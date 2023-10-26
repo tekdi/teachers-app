@@ -6,7 +6,7 @@
 ## https://github.com/oauth2-proxy/oauth2-proxy
 
 
-# ./oauth2-proxy --config=./oauth2-proxy-frontend.cfg --oidc-issuer-url="https://dev-shiksha.uniteframework.io/auth/realms/sunbird-rc"  --redirect-url="http://localhost:4181/oauth2/callback" --insecure-oidc-allow-unverified-email --pass-authorization-header=true
+# ./oauth2-proxy --config=./oauth2-proxy-frontend.cfg --oidc-issuer-url="https://shiksha.uniteframework.io/auth/realms/sunbird-rc"  --redirect-url="http://localhost:4181/oauth2/callback" --insecure-oidc-allow-unverified-email --pass-authorization-header=true
 # ./oauth2-proxy --config=./oauth2-proxy-frontend.cfg --oidc-issuer-url="http://localhost:8080/auth/realms/shiksha"  --redirect-url="http://localhost:4181/oauth2/callback" --insecure-oidc-allow-unverified-email --pass-authorization-header=true
 #
 
@@ -133,7 +133,7 @@ User=www-data
 Group=www-data
 
 
-ExecStart=/usr/local/bin/oauth2-proxy --config=/etc/oauth2-proxy/oauth2-proxy.cfg --oidc-issuer-url="https://dev-shiksha.uniteframework.io/auth/realms/sunbird-rc"  --redirect-url="http://sandbox.shikshaplatform.io:4181/oauth2/callback" --insecure-oidc-allow-unverified-email --pass-authorization-header=true
+ExecStart=/usr/local/bin/oauth2-proxy --config=/etc/oauth2-proxy/oauth2-proxy.cfg --oidc-issuer-url="https://shiksha.uniteframework.io/auth/realms/sunbird-rc"  --redirect-url="http://sandbox.shikshaplatform.io:4181/oauth2/callback" --insecure-oidc-allow-unverified-email --pass-authorization-header=true
 
 ExecReload=/bin/kill -HUP $MAINPID
 
