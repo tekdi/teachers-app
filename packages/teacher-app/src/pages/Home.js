@@ -7,8 +7,10 @@ function Home(props) {
   const [role, setRole] = React.useState();
 
   React.useEffect(async (e) => {
-    const newRole = await getRole();
-    setRole(newRole);
+
+
+    // const newRole = await getRole();
+    setRole("teacher");
   }, []);
 
   if (role && role.toLowerCase() === "teacher") {
