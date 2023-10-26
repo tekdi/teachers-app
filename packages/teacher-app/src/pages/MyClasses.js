@@ -14,7 +14,7 @@ import manifest from "../manifest.json";
 const colors = overrideColorTheme();
 
 const MyClassRoute = React.lazy(() => import("classes/MyClassRoute"));
-const TimeTableRoute = React.lazy(() => import("calendar/TimeTableRoute"));
+// const TimeTableRoute = React.lazy(() => import("calendar/TimeTableRoute"));
 
 const PRESENT = "Present";
 const ABSENT = "Absent";
@@ -117,7 +117,7 @@ const MyClasses = ({ footerLinks, setAlert, appName }) => {
           <Tab
             routes={[
               { title: t("MY_CLASS"), component: <MyClassRoute /> },
-              { title: t("TIME_TABLE"), component: <TimeTableRoute /> },
+              // { title: t("TIME_TABLE"), component: <TimeTableRoute /> },
             ]}
           />
         </Box>

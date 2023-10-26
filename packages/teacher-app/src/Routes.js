@@ -7,38 +7,38 @@ const Attendance = React.lazy(() => import("attendance/Attendance"));
 const Report = React.lazy(() => import("attendance/Report"));
 const ReportDetail = React.lazy(() => import("attendance/ReportDetail"));
 const SendSMS = React.lazy(() => import("attendance/SendSMS"));
-const TeachingDetail = React.lazy(() => import("worksheet/TeachingDetail"));
-const WorksheetShare = React.lazy(() => import("worksheet/WorksheetShare"));
-const Worksheet = React.lazy(() => import("worksheet/Worksheet"));
-const WorksheetQuestionBank = React.lazy(() =>
-  import("worksheet/WorksheetQuestionBank")
-);
-const CreateWorksheet = React.lazy(() => import("worksheet/CreateWorksheet"));
-const EditWorksheet = React.lazy(() => import("worksheet/EditWorksheet"));
-const WorksheetTemplate = React.lazy(() =>
-  import("worksheet/WorksheetTemplate")
-);
-const Teaching = React.lazy(() => import("worksheet/Teaching"));
+// const TeachingDetail = React.lazy(() => import("worksheet/TeachingDetail"));
+// const WorksheetShare = React.lazy(() => import("worksheet/WorksheetShare"));
+// const Worksheet = React.lazy(() => import("worksheet/Worksheet"));
+// const WorksheetQuestionBank = React.lazy(() =>
+//   import("worksheet/WorksheetQuestionBank")
+// );
+// const CreateWorksheet = React.lazy(() => import("worksheet/CreateWorksheet"));
+// const EditWorksheet = React.lazy(() => import("worksheet/EditWorksheet"));
+// const WorksheetTemplate = React.lazy(() =>
+//   import("worksheet/WorksheetTemplate")
+// );
+// const Teaching = React.lazy(() => import("worksheet/Teaching"));
 const Student = React.lazy(() => import("students/Student"));
 const StudentDetails = React.lazy(() => import("students/StudentDetails"));
 
-const Notification = React.lazy(() => import("notification/Notification"));
-const CreateNotification = React.lazy(() =>
-  import("notification/CreateNotification")
-);
-const ScheduleNotification = React.lazy(() =>
-  import("notification/ScheduleNotification")
-);
-const Outbox = React.lazy(() => import("notification/Outbox"));
+// const Notification = React.lazy(() => import("notification/Notification"));
+// const CreateNotification = React.lazy(() =>
+//   import("notification/CreateNotification")
+// );
+// const ScheduleNotification = React.lazy(() =>
+//   import("notification/ScheduleNotification")
+// );
+// const Outbox = React.lazy(() => import("notification/Outbox"));
 const Profile = React.lazy(() => import("profile/Profile"));
 const AttendanceReport = React.lazy(() => import("profile/AttendanceReport"));
 const SeeMore = React.lazy(() => import("profile/SeeMore"));
 
-const MyLearning = React.lazy(() => import("mylearning/MyLearning"));
-const CourseList = React.lazy(() => import("mylearning/CourseList"));
-const CourseDetails = React.lazy(() => import("mylearning/CourseDetails"));
-const VideoList = React.lazy(() => import("mylearning/VideoList"));
-const VideoDetails = React.lazy(() => import("mylearning/VideoDetails"));
+// const MyLearning = React.lazy(() => import("mylearning/MyLearning"));
+// const CourseList = React.lazy(() => import("mylearning/CourseList"));
+// const CourseDetails = React.lazy(() => import("mylearning/CourseDetails"));
+// const VideoList = React.lazy(() => import("mylearning/VideoList"));
+// const VideoDetails = React.lazy(() => import("mylearning/VideoDetails"));
 // Assessment Module Imports
 const Assessment = React.lazy(() => import("assessment/Assessment"));
 const AssessmentGiven = React.lazy(() => import("assessment/AssessmentGiven"));
@@ -95,59 +95,59 @@ const TeacherVisitReport = React.lazy(() =>
   import("schools/TeacherVisitReport")
 );
 const Question = React.lazy(() => import("schools/Question"));
-const Myvisits = React.lazy(() => import("visits/Myvisits"));
-const Recommendedschools = React.lazy(() =>
-  import("visits/Recommendedschools")
-);
-const Allocatedschools = React.lazy(() => import("visits/Allocatedschools"));
+// const Myvisits = React.lazy(() => import("visits/Myvisits"));
+// const Recommendedschools = React.lazy(() =>
+//   import("visits/Recommendedschools")
+// );
+// const Allocatedschools = React.lazy(() => import("visits/Allocatedschools"));
 
 export const routes = [
   // worksheet
-  {
-    moduleName: "worksheet",
-    path: "/worksheet/list/:state",
-    component: Worksheet,
-  },
-  {
-    moduleName: "worksheet",
-    path: "/worksheet/list",
-    component: Worksheet,
-  },
-  {
-    moduleName: "worksheet",
-    path: "/worksheet/:classId/:subject",
-    component: TeachingDetail,
-  },
-  {
-    moduleName: "worksheet",
-    path: "/worksheet/:worksheetId/share",
-    component: WorksheetShare,
-  },
-  {
-    moduleName: "worksheet",
-    path: "/worksheet/:id",
-    component: WorksheetQuestionBank,
-  },
-  {
-    moduleName: "worksheet",
-    path: "/worksheet/:id/edit",
-    component: EditWorksheet,
-  },
-  {
-    moduleName: "worksheet",
-    path: "/worksheet/create",
-    component: CreateWorksheet,
-  },
-  {
-    moduleName: "worksheet",
-    path: "/worksheet/template/:worksheetId",
-    component: WorksheetTemplate,
-  },
-  {
-    moduleName: "worksheet",
-    path: "/worksheet",
-    component: Teaching,
-  },
+  // {
+  //   moduleName: "worksheet",
+  //   path: "/worksheet/list/:state",
+  //   component: Worksheet,
+  // },
+  // {
+  //   moduleName: "worksheet",
+  //   path: "/worksheet/list",
+  //   component: Worksheet,
+  // },
+  // {
+  //   moduleName: "worksheet",
+  //   path: "/worksheet/:classId/:subject",
+  //   component: TeachingDetail,
+  // },
+  // {
+  //   moduleName: "worksheet",
+  //   path: "/worksheet/:worksheetId/share",
+  //   component: WorksheetShare,
+  // },
+  // {
+  //   moduleName: "worksheet",
+  //   path: "/worksheet/:id",
+  //   component: WorksheetQuestionBank,
+  // },
+  // {
+  //   moduleName: "worksheet",
+  //   path: "/worksheet/:id/edit",
+  //   component: EditWorksheet,
+  // },
+  // {
+  //   moduleName: "worksheet",
+  //   path: "/worksheet/create",
+  //   component: CreateWorksheet,
+  // },
+  // {
+  //   moduleName: "worksheet",
+  //   path: "/worksheet/template/:worksheetId",
+  //   component: WorksheetTemplate,
+  // },
+  // {
+  //   moduleName: "worksheet",
+  //   path: "/worksheet",
+  //   component: Teaching,
+  // },
   // classess
   {
     moduleName: "classes",
@@ -192,26 +192,26 @@ export const routes = [
     component: StudentDetails,
   },
   // notification
-  {
-    moduleName: "notification",
-    path: "/notification",
-    component: Notification,
-  },
-  {
-    moduleName: "notification",
-    path: "/notification/create",
-    component: CreateNotification,
-  },
-  {
-    moduleName: "notification",
-    path: "/notification/schedule",
-    component: ScheduleNotification,
-  },
-  {
-    moduleName: "notification",
-    path: "/notification/outbox",
-    component: Outbox,
-  },
+  // {
+  //   moduleName: "notification",
+  //   path: "/notification",
+  //   component: Notification,
+  // },
+  // {
+  //   moduleName: "notification",
+  //   path: "/notification/create",
+  //   component: CreateNotification,
+  // },
+  // {
+  //   moduleName: "notification",
+  //   path: "/notification/schedule",
+  //   component: ScheduleNotification,
+  // },
+  // {
+  //   moduleName: "notification",
+  //   path: "/notification/outbox",
+  //   component: Outbox,
+  // },
   // profile
   {
     moduleName: "profile",
@@ -229,11 +229,11 @@ export const routes = [
     component: SeeMore,
   },
   // mylearning
-  {
-    moduleName: "mylearning",
-    path: "/mylearning",
-    component: CourseList,
-  },
+  // {
+  //   moduleName: "mylearning",
+  //   path: "/mylearning",
+  //   component: CourseList,
+  // },
   // {
   //   moduleName: "mylearning",
   //   path: "/mylearning/list/:state",
@@ -244,11 +244,11 @@ export const routes = [
   //   path: "/mylearning/list",
   //   component: CourseList,
   // },
-  {
-    moduleName: "mylearning",
-    path: "/mylearning/:id/view",
-    component: CourseDetails,
-  },
+  // {
+  //   moduleName: "mylearning",
+  //   path: "/mylearning/:id/view",
+  //   component: CourseDetails,
+  // },
   // {
   //   moduleName: "mylearning",
   //   path: "/mylearning/video/list/:state",
@@ -427,21 +427,21 @@ export const routes = [
     component: Question,
   },
   // Visits Routes
-  {
-    moduleName: "visits",
-    path: "/visits/recommended-schools",
-    component: Recommendedschools,
-  },
-  {
-    moduleName: "visits",
-    path: "/visits/allocated-schools",
-    component: Allocatedschools,
-  },
-  {
-    moduleName: "visits",
-    path: "/visits",
-    component: Myvisits,
-  },
+  // {
+  //   moduleName: "visits",
+  //   path: "/visits/recommended-schools",
+  //   component: Recommendedschools,
+  // },
+  // {
+  //   moduleName: "visits",
+  //   path: "/visits/allocated-schools",
+  //   component: Allocatedschools,
+  // },
+  // {
+  //   moduleName: "visits",
+  //   path: "/visits",
+  //   component: Myvisits,
+  // },
   {
     moduleName: "app",
     path: "/",
