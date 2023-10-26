@@ -123,7 +123,7 @@ export const DEFAULT_THEME = async (theme) => {
   return extendTheme(joyfull.theme)
 }
 
-export const getAppshellData = async (routes = [], role = '') => {
+export const getAppshellData = async (routes = [], role = 'teacher') => {
   try {
     if (role === '') {
       role = await getRole()

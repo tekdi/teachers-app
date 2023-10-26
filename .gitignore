@@ -2,3 +2,5 @@ node_modules/
 .DS_Store
 .idea
 yarn-error.log
+prod-build
+*.tar
