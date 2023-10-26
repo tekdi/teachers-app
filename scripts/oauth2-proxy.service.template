@@ -10,7 +10,7 @@ Group=www-data
 # replace ${APP_DOMAIN_NAME} with application domain name
 # replace ${OIDC_ISSUER_URL} with OIDC ISSUER URL
 # e.g.
-# OIDC_ISSUER_URL=https://dev-shiksha.uniteframework.io/auth/realms/sunbird-rc
+# OIDC_ISSUER_URL=https://shiksha.uniteframework.io/auth/realms/sunbird-rc
 # APP_DOMAIN_NAME=https://proxy-sandbox.shikshaplatform.io
 
 ExecStart=/usr/local/bin/oauth2-proxy --config=/etc/oauth2-proxy/oauth2-proxy.cfg --oidc-issuer-url="${OIDC_ISSUER_URL}"  --redirect-url="${APP_DOMAIN_NAME}/oauth2/callback" --insecure-oidc-allow-unverified-email --pass-authorization-header=true --skip-jwt-bearer-tokens=true --reverse-proxy=true --oidc-audience-claim=azp
