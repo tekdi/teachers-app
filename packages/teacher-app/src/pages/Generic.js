@@ -36,6 +36,7 @@ function Generic({ footerLinks, appName, setAlert }) {
   const [showModal, setShowModal] = React.useState(false);
   const [popupModal, setPopupModal] = React.useState(false);
   let newAvatar = localStorage.getItem("firstName");
+  let fullName = localStorage.getItem("fullName");
   const [selfAttendance, setSelfAttendance] = React.useState({});
 
   let cameraUrl = "";
@@ -89,6 +90,8 @@ function Generic({ footerLinks, appName, setAlert }) {
           },
           _text: { color: "warmGray.700" },
         },
+      ]
+    },
         // {
         //   title: t("ACTIVITY"),
         //   subTitle: "1 " + t("REMAINING"),
@@ -128,8 +131,6 @@ function Generic({ footerLinks, appName, setAlert }) {
         //   },
         //   _text: { color: "warmGray.700" },
         // },
-      ],
-    },
     // {
     //   title: t("THIS_WEEK_TASKS"),
     //   data: [
@@ -255,10 +256,10 @@ function Generic({ footerLinks, appName, setAlert }) {
               uri: "https://images.unsplash.com/photo-1614289371518-722f2615943d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
             }}
           >
-            {newAvatar?.toUpperCase().substr(0, 2)}
+            {fullName?.toUpperCase().substr(0, 2)}
           </Avatar>
           <Heading size="md">
-            {newAvatar}
+            {fullName}
           </Heading>
         </VStack>
         <Box bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5} shadow={3}>
