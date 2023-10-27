@@ -20,6 +20,7 @@ import {
 import { useTranslation } from "react-i18next";
 import manifest from "../manifest.json";
 import moment from "moment";
+import { footerMenus } from "./parts/footer";
 
 const PRESENT = "Present";
 const ABSENT = "Absent";
@@ -234,7 +235,7 @@ function Generic({ footerLinks, appName, setAlert }) {
           pt: "20px",
           pb: "20px",
         }}
-        _footer={footerLinks}
+        _footer={footerMenus}
       >
         <Box bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5} shadow={3}>
           
