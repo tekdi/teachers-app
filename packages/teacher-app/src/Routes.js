@@ -2,6 +2,7 @@ import Home from "./pages/Home";
 import React from "react";
 import MyClasses from "pages/MyClasses";
 
+
 const ClassDetails = React.lazy(() => import("classes/ClassDetails"));
 const Attendance = React.lazy(() => import("attendance/Attendance"));
 const Report = React.lazy(() => import("attendance/Report"));
