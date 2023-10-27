@@ -57,6 +57,7 @@ const ClassDetails = ({ footerLinks }) => {
 
   React.useEffect(() => {
     capture("PAGE");
+    
   }, []);
 
   return (

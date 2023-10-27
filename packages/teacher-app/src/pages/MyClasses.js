@@ -11,6 +11,7 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import manifest from "../manifest.json";
+import { footerMenus } from "./parts/footer";
 const colors = overrideColorTheme();
 
 const MyClassRoute = React.lazy(() => import("classes/MyClassRoute"));
@@ -111,7 +112,7 @@ const MyClasses = ({ footerLinks, setAlert, appName }) => {
             textTransform: "inherit",
           },
         }}
-        _footer={footerLinks}
+        _footer={footerMenus}
       >
         <Box bg="white" p="5" mb="4" roundedBottom={"xl"} shadow={2}>
           <Tab

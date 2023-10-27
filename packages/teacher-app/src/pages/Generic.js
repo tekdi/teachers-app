@@ -21,6 +21,7 @@ import {
 import { useTranslation } from "react-i18next";
 import manifest from "../manifest.json";
 import moment from "moment";
+import { footerMenus } from "./parts/footer";
 
 const PRESENT = "Present";
 const ABSENT = "Absent";
@@ -235,7 +236,7 @@ function Generic({ footerLinks, appName, setAlert }) {
           pt: "20px",
           pb: "20px",
         }}
-        _footer={footerLinks}
+        _footer={footerMenus}
       >
       <VStack
           space={2}
