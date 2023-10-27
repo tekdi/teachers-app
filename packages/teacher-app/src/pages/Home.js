@@ -2,6 +2,7 @@ import React from "react";
 import { getRole } from "@shiksha/common-lib";
 import TeacherHome from "./TeacherHome";
 import MentorMonitorHome from "./MentorMonitorHome";
+import Generic from "./Generic";
 
 function Home(props) {
   const [role, setRole] = React.useState();
@@ -14,7 +15,7 @@ function Home(props) {
   }, []);
 
   if (role && role.toLowerCase() === "teacher") {
-    return <TeacherHome {...props} />;
+    return <Generic {...props} />;
   } else if (role && ["mentor", "monitor"].includes(role.toLowerCase())) {
     return <MentorMonitorHome {...props} />;
   }
