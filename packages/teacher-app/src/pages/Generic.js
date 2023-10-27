@@ -8,6 +8,7 @@ import {
   Pressable,
   Stack,
   VStack,
+  Heading
 } from "native-base";
 import {
   BodyLarge,
@@ -73,12 +74,12 @@ function Generic({ footerLinks, appName, setAlert }) {
     //   ],
     // },
     {
-      title: t("TODAY_TASKS"),
+      // title: t("TODAY_TASKS"),
       data: [
         {
-          title: t("CLASSES"),
+          title: t("MY_CLASSES"),
           link: "/classes",
-          subTitle: "3 " + t("REMAINING"),
+          // subTitle: "3 " + t("REMAINING"),
           icon: "ParentLineIcon",
           _box: {
             bg: "widgetColor.500",
@@ -181,7 +182,7 @@ function Generic({ footerLinks, appName, setAlert }) {
       <Layout
         _header={{
           title: t("HOME"),
-          subHeading: moment().format("hh:mm A"),
+          // subHeading: moment().format("hh:mm A"),
           iconComponent: (
             <Pressable onPress={(e) => setShowModal(true)}>
               {cameraUrl ? (
@@ -230,13 +231,36 @@ function Generic({ footerLinks, appName, setAlert }) {
           languages: manifest.languages,
           isShowNotificationButton: true,
         }}
-        subHeader={t("THIS_IS_HOW_YOUR_DAY_LOOKS")}
+        // subHeader={t("THIS_IS_HOW_YOUR_DAY_LOOKS")}
         _subHeader={{
           pt: "20px",
           pb: "20px",
         }}
         _footer={footerMenus}
       >
+      <VStack
+          space={2}
+          alignItems={{
+            base: "center",
+            md: "flex-start",
+          }}
+        >
+          <Avatar
+            borderRadius="lg"
+            bg="white"
+            alignSelf="center"
+            size="lg"
+            style={{ borderRadius: "50%" }}
+            source={{
+              uri: "https://images.unsplash.com/photo-1614289371518-722f2615943d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+            }}
+          >
+            {newAvatar?.toUpperCase().substr(0, 2)}
+          </Avatar>
+          <Heading size="md">
+            {newAvatar}
+          </Heading>
+        </VStack>
         <Box bg="white" roundedBottom={"2xl"} py={6} px={4} mb={5} shadow={3}>
           
           <Stack>

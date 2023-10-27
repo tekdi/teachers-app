@@ -25,6 +25,10 @@ function AppShell({
   const [alert, setAlert] = React.useState<any>()
   const [allConfig, setAllConfig] = React.useState<any>()
 
+  if(localStorage.getItem("console")){
+    console.log({accessRoutes})
+  }
+  
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search)
     const searchParams = Object.fromEntries(urlSearchParams.entries())

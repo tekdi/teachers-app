@@ -1,6 +1,7 @@
 import Home from "./pages/Home";
 import React from "react";
 import MyClasses from "pages/MyClasses";
+import MyClassDetails from "pages/MyClassDetails";
 
 
 const ClassDetails = React.lazy(() => import("classes/ClassDetails"));
@@ -153,7 +154,8 @@ export const routes = [
   {
     moduleName: "classes",
     path: "classes",
-    component: MyClasses,
+    // component: MyClasses,
+    component: MyClassDetails
   },
   {
     moduleName: "classes",
