@@ -3,6 +3,7 @@
   "private": true,
   "workspaces": {
     "packages": [
+      "packages/common-lib",
       "packages/core",
       "packages/attendance",
       "packages/assessment",
@@ -11,7 +12,6 @@
       "packages/profile",
       "packages/schools",
       "packages/teacher-app"
-
     ]
   },
   "scripts": {
