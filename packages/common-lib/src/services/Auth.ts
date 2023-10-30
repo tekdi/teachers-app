@@ -6,10 +6,11 @@ export function fetchToken(
   password: string
 ): Promise<any> {
   const params = new URLSearchParams()
-  params.append('client_id', 'registry-frontend')
+  params.append('client_id', 'hasura')
   params.append('username', username)
   params.append('password', password)
   params.append('grant_type', 'password')
+  params.append('client_secret', '2075cb0a-a176-42c7-b5d1-5c5afb9cd317')
 
   const config = {
     headers: {
