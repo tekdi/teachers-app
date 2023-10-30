@@ -81,20 +81,20 @@ export default function Login({ swPath }) {
           try {
             let { id } = resultTeacher;
             localStorage.setItem("id", id);
-            const updateTokenTeacher = await userRegistryService.update({
-              id,
-              fcmToken,
-            });
+            // const updateTokenTeacher = await userRegistryService.update({
+            //   id,
+            //   fcmToken,
+            // });
             localStorage.setItem(
               "fullName",
               resultTeacher.fullName
                 ? resultTeacher.fullName
                 : `${resultTeacher.firstName} ${resultTeacher.lastName}`
             );
-            localStorage.setItem("firstName", resultTeacher.firstName);
-            localStorage.setItem("lastName", resultTeacher.lastName);
-            localStorage.setItem("schoolId", resultTeacher.schoolId);
-            localStorage.setItem("phoneNumber", resultTeacher.phoneNumber);
+            // localStorage.setItem("firstName", resultTeacher.firstName);
+            // localStorage.setItem("lastName", resultTeacher.lastName);
+            // localStorage.setItem("schoolId", resultTeacher.schoolId);
+            // localStorage.setItem("phoneNumber", resultTeacher.phoneNumber);
           } catch (e) {
             localStorage.removeItem("token");
             console.log({ e });
@@ -102,7 +102,7 @@ export default function Login({ swPath }) {
           try {
             const fcmToken = await getUserToken(swPath);
             let id = localStorage.getItem("id");
-            await userRegistryService.update({ id, fcmToken });
+            // await userRegistryService.update({ id, fcmToken });
             localStorage.setItem("fcmToken", fcmToken);
           } catch (e) {
             localStorage.setItem("fcmToken", "");
