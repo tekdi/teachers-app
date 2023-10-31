@@ -1,0 +1,230 @@
+{
+  "solution": {
+      "_id": "653b6c4cac76fa7ab02e6167",
+      "externalId": "cfa2effa-749d-11ee-91ef-7196ba8fa2ff-1698393164031",
+      "name": "feedback of meeting",
+      "description": "Testing Survey for Support",
+      "captureGpsLocationAtQuestionLevel": false,
+      "enableQuestionReadOut": false
+  },
+  "assessment": {
+      "name": "feedback of meeting",
+      "description": "Testing Survey for Support",
+      "externalId": "cfa2effa-749d-11ee-91ef-7196ba8fa2ff-1698393164031",
+      "submissionId": "653b6cdbac76fa7ab02e6175",
+      "evidences": [
+          {
+              "code": "SF",
+              "sections": [
+                  {
+                      "code": "SQ",
+                      "questions": [
+                          {
+                              "_id": "",
+                              "externalId": "",
+                              "question": "",
+                              "tip": "",
+                              "hint": "",
+                              "responseType": "pageQuestions",
+                              "value": "",
+                              "isCompleted": "",
+                              "showRemarks": "",
+                              "remarks": "",
+                              "visibleIf": "",
+                              "options": "",
+                              "sliderOptions": "",
+                              "children": "",
+                              "questionGroup": "",
+                              "questionType": "",
+                              "modeOfCollection": "",
+                              "usedForScoring": "",
+                              "fileName": "",
+                              "validation": "",
+                              "accessibility": "",
+                              "canBeNotApplicable": "",
+                              "instanceQuestions": "",
+                              "isAGeneralQuestion": "",
+                              "autoCapture": "",
+                              "rubricLevel": "",
+                              "sectionHeader": "",
+                              "allowAudioRecording": "",
+                              "page": "p1",
+                              "questionNumber": "",
+                              "prefillFromEntityProfile": "",
+                              "entityFieldName": "",
+                              "isEditable": "",
+                              "showQuestionInPreview": "",
+                              "createdFromQuestionId": "",
+                              "updatedAt": "",
+                              "createdAt": "",
+                              "deleted": "",
+                              "__v": "",
+                              "evidenceMethod": "",
+                              "payload": "",
+                              "startTime": "",
+                              "endTime": "",
+                              "gpsLocation": "",
+                              "file": "",
+                              "pageQuestions": [
+                                  {
+                                      "_id": "653b6c4cac76fa7ab02e615f",
+                                      "externalId": "SUR_TEST_001_1698393162266-1698393164045",
+                                      "question": [
+                                          "how was the meeting",
+                                          ""
+                                      ],
+                                      "tip": "",
+                                      "hint": "",
+                                      "responseType": "text",
+                                      "value": "",
+                                      "isCompleted": false,
+                                      "showRemarks": true,
+                                      "remarks": "",
+                                      "visibleIf": "",
+                                      "options": [],
+                                      "sliderOptions": [],
+                                      "children": [],
+                                      "questionGroup": [
+                                          "A1"
+                                      ],
+                                      "questionType": "auto",
+                                      "modeOfCollection": "onfield",
+                                      "usedForScoring": "",
+                                      "fileName": [],
+                                      "validation": {
+                                          "required": true
+                                      },
+                                      "accessibility": "No",
+                                      "canBeNotApplicable": "false",
+                                      "instanceQuestions": [],
+                                      "isAGeneralQuestion": false,
+                                      "autoCapture": false,
+                                      "rubricLevel": "",
+                                      "sectionHeader": "",
+                                      "allowAudioRecording": false,
+                                      "page": "p1",
+                                      "questionNumber": "1",
+                                      "prefillFromEntityProfile": false,
+                                      "entityFieldName": "",
+                                      "isEditable": true,
+                                      "showQuestionInPreview": false,
+                                      "createdFromQuestionId": "653b6c4bac76fa7ab02e614f",
+                                      "updatedAt": "2023-10-27T07:52:44.053Z",
+                                      "createdAt": "2023-10-27T07:52:43.949Z",
+                                      "deleted": false,
+                                      "__v": 0,
+                                      "evidenceMethod": "SF",
+                                      "payload": {
+                                          "criteriaId": "653b6c4cac76fa7ab02e6163",
+                                          "responseType": "text",
+                                          "evidenceMethod": "SF",
+                                          "rubricLevel": ""
+                                      },
+                                      "startTime": "",
+                                      "endTime": "",
+                                      "gpsLocation": "",
+                                      "file": ""
+                                  },
+                                  {
+                                      "_id": "653b6c4cac76fa7ab02e6160",
+                                      "externalId": "SUR_TEST_002_1698393162266-1698393164049",
+                                      "question": [
+                                          "was it is useful",
+                                          ""
+                                      ],
+                                      "tip": "",
+                                      "hint": "",
+                                      "responseType": "radio",
+                                      "value": "",
+                                      "isCompleted": false,
+                                      "showRemarks": false,
+                                      "remarks": "",
+                                      "visibleIf": "",
+                                      "options": [
+                                          {
+                                              "value": "R1",
+                                              "label": "Yes"
+                                          },
+                                          {
+                                              "value": "R2",
+                                              "label": "No"
+                                          }
+                                      ],
+                                      "sliderOptions": [],
+                                      "children": [],
+                                      "questionGroup": [
+                                          "A1"
+                                      ],
+                                      "questionType": "auto",
+                                      "modeOfCollection": "onfield",
+                                      "usedForScoring": "",
+                                      "file": {
+                                          "required": true,
+                                          "type": [
+                                              "image/jpeg",
+                                              "docx",
+                                              "pdf",
+                                              "ppt"
+                                          ],
+                                          "minCount": 0,
+                                          "maxCount": 10,
+                                          "caption": "FALSE"
+                                      },
+                                      "fileName": [],
+                                      "validation": {
+                                          "required": true
+                                      },
+                                      "accessibility": "No",
+                                      "canBeNotApplicable": "false",
+                                      "instanceQuestions": [],
+                                      "isAGeneralQuestion": false,
+                                      "autoCapture": false,
+                                      "rubricLevel": "",
+                                      "sectionHeader": "",
+                                      "allowAudioRecording": false,
+                                      "page": "p1",
+                                      "questionNumber": "2",
+                                      "prefillFromEntityProfile": false,
+                                      "entityFieldName": "",
+                                      "isEditable": true,
+                                      "showQuestionInPreview": false,
+                                      "createdFromQuestionId": "653b6c4bac76fa7ab02e6155",
+                                      "updatedAt": "2023-10-27T07:52:44.053Z",
+                                      "createdAt": "2023-10-27T07:52:43.978Z",
+                                      "deleted": false,
+                                      "__v": 0,
+                                      "evidenceMethod": "SF",
+                                      "payload": {
+                                          "criteriaId": "653b6c4cac76fa7ab02e6163",
+                                          "responseType": "radio",
+                                          "evidenceMethod": "SF",
+                                          "rubricLevel": ""
+                                      },
+                                      "startTime": "",
+                                      "endTime": "",
+                                      "gpsLocation": ""
+                                  }
+                              ]
+                          }
+                      ],
+                      "name": "Survey Questions"
+                  }
+              ],
+              "externalId": "SF",
+              "name": "Survey And Feedback",
+              "description": "Survey And Feedback",
+              "modeOfCollection": "",
+              "canBeNotApplicable": false,
+              "notApplicable": false,
+              "canBeNotAllowed": false,
+              "remarks": "",
+              "isActive": true,
+              "startTime": "",
+              "endTime": "",
+              "isSubmitted": false,
+              "submissions": []
+          }
+      ],
+      "submissions": {}
+  }
+}
