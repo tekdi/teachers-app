@@ -1,9 +1,10 @@
 const { dependencies } = require("./package.json");
 
 module.exports = {
-  name: "samplemodule",
+  name: "cohort",
   exposes: {
-    "./SampleComponent": "./src/components/SampleComponent",
+    "./SampleComponent": "./src/components/SampleComponent.js",
+    "./CohortList": "./src/pages/CohortList.js",
   },
   remotes: {
     core: `core@[window.appModules.core.url]/moduleEntry.js`,

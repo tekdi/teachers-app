@@ -3,19 +3,18 @@ import React from "react";
 import "./App.css";
 import { AppShell } from "@shiksha/common-lib";
 import Sample from "pages/Sample";
-import Observation from "pages/Observation";
 
 function App() {
   const routes = [
     {
       moduleName: "cohort",
-      path: "/sample",
+      path: "/",
       component: Sample,
     },
     {
       moduleName: "cohort",
       path: "/",
-      component: Observation,
+      component: Sample,
     },
   ];
   const LoginComponent = React.lazy(() => import("core/Login"));

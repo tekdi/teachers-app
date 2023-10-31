@@ -15,6 +15,7 @@ import { footerMenus } from "./parts/footer";
 const colors = overrideColorTheme();
 
 const MyClassRoute = React.lazy(() => import("classes/MyClassRoute"));
+const CohortList = React.lazy(() => import("cohort/CohortList"));
 // const TimeTableRoute = React.lazy(() => import("calendar/TimeTableRoute"));
 
 const PRESENT = "Present";
@@ -117,7 +118,8 @@ const MyClasses = ({ footerLinks, setAlert, appName }) => {
         <Box bg="white" p="5" mb="4" roundedBottom={"xl"} shadow={2}>
           <Tab
             routes={[
-              { title: t("MY_CLASS"), component: <MyClassRoute /> },
+              // { title: t("MY_CLASS"), component: <MyClassRoute /> },
+              { title: t("MY_CLASS"), component: <CohortList /> },
               // { title: t("TIME_TABLE"), component: <TimeTableRoute /> },
             ]}
           />
