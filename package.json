@@ -11,6 +11,7 @@
       "packages/student",
       "packages/profile",
       "packages/schools",
+      "packages/cohort",
       "packages/teacher-app"
     ]
   },

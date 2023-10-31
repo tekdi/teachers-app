@@ -16,6 +16,7 @@ import FilterButton from './components/FilterButton'
 import SchoolCard from './components/SchoolCard'
 import * as userRegistryService from './services/userRegistryService'
 import * as classRegistryService from './services/classRegistryService'
+import * as cohortRegistryService from './services/cohortRegistryService'
 import * as attendanceRegistryService from './services/attendanceRegistryService'
 import * as studentRegistryService from './services/studentRegistryService'
 import * as worksheetRegistryService from './services/worksheetRegistryService'
@@ -64,6 +65,7 @@ export {
   SchoolCard,
   userRegistryService,
   classRegistryService,
+  cohortRegistryService,
   attendanceRegistryService,
   studentRegistryService,
   worksheetRegistryService,
