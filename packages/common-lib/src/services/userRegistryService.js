@@ -3,8 +3,10 @@ import { get, post, update as updateRequest } from './RestClient'
 
 const interfaceData = {
   id: 'userId',
-  fullName: 'fullName',
-  firstName: 'firstName',
+  username: 'username',
+  // fullName: 'fullName',
+  fullName: 'name',
+  firstName: 'name',
   lastName: 'lastName',
   email: 'email',
   aadhaar: 'aadhaar',
@@ -25,7 +27,8 @@ const interfaceData = {
   joiningDate: 'joiningDate',
   maritalStatus: 'maritalStatus',
   middleName: 'middleName',
-  phoneNumber: 'phoneNumber',
+  // phoneNumber: 'phoneNumber',
+  phoneNumber: 'mobile',
   pincode: 'pincode',
   profQualification: 'profQualification',
   refId1: 'refId1',
