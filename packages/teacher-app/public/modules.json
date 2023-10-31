@@ -37,5 +37,8 @@
   },
   "schools": {
     "url": "http://localhost:3012/modules/schools"
+  },
+  "cohort": {
+    "url": "http://localhost:4004/modules/cohort"
   }
 }

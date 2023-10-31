@@ -5,6 +5,8 @@ import MyClassDetails from "pages/MyClassDetails";
 
 
 const ClassDetails = React.lazy(() => import("classes/ClassDetails"));
+// const SampleComponent = React.lazy(() => import("cohort/SampleComponent"));
+// const CohortDetails = React.lazy(() => import("classes/CohortDetails"));
 const Attendance = React.lazy(() => import("attendance/Attendance"));
 const Report = React.lazy(() => import("attendance/Report"));
 const ReportDetail = React.lazy(() => import("attendance/ReportDetail"));
@@ -152,14 +154,17 @@ export const routes = [
   // },
   // classess
   {
-    moduleName: "classes",
+    // moduleName: "classes",
+    moduleName: "cohort",
     path: "classes",
-    // component: MyClasses,
-    component: MyClassDetails
+    component: MyClasses,
+    // component: MyClassDetails
+    // component: SampleComponent
   },
   {
     moduleName: "classes",
     path: "/classes/:classId",
+    // component: CohortDetails
     component: ClassDetails,
   },
   {
