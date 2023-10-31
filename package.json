@@ -11,8 +11,9 @@
       "packages/student",
       "packages/profile",
       "packages/schools",
+      "packages/teacher-app",
       "packages/cohort",
-      "packages/teacher-app"
+      "packages/observation"
     ]
   },
   "scripts": {
