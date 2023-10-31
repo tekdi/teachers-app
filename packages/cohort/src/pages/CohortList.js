@@ -19,7 +19,7 @@ export default function CohortList()  {
             type: "class",
             role: "teacher",
           }, {
-            tenantid: 'fbe108db-e236-48a7-8230-80d34c370800' //process.env.TENANT_ID
+            tenantid: process.env.REACT_APP_TENANT_ID //'fbe108db-e236-48a7-8230-80d34c370800' //process.env.TENANT_ID
           })
         );
       }

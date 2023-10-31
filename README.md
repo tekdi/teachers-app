@@ -15,6 +15,7 @@
 ```
 {
 "name": "[module-name]",
+"homepage": "modules/[module-name]",
 ...
 }
 ```
@@ -30,6 +31,8 @@ module.exports = {
 ```
 
 - update `packages/[module-name]/moduleFederation.config.js `
+- Add Entries for exposed pages/component
+- Add entries for the imports
 
 ```
 ...

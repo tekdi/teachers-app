@@ -10,12 +10,7 @@ function App() {
       moduleName: "module-template",
       path: "/",
       component: Sample,
-    },
-    {
-      moduleName: "module-template",
-      path: "/",
-      component: Sample,
-    },
+    }
   ];
   const LoginComponent = React.lazy(() => import("core/Login"));
 
