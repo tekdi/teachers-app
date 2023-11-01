@@ -117,11 +117,6 @@ function App() {
       path: "/",
       component: Assessment,
     },
-    {
-      moduleName: "assessment",
-      path: "/test",
-      component: TestPage,
-    },
   ];
   const LoginComponent = React.lazy(() => import("core/Login"));
   const skipLogin = !(
