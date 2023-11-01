@@ -2,6 +2,7 @@ import Home from "./pages/Home";
 import React from "react";
 import MyClasses from "pages/MyClasses";
 import MyClassDetails from "pages/MyClassDetails";
+import Test from "pages/Test";
 
 
 const ClassDetails = React.lazy(() => import("classes/ClassDetails"));
@@ -99,6 +100,8 @@ const TeacherVisitReport = React.lazy(() =>
   import("schools/TeacherVisitReport")
 );
 const Question = React.lazy(() => import("schools/Question"));
+
+
 // const Myvisits = React.lazy(() => import("visits/Myvisits"));
 // const Recommendedschools = React.lazy(() =>
 //   import("visits/Recommendedschools")
@@ -454,5 +457,10 @@ export const routes = [
     moduleName: "app",
     path: "/",
     component: Home,
+  },
+  {
+    moduleName: "app",
+    path: "/test",
+    component: Test,
   },
 ];

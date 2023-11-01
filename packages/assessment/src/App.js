@@ -19,6 +19,7 @@ import PastAssessments from "./pages/PastAssessments";
 import PastExaminationsList from "./pages/PastExaminations";
 import AssessmentGiven from "pages/AssessmentGiven";
 import StudentReport from "pages/StudentReport";
+import TestPage from "pages/TestPage";
 
 function App() {
   initializeI18n(
@@ -115,6 +116,11 @@ function App() {
       moduleName: "assessment",
       path: "/",
       component: Assessment,
+    },
+    {
+      moduleName: "assessment",
+      path: "/test",
+      component: TestPage,
     },
   ];
   const LoginComponent = React.lazy(() => import("core/Login"));

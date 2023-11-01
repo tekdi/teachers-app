@@ -7,13 +7,9 @@ import Observation from "pages/Observation";
 
 function App() {
   const routes = [
+    
     {
-      moduleName: "observation",
-      path: "/sample",
-      component: Sample,
-    },
-    {
-      moduleName: "observation",
+      moduleName: "cohort",
       path: "/",
       component: Observation,
     },
