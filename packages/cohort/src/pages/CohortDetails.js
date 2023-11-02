@@ -1,5 +1,13 @@
 import React from "react";
-import { Text, Box, Pressable, Image, Avatar } from "native-base";
+import {
+  Text,
+  Box,
+  Pressable,
+  Image,
+  Avatar,
+  Stack,
+  VStack,
+} from "native-base";
 import { useTranslation } from "react-i18next";
 import {
   capture,
@@ -8,28 +16,31 @@ import {
   overrideColorTheme,
   H3,
   IconByName,
+  Widget,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import manifest from "../manifest.json";
+import { useParams } from "react-router-dom";
+
 const colors = overrideColorTheme();
 
-const MyClassRoute = React.lazy(() => import("classes/MyClassRoute"));
-const CohortList = React.lazy(() => import("cohort/CohortList"));
+// const MyClassRoute = React.lazy(() => import("classes/MyClassRoute"));
 // const TimeTableRoute = React.lazy(() => import("calendar/TimeTableRoute"));
 
 const PRESENT = "Present";
 const ABSENT = "Absent";
 const UNMARKED = "Unmarked";
 
-const SelfAttendanceSheet = React.lazy(() =>
-  import("profile/SelfAttendanceSheet")
-);
+// const SelfAttendanceSheet = React.lazy(() =>
+//   import("profile/SelfAttendanceSheet")
+// );
 
-const MyClasses = ({ footerLinks, setAlert, appName }) => {
+const CohortDetails = ({ footerLinks, setAlert, appName }) => {
   const { t } = useTranslation();
   const [selfAttendance, setSelfAttendance] = React.useState({});
   const [showModal, setShowModal] = React.useState(false);
   let newAvatar = localStorage.getItem("firstName");
+  const { cohortId } = useParams();
 
   let cameraUrl = "";
   let avatarUrlObject = cameraUrl
@@ -39,21 +50,103 @@ const MyClasses = ({ footerLinks, setAlert, appName }) => {
         },
       }
     : {};
+  const widgetData = [
+    {
+      data: [
+        {
+          title: t("Mark My Attendance"),
+          link: "/classes",
+          icon: "ParentLineIcon",
+          _box: {
+            bg: "widgetColor.500",
+          },
+          _icon: {
+            color: "iconColor.500",
+          },
+          _text: { color: "warmGray.700" },
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          title: t("View Students"),
+          link: `/cohorts/${cohortId}/students`,
+          icon: "ParentLineIcon",
+          _box: {
+            bg: "widgetColor.600",
+          },
+          _icon: {
+            color: "iconColor.600",
+          },
+          _text: { color: "warmGray.700" },
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          title: t("Class Digital Observation"),
+          link: "/classes",
+          icon: "ParentLineIcon",
+          _box: {
+            bg: "widgetColor.700",
+          },
+          _icon: {
+            color: "iconColor.700",
+          },
+          _text: { color: "warmGray.700" },
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          title: t("Class Phygital Assessment"),
+          link: "/classes",
+          icon: "ParentLineIcon",
+          _box: {
+            bg: "widgetColor.800",
+          },
+          _icon: {
+            color: "iconColor.800",
+          },
+          _text: { color: "warmGray.700" },
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          title: t("View Class Reports"),
+          link: "/classes",
+          icon: "ParentLineIcon",
+          _box: {
+            bg: "widgetColor.1000",
+          },
+          _icon: {
+            color: "iconColor.1000",
+          },
+          _text: { color: "warmGray.700" },
+        },
+      ],
+    },
+  ];
 
   React.useEffect(() => {
     capture("PAGE");
   }, []);
 
   return (
-    <SelfAttendanceSheet
-      {...{
-        setAlert,
-        showModal,
-        setShowModal,
-        setAttendance: setSelfAttendance,
-        appName,
-      }}
-    >
+    // <SelfAttendanceSheet
+    //   {...{
+    //     setAlert,
+    //     showModal,
+    //     setShowModal,
+    //     setAttendance: setSelfAttendance,
+    //     appName,
+    //   }}
+    // >
       <Layout
         _header={{
           title: t("MY_CLASS"),
@@ -103,7 +196,7 @@ const MyClasses = ({ footerLinks, setAlert, appName }) => {
           ),
         }}
         _appBar={{ languages: manifest.languages }}
-        subHeader={<H3 textTransform="none">{t("THE_CLASS_YOU_TAKE")}</H3>}
+        // subHeader={<H3 textTransform="none">{t("THE_CLASS_YOU_TAKE")}</H3>}
         _subHeader={{
           bg: colors?.cardBg,
           _text: {
@@ -114,18 +207,14 @@ const MyClasses = ({ footerLinks, setAlert, appName }) => {
         }}
         _footer={footerLinks}
       >
-        <Box bg="white" p="5" mb="4" roundedBottom={"xl"} shadow={2}>
-          <Tab
-            routes={[
-              // { title: t("MY_CLASS"), component: <MyClassRoute /> },
-              { title: t("MY_CLASS"), component: <CohortList /> },
-              // { title: t("TIME_TABLE"), component: <TimeTableRoute /> },
-            ]}
-          />
-        </Box>
+        <VStack space={2}>
+          {widgetData.map((item, index) => {
+            return <Widget {...item} key={index} />;
+          })}
+        </VStack>
       </Layout>
-    </SelfAttendanceSheet>
+    // </SelfAttendanceSheet>
   );
 };
 
-export default MyClasses;
+export default CohortDetails;
