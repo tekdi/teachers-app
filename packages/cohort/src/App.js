@@ -1,10 +1,14 @@
 import React from "react";
 
 import "./App.css";
-import { AppShell } from "@shiksha/common-lib";
+import { AppShell, initializeI18n } from "@shiksha/common-lib";
 import Sample from "pages/Sample";
 
 function App() {
+  initializeI18n(
+    ["cohort"],
+    `${process.env.PUBLIC_URL}/locales/{{lng}}/{{ns}}.json`
+  );
   const routes = [
     {
       moduleName: "cohort",

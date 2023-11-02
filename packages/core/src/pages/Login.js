@@ -91,7 +91,7 @@ export default function Login({ swPath }) {
                 ? resultTeacher.fullName
                 : `${resultTeacher.firstName} ${resultTeacher.lastName}`
             );
-            // localStorage.setItem("firstName", resultTeacher.firstName);
+            localStorage.setItem("firstName", resultTeacher.firstName);
             // localStorage.setItem("lastName", resultTeacher.lastName);
             // localStorage.setItem("schoolId", resultTeacher.schoolId);
             // localStorage.setItem("phoneNumber", resultTeacher.phoneNumber);

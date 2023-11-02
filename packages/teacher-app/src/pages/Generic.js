@@ -20,8 +20,6 @@ import {
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import manifest from "../manifest.json";
-import moment from "moment";
-import { footerMenus } from "./parts/footer";
 
 const PRESENT = "Present";
 const ABSENT = "Absent";
@@ -79,7 +77,7 @@ function Generic({ footerLinks, appName, setAlert }) {
       data: [
         {
           title: t("MY_CLASSES"),
-          link: "/classes",
+          link: "/cohorts",
           // subTitle: "3 " + t("REMAINING"),
           icon: "ParentLineIcon",
           _box: {
@@ -237,14 +235,11 @@ function Generic({ footerLinks, appName, setAlert }) {
           pt: "20px",
           pb: "20px",
         }}
-        _footer={footerMenus}
+        _footer={footerLinks}
       >
       <VStack
           space={2}
-          alignItems={{
-            base: "center",
-            md: "flex-start",
-          }}
+          alignItems="center"
         >
           <Avatar
             borderRadius="lg"
@@ -258,7 +253,7 @@ function Generic({ footerLinks, appName, setAlert }) {
           >
             {fullName?.toUpperCase().substr(0, 2)}
           </Avatar>
-          <Heading size="md">
+          <Heading size="md" textAlign="center">
             {fullName}
           </Heading>
         </VStack>

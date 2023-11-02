@@ -5,6 +5,8 @@ module.exports = {
   exposes: {
     "./SampleComponent": "./src/components/SampleComponent.js",
     "./CohortList": "./src/pages/CohortList.js",
+    "./CohortDetails": "./src/pages/CohortDetails.js",
+    "./CohortMemberList": "./src/pages/CohortMemberList.js",
   },
   remotes: {
     core: `core@[window.appModules.core.url]/moduleEntry.js`,

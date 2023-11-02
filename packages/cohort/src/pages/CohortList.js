@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Box, HStack, VStack } from "native-base";
+import { Box, HStack, VStack, Text, Heading } from "native-base";
 import { useTranslation } from "react-i18next";
 import { generatePath } from "react-router-dom";
-import { Widget, cohortRegistryService } from "@shiksha/common-lib";
+import { H4, Widget, cohortRegistryService } from "@shiksha/common-lib";
 // import ChooseClassActionSheet from "./Molecules/ChooseClassActionSheet";
 
-export default function CohortList()  {
+export default function CohortList() {
   const { t } = useTranslation();
   const [classes, setClasses] = useState([]);
   const teacherId = localStorage.getItem("id");
@@ -14,20 +14,23 @@ export default function CohortList()  {
     const getData = async () => {
       if (!ignore) {
         setClasses(
-          await cohortRegistryService.getAll({
-            teacherId: teacherId,
-            type: "class",
-            role: "teacher",
-          }, {
-            tenantid: process.env.REACT_APP_TENANT_ID //'fbe108db-e236-48a7-8230-80d34c370800' //process.env.TENANT_ID
-          })
+          await cohortRegistryService.getAll(
+            {
+              teacherId: teacherId,
+              type: "class",
+              role: "teacher",
+            },
+            {
+              tenantid: process.env.REACT_APP_TENANT_ID, //'fbe108db-e236-48a7-8230-80d34c370800' //process.env.TENANT_ID
+            }
+          )
         );
       }
     };
     getData();
   }, [teacherId]);
 
-  return (
+  return classes?.length ? (
     <Box pb={4} pt="30">
       <VStack space={10}>
         <Widget
@@ -54,6 +57,9 @@ export default function CohortList()  {
         </HStack> */}
       </VStack>
     </Box>
+  ) : (
+    <H4 textAlign="center" mb="10" mt="10">
+      {t("NO_CLASSES_FOUND")}
+    </H4>
   );
-};
-
+}
