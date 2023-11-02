@@ -64,20 +64,14 @@ export const getCohortMembers = async (data = {}, header = {}) => {
   )
   if (result.data) {
     let memberData = result.data.data
-    const memberDetailsPromises = memberData.map((member) => {
-      return post(
-        `${process.env.REACT_APP_API_URL}/user/search`,
-        {
-          filters: {
-            userId: { _eq: member.userId }
-          }
-        },
-        { headers }
-      )
-    })
+    const body = {
+      filters: {
+        userId: { _in: memberData.map((e) => e.userId) }
+      }
+    }
+    let users = await post(`${process.env.REACT_APP_API_URL}/user/search`, body, { headers });
+    users = users.data.data
 
-    let users = await Promise.all(memberDetailsPromises)
-    users = users.map((user) => user.data.data[0])
     memberData = memberData.map((memberInfo, index) => {
       const user = users.find((user) => user.userId === memberInfo.userId)
       if (user) {
@@ -86,8 +80,35 @@ export const getCohortMembers = async (data = {}, header = {}) => {
           userDetails: user
         }
       }
-      return memberInfo
-    })
+      return false;
+    }).filter(item => !!item.userDetails);
+    // const memberDetailsPromises = memberData.map((member) => {
+    //   return post(
+    //     `${process.env.REACT_APP_API_URL}/user/search`,
+    //     {
+    //       filters: {
+    //         userId: { _eq: member.userId }
+    //       }
+    //     },
+    //     { headers }
+    //   )
+    // })
+
+    // let users = await Promise.all(memberDetailsPromises)
+    // users = users.map((user) => user.data.data[0])
+    // memberData = memberData.map((memberInfo, index) => {
+    //   const user = users.find((user) => user.userId === memberInfo.userId)
+    //   if (user) {
+    //     return {
+    //       ...memberInfo,
+    //       userDetails: user
+    //     }
+    //   }
+    //   return memberInfo
+    // })
+
+
+
     // .map((e) => mapInterfaceData(e, interfaceData))
     return memberData
     // .sort(function (a, b) {

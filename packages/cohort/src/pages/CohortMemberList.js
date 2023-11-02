@@ -21,6 +21,8 @@ import {
   BodySmall,
   H4,
   cohortRegistryService,
+  Loading,
+  useWindowSize,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import manifest from "../manifest.json";
@@ -28,10 +30,12 @@ const colors = overrideColorTheme();
 
 // import ChooseClassActionSheet from "./Molecules/ChooseClassActionSheet";
 
-export default function CohortMemberList({footerLinks}) {
+export default function CohortMemberList({ footerLinks }) {
   const { t } = useTranslation();
-  const [selfAttendance, setSelfAttendance] = React.useState({});
-  const [showModal, setShowModal] = React.useState(false);
+  const [selfAttendance, setSelfAttendance] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [width, height] = useWindowSize();
+  const [loading, setLoading] = useState(true);
   let newAvatar = localStorage.getItem("firstName");
 
   const [members, setMembers] = useState([]);
@@ -63,6 +67,7 @@ export default function CohortMemberList({footerLinks}) {
             }
           )
         );
+        setLoading(false);
       }
     };
     getData();
@@ -129,55 +134,57 @@ export default function CohortMemberList({footerLinks}) {
       }}
       _footer={footerLinks}
     >
-      <Box pb={4} pt="30">
-        <VStack space={2}>
-          {members.map((item, index) => {
-            return (
-              <Box
-                p="2"
-                m="2"
-                rounded={"lg"}
-                key={index}
-                style= {{
-                  background:
-                    index % 2 === 0
-                      ? "linear-gradient(281.03deg, #FC5858 -21.15%, #F8AF5A 100.04%)"
-                      : "linear-gradient(102.88deg, #D7BEE6 -5.88%, #B143F3 116.6%)",
-                }}
-                _text={{
-                  fontSize: "md",
-                  fontWeight: "medium",
-                  color: "black",
-                }}
-                shadow={2}
-              >
-                <HStack justifyContent="space-between">
-                  <VStack>
-                    <H4>{item?.userDetails?.name}</H4>
-                    <BodySmall>{"Student"}</BodySmall>
-                  </VStack>
-                  <HStack space={2}>
-                    <Button
-                      variant={"link"}
-                      colorScheme="primary"
-                      onPress={() => console.log("hello world")}
-                    >
-                      Take Attendance
-                    </Button>
-                    <Button
-                      variant={"link"}
-                      colorScheme="secondary"
-                      onPress={() => console.log("hello world")}
-                    >
-                      Take Observation
-                    </Button>
+      {loading ? (
+        <Loading height={height - height / 2} />
+      ) : (
+        <Box pb={4} pt="30">
+          <VStack space={2}>
+            {members.map((item, index) => {
+              return (
+                <Box
+                  p="2"
+                  m="2"
+                  rounded={"lg"}
+                  key={index}
+                  style={{
+                    background:
+                      index % 2 === 0
+                        ? "linear-gradient(281.03deg, #FC5858 -21.15%, #F8AF5A 100.04%)"
+                        : "linear-gradient(102.88deg, #D7BEE6 -5.88%, #B143F3 116.6%)",
+                  }}
+                  _text={{
+                    fontSize: "md",
+                    fontWeight: "medium",
+                    color: "black",
+                  }}
+                  shadow={2}
+                >
+                  <HStack justifyContent="space-between">
+                    <VStack>
+                      <H4>{item?.userDetails?.name}</H4>
+                      <BodySmall>{item?.role}</BodySmall>
+                    </VStack>
+                    <HStack space={2}>
+                      <Button
+                        variant={"link"}
+                        colorScheme="primary"
+                        onPress={() => console.log("hello world")}
+                      >
+                        Take Attendance
+                      </Button>
+                      <Button
+                        variant={"link"}
+                        colorScheme="secondary"
+                        onPress={() => console.log("hello world")}
+                      >
+                        Take Observation
+                      </Button>
+                    </HStack>
                   </HStack>
-                </HStack>
-              </Box>
-            );
-          })}
-          ;
-          {/* <Widget
+                </Box>
+              )
+            })}
+            {/* <Widget
             data={members.map((item, index) => {
               return {
                 title: item?.userDetails?.name || "",
@@ -194,11 +201,12 @@ export default function CohortMemberList({footerLinks}) {
               };
             })}
           /> */}
-          {/* <HStack space={2} justifyContent={"center"}>
+            {/* <HStack space={2} justifyContent={"center"}>
           <ChooseClassActionSheet />
         </HStack> */}
-        </VStack>
-      </Box>
+          </VStack>
+        </Box>
+      )}
     </Layout>
   );
 }
