@@ -3,6 +3,7 @@ import React from "react";
 import MyClasses from "pages/MyClasses";
 import MyClassDetails from "pages/MyClassDetails";
 import Test from "pages/Test";
+import TestObservation from "pages/TestObservation";
 
 
 const ClassDetails = React.lazy(() => import("classes/ClassDetails"));
@@ -462,5 +463,10 @@ export const routes = [
     moduleName: "app",
     path: "/test",
     component: Test,
+  },
+  {
+    moduleName: "app",
+    path: "/testObservation",
+    component: TestObservation,
   },
 ];

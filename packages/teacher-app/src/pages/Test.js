@@ -1,9 +1,9 @@
 import React from 'react'
-const Observation = React.lazy(() => import("observation/Observation"));
+const TestPage = React.lazy(() => import("assessment/TestPage"));
 
 function Test() {
   return (
-    <div><Observation/></div>
+    <div><TestPage/></div>
   )
 }
 
