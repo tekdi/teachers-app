@@ -87,7 +87,7 @@ export const getOne = async ({ id, ...params } = {}, header = {}) => {
   if (result.data && id) {
     localStorage.setItem("currentUser", JSON.stringify(result.data.data));
     return mapInterfaceData(result.data.data, interfaceData)
-  } else if (result.data) {
+  } else if (result?.data?.data) {
     localStorage.setItem("currentUser", JSON.stringify(result.data.data[0]));
     return mapInterfaceData(result.data.data[0], interfaceData)
   } else {

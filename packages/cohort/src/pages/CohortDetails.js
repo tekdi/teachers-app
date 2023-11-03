@@ -149,7 +149,7 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
     // >
       <Layout
         _header={{
-          title: t("MY_CLASS"),
+          title: t("MY_CLASSES"),
           subHeading: moment().format("hh:mm A"),
           iconComponent: (
             <Pressable onPress={(e) => setShowModal(true)}>

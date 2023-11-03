@@ -56,7 +56,7 @@ const MyClasses = ({ footerLinks, setAlert, appName }) => {
     >
       <Layout
         _header={{
-          title: t("MY_CLASS"),
+          title: t("MY_CLASSES"),
           subHeading: moment().format("hh:mm A"),
           iconComponent: (
             <Pressable onPress={(e) => setShowModal(true)}>
@@ -118,7 +118,7 @@ const MyClasses = ({ footerLinks, setAlert, appName }) => {
           <Tab
             routes={[
               // { title: t("MY_CLASS"), component: <MyClassRoute /> },
-              { title: t("MY_CLASS"), component: <CohortList /> },
+              { title: t("MY_CLASSES"), component: <CohortList /> },
               // { title: t("TIME_TABLE"), component: <TimeTableRoute /> },
             ]}
           />

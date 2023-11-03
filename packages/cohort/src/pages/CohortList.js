@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Box, HStack, VStack, Text, Heading } from "native-base";
 import { useTranslation } from "react-i18next";
 import { generatePath } from "react-router-dom";
-import { H4, Widget, cohortRegistryService } from "@shiksha/common-lib";
+import { H4, Widget, cohortRegistryService, Loading, useWindowSize } from "@shiksha/common-lib";
 // import ChooseClassActionSheet from "./Molecules/ChooseClassActionSheet";
 
 export default function CohortList() {
   const { t } = useTranslation();
   const [classes, setClasses] = useState([]);
+  const [width, height] = useWindowSize();
+  const [loading, setLoading] = useState(true);
   const teacherId = localStorage.getItem("id");
   useEffect(() => {
     let ignore = false;
@@ -25,10 +27,15 @@ export default function CohortList() {
             }
           )
         );
+        setLoading(false);
       }
     };
     getData();
   }, [teacherId]);
+
+  if (loading) {
+    return <Loading height={height - height / 2} />;
+  }
 
   return classes?.length ? (
     <Box pb={4} pt="30">
