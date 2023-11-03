@@ -5,7 +5,7 @@ import { initializeI18n, AppShell } from "@shiksha/common-lib";
 import { routes } from "./Routes";
 
 //TODO: separate out the theme related code from App
-initializeI18n(["translation", "core", "attendance"]);
+initializeI18n(["cohort", "translation", "core", "attendance"]);
 
 function App() {
   const LoginComponent = React.lazy(() => import("core/Login"));

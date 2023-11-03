@@ -9,6 +9,8 @@ import TestObservation from "pages/TestObservation";
 const ClassDetails = React.lazy(() => import("classes/ClassDetails"));
 // const SampleComponent = React.lazy(() => import("cohort/SampleComponent"));
 // const CohortDetails = React.lazy(() => import("classes/CohortDetails"));
+const CohortDetails = React.lazy(() => import("cohort/CohortDetails"));
+const CohortMemberList = React.lazy(() => import("cohort/CohortMemberList"));
 const Attendance = React.lazy(() => import("attendance/Attendance"));
 const Report = React.lazy(() => import("attendance/Report"));
 const ReportDetail = React.lazy(() => import("attendance/ReportDetail"));
@@ -160,16 +162,21 @@ export const routes = [
   {
     // moduleName: "classes",
     moduleName: "cohort",
-    path: "classes",
+    path: "/cohorts",
     component: MyClasses,
     // component: MyClassDetails
     // component: SampleComponent
   },
   {
-    moduleName: "classes",
-    path: "/classes/:classId",
-    // component: CohortDetails
-    component: ClassDetails,
+    moduleName: "cohort",
+    path: "/cohorts/:cohortId",
+    component: CohortDetails
+    // component: ClassDetails,
+  },
+  {
+    moduleName: "cohort",
+    path: "/cohorts/:cohortId/students",
+    component: CohortMemberList
   },
   {
     moduleName: "classes",

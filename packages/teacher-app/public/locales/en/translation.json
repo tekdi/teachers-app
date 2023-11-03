@@ -428,5 +428,6 @@
   "START_VISIT": "Start a Visit",
   "ASSESSMENT_REPORTS": "Assessment Reports",
   "WELCOME_BACK": "Welcome back",
-  "WELCOME": "Welcome"
+  "WELCOME": "Welcome",
+  "NO_CLASSES_FOUND": "No Classes found"
 }

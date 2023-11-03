@@ -15,7 +15,9 @@ export default function Footer({ menues, routeDynamics, ...props }) {
 
   useEffect(() => {
     let path = window?.location?.pathname.toString()
-    if (
+    if (path.startsWith('/cohorts')) {
+      setSelected('cohort')
+    } else if (
       path.startsWith('/attendance') ||
       path.startsWith('/class') ||
       path.startsWith('/assessment')

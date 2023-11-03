@@ -9,36 +9,36 @@ export default [
   {
     title: 'CLASSES',
     icon: 'TeamLineIcon',
-    moduleName: 'classes',
-    route: '/classes',
+    moduleName: 'cohort',
+    route: '/cohorts',
     routeparameters: {}
   },
-  {
-    title: 'TEACHING',
-    icon: 'BookOpenLineIcon',
-    moduleName: 'worksheet',
-    route: '/worksheet',
-    routeparameters: {}
-  },
-  {
-    title: 'MY_LEARNING',
-    icon: 'UserLineIcon',
-    moduleName: 'mylearning',
-    route: '/mylearning',
-    routeparameters: {}
-  },
-  {
-    title: 'VISITS',
-    icon: 'GovernmentLineIcon',
-    moduleName: 'visits',
-    route: '/visits',
-    routeparameters: {}
-  },
-  {
-    title: 'MATERIALS',
-    icon: 'BookOpenLineIcon',
-    moduleName: 'materials',
-    route: '/',
-    routeparameters: {}
-  }
+  // {
+  //   title: 'TEACHING',
+  //   icon: 'BookOpenLineIcon',
+  //   moduleName: 'worksheet',
+  //   route: '/worksheet',
+  //   routeparameters: {}
+  // },
+  // {
+  //   title: 'MY_LEARNING',
+  //   icon: 'UserLineIcon',
+  //   moduleName: 'mylearning',
+  //   route: '/mylearning',
+  //   routeparameters: {}
+  // },
+  // {
+  //   title: 'VISITS',
+  //   icon: 'GovernmentLineIcon',
+  //   moduleName: 'visits',
+  //   route: '/visits',
+  //   routeparameters: {}
+  // },
+  // {
+  //   title: 'MATERIALS',
+  //   icon: 'BookOpenLineIcon',
+  //   moduleName: 'materials',
+  //   route: '/',
+  //   routeparameters: {}
+  // }
 ]
