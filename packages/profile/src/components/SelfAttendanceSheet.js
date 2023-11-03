@@ -244,6 +244,7 @@ export default function SelfAttendanceSheet({
             "longitude",
             "image",
           ],
+          tenantid: process.env.REACT_APP_TENANT_ID
         })
         .then((e) => {
           setLoding(false);
