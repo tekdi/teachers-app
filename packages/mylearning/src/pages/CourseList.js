@@ -158,9 +158,6 @@ export default function MyLearning({ footerLinks, appName }) {
       status: state,
     })
 
-    console.log("DISKSHA DATA")
-    console.log(dikshaData)
-
     setCourses(dikshaData.data.result.content.children);
 
    
