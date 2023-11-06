@@ -13,7 +13,8 @@
       "packages/schools",
       "packages/teacher-app",
       "packages/cohort",
-      "packages/observation"
+      "packages/observation",
+      "packages/mylearning"
     ]
   },
   "scripts": {

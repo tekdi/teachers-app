@@ -3,6 +3,7 @@ import  { useRef, useEffect } from "react";
 import "../web-component/questionnaire-player-webcomponent"
 import"../web-component/styles.css"
 import mockData from "../data.json"
+import { Box } from 'native-base';
 
 function Observation() {
 
@@ -29,10 +30,10 @@ function Observation() {
     }, []);
   
   return (
-    <div> <questionnaire-player-main
+    <Box><questionnaire-player-main
     assessment={JSON.stringify(assessment)}
     ref={questionairePlayerMainRef}
-  ></questionnaire-player-main></div>
+  ></questionnaire-player-main></Box>
   )
 }
 

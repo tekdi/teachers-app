@@ -15,7 +15,7 @@ function App() {
   const routes = [
     {
       moduleName: "mylearning",
-      path: "/mylearning",
+      path: "/",
       component: CourseList,
     },
     // {

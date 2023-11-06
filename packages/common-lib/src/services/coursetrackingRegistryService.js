@@ -28,13 +28,14 @@ export const getAll = async ({ ...params } = {}, header = {}) => {
     ...header,
     Authorization: 'Bearer ' + localStorage.getItem('token')
   }
-  const result = await post(
-    process.env.REACT_APP_API_URL + '/coursetracking/search',
+  const result = await get(
+    `https://diksha.gov.in/api/course/v1/hierarchy/do_313316673200873472111821`,
     null,
     { params, headers }
   )
-  if (result.data.data) {
-    return await getDataWithCourse(result.data.data)
+  if (result) {
+    return result
+    // return await getDataWithCourse(result.data.data)
   } else {
     return []
   }
