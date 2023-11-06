@@ -38,7 +38,7 @@ jobs:
         run: ssh-keyscan -p ${{ secrets.SSH_PORT}} -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
 
       - name: Copy Build Artifact using Rsync
-        run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" shiksha-ui.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/shiksha-ui.tar
+        run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" shiksha-ui.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/root/shiksha-ui.tar
 
       - name: Unzip Artifact to Correct Locations to Deploy
         uses: appleboy/ssh-action@master
