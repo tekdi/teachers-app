@@ -150,14 +150,21 @@ export default function MyLearning({ footerLinks, appName }) {
         };
       })
     );
-    setCourses(
-      await coursetrackingRegistryService.getAll({
-        ...filterObject,
-        limit: 10,
-        userId,
-        status: state,
-      })
-    );
+
+    const dikshaData =  await coursetrackingRegistryService.getAll({
+      ...filterObject,
+      limit: 10,
+      userId,
+      status: state,
+    })
+
+    console.log("DISKSHA DATA")
+    console.log(dikshaData)
+
+    setCourses(dikshaData.data.result.content.children);
+
+   
+
     setLoading(false);
     const telemetryData = telemetryFactory.interact({
       appName,
