@@ -7,7 +7,7 @@
 | core        | Core features like School, Classes, Students |
 | teacher-app | Host Application for teachers                |
 
-## Create New Module
+## Create New Modules
 
 - copy module-template to packages/[module-name]
 - update `packages/[module-name]/package.json`
