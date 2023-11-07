@@ -47,5 +47,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu
+            cd /root
             tar -xvf shiksha-ui.tar -C /root/testwww/
