@@ -10,6 +10,7 @@ module.exports = {
   },
   remotes: {
     core: `core@[window.appModules.core.url]/moduleEntry.js`,
+    profile: `profile@[window.appModules.profile.url]/moduleEntry.js`,
   },
   filename: "moduleEntry.js",
   shared: {
