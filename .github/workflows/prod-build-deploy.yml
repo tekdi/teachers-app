@@ -48,4 +48,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /root
-            tar -xvf shiksha-ui.tar -C /root/testwww/
+            tar -xvf shiksha-ui.tar -C /var/www/shiksha.uniteframework.io/public
