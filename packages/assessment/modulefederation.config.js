@@ -3,6 +3,7 @@ const { dependencies } = require("./package.json");
 module.exports = {
   name: "assessment",
   exposes: {
+    "./TestPage": "./src/pages/TestPage.js",
     "./App": "./src/App",
     "./Assessment": "./src/pages",
     "./AssessmentGiven": "./src/pages/AssessmentGiven",
@@ -29,6 +30,9 @@ module.exports = {
   },
   remotes: {
     core: `core@[window.appModules.core.url]/moduleEntry.js`,
+    observation: `observation@[window.appModules.observation.url]/moduleEntry.js`,
+    
+    
   },
   filename: "moduleEntry.js",
   shared: {

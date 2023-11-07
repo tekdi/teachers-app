@@ -40,5 +40,8 @@
   },
   "cohort": {
     "url": "http://localhost:4004/modules/cohort"
+  },
+  "observation": {
+    "url": "http://localhost:5173/modules/observation"
   }
 }

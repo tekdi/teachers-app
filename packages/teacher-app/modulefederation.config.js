@@ -20,6 +20,8 @@ module.exports = {
     // visits: `visits@[window.appModules.visits.url]/moduleEntry.js`,
     // lessonplans: `lessonplans@[window.appModules.lessonplans.url]/moduleEntry.js`,
     cohort: `cohort@[window.appModules.cohort.url]/moduleEntry.js`,
+    observation: `observation@[window.appModules.observation.url]/moduleEntry.js`,
+    mylearning: `mylearning@[window.appModules.mylearning.url]/moduleEntry.js`,
   },
   filename: "moduleEntry.js",
   shared: {
