@@ -38,7 +38,8 @@ export default function CohortMemberList({ footerLinks, appName }) {
   const [showModal, setShowModal] = useState(false);
   const [userId, setUserId] = useState();
   const [width, height] = useWindowSize();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = React.useState(true);
+  const [cohortDetails, setCohortDetails] = React.useState({});
   let newAvatar = localStorage.getItem("firstName");
 
   const [members, setMembers] = useState([]);
@@ -56,8 +57,8 @@ export default function CohortMemberList({ footerLinks, appName }) {
     let ignore = false;
     const getData = async () => {
       if (!ignore) {
-        setMembers(
-          await cohortRegistryService.getCohortMembers(
+        const results = await Promise.all([
+          cohortRegistryService.getCohortMembers(
             {
               limit: "",
               page: 0,
@@ -68,8 +69,19 @@ export default function CohortMemberList({ footerLinks, appName }) {
             {
               tenantid: process.env.REACT_APP_TENANT_ID,
             }
-          )
-        );
+          ),
+          cohortRegistryService.getCohortDetails(
+            {
+              cohortId: cohortId,
+            },
+            {
+              tenantid: process.env.REACT_APP_TENANT_ID,
+            }
+          ),
+        ]);
+
+        setMembers(results[0]);
+        setCohortDetails(results[1][0]);
         setLoading(false);
       }
     };
@@ -89,7 +101,7 @@ export default function CohortMemberList({ footerLinks, appName }) {
     >
       <Layout
         _header={{
-          title: t("MY_CLASS"),
+          title: cohortDetails?.name,
           subHeading: moment().format("hh:mm A"),
           iconComponent: (
             <Pressable>

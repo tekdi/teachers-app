@@ -17,6 +17,8 @@ import {
   H3,
   IconByName,
   Widget,
+  cohortRegistryService,
+  Loading
 } from "@shiksha/common-lib";
 import moment from "moment";
 import manifest from "../manifest.json";
@@ -39,6 +41,8 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
   const { t } = useTranslation();
   const [selfAttendance, setSelfAttendance] = React.useState({});
   const [showModal, setShowModal] = React.useState(false);
+  const [cohortDetails, setCohortDetails] = React.useState({});
+  const [loading, setLoading] = React.useState(true);
   let newAvatar = localStorage.getItem("firstName");
   const { cohortId } = useParams();
 
@@ -134,22 +138,33 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
   ];
 
   React.useEffect(() => {
-    capture("PAGE");
-  }, []);
+    const getData = async () => {
+      const result = await cohortRegistryService.getCohortDetails(
+        {
+          cohortId: cohortId,
+        },
+        {
+          tenantid: process.env.REACT_APP_TENANT_ID,
+        }
+      );
+      console.log("result", result);
 
-  return (
-    // <SelfAttendanceSheet
-    //   {...{
-    //     setAlert,
-    //     showModal,
-    //     setShowModal,
-    //     setAttendance: setSelfAttendance,
-    //     appName,
-    //   }}
-    // >
+      if (result.length) {
+        setCohortDetails(result[0]);
+      }
+      setLoading(false);
+    };
+    getData();
+    capture("PAGE");
+  }, [cohortId]);
+
+  if (loading) {
+    return <Loading />;
+  } else {
+    return (
       <Layout
         _header={{
-          title: t("MY_CLASSES"),
+          title: cohortDetails?.name,
           subHeading: moment().format("hh:mm A"),
           iconComponent: (
             <Pressable onPress={(e) => setShowModal(true)}>
@@ -213,8 +228,8 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
           })}
         </VStack>
       </Layout>
-    // </SelfAttendanceSheet>
-  );
+    );
+  }
 };
 
 export default CohortDetails;

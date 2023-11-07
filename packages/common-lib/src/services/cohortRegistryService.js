@@ -50,6 +50,21 @@ export const getAll = async (params = {}, header = {}) => {
   }
 }
 
+export const getCohortDetails = async (params = {}, header = {}) => {
+  let headers = {
+    ...header,
+    Authorization: 'Bearer ' + localStorage.getItem('token')
+  }
+  const result = await get(
+    `${process.env.REACT_APP_API_URL}/cohort/${params.cohortId}`, {headers}
+  )
+  if (result.data) {
+    return result.data.data;
+  } else {
+    return [];
+  }
+}
+
 export const getCohortMembers = async (data = {}, header = {}) => {
   let headers = {
     ...header,
