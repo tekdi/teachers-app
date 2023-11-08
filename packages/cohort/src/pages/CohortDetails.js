@@ -34,7 +34,7 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
   const [selfAttendance, setSelfAttendance] = React.useState({});
   const [showModal, setShowModal] = React.useState(false);
   const [cohortDetails, setCohortDetails] = React.useState({});
-  const [fields, setFields] = React.useState([{label: 'test', values: "vals"}]);
+  const [fields, setFields] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   let newAvatar = localStorage.getItem("firstName");
   const { cohortId } = useParams();
