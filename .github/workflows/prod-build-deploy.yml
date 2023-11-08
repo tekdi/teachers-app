@@ -47,5 +47,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu
-            tar -xvf shiksha-ui.tar -C /root/testwww/
+            cd /root
+            tar -xvf shiksha-ui.tar -C /var/www/shiksha.uniteframework.io/public
