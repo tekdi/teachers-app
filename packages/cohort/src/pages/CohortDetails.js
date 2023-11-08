@@ -10,6 +10,9 @@ import {
   Heading,
   HStack,
   Center,
+  Button,
+  ArrowDownIcon,
+  ArrowUpIcon,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import {
@@ -26,6 +29,7 @@ import {
 import moment from "moment";
 import manifest from "../manifest.json";
 import { useParams } from "react-router-dom";
+import Collapse from "@mui/material/Collapse";
 
 const colors = overrideColorTheme();
 
@@ -34,6 +38,7 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
   const [selfAttendance, setSelfAttendance] = React.useState({});
   const [showModal, setShowModal] = React.useState(false);
   const [cohortDetails, setCohortDetails] = React.useState({});
+  const [toggleDetails, setToggleDetails] = React.useState(true);
   const [fields, setFields] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   let newAvatar = localStorage.getItem("firstName");
@@ -145,7 +150,11 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
       }
     });
     setFields(fieldVals);
-  }
+  };
+
+  const handleToggleDetails = () => {
+    setToggleDetails(!toggleDetails);
+  };
 
   React.useEffect(() => {
     const getData = async () => {
@@ -210,16 +219,30 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
       >
         {fields.length && (
           <Stack space={3} alignItems="start" ml={6}>
-            <Heading textAlign="center" mb="2">
-              Details
-            </Heading>
+            <Button
+              variant="outline"
+              leftIcon={
+                toggleDetails ? (
+                  <ArrowUpIcon size="4" />
+                ) : (
+                  <ArrowDownIcon size="4" />
+                )
+              }
+              onPress={handleToggleDetails}
+            >
+              {toggleDetails ? "Hide Details" : "Show Details"}
+            </Button>
 
-            {fields.map((item, index) => {
-              return <HStack space={3} alignItems="center" key={index}>
-                <Text bold>{item.label}:</Text>
-                <Text>{item.values}</Text>
-              </HStack>
-            })}
+            <Collapse in={toggleDetails}>
+              {fields.map((item, index) => {
+                return (
+                  <HStack space={3} alignItems="center" key={index}>
+                    <Text bold>{item.label}:</Text>
+                    <Text>{item.values}</Text>
+                  </HStack>
+                );
+              })}
+            </Collapse>
           </Stack>
         )}
         <VStack space={2}>
