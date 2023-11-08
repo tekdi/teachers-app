@@ -1,5 +1,8 @@
 {
   "core": {
     "url": "http://localhost:3001/modules/core"
+  },
+  "profile": {
+    "url": "http://localhost:3008/modules/profile"
   }
 }

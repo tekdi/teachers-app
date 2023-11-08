@@ -117,6 +117,7 @@ export default function SelfAttendanceSheet({
   setAttendance,
   appName,
   setAlert,
+  userId,
 }) {
   const { t } = useTranslation();
   const [specialDutyModal, setSpecialDutyModal] = React.useState(false);
@@ -223,7 +224,7 @@ export default function SelfAttendanceSheet({
       newAttedance = {
         ...newAttedance,
         date: moment().format("YYYY-MM-DD"),
-        studentId: localStorage.getItem("id"),
+        studentId: userId || localStorage.getItem("id"),
       };
       setSelfAttendance(newAttedance);
       attendanceRegistryService
@@ -244,6 +245,7 @@ export default function SelfAttendanceSheet({
             "longitude",
             "image",
           ],
+          tenantid: process.env.REACT_APP_TENANT_ID,
         })
         .then((e) => {
           setLoding(false);
@@ -279,7 +281,7 @@ export default function SelfAttendanceSheet({
       const todayAttendanceResult = await attendanceRegistryService.getAll({
         fromDate: moment().format("YYYY-MM-DD"),
         toDate: moment().format("YYYY-MM-DD"),
-        userId: localStorage.getItem("id"),
+        userId: userId || localStorage.getItem("id"),
       });
       const todayAttendance = todayAttendanceResult.find((e) =>
         [PRESENT, ABSENT, UNMARKED].includes(e.attendance)
@@ -403,7 +405,7 @@ export default function SelfAttendanceSheet({
           >
             <VStack space={5} p="5">
               <H1>{t("Can't mark self attendance")}</H1>
-              <Button.Group>
+              {userId ? (
                 <Button
                   flex="1"
                   fontSize="12px"
@@ -419,19 +421,37 @@ export default function SelfAttendanceSheet({
                 >
                   {t("CLOSE")}
                 </Button>
-                <Button
-                  flex="1"
-                  mr="5px"
-                  colorScheme="button"
-                  variant={"outline"}
-                  onPress={(e) => {
-                    navigate("/profile");
-                    setShowModal(false);
-                  }}
-                >
-                  {t("GO_TO_PROFILE")}
-                </Button>
-              </Button.Group>
+              ) : (
+                <Button.Group>
+                  <Button
+                    flex="1"
+                    fontSize="12px"
+                    fontWeight="600"
+                    colorScheme="button"
+                    _text={{
+                      color: "profile.white",
+                      textTransform: "capitalize",
+                    }}
+                    onPress={(e) => {
+                      setShowModal(false);
+                    }}
+                  >
+                    {t("CLOSE")}
+                  </Button>
+                  <Button
+                    flex="1"
+                    mr="5px"
+                    colorScheme="button"
+                    variant={"outline"}
+                    onPress={(e) => {
+                      navigate("/profile");
+                      setShowModal(false);
+                    }}
+                  >
+                    {t("GO_TO_PROFILE")}
+                  </Button>
+                </Button.Group>
+              )}
             </VStack>
           </Modal.Content>
         </Modal>
@@ -656,17 +676,7 @@ export default function SelfAttendanceSheet({
             );
           })}
 
-          <Button.Group m="5">
-            <Button
-              flex="1"
-              mr="5px"
-              colorScheme="button"
-              variant={"outline"}
-              onPress={(e) => navigate("/profile")}
-              _text={{ textTransform: "uppercase" }}
-            >
-              {t("GO_TO_PROFILE")}
-            </Button>
+          {userId ? (
             <Button
               flex="1"
               ml="5px"
@@ -682,7 +692,35 @@ export default function SelfAttendanceSheet({
             >
               {t("MARK")}
             </Button>
-          </Button.Group>
+          ) : (
+            <Button.Group m="5">
+              <Button
+                flex="1"
+                mr="5px"
+                colorScheme="button"
+                variant={"outline"}
+                onPress={(e) => navigate("/profile")}
+                _text={{ textTransform: "uppercase" }}
+              >
+                {t("GO_TO_PROFILE")}
+              </Button>
+              <Button
+                flex="1"
+                ml="5px"
+                colorScheme={
+                  selfAttendance?.attendance ? "button" : "profile.lightGray6"
+                }
+                isDisabled={selfAttendance?.attendance ? false : true}
+                _text={{
+                  textTransform: "uppercase",
+                  color: selfAttendance?.attendance ? "profile.white" : "",
+                }}
+                onPress={setAttendanceMark}
+              >
+                {t("MARK")}
+              </Button>
+            </Button.Group>
+          )}
         </Box>
       </Actionsheet>
       <Actionsheet
@@ -771,16 +809,7 @@ export default function SelfAttendanceSheet({
             </Pressable>
           ))}
 
-          <Button.Group m="5">
-            <Button
-              flex="1"
-              mr="5px"
-              colorScheme="button"
-              variant={"outline"}
-              onPress={(e) => navigate("/profile")}
-            >
-              {t("GO_TO_PROFILE")}
-            </Button>
+          {userId ? (
             <Button
               flex="1"
               ml="5px"
@@ -790,7 +819,28 @@ export default function SelfAttendanceSheet({
             >
               {t("MARK")}
             </Button>
-          </Button.Group>
+          ) : (
+            <Button.Group m="5">
+              <Button
+                flex="1"
+                mr="5px"
+                colorScheme="button"
+                variant={"outline"}
+                onPress={(e) => navigate("/profile")}
+              >
+                {t("GO_TO_PROFILE")}
+              </Button>
+              <Button
+                flex="1"
+                ml="5px"
+                colorScheme="button"
+                _text={{ color: "profile.white" }}
+                onPress={(e) => setSpecialDutyModal(false)}
+              >
+                {t("MARK")}
+              </Button>
+            </Button.Group>
+          )}
         </Box>
       </Actionsheet>
     </>
