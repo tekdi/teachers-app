@@ -7,6 +7,9 @@ import {
   Avatar,
   Stack,
   VStack,
+  Heading,
+  HStack,
+  Center,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import {
@@ -18,7 +21,7 @@ import {
   IconByName,
   Widget,
   cohortRegistryService,
-  Loading
+  Loading,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import manifest from "../manifest.json";
@@ -26,22 +29,12 @@ import { useParams } from "react-router-dom";
 
 const colors = overrideColorTheme();
 
-// const MyClassRoute = React.lazy(() => import("classes/MyClassRoute"));
-// const TimeTableRoute = React.lazy(() => import("calendar/TimeTableRoute"));
-
-const PRESENT = "Present";
-const ABSENT = "Absent";
-const UNMARKED = "Unmarked";
-
-// const SelfAttendanceSheet = React.lazy(() =>
-//   import("profile/SelfAttendanceSheet")
-// );
-
 const CohortDetails = ({ footerLinks, setAlert, appName }) => {
   const { t } = useTranslation();
   const [selfAttendance, setSelfAttendance] = React.useState({});
   const [showModal, setShowModal] = React.useState(false);
   const [cohortDetails, setCohortDetails] = React.useState({});
+  const [fields, setFields] = React.useState([{label: 'test', values: "vals"}]);
   const [loading, setLoading] = React.useState(true);
   let newAvatar = localStorage.getItem("firstName");
   const { cohortId } = useParams();
@@ -137,6 +130,23 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
     },
   ];
 
+  const getFieldValues = (cohortsFields) => {
+    let fieldVals = [];
+    cohortsFields.map((item) => {
+      if (item.fieldValues.length) {
+        let fieldValue = item.fieldValues[0];
+        if (item.fieldValues.length > 1) {
+          fieldValue = item.fieldValues.map((field) => field.value).join(", ");
+        }
+        fieldVals = [
+          ...fieldVals,
+          { label: item.label, values: fieldValue.value },
+        ];
+      }
+    });
+    setFields(fieldVals);
+  }
+
   React.useEffect(() => {
     const getData = async () => {
       const result = await cohortRegistryService.getCohortDetails(
@@ -151,6 +161,10 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
 
       if (result.length) {
         setCohortDetails(result[0]);
+        if (result[0].fields) {
+          getFieldValues(result[0].fields);
+          setSelfAttendance(result[0]);
+        }
       }
       setLoading(false);
     };
@@ -179,34 +193,6 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
               ) : (
                 <Avatar>{newAvatar?.toUpperCase().substr(0, 2)}</Avatar>
               )}
-              {selfAttendance?.attendance ? (
-                <IconByName
-                  name={
-                    selfAttendance.attendance === PRESENT &&
-                    selfAttendance?.remark !== ""
-                      ? "AwardFillIcon"
-                      : selfAttendance.attendance === ABSENT
-                      ? "CloseCircleFillIcon"
-                      : "CheckboxCircleFillIcon"
-                  }
-                  isDisabled
-                  color={
-                    selfAttendance.attendance === PRESENT &&
-                    selfAttendance?.remark !== ""
-                      ? "attendance.special_duty"
-                      : selfAttendance.attendance === ABSENT
-                      ? "attendance.absent"
-                      : "attendance.present"
-                  }
-                  position="absolute"
-                  bottom="-5px"
-                  right="-5px"
-                  bg="white"
-                  rounded="full"
-                />
-              ) : (
-                ""
-              )}
             </Pressable>
           ),
         }}
@@ -222,6 +208,20 @@ const CohortDetails = ({ footerLinks, setAlert, appName }) => {
         }}
         _footer={footerLinks}
       >
+        {fields.length && (
+          <Stack space={3} alignItems="start" ml={6}>
+            <Heading textAlign="center" mb="2">
+              Details
+            </Heading>
+
+            {fields.map((item, index) => {
+              return <HStack space={3} alignItems="center" key={index}>
+                <Text bold>{item.label}:</Text>
+                <Text>{item.values}</Text>
+              </HStack>
+            })}
+          </Stack>
+        )}
         <VStack space={2}>
           {widgetData.map((item, index) => {
             return <Widget {...item} key={index} />;
