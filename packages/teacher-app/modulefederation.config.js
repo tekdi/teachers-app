@@ -6,6 +6,7 @@ module.exports = {
     "./App": "./src/App",
   },
   remotes: {
+    admin: `admin@[window.appModules.admin.url]/moduleEntry.js`,
     core: `core@[window.appModules.core.url]/moduleEntry.js`,
     attendance: `attendance@[window.appModules.attendance.url]/moduleEntry.js`,
     assessment: `assessment@[window.appModules.assessment.url]/moduleEntry.js`,

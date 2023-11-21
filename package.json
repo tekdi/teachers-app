@@ -5,6 +5,7 @@
     "packages": [
       "packages/common-lib",
       "packages/core",
+      "packages/admin",
       "packages/attendance",
       "packages/assessment",
       "packages/classes",

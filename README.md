@@ -76,7 +76,7 @@ lerna run start --scope=[module-name]
 
 ```
 
-# e.g. core module is runninig on localhost:3001 then
+# e.g. core module is running on localhost:3001 then
 
   remotes: {
     core: 'core@[window.appModules.core.url]/remoteEntry.js',
@@ -86,7 +86,7 @@ lerna run start --scope=[module-name]
 - Add entry to `modules.json`
 
 ```
-# e.g. core module is runninig on localhost:3001 then
+# e.g. core module is running on localhost:3001 then
 
 {
     "core":{
@@ -97,10 +97,10 @@ lerna run start --scope=[module-name]
 ```
 
 - To use exposed component from remote module in react.
-  The lazy load componennt must be enclosed within `<React.Suspense>`
+  The lazy load component must be enclosed within `<React.Suspense>`
 
 ```
-# e.g. usiing AppShell component from core module
+# e.g. using AppShell component from core module
 
 const AppShell = React.lazy(() => import("core/AppShell"));
 ...
