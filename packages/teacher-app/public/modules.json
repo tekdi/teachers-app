@@ -41,6 +41,9 @@
   "cohort": {
     "url": "http://localhost:4004/modules/cohort"
   },
+  "admin": {
+    "url": "http://localhost:4006/modules/admin"
+  },
   "observation": {
     "url": "http://localhost:5173/modules/observation"
   }

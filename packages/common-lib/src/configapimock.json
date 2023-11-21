@@ -690,7 +690,7 @@
       "configId": "731a5733-d272-4ece-b207-5e5cf94262ab",
       "module": "roles",
       "key": "roles.teacher",
-      "value": "[\"mylearning\",\"attendance\",\"assessment\",\"classes\",\"notification\",\"profile\",\"schools\",\"student\",\"calendar\",\"app\",\"visits\",\"hpAssessment\",\"worksheet\",\"issues\",\"cohort\"]",
+      "value": "[\"mylearning\",\"attendance\",\"assessment\",\"classes\",\"notification\",\"profile\",\"schools\",\"student\",\"calendar\",\"app\",\"visits\",\"hpAssessment\",\"worksheet\",\"issues\",\"cohort\",\"admin\"]",
       "context": "",
       "contextId": "",
       "canOverride": true,
