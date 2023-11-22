@@ -13,6 +13,13 @@ export default [
     route: '/cohorts',
     routeparameters: {}
   },
+  {
+    title: 'ADMIN',
+    icon: 'GovernmentLineIcon',
+    moduleName: 'admin',
+    route: '/admin',
+    routeparameters: {}
+  },
   // {
   //   title: 'TEACHING',
   //   icon: 'BookOpenLineIcon',

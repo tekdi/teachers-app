@@ -17,6 +17,8 @@ export default function Footer({ menues, routeDynamics, ...props }) {
     let path = window?.location?.pathname.toString()
     if (path.startsWith('/cohorts')) {
       setSelected('cohort')
+    } else if (path.startsWith('/admin')) {
+      setSelected('admin')
     } else if (
       path.startsWith('/attendance') ||
       path.startsWith('/class') ||
