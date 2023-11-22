@@ -136,3 +136,21 @@ export const update = async (data = {}, header = {}) => {
     return {}
   }
 }
+
+export const create = async (data = {}, header = {}) => {
+  let headers = {
+    Authorization: 'Bearer ' + localStorage.getItem('token'),
+    ...header
+  }
+
+  const result = await post(
+    process.env.REACT_APP_API_URL + '/user',
+    data,
+    { headers }
+  )
+  if (result?.data) {
+    return result.data?.data;
+  } else {
+    return {}
+  }
+}
