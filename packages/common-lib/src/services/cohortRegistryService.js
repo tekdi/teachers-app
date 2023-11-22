@@ -137,6 +137,7 @@ export const getCohortMembers = async (data = {}, header = {}) => {
 export const create = async (data, header = {}) => {
   let headers = {
     ...header,
+    'Content-Type': 'multipart/form-data',
     Authorization: 'Bearer ' + localStorage.getItem('token')
   }
 
@@ -144,12 +145,11 @@ export const create = async (data, header = {}) => {
     process.env.REACT_APP_API_URL + '/cohort',
     data,
     {
-      headers: headers?.headers ? headers?.headers : {}
+      headers
     }
   )
   if (result.data) {
-    let { cohort } = result.data?.data?.result
-    return cohort
+    return result.data?.data;
   } else {
     return false
   }

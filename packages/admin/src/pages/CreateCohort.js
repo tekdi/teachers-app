@@ -3,34 +3,36 @@ import {
   Layout,
   overrideColorTheme,
   fieldsRegistryService,
+  cohortRegistryService,
 } from "@shiksha/common-lib";
 import React, { useCallback, useEffect, useState } from "react";
 import manifest from "../manifest.json";
 import { useTranslation } from "react-i18next";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { Box, Container } from "native-base";
+import { Box, Container, useToast } from "native-base";
+import { useNavigate } from "react-router-dom";
 
 let schema = {
   title: "Add Cohort",
   type: "object",
-  required: ["name", "type", "createdBy", "updatedBy"],
+  required: ["name", "type", "status", "createdBy", "updatedBy"],
   properties: {
     name: { type: "string", title: "Name", default: "" },
     type: { type: "string", title: "Type", default: "" },
-    // status: {
-    //   type: "string",
-    //   anyOf: [
-    //     {
-    //       title: "Active",
-    //       enum: [1],
-    //     },
-    //     {
-    //       title: "Inactive",
-    //       enum: [2],
-    //     },
-    //   ],
-    // },
+    status: {
+      type: "string",
+      anyOf: [
+        {
+          title: "Published",
+          enum: ["published"],
+        },
+        {
+          title: "Draft",
+          enum: ["draft"],
+        },
+      ],
+    },
     // class: {
     //   type: "string",
     //   title: "Class",
@@ -59,7 +61,9 @@ let uiSchema = {
 };
 
 function CreateCohort({ footerLinks, appName }) {
+  const navigate = useNavigate();
   const { t } = useTranslation();
+  const toast = useToast();
   const [formData, setFormData] = useState({ name: "My First Cohort" });
   const [showForm, setShowForm] = useState(false);
   const [formSchema, setFormSchema] = useState({
@@ -67,6 +71,7 @@ function CreateCohort({ footerLinks, appName }) {
     uiSchema: uiSchema,
   });
   const [fields, setFields] = useState([]);
+  const [fieldResponse, setFieldResponse] = useState({});
   let userIdentifier = localStorage.getItem("id");
 
   useEffect(() => {
@@ -95,12 +100,15 @@ function CreateCohort({ footerLinks, appName }) {
       .then((response) => {
         console.log("response", response);
         let extraFields = [];
+        let fieldRes = {};
         response.forEach((field) => {
           if (field.render) {
             extraFields.push(JSON.parse(field.render));
+            fieldRes[field.name] = field;
           }
         });
         setFields(extraFields);
+        setFieldResponse(fieldRes);
       })
       .catch((error) => {
         console.log(error);
@@ -169,13 +177,37 @@ function CreateCohort({ footerLinks, appName }) {
 
   const handleSubmit = (data) => {
     console.log("data", data);
-    // cohortService
-    //   .createCohort(data, {
-    //     tenantid: process.env.REACT_APP_TENANT_ID,
-    //   })
-    //   .then((response) => {
-    //     console.log("response", response);
-    //   });
+    const fieldKeys = fields.map((obj) => Object.keys(obj)[0]);
+    let corePayload = {};
+    let fieldsPayload = "";
+    const formData = new FormData();
+    for (let key in data) {
+      if (fieldKeys.includes(key)) {
+        if (fieldsPayload === "") {
+          fieldsPayload = `${fieldResponse[key].fieldId}:${data[key]}`;
+        } else {
+          fieldsPayload = `${fieldsPayload}|${fieldResponse[key].fieldId}:${data[key]}`;
+        }
+      } else {
+        corePayload[key] = data[key];
+        formData.append(key, data[key]);
+      }
+    }
+    formData.append("fieldValues", fieldsPayload);
+    cohortRegistryService
+      .create(formData, {
+        tenantid: process.env.REACT_APP_TENANT_ID,
+      })
+      .then((response) => {
+        console.log("response", response);
+        if (!toast.isActive("cohort-created")) {
+          toast.show({
+            id: "cohort-created",
+            title: "Cohort created successfully!",
+          });
+        }
+        navigate("/admin");
+      });
   };
   const colors = overrideColorTheme();
   return (
