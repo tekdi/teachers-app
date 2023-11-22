@@ -133,3 +133,24 @@ export const getCohortMembers = async (data = {}, header = {}) => {
     return []
   }
 }
+
+export const create = async (data, header = {}) => {
+  let headers = {
+    ...header,
+    Authorization: 'Bearer ' + localStorage.getItem('token')
+  }
+
+  const result = await post(
+    process.env.REACT_APP_API_URL + '/cohort',
+    data,
+    {
+      headers: headers?.headers ? headers?.headers : {}
+    }
+  )
+  if (result.data) {
+    let { cohort } = result.data?.data?.result
+    return cohort
+  } else {
+    return false
+  }
+}

@@ -4,6 +4,9 @@ module.exports = {
   name: "admin",
   exposes: {
     "./SampleComponent": "./src/components/SampleComponent",
+    "./CreateCohort": "./src/pages/CreateCohort.js",
+    "./CreateUser": "./src/pages/CreateUser.js",
+    "./AdminHome": "./src/pages/AdminHome.js"
   },
   remotes: {
     core: `core@[window.appModules.core.url]/moduleEntry.js`,

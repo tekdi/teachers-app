@@ -11,6 +11,9 @@ const ClassDetails = React.lazy(() => import("classes/ClassDetails"));
 // const SampleComponent = React.lazy(() => import("cohort/SampleComponent"));
 // const CohortDetails = React.lazy(() => import("classes/CohortDetails"));
 const CohortDetails = React.lazy(() => import("cohort/CohortDetails"));
+const CreateCohort = React.lazy(() => import("admin/CreateCohort"));
+const CreateUser = React.lazy(() => import("admin/CreateUser"));
+const AdminHome = React.lazy(() => import("admin/AdminHome"))
 const CohortMemberList = React.lazy(() => import("cohort/CohortMemberList"));
 const Attendance = React.lazy(() => import("attendance/Attendance"));
 const Report = React.lazy(() => import("attendance/Report"));
@@ -168,6 +171,11 @@ export const routes = [
     // component: MyClassDetails
     // component: SampleComponent
   },
+  // {
+  //   moduleName: "cohort",
+  //   path: "/cohorts/add",
+  //   component: CreateCohort
+  // },
   {
     moduleName: "cohort",
     path: "/cohorts/:cohortId",
@@ -178,6 +186,21 @@ export const routes = [
     moduleName: "cohort",
     path: "/cohorts/:cohortId/students",
     component: CohortMemberList
+  },
+  {
+    moduleName: "admin",
+    path: "/admin",
+    component: AdminHome
+  },
+  {
+    moduleName: "cohort",
+    path: "/admin/cohorts/add",
+    component: CreateCohort
+  },
+  {
+    moduleName: "cohort",
+    path: "/admin/users/add",
+    component: CreateUser
   },
   {
     moduleName: "classes",

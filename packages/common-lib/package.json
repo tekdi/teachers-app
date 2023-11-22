@@ -36,6 +36,7 @@
     "expo-font": "^10.0.3",
     "firebase": "^9.9.0",
     "i18next": "^21.6.14",
+    "idb-keyval": "^6.2.1",
     "i18next-http-backend": "^1.4.0",
     "i18next-react": "^0.2.2",
     "moment": "^2.29.1",
