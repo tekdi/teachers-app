@@ -3,13 +3,15 @@ import {
   Layout,
   overrideColorTheme,
   fieldsRegistryService,
+  userRegistryService,
 } from "@shiksha/common-lib";
 import React, { useCallback, useEffect, useState } from "react";
 import manifest from "../manifest.json";
 import { useTranslation } from "react-i18next";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { Box, Container } from "native-base";
+import { Box, Container, useToast } from "native-base";
+import { useNavigate } from "react-router-dom";
 
 let schema = {
   title: "Add Users",
@@ -18,7 +20,37 @@ let schema = {
   properties: {
     username: { type: "string", title: "Username", default: "" },
     name: { type: "string", title: "Name", default: "" },
-    role: { type: "string", title: "Role", default: "" },
+    role: {
+      type: "string",
+      title: "Role",
+      default: "",
+      oneOf: [
+        {
+          title: "Facilitator",
+          enum: ["facilitator"],
+        },
+        {
+          title: "Beneficiary",
+          enum: ["beneficiary"],
+        },
+        {
+          title: "System Admin",
+          enum: ["systemAdmin"],
+        },
+        {
+          title: "Student",
+          enum: ["student"],
+        },
+        {
+          title: "Teacher",
+          enum: ["teacher"],
+        },
+        {
+          title: "Mentor",
+          enum: ["mentor"],
+        },
+      ],
+    },
     password: { type: "string", title: "Password", default: "" },
     email: { type: "string", title: "Email", default: "" },
   },
@@ -27,15 +59,17 @@ let schema = {
 let uiSchema = {
   name: {
     "ui:classNames": "custom-class-name",
-    "ui:placeholder": "Enter a name of the cohort",
+    "ui:placeholder": ""
   },
   password: {
     "ui:widget": "password",
-  }
+  },
 };
 
 function CreateUser({ footerLinks, appName }) {
   const { t } = useTranslation();
+  const toast = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({});
   const [showForm, setShowForm] = useState(false);
   const [formSchema, setFormSchema] = useState({
@@ -43,6 +77,7 @@ function CreateUser({ footerLinks, appName }) {
     uiSchema: uiSchema,
   });
   const [fields, setFields] = useState([]);
+  const [fieldResponse, setFieldResponse] = useState({});
   let userIdentifier = localStorage.getItem("id");
 
   useEffect(() => {
@@ -57,18 +92,23 @@ function CreateUser({ footerLinks, appName }) {
           },
         },
         {
-          tenantid: "31d1cc30-da56-4c6a-90d7-8bc4fc51bc70" || process.env.REACT_APP_TENANT_ID,
+          tenantid:
+            "31d1cc30-da56-4c6a-90d7-8bc4fc51bc70" ||
+            process.env.REACT_APP_TENANT_ID,
         }
       )
       .then((response) => {
         console.log("response", response);
         let extraFields = [];
+        let fieldRes = {};
         response.forEach((field) => {
           if (field.render) {
             extraFields.push(JSON.parse(field.render));
+            fieldRes[field.name] = field;
           }
         });
         setFields(extraFields);
+        setFieldResponse(fieldRes);
       })
       .catch((error) => {
         console.log(error);
@@ -117,19 +157,44 @@ function CreateUser({ footerLinks, appName }) {
 
   const handleSubmit = (data) => {
     console.log("data", data);
-    // cohortService
-    //   .createCohort(data, {
-    //     tenantid: process.env.REACT_APP_TENANT_ID,
-    //   })
-    //   .then((response) => {
-    //     console.log("response", response);
-    //   });
+    const fieldKeys = fields.map((obj) => Object.keys(obj)[0]);
+    let corePayload = {};
+    let fieldsPayload = "";
+    for (let key in data) {
+      if (fieldKeys.includes(key)) {
+        if (fieldsPayload === "") {
+          fieldsPayload = `${fieldResponse[key].fieldId}:${data[key]}`;
+        } else {
+          fieldsPayload = `${fieldsPayload}|${fieldResponse[key].fieldId}:${data[key]}`;
+        }
+      } else {
+        corePayload[key] = data[key];
+      }
+    }
+    corePayload["password"] = data["password"];
+    corePayload["fieldValues"] = fieldsPayload;
+    userRegistryService
+      .create(corePayload, {
+        tenantid:
+          "31d1cc30-da56-4c6a-90d7-8bc4fc51bc70" ||
+          process.env.REACT_APP_TENANT_ID,
+      })
+      .then((response) => {
+        console.log("response", response);
+        if (!toast.isActive("user-created")) {
+          toast.show({
+            id: "user-created",
+            title: "User created successfully!",
+          });
+        }
+        navigate("/admin");
+      });
   };
   const colors = overrideColorTheme();
   return (
     <Layout
       _header={{
-        title: "Create New Cohort",
+        title: "Create New User",
       }}
       _appBar={{ languages: manifest.languages }}
       subHeader={
