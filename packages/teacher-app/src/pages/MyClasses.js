@@ -1,5 +1,13 @@
 import React from "react";
-import { Text, Box, Pressable, Image, Avatar } from "native-base";
+import {
+  Text,
+  Box,
+  Pressable,
+  Image,
+  Avatar,
+  HStack,
+  Button,
+} from "native-base";
 import { useTranslation } from "react-i18next";
 import {
   capture,
@@ -11,6 +19,8 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import manifest from "../manifest.json";
+import { useNavigate } from "react-router-dom";
+
 const colors = overrideColorTheme();
 
 const MyClassRoute = React.lazy(() => import("classes/MyClassRoute"));
@@ -30,6 +40,7 @@ const MyClasses = ({ footerLinks, setAlert, appName }) => {
   const [selfAttendance, setSelfAttendance] = React.useState({});
   const [showModal, setShowModal] = React.useState(false);
   let newAvatar = localStorage.getItem("firstName");
+  const navigate = useNavigate();
 
   let cameraUrl = "";
   let avatarUrlObject = cameraUrl
@@ -104,6 +115,12 @@ const MyClasses = ({ footerLinks, setAlert, appName }) => {
         }}
         _appBar={{ languages: manifest.languages }}
         subHeader={<H3 textTransform="none">{t("THE_CLASS_YOU_TAKE")}</H3>}
+        // subHeader={
+        //   <HStack  justifyContent={"space-between"}>
+        //     <H3 textTransform="none">{t("THE_CLASS_YOU_TAKE")}</H3>
+        //     <Button onPress={() => navigate("/cohorts/add")}>Create New Cohort</Button>
+        //   </HStack>
+        // }
         _subHeader={{
           bg: colors?.cardBg,
           _text: {

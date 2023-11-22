@@ -17,6 +17,7 @@ import SchoolCard from './components/SchoolCard'
 import * as userRegistryService from './services/userRegistryService'
 import * as classRegistryService from './services/classRegistryService'
 import * as cohortRegistryService from './services/cohortRegistryService'
+import * as fieldsRegistryService from './services/fieldsRegistryService'
 import * as attendanceRegistryService from './services/attendanceRegistryService'
 import * as studentRegistryService from './services/studentRegistryService'
 import * as worksheetRegistryService from './services/worksheetRegistryService'
@@ -36,6 +37,7 @@ import * as schoolRegisteryService from './services/schoolRegisteryService'
 import { getApiConfig } from './services/configApiRegistryService'
 import * as workHistoryRegistryService from './services/workHistoryRegistryService'
 import * as schoolRegistryService from './services/schoolRegistryService'
+import * as dbService from './services/dbService'
 import {
   getAllForUser,
   sendReadReceipt
@@ -66,6 +68,7 @@ export {
   userRegistryService,
   classRegistryService,
   cohortRegistryService,
+  fieldsRegistryService,
   attendanceRegistryService,
   studentRegistryService,
   worksheetRegistryService,
@@ -88,6 +91,7 @@ export {
   schoolRegistryService,
   mentorRegisteryService,
   schoolRegisteryService,
+  dbService,
   StarRating,
   InfiniteScroll
 }
