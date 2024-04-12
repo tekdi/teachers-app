@@ -41,6 +41,7 @@ reviews:
     - "feat/*"
     - "feat-*"
     - "release-*"
+    - "shiksha-2.0"
 
 chat:
   auto_reply: true
