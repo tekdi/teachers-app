@@ -2,6 +2,7 @@
   "COMMON": {
     "LANGUAGE": "Language",
     "LOADING": "Loading",
+    "MARK": "Mark",
     "MARK_MY_ATTENDANCE": "Mark My Attendance",
     "MARK_STUDENT_ATTENDANCE": "Mark Student Attendance",
     "MARK_ATTENDANCE": "Mark Attendance",
@@ -44,12 +45,20 @@
     "USERNAME_PASSWORD_NOT_CORRECT": "The username or password you entered is incorrect"
   },
   "DASHBOARD": {
+    "DASHBOARD": "Dashboard",
+    "DAY_WISE_ATTENDANCE": "Day-Wise Attendance",
     "HISTORY": "History",
     "MY_CLASSES": "My Classes",
     "ADD_NEW_CLASS": "Add New Class",
     "NEW_REMOTE_CLASS": "New Remote Class",
     "NEW_PHYSICAL_CLASS": "New Physical Class",
-    "CLASS": "Class"
+    "CLASS": "Class",
+    "NOT_MARKED": "Not Marked",
+    "FUTURE_DATE_CANT_MARK": "Future date can't be marked",
+    "PERCENT_ATTENDANCE": "{{percent_students}}% Attendance",
+    "PRESENT_STUDENTS": "({{present_students}/{total_students}} present)",
+    "OVERVIEW": "Overview",
+    "MORE_DETAILS": "More Details"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total No of Students: {{count}}",
@@ -63,7 +72,9 @@
     "ATTENDANCE_MARKED_UNSUCCESSFULLY": "Attendance not marked",
     "MY_ATTENDANCE_HISTORY": "My Attendance History",
     "UPDATE_ATTENDANCE_ALERT": "Are you sure you want to update this attendance?",
-    "CLEAR_ATTENDANCE_ALERT": "Are you sure you want to clear this attendance?"
+    "CLEAR_ATTENDANCE_ALERT": "Are you sure you want to clear this attendance?",
+    "YES": "Yes",
+    "NO_GO_BACK": "No Go Back"
   },
   "PROFILE": {
     "EDIT_PROFILE": "Edit Profile",

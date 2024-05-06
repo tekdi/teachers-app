@@ -11,7 +11,7 @@ export const getUser = async (userId: string, role: string): Promise<any> => {
   }
 };
 export const getUserId = async (): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/getUserDetails`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/user`;
   try {
     const response = await get(apiUrl);
     return response?.data?.result;

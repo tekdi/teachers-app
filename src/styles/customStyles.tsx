@@ -1,6 +1,6 @@
 import {
-  PaletteColor,
-  PaletteColorOptions,
+  // PaletteColor,
+  // PaletteColorOptions,
   createTheme,
 } from '@mui/material/styles';
 /* // declare module "@mui/material/styles" {
@@ -46,6 +46,7 @@ const customTheme = createTheme({
       A200: '#4D4639',
       A400: '#FFFFFF',
       A700: '#EDEDED',
+     A900: '#F8EFDA' 
     },
     error: {
       main: '#BA1A1A',
