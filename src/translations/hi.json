@@ -41,7 +41,9 @@
     "LOGIN": "लॉग इन करें",
     "USERNAME_PLACEHOLDER": "उपयोगकर्ता नाम दर्ज करें",
     "PASSWORD_PLACEHOLDER": "पासवर्ड दर्ज करें",
-    "USERNAME_PASSWORD_NOT_CORRECT": "आपका यूजरनेम या पासवर्ड गलत है"
+    "USERNAME_PASSWORD_NOT_CORRECT": "आपका यूजरनेम या पासवर्ड गलत है",
+    "FORGOT_PASSWORD": "पासवर्ड भूल गए?",
+    "REMEMBER_ME": "मुझे याद रखें"
   },
   "DASHBOARD": {
     "DASHBOARD": "डैशबोर्ड",

@@ -1,0 +1,12 @@
+.alert .MuiSnackbarContent-root {
+  background-color: #ffdad6 !important;
+  color: #ba1a1a;
+  font-size: 0.75rem;
+  margin-top: 35%;
+}
+.RememberMecheckbox span svg {
+  fill: black !important;
+}
+.RememberMecheckbox span {
+  padding: 6px 7px 6px 0 !important;
+}

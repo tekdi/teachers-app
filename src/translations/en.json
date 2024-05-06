@@ -30,11 +30,11 @@
     "MARITAL_STATUS": "Marital Status",
     "DROPOUT_YEAR": "Dropout Year",
     "EMPLOYMENT_STATUS": "Employment Status",
-    "ENROLLMENT_DATE":"Enrollment Date",
-    "AS_OF_TODAY":"As of today",
-    "AS_OF_LAST_WEEK":"As of last week",
-    "AS_OF_LAST_SIX_MONTH":"As of last six month",
-    "NONE":"None"
+    "ENROLLMENT_DATE": "Enrollment Date",
+    "AS_OF_TODAY": "As of today",
+    "AS_OF_LAST_WEEK": "As of last week",
+    "AS_OF_LAST_SIX_MONTH": "As of last six month",
+    "NONE": "None"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -42,7 +42,9 @@
     "LOGIN": "Login",
     "USERNAME_PLACEHOLDER": "Enter username",
     "PASSWORD_PLACEHOLDER": "Enter password",
-    "USERNAME_PASSWORD_NOT_CORRECT": "The username or password you entered is incorrect"
+    "USERNAME_PASSWORD_NOT_CORRECT": "The username or password you entered is incorrect",
+    "FORGOT_PASSWORD": "Forgot Password?",
+    "REMEMBER_ME": "Remember Me"
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",

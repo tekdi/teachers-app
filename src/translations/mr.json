@@ -39,7 +39,9 @@
     "LOGIN": "लॉग इन करा",
     "USERNAME_PLACEHOLDER": "वापरकर्तानाव प्रविष्ट करा",
     "PASSWORD_PLACEHOLDER": "पासवर्ड टाका",
-    "USERNAME_PASSWORD_NOT_CORRECT": "आपलं वापरकर्तानाव किंवा संकेतशब्द चुकीचं आहे"
+    "USERNAME_PASSWORD_NOT_CORRECT": "आपलं वापरकर्तानाव किंवा संकेतशब्द चुकीचं आहे",
+    "FORGOT_PASSWORD": "पासवर्ड विसरलात?",
+    "REMEMBER_ME": "मला लक्षात ठेवा"
   },
   "DASHBOARD": {
     "DASHBOARD": "डॅशबोर्ड",
