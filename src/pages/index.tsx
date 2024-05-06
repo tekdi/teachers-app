@@ -9,10 +9,7 @@ import { I18nextProvider } from 'react-i18next';
 // const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
-  console.log(
-    'process.env.NEXT_PUBLIC_ANALYTICS_ID',
-    process.env.NEXT_PUBLIC_ANALYTICS_ID
-  );
+  
   return (
     <>
       <I18nextProvider i18n={i18n}>
