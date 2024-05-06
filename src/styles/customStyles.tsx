@@ -45,9 +45,7 @@ const customTheme = createTheme({
       A100: '#D0C5B4',
       A200: '#4D4639',
       A400: '#FFFFFF',
-      A700: '#EDEDED',
-     A900: '#F8EFDA' 
-    },
+      A700: '#EDEDED'    },
     error: {
       main: '#BA1A1A',
       light: '#FFDAD6',
