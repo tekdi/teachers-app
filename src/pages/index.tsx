@@ -2,7 +2,8 @@
 // import Image from 'next/image';
 // import { Inter } from 'next/font/google';
 // import styles from '@/styles/Home.module.css';
-import LoginPage from './LoginPage';
+const LoginPage = dynamic(() => import('./LoginPage'), { ssr: false });
+import dynamic from 'next/dynamic';
 import i18n from '../i18n';
 import { I18nextProvider } from 'react-i18next';
 
