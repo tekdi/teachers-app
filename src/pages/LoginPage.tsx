@@ -23,7 +23,7 @@ import { useTheme } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 import config from '../../config.json';
 import { getUserId } from '../services/ProfileService';
-// import Loader from '../components/Loader.tsx';
+import Loader from '../components/Loader';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 
 interface State extends SnackbarOrigin {
@@ -161,9 +161,9 @@ const LoginPage = () => {
         bgcolor={theme.palette.warning.A200}
         minHeight={'100vh'}
       >
-        {/* {loading && (
+        {loading && (
           <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-        )} */}
+        )}
         <Box
           display={'flex'}
           overflow="auto"

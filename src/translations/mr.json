@@ -1,6 +1,7 @@
 {
   "COMMON": {
     "LANGUAGE": "भाषा",
+    "MARK": "मार्क",
     "MARK_MY_ATTENDANCE": "माझ्या उपस्थितीचा चिन्ह करा",
     "MARK_STUDENT_ATTENDANCE": "विद्यार्थी उपस्थितीचा चिन्ह करा",
     "LOADING": "लोड होत आहे",
@@ -41,12 +42,20 @@
     "USERNAME_PASSWORD_NOT_CORRECT": "आपलं वापरकर्तानाव किंवा संकेतशब्द चुकीचं आहे"
   },
   "DASHBOARD": {
+    "DASHBOARD": "डॅशबोर्ड",
+    "DAY_WISE_ATTENDANCE": "दिवस-वार उपस्थिती",
     "HISTORY": "इतिहास",
     "MY_CLASSES": "माझ्या क्लासेस",
     "ADD_NEW_CLASS": "नवीन क्लास जोडा",
     "NEW_REMOTE_CLASS": "नवीन रिमोट क्लास",
     "NEW_PHYSICAL_CLASS": "नवीन शारीरिक वर्ग",
-    "CLASS": "वर्ग"
+    "CLASS": "वर्ग",
+    "NOT_MARKED": "नोंद केलेले नाही",
+    "FUTURE_DATE_CANT_MARK": "भविष्यातील तारीख कोणताही नोंद करण्यास योग्य नाही",
+    "PERCENT_ATTENDANCE": "{{percent_students}}% उपस्थिती",
+    "PRESENT_STUDENTS": "({{present_students}}/{{total_students}} उपस्थित)",
+    "OVERVIEW": "अवलोकन",
+    "MORE_DETAILS": "अधिक माहिती"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "एकूण विद्यार्थी: {{count}}",
@@ -57,7 +66,9 @@
     "MY_ATTENDANCE_HISTORY": "माझ्या उपस्थितीचा इतिहास",
 
     "UPDATE_ATTENDANCE_ALERT": "आपलं खात्री करायला खात्री आहे का?",
-    "CLEAR_ATTENDANCE_ALERT": "आपल्याकडून हजेरी साफ करायला खात्री आहे का?"
+    "CLEAR_ATTENDANCE_ALERT": "आपल्याकडून हजेरी साफ करायला खात्री आहे का?",
+    "YES": "हो",
+    "NO_GO_BACK": "नाही लौटा"
   },
   "PROFILE": {
     "EDIT_PROFILE": "प्रोफाइल संपादित करा",
