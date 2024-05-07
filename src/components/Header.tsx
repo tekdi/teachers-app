@@ -65,7 +65,7 @@ const Header: React.FC = () => {
     }
   };
   const handleLogoutClick = () => {
-    router.push('/logout');
+    router.replace('/logout');
   };
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -101,7 +101,7 @@ const Header: React.FC = () => {
           sx={{ cursor: 'pointer', position: 'relative' }}
           aria-controls={open ? 'account-menu' : undefined}
           aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
+          aria-expanded={open ? 'true' : 'false'}
           paddingRight={'1rem'}
           display={'flex'}
           justifyContent={'center'}
