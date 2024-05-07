@@ -1,4 +1,3 @@
-'use client';
 import React, { useEffect, useMemo } from 'react';
 import {
   Box,
@@ -60,9 +59,9 @@ const LoginPage = () => {
   const { vertical, horizontal, openModal } = state;
 
   useEffect(() => {
-    const refresh_token = localStorage.getItem('refreshToken');
-    if (refresh_token) {
-      router.push('/dashboard');
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
+      router.push('/Dashboard');
     }
   }, []);
 
@@ -118,7 +117,7 @@ const LoginPage = () => {
           // localStorage.setItem('userId', userResponse?.userId);
         }
         setLoading(false);
-        router.push('/dashboard');
+        router.push('/Dashboard');
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 404) {
