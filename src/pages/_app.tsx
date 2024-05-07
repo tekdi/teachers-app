@@ -55,7 +55,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={mode === 'light' ? customTheme : darkTheme}>
         {/* <DarkTheme /> */}
-        <Component {...pageProps} />;
+        <Component {...pageProps} />
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

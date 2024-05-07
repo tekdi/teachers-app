@@ -15,16 +15,17 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
-// import '../App.css';
 import { login } from '../services/LoginService';
 import { useTranslation } from 'react-i18next';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useTheme } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 import config from '../../config.json';
-import { getUserId } from '../services/ProfileService';
+// import { getUserId } from '../services/ProfileService';
 import Loader from '../components/Loader';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import Link from '@mui/material/Link';
+import Checkbox from '@mui/material/Checkbox';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -35,22 +36,25 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showToastMessage, setShowToastMessage] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  //   const [selectedLanguage, setSelectedLanguage] = useState(
-  //     localStorage.getItem('preferredLanguage') || 'en'
-  //   );
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    localStorage.getItem('preferredLanguage') || 'en'
+  );
   const [language, setLanguage] = useState(selectedLanguage);
-  const router = useRouter();
-  //   const location = useLocation();
   const theme = useTheme<any>();
-  const [state, setState] = React.useState<State>({
-    openModal: false,
+  const router = useRouter();
+  // const location = useLocation();
+
+  const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
     vertical: 'top',
     horizontal: 'center',
+  };
+  const [state, setState] = React.useState<State>({
+    openModal: false,
+    ...DEFAULT_POSITION,
   });
   const { vertical, horizontal, openModal } = state;
 
@@ -65,11 +69,8 @@ const LoginPage = () => {
     const { value } = event.target;
     const trimmedValue = value.trim();
     setUsername(trimmedValue);
-    if (trimmedValue.includes(' ')) {
-      setUsernameError(true);
-    } else {
-      setUsernameError(false);
-    }
+    const containsSpace = /\s/.test(trimmedValue);
+    setUsernameError(containsSpace);
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +89,6 @@ const LoginPage = () => {
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!usernameError && !passwordError) {
-      // loginButtonClick(event);
       setLoading(true);
       event.preventDefault();
       try {
@@ -98,20 +98,29 @@ const LoginPage = () => {
         });
         console.log(response);
         if (response) {
+          setTimeout(() => {
+            setState({
+              openModal: false,
+              ...DEFAULT_POSITION,
+            });
+            setShowToastMessage(false);
+          });
+
           const token = response?.access_token;
           const refreshToken = response?.refresh_token;
-
           localStorage.setItem('token', token);
           localStorage.setItem('refreshToken', refreshToken);
-          const userResponse = await getUserId();
-          localStorage.setItem('userId', userResponse?.userId);
+
+          // const userResponse = await getUserId();
+          // localStorage.setItem('userId', userResponse?.userId);
         }
         setLoading(false);
         router.push('/Dashboard');
       } catch (error: any) {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
-          handleClick({ vertical: 'top', horizontal: 'center' })();
+        if (error.response && error.response.status === 404) {
+          handleClick({ ...DEFAULT_POSITION })();
+          setShowToastMessage(true);
         } else {
           console.error('Error:', error);
         }
@@ -122,7 +131,6 @@ const LoginPage = () => {
   const isButtonDisabled =
     !username || !password || usernameError || passwordError;
 
-  // const loginButtonClick = async (event: React.FormEvent) => {};
   const handleChange = (event: SelectChangeEvent) => {
     setLanguage(event.target.value);
     i18n.changeLanguage(event.target.value);
@@ -138,8 +146,6 @@ const LoginPage = () => {
   const action = useMemo(
     () => (
       <React.Fragment>
-        {/* <Typography>{t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')}</Typography> */}
-
         <IconButton
           size="small"
           aria-label="close"
@@ -214,7 +220,10 @@ const LoginPage = () => {
                 fullWidth={true}
                 className="CssTextField"
               >
-                <InputLabel htmlFor="outlined-adornment-username">
+                <InputLabel
+                  htmlFor="outlined-adornment-username"
+                  error={usernameError}
+                >
                   {t('LOGIN_PAGE.USERNAME')}
                 </InputLabel>
                 <OutlinedInput
@@ -229,7 +238,10 @@ const LoginPage = () => {
             </Box>
             <Box marginY={'1rem'}>
               <FormControl variant="outlined" className="CssTextField">
-                <InputLabel htmlFor="outlined-adornment-password">
+                <InputLabel
+                  htmlFor="outlined-adornment-password"
+                  error={passwordError}
+                >
                   {t('LOGIN_PAGE.PASSWORD')}
                 </InputLabel>
                 <OutlinedInput
@@ -255,6 +267,15 @@ const LoginPage = () => {
               </FormControl>
             </Box>
 
+            <Box marginTop={'-1rem'} marginLeft={'0.5rem'}>
+              <Link sx={{ color: 'blue' }} href="#" underline="none">
+                {t('LOGIN_PAGE.FORGOT_PASSWORD')}
+              </Link>
+            </Box>
+            <Box marginTop={'1rem'} className="RememberMecheckbox">
+              <Checkbox defaultChecked />
+              {t('LOGIN_PAGE.REMEMBER_ME')}
+            </Box>
             <Box
               alignContent={'center'}
               textAlign={'center'}
@@ -266,7 +287,6 @@ const LoginPage = () => {
                 variant="contained"
                 type="submit"
                 fullWidth={true}
-                // onClick={(event) => loginButtonClick(event)}
                 disabled={isButtonDisabled}
               >
                 {t('LOGIN_PAGE.LOGIN')}
@@ -274,17 +294,18 @@ const LoginPage = () => {
             </Box>
           </Box>
         </Box>
-
-        <Snackbar
-          anchorOrigin={{ vertical, horizontal }}
-          open={openModal}
-          onClose={handleClose}
-          className="alert"
-          autoHideDuration={5000}
-          key={vertical + horizontal}
-          message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')}
-          action={action}
-        />
+        {showToastMessage && (
+          <Snackbar
+            anchorOrigin={{ vertical, horizontal }}
+            open={openModal}
+            onClose={handleClose}
+            className="alert"
+            autoHideDuration={5000}
+            key={vertical + horizontal}
+            message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')}
+            action={action}
+          />
+        )}
       </Box>
     </form>
   );
