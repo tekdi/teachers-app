@@ -1,4 +1,4 @@
-name: Deploy to QA
+name: Deploy to dev-scp
 on:
   push:
     branches:
