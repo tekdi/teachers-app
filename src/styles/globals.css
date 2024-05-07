@@ -10,3 +10,8 @@
 .RememberMecheckbox span {
   padding: 6px 7px 6px 0 !important;
 }
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
