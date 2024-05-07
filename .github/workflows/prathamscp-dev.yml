@@ -1,0 +1,21 @@
+name: Deploy to dev-scp
+on:
+  push:
+    branches:
+      - shiksha-2.0
+jobs:
+   deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - 
+      name: Deploy Stack
+      uses: appleboy/ssh-action@master
+      with:
+          host: ${{ secrets.HOST_NAME_PRATHAM_DEV }}
+          username: ${{ secrets.USERNAME_PRATHAM_DEV }}
+          key: ${{ secrets.EC2_SSH_KEY_PRATHAM_DEV }}
+          port: ${{ secrets.PORT_PRATHAM_DEV }}
+          script: |    
+               cd ${{ secrets.TARGET_DIR_PRATHAM_DEV }}
+               ./deploy.sh
