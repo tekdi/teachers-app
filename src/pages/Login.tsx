@@ -1,4 +1,3 @@
-'use client';
 import React, { useEffect, useMemo } from 'react';
 import {
   Box,
@@ -13,7 +12,7 @@ import Image from 'next/image';
 import appLogo2 from '../../public/appLogo.png';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 // import { useLocation } from 'react-router-dom';
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
 import { login } from '../services/LoginService';
@@ -46,7 +45,7 @@ const LoginPage = () => {
   );
   const [language, setLanguage] = useState(selectedLanguage);
   const theme = useTheme<any>();
-  // const router = useRouter();
+  const router = useRouter();
   // const location = useLocation();
 
   const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
@@ -62,7 +61,7 @@ const LoginPage = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      // router.push('/dashboard');
+      router.push('/Dashboard');
     }
   }, []);
 
@@ -116,7 +115,7 @@ const LoginPage = () => {
           // localStorage.setItem('userId', userResponse?.userId);
         }
         setLoading(false);
-        // router.push('/dashboard');
+        router.push('/Dashboard');
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 404) {
