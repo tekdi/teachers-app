@@ -57,7 +57,7 @@ const LoginPage = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      router.push('/dashboard');
+      router.push('/Dashboard');
     }
   }, []);
 
@@ -107,7 +107,7 @@ const LoginPage = () => {
           localStorage.setItem('userId', userResponse?.userId);
         }
         setLoading(false);
-        router.push('/dashboard');
+        router.push('/Dashboard');
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 401) {
