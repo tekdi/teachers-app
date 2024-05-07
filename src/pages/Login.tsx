@@ -26,7 +26,6 @@ import Loader from '../components/Loader';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import Link from '@mui/material/Link';
 import Checkbox from '@mui/material/Checkbox';
-
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
@@ -36,6 +35,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(true);
   const [showToastMessage, setShowToastMessage] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -59,8 +59,8 @@ const LoginPage = () => {
   const { vertical, horizontal, openModal } = state;
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
       router.push('/Dashboard');
     }
   }, []);
@@ -109,7 +109,9 @@ const LoginPage = () => {
           const token = response?.access_token;
           const refreshToken = response?.refresh_token;
           localStorage.setItem('token', token);
-          localStorage.setItem('refreshToken', refreshToken);
+          rememberMe
+            ? localStorage.setItem('refreshToken', refreshToken)
+            : localStorage.removeItem('refreshToken');
 
           // const userResponse = await getUserId();
           // localStorage.setItem('userId', userResponse?.userId);
@@ -273,7 +275,10 @@ const LoginPage = () => {
               </Link>
             </Box>
             <Box marginTop={'1rem'} className="RememberMecheckbox">
-              <Checkbox defaultChecked />
+              <Checkbox
+                defaultChecked
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
               {t('LOGIN_PAGE.REMEMBER_ME')}
             </Box>
             <Box
