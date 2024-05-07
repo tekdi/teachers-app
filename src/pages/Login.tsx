@@ -13,7 +13,7 @@ import Image from 'next/image';
 import appLogo2 from '../../public/appLogo.png';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 // import { useLocation } from 'react-router-dom';
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
 import { login } from '../services/LoginService';
@@ -27,7 +27,6 @@ import Loader from '../components/Loader';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import Link from '@mui/material/Link';
 import Checkbox from '@mui/material/Checkbox';
-
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
@@ -37,6 +36,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(true);
   const [showToastMessage, setShowToastMessage] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -46,7 +46,7 @@ const LoginPage = () => {
   );
   const [language, setLanguage] = useState(selectedLanguage);
   const theme = useTheme<any>();
-  // const router = useRouter();
+  const router = useRouter();
   // const location = useLocation();
 
   const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
@@ -60,9 +60,9 @@ const LoginPage = () => {
   const { vertical, horizontal, openModal } = state;
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      // router.push('/dashboard');
+    const refresh_token = localStorage.getItem('refreshToken');
+    if (refresh_token) {
+      router.push('/dashboard');
     }
   }, []);
 
@@ -110,13 +110,15 @@ const LoginPage = () => {
           const token = response?.access_token;
           const refreshToken = response?.refresh_token;
           localStorage.setItem('token', token);
-          localStorage.setItem('refreshToken', refreshToken);
+          rememberMe
+            ? localStorage.setItem('refreshToken', refreshToken)
+            : localStorage.removeItem('refreshToken');
 
           // const userResponse = await getUserId();
           // localStorage.setItem('userId', userResponse?.userId);
         }
         setLoading(false);
-        // router.push('/dashboard');
+        router.push('/dashboard');
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 404) {
@@ -274,7 +276,10 @@ const LoginPage = () => {
               </Link>
             </Box>
             <Box marginTop={'1rem'} className="RememberMecheckbox">
-              <Checkbox defaultChecked />
+              <Checkbox
+                defaultChecked
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
               {t('LOGIN_PAGE.REMEMBER_ME')}
             </Box>
             <Box
