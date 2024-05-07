@@ -34,7 +34,7 @@ const Header: React.FC = () => {
       }}
       {...props}
     />
-  ))(({ }) => ({
+  ))(() => ({
     '& .MuiPaper-root': {
       borderRadius: 6,
       marginTop: theme.spacing(1),
