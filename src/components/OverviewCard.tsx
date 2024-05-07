@@ -19,7 +19,7 @@ const OverviewCard: React.FC<OverviewCardProps> = ({ label, value }) => {
       borderRadius="1rem"
       alignItems="left"
       bgcolor="white"
-      margin="1rem"
+      mx={'1rem'}
       sx={{ padding: '1rem' }}
       width={"40%"}
       height={"4.5rem"}

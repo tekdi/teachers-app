@@ -407,7 +407,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )}
-      <Box sx = {{bgcolor:theme.palette.warning['A900']}}>
+      <Box sx = {{bgcolor:theme.palette.warning['A900'], paddingBottom:"20px"}}>
       <Box
         display={'flex'}
         flexDirection={'column'}
@@ -493,12 +493,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
               <Typography
                 sx={{ color: theme.palette.warning['A400'] }}
                 variant="h6"
+                className='word-break'
               >
                 {t('DASHBOARD.PERCENT_ATTENDANCE')}
               </Typography>
               <Typography
                 sx={{ color: theme.palette.warning['A400'] }}
                 variant="h6"
+                className='word-break'
               >
                 {t('DASHBOARD.PRESENT_STUDENTS')}
               </Typography>
@@ -517,6 +519,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
               <Typography
                 sx={{ color: theme.palette.warning['A400'] }}
                 variant="h6"
+                 className='word-break'
               >
                 {t('ATTENDANCE.ON_LEAVE')}
               </Typography>
