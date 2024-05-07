@@ -100,3 +100,16 @@ export interface AttendanceParams {
     filters: object;
   }
   
+export interface TimeTableCardProps {
+  subject: string;
+  instructor: string;
+  time: string;
+}
+export interface ExtraSessionsCardProps {
+  subject: string;
+  instructor: string;
+  dateAndTime: string;
+  meetingURL: string;
+  onEditClick: void;
+  onCopyClick: void;
+}
