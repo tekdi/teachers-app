@@ -77,7 +77,8 @@
     "UPDATE_ATTENDANCE_ALERT": "आपलं खात्री करायला खात्री आहे का?",
     "CLEAR_ATTENDANCE_ALERT": "आपल्याकडून हजेरी साफ करायला खात्री आहे का?",
     "YES": "हां",
-    "NO_GO_BACK": "नहीं वापस जाएं"
+    "NO_GO_BACK": "नहीं वापस जाएं",
+    "MY_TIMETABLE": "मेरी समय सारिणी"
   },
   "PROFILE": {
     "EDIT_PROFILE": "प्रोफ़ाइल संपादित करें",

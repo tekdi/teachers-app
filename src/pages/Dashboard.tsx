@@ -39,6 +39,7 @@ import Link from 'next/link';
 import OverviewCard from '@/components/OverviewCard';
 import ExtraSessionsCard from '@/components/ExtraSessionsCard';
 import TimeTableCard from '@/components/TimeTableCard';
+import WeekDays from '@/components/WeekDays';
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface State extends SnackbarOrigin {
@@ -139,7 +140,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             ?.map((item: any) => ({
               cohortId: item.cohortData.cohortId,
               parentId: item.cohortData.parentId,
-              name: item.cohortData.name
+              name: item.cohortData.name,
             }))
             ?.filter(Boolean);
           setCohortsData(filteredData);
@@ -164,17 +165,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
       const parentCohortId = localStorage.getItem('parentCohortId');
       const formattedDate: string = currentDate;
       try {
-        if (userId && classId && parentCohortId) {   
-          let limit = "100";
+        if (userId && classId && parentCohortId) {
+          let limit = '100';
           let page = 0;
-          let filters = {  cohortId: classId }; //Hard coded for testing replace it with classId
+          let filters = { cohortId: classId }; //Hard coded for testing replace it with classId
           const response = await getMyCohortMemberList({
-            limit ,
+            limit,
             page,
-            filters
+            filters,
           });
           const resp = response?.data;
-          console.log(`classlist`, resp)
+          console.log(`classlist`, resp);
           setCohortMemberList(resp);
           setNumberOfCohortMembers(resp?.length);
           setLoading(false);
@@ -198,9 +199,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       } catch (error) {
         console.error('Error fetching cohort list:', error);
         setLoading(false);
-      }finally {
+      } finally {
         setLoading(false);
-    }
+      }
     };
 
     if (classId.length) {
@@ -724,6 +725,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
         ) : (
           <OverviewCard label="My Overall Attendance" value="85%" />
         )}
+      </Box>
+      <Box>
+        <Typography textAlign={'left'} fontSize={'0.8rem'} m={'1rem'}>
+          {t('DASHBOARD.MY_TIMETABLE')}
+        </Typography>
+        <WeekDays useAbbreviation={false} />
       </Box>
     </Box>
   );
