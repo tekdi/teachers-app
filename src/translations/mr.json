@@ -59,7 +59,8 @@
     "OVERVIEW": "अवलोकन",
     "MORE_DETAILS": "अधिक माहिती",
     "EXTRA_CLASS": "अतिरिक्त कक्षा",
-    "CENTER_ATTENDANCE": "केंद्रीय उपस्थिती"
+    "CENTER_ATTENDANCE": "केंद्रीय उपस्थिती",
+    "MY_TIMETABLE": "माझे वेळापत्रक"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "एकूण विद्यार्थी: {{count}}",

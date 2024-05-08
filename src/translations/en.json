@@ -62,7 +62,8 @@
     "OVERVIEW": "Overview",
     "MORE_DETAILS": "More Details",
     "EXTRA_CLASS": "Extra class",
-    "CENTER_ATTENDANCE": "Center Attendance"
+    "CENTER_ATTENDANCE": "Center Attendance",
+    "MY_TIMETABLE": "My TimeTable"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total No of Students: {{count}}",
