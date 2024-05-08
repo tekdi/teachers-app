@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useMemo } from 'react';
+
 import {
   Box,
   Button,
@@ -9,30 +9,37 @@ import {
   InputLabel,
   OutlinedInput,
 } from '@mui/material';
-import Image from 'next/image';
-import appLogo2 from '../../public/appLogo.png';
+import React, { useEffect, useMemo } from 'react';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+
+import Checkbox from '@mui/material/Checkbox';
 // import { useLocation } from 'react-router-dom';
 // import { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
-import { login } from '../services/LoginService';
-import { useTranslation } from 'react-i18next';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { useTheme } from '@mui/material/styles';
-import MenuItem from '@mui/material/MenuItem';
-import config from '../../config.json';
+import Image from 'next/image';
+import Link from '@mui/material/Link';
 // import { getUserId } from '../services/ProfileService';
 import Loader from '../components/Loader';
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
-import Link from '@mui/material/Link';
-import Checkbox from '@mui/material/Checkbox';
+import MenuItem from '@mui/material/MenuItem';
+import appLogo2 from '../../public/appLogo.png';
+import config from '../../config.json';
+import { login } from '../services/LoginService';
+import { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
 
-const LoginPage = () => {
+interface DrawerProps {
+  toggleDrawer: (open: boolean) => () => void;
+  open: boolean;
+}
+
+const LoginPage: React.FC<DrawerProps> = ({ toggleDrawer }) => {
   const { t, i18n } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
@@ -308,6 +315,7 @@ const LoginPage = () => {
           />
         )}
       </Box>
+      <Button onClick={toggleDrawer(true)}>Open drawer</Button>
     </form>
   );
 };
