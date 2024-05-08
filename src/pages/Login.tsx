@@ -1,5 +1,3 @@
-'use client';
-
 import {
   Box,
   Button,
@@ -15,8 +13,6 @@ import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 import Checkbox from '@mui/material/Checkbox';
-// import { useLocation } from 'react-router-dom';
-// import { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
 import Image from 'next/image';
 import Link from '@mui/material/Link';
@@ -26,6 +22,8 @@ import MenuItem from '@mui/material/MenuItem';
 import appLogo2 from '../../public/appLogo.png';
 import config from '../../config.json';
 import { login } from '../services/LoginService';
+// import { useLocation } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -34,16 +32,12 @@ interface State extends SnackbarOrigin {
   openModal: boolean;
 }
 
-interface DrawerProps {
-  toggleDrawer: (open: boolean) => () => void;
-  open: boolean;
-}
-
-const LoginPage: React.FC<DrawerProps> = ({ toggleDrawer }) => {
+const LoginPage = () => {
   const { t, i18n } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(true);
   const [showToastMessage, setShowToastMessage] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -53,7 +47,7 @@ const LoginPage: React.FC<DrawerProps> = ({ toggleDrawer }) => {
   );
   const [language, setLanguage] = useState(selectedLanguage);
   const theme = useTheme<any>();
-  // const router = useRouter();
+  const router = useRouter();
   // const location = useLocation();
 
   const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
@@ -67,9 +61,9 @@ const LoginPage: React.FC<DrawerProps> = ({ toggleDrawer }) => {
   const { vertical, horizontal, openModal } = state;
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      // router.push('/dashboard');
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
+      router.push('/Dashboard');
     }
   }, []);
 
@@ -117,13 +111,15 @@ const LoginPage: React.FC<DrawerProps> = ({ toggleDrawer }) => {
           const token = response?.access_token;
           const refreshToken = response?.refresh_token;
           localStorage.setItem('token', token);
-          localStorage.setItem('refreshToken', refreshToken);
+          rememberMe
+            ? localStorage.setItem('refreshToken', refreshToken)
+            : localStorage.removeItem('refreshToken');
 
           // const userResponse = await getUserId();
           // localStorage.setItem('userId', userResponse?.userId);
         }
         setLoading(false);
-        // router.push('/dashboard');
+        router.push('/Dashboard');
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 404) {
@@ -281,7 +277,10 @@ const LoginPage: React.FC<DrawerProps> = ({ toggleDrawer }) => {
               </Link>
             </Box>
             <Box marginTop={'1rem'} className="RememberMecheckbox">
-              <Checkbox defaultChecked />
+              <Checkbox
+                defaultChecked
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
               {t('LOGIN_PAGE.REMEMBER_ME')}
             </Box>
             <Box
@@ -315,7 +314,6 @@ const LoginPage: React.FC<DrawerProps> = ({ toggleDrawer }) => {
           />
         )}
       </Box>
-      <Button onClick={toggleDrawer(true)}>Open drawer</Button>
     </form>
   );
 };

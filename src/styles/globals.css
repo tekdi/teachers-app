@@ -24,3 +24,6 @@ body {
   /* border: 1px solid #1f1b13 !important; */
   border-radius: 8px;
 }
+.word-break {
+  word-break: break-all;
+}
