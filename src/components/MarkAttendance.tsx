@@ -62,12 +62,12 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
   const handleMarkClearAttendanceModal = () => {
     setOpenMarkClearAttendance(!openMarkClearAttendance);
   };
-  const [state, setState] = React.useState<State>({
+  const [modal, setModal] = React.useState<State>({
     openModal: false,
     vertical: 'top',
     horizontal: 'center'
   });
-  const { vertical, horizontal, openModal } = state;
+  const { vertical, horizontal, openModal } = modal;
   const submitUpdateAttendance = () => {
     handleClose();
     handleMarkUpdateAttendanceModal();
@@ -80,7 +80,7 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
   const submitAttendance = (newState: SnackbarOrigin) => () => {
     handleSubmit(date, status);
     //  setOpenMarkUpdateAttendance(!openMarkUpdateAttendance);
-    setState({ ...newState, openModal: true });
+    setModal({ ...newState, openModal: true });
     setTimeout(() => {
       handleClose2();
     }, SNACKBAR_AUTO_HIDE_DURATION);
@@ -91,14 +91,14 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
     handleMarkUpdateAttendanceModal();
     handleSubmit(date, status);
 
-    setState({ ...newState, openModal: true });
+    setModal({ ...newState, openModal: true });
     setTimeout(() => {
       handleClose2();
     }, SNACKBAR_AUTO_HIDE_DURATION);
   };
 
   const handleClose2 = () => {
-    setState({ ...state, openModal: false });
+    setModal({ ...modal, openModal: false });
   };
   const handleClear = () => {
     if (status !== ATTENDANCE_ENUM.NOT_MARKED) {
@@ -232,7 +232,7 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
             sx={{
               width: '100%'
             }}>
-            No, go back
+              {t('ATTENDANCE.NO_GO_BACK')}
           </Button>
           <Button
             variant="contained"
@@ -266,7 +266,7 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
             sx={{
               width: '100%'
             }}>
-           {t('COMMON.NO_GO_BACK')}
+           {t('ATTENDANCE.NO_GO_BACK')}
           </Button>
           <Button
             variant="contained"

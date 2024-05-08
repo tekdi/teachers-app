@@ -1,11 +1,12 @@
-import { get } from './RestClient';
+import { cohortListParam } from '@/utils/Interfaces';
+import { post } from './RestClient';
 
-export const cohortList = async (name: string, userId: string): Promise<any> => {
+export const cohortList = async ({limit, page,filters}: cohortListParam): Promise<any> => {
   const apiUrl: string = `${
     process.env.NEXT_PUBLIC_BASE_URL
-  }/cohort/cohortDetails?name=${name}&id=${userId}`;
+  }/cohorts/search`;
   try {
-    const response = await get(apiUrl);
+    const response = await post(apiUrl,{limit, page, filters});
     return response?.data;
   } catch (error) {
     console.error('error in getting cohort list', error);

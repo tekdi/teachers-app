@@ -45,18 +45,21 @@ export interface AttendanceParams {
   }
   
   export interface cohortListParam {
-    name?: string;
-    userId?: string;
+    limit : number; 
+    page : number; 
+    filters: {
+      userId: string;
+    };
   }
   
-  export interface cohortDetailsList {
-    contextId?: string;
-    report: boolean;
-    limit: number;
-    offset: number;
-    filters?: object;
-    attendanceDate?: string;
-  }
+  export interface cohortMemberList {
+    limit: string;
+    page: number;
+    filters: {
+      cohortId: string;
+    };
+    }
+
   export interface AttendanceByDateParams {
     fromDate: string;
     toDate: string;
