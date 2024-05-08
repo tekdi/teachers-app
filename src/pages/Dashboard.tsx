@@ -168,7 +168,7 @@ const Dashboard: React.FC<DashboardProps> = ({ toggleDrawer }: any) => {
         if (userId && classId && parentCohortId) {
           let limit = '100';
           let page = 0;
-          let filters = { cohortId: '2e09f3b6-e571-476e-a536-e1bf3a061e46' }; //Hard coded for testing replace it with classId
+          let filters = { cohortId: classId }; //Hard coded for testing replace it with classId
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -198,6 +198,8 @@ const Dashboard: React.FC<DashboardProps> = ({ toggleDrawer }: any) => {
         }
       } catch (error) {
         console.error('Error fetching cohort list:', error);
+        setLoading(false);
+      } finally {
         setLoading(false);
       }
     };
