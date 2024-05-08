@@ -13,7 +13,6 @@ interface TemporaryDrawerProps {
 // Import dynamic components
 const Login = dynamic(() => import('./Login'), { ssr: false });
 const TemporaryDrawer = dynamic(() => import('./LeftDrawer'), { ssr: false });
-const Dashboard = dynamic(() => import('./Dashboard'), { ssr: false });
 
 // Define the Home component
 const Home: React.FC = () => {
@@ -35,7 +34,6 @@ const Home: React.FC = () => {
         {/* Render the TemporaryDrawer and Login components */}
         <TemporaryDrawer toggleDrawer={toggleDrawer} open={open} />
         <Login />
-        <Dashboard />
       </I18nextProvider>
     </>
   );
