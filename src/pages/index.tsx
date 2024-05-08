@@ -34,8 +34,8 @@ const Home: React.FC = () => {
       <I18nextProvider i18n={i18n}>
         {/* Render the TemporaryDrawer and Login components */}
         <TemporaryDrawer toggleDrawer={toggleDrawer} open={open} />
-        {/* <Login toggleDrawer={toggleDrawer} open={open} /> */}
-        <Dashboard toggleDrawer={toggleDrawer} />
+        <Login />
+        <Dashboard />
       </I18nextProvider>
     </>
   );

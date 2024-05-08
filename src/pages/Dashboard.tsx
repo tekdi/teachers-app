@@ -48,7 +48,6 @@ interface State extends SnackbarOrigin {
 
 interface DashboardProps {
   //   buttonText: string;
-  toggleDrawer: any;
 }
 
 interface user {
@@ -717,7 +716,6 @@ const Dashboard: React.FC<DashboardProps> = ({ toggleDrawer }: any) => {
           <OverviewCard label="My Overall Attendance" value="85%" />
         )}
       </Box>
-      <Button onClick={toggleDrawer(true)}>Open drawer</Button>
     </Box>
   );
 };
