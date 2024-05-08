@@ -382,6 +382,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setState({ ...state, openModal: false });
   };
 
+  const handleEdit = () => {
+    //function for handle edit
+  };
+
+  const handleCopy = () => {
+    //  function for handle copy
+  };
+
   return (
     <Box minHeight="100vh" textAlign={'center'}>
       <Header />

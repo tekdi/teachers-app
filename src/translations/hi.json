@@ -59,7 +59,9 @@
     "PERCENT_ATTENDANCE": "{{percent_students}}% उपस्थिति",
     "PRESENT_STUDENTS": "({{present_students}}/{{total_students}} मौजूद हैं)",
     "OVERVIEW": "अवलोकन",
-    "MORE_DETAILS": "अधिक विवरण"
+    "MORE_DETAILS": "अधिक विवरण",
+    "EXTRA_CLASS": "अतिरिक्त क्लास",
+    "CENTER_ATTENDANCE": "केंद्रीय उपस्थिति"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "कुल छात्रों की संख्या: {{count}}",

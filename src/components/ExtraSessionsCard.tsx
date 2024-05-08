@@ -3,15 +3,8 @@ import { Card, CardContent, Typography, Box } from '@mui/material';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import { useTranslation } from 'react-i18next';
-
-interface ExtraSessionsCardProps {
-  subject: string;
-  instructor: string;
-  dateAndTime: string;
-  meetingURL: string;
-  onEditClick?: () => void;
-  onCopyClick?: () => void;
-}
+import { truncateURL } from '@/utils/Helper';
+import { ExtraSessionsCardProps } from '@/utils/Interfaces';
 
 const ExtraSessionsCard: React.FC<ExtraSessionsCardProps> = ({
   subject,
@@ -22,10 +15,6 @@ const ExtraSessionsCard: React.FC<ExtraSessionsCardProps> = ({
   onCopyClick,
 }) => {
   const { t } = useTranslation();
-  // Function to truncate URL if it's too long
-  const truncateURL = (url: string, maxLength: number) => {
-    return url.length > maxLength ? url.substr(0, maxLength - 3) + '...' : url;
-  };
 
   return (
     <Box>
