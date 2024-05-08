@@ -37,6 +37,8 @@ import { ATTENDANCE_ENUM } from '../utils/Helper';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import Link from 'next/link';
 import OverviewCard from '@/components/OverviewCard';
+import ExtraSessionsCard from '@/components/ExtraSessionsCard';
+import TimeTableCard from '@/components/TimeTableCard';
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface State extends SnackbarOrigin {
@@ -380,6 +382,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
   const handleClose = () => {
     setState({ ...state, openModal: false });
+  };
+
+  const handleEdit = () => {
+    //function for handle edit
+  };
+
+  const handleCopy = () => {
+    //  function for handle copy
   };
 
   return (

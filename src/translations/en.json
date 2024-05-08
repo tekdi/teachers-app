@@ -60,7 +60,9 @@
     "PERCENT_ATTENDANCE": "{{percent_students}}% Attendance",
     "PRESENT_STUDENTS": "({{present_students}/{total_students}} present)",
     "OVERVIEW": "Overview",
-    "MORE_DETAILS": "More Details"
+    "MORE_DETAILS": "More Details",
+    "EXTRA_CLASS": "Extra class",
+    "CENTER_ATTENDANCE": "Center Attendance"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total No of Students: {{count}}",
