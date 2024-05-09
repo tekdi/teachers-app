@@ -65,7 +65,8 @@
     "EXTRA_CLASS": "Extra class",
     "CENTER_ATTENDANCE": "Center Attendance",
     "MY_TIMETABLE": "My TimeTable",
-    "MY_TEACHING_CENTERS":"My Teaching Centers"
+    "MY_TEACHING_CENTERS":"My Teaching Centers",
+    "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total No of Students: {{count}}",
