@@ -4,18 +4,24 @@ import {
   BulkAttendanceParams,
   AttendanceByDateParams,
   TeacherAttendanceByDateParams,
-  AttendanceReports
+  AttendanceReports,
+  AttendanceStatusListProps,
 } from '../utils/Interfaces';
 
 export const markAttendance = async ({
   userId,
   attendanceDate,
   attendance,
-  contextId
+  contextId,
 }: AttendanceParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance`;
   try {
-    const response = await post(apiUrl, { userId, attendanceDate, attendance, contextId });
+    const response = await post(apiUrl, {
+      userId,
+      attendanceDate,
+      attendance,
+      contextId,
+    });
     return response?.data;
   } catch (error) {
     console.error('error in marking attendance', error);
@@ -26,11 +32,15 @@ export const markAttendance = async ({
 export const bulkAttendance = async ({
   attendanceDate,
   contextId,
-  userAttendance
+  userAttendance,
 }: BulkAttendanceParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance/bulkAttendance`;
   try {
-    const response = await post(apiUrl, { attendanceDate, contextId, userAttendance });
+    const response = await post(apiUrl, {
+      attendanceDate,
+      contextId,
+      userAttendance,
+    });
     return response?.data;
   } catch (error) {
     console.error('error in marking bulk attendance', error);
@@ -40,7 +50,7 @@ export const bulkAttendance = async ({
 export const getTeacherAttendanceByDate = async ({
   fromDate,
   toDate,
-  filters: { userId, contextId }
+  filters: { userId, contextId },
 }: TeacherAttendanceByDateParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance/bydate`;
   try {
@@ -49,12 +59,30 @@ export const getTeacherAttendanceByDate = async ({
       toDate,
       filters: {
         contextId,
-        userId
-      }
+        userId,
+      },
     });
     return response?.data;
   } catch (error) {
     console.error('error in marking attendance', error);
     throw error;
+  }
+};
+
+export const attendanceStatusList = async ({
+  limit,
+  page,
+  filters: { contextId, scope },
+}: AttendanceStatusListProps): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance/list`;
+  try {
+    const response = await post(apiUrl, {
+      limit,
+      page,
+      filters: { contextId, scope },
+    });
+    return response?.data;
+  } catch (error) {
+    console.error('error in marking bulk attendance', error);
   }
 };

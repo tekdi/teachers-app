@@ -38,8 +38,9 @@ export interface AttendanceStatusListViewProps {
 
 export interface UserAttendanceObj {
   userId: string;
-  attendance: string;
+  attendance: string; //Mandatory
   name?: string;
+  attendanceDate?: Date | string;
 }
 
 export interface BulkAttendanceParams {
@@ -134,5 +135,12 @@ export interface ExtraSessionsCardProps {
   dateAndTime: string;
   meetingURL: string;
   onEditClick?: () => void;
-  onCopyClick?: () => void;
+  onCopyClick?: () => void;}
+export interface AttendanceStatusListProps {
+  limit: number;
+  page: number;
+  filters: {
+    contextId: string;
+    scope: string;
+  };
 }
