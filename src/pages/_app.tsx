@@ -13,6 +13,8 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import IconButton from '@mui/material/IconButton';
 import customTheme from '../styles/customStyles';
 import darkTheme from '@/styles/darkStyle';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '../i18n';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 
@@ -55,7 +57,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={mode === 'light' ? customTheme : darkTheme}>
         {/* <DarkTheme /> */}
-        <Component {...pageProps} />
+        <I18nextProvider i18n={i18n}>
+          <Component {...pageProps} />
+        </I18nextProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
