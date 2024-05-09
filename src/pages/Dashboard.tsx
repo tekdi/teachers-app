@@ -39,7 +39,10 @@ import TodayIcon from '@mui/icons-material/Today';
 import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
-import { getTeacherAttendanceByDate, attendanceStatusList } from '../services/AttendanceService';
+import {
+  getTeacherAttendanceByDate,
+  attendanceStatusList,
+} from '../services/AttendanceService';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -180,7 +183,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             filters,
           });
           const resp = response?.data?.userDetails;
-          console.log(`classlist`, resp)
+          console.log(`classlist`, resp);
 
           if (resp[0]?.userDetails) {
             const nameUserIdArray = resp[0].userDetails.map(
@@ -196,25 +199,24 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   page: 10,
                   filters: {
                     contextId: contextId,
-                    scope: "student",
+                    scope: 'student',
                   },
                 };
                 const response2 =
                   await attendanceStatusList(attendanceStatusData);
-                console.log('res22222222', response2)
+                
                 if (response?.data?.length === 0) {
                   setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
                 } else {
                   setAttendanceStatus(response2?.data?.[0]?.attendance);
                 }
-                
 
                 //Add logic to merge response2 and nameUserIdArray
                 setCohortMemberList(nameUserIdArray);
                 setNumberOfCohortMembers(nameUserIdArray?.length);
                 setLoading(false);
               };
-              userAttendanceStatusList()
+              userAttendanceStatusList();
             }
           }
           // const TeachercontextId = parentCohortId.replace(/\n/g, '');
@@ -351,7 +353,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       const data = {
         attendanceDate: currentDate,
         contextId,
-        userAttendance
+        userAttendance,
       };
       const markBulkAttendance = async () => {
         setLoading(true);
@@ -405,7 +407,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           const response = await getTeacherAttendanceByDate(attendanceData);
           if (response?.data?.length === 0) {
             setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
-          } 
+          }
           // else {
           //   setAttendanceStatus(response?.data[0]?.attendance);
           // }
@@ -424,16 +426,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setState({ ...state, openModal: false });
   };
 
-  const handleEdit = () => {
-    //function for handle edit
-  };
-
-  const handleCopy = () => {
-    //  function for handle copy
-  };
-
   return (
-    <Box minHeight="100vh" textAlign={'center'}>
+    <Box minHeight="100vh">
       <Header />
       <Typography textAlign={'left'} fontSize={'1.5rem'} m={'1rem'}>
         {t('DASHBOARD.DASHBOARD')}
@@ -651,7 +645,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               key={user.userId}
                               userData={{
                                 userId: user.userId,
-                                attendance:user.attendance,
+                                attendance: user.attendance,
                                 attendanceDate: currentDate,
                                 name: user.name,
                               }}
@@ -779,6 +773,33 @@ const Dashboard: React.FC<DashboardProps> = () => {
           {t('DASHBOARD.MY_TIMETABLE')}
         </Typography>
         <WeekDays useAbbreviation={false} />
+        <TimeTableCard
+          subject={'Science'}
+          instructor={'Khapari Dharmu'}
+          time={'10 am - 1 pm'}
+        />
+        <TimeTableCard
+          subject={'Home Science'}
+          instructor={'Khapari Dharmu'}
+          time={'2 pm - 5 pm'}
+        />
+        <Typography textAlign={'left'} fontSize={'0.8rem'} m={'1rem'}>
+          {t('DASHBOARD.UPCOMING_EXTRA_SESSION')}
+        </Typography>
+        <ExtraSessionsCard
+          subject={'Science'}
+          instructor={'Upendra Kulkarni'}
+          dateAndTime={'07-may-2024'}
+          meetingURL={
+            'https://meet.google.com/fqz-ftoh-dynfqz-ftoh-dynfqz-ftoh-dyn'
+          }
+          onEditClick={() => {
+            console.log('edit');
+          }}
+          onCopyClick={() => {
+            console.log('copy');
+          }}
+        />
       </Box>
     </Box>
   );
