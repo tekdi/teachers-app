@@ -25,6 +25,7 @@ import AttendanceStatusListView from '../components/AttendanceStatusListView';
 import Backdrop from '@mui/material/Backdrop';
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
+import ExtraSessionsCard from '@/components/ExtraSessionsCard';
 import Fade from '@mui/material/Fade';
 import Header from '../components/Header';
 import Link from 'next/link';
@@ -32,17 +33,16 @@ import Loader from '../components/Loader';
 import MarkAttendance from '../components/MarkAttendance';
 import Modal from '@mui/material/Modal';
 import OverviewCard from '@/components/OverviewCard';
+import TimeTableCard from '@/components/TimeTableCard';
 import TodayIcon from '@mui/icons-material/Today';
+import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { getTeacherAttendanceByDate } from '../services/AttendanceService';
-import { ATTENDANCE_ENUM } from '../utils/Helper';
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
-import Link from 'next/link';
-import OverviewCard from '@/components/OverviewCard';
-import ExtraSessionsCard from '@/components/ExtraSessionsCard';
-import TimeTableCard from '@/components/TimeTableCard';
-import WeekDays from '@/components/WeekDays';
+import { useRouter } from 'next/navigation';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
+
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface State extends SnackbarOrigin {
@@ -65,7 +65,7 @@ interface cohort {
 let userId = localStorage.getItem('userId');
 let contextId: string = '';
 
-const Dashboard: React.FC<DashboardProps> = ({ toggleDrawer }: any) => {
+const Dashboard: React.FC<DashboardProps> = () => {
   const [open, setOpen] = React.useState(false);
   // const [selfAttendanceDetails, setSelfAttendanceDetails] = React.useState(null);
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
