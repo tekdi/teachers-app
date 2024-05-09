@@ -8,7 +8,7 @@ import i18n from '../i18n';
 
 // Import dynamic components
 const Login = dynamic(() => import('./Login'), { ssr: false });
-// const Dashboard = dynamic(() => import('./Dashboard'), { ssr: false });
+const Dashboard = dynamic(() => import('./Dashboard'), { ssr: false });
 
 // Define the Home component
 const Home: React.FC = () => {
@@ -25,8 +25,8 @@ const Home: React.FC = () => {
       <I18nextProvider i18n={i18n}>
         {/* Render the TemporaryDrawer and Login components */}
 
-        <Login />
-        {/* <Dashboard /> */}
+        {/* <Login /> */}
+        <Dashboard />
       </I18nextProvider>
     </>
   );
