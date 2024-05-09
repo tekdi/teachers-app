@@ -43,6 +43,7 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
+import { text } from 'stream/consumers';
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface State extends SnackbarOrigin {
@@ -388,16 +389,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setState({ ...state, openModal: false });
   };
 
-  const handleEdit = () => {
-    //function for handle edit
-  };
-
-  const handleCopy = () => {
-    //  function for handle copy
-  };
-
   return (
-    <Box minHeight="100vh" textAlign={'center'}>
+    <Box minHeight="100vh">
       <Header />
       <Typography textAlign={'left'} fontSize={'1.5rem'} m={'1rem'}>
         {t('DASHBOARD.DASHBOARD')}
@@ -734,6 +727,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
           {t('DASHBOARD.MY_TIMETABLE')}
         </Typography>
         <WeekDays useAbbreviation={false} />
+        <TimeTableCard
+          subject={'Science'}
+          instructor={'Upendra Kulkarni'}
+          time={'07-may-2024'}
+        />
+        <Typography textAlign={'left'} fontSize={'0.8rem'} m={'1rem'}>
+          {t('DASHBOARD.UPCOMING_EXTRA_SESSION')}
+        </Typography>
+        <ExtraSessionsCard
+          subject={'Science'}
+          instructor={'Upendra Kulkarni'}
+          dateAndTime={'07-may-2024'}
+          meetingURL={
+            'https://meet.google.com/fqz-ftoh-dynfqz-ftoh-dynfqz-ftoh-dyn'
+          }
+          onEditClick={() => {
+            console.log('edit');
+          }}
+          onCopyClick={() => {
+            console.log('copy');
+          }}
+        />
       </Box>
     </Box>
   );
