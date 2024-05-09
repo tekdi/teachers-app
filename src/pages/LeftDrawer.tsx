@@ -2,29 +2,37 @@
 
 import * as React from 'react';
 
-import {
-  Button,
-  FormControl,
-  IconButton,
-  MenuItem,
-  Select,
-} from '@mui/material';
+import { Button, FormControl, IconButton, MenuItem } from '@mui/material';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import Box from '@mui/material/Box';
 import ClearIcon from '@mui/icons-material/Clear';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import Drawer from '@mui/material/Drawer';
 import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
+import config from '../../config.json';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
 interface DrawerProps {
   toggleDrawer: (open: boolean) => () => void;
   open: boolean;
+  language: string;
+  setLanguage: (lang: string) => void;
 }
-const TemporaryDrawer: React.FC<DrawerProps> = ({ toggleDrawer, open }) => {
+const TemporaryDrawer: React.FC<DrawerProps> = ({
+  toggleDrawer,
+  open,
+  language,
+  setLanguage,
+}) => {
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setLanguage(event.target.value);
+    i18n.changeLanguage(event.target.value);
+  };
 
   return (
     <div>
@@ -59,7 +67,7 @@ const TemporaryDrawer: React.FC<DrawerProps> = ({ toggleDrawer, open }) => {
               gap: '30px',
             }}
           >
-            <Box sx={{ flexBasis: '30%' }}>
+            {/* <Box sx={{ flexBasis: '30%' }}>
               <FormControl className="drawer-select" sx={{ width: '100%' }}>
                 <Select
                   className="SelectLanguages fs-14 fw-500"
@@ -72,6 +80,28 @@ const TemporaryDrawer: React.FC<DrawerProps> = ({ toggleDrawer, open }) => {
                   }}
                 >
                   <MenuItem>English</MenuItem>
+                </Select>
+              </FormControl>
+            </Box> */}
+            <Box sx={{ flexBasis: '30%' }}>
+              <FormControl className="drawer-select" sx={{ width: '100%' }}>
+                <Select
+                  value={language}
+                  onChange={handleChange}
+                  displayEmpty
+                  className="SelectLanguages fs-14 fw-500"
+                  style={{
+                    borderRadius: '0.5rem',
+                    color: theme.palette.warning['200'],
+                    width: '100%',
+                    marginBottom: '0rem',
+                  }}
+                >
+                  {config?.languages.map((lang) => (
+                    <MenuItem value={lang.code} key={lang.code}>
+                      {lang.label}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>
@@ -111,7 +141,7 @@ const TemporaryDrawer: React.FC<DrawerProps> = ({ toggleDrawer, open }) => {
               }}
               startIcon={<DashboardOutlinedIcon />}
             >
-              Dashboard
+              {t('DASHBOARD.DASHBOARD')}
             </Button>
           </Box>
           <Box
@@ -133,7 +163,7 @@ const TemporaryDrawer: React.FC<DrawerProps> = ({ toggleDrawer, open }) => {
               }}
               className="fs-14 fw-500"
             >
-              My Teaching Centers
+              {t('DASHBOARD.MY_TEACHING_CENTERS')}
             </Box>
           </Box>
         </Box>

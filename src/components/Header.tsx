@@ -89,6 +89,12 @@ const Header: React.FC = () => {
   const TemporaryDrawer = dynamic(() => import('./../pages/LeftDrawer'), {
     ssr: false,
   });
+
+  const [selectedLanguage, setSelectedLanguage] = React.useState(
+    localStorage.getItem('preferredLanguage') || 'en'
+  );
+  const [language, setLanguage] = React.useState(selectedLanguage);
+
   return (
     <>
       <Stack
@@ -146,7 +152,12 @@ const Header: React.FC = () => {
         </div>
       </Stack>
       <Divider sx={{ borderBottomWidth: '0.15rem' }} />
-      <TemporaryDrawer toggleDrawer={toggleDrawer} open={openDrawer} />
+      <TemporaryDrawer
+        toggleDrawer={toggleDrawer}
+        open={openDrawer}
+        language={language}
+        setLanguage={setLanguage}
+      />
     </>
   );
 };
