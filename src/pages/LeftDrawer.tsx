@@ -20,7 +20,7 @@ interface DrawerProps {
   language: string;
   setLanguage: (lang: string) => void;
 }
-const TemporaryDrawer: React.FC<DrawerProps> = ({
+const menuDrawer: React.FC<DrawerProps> = ({
   toggleDrawer,
   open,
   language,
@@ -172,4 +172,4 @@ const TemporaryDrawer: React.FC<DrawerProps> = ({
   );
 };
 
-export default TemporaryDrawer;
+export default menuDrawer;

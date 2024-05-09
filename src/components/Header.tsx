@@ -86,7 +86,7 @@ const Header: React.FC = () => {
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
   };
-  const TemporaryDrawer = dynamic(() => import('./../pages/LeftDrawer'), {
+  const MenuDrawer = dynamic(() => import('./../pages/LeftDrawer'), {
     ssr: false,
   });
 
@@ -152,7 +152,7 @@ const Header: React.FC = () => {
         </div>
       </Stack>
       <Divider sx={{ borderBottomWidth: '0.15rem' }} />
-      <TemporaryDrawer
+      <MenuDrawer
         toggleDrawer={toggleDrawer}
         open={openDrawer}
         language={language}
