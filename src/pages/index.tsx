@@ -5,9 +5,6 @@ import dynamic from 'next/dynamic';
 import i18n from '../i18n';
 
 // Define the type for props
-interface TemporaryDrawerProps {
-  toggleDrawer: (newOpen: boolean) => () => void;
-}
 
 // Import dynamic components
 const Login = dynamic(() => import('./Login'), { ssr: false });
