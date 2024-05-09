@@ -85,7 +85,6 @@ const Header: React.FC = () => {
   };
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
-    console.log('shryas');
   };
   const TemporaryDrawer = dynamic(() => import('./../pages/LeftDrawer'), {
     ssr: false,
