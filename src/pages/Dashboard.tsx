@@ -2,6 +2,7 @@
 
 import {
   AttendanceParams,
+  AttendanceStatusListProps,
   TeacherAttendanceByDateParams,
 } from '../utils/Interfaces';
 import {
@@ -38,7 +39,7 @@ import TodayIcon from '@mui/icons-material/Today';
 import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
-import { getTeacherAttendanceByDate } from '../services/AttendanceService';
+import { getTeacherAttendanceByDate, attendanceStatusList } from '../services/AttendanceService';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -62,7 +63,7 @@ interface cohort {
   name: string;
   value: string;
 }
-let userId = localStorage.getItem('userId');
+// let userId = localStorage.getItem('userId');
 let contextId: string = '';
 
 const Dashboard: React.FC<DashboardProps> = () => {
@@ -165,10 +166,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     const getCohortMemberList = async () => {
       setLoading(true);
-      const parentCohortId = localStorage.getItem('parentCohortId');
-      const formattedDate: string = currentDate;
+      // const parentCohortId = localStorage.getItem('parentCohortId');
+      // const formattedDate: string = currentDate;
       try {
-        if (userId && classId && parentCohortId) {
+        if (classId) {
+          //userId && parentCohortId
           let limit = '100';
           let page = 0;
           let filters = { cohortId: classId }; //Hard coded for testing replace it with classId
@@ -177,27 +179,60 @@ const Dashboard: React.FC<DashboardProps> = () => {
             page,
             filters,
           });
-          const resp = response?.data;
-          console.log(`classlist`, resp);
-          setCohortMemberList(resp);
-          setNumberOfCohortMembers(resp?.length);
-          setLoading(false);
-          const TeachercontextId = parentCohortId.replace(/\n/g, '');
+          const resp = response?.data?.userDetails;
+          console.log(`classlist`, resp)
 
-          const attendanceData: TeacherAttendanceByDateParams = {
-            fromDate: formattedDate,
-            toDate: formattedDate,
-            filters: {
-              userId,
-              contextId: TeachercontextId,
-            },
-          };
-          const response2 = await getTeacherAttendanceByDate(attendanceData);
-          if (response?.data?.length === 0) {
-            setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
-          } else {
-            setAttendanceStatus(response2.data[0].attendance);
+          if (resp[0]?.userDetails) {
+            const nameUserIdArray = resp[0].userDetails.map(
+              ({ userId, name }: any) => ({
+                userId,
+                name,
+              })
+            );
+            if (nameUserIdArray && contextId) {
+              const userAttendanceStatusList = async () => {
+                const attendanceStatusData: AttendanceStatusListProps = {
+                  limit: 150,
+                  page: 10,
+                  filters: {
+                    contextId: contextId,
+                    scope: "student",
+                  },
+                };
+                const response2 =
+                  await attendanceStatusList(attendanceStatusData);
+                console.log('res22222222', response2)
+                if (response?.data?.length === 0) {
+                  setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
+                } else {
+                  setAttendanceStatus(response2?.data?.[0]?.attendance);
+                }
+                
+
+                //Add logic to merge response2 and nameUserIdArray
+                setCohortMemberList(nameUserIdArray);
+                setNumberOfCohortMembers(nameUserIdArray?.length);
+                setLoading(false);
+              };
+              userAttendanceStatusList()
+            }
           }
+          // const TeachercontextId = parentCohortId.replace(/\n/g, '');
+
+          // const attendanceData: TeacherAttendanceByDateParams = {
+          //   fromDate: formattedDate,
+          //   toDate: formattedDate,
+          //   filters: {
+          //     userId,
+          //     contextId: TeachercontextId,
+          //   },
+          // };
+          // const response2 = await getTeacherAttendanceByDate(attendanceData);
+          // if (response?.data?.length === 0) {
+          //   setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
+          // } else {
+          //   setAttendanceStatus(response2.data[0].attendance);
+          // }
         }
       } catch (error) {
         console.error('Error fetching cohort list:', error);
@@ -231,45 +266,45 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
     const formattedDate: string = currentDate;
     //console.log(date, status);
-    if (userId && parentCohortId) {
-      const TeachercontextId = parentCohortId.replace(/\n/g, '');
+    // if (userId && parentCohortId) {
+    //   const TeachercontextId = parentCohortId.replace(/\n/g, '');
 
-      const attendanceData: AttendanceParams = {
-        attendanceDate: date,
-        attendance: status,
-        userId,
-        contextId: TeachercontextId,
-      };
-      setLoading(true);
-      try {
-        const response = await markAttendance(attendanceData);
-        if (response) {
-          setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'));
+    //   const attendanceData: AttendanceParams = {
+    //     attendanceDate: date,
+    //     attendance: status,
+    //     userId,
+    //     contextId: TeachercontextId,
+    //   };
+    //   setLoading(true);
+    //   try {
+    //     const response = await markAttendance(attendanceData);
+    //     if (response) {
+    //       setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'));
 
-          //  const TeachercontextId = parentCohortId.replace(/\n/g, '');
+    //       //  const TeachercontextId = parentCohortId.replace(/\n/g, '');
 
-          const attendanceData: TeacherAttendanceByDateParams = {
-            fromDate: formattedDate,
-            toDate: formattedDate,
-            filters: {
-              userId,
-              contextId: TeachercontextId,
-            },
-          };
-          const response = await getTeacherAttendanceByDate(attendanceData);
-          if (response?.data?.length === 0) {
-            setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
-          } else {
-            setAttendanceStatus(response.data[0].attendance);
-          }
-        }
-        setLoading(false);
-      } catch (error) {
-        setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_UNSUCCESSFULLY'));
-        console.error('error', error);
-        setLoading(false);
-      }
-    }
+    //       const attendanceData: TeacherAttendanceByDateParams = {
+    //         fromDate: formattedDate,
+    //         toDate: formattedDate,
+    //         filters: {
+    //           userId,
+    //           contextId: TeachercontextId,
+    //         },
+    //       };
+    //       const response = await getTeacherAttendanceByDate(attendanceData);
+    //       if (response?.data?.length === 0) {
+    //         setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
+    //       } else {
+    //         setAttendanceStatus(response.data[0].attendance);
+    //       }
+    //     }
+    //     setLoading(false);
+    //   } catch (error) {
+    //     setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_UNSUCCESSFULLY'));
+    //     console.error('error', error);
+    //     setLoading(false);
+    //   }
+    // }
   };
 
   const submitBulkAttendanceAction = (
@@ -316,7 +351,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       const data = {
         attendanceDate: currentDate,
         contextId,
-        userAttendance,
+        userAttendance
       };
       const markBulkAttendance = async () => {
         setLoading(true);
@@ -370,9 +405,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
           const response = await getTeacherAttendanceByDate(attendanceData);
           if (response?.data?.length === 0) {
             setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
-          } else {
-            setAttendanceStatus(response?.data[0]?.attendance);
-          }
+          } 
+          // else {
+          //   setAttendanceStatus(response?.data[0]?.attendance);
+          // }
         }
       } catch (Error) {
         console.error(Error);
@@ -607,15 +643,24 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           bulkAttendanceStatus={bulkAttendanceStatus}
                           handleBulkAction={submitBulkAttendanceAction}
                         />
-                        {cohortMemberList?.map((user: any) => (
-                          <AttendanceStatusListView
-                            key={user.userId}
-                            userData={user}
-                            isEdit={true}
-                            bulkAttendanceStatus={bulkAttendanceStatus}
-                            handleBulkAction={submitBulkAttendanceAction}
-                          />
-                        ))}
+                        {cohortMemberList?.map(
+                          (
+                            user: any //cohort member list should have userId, attendance, name
+                          ) => (
+                            <AttendanceStatusListView
+                              key={user.userId}
+                              userData={{
+                                userId: user.userId,
+                                attendance:user.attendance,
+                                attendanceDate: currentDate,
+                                name: user.name,
+                              }}
+                              isEdit={true}
+                              bulkAttendanceStatus={bulkAttendanceStatus}
+                              handleBulkAction={submitBulkAttendanceAction}
+                            />
+                          )
+                        )}
                       </Box>
                       <Box
                         position={'absolute'}
