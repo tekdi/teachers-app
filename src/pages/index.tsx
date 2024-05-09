@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-
 import { I18nextProvider } from 'react-i18next';
+import React from 'react';
 // Import necessary modules
 import dynamic from 'next/dynamic';
 import i18n from '../i18n';
@@ -12,17 +11,13 @@ interface TemporaryDrawerProps {
 
 // Import dynamic components
 const Login = dynamic(() => import('./Login'), { ssr: false });
-const TemporaryDrawer = dynamic(() => import('./LeftDrawer'), { ssr: false });
+// const Dashboard = dynamic(() => import('./Dashboard'), { ssr: false });
 
 // Define the Home component
 const Home: React.FC = () => {
   // State for controlling drawer open/close
-  const [open, setOpen] = useState(false);
 
   // Function to toggle drawer state
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
 
   // Log 'hi' to console
   // console.log('hi');
@@ -32,8 +27,9 @@ const Home: React.FC = () => {
       {/* I18nextProvider for internationalization */}
       <I18nextProvider i18n={i18n}>
         {/* Render the TemporaryDrawer and Login components */}
-        <TemporaryDrawer toggleDrawer={toggleDrawer} open={open} />
+
         <Login />
+        {/* <Dashboard /> */}
       </I18nextProvider>
     </>
   );

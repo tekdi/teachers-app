@@ -16,6 +16,7 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import Drawer from '@mui/material/Drawer';
 import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 interface DrawerProps {
   toggleDrawer: (open: boolean) => () => void;
@@ -23,11 +24,12 @@ interface DrawerProps {
 }
 const TemporaryDrawer: React.FC<DrawerProps> = ({ toggleDrawer, open }) => {
   const theme = useTheme<any>();
+  const { t, i18n } = useTranslation();
 
   return (
     <div>
       <Drawer open={open} onClose={toggleDrawer(false)}>
-        <Box sx={{ padding: '16px 16px 12px 16px', width: '320px' }}>
+        <Box sx={{ padding: '16px 16px 12px 16px', width: '300px' }}>
           <Box
             sx={{
               display: 'flex',
@@ -35,7 +37,12 @@ const TemporaryDrawer: React.FC<DrawerProps> = ({ toggleDrawer, open }) => {
               alignItems: 'center',
             }}
           >
-            <Box sx={{ color: theme.palette.warning['A200'] }}>Menu</Box>
+            <Box
+              className="fs-14 fw-500"
+              sx={{ color: theme.palette.warning['A200'] }}
+            >
+              {t('DASHBOARD.MENU')}
+            </Box>
             <Box>
               <IconButton onClick={toggleDrawer(false)}>
                 <ClearIcon />
@@ -55,7 +62,7 @@ const TemporaryDrawer: React.FC<DrawerProps> = ({ toggleDrawer, open }) => {
             <Box sx={{ flexBasis: '30%' }}>
               <FormControl className="drawer-select" sx={{ width: '100%' }}>
                 <Select
-                  className="SelectLanguages"
+                  className="SelectLanguages fs-14 fw-500"
                   displayEmpty
                   style={{
                     borderRadius: '0.5rem',
@@ -89,6 +96,7 @@ const TemporaryDrawer: React.FC<DrawerProps> = ({ toggleDrawer, open }) => {
           <Box>
             <Button
               //   variant="outlined"
+              className="fs-14 fw-600"
               sx={{
                 width: '100%',
                 display: 'flex',
@@ -96,6 +104,10 @@ const TemporaryDrawer: React.FC<DrawerProps> = ({ toggleDrawer, open }) => {
                 background: theme.palette.primary.main,
                 padding: '16px !important',
                 marginTop: '15px',
+                color: '#2E1500',
+                '&:hover': {
+                  background: '#FDBE16',
+                },
               }}
               startIcon={<DashboardOutlinedIcon />}
             >
@@ -109,12 +121,20 @@ const TemporaryDrawer: React.FC<DrawerProps> = ({ toggleDrawer, open }) => {
               borderRadius: '100px',
               alignItems: 'center',
               marginTop: '12px',
+              marginLeft: '12px',
             }}
           >
             <Box>
               <LocalLibraryOutlinedIcon />
             </Box>
-            <Box>My Teaching Centers</Box>
+            <Box
+              sx={{
+                color: theme.palette.warning.A200,
+              }}
+              className="fs-14 fw-500"
+            >
+              My Teaching Centers
+            </Box>
           </Box>
         </Box>
       </Drawer>

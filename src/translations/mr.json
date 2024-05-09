@@ -57,7 +57,8 @@
     "PERCENT_ATTENDANCE": "{{percent_students}}% उपस्थिती",
     "PRESENT_STUDENTS": "({{present_students}}/{{total_students}} उपस्थित)",
     "OVERVIEW": "अवलोकन",
-    "MORE_DETAILS": "अधिक माहिती"
+    "MORE_DETAILS": "अधिक माहिती",
+    "MENU": "मेनू"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "एकूण विद्यार्थी: {{count}}",
