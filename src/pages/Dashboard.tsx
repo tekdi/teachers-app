@@ -36,10 +36,13 @@ import TodayIcon from '@mui/icons-material/Today';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { getTeacherAttendanceByDate } from '../services/AttendanceService';
-import { useRouter } from 'next/navigation';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'react-i18next';
-
+import { ATTENDANCE_ENUM } from '../utils/Helper';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import Link from 'next/link';
+import OverviewCard from '@/components/OverviewCard';
+import ExtraSessionsCard from '@/components/ExtraSessionsCard';
+import TimeTableCard from '@/components/TimeTableCard';
+import WeekDays from '@/components/WeekDays';
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface State extends SnackbarOrigin {
@@ -385,6 +388,14 @@ const Dashboard: React.FC<DashboardProps> = ({ toggleDrawer }: any) => {
     setState({ ...state, openModal: false });
   };
 
+  const handleEdit = () => {
+    //function for handle edit
+  };
+
+  const handleCopy = () => {
+    //  function for handle copy
+  };
+
   return (
     <Box minHeight="100vh" textAlign={'center'}>
       <Header />
@@ -717,6 +728,12 @@ const Dashboard: React.FC<DashboardProps> = ({ toggleDrawer }: any) => {
         ) : (
           <OverviewCard label="My Overall Attendance" value="85%" />
         )}
+      </Box>
+      <Box>
+        <Typography textAlign={'left'} fontSize={'0.8rem'} m={'1rem'}>
+          {t('DASHBOARD.MY_TIMETABLE')}
+        </Typography>
+        <WeekDays useAbbreviation={false} />
       </Box>
     </Box>
   );
