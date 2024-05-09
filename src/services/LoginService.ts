@@ -36,3 +36,14 @@ export const refresh = async ({
     throw error;
   }
 };
+
+export const logout = async (refreshToken: string): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/logout`;
+  try {
+    const response = await post(apiUrl, { refresh_token: refreshToken });
+    return response;
+  } catch (error) {
+    console.error('error in logout', error);
+    throw error;
+  }
+};
