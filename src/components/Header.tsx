@@ -71,7 +71,7 @@ const Header: React.FC = () => {
     }
   };
   const handleLogoutClick = () => {
-    router.replace('/logout');
+    router.replace('/Logout');
   };
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
