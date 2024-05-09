@@ -28,6 +28,7 @@ import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
+import { getUserId } from '../services/ProfileService';
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
@@ -98,7 +99,6 @@ const LoginPage = () => {
           username: username,
           password: password,
         });
-        console.log(response);
         if (response) {
           setTimeout(() => {
             setState({
@@ -115,8 +115,8 @@ const LoginPage = () => {
             ? localStorage.setItem('refreshToken', refreshToken)
             : localStorage.removeItem('refreshToken');
 
-          // const userResponse = await getUserId();
-          // localStorage.setItem('userId', userResponse?.userId);
+          const userResponse = await getUserId();
+          localStorage.setItem('userId', userResponse?.userId);
         }
         setLoading(false);
         router.push('/Dashboard');
@@ -138,6 +138,7 @@ const LoginPage = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setLanguage(event.target.value);
     i18n.changeLanguage(event.target.value);
+    localStorage.setItem('preferredLanguage', event.target.value);
   };
 
   const handleClick = (newState: SnackbarOrigin) => () => {
@@ -272,7 +273,11 @@ const LoginPage = () => {
             </Box>
 
             <Box marginTop={'-1rem'} marginLeft={'0.5rem'}>
-              <Link sx={{ color: 'blue' }} href="#" underline="none">
+              <Link
+                sx={{ color: 'blue' }}
+                href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=R-3zEZbbbyM"
+                underline="none"
+              >
                 {t('LOGIN_PAGE.FORGOT_PASSWORD')}
               </Link>
             </Box>
