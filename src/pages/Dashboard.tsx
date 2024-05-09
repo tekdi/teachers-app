@@ -47,7 +47,6 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
-import { text } from 'stream/consumers';
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface State extends SnackbarOrigin {
@@ -205,7 +204,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 };
                 const response2 =
                   await attendanceStatusList(attendanceStatusData);
-                console.log('res22222222', response2);
+                
                 if (response?.data?.length === 0) {
                   setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
                 } else {
