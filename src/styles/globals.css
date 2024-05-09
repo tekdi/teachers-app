@@ -15,6 +15,27 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
-.word-break{
+
+.drawer-select div div {
+  height: 32px !important;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  /* border: 1px solid #1f1b13 !important; */
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.word-break {
   word-break: break-all;
+}
+
+.fs-14 {
+  font-size: 14px;
+}
+.fw-500 {
+  font-weight: 500;
+}
+.fw-600 {
+  font-weight: 600;
 }

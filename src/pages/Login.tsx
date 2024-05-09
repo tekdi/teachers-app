@@ -1,4 +1,3 @@
-import React, { useEffect, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -8,24 +7,27 @@ import {
   InputLabel,
   OutlinedInput,
 } from '@mui/material';
-import Image from 'next/image';
-import appLogo2 from '../../public/appLogo.png';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-// import { useLocation } from 'react-router-dom';
-import { useRouter } from 'next/router';
-import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
-import { login } from '../services/LoginService';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect, useMemo } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { useTheme } from '@mui/material/styles';
-import MenuItem from '@mui/material/MenuItem';
-import config from '../../config.json';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+
+import Checkbox from '@mui/material/Checkbox';
+import CloseIcon from '@mui/icons-material/Close';
+import Image from 'next/image';
+import Link from '@mui/material/Link';
 // import { getUserId } from '../services/ProfileService';
 import Loader from '../components/Loader';
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
-import Link from '@mui/material/Link';
-import Checkbox from '@mui/material/Checkbox';
+import MenuItem from '@mui/material/MenuItem';
+import appLogo2 from '../../public/appLogo.png';
+import config from '../../config.json';
+import { login } from '../services/LoginService';
+// import { useLocation } from 'react-router-dom';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
+
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }

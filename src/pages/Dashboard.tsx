@@ -1,6 +1,9 @@
 'use client';
-import React, { useEffect } from 'react';
-import Header from '../components/Header';
+
+import {
+  AttendanceParams,
+  TeacherAttendanceByDateParams,
+} from '../utils/Interfaces';
 import {
   Box,
   Button,
@@ -11,35 +14,35 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import Divider from '@mui/material/Divider';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect } from 'react';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import { bulkAttendance, markAttendance } from '../services/AttendanceService';
+import { formatDate, getMonthName, getTodayDate } from '../utils/Helper';
+
+import { ATTENDANCE_ENUM } from '../utils/Helper';
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
-import TodayIcon from '@mui/icons-material/Today';
-import { useRouter } from 'next/navigation';
-import Backdrop from '@mui/material/Backdrop';
-import Modal from '@mui/material/Modal';
-import Fade from '@mui/material/Fade';
-import CloseIcon from '@mui/icons-material/Close';
 import AttendanceStatusListView from '../components/AttendanceStatusListView';
-import { useTheme } from '@mui/material/styles';
+import Backdrop from '@mui/material/Backdrop';
+import CloseIcon from '@mui/icons-material/Close';
+import Divider from '@mui/material/Divider';
+import ExtraSessionsCard from '@/components/ExtraSessionsCard';
+import Fade from '@mui/material/Fade';
+import Header from '../components/Header';
+import Link from 'next/link';
+import Loader from '../components/Loader';
 import MarkAttendance from '../components/MarkAttendance';
-import { markAttendance, bulkAttendance } from '../services/AttendanceService';
-import {
-  AttendanceParams,
-  TeacherAttendanceByDateParams,
-} from '../utils/Interfaces';
+import Modal from '@mui/material/Modal';
+import OverviewCard from '@/components/OverviewCard';
+import TimeTableCard from '@/components/TimeTableCard';
+import TodayIcon from '@mui/icons-material/Today';
+import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
-import { getTodayDate, formatDate, getMonthName } from '../utils/Helper';
-import Loader from '../components/Loader';
 import { getTeacherAttendanceByDate } from '../services/AttendanceService';
-import { ATTENDANCE_ENUM } from '../utils/Helper';
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
-import Link from 'next/link';
-import OverviewCard from '@/components/OverviewCard';
-import ExtraSessionsCard from '@/components/ExtraSessionsCard';
-import TimeTableCard from '@/components/TimeTableCard';
-import WeekDays from '@/components/WeekDays';
+import { useRouter } from 'next/navigation';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
+
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface State extends SnackbarOrigin {
