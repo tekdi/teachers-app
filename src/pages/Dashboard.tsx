@@ -420,7 +420,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, [classId, handleSaveHasRun]);
 
   const handleUserTypeChange = async (event: SelectChangeEvent) => {
-  
     setUserType(event.target.value as string);
     setHandleSaveHasRun(!handleSaveHasRun);
   };
@@ -591,19 +590,20 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const todayDate = new Date().toISOString().split('T')[0];
   console.log(percentageAttendance);
-  let currentAttendance = percentageAttendance?.[todayDate];
+  let currentAttendance;
+  currentAttendance = percentageAttendance?.[todayDate];
 
-  let selectedAttendance;
-  if (percentageAttendance?.[selectedDate]) {
-    currentAttendance = percentageAttendance?.[selectedDate];
-  } else {
-    currentAttendance = 'Not Marked';
+  if (selectedDate) {
+    if (percentageAttendance?.[selectedDate]) {
+      currentAttendance = percentageAttendance?.[selectedDate];
+    } else {
+      currentAttendance = 'Not Marked';
+    }
   }
   console.log(currentAttendance);
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
 
-  // Determine the color based on presentPercentage value
-  let pathColor; // Default color (green)
+  let pathColor;
   if (!isNaN(presentPercentage)) {
     if (presentPercentage < 25) {
       pathColor = '#BA1A1A';

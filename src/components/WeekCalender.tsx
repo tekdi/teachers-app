@@ -18,6 +18,7 @@ const Calendar = ({ showDetailsHandle, data }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showCircularProgress, setShowCircularProgress] = useState(false);
 
   const changeMonthHandle = (btnType) => {
     if (btnType === 'prev') {
@@ -84,27 +85,29 @@ const Calendar = ({ showDetailsHandle, data }) => {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
         const cloneDay = day;
-        console.log('cloneDay', cloneDay);
+        // console.log('cloneDay', cloneDay);
         let percentage = 0;
         let pathColor = 'gray';
-        let textColor = 'black';
 
         if (data !== null) {
           const dayData = data[format(cloneDay, 'yyyy-MM-dd')] || {};
-          console.log('dayData', dayData);
-          const presentPercentage =
-            parseFloat(dayData.present_percentage) * 100 || 0;
+          // console.log('dayData', dayData);
+          const presentPercentage = parseFloat(dayData.present_percentage) || 0;
           percentage = presentPercentage;
           if (presentPercentage < 25) {
             pathColor = '#BA1A1A';
-            textColor = '#BA1A1A';
           } else if (presentPercentage < 50) {
             pathColor = '#987100';
-            textColor = '#987100';
           } else {
             pathColor = '#06A816';
-            textColor = '#06A816';
           }
+          // let dayDataValuesExist = Object.values(dayData).some(
+          //   (value) => value !== null && value !== undefined && value !== ''
+          // );
+          // console.log(dayDataValuesExist);
+          // dayDataValuesExist
+          //   ? setShowCircularProgress(true)
+          //   : setShowCircularProgress(false);
         }
 
         days.push(
@@ -135,6 +138,7 @@ const Calendar = ({ showDetailsHandle, data }) => {
                 alignItems={'center'}
                 justifyContent={'center'}
               >
+                {/* {showCircularProgress && ( */}
                 <Box
                   width={'25px'}
                   height={'2rem'}
@@ -144,13 +148,14 @@ const Calendar = ({ showDetailsHandle, data }) => {
                   <CircularProgressbar
                     value={percentage}
                     styles={buildStyles({
-                      textColor: textColor,
+                      textColor: pathColor,
                       pathColor: pathColor,
                       trailColor: '#E6E6E6',
                     })}
                     strokeWidth={15}
                   />
                 </Box>
+                {/* )} */}
               </Box>
             </div>
           </Box>
