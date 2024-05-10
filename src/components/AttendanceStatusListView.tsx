@@ -1,21 +1,21 @@
+import { Box, Typography } from '@mui/material';
+
+import { ATTENDANCE_ENUM } from '../utils/Helper';
+import { AttendanceStatusListViewProps } from '../utils/Interfaces';
+import CancelIcon from '@mui/icons-material/Cancel'; //absent
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'; //present
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import { ATTENDANCE_ENUM } from '../utils/Helper';
-
-import { Box, Typography } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'; //present
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import CancelIcon from '@mui/icons-material/Cancel'; //absent
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { AttendanceStatusListViewProps } from '../utils/Interfaces';
 
 const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   userData,
   isEdit = false,
   isBulkAction = false,
   handleBulkAction = () => {},
-  bulkAttendanceStatus = ''
+  bulkAttendanceStatus = '',
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -24,14 +24,19 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
     display: 'flex',
     height: '56px',
     // width: '100%',
-    borderBottom: `0.5px solid ${theme.palette.warning[400]}`,
+    // borderBottom: `0.5px solid ${theme.palette.warning[400]}`,
     padding: '8px',
     alignItems: 'center',
     borderRadius: isBulkAction ? '8px' : 0,
-    backgroundColor: isBulkAction ? theme.palette.warning[800] : 'none'
+    marginBottom: '12px',
+    backgroundColor: isBulkAction ? theme.palette.warning[800] : 'none',
   };
 
-  const handleClickAction = (isBulkAction: boolean, selectedAction: string, id?: string) => {
+  const handleClickAction = (
+    isBulkAction: boolean,
+    selectedAction: string,
+    id?: string
+  ) => {
     if (isEdit) {
       handleBulkAction(isBulkAction, selectedAction, id);
     }
@@ -54,12 +59,18 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           )
         }
       >
-        {[userData?.attendance, bulkAttendanceStatus].includes(ATTENDANCE_ENUM.PRESENT) ? (
+        {[userData?.attendance, bulkAttendanceStatus].includes(
+          ATTENDANCE_ENUM.PRESENT
+        ) ? (
           <CheckCircleIcon />
         ) : (
           <CheckCircleOutlineIcon />
         )}
-        <Typography variant="h6" marginTop={1} sx={{ color: () => theme.palette.warning[400] }}>
+        <Typography
+          variant="h6"
+          marginTop={1}
+          sx={{ color: () => theme.palette.warning[400] }}
+        >
           {t('ATTENDANCE.PRESENT')}
         </Typography>
       </Box>
@@ -76,12 +87,18 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           )
         }
       >
-        {[userData?.attendance, bulkAttendanceStatus].includes(ATTENDANCE_ENUM.ABSENT) ? (
+        {[userData?.attendance, bulkAttendanceStatus].includes(
+          ATTENDANCE_ENUM.ABSENT
+        ) ? (
           <CancelIcon />
         ) : (
           <HighlightOffIcon />
         )}
-        <Typography variant="h6" marginTop={1} sx={{ color: () => theme.palette.warning[400] }}>
+        <Typography
+          variant="h6"
+          marginTop={1}
+          sx={{ color: () => theme.palette.warning[400] }}
+        >
           {t('ATTENDANCE.ABSENT')}
         </Typography>
       </Box>

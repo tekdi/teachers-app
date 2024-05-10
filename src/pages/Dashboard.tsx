@@ -821,6 +821,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 sx={{
                   ...modalContainer,
                   borderColor: theme.palette.warning['A400'],
+                  padding: '15px 10px 0 10px',
                 }}
                 borderRadius={'1rem'}
                 height={'80%'}
@@ -832,11 +833,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         variant="h2"
                         component="h2"
                         marginBottom={'0px'}
-                        fontWeight={'bold'}
+                        fontWeight={'500'}
+                        fontSize={'16px'}
                       >
                         {t('COMMON.MARK_STUDENT_ATTENDANCE')}
                       </Typography>
-                      <Typography variant="h2" component="h2">
+                      <Typography
+                        variant="h2"
+                        sx={{ paddingBottom: '10px' }}
+                        component="h2"
+                      >
                         {formatDate(currentDate)}
                       </Typography>
                     </Box>
@@ -844,7 +850,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       <CloseIcon sx={{ cursor: 'pointer' }} />
                     </Box>
                   </Box>
-                  <Divider sx={{ borderBottomWidth: '0.15rem' }} />
+                  <Box sx={{ height: '1px', background: '#D0C5B4' }}></Box>
                   {loading && (
                     <Loader
                       showBackdrop={true}
@@ -852,13 +858,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     />
                   )}
 
-                  <Typography>
+                  <Typography sx={{ marginTop: '10px', fontSize: '12px' }}>
                     {t('ATTENDANCE.TOTAL_STUDENTS', {
                       count: numberOfCohortMembers,
                     })}
                   </Typography>
                   {cohortMemberList && cohortMemberList?.length != 0 ? (
-                    <Box height={'58%'} sx={{ overflowY: 'scroll' }}>
+                    <Box
+                      height={'58%'}
+                      sx={{ overflowY: 'scroll', marginTop: '10px' }}
+                    >
                       <Box>
                         <AttendanceStatusListView
                           isEdit={true}
@@ -887,12 +896,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       </Box>
                       <Box
                         position={'absolute'}
-                        bottom="30px"
+                        bottom="10px"
                         display={'flex'}
                         gap={'20px'}
                         flexDirection={'row'}
                         justifyContent={'space-evenly'}
                         marginBottom={0}
+                        sx={{ background: '#fff', padding: '15px 0 0 0' }}
                       >
                         <Button
                           variant="outlined"
@@ -1006,8 +1016,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
           <OverviewCard label="My Overall Attendance" value="85%" />
         )}
       </Box>
-      <Box>
-        <Typography textAlign={'left'} fontSize={'0.8rem'} m={'1rem'}>
+      <Box sx={{ background: '#fff', padding: '1rem' }}>
+        <Typography textAlign={'left'} fontSize={'0.8rem'}>
           {t('DASHBOARD.MY_TIMETABLE')}
         </Typography>
         <WeekDays useAbbreviation={false} />

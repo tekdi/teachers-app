@@ -153,7 +153,6 @@ const customTheme = createTheme({
       fontWeight: 400,
       lineHeight: '24px',
       letterSpacing: '0.5px',
-      marginBottom: '1rem',
     },
     body2: {
       fontSize: '14px',
