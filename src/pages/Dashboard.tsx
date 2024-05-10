@@ -9,6 +9,7 @@ import {
   Box,
   Button,
   FormControl,
+  Grid,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -851,11 +852,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
         </Box>
         {userType == 'Students' ? (
           <Box display={'flex'} className="card_overview">
-            <OverviewCard label="Centre Attendance" value="71%" />
-            <OverviewCard
-              label="Low Attendance Students"
-              value="Bharat Kumar, Ankita Kulkarni, +3 more"
-            />
+            <Grid container spacing={0}>
+              <Grid item xs={5}>
+                <OverviewCard label="Centre Attendance" value="71%" />
+              </Grid>
+              <Grid item xs={7}>
+                <OverviewCard
+                  label="Low Attendance Students"
+                  value="Bharat Kumar, Ankita Kulkarni, +3 more"
+                />
+              </Grid>
+            </Grid>
           </Box>
         ) : (
           <OverviewCard label="My Overall Attendance" value="85%" />

@@ -55,7 +55,14 @@ body {
 }
 .card_overview div {
   /* background: blue; */
+  height: unset;
+  font-size: 11px;
 }
+.card_overview div div h2 {
+  font-size: 12px;
+  line-height: 16px;
+}
+
 .linerGradient {
   background: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%);
 }
