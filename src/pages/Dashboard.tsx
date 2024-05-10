@@ -491,7 +491,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   return (
-    <Box minHeight="100vh">
+    <Box minHeight="100vh" className="linerGradient">
       <Header />
       <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
         {t('DASHBOARD.DASHBOARD')}
@@ -850,7 +850,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           )}
         </Box>
         {userType == 'Students' ? (
-          <Box display={'flex'}>
+          <Box display={'flex'} className="card_overview">
             <OverviewCard label="Centre Attendance" value="71%" />
             <OverviewCard
               label="Low Attendance Students"

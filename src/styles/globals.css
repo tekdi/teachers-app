@@ -53,3 +53,9 @@ body {
 .text-decoration {
   text-decoration: none;
 }
+.card_overview div {
+  /* background: blue; */
+}
+.linerGradient {
+  background: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%);
+}
