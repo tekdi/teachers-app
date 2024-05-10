@@ -30,13 +30,13 @@ import prathamProfile from '../assets/images/prathamProfile.png';
 import imageOne from '../assets/images/imageOne.jpg';
 import Header from '@/components/Header';
 import ApartmentIcon from '@mui/icons-material/Apartment';
-import { StaticImageData } from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import { getUser, getUserDetails } from '@/services/ProfileService';
 import { Label } from '@mui/icons-material';
 const MyProfile = () => {
   // Assuming imageOne is of type StaticImageData
   const imageUrl: string = imageOne.src;
-  const prathamProfileUrl: String = prathamProfile.src;
+  const prathamProfileUrl: string = prathamProfile.src;
   interface CustomField {
     fieldId: string;
     label: string;
@@ -532,11 +532,11 @@ const MyProfile = () => {
                 display="flex"
                 flexDirection="column"
               >
-                <img
+                <Image
                   src={prathamProfileUrl}
                   alt="user"
-                  height={'100px'}
-                  width={'100px'}
+                  height={100}
+                  width={100}
                   style={{ marginLeft: '35%' }}
                 />
                 {/* <img
