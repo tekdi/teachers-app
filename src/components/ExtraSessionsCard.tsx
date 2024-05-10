@@ -5,7 +5,7 @@ import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import { useTranslation } from 'react-i18next';
 import { truncateURL } from '@/utils/Helper';
 import { ExtraSessionsCardProps } from '@/utils/Interfaces';
-
+import { useMediaQuery } from '@mui/material';
 const ExtraSessionsCard: React.FC<ExtraSessionsCardProps> = ({
   subject,
   instructor,
@@ -15,6 +15,8 @@ const ExtraSessionsCard: React.FC<ExtraSessionsCardProps> = ({
   onCopyClick,
 }) => {
   const { t } = useTranslation();
+
+  const isMobile = useMediaQuery('(max-width:600px)');
 
   return (
     <Box>
@@ -62,7 +64,7 @@ const ExtraSessionsCard: React.FC<ExtraSessionsCardProps> = ({
             display={'flex'}
             justifyContent={'space-between'}
           >
-            <Typography>{truncateURL(meetingURL, 30)}</Typography>
+            <Typography>{truncateURL(meetingURL, 30, isMobile)}</Typography>
             {onCopyClick && (
               <ContentCopyRoundedIcon
                 onClick={onCopyClick}
