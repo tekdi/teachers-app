@@ -58,7 +58,7 @@ export interface cohortListParam {
 }
 
 export interface cohortMemberList {
-  limit: string;
+  limit: number;
   page: number;
   filters: {
     cohortId: string;
@@ -140,7 +140,7 @@ export interface AttendanceStatusListProps {
   limit: number;
   page: number;
   filters: {
-    contextId: string;
-    scope: string;
+    fromDate: string;
+    toDate: string;
   };
 }
