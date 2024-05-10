@@ -43,13 +43,19 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   };
   return (
     <Box sx={boxStyling}>
-      <Typography variant="body1" marginRight="auto" marginY="auto">
+      <Typography
+        variant="body1"
+        marginRight="auto"
+        marginY="auto"
+        sx={{ color: theme.palette.warning['300'] }}
+      >
         {isBulkAction ? t('ATTENDANCE.MARK_ALL') : userData?.name}
       </Typography>
       <Box
         display="flex"
         flexDirection="column"
         alignItems="center"
+        className="icon_holder"
         p={2}
         onClick={() =>
           handleClickAction(
@@ -62,9 +68,11 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
         {[userData?.attendance, bulkAttendanceStatus].includes(
           ATTENDANCE_ENUM.PRESENT
         ) ? (
-          <CheckCircleIcon />
+          <CheckCircleIcon sx={{ color: () => theme.palette.warning[400] }} />
         ) : (
-          <CheckCircleOutlineIcon />
+          <CheckCircleOutlineIcon
+            sx={{ color: () => theme.palette.warning[400] }}
+          />
         )}
         <Typography
           variant="h6"
@@ -90,7 +98,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
         {[userData?.attendance, bulkAttendanceStatus].includes(
           ATTENDANCE_ENUM.ABSENT
         ) ? (
-          <CancelIcon />
+          <CancelIcon sx={{ color: () => theme.palette.warning[400] }} />
         ) : (
           <HighlightOffIcon />
         )}
