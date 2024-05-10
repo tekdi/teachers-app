@@ -525,6 +525,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           // const resp = response?.data;
           // console.log(`data`, data);
           setShowUpdateButton(true);
+          handleModalToggle()
           setLoading(false);
           setHandleSaveHasRun(true);
         } catch (error) {
