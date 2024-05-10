@@ -100,22 +100,6 @@ export interface UserData {
   customFields: CustomField[];
 }
 
-interface CustomField {
-  label: string;
-  value: string;
-}
-export interface UserData {
-  id: number;
-  name: string;
-  role: string;
-  district: string;
-  state: string;
-  email: string;
-  dob?: string;
-  mobile?: string;
-  customFields: CustomField[];
-}
-
 export interface AttendanceReports {
   contextId: string;
   userId: string;
