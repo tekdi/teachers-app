@@ -1,5 +1,6 @@
-import React from 'react';
 import { Box, Card, CardContent, Typography } from '@mui/material';
+
+import React from 'react';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 
@@ -8,12 +9,11 @@ interface WeekDaysProps {
 }
 
 const CardStyled = styled(Card)(({ theme }) => ({
-  width: '60px',
-  height: '60px',
   margin: theme.spacing(1),
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+  gap: '15px',
 }));
 
 const WeekDays: React.FC<WeekDaysProps> = ({ useAbbreviation }) => {
@@ -27,7 +27,7 @@ const WeekDays: React.FC<WeekDaysProps> = ({ useAbbreviation }) => {
   const currentDayIndex = currentDate.getDay();
 
   return (
-    <Box display="flex" justifyContent="center" overflow="auto">
+    <Box display="flex" justifyContent="flex-start" overflow="auto">
       {days.map((day, index) => (
         <CardStyled
           key={index}
@@ -38,7 +38,10 @@ const WeekDays: React.FC<WeekDaysProps> = ({ useAbbreviation }) => {
                 : 'inherit',
           }}
         >
-          <Box className="card" marginTop={'1.5rem'}>
+          <Box
+            className="card flex-center"
+            sx={{ width: '55px', height: '55px' }}
+          >
             <CardContent align-item="center">
               <Typography variant="body1">{day}</Typography>
             </CardContent>
