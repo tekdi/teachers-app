@@ -588,7 +588,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   console.log(percentageAttendance);
   const currentAttendance = percentageAttendance?.[todayDate];
   // let currentPercentAttendance = 'N/A';
-  const presentPercentage = parseFloat(currentAttendance.present_percentage);
+  const presentPercentage = parseFloat(currentAttendance?.present_percentage);
 
   // Determine the color based on presentPercentage value
   let pathColor; // Default color (green)
