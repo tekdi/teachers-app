@@ -174,7 +174,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       try {
         if (classId) {
           //userId && parentCohortId
-          let limit = '100';
+          let limit = 100;
           let page = 0;
           let filters = { cohortId: classId }; //Hard coded for testing replace it with classId
           const response = await getMyCohortMemberList({
@@ -185,30 +185,94 @@ const Dashboard: React.FC<DashboardProps> = () => {
           const resp = response?.data?.userDetails;
           console.log(`classlist`, resp);
 
-          if (resp[0]?.userDetails) {
-            const nameUserIdArray = resp[0].userDetails.map(
-              ({ userId, name }: any) => ({
-                userId,
-                name,
-              })
-            );
-            if (nameUserIdArray && contextId) {
+          if (resp) {
+            const nameUserIdArray = resp?.map((entry: any) => ({
+              userId: entry.userId,
+              name: entry.name,
+            }));
+            console.log('name..........', nameUserIdArray);
+            if (nameUserIdArray && currentDate) {
               const userAttendanceStatusList = async () => {
                 const attendanceStatusData: AttendanceStatusListProps = {
-                  limit: 150,
-                  page: 10,
+                  limit: 200,
+                  page: 1,
                   filters: {
-                    contextId: contextId,
-                    scope: 'student',
+                    fromDate: currentDate,
+                    toDate: currentDate,
                   },
                 };
-                const response2 =
-                  await attendanceStatusList(attendanceStatusData);
+                const res = await attendanceStatusList(attendanceStatusData);
+                const response = res?.data?.attendanceList;
+                console.log('attendanceStatusList', response);
+                if (nameUserIdArray && response) {
+                  const getUserAttendanceStatus = (
+                    nameUserIdArray: any[],
+                    response: any[]
+                  ) => {
+                    const userAttendanceArray: {
+                      userId: any;
+                      attendance: any;
+                    }[] = [];
 
-                if (response?.data?.length === 0) {
-                  setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
-                } else {
-                  setAttendanceStatus(response2?.data?.[0]?.attendance);
+                    nameUserIdArray.forEach((user) => {
+                      const userId = user.userId;
+                      const attendance = response.find(
+                        (status) => status.userId === userId
+                      );
+                      if (attendance) {
+                        userAttendanceArray.push({
+                          userId,
+                          attendance: attendance.attendance,
+                        });
+                      }
+                    });
+
+                    return userAttendanceArray;
+                  };
+                  const userAttendanceArray = getUserAttendanceStatus(
+                    nameUserIdArray,
+                    response
+                  );
+                  console.log('userAttendanceArray', userAttendanceArray);
+                  if (nameUserIdArray && userAttendanceArray) {
+                    const mergeArrays = (
+                      nameUserIdArray: { userId: string; name: string }[],
+                      userAttendanceArray: {
+                        userId: string;
+                        attendance: string;
+                      }[]
+                    ): {
+                      userId: string;
+                      name: string;
+                      attendance: string;
+                    }[] => {
+                      const newArray: {
+                        userId: string;
+                        name: string;
+                        attendance: string;
+                      }[] = [];
+
+                      // Iterate over nameUserIdArray
+                      nameUserIdArray.forEach((user) => {
+                        const userId = user.userId;
+                        // Find corresponding entry in userAttendanceArray
+                        const attendanceEntry = userAttendanceArray.find(
+                          (entry) => entry.userId === userId
+                        );
+                        if (attendanceEntry) {
+                          // If found, merge properties and push to newArray
+                          newArray.push({
+                            userId,
+                            name: user.name,
+                            attendance: attendanceEntry.attendance,
+                          });
+                        }
+                      });
+                      // setCohortMemberList(newArray); //Getting issue updating attendance regardless of cohort id for mark all
+                      return newArray;
+                    };
+                    mergeArrays(nameUserIdArray, userAttendanceArray);
+                  }
                 }
 
                 //Add logic to merge response2 and nameUserIdArray

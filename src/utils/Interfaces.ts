@@ -58,7 +58,7 @@ export interface cohortListParam {
 }
 
 export interface cohortMemberList {
-  limit: string;
+  limit: number;
   page: number;
   filters: {
     cohortId: string;
@@ -82,22 +82,6 @@ export interface TeacherAttendanceByDateParams {
     userId: string;
     contextId: string;
   };
-}
-
-interface CustomField {
-  label: string;
-  value: string;
-}
-export interface UserData {
-  id: number;
-  name: string;
-  role: string;
-  district: string;
-  state: string;
-  email: string;
-  dob?: string;
-  mobile?: string;
-  customFields: CustomField[];
 }
 
 interface CustomField {
@@ -140,7 +124,7 @@ export interface AttendanceStatusListProps {
   limit: number;
   page: number;
   filters: {
-    contextId: string;
-    scope: string;
+    fromDate: string;
+    toDate: string;
   };
 }

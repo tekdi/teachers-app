@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
 
 let lng = 'en';
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && window.localStorage) {
   lng = localStorage.getItem('preferredLanguage') || 'en';
 }
 const options = {
