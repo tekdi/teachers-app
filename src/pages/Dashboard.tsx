@@ -17,6 +17,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import React, { useEffect } from 'react';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import {
@@ -56,7 +57,7 @@ import { getTeacherAttendanceByDate } from '../services/AttendanceService';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface State extends SnackbarOrigin {
@@ -835,19 +836,29 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         marginBottom={'0px'}
                         fontWeight={'500'}
                         fontSize={'16px'}
+                        sx={{ color: theme.palette.warning['A200'] }}
                       >
                         {t('COMMON.MARK_STUDENT_ATTENDANCE')}
                       </Typography>
                       <Typography
                         variant="h2"
-                        sx={{ paddingBottom: '10px' }}
+                        sx={{
+                          paddingBottom: '10px',
+                          color: theme.palette.warning['A200'],
+                          fontSize: '14px',
+                        }}
                         component="h2"
                       >
                         {formatDate(currentDate)}
                       </Typography>
                     </Box>
                     <Box onClick={() => handleModalToggle()}>
-                      <CloseIcon sx={{ cursor: 'pointer' }} />
+                      <CloseIcon
+                        sx={{
+                          cursor: 'pointer',
+                          color: theme.palette.warning['A200'],
+                        }}
+                      />
                     </Box>
                   </Box>
                   <Box sx={{ height: '1px', background: '#D0C5B4' }}></Box>
@@ -858,7 +869,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     />
                   )}
 
-                  <Typography sx={{ marginTop: '10px', fontSize: '12px' }}>
+                  <Typography
+                    sx={{
+                      marginTop: '10px',
+                      fontSize: '12px',
+                      color: theme.palette.warning['A200'],
+                    }}
+                  >
                     {t('ATTENDANCE.TOTAL_STUDENTS', {
                       count: numberOfCohortMembers,
                     })}

@@ -312,3 +312,6 @@ main {
 .linerGradient {
   background: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%);
 }
+.icon_holder svg {
+  color: #1e1b16 !important;
+}
