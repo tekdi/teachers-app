@@ -145,8 +145,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   //API call to get center list
   useEffect(() => {
     const fetchCohortList = async () => {
-      // const userId = localStorage.getItem('userId');
-      const userId = '6d58d9c3-863f-484b-a81a-76901e9a6c9e'; //Hard Coded for testing purpose. TODO: replace by dynamic userId
+      const userId = localStorage.getItem('userId');
+      // const userId = '6d58d9c3-863f-484b-a81a-76901e9a6c9e'; //Hard Coded for testing purpose. TODO: replace by dynamic userId
       setLoading(true);
       try {
         if (userId) {
@@ -195,7 +195,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           //userId && parentCohortId
           let limit = 100;
           let page = 0;
-          let filters = { cohortId: classId }; //Hard coded for testing replace it with classId
+          let filters = { cohortId: classId }; 
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -504,7 +504,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   useEffect(() => {
-    let userId = '70861cf2-d00c-475a-a909-d58d0062c880'; //Hard coded for testing purpose: TODO: Remove it later and add dynamic userId
+    let userId = localStorage.getItem('userId'); //Hard coded for testing purpose: TODO: Remove it later and add dynamic userId
     //setContextId('17a82258-8b11-4c71-8b93-b0cac11826e3') // this one is for testing purpose
     const fetchUserDetails = async () => {
       try {
