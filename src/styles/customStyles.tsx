@@ -120,7 +120,6 @@ const customTheme = createTheme({
       fontSize: '16px',
       fontWeight: 500,
       lineHeight: '24px',
-      marginBottom: '0.75rem',
     },
     h3: {
       fontSize: '14px',
@@ -154,7 +153,6 @@ const customTheme = createTheme({
       fontWeight: 400,
       lineHeight: '24px',
       letterSpacing: '0.5px',
-      marginBottom: '1rem',
     },
     body2: {
       fontSize: '14px',

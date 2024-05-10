@@ -56,14 +56,14 @@
     "CLASS": "कक्षा",
     "NOT_MARKED": "नहीं चिह्नित",
     "FUTURE_DATE_CANT_MARK": "भविष्य की तारीख कोई चिह्नित नहीं की जा सकती",
-    "PERCENT_ATTENDANCE": "{{percent_students}}% उपस्थिति",
-    "PRESENT_STUDENTS": "({{present_students}}/{{total_students}} मौजूद हैं)",
+    "PERCENT_ATTENDANCE": " % उपस्थिति",
+    "PRESENT_STUDENTS": "मौजूद हैं",
     "OVERVIEW": "अवलोकन",
     "MORE_DETAILS": "अधिक विवरण",
     "MENU": "मेनू",
     "EXTRA_CLASS": "अतिरिक्त क्लास",
     "CENTER_ATTENDANCE": "केंद्रीय उपस्थिति",
-    "MY_TEACHING_CENTERS":"मेरे शिक्षण केंद्र",
+    "MY_TEACHING_CENTERS": "मेरे शिक्षण केंद्र",
     "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्र"
   },
   "ATTENDANCE": {

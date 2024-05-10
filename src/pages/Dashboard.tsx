@@ -2,14 +2,15 @@
 
 import {
   AttendanceParams,
-  AttendanceStatusListProps,
   AttendancePercentageProps,
+  AttendanceStatusListProps,
   TeacherAttendanceByDateParams,
 } from '../utils/Interfaces';
 import {
   Box,
   Button,
   FormControl,
+  Grid,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -47,6 +48,7 @@ import Modal from '@mui/material/Modal';
 import OverviewCard from '@/components/OverviewCard';
 import TimeTableCard from '@/components/TimeTableCard';
 import TodayIcon from '@mui/icons-material/Today';
+import WeekCalender from '@/components/WeekCalender';
 import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
@@ -54,8 +56,7 @@ import { getTeacherAttendanceByDate } from '../services/AttendanceService';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import WeekCalender from '@/components/WeekCalender';
-
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface State extends SnackbarOrigin {
@@ -97,6 +98,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState(null);
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
+  const [percentageAttendance, setPercentageAttendance] = React.useState(null);
   const [currentDate, setCurrentDate] = React.useState(getTodayDate);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -144,8 +146,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   //API call to get center list
   useEffect(() => {
     const fetchCohortList = async () => {
-      // const userId = localStorage.getItem('userId');
-      const userId = '6d58d9c3-863f-484b-a81a-76901e9a6c9e'; //Hard Coded for testing purpose. TODO: replace by dynamic userId
+      const userId = localStorage.getItem('userId');
+      // const userId = '6d58d9c3-863f-484b-a81a-76901e9a6c9e'; //Hard Coded for testing purpose. TODO: replace by dynamic userId
       setLoading(true);
       try {
         if (userId) {
@@ -194,7 +196,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           //userId && parentCohortId
           let limit = 100;
           let page = 0;
-          let filters = { cohortId: classId }; //Hard coded for testing replace it with classId
+          let filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -377,6 +379,35 @@ const Dashboard: React.FC<DashboardProps> = () => {
         setTimeout(() => {
           setPercentageAttendanceData(response?.data?.result?.attendanceDate);
         });
+
+        const attendanceDates = response?.data?.result?.attendanceDate;
+
+        const formattedAttendanceData = {};
+
+        // Loop through each attendance date
+        Object.keys(attendanceDates).forEach((date) => {
+          const attendance = attendanceDates[date];
+          const present = attendance.present || 0;
+          const absent = attendance.absent || 0;
+          const totalStudents =
+            attendance.present_percentage === '100.00'
+              ? present
+              : present + absent;
+
+          formattedAttendanceData[date] = {
+            date: date,
+            present_students: present,
+            total_students: totalStudents,
+            present_percentage:
+              parseFloat(attendance.present_percentage) ||
+              100 - parseFloat(attendance.absent_percentage),
+            absent_percentage:
+              parseFloat(attendance.absent_percentage) ||
+              100 - parseFloat(attendance.present_percentage),
+          };
+          console.log('formattedAttendanceData', formattedAttendanceData);
+          setPercentageAttendance(formattedAttendanceData);
+        });
       } catch (error) {
         console.log(error);
       }
@@ -503,7 +534,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   useEffect(() => {
-    let userId = '70861cf2-d00c-475a-a909-d58d0062c880'; //Hard coded for testing purpose: TODO: Remove it later and add dynamic userId
+    let userId = localStorage.getItem('userId'); //Hard coded for testing purpose: TODO: Remove it later and add dynamic userId
     //setContextId('17a82258-8b11-4c71-8b93-b0cac11826e3') // this one is for testing purpose
     const fetchUserDetails = async () => {
       try {
@@ -553,10 +584,27 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setState({ ...state, openModal: false });
   };
 
+  const todayDate = new Date().toISOString().split('T')[0];
+  console.log(percentageAttendance);
+  const currentAttendance = percentageAttendance?.[todayDate];
+  // let currentPercentAttendance = 'N/A';
+  const presentPercentage = parseFloat(currentAttendance?.present_percentage);
+
+  // Determine the color based on presentPercentage value
+  let pathColor; // Default color (green)
+  if (!isNaN(presentPercentage)) {
+    if (presentPercentage < 25) {
+      pathColor = '#BA1A1A'; // Less than 25% - Red color
+    } else if (presentPercentage < 50) {
+      pathColor = '#987100'; // Less than 50% - Purple color
+    } else {
+      pathColor = '#06A816'; // Less than 50% - Purple color
+    }
+  }
   return (
-    <Box minHeight="100vh">
+    <Box minHeight="100vh" className="linerGradient">
       <Header />
-      <Typography textAlign={'left'} fontSize={'1.5rem'} m={'1rem'}>
+      <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
         {t('DASHBOARD.DASHBOARD')}
       </Typography>
       {loading && (
@@ -567,12 +615,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
       >
         <Box display={'flex'} flexDirection={'column'} padding={'1rem'}>
           <Box display={'flex'} justifyContent={'space-between'}>
-            <Typography variant="h2">
+            <Typography variant="h2" sx={{ fontSize: '14px' }}>
               {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
             </Typography>
             <Box
+              className="calenderTitle flex-center"
               display={'flex'}
-              sx={{ color: theme.palette.warning['A200'], cursor: 'pointer' }}
+              sx={{
+                cursor: 'pointer',
+                color: theme.palette.secondary.main,
+                gap: '2px',
+              }}
               onClick={viewAttendanceHistory}
             >
               <Typography marginBottom={'0px'}>{getMonthName()}</Typography>
@@ -580,14 +633,24 @@ const Dashboard: React.FC<DashboardProps> = () => {
             </Box>
           </Box>
 
-          <Box sx={{ mt: 2 }}>
-            <Box sx={{ minWidth: 120 }} display={'flex'}>
-              <FormControl sx={{ m: 1, width: '40%' }}>
+          <Box sx={{ mt: 0.6 }}>
+            <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
+              <FormControl
+                className="drawer-select"
+                sx={{ my: 1, width: '40%' }}
+              >
                 <Select
                   value={userType}
                   onChange={handleUserTypeChange}
                   displayEmpty
                   inputProps={{ 'aria-label': 'Without label' }}
+                  className="SelectLanguages fs-14 fw-500"
+                  style={{
+                    borderRadius: '0.5rem',
+                    color: theme.palette.warning['200'],
+                    width: '100%',
+                    marginBottom: '0rem',
+                  }}
                 >
                   {userTypeArray.length !== 0 ? (
                     userTypeArray.map((user) => (
@@ -606,12 +669,22 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 </Select>
               </FormControl>
               {userType == 'student' ? (
-                <FormControl sx={{ m: 1, width: '60%' }}>
+                <FormControl
+                  className="drawer-select"
+                  sx={{ m: 1, width: '60%' }}
+                >
                   <Select
                     value={classId}
                     onChange={handleCohortSelection}
                     displayEmpty
                     inputProps={{ 'aria-label': 'Without label' }}
+                    className="SelectLanguages fs-14 fw-500"
+                    style={{
+                      borderRadius: '0.5rem',
+                      color: theme.palette.warning['200'],
+                      width: '100%',
+                      marginBottom: '0rem',
+                    }}
                   >
                     {cohortsData?.length !== 0 ? (
                       cohortsData?.map((cohort) => (
@@ -641,7 +714,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             borderRadius={'1rem'}
             bgcolor={theme.palette.warning['A200']}
             textAlign={'left'}
-            marginTop={'2rem'}
+            margin={'15px 0 0 0 '}
           >
             <Stack
               direction="row"
@@ -650,24 +723,45 @@ const Dashboard: React.FC<DashboardProps> = () => {
               justifyContent={'space-between'}
             >
               {userType == 'student' ? (
-                <Box>
+                <Box display={'flex'}>
                   {/* <Typography sx = {{color: theme.palette.warning['A400']}}>{t('DASHBOARD.NOT_MARKED')}</Typography> */}
                   {/* <Typography sx = {{color: theme.palette.warning['A400']}} fontSize={'0.8rem'}>{t('DASHBOARD.FUTURE_DATE_CANT_MARK')}</Typography>
                    */}
-                  <Typography
-                    sx={{ color: theme.palette.warning['A400'] }}
-                    variant="h6"
-                    className="word-break"
+                  <Box
+                    width={'25px'}
+                    height={'2rem'}
+                    marginTop={'0.25rem'}
+                    margin={'5px'}
                   >
-                    {t('DASHBOARD.PERCENT_ATTENDANCE')}
-                  </Typography>
-                  <Typography
-                    sx={{ color: theme.palette.warning['A400'] }}
-                    variant="h6"
-                    className="word-break"
-                  >
-                    {t('DASHBOARD.PRESENT_STUDENTS')}
-                  </Typography>
+                    <CircularProgressbar
+                      value={currentAttendance?.present_percentage}
+                      styles={buildStyles({
+                        textColor: pathColor,
+                        pathColor: pathColor,
+                        trailColor: '#E6E6E6',
+                      })}
+                      strokeWidth={15}
+                    />
+                  </Box>
+                  <Box>
+                    <Typography
+                      sx={{ color: theme.palette.warning['A400'] }}
+                      variant="h6"
+                      className="word-break"
+                    >
+                      {currentAttendance?.present_percentage}{' '}
+                      {t('DASHBOARD.PERCENT_ATTENDANCE')}
+                    </Typography>
+                    <Typography
+                      sx={{ color: theme.palette.warning['A400'] }}
+                      variant="h6"
+                      className="word-break"
+                    >
+                      ({percentageAttendance?.[todayDate]?.present_students}/
+                      {percentageAttendance?.[todayDate]?.total_students}){' '}
+                      {t('DASHBOARD.PRESENT_STUDENTS')}
+                    </Typography>
+                  </Box>
                 </Box>
               ) : (
                 <Box>
@@ -727,6 +821,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 sx={{
                   ...modalContainer,
                   borderColor: theme.palette.warning['A400'],
+                  padding: '15px 10px 0 10px',
                 }}
                 borderRadius={'1rem'}
                 height={'80%'}
@@ -738,11 +833,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         variant="h2"
                         component="h2"
                         marginBottom={'0px'}
-                        fontWeight={'bold'}
+                        fontWeight={'500'}
+                        fontSize={'16px'}
                       >
                         {t('COMMON.MARK_STUDENT_ATTENDANCE')}
                       </Typography>
-                      <Typography variant="h2" component="h2">
+                      <Typography
+                        variant="h2"
+                        sx={{ paddingBottom: '10px' }}
+                        component="h2"
+                      >
                         {formatDate(currentDate)}
                       </Typography>
                     </Box>
@@ -750,7 +850,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       <CloseIcon sx={{ cursor: 'pointer' }} />
                     </Box>
                   </Box>
-                  <Divider sx={{ borderBottomWidth: '0.15rem' }} />
+                  <Box sx={{ height: '1px', background: '#D0C5B4' }}></Box>
                   {loading && (
                     <Loader
                       showBackdrop={true}
@@ -758,13 +858,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     />
                   )}
 
-                  <Typography>
+                  <Typography sx={{ marginTop: '10px', fontSize: '12px' }}>
                     {t('ATTENDANCE.TOTAL_STUDENTS', {
                       count: numberOfCohortMembers,
                     })}
                   </Typography>
                   {cohortMemberList && cohortMemberList?.length != 0 ? (
-                    <Box height={'58%'} sx={{ overflowY: 'scroll' }}>
+                    <Box
+                      height={'58%'}
+                      sx={{ overflowY: 'scroll', marginTop: '10px' }}
+                    >
                       <Box>
                         <AttendanceStatusListView
                           isEdit={true}
@@ -793,12 +896,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       </Box>
                       <Box
                         position={'absolute'}
-                        bottom="30px"
+                        bottom="10px"
                         display={'flex'}
                         gap={'20px'}
                         flexDirection={'row'}
                         justifyContent={'space-evenly'}
                         marginBottom={0}
+                        sx={{ background: '#fff', padding: '15px 0 0 0' }}
                       >
                         <Button
                           variant="outlined"
@@ -874,7 +978,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
             padding={'2px'}
           >
             <Box>
-              <Typography variant="h2">{t('DASHBOARD.OVERVIEW')}</Typography>
+              <Typography className="fs-14" variant="h2">
+                {t('DASHBOARD.OVERVIEW')}
+              </Typography>
             </Box>
             <Box
               display={'flex'}
@@ -882,8 +988,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
               alignItems={'center'}
               sx={{ color: theme.palette.secondary.main }}
             >
-              <Link href={'/'}>
-                {t('DASHBOARD.MORE_DETAILS')} <ArrowForwardSharpIcon />
+              <Link className="flex-center fs-14 text-decoration" href={'/'}>
+                {t('DASHBOARD.MORE_DETAILS')}{' '}
+                <ArrowForwardSharpIcon sx={{ height: '18px' }} />
               </Link>
             </Box>
           </Stack>
@@ -891,20 +998,26 @@ const Dashboard: React.FC<DashboardProps> = () => {
             <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
           )}
         </Box>
-        {userType == 'student' ? (
-          <Box display={'flex'}>
-            <OverviewCard label="Centre Attendance" value="71%" />
-            <OverviewCard
-              label="Low Attendance Students"
-              value="Bharat Kumar, Ankita Kulkarni, +3 more"
-            />
+        {userType == 'Students' ? (
+          <Box display={'flex'} className="card_overview">
+            <Grid container spacing={0}>
+              <Grid item xs={5}>
+                <OverviewCard label="Centre Attendance" value="71%" />
+              </Grid>
+              <Grid item xs={7}>
+                <OverviewCard
+                  label="Low Attendance Students"
+                  value="Bharat Kumar, Ankita Kulkarni, +3 more"
+                />
+              </Grid>
+            </Grid>
           </Box>
         ) : (
           <OverviewCard label="My Overall Attendance" value="85%" />
         )}
       </Box>
-      <Box>
-        <Typography textAlign={'left'} fontSize={'0.8rem'} m={'1rem'}>
+      <Box sx={{ background: '#fff', padding: '1rem' }}>
+        <Typography textAlign={'left'} fontSize={'0.8rem'}>
           {t('DASHBOARD.MY_TIMETABLE')}
         </Typography>
         <WeekDays useAbbreviation={false} />
