@@ -57,15 +57,15 @@
     "CLASS": "Class",
     "NOT_MARKED": "Not Marked",
     "FUTURE_DATE_CANT_MARK": "Future date can't be marked",
-    "PERCENT_ATTENDANCE": "{{percent_students}}% Attendance",
-    "PRESENT_STUDENTS": "({{present_students}/{total_students}} present)",
+    "PERCENT_ATTENDANCE": " % Attendance",
+    "PRESENT_STUDENTS": " present",
     "OVERVIEW": "Overview",
     "MORE_DETAILS": "More Details",
     "MENU": "Menu",
     "EXTRA_CLASS": "Extra class",
     "CENTER_ATTENDANCE": "Center Attendance",
     "MY_TIMETABLE": "My TimeTable",
-    "MY_TEACHING_CENTERS":"My Teaching Centers",
+    "MY_TEACHING_CENTERS": "My Teaching Centers",
     "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions"
   },
   "ATTENDANCE": {
