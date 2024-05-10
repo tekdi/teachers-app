@@ -72,14 +72,14 @@ export const getTeacherAttendanceByDate = async ({
 export const attendanceStatusList = async ({
   limit,
   page,
-  filters: { contextId, scope },
+  filters: { fromDate, toDate },
 }: AttendanceStatusListProps): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance/list`;
   try {
     const response = await post(apiUrl, {
       limit,
       page,
-      filters: { contextId, scope },
+      filters: { fromDate, toDate },
     });
     return response?.data;
   } catch (error) {
