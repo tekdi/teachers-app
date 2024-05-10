@@ -129,34 +129,35 @@ const MyProfile = () => {
   };
 
   const fetchUserDetails = async () => {
-    const userId = localStorage.getItem('userId');
-    // const userId = '775f4baa-5593-466e-bb24-582cdf4a2d46';
-    console.log('userId', userId);
-    try {
-      if (userId) {
-        const response = await getUserDetails(userId, true);
-        console.log('userId', response);
-        if (response?.statusCode === 200) {
-          const data = response?.data;
-          if (data) {
-            const userData = data?.userData;
-            setUserData(userData);
-            const customDataFields = userData?.customFields;
-            console.log('customDataFields', customDataFields);
-            if (customDataFields?.length > 0) {
-              setCustomFieldsData(customDataFields);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userId = localStorage.getItem('userId');
+
+      try {
+        if (userId) {
+          const response = await getUserDetails(userId, true);
+          console.log('userId', response);
+          if (response?.statusCode === 200) {
+            const data = response?.data;
+            if (data) {
+              const userData = data?.userData;
+              setUserData(userData);
+              const customDataFields = userData?.customFields;
+              console.log('customDataFields', customDataFields);
+              if (customDataFields?.length > 0) {
+                setCustomFieldsData(customDataFields);
+              }
+            } else {
+              console.log('No data Found');
             }
           } else {
-            console.log('No data Found');
+            console.log('No Response Found');
           }
-        } else {
-          console.log('No Response Found');
-        }
 
-        // console.log(response?.result?.userData?.customFields);
+          // console.log(response?.result?.userData?.customFields);
+        }
+      } catch (error) {
+        console.error('Error fetching  user details:', error);
       }
-    } catch (error) {
-      console.error('Error fetching  user details:', error);
     }
   };
 
@@ -230,8 +231,7 @@ const MyProfile = () => {
               marginBottom: '2px',
             }}
           >
-            {/* {t('PROFILE.MY_PROFILE')} */}
-            My Profile
+            {t('PROFILE.MY_PROFILE')}
           </Typography>
         </Box>
 
@@ -291,8 +291,7 @@ const MyProfile = () => {
           startIcon={<CreateOutlinedIcon />}
           onClick={handleOpen}
         >
-          Edit Profile
-          {/* {t('PROFILE.EDIT_PROFILE')} */}
+          {t('PROFILE.EDIT_PROFILE')}
         </Button>
 
         {/* modal for edit profile */}
