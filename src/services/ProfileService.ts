@@ -34,3 +34,17 @@ export const editEditUser = async (
     throw error;
   }
 };
+
+export const getUserDetails = async (
+  userId: string,
+  fieldValue: boolean
+): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/users/${userId}?fieldvalue=${fieldValue}}`;
+  try {
+    const response = await get(apiUrl);
+    return response?.data;
+  } catch (error) {
+    console.error('error in fetching user details', error);
+    throw error;
+  }
+};
