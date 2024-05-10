@@ -67,22 +67,6 @@ const menuDrawer: React.FC<DrawerProps> = ({
               gap: '30px',
             }}
           >
-            {/* <Box sx={{ flexBasis: '30%' }}>
-              <FormControl className="drawer-select" sx={{ width: '100%' }}>
-                <Select
-                  className="SelectLanguages fs-14 fw-500"
-                  displayEmpty
-                  style={{
-                    borderRadius: '0.5rem',
-                    color: theme.palette.warning['200'],
-                    width: '100%',
-                    marginBottom: '0rem',
-                  }}
-                >
-                  <MenuItem>English</MenuItem>
-                </Select>
-              </FormControl>
-            </Box> */}
             <Box sx={{ flexBasis: '30%' }}>
               <FormControl className="drawer-select" sx={{ width: '100%' }}>
                 <Select

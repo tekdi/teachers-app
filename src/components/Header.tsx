@@ -100,7 +100,7 @@ const Header: React.FC = () => {
   return (
     <>
       <Stack
-        sx={{ minWidth: '100%' }}
+        sx={{ minWidth: '100%', padding: '8px 0' }}
         direction="row"
         justifyContent={'space-between'}
         alignItems={'center'}

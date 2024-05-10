@@ -31,11 +31,25 @@ body {
 }
 
 .fs-14 {
-  font-size: 14px;
+  font-size: 14px !important;
 }
 .fw-500 {
   font-weight: 500;
 }
 .fw-600 {
   font-weight: 600;
+}
+.calenderTitle p {
+  font-size: 14px !important;
+}
+.calenderTitle svg {
+  font-size: 14px !important;
+}
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.text-decoration {
+  text-decoration: none;
 }
