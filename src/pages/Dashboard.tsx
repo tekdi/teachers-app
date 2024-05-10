@@ -2,6 +2,7 @@
 
 import {
   AttendanceParams,
+  AttendancePercentageProps,
   AttendanceStatusListProps,
   TeacherAttendanceByDateParams,
 } from '../utils/Interfaces';
@@ -19,11 +20,17 @@ import {
 import React, { useEffect } from 'react';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import {
+  attendanceInPercentageStatusList,
   attendanceStatusList,
-  getTeacherAttendanceByDate,
+  bulkAttendance,
+  markAttendance,
 } from '../services/AttendanceService';
-import { bulkAttendance, markAttendance } from '../services/AttendanceService';
-import { formatDate, getMonthName, getTodayDate } from '../utils/Helper';
+import {
+  formatDate,
+  getMonthName,
+  getTodayDate,
+  shortDateFormat,
+} from '../utils/Helper';
 
 import { ATTENDANCE_ENUM } from '../utils/Helper';
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
@@ -41,9 +48,11 @@ import Modal from '@mui/material/Modal';
 import OverviewCard from '@/components/OverviewCard';
 import TimeTableCard from '@/components/TimeTableCard';
 import TodayIcon from '@mui/icons-material/Today';
+import WeekCalender from '@/components/WeekCalender';
 import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
+import { getTeacherAttendanceByDate } from '../services/AttendanceService';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -75,7 +84,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   // const [selfAttendanceDetails, setSelfAttendanceDetails] = React.useState(null);
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   const [classId, setClassId] = React.useState('');
-  const [userType, setUserType] = React.useState('Students');
+  const [userType, setUserType] = React.useState('student');
   const [cohortId, setCohortId] = React.useState(null);
   const [openMarkAttendance, setOpenMarkAttendance] = React.useState(false);
   const [openMarkUpdateAttendance, setOpenMarkUpdateAttendance] =
@@ -83,6 +92,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<user>>(
     []
   );
+  const [showDetails, setShowDetails] = React.useState(false);
+  const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
+  const [data, setData] = React.useState(null);
+  const [percentageAttendanceData, setPercentageAttendanceData] =
+    React.useState(null);
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
   const [currentDate, setCurrentDate] = React.useState(getTodayDate);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
@@ -107,7 +121,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const attendanceDate = currentDate;
   let contextId = classId;
   //  const [TeachercontextId, setTeacherContextId] = React.useState("");
-  const userTypeData = ['Students', 'Self'];
+  const userTypeData = {
+    Learners: 'student',
+    // Self: 'self',
+  };
+  const userTypeArray = Object.keys(userTypeData);
   const report = false;
   const offset = 0;
   const theme = useTheme<any>();
@@ -184,7 +202,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
             filters,
           });
           const resp = response?.data?.userDetails;
-          console.log(`classlist`, resp);
 
           if (resp) {
             const nameUserIdArray = resp?.map((entry: any) => ({
@@ -314,6 +331,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   }, [classId]);
 
+  const showDetailsHandle = (dayStr) => {
+    console.log(dayStr);
+    setData(dayStr);
+    setShowDetails(true);
+  };
+
   const handleModalToggle = () => setOpen(!open);
   const handleMarkAttendanceModal = () =>
     setOpenMarkAttendance(!openMarkAttendance);
@@ -324,7 +347,47 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setClassId(event.target.value as string);
   };
 
-  const handleUserTypeChange = (event: SelectChangeEvent) => {
+  useEffect(() => {
+    const getAttendaceData = async () => {
+      try {
+        const currentDate = new Date();
+        const dayOfWeek = currentDate.getDay();
+        const diffToMonday =
+          currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+        const startDate = new Date(currentDate.setDate(diffToMonday));
+        startDate.setHours(0, 0, 0, 0);
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 6);
+        endDate.setHours(23, 59, 59, 999);
+        const fromDateFormatted = shortDateFormat(startDate);
+        const toDateFormatted = shortDateFormat(endDate);
+        const attendanceRequest: AttendancePercentageProps = {
+          limit: 2,
+          page: 1,
+          filters: {
+            contextId: classId,
+            fromDate: fromDateFormatted,
+            toDate: toDateFormatted,
+            scope: userType,
+          },
+          facets: ['attendanceDate'],
+        };
+        const response =
+          await attendanceInPercentageStatusList(attendanceRequest);
+        console.log('response', response?.data?.result?.attendanceDate);
+        setTimeout(() => {
+          setPercentageAttendanceData(response?.data?.result?.attendanceDate);
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAttendaceData();
+  }, [classId, handleSaveHasRun]);
+
+  const handleUserTypeChange = async (event: SelectChangeEvent) => {
+    console.log(event.target.value);
     setUserType(event.target.value as string);
   };
 
@@ -429,6 +492,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           // console.log(`data`, data);
           setShowUpdateButton(true);
           setLoading(false);
+          setHandleSaveHasRun(true);
         } catch (error) {
           console.error('Error fetching  cohort list:', error);
           setLoading(false);
@@ -438,7 +502,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
       markBulkAttendance();
     }
   };
-  console.log('att', attendanceStatus);
 
   useEffect(() => {
     let userId = '70861cf2-d00c-475a-a909-d58d0062c880'; //Hard coded for testing purpose: TODO: Remove it later and add dynamic userId
@@ -542,9 +605,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     marginBottom: '0rem',
                   }}
                 >
-                  {userTypeData?.length !== 0 ? (
-                    userTypeData?.map((user) => (
-                      <MenuItem key={user} value={user}>
+                  {userTypeArray.length !== 0 ? (
+                    userTypeArray.map((user) => (
+                      <MenuItem
+                        key={userTypeData[user]}
+                        value={userTypeData[user]}
+                      >
                         {user}
                       </MenuItem>
                     ))
@@ -555,10 +621,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   )}
                 </Select>
               </FormControl>
-              {userType == 'Students' ? (
+              {userType == 'student' ? (
                 <FormControl
                   className="drawer-select"
-                  sx={{ my: 1, width: '60%' }}
+                  sx={{ m: 1, width: '60%' }}
                 >
                   <Select
                     value={classId}
@@ -589,6 +655,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
               ) : null}
             </Box>
           </Box>
+          <WeekCalender
+            showDetailsHandle={showDetailsHandle}
+            data={percentageAttendanceData}
+          />
           <Box
             border={'1px solid black'}
             height={'auto'}
@@ -605,7 +675,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
               marginTop={1}
               justifyContent={'space-between'}
             >
-              {userType == 'Students' ? (
+              {userType == 'student' ? (
                 <Box>
                   {/* <Typography sx = {{color: theme.palette.warning['A400']}}>{t('DASHBOARD.NOT_MARKED')}</Typography> */}
                   {/* <Typography sx = {{color: theme.palette.warning['A400']}} fontSize={'0.8rem'}>{t('DASHBOARD.FUTURE_DATE_CANT_MARK')}</Typography>
@@ -654,7 +724,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   padding: theme.spacing(1),
                 }}
                 onClick={
-                  userType == 'Students'
+                  userType == 'student'
                     ? handleModalToggle
                     : handleMarkAttendanceModal
                 }

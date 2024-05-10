@@ -119,7 +119,8 @@ export interface ExtraSessionsCardProps {
   dateAndTime: string;
   meetingURL: string;
   onEditClick?: () => void;
-  onCopyClick?: () => void;}
+  onCopyClick?: () => void;
+}
 export interface AttendanceStatusListProps {
   limit: number;
   page: number;
@@ -127,4 +128,16 @@ export interface AttendanceStatusListProps {
     fromDate: string;
     toDate: string;
   };
+}
+
+export interface AttendancePercentageProps {
+  limit: number;
+  page: number;
+  filters: {
+    contextId: string;
+    scope: string;
+    toDate: string;
+    fromDate: string;
+  };
+  facets: Array<string>;
 }

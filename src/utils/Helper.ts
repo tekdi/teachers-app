@@ -1,4 +1,3 @@
-import { useMediaQuery } from '@mui/material';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -27,6 +26,13 @@ export const formatDate = (dateString: string) => {
   const [year, monthIndex, day] = dateString.split('-');
   const month = MONTHS[parseInt(monthIndex, 10) - 1];
   return `${day} ${month}, ${year}`;
+};
+
+export const shortDateFormat = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };
 
 export const getTodayDate = () => {
@@ -58,8 +64,11 @@ export const getMonthName = () => {
 };
 
 // Function to truncate URL if it's too long
-export const truncateURL = (url: string, maxLength: number) => {
-  const isMobile = useMediaQuery('(max-width:600px)');
+export const truncateURL = (
+  url: string,
+  maxLength: number,
+  isMobile: boolean
+) => {
   if (isMobile) {
     return url.length > maxLength ? `${url.substring(0, maxLength)} ...` : url;
   }
