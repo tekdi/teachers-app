@@ -56,7 +56,7 @@ import { getTeacherAttendanceByDate } from '../services/AttendanceService';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface State extends SnackbarOrigin {
@@ -98,6 +98,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState(null);
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
+  const [percentageAttendance, setPercentageAttendance] = React.useState(null);
   const [currentDate, setCurrentDate] = React.useState(getTodayDate);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -195,7 +196,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           //userId && parentCohortId
           let limit = 100;
           let page = 0;
-          let filters = { cohortId: classId }; 
+          let filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -378,6 +379,35 @@ const Dashboard: React.FC<DashboardProps> = () => {
         setTimeout(() => {
           setPercentageAttendanceData(response?.data?.result?.attendanceDate);
         });
+
+        const attendanceDates = response?.data?.result?.attendanceDate;
+
+        const formattedAttendanceData = {};
+
+        // Loop through each attendance date
+        Object.keys(attendanceDates).forEach((date) => {
+          const attendance = attendanceDates[date];
+          const present = attendance.present || 0;
+          const absent = attendance.absent || 0;
+          const totalStudents =
+            attendance.present_percentage === '100.00'
+              ? present
+              : present + absent;
+
+          formattedAttendanceData[date] = {
+            date: date,
+            present_students: present,
+            total_students: totalStudents,
+            present_percentage:
+              parseFloat(attendance.present_percentage) ||
+              100 - parseFloat(attendance.absent_percentage),
+            absent_percentage:
+              parseFloat(attendance.absent_percentage) ||
+              100 - parseFloat(attendance.present_percentage),
+          };
+          console.log('formattedAttendanceData', formattedAttendanceData);
+          setPercentageAttendance(formattedAttendanceData);
+        });
       } catch (error) {
         console.log(error);
       }
@@ -554,6 +584,23 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setState({ ...state, openModal: false });
   };
 
+  const todayDate = new Date().toISOString().split('T')[0];
+  console.log(percentageAttendance);
+  const currentAttendance = percentageAttendance?.[todayDate];
+  // let currentPercentAttendance = 'N/A';
+  const presentPercentage = parseFloat(currentAttendance.present_percentage);
+
+  // Determine the color based on presentPercentage value
+  let pathColor; // Default color (green)
+  if (!isNaN(presentPercentage)) {
+    if (presentPercentage < 25) {
+      pathColor = '#BA1A1A'; // Less than 25% - Red color
+    } else if (presentPercentage < 50) {
+      pathColor = '#987100'; // Less than 50% - Purple color
+    } else {
+      pathColor = '#06A816'; // Less than 50% - Purple color
+    }
+  }
   return (
     <Box minHeight="100vh" className="linerGradient">
       <Header />
@@ -676,24 +723,45 @@ const Dashboard: React.FC<DashboardProps> = () => {
               justifyContent={'space-between'}
             >
               {userType == 'student' ? (
-                <Box>
+                <Box display={'flex'}>
                   {/* <Typography sx = {{color: theme.palette.warning['A400']}}>{t('DASHBOARD.NOT_MARKED')}</Typography> */}
                   {/* <Typography sx = {{color: theme.palette.warning['A400']}} fontSize={'0.8rem'}>{t('DASHBOARD.FUTURE_DATE_CANT_MARK')}</Typography>
                    */}
-                  <Typography
-                    sx={{ color: theme.palette.warning['A400'] }}
-                    variant="h6"
-                    className="word-break"
+                  <Box
+                    width={'25px'}
+                    height={'2rem'}
+                    marginTop={'0.25rem'}
+                    margin={'5px'}
                   >
-                    {t('DASHBOARD.PERCENT_ATTENDANCE')}
-                  </Typography>
-                  <Typography
-                    sx={{ color: theme.palette.warning['A400'] }}
-                    variant="h6"
-                    className="word-break"
-                  >
-                    {t('DASHBOARD.PRESENT_STUDENTS')}
-                  </Typography>
+                    <CircularProgressbar
+                      value={currentAttendance?.present_percentage}
+                      styles={buildStyles({
+                        textColor: pathColor,
+                        pathColor: pathColor,
+                        trailColor: '#E6E6E6',
+                      })}
+                      strokeWidth={15}
+                    />
+                  </Box>
+                  <Box>
+                    <Typography
+                      sx={{ color: theme.palette.warning['A400'] }}
+                      variant="h6"
+                      className="word-break"
+                    >
+                      {currentAttendance?.present_percentage}{' '}
+                      {t('DASHBOARD.PERCENT_ATTENDANCE')}
+                    </Typography>
+                    <Typography
+                      sx={{ color: theme.palette.warning['A400'] }}
+                      variant="h6"
+                      className="word-break"
+                    >
+                      ({percentageAttendance?.[todayDate]?.present_students}/
+                      {percentageAttendance?.[todayDate]?.total_students}){' '}
+                      {t('DASHBOARD.PRESENT_STUDENTS')}
+                    </Typography>
+                  </Box>
                 </Box>
               ) : (
                 <Box>
