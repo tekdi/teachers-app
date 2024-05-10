@@ -100,22 +100,6 @@ export interface UserData {
   customFields: CustomField[];
 }
 
-interface CustomField {
-  label: string;
-  value: string;
-}
-export interface UserData {
-  id: number;
-  name: string;
-  role: string;
-  district: string;
-  state: string;
-  email: string;
-  dob?: string;
-  mobile?: string;
-  customFields: CustomField[];
-}
-
 export interface AttendanceReports {
   contextId: string;
   userId: string;
@@ -135,7 +119,8 @@ export interface ExtraSessionsCardProps {
   dateAndTime: string;
   meetingURL: string;
   onEditClick?: () => void;
-  onCopyClick?: () => void;}
+  onCopyClick?: () => void;
+}
 export interface AttendanceStatusListProps {
   limit: number;
   page: number;
@@ -143,4 +128,16 @@ export interface AttendanceStatusListProps {
     fromDate: string;
     toDate: string;
   };
+}
+
+export interface AttendancePercentageProps {
+  limit: number;
+  page: number;
+  filters: {
+    contextId: string;
+    scope: string;
+    toDate: string;
+    fromDate: string;
+  };
+  facets: Array<string>;
 }
