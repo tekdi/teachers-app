@@ -1,4 +1,3 @@
-
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
   ABSENT: 'absent',
@@ -33,6 +32,16 @@ export const shortDateFormat = (date: Date) => {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+};
+
+export const formatSelectedDate = (inputDate: string) => {
+  var date = new Date(inputDate);
+  var year = date.getFullYear();
+  var month = ('0' + (date.getMonth() + 1)).slice(-2);
+  var day = ('0' + date.getDate()).slice(-2);
+  var formattedDate = year + '-' + month + '-' + day;
+  console.log(formattedDate);
+  return formattedDate;
 };
 
 export const getTodayDate = () => {

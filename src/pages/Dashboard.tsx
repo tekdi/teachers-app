@@ -28,6 +28,7 @@ import {
 } from '../services/AttendanceService';
 import {
   formatDate,
+  formatSelectedDate,
   getMonthName,
   getTodayDate,
   shortDateFormat,
@@ -95,7 +96,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   );
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
-  const [data, setData] = React.useState(null);
+  const [selectedDate, setSelectedDate] = React.useState('');
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState(null);
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
@@ -335,7 +336,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const showDetailsHandle = (dayStr) => {
     console.log(dayStr);
-    setData(dayStr);
+    setSelectedDate(formatSelectedDate(dayStr));
     setShowDetails(true);
   };
 
@@ -590,19 +591,26 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const todayDate = new Date().toISOString().split('T')[0];
   console.log(percentageAttendance);
-  const currentAttendance = percentageAttendance?.[todayDate];
-  // let currentPercentAttendance = 'N/A';
+  let currentAttendance = percentageAttendance?.[todayDate];
+
+  let selectedAttendance;
+  if (percentageAttendance?.[selectedDate]) {
+    currentAttendance = percentageAttendance?.[selectedDate];
+  } else {
+    currentAttendance = 'Not Marked';
+  }
+  console.log(currentAttendance);
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
 
   // Determine the color based on presentPercentage value
   let pathColor; // Default color (green)
   if (!isNaN(presentPercentage)) {
     if (presentPercentage < 25) {
-      pathColor = '#BA1A1A'; // Less than 25% - Red color
+      pathColor = '#BA1A1A';
     } else if (presentPercentage < 50) {
-      pathColor = '#987100'; // Less than 50% - Purple color
+      pathColor = '#987100';
     } else {
-      pathColor = '#06A816'; // Less than 50% - Purple color
+      pathColor = '#06A816';
     }
   }
   return (
@@ -728,44 +736,52 @@ const Dashboard: React.FC<DashboardProps> = () => {
             >
               {userType == 'student' ? (
                 <Box display={'flex'}>
-                  {/* <Typography sx = {{color: theme.palette.warning['A400']}}>{t('DASHBOARD.NOT_MARKED')}</Typography> */}
-                  {/* <Typography sx = {{color: theme.palette.warning['A400']}} fontSize={'0.8rem'}>{t('DASHBOARD.FUTURE_DATE_CANT_MARK')}</Typography>
-                   */}
-                  <Box
-                    width={'25px'}
-                    height={'2rem'}
-                    marginTop={'0.25rem'}
-                    margin={'5px'}
+                  {currentAttendance !== 'Not Marked' && (
+                    <>
+                      <Box
+                        width={'25px'}
+                        height={'2rem'}
+                        marginTop={'0.25rem'}
+                        margin={'5px'}
+                      >
+                        <CircularProgressbar
+                          value={currentAttendance?.present_percentage}
+                          styles={buildStyles({
+                            textColor: pathColor,
+                            pathColor: pathColor,
+                            trailColor: '#E6E6E6',
+                          })}
+                          strokeWidth={15}
+                        />
+                      </Box>
+                      <Box>
+                        <Typography
+                          sx={{ color: theme.palette.warning['A400'] }}
+                          variant="h6"
+                          className="word-break"
+                        >
+                          {currentAttendance?.present_percentage}{' '}
+                          {t('DASHBOARD.PERCENT_ATTENDANCE')}
+                        </Typography>
+                        <Typography
+                          sx={{ color: theme.palette.warning['A400'] }}
+                          variant="h6"
+                          className="word-break"
+                        >
+                          ({percentageAttendance?.[todayDate]?.present_students}
+                          /{percentageAttendance?.[todayDate]?.total_students}){' '}
+                          {t('DASHBOARD.PRESENT_STUDENTS')}
+                        </Typography>
+                      </Box>
+                    </>
+                  )}
+                  <Typography
+                    sx={{ color: theme.palette.warning['A400'] }}
+                    variant="h6"
+                    className="word-break"
                   >
-                    <CircularProgressbar
-                      value={currentAttendance?.present_percentage}
-                      styles={buildStyles({
-                        textColor: pathColor,
-                        pathColor: pathColor,
-                        trailColor: '#E6E6E6',
-                      })}
-                      strokeWidth={15}
-                    />
-                  </Box>
-                  <Box>
-                    <Typography
-                      sx={{ color: theme.palette.warning['A400'] }}
-                      variant="h6"
-                      className="word-break"
-                    >
-                      {currentAttendance?.present_percentage}{' '}
-                      {t('DASHBOARD.PERCENT_ATTENDANCE')}
-                    </Typography>
-                    <Typography
-                      sx={{ color: theme.palette.warning['A400'] }}
-                      variant="h6"
-                      className="word-break"
-                    >
-                      ({percentageAttendance?.[todayDate]?.present_students}/
-                      {percentageAttendance?.[todayDate]?.total_students}){' '}
-                      {t('DASHBOARD.PRESENT_STUDENTS')}
-                    </Typography>
-                  </Box>
+                    {t('DASHBOARD.NOT_MARKED')}
+                  </Typography>
                 </Box>
               ) : (
                 <Box>
