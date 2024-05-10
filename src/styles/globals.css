@@ -31,7 +31,7 @@ body {
 }
 
 .fs-14 {
-  font-size: 14px;
+  font-size: 14px !important;
 }
 .fw-500 {
   font-weight: 500;
@@ -284,4 +284,31 @@ main {
   width: 100%;
   align-items: center;
   justify-content: center;
+}
+.calenderTitle p {
+  font-size: 14px !important;
+}
+.calenderTitle svg {
+  font-size: 14px !important;
+}
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.text-decoration {
+  text-decoration: none;
+}
+.card_overview div {
+  /* background: blue; */
+  height: unset;
+  font-size: 11px;
+}
+.card_overview div div h2 {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.linerGradient {
+  background: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%);
 }

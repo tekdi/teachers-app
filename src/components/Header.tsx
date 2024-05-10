@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, Stack } from '@mui/material';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import React, { useEffect, useState } from 'react';
@@ -105,7 +107,7 @@ const Header: React.FC = () => {
   return (
     <>
       <Stack
-        sx={{ minWidth: '100%' }}
+        sx={{ minWidth: '100%', padding: '8px 0' }}
         direction="row"
         justifyContent={'space-between'}
         alignItems={'center'}

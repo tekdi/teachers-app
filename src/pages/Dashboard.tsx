@@ -2,14 +2,15 @@
 
 import {
   AttendanceParams,
-  AttendanceStatusListProps,
   AttendancePercentageProps,
+  AttendanceStatusListProps,
   TeacherAttendanceByDateParams,
 } from '../utils/Interfaces';
 import {
   Box,
   Button,
   FormControl,
+  Grid,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -47,6 +48,7 @@ import Modal from '@mui/material/Modal';
 import OverviewCard from '@/components/OverviewCard';
 import TimeTableCard from '@/components/TimeTableCard';
 import TodayIcon from '@mui/icons-material/Today';
+import WeekCalender from '@/components/WeekCalender';
 import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
@@ -54,7 +56,6 @@ import { getTeacherAttendanceByDate } from '../services/AttendanceService';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import WeekCalender from '@/components/WeekCalender';
 
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
@@ -554,9 +555,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   return (
-    <Box minHeight="100vh">
+    <Box minHeight="100vh" className="linerGradient">
       <Header />
-      <Typography textAlign={'left'} fontSize={'1.5rem'} m={'1rem'}>
+      <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
         {t('DASHBOARD.DASHBOARD')}
       </Typography>
       {loading && (
@@ -567,12 +568,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
       >
         <Box display={'flex'} flexDirection={'column'} padding={'1rem'}>
           <Box display={'flex'} justifyContent={'space-between'}>
-            <Typography variant="h2">
+            <Typography variant="h2" sx={{ fontSize: '14px' }}>
               {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
             </Typography>
             <Box
+              className="calenderTitle flex-center"
               display={'flex'}
-              sx={{ color: theme.palette.warning['A200'], cursor: 'pointer' }}
+              sx={{
+                cursor: 'pointer',
+                color: theme.palette.secondary.main,
+                gap: '2px',
+              }}
               onClick={viewAttendanceHistory}
             >
               <Typography marginBottom={'0px'}>{getMonthName()}</Typography>
@@ -580,14 +586,24 @@ const Dashboard: React.FC<DashboardProps> = () => {
             </Box>
           </Box>
 
-          <Box sx={{ mt: 2 }}>
-            <Box sx={{ minWidth: 120 }} display={'flex'}>
-              <FormControl sx={{ m: 1, width: '40%' }}>
+          <Box sx={{ mt: 0.6 }}>
+            <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
+              <FormControl
+                className="drawer-select"
+                sx={{ my: 1, width: '40%' }}
+              >
                 <Select
                   value={userType}
                   onChange={handleUserTypeChange}
                   displayEmpty
                   inputProps={{ 'aria-label': 'Without label' }}
+                  className="SelectLanguages fs-14 fw-500"
+                  style={{
+                    borderRadius: '0.5rem',
+                    color: theme.palette.warning['200'],
+                    width: '100%',
+                    marginBottom: '0rem',
+                  }}
                 >
                   {userTypeArray.length !== 0 ? (
                     userTypeArray.map((user) => (
@@ -606,12 +622,22 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 </Select>
               </FormControl>
               {userType == 'student' ? (
-                <FormControl sx={{ m: 1, width: '60%' }}>
+                <FormControl
+                  className="drawer-select"
+                  sx={{ m: 1, width: '60%' }}
+                >
                   <Select
                     value={classId}
                     onChange={handleCohortSelection}
                     displayEmpty
                     inputProps={{ 'aria-label': 'Without label' }}
+                    className="SelectLanguages fs-14 fw-500"
+                    style={{
+                      borderRadius: '0.5rem',
+                      color: theme.palette.warning['200'],
+                      width: '100%',
+                      marginBottom: '0rem',
+                    }}
                   >
                     {cohortsData?.length !== 0 ? (
                       cohortsData?.map((cohort) => (
@@ -641,7 +667,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             borderRadius={'1rem'}
             bgcolor={theme.palette.warning['A200']}
             textAlign={'left'}
-            marginTop={'2rem'}
+            margin={'15px 0 0 0 '}
           >
             <Stack
               direction="row"
@@ -874,7 +900,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
             padding={'2px'}
           >
             <Box>
-              <Typography variant="h2">{t('DASHBOARD.OVERVIEW')}</Typography>
+              <Typography className="fs-14" variant="h2">
+                {t('DASHBOARD.OVERVIEW')}
+              </Typography>
             </Box>
             <Box
               display={'flex'}
@@ -882,8 +910,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
               alignItems={'center'}
               sx={{ color: theme.palette.secondary.main }}
             >
-              <Link href={'/'}>
-                {t('DASHBOARD.MORE_DETAILS')} <ArrowForwardSharpIcon />
+              <Link className="flex-center fs-14 text-decoration" href={'/'}>
+                {t('DASHBOARD.MORE_DETAILS')}{' '}
+                <ArrowForwardSharpIcon sx={{ height: '18px' }} />
               </Link>
             </Box>
           </Stack>
@@ -891,13 +920,19 @@ const Dashboard: React.FC<DashboardProps> = () => {
             <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
           )}
         </Box>
-        {userType == 'student' ? (
-          <Box display={'flex'}>
-            <OverviewCard label="Centre Attendance" value="71%" />
-            <OverviewCard
-              label="Low Attendance Students"
-              value="Bharat Kumar, Ankita Kulkarni, +3 more"
-            />
+        {userType == 'Students' ? (
+          <Box display={'flex'} className="card_overview">
+            <Grid container spacing={0}>
+              <Grid item xs={5}>
+                <OverviewCard label="Centre Attendance" value="71%" />
+              </Grid>
+              <Grid item xs={7}>
+                <OverviewCard
+                  label="Low Attendance Students"
+                  value="Bharat Kumar, Ankita Kulkarni, +3 more"
+                />
+              </Grid>
+            </Grid>
           </Box>
         ) : (
           <OverviewCard label="My Overall Attendance" value="85%" />

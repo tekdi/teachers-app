@@ -10,10 +10,10 @@ import type { AppProps } from 'next/app';
 import Box from '@mui/material/Box';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { I18nextProvider } from 'react-i18next';
 import IconButton from '@mui/material/IconButton';
 import customTheme from '../styles/customStyles';
 import darkTheme from '@/styles/darkStyle';
-import { I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
