@@ -1,4 +1,3 @@
-import { useMediaQuery } from '@mui/material';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -58,8 +57,11 @@ export const getMonthName = () => {
 };
 
 // Function to truncate URL if it's too long
-export const truncateURL = (url: string, maxLength: number) => {
-  const isMobile = useMediaQuery('(max-width:600px)');
+export const truncateURL = (
+  url: string,
+  maxLength: number,
+  isMobile: boolean
+) => {
   if (isMobile) {
     return url.length > maxLength ? `${url.substring(0, maxLength)} ...` : url;
   }
