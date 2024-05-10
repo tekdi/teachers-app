@@ -22,15 +22,19 @@ const refreshToken = async () => {
   }
 };
 
+
+
 instance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     // config.headers.tenantid = '4783a636-1191-487a-8b09-55eca51b5036';
     // config.headers.tenantid = 'fbe108db-e236-48a7-8230-80d34c370800';
-    config.headers.tenantid ='ef99949b-7f3a-4a5f-806a-e67e683e38f3'
+    config.headers.tenantid = 'ef99949b-7f3a-4a5f-806a-e67e683e38f3';
     return config;
   },
   (error) => {

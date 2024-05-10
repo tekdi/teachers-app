@@ -1,6 +1,6 @@
 import { Box, Stack } from '@mui/material';
 import Menu, { MenuProps } from '@mui/material/Menu';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -66,8 +66,8 @@ const Header: React.FC = () => {
   }));
 
   const handleProfileClick = () => {
-    if (pathname !== '/profile') {
-      router.push('/profile');
+    if (pathname !== '/MyProfile') {
+      router.push('/MyProfile');
     }
   };
   const handleLogoutClick = () => {
@@ -90,9 +90,16 @@ const Header: React.FC = () => {
     ssr: false,
   });
 
-  const [selectedLanguage, setSelectedLanguage] = React.useState(
-    localStorage.getItem('preferredLanguage') || 'en'
-  );
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedLanguage = localStorage.getItem('preferredLanguage');
+      if (storedLanguage) {
+        setSelectedLanguage(storedLanguage);
+      }
+    }
+  }, []);
+  
   const [language, setLanguage] = React.useState(selectedLanguage);
 
   return (
