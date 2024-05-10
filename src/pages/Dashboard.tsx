@@ -346,6 +346,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
+    setHandleSaveHasRun(!handleSaveHasRun);
   };
 
   useEffect(() => {
@@ -417,8 +418,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, [classId, handleSaveHasRun]);
 
   const handleUserTypeChange = async (event: SelectChangeEvent) => {
-    console.log(event.target.value);
+  
     setUserType(event.target.value as string);
+    setHandleSaveHasRun(!handleSaveHasRun);
   };
 
   const submitAttendance = async (date: string, status: string) => {
@@ -501,6 +503,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   const handleSave = () => {
+    handleModalToggle();
     const userAttendance = cohortMemberList?.map((user: any) => {
       return {
         userId: user.userId,
