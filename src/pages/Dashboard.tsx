@@ -31,6 +31,7 @@ import {
   getMonthName,
   getTodayDate,
   shortDateFormat,
+  formatSelectedDate
 } from '../utils/Helper';
 
 import { ATTENDANCE_ENUM } from '../utils/Helper';
@@ -95,7 +96,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   );
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
-  const [data, setData] = React.useState<string>('');
+  const [selectedDate, setSelectedDate] = React.useState("");
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState(null);
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
@@ -335,7 +336,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const showDetailsHandle = (dayStr: string) => {
     console.log(dayStr);
-    setData(dayStr);
+    setSelectedDate(formatSelectedDate(dayStr));
     setShowDetails(true);
   };
 
@@ -513,7 +514,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     });
     if (userAttendance) {
       const data = {
-        attendanceDate: currentDate,
+        attendanceDate: selectedDate,
         contextId,
         userAttendance,
       };
@@ -525,6 +526,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           // const resp = response?.data;
           // console.log(`data`, data);
           setShowUpdateButton(true);
+          handleModalToggle()
           setLoading(false);
           setHandleSaveHasRun(true);
         } catch (error) {
@@ -852,7 +854,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         }}
                         component="h2"
                       >
-                        {formatDate(currentDate)}
+                        {formatDate(selectedDate)}
                       </Typography>
                     </Box>
                     <Box onClick={() => handleModalToggle()}>
