@@ -81,13 +81,3 @@ export const truncateURL = (
   }
   return url;
 };
-
-export const formatSelectedDate = (inputDate: string) => {
-  let date = new Date(inputDate);
-  let year = date.getFullYear();
-  let month = ('0' + (date.getMonth() + 1)).slice(-2);
-  let day = ('0' + date.getDate()).slice(-2);
-  let formattedDate = year + '-' + month + '-' + day;
-  console.log(formattedDate);
-  return formattedDate;
-};

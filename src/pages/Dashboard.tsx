@@ -28,7 +28,6 @@ import {
 } from '../services/AttendanceService';
 import {
   formatDate,
-  formatSelectedDate,
   getMonthName,
   getTodayDate,
   shortDateFormat,
