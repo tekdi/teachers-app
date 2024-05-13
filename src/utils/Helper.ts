@@ -35,13 +35,11 @@ export const shortDateFormat = (date: Date) => {
 };
 
 export const formatSelectedDate = (inputDate: string) => {
-  var date = new Date(inputDate);
-  var year = date.getFullYear();
-  var month = ('0' + (date.getMonth() + 1)).slice(-2);
-  var day = ('0' + date.getDate()).slice(-2);
-  var formattedDate = year + '-' + month + '-' + day;
-  console.log(formattedDate);
-  return formattedDate;
+  const date = new Date(inputDate);
+  const year = date.getFullYear();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  const day = ('0' + date.getDate()).slice(-2);
+  return `${year}-${month}-${day}`;
 };
 
 export const getTodayDate = () => {
