@@ -88,7 +88,7 @@ const Header: React.FC = () => {
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
   };
-  const MenuDrawer = dynamic(() => import('./../pages/LeftDrawer'), {
+  const MenuDrawer = dynamic(() => import('../pages/MenuDrawer'), {
     ssr: false,
   });
 

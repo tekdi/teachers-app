@@ -100,7 +100,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState(null);
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
-  const [percentageAttendance, setPercentageAttendance] = React.useState(null);
+  const [percentageAttendance, setPercentageAttendance] = React.useState<any>(null);
   const [currentDate, setCurrentDate] = React.useState(getTodayDate);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -124,7 +124,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const attendanceDate = currentDate;
   let contextId = classId;
   //  const [TeachercontextId, setTeacherContextId] = React.useState("");
-  const userTypeData = {
+  const userTypeData: any = {
     Learners: 'student',
     // Self: 'self',
   };
@@ -334,7 +334,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   }, [classId]);
 
-  const showDetailsHandle = (dayStr) => {
+  const showDetailsHandle = (dayStr: string) => {
     console.log(dayStr);
     setSelectedDate(formatSelectedDate(dayStr));
     setShowDetails(true);
@@ -385,7 +385,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
         const attendanceDates = response?.data?.result?.attendanceDate;
 
-        const formattedAttendanceData = {};
+        const formattedAttendanceData: any = {};
 
         // Loop through each attendance date
         Object.keys(attendanceDates).forEach((date) => {
@@ -592,7 +592,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const todayDate = new Date().toISOString().split('T')[0];
   console.log(percentageAttendance);
-  const currentAttendance = percentageAttendance?.[todayDate];
+  const currentAttendance: any = percentageAttendance?.[todayDate];
   // let currentPercentAttendance = 'N/A';
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
 

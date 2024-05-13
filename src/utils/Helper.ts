@@ -76,11 +76,11 @@ export const truncateURL = (
 };
 
 export const formatSelectedDate = (inputDate: string) => {
-  var date = new Date(inputDate);
-  var year = date.getFullYear();
-  var month = ('0' + (date.getMonth() + 1)).slice(-2);
-  var day = ('0' + date.getDate()).slice(-2);
-  var formattedDate = year + '-' + month + '-' + day;
+  let date = new Date(inputDate);
+  let year = date.getFullYear();
+  let month = ('0' + (date.getMonth() + 1)).slice(-2);
+  let day = ('0' + date.getDate()).slice(-2);
+  let formattedDate = year + '-' + month + '-' + day;
   console.log(formattedDate);
   return formattedDate;
 };
