@@ -1,4 +1,3 @@
-
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
   ABSENT: 'absent',
@@ -32,6 +31,14 @@ export const shortDateFormat = (date: Date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+export const formatSelectedDate = (inputDate: string) => {
+  const date = new Date(inputDate);
+  const year = date.getFullYear();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  const day = ('0' + date.getDate()).slice(-2);
   return `${year}-${month}-${day}`;
 };
 
@@ -73,14 +80,4 @@ export const truncateURL = (
     return url.length > maxLength ? `${url.substring(0, maxLength)} ...` : url;
   }
   return url;
-};
-
-export const formatSelectedDate = (inputDate: string) => {
-  let date = new Date(inputDate);
-  let year = date.getFullYear();
-  let month = ('0' + (date.getMonth() + 1)).slice(-2);
-  let day = ('0' + date.getDate()).slice(-2);
-  let formattedDate = year + '-' + month + '-' + day;
-  console.log(formattedDate);
-  return formattedDate;
 };
