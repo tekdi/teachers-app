@@ -14,13 +14,13 @@ import {
 import { Box } from '@mui/material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
-const Calendar = ({ showDetailsHandle, data }) => {
+const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCircularProgress, setShowCircularProgress] = useState(false);
 
-  const changeMonthHandle = (btnType) => {
+  const changeMonthHandle = (btnType: string) => {
     if (btnType === 'prev') {
       setCurrentMonth(subMonths(currentMonth, 1));
     }
@@ -29,7 +29,7 @@ const Calendar = ({ showDetailsHandle, data }) => {
     }
   };
 
-  const changeWeekHandle = (btnType) => {
+  const changeWeekHandle = (btnType: string) => {
     //console.log("current week", currentWeek);
     if (btnType === 'prev') {
       //console.log(subWeeks(currentMonth, 1));
@@ -43,7 +43,7 @@ const Calendar = ({ showDetailsHandle, data }) => {
     }
   };
 
-  const onDateClickHandle = (day, dayStr) => {
+  const onDateClickHandle = (day: any, dayStr: string) => {
     setSelectedDate(day);
     showDetailsHandle(dayStr);
   };
@@ -128,8 +128,8 @@ const Calendar = ({ showDetailsHandle, data }) => {
               onDateClickHandle(cloneDay, dayStr);
             }}
           >
-            <div className="cicularProgress">
-              <div key={day}>
+            <div className="circularProgress">
+              <div key={day + ''}>
                 <span className="number">{formattedDate}</span>
               </div>
               <Box
@@ -164,7 +164,7 @@ const Calendar = ({ showDetailsHandle, data }) => {
       }
 
       rows.push(
-        <div className="row" key={day}>
+        <div className="row" key={day + ''}>
           {days}
         </div>
       );
