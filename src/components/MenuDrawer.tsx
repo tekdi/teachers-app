@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import React, { useEffect } from 'react';
 
 import { Button, FormControl, IconButton, MenuItem } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -12,9 +12,8 @@ import Drawer from '@mui/material/Drawer';
 import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
 import config from '../../config.json';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from "next-i18next";
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-
 interface DrawerProps {
   toggleDrawer: (open: boolean) => () => void;
   open: boolean;
@@ -29,13 +28,23 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
-  
+  const router = useRouter();
   const { locale, locales, push, replace } = useRouter();
-  
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const lang = localStorage.getItem('preferredLanguage') || 'en';
+      setLanguage(lang);
+    }
+  }, []);
+
   const handleChange = (event: SelectChangeEvent) => {
     setLanguage(event.target.value);
-    i18n.changeLanguage(event.target.value);
-    push('/replace', 'hi', { locale: event.target.value })
+    const newLocale = event.target.value;
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('preferredLanguage', newLocale);
+      router.push('/dashboard', undefined, { locale: newLocale });
+    }
   };
 
   return (

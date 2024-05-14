@@ -11,7 +11,7 @@ import React, { useEffect, useMemo } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Checkbox from '@mui/material/Checkbox';
 import CloseIcon from '@mui/icons-material/Close';
 import Image from 'next/image';
@@ -27,7 +27,6 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import { getUserId } from '../services/ProfileService';
 interface State extends SnackbarOrigin {
@@ -35,7 +34,9 @@ interface State extends SnackbarOrigin {
 }
 
 const LoginPage = () => {
-  const { t, i18n } = useTranslation();
+  const { locale, locales, push } = useRouter();
+  const { t } = useTranslation();
+  // const { t, i18n } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -62,7 +63,8 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.getItem('preferredLanguage') || 'en';
+      const lang = localStorage.getItem('preferredLanguage') || 'en';
+      setLanguage(lang);
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         router.push('/dashboard');
@@ -140,10 +142,11 @@ const LoginPage = () => {
     !username || !password || usernameError || passwordError;
 
   const handleChange = (event: SelectChangeEvent) => {
+    const newLocale = event.target.value;
     if (typeof window !== 'undefined' && window.localStorage) {
-    setLanguage(event.target.value);
-    i18n.changeLanguage(event.target.value);
-    localStorage.setItem('preferredLanguage', event.target.value);
+      localStorage.setItem('preferredLanguage', newLocale);
+      setLanguage(event.target.value);
+      router.push('/login', undefined, { locale: newLocale });
     }
   };
 

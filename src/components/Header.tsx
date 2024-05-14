@@ -16,7 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import dynamic from 'next/dynamic';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from "next-i18next";
+import { useTranslation } from 'next-i18next';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -101,7 +101,7 @@ const Header: React.FC = () => {
       }
     }
   }, []);
-  
+
   const [language, setLanguage] = React.useState(selectedLanguage);
 
   return (
@@ -120,7 +120,7 @@ const Header: React.FC = () => {
           <Image
             src={LogoWithoutTagline}
             alt="logo"
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/dashboard')}
             style={{ cursor: 'pointer' }}
           />
         </Box>
