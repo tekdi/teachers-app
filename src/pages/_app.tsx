@@ -14,7 +14,7 @@ import { I18nextProvider } from 'react-i18next';
 import IconButton from '@mui/material/IconButton';
 import customTheme from '../styles/customStyles';
 import darkTheme from '@/styles/darkStyle';
-import i18n from '../i18n';
+import { appWithTranslation } from 'next-i18next';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 
@@ -41,7 +41,7 @@ export function DarkTheme() {
   );
 }
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   const [mode, setMode] = React.useState('light');
 
   const colorMode = React.useMemo(
@@ -57,10 +57,11 @@ export default function App({ Component, pageProps }: AppProps) {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={mode === 'light' ? customTheme : darkTheme}>
         {/* <DarkTheme /> */}
-        <I18nextProvider i18n={i18n}>
           <Component {...pageProps} />
-        </I18nextProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
 }
+
+
+export default appWithTranslation(App);

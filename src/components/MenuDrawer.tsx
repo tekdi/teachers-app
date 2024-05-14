@@ -12,7 +12,8 @@ import Drawer from '@mui/material/Drawer';
 import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
 import config from '../../config.json';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "next-i18next";
+import { useRouter } from 'next/router';
 
 interface DrawerProps {
   toggleDrawer: (open: boolean) => () => void;
@@ -28,10 +29,13 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
-
+  
+  const { locale, locales, push, replace } = useRouter();
+  
   const handleChange = (event: SelectChangeEvent) => {
     setLanguage(event.target.value);
     i18n.changeLanguage(event.target.value);
+    push('/replace', 'hi', { locale: event.target.value })
   };
 
   return (

@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 // Import necessary modules
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 
 // Define the type for props
 
 // Import dynamic components
-const Login = dynamic(() => import('./Login'), { ssr: false });
-const Dashboard = dynamic(() => import('./Dashboard'), { ssr: false });
+const Login = dynamic(() => import('./login'), { ssr: false });
+const Dashboard = dynamic(() => import('./dashboard'), { ssr: false });
 
 // Define the Home component
 const Home: React.FC = () => {
@@ -17,9 +18,16 @@ const Home: React.FC = () => {
   // Log 'hi' to console
   // console.log('hi');
 
+  const { locale, locales, push } = useRouter();
+
+  useEffect(() => {
+    push('/login', undefined, { locale: 'mr'});
+  })
+
   return (
     <>
-      <Login />
+    {/* <h1>Hello</h1> */}
+      {/* <Login /> */}
     </>
   );
 };
