@@ -214,14 +214,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
               name: entry.name,
             }));
             console.log('name..........', nameUserIdArray);
-            if (nameUserIdArray && currentDate) {
+            if (nameUserIdArray && (selectedDate || currentDate)) {
               const userAttendanceStatusList = async () => {
                 const attendanceStatusData: AttendanceStatusListProps = {
                   limit: 200,
                   page: 1,
                   filters: {
-                    fromDate: currentDate,
-                    toDate: currentDate,
+                    fromDate: selectedDate || currentDate,
+                    toDate: selectedDate || currentDate,
                   },
                 };
                 const res = await attendanceStatusList(attendanceStatusData);
@@ -299,7 +299,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 }
 
                 //Add logic to merge response2 and nameUserIdArray
-                setCohortMemberList(nameUserIdArray);
+                setCohortMemberList(nameUserIdArray); //check where to set cohort member list
                 setNumberOfCohortMembers(nameUserIdArray?.length);
                 setLoading(false);
               };
@@ -515,7 +515,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     });
     if (userAttendance) {
       const data = {
-        attendanceDate: selectedDate,
+        attendanceDate: selectedDate || currentDate,
         contextId,
         userAttendance,
       };
@@ -869,7 +869,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         }}
                         component="h2"
                       >
-                        {formatDate(selectedDate)}
+                        {formatDate(selectedDate || currentDate)}
                       </Typography>
                     </Box>
                     <Box onClick={() => handleModalToggle()}>
@@ -921,7 +921,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               userData={{
                                 userId: user.userId,
                                 attendance: user.attendance,
-                                attendanceDate: currentDate,
+                                attendanceDate: selectedDate || currentDate,
                                 name: user.name,
                               }}
                               isEdit={true}
@@ -982,7 +982,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         <MarkAttendance
           isOpen={openMarkAttendance}
           isSelfAttendance={true}
-          date={currentDate}
+          date={selectedDate || currentDate}
           currentStatus={attendanceStatus}
           handleClose={handleMarkAttendanceModal}
           handleSubmit={submitAttendance}

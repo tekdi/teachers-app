@@ -6,8 +6,8 @@ import { useRouter } from 'next/router';
 // Define the type for props
 
 // Import dynamic components
-const Login = dynamic(() => import('./Login'), { ssr: false });
-const Dashboard = dynamic(() => import('./Dashboard'), { ssr: false });
+const Login = dynamic(() => import('./login'), { ssr: false });
+const Dashboard = dynamic(() => import('./dashboard'), { ssr: false });
 
 // Define the Home component
 const Home: React.FC = () => {
@@ -21,7 +21,7 @@ const Home: React.FC = () => {
   const { locale, locales, push } = useRouter();
 
   useEffect(() => {
-    push('/Login', undefined, { locale: 'mr'});
+    push('/login', undefined, { locale: 'mr'});
   })
 
   return (

@@ -68,12 +68,12 @@ const Header: React.FC = () => {
   }));
 
   const handleProfileClick = () => {
-    if (pathname !== '/MyProfile') {
-      router.push('/MyProfile');
+    if (pathname !== '/my-profile') {
+      router.push('/my-profile');
     }
   };
   const handleLogoutClick = () => {
-    router.replace('/Logout');
+    router.replace('/logout');
   };
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
