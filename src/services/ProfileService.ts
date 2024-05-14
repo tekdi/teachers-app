@@ -25,7 +25,7 @@ export const editEditUser = async (
   userId: string,
   userDetails: object
 ): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/user/${userId}`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/users/${userId}`;
   try {
     const response = await patch(apiUrl, userDetails);
     return response?.data;
