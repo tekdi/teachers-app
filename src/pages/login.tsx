@@ -65,7 +65,7 @@ const LoginPage = () => {
       localStorage.getItem('preferredLanguage') || 'en';
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
-        router.push('/Dashboard');
+        router.push('/dashboard');
       }
     }
   }, []);
@@ -123,7 +123,7 @@ const LoginPage = () => {
           }
         }
         setLoading(false);
-        router.push('/Dashboard');
+        router.push('/dashboard');
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 404) {
