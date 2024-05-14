@@ -57,7 +57,8 @@ import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { getTeacherAttendanceByDate } from '../services/AttendanceService';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
@@ -1088,5 +1089,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
     </Box>
   );
 };
+
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  };
+}
 
 export default Dashboard;

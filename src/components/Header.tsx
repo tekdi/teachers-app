@@ -16,7 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import dynamic from 'next/dynamic';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "next-i18next";
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -88,7 +88,7 @@ const Header: React.FC = () => {
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
   };
-  const MenuDrawer = dynamic(() => import('../pages/MenuDrawer'), {
+  const MenuDrawer = dynamic(() => import('./MenuDrawer'), {
     ssr: false,
   });
 

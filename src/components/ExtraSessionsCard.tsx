@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "next-i18next";
 import { truncateURL } from '@/utils/Helper';
 import { ExtraSessionsCardProps } from '@/utils/Interfaces';
 import { useMediaQuery } from '@mui/material';

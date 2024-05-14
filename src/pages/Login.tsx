@@ -26,7 +26,8 @@ import { login } from '../services/LoginService';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import { getUserId } from '../services/ProfileService';
 interface State extends SnackbarOrigin {
@@ -43,9 +44,7 @@ const LoginPage = () => {
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    localStorage.getItem('preferredLanguage') || 'en'
-  );
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [language, setLanguage] = useState(selectedLanguage);
   const theme = useTheme<any>();
   const router = useRouter();
@@ -62,9 +61,12 @@ const LoginPage = () => {
   const { vertical, horizontal, openModal } = state;
 
   useEffect(() => {
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (refreshToken) {
-      router.push('/Dashboard');
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.getItem('preferredLanguage') || 'en';
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (refreshToken) {
+        router.push('/Dashboard');
+      }
     }
   }, []);
 
@@ -108,15 +110,17 @@ const LoginPage = () => {
             setShowToastMessage(false);
           });
 
-          const token = response?.access_token;
-          const refreshToken = response?.refresh_token;
-          localStorage.setItem('token', token);
-          rememberMe
-            ? localStorage.setItem('refreshToken', refreshToken)
-            : localStorage.removeItem('refreshToken');
+          if (typeof window !== 'undefined' && window.localStorage) {
+            const token = response?.access_token;
+            const refreshToken = response?.refresh_token;
+            localStorage.setItem('token', token);
+            rememberMe
+              ? localStorage.setItem('refreshToken', refreshToken)
+              : localStorage.removeItem('refreshToken');
 
-          const userResponse = await getUserId();
-          localStorage.setItem('userId', userResponse?.userId);
+            const userResponse = await getUserId();
+            localStorage.setItem('userId', userResponse?.userId);
+          }
         }
         setLoading(false);
         router.push('/Dashboard');
@@ -136,9 +140,11 @@ const LoginPage = () => {
     !username || !password || usernameError || passwordError;
 
   const handleChange = (event: SelectChangeEvent) => {
+    if (typeof window !== 'undefined' && window.localStorage) {
     setLanguage(event.target.value);
     i18n.changeLanguage(event.target.value);
     localStorage.setItem('preferredLanguage', event.target.value);
+    }
   };
 
   const handleClick = (newState: SnackbarOrigin) => () => {
@@ -322,5 +328,14 @@ const LoginPage = () => {
     </form>
   );
 };
+
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  };
+}
 
 export default LoginPage;

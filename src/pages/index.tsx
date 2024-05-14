@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 // Import necessary modules
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 
 // Define the type for props
 
@@ -17,9 +18,16 @@ const Home: React.FC = () => {
   // Log 'hi' to console
   // console.log('hi');
 
+  const { locale, locales, push } = useRouter();
+
+  useEffect(() => {
+    push('/Login', undefined, { locale: 'mr'});
+  })
+
   return (
     <>
-      <Login />
+    {/* <h1>Hello</h1> */}
+      {/* <Login /> */}
     </>
   );
 };
