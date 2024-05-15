@@ -315,3 +315,6 @@ main {
 .icon_holder svg {
   color: #1e1b16 !important;
 }
+.w-100 {
+  width: 100% !important;
+}
