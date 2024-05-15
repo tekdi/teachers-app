@@ -22,8 +22,6 @@ const refreshToken = async () => {
   }
 };
 
-
-
 instance.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -48,17 +46,22 @@ instance.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
+
     if (error.response.data.statusCode === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      try {
-        const accessToken = await refreshToken();
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        if (!accessToken) {
-          window.location.href = '/logout';
+      if (error?.response?.request?.responseURL.includes('/auth/refresh')) {
+        window.location.href = '/logout';
+      } else {
+        originalRequest._retry = true;
+        try {
+          const accessToken = await refreshToken();
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          if (!accessToken) {
+            window.location.href = '/logout';
+          }
+          return instance(originalRequest);
+        } catch (refreshError) {
+          return Promise.reject(refreshError);
         }
-        return instance(originalRequest);
-      } catch (refreshError) {
-        return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error);
