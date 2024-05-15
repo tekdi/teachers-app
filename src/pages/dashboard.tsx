@@ -57,7 +57,7 @@ import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { getTeacherAttendanceByDate } from '../services/AttendanceService';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from "next-i18next";
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -337,7 +337,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, [classId]);
 
   const showDetailsHandle = (dayStr: string) => {
-    console.log(dayStr);
     setSelectedDate(formatSelectedDate(dayStr));
     setShowDetails(true);
   };
@@ -601,6 +600,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
     } else {
       currentAttendance = 'Not Marked';
     }
+    const selectedDateTime = new Date(selectedDate).getTime();
+    const todayDateTime = new Date(todayDate).getTime();
+
+    if (selectedDateTime > todayDateTime) {
+      currentAttendance = 'futureDate';
+    }
   }
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
 
@@ -737,58 +742,80 @@ const Dashboard: React.FC<DashboardProps> = () => {
             >
               {userType == 'student' ? (
                 <Box display={'flex'}>
-                  {currentAttendance !== 'Not Marked' && (
-                    <>
-                      <Box
-                        width={'25px'}
-                        height={'2rem'}
-                        marginTop={'0.25rem'}
-                        margin={'5px'}
+                  {currentAttendance !== 'Not Marked' &&
+                    currentAttendance !== 'futureDate' && (
+                      <>
+                        <Box
+                          width={'25px'}
+                          height={'2rem'}
+                          marginTop={'0.25rem'}
+                          margin={'5px'}
+                        >
+                          <CircularProgressbar
+                            value={currentAttendance?.present_percentage}
+                            styles={buildStyles({
+                              textColor: pathColor,
+                              pathColor: pathColor,
+                              trailColor: '#E6E6E6',
+                            })}
+                            strokeWidth={15}
+                          />
+                        </Box>
+                        <Box>
+                          <Typography
+                            sx={{ color: theme.palette.warning['A400'] }}
+                            variant="h6"
+                            className="word-break"
+                          >
+                            {currentAttendance?.present_percentage}{' '}
+                            {t('DASHBOARD.PERCENT_ATTENDANCE')}
+                          </Typography>
+                          <Typography
+                            sx={{ color: theme.palette.warning['A400'] }}
+                            variant="h6"
+                            className="word-break"
+                          >
+                            (
+                            {
+                              percentageAttendance?.[todayDate]
+                                ?.present_students
+                            }
+                            /{percentageAttendance?.[todayDate]?.total_students}
+                            ) {t('DASHBOARD.PRESENT_STUDENTS')}
+                          </Typography>
+                        </Box>
+                      </>
+                    )}
+
+                  {currentAttendance === 'Not Marked' &&
+                    currentAttendance !== 'futureDate' && (
+                      <Typography
+                        sx={{ color: theme.palette.warning['A400'] }}
+                        fontSize={'0.8rem'}
+                        // variant="h6"
+                        // className="word-break"
                       >
-                        <CircularProgressbar
-                          value={currentAttendance?.present_percentage}
-                          styles={buildStyles({
-                            textColor: pathColor,
-                            pathColor: pathColor,
-                            trailColor: '#E6E6E6',
-                          })}
-                          strokeWidth={15}
-                        />
-                      </Box>
-                      <Box>
-                        <Typography
-                          sx={{ color: theme.palette.warning['A400'] }}
-                          variant="h6"
-                          className="word-break"
-                        >
-                          {currentAttendance?.present_percentage}{' '}
-                          {t('DASHBOARD.PERCENT_ATTENDANCE')}
-                        </Typography>
-                        <Typography
-                          sx={{ color: theme.palette.warning['A400'] }}
-                          variant="h6"
-                          className="word-break"
-                        >
-                          ({percentageAttendance?.[todayDate]?.present_students}
-                          /{percentageAttendance?.[todayDate]?.total_students}){' '}
-                          {t('DASHBOARD.PRESENT_STUDENTS')}
-                        </Typography>
-                      </Box>
-                    </>
+                        {t('DASHBOARD.NOT_MARKED')}
+                      </Typography>
+                    )}
+                  {currentAttendance === 'futureDate' && (
+                    <Typography
+                      sx={{ color: theme.palette.warning['A400'] }}
+                      fontSize={'0.8rem'}
+                    >
+                      {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
+                    </Typography>
                   )}
-                  <Typography
-                    sx={{ color: theme.palette.warning['A400'] }}
-                    variant="h6"
-                    className="word-break"
-                  >
-                    {t('DASHBOARD.NOT_MARKED')}
-                  </Typography>
                 </Box>
               ) : (
                 <Box>
-                  {/* <Typography sx = {{color: theme.palette.warning['A400']}}>{t('DASHBOARD.NOT_MARKED')}</Typography> */}
-                  {/* <Typography sx = {{color: theme.palette.warning['A400']}} fontSize={'0.8rem'}>{t('DASHBOARD.FUTURE_DATE_CANT_MARK')}</Typography>
-                   */}
+                  {/* <Typography
+                    sx={{ color: theme.palette.warning['A400'] }}
+                    fontSize={'0.8rem'}
+                  >
+                    {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
+                  </Typography> */}
+
                   {/* <Typography
                 sx={{ color: theme.palette.warning['A400'] }}
                 variant="h6"
@@ -817,6 +844,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     ? handleModalToggle
                     : handleMarkAttendanceModal
                 }
+                disabled={currentAttendance === 'futureDate'}
               >
                 {t('COMMON.MARK')}
               </Button>

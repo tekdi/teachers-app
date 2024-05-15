@@ -196,8 +196,7 @@ main {
 
 .calendar .days {
   text-transform: uppercase;
-  font-weight: 400;
-  color: black;
+  font-weight: 600;
   font-size: 70%;
   padding: 0.75em 0;
 }
@@ -211,6 +210,7 @@ main {
   transition: 0.25s ease-out;
   font-size: 1.5em;
   border-radius: 4px;
+  height: 4rem;
 }
 
 .calendar .body .cell:hover {
@@ -218,20 +218,22 @@ main {
   transition: 0.5s ease-out;
 }
 
+.currentDay {
+  color: #1e1b16;
+}
+
 .selected {
-  background-color: #1a8fff;
+  background-color: #fdbe16;
 }
 .selected:hover {
-  background-color: #1a8fff !important;
+  background-color: #fdbe16 !important;
 }
 
 .today {
-  border-image: linear-gradient(45deg, #ff1a79 0%, #eb82b3 40%);
   background-color: #fdbe16;
 }
 
 .today:hover {
-  border-image: linear-gradient(45deg, #ff1a79 0%, #eb82b3 40%) !important;
   background-color: #fdbe16 !important;
 }
 
