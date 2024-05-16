@@ -1,11 +1,13 @@
 'use client';
 
-import {
-  AttendanceParams,
-  AttendancePercentageProps,
-  AttendanceStatusListProps,
-  TeacherAttendanceByDateParams,
-} from '../utils/Interfaces';
+import ExtraSessionsCard from '@/components/ExtraSessionsCard';
+import OverviewCard from '@/components/OverviewCard';
+import TimeTableCard from '@/components/TimeTableCard';
+import WeekCalender from '@/components/WeekCalender';
+import WeekDays from '@/components/WeekDays';
+import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
+import CloseIcon from '@mui/icons-material/Close';
+import TodayIcon from '@mui/icons-material/Today';
 import {
   Box,
   Button,
@@ -17,49 +19,39 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import React, { useEffect } from 'react';
+import Backdrop from '@mui/material/Backdrop';
+import Divider from '@mui/material/Divider';
+import Fade from '@mui/material/Fade';
+import Modal from '@mui/material/Modal';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import AttendanceStatusListView from '../components/AttendanceStatusListView';
+import Header from '../components/Header';
+import Loader from '../components/Loader';
 import {
   attendanceInPercentageStatusList,
   attendanceStatusList,
   bulkAttendance,
 } from '../services/AttendanceService';
+import { cohortList } from '../services/CohortServices';
+import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import {
   formatDate,
   formatSelectedDate,
   getMonthName,
   getTodayDate,
-  shortDateFormat,
+  shortDateFormat
 } from '../utils/Helper';
-
-import { ATTENDANCE_ENUM } from '../utils/Helper';
-import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
-import AttendanceStatusListView from '../components/AttendanceStatusListView';
-import Backdrop from '@mui/material/Backdrop';
-import CloseIcon from '@mui/icons-material/Close';
-import Divider from '@mui/material/Divider';
-import ExtraSessionsCard from '@/components/ExtraSessionsCard';
-import Fade from '@mui/material/Fade';
-import Header from '../components/Header';
-import Link from 'next/link';
-import Loader from '../components/Loader';
-import MarkAttendance from '../components/MarkAttendance';
-import Modal from '@mui/material/Modal';
-import OverviewCard from '@/components/OverviewCard';
-import TimeTableCard from '@/components/TimeTableCard';
-import TodayIcon from '@mui/icons-material/Today';
-import WeekCalender from '@/components/WeekCalender';
-import WeekDays from '@/components/WeekDays';
-import { cohortList } from '../services/CohortServices';
-import { getMyCohortMemberList } from '../services/MyClassDetailsService';
-import { getTeacherAttendanceByDate } from '../services/AttendanceService';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter } from 'next/navigation';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-
-// import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import {
+  AttendancePercentageProps,
+  AttendanceStatusListProps
+} from '../utils/Interfaces';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -69,28 +61,16 @@ interface DashboardProps {
   //   buttonText: string;
 }
 
-interface user {
-  key: string;
-}
-
 interface cohort {
   cohortId: string;
   name: string;
   value: string;
 }
-// let userId = localStorage.getItem('userId');
-let contextId: string = '';
 
 const Dashboard: React.FC<DashboardProps> = () => {
   const [open, setOpen] = React.useState(false);
-  // const [selfAttendanceDetails, setSelfAttendanceDetails] = React.useState(null);
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   const [classId, setClassId] = React.useState('');
-  const [userType, setUserType] = React.useState('student');
-  const [cohortId, setCohortId] = React.useState(null);
-  const [openMarkAttendance, setOpenMarkAttendance] = React.useState(false);
-  const [openMarkUpdateAttendance, setOpenMarkUpdateAttendance] =
-    React.useState(false);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
@@ -100,11 +80,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
   const [percentageAttendance, setPercentageAttendance] =
     React.useState<any>(null);
-  const [currentDate, setCurrentDate] = React.useState(getTodayDate);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [AttendanceMessage, setAttendanceMessage] = React.useState('');
-  const [attendanceStatus, setAttendanceStatus] = React.useState('');
   const [isAllAttendanceMarked, setIsAllAttendanceMarked] =
     React.useState(false);
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);
@@ -113,23 +90,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
     vertical: 'top',
     horizontal: 'center',
   });
+  
   const { vertical, horizontal, openModal } = state;
-
   const { t } = useTranslation();
   const router = useRouter();
-  const limit = 100;
-  const page = 0;
-  // const userAttendance = [{ userId: localStorage.getItem('userId'), attendance: 'present' }];
-  const attendanceDate = currentDate;
+  const currentDate = getTodayDate();
   let contextId = classId;
-  //  const [TeachercontextId, setTeacherContextId] = React.useState("");
-  const userTypeData: any = {
-    Learners: 'student',
-    // Self: 'self',
-  };
-  const userTypeArray = Object.keys(userTypeData);
-  const report = false;
-  const offset = 0;
   const theme = useTheme<any>();
   ``;
   const modalContainer = {
@@ -144,11 +110,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
     p: 4,
   };
 
-  //API call to get center list
+  // API call to get center list
   useEffect(() => {
     const fetchCohortList = async () => {
       const userId = localStorage.getItem('userId');
-      // const userId = '6d58d9c3-863f-484b-a81a-76901e9a6c9e'; //Hard Coded for testing purpose. TODO: replace by dynamic userId
       setLoading(true);
       try {
         if (userId) {
@@ -162,17 +127,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
             'parentCohortId',
             extractedNames?.[0].cohortData.parentId
           );
-          //  setTeacherContextId(extractedNames[0].cohortData.parentId)
 
           const filteredData = extractedNames
             ?.map((item: any) => ({
-              cohortId: item.cohortData.cohortId,
-              parentId: item.cohortData.parentId,
-              name: item.cohortData.name,
+              cohortId: item?.cohortData?.cohortId,
+              parentId: item?.cohortData?.parentId,
+              name: item?.cohortData?.name,
             }))
             ?.filter(Boolean);
           setCohortsData(filteredData);
-          setClassId(filteredData?.[0].cohortId);
+          setClassId(filteredData?.[0]?.cohortId);
           setShowUpdateButton(true);
           setLoading(false);
         }
@@ -181,9 +145,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         setLoading(false);
       }
     };
-    // if (classesId != '') {
     fetchCohortList();
-    // }
   }, []);
 
   //API for getting student list
@@ -191,11 +153,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
     submitBulkAttendanceAction(true, '', '');
     const getCohortMemberList = async () => {
       setLoading(true);
-      // const parentCohortId = localStorage.getItem('parentCohortId');
-      // const formattedDate: string = currentDate;
       try {
         if (classId) {
-          //userId && parentCohortId
           let limit = 100;
           let page = 0;
           let filters = { cohortId: classId };
@@ -247,7 +206,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         });
                       }
                     });
-
                     return userAttendanceArray;
                   };
                   const userAttendanceArray = getUserAttendanceStatus(
@@ -255,6 +213,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     response
                   );
                   console.log('userAttendanceArray', userAttendanceArray);
+
                   if (nameUserIdArray && userAttendanceArray) {
                     const mergeArrays = (
                       nameUserIdArray: { userId: string; name: string }[],
@@ -302,22 +261,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
               userAttendanceStatusList();
             }
           }
-          // const TeachercontextId = parentCohortId.replace(/\n/g, '');
-
-          // const attendanceData: TeacherAttendanceByDateParams = {
-          //   fromDate: formattedDate,
-          //   toDate: formattedDate,
-          //   filters: {
-          //     userId,
-          //     contextId: TeachercontextId,
-          //   },
-          // };
-          // const response2 = await getTeacherAttendanceByDate(attendanceData);
-          // if (response?.data?.length === 0) {
-          //   setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
-          // } else {
-          //   setAttendanceStatus(response2.data[0].attendance);
-          // }
         }
       } catch (error) {
         console.error('Error fetching cohort list:', error);
@@ -327,7 +270,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       }
     };
 
-    if (classId.length) {
+    if (classId?.length) {
       getCohortMemberList();
     }
   }, [classId, selectedDate]);
@@ -338,10 +281,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   const handleModalToggle = () => setOpen(!open);
-  const handleMarkAttendanceModal = () =>
-    setOpenMarkAttendance(!openMarkAttendance);
-  const handleMarkUpdateAttendanceModal = () =>
-    setOpenMarkUpdateAttendance(!openMarkUpdateAttendance);
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
@@ -369,7 +308,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             contextId: classId,
             fromDate: fromDateFormatted,
             toDate: toDateFormatted,
-            scope: userType,
+            scope: 'student',
           },
           facets: ['attendanceDate'],
         };
@@ -415,57 +354,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
     getAttendaceData();
   }, [classId, handleSaveHasRun]);
-
-  const handleUserTypeChange = async (event: SelectChangeEvent) => {
-    setUserType(event.target.value as string);
-    setHandleSaveHasRun(!handleSaveHasRun);
-  };
-
-  const submitAttendance = async (date: string, status: string) => {
-    const parentCohortId = localStorage.getItem('parentCohortId');
-
-    const formattedDate: string = currentDate;
-    //console.log(date, status);
-    // if (userId && parentCohortId) {
-    //   const TeachercontextId = parentCohortId.replace(/\n/g, '');
-
-    //   const attendanceData: AttendanceParams = {
-    //     attendanceDate: date,
-    //     attendance: status,
-    //     userId,
-    //     contextId: TeachercontextId,
-    //   };
-    //   setLoading(true);
-    //   try {
-    //     const response = await markAttendance(attendanceData);
-    //     if (response) {
-    //       setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'));
-
-    //       //  const TeachercontextId = parentCohortId.replace(/\n/g, '');
-
-    //       const attendanceData: TeacherAttendanceByDateParams = {
-    //         fromDate: formattedDate,
-    //         toDate: formattedDate,
-    //         filters: {
-    //           userId,
-    //           contextId: TeachercontextId,
-    //         },
-    //       };
-    //       const response = await getTeacherAttendanceByDate(attendanceData);
-    //       if (response?.data?.length === 0) {
-    //         setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
-    //       } else {
-    //         setAttendanceStatus(response.data[0].attendance);
-    //       }
-    //     }
-    //     setLoading(false);
-    //   } catch (error) {
-    //     setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_UNSUCCESSFULLY'));
-    //     console.error('error', error);
-    //     setLoading(false);
-    //   }
-    // }
-  };
 
   const submitBulkAttendanceAction = (
     isBulkAction: boolean,
@@ -534,50 +422,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
       markBulkAttendance();
     }
   };
-
-  useEffect(() => {
-    let userId = localStorage.getItem('userId'); //Hard coded for testing purpose: TODO: Remove it later and add dynamic userId
-    //setContextId('17a82258-8b11-4c71-8b93-b0cac11826e3') // this one is for testing purpose
-    const fetchUserDetails = async () => {
-      try {
-        const parentCohortId = localStorage.getItem('parentCohortId');
-
-        const today: Date = new Date();
-        const year: number = today.getFullYear();
-        let month: number | string = today.getMonth() + 1; // Month is zero-based, so we add 1
-        let day: number | string = today.getDate();
-
-        // Pad single-digit months and days with a leading zero
-        month = month < 10 ? '0' + month : month;
-        day = day < 10 ? '0' + day : day;
-
-        const formattedDate: string = `${year}-${month}-${day}`;
-
-        if (userId && parentCohortId) {
-          const TeachercontextId = parentCohortId.replace(/\n/g, '');
-
-          const attendanceData: TeacherAttendanceByDateParams = {
-            fromDate: formattedDate,
-            toDate: formattedDate,
-            filters: {
-              userId,
-              contextId: TeachercontextId,
-            },
-          };
-          const response = await getTeacherAttendanceByDate(attendanceData);
-          if (response?.data?.length === 0) {
-            setAttendanceStatus(ATTENDANCE_ENUM.NOT_MARKED);
-          }
-          // else {
-          //   setAttendanceStatus(response?.data[0]?.attendance);
-          // }
-        }
-      } catch (Error) {
-        console.error(Error);
-      }
-    };
-    fetchUserDetails();
-  }, []);
 
   const handleClick = (newState: SnackbarOrigin) => () => {
     setState({ ...newState, openModal: true });
@@ -672,40 +516,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
                 <Box sx={{ mt: 0.6 }}>
                   <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
-                    <FormControl
-                      className="drawer-select"
-                      sx={{ my: 1, width: '40%' }}
-                    >
-                      <Select
-                        value={userType}
-                        onChange={handleUserTypeChange}
-                        displayEmpty
-                        inputProps={{ 'aria-label': 'Without label' }}
-                        className="SelectLanguages fs-14 fw-500"
-                        style={{
-                          borderRadius: '0.5rem',
-                          color: theme.palette.warning['200'],
-                          width: '100%',
-                          marginBottom: '0rem',
-                        }}
-                      >
-                        {userTypeArray.length !== 0 ? (
-                          userTypeArray.map((user) => (
-                            <MenuItem
-                              key={userTypeData[user]}
-                              value={userTypeData[user]}
-                            >
-                              {user}
-                            </MenuItem>
-                          ))
-                        ) : (
-                          <Typography style={{ fontWeight: 'bold' }}>
-                            {t('COMMON.NO_DATA_FOUND')}
-                          </Typography>
-                        )}
-                      </Select>
-                    </FormControl>
-                    {userType == 'student' ? (
                       <FormControl
                         className="drawer-select"
                         sx={{ m: 1, width: '60%' }}
@@ -739,7 +549,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           )}
                         </Select>
                       </FormControl>
-                    ) : null}
                   </Box>
                 </Box>
                 <WeekCalender
@@ -762,7 +571,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     marginTop={1}
                     justifyContent={'space-between'}
                   >
-                    {userType == 'student' ? (
                       <Box display={'flex'}>
                         {currentAttendance !== 'Not Marked' &&
                           currentAttendance !== 'futureDate' && (
@@ -829,17 +637,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           </Typography>
                         )}
                       </Box>
-                    ) : (
-                      <Box>
-                        <Typography
-                          sx={{ color: theme.palette.warning['A400'] }}
-                          variant="h6"
-                          className="word-break"
-                        >
-                          {t('ATTENDANCE.ON_LEAVE')}
-                        </Typography>
-                      </Box>
-                    )}
                     <Button
                       variant="contained"
                       color="primary"
@@ -848,11 +645,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         height: '2.5rem',
                         padding: theme.spacing(1),
                       }}
-                      onClick={
-                        userType == 'student'
-                          ? handleModalToggle
-                          : handleMarkAttendanceModal
-                      }
+                      onClick={handleModalToggle}
                       disabled={currentAttendance === 'futureDate'}
                     >
                       {t('COMMON.MARK')}
@@ -1019,17 +812,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Fade>
                 </Modal>
               </Box>
-
-              {/* Self Attendance Component */}
-              <MarkAttendance
-                isOpen={openMarkAttendance}
-                isSelfAttendance={true}
-                date={selectedDate || currentDate}
-                currentStatus={attendanceStatus}
-                handleClose={handleMarkAttendanceModal}
-                handleSubmit={submitAttendance}
-                message={AttendanceMessage}
-              />
+            
               <Snackbar
                 anchorOrigin={{ vertical, horizontal }}
                 open={openModal}
@@ -1083,7 +866,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   />
                 )}
               </Box>
-              {userType == 'Students' ? (
                 <Box display={'flex'} className="card_overview">
                   <Grid container spacing={0}>
                     <Grid item xs={5}>
@@ -1097,9 +879,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </Grid>
                   </Grid>
                 </Box>
-              ) : (
-                <OverviewCard label="My Overall Attendance" value="85%" />
-              )}
             </Box>
           </Box>
           <Box
