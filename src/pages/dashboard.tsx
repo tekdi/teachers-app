@@ -28,10 +28,10 @@ import {
 } from '../services/AttendanceService';
 import {
   formatDate,
+  formatSelectedDate,
   getMonthName,
   getTodayDate,
   shortDateFormat,
-  formatSelectedDate,
 } from '../utils/Helper';
 
 import { ATTENDANCE_ENUM } from '../utils/Helper';
@@ -55,10 +55,10 @@ import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { getTeacherAttendanceByDate } from '../services/AttendanceService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
@@ -337,6 +337,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, [classId]);
 
   const showDetailsHandle = (dayStr: string) => {
+    console.log(dayStr);
     setSelectedDate(formatSelectedDate(dayStr));
     setShowDetails(true);
   };
@@ -600,12 +601,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
     } else {
       currentAttendance = 'Not Marked';
     }
-    const selectedDateTime = new Date(selectedDate).getTime();
-    const todayDateTime = new Date(todayDate).getTime();
-
-    if (selectedDateTime > todayDateTime) {
-      currentAttendance = 'futureDate';
-    }
   }
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
 
@@ -621,498 +616,543 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }
   return (
     <Box minHeight="100vh" className="linerGradient">
-      <Header />
-      <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
-        {t('DASHBOARD.DASHBOARD')}
-      </Typography>
-      {loading && (
-        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-      )}
-      <Box
-        sx={{ bgcolor: theme.palette.warning['A900'], paddingBottom: '20px' }}
-      >
-        <Box display={'flex'} flexDirection={'column'} padding={'1rem'}>
-          <Box display={'flex'} justifyContent={'space-between'}>
-            <Typography variant="h2" sx={{ fontSize: '14px' }}>
-              {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
-            </Typography>
+      <Box>
+        <Box>
+          <Header />
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
-              className="calenderTitle flex-center"
-              display={'flex'}
               sx={{
-                cursor: 'pointer',
-                color: theme.palette.secondary.main,
-                gap: '2px',
+                width: '668px',
+                '@media (max-width: 700px)': {
+                  width: '100%',
+                },
               }}
-              onClick={viewAttendanceHistory}
             >
-              <Typography marginBottom={'0px'}>{getMonthName()}</Typography>
-              <TodayIcon />
+              <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
+                {t('DASHBOARD.DASHBOARD')}
+              </Typography>
             </Box>
           </Box>
-
-          <Box sx={{ mt: 0.6 }}>
-            <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
-              <FormControl
-                className="drawer-select"
-                sx={{ my: 1, width: '40%' }}
-              >
-                <Select
-                  value={userType}
-                  onChange={handleUserTypeChange}
-                  displayEmpty
-                  inputProps={{ 'aria-label': 'Without label' }}
-                  className="SelectLanguages fs-14 fw-500"
-                  style={{
-                    borderRadius: '0.5rem',
-                    color: theme.palette.warning['200'],
-                    width: '100%',
-                    marginBottom: '0rem',
-                  }}
-                >
-                  {userTypeArray.length !== 0 ? (
-                    userTypeArray.map((user) => (
-                      <MenuItem
-                        key={userTypeData[user]}
-                        value={userTypeData[user]}
-                      >
-                        {user}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <Typography style={{ fontWeight: 'bold' }}>
-                      {t('COMMON.NO_DATA_FOUND')}
-                    </Typography>
-                  )}
-                </Select>
-              </FormControl>
-              {userType == 'student' ? (
-                <FormControl
-                  className="drawer-select"
-                  sx={{ m: 1, width: '60%' }}
-                >
-                  <Select
-                    value={classId}
-                    onChange={handleCohortSelection}
-                    displayEmpty
-                    inputProps={{ 'aria-label': 'Without label' }}
-                    className="SelectLanguages fs-14 fw-500"
-                    style={{
-                      borderRadius: '0.5rem',
-                      color: theme.palette.warning['200'],
-                      width: '100%',
-                      marginBottom: '0rem',
+          {loading && (
+            <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+          )}
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                bgcolor: theme.palette.warning['A900'],
+                paddingBottom: '20px',
+                width: '668px',
+                '@media (max-width: 700px)': {
+                  width: '100%',
+                },
+              }}
+            >
+              <Box display={'flex'} flexDirection={'column'} padding={'1rem'}>
+                <Box display={'flex'} justifyContent={'space-between'}>
+                  <Typography variant="h2" sx={{ fontSize: '14px' }}>
+                    {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
+                  </Typography>
+                  <Box
+                    className="calenderTitle flex-center"
+                    display={'flex'}
+                    sx={{
+                      cursor: 'pointer',
+                      color: theme.palette.secondary.main,
+                      gap: '2px',
                     }}
+                    onClick={viewAttendanceHistory}
                   >
-                    {cohortsData?.length !== 0 ? (
-                      cohortsData?.map((cohort) => (
-                        <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                          {cohort.name}
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <Typography style={{ fontWeight: 'bold' }}>
-                        {t('COMMON.NO_DATA_FOUND')}
-                      </Typography>
-                    )}
-                  </Select>
-                </FormControl>
-              ) : null}
-            </Box>
-          </Box>
-          <WeekCalender
-            showDetailsHandle={showDetailsHandle}
-            data={percentageAttendanceData}
-          />
-          <Box
-            border={'1px solid black'}
-            height={'auto'}
-            width={'auto'}
-            padding={'1rem'}
-            borderRadius={'1rem'}
-            bgcolor={theme.palette.warning['A200']}
-            textAlign={'left'}
-            margin={'15px 0 0 0 '}
-          >
-            <Stack
-              direction="row"
-              spacing={1}
-              marginTop={1}
-              justifyContent={'space-between'}
-            >
-              {userType == 'student' ? (
-                <Box display={'flex'}>
-                  {currentAttendance !== 'Not Marked' &&
-                    currentAttendance !== 'futureDate' && (
-                      <>
-                        <Box
-                          width={'25px'}
-                          height={'2rem'}
-                          marginTop={'0.25rem'}
-                          margin={'5px'}
-                        >
-                          <CircularProgressbar
-                            value={currentAttendance?.present_percentage}
-                            styles={buildStyles({
-                              textColor: pathColor,
-                              pathColor: pathColor,
-                              trailColor: '#E6E6E6',
-                            })}
-                            strokeWidth={15}
-                          />
-                        </Box>
-                        <Box>
-                          <Typography
-                            sx={{ color: theme.palette.warning['A400'] }}
-                            variant="h6"
-                            className="word-break"
-                          >
-                            {currentAttendance?.present_percentage}{' '}
-                            {t('DASHBOARD.PERCENT_ATTENDANCE')}
-                          </Typography>
-                          <Typography
-                            sx={{ color: theme.palette.warning['A400'] }}
-                            variant="h6"
-                            className="word-break"
-                          >
-                            (
-                            {
-                              percentageAttendance?.[todayDate]
-                                ?.present_students
-                            }
-                            /{percentageAttendance?.[todayDate]?.total_students}
-                            ) {t('DASHBOARD.PRESENT_STUDENTS')}
-                          </Typography>
-                        </Box>
-                      </>
-                    )}
-
-                  {currentAttendance === 'Not Marked' &&
-                    currentAttendance !== 'futureDate' && (
-                      <Typography
-                        sx={{ color: theme.palette.warning['A400'] }}
-                        fontSize={'0.8rem'}
-                        // variant="h6"
-                        // className="word-break"
-                      >
-                        {t('DASHBOARD.NOT_MARKED')}
-                      </Typography>
-                    )}
-                  {currentAttendance === 'futureDate' && (
-                    <Typography
-                      sx={{ color: theme.palette.warning['A400'] }}
-                      fontSize={'0.8rem'}
-                    >
-                      {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
+                    <Typography marginBottom={'0px'}>
+                      {getMonthName()}
                     </Typography>
-                  )}
+                    <TodayIcon />
+                  </Box>
                 </Box>
-              ) : (
-                <Box>
-                  {/* <Typography
-                    sx={{ color: theme.palette.warning['A400'] }}
-                    fontSize={'0.8rem'}
-                  >
-                    {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
-                  </Typography> */}
 
-                  {/* <Typography
+                <Box sx={{ mt: 0.6 }}>
+                  <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
+                    <FormControl
+                      className="drawer-select"
+                      sx={{ my: 1, width: '40%' }}
+                    >
+                      <Select
+                        value={userType}
+                        onChange={handleUserTypeChange}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                        className="SelectLanguages fs-14 fw-500"
+                        style={{
+                          borderRadius: '0.5rem',
+                          color: theme.palette.warning['200'],
+                          width: '100%',
+                          marginBottom: '0rem',
+                        }}
+                      >
+                        {userTypeArray.length !== 0 ? (
+                          userTypeArray.map((user) => (
+                            <MenuItem
+                              key={userTypeData[user]}
+                              value={userTypeData[user]}
+                            >
+                              {user}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <Typography style={{ fontWeight: 'bold' }}>
+                            {t('COMMON.NO_DATA_FOUND')}
+                          </Typography>
+                        )}
+                      </Select>
+                    </FormControl>
+                    {userType == 'student' ? (
+                      <FormControl
+                        className="drawer-select"
+                        sx={{ m: 1, width: '60%' }}
+                      >
+                        <Select
+                          value={classId}
+                          onChange={handleCohortSelection}
+                          displayEmpty
+                          inputProps={{ 'aria-label': 'Without label' }}
+                          className="SelectLanguages fs-14 fw-500"
+                          style={{
+                            borderRadius: '0.5rem',
+                            color: theme.palette.warning['200'],
+                            width: '100%',
+                            marginBottom: '0rem',
+                          }}
+                        >
+                          {cohortsData?.length !== 0 ? (
+                            cohortsData?.map((cohort) => (
+                              <MenuItem
+                                key={cohort.cohortId}
+                                value={cohort.cohortId}
+                              >
+                                {cohort.name}
+                              </MenuItem>
+                            ))
+                          ) : (
+                            <Typography style={{ fontWeight: 'bold' }}>
+                              {t('COMMON.NO_DATA_FOUND')}
+                            </Typography>
+                          )}
+                        </Select>
+                      </FormControl>
+                    ) : null}
+                  </Box>
+                </Box>
+                <WeekCalender
+                  showDetailsHandle={showDetailsHandle}
+                  data={percentageAttendanceData}
+                />
+                <Box
+                  border={'1px solid black'}
+                  height={'auto'}
+                  width={'auto'}
+                  padding={'1rem'}
+                  borderRadius={'1rem'}
+                  bgcolor={theme.palette.warning['A200']}
+                  textAlign={'left'}
+                  margin={'15px 0 0 0 '}
+                >
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    marginTop={1}
+                    justifyContent={'space-between'}
+                  >
+                    {userType == 'student' ? (
+                      <Box display={'flex'}>
+                        {currentAttendance !== 'Not Marked' && (
+                          <>
+                            <Box
+                              width={'25px'}
+                              height={'2rem'}
+                              marginTop={'0.25rem'}
+                              margin={'5px'}
+                            >
+                              <CircularProgressbar
+                                value={currentAttendance?.present_percentage}
+                                styles={buildStyles({
+                                  textColor: pathColor,
+                                  pathColor: pathColor,
+                                  trailColor: '#E6E6E6',
+                                })}
+                                strokeWidth={15}
+                              />
+                            </Box>
+                            <Box>
+                              <Typography
+                                sx={{ color: theme.palette.warning['A400'] }}
+                                variant="h6"
+                                className="word-break"
+                              >
+                                {currentAttendance?.present_percentage}{' '}
+                                {t('DASHBOARD.PERCENT_ATTENDANCE')}
+                              </Typography>
+                              <Typography
+                                sx={{ color: theme.palette.warning['A400'] }}
+                                variant="h6"
+                                className="word-break"
+                              >
+                                (
+                                {
+                                  percentageAttendance?.[todayDate]
+                                    ?.present_students
+                                }
+                                /
+                                {
+                                  percentageAttendance?.[todayDate]
+                                    ?.total_students
+                                }
+                                ) {t('DASHBOARD.PRESENT_STUDENTS')}
+                              </Typography>
+                            </Box>
+                          </>
+                        )}
+                        <Typography
+                          sx={{ color: theme.palette.warning['A400'] }}
+                          variant="h6"
+                          className="word-break"
+                        >
+                          {t('DASHBOARD.NOT_MARKED')}
+                        </Typography>
+                      </Box>
+                    ) : (
+                      <Box>
+                        {/* <Typography sx = {{color: theme.palette.warning['A400']}}>{t('DASHBOARD.NOT_MARKED')}</Typography> */}
+                        {/* <Typography sx = {{color: theme.palette.warning['A400']}} fontSize={'0.8rem'}>{t('DASHBOARD.FUTURE_DATE_CANT_MARK')}</Typography>
+                         */}
+                        {/* <Typography
                 sx={{ color: theme.palette.warning['A400'] }}
                 variant="h6"
               >
                 {t('ATTENDANCE.PRESENT')}
               </Typography> */}
-                  <Typography
-                    sx={{ color: theme.palette.warning['A400'] }}
-                    variant="h6"
-                    className="word-break"
-                  >
-                    {t('ATTENDANCE.ON_LEAVE')}
-                  </Typography>
-                </Box>
-              )}
-              <Button
-                variant="contained"
-                color="primary"
-                style={{
-                  minWidth: '33%',
-                  height: '2.5rem',
-                  padding: theme.spacing(1),
-                }}
-                onClick={
-                  userType == 'student'
-                    ? handleModalToggle
-                    : handleMarkAttendanceModal
-                }
-                disabled={currentAttendance === 'futureDate'}
-              >
-                {t('COMMON.MARK')}
-              </Button>
-            </Stack>
-          </Box>
-
-          {/* Student Attendance Modal */}
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            open={open}
-            onClose={handleModalToggle}
-            closeAfterTransition
-            slots={{ backdrop: Backdrop }}
-            slotProps={{
-              backdrop: {
-                timeout: 500,
-              },
-            }}
-          >
-            <Fade in={open}>
-              <Box
-                sx={{
-                  ...modalContainer,
-                  borderColor: theme.palette.warning['A400'],
-                  padding: '15px 10px 0 10px',
-                }}
-                borderRadius={'1rem'}
-                height={'80%'}
-              >
-                <Box height={'100%'} width={'100%'}>
-                  <Box display={'flex'} justifyContent={'space-between'}>
-                    <Box marginBottom={'0px'}>
-                      <Typography
-                        variant="h2"
-                        component="h2"
-                        marginBottom={'0px'}
-                        fontWeight={'500'}
-                        fontSize={'16px'}
-                        sx={{ color: theme.palette.warning['A200'] }}
-                      >
-                        {t('COMMON.MARK_STUDENT_ATTENDANCE')}
-                      </Typography>
-                      <Typography
-                        variant="h2"
-                        sx={{
-                          paddingBottom: '10px',
-                          color: theme.palette.warning['A200'],
-                          fontSize: '14px',
-                        }}
-                        component="h2"
-                      >
-                        {formatDate(selectedDate || currentDate)}
-                      </Typography>
-                    </Box>
-                    <Box onClick={() => handleModalToggle()}>
-                      <CloseIcon
-                        sx={{
-                          cursor: 'pointer',
-                          color: theme.palette.warning['A200'],
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                  <Box sx={{ height: '1px', background: '#D0C5B4' }}></Box>
-                  {loading && (
-                    <Loader
-                      showBackdrop={true}
-                      loadingText={t('COMMON.LOADING')}
-                    />
-                  )}
-
-                  <Typography
-                    sx={{
-                      marginTop: '10px',
-                      fontSize: '12px',
-                      color: theme.palette.warning['A200'],
-                    }}
-                  >
-                    {t('ATTENDANCE.TOTAL_STUDENTS', {
-                      count: numberOfCohortMembers,
-                    })}
-                  </Typography>
-                  {cohortMemberList && cohortMemberList?.length != 0 ? (
-                    <Box
-                      height={'58%'}
-                      sx={{ overflowY: 'scroll', marginTop: '10px' }}
+                        <Typography
+                          sx={{ color: theme.palette.warning['A400'] }}
+                          variant="h6"
+                          className="word-break"
+                        >
+                          {t('ATTENDANCE.ON_LEAVE')}
+                        </Typography>
+                      </Box>
+                    )}
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        minWidth: '33%',
+                        height: '2.5rem',
+                        padding: theme.spacing(1),
+                      }}
+                      onClick={
+                        userType == 'student'
+                          ? handleModalToggle
+                          : handleMarkAttendanceModal
+                      }
                     >
-                      <Box>
-                        <AttendanceStatusListView
-                          isEdit={true}
-                          isBulkAction={true}
-                          bulkAttendanceStatus={bulkAttendanceStatus}
-                          handleBulkAction={submitBulkAttendanceAction}
-                        />
-                        {cohortMemberList?.map(
-                          (
-                            user: any //cohort member list should have userId, attendance, name
-                          ) => (
-                            <AttendanceStatusListView
-                              key={user.userId}
-                              userData={{
-                                userId: user.userId,
-                                attendance: user.attendance,
-                                attendanceDate: selectedDate || currentDate,
-                                name: user.name,
+                      {t('COMMON.MARK')}
+                    </Button>
+                  </Stack>
+                </Box>
+
+                {/* Student Attendance Modal */}
+                <Modal
+                  aria-labelledby="transition-modal-title"
+                  aria-describedby="transition-modal-description"
+                  open={open}
+                  onClose={handleModalToggle}
+                  closeAfterTransition
+                  slots={{ backdrop: Backdrop }}
+                  slotProps={{
+                    backdrop: {
+                      timeout: 500,
+                    },
+                  }}
+                >
+                  <Fade in={open}>
+                    <Box
+                      sx={{
+                        ...modalContainer,
+                        borderColor: theme.palette.warning['A400'],
+                        padding: '15px 10px 0 10px',
+                      }}
+                      borderRadius={'1rem'}
+                      height={'80%'}
+                    >
+                      <Box height={'100%'} width={'100%'}>
+                        <Box display={'flex'} justifyContent={'space-between'}>
+                          <Box marginBottom={'0px'}>
+                            <Typography
+                              variant="h2"
+                              component="h2"
+                              marginBottom={'0px'}
+                              fontWeight={'500'}
+                              fontSize={'16px'}
+                              sx={{ color: theme.palette.warning['A200'] }}
+                            >
+                              {t('COMMON.MARK_STUDENT_ATTENDANCE')}
+                            </Typography>
+                            <Typography
+                              variant="h2"
+                              sx={{
+                                paddingBottom: '10px',
+                                color: theme.palette.warning['A200'],
+                                fontSize: '14px',
                               }}
-                              isEdit={true}
-                              bulkAttendanceStatus={bulkAttendanceStatus}
-                              handleBulkAction={submitBulkAttendanceAction}
+                              component="h2"
+                            >
+                              {formatDate(selectedDate || currentDate)}
+                            </Typography>
+                          </Box>
+                          <Box onClick={() => handleModalToggle()}>
+                            <CloseIcon
+                              sx={{
+                                cursor: 'pointer',
+                                color: theme.palette.warning['A200'],
+                              }}
                             />
-                          )
+                          </Box>
+                        </Box>
+                        <Box
+                          sx={{ height: '1px', background: '#D0C5B4' }}
+                        ></Box>
+                        {loading && (
+                          <Loader
+                            showBackdrop={true}
+                            loadingText={t('COMMON.LOADING')}
+                          />
+                        )}
+
+                        <Typography
+                          sx={{
+                            marginTop: '10px',
+                            fontSize: '12px',
+                            color: theme.palette.warning['A200'],
+                          }}
+                        >
+                          {t('ATTENDANCE.TOTAL_STUDENTS', {
+                            count: numberOfCohortMembers,
+                          })}
+                        </Typography>
+                        {cohortMemberList && cohortMemberList?.length != 0 ? (
+                          <Box
+                            height={'58%'}
+                            sx={{ overflowY: 'scroll', marginTop: '10px' }}
+                          >
+                            <Box>
+                              <AttendanceStatusListView
+                                isEdit={true}
+                                isBulkAction={true}
+                                bulkAttendanceStatus={bulkAttendanceStatus}
+                                handleBulkAction={submitBulkAttendanceAction}
+                              />
+                              {cohortMemberList?.map(
+                                (
+                                  user: any //cohort member list should have userId, attendance, name
+                                ) => (
+                                  <AttendanceStatusListView
+                                    key={user.userId}
+                                    userData={{
+                                      userId: user.userId,
+                                      attendance: user.attendance,
+                                      attendanceDate:
+                                        selectedDate || currentDate,
+                                      name: user.name,
+                                    }}
+                                    isEdit={true}
+                                    bulkAttendanceStatus={bulkAttendanceStatus}
+                                    handleBulkAction={
+                                      submitBulkAttendanceAction
+                                    }
+                                  />
+                                )
+                              )}
+                            </Box>
+                            <Box
+                              position={'absolute'}
+                              bottom="10px"
+                              display={'flex'}
+                              gap={'20px'}
+                              flexDirection={'row'}
+                              justifyContent={'space-evenly'}
+                              marginBottom={0}
+                              sx={{ background: '#fff', padding: '15px 0 0 0' }}
+                            >
+                              <Button
+                                variant="outlined"
+                                style={{ width: '8rem' }}
+                                disabled={isAllAttendanceMarked ? false : true}
+                                onClick={() =>
+                                  submitBulkAttendanceAction(true, '', '')
+                                }
+                              >
+                                {' '}
+                                {t('COMMON.CLEAR_ALL')}
+                              </Button>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                style={{ width: '8rem' }}
+                                disabled={isAllAttendanceMarked ? false : true}
+                                onClick={handleSave}
+                              >
+                                {showUpdateButton
+                                  ? t('COMMON.UPDATE')
+                                  : t('COMMON.SAVE')}
+                              </Button>
+                            </Box>
+                          </Box>
+                        ) : (
+                          <Typography
+                            style={{ fontWeight: 'bold', marginLeft: '1rem' }}
+                          >
+                            {t('COMMON.NO_DATA_FOUND')}
+                          </Typography>
                         )}
                       </Box>
-                      <Box
-                        position={'absolute'}
-                        bottom="10px"
-                        display={'flex'}
-                        gap={'20px'}
-                        flexDirection={'row'}
-                        justifyContent={'space-evenly'}
-                        marginBottom={0}
-                        sx={{ background: '#fff', padding: '15px 0 0 0' }}
-                      >
-                        <Button
-                          variant="outlined"
-                          style={{ width: '8rem' }}
-                          disabled={isAllAttendanceMarked ? false : true}
-                          onClick={() =>
-                            submitBulkAttendanceAction(true, '', '')
-                          }
-                        >
-                          {' '}
-                          {t('COMMON.CLEAR_ALL')}
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          style={{ width: '8rem' }}
-                          disabled={isAllAttendanceMarked ? false : true}
-                          onClick={handleSave}
-                        >
-                          {showUpdateButton
-                            ? t('COMMON.UPDATE')
-                            : t('COMMON.SAVE')}
-                        </Button>
-                      </Box>
                     </Box>
-                  ) : (
-                    <Typography
-                      style={{ fontWeight: 'bold', marginLeft: '1rem' }}
-                    >
-                      {t('COMMON.NO_DATA_FOUND')}
-                    </Typography>
-                  )}
-                </Box>
+                  </Fade>
+                </Modal>
               </Box>
-            </Fade>
-          </Modal>
-        </Box>
 
-        {/* Self Attendance Component */}
-        <MarkAttendance
-          isOpen={openMarkAttendance}
-          isSelfAttendance={true}
-          date={selectedDate || currentDate}
-          currentStatus={attendanceStatus}
-          handleClose={handleMarkAttendanceModal}
-          handleSubmit={submitAttendance}
-          message={AttendanceMessage}
-        />
-        <Snackbar
-          anchorOrigin={{ vertical, horizontal }}
-          open={openModal}
-          onClose={handleClose}
-          className="sample"
-          autoHideDuration={5000}
-          key={vertical + horizontal}
-          message={t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY')}
-          // action={action}
-        />
+              {/* Self Attendance Component */}
+              <MarkAttendance
+                isOpen={openMarkAttendance}
+                isSelfAttendance={true}
+                date={selectedDate || currentDate}
+                currentStatus={attendanceStatus}
+                handleClose={handleMarkAttendanceModal}
+                handleSubmit={submitAttendance}
+                message={AttendanceMessage}
+              />
+              <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                open={openModal}
+                onClose={handleClose}
+                className="sample"
+                autoHideDuration={5000}
+                key={vertical + horizontal}
+                message={t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY')}
+                // action={action}
+              />
 
-        <Divider sx={{ borderBottomWidth: '0.1rem' }} />
+              <Divider sx={{ borderBottomWidth: '0.1rem' }} />
 
-        {/* Overview Card Section */}
-        <Box
-          display={'flex'}
-          flexDirection={'column'}
-          gap={'1rem'}
-          padding={'1rem'}
-        >
-          <Stack
-            direction={'row'}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-            padding={'2px'}
-          >
-            <Box>
-              <Typography className="fs-14" variant="h2">
-                {t('DASHBOARD.OVERVIEW')}
-              </Typography>
+              {/* Overview Card Section */}
+              <Box
+                display={'flex'}
+                flexDirection={'column'}
+                gap={'1rem'}
+                padding={'1rem'}
+              >
+                <Stack
+                  direction={'row'}
+                  justifyContent={'space-between'}
+                  alignItems={'center'}
+                  padding={'2px'}
+                >
+                  <Box>
+                    <Typography className="fs-14" variant="h2">
+                      {t('DASHBOARD.OVERVIEW')}
+                    </Typography>
+                  </Box>
+                  <Box
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    sx={{ color: theme.palette.secondary.main }}
+                  >
+                    <Link
+                      className="flex-center fs-14 text-decoration"
+                      href={'/'}
+                    >
+                      {t('DASHBOARD.MORE_DETAILS')}{' '}
+                      <ArrowForwardSharpIcon sx={{ height: '18px' }} />
+                    </Link>
+                  </Box>
+                </Stack>
+                {loading && (
+                  <Loader
+                    showBackdrop={true}
+                    loadingText={t('COMMON.LOADING')}
+                  />
+                )}
+              </Box>
+              {userType == 'Students' ? (
+                <Box display={'flex'} className="card_overview">
+                  <Grid container spacing={0}>
+                    <Grid item xs={5}>
+                      <OverviewCard label="Centre Attendance" value="71%" />
+                    </Grid>
+                    <Grid item xs={7}>
+                      <OverviewCard
+                        label="Low Attendance Students"
+                        value="Bharat Kumar, Ankita Kulkarni, +3 more"
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
+              ) : (
+                <OverviewCard label="My Overall Attendance" value="85%" />
+              )}
             </Box>
-            <Box
-              display={'flex'}
-              justifyContent={'center'}
-              alignItems={'center'}
-              sx={{ color: theme.palette.secondary.main }}
-            >
-              <Link className="flex-center fs-14 text-decoration" href={'/'}>
-                {t('DASHBOARD.MORE_DETAILS')}{' '}
-                <ArrowForwardSharpIcon sx={{ height: '18px' }} />
-              </Link>
-            </Box>
-          </Stack>
-          {loading && (
-            <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-          )}
-        </Box>
-        {userType == 'Students' ? (
-          <Box display={'flex'} className="card_overview">
-            <Grid container spacing={0}>
-              <Grid item xs={5}>
-                <OverviewCard label="Centre Attendance" value="71%" />
-              </Grid>
-              <Grid item xs={7}>
-                <OverviewCard
-                  label="Low Attendance Students"
-                  value="Bharat Kumar, Ankita Kulkarni, +3 more"
-                />
-              </Grid>
-            </Grid>
           </Box>
-        ) : (
-          <OverviewCard label="My Overall Attendance" value="85%" />
-        )}
-      </Box>
-      <Box sx={{ background: '#fff', padding: '1rem' }}>
-        <Typography textAlign={'left'} fontSize={'0.8rem'}>
-          {t('DASHBOARD.MY_TIMETABLE')}
-        </Typography>
-        <WeekDays useAbbreviation={false} />
-        <TimeTableCard
-          subject={'Science'}
-          instructor={'Khapari Dharmu'}
-          time={'10 am - 1 pm'}
-        />
-        <TimeTableCard
-          subject={'Home Science'}
-          instructor={'Khapari Dharmu'}
-          time={'2 pm - 5 pm'}
-        />
-        <Typography textAlign={'left'} fontSize={'0.8rem'} m={'1rem'}>
-          {t('DASHBOARD.UPCOMING_EXTRA_SESSION')}
-        </Typography>
-        <ExtraSessionsCard
-          subject={'Science'}
-          instructor={'Upendra Kulkarni'}
-          dateAndTime={'07-may-2024'}
-          meetingURL={
-            'https://meet.google.com/fqz-ftoh-dynfqz-ftoh-dynfqz-ftoh-dyn'
-          }
-          onEditClick={() => {
-            console.log('edit');
-          }}
-          onCopyClick={() => {
-            console.log('copy');
-          }}
-        />
+          <Box
+            sx={{
+              background: '#fff',
+              padding: '1rem',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <Box
+              sx={{
+                width: '668px',
+                '@media (max-width: 700px)': {
+                  width: '100%',
+                },
+              }}
+            >
+              <Typography
+                textAlign={'left'}
+                fontSize={'0.8rem'}
+                marginLeft={'8px'}
+              >
+                {t('DASHBOARD.MY_TIMETABLE')}
+              </Typography>
+              <WeekDays useAbbreviation={false} />
+              <TimeTableCard
+                subject={'Science'}
+                instructor={'Khapari Dharmu'}
+                time={'10 am - 1 pm'}
+              />
+              <TimeTableCard
+                subject={'Home Science'}
+                instructor={'Khapari Dharmu'}
+                time={'2 pm - 5 pm'}
+              />
+              <Typography textAlign={'left'} fontSize={'0.8rem'} m={'1rem'}>
+                {t('DASHBOARD.UPCOMING_EXTRA_SESSION')}
+              </Typography>
+              <ExtraSessionsCard
+                subject={'Science'}
+                instructor={'Upendra Kulkarni'}
+                dateAndTime={'07-may-2024'}
+                meetingURL={
+                  'https://meet.google.com/fqz-ftoh-dynfqz-ftoh-dynfqz-ftoh-dyn'
+                }
+                onEditClick={() => {
+                  console.log('edit');
+                }}
+                onCopyClick={() => {
+                  console.log('copy');
+                }}
+              />
+            </Box>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );

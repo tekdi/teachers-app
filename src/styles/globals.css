@@ -80,6 +80,40 @@ body {
   --border-color: #eee;
   --bg-color: #f9f9f9;
   --neutral-color: #fff;
+  --pink-color: #ff1a79;
+  --custom-gradient: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%);
+  --custom-gradient-pink: linear-gradient(45deg, #ff1a79 0%, #eb82b3 40%);
+}
+
+:root {
+  --primary-main: #fdbe16;
+  --primary-light: #ffdea1;
+
+  --secondary-main: #0d599e;
+  --secondary-light: #e7f3f8;
+
+  --success-main: #1a8825;
+  --success-light: #c0ffc7;
+
+  --info-main: #064471;
+  --info-light: #d6eeff;
+
+  --warning-100: #17130b;
+  --warning-200: #261900;
+  --warning-300: #1f1b13;
+  --warning-400: #7c766f;
+  --warning-500: #969088;
+  --warning-600: #b1aaa2;
+  --warning-700: #ded8e1;
+  --warning-800: #f8efe7;
+  --warning-900: #dadada;
+  --warning-A100: #d0c5b4;
+  --warning-A200: #4d4639;
+  --warning-A400: #ffffff;
+  --warning-A700: #ededed;
+
+  --error-main: #ba1a1a;
+  --error-light: #ffdad6;
 }
 
 /* GENERAL */
@@ -204,7 +238,7 @@ main {
 .calendar .body .cell {
   position: relative;
   padding: 10px;
-  border: 1px solid #d0c5b4;
+  border: 1px solid var(--warning-A100);
   overflow: hidden;
   cursor: pointer;
   transition: 0.25s ease-out;
@@ -223,6 +257,7 @@ main {
 }
 
 .selected {
+<<<<<<< HEAD
   background-color: #fdbe16;
 }
 .selected:hover {
@@ -235,6 +270,22 @@ main {
 
 .today:hover {
   background-color: #fdbe16 !important;
+=======
+  background-color: var(--main-color);
+}
+.selected:hover {
+  background-color: var(--main-color) !important;
+}
+
+.today {
+  border-image: var(--custom-gradient-pink);
+  background-color: var(--primary-main);
+}
+
+.today:hover {
+  background-image: var(--custom-gradient-pink) !important;
+  background-color: var(--primary-main) !important;
+>>>>>>> 81713b9d21ed8e413b8bcae4e9332fe5c1b61f80
 }
 
 .calendar .row {
@@ -274,7 +325,7 @@ main {
   transition: 0.5s ease-in;
 }
 .calendar .body .cell.today .bg {
-  color: #ff1a79;
+  color: var(--pink-colo);
   opacity: 0.05;
 }
 
@@ -312,8 +363,11 @@ main {
 }
 
 .linerGradient {
-  background: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%);
+  background-image: var(--custom-gradient);
 }
 .icon_holder svg {
   color: #1e1b16 !important;
+}
+.w-100 {
+  width: 100% !important;
 }

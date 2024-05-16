@@ -106,60 +106,68 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <Stack
-        sx={{ minWidth: '100%', padding: '8px 0' }}
-        direction="row"
-        justifyContent={'space-between'}
-        alignItems={'center'}
-        height="auto"
-      >
-        <Box onClick={toggleDrawer(true)} mt={'0.5rem'} paddingLeft={'1rem'}>
-          <MenuIcon />
-        </Box>
-        <Box sx={{ margin: '0 auto' }}>
-          <Image
-            src={LogoWithoutTagline}
-            alt="logo"
-            onClick={() => router.push('/dashboard')}
-            style={{ cursor: 'pointer' }}
-          />
-        </Box>
-        <Box
-          onClick={handleClick}
-          sx={{ cursor: 'pointer', position: 'relative' }}
-          aria-controls={open ? 'account-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : 'false'}
-          paddingRight={'1rem'}
-          display={'flex'}
-          justifyContent={'center'}
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Stack
+          sx={{
+            width: '668px',
+            '@media (max-width: 700px)': {
+              width: '100%',
+            },
+            padding: '8px 0',
+          }}
+          direction="row"
+          justifyContent={'space-between'}
           alignItems={'center'}
-          flexDirection={'column'}
-          mt={'0.5rem'}
+          height="auto"
         >
-          <AccountCircleIcon fontSize="large" color="action" />
-        </Box>
-        <div>
-          <StyledMenu
-            id="profile-menu"
-            MenuListProps={{
-              'aria-labelledby': 'profile-button',
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
+          <Box onClick={toggleDrawer(true)} mt={'0.5rem'} paddingLeft={'1rem'}>
+            <MenuIcon />
+          </Box>
+          <Box sx={{ margin: '0 auto' }}>
+            <Image
+              src={LogoWithoutTagline}
+              alt="logo"
+              onClick={() => router.push('/dashboard')}
+              style={{ cursor: 'pointer' }}
+            />
+          </Box>
+          <Box
+            onClick={handleClick}
+            sx={{ cursor: 'pointer', position: 'relative' }}
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : 'false'}
+            paddingRight={'1rem'}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            flexDirection={'column'}
+            mt={'0.5rem'}
           >
-            <MenuItem onClick={handleProfileClick} disableRipple>
-              <PersonOutlineOutlinedIcon />
-              {t('PROFILE.MY_PROFILE')}{' '}
-            </MenuItem>
-            <MenuItem onClick={handleLogoutClick} disableRipple>
-              <LogoutOutlinedIcon />
-              {t('COMMON.LOGOUT')}
-            </MenuItem>
-          </StyledMenu>
-        </div>
-      </Stack>
+            <AccountCircleIcon fontSize="large" color="action" />
+          </Box>
+          <div>
+            <StyledMenu
+              id="profile-menu"
+              MenuListProps={{
+                'aria-labelledby': 'profile-button',
+              }}
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleProfileClick} disableRipple>
+                <PersonOutlineOutlinedIcon />
+                {t('PROFILE.MY_PROFILE')}{' '}
+              </MenuItem>
+              <MenuItem onClick={handleLogoutClick} disableRipple>
+                <LogoutOutlinedIcon />
+                {t('COMMON.LOGOUT')}
+              </MenuItem>
+            </StyledMenu>
+          </div>
+        </Stack>
+      </Box>
       <Divider sx={{ borderBottomWidth: '0.15rem' }} />
       <MenuDrawer
         toggleDrawer={toggleDrawer}
