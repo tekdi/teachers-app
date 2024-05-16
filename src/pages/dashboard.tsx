@@ -501,7 +501,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     hasEmptyAttendance();
   };
   const viewAttendanceHistory = () => {
-    router.push('/user-attendance-history'); //Check Route
+    router.push('/userAttendanceHistory'); //Check Route
   };
 
   const handleSave = () => {
