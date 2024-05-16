@@ -19,7 +19,6 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [color, setColor] = useState(true);
-  const [showCircularProgress, setShowCircularProgress] = useState(false);
 
   const changeMonthHandle = (btnType: string) => {
     if (btnType === 'prev') {
@@ -93,6 +92,8 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
     let days = [];
     let day = startDate;
     let formattedDate = '';
+    let showCircularProgress = false;
+
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
@@ -103,7 +104,6 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
 
         if (data !== null) {
           const dayData = data?.[format(cloneDay, 'yyyy-MM-dd')] || {};
-          // console.log('dayData', dayData);
           const presentPercentage = parseFloat(dayData.present_percentage) || 0;
           percentage = presentPercentage;
           if (presentPercentage < 25) {
@@ -113,12 +113,14 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
           } else {
             pathColor = '#06A816';
           }
-          let dayDataValuesExist = Object.values(dayData).some(
+          const dayDataValuesExist = Object.values(dayData).some(
             (value) => value !== null && value !== undefined && value !== ''
           );
-          dayDataValuesExist
-            ? setShowCircularProgress(true)
-            : setShowCircularProgress(false);
+          if (dayDataValuesExist) {
+            showCircularProgress = true;
+          } else {
+            showCircularProgress = false;
+          }
         }
 
         days.push(
