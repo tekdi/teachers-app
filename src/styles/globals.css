@@ -257,35 +257,18 @@ main {
 }
 
 .selected {
-<<<<<<< HEAD
-  background-color: #fdbe16;
+  background-color: var(--primary-main);
 }
 .selected:hover {
-  background-color: #fdbe16 !important;
+  background-color: var(--primary-main) !important;
 }
 
 .today {
-  background-color: #fdbe16;
-}
-
-.today:hover {
-  background-color: #fdbe16 !important;
-=======
-  background-color: var(--main-color);
-}
-.selected:hover {
-  background-color: var(--main-color) !important;
-}
-
-.today {
-  border-image: var(--custom-gradient-pink);
   background-color: var(--primary-main);
 }
 
 .today:hover {
-  background-image: var(--custom-gradient-pink) !important;
   background-color: var(--primary-main) !important;
->>>>>>> 81713b9d21ed8e413b8bcae4e9332fe5c1b61f80
 }
 
 .calendar .row {
