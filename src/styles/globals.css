@@ -230,8 +230,7 @@ main {
 
 .calendar .days {
   text-transform: uppercase;
-  font-weight: 400;
-  color: black;
+  font-weight: 600;
   font-size: 70%;
   padding: 0.75em 0;
 }
@@ -245,6 +244,7 @@ main {
   transition: 0.25s ease-out;
   font-size: 1.5em;
   border-radius: 4px;
+  height: 4rem;
 }
 
 .calendar .body .cell:hover {
@@ -252,20 +252,22 @@ main {
   transition: 0.5s ease-out;
 }
 
+.currentDay {
+  color: #1e1b16;
+}
+
 .selected {
-  background-color: var(--main-color);
+  background-color: var(--primary-main);
 }
 .selected:hover {
-  background-color: var(--main-color) !important;
+  background-color: var(--primary-main) !important;
 }
 
 .today {
-  border-image: var(--custom-gradient-pink);
   background-color: var(--primary-main);
 }
 
 .today:hover {
-  background-image: var(--custom-gradient-pink) !important;
   background-color: var(--primary-main) !important;
 }
 
@@ -351,4 +353,125 @@ main {
 }
 .w-100 {
   width: 100% !important;
+}
+
+/* This is for react-calender month view and classes are from library */
+.react-calendar {
+  width: 100% !important;
+}
+
+.react-calendar_month-viewdays_day {
+  margin: 12px !important;
+}
+
+.react-calendar__tile--active:enabled:hover {
+  background-color: #fbbc13 !important;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  color: #1f1b13 !important;
+}
+
+.react-calendar__tile--now {
+  background-color: transparent !important;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  visibility: hidden;
+}
+
+.present-marker {
+  color: #1a8825;
+  margin: auto !important;
+  width: fit-content !important;
+}
+
+.absent-marker {
+  color: #ba1a1a !important;
+  width: fit-content !important;
+  margin: auto !important;
+}
+
+.on-leave-marker {
+  color: #ba1a1a !important;
+  width: fit-content !important;
+  margin: auto !important;
+}
+
+.tile-day {
+  border: 1px solid #d0c5b4 !important;
+  height: 70px !important;
+  width: 100% !important;
+  border-radius: 5px;
+  margin-bottom: 5px !important;
+  /* margin-left: 2px !important; */
+}
+
+.calender-body {
+  background-color: #e7f3f8 !important;
+}
+
+.react-calendar__tile--active {
+  background-color: #fbbc13 !important;
+  color: black !important;
+}
+
+.react-calendar__tile {
+  margin: auto !important;
+}
+
+.today {
+  border: 2px solid #1f1b13 !important;
+}
+
+.attendance-not-marked abbr {
+  border: 1px dashed #ba1a1a;
+  color: #ba1a1a !important;
+  border-radius: 50%;
+  padding: 5px;
+  height: 25px;
+  display: flex;
+  width: 25px;
+  justify-content: center;
+  align-items: center;
+}
+
+.sample .MuiSnackbarContent-root {
+  background-color: green !important;
+}
+
+.alert .MuiSnackbarContent-root {
+  background-color: #ffdad6 !important;
+  color: #ba1a1a;
+  font-size: 0.75rem;
+}
+
+.custom-calendar-container {
+  display: flex !important;
+  justify-content: center !important; /* Centers the calendar horizontally */
+}
+
+.react-calendar {
+  max-width: 100% !important; /* Ensures the calendar doesn't overflow its container */
+}
+
+.react-calendar__month-view__days {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important; /* Creates 7 columns */
+  gap: 8px !important; /* Adjust the spacing between the date cells */
+}
+
+.react-calendar__month-view__days__day {
+  text-align: center !important; /* Centers the text within each date cell */
+}
+
+.react-calendar button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.calender-body {
+  padding: 20px !important;
 }

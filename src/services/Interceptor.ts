@@ -54,11 +54,12 @@ instance.interceptors.response.use(
         originalRequest._retry = true;
         try {
           const accessToken = await refreshToken();
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           if (!accessToken) {
             window.location.href = '/logout';
+          } else {
+            originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+            return instance(originalRequest);
           }
-          return instance(originalRequest);
         } catch (refreshError) {
           return Promise.reject(refreshError);
         }
