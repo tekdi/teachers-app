@@ -23,8 +23,7 @@ import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import {
   attendanceInPercentageStatusList,
   attendanceStatusList,
-  bulkAttendance,
-  markAttendance,
+  bulkAttendance
 } from '../services/AttendanceService';
 import {
   formatDate,
@@ -92,7 +91,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [openMarkAttendance, setOpenMarkAttendance] = React.useState(false);
   const [openMarkUpdateAttendance, setOpenMarkUpdateAttendance] =
     React.useState(false);
-  const [cohortMemberList, setCohortMemberList] = React.useState<Array<user>>(
+  const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>(
     []
   );
   const [showDetails, setShowDetails] = React.useState(false);
@@ -191,6 +190,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   //API for getting student list
   useEffect(() => {
+    submitBulkAttendanceAction(true, '', '')
     const getCohortMemberList = async () => {
       setLoading(true);
       // const parentCohortId = localStorage.getItem('parentCohortId');
@@ -274,16 +274,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         name: string;
                         attendance: string;
                       }[] = [];
-
-                      // Iterate over nameUserIdArray
                       nameUserIdArray.forEach((user) => {
                         const userId = user.userId;
-                        // Find corresponding entry in userAttendanceArray
                         const attendanceEntry = userAttendanceArray.find(
                           (entry) => entry.userId === userId
                         );
                         if (attendanceEntry) {
-                          // If found, merge properties and push to newArray
                           newArray.push({
                             userId,
                             name: user.name,
@@ -291,16 +287,18 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           });
                         }
                       });
-                      // setCohortMemberList(newArray); //Getting issue updating attendance regardless of cohort id for mark all
+                      if(newArray.length !=0){
+                      setCohortMemberList(newArray);
+                      setNumberOfCohortMembers(newArray?.length);
+                    }else{
+                      setCohortMemberList(nameUserIdArray);
+                      setNumberOfCohortMembers(nameUserIdArray?.length);
+                    }
                       return newArray;
                     };
                     mergeArrays(nameUserIdArray, userAttendanceArray);
                   }
                 }
-
-                //Add logic to merge response2 and nameUserIdArray
-                setCohortMemberList(nameUserIdArray); //check where to set cohort member list
-                setNumberOfCohortMembers(nameUserIdArray?.length);
                 setLoading(false);
               };
               userAttendanceStatusList();
@@ -334,7 +332,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (classId.length) {
       getCohortMemberList();
     }
-  }, [classId]);
+  }, [classId, selectedDate]);
 
   const showDetailsHandle = (dayStr: string) => {
     setSelectedDate(formatSelectedDate(dayStr));
@@ -638,9 +636,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
               </Typography>
             </Box>
           </Box>
-          {/* {loading && (
+          {loading && (
             <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-          )} */}
+          )}
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
               sx={{
@@ -902,7 +900,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               fontSize={'16px'}
                               sx={{ color: theme.palette.warning['A200'] }}
                             >
-                              {t('COMMON.MARK_STUDENT_ATTENDANCE')}
+                              {t('COMMON.MARK_CENTER_ATTENDANCE')}
                             </Typography>
                             <Typography
                               variant="h2"
@@ -928,12 +926,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         <Box
                           sx={{ height: '1px', background: '#D0C5B4' }}
                         ></Box>
-                        {/* {loading && (
+                        {loading && (
                           <Loader
                             showBackdrop={true}
                             loadingText={t('COMMON.LOADING')}
                           />
-                        )} */}
+                        )}
 
                         <Typography
                           sx={{
@@ -1083,12 +1081,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </Link>
                   </Box>
                 </Stack>
-                {/* {loading && (
+                {loading && (
                   <Loader
                     showBackdrop={true}
                     loadingText={t('COMMON.LOADING')}
                   />
-                )} */}
+                )}
               </Box>
               {userType == 'Students' ? (
                 <Box display={'flex'} className="card_overview">
