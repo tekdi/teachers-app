@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import {
@@ -28,7 +27,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   onChange,
   onDateChange,
 }) => {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(() => new Date());
   const reducedPresentDates = useMemo(
     () => reduceDatesByOneDay(presentDates),
     [presentDates]
@@ -172,22 +171,13 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
           tileContent={tileContent}
           tileClassName={tileClassName}
           calendarType="gregory"
-          className="calender-body suvarna"
+          className="calender-body"
           formatShortWeekday={formatShortWeekday}
           onActiveStartDateChange={handleActiveStartDateChange}
         />
       </div>
     </div>
   );
-};
-
-MonthCalender.propTypes = {
-  presentDates: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-  absentDates: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-  halfDayDates: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-  notMarkedDates: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-  onChange: PropTypes.func.isRequired,
-  onDateChange: PropTypes.func.isRequired,
 };
 
 export default MonthCalender;

@@ -14,7 +14,7 @@ import { useTheme } from '@mui/material/styles';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import {
   attendanceInPercentageStatusList,
-  markAttendance,
+  // markAttendance,
 } from '../services/AttendanceService';
 import {
   AttendancePercentageProps,
@@ -25,9 +25,12 @@ import MarkAttendance from '../components/MarkAttendance';
 import { useTranslation } from 'react-i18next';
 import Loader from '../components/Loader';
 import MonthCalender from '@/components/MonthCalender';
+import { useRouter } from 'next/router';
+import { shortDateFormat } from '@/utils/Helper';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
+  const { locale, locales, push } = useRouter();
   const { t } = useTranslation();
   const [attendanceData, setAttendanceData] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -191,7 +194,7 @@ const UserAttendanceHistory = () => {
     const lastDate = new Date(endDate);
 
     while (currentDate <= lastDate) {
-      datesArray.push(formatDate(currentDate));
+      datesArray.push(shortDateFormat(currentDate));
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
@@ -209,7 +212,7 @@ const UserAttendanceHistory = () => {
 
   const handleSelectedDateChange = (date: Date) => {
     setSelectedDate(date);
-    const formattedSelectedDate = formatDate(date);
+    const formattedSelectedDate = shortDateFormat(date);
     let status = '';
     if (presentDates.includes(formattedSelectedDate)) {
       status = 'present';
@@ -248,18 +251,18 @@ const UserAttendanceHistory = () => {
         contextId: trimmedContextId,
       };
       setLoading(true);
-      try {
-        const response = await markAttendance(attendanceData);
-        if (response) {
-          setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'));
-          window.location.reload();
-        }
-        setLoading(false);
-      } catch (error) {
-        setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_UNSUCCESSFULLY'));
-        console.error('error', error);
-        setLoading(false);
-      }
+      // try {
+      //   const response = await markAttendance(attendanceData);
+      //   if (response) {
+      //     setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'));
+      //     window.location.reload();
+      //   }
+      //   setLoading(false);
+      // } catch (error) {
+      //   setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_UNSUCCESSFULLY'));
+      //   console.error('error', error);
+      //   setLoading(false);
+      // }
     }
   };
 
@@ -267,91 +270,105 @@ const UserAttendanceHistory = () => {
     <Box minHeight="100vh" textAlign={'center'}>
       <Header />
       {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />}
-      <Box
-        display={'flex'}
-        flexDirection={'column'}
-        gap={'1rem'}
-        padding={'1rem'}
-        alignItems={'center'}
-      >
+      <Box display={'flex'} justifyContent={'center'}>
         <Box
-          display={'flex'}
-          sx={{ color: theme.palette.warning['A200'] }}
-          gap={'10px'}
-          width={'100%'}
-          justifyContent={'center'}
-          position={'relative'}
+          sx={{
+            width: '668px',
+            '@media (max-width: 700px)': {
+              width: '100%',
+            },
+          }}
         >
           <Box
-            position={'absolute'}
-            left={'0'}
-            onClick={handleBackEvent}
-            padding={'0px'}
-            padding-right={'30px'}
+            display={'flex'}
+            flexDirection={'column'}
+            gap={'1rem'}
+            padding={'1rem'}
+            alignItems={'center'}
           >
-            <Button>
-              <KeyboardBackspaceOutlinedIcon
-                sx={{ color: theme.palette.warning['A200'] }}
-              />
-            </Button>
+            <Box
+              display={'flex'}
+              sx={{ color: theme.palette.warning['A200'] }}
+              gap={'10px'}
+              width={'100%'}
+              justifyContent={'center'}
+              position={'relative'}
+            >
+              <Box
+                left={'0'}
+                onClick={handleBackEvent}
+                padding={'0px'}
+                padding-right={'30px'}
+              >
+                <Box>
+                  <KeyboardBackspaceOutlinedIcon
+                    sx={{ color: theme.palette.warning['A200'] }}
+                  />
+                </Box>
+              </Box>
+
+              <Typography marginBottom={'0px'} fontSize={'25px'}>
+                {t('ATTENDANCE.DAY_WISE_ATTENDANCE')}
+              </Typography>
+            </Box>
+          </Box>
+          <Box mt={2} display={'flex'} justifyContent={'center'} m={2}>
+            <Box sx={{ width: '100%', maxWidth: 580 }}>
+              <FormControl fullWidth>
+                <InputLabel>Center</InputLabel>
+                <Select value={center} label="Center" onChange={handleChange}>
+                  {/* {cohorts?.map((item: string, index: number) => ( */}
+                  <MenuItem key={'index'} value={'item'}>
+                    item
+                  </MenuItem>
+                  {/* ))} */}
+                </Select>
+              </FormControl>
+            </Box>
           </Box>
 
-          <Typography marginBottom={'0px'} fontSize={'25px'}>
-            {t('ATTENDANCE.MY_ATTENDANCE_HISTORY')}
-          </Typography>
-        </Box>
-      </Box>
-      <Box mt={2} display={'flex'} justifyContent={'center'} m={2}>
-        <Box sx={{ width: '100%', maxWidth: 580 }}>
-          <FormControl fullWidth>
-            <InputLabel>Center</InputLabel>
-            <Select value={center} label="Center" onChange={handleChange}>
-              {/* {cohorts?.map((item: string, index: number) => ( */}
-              <MenuItem key={'index'} value={'item'}>
-                item
-              </MenuItem>
-              {/* ))} */}
-            </Select>
-          </FormControl>
-        </Box>
-      </Box>
+          <MonthCalender
+            presentDates={presentDates}
+            absentDates={absentDates}
+            halfDayDates={halfDayDates}
+            notMarkedDates={notMarkedDates}
+            futureDates={futureDates}
+            onChange={handleActiveStartDateChange}
+            onDateChange={handleSelectedDateChange}
+          />
 
-      <MonthCalender
-        presentDates={presentDates}
-        absentDates={absentDates}
-        halfDayDates={halfDayDates}
-        notMarkedDates={notMarkedDates}
-        futureDates={futureDates}
-        onChange={handleActiveStartDateChange}
-        onDateChange={handleSelectedDateChange}
-      />
-
-      <Box ml={1} mt={2}>
-        <Box display={'flex'} gap={'10px'} width={'100%'} mb={3}>
-          <Typography marginBottom={'0px'} fontSize={'16px'} fontWeight={'500'}>
-            {' '}
-            Attendance on {formatToShowDateMonth(selectedDate)}
-          </Typography>
-        </Box>
-        <Box>
-          {/* {status && (
+          <Box ml={1} mt={2}>
+            <Box display={'flex'} gap={'10px'} width={'100%'} mb={3}>
+              <Typography
+                marginBottom={'0px'}
+                fontSize={'16px'}
+                fontWeight={'500'}
+              >
+                {' '}
+                Attendance on {formatToShowDateMonth(selectedDate)}
+              </Typography>
+            </Box>
+            <Box>
+              {/* {status && (
             <AttendanceStatus
               status={status}
               onUpdate={handleMarkAttendanceModal}
             />
           )} */}
+            </Box>
+          </Box>
+
+          <MarkAttendance
+            isOpen={openMarkAttendance}
+            isSelfAttendance={true}
+            date={shortDateFormat(selectedDate)}
+            currentStatus={status}
+            handleClose={handleMarkAttendanceModal}
+            handleSubmit={handleUpdate}
+            message={AttendanceMessage}
+          />
         </Box>
       </Box>
-
-      <MarkAttendance
-        isOpen={openMarkAttendance}
-        isSelfAttendance={true}
-        date={formatDate(selectedDate)}
-        currentStatus={status}
-        handleClose={handleMarkAttendanceModal}
-        handleSubmit={handleUpdate}
-        message={AttendanceMessage}
-      />
     </Box>
   );
 };
