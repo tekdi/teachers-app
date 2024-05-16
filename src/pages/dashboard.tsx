@@ -23,7 +23,7 @@ import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import {
   attendanceInPercentageStatusList,
   attendanceStatusList,
-  bulkAttendance
+  bulkAttendance,
 } from '../services/AttendanceService';
 import {
   formatDate,
@@ -91,9 +91,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [openMarkAttendance, setOpenMarkAttendance] = React.useState(false);
   const [openMarkUpdateAttendance, setOpenMarkUpdateAttendance] =
     React.useState(false);
-  const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>(
-    []
-  );
+  const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
   const [selectedDate, setSelectedDate] = React.useState('');
@@ -190,7 +188,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   //API for getting student list
   useEffect(() => {
-    submitBulkAttendanceAction(true, '', '')
+    submitBulkAttendanceAction(true, '', '');
     const getCohortMemberList = async () => {
       setLoading(true);
       // const parentCohortId = localStorage.getItem('parentCohortId');
@@ -287,13 +285,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           });
                         }
                       });
-                      if(newArray.length !=0){
-                      setCohortMemberList(newArray);
-                      setNumberOfCohortMembers(newArray?.length);
-                    }else{
-                      setCohortMemberList(nameUserIdArray);
-                      setNumberOfCohortMembers(nameUserIdArray?.length);
-                    }
+                      if (newArray.length != 0) {
+                        setCohortMemberList(newArray);
+                        setNumberOfCohortMembers(newArray?.length);
+                      } else {
+                        setCohortMemberList(nameUserIdArray);
+                        setNumberOfCohortMembers(nameUserIdArray?.length);
+                      }
                       return newArray;
                     };
                     mergeArrays(nameUserIdArray, userAttendanceArray);
@@ -499,7 +497,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     hasEmptyAttendance();
   };
   const viewAttendanceHistory = () => {
-    router.push('/userAttendanceHistory'); //Check Route
+    router.push('/attendance-history');
   };
 
   const handleSave = () => {
@@ -791,25 +789,22 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   variant="h6"
                                   className="word-break"
                                 >
-                                  {currentAttendance?.present_percentage}{' '}
-                                  {t('DASHBOARD.PERCENT_ATTENDANCE')}
+                                  {t('DASHBOARD.PERCENT_ATTENDANCE', {
+                                    percent_students:
+                                      currentAttendance?.present_percentage,
+                                  })}
                                 </Typography>
                                 <Typography
                                   sx={{ color: theme.palette.warning['A400'] }}
                                   variant="h6"
                                   className="word-break"
                                 >
-                                  (
-                                  {
-                                    percentageAttendance?.[todayDate]
-                                      ?.present_students
-                                  }
-                                  /
-                                  {
-                                    percentageAttendance?.[todayDate]
-                                      ?.total_students
-                                  }
-                                  ) {t('DASHBOARD.PRESENT_STUDENTS')}
+                                  {t('DASHBOARD.PRESENT_STUDENTS', {
+                                    present_students:
+                                      currentAttendance?.present_students,
+                                    total_students:
+                                      currentAttendance?.total_students,
+                                  })}
                                 </Typography>
                               </Box>
                             </>
