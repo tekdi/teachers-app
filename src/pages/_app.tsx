@@ -8,6 +8,8 @@ import {
 } from '@mui/material/styles';
 import * as React from 'react';
 
+import { Poppins } from 'next/font/google';
+
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { Button } from '@mui/material';
@@ -18,6 +20,11 @@ import type { AppProps } from 'next/app';
 import customTheme from '../styles/customStyles';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
+const poppins = Poppins({
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  fallback: ['sans-serif'],
+  subsets: ['latin'],
+});
 export function DarkTheme() {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
@@ -42,7 +49,6 @@ export function DarkTheme() {
 }
 
 function App({ Component, pageProps }: AppProps) {
-
   function ModeToggle() {
     const { mode, setMode } = useColorScheme();
     return (
@@ -56,10 +62,17 @@ function App({ Component, pageProps }: AppProps) {
     );
   }
   return (
-    <CssVarsProvider theme={customTheme}>
-      <ModeToggle />
-      <Component {...pageProps} />
-    </CssVarsProvider>
+    <>
+      <style jsx global>{`
+        html {
+          font-family: ${poppins.style.fontFamily};
+        }
+      `}</style>
+      <CssVarsProvider theme={customTheme}>
+        {/* <ModeToggle /> */}
+        <Component {...pageProps} />
+      </CssVarsProvider>
+    </>
   );
 }
 
