@@ -9,26 +9,26 @@ import {
   AttendancePercentageProps,
 } from '../utils/Interfaces';
 
-export const markAttendance = async ({
-  userId,
-  attendanceDate,
-  attendance,
-  contextId,
-}: AttendanceParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance`;
-  try {
-    const response = await post(apiUrl, {
-      userId,
-      attendanceDate,
-      attendance,
-      contextId,
-    });
-    return response?.data;
-  } catch (error) {
-    console.error('error in marking attendance', error);
-    throw error;
-  }
-};
+// export const markAttendance = async ({
+//   userId,
+//   attendanceDate,
+//   attendance,
+//   contextId,
+// }: AttendanceParams): Promise<any> => {
+//   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance`;
+//   try {
+//     const response = await post(apiUrl, {
+//       userId,
+//       attendanceDate,
+//       attendance,
+//       contextId,
+//     });
+//     return response?.data;
+//   } catch (error) {
+//     console.error('error in marking attendance', error);
+//     throw error;
+//   }
+// };
 
 export const bulkAttendance = async ({
   attendanceDate,
