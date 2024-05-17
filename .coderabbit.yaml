@@ -1,4 +1,4 @@
-language: "en"
+language: 'en'
 
 early_access: false
 
@@ -9,19 +9,19 @@ reviews:
   review_status: true
   collapse_walkthrough: false
   path_filters:
-    - "!**/.xml"
+    - '!**/.xml'
   path_instructions:
-    - path: "**/*.css"
+    - path: '**/*.css'
       instructions: |
         "Review the CSS code against the Google CSS style guide and point out any mismatches. Ensure that:
         - The code adheres to best practices associated with CSS.
         - The code adheres to best practices recommended by lighthouse or similar tools for performance.
         - The code adheres to similar naming conventions for classes, ids."
-    - path: "**/*.html"
+    - path: '**/*.html'
       instructions: |
         "Review the HTML code against the Google HTML style guide and point out any mismatches. Ensure that:
         - The code adheres to best practices recommended by lighthouse or similar tools for performance."
-    - path: "**/*.js,**/*.ts,**/*.jsx,**/*.tsx"
+    - path: '**/*.js,**/*.ts,**/*.jsx,**/*.tsx'
       instructions: |
         "Review the JAVASCRIPT code against the Google javascript style guide and point out any mismatches. Ensure that:
         - The code adheres to best practices associated with React.
@@ -29,21 +29,21 @@ reviews:
         - The code adheres to best practices associated with SPA.
         - The code adheres to best practices associated with react applications created using nextjs.
         - The code adheres to best practices recommended by lighthouse or similar tools for performance.
-        - The code adheres to similar naming conventions for components, views, methods."        
+        - The code adheres to similar naming conventions for components, views, methods."
   auto_review:
     enabled: true
     ignore_title_keywords:
-      - "WIP"
-      - "DO NOT MERGE"
+      - 'WIP'
+      - 'DO NOT MERGE'
     drafts: false
     base_branches:
-    - "master"
-    - "main"
-    - "dev"
-    - "feat/*"
-    - "feat-*"
-    - "release-*"
-    - "shiksha-2.0"
+      - 'master'
+      - 'main'
+      - 'dev'
+      - 'feat/*'
+      - 'feat-*'
+      - 'release-*'
+      - 'shiksha-2.0'
 
 chat:
   auto_reply: true

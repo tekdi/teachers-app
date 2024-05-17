@@ -1,6 +1,6 @@
 import {
   createTheme,
-  experimental_extendTheme as extendTheme
+  experimental_extendTheme as extendTheme,
 } from '@mui/material/styles';
 
 const customTheme = createTheme({
@@ -158,7 +158,6 @@ const customTheme = createTheme({
   },
 });
 
-
 const myTheme = extendTheme({
   colorSchemes: {
     light: {
@@ -238,7 +237,7 @@ const myTheme = extendTheme({
           light: '#FFDAD6',
         },
       },
-    }
+    },
   },
   components: {
     MuiButton: {

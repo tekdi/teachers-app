@@ -1,18 +1,18 @@
 import React from 'react';
-import { useTranslation } from "next-i18next";
+import { useTranslation } from 'next-i18next';
 import { CardContent, CardMedia, Typography, Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import SmartDisplayIcon from '@mui/icons-material/SmartDisplay';
 import { CohortCardProps } from '../utils/Interfaces';
-import { useRouter } from 'next/navigation'; 
+import { useRouter } from 'next/navigation';
 
 const CohortCard: React.FC<CohortCardProps> = ({
   showBackground,
   isRemote,
   cohortName,
-  cohortId
+  cohortId,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -23,7 +23,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
     border: `1px solid ${theme.palette.warning.A100}`,
     borderRadius: '8px',
     cursor: 'pointer',
-    backgroundColor: theme.palette.warning.A400
+    backgroundColor: theme.palette.warning.A400,
   };
 
   const cardMedia = {
@@ -34,7 +34,9 @@ const CohortCard: React.FC<CohortCardProps> = ({
     width: '54px',
     height: '56px',
     borderRadius: '8px 0px 0px 8px',
-    backgroundColor: !showBackground ? theme.palette.warning.A400 : theme.palette.primary.light
+    backgroundColor: !showBackground
+      ? theme.palette.warning.A400
+      : theme.palette.primary.light,
   };
 
   const iconMedia = {
@@ -43,7 +45,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
     height: '1rem',
     width: '1rem',
     marginRight: 2,
-    display: !showBackground ? 'none' : 'block'
+    display: !showBackground ? 'none' : 'block',
   };
 
   return (

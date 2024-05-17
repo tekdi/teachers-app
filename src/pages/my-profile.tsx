@@ -19,7 +19,7 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { useTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from "next-i18next";
+import { useTranslation } from 'next-i18next';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 // import Header from '../components/Header.tsx';
 // import StudentStatsCard from '../components/StudentStatsCard.tsx';

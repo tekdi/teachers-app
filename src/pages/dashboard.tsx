@@ -46,11 +46,11 @@ import {
   formatSelectedDate,
   getMonthName,
   getTodayDate,
-  shortDateFormat
+  shortDateFormat,
 } from '../utils/Helper';
 import {
   AttendancePercentageProps,
-  AttendanceStatusListProps
+  AttendanceStatusListProps,
 } from '../utils/Interfaces';
 
 interface State extends SnackbarOrigin {
@@ -90,7 +90,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     vertical: 'top',
     horizontal: 'center',
   });
-  
+
   const { vertical, horizontal, openModal } = state;
   const { t } = useTranslation();
   const router = useRouter();
@@ -516,39 +516,39 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
                 <Box sx={{ mt: 0.6 }}>
                   <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
-                      <FormControl
-                        className="drawer-select"
-                        sx={{ m: 1, width: '60%' }}
+                    <FormControl
+                      className="drawer-select"
+                      sx={{ m: 1, width: '60%' }}
+                    >
+                      <Select
+                        value={classId}
+                        onChange={handleCohortSelection}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                        className="SelectLanguages fs-14 fw-500"
+                        style={{
+                          borderRadius: '0.5rem',
+                          color: theme.palette.warning['200'],
+                          width: '100%',
+                          marginBottom: '0rem',
+                        }}
                       >
-                        <Select
-                          value={classId}
-                          onChange={handleCohortSelection}
-                          displayEmpty
-                          inputProps={{ 'aria-label': 'Without label' }}
-                          className="SelectLanguages fs-14 fw-500"
-                          style={{
-                            borderRadius: '0.5rem',
-                            color: theme.palette.warning['200'],
-                            width: '100%',
-                            marginBottom: '0rem',
-                          }}
-                        >
-                          {cohortsData?.length !== 0 ? (
-                            cohortsData?.map((cohort) => (
-                              <MenuItem
-                                key={cohort.cohortId}
-                                value={cohort.cohortId}
-                              >
-                                {cohort.name}
-                              </MenuItem>
-                            ))
-                          ) : (
-                            <Typography style={{ fontWeight: 'bold' }}>
-                              {t('COMMON.NO_DATA_FOUND')}
-                            </Typography>
-                          )}
-                        </Select>
-                      </FormControl>
+                        {cohortsData?.length !== 0 ? (
+                          cohortsData?.map((cohort) => (
+                            <MenuItem
+                              key={cohort.cohortId}
+                              value={cohort.cohortId}
+                            >
+                              {cohort.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <Typography style={{ fontWeight: 'bold' }}>
+                            {t('COMMON.NO_DATA_FOUND')}
+                          </Typography>
+                        )}
+                      </Select>
+                    </FormControl>
                   </Box>
                 </Box>
                 <WeekCalender
@@ -571,72 +571,72 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     marginTop={1}
                     justifyContent={'space-between'}
                   >
-                      <Box display={'flex'}>
-                        {currentAttendance !== 'Not Marked' &&
-                          currentAttendance !== 'futureDate' && (
-                            <>
-                              <Box
-                                width={'25px'}
-                                height={'2rem'}
-                                marginTop={'0.25rem'}
-                                margin={'5px'}
-                              >
-                                <CircularProgressbar
-                                  value={currentAttendance?.present_percentage}
-                                  styles={buildStyles({
-                                    textColor: pathColor,
-                                    pathColor: pathColor,
-                                    trailColor: '#E6E6E6',
-                                  })}
-                                  strokeWidth={15}
-                                />
-                              </Box>
-                              <Box>
-                                <Typography
-                                  sx={{ color: theme.palette.warning['A400'] }}
-                                  variant="h6"
-                                  className="word-break"
-                                >
-                                  {t('DASHBOARD.PERCENT_ATTENDANCE', {
-                                    percent_students:
-                                      currentAttendance?.present_percentage,
-                                  })}
-                                </Typography>
-                                <Typography
-                                  sx={{ color: theme.palette.warning['A400'] }}
-                                  variant="h6"
-                                  className="word-break"
-                                >
-                                  {t('DASHBOARD.PRESENT_STUDENTS', {
-                                    present_students:
-                                      currentAttendance?.present_students,
-                                    total_students:
-                                      currentAttendance?.total_students,
-                                  })}
-                                </Typography>
-                              </Box>
-                            </>
-                          )}
-                        {currentAttendance === 'Not Marked' &&
-                          currentAttendance !== 'futureDate' && (
-                            <Typography
-                              sx={{ color: theme.palette.warning['A400'] }}
-                              fontSize={'0.8rem'}
-                              // variant="h6"
-                              // className="word-break"
+                    <Box display={'flex'}>
+                      {currentAttendance !== 'Not Marked' &&
+                        currentAttendance !== 'futureDate' && (
+                          <>
+                            <Box
+                              width={'25px'}
+                              height={'2rem'}
+                              marginTop={'0.25rem'}
+                              margin={'5px'}
                             >
-                              {t('DASHBOARD.NOT_MARKED')}
-                            </Typography>
-                          )}
-                        {currentAttendance === 'futureDate' && (
+                              <CircularProgressbar
+                                value={currentAttendance?.present_percentage}
+                                styles={buildStyles({
+                                  textColor: pathColor,
+                                  pathColor: pathColor,
+                                  trailColor: '#E6E6E6',
+                                })}
+                                strokeWidth={15}
+                              />
+                            </Box>
+                            <Box>
+                              <Typography
+                                sx={{ color: theme.palette.warning['A400'] }}
+                                variant="h6"
+                                className="word-break"
+                              >
+                                {t('DASHBOARD.PERCENT_ATTENDANCE', {
+                                  percent_students:
+                                    currentAttendance?.present_percentage,
+                                })}
+                              </Typography>
+                              <Typography
+                                sx={{ color: theme.palette.warning['A400'] }}
+                                variant="h6"
+                                className="word-break"
+                              >
+                                {t('DASHBOARD.PRESENT_STUDENTS', {
+                                  present_students:
+                                    currentAttendance?.present_students,
+                                  total_students:
+                                    currentAttendance?.total_students,
+                                })}
+                              </Typography>
+                            </Box>
+                          </>
+                        )}
+                      {currentAttendance === 'Not Marked' &&
+                        currentAttendance !== 'futureDate' && (
                           <Typography
                             sx={{ color: theme.palette.warning['A400'] }}
                             fontSize={'0.8rem'}
+                            // variant="h6"
+                            // className="word-break"
                           >
-                            {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
+                            {t('DASHBOARD.NOT_MARKED')}
                           </Typography>
                         )}
-                      </Box>
+                      {currentAttendance === 'futureDate' && (
+                        <Typography
+                          sx={{ color: theme.palette.warning['A400'] }}
+                          fontSize={'0.8rem'}
+                        >
+                          {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
+                        </Typography>
+                      )}
+                    </Box>
                     <Button
                       variant="contained"
                       color="primary"
@@ -812,7 +812,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Fade>
                 </Modal>
               </Box>
-            
+
               <Snackbar
                 anchorOrigin={{ vertical, horizontal }}
                 open={openModal}
@@ -866,19 +866,19 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   />
                 )}
               </Box>
-                <Box display={'flex'} className="card_overview">
-                  <Grid container spacing={0}>
-                    <Grid item xs={5}>
-                      <OverviewCard label="Centre Attendance" value="71%" />
-                    </Grid>
-                    <Grid item xs={7}>
-                      <OverviewCard
-                        label="Low Attendance Students"
-                        value="Bharat Kumar, Ankita Kulkarni, +3 more"
-                      />
-                    </Grid>
+              <Box display={'flex'} className="card_overview">
+                <Grid container spacing={0}>
+                  <Grid item xs={5}>
+                    <OverviewCard label="Centre Attendance" value="71%" />
                   </Grid>
-                </Box>
+                  <Grid item xs={7}>
+                    <OverviewCard
+                      label="Low Attendance Students"
+                      value="Bharat Kumar, Ankita Kulkarni, +3 more"
+                    />
+                  </Grid>
+                </Grid>
+              </Box>
             </Box>
           </Box>
           <Box
