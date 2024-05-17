@@ -65,25 +65,6 @@ export interface cohortMemberList {
   };
 }
 
-export interface AttendanceByDateParams {
-  fromDate: string;
-  toDate: string;
-  page: number;
-  filters: {
-    userId?: string;
-    contextId?: string;
-  };
-}
-
-export interface TeacherAttendanceByDateParams {
-  fromDate: string;
-  toDate: string;
-  filters: {
-    userId: string;
-    contextId: string;
-  };
-}
-
 interface CustomField {
   label: string;
   value: string;
@@ -98,14 +79,6 @@ export interface UserData {
   dob?: string;
   mobile?: string;
   customFields: CustomField[];
-}
-
-export interface AttendanceReports {
-  contextId: string;
-  userId: string;
-  report: boolean;
-  limit: number;
-  filters: object;
 }
 
 export interface TimeTableCardProps {
@@ -140,4 +113,10 @@ export interface AttendancePercentageProps {
     fromDate: string;
   };
   facets: Array<string>;
+}
+
+export interface cohort {
+  cohortId: string;
+  name: string;
+  value: string;
 }

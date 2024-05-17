@@ -51,6 +51,7 @@ import {
 import {
   AttendancePercentageProps,
   AttendanceStatusListProps,
+  cohort
 } from '../utils/Interfaces';
 
 interface State extends SnackbarOrigin {
@@ -59,12 +60,6 @@ interface State extends SnackbarOrigin {
 
 interface DashboardProps {
   //   buttonText: string;
-}
-
-interface cohort {
-  cohortId: string;
-  name: string;
-  value: string;
 }
 
 const Dashboard: React.FC<DashboardProps> = () => {
@@ -518,7 +513,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
                     <FormControl
                       className="drawer-select"
-                      sx={{ m: 1, width: '60%' }}
+                      sx={{ m: 1, width: '100%' }}
                     >
                       <Select
                         value={classId}
