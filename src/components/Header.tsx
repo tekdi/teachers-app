@@ -108,13 +108,8 @@ const Header: React.FC = () => {
     <>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Stack
-          sx={{
-            width: '668px',
-            '@media (max-width: 700px)': {
-              width: '100%',
-            },
-            padding: '8px 0',
-          }}
+          width={'100%'}
+          padding={'8px 0'}
           direction="row"
           justifyContent={'space-between'}
           alignItems={'center'}

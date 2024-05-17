@@ -12,7 +12,7 @@ import { Poppins } from 'next/font/google';
 
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { Button } from '@mui/material';
+import { Button, Container } from '@mui/material';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import { appWithTranslation } from 'next-i18next';
@@ -70,7 +70,9 @@ function App({ Component, pageProps }: AppProps) {
       `}</style>
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}
-        <Component {...pageProps} />
+        <Container maxWidth="md">
+          <Component {...pageProps} />
+        </Container>
       </CssVarsProvider>
     </>
   );
