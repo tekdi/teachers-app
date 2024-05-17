@@ -97,7 +97,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
         return (
           <div className="circularProgressBar">
             <CircularProgressbar
-              value={'100%'}
+              value={100}
               styles={buildStyles({
                 textColor: 'green',
                 pathColor: 'green',
