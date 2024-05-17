@@ -82,7 +82,8 @@
     "UPDATE_ATTENDANCE_ALERT": "Are you sure you want to update this attendance?",
     "CLEAR_ATTENDANCE_ALERT": "Are you sure you want to clear this attendance?",
     "YES": "Yes",
-    "NO_GO_BACK": "No Go Back"
+    "NO_GO_BACK": "No Go Back",
+    "DAY_WISE_ATTENDANCE": "Day-Wise Attendance"
   },
   "PROFILE": {
     "EDIT_PROFILE": "Edit Profile",

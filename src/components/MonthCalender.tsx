@@ -7,7 +7,7 @@ import {
   RemoveCircleOutline,
   RemoveOutlined,
 } from '@mui/icons-material';
-
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 interface CalendarWithAttendanceProps {
   presentDates: string[];
   absentDates: string[];
@@ -90,30 +90,21 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
 
   function tileContent({ date, view }: { date: Date; view: string }) {
     if (view !== 'month') return null;
-    const status = getAttendanceStatus(date);
+    // const status = getAttendanceStatus(date);
+    const status = 'present';
     switch (status) {
       case 'present':
         return (
-          <div className="present-marker">
-            <CheckCircleOutlineOutlined />
-          </div>
-        );
-      case 'absent':
-        return (
-          <div className="absent-marker">
-            <CancelOutlined />
-          </div>
-        );
-      case 'halfDay':
-        return (
-          <div>
-            <RemoveCircleOutline />
-          </div>
-        );
-      case 'futureDate':
-        return (
-          <div style={{ color: 'gray' }}>
-            <RemoveOutlined />
+          <div className="circularProgressBar">
+            <CircularProgressbar
+              value={'100%'}
+              styles={buildStyles({
+                textColor: 'green',
+                pathColor: 'green',
+                trailColor: '#E6E6E6',
+              })}
+              strokeWidth={15}
+            />
           </div>
         );
       default:

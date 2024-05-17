@@ -81,7 +81,8 @@
     "CLEAR_ATTENDANCE_ALERT": "आपल्याकडून हजेरी साफ करायला खात्री आहे का?",
     "YES": "हां",
     "NO_GO_BACK": "नहीं वापस जाएं",
-    "MY_TIMETABLE": "मेरी समय सारिणी"
+    "MY_TIMETABLE": "मेरी समय सारिणी",
+    "DAY_WISE_ATTENDANCE": "दिनविशेष उपस्थिति"
   },
   "PROFILE": {
     "EDIT_PROFILE": "प्रोफ़ाइल संपादित करें",
