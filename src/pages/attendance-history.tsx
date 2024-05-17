@@ -19,6 +19,7 @@ import {
 import {
   AttendancePercentageProps,
   AttendanceParams,
+  cohort,
 } from '../utils/Interfaces';
 // import AttendanceStatus from '../components/AttendanceStatus';
 import MarkAttendance from '../components/MarkAttendance';
@@ -28,6 +29,7 @@ import MonthCalender from '@/components/MonthCalender';
 import { useRouter } from 'next/router';
 import { shortDateFormat } from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { cohortList } from '@/services/CohortServices';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
@@ -40,6 +42,8 @@ const UserAttendanceHistory = () => {
   const [halfDayDates, setHalfDayDates] = useState<string[]>([]);
   const [notMarkedDates, setNotMarkedDates] = useState<string[]>([]);
   const [futureDates, setFutureDates] = useState<string[]>([]);
+  const [classId, setClassId] = React.useState('');
+  const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   // const [activeStartDate, setActiveStartDate] = useState<Date>(() => {
   //   const storedDate = localStorage.getItem('activeStartDate');
   //   return storedDate ? new Date(storedDate) : new Date();
@@ -61,6 +65,37 @@ const UserAttendanceHistory = () => {
   const handleBackEvent = () => {
     window.history.back();
   };
+
+  // API call to get center list
+  useEffect(() => {
+    const fetchCohortList = async () => {
+      const userId = localStorage.getItem('userId');
+      setLoading(true);
+      try {
+        if (userId) {
+          let limit = 0;
+          let page = 0;
+          let filters = { userId: userId };
+          const resp = await cohortList({ limit, page, filters });
+          const extractedNames = resp?.data?.cohortDetails;
+          const filteredData = extractedNames
+            ?.map((item: any) => ({
+              cohortId: item?.cohortData?.cohortId,
+              parentId: item?.cohortData?.parentId,
+              name: item?.cohortData?.name,
+            }))
+            ?.filter(Boolean);
+          setCohortsData(filteredData);
+          setClassId(filteredData?.[0]?.cohortId);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error fetching  cohort list:', error);
+        setLoading(false);
+      }
+    };
+    fetchCohortList();
+  }, []);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -267,6 +302,10 @@ const UserAttendanceHistory = () => {
     }
   };
 
+  const handleCohortSelection = (event: SelectChangeEvent) => {
+    setClassId(event.target.value as string);
+  };
+
   return (
     <Box minHeight="100vh" textAlign={'center'}>
       <Header />
@@ -307,19 +346,34 @@ const UserAttendanceHistory = () => {
               </Typography>
             </Box>
           </Box>
-          <Box mt={2} display={'flex'} justifyContent={'center'} m={2}>
-            <Box sx={{ width: '100%', maxWidth: 580 }}>
-              <FormControl fullWidth>
-                <InputLabel>Center</InputLabel>
-                <Select value={center} label="Center" onChange={handleChange}>
-                  {/* {cohorts?.map((item: string, index: number) => ( */}
-                  <MenuItem key={'index'} value={'item'}>
-                    item
-                  </MenuItem>
-                  {/* ))} */}
-                </Select>
-              </FormControl>
-            </Box>
+          <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
+            <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
+              <Select
+                value={classId}
+                onChange={handleCohortSelection}
+                displayEmpty
+                inputProps={{ 'aria-label': 'Without label' }}
+                className="SelectLanguages fs-14 fw-500"
+                style={{
+                  borderRadius: '0.5rem',
+                  color: theme.palette.warning['200'],
+                  width: '100%',
+                  marginBottom: '0rem',
+                }}
+              >
+                {cohortsData?.length !== 0 ? (
+                  cohortsData?.map((cohort) => (
+                    <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
+                      {cohort.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <Typography style={{ fontWeight: 'bold' }}>
+                    {t('COMMON.NO_DATA_FOUND')}
+                  </Typography>
+                )}
+              </Select>
+            </FormControl>
           </Box>
 
           <MonthCalender

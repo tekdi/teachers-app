@@ -12,7 +12,7 @@ export const getMyCohortMemberList = async ({
       limit,
       page,
       filters,
-    }); //contextId, report, limit, offset, filters
+    });
     console.log('data', response?.data);
     return response?.data;
   } catch (error) {
