@@ -21,7 +21,7 @@ function Logout() {
     localStorage.removeItem('userId');
     localStorage.removeItem('parentCohortId');
 
-    router.push('/login');
+    router.replace('/login');
   }, []);
 
   return '';
