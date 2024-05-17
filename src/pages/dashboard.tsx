@@ -469,14 +469,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       )}
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box
-          sx={{
-            bgcolor: theme.palette.warning['A900'],
-            paddingBottom: '20px',
-            width: '668px',
-            '@media (max-width: 700px)': {
-              width: '100%',
-            },
-          }}
+          bgcolor={theme.palette.warning['A900']}
+          paddingBottom={'20px'}
+          width={'100%'}
         >
           <Box display={'flex'} flexDirection={'column'} padding={'1rem'}>
             <Box display={'flex'} justifyContent={'space-between'}>
@@ -858,14 +853,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           justifyContent: 'center',
         }}
       >
-        <Box
-          sx={{
-            width: '668px',
-            '@media (max-width: 700px)': {
-              width: '100%',
-            },
-          }}
-        >
+        <Box width={'100%'}>
           <Typography textAlign={'left'} fontSize={'0.8rem'} marginLeft={'8px'}>
             {t('DASHBOARD.MY_TIMETABLE')}
           </Typography>
