@@ -68,8 +68,8 @@ const Header: React.FC = () => {
   }));
 
   const handleProfileClick = () => {
-    if (pathname !== '/teacherProfile') {
-      router.push('/teacherProfile');
+    if (pathname !== '/teacher-profile') {
+      router.push('/teacher-profile');
     }
   };
   const handleLogoutClick = () => {
