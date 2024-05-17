@@ -19,7 +19,7 @@ import Link from '@mui/material/Link';
 // import { getUserId } from '../services/ProfileService';
 import Loader from '../components/Loader';
 import MenuItem from '@mui/material/MenuItem';
-import appLogo2 from '../../public/appLogo.png';
+import appLogo2 from '../../public/images/appLogo.png';
 import config from '../../config.json';
 import { getUserId } from '../services/ProfileService';
 import { login } from '../services/LoginService';

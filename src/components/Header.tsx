@@ -9,7 +9,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Divider from '@mui/material/Divider';
 import Image from 'next/image';
-import LogoWithoutTagline from '../../public/Logo_without_tagline.png';
+import LogoWithoutTagline from '../../public/images/Logo_without_tagline.png';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
