@@ -1,21 +1,30 @@
 'use client';
 
 import '@/styles/globals.css';
-
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  useColorScheme,
+  useTheme,
+} from '@mui/material/styles';
 import * as React from 'react';
 
-import { ThemeProvider, useTheme } from '@mui/material/styles';
+import { Poppins } from 'next/font/google';
 
-import type { AppProps } from 'next/app';
-import Box from '@mui/material/Box';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { Button } from '@mui/material';
+import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import customTheme from '../styles/customStyles';
-import darkTheme from '@/styles/darkStyle';
 import { appWithTranslation } from 'next-i18next';
+import type { AppProps } from 'next/app';
+import customTheme from '../styles/customStyles';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
+const poppins = Poppins({
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  fallback: ['sans-serif'],
+  subsets: ['latin'],
+});
 export function DarkTheme() {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
@@ -40,24 +49,30 @@ export function DarkTheme() {
 }
 
 function App({ Component, pageProps }: AppProps) {
-  const [mode, setMode] = React.useState('light');
-
-  const colorMode = React.useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-      },
-    }),
-    []
-  );
-
+  function ModeToggle() {
+    const { mode, setMode } = useColorScheme();
+    return (
+      <Button
+        onClick={() => {
+          setMode(mode === 'light' ? 'dark' : 'light');
+        }}
+      >
+        {mode === 'light' ? 'Turn dark' : 'Turn light'}
+      </Button>
+    );
+  }
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={mode === 'light' ? customTheme : darkTheme}>
-        {/* <DarkTheme /> */}
+    <>
+      <style jsx global>{`
+        html {
+          font-family: ${poppins.style.fontFamily};
+        }
+      `}</style>
+      <CssVarsProvider theme={customTheme}>
+        {/* <ModeToggle /> */}
         <Component {...pageProps} />
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+      </CssVarsProvider>
+    </>
   );
 }
 

@@ -4,15 +4,15 @@ import { post } from './RestClient';
 export const getMyCohortMemberList = async ({
   limit,
   page,
-  filters
+  filters,
 }: cohortMemberList): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmembers/search`;
   try {
     const response = await post(apiUrl, {
       limit,
       page,
-      filters
-    }); //contextId, report, limit, offset, filters
+      filters,
+    });
     console.log('data', response?.data);
     return response?.data;
   } catch (error) {

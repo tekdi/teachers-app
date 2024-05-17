@@ -18,7 +18,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showCircularProgress, setShowCircularProgress] = useState(false);
+  const [color, setColor] = useState(true);
 
   const changeMonthHandle = (btnType: string) => {
     if (btnType === 'prev') {
@@ -44,6 +44,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   };
 
   const onDateClickHandle = (day: any, dayStr: string) => {
+    setColor(false);
     setSelectedDate(day);
     showDetailsHandle(dayStr);
   };
@@ -60,19 +61,29 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
       </div>
     );
   };
+
   const renderDays = () => {
-    const dateFormat = 'EEE';
+    const dateFormat = 'EEEEE';
     const days = [];
     let startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
+
     for (let i = 0; i < 7; i++) {
+      const day = addDays(startDate, i);
+      const isToday = isSameDay(day, new Date());
+
       days.push(
-        <div className="col col-center" key={i}>
-          {format(addDays(startDate, i), dateFormat)}
+        <div
+          className={`col col-center${isToday ? ' currentDay' : ''}`}
+          key={i}
+        >
+          {isToday ? 'Today' : format(day, dateFormat)}
         </div>
       );
     }
+
     return <div className="days row">{days}</div>;
   };
+
   const renderCells = () => {
     const startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
     const endDate = lastDayOfWeek(currentMonth, { weekStartsOn: 1 });
@@ -81,6 +92,8 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
     let days = [];
     let day = startDate;
     let formattedDate = '';
+    let showCircularProgress = false;
+
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
@@ -90,8 +103,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
         let pathColor = 'gray';
 
         if (data !== null) {
-          const dayData = data[format(cloneDay, 'yyyy-MM-dd')] || {};
-          // console.log('dayData', dayData);
+          const dayData = data?.[format(cloneDay, 'yyyy-MM-dd')] || {};
           const presentPercentage = parseFloat(dayData.present_percentage) || 0;
           percentage = presentPercentage;
           if (presentPercentage < 25) {
@@ -101,13 +113,14 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
           } else {
             pathColor = '#06A816';
           }
-          // let dayDataValuesExist = Object.values(dayData).some(
-          //   (value) => value !== null && value !== undefined && value !== ''
-          // );
-          // console.log(dayDataValuesExist);
-          // dayDataValuesExist
-          //   ? setShowCircularProgress(true)
-          //   : setShowCircularProgress(false);
+          const dayDataValuesExist = Object.values(dayData).some(
+            (value) => value !== null && value !== undefined && value !== ''
+          );
+          if (dayDataValuesExist) {
+            showCircularProgress = true;
+          } else {
+            showCircularProgress = false;
+          }
         }
 
         days.push(
@@ -115,12 +128,13 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
             display={'flex'}
             border={'1px solid red'}
             width={'14%'}
+            height={'20%'}
             overflow={'auto'}
             className={`col cell  ${
-              isSameDay(day, new Date())
+              isSameDay(day, new Date()) && color
                 ? 'today'
                 : isSameDay(day, selectedDate)
-                  ? 'selected'
+                  ? 'selected '
                   : ''
             }`}
             onClick={() => {
@@ -138,24 +152,24 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
                 alignItems={'center'}
                 justifyContent={'center'}
               >
-                {/* {showCircularProgress && ( */}
-                <Box
-                  width={'25px'}
-                  height={'2rem'}
-                  marginTop={'0.25rem'}
-                  padding={0}
-                >
-                  <CircularProgressbar
-                    value={percentage}
-                    styles={buildStyles({
-                      textColor: pathColor,
-                      pathColor: pathColor,
-                      trailColor: '#E6E6E6',
-                    })}
-                    strokeWidth={15}
-                  />
-                </Box>
-                {/* )} */}
+                {showCircularProgress && (
+                  <Box
+                    width={'25px'}
+                    height={'2rem'}
+                    marginTop={'0.25rem'}
+                    padding={0}
+                  >
+                    <CircularProgressbar
+                      value={percentage}
+                      styles={buildStyles({
+                        textColor: pathColor,
+                        pathColor: pathColor,
+                        trailColor: '#E6E6E6',
+                      })}
+                      strokeWidth={15}
+                    />
+                  </Box>
+                )}{' '}
               </Box>
             </div>
           </Box>

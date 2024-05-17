@@ -11,7 +11,7 @@ import React, { useEffect, useMemo } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+
 import Checkbox from '@mui/material/Checkbox';
 import CloseIcon from '@mui/icons-material/Close';
 import Image from 'next/image';
@@ -21,14 +21,15 @@ import Loader from '../components/Loader';
 import MenuItem from '@mui/material/MenuItem';
 import appLogo2 from '../../public/appLogo.png';
 import config from '../../config.json';
+import { getUserId } from '../services/ProfileService';
 import { login } from '../services/LoginService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 // import { useLocation } from 'react-router-dom';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
-import { getUserId } from '../services/ProfileService';
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
@@ -205,7 +206,14 @@ const LoginPage = () => {
           justifyContent={'center'}
           p={'2rem'}
         >
-          <Box position={'relative'}>
+          <Box
+            position={'relative'}
+            sx={{
+              '@media (max-width: 700px)': {
+                width: '100%',
+              },
+            }}
+          >
             <Box mt={'0.5rem'}>
               <FormControl sx={{ m: '2rem 0 1rem' }}>
                 <Select
@@ -228,7 +236,15 @@ const LoginPage = () => {
                 </Select>
               </FormControl>
             </Box>
-            <Box marginY={'1rem'}>
+            <Box
+              marginY={'1rem'}
+              sx={{
+                width: '668px',
+                '@media (max-width: 700px)': {
+                  width: '100%',
+                },
+              }}
+            >
               <FormControl
                 variant="outlined"
                 fullWidth={true}
@@ -250,8 +266,16 @@ const LoginPage = () => {
                 />
               </FormControl>
             </Box>
-            <Box marginY={'1rem'}>
-              <FormControl variant="outlined" className="CssTextField">
+            <Box
+              sx={{
+                width: '668px',
+                '@media (max-width: 768px)': {
+                  width: '100%',
+                },
+              }}
+              marginY={'1rem'}
+            >
+              <FormControl variant="outlined" className="CssTextField w-100">
                 <InputLabel
                   htmlFor="outlined-adornment-password"
                   error={passwordError}
