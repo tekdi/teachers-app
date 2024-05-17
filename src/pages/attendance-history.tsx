@@ -22,11 +22,12 @@ import {
 } from '../utils/Interfaces';
 // import AttendanceStatus from '../components/AttendanceStatus';
 import MarkAttendance from '../components/MarkAttendance';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import Loader from '../components/Loader';
 import MonthCalender from '@/components/MonthCalender';
 import { useRouter } from 'next/router';
 import { shortDateFormat } from '@/utils/Helper';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
@@ -291,17 +292,11 @@ const UserAttendanceHistory = () => {
               sx={{ color: theme.palette.warning['A200'] }}
               gap={'10px'}
               width={'100%'}
-              justifyContent={'center'}
-              position={'relative'}
             >
-              <Box
-                left={'0'}
-                onClick={handleBackEvent}
-                padding={'0px'}
-                padding-right={'30px'}
-              >
+              <Box onClick={handleBackEvent}>
                 <Box>
                   <KeyboardBackspaceOutlinedIcon
+                    cursor={'pointer'}
                     sx={{ color: theme.palette.warning['A200'] }}
                   />
                 </Box>
@@ -343,9 +338,9 @@ const UserAttendanceHistory = () => {
                 marginBottom={'0px'}
                 fontSize={'16px'}
                 fontWeight={'500'}
+                color={'black'}
               >
-                {' '}
-                Attendance on {formatToShowDateMonth(selectedDate)}
+                {formatToShowDateMonth(selectedDate)}
               </Typography>
             </Box>
             <Box>
@@ -372,5 +367,14 @@ const UserAttendanceHistory = () => {
     </Box>
   );
 };
+
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  };
+}
 
 export default UserAttendanceHistory;

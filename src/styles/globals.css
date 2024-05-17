@@ -486,3 +486,8 @@ main {
 .react-calendar__navigation button {
   border: unset !important;
 }
+
+.circularProgressBar {
+  margin-top: 8px;
+  width: 25px;
+}
