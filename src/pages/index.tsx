@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 // Import necessary modules
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import { Login } from '@mui/icons-material';
 
 // const Login = dynamic(() => import('./Login'), { ssr: false });
 // const Dashboard = dynamic(() => import('./Dashboard'), { ssr: false });
@@ -16,7 +17,7 @@ const Home: React.FC = () => {
   return (
     <>
       {/* <h1>Hello</h1> */}
-      {/* <Login /> */}
+      <Login />
     </>
   );
 };
