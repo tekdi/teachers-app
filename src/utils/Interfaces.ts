@@ -115,6 +115,10 @@ export interface AttendancePercentageProps {
   facets: Array<string>;
 }
 
+export interface updateCustomField {
+  fieldId: string;
+  value: string;
+}
 export interface cohort {
   cohortId: string;
   name: string;

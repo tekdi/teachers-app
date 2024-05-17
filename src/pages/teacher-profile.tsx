@@ -1,39 +1,35 @@
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
-import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
+
 import {
   Box,
-  //   Button,
-  Card,
-  CardContent,
-  FormHelperText,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
   Grid,
   IconButton,
-  Stack,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { useTheme } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-// import Header from '../components/Header.tsx';
-// import StudentStatsCard from '../components/StudentStatsCard.tsx';
-// import { editEditUser, getUser } from '../services/profileService.ts';
-// import { UserData } from '../utils/Interfaces.ts';
-import defaultUser from '/default_user.png';
 import prathamProfile from '../assets/images/prathamProfile.png';
 import imageOne from '../assets/images/imageOne.jpg';
 import Header from '@/components/Header';
-import ApartmentIcon from '@mui/icons-material/Apartment';
-import Image, { StaticImageData } from 'next/image';
-import { getUser, getUserDetails } from '@/services/ProfileService';
-import { Label } from '@mui/icons-material';
-const MyProfile = () => {
+import { editEditUser, getUserDetails } from '@/services/ProfileService';
+import { updateCustomField } from '@/utils/Interfaces';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Image from 'next/image';
+const TeacherProfile = () => {
   // Assuming imageOne is of type StaticImageData
   const imageUrl: string = imageOne.src;
   const prathamProfileUrl: string = prathamProfile.src;
@@ -45,59 +41,40 @@ const MyProfile = () => {
     type: string;
   }
 
-  interface updateCustomField {
-    fieldId: string;
-    value: string;
-  }
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [bio, setBio] = useState<string>(
-    'Teaching for a decade, my mission is to make math enjoyable and accessible, turning each lesson into a mathematical adventure.'
-  );
   const [userData, setUserData] = useState<any | null>(null);
-  const [updatedName, setUpdatedName] = useState<string | null>(null);
-  const [updatedPhone, setUpdatedPhone] = useState<string | null>(null);
-  const [updatedEmail, setUpdatedEmail] = useState<string | null>(null);
   const [updatedCustomFields, setUpdatedCustomFields] = useState<
     updateCustomField[]
   >([]);
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(prathamProfileUrl);
+  const [gender, setGender] = React.useState('');
 
   const [customFieldsData, setCustomFieldsData] = useState<CustomField[]>([]);
-  const handleBioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputBio = event.target.value;
-    if (inputBio.length <= 150) {
-      setBio(inputBio);
-    }
-  };
-  const charCount = bio.length;
+
   const theme = useTheme<any>();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 300,
+    width: isDesktop ? 700 : 400,
     bgcolor: 'warning.A400',
     p: 4,
     textAlign: 'center',
     height: '85vh',
   };
 
-  const backButtonEvent = () => {
-    window.history.back();
-  };
   const handleUpdateClick = async () => {
     setLoading(true);
     try {
       const userDetails = {
-        userData: {
-          name: updatedName ?? userData?.name,
-          email: updatedEmail ?? userData?.email,
-        },
         customFields:
           updatedCustomFields.length > 0
             ? updatedCustomFields
@@ -105,7 +82,7 @@ const MyProfile = () => {
       };
       const userId = localStorage.getItem('userId');
       if (userId) {
-        // await editEditUser(userId, userDetails);
+        await editEditUser(userId, userDetails);
         await fetchUserDetails();
       }
       setOpen(false);
@@ -116,16 +93,19 @@ const MyProfile = () => {
       console.log(error);
     }
   };
-  const handleFieldChange = (fieldId: string, value: string) => {
-    const newData: updateCustomField[] = [
-      {
-        fieldId: fieldId,
-        value: value,
-      },
 
-      // Add more objects as needed
-    ];
-    setUpdatedCustomFields(newData);
+  const handleFieldChange = (fieldId: string, value: string) => {
+    const updatedFields = [...updatedCustomFields];
+    const index = updatedFields?.findIndex(
+      (field) => field.fieldId === fieldId
+    );
+    if (index !== -1) {
+      updatedFields[index].value = value;
+    } else {
+      updatedFields?.push({ fieldId, value });
+    }
+
+    setUpdatedCustomFields(updatedFields);
   };
 
   const fetchUserDetails = async () => {
@@ -135,7 +115,7 @@ const MyProfile = () => {
       try {
         if (userId) {
           const response = await getUserDetails(userId, true);
-          console.log('userId', response);
+
           if (response?.statusCode === 200) {
             const data = response?.data;
             if (data) {
@@ -152,8 +132,6 @@ const MyProfile = () => {
           } else {
             console.log('No Response Found');
           }
-
-          // console.log(response?.result?.userData?.customFields);
         }
       } catch (error) {
         console.error('Error fetching  user details:', error);
@@ -165,24 +143,6 @@ const MyProfile = () => {
     fetchUserDetails();
   }, []);
 
-  const ageField: any = customFieldsData?.find(
-    (field) => field.label === 'Age'
-  );
-  const genderField: any = customFieldsData?.find(
-    (field) => field.label === 'Gender'
-  );
-
-  const YearOfJoingScp: any = customFieldsData?.find(
-    (field) => field.label === 'Year of joining SCP'
-  );
-
-  const designation: any = customFieldsData?.find(
-    (field) => field.label === 'Designation'
-  );
-  const noOfClusters: any = customFieldsData?.find(
-    (field) => field.label === 'No of clusters in which you teach'
-  );
-
   const techSubjects = customFieldsData?.find(
     (field) => field.label === 'Which subjects do you teach currently?'
   );
@@ -191,15 +151,18 @@ const MyProfile = () => {
     (field) => field.label === 'Which are your main subjects?'
   );
 
-  const allLabels = [
-    'Age',
-    'Gender',
-    'Year of joining SCP',
-    'Designation',
-    'No of clusters in which you teach',
-    'Which subjects do you teach currently?',
-    'Which are your main subjects?',
-  ];
+  const handleClickImage = () => {
+    fileInputRef.current && fileInputRef.current.click();
+  };
+
+  const handleImageUpload = (e: any) => {
+    const image: any[] = [e.target.files[0]];
+    const newImageUrl: any = [];
+    image.forEach((dataImage: any) =>
+      newImageUrl.push(URL.createObjectURL(dataImage))
+    );
+    setImage(newImageUrl);
+  };
 
   return (
     <Box
@@ -238,7 +201,6 @@ const MyProfile = () => {
         <Box
           sx={{
             flex: '1',
-            // textAlign: 'center',
             border: '2px solid',
             borderColor: theme.palette.warning['A100'],
           }}
@@ -251,7 +213,7 @@ const MyProfile = () => {
         >
           <Grid container spacing={3}>
             <Grid item xs={4}>
-              <img src={imageUrl} alt="user" />
+              <Image src={imageUrl} alt="user" width={100} height={100} />
             </Grid>
             <Grid item xs={8}>
               <Typography margin={0} variant="h2">
@@ -310,46 +272,22 @@ const MyProfile = () => {
           display="flex"
           flexDirection="row"
         >
-          {/* <Card>
-            <CardContent sx={{ alignItems: 'center' }}> */}
-
           <Grid container spacing={5}>
-            <Grid item xs={6}>
-              {/*  question */}
-              <Typography variant="h4" margin={0} color={'#4D4639'}>
-                Designation
-              </Typography>
+            {customFieldsData &&
+              customFieldsData?.map((item, i) => (
+                <Grid item xs={6}>
+                  {/*  question */}
+                  <Typography variant="h4" margin={0} color={'#4D4639'}>
+                    {item?.label}
+                  </Typography>
 
-              {/* value  */}
-              <Typography variant="h4" margin={0}>
-                {designation?.value}
-              </Typography>
-            </Grid>
+                  {/* value  */}
+                  <Typography variant="h4" margin={0}>
+                    {item?.value}
+                  </Typography>
+                </Grid>
+              ))}
 
-            <Grid item xs={6}>
-              <Typography variant="h4" margin={0} color={'#4D4639'}>
-                Year of Joining SCP
-              </Typography>
-              <Typography variant="h4" margin={0}>
-                {YearOfJoingScp?.value}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="h4" margin={0} color={'#4D4639'}>
-                Age
-              </Typography>
-              <Typography variant="h4" margin={0}>
-                {ageField?.value}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="h4" margin={0} color={'#4D4639'}>
-                Gender
-              </Typography>
-              <Typography variant="h4" margin={0}>
-                {genderField?.value}
-              </Typography>
-            </Grid>
             <Grid item xs={12}>
               <Typography variant="h4" margin={0} color={'#4D4639'}>
                 Subject | Teach
@@ -362,83 +300,21 @@ const MyProfile = () => {
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
                   <Grid item xs={4}>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      sx={{
-                        backgroundColor: '#EFC570',
-                        borderRadius: '4px',
-                        color: '#4D4639',
-                      }}
-                    >
-                      {techSubjects?.value}
-                    </Button>
+                    {techSubjects?.value && (
+                      <Button
+                        size="small"
+                        variant="contained"
+                        sx={{
+                          backgroundColor: '#EFC570',
+                          borderRadius: '4px',
+                          color: '#4D4639',
+                        }}
+                      >
+                        {techSubjects?.value}
+                      </Button>
+                    )}
                   </Grid>
-                  {/* <Grid item xs={4}>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      sx={{
-                        backgroundColor: '#EFC570',
-                        borderRadius: '4px',
-                        color: '#4D4639',
-                        // width: '100%',
-                        fontSize: '0.8rem',
-                      }}
-                    >
-                      Home Science
-                    </Button>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      sx={{
-                        backgroundColor: '#EFC570',
-                        borderRadius: '4px',
-                        color: '#4D4639',
-                      }}
-                    >
-                      Math
-                    </Button>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderRadius: '4px',
-                        color: '#4D4639',
-                      }}
-                    >
-                      Hindi
-                    </Button>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderRadius: '4px',
-                        color: '#4D4639',
-                      }}
-                    >
-                      Science
-                    </Button>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderRadius: '4px',
-                        color: '#4D4639',
-                        fontSize: '0.8rem',
-                      }}
-                    >
-                      Social Science
-                    </Button>
-                  </Grid> */}
+
                   <Grid item xs={4}>
                     {techSubjects?.value !== mainSubject?.value ? (
                       <Button
@@ -458,18 +334,7 @@ const MyProfile = () => {
                 </Grid>
               </Box>
             </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h4" margin={0} color={'#4D4639'}>
-                Number of Clusters | Teach
-              </Typography>
-              <Typography variant="h4" margin={0}>
-                {noOfClusters?.value}
-              </Typography>
-            </Grid>
           </Grid>
-
-          {/* </CardContent>
-          </Card> */}
         </Box>
         <Modal
           open={open}
@@ -522,9 +387,11 @@ const MyProfile = () => {
             >
               <Box
                 sx={{
-                  //flex: '1',
+                  flex: '1',
                   textAlign: 'center',
                   marginLeft: '5%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
                 borderRadius={'12px'}
                 border={'1px'}
@@ -533,24 +400,25 @@ const MyProfile = () => {
                 flexDirection="column"
               >
                 <Image
-                  src={prathamProfileUrl}
+                  src={image}
                   alt="user"
                   height={100}
                   width={100}
-                  style={{ marginLeft: '35%' }}
+                  style={{ alignItems: 'center' }}
                 />
-                {/* <img
-                  src={prathamProfileUrl}
-                  alt="user"
-                  style={{ marginLeft: '35%' }}
-                  height={'100px'}
-                  width={'100px'}
-                />{' '} */}
                 <Box>
+                  <input
+                    id=""
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                  />
                   <Button
                     sx={{
                       minWidth: '100%',
-
                       padding: '10px 24px 10px 16px',
                       borderRadius: '12px',
                       marginTop: '10px',
@@ -564,65 +432,78 @@ const MyProfile = () => {
                         backgroundColor: 'warning.A400',
                       },
                     }}
+                    onClick={handleClickImage}
                   >
                     {t('PROFILE.UPDATE_PICTURE')}
                   </Button>
                 </Box>
               </Box>
-              <TextField
-                sx={{
-                  marginTop: '20px',
-                }}
-                label={t('PROFILE.FULL_NAME')}
-                variant="outlined"
-                defaultValue={userData?.name}
-                onChange={(e) => setUpdatedName(e.target.value)}
-              />
-              {/* <TextField
-                label={t('PROFILE.PHONE')}
-                variant="outlined"
-                onChange={(e) => setUpdatedPhone(e.target.value)}
-              />
-              <TextField
-                label={t('PROFILE.EMAIL_ID')}
-                variant="outlined"
-                defaultValue={userData?.email}
-                onChange={(e) => setUpdatedEmail(e.target.value)}
-              /> */}
-              {/* {customFieldsData &&
-                customFieldsData.map((field) => (
+
+              {customFieldsData &&
+                customFieldsData?.map((field) => (
                   <Grid item xs={12} key={field.fieldId}>
-                    {field.type === 'text' && (
+                    {field.type === 'text' || field.type === 'numeric' ? (
                       <TextField
+                        sx={{ marginTop: '20px' }}
                         fullWidth
-                        name={field.fieldId}
+                        name={field.value}
                         label={field.label}
                         variant="outlined"
                         defaultValue={field.value}
-                        onChange={(e) =>
-                          handleFieldChange(field.fieldId, e.target.value)
-                        }
+                        onChange={(e) => {
+                          handleFieldChange(field.fieldId, e.target.value);
+                        }}
                       />
+                    ) : field.type === 'checkbox' ? (
+                      <Box marginTop={3}>
+                        <Typography
+                          textAlign={'start'}
+                          variant="h4"
+                          margin={0}
+                          color={'#4D4639'}
+                        >
+                          {field?.label}
+                        </Typography>
+                        {field?.options?.map((option: any) => (
+                          <FormGroup key={option?.order}>
+                            <FormControlLabel
+                              sx={{ color: '#1F1B13' }}
+                              control={<Checkbox color="default" />}
+                              label={option?.name}
+                            />
+                          </FormGroup>
+                        ))}
+                      </Box>
+                    ) : field.type === 'Drop Down' ? (
+                      <Box marginTop={3} textAlign={'start'}>
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-simple-select-label">
+                            {field?.label}
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={gender}
+                            label={field?.label}
+                            onChange={(e) => {
+                              setGender(e.target.value);
+                              handleFieldChange(field.fieldId, e.target.value);
+                            }}
+                          >
+                            {field?.options?.map((option: any) => (
+                              <MenuItem value={option?.value}>
+                                {option?.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Box>
+                    ) : (
+                      ''
                     )}
                   </Grid>
-                ))} */}
-              <Box>
-                {/* <TextField
-                  label={t('PROFILE.BIO')}
-                  multiline
-                  rows={4}
-                  InputProps={{
-                    inputProps: { maxLength: 150 }
-                  }}
-                  value={bio}
-                  onChange={handleBioChange}
-                  variant="outlined"
-                /> */}
-
-                {/* <FormHelperText
-                  style={{ textAlign: 'right' }}
-                >{`${charCount}/150`}</FormHelperText> */}
-              </Box>
+                ))}
+              <Box></Box>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
               <Button
@@ -648,4 +529,13 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  };
+}
+
+export default TeacherProfile;
