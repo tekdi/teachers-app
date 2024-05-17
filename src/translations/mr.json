@@ -91,6 +91,10 @@
     "LOCATION": "स्थान",
     "UPDATE": "अपडेट करा",
     "HELD_ON": "धारित:",
-    "MY_PROFILE": "माझी प्रोफाइल"
+    "MY_PROFILE": "माझी प्रोफाइल",
+
+    "VIEW_FULL_PROFILE": "पूर्ण प्रोफाइल पहा",
+    "CLOSE": "बंद करा",
+    "LEARNER_DETAILS": "विद्यार्थ्यांच्या तपशील"
   }
 }

@@ -96,6 +96,9 @@
     "FULL_NAME": "Full Name",
     "LOCATION": "Location",
     "HELD_ON": "Held on:",
-    "MY_PROFILE": "My Profile"
+    "MY_PROFILE": "My Profile",
+    "VIEW_FULL_PROFILE": "View Full Profile",
+    "CLOSE": "Close",
+    "LEARNER_DETAILS": "Learners Details"
   }
 }

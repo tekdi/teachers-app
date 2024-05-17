@@ -96,6 +96,10 @@
     "LOCATION": "स्थान",
     "UPDATE": "अपडेट",
     "HELD_ON": "धारित:",
-    "MY_PROFILE": "मेरी प्रोफ़ाइल"
+    "MY_PROFILE": "मेरी प्रोफ़ाइल",
+
+    "VIEW_FULL_PROFILE": "पूर्ण प्रोफाइल देखें",
+    "CLOSE": "बंद करें",
+    "LEARNER_DETAILS": "शिक्षक विवरण"
   }
 }

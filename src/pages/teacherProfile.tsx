@@ -20,14 +20,15 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { useTheme } from '@mui/material/styles';
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import prathamProfile from '../assets/images/prathamProfile.png';
 import imageOne from '../assets/images/imageOne.jpg';
 import Header from '@/components/Header';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { updateCustomField } from '@/utils/Interfaces';
-const MyProfile = () => {
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+const TeacherProfile = () => {
   // Assuming imageOne is of type StaticImageData
   const imageUrl: string = imageOne.src;
   const prathamProfileUrl: string = prathamProfile.src;
@@ -62,7 +63,7 @@ const MyProfile = () => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: isDesktop ? 500 : 300,
+    width: isDesktop ? 700 : 400,
     bgcolor: 'warning.A400',
     p: 4,
     textAlign: 'center',
@@ -530,4 +531,13 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  };
+}
+
+export default TeacherProfile;
