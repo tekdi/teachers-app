@@ -28,6 +28,7 @@ import Header from '@/components/Header';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { updateCustomField } from '@/utils/Interfaces';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Image from 'next/image';
 const TeacherProfile = () => {
   // Assuming imageOne is of type StaticImageData
   const imageUrl: string = imageOne.src;
@@ -94,17 +95,14 @@ const TeacherProfile = () => {
   };
 
   const handleFieldChange = (fieldId: string, value: string) => {
-    // Create a copy of updatedCustomFields array
     const updatedFields = [...updatedCustomFields];
-    // Find the index of the field with the given fieldId in the updatedFields array
     const index = updatedFields?.findIndex(
       (field) => field.fieldId === fieldId
     );
-    // If field exists, update its value; otherwise, add a new entry
     if (index !== -1) {
       updatedFields[index].value = value;
     } else {
-      updatedFields.push({ fieldId, value });
+      updatedFields?.push({ fieldId, value });
     }
 
     setUpdatedCustomFields(updatedFields);
@@ -215,7 +213,7 @@ const TeacherProfile = () => {
         >
           <Grid container spacing={3}>
             <Grid item xs={4}>
-              <img src={imageUrl} alt="user" />
+              <Image src={imageUrl} alt="user" width={100} height={100} />
             </Grid>
             <Grid item xs={8}>
               <Typography margin={0} variant="h2">
@@ -401,13 +399,13 @@ const TeacherProfile = () => {
                 display="flex"
                 flexDirection="column"
               >
-                <img
+                <Image
                   src={image}
                   alt="user"
                   height={100}
                   width={100}
                   style={{ alignItems: 'center' }}
-                ></img>
+                />
                 <Box>
                   <input
                     id=""
