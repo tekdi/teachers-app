@@ -407,10 +407,6 @@ main {
   /* margin-left: 2px !important; */
 }
 
-.calender-body {
-  background-color: #e7f3f8 !important;
-}
-
 .react-calendar__tile--active {
   background-color: #fbbc13 !important;
   color: black !important;
@@ -470,8 +466,23 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  /* border: 1px solid #d0c5b4 !important; */
 }
 
 .calender-body {
   padding: 20px !important;
+  background: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%) !important;
+  border: unset !important;
+}
+.react-calendar,
+.react-calendar *,
+.react-calendar *:before,
+.react-calendar *:after {
+  text-decoration: none;
+  color: #1f1b13;
+  font-size: 16px;
+  font-weight: 400;
+}
+.react-calendar__navigation button {
+  border: unset !important;
 }
