@@ -508,6 +508,7 @@ main {
   background: #4a4640;
   color: #fff;
   text-align: center;
+  cursor: pointer;
 }
 .w-98 {
   width: 98%;

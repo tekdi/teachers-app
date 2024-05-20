@@ -32,10 +32,12 @@ const UpDownButton = () => {
   const backToTop = () => {
     const scrollStep = -window.pageYOffset / (500 / 15);
     const scrollInterval = setInterval(() => {
-      if (window.pageYOffset !== 0) {
-        window.scrollBy(0, scrollStep);
-      } else {
-        clearInterval(scrollInterval);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        if (window.pageYOffset !== 0) {
+          window.scrollBy(0, scrollStep);
+        } else {
+          clearInterval(scrollInterval);
+        }
       }
     }, 15);
   };
@@ -47,10 +49,12 @@ const UpDownButton = () => {
       2000;
     const scrollStep = (targetPosition - window.pageYOffset) / (500 / 15);
     const scrollInterval = setInterval(() => {
-      if (window.pageYOffset < targetPosition) {
-        window.scrollBy(0, scrollStep);
-      } else {
-        clearInterval(scrollInterval);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        if (window.pageYOffset < targetPosition) {
+          window.scrollBy(0, scrollStep);
+        } else {
+          clearInterval(scrollInterval);
+        }
       }
     }, 15);
   };
@@ -64,9 +68,13 @@ const UpDownButton = () => {
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', trackScroll);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.addEventListener('scroll', trackScroll);
+    }
     return () => {
-      window.removeEventListener('scroll', trackScroll);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.removeEventListener('scroll', trackScroll);
+      }
     };
   }, []);
 
@@ -76,7 +84,6 @@ const UpDownButton = () => {
         <Box
           className={`up_down_btn ${isVisible ? 'up_down_btn-show' : ''}`}
           onClick={handleButtonClick}
-          title={isAtBottom ? 'Вниз' : 'Наверх'}
         >
           <span>{isAtBottom ? '' : <ArrowUpwardIcon />}</span>
           <span className="w-98">
