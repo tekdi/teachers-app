@@ -13,33 +13,21 @@ const UpDownButton = () => {
     const viewportHeight = document.documentElement.clientHeight;
     const totalHeight = document.documentElement.scrollHeight;
 
-    if (scrolled > 100) {
-      // Show button quickly after scrolling starts
-      setIsVisible(true);
-      setIsAtBottom(false);
-    } else if (scrolled === 0) {
-      setIsAtBottom(true);
-      setIsVisible(true);
-    } else if (scrolled + viewportHeight >= totalHeight - 10) {
-      // Adjust for small discrepancies with a 10px buffer
-      setIsAtBottom(true);
-      setIsVisible(true);
-    } else {
-      setIsVisible(false);
-    }
+    const atBottom =
+      scrolled === 0 || scrolled + viewportHeight >= totalHeight - 10;
+    +setIsVisible(scrolled > 100 || atBottom);
+    +setIsAtBottom(atBottom);
   };
 
   const backToTop = () => {
     const scrollStep = -window.pageYOffset / (500 / 15);
-    const scrollInterval = setInterval(() => {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        if (window.pageYOffset !== 0) {
-          window.scrollBy(0, scrollStep);
-        } else {
-          clearInterval(scrollInterval);
-        }
+    const animateScroll = () => {
+      if (window.pageYOffset > 0) {
+        window.scrollBy(0, scrollStep);
+        requestAnimationFrame(animateScroll);
       }
-    }, 15);
+    };
+    requestAnimationFrame(animateScroll);
   };
 
   const scrollToBottom = () => {
@@ -48,15 +36,13 @@ const UpDownButton = () => {
       document.documentElement.clientHeight -
       2000;
     const scrollStep = (targetPosition - window.pageYOffset) / (500 / 15);
-    const scrollInterval = setInterval(() => {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        if (window.pageYOffset < targetPosition) {
-          window.scrollBy(0, scrollStep);
-        } else {
-          clearInterval(scrollInterval);
-        }
+    const animateScroll = () => {
+      if (window.pageYOffset < targetPosition) {
+        window.scrollBy(0, scrollStep);
+        requestAnimationFrame(animateScroll);
       }
-    }, 15);
+    };
+    requestAnimationFrame(animateScroll);
   };
 
   const handleButtonClick = () => {
