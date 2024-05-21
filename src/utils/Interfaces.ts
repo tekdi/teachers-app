@@ -98,8 +98,8 @@ export interface AttendanceStatusListProps {
   limit: number;
   page: number;
   filters: {
-    fromDate: string;
-    toDate: string;
+    fromDate: string | Date;
+    toDate: string | Date;
   };
 }
 

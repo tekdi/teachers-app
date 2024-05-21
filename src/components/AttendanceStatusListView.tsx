@@ -47,7 +47,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
         variant="body1"
         marginRight="auto"
         marginY="auto"
-        sx={{ color: theme.palette.warning['300'] }}
+        sx={{ color: theme.palette.warning['300'], textAlign:'left'}}
       >
         {isBulkAction ? t('ATTENDANCE.MARK_ALL') : userData?.name}
       </Typography>

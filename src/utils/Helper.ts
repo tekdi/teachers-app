@@ -27,6 +27,12 @@ export const formatDate = (dateString: string) => {
   return `${day} ${month}, ${year}`;
 };
 
+export const formatToShowDateMonth = (date: Date) => {
+  const day = date.toLocaleString('en-US', { day: '2-digit' });
+  const month = date.toLocaleString('en-US', { month: 'long' });
+  return `${day} ${month}`;
+};
+
 export const shortDateFormat = (date: Date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -34,7 +40,7 @@ export const shortDateFormat = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-export const formatSelectedDate = (inputDate: string) => {
+export const formatSelectedDate = (inputDate: string | Date) => {
   const date = new Date(inputDate);
   const year = date.getFullYear();
   const month = ('0' + (date.getMonth() + 1)).slice(-2);

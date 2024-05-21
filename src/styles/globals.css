@@ -4,10 +4,10 @@
   font-size: 0.75rem;
   margin-top: 35%;
 }
-.RememberMecheckbox span svg {
+.remember-me-checkbox span svg {
   fill: black !important;
 }
-.RememberMecheckbox span {
+.remember-me-checkbox span {
   padding: 6px 7px 6px 0 !important;
 }
 body {
@@ -50,8 +50,8 @@ body {
 }
 /* FONT IMPORTS */
 
-@import url(https://fonts.googleapis.com/css?family=Open + Sans:300, 400, 700);
-@import url(https://fonts.googleapis.com/icon?family=Material + Icons);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
 
 .icon {
   font-family: 'Material Icons', serif;
@@ -490,4 +490,36 @@ main {
 .circularProgressBar {
   margin-top: 8px;
   width: 25px;
+}
+
+.up_down_btn {
+  position: fixed;
+  bottom: 80px;
+  right: 40px;
+  z-index: 9999;
+  box-shadow: 0px 1px 3px 0px #0000004d;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 15px;
+  border-radius: 100px;
+  box-shadow: 0px 4px 8px 3px #00000026;
+  background: #4a4640;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+}
+.w-98 {
+  width: 98%;
+}
+
+.up_down_btn-show {
+  display: block;
+}
+
+.up_down_btn-disabled {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0;
 }
