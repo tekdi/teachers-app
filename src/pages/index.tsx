@@ -1,23 +1,28 @@
 import React, { useEffect } from 'react';
 // Import necessary modules
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Login } from '@mui/icons-material';
 
 // const Login = dynamic(() => import('./Login'), { ssr: false });
 // const Dashboard = dynamic(() => import('./Dashboard'), { ssr: false });
 
 const Home: React.FC = () => {
-  const { locale, locales, push } = useRouter();
+  const {  push } = useRouter();
 
   useEffect(() => {
-    push('/login', undefined, { locale: 'en' });
-  });
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (refreshToken) {
+        push('/dashboard');
+      } else {
+        push('/login', undefined, { locale: 'en' });
+      }
+    }
+  }, []);
 
   return (
     <>
-      {/* <h1>Hello</h1> */}
-      <Login />
+      <h1>Hello</h1>
+      {/* <Login /> */}
     </>
   );
 };
