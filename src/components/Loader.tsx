@@ -27,7 +27,7 @@ const Loader: React.FC<{ showBackdrop: boolean; loadingText: string }> = ({
       >
         <Spinner />
       </Backdrop>
-      {!open && <Spinner />}
+      {!showBackdrop && <Spinner />}
     </>
   );
 };

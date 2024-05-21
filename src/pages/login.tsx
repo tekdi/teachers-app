@@ -1,41 +1,39 @@
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Box,
   Button,
   FormControl,
   IconButton,
   InputAdornment,
-  InputLabel,
-  OutlinedInput,
+  TextField,
 } from '@mui/material';
-import React, { useEffect, useMemo } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import React, { useEffect, useMemo } from 'react';
 
-import Checkbox from '@mui/material/Checkbox';
 import CloseIcon from '@mui/icons-material/Close';
-import Image from 'next/image';
+import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
+import Image from 'next/image';
 // import { getUserId } from '../services/ProfileService';
-import Loader from '../components/Loader';
 import MenuItem from '@mui/material/MenuItem';
-import appLogo2 from '../../public/images/appLogo.png';
-import config from '../../config.json';
-import { getUserId } from '../services/ProfileService';
-import { login } from '../services/LoginService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import config from '../../config.json';
+import appLogo2 from '../../public/images/appLogo.png';
+import Loader from '../components/Loader';
+import { login } from '../services/LoginService';
+import { getUserId } from '../services/ProfileService';
 // import { useLocation } from 'react-router-dom';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
 
 const LoginPage = () => {
-  const { locale, locales, push } = useRouter();
   const { t } = useTranslation();
   // const { t, i18n } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
@@ -245,26 +243,18 @@ const LoginPage = () => {
                 },
               }}
             >
-              <FormControl
-                variant="outlined"
-                fullWidth={true}
-                className="CssTextField"
-              >
-                <InputLabel
-                  htmlFor="outlined-adornment-username"
-                  error={usernameError}
-                >
-                  {t('LOGIN_PAGE.USERNAME')}
-                </InputLabel>
-                <OutlinedInput
-                  type={'text'}
-                  label={t('LOGIN_PAGE.USERNAME')}
-                  placeholder={t('LOGIN_PAGE.USERNAME_PLACEHOLDER')}
-                  value={username}
-                  onChange={handleUsernameChange}
-                  error={usernameError}
-                />
-              </FormControl>
+              <TextField
+                required
+                id="username"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                label={t('LOGIN_PAGE.USERNAME')}
+                placeholder={t('LOGIN_PAGE.USERNAME_PLACEHOLDER')}
+                value={username}
+                onChange={handleUsernameChange}
+                error={usernameError}
+              />
             </Box>
             <Box
               sx={{
@@ -275,16 +265,15 @@ const LoginPage = () => {
               }}
               marginY={'1rem'}
             >
-              <FormControl variant="outlined" className="CssTextField w-100">
-                <InputLabel
-                  htmlFor="outlined-adornment-password"
-                  error={passwordError}
-                >
-                  {t('LOGIN_PAGE.PASSWORD')}
-                </InputLabel>
-                <OutlinedInput
-                  type={showPassword ? 'text' : 'password'}
-                  endAdornment={
+              <TextField
+                type={showPassword ? 'text' : 'password'}
+                required
+                id="password"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
@@ -295,14 +284,14 @@ const LoginPage = () => {
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
-                  }
-                  label={t('LOGIN_PAGE.PASSWORD')}
-                  placeholder={t('LOGIN_PAGE.PASSWORD_PLACEHOLDER')}
-                  value={password}
-                  onChange={handlePasswordChange}
-                  error={passwordError}
-                />
-              </FormControl>
+                  ),
+                }}
+                label={t('LOGIN_PAGE.PASSWORD')}
+                placeholder={t('LOGIN_PAGE.PASSWORD_PLACEHOLDER')}
+                value={password}
+                onChange={handlePasswordChange}
+                error={passwordError}
+              />
             </Box>
 
             <Box marginTop={'-1rem'} marginLeft={'0.5rem'}>
@@ -314,7 +303,7 @@ const LoginPage = () => {
                 {t('LOGIN_PAGE.FORGOT_PASSWORD')}
               </Link>
             </Box>
-            <Box marginTop={'1rem'} className="RememberMecheckbox">
+            <Box marginTop={'1rem'} className="remember-me-checkbox">
               <Checkbox
                 defaultChecked
                 onChange={(e) => setRememberMe(e.target.checked)}
