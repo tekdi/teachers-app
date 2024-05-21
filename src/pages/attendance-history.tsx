@@ -220,7 +220,7 @@ const UserAttendanceHistory = () => {
   };
 
   const handleUpdate = async (date: string, status: string) => {
-    const trimmedContextId = contextId.trim();
+    const trimmedContextId = classId.trim();
     if (userId && trimmedContextId) {
       const attendanceData: AttendanceParams = {
         attendanceDate: date,
