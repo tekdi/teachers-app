@@ -1,13 +1,10 @@
 'use client';
 
-import ExtraSessionsCard from '@/components/ExtraSessionsCard';
-import OverviewCard from '@/components/OverviewCard';
-import TimeTableCard from '@/components/TimeTableCard';
-import WeekCalender from '@/components/WeekCalender';
-import WeekDays from '@/components/WeekDays';
-import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
-import CloseIcon from '@mui/icons-material/Close';
-import TodayIcon from '@mui/icons-material/Today';
+import {
+  AttendancePercentageProps,
+  AttendanceStatusListProps,
+  cohort,
+} from '../utils/Interfaces';
 import {
   Box,
   Button,
@@ -19,28 +16,14 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import Backdrop from '@mui/material/Backdrop';
-import Divider from '@mui/material/Divider';
-import Fade from '@mui/material/Fade';
-import Modal from '@mui/material/Modal';
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import AttendanceStatusListView from '../components/AttendanceStatusListView';
-import Header from '../components/Header';
-import Loader from '../components/Loader';
+import React, { useEffect } from 'react';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import {
   attendanceInPercentageStatusList,
   attendanceStatusList,
   bulkAttendance,
 } from '../services/AttendanceService';
-import { cohortList } from '../services/CohortServices';
-import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import {
   formatDate,
   formatSelectedDate,
@@ -48,11 +31,30 @@ import {
   getTodayDate,
   shortDateFormat,
 } from '../utils/Helper';
-import {
-  AttendancePercentageProps,
-  AttendanceStatusListProps,
-  cohort,
-} from '../utils/Interfaces';
+
+import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
+import AttendanceStatusListView from '../components/AttendanceStatusListView';
+import Backdrop from '@mui/material/Backdrop';
+import CloseIcon from '@mui/icons-material/Close';
+import Divider from '@mui/material/Divider';
+import ExtraSessionsCard from '@/components/ExtraSessionsCard';
+import Fade from '@mui/material/Fade';
+import Header from '../components/Header';
+import Link from 'next/link';
+import Loader from '../components/Loader';
+import Modal from '@mui/material/Modal';
+import OverviewCard from '@/components/OverviewCard';
+import TimeTableCard from '@/components/TimeTableCard';
+import TodayIcon from '@mui/icons-material/Today';
+import UpDownButton from '@/components/UpDownButton';
+import WeekCalender from '@/components/WeekCalender';
+import WeekDays from '@/components/WeekDays';
+import { cohortList } from '../services/CohortServices';
+import { getMyCohortMemberList } from '../services/MyClassDetailsService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/navigation';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
