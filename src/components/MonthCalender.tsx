@@ -8,46 +8,19 @@ import {
   RemoveOutlined,
 } from '@mui/icons-material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { shortDateFormat } from '@/utils/Helper';
 interface CalendarWithAttendanceProps {
-  presentDates: string[];
-  absentDates: string[];
-  halfDayDates: string[];
-  notMarkedDates: string[];
-  futureDates: string[];
+  formattedAttendanceData: object;
   onChange: (date: Date) => void;
   onDateChange: (date: Date) => void;
 }
 
 const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
-  presentDates,
-  absentDates,
-  halfDayDates,
-  notMarkedDates,
-  futureDates,
+  formattedAttendanceData,
   onChange,
   onDateChange,
 }) => {
   const [date, setDate] = useState(() => new Date());
-  const reducedPresentDates = useMemo(
-    () => reduceDatesByOneDay(presentDates),
-    [presentDates]
-  );
-  const reducedHalfDates = useMemo(
-    () => reduceDatesByOneDay(halfDayDates),
-    [halfDayDates]
-  );
-  const reducedAbsentDates = useMemo(
-    () => reduceDatesByOneDay(absentDates),
-    [absentDates]
-  );
-  const reducedNotMarkedDates = useMemo(
-    () => reduceDatesByOneDay(notMarkedDates),
-    [notMarkedDates]
-  );
-  const reducedFutureDates = useMemo(
-    () => reduceDatesByOneDay(futureDates),
-    [futureDates]
-  );
 
   useEffect(() => {
     const currentDate = new Date();
@@ -67,40 +40,45 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     const dateString = date.toISOString().slice(0, 10);
     // const currentDate = new Date().toISOString().slice(0, 10);
 
-    if (
-      reducedPresentDates.includes(dateString) &&
-      !halfDayDates.includes(dateString)
-    ) {
-      return 'present';
-    }
-    if (reducedHalfDates.includes(dateString)) {
-      return 'halfDay';
-    }
-    if (reducedAbsentDates.includes(dateString)) {
-      return 'absent';
-    }
-    if (reducedNotMarkedDates.includes(dateString)) {
-      return 'attendanceNotMarked';
-    }
-    if (reducedFutureDates.includes(dateString)) {
-      return 'futureDate';
-    }
     return null;
   }
 
-  function tileContent({ date, view }: { date: Date; view: string }) {
+  function tileContent({
+    date,
+    view,
+    formattedAttendanceData,
+  }: {
+    date: Date;
+    view: string;
+    formattedAttendanceData: object;
+  }) {
     if (view !== 'month') return null;
+    const dateString = shortDateFormat(date);
+    const attendanceData = formattedAttendanceData?.[dateString];
+    if (!attendanceData) return null;
+    const presentPercentage = attendanceData.present_percentage;
+
     // const status = getAttendanceStatus(date);
+    let pathColor;
+    if (!isNaN(presentPercentage)) {
+      if (presentPercentage < 25) {
+        pathColor = '#BA1A1A';
+      } else if (presentPercentage < 50) {
+        pathColor = '#987100';
+      } else {
+        pathColor = '#06A816';
+      }
+    }
     const status = 'present';
     switch (status) {
       case 'present':
         return (
           <div className="circularProgressBar">
             <CircularProgressbar
-              value={100}
+              value={presentPercentage}
               styles={buildStyles({
-                textColor: 'green',
-                pathColor: 'green',
+                textColor: pathColor,
+                pathColor: pathColor,
                 trailColor: '#E6E6E6',
               })}
               strokeWidth={15}
@@ -159,7 +137,9 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
         <Calendar
           onChange={handleDateChange}
           value={date}
-          tileContent={tileContent}
+          tileContent={({ date, view }) =>
+            tileContent({ date, view, formattedAttendanceData })
+          }
           tileClassName={tileClassName}
           calendarType="gregory"
           className="calender-body"
