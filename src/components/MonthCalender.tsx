@@ -10,10 +10,18 @@ import {
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { shortDateFormat } from '@/utils/Helper';
 interface CalendarWithAttendanceProps {
-  formattedAttendanceData: object;
+  formattedAttendanceData: FormattedAttendanceData;
   onChange: (date: Date) => void;
   onDateChange: (date: Date) => void;
 }
+
+type AttendanceData = {
+  present_percentage: number;
+};
+
+type FormattedAttendanceData = {
+  [date: string]: AttendanceData;
+};
 
 const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   formattedAttendanceData,
@@ -50,7 +58,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   }: {
     date: Date;
     view: string;
-    formattedAttendanceData: object;
+    formattedAttendanceData: FormattedAttendanceData;
   }) {
     if (view !== 'month') return null;
     const dateString = shortDateFormat(date);
