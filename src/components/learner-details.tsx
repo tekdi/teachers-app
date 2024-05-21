@@ -73,7 +73,7 @@ const LearnerDetails = () => {
               variant="h2"
               style={{
                 textAlign: 'left',
-                color: '#4D4639',
+                color: theme.palette.warning['A400'],
               }}
             >
               {t('PROFILE.LEARNER_DETAILS')}
@@ -100,14 +100,7 @@ const LearnerDetails = () => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button
               sx={{
-                // minWidth: '100%',
-
-                color: 'black',
-                backgroundColor: 'containedSecondary',
-                '&:hover': {
-                  backgroundColor: 'containedSecondary',
-                },
-                border: 'black',
+                borderColor: theme.palette.warning['A400'],
                 borderRadius: '1px',
               }}
               onClick={handleClose}
@@ -117,13 +110,7 @@ const LearnerDetails = () => {
             </Button>
             <Button
               sx={{
-                // minWidth: '100%',
-
-                color: 'black',
-                backgroundColor: 'containedSecondary',
-                '&:hover': {
-                  backgroundColor: 'containedSecondary',
-                },
+                borderColor: theme.palette.warning['A400'],
               }}
               // onClick={handleUpdateClick}
               variant="contained"
