@@ -846,7 +846,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   >
                     <Link
                       className="flex-center fs-14 text-decoration"
-                      href={'/'}
+                      href={'/attendance-overview'}
                     >
                       {t('DASHBOARD.MORE_DETAILS')}{' '}
                       <ArrowForwardSharpIcon sx={{ height: '18px' }} />
