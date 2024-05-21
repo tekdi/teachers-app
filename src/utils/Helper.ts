@@ -40,7 +40,7 @@ export const shortDateFormat = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-export const formatSelectedDate = (inputDate: string) => {
+export const formatSelectedDate = (inputDate: string | Date) => {
   const date = new Date(inputDate);
   const year = date.getFullYear();
   const month = ('0' + (date.getMonth() + 1)).slice(-2);
