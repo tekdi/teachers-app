@@ -441,29 +441,38 @@ const UserAttendanceHistory = () => {
   // handle sorting data
   const handleSorting = (sortByName: string, sortByAttendance: string) => {
     handleCloseModal();
-    if(sortByName == "asc"){
-      let sortedData = [...cohortMemberList].sort((a, b) => a.name.localeCompare(b.name));
-      setDisplayStudentList(sortedData)
-    }else{
-      let sortedData = [...cohortMemberList].sort((a, b) => b.name.localeCompare(a.name));
-      setDisplayStudentList(sortedData)
+    let sortedData = [...cohortMemberList];
+  
+    // Sorting by name
+    switch (sortByName) {
+      case "asc":
+        sortedData.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "desc":
+        sortedData.sort((a, b) => b.name.localeCompare(a.name));
+        break;
     }
-    if (sortByAttendance == "pre"){
-      let sortedData = [...cohortMemberList].sort((a, b) => {
-        if (a.attendance === "present" && b.attendance === "absent") return -1;
-        if (a.attendance === "absent" && b.attendance === "present") return 1;
-        return 0;
-      });
-      setDisplayStudentList(sortedData)
-    }else{
-      const sortedData = [...cohortMemberList].sort((a, b) => {
-        if (a.attendance === 'absent' && b.attendance === 'present') return -1;
-        if (a.attendance === 'present' && b.attendance === 'absent') return 1;
-        return 0;
-      });
-      setDisplayStudentList(sortedData)
-    }  
+  
+    // Sorting by attendance
+    switch (sortByAttendance) {
+      case "pre":
+        sortedData.sort((a, b) => {
+          if (a.attendance === "present" && b.attendance === "absent") return -1;
+          if (a.attendance === "absent" && b.attendance === "present") return 1;
+          return 0;
+        });
+        break;
+      case "abs":
+        sortedData.sort((a, b) => {
+          if (a.attendance === 'absent' && b.attendance === 'present') return -1;
+          if (a.attendance === 'present' && b.attendance === 'absent') return 1;
+          return 0;
+        });
+        break;
+    }
+    setDisplayStudentList(sortedData);
   };
+  
 
   const submitBulkAttendanceAction = (
     isBulkAction: boolean,
