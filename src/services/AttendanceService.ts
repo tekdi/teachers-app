@@ -35,7 +35,7 @@ const postAttendanceList = async ({
     return response?.data;
   } catch (error) {
     console.error('Error in fetching attendance list', error);
-    throw error; // Rethrow the error to handle it in the caller function if needed
+    // throw error; // Rethrow the error to handle it in the caller function if needed
   }
 };
 

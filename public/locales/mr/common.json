@@ -2,6 +2,7 @@
   "COMMON": {
     "LANGUAGE": "भाषा",
     "MARK": "मार्क",
+    "MODIFY": "सुधारित करा",
     "MARK_MY_ATTENDANCE": "माझ्या उपस्थितीचा चिन्ह करा",
     "MARK_CENTER_ATTENDANCE": "केंद्र उपस्थिती चिन्हांकित करा",
     "LOADING": "लोड होत आहे",
@@ -10,6 +11,8 @@
     "SEARCH_STUDENT": "विद्यार्थी शोधा",
     "SORT_BY": "क्रमवारी लावा",
     "APPLY": "लागू करा",
+    "A_TO_Z": "A TO Z",
+    "Z_TO_A": "Z TO A",
     "HIGH_TO_LOW": "उच्च ते निम्न",
     "LOW_TO_HIGH": "निम्न ते उच्च",
     "NAMES": "नावे",
