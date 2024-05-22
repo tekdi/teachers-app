@@ -54,7 +54,7 @@ interface user {
   key?: string;
 }
 import AttendanceStatus from '@/components/AttendanceStatus';
-import MarkBulkAttendace from '@/components/MarkBulkAttendace';
+import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
@@ -742,7 +742,7 @@ const UserAttendanceHistory = () => {
             )}
           </Box>
 
-          <MarkBulkAttendace
+          <MarkBulkAttendance
             open={open}
             onClose={handleClose}
             classId={classId}
