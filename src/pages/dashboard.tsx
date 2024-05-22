@@ -454,11 +454,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
   let pathColor;
   if (!isNaN(presentPercentage)) {
     if (presentPercentage < 25) {
-      pathColor = '#BA1A1A';
+      pathColor = theme.palette.error.main;
     } else if (presentPercentage < 50) {
-      pathColor = '#987100';
+      pathColor = theme.palette.action.activeChannel;
     } else {
-      pathColor = '#06A816';
+      pathColor = theme.palette.success.main;
     }
   }
   return (

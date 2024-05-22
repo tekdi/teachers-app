@@ -9,6 +9,8 @@ import {
 } from '@mui/icons-material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { shortDateFormat } from '@/utils/Helper';
+import { useTheme } from '@mui/material/styles';
+
 interface CalendarWithAttendanceProps {
   formattedAttendanceData: FormattedAttendanceData;
   onChange: (date: Date) => void;
@@ -29,6 +31,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   onDateChange,
 }) => {
   const [date, setDate] = useState(() => new Date());
+  const theme = useTheme<any>();
 
   useEffect(() => {
     const currentDate = new Date();
@@ -70,11 +73,11 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     let pathColor;
     if (!isNaN(presentPercentage)) {
       if (presentPercentage < 25) {
-        pathColor = '#BA1A1A';
+        pathColor = theme.palette.error.main;
       } else if (presentPercentage < 50) {
-        pathColor = '#987100';
+        pathColor = theme.palette.action.activeChannel;
       } else {
-        pathColor = '#06A816';
+        pathColor = theme.palette.success.main;
       }
     }
     const status = 'present';

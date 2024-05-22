@@ -13,12 +13,14 @@ import {
 } from 'date-fns';
 import { Box } from '@mui/material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { useTheme } from '@mui/material/styles';
 
 const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [color, setColor] = useState(true);
+  const theme = useTheme<any>();
 
   const changeMonthHandle = (btnType: string) => {
     if (btnType === 'prev') {
@@ -107,11 +109,11 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
           const presentPercentage = parseFloat(dayData.present_percentage) || 0;
           percentage = presentPercentage;
           if (presentPercentage < 25) {
-            pathColor = '#BA1A1A';
+            pathColor = theme.palette.error.main;
           } else if (presentPercentage < 50) {
-            pathColor = '#987100';
+            pathColor = theme.palette.action.activeChannel;
           } else {
-            pathColor = '#06A816';
+            pathColor = theme.palette.success.main;
           }
           const dayDataValuesExist = Object.values(dayData).some(
             (value) => value !== null && value !== undefined && value !== ''
