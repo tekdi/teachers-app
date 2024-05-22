@@ -39,6 +39,10 @@ const customTheme = extendTheme({
           main: '#BA1A1A',
           light: '#FFDAD6',
         },
+        action: {
+          activeChannel: '#987100',
+          selectedChannel: '#dba403',
+        },
       },
     },
     dark: {
@@ -77,6 +81,10 @@ const customTheme = extendTheme({
         error: {
           main: '#BA1A1A',
           light: '#FFDAD6',
+        },
+        action: {
+          activeChannel: '#987100',
+          selectedChannel: '#dba403',
         },
       },
     },
