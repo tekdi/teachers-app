@@ -13,12 +13,14 @@ import {
 } from 'date-fns';
 import { Box } from '@mui/material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
 
 const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [color, setColor] = useState(true);
+  const determinePathColor = useDeterminePathColor();
 
   const changeMonthHandle = (btnType: string) => {
     if (btnType === 'prev') {
@@ -65,7 +67,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const renderDays = () => {
     const dateFormat = 'EEEEE';
     const days = [];
-    let startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
+    const startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
 
     for (let i = 0; i < 7; i++) {
       const day = addDays(startDate, i);
@@ -100,19 +102,14 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
         const cloneDay = day;
         // console.log('cloneDay', cloneDay);
         let percentage = 0;
-        let pathColor = 'gray';
+        let pathColor;
 
         if (data !== null) {
           const dayData = data?.[format(cloneDay, 'yyyy-MM-dd')] || {};
           const presentPercentage = parseFloat(dayData.present_percentage) || 0;
           percentage = presentPercentage;
-          if (presentPercentage < 25) {
-            pathColor = '#BA1A1A';
-          } else if (presentPercentage < 50) {
-            pathColor = '#987100';
-          } else {
-            pathColor = '#06A816';
-          }
+          pathColor = determinePathColor(presentPercentage);
+
           const dayDataValuesExist = Object.values(dayData).some(
             (value) => value !== null && value !== undefined && value !== ''
           );

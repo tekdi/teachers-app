@@ -1,6 +1,6 @@
 .alert .MuiSnackbarContent-root {
-  background-color: #ffdad6 !important;
-  color: #ba1a1a;
+  background-color: var(--mui-palette-error-light) !important;
+  color: var(--mui-palette-error-main);
   font-size: 0.75rem;
   margin-top: 35%;
 }
@@ -79,41 +79,9 @@ body {
   --text-color-light: #ccc;
   --border-color: #eee;
   --bg-color: #f9f9f9;
-  --neutral-color: #fff;
   --pink-color: #ff1a79;
   --custom-gradient: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%);
   --custom-gradient-pink: linear-gradient(45deg, #ff1a79 0%, #eb82b3 40%);
-}
-
-:root {
-  --primary-main: #fdbe16;
-  --primary-light: #ffdea1;
-
-  --secondary-main: #0d599e;
-  --secondary-light: #e7f3f8;
-
-  --success-main: #1a8825;
-  --success-light: #c0ffc7;
-
-  --info-main: #064471;
-  --info-light: #d6eeff;
-
-  --warning-100: #17130b;
-  --warning-200: #261900;
-  --warning-300: #1f1b13;
-  --warning-400: #7c766f;
-  --warning-500: #969088;
-  --warning-600: #b1aaa2;
-  --warning-700: #ded8e1;
-  --warning-800: #f8efe7;
-  --warning-900: #dadada;
-  --warning-A100: #d0c5b4;
-  --warning-A200: #4d4639;
-  --warning-A400: #ffffff;
-  --warning-A700: #ededed;
-
-  --error-main: #ba1a1a;
-  --error-light: #ffdad6;
 }
 
 /* GENERAL */
@@ -137,7 +105,7 @@ header {
   width: 100%;
   padding: 1.75em 0;
   border-bottom: 1px solid var(--border-color);
-  background: var(--neutral-color);
+  background: var(--mui-palette-success-contrastText);
 }
 
 header #logo {
@@ -238,7 +206,7 @@ main {
 .calendar .body .cell {
   position: relative;
   padding: 10px;
-  border: 1px solid var(--warning-A100);
+  border: 1px solid var(--mui-palette-warning-A100);
   overflow: hidden;
   cursor: pointer;
   transition: 0.25s ease-out;
@@ -257,18 +225,18 @@ main {
 }
 
 .selected {
-  background-color: var(--primary-main);
+  background-color: var(--mui-palette-primary-main);
 }
 .selected:hover {
-  background-color: var(--primary-main) !important;
+  background-color: var(--mui-palette-primary-main) !important;
 }
 
 .today {
-  background-color: var(--primary-main);
+  background-color: var(--mui-palette-primary-main);
 }
 
 .today:hover {
-  background-color: var(--primary-main) !important;
+  background-color: var(--mui-palette-primary-main) !important;
 }
 
 .calendar .row {
@@ -369,7 +337,7 @@ main {
 }
 
 .react-calendar__month-view__days__day--weekend {
-  color: #1f1b13 !important;
+  color: var(--mui-palette-warning-300) !important;
 }
 
 .react-calendar__tile--now {
@@ -381,19 +349,19 @@ main {
 }
 
 .present-marker {
-  color: #1a8825;
+  color: var(--mui-palette-success-main);
   margin: auto !important;
   width: fit-content !important;
 }
 
 .absent-marker {
-  color: #ba1a1a !important;
+  color: var(--mui-palette-error-main) !important;
   width: fit-content !important;
   margin: auto !important;
 }
 
 .on-leave-marker {
-  color: #ba1a1a !important;
+  color: var(--mui-palette-error-main) !important;
   width: fit-content !important;
   margin: auto !important;
 }
@@ -417,12 +385,12 @@ main {
 }
 
 .today {
-  border: 2px solid #1f1b13 !important;
+  border: 2px solid var(--mui-palette-warning-300) !important;
 }
 
 .attendance-not-marked abbr {
-  border: 1px dashed #ba1a1a;
-  color: #ba1a1a !important;
+  border: 1px dashed var(--mui-palette-error-main);
+  color: var(--mui-palette-error-main) !important;
   border-radius: 50%;
   padding: 5px;
   height: 25px;
@@ -437,8 +405,8 @@ main {
 }
 
 .alert .MuiSnackbarContent-root {
-  background-color: #ffdad6 !important;
-  color: #ba1a1a;
+  background-color: var(--mui-palette-error-light) !important;
+  color: var(--mui-palette-error-main);
   font-size: 0.75rem;
 }
 
@@ -479,7 +447,7 @@ main {
 .react-calendar *:before,
 .react-calendar *:after {
   text-decoration: none;
-  color: #1f1b13;
+  color: var(--mui-palette-warning-300);
   font-size: 16px;
   font-weight: 400;
 }

@@ -1,56 +1,119 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
-import {
-  RemoveCircleOutline,
-  CheckCircleOutlineOutlined,
-  CancelOutlined,
-  CreateOutlined
-} from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
+import { CreateOutlined } from '@mui/icons-material';
+import { useTranslation } from 'next-i18next';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { shortDateFormat } from '@/utils/Helper';
+import { useTheme } from '@mui/material/styles';
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
 
 interface AttendanceStatusProps {
-  status: string;
+  formattedAttendanceData: FormattedAttendanceData;
+  onDateSelection: Date;
   onUpdate?: () => void;
 }
 
-function AttendanceStatus({ status, onUpdate }: AttendanceStatusProps) {
-  const { t } = useTranslation();
+type AttendanceData = {
+  present_percentage: number;
+  present_students: number;
+  total_students: number;
+};
 
-  let icon, message;
-  switch (status) {
-    case 'present':
-      icon = <CheckCircleOutlineOutlined />;
-      message = 'Present';
-      break;
-    case 'absent':
-      icon = <CancelOutlined />;
-      message = 'Absent';
-      break;
-    case 'on-leave':
-      icon = <CancelOutlined />;
-      message = 'On leave';
-      break;
-    case 'half-day':
-      icon = <RemoveCircleOutline />;
-      message = 'Half-day';
-      break;
-    case 'Not marked':
-      message = 'Attendance not marked';
-      break;
-    case 'Future date':
-      message = 'Future date cannot be marked';
-      break;
-    default:
-      break;
+type FormattedAttendanceData = {
+  [date: string]: AttendanceData;
+};
+
+function AttendanceStatus({
+  formattedAttendanceData,
+  onDateSelection,
+  onUpdate,
+}: AttendanceStatusProps) {
+  const { t } = useTranslation();
+  const theme = useTheme<any>();
+  const determinePathColor = useDeterminePathColor();
+  const selectedDate = shortDateFormat(onDateSelection);
+  const dateString = shortDateFormat(onDateSelection);
+  const attendanceData = formattedAttendanceData?.[dateString];
+  const todayDate = shortDateFormat(new Date());
+  const currentAttendance =
+    formattedAttendanceData?.[dateString] || 'notMarked';
+  let attendanceStatus;
+
+  if (!attendanceData) {
+    attendanceStatus = 'notMarked';
+    if (selectedDate > todayDate) {
+      attendanceStatus = 'futureDate';
+    }
   }
+
+  const presentPercentage = currentAttendance?.present_percentage;
+  const pathColor = determinePathColor(presentPercentage);
 
   return (
     <Box>
-      <Grid container display={'flex'} justifyContent="space-between" alignItems={'center'}>
+      <Grid
+        container
+        display={'flex'}
+        justifyContent="space-between"
+        alignItems={'center'}
+      >
         <Grid item xs={8} display={'flex'}>
-          {icon && <div className={`${status.toLowerCase()}-marker`}>{icon}</div>}
-          <Typography marginBottom={0} fontSize="16px" ml={1}>
-            {message}
-          </Typography>
+          <Box display={'flex'}>
+            {attendanceStatus !== 'notMarked' &&
+              attendanceStatus !== 'futureDate' && (
+                <>
+                  <Box
+                    width={'25px'}
+                    height={'2rem'}
+                    marginTop={'1rem'}
+                    margin={'5px'}
+                  >
+                    <CircularProgressbar
+                      value={presentPercentage}
+                      styles={buildStyles({
+                        textColor: pathColor,
+                        pathColor: pathColor,
+                        trailColor: '#E6E6E6',
+                      })}
+                      strokeWidth={15}
+                    />
+                  </Box>
+                  <Box display={'flex'} alignItems={'center'}>
+                    <Typography
+                      variant="h6"
+                      className="word-break"
+                      color={pathColor}
+                    >
+                      {t('DASHBOARD.PERCENT_ATTENDANCE', {
+                        percent_students: currentAttendance?.present_percentage,
+                      })}
+                    </Typography>
+                    &nbsp;
+                    <Typography
+                      variant="h6"
+                      className="word-break"
+                      color={pathColor}
+                    >
+                      {t('DASHBOARD.PRESENT_STUDENTS', {
+                        present_students: currentAttendance?.present_students,
+                        total_students: currentAttendance?.total_students,
+                      })}
+                    </Typography>
+                  </Box>
+                </>
+              )}
+
+            {attendanceStatus === 'notMarked' && (
+              <Typography fontSize={'0.8rem'} color={pathColor}>
+                {t('DASHBOARD.NOT_MARKED')}
+              </Typography>
+            )}
+
+            {attendanceStatus === 'futureDate' && (
+              <Typography fontSize={'0.8rem'} color={pathColor}>
+                {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
+              </Typography>
+            )}
+          </Box>
         </Grid>
         {onUpdate && (
           <Grid item xs={4} display={'flex'} justifyContent={'end'}>
@@ -58,8 +121,12 @@ function AttendanceStatus({ status, onUpdate }: AttendanceStatusProps) {
               variant="text"
               endIcon={<CreateOutlined />}
               onClick={onUpdate}
-              disabled={status === 'Future date'}>
-              {t('COMMON.UPDATE')}
+              disabled={attendanceStatus === 'futureDate'}
+            >
+              {attendanceStatus === 'notMarked' ||
+              attendanceStatus === 'futureDate'
+                ? t('COMMON.MARK')
+                : t('COMMON.MODIFY')}
             </Button>
           </Grid>
         )}
