@@ -15,41 +15,68 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 
 interface sortCardProps {
-  handleSorting: (sortByName: string, sortByAttendance: string) => void;
+  handleSorting: (sortByName: string, sortByAttendance: string, sortByClassesMissed: string, sortByAttendanceNumber: string) => void;
   handleCloseModal: () => void;
   isModalOpen: boolean;
+  routeName: string
 }
 
 const SortingModal: React.FC<sortCardProps> = ({
   handleSorting,
   isModalOpen,
   handleCloseModal,
+  routeName
 }) => {
   const [sortByName, setSortByName] = React.useState('asc');
   const [sortByAttendance, setSortByAttendance] = React.useState('');
+  const [sortByClassesMissed, setSortByClassesMissed] = React.useState('');
+  const [sortByAttendanceNumber, setSortByAttendanceNumber] = React.useState('');
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
   // handle changes names from sorting
-  const handleChangeSort = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSortByName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSortByAttendance('');
-    if (event.target.value === 'asc' || event.target.value === 'desc') {
+    setSortByClassesMissed('')
+    setSortByAttendanceNumber('')
+    // if (event.target.value === 'asc' || event.target.value === 'desc') {
       setSortByName(event.target.value);
-    } else {
-      setSortByAttendance(event.target.value);
-    }
+    // }
+    //  else {
+    //   setSortByAttendance(event.target.value);
+    // }
   };
 
-  // handle chnage attandance in sorting
-  const handleChangeAttendance = (
+  const handleSortByAttendance = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSortByAttendance(event.target.value);
     setSortByName('');
+    setSortByClassesMissed('')
+    setSortByAttendanceNumber('')
   };
 
+  const handleSortByAttendanceNumber = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSortByAttendanceNumber(event.target.value);
+    setSortByAttendance('');
+    setSortByName('');
+    setSortByClassesMissed('')
+  };
+  
+  const handleSortByClassesMissed = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSortByClassesMissed(event.target.value);
+    setSortByAttendance('');
+    setSortByName('');
+    setSortByAttendanceNumber('')
+  };
+  
+
   const handleApplySort = () => {
-    handleSorting(sortByName, sortByAttendance);
+    handleSorting(sortByName, sortByAttendance, sortByClassesMissed, sortByAttendanceNumber);
     handleCloseModal();
   };
 
@@ -69,6 +96,70 @@ const SortingModal: React.FC<sortCardProps> = ({
         }}
       />
       <Grid container spacing={2}>
+      
+      {routeName== "/attendance-overview" ? 
+     <>
+      <Grid item xs={12}>
+          <FormControl component="fieldset">
+            <FormLabel
+              style={{ color: theme.palette.warning['400'] }}
+              component="legend"
+            >
+              {t('COMMON.ATTENDANCE')}
+            </FormLabel>
+            <RadioGroup
+              aria-label="sortByAttendanceNumber"
+              name="sortByAttendanceNumber"
+              value={sortByAttendanceNumber}
+              onChange={handleSortByAttendanceNumber}
+            >
+              <FormControlLabel
+                labelPlacement="start"
+                value="high"
+                control={<Radio sx={{ ml: '80px' }} />}
+                label={t('COMMON.HIGH_TO_LOW')}
+              />
+              <FormControlLabel
+                labelPlacement="start"
+                value="low"
+                control={<Radio sx={{ ml: '80px' }} />}
+                label={t('COMMON.LOW_TO_HIGH')}
+              />
+            </RadioGroup>
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12}>
+          <FormControl component="fieldset">
+            <FormLabel
+              style={{ color: theme.palette.warning['400'] }}
+              component="legend"
+            >
+              {t('COMMON.CLASS_MISSED')}
+            </FormLabel>
+            <RadioGroup
+              aria-label="sortByClassesMissed"
+              name="sortByClassesMissed"
+              value={sortByClassesMissed}
+              onChange={handleSortByClassesMissed}
+            >
+              <FormControlLabel
+                labelPlacement="start"
+                value="high"
+                control={<Radio sx={{ ml: '80px' }} />}
+                label={t('COMMON.HIGH_TO_LOW')}
+              />
+              <FormControlLabel
+                labelPlacement="start"
+                value="low"
+                control={<Radio sx={{ ml: '80px' }} />}
+                label={t('COMMON.LOW_TO_HIGH')}
+              />
+            </RadioGroup>
+          </FormControl>
+        </Grid> </>:
+
+
       <Grid item xs={12}>
           <FormControl component="fieldset">
             <FormLabel
@@ -81,7 +172,7 @@ const SortingModal: React.FC<sortCardProps> = ({
               aria-label="sortByAttendance"
               name="sortByAttendance"
               value={sortByAttendance}
-              onChange={handleChangeAttendance}
+              onChange={handleSortByAttendance}
             >
               <FormControlLabel
                 labelPlacement="start"
@@ -98,6 +189,7 @@ const SortingModal: React.FC<sortCardProps> = ({
             </RadioGroup>
           </FormControl>
         </Grid>
+         }
         <Grid item xs={12}>
           <FormControl component="fieldset">
             <FormLabel
@@ -114,7 +206,7 @@ const SortingModal: React.FC<sortCardProps> = ({
               aria-label="sortByName"
               name="sortByName"
               value={sortByName}
-              onChange={handleChangeSort}
+              onChange={handleSortByName}
             >
               <FormControlLabel
                 labelPlacement="start"
