@@ -30,7 +30,6 @@ import {
   cohort,
   AttendanceStatusListProps,
 } from '../utils/Interfaces';
-import MarkAttendance from '../components/MarkAttendance';
 import { useTranslation } from 'next-i18next';
 import Loader from '../components/Loader';
 import MonthCalender from '@/components/MonthCalender';
@@ -55,6 +54,7 @@ interface user {
   key?: string;
 }
 import AttendanceStatus from '@/components/AttendanceStatus';
+import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
@@ -86,6 +86,8 @@ const UserAttendanceHistory = () => {
     setOpenMarkAttendance(!openMarkAttendance);
   const [loading, setLoading] = React.useState(false);
   const [AttendanceMessage, setAttendanceMessage] = React.useState('');
+  const [open, setOpen] = useState(false);
+  const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
 
   const pathname = usePathname();
   let userId: string;
@@ -96,6 +98,14 @@ const UserAttendanceHistory = () => {
 
   const handleBackEvent = () => {
     window.history.back();
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   // API call to get center list
@@ -200,7 +210,7 @@ const UserAttendanceHistory = () => {
       }
     };
     fetchData();
-  }, [classId]);
+  }, [classId, handleSaveHasRun]);
 
   //API for getting student list
   const getCohortMemberList = async () => {
@@ -411,6 +421,7 @@ const UserAttendanceHistory = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
+    setHandleSaveHasRun(!handleSaveHasRun);
   };
 
   const handleSearchClear = () => {
@@ -607,7 +618,7 @@ const UserAttendanceHistory = () => {
               <AttendanceStatus
                 formattedAttendanceData={percentageAttendance}
                 onDateSelection={selectedDate}
-                onUpdate={handleMarkAttendanceModal}
+                onUpdate={handleOpen}
               />
             </Box>
           </Box>
@@ -733,14 +744,12 @@ const UserAttendanceHistory = () => {
             )}
           </Box>
 
-          <MarkAttendance
-            isOpen={openMarkAttendance}
-            isSelfAttendance={false}
-            date={shortDateFormat(selectedDate)}
-            currentStatus={status}
-            handleClose={handleMarkAttendanceModal}
-            handleSubmit={handleUpdate}
-            message={AttendanceMessage}
+          <MarkBulkAttendance
+            open={open}
+            onClose={handleClose}
+            classId={classId}
+            selectedDate={selectedDate}
+            onSaveSuccess={() => setHandleSaveHasRun(true)}
           />
         </Box>
       </Box>
