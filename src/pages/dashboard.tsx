@@ -55,7 +55,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
@@ -95,6 +95,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const currentDate = getTodayDate();
   const contextId = classId;
   const theme = useTheme<any>();
+  const determinePathColor = useDeterminePathColor();
   const modalContainer = {
     position: 'absolute',
     top: '50%',
@@ -391,6 +392,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     };
     hasEmptyAttendance();
   };
+
   const viewAttendanceHistory = () => {
     router.push('/attendance-history');
   };
@@ -451,16 +453,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
 
-  let pathColor;
-  if (!isNaN(presentPercentage)) {
-    if (presentPercentage < 25) {
-      pathColor = '#BA1A1A';
-    } else if (presentPercentage < 50) {
-      pathColor = '#987100';
-    } else {
-      pathColor = '#06A816';
-    }
-  }
+  const pathColor = determinePathColor(presentPercentage);
+
   return (
     <>
       {!isAuthenticated && (
@@ -846,7 +840,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   >
                     <Link
                       className="flex-center fs-14 text-decoration"
-                      href={'/'}
+                      href={'/attendance-overview'}
                     >
                       {t('DASHBOARD.MORE_DETAILS')}{' '}
                       <ArrowForwardSharpIcon sx={{ height: '18px' }} />

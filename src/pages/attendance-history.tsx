@@ -6,7 +6,6 @@ import {
   Grid,
   IconButton,
   InputBase,
-  InputLabel,
   MenuItem,
   Paper,
   Select,
@@ -21,7 +20,8 @@ import Header from '../components/Header';
 import { useTheme } from '@mui/material/styles';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import {
-  attendanceInPercentageStatusList, attendanceStatusList,
+  attendanceInPercentageStatusList,
+  attendanceStatusList,
   // markAttendance,
 } from '../services/AttendanceService';
 import {
@@ -30,19 +30,22 @@ import {
   cohort,
   AttendanceStatusListProps,
 } from '../utils/Interfaces';
-import MarkAttendance from '../components/MarkAttendance';
 import { useTranslation } from 'next-i18next';
 import Loader from '../components/Loader';
 import MonthCalender from '@/components/MonthCalender';
 import { useRouter } from 'next/router';
-import {  debounce, getTodayDate, formatToShowDateMonth, shortDateFormat } from '@/utils/Helper';
+import {
+  debounce,
+  getTodayDate,
+  formatToShowDateMonth,
+  shortDateFormat,
+} from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { cohortList } from '@/services/CohortServices';
 import SortingModal from '../components/SortingModal';
-import AttendanceStatus from '@/components/AttendanceStatus';
 import AttendanceStatusListView from '@/components/AttendanceStatusListView';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-
+import { usePathname } from 'next/navigation';
 
 interface user {
   userId: string;
@@ -50,26 +53,25 @@ interface user {
   attendance?: string;
   key?: string;
 }
+import AttendanceStatus from '@/components/AttendanceStatus';
+import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
-  const { locale, locales, push } = useRouter();
   const { t } = useTranslation();
-  const [attendanceData, setAttendanceData] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [presentDates, setPresentDates] = useState<string[]>([]);
-  const [absentDates, setAbsentDates] = useState<string[]>([]);
-  const [halfDayDates, setHalfDayDates] = useState<string[]>([]);
-  const [notMarkedDates, setNotMarkedDates] = useState<string[]>([]);
-  const [futureDates, setFutureDates] = useState<string[]>([]);
   const [classId, setClassId] = React.useState('');
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState(null);
   const [percentageAttendance, setPercentageAttendance] =
     React.useState<any>(null);
-  const [cohortMemberList, setCohortMemberList] = React.useState<Array<user>>([]);
-  const [displayStudentList, setDisplayStudentList] = React.useState<Array<user>>([]);
+  const [cohortMemberList, setCohortMemberList] = React.useState<Array<user>>(
+    []
+  );
+  const [displayStudentList, setDisplayStudentList] = React.useState<
+    Array<user>
+  >([]);
   const [searchWord, setSearchWord] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
@@ -84,7 +86,10 @@ const UserAttendanceHistory = () => {
     setOpenMarkAttendance(!openMarkAttendance);
   const [loading, setLoading] = React.useState(false);
   const [AttendanceMessage, setAttendanceMessage] = React.useState('');
+  const [open, setOpen] = useState(false);
+  const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
 
+  const pathname = usePathname();
   let userId: string;
   const currentDate = getTodayDate();
   // =localStorage.getItem('userId') || '';
@@ -93,6 +98,14 @@ const UserAttendanceHistory = () => {
 
   const handleBackEvent = () => {
     window.history.back();
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   // API call to get center list
@@ -169,11 +182,23 @@ const UserAttendanceHistory = () => {
           const formattedAttendanceData: any = {};
           Object.keys(attendanceDates).forEach((date) => {
             const attendance = attendanceDates[date];
+            const present = attendance.present || 0;
+            const absent = attendance.absent || 0;
+            const totalStudents =
+              attendance.present_percentage === '100.00'
+                ? present
+                : present + absent;
+
             formattedAttendanceData[date] = {
               date: date,
+              present_students: present,
+              total_students: totalStudents,
               present_percentage:
                 parseFloat(attendance.present_percentage) ||
                 100 - parseFloat(attendance.absent_percentage),
+              absent_percentage:
+                parseFloat(attendance.absent_percentage) ||
+                100 - parseFloat(attendance.present_percentage),
             };
             console.log('formattedAttendanceData', formattedAttendanceData);
             setPercentageAttendance(formattedAttendanceData);
@@ -185,10 +210,10 @@ const UserAttendanceHistory = () => {
       }
     };
     fetchData();
-  }, [classId]);
+  }, [classId, handleSaveHasRun]);
 
-   //API for getting student list
-   const getCohortMemberList = async () => {
+  //API for getting student list
+  const getCohortMemberList = async () => {
     setLoading(true);
     try {
       if (classId) {
@@ -283,10 +308,10 @@ const UserAttendanceHistory = () => {
                     });
                     if (newArray.length != 0) {
                       setCohortMemberList(newArray);
-                      setDisplayStudentList(newArray)
+                      setDisplayStudentList(newArray);
                     } else {
                       setCohortMemberList(nameUserIdArray);
-                      setDisplayStudentList(nameUserIdArray)
+                      setDisplayStudentList(nameUserIdArray);
                     }
                     return newArray;
                   };
@@ -307,9 +332,9 @@ const UserAttendanceHistory = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getCohortMemberList();
-  },[classId, selectedDate])
+  }, [classId, selectedDate]);
 
   useEffect(() => {
     console.log(status);
@@ -362,7 +387,7 @@ const UserAttendanceHistory = () => {
   };
 
   const handleSelectedDateChange = (date: Date) => {
-    // setSelectedDate(date);
+    setSelectedDate(date);
   };
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -396,6 +421,7 @@ const UserAttendanceHistory = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
+    setHandleSaveHasRun(!handleSaveHasRun);
   };
 
   const handleSearchClear = () => {
@@ -403,12 +429,12 @@ const UserAttendanceHistory = () => {
     setDisplayStudentList(cohortMemberList);
   };
 
-   // debounce use for searching time period is 2 sec
-   const debouncedSearch = debounce((value: string) => {
+  // debounce use for searching time period is 2 sec
+  const debouncedSearch = debounce((value: string) => {
     let filteredList = cohortMemberList?.filter((user: any) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
-    setDisplayStudentList(filteredList)
+    setDisplayStudentList(filteredList);
   }, 200);
 
   // handle search student data
@@ -417,7 +443,7 @@ const UserAttendanceHistory = () => {
     if (event.target.value.length >= 3) {
       debouncedSearch(event.target.value);
     } else {
-      setDisplayStudentList(cohortMemberList)
+      setDisplayStudentList(cohortMemberList);
     }
   };
 
@@ -425,11 +451,11 @@ const UserAttendanceHistory = () => {
     let filteredList = cohortMemberList?.filter((user: any) =>
       user.name.toLowerCase().includes(searchWord.toLowerCase())
     );
-    setDisplayStudentList(filteredList)
+    setDisplayStudentList(filteredList);
   };
 
-   // open modal of sort
-   const handleOpenModal = () => {
+  // open modal of sort
+  const handleOpenModal = () => {
     setModalOpen(true);
   };
 
@@ -442,29 +468,31 @@ const UserAttendanceHistory = () => {
   const handleSorting = (sortByName: string, sortByAttendance: string) => {
     handleCloseModal();
     let sortedData = [...cohortMemberList];
-  
+
     // Sorting by name
     switch (sortByName) {
-      case "asc":
+      case 'asc':
         sortedData.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case "desc":
+      case 'desc':
         sortedData.sort((a, b) => b.name.localeCompare(a.name));
         break;
     }
-  
+
     // Sorting by attendance
     switch (sortByAttendance) {
-      case "pre":
+      case 'pre':
         sortedData.sort((a, b) => {
-          if (a.attendance === "present" && b.attendance === "absent") return -1;
-          if (a.attendance === "absent" && b.attendance === "present") return 1;
+          if (a.attendance === 'present' && b.attendance === 'absent')
+            return -1;
+          if (a.attendance === 'absent' && b.attendance === 'present') return 1;
           return 0;
         });
         break;
-      case "abs":
+      case 'abs':
         sortedData.sort((a, b) => {
-          if (a.attendance === 'absent' && b.attendance === 'present') return -1;
+          if (a.attendance === 'absent' && b.attendance === 'present')
+            return -1;
           if (a.attendance === 'present' && b.attendance === 'absent') return 1;
           return 0;
         });
@@ -472,7 +500,6 @@ const UserAttendanceHistory = () => {
     }
     setDisplayStudentList(sortedData);
   };
-  
 
   const submitBulkAttendanceAction = (
     isBulkAction: boolean,
@@ -493,7 +520,7 @@ const UserAttendanceHistory = () => {
     });
     console.log('updatedAttendanceList', updatedAttendanceList);
     setCohortMemberList(updatedAttendanceList);
-    setDisplayStudentList(updatedAttendanceList)
+    setDisplayStudentList(updatedAttendanceList);
   };
 
   return (
@@ -567,6 +594,8 @@ const UserAttendanceHistory = () => {
           </Box>
           <Box
             pl={1}
+            borderBottom={1}
+            borderTop={1}
             sx={{
               position: 'sticky',
               top: 0,
@@ -574,24 +603,24 @@ const UserAttendanceHistory = () => {
               backgroundColor: 'white',
             }}
           >
-            <Box display={'flex'} gap={'10px'} width={'100%'} mb={3}>
+            <Box display={'flex'} width={'100%'}>
               <Typography
                 marginBottom={'0px'}
-                fontSize={'16px'}
+                ml={1}
+                fontSize={'14px'}
                 fontWeight={'500'}
                 color={'black'}
               >
                 {formatToShowDateMonth(selectedDate)}
               </Typography>
             </Box>
-            {/* <Box>
-              {status && (
-                <AttendanceStatus
-                  status={status}
-                  onUpdate={handleMarkAttendanceModal}
-                />
-              )}
-            </Box> */}
+            <Box>
+              <AttendanceStatus
+                formattedAttendanceData={percentageAttendance}
+                onDateSelection={selectedDate}
+                onUpdate={handleOpen}
+              />
+            </Box>
           </Box>
 
           <MonthCalender
@@ -599,111 +628,128 @@ const UserAttendanceHistory = () => {
             onChange={handleActiveStartDateChange}
             onDateChange={handleSelectedDateChange}
           />
-        <Box ml={1} mt={2}>
-        {/*----------------------------search and Sort---------------------------------------*/}
-        <Stack mr={1} ml={1}>
-          <Box
-            mt={3}
-            mb={3}
-            boxShadow={'none'}>
-            <Grid container alignItems="center" display={'flex'} justifyContent="space-between">
-              <Grid item xs={8}>
-                <Paper
-                  component="form"
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
+          <Box ml={1} mt={2}>
+            {/*----------------------------search and Sort---------------------------------------*/}
+            <Stack mr={1} ml={1}>
+              <Box mt={3} mb={3} boxShadow={'none'}>
+                <Grid
+                  container
+                  alignItems="center"
+                  display={'flex'}
+                  justifyContent="space-between"
+                >
+                  <Grid item xs={8}>
+                    <Paper
+                      component="form"
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
 
-                    borderRadius: '100px',
-                    background: theme.palette.warning.A700,
-                    boxShadow: 'none'
-                  }}>
-                  <InputBase
-                    value={searchWord}
-                    sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
-                    placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
-                    inputProps={{ 'aria-label': 'search student' }}
-                    onChange={handleSearch}
-                  />
-                  <IconButton
-                    type="button"
-                    sx={{ p: '10px' }}
-                    aria-label="search"
-                    onClick={handleSearchSubmit}>
-                    <SearchIcon />
-                  </IconButton>
+                        borderRadius: '100px',
+                        background: theme.palette.warning.A700,
+                        boxShadow: 'none',
+                      }}
+                    >
+                      <InputBase
+                        value={searchWord}
+                        sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
+                        placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
+                        inputProps={{ 'aria-label': 'search student' }}
+                        onChange={handleSearch}
+                      />
+                      <IconButton
+                        type="button"
+                        sx={{ p: '10px' }}
+                        aria-label="search"
+                        onClick={handleSearchSubmit}
+                      >
+                        <SearchIcon />
+                      </IconButton>
 
-                  {searchWord?.length > 0 && (
-                    <IconButton
-                      type="button"
-                      aria-label="Clear"
-                      onClick={handleSearchClear}>
-                      <ClearIcon />
-                    </IconButton>
-                  )}
-                </Paper>
-              </Grid>
-              <Grid item xs={4} display={'flex'} justifyContent={'flex-end'}>
-                <Button
-                  onClick={handleOpenModal}
-                  sx={{
-                    color: theme.palette.warning.A200,
+                      {searchWord?.length > 0 && (
+                        <IconButton
+                          type="button"
+                          aria-label="Clear"
+                          onClick={handleSearchClear}
+                        >
+                          <ClearIcon />
+                        </IconButton>
+                      )}
+                    </Paper>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={4}
+                    display={'flex'}
+                    justifyContent={'flex-end'}
+                  >
+                    <Button
+                      onClick={handleOpenModal}
+                      sx={{
+                        color: theme.palette.warning.A200,
 
-                    borderRadius: '10px',
-                    fontSize: '14px'
-                  }}
-                  endIcon={<ArrowDropDownSharpIcon />}
-                  size="small"
-                  variant="outlined">
-                  {t('COMMON.SORT_BY').length > 7
-                    ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
-                    : t('COMMON.SORT_BY')}
-                </Button>
-              </Grid>
-            </Grid>
-          </Box>
-          <SortingModal
-            isModalOpen={modalOpen}
-            handleCloseModal={handleCloseModal}
-            handleSorting={handleSorting}
-          />
-        </Stack>
-        <Box>
-          {status && <AttendanceStatus status={status} onUpdate={handleMarkAttendanceModal} />}
-        </Box>
-        {cohortMemberList?.length > 0 ? (
-          <Box>
-            {displayStudentList?.map((user: any) => (
-              <AttendanceStatusListView
-                key={user.userId}
-                userData={user}
-                isEdit={false}
-                bulkAttendanceStatus={bulkAttendanceStatus}
-                handleBulkAction={submitBulkAttendanceAction}
+                        borderRadius: '10px',
+                        fontSize: '14px',
+                      }}
+                      endIcon={<ArrowDropDownSharpIcon />}
+                      size="small"
+                      variant="outlined"
+                    >
+                      {t('COMMON.SORT_BY').length > 7
+                        ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
+                        : t('COMMON.SORT_BY')}
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+              <SortingModal
+                isModalOpen={modalOpen}
+                handleCloseModal={handleCloseModal}
+                handleSorting={handleSorting}
+                routeName={pathname}
               />
-            ))}
+            </Stack>
+            <Box>
+              {status && (
+                <AttendanceStatus
+                  formattedAttendanceData={percentageAttendance}
+                  onDateSelection={selectedDate}
+                  onUpdate={handleMarkAttendanceModal}
+                />
+              )}
+            </Box>
+            {cohortMemberList?.length > 0 ? (
+              <Box>
+                {displayStudentList?.map((user: any) => (
+                  <AttendanceStatusListView
+                    key={user.userId}
+                    userData={user}
+                    isEdit={false}
+                    bulkAttendanceStatus={bulkAttendanceStatus}
+                    handleBulkAction={submitBulkAttendanceAction}
+                  />
+                ))}
+              </Box>
+            ) : (
+              <Box
+                display={'flex'}
+                justifyContent={'center'}
+                mt={2}
+                p={'1rem'}
+                borderRadius={'1rem'}
+                bgcolor={'secondary.light'}
+              >
+                <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
+              </Box>
+            )}
           </Box>
-        ) : (
-          <Box
-            display={'flex'}
-            justifyContent={'center'}
-            mt={2}
-            p={'1rem'}
-            borderRadius={'1rem'}
-            bgcolor={'secondary.light'}>
-            <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
-          </Box>
-        )}
-      </Box>
 
-          <MarkAttendance
-            isOpen={openMarkAttendance}
-            isSelfAttendance={true}
-            date={shortDateFormat(selectedDate)}
-            currentStatus={status}
-            handleClose={handleMarkAttendanceModal}
-            handleSubmit={handleUpdate}
-            message={AttendanceMessage}
+          <MarkBulkAttendance
+            open={open}
+            onClose={handleClose}
+            classId={classId}
+            selectedDate={selectedDate}
+            onSaveSuccess={() => setHandleSaveHasRun(true)}
           />
         </Box>
       </Box>
