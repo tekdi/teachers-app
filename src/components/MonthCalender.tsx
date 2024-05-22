@@ -9,8 +9,7 @@ import {
 } from '@mui/icons-material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { shortDateFormat } from '@/utils/Helper';
-import { useTheme } from '@mui/material/styles';
-
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
 interface CalendarWithAttendanceProps {
   formattedAttendanceData: FormattedAttendanceData;
   onChange: (date: Date) => void;
@@ -31,7 +30,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   onDateChange,
 }) => {
   const [date, setDate] = useState(() => new Date());
-  const theme = useTheme<any>();
+  const determinePathColor = useDeterminePathColor();
 
   useEffect(() => {
     const currentDate = new Date();
@@ -70,16 +69,8 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     const presentPercentage = attendanceData.present_percentage;
 
     // const status = getAttendanceStatus(date);
-    let pathColor;
-    if (!isNaN(presentPercentage)) {
-      if (presentPercentage < 25) {
-        pathColor = theme.palette.error.main;
-      } else if (presentPercentage < 50) {
-        pathColor = theme.palette.action.activeChannel;
-      } else {
-        pathColor = theme.palette.success.main;
-      }
-    }
+    const pathColor = determinePathColor(presentPercentage);
+
     const status = 'present';
     switch (status) {
       case 'present':

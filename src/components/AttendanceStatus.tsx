@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { shortDateFormat } from '@/utils/Helper';
 import { useTheme } from '@mui/material/styles';
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
 
 interface AttendanceStatusProps {
   formattedAttendanceData: FormattedAttendanceData;
@@ -28,8 +29,8 @@ function AttendanceStatus({
 }: AttendanceStatusProps) {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+  const determinePathColor = useDeterminePathColor();
   const selectedDate = shortDateFormat(onDateSelection);
-  console.log(selectedDate);
   const dateString = shortDateFormat(onDateSelection);
   const attendanceData = formattedAttendanceData?.[dateString];
   const todayDate = shortDateFormat(new Date());
@@ -45,16 +46,7 @@ function AttendanceStatus({
   }
 
   const presentPercentage = currentAttendance?.present_percentage;
-  let pathColor;
-  if (!isNaN(presentPercentage)) {
-    if (presentPercentage < 25) {
-      pathColor = theme.palette.error.main;
-    } else if (presentPercentage < 50) {
-      pathColor = theme.palette.action.activeChannel;
-    } else {
-      pathColor = theme.palette.success.main;
-    }
-  }
+  const pathColor = determinePathColor(presentPercentage);
 
   return (
     <Box>
@@ -128,7 +120,7 @@ function AttendanceStatus({
             <Button
               variant="text"
               endIcon={<CreateOutlined />}
-              // onClick={onUpdate}
+              onClick={onUpdate}
               disabled={attendanceStatus === 'futureDate'}
             >
               {attendanceStatus === 'notMarked' ||
