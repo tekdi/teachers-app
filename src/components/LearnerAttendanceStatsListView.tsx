@@ -41,10 +41,10 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           justifyContent="space-between"
           p={2}
         >
-          <Grid>
+        <Grid item xs={4}>
           <Link href={`/student-details/${cohortId}/${userId}`}> {name}</Link>
           </Grid>
-          <Grid>
+          <Grid item xs={4}>
             <Typography
         
               fontSize="1rem"
@@ -56,7 +56,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
               {value1}%
             </Typography>
           </Grid>
-         <Grid item xs={3}>
+         <Grid item xs={4}>
           <Typography
            
             fontSize="1rem"
