@@ -64,3 +64,17 @@ export const attendanceInPercentageStatusList = async ({
     facets,
   });
 };
+
+export const classesMissedAttendancePercentList = async ({
+  filters,
+  facets,
+}: any): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance/list`;
+  try {
+    const response = await post(apiUrl, { filters, facets });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in fetching attendance list', error);
+    // throw error; // Rethrow the error to handle it in the caller function if needed
+  }
+};

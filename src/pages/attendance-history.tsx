@@ -6,7 +6,6 @@ import {
   Grid,
   IconButton,
   InputBase,
-  InputLabel,
   MenuItem,
   Paper,
   Select,
@@ -46,6 +45,7 @@ import { cohortList } from '@/services/CohortServices';
 import SortingModal from '../components/SortingModal';
 import AttendanceStatusListView from '@/components/AttendanceStatusListView';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { usePathname } from 'next/navigation';
 
 interface user {
   userId: string;
@@ -89,6 +89,7 @@ const UserAttendanceHistory = () => {
   const [open, setOpen] = useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
 
+  const pathname = usePathname();
   let userId: string;
   const currentDate = getTodayDate();
   // =localStorage.getItem('userId') || '';
@@ -705,6 +706,7 @@ const UserAttendanceHistory = () => {
                 isModalOpen={modalOpen}
                 handleCloseModal={handleCloseModal}
                 handleSorting={handleSorting}
+                routeName={pathname}
               />
             </Stack>
             <Box>
