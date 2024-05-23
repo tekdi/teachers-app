@@ -655,7 +655,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       timeout: 500,
                     },
                   }}
-                  className="shreyas"
+                  className="modal_mark"
                 >
                   <Fade in={open}>
                     <Box
