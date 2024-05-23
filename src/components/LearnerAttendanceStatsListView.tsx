@@ -21,6 +21,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const textColor = presentPercent > 60 ? theme.palette.success.main : theme.palette.error.main;
 
   //   const handleStudentDetails = () => {
   //     router.push(`/student-details/${cohortId}/${userId}`);
@@ -50,7 +51,8 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
               fontSize="1rem"
               fontWeight="bold"
               lineHeight="1.5rem"
-              color={theme.palette.text.primary}
+              // color={theme.palette.text.primary}
+            color= {textColor}
               textAlign="center"
             >
               {presentPercent}%
