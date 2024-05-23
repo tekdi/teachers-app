@@ -887,7 +887,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
               <Typography
                 textAlign={'left'}
                 fontSize={'0.8rem'}
-                marginLeft={'8px'}
+                ml={'1rem'}
+                mt={'1rem'}
+                color={'black'}
+                fontWeight={'600'}
               >
                 {t('DASHBOARD.MY_TIMETABLE')}
               </Typography>
@@ -902,21 +905,24 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 instructor={'Khapari Dharmu'}
                 time={'2 pm - 5 pm'}
               />
-              <Typography textAlign={'left'} fontSize={'0.8rem'} m={'1rem'}>
+              <Typography
+                textAlign={'left'}
+                fontSize={'0.8rem'}
+                ml={'1rem'}
+                color={'black'}
+                fontWeight={'600'}
+              >
                 {t('DASHBOARD.UPCOMING_EXTRA_SESSION')}
               </Typography>
               <ExtraSessionsCard
                 subject={'Science'}
                 instructor={'Upendra Kulkarni'}
-                dateAndTime={'07-may-2024'}
+                dateAndTime={'27 May, 11am - 12pm'}
                 meetingURL={
                   'https://meet.google.com/fqz-ftoh-dynfqz-ftoh-dynfqz-ftoh-dyn'
                 }
                 onEditClick={() => {
                   console.log('edit');
-                }}
-                onCopyClick={() => {
-                  console.log('copy');
                 }}
               />
             </Box>

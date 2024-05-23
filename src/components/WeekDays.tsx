@@ -14,6 +14,10 @@ const CardStyled = styled(Card)(({ theme }) => ({
   justifyContent: 'center',
   alignItems: 'center',
   gap: '15px',
+  border: '1px solid #ccc',
+  boxShadow: 'none',
+  backgroundImage: 'none',
+  overflow: 'visible'
 }));
 
 const WeekDays: React.FC<WeekDaysProps> = ({ useAbbreviation }) => {
@@ -30,7 +34,7 @@ const WeekDays: React.FC<WeekDaysProps> = ({ useAbbreviation }) => {
     <Box display="flex" justifyContent="flex-start" overflow="auto">
       {days.map((day, index) => (
         <CardStyled
-          key={index}
+          key={day}
           style={{
             backgroundColor:
               index === currentDayIndex
