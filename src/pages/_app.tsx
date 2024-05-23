@@ -70,7 +70,7 @@ function App({ Component, pageProps }: AppProps) {
       `}</style>
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}
-        <Container maxWidth="md">
+        <Container maxWidth="md" style={{padding: 0}}>
           <Component {...pageProps} />
         </Container>
       </CssVarsProvider>
