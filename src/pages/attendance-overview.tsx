@@ -37,6 +37,7 @@ import {
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
+import LearnerListHeader from '@/components/LearnerListHeader';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -371,14 +372,14 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             routeName={pathname}
           />
         </Stack>
-
+        <LearnerListHeader numberOfColumns={3} firstColumnName={t('COMMON.ATTENDANCE')} secondColumnName={t('COMMON.CLASS_MISSED')}/>
         {learnerData?.length > 0 ? (
           <Box>
             {displayStudentList?.map((user: any) => (
               <StudentsStatsList
                 key={user.userId}
                 name={user.name}
-                value1={user.present_percentage}
+                value1={Math.floor(parseFloat(user.present_percent))}
                 value2={user.absent}
                 userId= {user.userId}
                 cohortId= {classId}

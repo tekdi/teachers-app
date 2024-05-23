@@ -48,6 +48,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import LearnerListHeader from '@/components/LearnerListHeader';
 
 interface user {
   userId: string;
@@ -712,6 +713,7 @@ const UserAttendanceHistory = () => {
                 />
               )}
             </Box>
+            <LearnerListHeader numberOfColumns={3} firstColumnName={t('ATTENDANCE.PRESENT')} secondColumnName={t('ATTENDANCE.ABSENT')}/>
             {cohortMemberList?.length > 0 ? (
               <Box>
                 {displayStudentList?.map((user: any) => (

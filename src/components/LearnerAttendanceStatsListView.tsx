@@ -38,6 +38,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
         <Grid
           container
           alignItems="center"
+          textAlign={'center'}
           justifyContent="space-between"
           p={2}
         >

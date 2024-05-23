@@ -124,3 +124,10 @@ export interface cohort {
   name: string;
   value: string;
 }
+
+export interface LearListHeaderProps {
+  numberOfColumns: number,
+  firstColumnName: string,
+  secondColumnName: string,
+}
+
