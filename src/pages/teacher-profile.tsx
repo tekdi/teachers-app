@@ -29,6 +29,7 @@ import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { updateCustomField } from '@/utils/Interfaces';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 const TeacherProfile = () => {
   // Assuming imageOne is of type StaticImageData
   const imageUrl: string = imageOne.src;
@@ -42,6 +43,7 @@ const TeacherProfile = () => {
   }
 
   const { t } = useTranslation();
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -52,7 +54,7 @@ const TeacherProfile = () => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(prathamProfileUrl);
   const [gender, setGender] = React.useState('');
-
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [customFieldsData, setCustomFieldsData] = useState<CustomField[]>([]);
 
   const theme = useTheme<any>();
@@ -70,6 +72,18 @@ const TeacherProfile = () => {
     textAlign: 'center',
     height: '85vh',
   };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (refreshToken) {
+        setIsAuthenticated(true);
+      } else {
+        router.push('/login');
+      }
+    }
+  }, []);
+
 
   const handleUpdateClick = async () => {
     setLoading(true);
