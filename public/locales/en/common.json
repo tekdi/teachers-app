@@ -34,11 +34,17 @@
     "DROPOUT_YEAR": "Dropout Year",
     "EMPLOYMENT_STATUS": "Employment Status",
     "ENROLLMENT_DATE": "Enrollment Date",
+    "AS_OF_LAST_SIX_MONTH": "As of last six month",
     "AS_OF_TODAY": "As of today",
     "AS_OF_LAST_WEEK": "As of last week",
-    "AS_OF_LAST_SIX_MONTH": "As of last six month",
+    "LAST_SEVEN_DAYS": "Last 7 Days",
+    "LAST_MONTH": "Last Month",
+    "LAST_SIX_MONTHS": "Last Six Months",
+    "CUSTOM_RANGE": "Custom Range",
     "NONE": "None",
-    "LEARNER_NAME": "Learner Name"
+    "LEARNER_NAME": "Learner Name",
+    "DATE_RANGE": "Date Range",
+    "SELECT_AN_OPTION": "Select an option"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -87,7 +93,10 @@
     "CLEAR_ATTENDANCE_ALERT": "Are you sure you want to clear this attendance?",
     "YES": "Yes",
     "NO_GO_BACK": "No Go Back",
-    "DAY_WISE_ATTENDANCE": "Day-Wise Attendance"
+    "DAY_WISE_ATTENDANCE": "Day-Wise Attendance",
+    "ATTENDANCE_OVERVIEW": "Attendance Overview",
+    "CENTER_ATTENDANCE": "Center Attendance",
+    "LOW_ATTENDANCE_STUDENTS": "Low Attendance Students"
   },
   "PROFILE": {
     "EDIT_PROFILE": "Edit Profile",
