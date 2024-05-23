@@ -6,9 +6,17 @@ const nextConfig = {
     // Disabling on production builds because we're running checks on PRs via GitHub Actions.
     ignoreDuringBuilds: true,
   },
-  trailingSlash: true,
+  trailingSlash: false,
   reactStrictMode: true,
   i18n: nextI18nextConfig.i18n,
+  async rewrites () {
+    return [
+      {
+        source: '/dashboard',
+        destination: '/dashboard/',
+      },
+    ];
+  }
 };
 
 export default nextConfig;
