@@ -19,7 +19,7 @@ import Image from 'next/image';
 import MenuItem from '@mui/material/MenuItem';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import config from '../../config.json';
-import appLogo2 from '../../public/images/appLogo.png';
+import appLogo from '../../public/images/appLogo.png';
 import Loader from '../components/Loader';
 import { login } from '../services/LoginService';
 import { getUserId } from '../services/ProfileService';
@@ -191,7 +191,7 @@ const LoginPage = () => {
           zIndex={99}
           sx={{ margin: '32px 0' }}
         >
-          <Image src={appLogo2} alt="App Logo" />{' '}
+          <Image src={appLogo} alt="App Logo" height={100} />{' '}
         </Box>
         <Box
           flexGrow={1}

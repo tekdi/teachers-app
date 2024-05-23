@@ -9,7 +9,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Divider from '@mui/material/Divider';
 import Image from 'next/image';
-import LogoWithoutTagline from '../../public/images/Logo_without_tagline.png';
+import logoLight from '../../public/images/logo-light.png';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -120,7 +120,9 @@ const Header: React.FC = () => {
           </Box>
           <Box sx={{ margin: '0 auto' }}>
             <Image
-              src={LogoWithoutTagline}
+              height={40}
+              width={40}
+              src={logoLight}
               alt="logo"
               onClick={() => router.push('/dashboard')}
               style={{ cursor: 'pointer' }}
