@@ -347,7 +347,7 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
               </Typography>
               {cohortMemberList && cohortMemberList?.length != 0 ? (
                 <Box
-                  height={'100%'}
+                  height={'54vh'}
                   sx={{
                     overflowY: 'scroll',
                     marginTop: '10px',
