@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material';
 
 import { ATTENDANCE_ENUM } from '../utils/Helper';
 import { AttendanceStatusListViewProps } from '../utils/Interfaces';
+import { BorderBottom } from '@mui/icons-material';
 import CancelIcon from '@mui/icons-material/Cancel'; //absent
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; //present
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -22,14 +23,17 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
 
   const boxStyling = {
     display: 'flex',
-    height: '56px',
+    height: isBulkAction ? '56px' : '',
     // width: '100%',
     // borderBottom: `0.5px solid ${theme.palette.warning[400]}`,
     padding: '8px',
     alignItems: 'center',
     borderRadius: isBulkAction ? '8px' : 0,
-    marginBottom: '12px',
+    // marginBottom: '12px',
     backgroundColor: isBulkAction ? theme.palette.warning[800] : 'none',
+    // position: isBulkAction ? 'fixed' : 'none',
+    // width: isBulkAction ? '89%' : '100%',
+    borderBottom: isBulkAction ? 'none' : '1px solid #D0C5B4',
   };
 
   const handleClickAction = (
@@ -42,73 +46,78 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
     }
   };
   return (
-    <Box sx={boxStyling}>
-      <Typography
-        variant="body1"
-        marginRight="auto"
-        marginY="auto"
-        sx={{ color: theme.palette.warning['300'], textAlign:'left'}}
-      >
-        {isBulkAction ? t('ATTENDANCE.MARK_ALL') : userData?.name}
-      </Typography>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        className="icon_holder"
-        p={2}
-        onClick={() =>
-          handleClickAction(
-            isBulkAction,
-            ATTENDANCE_ENUM.PRESENT,
-            isBulkAction ? '' : userData?.userId
-          )
-        }
-      >
-        {[userData?.attendance, bulkAttendanceStatus].includes(
-          ATTENDANCE_ENUM.PRESENT
-        ) ? (
-          <CheckCircleIcon sx={{ color: () => theme.palette.warning[400] }} />
-        ) : (
-          <CheckCircleOutlineIcon
+    <Box>
+      <Box sx={boxStyling}>
+        <Typography
+          variant="body1"
+          marginRight="auto"
+          marginY="auto"
+          sx={{
+            color: theme.palette.warning['300'],
+            textAlign: 'left',
+          }}
+        >
+          {isBulkAction ? t('ATTENDANCE.MARK_ALL') : userData?.name}
+        </Typography>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          className="icon_holder"
+          p={2}
+          onClick={() =>
+            handleClickAction(
+              isBulkAction,
+              ATTENDANCE_ENUM.PRESENT,
+              isBulkAction ? '' : userData?.userId
+            )
+          }
+        >
+          {[userData?.attendance, bulkAttendanceStatus].includes(
+            ATTENDANCE_ENUM.PRESENT
+          ) ? (
+            <CheckCircleIcon sx={{ color: () => theme.palette.warning[400] }} />
+          ) : (
+            <CheckCircleOutlineIcon
+              sx={{ color: () => theme.palette.warning[400] }}
+            />
+          )}
+          <Typography
+            variant="h6"
+            marginTop={1}
             sx={{ color: () => theme.palette.warning[400] }}
-          />
-        )}
-        <Typography
-          variant="h6"
-          marginTop={1}
-          sx={{ color: () => theme.palette.warning[400] }}
+          >
+            {t('ATTENDANCE.PRESENT')}
+          </Typography>
+        </Box>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          p={2}
+          onClick={() =>
+            handleClickAction(
+              isBulkAction,
+              ATTENDANCE_ENUM.ABSENT,
+              isBulkAction ? '' : userData?.userId
+            )
+          }
         >
-          {t('ATTENDANCE.PRESENT')}
-        </Typography>
-      </Box>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        p={2}
-        onClick={() =>
-          handleClickAction(
-            isBulkAction,
-            ATTENDANCE_ENUM.ABSENT,
-            isBulkAction ? '' : userData?.userId
-          )
-        }
-      >
-        {[userData?.attendance, bulkAttendanceStatus].includes(
-          ATTENDANCE_ENUM.ABSENT
-        ) ? (
-          <CancelIcon sx={{ color: () => theme.palette.warning[400] }} />
-        ) : (
-          <HighlightOffIcon />
-        )}
-        <Typography
-          variant="h6"
-          marginTop={1}
-          sx={{ color: () => theme.palette.warning[400] }}
-        >
-          {t('ATTENDANCE.ABSENT')}
-        </Typography>
+          {[userData?.attendance, bulkAttendanceStatus].includes(
+            ATTENDANCE_ENUM.ABSENT
+          ) ? (
+            <CancelIcon sx={{ color: () => theme.palette.warning[400] }} />
+          ) : (
+            <HighlightOffIcon />
+          )}
+          <Typography
+            variant="h6"
+            marginTop={1}
+            sx={{ color: () => theme.palette.warning[400] }}
+          >
+            {t('ATTENDANCE.ABSENT')}
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

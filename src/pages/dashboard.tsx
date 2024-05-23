@@ -52,10 +52,11 @@ import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import useDeterminePathColor from '../hooks/useDeterminePathColor';
+
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
@@ -654,6 +655,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       timeout: 500,
                     },
                   }}
+                  className="shreyas"
                 >
                   <Fade in={open}>
                     <Box
@@ -722,7 +724,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         </Typography>
                         {cohortMemberList && cohortMemberList?.length != 0 ? (
                           <Box
-                            height={'58%'}
+                            height={'100%'}
                             sx={{ overflowY: 'scroll', marginTop: '10px' }}
                           >
                             <Box>
@@ -756,13 +758,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             </Box>
                             <Box
                               position={'absolute'}
-                              bottom="10px"
+                              bottom="0px"
                               display={'flex'}
                               gap={'20px'}
                               flexDirection={'row'}
                               justifyContent={'space-evenly'}
                               marginBottom={0}
-                              sx={{ background: '#fff', padding: '15px 0 0 0' }}
+                              sx={{
+                                background: '#fff',
+                                padding: '15px 0 15px 0',
+                              }}
                             >
                               <Button
                                 variant="outlined"

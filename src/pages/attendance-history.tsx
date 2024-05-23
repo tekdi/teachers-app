@@ -11,7 +11,6 @@ import {
   Grid,
   IconButton,
   InputBase,
-  InputLabel,
   MenuItem,
   Paper,
   Select,
@@ -38,13 +37,14 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Header from '../components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import Loader from '../components/Loader';
-import MarkAttendance from '../components/MarkAttendance';
+import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import MonthCalender from '@/components/MonthCalender';
 import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '../components/SortingModal';
 import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -86,7 +86,10 @@ const UserAttendanceHistory = () => {
     setOpenMarkAttendance(!openMarkAttendance);
   const [loading, setLoading] = React.useState(false);
   const [AttendanceMessage, setAttendanceMessage] = React.useState('');
+  const [open, setOpen] = useState(false);
+  const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
 
+  const pathname = usePathname();
   let userId: string;
   const currentDate = getTodayDate();
   // =localStorage.getItem('userId') || '';
@@ -95,6 +98,14 @@ const UserAttendanceHistory = () => {
 
   const handleBackEvent = () => {
     window.history.back();
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   // API call to get center list
@@ -199,7 +210,7 @@ const UserAttendanceHistory = () => {
       }
     };
     fetchData();
-  }, [classId]);
+  }, [classId, handleSaveHasRun]);
 
   //API for getting student list
   const getCohortMemberList = async () => {
@@ -410,6 +421,7 @@ const UserAttendanceHistory = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
+    setHandleSaveHasRun(!handleSaveHasRun);
   };
 
   const handleSearchClear = () => {
@@ -600,7 +612,7 @@ const UserAttendanceHistory = () => {
                 date={selectedDate}
                 formattedAttendanceData={percentageAttendance}
                 onDateSelection={selectedDate}
-                onUpdate={handleMarkAttendanceModal}
+                onUpdate={handleOpen}
               />
             </Box>
           </Box>
@@ -688,6 +700,7 @@ const UserAttendanceHistory = () => {
                 isModalOpen={modalOpen}
                 handleCloseModal={handleCloseModal}
                 handleSorting={handleSorting}
+                routeName={pathname}
               />
             </Stack>
             <Box>
@@ -725,14 +738,12 @@ const UserAttendanceHistory = () => {
             )}
           </Box>
 
-          <MarkAttendance
-            isOpen={openMarkAttendance}
-            isSelfAttendance={false}
-            date={shortDateFormat(selectedDate)}
-            currentStatus={status}
-            handleClose={handleMarkAttendanceModal}
-            handleSubmit={handleUpdate}
-            message={AttendanceMessage}
+          <MarkBulkAttendance
+            open={open}
+            onClose={handleClose}
+            classId={classId}
+            selectedDate={selectedDate}
+            onSaveSuccess={() => setHandleSaveHasRun(true)}
           />
         </Box>
       </Box>
