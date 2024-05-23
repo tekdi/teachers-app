@@ -361,8 +361,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             <StudentsStatsList
               key={user.userId}
               name={user.name}
-              value1={user.present_percentage}
-              value2={user.absent}
+              presentPercent={user.present_percentage}
+              classesMissed={user.absent}
               userId={user.userId}
               cohortId={classId}
             />
