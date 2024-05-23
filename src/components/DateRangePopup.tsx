@@ -14,6 +14,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import Check from '@mui/icons-material/Check';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import { useTranslation } from 'next-i18next';
 
 const modalStyle = {
   position: 'absolute',
@@ -47,6 +48,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
 
   const handleModalOpen = () => setIsModalOpen(true);
   const handleModalClose = () => setIsModalOpen(false);
+  const { t } = useTranslation();
 
   const handleMenuItemClick = (index: number, item: string) => {
     setSelectedIndex(index);
@@ -67,10 +69,10 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
               inputProps={{ readOnly: true }}
             >
               <MenuItem value="" disabled>
-                Select an option
+                {t('COMMON.SELECT_AN_OPTION')}
               </MenuItem>
               <MenuItem value={selectedValue}>
-                {selectedValue ? selectedValue : 'Select an option'}
+                {selectedValue ? selectedValue : t('COMMON.SELECT_AN_OPTION')}
               </MenuItem>
             </Select>
           </FormControl>
@@ -93,7 +95,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           <Box>
             <Grid container>
               <Grid item xs={6}>
-                <Typography textAlign={'left'}>Date Range</Typography>
+                <Typography textAlign={'left'}>{t('COMMON.DATE_RANGE')}</Typography>
               </Grid>
               <Grid item xs={6} textAlign={'right'}>
                 <CloseIcon onClick={handleModalClose} />
@@ -130,7 +132,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           </MenuList>
           <Divider sx={dividerStyle} />
           <Button variant="contained" onClick={handleModalClose}>
-            Apply
+            {t('COMMON.APPLY')}
           </Button>
         </Box>
       </Modal>

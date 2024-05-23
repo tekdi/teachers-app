@@ -42,7 +42,9 @@
     "LAST_SIX_MONTHS": "Last Six Months",
     "CUSTOM_RANGE": "Custom Range",
     "NONE": "None",
-    "LEARNER_NAME": "Learner Name"
+    "LEARNER_NAME": "Learner Name",
+    "DATE_RANGE": "Date Range",
+    "SELECT_AN_OPTION": "Select an option"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
