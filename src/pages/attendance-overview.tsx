@@ -48,7 +48,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [loading, setLoading] = React.useState(false);
   const [searchWord, setSearchWord] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
-  const [learnerData, setlearnerData] = React.useState<Array<any>>([]);
+  const [learnerData, setLearnerData] = React.useState<Array<any>>([]);
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
   >([]);
@@ -149,8 +149,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     name: user ? user.name : 'Unknown',
                   });
                 });
-                setlearnerData(mergedArray);
-                console.log('//////////////////', mergedArray)
+                setLearnerData(mergedArray);
                 setDisplayStudentList(mergedArray);
               }
             }
@@ -234,9 +233,19 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         sortedData.sort((a, b) => parseFloat(b.present_percent) - parseFloat(a.present_percent));
         break;
       case 'low':
-          return sortedData.sort((b, a) => parseFloat(a.present_percent) - parseFloat(b.present_percent));
+        sortedData.sort((a, b) => parseFloat(a.present_percent) - parseFloat(b.present_percent));
         break;
     }
+
+    switch (sortByClassesMissed) {
+      case 'more':
+        sortedData.sort((a, b) => parseFloat(b.absent) - parseFloat(a.absent));
+        break;
+      case 'less':
+        sortedData.sort((a, b) => parseFloat(a.absent) - parseFloat(b.absent));
+        break;
+    }
+  
     setDisplayStudentList(sortedData);
   };
 
