@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 // Import necessary modules
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 // const Login = dynamic(() => import('./Login'), { ssr: false });
 // const Dashboard = dynamic(() => import('./Dashboard'), { ssr: false });
@@ -30,5 +31,14 @@ const Home: React.FC = () => {
     </>
   );
 };
+
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  };
+}
 
 export default Home;
