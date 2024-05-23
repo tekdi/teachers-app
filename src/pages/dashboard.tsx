@@ -111,8 +111,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const refreshToken = localStorage.getItem('refreshToken');
-      if (refreshToken) {
+      const token = localStorage.getItem('token');
+      if (token) {
         setIsAuthenticated(true);
       } else {
         router.push('/login');
@@ -189,6 +189,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   filters: {
                     fromDate: selectedDate || currentDate,
                     toDate: selectedDate || currentDate,
+                    contextId: classId
                   },
                 };
                 const res = await attendanceStatusList(attendanceStatusData);
@@ -209,10 +210,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       const attendance = response.find(
                         (status) => status.userId === userId
                       );
-                        userAttendanceArray.push({
-                          userId,
-                          attendance: attendance?.attendance ? attendance.attendance : '',
-                        });
+                      userAttendanceArray.push({
+                        userId,
+                        attendance: attendance?.attendance
+                          ? attendance.attendance
+                          : '',
+                      });
                     });
                     return userAttendanceArray;
                   };
@@ -864,7 +867,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Grid>
                   <Grid item xs={7}>
                     <OverviewCard
-                      label="Low Attendance Students"
+                      label="Low Attendance Learners"
                       value="Bharat Kumar, Ankita Kulkarni, +3 more"
                     />
                   </Grid>

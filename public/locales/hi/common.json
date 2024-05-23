@@ -34,10 +34,17 @@
     "EMPLOYMENT_STATUS": "रोज़गार स्थिति",
     "ENROLLMENT_DATE": "नामांकन की तिथि",
     "AS_OF_TODAY": "आज से",
+    "LAST_SEVEN_DAYS": "पिछले 7 दिन",
+    "LAST_MONTH": "पिछला महीना",
+    "LAST_SIX_MONTHS": "पिछले छह महीने",
+    "CUSTOM_RANGE": "कस्टम रेंज",
     "AS_OF_LAST_WEEK": "पिछले सप्ताह तक",
     "AS_OF_LAST_SIX_MONTH": "पिछले छह महीने से",
     "NONE": "कोई नहीं",
-    "LEARNER_NAME": "शिक्षार्थी का नाम"
+    "LEARNER_NAME": "शिक्षार्थी का नाम",
+    "DATE_RANGE": "तिथि सीमा",
+    "SELECT_AN_OPTION": "कोई विकल्प चुनें"
+
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",
@@ -86,7 +93,10 @@
     "YES": "हां",
     "NO_GO_BACK": "नहीं वापस जाएं",
     "MY_TIMETABLE": "मेरी समय सारिणी",
-    "DAY_WISE_ATTENDANCE": "दिनविशेष उपस्थिति"
+    "DAY_WISE_ATTENDANCE": "दिनविशेष उपस्थिति",
+    "ATTENDANCE_OVERVIEW": "उपस्थिति अवलोकन",
+    "CENTER_ATTENDANCE": "केंद्र उपस्थिति",
+    "LOW_ATTENDANCE_STUDENTS": "कम उपस्थिति वाले छात्र"
   },
   "PROFILE": {
     "EDIT_PROFILE": "प्रोफ़ाइल संपादित करें",

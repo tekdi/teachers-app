@@ -21,7 +21,7 @@ const WeekDays: React.FC<WeekDaysProps> = ({ useAbbreviation }) => {
 
   const days = useAbbreviation
     ? ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-    : ['Sun', 'Mon', 'Tues', 'Wed', 'Thu', 'Fri', 'Sat'];
+    : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   const currentDate = new Date();
   const currentDayIndex = currentDate.getDay();

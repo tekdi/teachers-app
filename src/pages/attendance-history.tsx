@@ -60,6 +60,7 @@ interface user {
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const { push } = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [classId, setClassId] = React.useState('');
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
@@ -108,6 +109,18 @@ const UserAttendanceHistory = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const token = localStorage.getItem('token');
+      setLoading(false);
+      if (token) {
+        push('/attendance-history');
+      } else {
+        push('/login', undefined, { locale: 'en' });
+      }
+    }
+  }, []);
 
   // API call to get center list
   useEffect(() => {
@@ -707,6 +720,7 @@ const UserAttendanceHistory = () => {
             <Box>
               {status && (
                 <AttendanceStatus
+                  date={selectedDate}
                   formattedAttendanceData={percentageAttendance}
                   onDateSelection={selectedDate}
                   onUpdate={handleMarkAttendanceModal}

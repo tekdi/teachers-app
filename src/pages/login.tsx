@@ -51,7 +51,7 @@ const LoginPage = () => {
   // const location = useLocation();
 
   const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
-    vertical: 'top',
+    vertical: 'bottom',
     horizontal: 'center',
   };
   const [state, setState] = React.useState<State>({
@@ -64,8 +64,8 @@ const LoginPage = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const lang = localStorage.getItem('preferredLanguage') || 'en';
       setLanguage(lang);
-      const refreshToken = localStorage.getItem('refreshToken');
-      if (refreshToken) {
+      const token = localStorage.getItem('token');
+      if (token) {
         router.push('/dashboard');
       }
     }
@@ -222,7 +222,7 @@ const LoginPage = () => {
                   style={{
                     borderRadius: '0.5rem',
                     color: theme.palette.warning['200'],
-                    width: 'auto',
+                    width: '7rem',
                     marginBottom: '0rem',
                   }}
                 >
@@ -244,7 +244,6 @@ const LoginPage = () => {
               }}
             >
               <TextField
-                required
                 id="username"
                 InputLabelProps={{
                   shrink: true,
@@ -267,7 +266,6 @@ const LoginPage = () => {
             >
               <TextField
                 type={showPassword ? 'text' : 'password'}
-                required
                 id="password"
                 InputLabelProps={{
                   shrink: true,
@@ -294,9 +292,9 @@ const LoginPage = () => {
               />
             </Box>
 
-            <Box marginTop={'-1rem'} marginLeft={'0.5rem'}>
+            <Box marginTop={'1rem'} marginLeft={'0.5rem'}>
               <Link
-                sx={{ color: 'blue' }}
+                sx={{ color: theme.palette.secondary.main }}
                 href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=R-3zEZbbbyM"
                 underline="none"
               >
@@ -313,7 +311,7 @@ const LoginPage = () => {
             <Box
               alignContent={'center'}
               textAlign={'center'}
-              marginTop={'1rem'}
+              marginTop={'5rem'}
               bottom={'1rem'}
               width={'100%'}
             >
