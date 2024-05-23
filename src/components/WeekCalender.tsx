@@ -122,6 +122,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
 
         days.push(
           <Box
+            key={i}
             display={'flex'}
             border={'1px solid red'}
             width={'14%'}
