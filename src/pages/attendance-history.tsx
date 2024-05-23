@@ -1,4 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import {
+  AttendanceParams,
+  AttendancePercentageProps,
+  AttendanceStatusListProps,
+  cohort,
+} from '../utils/Interfaces';
 import {
   Box,
   Button,
@@ -14,39 +19,35 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
-import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
-import Header from '../components/Header';
-import { useTheme } from '@mui/material/styles';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import React, { useEffect, useState } from 'react';
 import {
   attendanceInPercentageStatusList,
   attendanceStatusList,
-  // markAttendance,
 } from '../services/AttendanceService';
 import {
-  AttendancePercentageProps,
-  AttendanceParams,
-  cohort,
-  AttendanceStatusListProps,
-} from '../utils/Interfaces';
-import MarkAttendance from '../components/MarkAttendance';
-import { useTranslation } from 'next-i18next';
-import Loader from '../components/Loader';
-import MonthCalender from '@/components/MonthCalender';
-import { useRouter } from 'next/router';
-import {
   debounce,
-  getTodayDate,
   formatToShowDateMonth,
+  getTodayDate,
   shortDateFormat,
 } from '@/utils/Helper';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { cohortList } from '@/services/CohortServices';
-import SortingModal from '../components/SortingModal';
+
+import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
+import AttendanceStatus from '@/components/AttendanceStatus';
 import AttendanceStatusListView from '@/components/AttendanceStatusListView';
+import ClearIcon from '@mui/icons-material/Clear';
+import Header from '../components/Header';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import Loader from '../components/Loader';
+import MarkAttendance from '../components/MarkAttendance';
+import MonthCalender from '@/components/MonthCalender';
+import SearchIcon from '@mui/icons-material/Search';
+import SortingModal from '../components/SortingModal';
+import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 interface user {
   userId: string;
@@ -54,7 +55,6 @@ interface user {
   attendance?: string;
   key?: string;
 }
-import AttendanceStatus from '@/components/AttendaceStatus';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
@@ -589,21 +589,15 @@ const UserAttendanceHistory = () => {
               top: 0,
               zIndex: 1000,
               backgroundColor: 'white',
+              // boxShadow: '0px 1px 3px 0px #0000004D',
+              boxShadow: '0px 4px 8px 3px #00000026',
+              border: '1px solid #DED8E1',
             }}
+            py={'5px'}
           >
-            <Box display={'flex'} width={'100%'}>
-              <Typography
-                marginBottom={'0px'}
-                ml={1}
-                fontSize={'14px'}
-                fontWeight={'500'}
-                color={'black'}
-              >
-                {formatToShowDateMonth(selectedDate)}
-              </Typography>
-            </Box>
             <Box>
               <AttendanceStatus
+                date={selectedDate}
                 formattedAttendanceData={percentageAttendance}
                 onDateSelection={selectedDate}
                 onUpdate={handleMarkAttendanceModal}
