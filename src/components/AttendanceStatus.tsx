@@ -1,12 +1,14 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
-import { CreateOutlined } from '@mui/icons-material';
-import { useTranslation } from 'next-i18next';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { shortDateFormat } from '@/utils/Helper';
-import { useTheme } from '@mui/material/styles';
+import { formatToShowDateMonth, shortDateFormat } from '@/utils/Helper';
+
+import { CreateOutlined } from '@mui/icons-material';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 interface AttendanceStatusProps {
+  date: Date;
   formattedAttendanceData: FormattedAttendanceData;
   onDateSelection: Date;
   onUpdate?: () => void;
@@ -23,6 +25,7 @@ type FormattedAttendanceData = {
 };
 
 function AttendanceStatus({
+  date,
   formattedAttendanceData,
   onDateSelection,
   onUpdate,
@@ -56,7 +59,18 @@ function AttendanceStatus({
         justifyContent="space-between"
         alignItems={'center'}
       >
-        <Grid item xs={8} display={'flex'}>
+        <Grid item xs={8}>
+          <Box display={'flex'} width={'100%'}>
+            <Typography
+              marginBottom={'0px'}
+              ml={1}
+              fontSize={'14px'}
+              fontWeight={'500'}
+              color={'black'}
+            >
+              {formatToShowDateMonth(date)}
+            </Typography>
+          </Box>
           <Box display={'flex'}>
             {attendanceStatus !== 'notMarked' &&
               attendanceStatus !== 'futureDate' && (

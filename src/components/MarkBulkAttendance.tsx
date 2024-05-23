@@ -1,19 +1,20 @@
 import { Box, Button, Fade, Modal, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
-import Loader from './Loader';
-import AttendanceStatusListView from './AttendanceStatusListView';
-import { useTranslation } from 'next-i18next';
-import { shortDateFormat } from '../utils/Helper';
-import CloseIcon from '@mui/icons-material/Close';
-import { useTheme } from '@mui/material/styles';
-import Backdrop from '@mui/material/Backdrop';
-import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import {
   attendanceStatusList,
   bulkAttendance,
 } from '@/services/AttendanceService';
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+
 import { AttendanceStatusListProps } from '../utils/Interfaces';
+import AttendanceStatusListView from './AttendanceStatusListView';
+import Backdrop from '@mui/material/Backdrop';
+import CloseIcon from '@mui/icons-material/Close';
+import Loader from './Loader';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { shortDateFormat } from '../utils/Helper';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -277,6 +278,7 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
             timeout: 500,
           },
         }}
+        className="modal_mark"
       >
         <Fade in={open}>
           <Box
@@ -289,7 +291,11 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
             height={'80%'}
           >
             <Box height={'100%'} width={'100%'}>
-              <Box display={'flex'} justifyContent={'space-between'}>
+              <Box
+                display={'flex'}
+                justifyContent={'space-between'}
+                sx={{ padding: '0 10px' }}
+              >
                 <Box marginBottom={'0px'}>
                   <Typography
                     variant="h2"
@@ -332,6 +338,7 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
                   marginTop: '10px',
                   fontSize: '12px',
                   color: theme.palette.warning['A200'],
+                  padding: '0 10px',
                 }}
               >
                 {t('ATTENDANCE.TOTAL_STUDENTS', {
@@ -340,10 +347,14 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
               </Typography>
               {cohortMemberList && cohortMemberList?.length != 0 ? (
                 <Box
-                  height={'58%'}
-                  sx={{ overflowY: 'scroll', marginTop: '10px' }}
+                  height={'100%'}
+                  sx={{
+                    overflowY: 'scroll',
+                    marginTop: '10px',
+                    padding: '0 10px',
+                  }}
                 >
-                  <Box>
+                  <Box className="modalBulk">
                     <AttendanceStatusListView
                       isEdit={true}
                       isBulkAction={true}
@@ -371,13 +382,13 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
                   </Box>
                   <Box
                     position={'absolute'}
-                    bottom="10px"
+                    bottom="0"
                     display={'flex'}
                     gap={'20px'}
                     flexDirection={'row'}
                     justifyContent={'space-evenly'}
                     marginBottom={0}
-                    sx={{ background: '#fff', padding: '15px 0 0 0' }}
+                    sx={{ background: '#fff', padding: '15px 0 15px 0' }}
                   >
                     <Button
                       variant="outlined"
