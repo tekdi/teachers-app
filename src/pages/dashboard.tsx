@@ -189,7 +189,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   filters: {
                     fromDate: selectedDate || currentDate,
                     toDate: selectedDate || currentDate,
-                    contextId: classId
+                    contextId: classId,
                   },
                 };
                 const res = await attendanceStatusList(attendanceStatusData);
@@ -725,7 +725,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         </Typography>
                         {cohortMemberList && cohortMemberList?.length != 0 ? (
                           <Box
-                            height={'100%'}
+                            height={'54vh'}
                             sx={{ overflowY: 'scroll', marginTop: '10px' }}
                           >
                             <Box>
