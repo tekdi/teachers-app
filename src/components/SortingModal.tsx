@@ -32,7 +32,7 @@ const SortingModal: React.FC<sortCardProps> = ({
   handleCloseModal,
   routeName,
 }) => {
-  const [sortByName, setSortByName] = React.useState('asc');
+  const [sortByName, setSortByName] = React.useState('');
   const [sortByAttendance, setSortByAttendance] = React.useState('');
   const [sortByClassesMissed, setSortByClassesMissed] = React.useState('');
   const [sortByAttendanceNumber, setSortByAttendanceNumber] =
@@ -66,9 +66,9 @@ const SortingModal: React.FC<sortCardProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSortByAttendanceNumber(event.target.value);
-    setSortByAttendance('');
     setSortByName('');
     setSortByClassesMissed('');
+    setSortByAttendance('');
   };
 
   const handleSortByClassesMissed = (
@@ -124,12 +124,14 @@ const SortingModal: React.FC<sortCardProps> = ({
                 >
                   <FormControlLabel
                     labelPlacement="start"
+                    sx={{ justifyContent: 'space-between' }}
                     value="high"
                     control={<Radio sx={{ ml: '80px' }} />}
                     label={t('COMMON.HIGH_TO_LOW')}
                   />
                   <FormControlLabel
                     labelPlacement="start"
+                    sx={{ justifyContent: 'space-between' }}
                     value="low"
                     control={<Radio sx={{ ml: '80px' }} />}
                     label={t('COMMON.LOW_TO_HIGH')}
@@ -153,14 +155,16 @@ const SortingModal: React.FC<sortCardProps> = ({
                 >
                   <FormControlLabel
                     labelPlacement="start"
-                    value="high"
-                    control={<Radio />}
+                    sx={{ justifyContent: 'space-between' }}
+                    value="more"
+                    control={<Radio sx={{ ml: '80px' }}/>}
                     label={t('COMMON.HIGH_TO_LOW')}
                   />
                   <FormControlLabel
+                  sx={{ justifyContent: 'space-between' }}
                     labelPlacement="start"
-                    value="low"
-                    control={<Radio />}
+                    value="less"
+                    control={<Radio sx={{ ml: '80px' }}/>}
                     label={t('COMMON.LOW_TO_HIGH')}
                   />
                 </RadioGroup>
@@ -210,9 +214,6 @@ const SortingModal: React.FC<sortCardProps> = ({
             </FormLabel>
             <RadioGroup
               aria-labelledby="demo-controlled-radio-buttons-group"
-              //           name="controlled-radio-buttons-group"
-              //           value={sortByName}
-              //           onChange={handleChangeSort}
               aria-label="sortByName"
               name="sortByName"
               value={sortByName}
