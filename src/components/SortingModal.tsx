@@ -1,6 +1,4 @@
 import * as React from 'react';
-import Divider from '@mui/material/Divider';
-
 
 import {
   FormControl,
@@ -8,39 +6,47 @@ import {
   FormLabel,
   Grid,
   Radio,
-  RadioGroup
+  RadioGroup,
 } from '@mui/material';
+
+import Divider from '@mui/material/Divider';
 import ModalComponent from './Modal';
-import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 interface sortCardProps {
-  handleSorting: (sortByName: string, sortByAttendance: string, sortByClassesMissed: string, sortByAttendanceNumber: string) => void;
+  handleSorting: (
+    sortByName: string,
+    sortByAttendance: string,
+    sortByClassesMissed: string,
+    sortByAttendanceNumber: string
+  ) => void;
   handleCloseModal: () => void;
   isModalOpen: boolean;
-  routeName: string
+  routeName: string;
 }
 
 const SortingModal: React.FC<sortCardProps> = ({
   handleSorting,
   isModalOpen,
   handleCloseModal,
-  routeName
+  routeName,
 }) => {
   const [sortByName, setSortByName] = React.useState('asc');
   const [sortByAttendance, setSortByAttendance] = React.useState('');
   const [sortByClassesMissed, setSortByClassesMissed] = React.useState('');
-  const [sortByAttendanceNumber, setSortByAttendanceNumber] = React.useState('');
+  const [sortByAttendanceNumber, setSortByAttendanceNumber] =
+    React.useState('');
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
   // handle changes names from sorting
   const handleSortByName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSortByAttendance('');
-    setSortByClassesMissed('')
-    setSortByAttendanceNumber('')
+    setSortByClassesMissed('');
+    setSortByAttendanceNumber('');
     // if (event.target.value === 'asc' || event.target.value === 'desc') {
-      setSortByName(event.target.value);
+    setSortByName(event.target.value);
     // }
     //  else {
     //   setSortByAttendance(event.target.value);
@@ -52,8 +58,8 @@ const SortingModal: React.FC<sortCardProps> = ({
   ) => {
     setSortByAttendance(event.target.value);
     setSortByName('');
-    setSortByClassesMissed('')
-    setSortByAttendanceNumber('')
+    setSortByClassesMissed('');
+    setSortByAttendanceNumber('');
   };
 
   const handleSortByAttendanceNumber = (
@@ -62,21 +68,25 @@ const SortingModal: React.FC<sortCardProps> = ({
     setSortByAttendanceNumber(event.target.value);
     setSortByAttendance('');
     setSortByName('');
-    setSortByClassesMissed('')
+    setSortByClassesMissed('');
   };
-  
+
   const handleSortByClassesMissed = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSortByClassesMissed(event.target.value);
     setSortByAttendance('');
     setSortByName('');
-    setSortByAttendanceNumber('')
+    setSortByAttendanceNumber('');
   };
-  
 
   const handleApplySort = () => {
-    handleSorting(sortByName, sortByAttendance, sortByClassesMissed, sortByAttendanceNumber);
+    handleSorting(
+      sortByName,
+      sortByAttendance,
+      sortByClassesMissed,
+      sortByAttendanceNumber
+    );
     handleCloseModal();
   };
 
@@ -96,102 +106,102 @@ const SortingModal: React.FC<sortCardProps> = ({
         }}
       />
       <Grid container spacing={2}>
-      
-      {routeName== "/attendance-overview" ? 
-     <>
-      <Grid item xs={12}>
-          <FormControl component="fieldset">
-            <FormLabel
-              style={{ color: theme.palette.warning['400'] }}
-              component="legend"
-            >
-              {t('COMMON.ATTENDANCE')}
-            </FormLabel>
-            <RadioGroup
-              aria-label="sortByAttendanceNumber"
-              name="sortByAttendanceNumber"
-              value={sortByAttendanceNumber}
-              onChange={handleSortByAttendanceNumber}
-            >
-              <FormControlLabel
-                labelPlacement="start"
-                value="high"
-                control={<Radio sx={{ ml: '80px' }} />}
-                label={t('COMMON.HIGH_TO_LOW')}
-              />
-              <FormControlLabel
-                labelPlacement="start"
-                value="low"
-                control={<Radio sx={{ ml: '80px' }} />}
-                label={t('COMMON.LOW_TO_HIGH')}
-              />
-            </RadioGroup>
-          </FormControl>
-        </Grid>
-
+        {routeName == '/attendance-overview' ? (
+          <>
+            <Grid item xs={12}>
+              <FormControl component="fieldset">
+                <FormLabel
+                  style={{ color: theme.palette.warning['400'] }}
+                  component="legend"
+                >
+                  {t('COMMON.ATTENDANCE')}
+                </FormLabel>
+                <RadioGroup
+                  aria-label="sortByAttendanceNumber"
+                  name="sortByAttendanceNumber"
+                  value={sortByAttendanceNumber}
+                  onChange={handleSortByAttendanceNumber}
+                >
+                  <FormControlLabel
+                    labelPlacement="start"
+                    value="high"
+                    control={<Radio sx={{ ml: '80px' }} />}
+                    label={t('COMMON.HIGH_TO_LOW')}
+                  />
+                  <FormControlLabel
+                    labelPlacement="start"
+                    value="low"
+                    control={<Radio sx={{ ml: '80px' }} />}
+                    label={t('COMMON.LOW_TO_HIGH')}
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl component="fieldset">
+                <FormLabel
+                  style={{ color: theme.palette.warning['400'] }}
+                  component="legend"
+                >
+                  {t('COMMON.CLASS_MISSED')}
+                </FormLabel>
+                <RadioGroup
+                  aria-label="sortByClassesMissed"
+                  name="sortByClassesMissed"
+                  value={sortByClassesMissed}
+                  onChange={handleSortByClassesMissed}
+                >
+                  <FormControlLabel
+                    labelPlacement="start"
+                    value="high"
+                    control={<Radio />}
+                    label={t('COMMON.HIGH_TO_LOW')}
+                  />
+                  <FormControlLabel
+                    labelPlacement="start"
+                    value="low"
+                    control={<Radio />}
+                    label={t('COMMON.LOW_TO_HIGH')}
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Grid>{' '}
+          </>
+        ) : (
+          <Grid item xs={12}>
+            <FormControl component="fieldset" style={{ width: '100%' }}>
+              <FormLabel
+                style={{ color: theme.palette.warning['400'] }}
+                component="legend"
+              >
+                {t('COMMON.ATTENDANCE')}
+              </FormLabel>
+              <RadioGroup
+                aria-label="sortByAttendance"
+                name="sortByAttendance"
+                value={sortByAttendance}
+                onChange={handleSortByAttendance}
+              >
+                <FormControlLabel
+                  labelPlacement="start"
+                  sx={{ justifyContent: 'space-between' }}
+                  value="pre"
+                  control={<Radio sx={{ ml: '80px' }} />}
+                  label={t('ATTENDANCE.PRESENT')}
+                />
+                <FormControlLabel
+                  labelPlacement="start"
+                  sx={{ justifyContent: 'space-between' }}
+                  value="abs"
+                  control={<Radio sx={{ ml: '80px' }} />}
+                  label={t('ATTENDANCE.ABSENT')}
+                />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+        )}
         <Grid item xs={12}>
-          <FormControl component="fieldset">
-            <FormLabel
-              style={{ color: theme.palette.warning['400'] }}
-              component="legend"
-            >
-              {t('COMMON.CLASS_MISSED')}
-            </FormLabel>
-            <RadioGroup
-              aria-label="sortByClassesMissed"
-              name="sortByClassesMissed"
-              value={sortByClassesMissed}
-              onChange={handleSortByClassesMissed}
-            >
-              <FormControlLabel
-                labelPlacement="start"
-                value="high"
-                control={<Radio sx={{ ml: '80px' }} />}
-                label={t('COMMON.HIGH_TO_LOW')}
-              />
-              <FormControlLabel
-                labelPlacement="start"
-                value="low"
-                control={<Radio sx={{ ml: '80px' }} />}
-                label={t('COMMON.LOW_TO_HIGH')}
-              />
-            </RadioGroup>
-          </FormControl>
-        </Grid> </>:
-
-
-      <Grid item xs={12}>
-          <FormControl component="fieldset">
-            <FormLabel
-              style={{ color: theme.palette.warning['400'] }}
-              component="legend"
-            >
-              {t('COMMON.ATTENDANCE')}
-            </FormLabel>
-            <RadioGroup
-              aria-label="sortByAttendance"
-              name="sortByAttendance"
-              value={sortByAttendance}
-              onChange={handleSortByAttendance}
-            >
-              <FormControlLabel
-                labelPlacement="start"
-                value="pre"
-                control={<Radio sx={{ ml: '80px' }} />}
-                label={t('ATTENDANCE.PRESENT')}
-              />
-              <FormControlLabel
-                labelPlacement="start"
-                value="abs"
-                control={<Radio sx={{ ml: '80px' }} />}
-                label={t('ATTENDANCE.ABSENT')}
-              />
-            </RadioGroup>
-          </FormControl>
-        </Grid>
-         }
-        <Grid item xs={12}>
-          <FormControl component="fieldset">
+          <FormControl component="fieldset" style={{ width: '100%' }}>
             <FormLabel
               style={{ color: theme.palette.warning['400'] }}
               component="legend"
@@ -210,15 +220,17 @@ const SortingModal: React.FC<sortCardProps> = ({
             >
               <FormControlLabel
                 labelPlacement="start"
+                sx={{ justifyContent: 'space-between' }}
                 value="asc"
-                control={<Radio sx={{ ml: '80px' }} />}
+                control={<Radio />}
                 label={t('COMMON.A_TO_Z')}
               />
 
               <FormControlLabel
                 labelPlacement="start"
+                sx={{ justifyContent: 'space-between' }}
                 value="desc"
-                control={<Radio sx={{ ml: '80px' }} />}
+                control={<Radio />}
                 label={t('COMMON.Z_TO_A')}
               />
             </RadioGroup>
