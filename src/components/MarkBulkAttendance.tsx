@@ -278,7 +278,7 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
             timeout: 500,
           },
         }}
-        className="shreyas"
+        className="modal_mark"
       >
         <Fade in={open}>
           <Box
