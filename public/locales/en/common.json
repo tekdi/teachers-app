@@ -37,17 +37,12 @@
     "AS_OF_LAST_SIX_MONTH": "As of last six month",
     "AS_OF_TODAY": "As of today",
     "AS_OF_LAST_WEEK": "As of last week",
-<<<<<<< HEAD
     "LAST_SEVEN_DAYS": "Last 7 Days",
     "LAST_MONTH": "Last Month",
     "LAST_SIX_MONTHS": "Last Six Months",
     "CUSTOM_RANGE": "Custom Range",
-    "NONE": "None"
-=======
-    "AS_OF_LAST_SIX_MONTH": "As of last six month",
     "NONE": "None",
     "LEARNER_NAME": "Learner Name"
->>>>>>> upstream/shiksha-2.0
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
