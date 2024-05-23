@@ -45,8 +45,6 @@ import Loader from '../components/Loader';
 import Modal from '@mui/material/Modal';
 import OverviewCard from '@/components/OverviewCard';
 import TimeTableCard from '@/components/TimeTableCard';
-import TodayIcon from '@mui/icons-material/Today';
-import UpDownButton from '@/components/UpDownButton';
 import WeekCalender from '@/components/WeekCalender';
 import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
@@ -56,6 +54,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -468,7 +467,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           <Header />
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box width={'100%'}>
-              <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
+              <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'} color={'black'}>
                 {t('DASHBOARD.DASHBOARD')}
               </Typography>
             </Box>
@@ -484,7 +483,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             >
               <Box display={'flex'} flexDirection={'column'} padding={'1rem'}>
                 <Box display={'flex'} justifyContent={'space-between'}>
-                  <Typography variant="h2" sx={{ fontSize: '14px' }}>
+                  <Typography variant="h2" sx={{ fontSize: '14px' }} color={'black'} fontWeight={'500'}>
                     {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
                   </Typography>
                   <Box
@@ -500,7 +499,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Typography marginBottom={'0px'}>
                       {getMonthName()}
                     </Typography>
-                    <TodayIcon />
+                    <CalendarMonthIcon />
                   </Box>
                 </Box>
 
@@ -508,7 +507,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
                     <FormControl
                       className="drawer-select"
-                      sx={{ m: 1, width: '100%' }}
+                      sx={{ m: 0, width: '100%' }}
                     >
                       <Select
                         value={classId}
@@ -577,6 +576,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   textColor: pathColor,
                                   pathColor: pathColor,
                                   trailColor: '#E6E6E6',
+                                  strokeLinecap: 'round',
+                                  backgroundColor: '#ffffff',
                                 })}
                                 strokeWidth={15}
                               />
@@ -875,26 +876,27 @@ const Dashboard: React.FC<DashboardProps> = () => {
               </Box>
             </Box>
           </Box>
+          <Box sx={{ background: '#fff' }}>
+            <Typography
+              textAlign={'left'}
+              fontSize={'0.8rem'}
+              pl={'1rem'}
+              pt={'1rem'}
+              color={'black'}
+              fontWeight={'600'}
+            >
+              {t('DASHBOARD.MY_TIMETABLE')}
+            </Typography>
+            <WeekDays useAbbreviation={false} />
+          </Box>
           <Box
             sx={{
               background: '#fff',
-              padding: '1rem',
               display: 'flex',
               justifyContent: 'center',
             }}
           >
             <Box width={'100%'}>
-              <Typography
-                textAlign={'left'}
-                fontSize={'0.8rem'}
-                ml={'1rem'}
-                mt={'1rem'}
-                color={'black'}
-                fontWeight={'600'}
-              >
-                {t('DASHBOARD.MY_TIMETABLE')}
-              </Typography>
-              <WeekDays useAbbreviation={false} />
               <TimeTableCard
                 subject={'Science'}
                 instructor={'Khapari Dharmu'}
