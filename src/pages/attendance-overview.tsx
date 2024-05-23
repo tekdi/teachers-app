@@ -57,11 +57,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const pathname = usePathname();
 
   const menuItems = [
-    'Last 7 Days(18 - 25 May)',
-    'As Of Today, 25 May',
-    'Last Month',
-    'Last 6 Months',
-    'Custom Range',
+    t('COMMON.LAST_SEVEN_DAYS'),
+    t('COMMON.AS_OF_TODAY'),
+    t('COMMON.AS_OF_LAST_WEEK'),
+    t('COMMON.LAST_MONTH'),
+    t('COMMON.LAST_SIX_MONTHS'),
+    t('COMMON.CUSTOM_RANGE'),
   ];
 
   // API call to get center list
@@ -219,7 +220,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box width={'100%'}>
           <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
-            {t('Attendance Overview')}
+            {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
           </Typography>
         </Box>
       </Box>
@@ -265,11 +266,14 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       <Box display={'flex'} className="card_overview">
         <Grid container spacing={0}>
           <Grid item xs={5}>
-            <OverviewCard label="Centre Attendance" value="71%" />
+            <OverviewCard
+              label={t('ATTENDANCE.CENTER_ATTENDANCE')}
+              value="71%"
+            />
           </Grid>
           <Grid item xs={7}>
             <OverviewCard
-              label="Low Attendance Students"
+              label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
               value="Bharat Kumar, Ankita Kulkarni, +3 more"
             />
           </Grid>

@@ -32,6 +32,11 @@
     "EMPLOYMENT_STATUS": "रोज़गार की स्थिति",
     "ENROLLMENT_DATE": "नावनोंदणी तारीख",
     "AS_OF_TODAY": "आजपासून",
+    "LAST_SEVEN_DAYS": "शेवटचे ७ दिवस",
+    "LAST_MONTH": "गेल्या महिन्यात",
+    "LAST_SIX_MONTHS": "शेवटचे सहा महिने",
+    "CUSTOM_RANGE": "कस्टम रेंज",
+
     "AS_OF_LAST_WEEK": "गेल्या आठवड्याप्रमाणे",
     "AS_OF_LAST_SIX_MONTH": "गेल्या सहा महिन्यांपासून",
     "NONE": "काहीही नाही"
@@ -79,12 +84,15 @@
     "CLEAR_ATTENDANCE_ALERT": "आपल्याकडून हजेरी साफ करायला खात्री आहे का?",
     "YES": "हो",
     "NO_GO_BACK": "नाही लौटा",
-    "DAY_WISE_ATTENDANCE": "दिवस-विशेष उपस्थिती"
+    "DAY_WISE_ATTENDANCE": "दिवस-विशेष उपस्थिती",
+    "ATTENDANCE_OVERVIEW": "उपस्थिती विहंगावलोकन",
+    "CENTER_ATTENDANCE": "केंद्र उपस्थिती",
+    "LOW_ATTENDANCE_STUDENTS": "कमी उपस्थिती विद्यार्थी"
   },
   "PROFILE": {
     "EDIT_PROFILE": "प्रोफाइल संपादित करा",
     "CONTACT_INFORMATION": "संपर्क माहिती",
-    "OTHER_INFORMATION": "Other Information",
+    "OTHER_INFORMATION": "इतर माहिती",
     "PHONE": "फोन",
     "EMAIL_ID": "ईमेल आयडी",
     "BIO": "बायो",
