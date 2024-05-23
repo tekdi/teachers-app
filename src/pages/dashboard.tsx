@@ -208,12 +208,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       const attendance = response.find(
                         (status) => status.userId === userId
                       );
-                      if (attendance) {
                         userAttendanceArray.push({
                           userId,
-                          attendance: attendance.attendance,
+                          attendance: attendance?.attendance ? attendance.attendance : '',
                         });
-                      }
                     });
                     return userAttendanceArray;
                   };

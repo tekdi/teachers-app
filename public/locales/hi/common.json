@@ -36,7 +36,8 @@
     "AS_OF_TODAY": "आज से",
     "AS_OF_LAST_WEEK": "पिछले सप्ताह तक",
     "AS_OF_LAST_SIX_MONTH": "पिछले छह महीने से",
-    "NONE": "कोई नहीं"
+    "NONE": "कोई नहीं",
+    "LEARNER_NAME": "शिक्षार्थी का नाम"
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",
