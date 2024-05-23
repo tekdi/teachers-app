@@ -26,7 +26,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
     height: isBulkAction ? '56px' : '',
     // width: '100%',
     // borderBottom: `0.5px solid ${theme.palette.warning[400]}`,
-    padding: '8px',
+    padding: isBulkAction ? '0 8px' : '0 8px',
     alignItems: 'center',
     borderRadius: isBulkAction ? '8px' : 0,
     // marginBottom: '12px',
@@ -64,7 +64,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           flexDirection="column"
           alignItems="center"
           className="icon_holder"
-          p={2}
+          p={1}
           onClick={() =>
             handleClickAction(
               isBulkAction,
@@ -94,7 +94,8 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           display="flex"
           flexDirection="column"
           alignItems="center"
-          p={2}
+          className="icon_holder"
+          p={1}
           onClick={() =>
             handleClickAction(
               isBulkAction,
