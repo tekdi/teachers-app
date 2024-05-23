@@ -113,7 +113,7 @@ const UserAttendanceHistory = () => {
       const token = localStorage.getItem('token');
       setLoading(false);
       if (token) {
-        push('/dashboard');
+        push('/attendance-history');
       } else {
         push('/login', undefined, { locale: 'en' });
       }
@@ -718,6 +718,7 @@ const UserAttendanceHistory = () => {
             <Box>
               {status && (
                 <AttendanceStatus
+                  date={selectedDate}
                   formattedAttendanceData={percentageAttendance}
                   onDateSelection={selectedDate}
                   onUpdate={handleMarkAttendanceModal}
