@@ -189,6 +189,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   filters: {
                     fromDate: selectedDate || currentDate,
                     toDate: selectedDate || currentDate,
+                    contextId: classId
                   },
                 };
                 const res = await attendanceStatusList(attendanceStatusData);
@@ -866,7 +867,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Grid>
                   <Grid item xs={7}>
                     <OverviewCard
-                      label="Low Attendance Students"
+                      label="Low Attendance Learners"
                       value="Bharat Kumar, Ankita Kulkarni, +3 more"
                     />
                   </Grid>

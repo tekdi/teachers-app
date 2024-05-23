@@ -42,12 +42,12 @@ const postAttendanceList = async ({
 export const attendanceStatusList = async ({
   limit,
   page,
-  filters: { fromDate, toDate },
+  filters: { fromDate, toDate, contextId },
 }: AttendanceStatusListProps): Promise<any> => {
   return postAttendanceList({
     limit,
     page,
-    filters: { fromDate, toDate },
+    filters: { fromDate, toDate, contextId },
   });
 };
 

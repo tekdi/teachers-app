@@ -100,6 +100,7 @@ export interface AttendanceStatusListProps {
   filters: {
     fromDate: string | Date;
     toDate: string | Date;
+    contextId?: string;
   };
 }
 
@@ -124,3 +125,10 @@ export interface cohort {
   name: string;
   value: string;
 }
+
+export interface LearListHeaderProps {
+  numberOfColumns: number,
+  firstColumnName: string,
+  secondColumnName: string,
+}
+

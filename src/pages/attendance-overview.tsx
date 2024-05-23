@@ -33,6 +33,7 @@ import { classesMissedAttendancePercentList } from '@/services/AttendanceService
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
+import LearnerListHeader from '@/components/LearnerListHeader';
 import DateRangePopup from '@/components/DateRangePopup';
 
 interface AttendanceOverviewProps {
@@ -149,6 +150,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                   });
                 });
                 setlearnerData(mergedArray);
+                console.log('//////////////////', mergedArray)
                 setDisplayStudentList(mergedArray);
               }
             }
@@ -173,32 +175,32 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const handleSearchClear = () => {
     setSearchWord('');
-    // setDisplayStudentList(cohortMemberList);
+    setDisplayStudentList(learnerData);
   };
 
   // debounce use for searching time period is 2 sec
   const debouncedSearch = debounce((value: string) => {
-    // let filteredList = cohortMemberList?.filter((user: any) =>
-    //   user.name.toLowerCase().includes(value.toLowerCase())
-    // );
-    // setDisplayStudentList(filteredList)
+    let filteredList = learnerData?.filter((user: any) =>
+      user.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setDisplayStudentList(filteredList)
   }, 200);
 
   // handle search student data
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchWord(event.target.value);
-    // if (event.target.value.length >= 3) {
-    //   debouncedSearch(event.target.value);
-    // } else {
-    //   setDisplayStudentList(cohortMemberList)
-    // }
+    if (event.target.value.length >= 3) {
+      debouncedSearch(event.target.value);
+    } else {
+      setDisplayStudentList(learnerData)
+    }
   };
 
   const handleSearchSubmit = () => {
-    // let filteredList = cohortMemberList?.filter((user: any) =>
-    //   user.name.toLowerCase().includes(searchWord.toLowerCase())
-    // );
-    // setDisplayStudentList(filteredList)
+    let filteredList = learnerData?.filter((user: any) =>
+      user.name.toLowerCase().includes(searchWord.toLowerCase())
+    );
+    setDisplayStudentList(filteredList)
   };
 
   // open modal of sort
@@ -212,7 +214,31 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   };
 
   //handel sorting
-  const handleSorting = () => {};
+  const handleSorting = (sortByName: string, sortByAttendanceNumber: string, sortByClassesMissed: string) => {
+    handleCloseModal();
+    let sortedData = [...learnerData];
+
+    // Sorting by name
+    switch (sortByName) {
+      case 'asc':
+        sortedData.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'desc':
+        sortedData.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+    }
+
+    // Sorting by attendance
+    switch (sortByAttendanceNumber) {
+      case 'high':
+        sortedData.sort((a, b) => parseFloat(b.present_percent) - parseFloat(a.present_percent));
+        break;
+      case 'low':
+          return sortedData.sort((b, a) => parseFloat(a.present_percent) - parseFloat(b.present_percent));
+        break;
+    }
+    setDisplayStudentList(sortedData);
+  };
 
   return (
     <Box>
@@ -263,14 +289,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         setSelectedValue={setSelectedValue}
       />
 
-      <Box display={'flex'} className="card_overview">
-        <Grid container spacing={0}>
-          <Grid item xs={5}>
-            <OverviewCard
-              label={t('ATTENDANCE.CENTER_ATTENDANCE')}
-              value="71%"
-            />
-          </Grid>
+        <Box display={'flex'} className="card_overview">
+          <Grid container spacing={0}>
+            <Grid item xs={5}>
+              <OverviewCard label="ATTENDANCE.CENTER_ATTENDANCE" value="71%" />
+            </Grid>
           <Grid item xs={7}>
             <OverviewCard
               label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
@@ -354,14 +377,14 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           routeName={pathname}
         />
       </Stack>
-
+      <LearnerListHeader numberOfColumns={3} firstColumnName={t('COMMON.ATTENDANCE')} secondColumnName={t('COMMON.CLASS_MISSED')}/>
       {learnerData?.length > 0 ? (
         <Box>
           {displayStudentList?.map((user: any) => (
             <StudentsStatsList
               key={user.userId}
               name={user.name}
-              presentPercent={user.present_percentage}
+              presentPercent={Math.floor(parseFloat(user.present_percent))}
               classesMissed={user.absent}
               userId={user.userId}
               cohortId={classId}
