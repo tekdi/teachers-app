@@ -42,7 +42,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           justifyContent="space-between"
           p={2}
         >
-          <Grid item xs={4}>
+          <Grid item xs={4}   textAlign={'left'}>
             <Link href={`/student-details/${cohortId}/${userId}`}> {name}</Link>
           </Grid>
           <Grid item xs={4}>

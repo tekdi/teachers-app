@@ -34,7 +34,7 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
         p={2}
       >
       <Grid item xs={4}>
-      <Typography>{t('COMMON.LEARNER_NAME')}</Typography>
+      <Typography  textAlign={'left'}>{t('COMMON.LEARNER_NAME')}</Typography>
         </Grid>
         <Grid item xs={4}>
         <Typography>{firstColumnName}</Typography>
