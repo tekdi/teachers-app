@@ -491,3 +491,6 @@ main {
   cursor: default;
   opacity: 0;
 }
+.modal_mark .css-rsi8of {
+  overflow: hidden;
+}
