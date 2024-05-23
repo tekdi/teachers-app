@@ -8,16 +8,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 // const Dashboard = dynamic(() => import('./Dashboard'), { ssr: false });
 
 const Home: React.FC = () => {
-  const {  push } = useRouter();
+  const { push } = useRouter();
   const { t } = useTranslation();
 
   const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const refreshToken = localStorage.getItem('refreshToken');
+      const token = localStorage.getItem('token');
       setLoading(false);
-      if (refreshToken) {
+      if (token) {
         push('/dashboard');
       } else {
         push('/login', undefined, { locale: 'en' });
@@ -25,11 +25,7 @@ const Home: React.FC = () => {
     }
   }, []);
 
-  return (
-    <>
-      {loading && <p>{t('COMMON.LOADING')}...</p>}
-    </>
-  );
+  return <>{loading && <p>{t('COMMON.LOADING')}...</p>}</>;
 };
 
 export async function getStaticProps({ locale }: any) {

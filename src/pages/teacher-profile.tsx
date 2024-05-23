@@ -75,15 +75,14 @@ const TeacherProfile = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const refreshToken = localStorage.getItem('refreshToken');
-      if (refreshToken) {
+      const token = localStorage.getItem('token');
+      if (token) {
         setIsAuthenticated(true);
       } else {
         router.push('/login');
       }
     }
   }, []);
-
 
   const handleUpdateClick = async () => {
     setLoading(true);
