@@ -49,6 +49,18 @@ import { AssesmentListService } from '@/services/AssesmentService';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 
+interface QuestionValue {
+  question: string;
+  mark_obtained: number;
+  totalMarks: number;
+}
+interface QuestionValues {
+  totalMaxScore: number;
+  totalScore: number;
+  length: number;
+  questions: QuestionValue[];
+}
+
 const LearnerProfile: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -74,6 +86,7 @@ const LearnerProfile: React.FC = () => {
   const [customFieldsData, setCustomFieldsData] = useState<updateCustomField[]>(
     []
   );
+  const [submittedOn, setSubmitedOn] = useState('');
 
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -88,12 +101,12 @@ const LearnerProfile: React.FC = () => {
   const handleOpenEdit = () => setOpenEdit(true);
   const handleCloseEdit = () => setOpenEdit(false);
 
-  const handleListItemClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    index: number
-  ) => {
-    setSelectedIndex(index);
-  };
+  // const handleListItemClick = (
+  //   event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  //   index: number
+  // ) => {
+  //   setSelectedIndex(index);
+  // };
 
   const [openModal, setOpenModal] = React.useState(true);
   const handleOpenModal = () => setOpenModal(true);
@@ -188,6 +201,7 @@ const LearnerProfile: React.FC = () => {
       const result = response?.result;
       if (result?.length > 0) {
         const data = result;
+        setSubmitedOn(data?.createdOn);
         setAssesmentData(data);
         console.log('Data', data);
       } else {
@@ -437,7 +451,7 @@ const LearnerProfile: React.FC = () => {
           sx={{
             flex: '1',
             border: '2px solid',
-            borderColor: theme.palette.warning.A100,
+            borderColor: '#FFECB3',
             padding: '10px',
           }}
           minWidth={'100%'}
