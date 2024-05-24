@@ -36,7 +36,7 @@ interface CustomSelectModalProps {
   menuItems: string[];
   selectedValue: string;
   setSelectedValue: (value: string) => void;
-  onDateRangeSelected;
+  onDateRangeSelected: any;
 }
 
 const DateRangePopup: React.FC<CustomSelectModalProps> = ({
@@ -67,9 +67,9 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     handleModalClose();
   };
 
-  const getDateRange = (index) => {
+  const getDateRange = (index:number | null) => {
     const today = new Date();
-    const formatDate = (date) => date.toISOString().split('T')[0];
+    const formatDate = (date: Date) => date.toISOString().split('T')[0];
     let fromDate;
     let toDate = formatDate(today);
 
