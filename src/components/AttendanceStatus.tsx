@@ -37,6 +37,10 @@ function AttendanceStatus({
   const dateString = shortDateFormat(onDateSelection);
   const attendanceData = formattedAttendanceData?.[dateString];
   const todayDate = shortDateFormat(new Date());
+  const currentDate = new Date();
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(currentDate.getDate() - 7);
+  const formatedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
   const currentAttendance =
     formattedAttendanceData?.[dateString] || 'notMarked';
   let attendanceStatus;
@@ -135,7 +139,11 @@ function AttendanceStatus({
               variant="text"
               endIcon={<CreateOutlined />}
               onClick={onUpdate}
-              disabled={attendanceStatus === 'futureDate'}
+              disabled={
+                attendanceStatus === 'futureDate' ||
+                (attendanceStatus !== 'futureDate' &&
+                  formatedSevenDaysAgo > selectedDate)
+              }
             >
               {attendanceStatus === 'notMarked' ||
               attendanceStatus === 'futureDate'
