@@ -110,6 +110,9 @@
     "FULL_NAME": "Full Name",
     "LOCATION": "Location",
     "HELD_ON": "Held on:",
-    "MY_PROFILE": "My Profile"
+    "MY_PROFILE": "My Profile",
+    "VIEW_MORE": "View More",
+    "VIEW_LESS": "View Less",
+    "DATA_RANAGE": "Data Ranage"
   }
 }
