@@ -347,11 +347,11 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
               </Typography>
               {cohortMemberList && cohortMemberList?.length != 0 ? (
                 <Box
-                  height={'54vh'}
+                  height={'56vh'}
                   sx={{
                     overflowY: 'scroll',
                     marginTop: '10px',
-                    padding: '0 10px',
+                    // padding: '0 10px',
                   }}
                 >
                   <Box className="modalBulk">
@@ -387,11 +387,11 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
                     gap={'20px'}
                     flexDirection={'row'}
                     justifyContent={'space-evenly'}
-                    marginBottom={0}
+                    marginBottom={'8px'}
                     sx={{
                       background: '#fff',
                       padding: '15px 0 15px 0',
-                      width: '86%',
+                      width: '93%',
                     }}
                   >
                     <Button

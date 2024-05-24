@@ -31,30 +31,21 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
             justifyContent="space-between"
             p={2}
           >
-            <Grid item xs={10}>
-              <Typography textAlign={'left'} style={{ fontSize: '11px' }}>
+            <Grid item xs={4}>
+              <Typography
+                textAlign={'left'}
+                sx={{ fontSize: '11px', fontWeight: '500' }}
+              >
                 {t('COMMON.LEARNER_NAME')}
               </Typography>
             </Grid>
-            <Grid item xs={1}>
-              <Typography
-                style={{
-                  fontSize: '11px',
-                  textAlign: 'center',
-                  marginLeft: '11px',
-                }}
-              >
+            <Grid item xs={4}>
+              <Typography sx={{ fontSize: '11px', fontWeight: '500' }}>
                 {firstColumnName}
               </Typography>
             </Grid>
-            <Grid item xs={1}>
-              <Typography
-                style={{
-                  fontSize: '11px',
-                  textAlign: 'center',
-                  marginLeft: '15px',
-                }}
-              >
+            <Grid item xs={4}>
+              <Typography sx={{ fontSize: '11px', fontWeight: '500' }}>
                 {secondColumnName}
               </Typography>
             </Grid>
