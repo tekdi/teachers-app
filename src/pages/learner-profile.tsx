@@ -1,53 +1,52 @@
-import React, { useState, useEffect } from 'react';
-// import { Link, useParams } from 'react-router-dom';
-import {
-  Box,
-  Card,
-  CardContent,
-  FormControl,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-  Divider,
-  Grid,
-  IconButton,
-  Modal,
-  useMediaQuery,
-  Button,
-  List,
-  ListItemButton,
-  ListItemText,
-  MenuList,
-  ListItemIcon,
-  TextField,
-  InputLabel,
-  SelectChangeEvent,
-} from '@mui/material';
 import {
   ArrowBack as ArrowBackIcon,
   Check,
   East as EastIcon,
 } from '@mui/icons-material';
-import { useTheme, Theme } from '@mui/material/styles';
-
-import { useTranslation } from 'next-i18next';
+// import { Link, useParams } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  FormControl,
+  Grid,
+  IconButton,
+  InputLabel,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Modal,
+  Select,
+  SelectChangeEvent,
+  Stack,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Theme, useTheme } from '@mui/material/styles';
 import { UserData, updateCustomField } from '../utils/Interfaces';
-
-import Header from '../components/Header';
 import { formatDate, getTodayDate } from '../utils/Helper';
-import StudentStatsCard from '@/components/StudentStatsCard';
-import CustomSelect from '@/components/CustomSelect';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+
+import { AssesmentListService } from '@/services/AssesmentService';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
-import { getUserDetails } from '@/services/ProfileService';
-import WeekDays from '@/components/WeekDays';
+import CustomSelect from '@/components/CustomSelect';
+import Header from '../components/Header';
 import MarksObtainedCard from '@/components/MarksObtainedCard';
-import { AssesmentListService } from '@/services/AssesmentService';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import StudentStatsCard from '@/components/StudentStatsCard';
+import WeekDays from '@/components/WeekDays';
+import { getUserDetails } from '@/services/ProfileService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 
 const LearnerProfile: React.FC = () => {
   const { t } = useTranslation();
@@ -406,7 +405,7 @@ const LearnerProfile: React.FC = () => {
         <Typography
           fontWeight={'500'}
           fontSize={'16px'}
-          sx={{ color: theme.palette.warning['A200']  }}
+          sx={{ color: theme.palette.warning['A200'] }}
         >
           Learner Details
         </Typography>

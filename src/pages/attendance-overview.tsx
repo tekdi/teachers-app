@@ -1,7 +1,5 @@
 'use client';
 
-import Header from '@/components/Header';
-import OverviewCard from '@/components/OverviewCard';
 import {
   Box,
   Button,
@@ -16,26 +14,28 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
-import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
-import { useTranslation } from 'next-i18next';
-import { cohortList } from '@/services/CohortServices';
-
-import { useRouter } from 'next/router';
-import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { cohort } from '@/utils/Interfaces';
-import { useTheme } from '@mui/material/styles';
-import SortingModal from '@/components/SortingModal';
 import { debounce, getTodayDate } from '@/utils/Helper';
-import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
-import LearnerListHeader from '@/components/LearnerListHeader';
+
+import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
+import ClearIcon from '@mui/icons-material/Clear';
 import DateRangePopup from '@/components/DateRangePopup';
+import Header from '@/components/Header';
+import LearnerListHeader from '@/components/LearnerListHeader';
 import Loader from '@/components/Loader';
+import OverviewCard from '@/components/OverviewCard';
+import SearchIcon from '@mui/icons-material/Search';
+import SortingModal from '@/components/SortingModal';
+import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
+import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
+import { cohort } from '@/utils/Interfaces';
+import { cohortList } from '@/services/CohortServices';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -158,7 +158,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     name: user ? user.name : 'Unknown',
                   });
                 });
-                mergedArray = mergedArray.filter(item => item.name !== 'Unknown');
+                mergedArray = mergedArray.filter(
+                  (item) => item.name !== 'Unknown'
+                );
                 setLearnerData(mergedArray);
                 setDisplayStudentList(mergedArray);
               }
@@ -414,9 +416,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         firstColumnName={t('COMMON.ATTENDANCE')}
         secondColumnName={t('COMMON.CLASS_MISSED')}
       />
-        {loading && (
-                <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-              )}
+      {loading && (
+        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+      )}
       {learnerData?.length > 0 ? (
         <Box>
           {displayStudentList?.map((user: any) => (

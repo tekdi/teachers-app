@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -11,8 +10,10 @@ import {
   Select,
   Typography,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import React, { useState } from 'react';
+
 import Check from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { useTranslation } from 'next-i18next';
 
@@ -67,7 +68,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     handleModalClose();
   };
 
-  const getDateRange = (index:number | null) => {
+  const getDateRange = (index: number | null) => {
     const today = new Date();
     const formatDate = (date: Date) => date.toISOString().split('T')[0];
     let fromDate;
@@ -115,7 +116,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         <Grid item sx={{ flex: 1 }}>
           <FormControl fullWidth sx={{ m: 1 }}>
             <Select
-              sx={{ height: '32px' }}
+              sx={{ height: '32px', width: '96%', borderRadius: '8px' }}
               value={selectedValue}
               displayEmpty
               onClick={handleModalOpen}
