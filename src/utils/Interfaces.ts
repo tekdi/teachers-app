@@ -120,7 +120,9 @@ export interface AttendancePercentageProps {
 export interface updateCustomField {
   fieldId: string;
   value: string;
-  type: String;
+  type: string;
+  label?: string;
+  values?: string | string[];
 }
 export interface cohort {
   cohortId: string;

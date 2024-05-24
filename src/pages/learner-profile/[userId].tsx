@@ -53,6 +53,17 @@ import { useTranslation } from 'next-i18next';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
+interface QuestionValue {
+  question: string;
+  mark_obtained: number;
+  totalMarks: number;
+}
+interface QuestionValues {
+  totalMaxScore: number;
+  totalScore: number;
+  length: number;
+  questions: QuestionValue[];
+}
 const LearnerProfile: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -100,7 +111,7 @@ const LearnerProfile: React.FC = () => {
   //     setSelectedIndex(index);
   //   };
 
-  const [openModal, setOpenModal] = React.useState(true);
+  const [openModal, setOpenModal] = React.useState(false);
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
@@ -280,8 +291,7 @@ const LearnerProfile: React.FC = () => {
                 fontSize: '12px',
               }}
             >
-              {userData?.district}
-              {userData?.state}
+              {userData?.district},{userData?.state}
             </Typography>
           </Box>
         </Grid>
@@ -421,7 +431,7 @@ const LearnerProfile: React.FC = () => {
         <Typography
           fontWeight={'500'}
           fontSize={'16px'}
-          sx={{ color: theme.palette.warning.A200 }}
+          sx={{ color: theme.palette.warning.main }}
         >
           Learner Details
         </Typography>
@@ -452,7 +462,7 @@ const LearnerProfile: React.FC = () => {
           sx={{
             flex: '1',
             border: '2px solid',
-            borderColor: theme.palette.warning.A100,
+            borderColor: '#FFECB3',
             padding: '10px',
           }}
           minWidth={'100%'}
@@ -512,9 +522,8 @@ const LearnerProfile: React.FC = () => {
             </Typography>
 
             <Box>
-              <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
-                {' '}
-                {/* Adjusted minWidth here */}
+              {/* <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
+               
                 <InputLabel id="demo-simple-select-helper-label">
                   Test
                 </InputLabel>
@@ -532,8 +541,8 @@ const LearnerProfile: React.FC = () => {
                   <MenuItem value={'pre_test'}>Pre Test</MenuItem>
                   <MenuItem value={'post_test'}>Post Test</MenuItem>
                 </Select>
-              </FormControl>
-              <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
+              </FormControl> */}
+              {/* <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
                 <InputLabel id="demo-simple-select-helper-label">
                   Subject
                 </InputLabel>
@@ -551,7 +560,7 @@ const LearnerProfile: React.FC = () => {
                   <MenuItem value={'pre_test'}>Marathi</MenuItem>
                   <MenuItem value={'post_test'}>Hindi</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
             </Box>
             <Box
               sx={{
