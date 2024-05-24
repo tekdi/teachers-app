@@ -523,9 +523,8 @@ const LearnerProfile: React.FC = () => {
             </Typography>
 
             <Box>
-              <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
-                {' '}
-                {/* Adjusted minWidth here */}
+              {/* <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
+               
                 <InputLabel id="demo-simple-select-helper-label">
                   Test
                 </InputLabel>
@@ -543,8 +542,8 @@ const LearnerProfile: React.FC = () => {
                   <MenuItem value={'pre_test'}>Pre Test</MenuItem>
                   <MenuItem value={'post_test'}>Post Test</MenuItem>
                 </Select>
-              </FormControl>
-              <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
+              </FormControl> */}
+              {/* <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
                 <InputLabel id="demo-simple-select-helper-label">
                   Subject
                 </InputLabel>
@@ -562,7 +561,7 @@ const LearnerProfile: React.FC = () => {
                   <MenuItem value={'pre_test'}>Marathi</MenuItem>
                   <MenuItem value={'post_test'}>Hindi</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
             </Box>
             <Box
               sx={{
