@@ -47,10 +47,9 @@ const TeacherProfile = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [userData, setUserData] = useState<any | null>(null);
-  const [updatedCustomFields, setUpdatedCustomFields] = useState<
-    // updateCustomField[]
-    any
-  >([]);
+  const [updatedCustomFields, setUpdatedCustomFields] =
+    useState<// updateCustomField[]
+    any>([]);
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [dropdownValues, setDropdownValues] = useState<any>({});
@@ -63,7 +62,9 @@ const TeacherProfile = () => {
 
   const handleFieldChange = (fieldId: string, value: string, type: string) => {
     const updatedFields: any = [...updatedCustomFields];
-    const index = updatedFields.findIndex((field: any) => field.fieldId === fieldId);
+    const index = updatedFields.findIndex(
+      (field: any) => field.fieldId === fieldId
+    );
 
     if (index !== -1) {
       if (type === 'checkbox' && Array.isArray(value)) {
@@ -102,7 +103,9 @@ const TeacherProfile = () => {
       if (checked) {
         updatedValues.push(optionName);
       } else {
-        updatedValues = updatedValues.filter((value: any) => value !== optionName);
+        updatedValues = updatedValues.filter(
+          (value: any) => value !== optionName
+        );
       }
     } else {
       if (checked) {
@@ -274,12 +277,14 @@ const TeacherProfile = () => {
         >
           <Grid container spacing={3}>
             <Grid item xs={4}>
+              <Box  m={2}>
               <Image
                 src={user_placeholder_img}
                 alt="user"
                 width={100}
                 height={100}
               />
+              </Box>
             </Grid>
             <Grid item xs={8}>
               <Typography margin={0} variant="h2">
@@ -497,7 +502,10 @@ const TeacherProfile = () => {
                                   color="default"
                                   checked={
                                     updatedCustomFields
-                                      .find((f: any) => f.fieldId === field.fieldId)?.values?.includes(option?.name) || false
+                                      .find(
+                                        (f: any) => f.fieldId === field.fieldId
+                                      )
+                                      ?.values?.includes(option?.name) || false
                                   }
                                   onChange={(e) =>
                                     handleCheckboxChange(
