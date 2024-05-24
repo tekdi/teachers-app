@@ -1,18 +1,18 @@
 'use client';
 
 import { Button, FormControl, IconButton, MenuItem } from '@mui/material';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import React, { useEffect, useState } from 'react';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
+import Box from '@mui/material/Box';
 import ClearIcon from '@mui/icons-material/Clear';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
-import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
+import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
+import config from '../../config.json';
+import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
-import config from '../../config.json';
 
 interface DrawerProps {
   toggleDrawer: (open: boolean) => () => void;
@@ -27,7 +27,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   setLanguage,
 }) => {
   const theme = useTheme<any>();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(open);
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -38,19 +38,23 @@ const MenuDrawer: React.FC<DrawerProps> = ({
       const lang = localStorage.getItem('preferredLanguage') || 'en';
       setLanguage(lang);
     }
-  }, []);
+  }, [setLanguage]);
 
   const handleChange = (event: SelectChangeEvent) => {
-    setLanguage(event.target.value);
     const newLocale = event.target.value;
+    setLanguage(newLocale);
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem('preferredLanguage', newLocale);
-      router.push('/dashboard', undefined, { locale: newLocale });
+      router.replace(router.pathname, router.asPath, { locale: newLocale });
     }
   };
 
   return (
-    <Drawer open={isOpen} onClose={toggleDrawer(false)}>
+    <Drawer
+      open={isOpen}
+      onClose={toggleDrawer(false)}
+      transitionDuration={{ enter: 500, exit: 500 }} // Transition duration in milliseconds
+    >
       <Box
         sx={{ padding: '16px 16px 12px 16px', width: '350px' }}
         role="presentation"
@@ -126,7 +130,6 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 
         <Box>
           <Button
-            //   variant="outlined"
             className="fs-14 fw-600"
             sx={{
               width: '100%',
