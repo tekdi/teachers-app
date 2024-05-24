@@ -55,7 +55,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
   >([]);
-  const [selectedValue, setSelectedValue] = React.useState<string>( t('COMMON.AS_OF_TODAY'));
+  const [selectedValue, setSelectedValue] = React.useState<string>(
+    t('COMMON.AS_OF_TODAY')
+  );
 
   const theme = useTheme<any>();
   const pathname = usePathname();
@@ -326,7 +328,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       <Box display={'flex'} className="card_overview">
         <Grid container spacing={0}>
           <Grid item xs={5}>
-            <OverviewCard label="ATTENDANCE.CENTER_ATTENDANCE" value="71%" />
+            <OverviewCard
+              label={t('ATTENDANCE.CENTER_ATTENDANCE')}
+              value="71%"
+            />
           </Grid>
           <Grid item xs={7}>
             <OverviewCard

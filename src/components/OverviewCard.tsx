@@ -31,10 +31,15 @@ const OverviewCard: React.FC<OverviewCardProps> = ({ label, value }) => {
           color={`${theme.palette.warning[400]}`}
           variant="h6"
           fontWeight={600}
+          sx={{ fontSize: '11px', color: '#7C766F' }}
         >
           {label}
         </Typography>
-        <Typography variant="h2" fontWeight={500}>
+        <Typography
+          variant="h2"
+          sx={{ color: '#1F1B13', fontSize: '16px', fontWeight: '500' }}
+          fontWeight={500}
+        >
           {value}
         </Typography>
       </Box>
