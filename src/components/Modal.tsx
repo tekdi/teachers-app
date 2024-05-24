@@ -1,9 +1,10 @@
 // import { useState } from 'react';
-import { Modal, Typography, Box } from '@mui/material';
+import { Box, Modal, Typography } from '@mui/material';
+
 import ButtonFunctional from './ButtonComponent';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
-import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 interface ModalProps {
   open: boolean;
   onClose: () => void;
@@ -21,7 +22,7 @@ const ModalComponent: React.FC<ModalProps> = ({
   SubHeading,
   children,
   btnText,
-  handleApplySort
+  handleApplySort,
 }) => {
   // const style = {
   //   position: 'absolute',
@@ -74,16 +75,17 @@ const ModalComponent: React.FC<ModalProps> = ({
           // Responsive styles
           '@media (max-width: 768px)': {
             width: '95%', // Adjust width for smaller screens
-            padding: '15px' // Adjust padding for smaller screens
-          }
-        }}>
+            padding: '15px', // Adjust padding for smaller screens
+          },
+        }}
+      >
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h4" fontSize="16px" fontWeight="500" m={0}>
             {heading}
           </Typography>
           <CloseSharpIcon
             sx={{
-              cursor: 'pointer' // Show pointer cursor on hover
+              cursor: 'pointer', // Show pointer cursor on hover
             }}
             onClick={onClose}
             aria-label="Close"
@@ -92,7 +94,10 @@ const ModalComponent: React.FC<ModalProps> = ({
         <Typography variant="h6">{SubHeading}</Typography>
         <Box mt={2}>{children}</Box>
         <Box mt={2} display="flex" justifyContent="flex-end">
-          <ButtonFunctional handleClickButton={handleApplySort} buttonName={t('COMMON.APPLY')} />{' '}
+          <ButtonFunctional
+            handleClickButton={handleApplySort}
+            buttonName={t('COMMON.APPLY')}
+          />{' '}
           {/* You may use t('COMMON.APPLY') */}
         </Box>
       </Box>
@@ -106,7 +111,7 @@ ModalComponent.propTypes = {
   heading: PropTypes.string.isRequired,
   SubHeading: PropTypes.string.isRequired,
   btnText: PropTypes.string.isRequired,
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 export default ModalComponent;
