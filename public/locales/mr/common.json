@@ -107,6 +107,9 @@
     "LOCATION": "स्थान",
     "UPDATE": "अपडेट करा",
     "HELD_ON": "धारित:",
-    "MY_PROFILE": "माझी प्रोफाइल"
+    "MY_PROFILE": "माझी प्रोफाइल",
+    "VIEW_MORE": "अधिक पाहा",
+    "VIEW_LESS": "कमी करा",
+    "DATA_RANAGE": "डेटा श्रेणी"
   }
 }

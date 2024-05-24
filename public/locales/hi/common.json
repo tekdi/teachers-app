@@ -111,6 +111,9 @@
     "LOCATION": "स्थान",
     "UPDATE": "अपडेट",
     "HELD_ON": "धारित:",
-    "MY_PROFILE": "मेरी प्रोफ़ाइल"
+    "MY_PROFILE": "मेरी प्रोफ़ाइल",
+    "VIEW_MORE": "अधिक देखें",
+    "VIEW_LESS": "कम देखें",
+    "DATA_RANAGE": "डेटा रेंज़"
   }
 }

@@ -22,8 +22,7 @@ import { useTheme } from '@mui/material/styles';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import prathamProfile from '../assets/images/prathamProfile.png';
-import imageOne from '../assets/images/imageOne.jpg';
+import user_placeholder from '../assets/images/user_placeholder.png';
 import Header from '@/components/Header';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { updateCustomField } from '@/utils/Interfaces';
@@ -31,9 +30,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 const TeacherProfile = () => {
-  // Assuming imageOne is of type StaticImageData
-  const imageUrl: string = imageOne.src;
-  const prathamProfileUrl: string = prathamProfile.src;
+  const user_placeholder_img: string = user_placeholder.src;
+
   interface CustomField {
     fieldId: string;
     label: string;
@@ -44,6 +42,7 @@ const TeacherProfile = () => {
 
   const { t } = useTranslation();
   const router = useRouter();
+  const theme = useTheme<any>();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -51,15 +50,75 @@ const TeacherProfile = () => {
   const [updatedCustomFields, setUpdatedCustomFields] = useState<
     updateCustomField[]
   >([]);
-  const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(prathamProfileUrl);
-  const [gender, setGender] = React.useState('');
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [customFieldsData, setCustomFieldsData] = useState<CustomField[]>([]);
-
-  const theme = useTheme<any>();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [dropdownValues, setDropdownValues] = useState({});
+  const [customFieldsData, setCustomFieldsData] = useState<CustomField[]>([]);
+
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(user_placeholder_img);
+  const [gender, setGender] = React.useState('');
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+
+  const handleFieldChange = (fieldId: string, value: string, type: string) => {
+    const updatedFields = [...updatedCustomFields];
+    const index = updatedFields.findIndex((field) => field.fieldId === fieldId);
+
+    if (index !== -1) {
+      if (type === 'checkbox' && Array.isArray(value)) {
+        updatedFields[index].values = value;
+      } else {
+        updatedFields[index].value = value;
+      }
+      updatedFields[index].type = type;
+    } else {
+      const newField = {
+        fieldId,
+        type,
+        ...(type === 'checkbox' && Array.isArray(value)
+          ? { value }
+          : { values: value }),
+      };
+      updatedFields.push(newField);
+    }
+
+    setUpdatedCustomFields(updatedFields);
+  };
+
+  const handleCheckboxChange = (
+    fieldId: string,
+    optionName: string,
+    checked
+  ) => {
+    const existingField = updatedCustomFields?.find(
+      (field) => field.fieldId === fieldId
+    );
+
+    let updatedValues = [];
+
+    if (existingField) {
+      updatedValues = existingField.values || [];
+      if (checked) {
+        updatedValues.push(optionName);
+      } else {
+        updatedValues = updatedValues.filter((value) => value !== optionName);
+      }
+    } else {
+      if (checked) {
+        updatedValues.push(optionName);
+      }
+    }
+
+    handleFieldChange(fieldId, updatedValues, 'checkbox');
+  };
+
+  const handleDropdownChange = (fieldId, value) => {
+    setDropdownValues({
+      ...dropdownValues,
+      [fieldId]: value,
+    });
+    handleFieldChange(fieldId, value, 'dropdown');
+  };
 
   const style = {
     position: 'absolute',
@@ -86,13 +145,24 @@ const TeacherProfile = () => {
 
   const handleUpdateClick = async () => {
     setLoading(true);
+
     try {
+      // Transform the custom fields based on their types
+      const transformedFields = updatedCustomFields?.map((field) => {
+        if (field.type === 'checkbox' && Array.isArray(field.value)) {
+          return {
+            ...field,
+            values: field.value.join(','), // Convert array to comma-separated string
+          };
+        }
+        return field;
+      });
+
       const userDetails = {
         customFields:
-          updatedCustomFields.length > 0
-            ? updatedCustomFields
-            : customFieldsData,
+          transformedFields.length > 0 ? transformedFields : customFieldsData,
       };
+
       const userId = localStorage.getItem('userId');
       if (userId) {
         await editEditUser(userId, userDetails);
@@ -102,23 +172,8 @@ const TeacherProfile = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-
       console.log(error);
     }
-  };
-
-  const handleFieldChange = (fieldId: string, value: string) => {
-    const updatedFields = [...updatedCustomFields];
-    const index = updatedFields?.findIndex(
-      (field) => field.fieldId === fieldId
-    );
-    if (index !== -1) {
-      updatedFields[index].value = value;
-    } else {
-      updatedFields?.push({ fieldId, value });
-    }
-
-    setUpdatedCustomFields(updatedFields);
   };
 
   const fetchUserDetails = async () => {
@@ -155,14 +210,6 @@ const TeacherProfile = () => {
   useEffect(() => {
     fetchUserDetails();
   }, []);
-
-  const techSubjects = customFieldsData?.find(
-    (field) => field.label === 'Which subjects do you teach currently?'
-  );
-
-  const mainSubject = customFieldsData?.find(
-    (field) => field.label === 'Which are your main subjects?'
-  );
 
   const handleClickImage = () => {
     fileInputRef.current && fileInputRef.current.click();
@@ -226,7 +273,12 @@ const TeacherProfile = () => {
         >
           <Grid container spacing={3}>
             <Grid item xs={4}>
-              <Image src={imageUrl} alt="user" width={100} height={100} />
+              <Image
+                src={user_placeholder_img}
+                alt="user"
+                width={100}
+                height={100}
+              />
             </Grid>
             <Grid item xs={8}>
               <Typography margin={0} variant="h2">
@@ -300,53 +352,6 @@ const TeacherProfile = () => {
                   </Typography>
                 </Grid>
               ))}
-
-            <Grid item xs={12}>
-              <Typography variant="h4" margin={0} color={'#4D4639'}>
-                Subject | Teach
-              </Typography>
-              <Box mt={2}>
-                <Grid
-                  container
-                  spacing={2}
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
-                  <Grid item xs={4}>
-                    {techSubjects?.value && (
-                      <Button
-                        size="small"
-                        variant="contained"
-                        sx={{
-                          backgroundColor: '#EFC570',
-                          borderRadius: '4px',
-                          color: '#4D4639',
-                        }}
-                      >
-                        {techSubjects?.value}
-                      </Button>
-                    )}
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    {techSubjects?.value !== mainSubject?.value ? (
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        sx={{
-                          borderRadius: '4px',
-                          color: '#4D4639',
-                        }}
-                      >
-                        {mainSubject?.value}
-                      </Button>
-                    ) : (
-                      ''
-                    )}
-                  </Grid>
-                </Grid>
-              </Box>
-            </Grid>
           </Grid>
         </Box>
         <Modal
@@ -413,12 +418,13 @@ const TeacherProfile = () => {
                 flexDirection="column"
               >
                 <Image
-                  src={image}
+                  src={user_placeholder_img}
                   alt="user"
                   height={100}
                   width={100}
                   style={{ alignItems: 'center' }}
                 />
+
                 <Box>
                   <input
                     id=""
@@ -453,7 +459,7 @@ const TeacherProfile = () => {
               </Box>
 
               {customFieldsData &&
-                customFieldsData?.map((field) => (
+                customFieldsData.map((field) => (
                   <Grid item xs={12} key={field.fieldId}>
                     {field.type === 'text' || field.type === 'numeric' ? (
                       <TextField
@@ -464,7 +470,11 @@ const TeacherProfile = () => {
                         variant="outlined"
                         defaultValue={field.value}
                         onChange={(e) => {
-                          handleFieldChange(field.fieldId, e.target.value);
+                          handleFieldChange(
+                            field.fieldId,
+                            e.target.value,
+                            field?.type
+                          );
                         }}
                       />
                     ) : field.type === 'checkbox' ? (
@@ -477,11 +487,27 @@ const TeacherProfile = () => {
                         >
                           {field?.label}
                         </Typography>
-                        {field?.options?.map((option: any) => (
+                        {field?.options?.map((option) => (
                           <FormGroup key={option?.order}>
                             <FormControlLabel
                               sx={{ color: '#1F1B13' }}
-                              control={<Checkbox color="default" />}
+                              control={
+                                <Checkbox
+                                  color="default"
+                                  checked={
+                                    updatedCustomFields
+                                      .find((f) => f.fieldId === field.fieldId)
+                                      ?.values?.includes(option?.name) || false
+                                  }
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      field.fieldId,
+                                      option?.name,
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              }
                               label={option?.name}
                             />
                           </FormGroup>
@@ -490,30 +516,33 @@ const TeacherProfile = () => {
                     ) : field.type === 'Drop Down' ? (
                       <Box marginTop={3} textAlign={'start'}>
                         <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">
+                          <InputLabel id={`select-label-${field.fieldId}`}>
                             {field?.label}
                           </InputLabel>
                           <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={gender}
+                            labelId={`select-label-${field.fieldId}`}
+                            id={`select-${field.fieldId}`}
+                            value={dropdownValues[field.fieldId] || ''}
                             label={field?.label}
-                            onChange={(e) => {
-                              setGender(e.target.value);
-                              handleFieldChange(field.fieldId, e.target.value);
-                            }}
+                            onChange={(e) =>
+                              handleDropdownChange(
+                                field.fieldId,
+                                e.target.value
+                              )
+                            }
                           >
-                            {field?.options?.map((option: any) => (
-                              <MenuItem value={option?.value}>
+                            {field?.options?.map((option) => (
+                              <MenuItem
+                                key={option?.value}
+                                value={option?.value}
+                              >
                                 {option?.name}
                               </MenuItem>
                             ))}
                           </Select>
                         </FormControl>
                       </Box>
-                    ) : (
-                      ''
-                    )}
+                    ) : null}
                   </Grid>
                 ))}
               <Box></Box>
