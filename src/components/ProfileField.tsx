@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Box, Typography } from '@mui/material';
 import { useTheme, useThemeProps } from '@mui/material/styles';
 interface ProfileFieldProps {
-  data: { label: string; value: string }[];
+  data: { label: string; value: string }[] | any;
 }
 
 const ProfileField: React.FC<ProfileFieldProps> = ({ data }) => {
@@ -10,7 +10,7 @@ const ProfileField: React.FC<ProfileFieldProps> = ({ data }) => {
 
   return (
     <Grid container spacing={2}>
-      {data?.map((item, index) => (
+      {data?.map((item: any, index: any) => (
         <Grid item xs={6} key={index} textAlign="left">
           <Typography margin={0} variant="h5">
             {item.label}
