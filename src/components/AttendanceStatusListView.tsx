@@ -53,8 +53,11 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           marginRight="auto"
           marginY="auto"
           sx={{
-            color: theme.palette.warning['300'],
             textAlign: 'left',
+            fontSize: '14px',
+            fontWeight: '400',
+            color: '#0D599E',
+            textDecoration: 'underline',
           }}
         >
           {isBulkAction ? t('ATTENDANCE.MARK_ALL') : userData?.name}

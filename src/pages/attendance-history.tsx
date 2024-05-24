@@ -617,7 +617,7 @@ const UserAttendanceHistory = () => {
               backgroundColor: 'white',
               // boxShadow: '0px 1px 3px 0px #0000004D',
               boxShadow: '0px 4px 8px 3px #00000026',
-              border: '1px solid #DED8E1',
+              border: '1px solid #D0C5B4',
             }}
             py={'5px'}
           >
@@ -636,7 +636,7 @@ const UserAttendanceHistory = () => {
             onChange={handleActiveStartDateChange}
             onDateChange={handleSelectedDateChange}
           />
-          <Box mt={2}>
+          <Box padding={'0 10px'} mt={2}>
             {/*----------------------------search and Sort---------------------------------------*/}
             <Stack mr={1} ml={1}>
               <Box mt={3} mb={3} boxShadow={'none'}>
@@ -727,11 +727,38 @@ const UserAttendanceHistory = () => {
                 />
               )}
             </Box>
-            <LearnerListHeader
+            {/* <LearnerListHeader
               numberOfColumns={3}
               firstColumnName={t('ATTENDANCE.PRESENT')}
               secondColumnName={t('ATTENDANCE.ABSENT')}
-            />
+            /> */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                padding: '8px 8px',
+                borderBottom: '1px solid #D0C5B4',
+                bgcolor: '#E6E6E6',
+              }}
+            >
+              <Box sx={{ color: '#1F1B13', fontSize: '11px' }}>
+                {t(' LEARNER_NAME')}
+              </Box>
+              <Box sx={{ display: 'flex', gap: '13px' }}>
+                <Box sx={{ color: '#1F1B13', fontSize: '11px' }}>
+                  {t('PRESENT')}
+                </Box>
+                <Box
+                  sx={{
+                    color: '#1F1B13',
+                    fontSize: '11px',
+                    paddingRight: '10px',
+                  }}
+                >
+                  {t('ABSENT')}
+                </Box>
+              </Box>
+            </Box>
             {cohortMemberList?.length > 0 ? (
               <Box>
                 {displayStudentList?.map((user: any) => (
