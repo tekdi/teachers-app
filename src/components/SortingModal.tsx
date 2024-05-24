@@ -109,7 +109,7 @@ const SortingModal: React.FC<sortCardProps> = ({
         {routeName == '/attendance-overview' ? (
           <>
             <Grid item xs={12}>
-              <FormControl component="fieldset">
+              <FormControl component="fieldset" sx={{ width: '100%' }}>
                 <FormLabel
                   style={{ color: theme.palette.warning['400'] }}
                   component="legend"
@@ -140,7 +140,7 @@ const SortingModal: React.FC<sortCardProps> = ({
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <FormControl component="fieldset">
+              <FormControl component="fieldset" sx={{ width: '100%' }}>
                 <FormLabel
                   style={{ color: theme.palette.warning['400'] }}
                   component="legend"
@@ -157,14 +157,14 @@ const SortingModal: React.FC<sortCardProps> = ({
                     labelPlacement="start"
                     sx={{ justifyContent: 'space-between' }}
                     value="more"
-                    control={<Radio sx={{ ml: '80px' }}/>}
+                    control={<Radio sx={{ ml: '80px' }} />}
                     label={t('COMMON.HIGH_TO_LOW')}
                   />
                   <FormControlLabel
-                  sx={{ justifyContent: 'space-between' }}
+                    sx={{ justifyContent: 'space-between' }}
                     labelPlacement="start"
                     value="less"
-                    control={<Radio sx={{ ml: '80px' }}/>}
+                    control={<Radio sx={{ ml: '80px' }} />}
                     label={t('COMMON.LOW_TO_HIGH')}
                   />
                 </RadioGroup>
