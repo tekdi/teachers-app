@@ -47,9 +47,7 @@ const TeacherProfile = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [userData, setUserData] = useState<any | null>(null);
-  const [updatedCustomFields, setUpdatedCustomFields] =
-    useState<// updateCustomField[]
-    any>([]);
+  const [updatedCustomFields, setUpdatedCustomFields] = useState<any>([]);
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [dropdownValues, setDropdownValues] = useState<any>({});
@@ -277,13 +275,13 @@ const TeacherProfile = () => {
         >
           <Grid container spacing={3}>
             <Grid item xs={4}>
-              <Box  m={2}>
-              <Image
-                src={user_placeholder_img}
-                alt="user"
-                width={100}
-                height={100}
-              />
+              <Box m={2}>
+                <Image
+                  src={user_placeholder_img}
+                  alt="user"
+                  width={100}
+                  height={100}
+                />
               </Box>
             </Grid>
             <Grid item xs={8}>
