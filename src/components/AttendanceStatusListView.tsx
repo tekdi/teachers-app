@@ -56,8 +56,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             textAlign: 'left',
             fontSize: '14px',
             fontWeight: '400',
-            color: '#0D599E',
-            textDecoration: 'underline',
+            color: '#1F1B13',
           }}
         >
           {isBulkAction ? t('ATTENDANCE.MARK_ALL') : userData?.name}
