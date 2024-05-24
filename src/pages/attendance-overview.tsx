@@ -28,13 +28,14 @@ import React, { useEffect, useState } from 'react';
 import { cohort } from '@/utils/Interfaces';
 import { useTheme } from '@mui/material/styles';
 import SortingModal from '@/components/SortingModal';
-import { debounce } from '@/utils/Helper';
+import { debounce, getTodayDate } from '@/utils/Helper';
 import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
 import LearnerListHeader from '@/components/LearnerListHeader';
 import DateRangePopup from '@/components/DateRangePopup';
+import Loader from '@/components/Loader';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -49,8 +50,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [searchWord, setSearchWord] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
   const [learnerData, setLearnerData] = React.useState<Array<any>>([]);
-  const [isFromDate, setIsFromDate] = useState('')
-  const [isToDate, setIsToDate] = useState('')
+  const [isFromDate, setIsFromDate] = useState(getTodayDate());
+  const [isToDate, setIsToDate] = useState(getTodayDate());
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
   >([]);
@@ -413,6 +414,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         firstColumnName={t('COMMON.ATTENDANCE')}
         secondColumnName={t('COMMON.CLASS_MISSED')}
       />
+        {loading && (
+                <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+              )}
       {learnerData?.length > 0 ? (
         <Box>
           {displayStudentList?.map((user: any) => (
