@@ -51,7 +51,7 @@ import { useRouter } from 'next/router';
 
 const LearnerProfile: React.FC = () => {
   const { t } = useTranslation();
-  const theme: Theme = useTheme();
+  const theme = useTheme<any>();
 
   const router = useRouter();
   const { userId } = router.query; // userId is extracted from the URL
@@ -63,7 +63,7 @@ const LearnerProfile: React.FC = () => {
   const [filter, setFilter] = useState<object>({});
   const [maritalStatus, setMaritalStatus] = useState<string>('');
   const [currentDate, setCurrentDate] = React.useState(getTodayDate);
-  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [selectedValue, setSelectedValue] = useState('');
   const [assesmentData, setAssesmentData] = useState([]);
   const [questionData, setQuestionData] = useState([]);
@@ -126,7 +126,7 @@ const LearnerProfile: React.FC = () => {
     setSubject(event.target.value);
   };
 
-  const handleMenuItemClick = (index, value) => {
+  const handleMenuItemClick = (index: any, value: any) => {
     setSelectedIndex(index);
     setSelectedValue(value);
     console.log('Selected Value:', value); // You can use this value as needed
@@ -142,7 +142,7 @@ const LearnerProfile: React.FC = () => {
 
   const fetchUserDetails = async () => {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const user = userId;
+      const user: any = userId;
 
       try {
         if (user) {
@@ -197,20 +197,20 @@ const LearnerProfile: React.FC = () => {
     }
   };
 
-  function getQuestionValues(data) {
-    const questionValues = {
+  function getQuestionValues(data: any) {
+    const questionValues: any = {
       totalMaxScore: 0,
       totalScore: 0,
       length: data.length,
       questions: [],
     };
 
-    data.forEach((item) => {
-      item.assessmentSummary?.forEach((summary) => {
+    data.forEach((item: any) => {
+      item.assessmentSummary?.forEach((summary: any) => {
         const parsedData = JSON.parse(summary.data);
         let questionNumber = 1;
-        parsedData.forEach((section) => {
-          section.data.forEach((question, index) => {
+        parsedData.forEach((section: any) => {
+          section.data.forEach((question: any) => {
             const questionValue = {
               question: `Q${questionNumber}`,
               mark_obtained: question.score,
@@ -406,7 +406,7 @@ const LearnerProfile: React.FC = () => {
         <Typography
           fontWeight={'500'}
           fontSize={'16px'}
-          sx={{ color: theme.palette.warning.A200 }}
+          sx={{ color: theme.palette.warning['A200']  }}
         >
           Learner Details
         </Typography>
@@ -449,7 +449,7 @@ const LearnerProfile: React.FC = () => {
         >
           <Grid container spacing={4}>
             {customFieldsData &&
-              customFieldsData?.map((item, i) => (
+              customFieldsData?.map((item: any, i: number) => (
                 <Grid item xs={6} key={i}>
                   {/*  question */}
                   <Typography variant="h4" margin={0}>

@@ -55,7 +55,7 @@ import { UserData, updateCustomField } from '@/utils/Interfaces';
 
 const LearnerProfile: React.FC = () => {
   const { t } = useTranslation();
-  const theme: Theme = useTheme();
+  const theme = useTheme<any>();
 
   const router = useRouter();
   const { userId } = router.query;
@@ -147,7 +147,7 @@ const LearnerProfile: React.FC = () => {
 
   const fetchUserDetails = async () => {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const user = userId;
+      const user: any = userId;
 
       try {
         if (user) {
@@ -206,7 +206,7 @@ const LearnerProfile: React.FC = () => {
   };
 
   function getQuestionValues(data: any) {
-    const questionValues = {
+    const questionValues: any = {
       totalMaxScore: 0,
       totalScore: 0,
       length: data.length,
@@ -219,7 +219,7 @@ const LearnerProfile: React.FC = () => {
         let questionNumber = 1;
         parsedData.forEach((section: any) => {
           section.data.forEach((question: any, index: any) => {
-            const questionValue = {
+            const questionValue: any = {
               question: `Q${questionNumber}`,
               mark_obtained: question.score,
               totalMarks: question.item.maxscore,
@@ -464,7 +464,7 @@ const LearnerProfile: React.FC = () => {
         >
           <Grid container spacing={4}>
             {customFieldsData &&
-              customFieldsData?.map((item, i) => (
+              customFieldsData?.map((item: any, i: number) => (
                 <Grid item xs={6} key={i}>
                   {/*  question */}
                   <Typography variant="h4" margin={0}>
