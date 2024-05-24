@@ -25,7 +25,7 @@ const LearnerDetails = () => {
   // const { t } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
-  const { userId } = router.query;
+  const { userId }: any = router.query;
 
   const [open, setOpen] = React.useState(true);
   const [userData, setUserData] = React.useState<UserData | null>(null);
@@ -82,7 +82,7 @@ const LearnerDetails = () => {
   const theme = useTheme<any>();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
-  const labelValueArray = customFieldsData.map(({ label, value }) => ({
+  const labelValueArray = customFieldsData.map(({ label, value }: any) => ({
     label,
     value,
   }));

@@ -48,11 +48,12 @@ const TeacherProfile = () => {
   const handleClose = () => setOpen(false);
   const [userData, setUserData] = useState<any | null>(null);
   const [updatedCustomFields, setUpdatedCustomFields] = useState<
-    updateCustomField[]
+    // updateCustomField[]
+    any
   >([]);
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [dropdownValues, setDropdownValues] = useState({});
+  const [dropdownValues, setDropdownValues] = useState<any>({});
   const [customFieldsData, setCustomFieldsData] = useState<CustomField[]>([]);
 
   const [loading, setLoading] = useState(false);
@@ -61,8 +62,8 @@ const TeacherProfile = () => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   const handleFieldChange = (fieldId: string, value: string, type: string) => {
-    const updatedFields = [...updatedCustomFields];
-    const index = updatedFields.findIndex((field) => field.fieldId === fieldId);
+    const updatedFields: any = [...updatedCustomFields];
+    const index = updatedFields.findIndex((field: any) => field.fieldId === fieldId);
 
     if (index !== -1) {
       if (type === 'checkbox' && Array.isArray(value)) {
@@ -90,8 +91,8 @@ const TeacherProfile = () => {
     optionName: string,
     checked: any
   ) => {
-    const existingField = updatedCustomFields?.find(
-      (field) => field.fieldId === fieldId
+    const existingField: any = updatedCustomFields?.find(
+      (field: any) => field.fieldId === fieldId
     );
 
     let updatedValues = [];
@@ -101,7 +102,7 @@ const TeacherProfile = () => {
       if (checked) {
         updatedValues.push(optionName);
       } else {
-        updatedValues = updatedValues.filter((value) => value !== optionName);
+        updatedValues = updatedValues.filter((value: any) => value !== optionName);
       }
     } else {
       if (checked) {
@@ -112,7 +113,7 @@ const TeacherProfile = () => {
     handleFieldChange(fieldId, updatedValues, 'checkbox');
   };
 
-  const handleDropdownChange = (fieldId, value) => {
+  const handleDropdownChange = (fieldId: any, value: any) => {
     setDropdownValues({
       ...dropdownValues,
       [fieldId]: value,
@@ -148,7 +149,7 @@ const TeacherProfile = () => {
 
     try {
       // Transform the custom fields based on their types
-      const transformedFields = updatedCustomFields?.map((field) => {
+      const transformedFields = updatedCustomFields?.map((field: any) => {
         if (field.type === 'checkbox' && Array.isArray(field.value)) {
           return {
             ...field,
@@ -487,7 +488,7 @@ const TeacherProfile = () => {
                         >
                           {field?.label}
                         </Typography>
-                        {field?.options?.map((option) => (
+                        {field?.options?.map((option: any) => (
                           <FormGroup key={option?.order}>
                             <FormControlLabel
                               sx={{ color: '#1F1B13' }}
@@ -496,8 +497,7 @@ const TeacherProfile = () => {
                                   color="default"
                                   checked={
                                     updatedCustomFields
-                                      .find((f) => f.fieldId === field.fieldId)
-                                      ?.values?.includes(option?.name) || false
+                                      .find((f: any) => f.fieldId === field.fieldId)?.values?.includes(option?.name) || false
                                   }
                                   onChange={(e) =>
                                     handleCheckboxChange(
@@ -531,7 +531,7 @@ const TeacherProfile = () => {
                               )
                             }
                           >
-                            {field?.options?.map((option) => (
+                            {field?.options?.map((option: any) => (
                               <MenuItem
                                 key={option?.value}
                                 value={option?.value}
