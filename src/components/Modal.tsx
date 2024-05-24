@@ -1,9 +1,10 @@
 // import { useState } from 'react';
-import { Modal, Typography, Box } from '@mui/material';
+import { Box, Modal, Typography } from '@mui/material';
+
 import ButtonFunctional from './ButtonComponent';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
-import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 interface ModalProps {
   open: boolean;
   onClose: () => void;

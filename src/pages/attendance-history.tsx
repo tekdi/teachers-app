@@ -36,6 +36,7 @@ import AttendanceStatusListView from '@/components/AttendanceStatusListView';
 import ClearIcon from '@mui/icons-material/Clear';
 import Header from '../components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import LearnerListHeader from '@/components/LearnerListHeader';
 import Loader from '../components/Loader';
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import MonthCalender from '@/components/MonthCalender';
@@ -48,7 +49,6 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import LearnerListHeader from '@/components/LearnerListHeader';
 
 interface user {
   userId: string;
@@ -636,7 +636,7 @@ const UserAttendanceHistory = () => {
             onChange={handleActiveStartDateChange}
             onDateChange={handleSelectedDateChange}
           />
-          <Box ml={1} mt={2}>
+          <Box mt={2}>
             {/*----------------------------search and Sort---------------------------------------*/}
             <Stack mr={1} ml={1}>
               <Box mt={3} mb={3} boxShadow={'none'}>
@@ -727,7 +727,11 @@ const UserAttendanceHistory = () => {
                 />
               )}
             </Box>
-            <LearnerListHeader numberOfColumns={3} firstColumnName={t('ATTENDANCE.PRESENT')} secondColumnName={t('ATTENDANCE.ABSENT')}/>
+            <LearnerListHeader
+              numberOfColumns={3}
+              firstColumnName={t('ATTENDANCE.PRESENT')}
+              secondColumnName={t('ATTENDANCE.ABSENT')}
+            />
             {cohortMemberList?.length > 0 ? (
               <Box>
                 {displayStudentList?.map((user: any) => (

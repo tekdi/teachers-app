@@ -388,11 +388,14 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
                     flexDirection={'row'}
                     justifyContent={'space-evenly'}
                     marginBottom={0}
-                    sx={{ background: '#fff', padding: '15px 0 15px 0' }}
+                    sx={{
+                      background: '#fff',
+                      padding: '15px 0 15px 0',
+                      width: '86%',
+                    }}
                   >
                     <Button
                       variant="outlined"
-                      style={{ width: '8rem' }}
                       disabled={isAllAttendanceMarked ? false : true}
                       onClick={() => submitBulkAttendanceAction(true, '', '')}
                     >

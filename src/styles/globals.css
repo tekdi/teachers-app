@@ -29,6 +29,9 @@ body {
 .word-break {
   word-break: break-all;
 }
+.fs-12 {
+  font-size: 12px !important;
+}
 
 .fs-14 {
   font-size: 14px !important;
@@ -493,4 +496,11 @@ main {
 }
 .modal_mark .css-rsi8of {
   overflow: hidden;
+}
+.modal_label {
+  margin-left: 0px !important;
+}
+.modal_label span {
+  font-size: 14px !important;
+  color: #1e1b16;
 }

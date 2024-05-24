@@ -97,6 +97,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     fetchCohortList();
   }, []);
 
+  const handleDateRangeSelected = ({ fromDate, toDate }) => {
+    console.log('Date Range Selected:', { fromDate, toDate });
+    // getCohortMemberList();
+    // Handle the date range values as needed
+  };
   //API for getting student list
   const getCohortMemberList = async () => {
     setLoading(true);
@@ -182,7 +187,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     let filteredList = learnerData?.filter((user: any) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
-    setDisplayStudentList(filteredList)
+    setDisplayStudentList(filteredList);
   }, 200);
 
   // handle search student data
@@ -191,7 +196,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     if (event.target.value.length >= 3) {
       debouncedSearch(event.target.value);
     } else {
-      setDisplayStudentList(learnerData)
+      setDisplayStudentList(learnerData);
     }
   };
 
@@ -199,7 +204,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     let filteredList = learnerData?.filter((user: any) =>
       user.name.toLowerCase().includes(searchWord.toLowerCase())
     );
-    setDisplayStudentList(filteredList)
+    setDisplayStudentList(filteredList);
   };
 
   // open modal of sort
@@ -213,7 +218,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   };
 
   //handel sorting
-  const handleSorting = (sortByName: string, sortByAttendanceNumber: string, sortByClassesMissed: string) => {
+  const handleSorting = (
+    sortByName: string,
+    sortByAttendance: string,
+    sortByClassesMissed: string,
+    sortByAttendanceNumber: string
+  ) => {
     handleCloseModal();
     let sortedData = [...learnerData];
 
@@ -230,13 +240,20 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     // Sorting by attendance
     switch (sortByAttendanceNumber) {
       case 'high':
-        sortedData.sort((a, b) => parseFloat(b.present_percent) - parseFloat(a.present_percent));
+        sortedData.sort(
+          (a, b) =>
+            parseFloat(b.present_percent) - parseFloat(a.present_percent)
+        );
         break;
       case 'low':
-        sortedData.sort((a, b) => parseFloat(a.present_percent) - parseFloat(b.present_percent));
+        sortedData.sort(
+          (a, b) =>
+            parseFloat(a.present_percent) - parseFloat(b.present_percent)
+        );
         break;
     }
 
+    // Sorting by classesMissed
     switch (sortByClassesMissed) {
       case 'more':
         sortedData.sort((a, b) => parseFloat(b.absent) - parseFloat(a.absent));
@@ -245,7 +262,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         sortedData.sort((a, b) => parseFloat(a.absent) - parseFloat(b.absent));
         break;
     }
-  
+
     setDisplayStudentList(sortedData);
   };
 
@@ -296,13 +313,14 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         menuItems={menuItems}
         selectedValue={selectedValue}
         setSelectedValue={setSelectedValue}
+        onDateRangeSelected={handleDateRangeSelected}
       />
 
-        <Box display={'flex'} className="card_overview">
-          <Grid container spacing={0}>
-            <Grid item xs={5}>
-              <OverviewCard label="ATTENDANCE.CENTER_ATTENDANCE" value="71%" />
-            </Grid>
+      <Box display={'flex'} className="card_overview">
+        <Grid container spacing={0}>
+          <Grid item xs={5}>
+            <OverviewCard label="ATTENDANCE.CENTER_ATTENDANCE" value="71%" />
+          </Grid>
           <Grid item xs={7}>
             <OverviewCard
               label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
@@ -386,7 +404,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           routeName={pathname}
         />
       </Stack>
-      <LearnerListHeader numberOfColumns={3} firstColumnName={t('COMMON.ATTENDANCE')} secondColumnName={t('COMMON.CLASS_MISSED')}/>
+      <LearnerListHeader
+        numberOfColumns={3}
+        firstColumnName={t('COMMON.ATTENDANCE')}
+        secondColumnName={t('COMMON.CLASS_MISSED')}
+      />
       {learnerData?.length > 0 ? (
         <Box>
           {displayStudentList?.map((user: any) => (

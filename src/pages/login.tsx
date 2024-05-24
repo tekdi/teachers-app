@@ -1,4 +1,3 @@
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -7,27 +6,28 @@ import {
   InputAdornment,
   TextField,
 } from '@mui/material';
+import React, { useEffect, useMemo } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
-import React, { useEffect, useMemo } from 'react';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-import CloseIcon from '@mui/icons-material/Close';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
+import CloseIcon from '@mui/icons-material/Close';
 import Image from 'next/image';
+import Link from '@mui/material/Link';
+import Loader from '../components/Loader';
 // import { getUserId } from '../services/ProfileService';
 import MenuItem from '@mui/material/MenuItem';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import config from '../../config.json';
 import appLogo from '../../public/images/appLogo.png';
-import Loader from '../components/Loader';
-import { login } from '../services/LoginService';
+import config from '../../config.json';
 import { getUserId } from '../services/ProfileService';
+import { login } from '../services/LoginService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 // import { useLocation } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -178,7 +178,7 @@ const LoginPage = () => {
         display="flex"
         flexDirection="column"
         bgcolor={theme.palette.warning.A200}
-        minHeight={'100vh'}
+        height={'100vh'}
       >
         {loading && (
           <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -302,17 +302,16 @@ const LoginPage = () => {
               </Link>
             </Box>
             <Box marginTop={'1rem'} className="remember-me-checkbox">
-              <Checkbox
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />
+              <Checkbox onChange={(e) => setRememberMe(e.target.checked)} />
               {t('LOGIN_PAGE.REMEMBER_ME')}
             </Box>
             <Box
               alignContent={'center'}
               textAlign={'center'}
-              marginTop={'5rem'}
-              bottom={'1rem'}
+              // marginTop={'5rem'}
+              bottom={'2%'}
               width={'100%'}
+              position={'absolute'}
             >
               <Button
                 variant="contained"

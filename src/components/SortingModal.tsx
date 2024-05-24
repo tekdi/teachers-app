@@ -109,9 +109,12 @@ const SortingModal: React.FC<sortCardProps> = ({
         {routeName == '/attendance-overview' ? (
           <>
             <Grid item xs={12}>
-              <FormControl component="fieldset">
+              <FormControl component="fieldset" sx={{ width: '100%' }}>
                 <FormLabel
-                  style={{ color: theme.palette.warning['400'] }}
+                  style={{
+                    color: theme.palette.warning['400'],
+                  }}
+                  className="fs-12 fw-500"
                   component="legend"
                 >
                   {t('COMMON.ATTENDANCE')}
@@ -128,6 +131,7 @@ const SortingModal: React.FC<sortCardProps> = ({
                     value="high"
                     control={<Radio sx={{ ml: '80px' }} />}
                     label={t('COMMON.HIGH_TO_LOW')}
+                    className="modal_label"
                   />
                   <FormControlLabel
                     labelPlacement="start"
@@ -135,15 +139,17 @@ const SortingModal: React.FC<sortCardProps> = ({
                     value="low"
                     control={<Radio sx={{ ml: '80px' }} />}
                     label={t('COMMON.LOW_TO_HIGH')}
+                    className="modal_label"
                   />
                 </RadioGroup>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
-              <FormControl component="fieldset">
+            <Grid item xs={12} mt={1}>
+              <FormControl component="fieldset" sx={{ width: '100%' }}>
                 <FormLabel
                   style={{ color: theme.palette.warning['400'] }}
                   component="legend"
+                  className="fs-12 fw-500"
                 >
                   {t('COMMON.CLASS_MISSED')}
                 </FormLabel>
@@ -157,26 +163,29 @@ const SortingModal: React.FC<sortCardProps> = ({
                     labelPlacement="start"
                     sx={{ justifyContent: 'space-between' }}
                     value="more"
-                    control={<Radio sx={{ ml: '80px' }}/>}
+                    control={<Radio sx={{ ml: '80px' }} />}
                     label={t('COMMON.HIGH_TO_LOW')}
+                    className="modal_label"
                   />
                   <FormControlLabel
-                  sx={{ justifyContent: 'space-between' }}
+                    sx={{ justifyContent: 'space-between' }}
                     labelPlacement="start"
                     value="less"
-                    control={<Radio sx={{ ml: '80px' }}/>}
+                    control={<Radio sx={{ ml: '80px' }} />}
                     label={t('COMMON.LOW_TO_HIGH')}
+                    className="modal_label"
                   />
                 </RadioGroup>
               </FormControl>
             </Grid>{' '}
           </>
         ) : (
-          <Grid item xs={12}>
+          <Grid item xs={12} mt={1}>
             <FormControl component="fieldset" style={{ width: '100%' }}>
               <FormLabel
                 style={{ color: theme.palette.warning['400'] }}
                 component="legend"
+                className="fs-12 fw-500"
               >
                 {t('COMMON.ATTENDANCE')}
               </FormLabel>
@@ -192,6 +201,7 @@ const SortingModal: React.FC<sortCardProps> = ({
                   value="pre"
                   control={<Radio sx={{ ml: '80px' }} />}
                   label={t('ATTENDANCE.PRESENT')}
+                  className="modal_label"
                 />
                 <FormControlLabel
                   labelPlacement="start"
@@ -199,16 +209,18 @@ const SortingModal: React.FC<sortCardProps> = ({
                   value="abs"
                   control={<Radio sx={{ ml: '80px' }} />}
                   label={t('ATTENDANCE.ABSENT')}
+                  className="modal_label"
                 />
               </RadioGroup>
             </FormControl>
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid item xs={12} mt={1}>
           <FormControl component="fieldset" style={{ width: '100%' }}>
             <FormLabel
               style={{ color: theme.palette.warning['400'] }}
               component="legend"
+              className="fs-12 fw-500"
             >
               {t('COMMON.NAMES')}
             </FormLabel>
@@ -225,6 +237,7 @@ const SortingModal: React.FC<sortCardProps> = ({
                 value="asc"
                 control={<Radio />}
                 label={t('COMMON.A_TO_Z')}
+                className="modal_label"
               />
 
               <FormControlLabel
@@ -233,6 +246,7 @@ const SortingModal: React.FC<sortCardProps> = ({
                 value="desc"
                 control={<Radio />}
                 label={t('COMMON.Z_TO_A')}
+                className="modal_label"
               />
             </RadioGroup>
           </FormControl>
