@@ -21,7 +21,8 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const textColor = presentPercent > 60 ? theme.palette.success.main : theme.palette.error.main;
+  const textColor =
+    presentPercent > 60 ? theme.palette.success.main : theme.palette.error.main;
 
   //   const handleStudentDetails = () => {
   //     router.push(`/student-details/${cohortId}/${userId}`);
@@ -43,8 +44,8 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           justifyContent="space-between"
           p={2}
         >
-          <Grid item xs={4}   textAlign={'left'}>
-            <Link href={`/student-details/${cohortId}/${userId}`}> {name}</Link>
+          <Grid item xs={4} textAlign={'left'}>
+            <Link href={`/learner-profile/${userId}`}> {name}</Link>
           </Grid>
           <Grid item xs={4}>
             <Typography
@@ -52,7 +53,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
               fontWeight="bold"
               lineHeight="1.5rem"
               // color={theme.palette.text.primary}
-            color= {textColor}
+              color={textColor}
               textAlign="center"
             >
               {presentPercent}%

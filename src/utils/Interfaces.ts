@@ -119,6 +119,7 @@ export interface AttendancePercentageProps {
 export interface updateCustomField {
   fieldId: string;
   value: string;
+  type: String;
 }
 export interface cohort {
   cohortId: string;
@@ -127,8 +128,25 @@ export interface cohort {
 }
 
 export interface LearListHeaderProps {
-  numberOfColumns: number,
-  firstColumnName: string,
-  secondColumnName: string,
+  numberOfColumns: number;
+  firstColumnName: string;
+  secondColumnName: string;
 }
 
+export interface MarksObtainedCardProps {
+  data: { question: string; mark_obtained: number; totalMarks: number }[];
+}
+
+export interface assesmentListServiceParam {
+  filters: {
+    userId: string;
+  };
+  pagination: {
+    pageSize: Number;
+    page: Number;
+  };
+  sort: {
+    field: string;
+    order: String;
+  };
+}
