@@ -291,8 +291,7 @@ const LearnerProfile: React.FC = () => {
                 fontSize: '12px',
               }}
             >
-              {userData?.district}
-              {userData?.state}
+              {userData?.district},{userData?.state}
             </Typography>
           </Box>
         </Grid>
