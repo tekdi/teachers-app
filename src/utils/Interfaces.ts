@@ -62,6 +62,7 @@ export interface cohortMemberList {
   page: number;
   filters: {
     cohortId: string;
+    role?: string;
   };
 }
 

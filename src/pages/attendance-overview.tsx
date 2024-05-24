@@ -24,7 +24,7 @@ import { cohortList } from '@/services/CohortServices';
 
 import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { cohort } from '@/utils/Interfaces';
 import { useTheme } from '@mui/material/styles';
 import SortingModal from '@/components/SortingModal';
@@ -49,6 +49,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [searchWord, setSearchWord] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
   const [learnerData, setLearnerData] = React.useState<Array<any>>([]);
+  const [isFromDate, setIsFromDate] = useState('')
+  const [isToDate, setIsToDate] = useState('')
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
   >([]);
@@ -99,7 +101,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const handleDateRangeSelected = ({ fromDate, toDate }) => {
     console.log('Date Range Selected:', { fromDate, toDate });
-    // getCohortMemberList();
+    setIsFromDate(fromDate);
+    setIsToDate(toDate);
     // Handle the date range values as needed
   };
   //API for getting student list
@@ -125,8 +128,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
             //Write logic to call class missed api
-            let fromDate = '2024-05-14';
-            let toDate = '2024-05-20';
+            let fromDate = isFromDate;
+            let toDate = isToDate;
             let filters = {
               contextId: classId,
               fromDate,
@@ -145,7 +148,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 present_percent: resp[userId].present_percentage,
               }));
               if (nameUserIdArray && filteredData) {
-                const mergedArray = filteredData.map((attendance) => {
+                let mergedArray = filteredData.map((attendance) => {
                   const user = nameUserIdArray.find(
                     (user: { userId: string }) =>
                       user.userId === attendance.userId
@@ -154,6 +157,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     name: user ? user.name : 'Unknown',
                   });
                 });
+                mergedArray = mergedArray.filter(item => item.name !== 'Unknown');
                 setLearnerData(mergedArray);
                 setDisplayStudentList(mergedArray);
               }
@@ -171,7 +175,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   useEffect(() => {
     getCohortMemberList();
-  }, [classId]);
+  }, [classId, isToDate, isFromDate]);
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
@@ -415,8 +419,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             <StudentsStatsList
               key={user.userId}
               name={user.name}
-              presentPercent={Math.floor(parseFloat(user.present_percent))}
-              classesMissed={user.absent}
+              presentPercent={Math.floor(parseFloat(user.present_percent)) || 0}
+              classesMissed={user.absent || 0}
               userId={user.userId}
               cohortId={classId}
             />
