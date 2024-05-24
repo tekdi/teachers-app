@@ -36,12 +36,14 @@ interface CustomSelectModalProps {
   menuItems: string[];
   selectedValue: string;
   setSelectedValue: (value: string) => void;
+  onDateRangeSelected;
 }
 
 const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   menuItems,
   selectedValue,
   setSelectedValue,
+  onDateRangeSelected,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -53,7 +55,58 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const handleMenuItemClick = (index: number, item: string) => {
     setSelectedIndex(index);
     setSelectedValue(item);
+    // handleModalClose();
+  };
+
+  const onApply = () => {
+    console.log('applied', selectedIndex, selectedValue);
+    const values = getDateRange(selectedIndex);
+    const { toDate, fromDate } = values;
+    console.log(toDate, fromDate);
+    onDateRangeSelected({ fromDate, toDate });
     handleModalClose();
+  };
+
+  const getDateRange = (index) => {
+    const today = new Date();
+    const formatDate = (date) => date.toISOString().split('T')[0];
+    let fromDate;
+    let toDate = formatDate(today);
+
+    switch (index) {
+      case 0:
+        fromDate = new Date(today);
+        fromDate.setDate(today.getDate() - 7);
+        break;
+      case 1:
+        fromDate = new Date(today);
+        break;
+      case 2:
+        fromDate = new Date(today);
+        fromDate.setDate(today.getDate() - today.getDay() - 7); // Start of last week
+        toDate = formatDate(new Date(fromDate)); // End of last week
+        fromDate.setDate(fromDate.getDate() - 6);
+        break;
+      case 3:
+        fromDate = new Date(today);
+        fromDate.setMonth(today.getMonth() - 1);
+        fromDate.setDate(1); // Start of last month
+        toDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 0)); // End of last month
+        break;
+      case 4:
+        fromDate = new Date(today);
+        fromDate.setMonth(today.getMonth() - 6);
+        fromDate.setDate(1); // Start of the period
+        toDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 0)); // End of last month
+        break;
+      default:
+        fromDate = new Date(today);
+    }
+
+    return {
+      fromDate: formatDate(fromDate),
+      toDate,
+    };
   };
 
   return (
@@ -95,7 +148,9 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           <Box>
             <Grid container>
               <Grid item xs={6}>
-                <Typography textAlign={'left'}>{t('COMMON.DATE_RANGE')}</Typography>
+                <Typography textAlign={'left'}>
+                  {t('COMMON.DATE_RANGE')}
+                </Typography>
               </Grid>
               <Grid item xs={6} textAlign={'right'}>
                 <CloseIcon onClick={handleModalClose} />
@@ -131,7 +186,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
             ))}
           </MenuList>
           <Divider sx={dividerStyle} />
-          <Button variant="contained" onClick={handleModalClose}>
+          <Button variant="contained" onClick={onApply}>
             {t('COMMON.APPLY')}
           </Button>
         </Box>
