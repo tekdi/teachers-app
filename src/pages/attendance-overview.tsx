@@ -213,7 +213,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   };
 
   //handel sorting
-  const handleSorting = (sortByName: string, sortByAttendanceNumber: string, sortByClassesMissed: string) => {
+  const handleSorting = (sortByName: string, sortByAttendance: string, sortByClassesMissed: string, sortByAttendanceNumber: string, ) => {
     handleCloseModal();
     let sortedData = [...learnerData];
 
@@ -237,6 +237,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         break;
     }
 
+    // Sorting by classesMissed
     switch (sortByClassesMissed) {
       case 'more':
         sortedData.sort((a, b) => parseFloat(b.absent) - parseFloat(a.absent));
