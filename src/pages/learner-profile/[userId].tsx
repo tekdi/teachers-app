@@ -53,6 +53,17 @@ import { formatDate, getTodayDate } from '@/utils/Helper';
 import { GetStaticPaths } from 'next';
 import { UserData, updateCustomField } from '@/utils/Interfaces';
 
+interface QuestionValue {
+  question: string;
+  mark_obtained: number;
+  totalMarks: number;
+}
+interface QuestionValues {
+  totalMaxScore: number;
+  totalScore: number;
+  length: number;
+  questions: QuestionValue[];
+}
 const LearnerProfile: React.FC = () => {
   const { t } = useTranslation();
   const theme: Theme = useTheme();
@@ -100,7 +111,7 @@ const LearnerProfile: React.FC = () => {
   //     setSelectedIndex(index);
   //   };
 
-  const [openModal, setOpenModal] = React.useState(true);
+  const [openModal, setOpenModal] = React.useState(false);
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
@@ -205,8 +216,8 @@ const LearnerProfile: React.FC = () => {
     }
   };
 
-  function getQuestionValues(data: any) {
-    const questionValues = {
+  function getQuestionValues(data: any): QuestionValues {
+    const questionValues: QuestionValues = {
       totalMaxScore: 0,
       totalScore: 0,
       length: data.length,
@@ -421,7 +432,7 @@ const LearnerProfile: React.FC = () => {
         <Typography
           fontWeight={'500'}
           fontSize={'16px'}
-          sx={{ color: theme.palette.warning.A200 }}
+          sx={{ color: theme.palette.warning.main }}
         >
           Learner Details
         </Typography>
@@ -452,7 +463,7 @@ const LearnerProfile: React.FC = () => {
           sx={{
             flex: '1',
             border: '2px solid',
-            borderColor: theme.palette.warning.A100,
+            borderColor: '#FFECB3',
             padding: '10px',
           }}
           minWidth={'100%'}

@@ -88,7 +88,7 @@ const TeacherProfile = () => {
   const handleCheckboxChange = (
     fieldId: string,
     optionName: string,
-    checked
+    checked: any
   ) => {
     const existingField = updatedCustomFields?.find(
       (field) => field.fieldId === fieldId

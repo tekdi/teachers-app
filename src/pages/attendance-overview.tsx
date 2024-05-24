@@ -97,7 +97,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     fetchCohortList();
   }, []);
 
-  const handleDateRangeSelected = ({ fromDate, toDate }) => {
+  const handleDateRangeSelected = (fromDate: any, toDate: any) => {
     console.log('Date Range Selected:', { fromDate, toDate });
     // getCohortMemberList();
     // Handle the date range values as needed

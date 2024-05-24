@@ -36,8 +36,8 @@ export const editEditUser = async (
 };
 
 export const getUserDetails = async (
-  userId: string,
-  fieldValue: boolean
+  userId?: string | string[],
+  fieldValue?: boolean
 ): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/users/${userId}?fieldvalue=${fieldValue}`;
   try {

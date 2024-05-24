@@ -49,6 +49,18 @@ import { AssesmentListService } from '@/services/AssesmentService';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 
+interface QuestionValue {
+  question: string;
+  mark_obtained: number;
+  totalMarks: number;
+}
+interface QuestionValues {
+  totalMaxScore: number;
+  totalScore: number;
+  length: number;
+  questions: QuestionValue[];
+}
+
 const LearnerProfile: React.FC = () => {
   const { t } = useTranslation();
   const theme: Theme = useTheme();
@@ -74,6 +86,7 @@ const LearnerProfile: React.FC = () => {
   const [customFieldsData, setCustomFieldsData] = useState<updateCustomField[]>(
     []
   );
+  const [submittedOn, setSubmitedOn] = useState('');
 
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -88,12 +101,12 @@ const LearnerProfile: React.FC = () => {
   const handleOpenEdit = () => setOpenEdit(true);
   const handleCloseEdit = () => setOpenEdit(false);
 
-  const handleListItemClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    index: number
-  ) => {
-    setSelectedIndex(index);
-  };
+  // const handleListItemClick = (
+  //   event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  //   index: number
+  // ) => {
+  //   setSelectedIndex(index);
+  // };
 
   const [openModal, setOpenModal] = React.useState(true);
   const handleOpenModal = () => setOpenModal(true);
@@ -126,7 +139,7 @@ const LearnerProfile: React.FC = () => {
     setSubject(event.target.value);
   };
 
-  const handleMenuItemClick = (index, value) => {
+  const handleMenuItemClick = (index: any, value: any) => {
     setSelectedIndex(index);
     setSelectedValue(value);
     console.log('Selected Value:', value); // You can use this value as needed
@@ -188,6 +201,7 @@ const LearnerProfile: React.FC = () => {
       const result = response?.result;
       if (result?.length > 0) {
         const data = result;
+        setSubmitedOn(data?.createdOn);
         setAssesmentData(data);
         console.log('Data', data);
       } else {
@@ -197,20 +211,20 @@ const LearnerProfile: React.FC = () => {
     }
   };
 
-  function getQuestionValues(data) {
-    const questionValues = {
+  function getQuestionValues(data: any): QuestionValues {
+    const questionValues: QuestionValues = {
       totalMaxScore: 0,
       totalScore: 0,
       length: data.length,
       questions: [],
     };
 
-    data.forEach((item) => {
-      item.assessmentSummary?.forEach((summary) => {
+    data.forEach((item: any) => {
+      item.assessmentSummary?.forEach((summary: any) => {
         const parsedData = JSON.parse(summary.data);
         let questionNumber = 1;
-        parsedData.forEach((section) => {
-          section.data.forEach((question, index) => {
+        parsedData.forEach((section: any) => {
+          section.data.forEach((question: any, index: any) => {
             const questionValue = {
               question: `Q${questionNumber}`,
               mark_obtained: question.score,
@@ -406,7 +420,7 @@ const LearnerProfile: React.FC = () => {
         <Typography
           fontWeight={'500'}
           fontSize={'16px'}
-          sx={{ color: theme.palette.warning.A200 }}
+          sx={{ color: theme.palette.warning.main }}
         >
           Learner Details
         </Typography>
@@ -437,7 +451,7 @@ const LearnerProfile: React.FC = () => {
           sx={{
             flex: '1',
             border: '2px solid',
-            borderColor: theme.palette.warning.A100,
+            borderColor: '#FFECB3',
             padding: '10px',
           }}
           minWidth={'100%'}
