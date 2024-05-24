@@ -99,7 +99,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     fetchCohortList();
   }, []);
 
-  const handleDateRangeSelected = ({ fromDate, toDate }) => {
+  const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
     console.log('Date Range Selected:', { fromDate, toDate });
     setIsFromDate(fromDate);
     setIsToDate(toDate);
