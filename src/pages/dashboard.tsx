@@ -166,7 +166,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         if (classId) {
           let limit = 100;
           let page = 0;
-          let filters = { cohortId: classId };
+          let filters = { cohortId: classId};
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -236,7 +236,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       name: string;
                       attendance: string;
                     }[] => {
-                      const newArray: {
+                      let newArray: {
                         userId: string;
                         name: string;
                         attendance: string;
@@ -255,6 +255,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         }
                       });
                       if (newArray.length != 0) {
+                        // newArray = newArray.filter(item => item.name);
                         setCohortMemberList(newArray);
                         setNumberOfCohortMembers(newArray?.length);
                       } else {
