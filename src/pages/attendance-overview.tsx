@@ -55,7 +55,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
   >([]);
-  const [selectedValue, setSelectedValue] = React.useState<string>('');
+  const [selectedValue, setSelectedValue] = React.useState<string>( t('COMMON.AS_OF_TODAY'));
 
   const theme = useTheme<any>();
   const pathname = usePathname();
