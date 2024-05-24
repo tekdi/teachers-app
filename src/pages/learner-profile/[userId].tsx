@@ -32,7 +32,7 @@ import {
 import { useTheme, Theme } from '@mui/material/styles';
 
 import { useTranslation } from 'next-i18next';
-import { UserData, updateCustomField } from '../utils/Interfaces';
+// import { UserData, updateCustomField } from '../utils/Interfaces';
 
 // import Header from '../components/Header';
 // import { formatDate, getTodayDate } from '../utils/Helper';
@@ -51,6 +51,7 @@ import { useRouter } from 'next/router';
 import Header from '@/components/Header';
 import { formatDate, getTodayDate } from '@/utils/Helper';
 import { GetStaticPaths } from 'next';
+import { UserData, updateCustomField } from '@/utils/Interfaces';
 
 const LearnerProfile: React.FC = () => {
   const { t } = useTranslation();
@@ -77,6 +78,7 @@ const LearnerProfile: React.FC = () => {
   const [customFieldsData, setCustomFieldsData] = useState<updateCustomField[]>(
     []
   );
+  const [submittedOn, setSubmitedOn] = useState();
 
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -91,12 +93,12 @@ const LearnerProfile: React.FC = () => {
   const handleOpenEdit = () => setOpenEdit(true);
   const handleCloseEdit = () => setOpenEdit(false);
 
-  const handleListItemClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    index: number
-  ) => {
-    setSelectedIndex(index);
-  };
+  //   const handleListItemClick = (
+  //     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  //     index: Number
+  //   ) => {
+  //     setSelectedIndex(index);
+  //   };
 
   const [openModal, setOpenModal] = React.useState(true);
   const handleOpenModal = () => setOpenModal(true);
@@ -129,7 +131,7 @@ const LearnerProfile: React.FC = () => {
     setSubject(event.target.value);
   };
 
-  const handleMenuItemClick = (index, value) => {
+  const handleMenuItemClick = (index: any, value: any) => {
     setSelectedIndex(index);
     setSelectedValue(value);
     console.log('Selected Value:', value); // You can use this value as needed
@@ -155,6 +157,7 @@ const LearnerProfile: React.FC = () => {
             const data = response?.data;
             if (data) {
               const userData = data?.userData;
+
               setUserData(userData);
               console.log('userData', userData);
               const customDataFields = userData?.customFields;
@@ -192,6 +195,7 @@ const LearnerProfile: React.FC = () => {
       const result = response?.result;
       if (result?.length > 0) {
         const data = result;
+        setSubmitedOn(data?.createdOn);
         setAssesmentData(data);
         console.log('Data', data);
       } else {
@@ -201,7 +205,7 @@ const LearnerProfile: React.FC = () => {
     }
   };
 
-  function getQuestionValues(data) {
+  function getQuestionValues(data: any) {
     const questionValues = {
       totalMaxScore: 0,
       totalScore: 0,
@@ -209,12 +213,12 @@ const LearnerProfile: React.FC = () => {
       questions: [],
     };
 
-    data.forEach((item) => {
-      item.assessmentSummary?.forEach((summary) => {
+    data.forEach((item: any) => {
+      item.assessmentSummary?.forEach((summary: any) => {
         const parsedData = JSON.parse(summary.data);
         let questionNumber = 1;
-        parsedData.forEach((section) => {
-          section.data.forEach((question, index) => {
+        parsedData.forEach((section: any) => {
+          section.data.forEach((question: any, index: any) => {
             const questionValue = {
               question: `Q${questionNumber}`,
               mark_obtained: question.score,
@@ -558,7 +562,7 @@ const LearnerProfile: React.FC = () => {
               {/* {assesmentData && assesmentData?.map((item, i) => {})}{' '} */}
               <Box>
                 <Typography variant="h5">
-                  Submitted On : 2nd Feb , 2024
+                  Submitted On : {submittedOn}
                 </Typography>
               </Box>
               <Box display={'flex'} justifyContent={'space-between'} mt={1}>

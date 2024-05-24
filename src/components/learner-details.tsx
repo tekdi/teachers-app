@@ -19,11 +19,13 @@ import { useRouter } from 'next/router';
 import { useParams, usePathname } from 'next/navigation';
 import { getUserDetails } from '@/services/ProfileService';
 import { UserData, updateCustomField } from '@/utils/Interfaces';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const LearnerDetails = () => {
   // const { t } = useTranslation();
-  const router = useRouter();
   const pathname = usePathname();
+  const router = useRouter();
+  const { userId } = router.query;
 
   const [open, setOpen] = React.useState(true);
   const [userData, setUserData] = React.useState<UserData | null>(null);
@@ -80,13 +82,7 @@ const LearnerDetails = () => {
   const theme = useTheme<any>();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
-  const handleGoFullProfile = () => {
-    if (pathname !== `/learner-profile/${user}`) {
-      router.push(`/learner-profile/${user}`);
-    }
-  };
-
-  const labelValueArray = customFieldsData?.map(({ label, value }) => ({
+  const labelValueArray = customFieldsData.map(({ label, value }) => ({
     label,
     value,
   }));
