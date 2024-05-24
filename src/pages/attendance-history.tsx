@@ -742,10 +742,12 @@ const UserAttendanceHistory = () => {
               }}
             >
               <Box sx={{ color: '#1F1B13', fontSize: '11px' }}>
-                Learner Name
+                {t(' LEARNER_NAME')}
               </Box>
               <Box sx={{ display: 'flex', gap: '13px' }}>
-                <Box sx={{ color: '#1F1B13', fontSize: '11px' }}>Present</Box>
+                <Box sx={{ color: '#1F1B13', fontSize: '11px' }}>
+                  {t('PRESENT')}
+                </Box>
                 <Box
                   sx={{
                     color: '#1F1B13',
@@ -753,7 +755,7 @@ const UserAttendanceHistory = () => {
                     paddingRight: '10px',
                   }}
                 >
-                  Absent
+                  {t('ABSENT')}
                 </Box>
               </Box>
             </Box>

@@ -35,6 +35,7 @@ import {
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import AttendanceStatusListView from '../components/AttendanceStatusListView';
 import Backdrop from '@mui/material/Backdrop';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
 import ExtraSessionsCard from '@/components/ExtraSessionsCard';
@@ -54,7 +55,6 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -467,7 +467,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
           <Header />
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box width={'100%'}>
-              <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'} color={'black'}>
+              <Typography
+                textAlign={'left'}
+                fontSize={'22px'}
+                m={'1rem'}
+                color={'black'}
+              >
                 {t('DASHBOARD.DASHBOARD')}
               </Typography>
             </Box>
@@ -483,7 +488,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
             >
               <Box display={'flex'} flexDirection={'column'} padding={'1rem'}>
                 <Box display={'flex'} justifyContent={'space-between'}>
-                  <Typography variant="h2" sx={{ fontSize: '14px' }} color={'black'} fontWeight={'500'}>
+                  <Typography
+                    variant="h2"
+                    sx={{ fontSize: '14px' }}
+                    color={'black'}
+                    fontWeight={'500'}
+                  >
                     {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
                   </Typography>
                   <Box
@@ -726,7 +736,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         </Typography>
                         {cohortMemberList && cohortMemberList?.length != 0 ? (
                           <Box
-                            height={'54vh'}
+                            height={'56vh'}
                             sx={{ overflowY: 'scroll', marginTop: '10px' }}
                           >
                             <Box>
