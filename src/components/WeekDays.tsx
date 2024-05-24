@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 
@@ -14,6 +14,10 @@ const CardStyled = styled(Card)(({ theme }) => ({
   justifyContent: 'center',
   alignItems: 'center',
   gap: '15px',
+  border: '1px solid #ccc',
+  boxShadow: 'none',
+  backgroundImage: 'none',
+  overflow: 'visible'
 }));
 
 const WeekDays: React.FC<WeekDaysProps> = ({ useAbbreviation }) => {
@@ -25,12 +29,29 @@ const WeekDays: React.FC<WeekDaysProps> = ({ useAbbreviation }) => {
 
   const currentDate = new Date();
   const currentDayIndex = currentDate.getDay();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const selectedItemRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    const selectedItem = selectedItemRef.current;
+
+    if (scrollContainer && selectedItem) {
+      const containerWidth = scrollContainer.offsetWidth;
+      const itemLeft = selectedItem.offsetLeft;
+      const itemWidth = selectedItem.offsetWidth;
+
+      const scrollPosition = itemLeft - (containerWidth / 2) + (itemWidth / 2);
+      scrollContainer.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+    }
+  }, []);
 
   return (
-    <Box display="flex" justifyContent="flex-start" overflow="auto">
+    <Box display="flex" justifyContent="flex-start" overflow="auto" ref={scrollContainerRef}>
       {days.map((day, index) => (
         <CardStyled
-          key={index}
+          key={day}
+          ref={index === currentDayIndex ? selectedItemRef : null}
           style={{
             backgroundColor:
               index === currentDayIndex

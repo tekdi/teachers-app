@@ -303,7 +303,6 @@ const LoginPage = () => {
             </Box>
             <Box marginTop={'1rem'} className="remember-me-checkbox">
               <Checkbox
-                defaultChecked
                 onChange={(e) => setRememberMe(e.target.checked)}
               />
               {t('LOGIN_PAGE.REMEMBER_ME')}

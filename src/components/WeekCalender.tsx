@@ -163,6 +163,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
                         textColor: pathColor,
                         pathColor: pathColor,
                         trailColor: '#E6E6E6',
+                        strokeLinecap: 'round',
                       })}
                       strokeWidth={15}
                     />
