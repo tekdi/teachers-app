@@ -27,6 +27,7 @@ import OverviewCard from '@/components/OverviewCard';
 import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '@/components/SortingModal';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
+import UpDownButton from '@/components/UpDownButton';
 import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
 import { cohort } from '@/utils/Interfaces';
 import { cohortList } from '@/services/CohortServices';
@@ -254,7 +255,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           const bPercent = parseFloat(b.present_percent);
           if (isNaN(aPercent)) return 1;
           if (isNaN(bPercent)) return -1;
-          return bPercent - aPercent; 
+          return bPercent - aPercent;
         });
         break;
       case 'low':
@@ -263,7 +264,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           const bPercent = parseFloat(a.present_percent);
           if (isNaN(aPercent)) return 1;
           if (isNaN(bPercent)) return -1;
-          return aPercent - bPercent; 
+          return aPercent - bPercent;
         });
         break;
     }
@@ -277,7 +278,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           const bClassMissed = parseFloat(b.absent);
           if (isNaN(aClassMissed)) return 1;
           if (isNaN(bClassMissed)) return -1;
-          return bClassMissed - aClassMissed; 
+          return bClassMissed - aClassMissed;
         });
         break;
       case 'less':
@@ -287,7 +288,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           const bClassMissed = parseFloat(b.absent);
           if (isNaN(aClassMissed)) return 1;
           if (isNaN(bClassMissed)) return -1;
-          return aClassMissed - bClassMissed; 
+          return aClassMissed - bClassMissed;
         });
         break;
     }
@@ -297,6 +298,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   return (
     <Box>
+      <UpDownButton />
       <Header />
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box width={'100%'}>
