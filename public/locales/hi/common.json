@@ -44,7 +44,6 @@
     "LEARNER_NAME": "शिक्षार्थी का नाम",
     "DATE_RANGE": "तिथि सीमा",
     "SELECT_AN_OPTION": "कोई विकल्प चुनें"
-
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",
@@ -114,6 +113,11 @@
     "MY_PROFILE": "मेरी प्रोफ़ाइल",
     "VIEW_MORE": "अधिक देखें",
     "VIEW_LESS": "कम देखें",
-    "DATA_RANAGE": "डेटा रेंज़"
+    "DATA_RANAGE": "डेटा रेंज़",
+    "LEARNER_DETAILS": "विद्यार्थी विवरण",
+    "VIEW_DAY_WISE": "दिन-वार देखें",
+    "SUBMITTED_ON": "प्रस्तुत किया गया",
+    "MARK_OBTAINED": "प्राप्त अंक",
+    "TOTAL_QUESTIONS": "कुल प्रश्न"
   }
 }
