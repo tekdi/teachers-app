@@ -472,7 +472,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         <Box minHeight="100vh" className="linerGradient">
           <Header />
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Box width={'100%'}>
+            <Box width={'100%'} sx={{ backgroundColor: 'white' }}>
               <Typography
                 textAlign={'left'}
                 fontSize={'22px'}
