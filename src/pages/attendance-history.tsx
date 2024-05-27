@@ -790,7 +790,7 @@ const UserAttendanceHistory = () => {
             onClose={handleClose}
             classId={classId}
             selectedDate={selectedDate}
-            onSaveSuccess={() => setHandleSaveHasRun(true)}
+            onSaveSuccess={() => setHandleSaveHasRun(!handleSaveHasRun)}
           />
         </Box>
       </Box>

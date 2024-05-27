@@ -166,7 +166,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         if (classId) {
           let limit = 0;
           let page = 0;
-          let filters = { cohortId: classId};
+          let filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -583,6 +583,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             >
                               <CircularProgressbar
                                 value={currentAttendance?.present_percentage}
+                                background
+                                backgroundPadding={6}
                                 styles={buildStyles({
                                   textColor: pathColor,
                                   pathColor: pathColor,
