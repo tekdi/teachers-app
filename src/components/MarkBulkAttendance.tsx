@@ -120,7 +120,7 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
               const userAttendanceStatusList = async () => {
                 const attendanceStatusData: AttendanceStatusListProps = {
                   limit: 0,
-                  page: 1,
+                  page: 0,
                   filters: {
                     fromDate: formatSelectedDate,
                     toDate: formatSelectedDate,
