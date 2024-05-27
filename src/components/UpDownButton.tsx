@@ -13,10 +13,10 @@ const UpDownButton = () => {
     const viewportHeight = document.documentElement.clientHeight;
     const totalHeight = document.documentElement.scrollHeight;
 
-    const atBottom =
-      scrolled === 0 || scrolled + viewportHeight >= totalHeight - 10;
-    +setIsVisible(scrolled > 100 || atBottom);
-    +setIsAtBottom(atBottom);
+    const atBottom = window.pageYOffset >= 780;
+    const atTop = scrolled <= 780;
+    setIsVisible(atTop || atBottom);
+    setIsAtBottom(window.pageYOffset >= 780);
   };
 
   const backToTop = () => {
@@ -33,11 +33,24 @@ const UpDownButton = () => {
   const scrollToBottom = () => {
     const targetPosition =
       document.documentElement.scrollHeight -
-      document.documentElement.clientHeight -
-      2000;
+      document.documentElement.clientHeight;
     const scrollStep = (targetPosition - window.pageYOffset) / (500 / 15);
     const animateScroll = () => {
-      if (window.pageYOffset < targetPosition) {
+      if (window.pageYOffset < targetPosition - 1) {
+        window.scrollBy(0, scrollStep);
+        requestAnimationFrame(animateScroll);
+      }
+    };
+    requestAnimationFrame(animateScroll);
+  };
+
+  const scrollToHeight = (height: any) => {
+    const scrollStep = (height - window.pageYOffset) / (500 / 15);
+    const animateScroll = () => {
+      if (
+        (scrollStep > 0 && window.pageYOffset < height - 1) ||
+        (scrollStep < 0 && window.pageYOffset > height + 1)
+      ) {
         window.scrollBy(0, scrollStep);
         requestAnimationFrame(animateScroll);
       }
@@ -47,18 +60,19 @@ const UpDownButton = () => {
 
   const handleButtonClick = () => {
     if (isAtBottom) {
-      scrollToBottom();
-    } else {
       backToTop();
+    } else {
+      // Scroll to a particular screen height, for example, 500 pixels from the top
+      scrollToHeight(780);
     }
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
+    if (typeof window !== 'undefined') {
       window.addEventListener('scroll', trackScroll);
     }
     return () => {
-      if (typeof window !== 'undefined' && window.localStorage) {
+      if (typeof window !== 'undefined') {
         window.removeEventListener('scroll', trackScroll);
       }
     };
@@ -71,11 +85,19 @@ const UpDownButton = () => {
           className={`up_down_btn ${isVisible ? 'up_down_btn-show' : ''}`}
           onClick={handleButtonClick}
         >
-          <span>{isAtBottom ? '' : <ArrowUpwardIcon />}</span>
-          <span className="w-98">
-            {isAtBottom ? 'Learners' : 'Back to Top'}
-          </span>
-          <span>{isAtBottom ? <ArrowDownwardIcon /> : ''}</span>
+          {isAtBottom ? (
+            <>
+              <ArrowUpwardIcon />
+              <span className="w-98">Back to Top</span>
+              <span />
+            </>
+          ) : (
+            <>
+              <span />
+              <span className="w-98">Learners</span>
+              <ArrowDownwardIcon />
+            </>
+          )}
         </Box>
       )}
     </div>

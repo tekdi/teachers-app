@@ -35,6 +35,7 @@ import AttendanceStatus from '@/components/AttendanceStatus';
 import AttendanceStatusListView from '@/components/AttendanceStatusListView';
 import ClearIcon from '@mui/icons-material/Clear';
 import Header from '../components/Header';
+import { Height } from '@mui/icons-material';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import LearnerListHeader from '@/components/LearnerListHeader';
 import Loader from '../components/Loader';
@@ -42,6 +43,7 @@ import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import MonthCalender from '@/components/MonthCalender';
 import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '../components/SortingModal';
+import UpDownButton from '@/components/UpDownButton';
 import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -794,6 +796,8 @@ const UserAttendanceHistory = () => {
           />
         </Box>
       </Box>
+      <Box style={{ Height: '5000px' }}></Box>
+      <UpDownButton />
     </Box>
   );
 };
