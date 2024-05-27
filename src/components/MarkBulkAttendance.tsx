@@ -12,7 +12,7 @@ import Backdrop from '@mui/material/Backdrop';
 import CloseIcon from '@mui/icons-material/Close';
 import Loader from './Loader';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { shortDateFormat } from '../utils/Helper';
+import { shortDateFormat, toPascalCase } from '../utils/Helper';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
@@ -100,7 +100,7 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
       setLoading(true);
       try {
         if (classId) {
-          const limit = 100;
+          const limit = 0;
           const page = 0;
           const filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
@@ -113,14 +113,14 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
           if (resp) {
             const nameUserIdArray = resp?.map((entry: any) => ({
               userId: entry.userId,
-              name: entry.name,
+              name: toPascalCase(entry.name),
             }));
             if (nameUserIdArray && selectedDate) {
               const formatSelectedDate = shortDateFormat(selectedDate);
               const userAttendanceStatusList = async () => {
                 const attendanceStatusData: AttendanceStatusListProps = {
-                  limit: 200,
-                  page: 1,
+                  limit: 0,
+                  page: 0,
                   filters: {
                     fromDate: formatSelectedDate,
                     toDate: formatSelectedDate,

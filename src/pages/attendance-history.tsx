@@ -28,6 +28,7 @@ import {
   formatToShowDateMonth,
   getTodayDate,
   shortDateFormat,
+  toPascalCase,
 } from '@/utils/Helper';
 
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
@@ -231,7 +232,7 @@ const UserAttendanceHistory = () => {
     setLoading(true);
     try {
       if (classId) {
-        let limit = 100;
+        let limit = 0;
         let page = 0;
         let filters = { cohortId: classId };
         const response = await getMyCohortMemberList({
@@ -244,14 +245,14 @@ const UserAttendanceHistory = () => {
         if (resp) {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
-            name: entry.name,
+            name: toPascalCase(entry.name),
           }));
           console.log('name..........', nameUserIdArray);
           if (nameUserIdArray && (selectedDate || currentDate)) {
             const userAttendanceStatusList = async () => {
               const attendanceStatusData: AttendanceStatusListProps = {
-                limit: 200,
-                page: 1,
+                limit: 0,
+                page: 0,
                 filters: {
                   fromDate: shortDateFormat(selectedDate || currentDate),
                   toDate: shortDateFormat(selectedDate || currentDate),
@@ -790,7 +791,7 @@ const UserAttendanceHistory = () => {
             onClose={handleClose}
             classId={classId}
             selectedDate={selectedDate}
-            onSaveSuccess={() => setHandleSaveHasRun(true)}
+            onSaveSuccess={() => setHandleSaveHasRun(!handleSaveHasRun)}
           />
         </Box>
       </Box>

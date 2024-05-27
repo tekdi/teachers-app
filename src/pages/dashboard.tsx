@@ -30,6 +30,7 @@ import {
   getMonthName,
   getTodayDate,
   shortDateFormat,
+  toPascalCase,
 } from '../utils/Helper';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
@@ -55,6 +56,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -164,9 +166,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setLoading(true);
       try {
         if (classId) {
-          let limit = 100;
+          let limit = 0;
           let page = 0;
-          let filters = { cohortId: classId};
+          let filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -177,14 +179,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
           if (resp) {
             const nameUserIdArray = resp?.map((entry: any) => ({
               userId: entry.userId,
-              name: entry.name,
+              name: toPascalCase(entry.name),
             }));
             console.log('name..........', nameUserIdArray);
             if (nameUserIdArray && (selectedDate || currentDate)) {
               const userAttendanceStatusList = async () => {
                 const attendanceStatusData: AttendanceStatusListProps = {
-                  limit: 200,
-                  page: 1,
+                  limit: 0,
+                  page: 0,
                   filters: {
                     fromDate: selectedDate || currentDate,
                     toDate: selectedDate || currentDate,
@@ -583,6 +585,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             >
                               <CircularProgressbar
                                 value={currentAttendance?.present_percentage}
+                                background
+                                backgroundPadding={6}
                                 styles={buildStyles({
                                   textColor: pathColor,
                                   pathColor: pathColor,

@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { debounce, getTodayDate } from '@/utils/Helper';
+import { debounce, getTodayDate, toPascalCase } from '@/utils/Helper';
 
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -113,7 +113,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     setLoading(true);
     try {
       if (classId) {
-        let limit = 100;
+        let limit = 0;
         let page = 0;
         let filters = { cohortId: classId };
         const response = await getMyCohortMemberList({
@@ -126,7 +126,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         if (resp) {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
-            name: entry.name,
+            name: toPascalCase(entry.name),
           }));
           console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
@@ -249,16 +249,22 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     // Sorting by attendance
     switch (sortByAttendanceNumber) {
       case 'high':
-        sortedData.sort(
-          (a, b) =>
-            parseFloat(b.present_percent) - parseFloat(a.present_percent)
-        );
+        sortedData.sort((a, b) => {
+          const aPercent = parseFloat(a.present_percent);
+          const bPercent = parseFloat(b.present_percent);
+          if (isNaN(aPercent)) return 1;
+          if (isNaN(bPercent)) return -1;
+          return bPercent - aPercent; 
+        });
         break;
       case 'low':
-        sortedData.sort(
-          (a, b) =>
-            parseFloat(a.present_percent) - parseFloat(b.present_percent)
-        );
+        sortedData.sort((a, b) => {
+          const aPercent = parseFloat(b.present_percent);
+          const bPercent = parseFloat(a.present_percent);
+          if (isNaN(aPercent)) return 1;
+          if (isNaN(bPercent)) return -1;
+          return aPercent - bPercent; 
+        });
         break;
     }
 
@@ -266,9 +272,23 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     switch (sortByClassesMissed) {
       case 'more':
         sortedData.sort((a, b) => parseFloat(b.absent) - parseFloat(a.absent));
+        sortedData.sort((a, b) => {
+          const aClassMissed = parseFloat(a.absent);
+          const bClassMissed = parseFloat(b.absent);
+          if (isNaN(aClassMissed)) return 1;
+          if (isNaN(bClassMissed)) return -1;
+          return bClassMissed - aClassMissed; 
+        });
         break;
       case 'less':
-        sortedData.sort((a, b) => parseFloat(a.absent) - parseFloat(b.absent));
+        sortedData.sort((b, a) => parseFloat(a.absent) - parseFloat(b.absent));
+        sortedData.sort((b, a) => {
+          const aClassMissed = parseFloat(a.absent);
+          const bClassMissed = parseFloat(b.absent);
+          if (isNaN(aClassMissed)) return 1;
+          if (isNaN(bClassMissed)) return -1;
+          return aClassMissed - bClassMissed; 
+        });
         break;
     }
 
