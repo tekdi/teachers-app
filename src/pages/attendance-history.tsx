@@ -573,7 +573,7 @@ const UserAttendanceHistory = () => {
                 </Box>
               </Box>
 
-              <Typography marginBottom={'0px'} fontSize={'25px'}>
+              <Typography marginBottom={'0px'} fontSize={'22px'} color={theme.palette.warning['A200']}>
                 {t('ATTENDANCE.DAY_WISE_ATTENDANCE')}
               </Typography>
             </Box>
@@ -637,7 +637,7 @@ const UserAttendanceHistory = () => {
             onChange={handleActiveStartDateChange}
             onDateChange={handleSelectedDateChange}
           />
-          <Box padding={'0 10px'} mt={2}>
+          <Box mt={2}>
             {/*----------------------------search and Sort---------------------------------------*/}
             <Stack mr={1} ml={1}>
               <Box mt={3} mb={3} boxShadow={'none'}>
@@ -742,21 +742,22 @@ const UserAttendanceHistory = () => {
                 bgcolor: '#E6E6E6',
               }}
             >
-              <Box sx={{ color: '#1F1B13', fontSize: '11px' }}>
-                {t(' LEARNER_NAME')}
+              <Box sx={{ color: theme.palette.warning[400], fontSize: '11px', fontWeight: 600 }}>
+                {t('COMMON.LEARNER_NAME')}
               </Box>
               <Box sx={{ display: 'flex', gap: '13px' }}>
-                <Box sx={{ color: '#1F1B13', fontSize: '11px' }}>
-                  {t('PRESENT')}
+                <Box sx={{ color: theme.palette.warning[400], fontSize: '11px', fontWeight: 600 }}>
+                  {t('ATTENDANCE.PRESENT')}
                 </Box>
                 <Box
                   sx={{
-                    color: '#1F1B13',
+                    color: theme.palette.warning[400],
                     fontSize: '11px',
                     paddingRight: '10px',
+                    fontWeight: 600
                   }}
                 >
-                  {t('ABSENT')}
+                  {t('ATTENDANCE.ABSENT')}
                 </Box>
               </Box>
             </Box>
@@ -764,6 +765,8 @@ const UserAttendanceHistory = () => {
               <Box>
                 {displayStudentList?.map((user: any) => (
                   <AttendanceStatusListView
+                    isDisabled= {true}
+                    showLink={true}
                     key={user.userId}
                     userData={user}
                     isEdit={false}

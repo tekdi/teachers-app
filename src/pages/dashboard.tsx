@@ -512,7 +512,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     }}
                     onClick={viewAttendanceHistory}
                   >
-                    <Typography marginBottom={'0px'}>
+                    <Typography marginBottom={'0'} style={{ fontWeight: '500' }}>
                       {getMonthName()}
                     </Typography>
                     <CalendarMonthIcon />
@@ -891,8 +891,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Link
                       className="flex-center fs-14 text-decoration"
                       href={'/attendance-overview'}
+                      style={{color: theme.palette.secondary.main, fontWeight: '500'}}
                     >
-                      {t('DASHBOARD.MORE_DETAILS')}{' '}
+                      {t('DASHBOARD.MORE_DETAILS')}
                       <ArrowForwardSharpIcon sx={{ height: '18px' }} />
                     </Link>
                   </Box>

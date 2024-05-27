@@ -44,10 +44,21 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           justifyContent="space-between"
           p={2}
         >
-          <Grid item xs={4} textAlign={'left'}>
-            <Link href={`/learner-profile/${userId}`}> {name}</Link>
+          <Grid item xs={6} textAlign={'left'}>
+            <Link href={`/learner-profile/${userId}`}>
+              <Typography
+                sx={{
+                  textAlign: 'left',
+                  fontSize: '14px',
+                  fontWeight: '400',
+                  color: theme.palette.secondary.main
+                }}
+              >
+                {name}
+              </Typography>
+            </Link>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Typography
               fontSize="1rem"
               fontWeight="bold"
@@ -59,7 +70,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
               {presentPercent}%
             </Typography>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Typography
               fontSize="1rem"
               fontWeight="bold"
