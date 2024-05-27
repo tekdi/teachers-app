@@ -80,6 +80,8 @@
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total Number of Learners: {{count}}",
+    "PRESENT_STUDENTS": "Present Learners: {{count}}",
+    "ABSENT_STUDENTS": "Absent Learners: {{count}}",
     "PRESENT": "Present",
     "ABSENT": "Absent",
     "HALF_DAY": "Half Day",

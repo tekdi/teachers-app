@@ -70,6 +70,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   const [classId, setClassId] = React.useState('');
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
+  const [presentCount, setPresentCount] = React.useState(0);
+  const [absentCount, setAbsentCount] = React.useState(0);
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
   const [selectedDate, setSelectedDate] = React.useState('');
@@ -258,6 +260,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       if (newArray.length != 0) {
                         // newArray = newArray.filter(item => item.name);
                         setCohortMemberList(newArray);
+                        setPresentCount(newArray.filter(user => user.attendance === "present").length);
+                        setAbsentCount(newArray.filter(user => user.attendance === "absent").length);
                         setNumberOfCohortMembers(newArray?.length);
                       } else {
                         setCohortMemberList(nameUserIdArray);
@@ -739,6 +743,30 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             count: numberOfCohortMembers,
                           })}
                         </Typography>
+                        <Box display={'flex'} justifyContent={'space-between'}>
+                        <Typography
+                          sx={{
+                            marginTop: '0px',
+                            fontSize: '12px',
+                            color: theme.palette.warning['A200'],
+                          }}
+                        >
+                          {t('ATTENDANCE.PRESENT_STUDENTS', {
+                            count: presentCount,
+                          })}
+                        </Typography>
+                        <Typography
+                          sx={{
+                            marginTop: '0px',
+                            fontSize: '12px',
+                            color: theme.palette.warning['A200'],
+                          }}
+                        >
+                          {t('ATTENDANCE.ABSENT_STUDENTS', {
+                            count: absentCount,
+                          })}
+                        </Typography>
+                        </Box>
                         {cohortMemberList && cohortMemberList?.length != 0 ? (
                           <Box
                             height={'56vh'}

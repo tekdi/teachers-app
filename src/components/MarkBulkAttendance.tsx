@@ -40,6 +40,8 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
   //   const [open, setOpen] = React.useState(false);
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
+  const [presentCount, setPresentCount] = React.useState(0);
+  const [absentCount, setAbsentCount] = React.useState(0);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
   const [isAllAttendanceMarked, setIsAllAttendanceMarked] =
     React.useState(false);
@@ -191,6 +193,8 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
                       });
                       if (newArray.length != 0) {
                         setCohortMemberList(newArray);
+                        setPresentCount(newArray.filter(user => user.attendance === "present").length);
+                        setAbsentCount(newArray.filter(user => user.attendance === "absent").length);
                         setNumberOfCohortMembers(newArray?.length);
                       } else {
                         setCohortMemberList(nameUserIdArray);
@@ -345,6 +349,32 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
                   count: numberOfCohortMembers,
                 })}
               </Typography>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                        <Typography
+                          sx={{
+                            marginTop: '0px',
+                            marginLeft: '0.5rem',
+                            fontSize: '12px',
+                            color: theme.palette.warning['A200'],
+                          }}
+                        >
+                          {t('ATTENDANCE.PRESENT_STUDENTS', {
+                            count: presentCount,
+                          })}
+                        </Typography>
+                        <Typography
+                          sx={{
+                            marginTop: '0px',
+                            marginLeft: '0.5rem',
+                            fontSize: '12px',
+                            color: theme.palette.warning['A200'],
+                          }}
+                        >
+                          {t('ATTENDANCE.ABSENT_STUDENTS', {
+                            count: absentCount,
+                          })}
+                        </Typography>
+                        </Box>
               {cohortMemberList && cohortMemberList?.length != 0 ? (
                 <Box
                   height={'56vh'}
