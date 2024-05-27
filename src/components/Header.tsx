@@ -9,12 +9,12 @@ import { usePathname, useRouter } from 'next/navigation';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Divider from '@mui/material/Divider';
 import Image from 'next/image';
-import logoLight from '../../public/images/logo-light.png';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import dynamic from 'next/dynamic';
+import logoLight from '../../public/images/logo-light.png';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
@@ -105,8 +105,19 @@ const Header: React.FC = () => {
   const [language, setLanguage] = React.useState(selectedLanguage);
 
   return (
-    <Box sx={{marginBottom:'4rem'}}>
-      <Box sx={{ display: 'flex', justifyContent: 'center', position:'fixed', top:'0px', zIndex:'999', width:'100%', bgcolor:' #FFFFFF'}}>
+    <Box sx={{ marginBottom: '4rem' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          position: 'fixed',
+          top: '0px',
+          zIndex: '999',
+          width: '100%',
+          bgcolor: ' #FFFFFF',
+          maxWidth: '896px',
+        }}
+      >
         <Stack
           width={'100%'}
           padding={'8px 0'}
@@ -114,7 +125,7 @@ const Header: React.FC = () => {
           justifyContent={'space-between'}
           alignItems={'center'}
           height="auto"
-          boxShadow = '0px 1px 3px 0px #0000004D'
+          boxShadow="0px 1px 3px 0px #0000004D"
         >
           <Box onClick={toggleDrawer(true)} mt={'0.5rem'} paddingLeft={'1rem'}>
             <MenuIcon />
@@ -166,7 +177,7 @@ const Header: React.FC = () => {
           </div>
         </Stack>
       </Box>
-     
+
       <MenuDrawer
         toggleDrawer={toggleDrawer}
         open={openDrawer}

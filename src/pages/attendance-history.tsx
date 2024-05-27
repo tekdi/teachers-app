@@ -796,7 +796,6 @@ const UserAttendanceHistory = () => {
           />
         </Box>
       </Box>
-      <Box style={{ Height: '5000px' }}></Box>
       <UpDownButton />
     </Box>
   );

@@ -3,20 +3,32 @@ import { useEffect, useState } from 'react';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Box } from '@mui/material';
+import { usePathname } from 'next/navigation';
 
 const UpDownButton = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
+  const pathname = usePathname();
 
   const trackScroll = () => {
     const scrolled = window.pageYOffset;
     const viewportHeight = document.documentElement.clientHeight;
     const totalHeight = document.documentElement.scrollHeight;
 
-    const atBottom = window.pageYOffset >= 780;
-    const atTop = scrolled <= 780;
+    const atBottom =
+      pathname == '/attendance-overview'
+        ? window.pageYOffset >= 300
+        : window.pageYOffset >= 780;
+
+    // pathname == '/attendance-overview' ? 320 : 780
+    const atTop =
+      pathname == '/attendance-overview' ? scrolled <= 320 : scrolled <= 780;
     setIsVisible(atTop || atBottom);
-    setIsAtBottom(window.pageYOffset >= 780);
+    setIsAtBottom(
+      pathname == '/attendance-overview'
+        ? window.pageYOffset >= 300
+        : window.pageYOffset >= 780
+    );
   };
 
   const backToTop = () => {
@@ -63,7 +75,7 @@ const UpDownButton = () => {
       backToTop();
     } else {
       // Scroll to a particular screen height, for example, 500 pixels from the top
-      scrollToHeight(780);
+      scrollToHeight(pathname == '/attendance-overview' ? 320 : 780);
     }
   };
 
