@@ -78,6 +78,8 @@
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "कुल छात्रों की संख्या: {{count}}",
+    "PRESENT_STUDENTS": "उपस्थित छात्र: {{count}}",
+    "ABSENT_STUDENTS": "अनुपस्थित छात्र: {{count}}",
     "PRESENT": "उपस्थित",
     "ABSENT": "अनुपस्थित",
     "HALF_DAY": "आधा दिन",

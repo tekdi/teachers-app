@@ -78,6 +78,8 @@
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "एकूण विद्यार्थी: {{count}}",
+    "PRESENT_STUDENTS": "उपस्थित विद्यार्थी: {{count}}",
+    "ABSENT_STUDENTS": "अनुपस्थित विद्यार्थी: {{count}}",
     "MARK_ALL": "सर्व चिन्हित करा",
     "CLEAR": "स्पष्ट",
     "ATTENDANCE_MARKED_SUCCESSFULLY": "उपस्थिती यशस्वीरित्या चिन्हांकित केली गेली आहे",
