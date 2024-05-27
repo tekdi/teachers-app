@@ -642,6 +642,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         <Typography
                           sx={{ color: theme.palette.warning['A400'] }}
                           fontSize={'0.8rem'}
+                          fontStyle={'italic'}
+                          fontWeight={'500'}
                         >
                           {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
                         </Typography>
