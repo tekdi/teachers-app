@@ -113,7 +113,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     setLoading(true);
     try {
       if (classId) {
-        let limit = 0;
+        let limit = 300;
         let page = 0;
         let filters = { cohortId: classId };
         const response = await getMyCohortMemberList({
@@ -313,6 +313,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               value={classId}
               onChange={handleCohortSelection}
               displayEmpty
+              disabled = {cohortsData?.length == 1 ? true : false}
               inputProps={{ 'aria-label': 'Without label' }}
               className="SelectLanguages fs-14 fw-500"
               style={{

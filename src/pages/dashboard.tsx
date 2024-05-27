@@ -56,7 +56,6 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -166,7 +165,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setLoading(true);
       try {
         if (classId) {
-          let limit = 0;
+          let limit = 300;
           let page = 0;
           let filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
@@ -185,7 +184,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             if (nameUserIdArray && (selectedDate || currentDate)) {
               const userAttendanceStatusList = async () => {
                 const attendanceStatusData: AttendanceStatusListProps = {
-                  limit: 0,
+                  limit: 300,
                   page: 0,
                   filters: {
                     fromDate: selectedDate || currentDate,
@@ -316,8 +315,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
           const fromDateFormatted = shortDateFormat(startDate);
           const toDateFormatted = shortDateFormat(endDate);
           const attendanceRequest: AttendancePercentageProps = {
-            limit: 2,
-            page: 1,
+            limit: 300,
+            page: 0,
             filters: {
               contextId: classId,
               fromDate: fromDateFormatted,
@@ -527,6 +526,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         onChange={handleCohortSelection}
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
+                        disabled = {cohortsData?.length == 1 ? true : false}
                         className="SelectLanguages fs-14 fw-500"
                         style={{
                           borderRadius: '0.5rem',
@@ -891,7 +891,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
               </Box>
             </Box>
           </Box>
-          <Box sx={{ background: '#fff' }}>
+          {/* <Box sx={{ background: '#fff' }}>
             <Typography
               textAlign={'left'}
               fontSize={'0.8rem'}
@@ -943,7 +943,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 }}
               />
             </Box>
-          </Box>
+          </Box> */}
         </Box>
       )}
     </>
