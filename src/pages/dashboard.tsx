@@ -164,7 +164,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setLoading(true);
       try {
         if (classId) {
-          let limit = 100;
+          let limit = 0;
           let page = 0;
           let filters = { cohortId: classId};
           const response = await getMyCohortMemberList({
@@ -183,8 +183,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
             if (nameUserIdArray && (selectedDate || currentDate)) {
               const userAttendanceStatusList = async () => {
                 const attendanceStatusData: AttendanceStatusListProps = {
-                  limit: 200,
-                  page: 1,
+                  limit: 0,
+                  page: 0,
                   filters: {
                     fromDate: selectedDate || currentDate,
                     toDate: selectedDate || currentDate,
