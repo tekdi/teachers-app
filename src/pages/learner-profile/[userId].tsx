@@ -256,6 +256,7 @@ const LearnerProfile: React.FC = () => {
       totalScore: 0,
       length: data.length,
       questions: [],
+      totalQuestions: 0,
     };
 
     data.forEach((item: any) => {
@@ -365,7 +366,7 @@ const LearnerProfile: React.FC = () => {
             variant="h6"
             gutterBottom
           >
-            {t('ATTENDANCE_OVERVIEW')}
+            {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
           </Typography>
           <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography
@@ -377,7 +378,7 @@ const LearnerProfile: React.FC = () => {
               variant="h6"
               gutterBottom
             >
-              {t('VIEW_DAY_WISE')}
+              {t('PROFILE.VIEW_DAY_WISE')}
             </Typography>
             <EastIcon
               fontSize="inherit"
@@ -465,7 +466,7 @@ const LearnerProfile: React.FC = () => {
           fontSize={'16px'}
           sx={{ color: theme.palette.warning.main }}
         >
-          {t('LEARNER_DETAILS')}
+          {t('PROFILE.LEARNER_DETAILS')}
         </Typography>
         <Button
           sx={{
@@ -600,12 +601,12 @@ const LearnerProfile: React.FC = () => {
             >
               <Box>
                 <Typography variant="h5">
-                  {t('SUBMITTED_ON')} : {submittedOn}
+                  {t('PROFILE.SUBMITTED_ON')} : {submittedOn}
                 </Typography>
               </Box>
               <Box display={'flex'} justifyContent={'space-between'} mt={1}>
                 <Typography variant="h3" fontWeight={'bold'}>
-                  {t('MARK_OBTAINED')}
+                  {t('PROFILE.MARK_OBTAINED')}
                 </Typography>
                 <Typography variant="h4" fontWeight={'bold'}>
                   {/* 60/70 */}
@@ -613,7 +614,10 @@ const LearnerProfile: React.FC = () => {
               </Box>
               <Divider />
               <Box mt={1}>
-                <Typography variant="h5">{t('TOTAL_QUESTIONS')} : </Typography>
+                <Typography variant="h5">
+                  {t('PROFILE.TOTAL_QUESTIONS')} :
+                  {questionValues?.questions?.length}
+                </Typography>
               </Box>
               <Box mt={2}>
                 <MarksObtainedCard data={questionValues?.questions} />
@@ -680,6 +684,7 @@ const LearnerProfile: React.FC = () => {
     </>
   );
 };
+
 export async function getStaticProps({ locale }: any) {
   return {
     props: {
