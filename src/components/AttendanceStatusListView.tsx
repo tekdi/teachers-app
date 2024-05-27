@@ -10,8 +10,11 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
+  isDisabled = false,
+  showLink = false,
   userData,
   isEdit = false,
   isBulkAction = false,
@@ -59,7 +62,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             color: '#1F1B13',
           }}
         >
-          {isBulkAction ? t('ATTENDANCE.MARK_ALL') : userData?.name}
+          {isBulkAction ? t('ATTENDANCE.MARK_ALL') : (showLink ? <Link style={{color: theme.palette.secondary.main}} href={`/learner-profile/${userData?.userId}`}> {userData?.name}</Link> : userData?.name)}
         </Typography>
         <Box
           display="flex"
@@ -78,10 +81,20 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           {[userData?.attendance, bulkAttendanceStatus].includes(
             ATTENDANCE_ENUM.PRESENT
           ) ? (
-            <CheckCircleIcon sx={{ color: () => theme.palette.warning[400] }} />
+            <CheckCircleIcon
+              style={{
+                fill: isDisabled
+                  ? theme.palette.success.main
+                  : theme.palette.success.main,
+              }}
+            />
           ) : (
             <CheckCircleOutlineIcon
-              sx={{ color: () => theme.palette.warning[400] }}
+              style={{
+                fill: isDisabled
+                  ? theme.palette.warning['400']
+                  : theme.palette.warning[100],
+              }}
             />
           )}
           <Typography
@@ -109,9 +122,15 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           {[userData?.attendance, bulkAttendanceStatus].includes(
             ATTENDANCE_ENUM.ABSENT
           ) ? (
-            <CancelIcon sx={{ color: () => theme.palette.warning[400] }} />
+            <CancelIcon style={{ fill: theme.palette.error.main }} />
           ) : (
-            <HighlightOffIcon />
+            <HighlightOffIcon
+              style={{
+                fill: isDisabled
+                  ? theme.palette.warning['400']
+                  : theme.palette.warning[100],
+              }}
+            />
           )}
           <Typography
             variant="h6"

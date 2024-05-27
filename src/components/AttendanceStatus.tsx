@@ -127,7 +127,7 @@ function AttendanceStatus({
             )}
 
             {attendanceStatus === 'futureDate' && (
-              <Typography fontSize={'0.8rem'} color={pathColor}>
+              <Typography fontSize={'0.8rem'} color={pathColor} fontStyle='italic'  fontWeight={'500'}>
                 {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
               </Typography>
             )}

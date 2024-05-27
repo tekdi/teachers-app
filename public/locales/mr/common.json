@@ -43,8 +43,6 @@
     "LEARNER_NAME": "शिकणाऱ्याचे नाव",
     "DATE_RANGE": "तारीख श्रेणी",
     "SELECT_AN_OPTION": "एक पर्याय निवडा"
-
-
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्ता नाव",
@@ -80,6 +78,8 @@
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "एकूण विद्यार्थी: {{count}}",
+    "PRESENT_STUDENTS": "उपस्थित विद्यार्थी: {{count}}",
+    "ABSENT_STUDENTS": "अनुपस्थित विद्यार्थी: {{count}}",
     "MARK_ALL": "सर्व चिन्हित करा",
     "CLEAR": "स्पष्ट",
     "ATTENDANCE_MARKED_SUCCESSFULLY": "उपस्थिती यशस्वीरित्या चिन्हांकित केली गेली आहे",
@@ -110,6 +110,11 @@
     "MY_PROFILE": "माझी प्रोफाइल",
     "VIEW_MORE": "अधिक पाहा",
     "VIEW_LESS": "कमी करा",
-    "DATA_RANAGE": "डेटा श्रेणी"
+    "DATA_RANAGE": "डेटा श्रेणी",
+    "LEARNER_DETAILS": "विद्यार्थी तपशील",
+    "VIEW_DAY_WISE": "दिवस-निहाय पहा",
+    "SUBMITTED_ON": "सादर केलेले",
+    "MARK_OBTAINED": "प्राप्त गुण",
+    "TOTAL_QUESTIONS": "एकूण प्रश्न"
   }
 }

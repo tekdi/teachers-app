@@ -99,7 +99,7 @@ const darkTheme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Poppins, sans-serif',
+    // fontFamily: 'Poppins, sans-serif',
     h1: {
       fontSize: '22px',
       fontWeight: 400,

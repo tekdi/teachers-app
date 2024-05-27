@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { debounce, getTodayDate } from '@/utils/Helper';
+import { debounce, getTodayDate, toPascalCase } from '@/utils/Helper';
 
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -114,7 +114,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     setLoading(true);
     try {
       if (classId) {
-        let limit = 100;
+        let limit = 300;
         let page = 0;
         let filters = { cohortId: classId };
         const response = await getMyCohortMemberList({
@@ -127,7 +127,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         if (resp) {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
-            name: entry.name,
+            name: toPascalCase(entry.name),
           }));
           console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
@@ -315,6 +315,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               value={classId}
               onChange={handleCohortSelection}
               displayEmpty
+              disabled = {cohortsData?.length == 1 ? true : false}
               inputProps={{ 'aria-label': 'Without label' }}
               className="SelectLanguages fs-14 fw-500"
               style={{

@@ -50,6 +50,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
+import DateRangePopup from '@/components/DateRangePopup';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -69,17 +71,17 @@ const LearnerProfile: React.FC = () => {
   const theme = useTheme<any>();
 
   const router = useRouter();
-  const { userId } = router.query;
+  const { userId }: any = router.query;
 
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [attendanceReport, setAttendanceReport] = useState<any>(null);
+  // const [attendanceReport, setAttendanceReport] = useState<any>(null);
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
   const [filter, setFilter] = useState<object>({});
   const [maritalStatus, setMaritalStatus] = useState<string>('');
   const [currentDate, setCurrentDate] = React.useState(getTodayDate);
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const [selectedValue, setSelectedValue] = useState('');
+  // const [selectedValue, setSelectedValue] = useState('');
   const [assesmentData, setAssesmentData] = useState([]);
   const [questionData, setQuestionData] = useState([]);
   const [age, setAge] = React.useState('');
@@ -89,8 +91,21 @@ const LearnerProfile: React.FC = () => {
   const [customFieldsData, setCustomFieldsData] = useState<updateCustomField[]>(
     []
   );
+  interface OverallAttendance {
+    absent?: any; // Adjust the type according to your actual data
+    present?: any;
+    absent_percentage: any;
+    present_percentage: any;
+    // Add other properties as needed
+  }
+  const [isFromDate, setIsFromDate] = useState(getTodayDate());
+  const [isToDate, setIsToDate] = useState(getTodayDate());
   const [submittedOn, setSubmitedOn] = useState();
-
+  const [overallAttendance, setOverallAttendance] =
+    useState<OverallAttendance>();
+  const [selectedValue, setSelectedValue] = React.useState<string>(
+    t('COMMON.AS_OF_TODAY')
+  );
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     // set""AnchorEl(event.currentTarget);
@@ -103,13 +118,6 @@ const LearnerProfile: React.FC = () => {
 
   const handleOpenEdit = () => setOpenEdit(true);
   const handleCloseEdit = () => setOpenEdit(false);
-
-  //   const handleListItemClick = (
-  //     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  //     index: Number
-  //   ) => {
-  //     setSelectedIndex(index);
-  //   };
 
   const [openModal, setOpenModal] = React.useState(false);
   const handleOpenModal = () => setOpenModal(true);
@@ -142,19 +150,45 @@ const LearnerProfile: React.FC = () => {
     setSubject(event.target.value);
   };
 
-  const handleMenuItemClick = (index: any, value: any) => {
-    setSelectedIndex(index);
-    setSelectedValue(value);
-    console.log('Selected Value:', value); // You can use this value as needed
+  const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
+    console.log('Date Range Selected:', { fromDate, toDate });
+    setIsFromDate(fromDate);
+    setIsToDate(toDate);
+    getAttendaceData(fromDate, toDate);
+    // Handle the date range values as needed
   };
-
   const menuItems = [
-    'Last 7 Days(18 - 25 may)',
-    'As Of Today, 25 may',
-    'Last Month',
-    'Last 6 Month',
-    'Custom Range',
+    t('COMMON.LAST_SEVEN_DAYS'),
+    t('COMMON.AS_OF_TODAY'),
+    t('COMMON.AS_OF_LAST_WEEK'),
+    t('COMMON.LAST_MONTH'),
+    t('COMMON.LAST_SIX_MONTHS'),
+    t('COMMON.CUSTOM_RANGE'),
   ];
+
+  const getAttendaceData = async (fromDates: any, toDates: any) => {
+    console.log('dates', fromDates, toDates);
+    let fromDate = fromDates;
+    let toDate = toDates;
+    let filters = {
+      // contextId: classId,
+      fromDate,
+      toDate,
+      userId: userId,
+      // scope: 'student',
+    };
+    const response = await classesMissedAttendancePercentList({
+      filters,
+      facets: ['userId'],
+    });
+    if (response?.statusCode === 200) {
+      console.log('response for userData', response?.data?.result);
+      const userData = response?.data.result.userId[userId];
+      setOverallAttendance(userData);
+
+      // if (setOverallAttendance)
+    }
+  };
 
   const fetchUserDetails = async () => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -190,7 +224,7 @@ const LearnerProfile: React.FC = () => {
 
   const testReportDetails = async () => {
     let filters = {
-      userId: '4bc64b4d-c3c6-4a23-b9f3-15c70ed8ffb6',
+      userId: userId,
     };
     let pagination = {
       pageSize: 1,
@@ -222,6 +256,7 @@ const LearnerProfile: React.FC = () => {
       totalScore: 0,
       length: data.length,
       questions: [],
+      totalQuestions: 0,
     };
 
     data.forEach((item: any) => {
@@ -247,10 +282,15 @@ const LearnerProfile: React.FC = () => {
     return questionValues;
   }
 
-  // Usage example
+  // questionValues
   const questionValues = getQuestionValues(assesmentData);
 
   useEffect(() => {
+    const today = new Date();
+    const formatDate = (date: Date) => date.toISOString().split('T')[0];
+    let toDay = formatDate(today);
+
+    getAttendaceData(toDay, toDay);
     fetchUserDetails();
     testReportDetails();
   }, []);
@@ -264,14 +304,15 @@ const LearnerProfile: React.FC = () => {
       <Header />
       <Grid container spacing={2} alignItems="flex-start" mt={3}>
         <Grid item>
-          <Button onClick={handleGoBack}>
+          <Box onClick={handleGoBack}>
             <ArrowBackIcon
               sx={{
                 color: (theme.palette.warning as any)['A200'],
                 fontSize: '1.5rem',
+                ml: 2,
               }}
             />
-          </Button>
+          </Box>
         </Grid>
         <Grid item xs>
           <Box>
@@ -291,7 +332,9 @@ const LearnerProfile: React.FC = () => {
                 fontSize: '12px',
               }}
             >
-              {userData?.district},{userData?.state}
+              {userData?.district && userData?.state
+                ? `${userData.district}, ${userData.state}`
+                : `${userData?.district || ''}${userData?.state || ''}`}
             </Typography>
           </Box>
         </Grid>
@@ -323,7 +366,7 @@ const LearnerProfile: React.FC = () => {
             variant="h6"
             gutterBottom
           >
-            Attendance Overview
+            {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
           </Typography>
           <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography
@@ -335,7 +378,7 @@ const LearnerProfile: React.FC = () => {
               variant="h6"
               gutterBottom
             >
-              View Day-Wise
+              {t('PROFILE.VIEW_DAY_WISE')}
             </Typography>
             <EastIcon
               fontSize="inherit"
@@ -349,22 +392,12 @@ const LearnerProfile: React.FC = () => {
 
         <Grid container spacing={1}>
           <Grid item sx={{ flex: 1 }}>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <Select
-                sx={{ height: '32px' }}
-                value={selectedValue}
-                displayEmpty
-                onClick={handleOpenModal}
-                inputProps={{ readOnly: true }}
-              >
-                <MenuItem value="" disabled>
-                  Select an option
-                </MenuItem>
-                <MenuItem value={selectedValue}>
-                  {selectedValue ? selectedValue : 'Select an option'}
-                </MenuItem>
-              </Select>
-            </FormControl>
+            <DateRangePopup
+              menuItems={menuItems}
+              selectedValue={selectedValue}
+              setSelectedValue={setSelectedValue}
+              onDateRangeSelected={handleDateRangeSelected}
+            />
           </Grid>
         </Grid>
         <Card
@@ -385,7 +418,7 @@ const LearnerProfile: React.FC = () => {
               variant="h6"
               gutterBottom
             >
-              {'As of today' + ' ' + formatDate(currentDate)}
+              {selectedValue}
             </Typography>
             <Box
               gap={1}
@@ -400,7 +433,7 @@ const LearnerProfile: React.FC = () => {
                 <Grid item xs={5}>
                   <StudentStatsCard
                     label1="Attendance %"
-                    value1={`${Math.round(attendanceReport?.average?.average_attendance_percentage || 0)}%`}
+                    value1={`${Math.round(overallAttendance?.present_percentage || 0)}%`}
                     label2={false}
                     value2="5"
                   />
@@ -408,7 +441,7 @@ const LearnerProfile: React.FC = () => {
                 <Grid item xs={5}>
                   <StudentStatsCard
                     label1="Class missed"
-                    value1={'6'}
+                    value1={overallAttendance?.absent || 0}
                     label2={false}
                     value2="5"
                   />
@@ -433,7 +466,7 @@ const LearnerProfile: React.FC = () => {
           fontSize={'16px'}
           sx={{ color: theme.palette.warning.main }}
         >
-          Learner Details
+          {t('PROFILE.LEARNER_DETAILS')}
         </Typography>
         <Button
           sx={{
@@ -501,8 +534,6 @@ const LearnerProfile: React.FC = () => {
       <Box padding={2}>
         <Card
           sx={{
-            // bgcolor: theme.palette.secondary.light,
-            // background: 'linear-gradient(180deg, #FFFDF7 0%, #F8EFDA 100%)',
             borderRadius: theme.spacing(3),
             boxShadow: 'none',
             border: '1px solid #D0C5B4',
@@ -568,23 +599,25 @@ const LearnerProfile: React.FC = () => {
                 p: 2,
               }}
             >
-              {/* {assesmentData && assesmentData?.map((item, i) => {})}{' '} */}
               <Box>
                 <Typography variant="h5">
-                  Submitted On : {submittedOn}
+                  {t('PROFILE.SUBMITTED_ON')} : {submittedOn}
                 </Typography>
               </Box>
               <Box display={'flex'} justifyContent={'space-between'} mt={1}>
                 <Typography variant="h3" fontWeight={'bold'}>
-                  Mark Obtained
+                  {t('PROFILE.MARK_OBTAINED')}
                 </Typography>
                 <Typography variant="h4" fontWeight={'bold'}>
-                  60/70
+                  {/* 60/70 */}
                 </Typography>
               </Box>
               <Divider />
               <Box mt={1}>
-                <Typography variant="h5">Total Questions : 15</Typography>
+                <Typography variant="h5">
+                  {t('PROFILE.TOTAL_QUESTIONS')} :
+                  {questionValues?.questions?.length}
+                </Typography>
               </Box>
               <Box mt={2}>
                 <MarksObtainedCard data={questionValues?.questions} />
@@ -593,7 +626,7 @@ const LearnerProfile: React.FC = () => {
           </CardContent>
         </Card>
       </Box>
-      <Modal
+      {/* <Modal
         open={openModal}
         onClose={handleCloseModal}
         aria-labelledby="edit-profile-modal"
@@ -622,7 +655,7 @@ const LearnerProfile: React.FC = () => {
               <MenuItem
                 key={index}
                 selected={selectedIndex === index}
-                onClick={() => handleMenuItemClick(index, item)}
+                // onClick={() => handleMenuItemClick(index, item)}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -647,10 +680,11 @@ const LearnerProfile: React.FC = () => {
           <Divider sx={dividerStyle} />
           <Button variant="contained">Apply</Button>
         </Box>
-      </Modal>
+      </Modal> */}
     </>
   );
 };
+
 export async function getStaticProps({ locale }: any) {
   return {
     props: {

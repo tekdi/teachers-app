@@ -128,7 +128,7 @@ const Header: React.FC = () => {
           boxShadow="0px 1px 3px 0px #0000004D"
         >
           <Box onClick={toggleDrawer(true)} mt={'0.5rem'} paddingLeft={'1rem'}>
-            <MenuIcon />
+            <MenuIcon style={{ fill: theme.palette.warning['A200'] }} />
           </Box>
           <Box sx={{ margin: '0 auto' }}>
             <Image
@@ -153,7 +153,7 @@ const Header: React.FC = () => {
             flexDirection={'column'}
             mt={'0.5rem'}
           >
-            <AccountCircleIcon fontSize="large" color="action" />
+            <AccountCircleIcon fontSize="large" style={{ fill: theme.palette.warning['A200'] }} />
           </Box>
           <div>
             <StyledMenu

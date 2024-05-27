@@ -175,7 +175,7 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
             )}
             {getButtonComponent(
               ATTENDANCE_ENUM.PRESENT,
-              <CheckCircleIcon />,
+              <CheckCircleIcon style={{ fill: theme.palette.success.main }} />,
               <CheckCircleOutlineIcon />,
               t('ATTENDANCE.PRESENT')
             )}
@@ -183,7 +183,7 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
               isSelfAttendance
                 ? ATTENDANCE_ENUM.ON_LEAVE
                 : ATTENDANCE_ENUM.ABSENT,
-              <CancelIcon />,
+              <CancelIcon style={{ fill: theme.palette.error.main }} />,
               <HighlightOffIcon />,
               isSelfAttendance
                 ? t('ATTENDANCE.ON_LEAVE')

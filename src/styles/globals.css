@@ -94,7 +94,6 @@ body {
 }
 
 body {
-  /* font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; */
   font-size: 1em;
   font-weight: 300;
   line-height: 1.5;
@@ -389,7 +388,7 @@ main {
 }
 
 .today {
-  border: 2px solid var(--mui-palette-warning-300) !important;
+  /* border: 2px solid var(--mui-palette-warning-300) !important; */
 }
 
 .attendance-not-marked abbr {

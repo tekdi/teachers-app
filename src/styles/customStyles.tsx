@@ -146,7 +146,7 @@ const customTheme = extendTheme({
     },
   },
   typography: {
-    fontFamily: 'Poppins, sans-serif',
+    fontFamily: 'inherit',
     h1: {
       fontSize: '22px',
       fontWeight: 400,

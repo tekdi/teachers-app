@@ -80,6 +80,8 @@
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total Number of Learners: {{count}}",
+    "PRESENT_STUDENTS": "Present Learners: {{count}}",
+    "ABSENT_STUDENTS": "Absent Learners: {{count}}",
     "PRESENT": "Present",
     "ABSENT": "Absent",
     "HALF_DAY": "Half Day",
@@ -113,6 +115,11 @@
     "MY_PROFILE": "My Profile",
     "VIEW_MORE": "View More",
     "VIEW_LESS": "View Less",
-    "DATA_RANAGE": "Data Ranage"
+    "DATA_RANAGE": "Data Range",
+    "LEARNER_DETAILS": "Learner Details",
+    "VIEW_DAY_WISE": "View Day-Wise",
+    "SUBMITTED_ON": "Submitted On",
+    "MARK_OBTAINED": "Mark Obtained",
+    "TOTAL_QUESTIONS":"Total Questions"
   }
 }
