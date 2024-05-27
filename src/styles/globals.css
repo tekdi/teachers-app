@@ -309,11 +309,13 @@ main {
   /* background: blue; */
   height: unset;
   font-size: 11px;
+  line-height: 16px;
 }
 .card_overview div div h2 {
   font-size: 16px;
   line-height: 24px;
   margin-top: 4px;
+  line-height: 24px;
 }
 
 .linerGradient {

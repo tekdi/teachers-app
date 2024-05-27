@@ -74,7 +74,9 @@
     "EXTRA_CLASS": "अतिरिक्त क्लास",
     "CENTER_ATTENDANCE": "केंद्रीय उपस्थिति",
     "MY_TEACHING_CENTERS": "मेरे शिक्षण केंद्र",
-    "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्र"
+    "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्र",
+    "BACK_TO_TOP":"वापस शीर्ष पर",
+    "LEARNER":"शिक्षार्थियों"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "कुल छात्रों की संख्या: {{count}}",

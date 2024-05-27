@@ -5,6 +5,7 @@ import {
   attendanceStatusList,
   bulkAttendance,
 } from '@/services/AttendanceService';
+import { shortDateFormat, toPascalCase } from '../utils/Helper';
 
 import { AttendanceStatusListProps } from '../utils/Interfaces';
 import AttendanceStatusListView from './AttendanceStatusListView';
@@ -12,7 +13,6 @@ import Backdrop from '@mui/material/Backdrop';
 import CloseIcon from '@mui/icons-material/Close';
 import Loader from './Loader';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { shortDateFormat, toPascalCase } from '../utils/Helper';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
@@ -193,8 +193,16 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
                       });
                       if (newArray.length != 0) {
                         setCohortMemberList(newArray);
-                        setPresentCount(newArray.filter(user => user.attendance === "present").length);
-                        setAbsentCount(newArray.filter(user => user.attendance === "absent").length);
+                        setPresentCount(
+                          newArray.filter(
+                            (user) => user.attendance === 'present'
+                          ).length
+                        );
+                        setAbsentCount(
+                          newArray.filter(
+                            (user) => user.attendance === 'absent'
+                          ).length
+                        );
                         setNumberOfCohortMembers(newArray?.length);
                       } else {
                         setCohortMemberList(nameUserIdArray);
@@ -350,31 +358,31 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
                 })}
               </Typography>
               <Box display={'flex'} justifyContent={'space-between'}>
-                        <Typography
-                          sx={{
-                            marginTop: '0px',
-                            marginLeft: '0.5rem',
-                            fontSize: '12px',
-                            color: theme.palette.warning['A200'],
-                          }}
-                        >
-                          {t('ATTENDANCE.PRESENT_STUDENTS', {
-                            count: presentCount,
-                          })}
-                        </Typography>
-                        <Typography
-                          sx={{
-                            marginTop: '0px',
-                            marginLeft: '0.5rem',
-                            fontSize: '12px',
-                            color: theme.palette.warning['A200'],
-                          }}
-                        >
-                          {t('ATTENDANCE.ABSENT_STUDENTS', {
-                            count: absentCount,
-                          })}
-                        </Typography>
-                        </Box>
+                <Typography
+                  sx={{
+                    marginTop: '0px',
+                    marginLeft: '0.5rem',
+                    fontSize: '12px',
+                    color: theme.palette.warning['A200'],
+                  }}
+                >
+                  {t('ATTENDANCE.PRESENT_STUDENTS', {
+                    count: presentCount,
+                  })}
+                </Typography>
+                <Typography
+                  sx={{
+                    marginTop: '0px',
+                    marginLeft: '0.5rem',
+                    fontSize: '12px',
+                    color: theme.palette.warning['A200'],
+                  }}
+                >
+                  {t('ATTENDANCE.ABSENT_STUDENTS', {
+                    count: absentCount,
+                  })}
+                </Typography>
+              </Box>
               {cohortMemberList && cohortMemberList?.length != 0 ? (
                 <Box
                   height={'56vh'}

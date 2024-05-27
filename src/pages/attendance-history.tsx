@@ -557,7 +557,7 @@ const UserAttendanceHistory = () => {
             display={'flex'}
             flexDirection={'column'}
             gap={'1rem'}
-            padding={'1rem'}
+            padding={'0.5rem 1rem'}
             alignItems={'center'}
           >
             <Box
@@ -565,6 +565,7 @@ const UserAttendanceHistory = () => {
               sx={{ color: theme.palette.warning['A200'] }}
               gap={'10px'}
               width={'100%'}
+              paddingTop={'10px'}
             >
               <Box onClick={handleBackEvent}>
                 <Box>
@@ -584,7 +585,10 @@ const UserAttendanceHistory = () => {
               </Typography>
             </Box>
           </Box>
-          <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
+          <Box
+            sx={{ minWidth: 120, gap: '15px', paddingBottom: '10px' }}
+            display={'flex'}
+          >
             <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
               <Select
                 value={classId}

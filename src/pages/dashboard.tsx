@@ -260,8 +260,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       if (newArray.length != 0) {
                         // newArray = newArray.filter(item => item.name);
                         setCohortMemberList(newArray);
-                        setPresentCount(newArray.filter(user => user.attendance === "present").length);
-                        setAbsentCount(newArray.filter(user => user.attendance === "absent").length);
+                        setPresentCount(
+                          newArray.filter(
+                            (user) => user.attendance === 'present'
+                          ).length
+                        );
+                        setAbsentCount(
+                          newArray.filter(
+                            (user) => user.attendance === 'absent'
+                          ).length
+                        );
                         setNumberOfCohortMembers(newArray?.length);
                       } else {
                         setCohortMemberList(nameUserIdArray);
@@ -469,14 +477,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
       )}
 
       {isAuthenticated && (
-        <Box minHeight="100vh" className="linerGradient">
+        <Box minHeight="100vh">
           <Header />
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box width={'100%'} sx={{ backgroundColor: 'white' }}>
               <Typography
                 textAlign={'left'}
                 fontSize={'22px'}
-                m={'1rem'}
+                m={'1rem 1rem 0.8rem'}
                 color={'black'}
               >
                 {t('DASHBOARD.DASHBOARD')}
@@ -488,9 +496,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
           )}
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
-              bgcolor={theme.palette.warning['A900']}
               paddingBottom={'20px'}
               width={'100%'}
+              className="linerGradient"
             >
               <Box display={'flex'} flexDirection={'column'} padding={'1rem'}>
                 <Box display={'flex'} justifyContent={'space-between'}>
@@ -512,14 +520,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     }}
                     onClick={viewAttendanceHistory}
                   >
-                    <Typography marginBottom={'0'} style={{ fontWeight: '500' }}>
+                    <Typography
+                      marginBottom={'0'}
+                      style={{ fontWeight: '500' }}
+                    >
                       {getMonthName()}
                     </Typography>
                     <CalendarMonthIcon />
                   </Box>
                 </Box>
 
-                <Box sx={{ mt: 0.6 }}>
+                <Box sx={{ mt: 1.5 }}>
                   <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
                     <FormControl
                       className="drawer-select"
@@ -530,7 +541,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         onChange={handleCohortSelection}
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
-                        disabled = {cohortsData?.length == 1 ? true : false}
+                        disabled={cohortsData?.length == 1 ? true : false}
                         className="SelectLanguages fs-14 fw-500"
                         style={{
                           borderRadius: '0.5rem',
@@ -557,10 +568,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </FormControl>
                   </Box>
                 </Box>
-                <WeekCalender
-                  showDetailsHandle={showDetailsHandle}
-                  data={percentageAttendanceData}
-                />
+                <Box sx={{ mt: 1.5 }}>
+                  <WeekCalender
+                    showDetailsHandle={showDetailsHandle}
+                    data={percentageAttendanceData}
+                  />
+                </Box>
                 <Box
                   border={'1px solid black'}
                   height={'auto'}
@@ -569,7 +582,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   borderRadius={'1rem'}
                   bgcolor={theme.palette.warning['A200']}
                   textAlign={'left'}
-                  margin={'15px 0 0 0 '}
+                  margin={'25px 0 15px 0 '}
                 >
                   <Stack
                     direction="row"
@@ -746,28 +759,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           })}
                         </Typography>
                         <Box display={'flex'} justifyContent={'space-between'}>
-                        <Typography
-                          sx={{
-                            marginTop: '0px',
-                            fontSize: '12px',
-                            color: theme.palette.warning['A200'],
-                          }}
-                        >
-                          {t('ATTENDANCE.PRESENT_STUDENTS', {
-                            count: presentCount,
-                          })}
-                        </Typography>
-                        <Typography
-                          sx={{
-                            marginTop: '0px',
-                            fontSize: '12px',
-                            color: theme.palette.warning['A200'],
-                          }}
-                        >
-                          {t('ATTENDANCE.ABSENT_STUDENTS', {
-                            count: absentCount,
-                          })}
-                        </Typography>
+                          <Typography
+                            sx={{
+                              marginTop: '0px',
+                              fontSize: '12px',
+                              color: theme.palette.warning['A200'],
+                            }}
+                          >
+                            {t('ATTENDANCE.PRESENT_STUDENTS', {
+                              count: presentCount,
+                            })}
+                          </Typography>
+                          <Typography
+                            sx={{
+                              marginTop: '0px',
+                              fontSize: '12px',
+                              color: theme.palette.warning['A200'],
+                            }}
+                          >
+                            {t('ATTENDANCE.ABSENT_STUDENTS', {
+                              count: absentCount,
+                            })}
+                          </Typography>
                         </Box>
                         {cohortMemberList && cohortMemberList?.length != 0 ? (
                           <Box
@@ -893,7 +906,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Link
                       className="flex-center fs-14 text-decoration"
                       href={'/attendance-overview'}
-                      style={{color: theme.palette.secondary.main, fontWeight: '500'}}
+                      style={{
+                        color: theme.palette.secondary.main,
+                        fontWeight: '500',
+                      }}
                     >
                       {t('DASHBOARD.MORE_DETAILS')}
                       <ArrowForwardSharpIcon sx={{ height: '18px' }} />
@@ -907,12 +923,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   />
                 )}
               </Box>
-              <Box display={'flex'} className="card_overview">
-                <Grid container spacing={0}>
-                  <Grid item xs={5}>
+              <Box display={'flex'} className="card_overview" mx={'1rem'}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
                     <OverviewCard label="Centre Attendance" value="71%" />
                   </Grid>
-                  <Grid item xs={7}>
+                  <Grid item xs={8}>
                     <OverviewCard
                       label="Low Attendance Learners"
                       value="Bharat Kumar, Ankita Kulkarni, +3 more"

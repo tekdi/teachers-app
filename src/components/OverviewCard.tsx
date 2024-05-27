@@ -21,9 +21,8 @@ const OverviewCard: React.FC<OverviewCardProps> = ({ label, value }) => {
       borderRadius="1rem"
       alignItems="left"
       bgcolor="white"
-      mx={'1rem'}
       sx={{ padding: '1rem' }}
-      height={'4.5rem'}
+      minHeight={'6rem'}
       overflow={'hidden'}
     >
       <Box>

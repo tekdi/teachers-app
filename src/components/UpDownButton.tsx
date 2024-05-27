@@ -4,11 +4,13 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Box } from '@mui/material';
 import { usePathname } from 'next/navigation';
+import { useTranslation } from 'next-i18next';
 
 const UpDownButton = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   const trackScroll = () => {
     const scrolled = window.pageYOffset;
@@ -104,14 +106,14 @@ const UpDownButton = () => {
                 className="flex-column-center"
               >
                 <ArrowUpwardIcon />
-                <span className="w-78">Back to Top</span>
+                <span className="w-78"> {t('DASHBOARD.BACK_TO_TOP')}</span>
               </Box>
             ) : (
               <Box
                 sx={{ height: '80px', width: '64px' }}
                 className="flex-column-center"
               >
-                Learners
+                {t('DASHBOARD.LEARNER')}
                 <ArrowDownwardIcon />
               </Box>
             )}
