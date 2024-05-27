@@ -12,7 +12,7 @@ import Backdrop from '@mui/material/Backdrop';
 import CloseIcon from '@mui/icons-material/Close';
 import Loader from './Loader';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { shortDateFormat } from '../utils/Helper';
+import { shortDateFormat, toPascalCase } from '../utils/Helper';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
@@ -113,7 +113,7 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
           if (resp) {
             const nameUserIdArray = resp?.map((entry: any) => ({
               userId: entry.userId,
-              name: entry.name,
+              name: toPascalCase(entry.name),
             }));
             if (nameUserIdArray && selectedDate) {
               const formatSelectedDate = shortDateFormat(selectedDate);
