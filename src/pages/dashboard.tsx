@@ -30,6 +30,7 @@ import {
   getMonthName,
   getTodayDate,
   shortDateFormat,
+  toPascalCase,
 } from '../utils/Helper';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
@@ -55,6 +56,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -177,7 +179,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           if (resp) {
             const nameUserIdArray = resp?.map((entry: any) => ({
               userId: entry.userId,
-              name: entry.name,
+              name: toPascalCase(entry.name),
             }));
             console.log('name..........', nameUserIdArray);
             if (nameUserIdArray && (selectedDate || currentDate)) {

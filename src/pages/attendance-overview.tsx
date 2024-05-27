@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { debounce, getTodayDate } from '@/utils/Helper';
+import { debounce, getTodayDate, toPascalCase } from '@/utils/Helper';
 
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -126,7 +126,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         if (resp) {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
-            name: entry.name,
+            name: toPascalCase(entry.name),
           }));
           console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
