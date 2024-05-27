@@ -100,7 +100,7 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
       setLoading(true);
       try {
         if (classId) {
-          const limit = 100;
+          const limit = 0;
           const page = 0;
           const filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
@@ -119,7 +119,7 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
               const formatSelectedDate = shortDateFormat(selectedDate);
               const userAttendanceStatusList = async () => {
                 const attendanceStatusData: AttendanceStatusListProps = {
-                  limit: 200,
+                  limit: 0,
                   page: 1,
                   filters: {
                     fromDate: formatSelectedDate,

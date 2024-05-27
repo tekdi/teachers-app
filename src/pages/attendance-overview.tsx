@@ -113,7 +113,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     setLoading(true);
     try {
       if (classId) {
-        let limit = 100;
+        let limit = 0;
         let page = 0;
         let filters = { cohortId: classId };
         const response = await getMyCohortMemberList({
