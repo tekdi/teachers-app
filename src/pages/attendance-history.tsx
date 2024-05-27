@@ -232,7 +232,7 @@ const UserAttendanceHistory = () => {
     setLoading(true);
     try {
       if (classId) {
-        let limit = 0;
+        let limit = 300;
         let page = 0;
         let filters = { cohortId: classId };
         const response = await getMyCohortMemberList({
@@ -251,7 +251,7 @@ const UserAttendanceHistory = () => {
           if (nameUserIdArray && (selectedDate || currentDate)) {
             const userAttendanceStatusList = async () => {
               const attendanceStatusData: AttendanceStatusListProps = {
-                limit: 0,
+                limit: 300,
                 page: 0,
                 filters: {
                   fromDate: shortDateFormat(selectedDate || currentDate),
