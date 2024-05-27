@@ -365,7 +365,7 @@ const LearnerProfile: React.FC = () => {
             variant="h6"
             gutterBottom
           >
-            Attendance Overview
+            {t('ATTENDANCE_OVERVIEW')}
           </Typography>
           <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography
@@ -377,7 +377,7 @@ const LearnerProfile: React.FC = () => {
               variant="h6"
               gutterBottom
             >
-              View Day-Wise
+              {t('VIEW_DAY_WISE')}
             </Typography>
             <EastIcon
               fontSize="inherit"
@@ -418,7 +418,6 @@ const LearnerProfile: React.FC = () => {
               gutterBottom
             >
               {selectedValue}
-              {/* {'As of today' + ' ' + formatDate(currentDate)} */}
             </Typography>
             <Box
               gap={1}
@@ -466,7 +465,7 @@ const LearnerProfile: React.FC = () => {
           fontSize={'16px'}
           sx={{ color: theme.palette.warning.main }}
         >
-          Learner Details
+          {t('LEARNER_DETAILS')}
         </Typography>
         <Button
           sx={{
@@ -601,12 +600,12 @@ const LearnerProfile: React.FC = () => {
             >
               <Box>
                 <Typography variant="h5">
-                  Submitted On : {submittedOn}
+                  {t('SUBMITTED_ON')} : {submittedOn}
                 </Typography>
               </Box>
               <Box display={'flex'} justifyContent={'space-between'} mt={1}>
                 <Typography variant="h3" fontWeight={'bold'}>
-                  Mark Obtained
+                  {t('MARK_OBTAINED')}
                 </Typography>
                 <Typography variant="h4" fontWeight={'bold'}>
                   {/* 60/70 */}
@@ -614,7 +613,7 @@ const LearnerProfile: React.FC = () => {
               </Box>
               <Divider />
               <Box mt={1}>
-                <Typography variant="h5">Total Questions : </Typography>
+                <Typography variant="h5">{t('TOTAL_QUESTIONS')} : </Typography>
               </Box>
               <Box mt={2}>
                 <MarksObtainedCard data={questionValues?.questions} />
