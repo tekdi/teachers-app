@@ -58,17 +58,19 @@ const TeacherProfile = () => {
   const [gender, setGender] = React.useState('');
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
-  const handleFieldChange = (fieldId: string, value: string, type: string) => {
-    const updatedFields: any = [...updatedCustomFields];
-    const index = updatedFields.findIndex(
-      (field: any) => field.fieldId === fieldId
-    );
+  const handleFieldChange = (
+    fieldId: string,
+    value: string | string[],
+    type: string
+  ) => {
+    const updatedFields = [...updatedCustomFields];
+    const index = updatedFields.findIndex((field) => field.fieldId === fieldId);
 
     if (index !== -1) {
       if (type === 'checkbox' && Array.isArray(value)) {
         updatedFields[index].values = value;
       } else {
-        updatedFields[index].value = value;
+        updatedFields[index].value = value as string;
       }
       updatedFields[index].type = type;
     } else {
@@ -76,8 +78,8 @@ const TeacherProfile = () => {
         fieldId,
         type,
         ...(type === 'checkbox' && Array.isArray(value)
-          ? { value }
-          : { values: value }),
+          ? { values: value }
+          : { value: value as string }),
       };
       updatedFields.push(newField);
     }
@@ -88,22 +90,20 @@ const TeacherProfile = () => {
   const handleCheckboxChange = (
     fieldId: string,
     optionName: string,
-    checked: any
+    checked: boolean
   ) => {
-    const existingField: any = updatedCustomFields?.find(
+    const existingField = updatedCustomFields.find(
       (field: any) => field.fieldId === fieldId
     );
 
-    let updatedValues = [];
+    let updatedValues: string[] = [];
 
-    if (existingField) {
-      updatedValues = existingField.values || [];
+    if (existingField && Array.isArray(existingField.values)) {
+      updatedValues = [...existingField.values];
       if (checked) {
         updatedValues.push(optionName);
       } else {
-        updatedValues = updatedValues.filter(
-          (value: any) => value !== optionName
-        );
+        updatedValues = updatedValues.filter((value) => value !== optionName);
       }
     } else {
       if (checked) {
@@ -226,6 +226,16 @@ const TeacherProfile = () => {
     setImage(newImageUrl);
   };
 
+  const techSubjectsField = customFieldsData?.find(
+    (field) => field.label === 'Subjects I Teach'
+  );
+  const mainSubjectsField = customFieldsData?.find(
+    (field) => field.label === 'My Main Subjects'
+  );
+
+  const techSubjects = techSubjectsField?.value?.split(', ') || [];
+  const mainSubjects = mainSubjectsField?.value?.split(', ') || [];
+
   return (
     <Box
       display="flex"
@@ -291,11 +301,18 @@ const TeacherProfile = () => {
                 {userData?.name}
               </Typography>
               <Box display={'flex'}>
-                <PlaceOutlinedIcon
-                  sx={{ fontSize: '1rem', marginTop: '1px' }}
-                />
+                {userData?.district || userData?.state ? (
+                  <PlaceOutlinedIcon
+                    sx={{ fontSize: '1rem', marginTop: '1px' }}
+                  />
+                ) : (
+                  ''
+                )}
+
                 <Typography variant="h5" margin={0} color={'#4D4639'}>
-                  {userData?.district},{userData?.state}
+                  {userData?.district && userData?.state
+                    ? `${userData.district}, ${userData.state}`
+                    : `${userData?.district || ''}${userData?.state || ''}`}
                 </Typography>
               </Box>
             </Grid>
@@ -344,18 +361,81 @@ const TeacherProfile = () => {
           <Grid container spacing={5}>
             {customFieldsData &&
               customFieldsData?.map((item, i) => (
-                <Grid item xs={6}>
-                  {/*  question */}
-                  <Typography variant="h4" margin={0} color={'#4D4639'}>
-                    {item?.label}
-                  </Typography>
+                <>
+                  {item?.label !== 'Subjects I Teach' &&
+                  item?.label !== 'My Main Subjects' ? (
+                    <Grid item xs={6}>
+                      {/* question */}
+                      <Typography variant="h4" margin={0}>
+                        {item?.label}
+                      </Typography>
 
-                  {/* value  */}
-                  <Typography variant="h4" margin={0}>
-                    {item?.value}
-                  </Typography>
-                </Grid>
+                      {/* value */}
+                      <Typography variant="h4" margin={0} color={'#4D4639'}>
+                        {item?.value}
+                      </Typography>
+                    </Grid>
+                  ) : null}
+                </>
               ))}
+
+            <Grid item xs={12}>
+              <Typography variant="h4" margin={0}>
+                Subjects I Teach
+              </Typography>
+              <Box mt={2}>
+                <Grid
+                  container
+                  spacing={2}
+                  rowSpacing={1}
+                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                >
+                  <Grid
+                    item
+                    xs={4}
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                    gap={1}
+                  >
+                    {techSubjects?.map((subject, index) => (
+                      <Button
+                        size="small"
+                        variant={
+                          mainSubjects?.includes(subject)
+                            ? 'contained'
+                            : 'outlined'
+                        }
+                        sx={{
+                          backgroundColor: mainSubjects?.includes(subject)
+                            ? '#EFC570'
+                            : 'none',
+                          borderRadius: '4px',
+                          color: '#4D4639',
+                        }}
+                      >
+                        {subject}
+                      </Button>
+                    ))}
+                    {mainSubjects
+                      .filter((subject) => !techSubjects.includes(subject))
+                      .map((subject, index) => (
+                        <Grid item xs={4} key={techSubjects.length + index}>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              borderRadius: '4px',
+                              color: '#4D4639',
+                            }}
+                          >
+                            {subject}
+                          </Button>
+                        </Grid>
+                      ))}
+                  </Grid>
+                </Grid>
+              </Box>
+            </Grid>
           </Grid>
         </Box>
         <Modal
@@ -477,7 +557,7 @@ const TeacherProfile = () => {
                           handleFieldChange(
                             field.fieldId,
                             e.target.value,
-                            field?.type
+                            field.type
                           );
                         }}
                       />
@@ -489,32 +569,36 @@ const TeacherProfile = () => {
                           margin={0}
                           color={'#4D4639'}
                         >
-                          {field?.label}
+                          {field.label}
                         </Typography>
-                        {field?.options?.map((option: any) => (
-                          <FormGroup key={option?.order}>
+                        {console.log(
+                          'updatedCustomFields Data ',
+                          updatedCustomFields
+                        )}
+                        {field.options.map((option: any) => (
+                          <FormGroup key={option.order}>
                             <FormControlLabel
                               sx={{ color: '#1F1B13' }}
                               control={
                                 <Checkbox
                                   color="default"
                                   checked={
-                                    updatedCustomFields
-                                      .find(
+                                    (
+                                      updatedCustomFields.find(
                                         (f: any) => f.fieldId === field.fieldId
-                                      )
-                                      ?.values?.includes(option?.name) || false
+                                      )?.values || []
+                                    ).includes(option.name) || false
                                   }
                                   onChange={(e) =>
                                     handleCheckboxChange(
                                       field.fieldId,
-                                      option?.name,
+                                      option.name,
                                       e.target.checked
                                     )
                                   }
                                 />
                               }
-                              label={option?.name}
+                              label={option.name}
                             />
                           </FormGroup>
                         ))}
@@ -523,13 +607,13 @@ const TeacherProfile = () => {
                       <Box marginTop={3} textAlign={'start'}>
                         <FormControl fullWidth>
                           <InputLabel id={`select-label-${field.fieldId}`}>
-                            {field?.label}
+                            {field.label}
                           </InputLabel>
                           <Select
                             labelId={`select-label-${field.fieldId}`}
                             id={`select-${field.fieldId}`}
                             value={dropdownValues[field.fieldId] || ''}
-                            label={field?.label}
+                            label={field.label}
                             onChange={(e) =>
                               handleDropdownChange(
                                 field.fieldId,
@@ -537,12 +621,9 @@ const TeacherProfile = () => {
                               )
                             }
                           >
-                            {field?.options?.map((option: any) => (
-                              <MenuItem
-                                key={option?.value}
-                                value={option?.value}
-                              >
-                                {option?.name}
+                            {field.options?.map((option: any) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.name}
                               </MenuItem>
                             ))}
                           </Select>
@@ -551,6 +632,7 @@ const TeacherProfile = () => {
                     ) : null}
                   </Grid>
                 ))}
+
               <Box></Box>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
