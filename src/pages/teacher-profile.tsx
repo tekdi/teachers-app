@@ -379,7 +379,7 @@ const TeacherProfile = () => {
                 </>
               ))}
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Typography variant="h4" margin={0}>
                 Subjects I Teach
               </Typography>
@@ -435,7 +435,7 @@ const TeacherProfile = () => {
                   </Grid>
                 </Grid>
               </Box>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Box>
         <Modal

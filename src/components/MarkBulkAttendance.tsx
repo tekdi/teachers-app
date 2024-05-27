@@ -27,7 +27,7 @@ interface MarkBulkAttendanceProps {
   onSaveSuccess: () => void;
 }
 
-const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
+const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   open,
   onClose,
   classId,
@@ -475,4 +475,4 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
   );
 };
 
-export default MarkBulkAttendace;
+export default MarkBulkAttendance;

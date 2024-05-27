@@ -56,6 +56,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { isFuture, format, isSameDay, parseISO, startOfDay, isAfter } from 'date-fns';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -129,9 +130,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setLoading(true);
       try {
         if (userId) {
-          let limit = 0;
-          let page = 0;
-          let filters = { userId: userId };
+          const limit = 0;
+          const page = 0;
+          const filters = { userId: userId };
           const resp = await cohortList({ limit, page, filters });
 
           const extractedNames = resp?.data?.cohortDetails;
@@ -149,7 +150,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             ?.filter(Boolean);
           setCohortsData(filteredData);
           setClassId(filteredData?.[0]?.cohortId);
-          setShowUpdateButton(true);
+          // setShowUpdateButton(true);
           setLoading(false);
         }
       } catch (error) {
@@ -167,9 +168,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setLoading(true);
       try {
         if (classId) {
-          let limit = 300;
-          let page = 0;
-          let filters = { cohortId: classId };
+          const limit = 300;
+          const page = 0;
+          const filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -239,7 +240,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       name: string;
                       attendance: string;
                     }[] => {
-                      let newArray: {
+                      const newArray: {
                         userId: string;
                         name: string;
                         attendance: string;
@@ -401,7 +402,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         (user) => user.attendance === ''
       );
       setIsAllAttendanceMarked(!allAttendance);
-      if (!allAttendance) {
+      if (allAttendance) {
         setShowUpdateButton(true);
       }
     };
@@ -429,7 +430,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       const markBulkAttendance = async () => {
         setLoading(true);
         try {
-          const response = await bulkAttendance(data);
+          await bulkAttendance(data);
           // console.log(`response bulkAttendance`, response?.responses);
           // const resp = response?.data;
           // console.log(`data`, data);
@@ -454,18 +455,25 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setState({ ...state, openModal: false });
   };
 
-  const todayDate = new Date().toISOString().split('T')[0];
-  let currentAttendance = percentageAttendance?.[todayDate] || 'Not Marked';
+// Get today's date in the format 'YYYY-MM-DD'
+// const todayDate = new Date().toISOString().split('T')[0];
+const todayDate = getTodayDate();
 
-  if (selectedDate) {
-    const selectedDateTime = new Date(selectedDate).getTime();
-    const todayDateTime = new Date(todayDate).getTime();
-    if (selectedDateTime > todayDateTime) {
-      currentAttendance = 'futureDate';
-    } else {
-      currentAttendance = percentageAttendance?.[selectedDate] || 'Not Marked';
-    }
+// Initialize currentAttendance based on today's date
+let currentAttendance = percentageAttendance?.[todayDate] || 'Not Marked';
+const isFutureDateWithoutTime = (date: Date | string) => {
+  const today = startOfDay(new Date());
+  date = startOfDay(new Date(date));
+  return isAfter(date, today);
+}
+
+if (selectedDate) {
+  if (isFutureDateWithoutTime(selectedDate)) {
+    currentAttendance = 'futureDate';
+  } else {
+    currentAttendance = percentageAttendance?.[selectedDate] || 'Not Marked';
   }
+}
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
 
   const pathColor = determinePathColor(presentPercentage);
