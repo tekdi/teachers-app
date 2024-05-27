@@ -28,6 +28,7 @@ import {
   formatToShowDateMonth,
   getTodayDate,
   shortDateFormat,
+  toPascalCase,
 } from '@/utils/Helper';
 
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
@@ -244,7 +245,7 @@ const UserAttendanceHistory = () => {
         if (resp) {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
-            name: entry.name,
+            name: toPascalCase(entry.name),
           }));
           console.log('name..........', nameUserIdArray);
           if (nameUserIdArray && (selectedDate || currentDate)) {
