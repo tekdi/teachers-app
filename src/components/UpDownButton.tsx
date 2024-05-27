@@ -97,19 +97,25 @@ const UpDownButton = () => {
           className={`up_down_btn ${isVisible ? 'up_down_btn-show' : ''}`}
           onClick={handleButtonClick}
         >
-          {isAtBottom ? (
-            <>
-              <ArrowUpwardIcon />
-              <span className="w-98">Back to Top</span>
-              <span />
-            </>
-          ) : (
-            <>
-              <span />
-              <span className="w-98">Learners</span>
-              <ArrowDownwardIcon />
-            </>
-          )}
+          <Box className="w-98">
+            {isAtBottom ? (
+              <Box
+                sx={{ height: '88px', width: '64px' }}
+                className="flex-column-center"
+              >
+                <ArrowUpwardIcon />
+                <span className="w-78">Back to Top</span>
+              </Box>
+            ) : (
+              <Box
+                sx={{ height: '80px', width: '64px' }}
+                className="flex-column-center"
+              >
+                Learners
+                <ArrowDownwardIcon />
+              </Box>
+            )}
+          </Box>
         </Box>
       )}
     </div>

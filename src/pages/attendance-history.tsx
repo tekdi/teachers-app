@@ -575,7 +575,11 @@ const UserAttendanceHistory = () => {
                 </Box>
               </Box>
 
-              <Typography marginBottom={'0px'} fontSize={'22px'} color={theme.palette.warning['A200']}>
+              <Typography
+                marginBottom={'0px'}
+                fontSize={'22px'}
+                color={theme.palette.warning['A200']}
+              >
                 {t('ATTENDANCE.DAY_WISE_ATTENDANCE')}
               </Typography>
             </Box>
@@ -615,7 +619,7 @@ const UserAttendanceHistory = () => {
             borderTop={1}
             sx={{
               position: 'sticky',
-              top: 0,
+              top: '62px',
               zIndex: 1000,
               backgroundColor: 'white',
               // boxShadow: '0px 1px 3px 0px #0000004D',
@@ -744,11 +748,23 @@ const UserAttendanceHistory = () => {
                 bgcolor: '#E6E6E6',
               }}
             >
-              <Box sx={{ color: theme.palette.warning[400], fontSize: '11px', fontWeight: 600 }}>
+              <Box
+                sx={{
+                  color: theme.palette.warning[400],
+                  fontSize: '11px',
+                  fontWeight: 600,
+                }}
+              >
                 {t('COMMON.LEARNER_NAME')}
               </Box>
               <Box sx={{ display: 'flex', gap: '13px' }}>
-                <Box sx={{ color: theme.palette.warning[400], fontSize: '11px', fontWeight: 600 }}>
+                <Box
+                  sx={{
+                    color: theme.palette.warning[400],
+                    fontSize: '11px',
+                    fontWeight: 600,
+                  }}
+                >
                   {t('ATTENDANCE.PRESENT')}
                 </Box>
                 <Box
@@ -756,7 +772,7 @@ const UserAttendanceHistory = () => {
                     color: theme.palette.warning[400],
                     fontSize: '11px',
                     paddingRight: '10px',
-                    fontWeight: 600
+                    fontWeight: 600,
                   }}
                 >
                   {t('ATTENDANCE.ABSENT')}
@@ -767,7 +783,7 @@ const UserAttendanceHistory = () => {
               <Box>
                 {displayStudentList?.map((user: any) => (
                   <AttendanceStatusListView
-                    isDisabled= {true}
+                    isDisabled={true}
                     showLink={true}
                     key={user.userId}
                     userData={user}

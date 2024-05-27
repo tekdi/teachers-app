@@ -465,15 +465,15 @@ main {
 
 .up_down_btn {
   position: fixed;
-  bottom: 80px;
-  right: 40px;
+  bottom: 40px;
+  right: 22px;
   z-index: 9999;
   box-shadow: 0px 1px 3px 0px #0000004d;
   display: flex !important;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 15px;
+  /* padding: 20px 15px; */
   border-radius: 100px;
   box-shadow: 0px 4px 8px 3px #00000026;
   background: #4a4640;
@@ -503,4 +503,15 @@ main {
 .modal_label span {
   font-size: 14px !important;
   color: #1e1b16;
+}
+.flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+
+.w-78 {
+  width: 78%;
 }
