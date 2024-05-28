@@ -113,11 +113,11 @@
     "MY_PROFILE": "My Profile",
     "VIEW_MORE": "View More",
     "VIEW_LESS": "View Less",
-    "DATA_RANAGE": "Data Ranage",
+    "DATA_RANAGE": "Data Range",
     "LEARNER_DETAILS": "Learner Details",
     "VIEW_DAY_WISE": "View Day-Wise",
     "SUBMITTED_ON": "Submitted On",
     "MARK_OBTAINED": "Mark Obtained",
-    "TOTAL_QUESTIONS":"Total Questions"
+    "TOTAL_QUESTIONS": "Total Questions"
   }
 }

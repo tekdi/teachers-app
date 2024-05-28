@@ -19,6 +19,7 @@ const customTheme = extendTheme({
         info: {
           main: '#064471',
           light: '#D6EEFF',
+          contrastText: ' #EFC570',
         },
         warning: {
           '100': '#17130B',
@@ -43,6 +44,7 @@ const customTheme = extendTheme({
           activeChannel: '#987100',
           selectedChannel: '#dba403',
         },
+        background: {},
       },
     },
     dark: {
@@ -62,6 +64,7 @@ const customTheme = extendTheme({
         info: {
           main: '#064471',
           light: '#D6EEFF',
+          contrastText: ' #EFC570',
         },
         warning: {
           '100': '#17130B',
