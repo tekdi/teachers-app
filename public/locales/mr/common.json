@@ -77,7 +77,7 @@
     "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्रे",
     "BACK_TO_TOP":"परत वर जा",
     "LEARNER":"शिकणारे",
-    "LAST_SEVEN_DAYS": "शेवटचे 7 दिवस {{date_range}}"
+    "LAST_SEVEN_DAYS_RANGE": "शेवटचे 7 दिवस {{date_range}}"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "एकूण विद्यार्थी: {{count}}",

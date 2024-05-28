@@ -946,7 +946,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       {t('DASHBOARD.OVERVIEW')}
                     </Typography>
                     <Typography className="fs-14" variant="h2">
-                      {t('DASHBOARD.LAST_SEVEN_DAYS', { date_range: dateRange })}
+                      {t('DASHBOARD.LAST_SEVEN_DAYS_RANGE"', { date_range: dateRange })}
                     </Typography>
                   </Box>
                   <Box

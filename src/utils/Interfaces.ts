@@ -147,8 +147,8 @@ export interface assesmentListServiceParam {
     userId: string;
   };
   pagination: {
-    pageSize: Number;
-    page: Number;
+    pageSize: number;
+    page: number;
   };
   sort: {
     field: string;

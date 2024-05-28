@@ -323,7 +323,7 @@ const UserAttendanceHistory = () => {
                         });
                       }
                     });
-                    if (newArray.length != 0) {
+                    if (newArray.length !== 0) {
                       setCohortMemberList(newArray);
                       setDisplayStudentList(newArray);
                     } else {
