@@ -79,7 +79,7 @@
     "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
     "BACK_TO_TOP":"Back to Top",
     "LEARNER":"Learners",
-    "LAST_SEVEN_DAYS": "Last 7 Days {{date_range}})"
+    "LAST_SEVEN_DAYS_RANGE": "Last 7 Days {{date_range}})"
 
   },
   "ATTENDANCE": {
