@@ -82,8 +82,9 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
                 textColor: pathColor,
                 pathColor: pathColor,
                 trailColor: '#E6E6E6',
+                strokeLinecap: 'round',
               })}
-              strokeWidth={15}
+              strokeWidth={20}
             />
           </div>
         );
