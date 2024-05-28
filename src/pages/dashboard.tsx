@@ -32,6 +32,7 @@ import {
   shortDateFormat,
   toPascalCase,
 } from '../utils/Helper';
+import { isAfter, startOfDay } from 'date-fns';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import AttendanceStatusListView from '../components/AttendanceStatusListView';
@@ -39,16 +40,13 @@ import Backdrop from '@mui/material/Backdrop';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
-import ExtraSessionsCard from '@/components/ExtraSessionsCard';
 import Fade from '@mui/material/Fade';
 import Header from '../components/Header';
 import Link from 'next/link';
 import Loader from '../components/Loader';
 import Modal from '@mui/material/Modal';
 import OverviewCard from '@/components/OverviewCard';
-import TimeTableCard from '@/components/TimeTableCard';
 import WeekCalender from '@/components/WeekCalender';
-import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -70,6 +68,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   const [classId, setClassId] = React.useState('');
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
+  const [presentCount, setPresentCount] = React.useState(0);
+  const [absentCount, setAbsentCount] = React.useState(0);
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
   const [selectedDate, setSelectedDate] = React.useState('');
@@ -107,6 +107,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    Height: '585px',
   };
 
   useEffect(() => {
@@ -127,9 +128,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setLoading(true);
       try {
         if (userId) {
-          let limit = 0;
-          let page = 0;
-          let filters = { userId: userId };
+          const limit = 0;
+          const page = 0;
+          const filters = { userId: userId };
           const resp = await cohortList({ limit, page, filters });
 
           const extractedNames = resp?.data?.cohortDetails;
@@ -147,7 +148,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             ?.filter(Boolean);
           setCohortsData(filteredData);
           setClassId(filteredData?.[0]?.cohortId);
-          setShowUpdateButton(true);
+          // setShowUpdateButton(true);
           setLoading(false);
         }
       } catch (error) {
@@ -165,9 +166,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setLoading(true);
       try {
         if (classId) {
-          let limit = 300;
-          let page = 0;
-          let filters = { cohortId: classId };
+          const limit = 300;
+          const page = 0;
+          const filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -237,7 +238,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       name: string;
                       attendance: string;
                     }[] => {
-                      let newArray: {
+                      const newArray: {
                         userId: string;
                         name: string;
                         attendance: string;
@@ -258,6 +259,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       if (newArray.length != 0) {
                         // newArray = newArray.filter(item => item.name);
                         setCohortMemberList(newArray);
+                        setPresentCount(
+                          newArray.filter(
+                            (user) => user.attendance === 'present'
+                          ).length
+                        );
+                        setAbsentCount(
+                          newArray.filter(
+                            (user) => user.attendance === 'absent'
+                          ).length
+                        );
                         setNumberOfCohortMembers(newArray?.length);
                       } else {
                         setCohortMemberList(nameUserIdArray);
@@ -389,7 +400,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         (user) => user.attendance === ''
       );
       setIsAllAttendanceMarked(!allAttendance);
-      if (!allAttendance) {
+      if (allAttendance) {
         setShowUpdateButton(true);
       }
     };
@@ -417,7 +428,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       const markBulkAttendance = async () => {
         setLoading(true);
         try {
-          const response = await bulkAttendance(data);
+          await bulkAttendance(data);
           // console.log(`response bulkAttendance`, response?.responses);
           // const resp = response?.data;
           // console.log(`data`, data);
@@ -442,16 +453,23 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setState({ ...state, openModal: false });
   };
 
-  const todayDate = new Date().toISOString().split('T')[0];
-  let currentAttendance = percentageAttendance?.[todayDate] || 'Not Marked';
+  // Get today's date in the format 'YYYY-MM-DD'
+  // const todayDate = new Date().toISOString().split('T')[0];
+  const todayDate = getTodayDate();
+
+  // Initialize currentAttendance based on today's date
+  let currentAttendance = percentageAttendance?.[todayDate] || 'notMarked';
+  const isFutureDateWithoutTime = (date: Date | string) => {
+    const today = startOfDay(new Date());
+    date = startOfDay(new Date(date));
+    return isAfter(date, today);
+  };
 
   if (selectedDate) {
-    const selectedDateTime = new Date(selectedDate).getTime();
-    const todayDateTime = new Date(todayDate).getTime();
-    if (selectedDateTime > todayDateTime) {
+    if (isFutureDateWithoutTime(selectedDate)) {
       currentAttendance = 'futureDate';
     } else {
-      currentAttendance = percentageAttendance?.[selectedDate] || 'Not Marked';
+      currentAttendance = percentageAttendance?.[selectedDate] || 'notMarked';
     }
   }
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
@@ -465,14 +483,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
       )}
 
       {isAuthenticated && (
-        <Box minHeight="100vh" className="linerGradient">
+        <Box minHeight="100vh">
           <Header />
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Box width={'100%'}>
+            <Box width={'100%'} sx={{ backgroundColor: 'white' }}>
               <Typography
                 textAlign={'left'}
                 fontSize={'22px'}
-                m={'1rem'}
+                m={'1rem 1rem 0.8rem'}
                 color={'black'}
               >
                 {t('DASHBOARD.DASHBOARD')}
@@ -484,9 +502,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
           )}
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
-              bgcolor={theme.palette.warning['A900']}
               paddingBottom={'20px'}
               width={'100%'}
+              className="linerGradient"
             >
               <Box display={'flex'} flexDirection={'column'} padding={'1rem'}>
                 <Box display={'flex'} justifyContent={'space-between'}>
@@ -508,14 +526,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     }}
                     onClick={viewAttendanceHistory}
                   >
-                    <Typography marginBottom={'0px'}>
+                    <Typography
+                      marginBottom={'0'}
+                      style={{ fontWeight: '500' }}
+                    >
                       {getMonthName()}
                     </Typography>
                     <CalendarMonthIcon />
                   </Box>
                 </Box>
 
-                <Box sx={{ mt: 0.6 }}>
+                <Box sx={{ mt: 1.5 }}>
                   <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
                     <FormControl
                       className="drawer-select"
@@ -526,7 +547,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         onChange={handleCohortSelection}
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
-                        disabled = {cohortsData?.length == 1 ? true : false}
+                        disabled={cohortsData?.length == 1 ? true : false}
                         className="SelectLanguages fs-14 fw-500"
                         style={{
                           borderRadius: '0.5rem',
@@ -553,10 +574,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </FormControl>
                   </Box>
                 </Box>
-                <WeekCalender
-                  showDetailsHandle={showDetailsHandle}
-                  data={percentageAttendanceData}
-                />
+                <Box sx={{ mt: 1.5 }}>
+                  <WeekCalender
+                    showDetailsHandle={showDetailsHandle}
+                    data={percentageAttendanceData}
+                  />
+                </Box>
                 <Box
                   border={'1px solid black'}
                   height={'auto'}
@@ -565,7 +588,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   borderRadius={'1rem'}
                   bgcolor={theme.palette.warning['A200']}
                   textAlign={'left'}
-                  margin={'15px 0 0 0 '}
+                  margin={'25px 0 15px 0 '}
                 >
                   <Stack
                     direction="row"
@@ -574,7 +597,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     justifyContent={'space-between'}
                   >
                     <Box display={'flex'}>
-                      {currentAttendance !== 'Not Marked' &&
+                      {currentAttendance !== 'notMarked' &&
                         currentAttendance !== 'futureDate' && (
                           <>
                             <Box
@@ -586,7 +609,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               <CircularProgressbar
                                 value={currentAttendance?.present_percentage}
                                 background
-                                backgroundPadding={6}
+                                backgroundPadding={8}
                                 styles={buildStyles({
                                   textColor: pathColor,
                                   pathColor: pathColor,
@@ -594,7 +617,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   strokeLinecap: 'round',
                                   backgroundColor: '#ffffff',
                                 })}
-                                strokeWidth={15}
+                                strokeWidth={20}
                               />
                             </Box>
                             <Box>
@@ -623,7 +646,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             </Box>
                           </>
                         )}
-                      {currentAttendance === 'Not Marked' &&
+                      {currentAttendance === 'notMarked' &&
                         currentAttendance !== 'futureDate' && (
                           <Typography
                             sx={{ color: theme.palette.warning['A400'] }}
@@ -638,6 +661,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         <Typography
                           sx={{ color: theme.palette.warning['A400'] }}
                           fontSize={'0.8rem'}
+                          fontStyle={'italic'}
+                          fontWeight={'500'}
                         >
                           {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
                         </Typography>
@@ -654,7 +679,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       onClick={handleModalToggle}
                       disabled={currentAttendance === 'futureDate'}
                     >
-                      {t('COMMON.MARK')}
+                      {currentAttendance === 'notMarked' ||
+                      currentAttendance === 'futureDate'
+                        ? t('COMMON.MARK')
+                        : t('COMMON.MODIFY')}
                     </Button>
                   </Stack>
                 </Box>
@@ -739,9 +767,33 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             count: numberOfCohortMembers,
                           })}
                         </Typography>
+                        <Box display={'flex'} justifyContent={'space-between'}>
+                          <Typography
+                            sx={{
+                              marginTop: '0px',
+                              fontSize: '12px',
+                              color: theme.palette.warning['A200'],
+                            }}
+                          >
+                            {t('ATTENDANCE.PRESENT_STUDENTS', {
+                              count: presentCount,
+                            })}
+                          </Typography>
+                          <Typography
+                            sx={{
+                              marginTop: '0px',
+                              fontSize: '12px',
+                              color: theme.palette.warning['A200'],
+                            }}
+                          >
+                            {t('ATTENDANCE.ABSENT_STUDENTS', {
+                              count: absentCount,
+                            })}
+                          </Typography>
+                        </Box>
                         {cohortMemberList && cohortMemberList?.length != 0 ? (
                           <Box
-                            height={'56vh'}
+                            height={'53vh'}
                             sx={{ overflowY: 'scroll', marginTop: '10px' }}
                           >
                             <Box>
@@ -863,8 +915,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Link
                       className="flex-center fs-14 text-decoration"
                       href={'/attendance-overview'}
+                      style={{
+                        color: theme.palette.secondary.main,
+                        fontWeight: '500',
+                      }}
                     >
-                      {t('DASHBOARD.MORE_DETAILS')}{' '}
+                      {t('DASHBOARD.MORE_DETAILS')}
                       <ArrowForwardSharpIcon sx={{ height: '18px' }} />
                     </Link>
                   </Box>
@@ -876,12 +932,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   />
                 )}
               </Box>
-              <Box display={'flex'} className="card_overview">
-                <Grid container spacing={0}>
-                  <Grid item xs={5}>
+              <Box display={'flex'} className="card_overview" mx={'1rem'}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
                     <OverviewCard label="Centre Attendance" value="71%" />
                   </Grid>
-                  <Grid item xs={7}>
+                  <Grid item xs={8}>
                     <OverviewCard
                       label="Low Attendance Learners"
                       value="Bharat Kumar, Ankita Kulkarni, +3 more"

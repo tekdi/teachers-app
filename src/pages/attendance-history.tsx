@@ -36,6 +36,7 @@ import AttendanceStatus from '@/components/AttendanceStatus';
 import AttendanceStatusListView from '@/components/AttendanceStatusListView';
 import ClearIcon from '@mui/icons-material/Clear';
 import Header from '../components/Header';
+import { Height } from '@mui/icons-material';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import LearnerListHeader from '@/components/LearnerListHeader';
 import Loader from '../components/Loader';
@@ -43,6 +44,7 @@ import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import MonthCalender from '@/components/MonthCalender';
 import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '../components/SortingModal';
+import UpDownButton from '@/components/UpDownButton';
 import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -555,7 +557,7 @@ const UserAttendanceHistory = () => {
             display={'flex'}
             flexDirection={'column'}
             gap={'1rem'}
-            padding={'1rem'}
+            padding={'0.5rem 1rem'}
             alignItems={'center'}
           >
             <Box
@@ -563,6 +565,7 @@ const UserAttendanceHistory = () => {
               sx={{ color: theme.palette.warning['A200'] }}
               gap={'10px'}
               width={'100%'}
+              paddingTop={'10px'}
             >
               <Box onClick={handleBackEvent}>
                 <Box>
@@ -573,12 +576,19 @@ const UserAttendanceHistory = () => {
                 </Box>
               </Box>
 
-              <Typography marginBottom={'0px'} fontSize={'25px'}>
+              <Typography
+                marginBottom={'0px'}
+                fontSize={'22px'}
+                color={theme.palette.warning['A200']}
+              >
                 {t('ATTENDANCE.DAY_WISE_ATTENDANCE')}
               </Typography>
             </Box>
           </Box>
-          <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
+          <Box
+            sx={{ minWidth: 120, gap: '15px', paddingBottom: '10px' }}
+            display={'flex'}
+          >
             <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
               <Select
                 value={classId}
@@ -613,7 +623,7 @@ const UserAttendanceHistory = () => {
             borderTop={1}
             sx={{
               position: 'sticky',
-              top: 0,
+              top: '62px',
               zIndex: 1000,
               backgroundColor: 'white',
               // boxShadow: '0px 1px 3px 0px #0000004D',
@@ -637,7 +647,7 @@ const UserAttendanceHistory = () => {
             onChange={handleActiveStartDateChange}
             onDateChange={handleSelectedDateChange}
           />
-          <Box padding={'0 10px'} mt={2}>
+          <Box mt={2}>
             {/*----------------------------search and Sort---------------------------------------*/}
             <Stack mr={1} ml={1}>
               <Box mt={3} mb={3} boxShadow={'none'}>
@@ -742,21 +752,34 @@ const UserAttendanceHistory = () => {
                 bgcolor: '#E6E6E6',
               }}
             >
-              <Box sx={{ color: '#1F1B13', fontSize: '11px' }}>
-                {t(' LEARNER_NAME')}
+              <Box
+                sx={{
+                  color: theme.palette.warning[400],
+                  fontSize: '11px',
+                  fontWeight: 600,
+                }}
+              >
+                {t('COMMON.LEARNER_NAME')}
               </Box>
               <Box sx={{ display: 'flex', gap: '13px' }}>
-                <Box sx={{ color: '#1F1B13', fontSize: '11px' }}>
-                  {t('PRESENT')}
+                <Box
+                  sx={{
+                    color: theme.palette.warning[400],
+                    fontSize: '11px',
+                    fontWeight: 600,
+                  }}
+                >
+                  {t('ATTENDANCE.PRESENT')}
                 </Box>
                 <Box
                   sx={{
-                    color: '#1F1B13',
+                    color: theme.palette.warning[400],
                     fontSize: '11px',
                     paddingRight: '10px',
+                    fontWeight: 600,
                   }}
                 >
-                  {t('ABSENT')}
+                  {t('ATTENDANCE.ABSENT')}
                 </Box>
               </Box>
             </Box>
@@ -764,6 +787,8 @@ const UserAttendanceHistory = () => {
               <Box>
                 {displayStudentList?.map((user: any) => (
                   <AttendanceStatusListView
+                    isDisabled={true}
+                    showLink={true}
                     key={user.userId}
                     userData={user}
                     isEdit={false}
@@ -795,6 +820,7 @@ const UserAttendanceHistory = () => {
           />
         </Box>
       </Box>
+      <UpDownButton />
     </Box>
   );
 };

@@ -3,10 +3,14 @@ import { useEffect, useState } from 'react';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Box } from '@mui/material';
+import { usePathname } from 'next/navigation';
+import { useTranslation } from 'next-i18next';
 
 const UpDownButton = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
+  const pathname = usePathname();
+  const { t } = useTranslation();
 
   const trackScroll = () => {
     const scrolled = window.pageYOffset;
@@ -14,9 +18,12 @@ const UpDownButton = () => {
     const totalHeight = document.documentElement.scrollHeight;
 
     const atBottom =
-      scrolled === 0 || scrolled + viewportHeight >= totalHeight - 10;
-    +setIsVisible(scrolled > 100 || atBottom);
-    +setIsAtBottom(atBottom);
+      pathname === '/attendance-overview' ? scrolled >= 300 : scrolled >= 720;
+
+    const atTop =
+      pathname === '/attendance-overview' ? scrolled <= 320 : scrolled <= 720;
+    setIsVisible(atTop || atBottom);
+    setIsAtBottom(atBottom);
   };
 
   const backToTop = () => {
@@ -33,11 +40,24 @@ const UpDownButton = () => {
   const scrollToBottom = () => {
     const targetPosition =
       document.documentElement.scrollHeight -
-      document.documentElement.clientHeight -
-      2000;
+      document.documentElement.clientHeight;
     const scrollStep = (targetPosition - window.pageYOffset) / (500 / 15);
     const animateScroll = () => {
-      if (window.pageYOffset < targetPosition) {
+      if (window.pageYOffset < targetPosition - 1) {
+        window.scrollBy(0, scrollStep);
+        requestAnimationFrame(animateScroll);
+      }
+    };
+    requestAnimationFrame(animateScroll);
+  };
+
+  const scrollToHeight = (height: any) => {
+    const scrollStep = (height - window.pageYOffset) / (500 / 15);
+    const animateScroll = () => {
+      if (
+        (scrollStep > 0 && window.pageYOffset < height - 1) ||
+        (scrollStep < 0 && window.pageYOffset > height + 1)
+      ) {
         window.scrollBy(0, scrollStep);
         requestAnimationFrame(animateScroll);
       }
@@ -47,22 +67,23 @@ const UpDownButton = () => {
 
   const handleButtonClick = () => {
     if (isAtBottom) {
-      scrollToBottom();
-    } else {
       backToTop();
+    } else {
+      scrollToHeight(pathname === '/attendance-overview' ? 320 : 720);
     }
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
+    if (typeof window !== 'undefined') {
       window.addEventListener('scroll', trackScroll);
+      trackScroll(); // Check initial scroll position when the component mounts
     }
     return () => {
-      if (typeof window !== 'undefined' && window.localStorage) {
+      if (typeof window !== 'undefined') {
         window.removeEventListener('scroll', trackScroll);
       }
     };
-  }, []);
+  }, [pathname]);
 
   return (
     <div>
@@ -71,11 +92,25 @@ const UpDownButton = () => {
           className={`up_down_btn ${isVisible ? 'up_down_btn-show' : ''}`}
           onClick={handleButtonClick}
         >
-          <span>{isAtBottom ? '' : <ArrowUpwardIcon />}</span>
-          <span className="w-98">
-            {isAtBottom ? 'Learners' : 'Back to Top'}
-          </span>
-          <span>{isAtBottom ? <ArrowDownwardIcon /> : ''}</span>
+          <Box className="w-98">
+            {isAtBottom ? (
+              <Box
+                sx={{ height: '88px', width: '64px' }}
+                className="flex-column-center"
+              >
+                <ArrowUpwardIcon />
+                <span className="w-78"> {t('DASHBOARD.BACK_TO_TOP')}</span>
+              </Box>
+            ) : (
+              <Box
+                sx={{ height: '80px', width: '64px' }}
+                className="flex-column-center"
+              >
+                {t('DASHBOARD.LEARNER')}
+                <ArrowDownwardIcon />
+              </Box>
+            )}
+          </Box>
         </Box>
       )}
     </div>

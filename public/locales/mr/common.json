@@ -74,10 +74,14 @@
     "CENTER_ATTENDANCE": "केंद्रीय उपस्थिती",
     "MY_TIMETABLE": "माझे वेळापत्रक",
     "MY_TEACHING_CENTERS": "माझे शिक्षण केंद्र",
-    "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्रे"
+    "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्रे",
+    "BACK_TO_TOP":"परत वर जा",
+    "LEARNER":"शिकणारे"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "एकूण विद्यार्थी: {{count}}",
+    "PRESENT_STUDENTS": "उपस्थित विद्यार्थी: {{count}}",
+    "ABSENT_STUDENTS": "अनुपस्थित विद्यार्थी: {{count}}",
     "MARK_ALL": "सर्व चिन्हित करा",
     "CLEAR": "स्पष्ट",
     "ATTENDANCE_MARKED_SUCCESSFULLY": "उपस्थिती यशस्वीरित्या चिन्हांकित केली गेली आहे",

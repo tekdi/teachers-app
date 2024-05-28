@@ -25,6 +25,8 @@ export interface MarkAttendanceProps {
 }
 
 export interface AttendanceStatusListViewProps {
+  isDisabled?: boolean;
+  showLink?: boolean;
   userData?: UserAttendanceObj;
   isEdit?: boolean;
   isBulkAction?: boolean;

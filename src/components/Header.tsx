@@ -9,12 +9,12 @@ import { usePathname, useRouter } from 'next/navigation';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Divider from '@mui/material/Divider';
 import Image from 'next/image';
-import logoLight from '../../public/images/logo-light.png';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import dynamic from 'next/dynamic';
+import logoLight from '../../public/images/logo-light.png';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
@@ -115,6 +115,7 @@ const Header: React.FC = () => {
           zIndex: '999',
           width: '100%',
           bgcolor: ' #FFFFFF',
+          maxWidth: '896px',
         }}
       >
         <Stack
@@ -127,7 +128,7 @@ const Header: React.FC = () => {
           boxShadow="0px 1px 3px 0px #0000004D"
         >
           <Box onClick={toggleDrawer(true)} mt={'0.5rem'} paddingLeft={'1rem'}>
-            <MenuIcon />
+            <MenuIcon style={{ fill: theme.palette.warning['A200'] }} />
           </Box>
           <Box sx={{ margin: '0 auto' }}>
             <Image
@@ -152,7 +153,7 @@ const Header: React.FC = () => {
             flexDirection={'column'}
             mt={'0.5rem'}
           >
-            <AccountCircleIcon fontSize="large" color="action" />
+            <AccountCircleIcon fontSize="large" style={{ fill: theme.palette.warning['A200'] }} />
           </Box>
           <div>
             <StyledMenu

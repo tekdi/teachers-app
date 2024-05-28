@@ -91,8 +91,9 @@ function AttendanceStatus({
                         textColor: pathColor,
                         pathColor: pathColor,
                         trailColor: '#E6E6E6',
+                        strokeLinecap: 'round',
                       })}
-                      strokeWidth={15}
+                      strokeWidth={20}
                     />
                   </Box>
                   <Box display={'flex'} alignItems={'center'}>
@@ -127,7 +128,12 @@ function AttendanceStatus({
             )}
 
             {attendanceStatus === 'futureDate' && (
-              <Typography fontSize={'0.8rem'} color={pathColor}>
+              <Typography
+                fontSize={'0.8rem'}
+                color={pathColor}
+                fontStyle="italic"
+                fontWeight={'500'}
+              >
                 {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
               </Typography>
             )}

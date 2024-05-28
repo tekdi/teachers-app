@@ -5,6 +5,7 @@ import {
   attendanceStatusList,
   bulkAttendance,
 } from '@/services/AttendanceService';
+import { shortDateFormat, toPascalCase } from '../utils/Helper';
 
 import { AttendanceStatusListProps } from '../utils/Interfaces';
 import AttendanceStatusListView from './AttendanceStatusListView';
@@ -12,7 +13,6 @@ import Backdrop from '@mui/material/Backdrop';
 import CloseIcon from '@mui/icons-material/Close';
 import Loader from './Loader';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { shortDateFormat, toPascalCase } from '../utils/Helper';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
@@ -27,7 +27,7 @@ interface MarkBulkAttendanceProps {
   onSaveSuccess: () => void;
 }
 
-const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
+const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   open,
   onClose,
   classId,
@@ -40,6 +40,8 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
   //   const [open, setOpen] = React.useState(false);
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
+  const [presentCount, setPresentCount] = React.useState(0);
+  const [absentCount, setAbsentCount] = React.useState(0);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
   const [isAllAttendanceMarked, setIsAllAttendanceMarked] =
     React.useState(false);
@@ -62,6 +64,7 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    Height: '585px',
   };
 
   const submitBulkAttendanceAction = (
@@ -191,6 +194,16 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
                       });
                       if (newArray.length != 0) {
                         setCohortMemberList(newArray);
+                        setPresentCount(
+                          newArray.filter(
+                            (user) => user.attendance === 'present'
+                          ).length
+                        );
+                        setAbsentCount(
+                          newArray.filter(
+                            (user) => user.attendance === 'absent'
+                          ).length
+                        );
                         setNumberOfCohortMembers(newArray?.length);
                       } else {
                         setCohortMemberList(nameUserIdArray);
@@ -345,9 +358,35 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
                   count: numberOfCohortMembers,
                 })}
               </Typography>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Typography
+                  sx={{
+                    marginTop: '0px',
+                    marginLeft: '0.5rem',
+                    fontSize: '12px',
+                    color: theme.palette.warning['A200'],
+                  }}
+                >
+                  {t('ATTENDANCE.PRESENT_STUDENTS', {
+                    count: presentCount,
+                  })}
+                </Typography>
+                <Typography
+                  sx={{
+                    marginTop: '0px',
+                    marginLeft: '0.5rem',
+                    fontSize: '12px',
+                    color: theme.palette.warning['A200'],
+                  }}
+                >
+                  {t('ATTENDANCE.ABSENT_STUDENTS', {
+                    count: absentCount,
+                  })}
+                </Typography>
+              </Box>
               {cohortMemberList && cohortMemberList?.length != 0 ? (
                 <Box
-                  height={'56vh'}
+                  height={'53vh'}
                   sx={{
                     overflowY: 'scroll',
                     marginTop: '10px',
@@ -390,7 +429,7 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
                     marginBottom={'8px'}
                     sx={{
                       background: '#fff',
-                      padding: '15px 0 15px 0',
+                      padding: '15px 0 10px 0',
                       width: '93%',
                     }}
                   >
@@ -437,4 +476,4 @@ const MarkBulkAttendace: React.FC<MarkBulkAttendanceProps> = ({
   );
 };
 
-export default MarkBulkAttendace;
+export default MarkBulkAttendance;

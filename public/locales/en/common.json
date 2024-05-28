@@ -76,10 +76,15 @@
     "CENTER_ATTENDANCE": "Center Attendance",
     "MY_TIMETABLE": "My Timetable",
     "MY_TEACHING_CENTERS": "My Teaching Centers",
-    "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions"
+    "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
+    "BACK_TO_TOP":"Back to Top",
+    "LEARNER":"Learners"
+
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total Number of Learners: {{count}}",
+    "PRESENT_STUDENTS": "Present Learners: {{count}}",
+    "ABSENT_STUDENTS": "Absent Learners: {{count}}",
     "PRESENT": "Present",
     "ABSENT": "Absent",
     "HALF_DAY": "Half Day",

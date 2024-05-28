@@ -65,7 +65,7 @@ function App({ Component, pageProps }: AppProps) {
     <>
       <style jsx global>{`
         html {
-          font-family: ${poppins.style.fontFamily};
+          font-family: ${poppins.style.fontFamily} !important;
         }
       `}</style>
       <CssVarsProvider theme={customTheme}>
