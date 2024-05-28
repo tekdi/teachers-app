@@ -78,7 +78,8 @@
     "MY_TEACHING_CENTERS": "My Teaching Centers",
     "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
     "BACK_TO_TOP":"Back to Top",
-    "LEARNER":"Learners"
+    "LEARNER":"Learners",
+    "LAST_SEVEN_DAYS": "Last 7 Days {{date_range}})"
 
   },
   "ATTENDANCE": {
@@ -101,7 +102,7 @@
     "DAY_WISE_ATTENDANCE": "Day-Wise Attendance",
     "ATTENDANCE_OVERVIEW": "Attendance Overview",
     "CENTER_ATTENDANCE": "Center Attendance",
-    "LOW_ATTENDANCE_STUDENTS": "Low Attendance Students"
+    "LOW_ATTENDANCE_STUDENTS": "Low Attendance Learners"
   },
   "PROFILE": {
     "EDIT_PROFILE": "Edit Profile",

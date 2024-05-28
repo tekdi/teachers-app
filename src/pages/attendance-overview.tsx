@@ -28,8 +28,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '@/components/SortingModal';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
 import UpDownButton from '@/components/UpDownButton';
-import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
-import { cohort } from '@/utils/Interfaces';
+import { classesMissedAttendancePercentList, getCohortAttendance,} from '@/services/AttendanceService';
+import { cohort, cohortAttendancePercentParam } from '@/utils/Interfaces';
 import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -59,6 +59,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [selectedValue, setSelectedValue] = React.useState<string>(
     t('COMMON.AS_OF_TODAY')
   );
+  const [presentPercentage, setPresentPercentage] = React.useState<string>('');
+  const [lowAttendanceLearnerList,setLowAttendanceLearnerList] = React.useState<any>([]);
 
   const theme = useTheme<any>();
   const pathname = usePathname();
@@ -166,9 +168,52 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 );
                 setLearnerData(mergedArray);
                 setDisplayStudentList(mergedArray);
-              }
+                const presentPercentages = mergedArray.map((student) =>
+                  parseFloat(student.present_percent)
+                );
+
+                // Find the minimum present_percent
+                const minPresentPercent = Math.min(...presentPercentages);
+
+                // Filter students with the minimum present_percent
+                const studentsWithLowestAttendance = mergedArray.filter(
+                  (student) =>
+                    parseFloat(student.present_percent) === minPresentPercent
+                );
+
+                // Extract names of these students
+                const namesOfLowestAttendance: any[] =
+                  studentsWithLowestAttendance.map((student) => student.name);
+                  setLowAttendanceLearnerList(namesOfLowestAttendance)
+              } 
             }
           }
+        }
+        if (classId) {
+          const cohortAttendancePercent = async () => {
+            const cohortAttendanceData: cohortAttendancePercentParam = {
+              limit: 0,
+              page: 0,
+              filters: {
+                scope: 'student',
+                fromDate: isFromDate,
+                toDate: isToDate,
+                contextId: classId,
+              },
+              facets: ['contextId'],
+            };
+            const res = await getCohortAttendance(cohortAttendanceData);
+            const response = res?.data?.result;
+            const contextData =
+              response.contextId && response.contextId[classId];
+            const presentPercentage = contextData ? (
+              contextData.present_percentage
+            ) : (
+              <Typography>N/A</Typography>
+            );
+            setPresentPercentage(presentPercentage);
+          };
+          cohortAttendancePercent();
         }
       }
     } catch (error) {
@@ -300,6 +345,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     <Box>
       <UpDownButton />
       <Header />
+      {loading && (
+                <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+              )}
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box width={'100%'}>
           <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
@@ -307,7 +355,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           </Typography>
         </Box>
       </Box>
-
+      
       <Box sx={{ mt: 0.6 }}>
         <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
           <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
@@ -315,7 +363,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               value={classId}
               onChange={handleCohortSelection}
               displayEmpty
-              disabled = {cohortsData?.length == 1 ? true : false}
+              disabled={cohortsData?.length == 1 ? true : false}
               inputProps={{ 'aria-label': 'Without label' }}
               className="SelectLanguages fs-14 fw-500"
               style={{
@@ -349,18 +397,25 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       />
 
       <Box display={'flex'} className="card_overview">
-        <Grid container spacing={0}>
+        <Grid container spacing={2} >
           <Grid item xs={5}>
             <OverviewCard
               label={t('ATTENDANCE.CENTER_ATTENDANCE')}
-              value="71%"
+              value={learnerData.length? (presentPercentage + " %") : presentPercentage}
             />
           </Grid>
           <Grid item xs={7}>
-            <OverviewCard
+            {/* <OverviewCard
               label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
-              value="Bharat Kumar, Ankita Kulkarni, +3 more"
-            />
+              {...loading && (
+                <Loader loadingText={t('COMMON.LOADING')} showBackdrop={false} />
+              )}
+              value= { learnerData.length ? lowAttendanceLearnerList: "N/A"}
+            /> */}
+            <OverviewCard
+                      label="Low Attendance Learners"
+                      value="Bharat Kumar, Ankita Kulkarni, +3 more"
+                    />
           </Grid>
         </Grid>
       </Box>
