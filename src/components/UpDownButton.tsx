@@ -18,19 +18,12 @@ const UpDownButton = () => {
     const totalHeight = document.documentElement.scrollHeight;
 
     const atBottom =
-      pathname == '/attendance-overview'
-        ? window.pageYOffset >= 300
-        : window.pageYOffset >= 780;
+      pathname === '/attendance-overview' ? scrolled >= 300 : scrolled >= 720;
 
-    // pathname == '/attendance-overview' ? 320 : 780
     const atTop =
-      pathname == '/attendance-overview' ? scrolled <= 320 : scrolled <= 780;
+      pathname === '/attendance-overview' ? scrolled <= 320 : scrolled <= 720;
     setIsVisible(atTop || atBottom);
-    setIsAtBottom(
-      pathname == '/attendance-overview'
-        ? window.pageYOffset >= 300
-        : window.pageYOffset >= 780
-    );
+    setIsAtBottom(atBottom);
   };
 
   const backToTop = () => {
@@ -76,21 +69,21 @@ const UpDownButton = () => {
     if (isAtBottom) {
       backToTop();
     } else {
-      // Scroll to a particular screen height, for example, 500 pixels from the top
-      scrollToHeight(pathname == '/attendance-overview' ? 320 : 780);
+      scrollToHeight(pathname === '/attendance-overview' ? 320 : 720);
     }
   };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.addEventListener('scroll', trackScroll);
+      trackScroll(); // Check initial scroll position when the component mounts
     }
     return () => {
       if (typeof window !== 'undefined') {
         window.removeEventListener('scroll', trackScroll);
       }
     };
-  }, []);
+  }, [pathname]);
 
   return (
     <div>

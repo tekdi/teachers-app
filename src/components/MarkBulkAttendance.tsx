@@ -11,6 +11,7 @@ import { AttendanceStatusListProps } from '../utils/Interfaces';
 import AttendanceStatusListView from './AttendanceStatusListView';
 import Backdrop from '@mui/material/Backdrop';
 import CloseIcon from '@mui/icons-material/Close';
+import { Height } from '@mui/icons-material';
 import Loader from './Loader';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { useTheme } from '@mui/material/styles';
@@ -64,6 +65,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    Height: '585px',
   };
 
   const submitBulkAttendanceAction = (
@@ -385,7 +387,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
               </Box>
               {cohortMemberList && cohortMemberList?.length != 0 ? (
                 <Box
-                  height={'56vh'}
+                  height={'53vh'}
                   sx={{
                     overflowY: 'scroll',
                     marginTop: '10px',
@@ -428,7 +430,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                     marginBottom={'8px'}
                     sx={{
                       background: '#fff',
-                      padding: '15px 0 15px 0',
+                      padding: '15px 0 10px 0',
                       width: '93%',
                     }}
                   >
