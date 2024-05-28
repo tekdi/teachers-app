@@ -113,8 +113,8 @@ export interface AttendancePercentageProps {
   filters: {
     contextId: string;
     scope: string;
-    toDate: string;
-    fromDate: string;
+    toDate: string | Date;
+    fromDate: string | Date;
   };
   facets: Array<string>;
 }
@@ -155,3 +155,18 @@ export interface assesmentListServiceParam {
     order: String;
   };
 }
+
+
+export interface cohortAttendancePercentParam {
+  limit: number;
+  page: number;
+  filters: {
+    scope: string;
+    fromDate: Date | string;
+    toDate: Date | string;
+    contextId: string
+  };
+  facets: Array<string>;
+}
+
+
