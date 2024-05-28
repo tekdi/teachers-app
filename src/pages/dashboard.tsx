@@ -34,6 +34,7 @@ import {
   shortDateFormat,
   toPascalCase,
 } from '../utils/Helper';
+import { isAfter, startOfDay } from 'date-fns';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import AttendanceStatusListView from '../components/AttendanceStatusListView';
@@ -41,16 +42,13 @@ import Backdrop from '@mui/material/Backdrop';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
-import ExtraSessionsCard from '@/components/ExtraSessionsCard';
 import Fade from '@mui/material/Fade';
 import Header from '../components/Header';
 import Link from 'next/link';
 import Loader from '../components/Loader';
 import Modal from '@mui/material/Modal';
 import OverviewCard from '@/components/OverviewCard';
-import TimeTableCard from '@/components/TimeTableCard';
 import WeekCalender from '@/components/WeekCalender';
-import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -58,7 +56,6 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { isFuture, format, isSameDay, parseISO, startOfDay, isAfter } from 'date-fns';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -118,6 +115,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    Height: '585px',
   };
 
   useEffect(() => {
@@ -498,25 +496,25 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setState({ ...state, openModal: false });
   };
 
-// Get today's date in the format 'YYYY-MM-DD'
-// const todayDate = new Date().toISOString().split('T')[0];
-const todayDate = getTodayDate();
+  // Get today's date in the format 'YYYY-MM-DD'
+  // const todayDate = new Date().toISOString().split('T')[0];
+  const todayDate = getTodayDate();
 
-// Initialize currentAttendance based on today's date
-let currentAttendance = percentageAttendance?.[todayDate] || 'Not Marked';
-const isFutureDateWithoutTime = (date: Date | string) => {
-  const today = startOfDay(new Date());
-  date = startOfDay(new Date(date));
-  return isAfter(date, today);
-}
+  // Initialize currentAttendance based on today's date
+  let currentAttendance = percentageAttendance?.[todayDate] || 'Not Marked';
+  const isFutureDateWithoutTime = (date: Date | string) => {
+    const today = startOfDay(new Date());
+    date = startOfDay(new Date(date));
+    return isAfter(date, today);
+  };
 
-if (selectedDate) {
-  if (isFutureDateWithoutTime(selectedDate)) {
-    currentAttendance = 'futureDate';
-  } else {
-    currentAttendance = percentageAttendance?.[selectedDate] || 'Not Marked';
+  if (selectedDate) {
+    if (isFutureDateWithoutTime(selectedDate)) {
+      currentAttendance = 'futureDate';
+    } else {
+      currentAttendance = percentageAttendance?.[selectedDate] || 'Not Marked';
+    }
   }
-}
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
 
   const pathColor = determinePathColor(presentPercentage);
@@ -835,7 +833,7 @@ if (selectedDate) {
                         </Box>
                         {cohortMemberList && cohortMemberList?.length != 0 ? (
                           <Box
-                            height={'56vh'}
+                            height={'53vh'}
                             sx={{ overflowY: 'scroll', marginTop: '10px' }}
                           >
                             <Box>
