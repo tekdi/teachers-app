@@ -25,14 +25,6 @@ import {
   bulkAttendance,
 } from '../services/AttendanceService';
 import {
-  format,
-  isAfter,
-  isFuture,
-  isSameDay,
-  parseISO,
-  startOfDay,
-} from 'date-fns';
-import {
   formatDate,
   formatSelectedDate,
   getMonthName,
@@ -40,6 +32,7 @@ import {
   shortDateFormat,
   toPascalCase,
 } from '../utils/Helper';
+import { isAfter, startOfDay } from 'date-fns';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import AttendanceStatusListView from '../components/AttendanceStatusListView';
@@ -47,17 +40,13 @@ import Backdrop from '@mui/material/Backdrop';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
-import ExtraSessionsCard from '@/components/ExtraSessionsCard';
 import Fade from '@mui/material/Fade';
 import Header from '../components/Header';
-import { Height } from '@mui/icons-material';
 import Link from 'next/link';
 import Loader from '../components/Loader';
 import Modal from '@mui/material/Modal';
 import OverviewCard from '@/components/OverviewCard';
-import TimeTableCard from '@/components/TimeTableCard';
 import WeekCalender from '@/components/WeekCalender';
-import WeekDays from '@/components/WeekDays';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
