@@ -517,3 +517,13 @@ main {
 .w-78 {
   width: 78%;
 }
+/* @media (min-width: 1350px) {
+  .up_down_btn {
+    right: 400px;
+  }
+}
+@media (min-width: 1200px) {
+  .up_down_btn {
+    right: 360px;
+  }
+} */
