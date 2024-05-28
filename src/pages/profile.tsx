@@ -31,7 +31,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 const TeacherProfile = () => {
-  const user_placeholder_img: string = userPicture.src;
+  const user_placeholder_img: string = user_placeholder.src;
 
   interface CustomField {
     fieldId: string;
@@ -420,29 +420,30 @@ const TeacherProfile = () => {
                         flexWrap: 'wrap',
                       }}
                     >
-                      {orderedSubjects?.map((subject, index) => (
-                        <Button
-                          key={index}
-                          size="small"
-                          variant={
-                            mainSubjects?.includes(subject)
-                              ? 'contained'
-                              : 'outlined'
-                          }
-                          sx={{
-                            backgroundColor: mainSubjects?.includes(subject)
-                              ? theme.palette.info.contrastText
-                              : 'none',
-                            borderRadius: '8px',
-                            color: theme.palette.warning.A200,
-                            whiteSpace: 'nowrap',
-                            boxShadow: 'none',
-                            border: `1px solid ${theme.palette.warning[900]}`,
-                          }}
-                        >
-                          {subject}
-                        </Button>
-                      ))}
+                      {orderedSubjects &&
+                        orderedSubjects?.map((subject, index) => (
+                          <Button
+                            key={index}
+                            size="small"
+                            variant={
+                              mainSubjects?.includes(subject)
+                                ? 'contained'
+                                : 'outlined'
+                            }
+                            sx={{
+                              backgroundColor: mainSubjects?.includes(subject)
+                                ? theme.palette.info.contrastText
+                                : 'none',
+                              borderRadius: '8px',
+                              color: theme.palette.warning.A200,
+                              whiteSpace: 'nowrap',
+                              boxShadow: 'none',
+                              border: `1px solid ${theme.palette.warning[900]}`,
+                            }}
+                          >
+                            {subject}
+                          </Button>
+                        ))}
                     </Box>
                   </Grid>
                 );
