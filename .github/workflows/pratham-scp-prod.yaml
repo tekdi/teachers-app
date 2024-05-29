@@ -23,7 +23,7 @@ jobs:
       - name: List Contents
         run: |
            echo "Contents of the current directory (in reverse order):"
-            ls -lr
+            ls -lra
 
       - name: List Contents
         run: |
