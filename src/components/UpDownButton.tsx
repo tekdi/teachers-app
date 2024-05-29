@@ -15,74 +15,38 @@ const UpDownButton = () => {
   const trackScroll = () => {
     const scrolled = window.pageYOffset;
     const viewportHeight = document.documentElement.clientHeight;
-    const totalHeight = document.documentElement.scrollHeight;
 
     const atBottom =
       pathname === '/attendance-overview' ? scrolled >= 300 : scrolled >= 720;
 
     const atTop =
       pathname === '/attendance-overview' ? scrolled <= 320 : scrolled <= 720;
+
     setIsVisible(atTop || atBottom);
     setIsAtBottom(atBottom);
   };
 
-  const backToTop = () => {
-    const scrollStep = -window.pageYOffset / (500 / 15);
-    const animateScroll = () => {
-      if (window.pageYOffset > 0) {
-        window.scrollBy(0, scrollStep);
-        requestAnimationFrame(animateScroll);
-      }
-    };
-    requestAnimationFrame(animateScroll);
-  };
-
-  const scrollToBottom = () => {
-    const targetPosition =
-      document.documentElement.scrollHeight -
-      document.documentElement.clientHeight;
-    const scrollStep = (targetPosition - window.pageYOffset) / (500 / 15);
-    const animateScroll = () => {
-      if (window.pageYOffset < targetPosition - 1) {
-        window.scrollBy(0, scrollStep);
-        requestAnimationFrame(animateScroll);
-      }
-    };
-    requestAnimationFrame(animateScroll);
-  };
-
-  const scrollToHeight = (height: any) => {
-    const scrollStep = (height - window.pageYOffset) / (500 / 15);
-    const animateScroll = () => {
-      if (
-        (scrollStep > 0 && window.pageYOffset < height - 1) ||
-        (scrollStep < 0 && window.pageYOffset > height + 1)
-      ) {
-        window.scrollBy(0, scrollStep);
-        requestAnimationFrame(animateScroll);
-      }
-    };
-    requestAnimationFrame(animateScroll);
-  };
-
   const handleButtonClick = () => {
     if (isAtBottom) {
-      backToTop();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      scrollToHeight(pathname === '/attendance-overview' ? 320 : 720);
+      const targetPosition = pathname === '/attendance-overview' ? 320 : 720;
+      window.scrollTo({ top: targetPosition, behavior: 'smooth' });
     }
   };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', trackScroll);
+      const throttledTrackScroll = () => {
+        setTimeout(trackScroll, 100);
+      };
+      window.addEventListener('scroll', throttledTrackScroll);
       trackScroll(); // Check initial scroll position when the component mounts
+
+      return () => {
+        window.removeEventListener('scroll', throttledTrackScroll);
+      };
     }
-    return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('scroll', trackScroll);
-      }
-    };
   }, [pathname]);
 
   return (
