@@ -527,3 +527,17 @@ main {
     right: 360px;
   }
 } */
+.prev_btn {
+  position: absolute;
+  top: 53px;
+  z-index: 999;
+  left: -14px;
+  transform: rotate(90deg);
+}
+.next_btn {
+  position: absolute;
+  top: 53px;
+  right: -14px;
+  z-index: 999;
+  transform: rotate(270deg);
+}
