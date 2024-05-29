@@ -6,7 +6,7 @@ import {
   InputAdornment,
   TextField,
 } from '@mui/material';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -49,6 +49,8 @@ const LoginPage = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   // const location = useLocation();
+
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
     vertical: 'bottom',
@@ -172,6 +174,12 @@ const LoginPage = () => {
     [t]
   );
 
+  useEffect(() => {
+    if (passwordRef.current) {
+      passwordRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [passwordRef]);
+
   return (
     <form onSubmit={handleFormSubmit}>
       <Box
@@ -213,7 +221,7 @@ const LoginPage = () => {
             }}
           >
             <Box mt={'0.5rem'}>
-              <FormControl sx={{ m: '2rem 0 1rem' }}>
+              <FormControl sx={{ m: '1rem 0 1rem' }}>
                 <Select
                   className="SelectLanguages"
                   value={language}
@@ -221,9 +229,11 @@ const LoginPage = () => {
                   displayEmpty
                   style={{
                     borderRadius: '0.5rem',
-                    color: theme.palette.warning['200'],
-                    width: '7rem',
+                    color: theme.palette.warning['A200'],
+                    width: '117px',
+                    height: '32px',
                     marginBottom: '0rem',
+                    fontSize: '14px',
                   }}
                 >
                   {config?.languages.map((lang) => (
@@ -262,7 +272,7 @@ const LoginPage = () => {
                   width: '100%',
                 },
               }}
-              marginY={'1rem'}
+              margin={'2rem 0 0'}
             >
               <TextField
                 type={showPassword ? 'text' : 'password'}
@@ -289,10 +299,17 @@ const LoginPage = () => {
                 value={password}
                 onChange={handlePasswordChange}
                 error={passwordError}
+                onFocus={() =>
+                  passwordRef.current?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'end',
+                  })
+                }
+                inputRef={passwordRef}
               />
             </Box>
 
-            <Box marginTop={'1rem'} marginLeft={'0.5rem'}>
+            <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
               <Link
                 sx={{ color: theme.palette.secondary.main }}
                 href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=R-3zEZbbbyM"
@@ -301,17 +318,17 @@ const LoginPage = () => {
                 {t('LOGIN_PAGE.FORGOT_PASSWORD')}
               </Link>
             </Box>
-            <Box marginTop={'1rem'} className="remember-me-checkbox">
+            <Box marginTop={'1.2rem'} className="remember-me-checkbox">
               <Checkbox onChange={(e) => setRememberMe(e.target.checked)} />
               {t('LOGIN_PAGE.REMEMBER_ME')}
             </Box>
             <Box
               alignContent={'center'}
               textAlign={'center'}
-              // marginTop={'5rem'}
-              bottom={'2%'}
+              marginTop={'5rem'}
+              // bottom={'2%'}
               width={'100%'}
-              position={'absolute'}
+              // position={'absolute'}
             >
               <Button
                 variant="contained"
