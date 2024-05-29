@@ -6,7 +6,7 @@ export const cohortList = async ({
   page,
   filters,
 }: cohortListParam): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohorts/search`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohort/search`;
   try {
     const response = await post(apiUrl, { limit, page, filters });
     return response?.data;
