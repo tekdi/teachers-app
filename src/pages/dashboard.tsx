@@ -501,7 +501,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const todayDate = getTodayDate();
 
   // Initialize currentAttendance based on today's date
-  let currentAttendance = percentageAttendance?.[todayDate] || 'Not Marked';
+  let currentAttendance = percentageAttendance?.[todayDate] || 'notMarked';
   const isFutureDateWithoutTime = (date: Date | string) => {
     const today = startOfDay(new Date());
     date = startOfDay(new Date(date));
@@ -512,7 +512,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (isFutureDateWithoutTime(selectedDate)) {
       currentAttendance = 'futureDate';
     } else {
-      currentAttendance = percentageAttendance?.[selectedDate] || 'Not Marked';
+      currentAttendance = percentageAttendance?.[selectedDate] || 'notMarked';
     }
   }
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
@@ -640,7 +640,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     justifyContent={'space-between'}
                   >
                     <Box display={'flex'}>
-                      {currentAttendance !== 'Not Marked' &&
+                      {currentAttendance !== 'notMarked' &&
                         currentAttendance !== 'futureDate' && (
                           <>
                             <Box
@@ -652,7 +652,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               <CircularProgressbar
                                 value={currentAttendance?.present_percentage}
                                 background
-                                backgroundPadding={6}
+                                backgroundPadding={8}
                                 styles={buildStyles({
                                   textColor: pathColor,
                                   pathColor: pathColor,
@@ -660,7 +660,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   strokeLinecap: 'round',
                                   backgroundColor: '#ffffff',
                                 })}
-                                strokeWidth={15}
+                                strokeWidth={20}
                               />
                             </Box>
                             <Box>
@@ -689,7 +689,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             </Box>
                           </>
                         )}
-                      {currentAttendance === 'Not Marked' &&
+                      {currentAttendance === 'notMarked' &&
                         currentAttendance !== 'futureDate' && (
                           <Typography
                             sx={{ color: theme.palette.warning['A400'] }}
@@ -722,7 +722,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       onClick={handleModalToggle}
                       disabled={currentAttendance === 'futureDate'}
                     >
-                      {t('COMMON.MARK')}
+                      {currentAttendance === 'notMarked' ||
+                      currentAttendance === 'futureDate'
+                        ? t('COMMON.MARK')
+                        : t('COMMON.MODIFY')}
                     </Button>
                   </Stack>
                 </Box>

@@ -165,7 +165,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
                         trailColor: '#E6E6E6',
                         strokeLinecap: 'round',
                       })}
-                      strokeWidth={15}
+                      strokeWidth={20}
                     />
                   </Box>
                 )}{' '}

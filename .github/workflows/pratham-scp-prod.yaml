@@ -1,0 +1,50 @@
+name: Node CI
+
+on:
+  push:
+    branches:
+      - shiksha-2.0
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: npm install, build
+        run: |
+          npm install
+          npm run build
+
+      - name: Show PWD
+        run: |
+           echo "Current Working Directory:"
+           pwd
+
+      - name: List Contents
+        run: |
+           echo "Contents of the current directory (in reverse order):"
+            ls -lra
+
+      - name: List Contents
+        run: |
+           echo "Contents of the dist directory (in reverse order):"
+            cd /home/runner/work/shiksha-frontend/shiksha-frontend/.next/
+            ls -lr
+            
+
+      - name: Install AWS CLI
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y awscli
+
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_S3_BUCKET_REGION }}  
+
+      - name: Upload to s3 Bucket
+        run: |
+              aws s3 rm s3://${{ secrets.AWS_S3_BUCKET }}/_next/ --recursive
+              aws s3 sync ./.next s3://${{ secrets.AWS_S3_BUCKET }}/_next/
+            
+              
