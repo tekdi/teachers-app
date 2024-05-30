@@ -19,6 +19,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { cohortMemberList } from '../utils/Interfaces';
 import {
   attendanceInPercentageStatusList,
   attendanceStatusList,
@@ -52,6 +53,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { calculatePercentage } from '@/utils/attendanceStats';
 
 interface user {
   userId: string;
@@ -136,7 +138,7 @@ const UserAttendanceHistory = () => {
           let page = 0;
           let filters = { userId: userId };
           const resp = await cohortList({ limit, page, filters });
-          const extractedNames = resp?.data?.cohortDetails;
+          const extractedNames = resp?.results?.cohortDetails;
           const filteredData = extractedNames
             ?.map((item: any) => ({
               cohortId: item?.cohortData?.cohortId,
@@ -157,79 +159,54 @@ const UserAttendanceHistory = () => {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        if (classId !== '') {
-          const currentDate = new Date();
-          const firstDayOfMonth = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth(),
-            1
-          );
-          const lastDayOfMonth = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth() + 1,
-            0
-          );
-
-          const formattedFirstDay = formatDate(firstDayOfMonth);
-          const formattedLastDay = formatDate(lastDayOfMonth);
-
-          const attendanceData: AttendancePercentageProps = {
-            page: 0,
-            limit: 1,
-            filters: {
-              contextId: classId,
-              fromDate: formattedFirstDay,
-              toDate: formattedLastDay,
-              scope: 'student',
-            },
-            facets: ['attendanceDate'],
-          };
-
-          const response =
-            await attendanceInPercentageStatusList(attendanceData);
-          console.log(response);
-          setTimeout(() => {
-            setPercentageAttendanceData(response?.data?.result?.attendanceDate);
-          });
-
-          const attendanceDates = response?.data?.result?.attendanceDate;
-          const formattedAttendanceData: any = {};
-          Object.keys(attendanceDates).forEach((date) => {
-            const attendance = attendanceDates[date];
-            const present = attendance.present || 0;
-            const absent = attendance.absent || 0;
-            const totalStudents =
-              attendance.present_percentage === '100.00'
-                ? present
-                : present + absent;
-
-            formattedAttendanceData[date] = {
-              date: date,
-              present_students: present,
-              total_students: totalStudents,
-              present_percentage:
-                parseFloat(attendance.present_percentage) ||
-                100 - parseFloat(attendance.absent_percentage),
-              absent_percentage:
-                parseFloat(attendance.absent_percentage) ||
-                100 - parseFloat(attendance.present_percentage),
-            };
-            console.log('formattedAttendanceData', formattedAttendanceData);
-            setPercentageAttendance(formattedAttendanceData);
-          });
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Error:', error);
+    const getAttendanceStats = async () => {
+      if (classId !== '' && classId !== undefined) {
+        console.log('classId', classId);
+        const cohortMemberRequest: cohortMemberList = {
+          limit: 300,
+          page: 0,
+          filters: {
+            cohortId: classId,
+            role: 'Student',
+          },
+        };
+        const currentDate = new Date();
+        const dayOfWeek = currentDate.getDay();
+        const diffToMonday =
+          currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+        const weekStartDate = new Date(currentDate.setDate(diffToMonday));
+        const startDate = new Date(
+          currentDate.setDate(currentDate.getDate() - 30)
+        );
+        startDate.setHours(0, 0, 0, 0);
+        const endDate = new Date(weekStartDate);
+        endDate.setDate(weekStartDate.getDate() + 6);
+        endDate.setHours(23, 59, 59, 999);
+        const fromDateFormatted = shortDateFormat(startDate);
+        const toDateFormatted = shortDateFormat(endDate);
+        const attendanceRequest: AttendancePercentageProps = {
+          limit: 300,
+          page: 0,
+          filters: {
+            contextId: classId,
+            fromDate: fromDateFormatted,
+            toDate: toDateFormatted,
+            scope: 'student',
+          },
+          facets: ['attendanceDate'],
+        };
+        const attendanceStats = await calculatePercentage(
+          cohortMemberRequest,
+          attendanceRequest
+        );
+        setPercentageAttendance(attendanceStats);
+        // setAttendanceStats(attendanceStats);
+        console.log('attendanceStats', attendanceStats);
       }
     };
-    fetchData();
-  }, [classId, handleSaveHasRun]);
+    getAttendanceStats();
+  }, [classId, selectedDate]);
 
-  //API for getting student list
   const getCohortMemberList = async () => {
     setLoading(true);
     try {
@@ -249,7 +226,6 @@ const UserAttendanceHistory = () => {
             userId: entry.userId,
             name: toPascalCase(entry.name),
           }));
-          console.log('name..........', nameUserIdArray);
           if (nameUserIdArray && (selectedDate || currentDate)) {
             const userAttendanceStatusList = async () => {
               const attendanceStatusData: AttendanceStatusListProps = {
@@ -262,7 +238,6 @@ const UserAttendanceHistory = () => {
               };
               const res = await attendanceStatusList(attendanceStatusData);
               const response = res?.data?.attendanceList;
-              console.log('attendanceStatusList', response);
               if (nameUserIdArray && response) {
                 const getUserAttendanceStatus = (
                   nameUserIdArray: any[],
@@ -291,7 +266,6 @@ const UserAttendanceHistory = () => {
                   nameUserIdArray,
                   response
                 );
-                console.log('userAttendanceArray', userAttendanceArray);
 
                 if (nameUserIdArray && userAttendanceArray) {
                   const mergeArrays = (
@@ -367,7 +341,6 @@ const UserAttendanceHistory = () => {
 
   const handleActiveStartDateChange = (date: Date) => {
     // setActiveStartDate(date);
-    console.log('date change called', date);
   };
 
   // updated function : it will handle null or undefiend data
@@ -421,18 +394,6 @@ const UserAttendanceHistory = () => {
         contextId: trimmedContextId,
       };
       setLoading(true);
-      // try {
-      //   const response = await markAttendance(attendanceData);
-      //   if (response) {
-      //     setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'));
-      //     window.location.reload();
-      //   }
-      //   setLoading(false);
-      // } catch (error) {
-      //   setAttendanceMessage(t('ATTENDANCE.ATTENDANCE_MARKED_UNSUCCESSFULLY'));
-      //   console.error('error', error);
-      //   setLoading(false);
-      // }
     }
   };
 
@@ -535,7 +496,6 @@ const UserAttendanceHistory = () => {
       }
       return user;
     });
-    console.log('updatedAttendanceList', updatedAttendanceList);
     setCohortMemberList(updatedAttendanceList);
     setDisplayStudentList(updatedAttendanceList);
   };

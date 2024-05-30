@@ -114,7 +114,7 @@ function AttendanceStatus({
                     >
                       {t('DASHBOARD.PRESENT_STUDENTS', {
                         present_students: currentAttendance?.present_students,
-                        total_students: currentAttendance?.total_students,
+                        total_students: currentAttendance?.totalcount,
                       })}
                     </Typography>
                   </Box>
