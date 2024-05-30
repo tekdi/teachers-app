@@ -189,22 +189,20 @@ const TeacherProfile = () => {
       try {
         if (userId) {
           const response = await getUserDetails(userId, true);
+          console.log('profile', response);
+          const data = response?.result;
 
-          if (response?.statusCode === 200) {
-            const data = response?.data;
-            if (data) {
-              const userData = data?.userData;
-              setUserData(userData);
-              const customDataFields = userData?.customFields;
-              console.log('customDataFields', customDataFields);
-              if (customDataFields?.length > 0) {
-                setCustomFieldsData(customDataFields);
-              }
-            } else {
-              console.log('No data Found');
+          if (data) {
+            const userData = data?.userData;
+
+            setUserData(userData);
+            const customDataFields = userData?.customFields;
+            console.log('dataResponse', customDataFields);
+            if (customDataFields?.length > 0) {
+              setCustomFieldsData(customDataFields);
             }
           } else {
-            console.log('No Response Found');
+            console.log('No data Found');
           }
         }
       } catch (error) {
@@ -230,7 +228,7 @@ const TeacherProfile = () => {
     setImage(newImageUrl);
   };
 
-  // render subjects i teach
+  // Find fields for "Subjects I Teach" and "My Main Subjects"
   const techSubjectsField = customFieldsData?.find(
     (field) => field.label === 'Subjects I Teach'
   );
@@ -238,9 +236,14 @@ const TeacherProfile = () => {
     (field) => field.label === 'My Main Subjects'
   );
 
-  const techSubjects = techSubjectsField?.value?.split(', ') || [];
-  const mainSubjects = mainSubjectsField?.value?.split(', ') || [];
+  const techSubjects: string[] = Array.isArray(techSubjectsField?.value)
+    ? techSubjectsField?.value
+    : [];
+  const mainSubjects: string[] = Array.isArray(mainSubjectsField?.value)
+    ? mainSubjectsField?.value
+    : [];
 
+  // Find mutual and remaining subjects
   const mutualSubjects = techSubjects.filter((subject) =>
     mainSubjects.includes(subject)
   );
@@ -252,9 +255,10 @@ const TeacherProfile = () => {
   // Define the desired order
   const order = [1, 4, 2, 3, 5, 7];
 
+  // Order fields based on the predefined order
   const orderedFields = customFieldsData
-    ?.filter((field) => order?.includes(field.order))
-    ?.sort((a, b) => order.indexOf(a.order) - order?.indexOf(b.order));
+    ?.filter((field) => order.includes(field.order))
+    ?.sort((a, b) => order.indexOf(a.order) - order.indexOf(b.order));
 
   return (
     <Box
