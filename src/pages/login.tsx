@@ -6,7 +6,7 @@ import {
   InputAdornment,
   TextField,
 } from '@mui/material';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -16,7 +16,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import Image from 'next/image';
 import Link from '@mui/material/Link';
 import Loader from '../components/Loader';
-// import { getUserId } from '../services/ProfileService';
 import MenuItem from '@mui/material/MenuItem';
 import appLogo from '../../public/images/appLogo.png';
 import config from '../../config.json';
@@ -24,8 +23,6 @@ import { getUserId } from '../services/ProfileService';
 import { login } from '../services/LoginService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-// import { useLocation } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
@@ -35,7 +32,6 @@ interface State extends SnackbarOrigin {
 
 const LoginPage = () => {
   const { t } = useTranslation();
-  // const { t, i18n } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -46,11 +42,12 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [language, setLanguage] = useState(selectedLanguage);
+
   const theme = useTheme<any>();
   const router = useRouter();
-  // const location = useLocation();
 
   const passwordRef = useRef<HTMLInputElement>(null);
+  const loginButtonRef = useRef<HTMLButtonElement>(null);
 
   const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
     vertical: 'bottom',
@@ -98,7 +95,6 @@ const LoginPage = () => {
     event.preventDefault();
     if (!usernameError && !passwordError) {
       setLoading(true);
-      event.preventDefault();
       try {
         const response = await login({
           username: username,
@@ -158,27 +154,25 @@ const LoginPage = () => {
   const handleClose = () => {
     setState({ ...state, openModal: false });
   };
-  const action = useMemo(
-    () => (
-      <React.Fragment>
-        <IconButton
-          size="small"
-          aria-label="close"
-          color="inherit"
-          onClick={handleClose}
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </React.Fragment>
-    ),
-    [t]
-  );
 
   useEffect(() => {
-    if (passwordRef.current) {
-      passwordRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    const handlePasswordFocus = () => {
+      if (loginButtonRef.current) {
+        loginButtonRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }
+    };
+
+    const passwordField = passwordRef.current;
+    if (passwordField) {
+      passwordField.addEventListener('focus', handlePasswordFocus);
+      return () => {
+        passwordField.removeEventListener('focus', handlePasswordFocus);
+      };
     }
-  }, [passwordRef]);
+  }, []);
 
   return (
     <form onSubmit={handleFormSubmit}>
@@ -186,7 +180,6 @@ const LoginPage = () => {
         display="flex"
         flexDirection="column"
         bgcolor={theme.palette.warning.A200}
-        height={'100vh'}
       >
         {loading && (
           <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -197,163 +190,164 @@ const LoginPage = () => {
           alignItems={'center'}
           justifyContent={'center'}
           zIndex={99}
-          sx={{ margin: '32px 0' }}
+          sx={{ margin: '32px 0 65px' }}
         >
           <Image src={appLogo} alt="App Logo" height={100} />{' '}
         </Box>
+      </Box>
+      <Box
+        flexGrow={1}
+        display={'flex'}
+        bgcolor="white"
+        overflow="auto"
+        height="auto"
+        borderRadius={'2rem 2rem 0 0'}
+        zIndex={99}
+        justifyContent={'center'}
+        p={'2rem'}
+        marginTop={'-25px'}
+        sx={{ height: `calc(100vh - 172px)` }}
+      >
         <Box
-          flexGrow={1}
-          display={'flex'}
-          bgcolor="white"
-          overflow="auto"
-          height="auto"
-          borderRadius={'2rem 2rem 0 0'}
-          zIndex={99}
-          justifyContent={'center'}
-          p={'2rem'}
+          position={'relative'}
+          sx={{
+            '@media (max-width: 700px)': {
+              width: '100%',
+            },
+          }}
         >
+          <Box mt={'0.5rem'}>
+            <FormControl sx={{ m: '1rem 0 1rem' }}>
+              <Select
+                className="SelectLanguages"
+                value={language}
+                onChange={handleChange}
+                displayEmpty
+                style={{
+                  borderRadius: '0.5rem',
+                  color: theme.palette.warning['A200'],
+                  width: '117px',
+                  height: '32px',
+                  marginBottom: '0rem',
+                  fontSize: '14px',
+                }}
+              >
+                {config?.languages.map((lang) => (
+                  <MenuItem value={lang.code} key={lang.code}>
+                    {lang.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
           <Box
-            position={'relative'}
+            marginY={'1rem'}
             sx={{
+              width: '668px',
               '@media (max-width: 700px)': {
                 width: '100%',
               },
             }}
           >
-            <Box mt={'0.5rem'}>
-              <FormControl sx={{ m: '1rem 0 1rem' }}>
-                <Select
-                  className="SelectLanguages"
-                  value={language}
-                  onChange={handleChange}
-                  displayEmpty
-                  style={{
-                    borderRadius: '0.5rem',
-                    color: theme.palette.warning['A200'],
-                    width: '117px',
-                    height: '32px',
-                    marginBottom: '0rem',
-                    fontSize: '14px',
-                  }}
-                >
-                  {config?.languages.map((lang) => (
-                    <MenuItem value={lang.code} key={lang.code}>
-                      {lang.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-            <Box
-              marginY={'1rem'}
-              sx={{
-                width: '668px',
-                '@media (max-width: 700px)': {
-                  width: '100%',
-                },
+            <TextField
+              id="username"
+              InputLabelProps={{
+                shrink: true,
               }}
-            >
-              <TextField
-                id="username"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                label={t('LOGIN_PAGE.USERNAME')}
-                placeholder={t('LOGIN_PAGE.USERNAME_PLACEHOLDER')}
-                value={username}
-                onChange={handleUsernameChange}
-                error={usernameError}
-              />
-            </Box>
-            <Box
-              sx={{
-                width: '668px',
-                '@media (max-width: 768px)': {
-                  width: '100%',
-                },
+              label={t('LOGIN_PAGE.USERNAME')}
+              placeholder={t('LOGIN_PAGE.USERNAME_PLACEHOLDER')}
+              value={username}
+              onChange={handleUsernameChange}
+              error={usernameError}
+            />
+          </Box>
+          <Box
+            sx={{
+              width: '668px',
+              '@media (max-width: 768px)': {
+                width: '100%',
+              },
+            }}
+            margin={'2rem 0 0'}
+          >
+            <TextField
+              type={showPassword ? 'text' : 'password'}
+              id="password"
+              InputLabelProps={{
+                shrink: true,
               }}
-              margin={'2rem 0 0'}
-            >
-              <TextField
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                label={t('LOGIN_PAGE.PASSWORD')}
-                placeholder={t('LOGIN_PAGE.PASSWORD_PLACEHOLDER')}
-                value={password}
-                onChange={handlePasswordChange}
-                error={passwordError}
-                onFocus={() =>
-                  passwordRef.current?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'end',
-                  })
-                }
-                inputRef={passwordRef}
-              />
-            </Box>
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              label={t('LOGIN_PAGE.PASSWORD')}
+              placeholder={t('LOGIN_PAGE.PASSWORD_PLACEHOLDER')}
+              value={password}
+              onChange={handlePasswordChange}
+              error={passwordError}
+              inputRef={passwordRef}
+            />
+          </Box>
 
-            <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
-              <Link
-                sx={{ color: theme.palette.secondary.main }}
-                href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=R-3zEZbbbyM"
-                underline="none"
-              >
-                {t('LOGIN_PAGE.FORGOT_PASSWORD')}
-              </Link>
-            </Box>
-            <Box marginTop={'1.2rem'} className="remember-me-checkbox">
-              <Checkbox onChange={(e) => setRememberMe(e.target.checked)} />
-              {t('LOGIN_PAGE.REMEMBER_ME')}
-            </Box>
-            <Box
-              alignContent={'center'}
-              textAlign={'center'}
-              marginTop={'5rem'}
-              // bottom={'2%'}
-              width={'100%'}
-              // position={'absolute'}
+          <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
+            <Link
+              sx={{ color: theme.palette.secondary.main }}
+              href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=R-3zEZbbbyM"
+              underline="none"
             >
-              <Button
-                variant="contained"
-                type="submit"
-                fullWidth={true}
-                disabled={isButtonDisabled}
-              >
-                {t('LOGIN_PAGE.LOGIN')}
-              </Button>
-            </Box>
+              {t('LOGIN_PAGE.FORGOT_PASSWORD')}
+            </Link>
+          </Box>
+          <Box marginTop={'1.2rem'} className="remember-me-checkbox">
+            <Checkbox onChange={(e) => setRememberMe(e.target.checked)} />
+            {t('LOGIN_PAGE.REMEMBER_ME')}
+          </Box>
+          <Box
+            alignContent={'center'}
+            textAlign={'center'}
+            marginTop={'2rem'}
+            marginBottom={'2rem'}
+            width={'100%'}
+          >
+            <Button
+              variant="contained"
+              type="submit"
+              fullWidth={true}
+              disabled={isButtonDisabled}
+              ref={loginButtonRef}
+              sx={{ marginBottom: '2rem' }}
+            >
+              {t('LOGIN_PAGE.LOGIN')}
+            </Button>
           </Box>
         </Box>
-        {showToastMessage && (
-          <Snackbar
-            anchorOrigin={{ vertical, horizontal }}
-            open={openModal}
-            onClose={handleClose}
-            className="alert"
-            autoHideDuration={5000}
-            key={vertical + horizontal}
-            message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')}
-            action={action}
-          />
-        )}
       </Box>
+      {showToastMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={openModal}
+          onClose={handleClose}
+          className="alert"
+          autoHideDuration={5000}
+          key={vertical + horizontal}
+          message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')}
+          action={
+            <IconButton size="small" color="inherit" onClick={handleClose}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+        />
+      )}
     </form>
   );
 };
@@ -362,7 +356,6 @@ export async function getStaticProps({ locale }: any) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
-      // Will be passed to the page component as props
     },
   };
 }
