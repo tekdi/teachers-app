@@ -209,7 +209,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             const presentPercentage = contextData ? (
               contextData.present_percentage
             ) : (
-              <Typography>N/A</Typography>
+              <Typography> {t('ATTENDANCE.N/A')}</Typography>
             );
             setPresentPercentage(presentPercentage);
           };
@@ -374,11 +374,16 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               }}
             >
               {cohortsData?.length !== 0 ? (
-                cohortsData?.map((cohort) => (
+                 <>
+                {cohortsData?.map((cohort) => (
                   <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
                     {cohort.name}
                   </MenuItem>
-                ))
+                ))}
+                <MenuItem key="all-cohorts" value="all">
+               { t('ATTENDANCE.ALL_CENTERS')}
+                </MenuItem>
+                </>
               ) : (
                 <Typography style={{ fontWeight: 'bold' }}>
                   {t('COMMON.NO_DATA_FOUND')}
@@ -410,11 +415,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               {...loading && (
                 <Loader loadingText={t('COMMON.LOADING')} showBackdrop={false} />
               )}
-              value= { learnerData.length ? lowAttendanceLearnerList: "N/A"}
+              value= { learnerData.length ? lowAttendanceLearnerList:  {t('ATTENDANCE.N/A')}}
             /> */}
             <OverviewCard
                       label="Low Attendance Learners"
-                      value="Bharat Kumar, Ankita Kulkarni, +3 more"
+                      value="Bharat Kumar, Ankita Kulkarni and 3 more"
                     />
           </Grid>
         </Grid>
@@ -494,11 +499,17 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           routeName={pathname}
         />
       </Stack>
-      <LearnerListHeader
+      {classId !== "all"?
+        <LearnerListHeader
         numberOfColumns={3}
         firstColumnName={t('COMMON.ATTENDANCE')}
         secondColumnName={t('COMMON.CLASS_MISSED')}
-      />
+      />:  <LearnerListHeader
+      numberOfColumns={2}
+      firstColumnName={t('COMMON.ATTENDANCE')}
+    />
+      }
+    
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )}

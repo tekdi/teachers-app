@@ -28,6 +28,7 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
             alignItems="center"
             textAlign={'center'}
             justifyContent="space-between"
+              p={'5px'}
           >
             <Grid item xs={6}>
               <Typography
@@ -50,7 +51,35 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
           </Grid>
         </Box>
       ) : (
-        'none'
+        <Box
+        borderBottom={`1px solid ${theme.palette.warning['300']}`}
+        margin="0"
+        alignItems={'center'}
+        bgcolor={'#E6E6E6'}
+        maxHeight={'auto'}
+      >
+        <Grid
+          container
+          alignItems="center"
+          textAlign={'center'}
+          justifyContent="space-between"
+          p={'5px'}
+        >
+          <Grid item xs={9}>
+            <Typography
+              textAlign={'left'}
+              sx={{ fontSize: '11px', fontWeight: '500' }}
+            >
+              {t('ATTENDANCE.CENTER_NAME')}
+            </Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <Typography sx={{ fontSize: '11px', fontWeight: '500' }}>
+              {firstColumnName}
+            </Typography>
+          </Grid>
+        </Grid>
+      </Box>
       )}
     </Stack>
   );
