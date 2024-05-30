@@ -4,6 +4,7 @@ import {
   AttendancePercentageProps,
   cohort,
   cohortAttendancePercentParam,
+  cohortMemberList,
 } from '../utils/Interfaces';
 import {
   Box,
@@ -46,6 +47,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { calculatePercentage } from '@/utils/attendanceStats';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -65,8 +67,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     React.useState<string>(getTodayDate());
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState(null);
-  const [percentageAttendance, setPercentageAttendance] =
-    React.useState<any>(null);
+  const [attendanceStats, setAttendanceStats] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [cohortPresentPercentage, setCohortPresentPercentage] =
@@ -93,24 +94,24 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const theme = useTheme<any>();
   const determinePathColor = useDeterminePathColor();
 
-  useEffect(() => {
-    let date = new Date();
-    const dayOfWeek = date.getDay();
-    const diffToMonday =
-      date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-    let startDate = new Date(date);
-    startDate.setDate(diffToMonday);
-    startDate.setHours(0, 0, 0, 0);
-    const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 6);
-    endDate.setHours(23, 59, 59, 999);
-    const startDay = startDate.getDate();
-    const endDay = endDate.getDate();
-    const month = endDate.toLocaleString('default', { month: 'long' });
-    setDateRange(`(${startDay}-${endDay} ${month}`);
-    setFromDateFormatted(shortDateFormat(startDate));
-    setToDateFormatted(shortDateFormat(endDate));
-  }, []);
+  // useEffect(() => {
+  //   let date = new Date();
+  //   const dayOfWeek = date.getDay();
+  //   const diffToMonday =
+  //     date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+  //   let startDate = new Date(date);
+  //   startDate.setDate(diffToMonday);
+  //   startDate.setHours(0, 0, 0, 0);
+  //   const endDate = new Date(startDate);
+  //   endDate.setDate(startDate.getDate() + 6);
+  //   endDate.setHours(23, 59, 59, 999);
+  //   const startDay = startDate.getDate();
+  //   const endDay = endDate.getDate();
+  //   const month = endDate.toLocaleString('default', { month: 'long' });
+  //   setDateRange(`(${startDay}-${endDay} ${month}`);
+  //   setFromDateFormatted(shortDateFormat(startDate));
+  //   setToDateFormatted(shortDateFormat(endDate));
+  // }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -212,74 +213,52 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   useEffect(() => {
-    const getAttendaceData = async () => {
-      try {
-        if (contextId !== '') {
-          const currentDate = new Date();
-          const dayOfWeek = currentDate.getDay();
-          const diffToMonday =
-            currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-          const weekStartDate = new Date(currentDate.setDate(diffToMonday));
-          const startDate = new Date(
-            currentDate.setDate(currentDate.getDate() - 30)
-          );
-          startDate.setHours(0, 0, 0, 0);
-          const endDate = new Date(weekStartDate);
-          endDate.setDate(weekStartDate.getDate() + 6);
-          endDate.setHours(23, 59, 59, 999);
-          const fromDateFormatted = shortDateFormat(startDate);
-          const toDateFormatted = shortDateFormat(endDate);
-          const attendanceRequest: AttendancePercentageProps = {
-            limit: 300,
-            page: 0,
-            filters: {
-              contextId: classId,
-              fromDate: fromDateFormatted,
-              toDate: toDateFormatted,
-              scope: 'student',
-            },
-            facets: ['attendanceDate'],
-          };
-          const response =
-            await attendanceInPercentageStatusList(attendanceRequest);
-          console.log('response', response?.data?.result?.attendanceDate);
-          setTimeout(() => {
-            setPercentageAttendanceData(response?.data?.result?.attendanceDate);
-          });
-
-          const attendanceDates = response?.data?.result?.attendanceDate;
-          const formattedAttendanceData: any = {};
-          Object.keys(attendanceDates).forEach((date) => {
-            const attendance = attendanceDates[date];
-            const present = attendance.present || 0;
-            const absent = attendance.absent || 0;
-            const totalStudents =
-              attendance.present_percentage === '100.00'
-                ? present
-                : present + absent;
-
-            formattedAttendanceData[date] = {
-              date: date,
-              present_students: present,
-              total_students: totalStudents,
-              present_percentage:
-                parseFloat(attendance.present_percentage) ||
-                100 - parseFloat(attendance.absent_percentage),
-              absent_percentage:
-                parseFloat(attendance.absent_percentage) ||
-                100 - parseFloat(attendance.present_percentage),
-            };
-            console.log('formattedAttendanceData', formattedAttendanceData);
-            setPercentageAttendance(formattedAttendanceData);
-          });
-        }
-      } catch (error) {
-        console.log(error);
+    const getAttendanceStats = async () => {
+      if (classId !== '') {
+        const cohortMemberRequest: cohortMemberList = {
+          limit: 300,
+          page: 0,
+          filters: {
+            cohortId: classId,
+            role: 'Student',
+          },
+        };
+        const currentDate = new Date();
+        const dayOfWeek = currentDate.getDay();
+        const diffToMonday =
+          currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+        const weekStartDate = new Date(currentDate.setDate(diffToMonday));
+        const startDate = new Date(
+          currentDate.setDate(currentDate.getDate() - 30)
+        );
+        startDate.setHours(0, 0, 0, 0);
+        const endDate = new Date(weekStartDate);
+        endDate.setDate(weekStartDate.getDate() + 6);
+        endDate.setHours(23, 59, 59, 999);
+        const fromDateFormatted = shortDateFormat(startDate);
+        const toDateFormatted = shortDateFormat(endDate);
+        const attendanceRequest: AttendancePercentageProps = {
+          limit: 300,
+          page: 0,
+          filters: {
+            contextId: classId,
+            fromDate: fromDateFormatted,
+            toDate: toDateFormatted,
+            scope: 'student',
+          },
+          facets: ['attendanceDate'],
+        };
+        const attendanceStats = await calculatePercentage(
+          cohortMemberRequest,
+          attendanceRequest
+        );
+        setPercentageAttendanceData(attendanceStats);
+        setAttendanceStats(attendanceStats);
+        console.log('attendanceStats', attendanceStats);
       }
     };
-
-    getAttendaceData();
-  }, [classId, handleSaveHasRun]);
+    getAttendanceStats();
+  }, [classId, selectedDate]);
 
   const viewAttendanceHistory = () => {
     router.push('/attendance-history');
@@ -291,8 +270,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const todayDate = getTodayDate();
 
-  // Initialize currentAttendance based on today's date
-  let currentAttendance = percentageAttendance?.[todayDate] || 'notMarked';
+  let currentAttendance = attendanceStats?.[todayDate] || 'notMarked';
   const isFutureDateWithoutTime = (date: Date | string) => {
     const today = startOfDay(new Date());
     date = startOfDay(new Date(date));
@@ -303,7 +281,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (isFutureDateWithoutTime(selectedDate)) {
       currentAttendance = 'futureDate';
     } else {
-      currentAttendance = percentageAttendance?.[selectedDate] || 'notMarked';
+      currentAttendance = attendanceStats?.[selectedDate] || 'notMarked';
     }
   }
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
@@ -473,8 +451,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 {t('DASHBOARD.PRESENT_STUDENTS', {
                                   present_students:
                                     currentAttendance?.present_students,
-                                  total_students:
-                                    currentAttendance?.total_students,
+                                  total_students: currentAttendance?.totalcount,
                                 })}
                               </Typography>
                             </Box>
