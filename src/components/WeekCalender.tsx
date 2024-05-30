@@ -36,29 +36,23 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const changeWeekHandle = (btnType: string) => {
     const today = new Date();
     const startDate = subDays(today, 29);
-
-    if (btnType === 'prev') {
-      const newDate = subWeeks(currentMonth, 1);
-      const endDate = subWeeks(currentMonth, 2);
-      if (newDate >= startDate) {
-        setCurrentMonth(newDate);
-        setCurrentWeek(getWeek(newDate));
-        setIsNextDisabled(false);
-      }
-      if (endDate <= startDate) {
-        setIsPrevDisabled(true);
-      }
-    } else if (btnType === 'next') {
-      const newDate = addWeeks(currentMonth, 1);
-      const finishDate = addWeeks(currentMonth, 2);
-      if (newDate <= today) {
-        setCurrentMonth(newDate);
-        setCurrentWeek(getWeek(newDate));
-        setIsPrevDisabled(false);
-      }
-      if (finishDate >= today) {
-        setIsNextDisabled(true);
-      }
+    const newDate =
+      btnType === 'prev'
+        ? subWeeks(currentMonth, 1)
+        : addWeeks(currentMonth, 1);
+    const endDate =
+      btnType === 'prev'
+        ? subWeeks(currentMonth, 2)
+        : addWeeks(currentMonth, 2);
+    setCurrentMonth(newDate);
+    setCurrentWeek(getWeek(newDate));
+    setIsNextDisabled(false);
+    setIsPrevDisabled(false);
+    if (endDate <= startDate) {
+      setIsPrevDisabled(true);
+    }
+    if (endDate >= today) {
+      setIsNextDisabled(true);
     }
   };
 
