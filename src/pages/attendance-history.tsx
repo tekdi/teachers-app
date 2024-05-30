@@ -595,7 +595,7 @@ const UserAttendanceHistory = () => {
                 onChange={handleCohortSelection}
                 displayEmpty
                 inputProps={{ 'aria-label': 'Without label' }}
-                disabled={cohortsData?.length == 1 ? true : false}
+                disabled={cohortsData?.length === 1 ? true : false}
                 className="SelectLanguages fs-14 fw-500"
                 style={{
                   borderRadius: '0.5rem',

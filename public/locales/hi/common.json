@@ -41,6 +41,7 @@
     "AS_OF_LAST_WEEK": "पिछले सप्ताह तक",
     "AS_OF_LAST_SIX_MONTH": "पिछले छह महीने से",
     "NONE": "कोई नहीं",
+    "LEARNERS":"शिक्षार्थियों",
     "LEARNER_NAME": "शिक्षार्थी का नाम",
     "DATE_RANGE": "तिथि सीमा",
     "SELECT_AN_OPTION": "कोई विकल्प चुनें"
@@ -76,7 +77,6 @@
     "MY_TEACHING_CENTERS": "मेरे शिक्षण केंद्र",
     "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्र",
     "BACK_TO_TOP":"वापस शीर्ष पर",
-    "LEARNER":"शिक्षार्थियों",
     "LAST_SEVEN_DAYS_RANGE": "पिछले 7 दिन {{date_range}}"
   },
   "ATTENDANCE": {

@@ -59,7 +59,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [selectedValue, setSelectedValue] = React.useState<string>(
     t('COMMON.AS_OF_TODAY')
   );
-  const [presentPercentage, setPresentPercentage] = React.useState<string>('');
+  const [presentPercentage, setPresentPercentage] = React.useState<string | number>('');
   const [lowAttendanceLearnerList,setLowAttendanceLearnerList] = React.useState<any>([]);
 
   const theme = useTheme<any>();
