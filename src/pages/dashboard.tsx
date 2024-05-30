@@ -58,6 +58,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = () => {
+  const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   const [classId, setClassId] = React.useState('');
@@ -66,18 +67,18 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [selectedDate, setSelectedDate] =
     React.useState<string>(getTodayDate());
   const [percentageAttendanceData, setPercentageAttendanceData] =
-    React.useState(null);
+    React.useState<any>(null);
   const [attendanceStats, setAttendanceStats] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [cohortPresentPercentage, setCohortPresentPercentage] =
-    React.useState<string>('');
+    React.useState<string>(t('ATTENDANCE.N/A'));
   const [lowAttendanceLearnerList, setLowAttendanceLearnerList] =
-    React.useState<any>([]);
-  const [fromDateFormatted, setFromDateFormatted] = React.useState<
+    React.useState<any>(t('ATTENDANCE.N/A'));
+  const [startDateRange, setStartDateRange] = React.useState<
     Date | string
   >('');
-  const [toDateFormatted, setToDateFormatted] = React.useState<Date | string>(
+  const [endDateRange, setEndDateRange] = React.useState<Date | string>(
     ''
   );
   const [dateRange, setDateRange] = React.useState<Date | string>('');
@@ -88,30 +89,27 @@ const Dashboard: React.FC<DashboardProps> = () => {
   });
 
   const { vertical, horizontal, openModal } = state;
-  const { t } = useTranslation();
   const router = useRouter();
   const contextId = classId;
   const theme = useTheme<any>();
   const determinePathColor = useDeterminePathColor();
+  useEffect(() => {
+    const calculateDateRange = () => {
+      let endRangeDate = new Date();
+      endRangeDate.setHours(23, 59, 59, 999);
+      let startRangeDate = new Date(endRangeDate);
+      startRangeDate.setDate(startRangeDate.getDate() - 6);
+      startRangeDate.setHours(0, 0, 0, 0);
+      let startDay = startRangeDate.getDate();
+      let endDay = endRangeDate.getDate();
+      let month = endRangeDate.toLocaleString('default', { month: 'long' });
+      setDateRange(`(${startDay}-${endDay} ${month}`);
+      setStartDateRange(shortDateFormat(startRangeDate));
+      setEndDateRange(shortDateFormat(endRangeDate));
+    };
 
-  // useEffect(() => {
-  //   let date = new Date();
-  //   const dayOfWeek = date.getDay();
-  //   const diffToMonday =
-  //     date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-  //   let startDate = new Date(date);
-  //   startDate.setDate(diffToMonday);
-  //   startDate.setHours(0, 0, 0, 0);
-  //   const endDate = new Date(startDate);
-  //   endDate.setDate(startDate.getDate() + 6);
-  //   endDate.setHours(23, 59, 59, 999);
-  //   const startDay = startDate.getDate();
-  //   const endDay = endDate.getDate();
-  //   const month = endDate.toLocaleString('default', { month: 'long' });
-  //   setDateRange(`(${startDay}-${endDay} ${month}`);
-  //   setFromDateFormatted(shortDateFormat(startDate));
-  //   setToDateFormatted(shortDateFormat(endDate));
-  // }, []);
+    calculateDateRange();
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -171,22 +169,21 @@ const Dashboard: React.FC<DashboardProps> = () => {
           page: 0,
           filters: {
             scope: 'student',
-            fromDate: fromDateFormatted,
-            toDate: toDateFormatted,
+            fromDate: startDateRange,
+            toDate: endDateRange,
             contextId: classId,
           },
           facets: ['contextId'],
         };
         const res = await getCohortAttendance(cohortAttendanceData);
         const response = res?.data?.result;
-        const contextData = response?.contextId && response?.contextId[classId];
-        const presentPercentage =
-          contextData && contextData != undefined ? (
-            contextData?.present_percentage
-          ) : (
-            <Typography>{t('ATTENDANCE.N/A')}</Typography>
-          );
-        setCohortPresentPercentage(presentPercentage);
+        console.log('Response Data:', response);
+        const contextData = response?.contextId?.[classId];
+        if (contextData && typeof contextData.present_percentage !== 'object') {
+          setCohortPresentPercentage(contextData.present_percentage.toString());
+        } else {
+          setCohortPresentPercentage(t('ATTENDANCE.N/A'));
+        }
       } catch (error) {
         console.error('Error fetching cohort list:', error);
         setLoading(false);
@@ -581,13 +578,21 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Grid item xs={4}>
                     <OverviewCard
                       label="Centre Attendance"
-                      value={cohortPresentPercentage + ' %'}
+                      value={
+                        cohortPresentPercentage === t('ATTENDANCE.N/A')
+                          ? cohortPresentPercentage
+                          : cohortPresentPercentage + ' %'
+                      }
                     />
                   </Grid>
                   <Grid item xs={8}>
                     <OverviewCard
                       label="Low Attendance Learners"
-                      value="Bharat Kumar, Ankita Kulkarni, 3 more"
+                      value={
+                        cohortPresentPercentage === t('ATTENDANCE.N/A')
+                          ? cohortPresentPercentage
+                          : 'Bharat Kumar, Ankita Kulkarni, 3 more'
+                      }
                     />
                   </Grid>
                 </Grid>

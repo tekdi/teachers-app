@@ -77,7 +77,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     switch (index) {
       case 0:
         fromDate = new Date(today);
-        fromDate.setDate(today.getDate() - 7);
+        fromDate.setDate(today.getDate() - 6);
         break;
       case 1:
         fromDate = new Date(today);
