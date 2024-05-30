@@ -20,13 +20,13 @@ const getPresentStudentCount = async (
   const response = await attendanceInPercentageStatusList(attendanceRequest);
   const attendanceDates = response?.data?.result?.attendanceDate;
   const presentStudents: any = {};
-  Object.keys(attendanceDates).forEach((date) => {
+  for (const date of Object.keys(attendanceDates)) {
     const attendance = attendanceDates[date];
     const present = attendance.present || 0;
     presentStudents[date] = {
       present_students: present,
     };
-  });
+  }
   console.log('presentStudents', presentStudents);
   return presentStudents;
 };
@@ -54,7 +54,7 @@ export const calculatePercentage = async (
 
   const result: Result = {};
 
-  Object.keys(presentStudents).forEach((date) => {
+  for (const date of Object.keys(presentStudents)) {
     const presentCount = presentStudents[date].present_students;
     const presentPercentage = parseFloat(
       ((presentCount / totalStudentsCount) * 100).toFixed(2)
@@ -65,7 +65,7 @@ export const calculatePercentage = async (
       totalcount: totalStudentsCount,
       present_percentage: presentPercentage,
     };
-  });
+  }
 
   return result;
 };
