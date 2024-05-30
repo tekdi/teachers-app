@@ -165,126 +165,124 @@ const Dashboard: React.FC<DashboardProps> = () => {
     const getCohortMemberList = async () => {
       setLoading(true);
       try {
-        if (classId) {
-          const limit = 300;
-          const page = 0;
-          const filters = { cohortId: classId };
-          const response = await getMyCohortMemberList({
-            limit,
-            page,
-            filters,
-          });
-          const resp = response?.data?.userDetails;
+        // if (classId) {
+        const limit = 300;
+        const page = 0;
+        const filters = { cohortId: classId };
+        const response = await getMyCohortMemberList({
+          limit,
+          page,
+          filters,
+        });
+        const resp = response?.data?.userDetails;
 
-          if (resp) {
-            const nameUserIdArray = resp?.map((entry: any) => ({
-              userId: entry.userId,
-              name: toPascalCase(entry.name),
-            }));
-            console.log('name..........', nameUserIdArray);
-            if (nameUserIdArray && (selectedDate || currentDate)) {
-              const userAttendanceStatusList = async () => {
-                const attendanceStatusData: AttendanceStatusListProps = {
-                  limit: 300,
-                  page: 0,
-                  filters: {
-                    fromDate: selectedDate || currentDate,
-                    toDate: selectedDate || currentDate,
-                    contextId: classId,
-                  },
-                };
-                const res = await attendanceStatusList(attendanceStatusData);
-                const response = res?.data?.attendanceList;
-                console.log('attendanceStatusList', response);
-                if (nameUserIdArray && response) {
-                  const getUserAttendanceStatus = (
-                    nameUserIdArray: any[],
-                    response: any[]
-                  ) => {
-                    const userAttendanceArray: {
-                      userId: any;
-                      attendance: any;
-                    }[] = [];
+        if (resp) {
+          const nameUserIdArray = resp?.map((entry: any) => ({
+            userId: entry.userId,
+            name: toPascalCase(entry.name),
+          }));
+          console.log('name..........', nameUserIdArray);
+          if (nameUserIdArray && (selectedDate || currentDate)) {
+            const userAttendanceStatusList = async () => {
+              const attendanceStatusData: AttendanceStatusListProps = {
+                limit: 300,
+                page: 0,
+                filters: {
+                  fromDate: selectedDate || currentDate,
+                  toDate: selectedDate || currentDate,
+                  contextId: classId,
+                },
+              };
+              const res = await attendanceStatusList(attendanceStatusData);
+              const response = res?.data?.attendanceList;
+              console.log('attendanceStatusList', response);
+              if (nameUserIdArray && response) {
+                const getUserAttendanceStatus = (
+                  nameUserIdArray: any[],
+                  response: any[]
+                ) => {
+                  const userAttendanceArray: {
+                    userId: any;
+                    attendance: any;
+                  }[] = [];
 
-                    nameUserIdArray.forEach((user) => {
-                      const userId = user.userId;
-                      const attendance = response.find(
-                        (status) => status.userId === userId
-                      );
-                      userAttendanceArray.push({
-                        userId,
-                        attendance: attendance?.attendance
-                          ? attendance.attendance
-                          : '',
-                      });
+                  nameUserIdArray.forEach((user) => {
+                    const userId = user.userId;
+                    const attendance = response.find(
+                      (status) => status.userId === userId
+                    );
+                    userAttendanceArray.push({
+                      userId,
+                      attendance: attendance?.attendance
+                        ? attendance.attendance
+                        : '',
                     });
-                    return userAttendanceArray;
-                  };
-                  const userAttendanceArray = getUserAttendanceStatus(
-                    nameUserIdArray,
-                    response
-                  );
-                  console.log('userAttendanceArray', userAttendanceArray);
+                  });
+                  return userAttendanceArray;
+                };
+                const userAttendanceArray = getUserAttendanceStatus(
+                  nameUserIdArray,
+                  response
+                );
+                console.log('userAttendanceArray', userAttendanceArray);
 
-                  if (nameUserIdArray && userAttendanceArray) {
-                    const mergeArrays = (
-                      nameUserIdArray: { userId: string; name: string }[],
-                      userAttendanceArray: {
-                        userId: string;
-                        attendance: string;
-                      }[]
-                    ): {
+                if (nameUserIdArray && userAttendanceArray) {
+                  const mergeArrays = (
+                    nameUserIdArray: { userId: string; name: string }[],
+                    userAttendanceArray: {
+                      userId: string;
+                      attendance: string;
+                    }[]
+                  ): {
+                    userId: string;
+                    name: string;
+                    attendance: string;
+                  }[] => {
+                    const newArray: {
                       userId: string;
                       name: string;
                       attendance: string;
-                    }[] => {
-                      const newArray: {
-                        userId: string;
-                        name: string;
-                        attendance: string;
-                      }[] = [];
-                      nameUserIdArray.forEach((user) => {
-                        const userId = user.userId;
-                        const attendanceEntry = userAttendanceArray.find(
-                          (entry) => entry.userId === userId
-                        );
-                        if (attendanceEntry) {
-                          newArray.push({
-                            userId,
-                            name: user.name,
-                            attendance: attendanceEntry.attendance,
-                          });
-                        }
-                      });
-                      if (newArray.length != 0) {
-                        // newArray = newArray.filter(item => item.name);
-                        setCohortMemberList(newArray);
-                        setPresentCount(
-                          newArray.filter(
-                            (user) => user.attendance === 'present'
-                          ).length
-                        );
-                        setAbsentCount(
-                          newArray.filter(
-                            (user) => user.attendance === 'absent'
-                          ).length
-                        );
-                        setNumberOfCohortMembers(newArray?.length);
-                      } else {
-                        setCohortMemberList(nameUserIdArray);
-                        setNumberOfCohortMembers(nameUserIdArray?.length);
+                    }[] = [];
+                    nameUserIdArray.forEach((user) => {
+                      const userId = user.userId;
+                      const attendanceEntry = userAttendanceArray.find(
+                        (entry) => entry.userId === userId
+                      );
+                      if (attendanceEntry) {
+                        newArray.push({
+                          userId,
+                          name: user.name,
+                          attendance: attendanceEntry.attendance,
+                        });
                       }
-                      return newArray;
-                    };
-                    mergeArrays(nameUserIdArray, userAttendanceArray);
-                  }
+                    });
+                    if (newArray.length != 0) {
+                      // newArray = newArray.filter(item => item.name);
+                      setCohortMemberList(newArray);
+                      setPresentCount(
+                        newArray.filter((user) => user.attendance === 'present')
+                          .length
+                      );
+                      setAbsentCount(
+                        newArray.filter((user) => user.attendance === 'absent')
+                          .length
+                      );
+                      setNumberOfCohortMembers(newArray?.length);
+                    } else {
+                      setCohortMemberList(nameUserIdArray);
+                      setNumberOfCohortMembers(nameUserIdArray?.length);
+                    }
+                    return newArray;
+                  };
+                  mergeArrays(nameUserIdArray, userAttendanceArray);
                 }
-                setLoading(false);
-              };
-              userAttendanceStatusList();
-            }
+              }
+              setLoading(false);
+            };
+            userAttendanceStatusList();
           }
         }
+        // }
       } catch (error) {
         console.error('Error fetching cohort list:', error);
         setLoading(false);
