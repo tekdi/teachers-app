@@ -132,7 +132,7 @@ const TeacherProfile = () => {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
-    bgcolor: 'warning.A400',
+    bgcolor: theme.palette.warning.A400,
     p: 4,
     textAlign: 'center',
     height: '85vh',
@@ -378,10 +378,6 @@ const TeacherProfile = () => {
             color: theme.palette.warning.A200,
             border: '1px solid black',
             borderColor: theme.palette.warning['A100'],
-            backgroundColor: theme.palette.warning.A400,
-            '&:hover': {
-              backgroundColor: theme.palette.warning.A400,
-            },
           }}
           startIcon={<CreateOutlinedIcon />}
           onClick={handleOpen}
@@ -572,7 +568,7 @@ const TeacherProfile = () => {
                 }}
                 borderRadius={'12px'}
                 border={'1px'}
-                bgcolor="warning.A400"
+                bgcolor={theme.palette.warning.A400}
                 display="flex"
                 flexDirection="column"
               >
@@ -605,10 +601,6 @@ const TeacherProfile = () => {
                       color: 'black',
                       border: '1px solid black',
                       borderColor: 'black',
-                      backgroundColor: theme.palette.warning.A400,
-                      '&:hover': {
-                        backgroundColor: theme.palette.warning.A400,
-                      },
                     }}
                     onClick={handleClickImage}
                   >
