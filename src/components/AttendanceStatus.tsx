@@ -15,6 +15,7 @@ interface AttendanceStatusProps {
 }
 
 type AttendanceData = {
+  totalcount: any;
   present_percentage: number;
   present_students: number;
   total_students: number;
