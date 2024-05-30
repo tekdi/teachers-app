@@ -215,6 +215,20 @@ const Dashboard: React.FC<DashboardProps> = () => {
     const getAttendaceData = async () => {
       try {
         if (contextId !== '') {
+          const currentDate = new Date();
+          const dayOfWeek = currentDate.getDay();
+          const diffToMonday =
+            currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+          const weekStartDate = new Date(currentDate.setDate(diffToMonday));
+          const startDate = new Date(
+            currentDate.setDate(currentDate.getDate() - 30)
+          );
+          startDate.setHours(0, 0, 0, 0);
+          const endDate = new Date(weekStartDate);
+          endDate.setDate(weekStartDate.getDate() + 6);
+          endDate.setHours(23, 59, 59, 999);
+          const fromDateFormatted = shortDateFormat(startDate);
+          const toDateFormatted = shortDateFormat(endDate);
           const attendanceRequest: AttendancePercentageProps = {
             limit: 300,
             page: 0,
@@ -394,7 +408,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </FormControl>
                   </Box>
                 </Box>
-                <Box sx={{ mt: 1.5 }}>
+                <Box sx={{ mt: 1.5, position: 'relative' }}>
                   <WeekCalender
                     showDetailsHandle={showDetailsHandle}
                     data={percentageAttendanceData}
