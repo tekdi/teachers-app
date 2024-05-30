@@ -147,13 +147,13 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       const attendance = response.find(
                         (status) => status.userId === userId
                       );
-                      if (attendance) {
-                        userAttendanceArray.push({
-                          userId,
-                          attendance: attendance.attendance,
+                      userAttendanceArray.push({
+                        userId,
+                        attendance: attendance?.attendance
+                        ? attendance.attendance
+                        : '',
                         });
-                      }
-                    });
+                        });
                     return userAttendanceArray;
                   };
                   const userAttendanceArray = getUserAttendanceStatus(
@@ -231,7 +231,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     if (classId !== '') {
       getCohortMemberList();
     }
-  }, [classId, selectedDate]);
+  }, [classId, selectedDate, showUpdateButton]);
 
   const handleSave = () => {
     onClose();

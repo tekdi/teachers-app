@@ -142,7 +142,6 @@ const UserAttendanceHistory = () => {
           const filteredData = extractedNames
             ?.map((item: any) => ({
               cohortId: item?.cohortData?.cohortId,
-              parentId: item?.cohortData?.parentId,
               name: item?.cohortData?.name,
             }))
             ?.filter(Boolean);
@@ -219,7 +218,7 @@ const UserAttendanceHistory = () => {
           page,
           filters,
         });
-        const resp = response?.data?.userDetails;
+        const resp = response?.result?.results?.userDetails;
 
         if (resp) {
           const nameUserIdArray = resp?.map((entry: any) => ({
@@ -253,13 +252,13 @@ const UserAttendanceHistory = () => {
                     const attendance = response.find(
                       (status) => status.userId === userId
                     );
-                    if (attendance) {
-                      userAttendanceArray.push({
-                        userId,
-                        attendance: attendance.attendance,
+                    userAttendanceArray.push({
+                      userId,
+                      attendance: attendance?.attendance
+                      ? attendance.attendance
+                      : '',
                       });
-                    }
-                  });
+                      });
                   return userAttendanceArray;
                 };
                 const userAttendanceArray = getUserAttendanceStatus(

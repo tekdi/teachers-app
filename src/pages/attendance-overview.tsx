@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { debounce, getTodayDate, toPascalCase } from '@/utils/Helper';
-
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import ClearIcon from '@mui/icons-material/Clear';
 import DateRangePopup from '@/components/DateRangePopup';
@@ -28,7 +28,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '@/components/SortingModal';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
 import UpDownButton from '@/components/UpDownButton';
-import { classesMissedAttendancePercentList, getCohortAttendance,} from '@/services/AttendanceService';
+import {
+  classesMissedAttendancePercentList,
+  getCohortAttendance,
+} from '@/services/AttendanceService';
 import { cohort, cohortAttendancePercentParam } from '@/utils/Interfaces';
 import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
@@ -59,8 +62,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [selectedValue, setSelectedValue] = React.useState<string>(
     t('COMMON.AS_OF_TODAY')
   );
-  const [presentPercentage, setPresentPercentage] = React.useState<string | number>('');
-  const [lowAttendanceLearnerList,setLowAttendanceLearnerList] = React.useState<any>([]);
+  const [presentPercentage, setPresentPercentage] = React.useState<
+    string | number
+  >('');
+  const [lowAttendanceLearnerList, setLowAttendanceLearnerList] =
+    React.useState<any>([]);
 
   const theme = useTheme<any>();
   const pathname = usePathname();
@@ -85,18 +91,20 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           let page = 0;
           let filters = { userId: userId };
           const resp = await cohortList({ limit, page, filters });
-          const extractedNames = resp?.data?.cohortDetails;
-          const filteredData = extractedNames
-            ?.map((item: any) => ({
-              cohortId: item?.cohortData?.cohortId,
-              parentId: item?.cohortData?.parentId,
-              name: item?.cohortData?.name,
-            }))
-            ?.filter(Boolean);
+          const response = resp?.results;
+          const cohortDetails = response?.cohortDetails || [];
+
+          const filteredData = cohortDetails.map((item: any) => ({
+            cohortId: item?.cohortData?.cohortId,
+            name: item?.cohortData?.name,
+          }));
           setCohortsData(filteredData);
-          setClassId(filteredData?.[0]?.cohortId);
-          setLoading(false);
+
+          if (filteredData.length > 0) {
+            setClassId(filteredData[0].cohortId);
+          }
         }
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching  cohort list:', error);
         setLoading(false);
@@ -124,8 +132,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           page,
           filters,
         });
-        const resp = response?.data?.userDetails;
-
+        const resp = response?.result?.results?.userDetails;
         if (resp) {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
@@ -184,8 +191,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 // Extract names of these students
                 const namesOfLowestAttendance: any[] =
                   studentsWithLowestAttendance.map((student) => student.name);
-                  setLowAttendanceLearnerList(namesOfLowestAttendance)
-              } 
+                setLowAttendanceLearnerList(namesOfLowestAttendance);
+              }
             }
           }
         }
@@ -340,22 +347,39 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
     setDisplayStudentList(sortedData);
   };
+  const handleBackEvent = () => {
+    window.history.back();
+  };
 
   return (
     <Box>
       <UpDownButton />
       <Header />
       {loading && (
-                <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-              )}
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Box width={'100%'}>
-          <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
-            {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
-          </Typography>
+        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+      )}
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'left',
+          alignItems: 'center',
+          color: '#4D4639',
+        }}
+        width={'100%'}
+        onClick={handleBackEvent}
+      >
+        <Box>
+          <KeyboardBackspaceOutlinedIcon
+            cursor={'pointer'}
+            sx={{ color: theme.palette.warning['A200'] }}
+          />
         </Box>
+        <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
+          {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
+        </Typography>
       </Box>
-      
+
       <Box sx={{ mt: 0.6 }}>
         <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
           <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
@@ -374,17 +398,19 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               }}
             >
               {cohortsData?.length !== 0 ? (
-                 <>
-                {cohortsData?.map((cohort) => (
+                //  <>
+                // {
+                cohortsData?.map((cohort) => (
                   <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
                     {cohort.name}
                   </MenuItem>
-                ))}
-                <MenuItem key="all-cohorts" value="all">
-               { t('ATTENDANCE.ALL_CENTERS')}
-                </MenuItem>
-                </>
+                ))
               ) : (
+                // }
+                //   <MenuItem key="all-cohorts" value="all">
+                //  { t('ATTENDANCE.ALL_CENTERS')}
+                //   </MenuItem>
+                //   </>
                 <Typography style={{ fontWeight: 'bold' }}>
                   {t('COMMON.NO_DATA_FOUND')}
                 </Typography>
@@ -402,11 +428,15 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       />
 
       <Box display={'flex'} className="card_overview">
-        <Grid container spacing={2} >
+        <Grid container spacing={2}>
           <Grid item xs={5}>
             <OverviewCard
               label={t('ATTENDANCE.CENTER_ATTENDANCE')}
-              value={learnerData.length? (presentPercentage + " %") : presentPercentage}
+              value={
+                learnerData.length
+                  ? presentPercentage + ' %'
+                  : presentPercentage
+              }
             />
           </Grid>
           <Grid item xs={7}>
@@ -418,9 +448,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               value= { learnerData.length ? lowAttendanceLearnerList:  {t('ATTENDANCE.N/A')}}
             /> */}
             <OverviewCard
-                      label="Low Attendance Learners"
-                      value="Bharat Kumar, Ankita Kulkarni and 3 more"
-                    />
+              label="Low Attendance Learners"
+              value="Bharat Kumar, Ankita Kulkarni and 3 more"
+            />
           </Grid>
         </Grid>
       </Box>
@@ -499,17 +529,19 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           routeName={pathname}
         />
       </Stack>
-      {classId !== "all"?
+      {classId !== 'all' ? (
         <LearnerListHeader
-        numberOfColumns={3}
-        firstColumnName={t('COMMON.ATTENDANCE')}
-        secondColumnName={t('COMMON.CLASS_MISSED')}
-      />:  <LearnerListHeader
-      numberOfColumns={2}
-      firstColumnName={t('COMMON.ATTENDANCE')}
-    />
-      }
-    
+          numberOfColumns={3}
+          firstColumnName={t('COMMON.ATTENDANCE')}
+          secondColumnName={t('COMMON.CLASS_MISSED')}
+        />
+      ) : (
+        <LearnerListHeader
+          numberOfColumns={2}
+          firstColumnName={t('COMMON.ATTENDANCE')}
+        />
+      )}
+
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )}
