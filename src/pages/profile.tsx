@@ -11,6 +11,8 @@ import {
   IconButton,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
   Typography,
@@ -59,6 +61,9 @@ const TeacherProfile = () => {
   const [image, setImage] = useState(user_placeholder_img);
   const [gender, setGender] = React.useState('');
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [unitName, setUnitName] = useState('');
+  const [blockName, setBlockName] = useState('');
+  const [radioValues, setRadioValues] = useState<any>([]);
 
   const handleFieldChange = (
     fieldId: string,
@@ -126,6 +131,12 @@ const TeacherProfile = () => {
     handleFieldChange(fieldId, value, 'dropdown');
   };
 
+  const handleRadioChange = (fieldId: any, value: any) => {
+    setRadioValues((prev: any) => ({
+      ...prev,
+      [fieldId]: value,
+    }));
+  };
   const style = {
     position: 'absolute',
     top: '50%',
@@ -182,6 +193,12 @@ const TeacherProfile = () => {
     }
   };
 
+  // find Address
+  const getFieldValue = (data: any, label: string) => {
+    const field = data.find((item: any) => item.label === label);
+    return field ? field.value[0] : null;
+  };
+
   const fetchUserDetails = async () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const userId = localStorage.getItem('userId');
@@ -189,7 +206,7 @@ const TeacherProfile = () => {
       try {
         if (userId) {
           const response = await getUserDetails(userId, true);
-          
+
           const data = response?.result;
 
           if (data) {
@@ -199,6 +216,12 @@ const TeacherProfile = () => {
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
+
+              
+              const unitName = getFieldValue(customDataFields, 'Unit Name');
+              setUnitName(unitName);
+              const blockName = getFieldValue(customDataFields, 'Block Name');
+              setBlockName(blockName);
             }
           } else {
             console.log('No data Found');
@@ -253,11 +276,19 @@ const TeacherProfile = () => {
 
   // Define the desired order
   const order = [1, 4, 2, 3, 5, 7];
-
   // Order fields based on the predefined order
   const orderedFields = customFieldsData
     ?.filter((field) => order.includes(field.order))
     ?.sort((a, b) => order.indexOf(a.order) - order.indexOf(b.order));
+
+  const address = [unitName, blockName, userData?.district, userData?.state]
+    ?.filter(Boolean)
+    ?.join(', ');
+
+  // Filter and sort customFieldsData by order, excluding fields with order 0
+  const filteredSortedFields = [...customFieldsData]
+    ?.filter((field) => field.order !== 0)
+    ?.sort((a, b) => a.order - b.order);
 
   return (
     <Box
@@ -334,7 +365,7 @@ const TeacherProfile = () => {
                 </Typography>
               </Box>
               <Box display={'flex'} mt={'3px'}>
-                {userData?.district || userData?.state ? (
+                {address ? (
                   <PlaceOutlinedIcon
                     sx={{
                       fontSize: '1rem',
@@ -354,9 +385,7 @@ const TeacherProfile = () => {
                   fontWeight={'500'}
                   lineHeight={'16px'}
                 >
-                  {userData?.district && userData?.state
-                    ? `${userData.district}, ${userData.state}`
-                    : `${userData?.district || ''}${userData?.state || ''}`}
+                  {address}
                 </Typography>
               </Box>
             </Grid>
@@ -597,10 +626,9 @@ const TeacherProfile = () => {
                       marginTop: '10px',
                       flex: '1',
                       textAlign: 'center',
-                      color: 'black',
-                      border: '1px solid black',
-                      borderColor: 'black',
+                      border: '1px solid ',
                     }}
+                    disabled // commment for temp
                     onClick={handleClickImage}
                   >
                     {t('PROFILE.UPDATE_PICTURE')}
@@ -608,8 +636,8 @@ const TeacherProfile = () => {
                 </Box>
               </Box>
 
-              {customFieldsData &&
-                customFieldsData.map((field) => (
+              {filteredSortedFields &&
+                filteredSortedFields.map((field) => (
                   <Grid item xs={12} key={field.fieldId}>
                     {field.type === 'text' || field.type === 'numeric' ? (
                       <TextField
@@ -691,6 +719,37 @@ const TeacherProfile = () => {
                             ))}
                           </Select>
                         </FormControl>
+                      </Box>
+                    ) : field.type === 'radio' ? (
+                      <Box marginTop={3}>
+                        <Typography
+                          textAlign={'start'}
+                          variant="h4"
+                          margin={0}
+                          color={theme.palette.warning.A200}
+                        >
+                          {field.label}
+                        </Typography>
+                        <RadioGroup
+                          name={field.fieldId}
+                          value={
+                            radioValues[field.fieldId] || field.value[0] || ''
+                          }
+                          onChange={(e) =>
+                            handleRadioChange(field.fieldId, e.target.value)
+                          }
+                        >
+                          <Box display="flex" flexWrap="wrap">
+                            {field.options?.map((option: any) => (
+                              <FormControlLabel
+                                key={option.value}
+                                value={option.value}
+                                control={<Radio color="default" />}
+                                label={option.name}
+                              />
+                            ))}
+                          </Box>
+                        </RadioGroup>
                       </Box>
                     ) : null}
                   </Grid>
