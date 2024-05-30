@@ -189,7 +189,7 @@ const TeacherProfile = () => {
       try {
         if (userId) {
           const response = await getUserDetails(userId, true);
-          console.log('profile', response);
+          
           const data = response?.result;
 
           if (data) {
@@ -197,7 +197,6 @@ const TeacherProfile = () => {
 
             setUserData(userData);
             const customDataFields = userData?.customFields;
-            console.log('dataResponse', customDataFields);
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
             }
