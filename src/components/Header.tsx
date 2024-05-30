@@ -127,19 +127,28 @@ const Header: React.FC = () => {
           height="auto"
           boxShadow="0px 1px 3px 0px #0000004D"
         >
-          <Box onClick={toggleDrawer(true)} mt={'0.5rem'} paddingLeft={'1rem'}>
-            <MenuIcon style={{ fill: theme.palette.warning['A200'] }} />
-          </Box>
-          <Box sx={{ margin: '0 auto' }}>
-            <Image
-              height={40}
-              width={40}
-              src={logoLight}
-              alt="logo"
-              onClick={() => router.push('/dashboard')}
-              style={{ cursor: 'pointer' }}
+          <Box
+            onClick={toggleDrawer(true)}
+            mt={'0.5rem'}
+            sx={{ cursor: 'pointer' }}
+            paddingLeft={'1rem'}
+          >
+            <MenuIcon
+              style={{
+                fill: theme.palette.warning['A200'],
+              }}
+              className="menuSvg"
             />
           </Box>
+
+          <Image
+            height={40}
+            width={44}
+            src={logoLight}
+            alt="logo"
+            onClick={() => router.push('/dashboard')}
+            style={{ cursor: 'pointer' }}
+          />
           <Box
             onClick={handleClick}
             sx={{ cursor: 'pointer', position: 'relative' }}
@@ -153,9 +162,13 @@ const Header: React.FC = () => {
             flexDirection={'column'}
             mt={'0.5rem'}
           >
-            <AccountCircleIcon fontSize="large" style={{ fill: theme.palette.warning['A200'] }} />
+            <AccountCircleIcon
+              fontSize="large"
+              className="accIcon"
+              style={{ fill: theme.palette.warning['A200'] }}
+            />
           </Box>
-          <div>
+          <div style={{ position: 'absolute' }}>
             <StyledMenu
               id="profile-menu"
               MenuListProps={{
