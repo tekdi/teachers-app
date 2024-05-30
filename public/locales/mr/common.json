@@ -95,7 +95,10 @@
     "DAY_WISE_ATTENDANCE": "दिवस-विशेष उपस्थिती",
     "ATTENDANCE_OVERVIEW": "उपस्थिती विहंगावलोकन",
     "CENTER_ATTENDANCE": "केंद्र उपस्थिती",
-    "LOW_ATTENDANCE_STUDENTS": "कमी उपस्थिती विद्यार्थी"
+    "LOW_ATTENDANCE_STUDENTS": "कमी उपस्थिती विद्यार्थी",
+    "N/A": "उपलब्ध नाही",
+    "CENTER_NAME": "केंद्राचे नाव",
+    "ALL_CENTERS": "सर्व केंद्रे"
   },
   "PROFILE": {
     "EDIT_PROFILE": "प्रोफाइल संपादित करा",

@@ -135,7 +135,7 @@ export interface cohort {
 export interface LearListHeaderProps {
   numberOfColumns: number;
   firstColumnName: string;
-  secondColumnName: string;
+  secondColumnName?: string;
 }
 
 export interface MarksObtainedCardProps {

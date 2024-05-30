@@ -102,7 +102,10 @@
     "DAY_WISE_ATTENDANCE": "Day-Wise Attendance",
     "ATTENDANCE_OVERVIEW": "Attendance Overview",
     "CENTER_ATTENDANCE": "Center Attendance",
-    "LOW_ATTENDANCE_STUDENTS": "Low Attendance Learners"
+    "LOW_ATTENDANCE_STUDENTS": "Low Attendance Learners",
+    "N/A": "N/A.",
+    "CENTER_NAME": "Center Name",
+    "ALL_CENTERS": "All Centers"
   },
   "PROFILE": {
     "EDIT_PROFILE": "Edit Profile",
