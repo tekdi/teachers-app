@@ -18,6 +18,6 @@ export const getMyCohortMemberList = async ({
     return response?.data;
   } catch (error) {
     console.error('error in attendance report api ', error);
-    throw error;
+    // throw error;
   }
 };
