@@ -365,6 +365,8 @@ const TeacherProfile = () => {
         </Box>
         <Button
           sx={{
+            fontSize: '14px',
+            lineHeight: '20px',
             minWidth: '100%',
 
             padding: '10px 24px 10px 16px',
@@ -373,9 +375,9 @@ const TeacherProfile = () => {
             marginTop: '10px',
             flex: '1',
             textAlign: 'center',
-            color: 'black',
+            color: theme.palette.warning.A200,
             border: '1px solid black',
-            borderColor: 'black',
+            borderColor: theme.palette.warning['A100'],
             backgroundColor: theme.palette.warning.A400,
             '&:hover': {
               backgroundColor: theme.palette.warning.A400,
@@ -384,7 +386,19 @@ const TeacherProfile = () => {
           startIcon={<CreateOutlinedIcon />}
           onClick={handleOpen}
         >
-          {t('PROFILE.EDIT_PROFILE')}
+          <Typography
+            variant="h3"
+            style={{
+              letterSpacing: '0.1px',
+              textAlign: 'left',
+              marginBottom: '2px',
+            }}
+            fontSize={'14px'}
+            fontWeight={'500'}
+            lineHeight={'20px'}
+          >
+            {t('PROFILE.EDIT_PROFILE')}
+          </Typography>
         </Button>
 
         {/* modal for edit profile */}
@@ -697,17 +711,13 @@ const TeacherProfile = () => {
               <Button
                 sx={{
                   minWidth: '100%',
-
-                  color: 'black',
-                  backgroundColor: 'containedSecondary',
-                  '&:hover': {
-                    backgroundColor: 'containedSecondary',
-                  },
+                  color: theme.palette.warning.A200,
+                  boxShadow: 'none',
                 }}
                 onClick={handleUpdateClick}
                 variant="contained"
               >
-                {t('COMMON.UPDATE')}
+                {t('COMMON.SAVE')}
               </Button>
             </Box>
           </Box>
