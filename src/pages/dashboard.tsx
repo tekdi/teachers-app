@@ -2,8 +2,8 @@
 
 import {
   AttendancePercentageProps,
-  AttendanceStatusListProps,
   cohort,
+  cohortAttendancePercentParam,
 } from '../utils/Interfaces';
 import {
   Box,
@@ -21,34 +21,26 @@ import React, { useEffect } from 'react';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import {
   attendanceInPercentageStatusList,
-  attendanceStatusList,
-  bulkAttendance,
+  getCohortAttendance,
 } from '../services/AttendanceService';
 import {
-  formatDate,
   formatSelectedDate,
   getMonthName,
   getTodayDate,
   shortDateFormat,
-  toPascalCase,
 } from '../utils/Helper';
 import { isAfter, startOfDay } from 'date-fns';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
-import AttendanceStatusListView from '../components/AttendanceStatusListView';
-import Backdrop from '@mui/material/Backdrop';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
-import Fade from '@mui/material/Fade';
 import Header from '../components/Header';
 import Link from 'next/link';
 import Loader from '../components/Loader';
-import Modal from '@mui/material/Modal';
+import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import OverviewCard from '@/components/OverviewCard';
 import WeekCalender from '@/components/WeekCalender';
 import { cohortList } from '../services/CohortServices';
-import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
@@ -67,23 +59,27 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   const [classId, setClassId] = React.useState('');
-  const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
-  const [presentCount, setPresentCount] = React.useState(0);
-  const [absentCount, setAbsentCount] = React.useState(0);
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
-  const [selectedDate, setSelectedDate] = React.useState('');
+  const [selectedDate, setSelectedDate] =
+    React.useState<string>(getTodayDate());
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState(null);
-  const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
   const [percentageAttendance, setPercentageAttendance] =
     React.useState<any>(null);
-  const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [isAllAttendanceMarked, setIsAllAttendanceMarked] =
-    React.useState(false);
-  const [showUpdateButton, setShowUpdateButton] = React.useState(false);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [cohortPresentPercentage, setCohortPresentPercentage] =
+    React.useState<string>('');
+  const [lowAttendanceLearnerList, setLowAttendanceLearnerList] =
+    React.useState<any>([]);
+  const [fromDateFormatted, setFromDateFormatted] = React.useState<
+    Date | string
+  >('');
+  const [toDateFormatted, setToDateFormatted] = React.useState<Date | string>(
+    ''
+  );
+  const [dateRange, setDateRange] = React.useState<Date | string>('');
   const [state, setState] = React.useState<State>({
     openModal: false,
     vertical: 'top',
@@ -93,22 +89,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const { vertical, horizontal, openModal } = state;
   const { t } = useTranslation();
   const router = useRouter();
-  const currentDate = getTodayDate();
   const contextId = classId;
   const theme = useTheme<any>();
   const determinePathColor = useDeterminePathColor();
-  const modalContainer = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 300,
-    bgcolor: theme.palette.warning['A400'],
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-    Height: '585px',
-  };
+
+  useEffect(() => {
+    let date = new Date();
+    const dayOfWeek = date.getDay();
+    const diffToMonday =
+      date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+    let startDate = new Date(date);
+    startDate.setDate(diffToMonday);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 6);
+    endDate.setHours(23, 59, 59, 999);
+    const startDay = startDate.getDate();
+    const endDay = endDate.getDate();
+    const month = endDate.toLocaleString('default', { month: 'long' });
+    setDateRange(`(${startDay}-${endDay} ${month}`);
+    setFromDateFormatted(shortDateFormat(startDate));
+    setToDateFormatted(shortDateFormat(endDate));
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -133,7 +135,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           const filters = { userId: userId };
           const resp = await cohortList({ limit, page, filters });
 
-          const extractedNames = resp?.data?.cohortDetails;
+          const extractedNames = resp?.results?.cohortDetails;
           localStorage.setItem(
             'parentCohortId',
             extractedNames?.[0].cohortData.parentId
@@ -148,7 +150,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
             ?.filter(Boolean);
           setCohortsData(filteredData);
           setClassId(filteredData?.[0]?.cohortId);
-          // setShowUpdateButton(true);
           setLoading(false);
         }
       } catch (error) {
@@ -161,130 +162,30 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   //API for getting student list
   useEffect(() => {
-    submitBulkAttendanceAction(true, '', '');
-    const getCohortMemberList = async () => {
+    const cohortAttendancePercent = async () => {
       setLoading(true);
       try {
-        if (classId) {
-          const limit = 300;
-          const page = 0;
-          const filters = { cohortId: classId };
-          const response = await getMyCohortMemberList({
-            limit,
-            page,
-            filters,
-          });
-          const resp = response?.data?.userDetails;
-
-          if (resp) {
-            const nameUserIdArray = resp?.map((entry: any) => ({
-              userId: entry.userId,
-              name: toPascalCase(entry.name),
-            }));
-            console.log('name..........', nameUserIdArray);
-            if (nameUserIdArray && (selectedDate || currentDate)) {
-              const userAttendanceStatusList = async () => {
-                const attendanceStatusData: AttendanceStatusListProps = {
-                  limit: 300,
-                  page: 0,
-                  filters: {
-                    fromDate: selectedDate || currentDate,
-                    toDate: selectedDate || currentDate,
-                    contextId: classId,
-                  },
-                };
-                const res = await attendanceStatusList(attendanceStatusData);
-                const response = res?.data?.attendanceList;
-                console.log('attendanceStatusList', response);
-                if (nameUserIdArray && response) {
-                  const getUserAttendanceStatus = (
-                    nameUserIdArray: any[],
-                    response: any[]
-                  ) => {
-                    const userAttendanceArray: {
-                      userId: any;
-                      attendance: any;
-                    }[] = [];
-
-                    nameUserIdArray.forEach((user) => {
-                      const userId = user.userId;
-                      const attendance = response.find(
-                        (status) => status.userId === userId
-                      );
-                      userAttendanceArray.push({
-                        userId,
-                        attendance: attendance?.attendance
-                          ? attendance.attendance
-                          : '',
-                      });
-                    });
-                    return userAttendanceArray;
-                  };
-                  const userAttendanceArray = getUserAttendanceStatus(
-                    nameUserIdArray,
-                    response
-                  );
-                  console.log('userAttendanceArray', userAttendanceArray);
-
-                  if (nameUserIdArray && userAttendanceArray) {
-                    const mergeArrays = (
-                      nameUserIdArray: { userId: string; name: string }[],
-                      userAttendanceArray: {
-                        userId: string;
-                        attendance: string;
-                      }[]
-                    ): {
-                      userId: string;
-                      name: string;
-                      attendance: string;
-                    }[] => {
-                      const newArray: {
-                        userId: string;
-                        name: string;
-                        attendance: string;
-                      }[] = [];
-                      nameUserIdArray.forEach((user) => {
-                        const userId = user.userId;
-                        const attendanceEntry = userAttendanceArray.find(
-                          (entry) => entry.userId === userId
-                        );
-                        if (attendanceEntry) {
-                          newArray.push({
-                            userId,
-                            name: user.name,
-                            attendance: attendanceEntry.attendance,
-                          });
-                        }
-                      });
-                      if (newArray.length != 0) {
-                        // newArray = newArray.filter(item => item.name);
-                        setCohortMemberList(newArray);
-                        setPresentCount(
-                          newArray.filter(
-                            (user) => user.attendance === 'present'
-                          ).length
-                        );
-                        setAbsentCount(
-                          newArray.filter(
-                            (user) => user.attendance === 'absent'
-                          ).length
-                        );
-                        setNumberOfCohortMembers(newArray?.length);
-                      } else {
-                        setCohortMemberList(nameUserIdArray);
-                        setNumberOfCohortMembers(nameUserIdArray?.length);
-                      }
-                      return newArray;
-                    };
-                    mergeArrays(nameUserIdArray, userAttendanceArray);
-                  }
-                }
-                setLoading(false);
-              };
-              userAttendanceStatusList();
-            }
-          }
-        }
+        const cohortAttendanceData: cohortAttendancePercentParam = {
+          limit: 0,
+          page: 0,
+          filters: {
+            scope: 'student',
+            fromDate: fromDateFormatted,
+            toDate: toDateFormatted,
+            contextId: classId,
+          },
+          facets: ['contextId'],
+        };
+        const res = await getCohortAttendance(cohortAttendanceData);
+        const response = res?.data?.result;
+        const contextData = response?.contextId && response?.contextId[classId];
+        const presentPercentage =
+          contextData && contextData != undefined ? (
+            contextData?.present_percentage
+          ) : (
+            <Typography>{t('ATTENDANCE.N/A')}</Typography>
+          );
+        setCohortPresentPercentage(presentPercentage);
       } catch (error) {
         console.error('Error fetching cohort list:', error);
         setLoading(false);
@@ -294,7 +195,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     };
 
     if (classId?.length) {
-      getCohortMemberList();
+      cohortAttendancePercent();
     }
   }, [classId, selectedDate]);
 
@@ -318,10 +219,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
           const dayOfWeek = currentDate.getDay();
           const diffToMonday =
             currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-          const startDate = new Date(currentDate.setDate(diffToMonday));
+          const weekStartDate = new Date(currentDate.setDate(diffToMonday));
+          const startDate = new Date(
+            currentDate.setDate(currentDate.getDate() - 30)
+          );
           startDate.setHours(0, 0, 0, 0);
-          const endDate = new Date(startDate);
-          endDate.setDate(startDate.getDate() + 6);
+          const endDate = new Date(weekStartDate);
+          endDate.setDate(weekStartDate.getDate() + 6);
           endDate.setHours(23, 59, 59, 999);
           const fromDateFormatted = shortDateFormat(startDate);
           const toDateFormatted = shortDateFormat(endDate);
@@ -377,84 +281,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
     getAttendaceData();
   }, [classId, handleSaveHasRun]);
 
-  const submitBulkAttendanceAction = (
-    isBulkAction: boolean,
-    status: string,
-    id?: string | undefined
-  ) => {
-    const updatedAttendanceList = cohortMemberList?.map((user: any) => {
-      if (isBulkAction) {
-        user.attendance = status;
-        setBulkAttendanceStatus(status);
-      } else {
-        setBulkAttendanceStatus('');
-        if (user.userId === id) {
-          user.attendance = status;
-        }
-      }
-      return user;
-    });
-    setCohortMemberList(updatedAttendanceList);
-    const hasEmptyAttendance = () => {
-      const allAttendance = updatedAttendanceList.some(
-        (user) => user.attendance === ''
-      );
-      setIsAllAttendanceMarked(!allAttendance);
-      if (allAttendance) {
-        setShowUpdateButton(true);
-      }
-    };
-    hasEmptyAttendance();
-  };
-
   const viewAttendanceHistory = () => {
     router.push('/attendance-history');
   };
 
-  const handleSave = () => {
-    handleModalToggle();
-    const userAttendance = cohortMemberList?.map((user: any) => {
-      return {
-        userId: user.userId,
-        attendance: user.attendance,
-      };
-    });
-    if (userAttendance) {
-      const data = {
-        attendanceDate: selectedDate || currentDate,
-        contextId,
-        userAttendance,
-      };
-      const markBulkAttendance = async () => {
-        setLoading(true);
-        try {
-          await bulkAttendance(data);
-          // console.log(`response bulkAttendance`, response?.responses);
-          // const resp = response?.data;
-          // console.log(`data`, data);
-          setShowUpdateButton(true);
-          handleModalToggle();
-          setLoading(false);
-          setHandleSaveHasRun(true);
-        } catch (error) {
-          console.error('Error fetching  cohort list:', error);
-          setLoading(false);
-        }
-        handleClick({ vertical: 'bottom', horizontal: 'center' })();
-      };
-      markBulkAttendance();
-    }
-  };
-
-  const handleClick = (newState: SnackbarOrigin) => () => {
-    setState({ ...newState, openModal: true });
-  };
   const handleClose = () => {
-    setState({ ...state, openModal: false });
+    setOpen(false);
   };
 
-  // Get today's date in the format 'YYYY-MM-DD'
-  // const todayDate = new Date().toISOString().split('T')[0];
   const todayDate = getTodayDate();
 
   // Initialize currentAttendance based on today's date
@@ -574,7 +408,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </FormControl>
                   </Box>
                 </Box>
-                <Box sx={{ mt: 1.5 }}>
+                <Box sx={{ mt: 1.5, position: 'relative' }}>
                   <WeekCalender
                     showDetailsHandle={showDetailsHandle}
                     data={percentageAttendanceData}
@@ -687,192 +521,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Stack>
                 </Box>
 
-                {/* Student Attendance Modal */}
-                <Modal
-                  aria-labelledby="transition-modal-title"
-                  aria-describedby="transition-modal-description"
+                <MarkBulkAttendance
                   open={open}
-                  onClose={handleModalToggle}
-                  closeAfterTransition
-                  slots={{ backdrop: Backdrop }}
-                  slotProps={{
-                    backdrop: {
-                      timeout: 500,
-                    },
-                  }}
-                  className="modal_mark"
-                >
-                  <Fade in={open}>
-                    <Box
-                      sx={{
-                        ...modalContainer,
-                        borderColor: theme.palette.warning['A400'],
-                        padding: '15px 10px 0 10px',
-                      }}
-                      borderRadius={'1rem'}
-                      height={'80%'}
-                    >
-                      <Box height={'100%'} width={'100%'}>
-                        <Box display={'flex'} justifyContent={'space-between'}>
-                          <Box marginBottom={'0px'}>
-                            <Typography
-                              variant="h2"
-                              component="h2"
-                              marginBottom={'0px'}
-                              fontWeight={'500'}
-                              fontSize={'16px'}
-                              sx={{ color: theme.palette.warning['A200'] }}
-                            >
-                              {t('COMMON.MARK_CENTER_ATTENDANCE')}
-                            </Typography>
-                            <Typography
-                              variant="h2"
-                              sx={{
-                                paddingBottom: '10px',
-                                color: theme.palette.warning['A200'],
-                                fontSize: '14px',
-                              }}
-                              component="h2"
-                            >
-                              {formatDate(selectedDate || currentDate)}
-                            </Typography>
-                          </Box>
-                          <Box onClick={() => handleModalToggle()}>
-                            <CloseIcon
-                              sx={{
-                                cursor: 'pointer',
-                                color: theme.palette.warning['A200'],
-                              }}
-                            />
-                          </Box>
-                        </Box>
-                        <Box
-                          sx={{ height: '1px', background: '#D0C5B4' }}
-                        ></Box>
-                        {loading && (
-                          <Loader
-                            showBackdrop={true}
-                            loadingText={t('COMMON.LOADING')}
-                          />
-                        )}
-
-                        <Typography
-                          sx={{
-                            marginTop: '10px',
-                            fontSize: '12px',
-                            color: theme.palette.warning['A200'],
-                          }}
-                        >
-                          {t('ATTENDANCE.TOTAL_STUDENTS', {
-                            count: numberOfCohortMembers,
-                          })}
-                        </Typography>
-                        <Box display={'flex'} justifyContent={'space-between'}>
-                          <Typography
-                            sx={{
-                              marginTop: '0px',
-                              fontSize: '12px',
-                              color: theme.palette.warning['A200'],
-                            }}
-                          >
-                            {t('ATTENDANCE.PRESENT_STUDENTS', {
-                              count: presentCount,
-                            })}
-                          </Typography>
-                          <Typography
-                            sx={{
-                              marginTop: '0px',
-                              fontSize: '12px',
-                              color: theme.palette.warning['A200'],
-                            }}
-                          >
-                            {t('ATTENDANCE.ABSENT_STUDENTS', {
-                              count: absentCount,
-                            })}
-                          </Typography>
-                        </Box>
-                        {cohortMemberList && cohortMemberList?.length != 0 ? (
-                          <Box
-                            height={'53vh'}
-                            sx={{ overflowY: 'scroll', marginTop: '10px' }}
-                          >
-                            <Box>
-                              <AttendanceStatusListView
-                                isEdit={true}
-                                isBulkAction={true}
-                                bulkAttendanceStatus={bulkAttendanceStatus}
-                                handleBulkAction={submitBulkAttendanceAction}
-                              />
-                              {cohortMemberList?.map(
-                                (
-                                  user: any //cohort member list should have userId, attendance, name
-                                ) => (
-                                  <AttendanceStatusListView
-                                    key={user.userId}
-                                    userData={{
-                                      userId: user.userId,
-                                      attendance: user.attendance,
-                                      attendanceDate:
-                                        selectedDate || currentDate,
-                                      name: user.name,
-                                    }}
-                                    isEdit={true}
-                                    bulkAttendanceStatus={bulkAttendanceStatus}
-                                    handleBulkAction={
-                                      submitBulkAttendanceAction
-                                    }
-                                  />
-                                )
-                              )}
-                            </Box>
-                            <Box
-                              position={'absolute'}
-                              bottom="0px"
-                              display={'flex'}
-                              gap={'20px'}
-                              flexDirection={'row'}
-                              justifyContent={'space-evenly'}
-                              marginBottom={0}
-                              sx={{
-                                background: '#fff',
-                                padding: '15px 0 15px 0',
-                              }}
-                            >
-                              <Button
-                                variant="outlined"
-                                style={{ width: '8rem' }}
-                                disabled={isAllAttendanceMarked ? false : true}
-                                onClick={() =>
-                                  submitBulkAttendanceAction(true, '', '')
-                                }
-                              >
-                                {' '}
-                                {t('COMMON.CLEAR_ALL')}
-                              </Button>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                style={{ width: '8rem' }}
-                                disabled={isAllAttendanceMarked ? false : true}
-                                onClick={handleSave}
-                              >
-                                {showUpdateButton
-                                  ? t('COMMON.UPDATE')
-                                  : t('COMMON.SAVE')}
-                              </Button>
-                            </Box>
-                          </Box>
-                        ) : (
-                          <Typography
-                            style={{ fontWeight: 'bold', marginLeft: '1rem' }}
-                          >
-                            {t('COMMON.NO_DATA_FOUND')}
-                          </Typography>
-                        )}
-                      </Box>
-                    </Box>
-                  </Fade>
-                </Modal>
+                  onClose={handleClose}
+                  classId={classId}
+                  selectedDate={new Date(selectedDate)}
+                  onSaveSuccess={() => setHandleSaveHasRun(!handleSaveHasRun)}
+                />
               </Box>
 
               <Snackbar
@@ -902,8 +557,20 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   padding={'2px'}
                 >
                   <Box>
-                    <Typography className="fs-14" variant="h2">
+                    <Typography
+                      variant="h2"
+                      sx={{
+                        color: '#1F1B13',
+                        fontSize: '16px',
+                        fontWeight: '500',
+                      }}
+                    >
                       {t('DASHBOARD.OVERVIEW')}
+                    </Typography>
+                    <Typography className="fs-14" variant="h2">
+                      {t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+                        date_range: dateRange,
+                      })}
                     </Typography>
                   </Box>
                   <Box
@@ -935,12 +602,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
               <Box display={'flex'} className="card_overview" mx={'1rem'}>
                 <Grid container spacing={2}>
                   <Grid item xs={4}>
-                    <OverviewCard label="Centre Attendance" value="71%" />
+                    <OverviewCard
+                      label="Centre Attendance"
+                      value={cohortPresentPercentage + ' %'}
+                    />
                   </Grid>
                   <Grid item xs={8}>
                     <OverviewCard
                       label="Low Attendance Learners"
-                      value="Bharat Kumar, Ankita Kulkarni, +3 more"
+                      value="Bharat Kumar, Ankita Kulkarni, 3 more"
                     />
                   </Grid>
                 </Grid>

@@ -14,6 +14,7 @@ body {
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box;
+  background-color: white;
 }
 
 .drawer-select div div {
@@ -527,3 +528,25 @@ main {
     right: 360px;
   }
 } */
+.prev_btn {
+  position: absolute;
+  top: 53px;
+  z-index: 999;
+  left: -14px;
+  transform: rotate(90deg);
+}
+.next_btn {
+  position: absolute;
+  top: 53px;
+  right: -14px;
+  z-index: 999;
+  transform: rotate(270deg);
+}
+.menuSvg path {
+  width: 36px;
+  height: 24px;
+}
+.accIcon path {
+  width: 20;
+  height: 20px;
+}

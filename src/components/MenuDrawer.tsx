@@ -20,6 +20,7 @@ interface DrawerProps {
   language: string;
   setLanguage: (lang: string) => void;
 }
+
 const MenuDrawer: React.FC<DrawerProps> = ({
   toggleDrawer,
   open,
@@ -48,6 +49,12 @@ const MenuDrawer: React.FC<DrawerProps> = ({
       router.replace(router.pathname, router.asPath, { locale: newLocale });
     }
   };
+
+  const navigateToDashboard = () => {
+    router.push('/dashboard');
+  };
+
+  const isDashboard = router.pathname === '/dashboard';
 
   return (
     <Drawer
@@ -135,7 +142,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               width: '100%',
               display: 'flex',
               justifyContent: 'flex-start',
-              background: theme.palette.primary.main,
+              background: isDashboard
+                ? theme.palette.primary.main
+                : 'rgba(29, 27, 32, 0.12)',
               padding: '16px !important',
               marginTop: '15px',
               color: '#2E1500',
@@ -144,6 +153,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               },
             }}
             startIcon={<DashboardOutlinedIcon />}
+            onClick={navigateToDashboard}
           >
             {t('DASHBOARD.DASHBOARD')}
           </Button>

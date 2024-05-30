@@ -42,6 +42,7 @@
     "LAST_SIX_MONTHS": "Last Six Months",
     "CUSTOM_RANGE": "Custom Range",
     "NONE": "None",
+    "LEARNERS":"Learners",
     "LEARNER_NAME": "Learner Name",
     "DATE_RANGE": "Date Range",
     "SELECT_AN_OPTION": "Select an option"
@@ -78,7 +79,7 @@
     "MY_TEACHING_CENTERS": "My Teaching Centers",
     "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
     "BACK_TO_TOP":"Back to Top",
-    "LEARNER":"Learners"
+    "LAST_SEVEN_DAYS_RANGE": "Last 7 Days {{date_range}})"
 
   },
   "ATTENDANCE": {
@@ -101,7 +102,10 @@
     "DAY_WISE_ATTENDANCE": "Day-Wise Attendance",
     "ATTENDANCE_OVERVIEW": "Attendance Overview",
     "CENTER_ATTENDANCE": "Center Attendance",
-    "LOW_ATTENDANCE_STUDENTS": "Low Attendance Students"
+    "LOW_ATTENDANCE_STUDENTS": "Low Attendance Learners",
+    "N/A": "N/A.",
+    "CENTER_NAME": "Center Name",
+    "ALL_CENTERS": "All Centers"
   },
   "PROFILE": {
     "EDIT_PROFILE": "Edit Profile",
