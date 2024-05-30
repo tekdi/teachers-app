@@ -217,7 +217,6 @@ const TeacherProfile = () => {
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
 
-              
               const unitName = getFieldValue(customDataFields, 'Unit Name');
               setUnitName(unitName);
               const blockName = getFieldValue(customDataFields, 'Block Name');
@@ -274,21 +273,20 @@ const TeacherProfile = () => {
   );
   const orderedSubjects = [...mutualSubjects, ...remainingSubjects];
 
-  // Define the desired order
-  const order = [1, 4, 2, 3, 5, 7];
-  // Order fields based on the predefined order
-  const orderedFields = customFieldsData
-    ?.filter((field) => order.includes(field.order))
-    ?.sort((a, b) => order.indexOf(a.order) - order.indexOf(b.order));
+  //fields  for view profile by order
+  const filteredSortedForView = [...customFieldsData]
+    ?.filter((field) => field.order !== 0 && field.label !== 'My Main Subjects')
+    ?.sort((a, b) => a.order - b.order);
 
+  //fields  for edit popup by order
+  const filteredSortedForEdit = [...customFieldsData]
+    ?.filter((field) => field.order !== 0)
+    ?.sort((a, b) => a.order - b.order);
+
+  // address find
   const address = [unitName, blockName, userData?.district, userData?.state]
     ?.filter(Boolean)
     ?.join(', ');
-
-  // Filter and sort customFieldsData by order, excluding fields with order 0
-  const filteredSortedFields = [...customFieldsData]
-    ?.filter((field) => field.order !== 0)
-    ?.sort((a, b) => a.order - b.order);
 
   return (
     <Box
@@ -441,7 +439,7 @@ const TeacherProfile = () => {
           flexDirection="row"
         >
           <Grid container spacing={4}>
-            {orderedFields?.map((item, index) => {
+            {filteredSortedForView?.map((item, index) => {
               if (item.order === 5) {
                 return (
                   <Grid item xs={12}>
@@ -636,8 +634,8 @@ const TeacherProfile = () => {
                 </Box>
               </Box>
 
-              {filteredSortedFields &&
-                filteredSortedFields.map((field) => (
+              {filteredSortedForEdit &&
+                filteredSortedForEdit?.map((field) => (
                   <Grid item xs={12} key={field.fieldId}>
                     {field.type === 'text' || field.type === 'numeric' ? (
                       <TextField
