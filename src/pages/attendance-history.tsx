@@ -323,7 +323,7 @@ const UserAttendanceHistory = () => {
                         });
                       }
                     });
-                    if (newArray.length != 0) {
+                    if (newArray.length !== 0) {
                       setCohortMemberList(newArray);
                       setDisplayStudentList(newArray);
                     } else {
@@ -595,6 +595,7 @@ const UserAttendanceHistory = () => {
                 onChange={handleCohortSelection}
                 displayEmpty
                 inputProps={{ 'aria-label': 'Without label' }}
+                disabled={cohortsData?.length === 1 ? true : false}
                 className="SelectLanguages fs-14 fw-500"
                 style={{
                   borderRadius: '0.5rem',

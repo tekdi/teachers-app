@@ -24,7 +24,7 @@ const modalStyle = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  // border: '2px solid #000',
   boxShadow: 24,
   p: 4,
 };
@@ -47,7 +47,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   onDateRangeSelected,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(1);
 
   const handleModalOpen = () => setIsModalOpen(true);
   const handleModalClose = () => setIsModalOpen(false);

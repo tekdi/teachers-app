@@ -7,7 +7,7 @@ import { useTheme } from '@mui/material/styles';
 
 interface OverviewCardProps {
   label: string;
-  value: string;
+  value: string | number;
 }
 
 const OverviewCard: React.FC<OverviewCardProps> = ({ label, value }) => {
