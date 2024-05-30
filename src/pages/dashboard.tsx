@@ -37,6 +37,7 @@ import Divider from '@mui/material/Divider';
 import Header from '../components/Header';
 import Link from 'next/link';
 import Loader from '../components/Loader';
+import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import OverviewCard from '@/components/OverviewCard';
 import WeekCalender from '@/components/WeekCalender';
 import { cohortList } from '../services/CohortServices';
@@ -45,7 +46,6 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -61,7 +61,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [classId, setClassId] = React.useState('');
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
-  const [selectedDate, setSelectedDate] = React.useState<string>(getTodayDate());
+  const [selectedDate, setSelectedDate] =
+    React.useState<string>(getTodayDate());
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState(null);
   const [percentageAttendance, setPercentageAttendance] =
@@ -161,32 +162,31 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   //API for getting student list
   useEffect(() => {
-              const cohortAttendancePercent = async () => {
-                setLoading(true);
-                try {
-                const cohortAttendanceData: cohortAttendancePercentParam = {
-                  limit: 0,
-                  page: 0,
-                  filters: {
-                    scope: 'student',
-                    fromDate: fromDateFormatted,
-                    toDate: toDateFormatted,
-                    contextId: classId,
-                  },
-                  facets: ['contextId'],
-                };
-                const res = await getCohortAttendance(cohortAttendanceData);
-                const response = res?.data?.result;
-                const contextData =
-                  response?.contextId && response?.contextId[classId];
-                const presentPercentage = contextData && contextData != undefined ? (
-                  contextData?.present_percentage
-                ) : (
-                  <Typography>{t('ATTENDANCE.N/A')}</Typography>
-                );
-                setCohortPresentPercentage(presentPercentage);
-            }
-       catch (error) {
+    const cohortAttendancePercent = async () => {
+      setLoading(true);
+      try {
+        const cohortAttendanceData: cohortAttendancePercentParam = {
+          limit: 0,
+          page: 0,
+          filters: {
+            scope: 'student',
+            fromDate: fromDateFormatted,
+            toDate: toDateFormatted,
+            contextId: classId,
+          },
+          facets: ['contextId'],
+        };
+        const res = await getCohortAttendance(cohortAttendanceData);
+        const response = res?.data?.result;
+        const contextData = response?.contextId && response?.contextId[classId];
+        const presentPercentage =
+          contextData && contextData != undefined ? (
+            contextData?.present_percentage
+          ) : (
+            <Typography>{t('ATTENDANCE.N/A')}</Typography>
+          );
+        setCohortPresentPercentage(presentPercentage);
+      } catch (error) {
         console.error('Error fetching cohort list:', error);
         setLoading(false);
       } finally {
@@ -195,7 +195,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     };
 
     if (classId?.length) {
-      cohortAttendancePercent()
+      cohortAttendancePercent();
     }
   }, [classId, selectedDate]);
 
