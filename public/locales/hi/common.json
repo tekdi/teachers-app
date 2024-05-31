@@ -47,6 +47,7 @@
     "SELECT_AN_OPTION": "कोई विकल्प चुनें",
     "AND": "और",
     "MORE": "अधिक",
+    "CLOSE": "बंद करना",
     "CANCEL":"रद्द करना",
     "OK":"ठीक है",
     "FROM_TO_DATE":"से - दिनांक तक"
@@ -82,7 +83,8 @@
     "MY_TEACHING_CENTERS": "मेरे शिक्षण केंद्र",
     "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्र",
     "BACK_TO_TOP": "वापस शीर्ष पर",
-    "LAST_SEVEN_DAYS_RANGE": "पिछले 7 दिन {{date_range}}"
+    "LAST_SEVEN_DAYS_RANGE": "पिछले 7 दिन {{date_range}}",
+    "LEARNER": "शिक्षार्थियों"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "कुल छात्रों की संख्या: {{count}}",
@@ -131,6 +133,7 @@
     "VIEW_DAY_WISE": "दिन-वार देखें",
     "SUBMITTED_ON": "प्रस्तुत किया गया",
     "MARK_OBTAINED": "प्राप्त अंक",
-    "TOTAL_QUESTIONS": "कुल प्रश्न"
+    "TOTAL_QUESTIONS": "कुल प्रश्न",
+    "VIEW_FULL_PROFILE": "पूरा प्रोफाइल देखें"
   }
 }
