@@ -110,8 +110,8 @@ const LoginPage = () => {
           });
 
           if (typeof window !== 'undefined' && window.localStorage) {
-            const token = response?.access_token;
-            const refreshToken = response?.refresh_token;
+            const token = response?.result?.access_token;
+            const refreshToken = response?.result?.refresh_token;
             localStorage.setItem('token', token);
             rememberMe
               ? localStorage.setItem('refreshToken', refreshToken)
