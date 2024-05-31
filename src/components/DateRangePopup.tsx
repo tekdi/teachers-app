@@ -83,10 +83,13 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         fromDate = new Date(today);
         break;
       case 2:
-        fromDate = new Date(today);
-        fromDate.setDate(today.getDate() - today.getDay() - 7); // Start of last week
-        toDate = formatDate(new Date(fromDate)); // End of last week
-        fromDate.setDate(fromDate.getDate() - 6);
+        const dayOfWeek = today.getDay();
+        const lastSaturday = new Date(today);
+        lastSaturday.setDate(today.getDate() - dayOfWeek - 1);
+        const lastSunday = new Date(lastSaturday);
+        lastSunday.setDate(lastSaturday.getDate() - 6);
+          fromDate= lastSunday,
+          toDate= formatDate(lastSaturday)
         break;
       case 3:
         fromDate = new Date(today);
