@@ -40,6 +40,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import {lowLearnerAttendanceLimit} from './../../app.config';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -96,7 +97,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
           const filteredData = cohortDetails.map((item: any) => ({
             cohortId: item?.cohortData?.cohortId,
-            name: item?.cohortData?.name,
+            name: toPascalCase(item?.cohortData?.name),
           }));
           setCohortsData(filteredData);
 
@@ -152,6 +153,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             const response = await classesMissedAttendancePercentList({
               filters,
               facets: ['userId'],
+              sort: ['absent_percentage', 'asc'],
             });
             let resp = response?.data?.result?.userId;
             if (resp) {
@@ -173,25 +175,22 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 mergedArray = mergedArray.filter(
                   (item) => item.name !== 'Unknown'
                 );
+                console.log(mergedArray);
                 setLearnerData(mergedArray);
                 setDisplayStudentList(mergedArray);
-                const presentPercentages = mergedArray.map((student) =>
-                  parseFloat(student.present_percent)
-                );
 
-                // Find the minimum present_percent
-                const minPresentPercent = Math.min(...presentPercentages);
-
-                // Filter students with the minimum present_percent
                 const studentsWithLowestAttendance = mergedArray.filter(
-                  (student) =>
-                    parseFloat(student.present_percent) === minPresentPercent
+                  (user) => (user.absent && user.present_percent < lowLearnerAttendanceLimit ) //TODO: Modify here condition to show low attendance learners
                 );
 
                 // Extract names of these students
-                const namesOfLowestAttendance: any[] =
-                  studentsWithLowestAttendance.map((student) => student.name);
-                setLowAttendanceLearnerList(namesOfLowestAttendance);
+                if (studentsWithLowestAttendance.length) {
+                  const namesOfLowestAttendance: any[] =
+                    studentsWithLowestAttendance.map((student) => student.name);
+                  setLowAttendanceLearnerList(namesOfLowestAttendance);
+                } else {
+                  setLowAttendanceLearnerList([]);
+                }
               }
             }
           }
@@ -212,13 +211,16 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             const res = await getCohortAttendance(cohortAttendanceData);
             const response = res?.data?.result;
             const contextData =
-              response.contextId && response.contextId[classId];
-            const presentPercentage = contextData ? (
-              contextData.present_percentage
-            ) : (
-              <Typography> {t('ATTENDANCE.N/A')}</Typography>
-            );
-            setPresentPercentage(presentPercentage);
+              response?.contextId && response?.contextId[classId];
+              if ( contextData?.present_percentage){
+                const presentPercentage = (contextData?.present_percentage);
+                setPresentPercentage(presentPercentage);
+              }else if(contextData?.absent_percentage){
+            setPresentPercentage(0);
+              }else{
+                setPresentPercentage(t('ATTENDANCE.N/A'))
+              }
+                
           };
           cohortAttendancePercent();
         }
@@ -312,8 +314,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         break;
       case 'low':
         sortedData.sort((a, b) => {
-          const aPercent = parseFloat(b.present_percent);
-          const bPercent = parseFloat(a.present_percent);
+          const aPercent = parseFloat(a.present_percent);
+          const bPercent = parseFloat(b.present_percent);
           if (isNaN(aPercent)) return 1;
           if (isNaN(bPercent)) return -1;
           return aPercent - bPercent;
@@ -324,7 +326,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     // Sorting by classesMissed
     switch (sortByClassesMissed) {
       case 'more':
-        sortedData.sort((a, b) => parseFloat(b.absent) - parseFloat(a.absent));
         sortedData.sort((a, b) => {
           const aClassMissed = parseFloat(a.absent);
           const bClassMissed = parseFloat(b.absent);
@@ -334,8 +335,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         });
         break;
       case 'less':
-        sortedData.sort((b, a) => parseFloat(a.absent) - parseFloat(b.absent));
-        sortedData.sort((b, a) => {
+        sortedData.sort((a, b) => {
           const aClassMissed = parseFloat(a.absent);
           const bClassMissed = parseFloat(b.absent);
           if (isNaN(aClassMissed)) return 1;
@@ -344,6 +344,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         });
         break;
     }
+    
 
     setDisplayStudentList(sortedData);
   };
@@ -440,16 +441,23 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             />
           </Grid>
           <Grid item xs={7}>
-            {/* <OverviewCard
-              label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
-              {...loading && (
-                <Loader loadingText={t('COMMON.LOADING')} showBackdrop={false} />
-              )}
-              value= { learnerData.length ? lowAttendanceLearnerList:  {t('ATTENDANCE.N/A')}}
-            /> */}
             <OverviewCard
-              label="Low Attendance Learners"
-              value="Bharat Kumar, Ankita Kulkarni and 3 more"
+              label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
+              {...(loading && (
+                <Loader
+                  loadingText={t('COMMON.LOADING')}
+                  showBackdrop={false}
+                />
+              ))}
+              value={
+                lowAttendanceLearnerList.length > 2
+                  ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} and ${lowAttendanceLearnerList.length - 2} more`
+                  : lowAttendanceLearnerList.length === 2
+                    ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
+                    : lowAttendanceLearnerList.length === 1
+                      ? `${lowAttendanceLearnerList[0]}`
+                      : t('ATTENDANCE.N/A')
+              }
             />
           </Grid>
         </Grid>
