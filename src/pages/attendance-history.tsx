@@ -20,13 +20,9 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { cohortMemberList } from '../utils/Interfaces';
-import {
-  attendanceInPercentageStatusList,
-  attendanceStatusList,
-} from '../services/AttendanceService';
+import { attendanceStatusList } from '../services/AttendanceService';
 import {
   debounce,
-  formatToShowDateMonth,
   getTodayDate,
   shortDateFormat,
   toPascalCase,
@@ -37,9 +33,7 @@ import AttendanceStatus from '@/components/AttendanceStatus';
 import AttendanceStatusListView from '@/components/AttendanceStatusListView';
 import ClearIcon from '@mui/icons-material/Clear';
 import Header from '../components/Header';
-import { Height } from '@mui/icons-material';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import LearnerListHeader from '@/components/LearnerListHeader';
 import Loader from '../components/Loader';
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import MonthCalender from '@/components/MonthCalender';
@@ -69,8 +63,6 @@ const UserAttendanceHistory = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [classId, setClassId] = React.useState('');
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
-  const [percentageAttendanceData, setPercentageAttendanceData] =
-    React.useState(null);
   const [percentageAttendance, setPercentageAttendance] =
     React.useState<any>(null);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<user>>(
@@ -82,30 +74,18 @@ const UserAttendanceHistory = () => {
   const [searchWord, setSearchWord] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
-  // const [activeStartDate, setActiveStartDate] = useState<Date>(() => {
-  //   const storedDate = localStorage.getItem('activeStartDate');
-  //   return storedDate ? new Date(storedDate) : new Date();
-  // });
   const [status, setStatus] = useState('');
   const [center, setCenter] = useState('');
   const [openMarkAttendance, setOpenMarkAttendance] = useState(false);
   const handleMarkAttendanceModal = () =>
     setOpenMarkAttendance(!openMarkAttendance);
   const [loading, setLoading] = React.useState(false);
-  const [AttendanceMessage, setAttendanceMessage] = React.useState('');
   const [open, setOpen] = useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
 
   const pathname = usePathname();
   let userId: string;
   const currentDate = getTodayDate();
-  // =localStorage.getItem('userId') || '';
-  // localStorage.getItem('parentCohortId') ||
-  // '60d4f919-cfb1-45a2-8502-ccc9b326ef48';
-
-  const handleBackEvent = () => {
-    window.history.back();
-  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -134,9 +114,9 @@ const UserAttendanceHistory = () => {
       setLoading(true);
       try {
         if (userId) {
-          let limit = 0;
-          let page = 0;
-          let filters = { userId: userId };
+          const limit = 0;
+          const page = 0;
+          const filters = { userId: userId };
           const resp = await cohortList({ limit, page, filters });
           const extractedNames = resp?.results?.cohortDetails;
           const filteredData = extractedNames
@@ -147,6 +127,7 @@ const UserAttendanceHistory = () => {
             ?.filter(Boolean);
           setCohortsData(filteredData);
           setClassId(filteredData?.[0]?.cohortId);
+          localStorage.setItem('classId', filteredData?.[0]?.cohortId);
           setLoading(false);
         }
       } catch (error) {
@@ -199,8 +180,6 @@ const UserAttendanceHistory = () => {
           attendanceRequest
         );
         setPercentageAttendance(attendanceStats);
-        // setAttendanceStats(attendanceStats);
-        console.log('attendanceStats', attendanceStats);
       }
     };
     getAttendanceStats();
@@ -210,9 +189,9 @@ const UserAttendanceHistory = () => {
     setLoading(true);
     try {
       if (classId) {
-        let limit = 300;
-        let page = 0;
-        let filters = { cohortId: classId };
+        const limit = 300;
+        const page = 0;
+        const filters = { cohortId: classId };
         const response = await getMyCohortMemberList({
           limit,
           page,
@@ -255,10 +234,10 @@ const UserAttendanceHistory = () => {
                     userAttendanceArray.push({
                       userId,
                       attendance: attendance?.attendance
-                      ? attendance.attendance
-                      : '',
-                      });
-                      });
+                        ? attendance.attendance
+                        : '',
+                    });
+                  });
                   return userAttendanceArray;
                 };
                 const userAttendanceArray = getUserAttendanceStatus(
@@ -342,13 +321,12 @@ const UserAttendanceHistory = () => {
     // setActiveStartDate(date);
   };
 
-  // updated function : it will handle null or undefiend data
   const formatDate = (date: Date | null | undefined) => {
     if (!date) {
       return '';
     }
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
@@ -366,21 +344,8 @@ const UserAttendanceHistory = () => {
     return datesArray;
   };
 
-  const isWeekend = (date: string): boolean => {
-    const dayOfWeek = new Date(date).getDay();
-    return dayOfWeek === 0 || dayOfWeek === 6;
-  };
-
-  const isFutureDate = (date: string): boolean => {
-    return new Date(date) > new Date();
-  };
-
   const handleSelectedDateChange = (date: Date) => {
     setSelectedDate(date);
-  };
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setCenter(event.target.value as string);
   };
 
   const handleUpdate = async (date: string, status: string) => {
@@ -526,7 +491,7 @@ const UserAttendanceHistory = () => {
               width={'100%'}
               paddingTop={'10px'}
             >
-              <Box onClick={handleBackEvent}>
+              <Box onClick={() => window.history.back()}>
                 <Box>
                   <KeyboardBackspaceOutlinedIcon
                     cursor={'pointer'}

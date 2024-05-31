@@ -1,17 +1,16 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import {
   CheckCircleOutlineOutlined,
   CancelOutlined,
-  RemoveCircleOutline,
-  RemoveOutlined,
 } from '@mui/icons-material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { shortDateFormat } from '@/utils/Helper';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 interface CalendarWithAttendanceProps {
-  formattedAttendanceData: FormattedAttendanceData;
+  formattedAttendanceData?: FormattedAttendanceData;
+  learnerAttendanceDate?: learnerAttendanceDate;
   onChange: (date: Date) => void;
   onDateChange: (date: Date) => void;
 }
@@ -24,8 +23,13 @@ type FormattedAttendanceData = {
   [date: string]: AttendanceData;
 };
 
+type learnerAttendanceDate = {
+  [date: string]: AttendanceData;
+};
+
 const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   formattedAttendanceData,
+  learnerAttendanceDate,
   onChange,
   onDateChange,
 }) => {
@@ -38,58 +42,69 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     console.log('activeStartDate child', currentDate);
   }, []);
 
-  function reduceDatesByOneDay(dates: string[]) {
-    return dates.map((dateString) => {
-      const date = new Date(dateString);
-      date.setDate(date.getDate() - 1);
-      return date.toISOString().slice(0, 10);
-    });
-  }
-
-  function getAttendanceStatus(date: Date) {
-    const dateString = date.toISOString().slice(0, 10);
-    // const currentDate = new Date().toISOString().slice(0, 10);
-
-    return null;
-  }
-
   function tileContent({
     date,
     view,
     formattedAttendanceData,
+    learnerAttendanceDate,
   }: {
     date: Date;
     view: string;
-    formattedAttendanceData: FormattedAttendanceData;
+    formattedAttendanceData?: FormattedAttendanceData;
+    learnerAttendanceDate?: learnerAttendanceDate;
   }) {
-    if (view !== 'month') return null;
-    const dateString = shortDateFormat(date);
-    const attendanceData = formattedAttendanceData?.[dateString];
-    if (!attendanceData) return null;
-    const presentPercentage = attendanceData.present_percentage;
+    if (formattedAttendanceData) {
+      if (view !== 'month') return null;
+      const dateString = shortDateFormat(date);
+      console.log('formattedAttendanceData', formattedAttendanceData);
+      const attendanceData = formattedAttendanceData?.[dateString];
+      if (!attendanceData) return null;
+      const presentPercentage = attendanceData?.present_percentage;
 
-    // const status = getAttendanceStatus(date);
-    const pathColor = determinePathColor(presentPercentage);
+      const pathColor = determinePathColor(presentPercentage);
 
-    const status = 'present';
-    switch (status) {
-      case 'present':
-        return (
-          <div className="circularProgressBar">
-            <CircularProgressbar
-              value={presentPercentage}
-              styles={buildStyles({
-                textColor: pathColor,
-                pathColor: pathColor,
-                trailColor: '#E6E6E6',
-                strokeLinecap: 'round',
-              })}
-              strokeWidth={20}
-            />
-          </div>
-        );
-      default:
-        return null;
+      const status = 'present';
+      switch (status) {
+        case 'present':
+          return (
+            <div className="circularProgressBar">
+              <CircularProgressbar
+                value={presentPercentage}
+                styles={buildStyles({
+                  textColor: pathColor,
+                  pathColor: pathColor,
+                  trailColor: '#E6E6E6',
+                  strokeLinecap: 'round',
+                })}
+                strokeWidth={20}
+              />
+            </div>
+          );
+        default:
+          return null;
+      }
+    } else if (learnerAttendanceDate) {
+      if (view !== 'month') return null;
+      const dateString = shortDateFormat(date);
+      const attendanceDate = learnerAttendanceDate?.[dateString];
+      const status = attendanceDate?.attendanceStatus;
+      console.log('status ', status);
+      switch (status) {
+        case 'present':
+          return (
+            <div className="present-marker">
+              <CheckCircleOutlineOutlined />
+            </div>
+          );
+        case 'absent':
+          return (
+            <div className="absent-marker">
+              <CancelOutlined />
+            </div>
+          );
+        default:
+          return null;
+      }
     }
   }
 
@@ -98,9 +113,6 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     const classes = ['tile-day'];
     if (date.toDateString() === new Date().toDateString()) {
       classes.push('today');
-    }
-    if (getAttendanceStatus(date) === 'attendanceNotMarked') {
-      classes.push('attendance-not-marked');
     }
     return classes.join(' ');
   }
@@ -123,14 +135,11 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     view,
   }: any) => void = ({ activeStartDate }) => {
     console.log('Active start date changed:', activeStartDate);
-    // localStorage.setItem("activeStartDate", activeStartDate);
     onChange(activeStartDate);
   };
 
   const handleDateChange: (value: any) => void = (newDate) => {
-    // Handle the selected date here
-    console.log('Selected date:', newDate?.toDateString());
-    setDate(newDate); // Update state with the new selected date if needed
+    setDate(newDate);
     onDateChange(newDate);
   };
 
@@ -141,7 +150,12 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
           onChange={handleDateChange}
           value={date}
           tileContent={({ date, view }) =>
-            tileContent({ date, view, formattedAttendanceData })
+            tileContent({
+              date,
+              view,
+              formattedAttendanceData,
+              learnerAttendanceDate,
+            })
           }
           tileClassName={tileClassName}
           calendarType="gregory"

@@ -4,6 +4,7 @@ import {
   AttendanceStatusListProps,
   AttendancePercentageProps,
   cohortAttendancePercentParam,
+  LearnerAttendanceProps,
 } from '../utils/Interfaces';
 
 export const bulkAttendance = async ({
@@ -66,16 +67,28 @@ export const attendanceInPercentageStatusList = async ({
   });
 };
 
+export const getLearnerAttendanceStatus = async ({
+  limit,
+  page,
+  filters: { contextId, scope, toDate, fromDate, userId },
+}: LearnerAttendanceProps): Promise<any> => {
+  return postAttendanceList({
+    limit,
+    page,
+    filters: { contextId, scope, toDate, fromDate, userId },
+  });
+};
+
 export const getCohortAttendance = async ({
   limit,
   page,
-  filters: {scope, fromDate, toDate, contextId},
+  filters: { scope, fromDate, toDate, contextId },
   facets,
 }: cohortAttendancePercentParam): Promise<any> => {
   return postAttendanceList({
     limit,
     page,
-    filters: {scope, fromDate, toDate, contextId},
+    filters: { scope, fromDate, toDate, contextId },
     facets,
   });
 };
