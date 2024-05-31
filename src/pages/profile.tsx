@@ -42,6 +42,7 @@ const TeacherProfile = () => {
     options: Record<string, any>;
     type: string;
     order: number;
+    name: string;
   }
 
   const { t } = useTranslation();
@@ -250,32 +251,32 @@ const TeacherProfile = () => {
   };
 
   // Find fields for "Subjects I Teach" and "My Main Subjects"
-  const techSubjectsField = customFieldsData?.find(
-    (field) => field.label === 'Subjects I Teach'
+  const teachSubjectsField = customFieldsData?.find(
+    (field) => field.name === 'subject_taught'
   );
   const mainSubjectsField = customFieldsData?.find(
-    (field) => field.label === 'My Main Subjects'
+    (field) => field.name === 'main_subject'
   );
 
-  const techSubjects: string[] = Array.isArray(techSubjectsField?.value)
-    ? techSubjectsField?.value
+  const teachSubjects: string[] = Array.isArray(teachSubjectsField?.value)
+    ? teachSubjectsField?.value
     : [];
   const mainSubjects: string[] = Array.isArray(mainSubjectsField?.value)
     ? mainSubjectsField?.value
     : [];
 
   // Find mutual and remaining subjects
-  const mutualSubjects = techSubjects.filter((subject) =>
-    mainSubjects.includes(subject)
+  const mutualSubjects = teachSubjects?.filter((subject) =>
+    mainSubjects?.includes(subject)
   );
-  const remainingSubjects = techSubjects.filter(
-    (subject) => !mainSubjects.includes(subject)
+  const remainingSubjects = teachSubjects?.filter(
+    (subject) => !mainSubjects?.includes(subject)
   );
   const orderedSubjects = [...mutualSubjects, ...remainingSubjects];
 
   //fields  for view profile by order
   const filteredSortedForView = [...customFieldsData]
-    ?.filter((field) => field.order !== 0 && field.label !== 'My Main Subjects')
+    ?.filter((field) => field.order !== 0 && field.name !== 'main_subject')
     ?.sort((a, b) => a.order - b.order);
 
   //fields  for edit popup by order
