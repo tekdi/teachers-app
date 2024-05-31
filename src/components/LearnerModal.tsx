@@ -12,7 +12,6 @@ import {
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import { useTheme } from '@mui/material/styles';
 
-import ProfileField from './ProfileField';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
