@@ -35,7 +35,6 @@ import { isAfter, startOfDay } from 'date-fns';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import CustomRangeModal from '@/components/CustomRangeModal';
 import Divider from '@mui/material/Divider';
 import Header from '../components/Header';
 import Link from 'next/link';
@@ -742,7 +741,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
               />
             </Box>
           </Box> */}
-          <CustomRangeModal />
         </Box>
       )}
     </>
