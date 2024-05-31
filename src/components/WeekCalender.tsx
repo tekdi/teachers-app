@@ -1,19 +1,20 @@
-import { useState } from 'react';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import {
-  format,
-  startOfWeek,
   addDays,
+  addWeeks,
+  format,
+  getWeek,
   isSameDay,
   lastDayOfWeek,
-  getWeek,
-  addWeeks,
-  subWeeks,
+  startOfWeek,
   subDays,
+  subWeeks,
 } from 'date-fns';
-import { Box } from '@mui/material';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import useDeterminePathColor from '../hooks/useDeterminePathColor';
+
 import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
+import { Box } from '@mui/material';
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
+import { useState } from 'react';
 
 const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
