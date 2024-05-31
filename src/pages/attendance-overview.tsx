@@ -40,6 +40,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import {lowLearnerAttendanceLimit} from './../../app.config';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -179,7 +180,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 setDisplayStudentList(mergedArray);
 
                 const studentsWithLowestAttendance = mergedArray.filter(
-                  (user) => (user.absent) //TODO: Modify here condition to show low attendance learners
+                  (user) => (user.absent && user.present_percent < lowLearnerAttendanceLimit ) //TODO: Modify here condition to show low attendance learners
                 );
 
                 // Extract names of these students

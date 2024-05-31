@@ -32,6 +32,7 @@ import {
   toPascalCase,
 } from '../utils/Helper';
 import { isAfter, startOfDay } from 'date-fns';
+import {lowLearnerAttendanceLimit} from './../../app.config';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -219,7 +220,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     (item) => item.name !== 'Unknown'
                   );
                 const studentsWithLowestAttendance = mergedArray.filter(
-                    (user) => (user.absent )  //TODO: Modify here condition to show low attendance learners
+                    (user) => (user.absent && user.present_percent < lowLearnerAttendanceLimit )  //TODO: Modify here condition to show low attendance learners
                   );
   
                   // Extract names of these students
