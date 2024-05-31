@@ -70,7 +70,7 @@ const UpDownButton = () => {
                 sx={{ height: '80px', width: '64px' }}
                 className="flex-column-center"
               >
-                {t('DASHBOARD.LEARNERS_DASHBOARD')}
+                {t('COMMON.LEARNERS')}
                 <ArrowDownwardIcon />
               </Box>
             )}

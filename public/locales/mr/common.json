@@ -40,10 +40,12 @@
     "AS_OF_LAST_WEEK": "गेल्या आठवड्याप्रमाणे",
     "AS_OF_LAST_SIX_MONTH": "गेल्या सहा महिन्यांपासून",
     "NONE": "काहीही नाही",
-    "LEARNERS":"शिकणारे",
+    "LEARNERS": "शिकणारे",
     "LEARNER_NAME": "शिकणाऱ्याचे नाव",
     "DATE_RANGE": "तारीख श्रेणी",
-    "SELECT_AN_OPTION": "एक पर्याय निवडा"
+    "SELECT_AN_OPTION": "एक पर्याय निवडा",
+    "AND": "आणि",
+    "MORE": "अधिक"
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्ता नाव",
@@ -76,9 +78,8 @@
     "MY_TIMETABLE": "माझे वेळापत्रक",
     "MY_TEACHING_CENTERS": "माझे शिक्षण केंद्र",
     "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्रे",
-    "BACK_TO_TOP":"परत वर जा",
-    "LAST_SEVEN_DAYS_RANGE": "शेवटचे 7 दिवस {{date_range}}",
-    "LEARNERS_DASHBOARD":"शिकणारे"
+    "BACK_TO_TOP": "परत वर जा",
+    "LAST_SEVEN_DAYS_RANGE": "शेवटचे 7 दिवस {{date_range}}"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "एकूण विद्यार्थी: {{count}}",

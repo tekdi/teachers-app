@@ -32,7 +32,6 @@ import {
   toPascalCase,
 } from '../utils/Helper';
 import { isAfter, startOfDay } from 'date-fns';
-import {lowLearnerAttendanceLimit} from './../../app.config';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -43,14 +42,15 @@ import Loader from '../components/Loader';
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import OverviewCard from '@/components/OverviewCard';
 import WeekCalender from '@/components/WeekCalender';
+import { calculatePercentage } from '@/utils/attendanceStats';
 import { cohortList } from '../services/CohortServices';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { lowLearnerAttendanceLimit } from './../../app.config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { calculatePercentage } from '@/utils/attendanceStats';
-import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -78,14 +78,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
     React.useState<string>(t('ATTENDANCE.N/A'));
   const [lowAttendanceLearnerList, setLowAttendanceLearnerList] =
     React.useState<any>(t('ATTENDANCE.N/A'));
-  const [startDateRange, setStartDateRange] = React.useState<
-    Date | string
-  >('');
-  const [endDateRange, setEndDateRange] = React.useState<Date | string>(
-    ''
-  );
+  const [startDateRange, setStartDateRange] = React.useState<Date | string>('');
+  const [endDateRange, setEndDateRange] = React.useState<Date | string>('');
   const [dateRange, setDateRange] = React.useState<Date | string>('');
-  
+
   const [state, setState] = React.useState<State>({
     openModal: false,
     vertical: 'top',
@@ -165,7 +161,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   //API for getting student list
   useEffect(() => {
-
     const getCohortMemberList = async () => {
       setLoading(true);
       try {
@@ -219,14 +214,18 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   mergedArray = mergedArray.filter(
                     (item) => item.name !== 'Unknown'
                   );
-                const studentsWithLowestAttendance = mergedArray.filter(
-                    (user) => (user.absent && user.present_percent < lowLearnerAttendanceLimit )  //TODO: Modify here condition to show low attendance learners
+                  const studentsWithLowestAttendance = mergedArray.filter(
+                    (user) =>
+                      user.absent &&
+                      user.present_percent < lowLearnerAttendanceLimit //TODO: Modify here condition to show low attendance learners
                   );
-  
+
                   // Extract names of these students
                   if (studentsWithLowestAttendance.length) {
                     const namesOfLowestAttendance: any[] =
-                      studentsWithLowestAttendance.map((student) => student.name);
+                      studentsWithLowestAttendance.map(
+                        (student) => student.name
+                      );
                     setLowAttendanceLearnerList(namesOfLowestAttendance);
                   } else {
                     setLowAttendanceLearnerList([]);
@@ -252,15 +251,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
               const response = res?.data?.result;
               const contextData =
                 response?.contextId && response?.contextId[classId];
-                if ( contextData?.present_percentage){
-                  let presentPercent = (contextData?.present_percentage);
-                  setCohortPresentPercentage(presentPercent);
-                }else if(contextData?.absent_percentage){
-                  setCohortPresentPercentage('0');
-                }else{
-                  setCohortPresentPercentage(t('ATTENDANCE.N/A'))
-                }
-                  
+              if (contextData?.present_percentage) {
+                let presentPercent = contextData?.present_percentage;
+                setCohortPresentPercentage(presentPercent);
+              } else if (contextData?.absent_percentage) {
+                setCohortPresentPercentage('0');
+              } else {
+                setCohortPresentPercentage(t('ATTENDANCE.N/A'));
+              }
             };
             cohortAttendancePercent();
           }
@@ -274,7 +272,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     };
 
     if (classId?.length) {
-      getCohortMemberList()
+      getCohortMemberList();
     }
   }, [classId, selectedDate]);
 
@@ -667,24 +665,24 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     />
                   </Grid>
                   <Grid item xs={8}>
-                  <OverviewCard
-              label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
-              {...(loading && (
-                <Loader
-                  loadingText={t('COMMON.LOADING')}
-                  showBackdrop={false}
-                />
-              ))}
-              value={
-                lowAttendanceLearnerList.length > 2
-                  ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} and ${lowAttendanceLearnerList.length - 2} more`
-                  : lowAttendanceLearnerList.length === 2
-                    ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
-                    : lowAttendanceLearnerList.length === 1
-                      ? `${lowAttendanceLearnerList[0]}`
-                      : t('ATTENDANCE.N/A')
-              }
-            />
+                    <OverviewCard
+                      label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
+                      {...(loading && (
+                        <Loader
+                          loadingText={t('COMMON.LOADING')}
+                          showBackdrop={false}
+                        />
+                      ))}
+                      value={
+                        lowAttendanceLearnerList.length > 2
+                          ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} and ${lowAttendanceLearnerList.length - 2} more`
+                          : lowAttendanceLearnerList.length === 2
+                            ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
+                            : lowAttendanceLearnerList.length === 1
+                              ? `${lowAttendanceLearnerList[0]}`
+                              : t('ATTENDANCE.N/A')
+                      }
+                    />
                   </Grid>
                 </Grid>
               </Box>

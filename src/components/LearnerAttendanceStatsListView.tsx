@@ -4,6 +4,7 @@ import { Box, Grid, Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
+import { lowLearnerAttendanceLimit } from '../../app.config';
 interface StudentsStatsListProps {
   name: string;
   presentPercent: number;
@@ -22,7 +23,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const textColor =
-    presentPercent > 60 ? theme.palette.success.main : theme.palette.error.main;
+    presentPercent > lowLearnerAttendanceLimit ? theme.palette.success.main : theme.palette.error.main;
 
   //   const handleStudentDetails = () => {
   //     router.push(`/student-details/${cohortId}/${userId}`);
