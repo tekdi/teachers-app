@@ -1,16 +1,23 @@
 import { Box, Typography } from '@mui/material';
 
 import { ATTENDANCE_ENUM } from '../utils/Helper';
-import { AttendanceStatusListViewProps } from '../utils/Interfaces';
+import {
+  AttendanceStatusListViewProps,
+  UserData,
+  updateCustomField,
+} from '../utils/Interfaces';
 import { BorderBottom } from '@mui/icons-material';
 import CancelIcon from '@mui/icons-material/Cancel'; //absent
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; //present
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
+import LearnerModal from './LearnerModal';
+import { getUserDetails } from '@/services/ProfileService';
+import Loader from './Loader';
 
 const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   isDisabled = false,
@@ -48,8 +55,83 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
       handleBulkAction(isBulkAction, selectedAction, id);
     }
   };
+
+  // -----learner profile  details----
+  const [usersData, setUsersData] = React.useState<UserData | null>(null);
+  const [customFieldsData, setCustomFieldsData] = React.useState<
+    updateCustomField[]
+  >([]);
+  const [userName, setUserName] = React.useState('');
+  const [isModalOpenLearner, setIsModalOpenLearner] = useState(false);
+  const [loading, setLoading] = useState(false);
+  // const userId = '12345'; // Replace with the actual user ID you want to pass
+
+  const handleOpenModalLearner = (userId: string) => {
+    fetchUserDetails(userId);
+    setIsModalOpenLearner(true);
+  };
+
+  const handleCloseModalLearner = () => {
+    setIsModalOpenLearner(false);
+  };
+
+  const fetchUserDetails = async (userId: string) => {
+    try {
+      if (userId) {
+        setLoading(true);
+        const response = await getUserDetails(userId, true);
+        console.log('response for popup', response?.result);
+        if (response?.responseCode === 200) {
+          const data = response?.result;
+          if (data) {
+            const userData = data?.userData;
+            // setUsersData(userData);
+            setUserName(userData?.name);
+
+            const customDataFields = userData?.customFields;
+            if (customDataFields?.length > 0) {
+              console.log('customDataFields', customDataFields);
+              setCustomFieldsData(customDataFields);
+            }
+            setLoading(false);
+          } else {
+            console.log('No data Found');
+          }
+        } else {
+          console.log('No Response Found');
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
+  };
+  const names = [
+    'name',
+    'age',
+    'gender',
+    'student_type',
+    'enrollment_number',
+    'primary_work',
+  ];
+
+  const filteredFields = names
+    .map((label) => customFieldsData.find((field) => field.name === label))
+    .filter(Boolean);
+
   return (
     <Box>
+      {loading ? (
+        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+      ) : (
+        <LearnerModal
+          userId={userData?.userId}
+          open={isModalOpenLearner}
+          onClose={handleCloseModalLearner}
+          data={filteredFields}
+          userName={userName}
+        />
+      )}
+
       <Box sx={boxStyling}>
         <Typography
           variant="body1"
@@ -61,8 +143,17 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             fontWeight: '400',
             color: '#1F1B13',
           }}
+          onClick={() => handleOpenModalLearner(userData?.userId!)}
         >
-          {isBulkAction ? t('ATTENDANCE.MARK_ALL') : (showLink ? <Link style={{color: theme.palette.secondary.main}} href={`/learner-profile/${userData?.userId}`}> {userData?.name}</Link> : userData?.name)}
+          {isBulkAction ? (
+            t('ATTENDANCE.MARK_ALL')
+          ) : showLink ? (
+            <Link style={{ color: theme.palette.secondary.main }} href={''}>
+              {userData?.name}
+            </Link>
+          ) : (
+            userData?.name
+          )}
         </Typography>
         <Box
           display="flex"

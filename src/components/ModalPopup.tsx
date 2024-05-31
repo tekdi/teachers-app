@@ -13,12 +13,10 @@ import {
 import { useTranslation } from 'next-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import ProfileField from '@/components/ProfileField';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const ModalComponent = () => {
   const { t } = useTranslation();
-
   const [open, setOpen] = React.useState(true);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

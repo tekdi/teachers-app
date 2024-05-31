@@ -33,7 +33,10 @@ import { Theme, useTheme } from '@mui/material/styles';
 import { UserData, updateCustomField } from '@/utils/Interfaces';
 import { formatDate, getTodayDate } from '@/utils/Helper';
 
-import { AssesmentListService } from '@/services/AssesmentService';
+import {
+  AssesmentListService,
+  getDoIdForAssesmentDetails,
+} from '@/services/AssesmentService';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import CustomSelect from '@/components/CustomSelect';
@@ -52,6 +55,11 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
 import DateRangePopup from '@/components/DateRangePopup';
+import { styled, alpha } from '@mui/material/styles';
+import Menu, { MenuProps } from '@mui/material/Menu';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import PersonOffIcon from '@mui/icons-material/PersonOff';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -85,7 +93,8 @@ const LearnerProfile: React.FC = () => {
   const [assesmentData, setAssesmentData] = useState([]);
   const [questionData, setQuestionData] = useState([]);
   const [age, setAge] = React.useState('');
-  const [subject, setSubject] = React.useState('');
+  const [test, setTest] = React.useState('Pre Test');
+  const [subject, setSubject] = React.useState('English');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [openEdit, setOpenEdit] = React.useState(false);
   const [customFieldsData, setCustomFieldsData] = useState<updateCustomField[]>(
@@ -107,51 +116,69 @@ const LearnerProfile: React.FC = () => {
     t('COMMON.AS_OF_TODAY')
   );
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    // set""AnchorEl(event.currentTarget);
-    alert('drawer');
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleOpenEdit = () => setOpenEdit(true);
   const handleCloseEdit = () => setOpenEdit(false);
 
-  const [openModal, setOpenModal] = React.useState(false);
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
+  const [unitName, setUnitName] = useState('');
+  const [blockName, setBlockName] = useState('');
+  const [uniqueDoId, setUniqueDoId] = useState('');
+  const [anchorElOption, setAnchorElOption] =
+    React.useState<null | HTMLElement>(null);
+  const openOption = Boolean(anchorElOption);
 
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  const StyledMenu = styled((props: MenuProps) => (
+    <Menu
+      elevation={0}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      {...props}
+    />
+  ))(({ theme }) => ({
+    '& .MuiPaper-root': {
+      borderRadius: 6,
+      marginTop: theme.spacing(1),
+      minWidth: 180,
+      color:
+        theme.palette.mode === 'light'
+          ? 'rgb(55, 65, 81)'
+          : theme.palette.grey[300],
+      boxShadow:
+        'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+      '& .MuiMenu-list': {
+        padding: '4px 0',
+      },
+      '& .MuiMenuItem-root': {
+        '& .MuiSvgIcon-root': {
+          fontSize: 18,
+          color: theme.palette.text.secondary,
+          marginRight: theme.spacing(1.5),
+        },
+        '&:active': {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            theme.palette.action.selectedOpacity
+          ),
+        },
+      },
+    },
+  }));
 
-  const dividerStyle = {
-    width: '100%', // Make the divider full width
-    marginBottom: '10px', // Optional: Add some spacing below the divider
+  const handleClickOption = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElOption(event.currentTarget);
   };
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: isDesktop ? 500 : 400,
-    bgcolor: 'warning.A400',
-    p: 4,
-    textAlign: 'center',
-    height: 'auto',
-  };
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value);
-  };
-
-  const handleChangeSubject = (event: SelectChangeEvent) => {
-    setSubject(event.target.value);
+  const handleCloseOption = () => {
+    setAnchorElOption(null); // Set anchorElOption to null to close the menu
   };
 
   const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
-    console.log('Date Range Selected:', { fromDate, toDate });
     setIsFromDate(fromDate);
     setIsToDate(toDate);
     getAttendaceData(fromDate, toDate);
@@ -190,6 +217,13 @@ const LearnerProfile: React.FC = () => {
     }
   };
 
+  // find Address
+  const getFieldValue = (data: any, label: string) => {
+    const field = data.find((item: any) => item.label === label);
+    return field ? field.value[0] : null;
+  };
+
+  // ger user information
   const fetchUserDetails = async () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const user: any = userId;
@@ -198,16 +232,22 @@ const LearnerProfile: React.FC = () => {
         if (user) {
           const response = await getUserDetails(user, true);
 
-          if (response?.statusCode === 200) {
-            const data = response?.data;
+          console.log('response userId', response);
+          if (response?.responseCode === 200) {
+            const data = response?.result;
+            console.log('data', data);
             if (data) {
               const userData = data?.userData;
 
               setUserData(userData);
-              console.log('userData', userData);
+
               const customDataFields = userData?.customFields;
               if (customDataFields?.length > 0) {
                 setCustomFieldsData(customDataFields);
+                const unitName = getFieldValue(customDataFields, 'Unit Name');
+                setUnitName(unitName);
+                const blockName = getFieldValue(customDataFields, 'Block Name');
+                setBlockName(blockName);
               }
             } else {
               console.log('No data Found');
@@ -222,9 +262,65 @@ const LearnerProfile: React.FC = () => {
     }
   };
 
-  const testReportDetails = async () => {
+  // address find
+  const address = [unitName, blockName, userData?.district]
+    ?.filter(Boolean)
+    ?.join(', ');
+
+  //------ Test Report API Integration------
+
+  const handleChangeTest = (event: SelectChangeEvent) => {
+    const test = event.target.value;
+    setTest(test);
+    getDoIdForAssesmentReport(test, subject);
+  };
+
+  const handleChangeSubject = (event: SelectChangeEvent) => {
+    const subject = event.target.value;
+    setSubject(event.target.value);
+    getDoIdForAssesmentReport(test, subject);
+  };
+
+  const getDoIdForAssesmentReport = async (tests: string, subjects: string) => {
+    const filters = {
+      program: ['Second chance'],
+      se_boards: ['Maharashtra'],
+      subject: [subjects ? subjects : subject],
+      assessment1: tests ? tests : test,
+    };
+
+    try {
+      const searchResults = await getDoIdForAssesmentDetails({ filters });
+
+      if (searchResults?.responseCode === 'OK') {
+        const result = searchResults?.result;
+        if (result) {
+          const QuestionSet = result?.QuestionSet?.[0];
+          const getUniqueDoId = QuestionSet?.IL_UNIQUE_ID;
+          setUniqueDoId(getUniqueDoId);
+          console.log('results:', getUniqueDoId);
+          testReportDetails(getUniqueDoId);
+        } else {
+          console.log('NO Result found from getDoIdForAssesmentDetails ');
+        }
+      } else {
+        console.log('NO Data found from getDoIdForAssesmentDetails ');
+      }
+    } catch (error) {
+      console.error(
+        'Error fetching getDoIdForAssesmentDetails results:',
+        error
+      );
+    }
+  };
+
+  const testReportDetails = async (do_Id: string) => {
+    const cohortId = localStorage.getItem('cohortId');
     let filters = {
       userId: userId,
+      courseId: do_Id,
+      batchId: cohortId, // user cohort id
+      contentId: do_Id, // do_Id
     };
     let pagination = {
       pageSize: 1,
@@ -236,17 +332,23 @@ const LearnerProfile: React.FC = () => {
     };
 
     const response = await AssesmentListService({ sort, pagination, filters });
-    if (response) {
-      const result = response?.result;
-      if (result?.length > 0) {
-        const data = result;
-        setSubmitedOn(data?.createdOn);
-        setAssesmentData(data);
-        console.log('Data', data);
+    console.log('statusCode', response?.response);
+    if (response?.response?.status === 200) {
+      if (response) {
+        const result = response?.result;
+        if (result?.length > 0) {
+          const data = result;
+          setSubmitedOn(data?.createdOn);
+          setAssesmentData(data);
+          console.log('Data', data);
+        } else {
+        }
       } else {
+        console.log('No Data Found');
       }
     } else {
-      console.log('No Data Found');
+      setUniqueDoId('');
+      console.log('AssesmentListService data', response?.response?.statusText);
     }
   };
 
@@ -259,32 +361,30 @@ const LearnerProfile: React.FC = () => {
       totalQuestions: 0,
     };
 
-    data.forEach((item: any) => {
-      item.assessmentSummary?.forEach((summary: any) => {
-        const parsedData = JSON.parse(summary.data);
+    data?.forEach((item: any) => {
+      item?.assessmentSummary?.forEach((summary: any) => {
         let questionNumber = 1;
-        parsedData.forEach((section: any) => {
-          section.data.forEach((question: any, index: any) => {
-            const questionValue: any = {
-              question: `Q${questionNumber}`,
-              mark_obtained: question.score,
-              totalMarks: question.item.maxscore,
-            };
-            questionValues.totalMaxScore += question.item.maxscore;
-            questionValues.totalScore += question.score;
-            questionValues.questions.push(questionValue);
-            questionNumber++;
-          });
+        summary?.data?.forEach((question: any) => {
+          const questionValue: any = {
+            question: `Q${questionNumber}`,
+            mark_obtained: question.score,
+            totalMarks: question.item.maxscore,
+          };
+          questionValues.totalMaxScore += question.item.maxscore;
+          questionValues.totalScore += question.score;
+          questionValues.questions.push(questionValue);
+          questionNumber++;
         });
       });
     });
 
+    questionValues.totalQuestions = questionValues.questions.length;
     return questionValues;
   }
-
   // questionValues
   const questionValues = getQuestionValues(assesmentData);
 
+  // all function call when page render
   useEffect(() => {
     const today = new Date();
     const formatDate = (date: Date) => date.toISOString().split('T')[0];
@@ -292,24 +392,22 @@ const LearnerProfile: React.FC = () => {
 
     getAttendaceData(toDay, toDay);
     fetchUserDetails();
-    testReportDetails();
+    // testReportDetails();
+    getDoIdForAssesmentReport(test, subject);
   }, []);
-
-  const handleGoBack = () => {
-    router.push('/attendance-overview');
-  };
 
   return (
     <>
       <Header />
       <Grid container spacing={2} alignItems="flex-start" mt={3}>
         <Grid item>
-          <Box onClick={handleGoBack}>
+          <Box onClick={() => window.history.back()}>
             <ArrowBackIcon
               sx={{
                 color: (theme.palette.warning as any)['A200'],
                 fontSize: '1.5rem',
                 ml: 2,
+                cursor: 'pointer',
               }}
             />
           </Box>
@@ -332,22 +430,52 @@ const LearnerProfile: React.FC = () => {
                 fontSize: '12px',
               }}
             >
-              {userData?.district && userData?.state
-                ? `${userData.district}, ${userData.state}`
-                : `${userData?.district || ''}${userData?.state || ''}`}
+              {address}
             </Typography>
           </Box>
         </Grid>
         <Grid item>
           <IconButton
             aria-label="more"
-            id="long-button"
-            aria-controls={open ? 'long-menu' : undefined}
-            aria-expanded={open ? 'true' : undefined}
+            id="demo-customized-button"
+            aria-controls={openOption ? 'demo-customized-menu' : undefined}
+            aria-expanded={openOption ? 'true' : undefined}
             aria-haspopup="true"
-            onClick={handleClick}
           >
-            <MoreVertIcon />
+            <Box onClick={handleClickOption}>
+              <MoreVertIcon />
+            </Box>
+
+            <Box>
+              {/* <Button
+                id="demo-customized-button"
+                aria-controls={openOption ? 'demo-customized-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={openOption ? 'true' : undefined}
+                variant="contained"
+                disableElevation
+                onClick={handleClickOption}
+                endIcon={<KeyboardArrowDownIcon />}
+              >
+                Options
+              </Button> */}
+              <StyledMenu
+                id="demo-customized-menu"
+                MenuListProps={{
+                  'aria-labelledby': 'demo-customized-button',
+                }}
+                anchorEl={anchorElOption}
+                open={openOption}
+                onClose={handleCloseOption}
+              >
+                <MenuItem onClick={handleCloseOption} disableRipple>
+                  Mark as Drop Out
+                </MenuItem>
+                <MenuItem onClick={handleCloseOption} disableRipple>
+                  Remove
+                </MenuItem>
+              </StyledMenu>
+            </Box>
           </IconButton>
         </Grid>
       </Grid>
@@ -408,17 +536,15 @@ const LearnerProfile: React.FC = () => {
           }}
         >
           <CardContent>
-            <Typography> {t('COMMON.OVERALL_ATTENDANCE')}</Typography>
             <Typography
               sx={{
                 color: theme.palette.text.secondary,
-                fontSize: '14px',
-                fontWeight: 500,
               }}
-              variant="h6"
-              gutterBottom
+              fontSize={'14px'}
+              fontWeight={'500'}
+              lineHeight={'16px'}
             >
-              {selectedValue}
+              Attendance Marked : 3 out of last 7 days
             </Typography>
             <Box
               gap={1}
@@ -551,29 +677,26 @@ const LearnerProfile: React.FC = () => {
             >
               {t('COMMON.TEST_REPORT')}
             </Typography>
-
             <Box>
-              {/* <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
-               
+              <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
                 <InputLabel id="demo-simple-select-helper-label">
                   Test
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
-                  value={age}
-                  label="Age"
-                  onChange={handleChange}
+                  value={test}
+                  label="test"
+                  onChange={handleChangeTest}
                 >
-                  <MenuItem value="">
+                  {/* <MenuItem value="">
                     <em>Select Value</em>
-                  </MenuItem>
-                  <MenuItem value={'test'}>Test</MenuItem>
-                  <MenuItem value={'pre_test'}>Pre Test</MenuItem>
-                  <MenuItem value={'post_test'}>Post Test</MenuItem>
+                  </MenuItem> */}
+                  <MenuItem value={'Post Test'}>Post Test</MenuItem>
+                  <MenuItem value={'Pre Test'}>Pre Test</MenuItem>
                 </Select>
-              </FormControl> */}
-              {/* <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
                 <InputLabel id="demo-simple-select-helper-label">
                   Subject
                 </InputLabel>
@@ -584,48 +707,57 @@ const LearnerProfile: React.FC = () => {
                   label="Subject"
                   onChange={handleChangeSubject}
                 >
-                  <MenuItem value="">
+                  {/* <MenuItem value="">
                     <em>Select Value</em>
-                  </MenuItem>
-                  <MenuItem value={'test'}>English</MenuItem>
-                  <MenuItem value={'pre_test'}>Marathi</MenuItem>
-                  <MenuItem value={'post_test'}>Hindi</MenuItem>
+                  </MenuItem> */}
+                  <MenuItem value={'English'}>English</MenuItem>
+                  <MenuItem value={'Math'}>Math</MenuItem>
                 </Select>
-              </FormControl> */}
+              </FormControl>
             </Box>
-            <Box
-              sx={{
-                background: 'linear-gradient(180deg, #FFFDF6 0%, #F8EFDA 100%)',
-                p: 2,
-              }}
-            >
-              <Box>
-                <Typography variant="h5">
-                  {t('PROFILE.SUBMITTED_ON')} : {submittedOn}
-                </Typography>
+            {uniqueDoId ? (
+              <Box
+                sx={{
+                  background:
+                    'linear-gradient(180deg, #FFFDF6 0%, #F8EFDA 100%)',
+                  p: 2,
+                }}
+              >
+                <Box>
+                  <Typography variant="h5">
+                    {t('PROFILE.SUBMITTED_ON')} : {submittedOn}
+                  </Typography>
+                </Box>
+                <Box display={'flex'} justifyContent={'space-between'} mt={1}>
+                  <Typography variant="h3" fontWeight={'bold'}>
+                    {t('PROFILE.MARK_OBTAINED')}
+                  </Typography>
+                  <Typography variant="h4" fontWeight={'bold'}>
+                    {/* 60/70 */}
+                  </Typography>
+                </Box>
+                <Divider />
+                <Box mt={1}>
+                  <Typography variant="h5">
+                    {t('PROFILE.TOTAL_QUESTIONS')} :
+                    {questionValues?.questions?.length}
+                  </Typography>
+                </Box>
+                <Box mt={2}>
+                  <MarksObtainedCard data={questionValues?.questions} />
+                </Box>
               </Box>
-              <Box display={'flex'} justifyContent={'space-between'} mt={1}>
-                <Typography variant="h3" fontWeight={'bold'}>
-                  {t('PROFILE.MARK_OBTAINED')}
-                </Typography>
-                <Typography variant="h4" fontWeight={'bold'}>
-                  {/* 60/70 */}
-                </Typography>
-              </Box>
-              <Divider />
-              <Box mt={1}>
-                <Typography variant="h5">
-                  {t('PROFILE.TOTAL_QUESTIONS')} :
-                  {questionValues?.questions?.length}
-                </Typography>
-              </Box>
+            ) : (
               <Box mt={2}>
-                <MarksObtainedCard data={questionValues?.questions} />
+                <Typography textAlign={'center'}>
+                  {t('COMMON.NO_DATA_FOUND')}
+                </Typography>
               </Box>
-            </Box>
+            )}
           </CardContent>
         </Card>
       </Box>
+
       {/* <Modal
         open={openModal}
         onClose={handleCloseModal}
