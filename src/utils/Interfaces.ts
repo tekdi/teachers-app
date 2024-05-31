@@ -115,6 +115,18 @@ export interface AttendancePercentageProps {
   facets: Array<string>;
 }
 
+export interface LearnerAttendanceProps {
+  limit: number;
+  page: number;
+  filters: {
+    contextId: string;
+    scope: string;
+    toDate: string | Date;
+    fromDate: string | Date;
+    userId: string;
+  };
+}
+
 export interface updateCustomField {
   fieldId: string;
   value: string;
@@ -164,7 +176,6 @@ export interface cohortAttendancePercentParam {
   };
   facets: Array<string>;
 }
-
 export interface gerDoIdServiceParam {
   filters: {
     program: string[];

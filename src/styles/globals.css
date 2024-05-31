@@ -567,3 +567,15 @@ main {
   width: 20;
   height: 20px;
 }
+
+.present-marker svg path {
+  color: var(--mui-palette-success-main) !important;
+  margin: auto !important;
+  width: fit-content !important;
+}
+
+.absent-marker svg path {
+  color: var(--mui-palette-error-main) !important;
+  width: fit-content !important;
+  margin: auto !important;
+}
