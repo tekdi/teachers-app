@@ -46,7 +46,10 @@
     "DATE_RANGE": "तिथि सीमा",
     "SELECT_AN_OPTION": "कोई विकल्प चुनें",
     "AND": "और",
-    "MORE": "अधिक"
+    "MORE": "अधिक",
+    "CANCEL":"रद्द करना",
+    "OK":"ठीक है",
+    "FROM_TO_DATE":"से - दिनांक तक"
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",

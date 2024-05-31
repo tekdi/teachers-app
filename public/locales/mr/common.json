@@ -45,7 +45,10 @@
     "DATE_RANGE": "तारीख श्रेणी",
     "SELECT_AN_OPTION": "एक पर्याय निवडा",
     "AND": "आणि",
-    "MORE": "अधिक"
+    "MORE": "अधिक",
+    "CANCEL":"रद्द करा",
+    "OK":"ठीक आहे",
+    "FROM_TO_DATE":"पासून - तारखा"
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्ता नाव",
