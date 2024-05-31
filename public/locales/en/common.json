@@ -47,7 +47,8 @@
     "DATE_RANGE": "Date Range",
     "SELECT_AN_OPTION": "Select an option",
     "AND": "and",
-    "MORE": "more"
+    "MORE": "more",
+    "CLOSE": "Close"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -81,7 +82,8 @@
     "MY_TEACHING_CENTERS": "My Teaching Centers",
     "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
     "BACK_TO_TOP": "Back to Top",
-    "LAST_SEVEN_DAYS_RANGE": "Last 7 Days {{date_range}})"
+    "LAST_SEVEN_DAYS_RANGE": "Last 7 Days {{date_range}})",
+    "LEARNER": "Learners"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total Number of Learners: {{count}}",
@@ -128,6 +130,7 @@
     "VIEW_DAY_WISE": "View Day-Wise",
     "SUBMITTED_ON": "Submitted On",
     "MARK_OBTAINED": "Mark Obtained",
-    "TOTAL_QUESTIONS": "Total Questions"
+    "TOTAL_QUESTIONS": "Total Questions",
+    "VIEW_FULL_PROFILE": "View Full Profile"
   }
 }

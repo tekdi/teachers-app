@@ -45,7 +45,8 @@
     "DATE_RANGE": "तारीख श्रेणी",
     "SELECT_AN_OPTION": "एक पर्याय निवडा",
     "AND": "आणि",
-    "MORE": "अधिक"
+    "MORE": "अधिक",
+    "CLOSE": "बंद"
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्ता नाव",
@@ -79,7 +80,8 @@
     "MY_TEACHING_CENTERS": "माझे शिक्षण केंद्र",
     "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्रे",
     "BACK_TO_TOP": "परत वर जा",
-    "LAST_SEVEN_DAYS_RANGE": "शेवटचे 7 दिवस {{date_range}}"
+    "LAST_SEVEN_DAYS_RANGE": "शेवटचे 7 दिवस {{date_range}}",
+    "LEARNER": "शिकणारे"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "एकूण विद्यार्थी: {{count}}",
@@ -123,6 +125,7 @@
     "VIEW_DAY_WISE": "दिवस-निहाय पहा",
     "SUBMITTED_ON": "सादर केलेले",
     "MARK_OBTAINED": "प्राप्त गुण",
-    "TOTAL_QUESTIONS": "एकूण प्रश्न"
+    "TOTAL_QUESTIONS": "एकूण प्रश्न",
+    "VIEW_FULL_PROFILE": "पूर्ण प्रोफाइल पहा"
   }
 }

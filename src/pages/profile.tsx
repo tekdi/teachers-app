@@ -28,22 +28,12 @@ import user_placeholder from '../assets/images/user_placeholder.png';
 import userPicture from '@/assets/images/imageOne.jpg';
 import Header from '@/components/Header';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
-import { updateCustomField } from '@/utils/Interfaces';
+import { CustomField, updateCustomField } from '@/utils/Interfaces';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 const TeacherProfile = () => {
   const user_placeholder_img: string = user_placeholder.src;
-
-  interface CustomField {
-    fieldId: string;
-    label: string;
-    value: string;
-    options: Record<string, any>;
-    type: string;
-    order: number;
-    name: string;
-  }
 
   const { t } = useTranslation();
   const router = useRouter();
