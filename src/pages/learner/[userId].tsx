@@ -396,6 +396,10 @@ const LearnerProfile: React.FC = () => {
     getDoIdForAssesmentReport(test, subject);
   }, []);
 
+  const getLearnerAttendance = () => {
+    router.push('/learner-attendance-history');
+  };
+
   return (
     <>
       <Header />
@@ -502,9 +506,11 @@ const LearnerProfile: React.FC = () => {
                 color: theme.palette.secondary.main,
                 marginRight: '4px',
                 fontSize: '14px',
+                cursor: 'pointer',
               }}
               variant="h6"
               gutterBottom
+              onClick={getLearnerAttendance}
             >
               {t('PROFILE.VIEW_DAY_WISE')}
             </Typography>
