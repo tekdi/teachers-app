@@ -1,1 +1,1 @@
-export const lowLearnerAttendanceLimit: number = 67;
+export const lowLearnerAttendanceLimit: number = 33;
