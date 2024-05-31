@@ -11,6 +11,8 @@ import {
   IconButton,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
   Typography,
@@ -31,7 +33,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 const TeacherProfile = () => {
-  const user_placeholder_img: string = userPicture.src;
+  const user_placeholder_img: string = user_placeholder.src;
 
   interface CustomField {
     fieldId: string;
@@ -39,6 +41,8 @@ const TeacherProfile = () => {
     value: string;
     options: Record<string, any>;
     type: string;
+    order: number;
+    name: string;
   }
 
   const { t } = useTranslation();
@@ -58,6 +62,9 @@ const TeacherProfile = () => {
   const [image, setImage] = useState(user_placeholder_img);
   const [gender, setGender] = React.useState('');
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [unitName, setUnitName] = useState('');
+  const [blockName, setBlockName] = useState('');
+  const [radioValues, setRadioValues] = useState<any>([]);
 
   const handleFieldChange = (
     fieldId: string,
@@ -65,7 +72,9 @@ const TeacherProfile = () => {
     type: string
   ) => {
     const updatedFields = [...updatedCustomFields];
-    const index = updatedFields.findIndex((field) => field.fieldId === fieldId);
+    const index = updatedFields?.findIndex(
+      (field) => field.fieldId === fieldId
+    );
 
     if (index !== -1) {
       if (type === 'checkbox' && Array.isArray(value)) {
@@ -123,13 +132,19 @@ const TeacherProfile = () => {
     handleFieldChange(fieldId, value, 'dropdown');
   };
 
+  const handleRadioChange = (fieldId: any, value: any) => {
+    setRadioValues((prev: any) => ({
+      ...prev,
+      [fieldId]: value,
+    }));
+  };
   const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
-    bgcolor: 'warning.A400',
+    bgcolor: theme.palette.warning.A400,
     p: 4,
     textAlign: 'center',
     height: '85vh',
@@ -155,7 +170,7 @@ const TeacherProfile = () => {
         if (field.type === 'checkbox' && Array.isArray(field.value)) {
           return {
             ...field,
-            values: field.value.join(','), // Convert array to comma-separated string
+            value: field.value.join(', '),
           };
         }
         return field;
@@ -179,6 +194,12 @@ const TeacherProfile = () => {
     }
   };
 
+  // find Address
+  const getFieldValue = (data: any, label: string) => {
+    const field = data.find((item: any) => item.label === label);
+    return field ? field.value[0] : null;
+  };
+
   const fetchUserDetails = async () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const userId = localStorage.getItem('userId');
@@ -187,21 +208,23 @@ const TeacherProfile = () => {
         if (userId) {
           const response = await getUserDetails(userId, true);
 
-          if (response?.statusCode === 200) {
-            const data = response?.data;
-            if (data) {
-              const userData = data?.userData;
-              setUserData(userData);
-              const customDataFields = userData?.customFields;
-              console.log('customDataFields', customDataFields);
-              if (customDataFields?.length > 0) {
-                setCustomFieldsData(customDataFields);
-              }
-            } else {
-              console.log('No data Found');
+          const data = response?.result;
+
+          if (data) {
+            const userData = data?.userData;
+
+            setUserData(userData);
+            const customDataFields = userData?.customFields;
+            if (customDataFields?.length > 0) {
+              setCustomFieldsData(customDataFields);
+
+              const unitName = getFieldValue(customDataFields, 'Unit Name');
+              setUnitName(unitName);
+              const blockName = getFieldValue(customDataFields, 'Block Name');
+              setBlockName(blockName);
             }
           } else {
-            console.log('No Response Found');
+            console.log('No data Found');
           }
         }
       } catch (error) {
@@ -227,15 +250,44 @@ const TeacherProfile = () => {
     setImage(newImageUrl);
   };
 
-  const techSubjectsField = customFieldsData?.find(
-    (field) => field.label === 'Subjects I Teach'
+  // Find fields for "Subjects I Teach" and "My Main Subjects"
+  const teachSubjectsField = customFieldsData?.find(
+    (field) => field.name === 'subject_taught'
   );
   const mainSubjectsField = customFieldsData?.find(
-    (field) => field.label === 'My Main Subjects'
+    (field) => field.name === 'main_subject'
   );
 
-  const techSubjects = techSubjectsField?.value?.split(', ') || [];
-  const mainSubjects = mainSubjectsField?.value?.split(', ') || [];
+  const teachSubjects: string[] = Array.isArray(teachSubjectsField?.value)
+    ? teachSubjectsField?.value
+    : [];
+  const mainSubjects: string[] = Array.isArray(mainSubjectsField?.value)
+    ? mainSubjectsField?.value
+    : [];
+
+  // Find mutual and remaining subjects
+  const mutualSubjects = teachSubjects?.filter((subject) =>
+    mainSubjects?.includes(subject)
+  );
+  const remainingSubjects = teachSubjects?.filter(
+    (subject) => !mainSubjects?.includes(subject)
+  );
+  const orderedSubjects = [...mutualSubjects, ...remainingSubjects];
+
+  //fields  for view profile by order
+  const filteredSortedForView = [...customFieldsData]
+    ?.filter((field) => field.order !== 0 && field.name !== 'main_subject')
+    ?.sort((a, b) => a.order - b.order);
+
+  //fields  for edit popup by order
+  const filteredSortedForEdit = [...customFieldsData]
+    ?.filter((field) => field.order !== 0)
+    ?.sort((a, b) => a.order - b.order);
+
+  // address find
+  const address = [unitName, blockName, userData?.district, userData?.state]
+    ?.filter(Boolean)
+    ?.join(', ');
 
   return (
     <Box
@@ -266,6 +318,9 @@ const TeacherProfile = () => {
               textAlign: 'left',
               marginBottom: '2px',
             }}
+            fontSize={'22px'}
+            fontWeight={'400'}
+            lineHeight={'28px'}
           >
             {t('PROFILE.MY_PROFILE')}
           </Typography>
@@ -280,7 +335,7 @@ const TeacherProfile = () => {
           minWidth={'100%'}
           borderRadius={'12px'}
           border={'1px'}
-          bgcolor="warning.A400"
+          bgcolor={theme.palette.warning.A400}
           display="flex"
           flexDirection="row"
         >
@@ -296,24 +351,40 @@ const TeacherProfile = () => {
               </Box>
             </Grid>
             <Grid item xs={8}>
-              <Typography margin={0} variant="h2">
-                <br />
+              <Box>
+                <Typography
+                  ml={0.5}
+                  fontSize={'16px'}
+                  lineHeight={'16px'}
+                  fontWeight={'500'}
+                >
+                  <br />
 
-                {userData?.name}
-              </Typography>
-              <Box display={'flex'}>
-                {userData?.district || userData?.state ? (
+                  {userData?.name}
+                </Typography>
+              </Box>
+              <Box display={'flex'} mt={'3px'}>
+                {address ? (
                   <PlaceOutlinedIcon
-                    sx={{ fontSize: '1rem', marginTop: '1px' }}
+                    sx={{
+                      fontSize: '1rem',
+                      marginTop: '1px',
+                      fontWeight: '11.7px',
+                      height: '14.4px',
+                    }}
                   />
                 ) : (
                   ''
                 )}
 
-                <Typography variant="h5" margin={0} color={'#4D4639'}>
-                  {userData?.district && userData?.state
-                    ? `${userData.district}, ${userData.state}`
-                    : `${userData?.district || ''}${userData?.state || ''}`}
+                <Typography
+                  margin={0}
+                  color={theme.palette.warning.A200}
+                  fontSize={'12px'}
+                  fontWeight={'500'}
+                  lineHeight={'16px'}
+                >
+                  {address}
                 </Typography>
               </Box>
             </Grid>
@@ -321,6 +392,8 @@ const TeacherProfile = () => {
         </Box>
         <Button
           sx={{
+            fontSize: '14px',
+            lineHeight: '20px',
             minWidth: '100%',
 
             padding: '10px 24px 10px 16px',
@@ -329,18 +402,26 @@ const TeacherProfile = () => {
             marginTop: '10px',
             flex: '1',
             textAlign: 'center',
-            color: 'black',
+            color: theme.palette.warning.A200,
             border: '1px solid black',
-            borderColor: 'black',
-            backgroundColor: 'warning.A400',
-            '&:hover': {
-              backgroundColor: 'warning.A400',
-            },
+            borderColor: theme.palette.warning['A100'],
           }}
           startIcon={<CreateOutlinedIcon />}
           onClick={handleOpen}
         >
-          {t('PROFILE.EDIT_PROFILE')}
+          <Typography
+            variant="h3"
+            style={{
+              letterSpacing: '0.1px',
+              textAlign: 'left',
+              marginBottom: '2px',
+            }}
+            fontSize={'14px'}
+            fontWeight={'500'}
+            lineHeight={'20px'}
+          >
+            {t('PROFILE.EDIT_PROFILE')}
+          </Typography>
         </Button>
 
         {/* modal for edit profile */}
@@ -355,88 +436,104 @@ const TeacherProfile = () => {
           minWidth={'100%'}
           borderRadius={'12px'}
           border={'1px'}
-          bgcolor="warning.A400"
           display="flex"
           flexDirection="row"
         >
-          <Grid container spacing={5}>
-            {customFieldsData &&
-              customFieldsData?.map((item, i) => (
-                <>
-                  {item?.label !== 'Subjects I Teach' &&
-                  item?.label !== 'My Main Subjects' ? (
-                    <Grid item xs={6}>
-                      {/* question */}
-                      <Typography variant="h4" margin={0}>
-                        {item?.label}
-                      </Typography>
-
-                      {/* value */}
-                      <Typography variant="h4" margin={0} color={'#4D4639'}>
-                        {item?.value}
-                      </Typography>
-                    </Grid>
-                  ) : null}
-                </>
-              ))}
-
-            {/* <Grid item xs={12}>
-              <Typography variant="h4" margin={0}>
-                Subjects I Teach
-              </Typography>
-              <Box mt={2}>
-                <Grid
-                  container
-                  spacing={2}
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
-                  <Grid
-                    item
-                    xs={4}
-                    display={'flex'}
-                    justifyContent={'space-between'}
-                    gap={1}
-                  >
-                    {techSubjects?.map((subject, index) => (
-                      <Button
-                        size="small"
-                        variant={
-                          mainSubjects?.includes(subject)
-                            ? 'contained'
-                            : 'outlined'
-                        }
-                        sx={{
-                          backgroundColor: mainSubjects?.includes(subject)
-                            ? '#EFC570'
-                            : 'none',
-                          borderRadius: '4px',
-                          color: '#4D4639',
-                        }}
-                      >
-                        {subject}
-                      </Button>
-                    ))}
-                    {mainSubjects
-                      .filter((subject) => !techSubjects.includes(subject))
-                      .map((subject, index) => (
-                        <Grid item xs={4} key={techSubjects.length + index}>
+          <Grid container spacing={4}>
+            {filteredSortedForView?.map((item, index) => {
+              if (item.order === 5) {
+                return (
+                  <Grid item xs={12}>
+                    <Typography
+                      fontSize={'12px'}
+                      fontWeight={'600'}
+                      margin={0}
+                      lineHeight={'16px'}
+                      letterSpacing={'0.5px'}
+                    >
+                      {item?.label}
+                    </Typography>
+                    <Box
+                      mt={2}
+                      sx={{
+                        display: 'flex',
+                        gap: '10px',
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      {orderedSubjects &&
+                        orderedSubjects?.map((subject, index) => (
                           <Button
+                            key={index}
                             size="small"
-                            variant="outlined"
+                            variant={
+                              mainSubjects?.includes(subject)
+                                ? 'contained'
+                                : 'outlined'
+                            }
                             sx={{
-                              borderRadius: '4px',
-                              color: '#4D4639',
+                              backgroundColor: mainSubjects?.includes(subject)
+                                ? theme.palette.info.contrastText
+                                : 'none',
+                              borderRadius: '8px',
+                              color: theme.palette.warning.A200,
+                              whiteSpace: 'nowrap',
+                              boxShadow: 'none',
+                              border: `1px solid ${theme.palette.warning[900]}`,
                             }}
                           >
                             {subject}
                           </Button>
-                        </Grid>
-                      ))}
+                        ))}
+                    </Box>
                   </Grid>
-                </Grid>
-              </Box>
-            </Grid> */}
+                );
+              } else if (item.order === 7) {
+                return (
+                  <Grid item xs={12} key={index}>
+                    <Typography
+                      variant="h4"
+                      margin={0}
+                      lineHeight={'16px'}
+                      fontSize={'12px'}
+                      fontWeight={'600'}
+                      letterSpacing={'0.5px'}
+                    >
+                      {item.label}
+                    </Typography>
+                    <Typography
+                      variant="h4"
+                      margin={0}
+                      color={theme.palette.warning.A200}
+                    >
+                      {item.value}
+                    </Typography>
+                  </Grid>
+                );
+              } else {
+                return (
+                  <Grid item xs={6} key={index}>
+                    <Typography
+                      variant="h4"
+                      margin={0}
+                      lineHeight={'16px'}
+                      fontSize={'12px'}
+                      fontWeight={'600'}
+                      letterSpacing={'0.5px'}
+                    >
+                      {item.label}
+                    </Typography>
+                    <Typography
+                      variant="h4"
+                      margin={0}
+                      color={theme.palette.warning.A200}
+                    >
+                      {item.value}
+                    </Typography>
+                  </Grid>
+                );
+              }
+            })}
           </Grid>
         </Box>
         <Modal
@@ -464,7 +561,7 @@ const TeacherProfile = () => {
                 variant="h2"
                 style={{
                   textAlign: 'left',
-                  color: '#4D4639',
+                  color: theme.palette.warning.A200,
                 }}
               >
                 {t('PROFILE.EDIT_PROFILE')}
@@ -498,7 +595,7 @@ const TeacherProfile = () => {
                 }}
                 borderRadius={'12px'}
                 border={'1px'}
-                bgcolor="warning.A400"
+                bgcolor={theme.palette.warning.A400}
                 display="flex"
                 flexDirection="column"
               >
@@ -528,14 +625,9 @@ const TeacherProfile = () => {
                       marginTop: '10px',
                       flex: '1',
                       textAlign: 'center',
-                      color: 'black',
-                      border: '1px solid black',
-                      borderColor: 'black',
-                      backgroundColor: 'warning.A400',
-                      '&:hover': {
-                        backgroundColor: 'warning.A400',
-                      },
+                      border: '1px solid ',
                     }}
+                    disabled // commment for temp
                     onClick={handleClickImage}
                   >
                     {t('PROFILE.UPDATE_PICTURE')}
@@ -543,8 +635,8 @@ const TeacherProfile = () => {
                 </Box>
               </Box>
 
-              {customFieldsData &&
-                customFieldsData.map((field) => (
+              {filteredSortedForEdit &&
+                filteredSortedForEdit?.map((field) => (
                   <Grid item xs={12} key={field.fieldId}>
                     {field.type === 'text' || field.type === 'numeric' ? (
                       <TextField
@@ -568,24 +660,21 @@ const TeacherProfile = () => {
                           textAlign={'start'}
                           variant="h4"
                           margin={0}
-                          color={'#4D4639'}
+                          color={theme.palette.warning.A200}
                         >
                           {field.label}
                         </Typography>
-                        {console.log(
-                          'updatedCustomFields Data ',
-                          updatedCustomFields
-                        )}
-                        {field.options.map((option: any) => (
+
+                        {field?.options?.map((option: any) => (
                           <FormGroup key={option.order}>
                             <FormControlLabel
-                              sx={{ color: '#1F1B13' }}
+                              sx={{ color: theme.palette.warning[300] }}
                               control={
                                 <Checkbox
                                   color="default"
                                   checked={
                                     (
-                                      updatedCustomFields.find(
+                                      updatedCustomFields?.find(
                                         (f: any) => f.fieldId === field.fieldId
                                       )?.values || []
                                     ).includes(option.name) || false
@@ -630,6 +719,37 @@ const TeacherProfile = () => {
                           </Select>
                         </FormControl>
                       </Box>
+                    ) : field.type === 'radio' ? (
+                      <Box marginTop={3}>
+                        <Typography
+                          textAlign={'start'}
+                          variant="h4"
+                          margin={0}
+                          color={theme.palette.warning.A200}
+                        >
+                          {field.label}
+                        </Typography>
+                        <RadioGroup
+                          name={field.fieldId}
+                          value={
+                            radioValues[field.fieldId] || field.value[0] || ''
+                          }
+                          onChange={(e) =>
+                            handleRadioChange(field.fieldId, e.target.value)
+                          }
+                        >
+                          <Box display="flex" flexWrap="wrap">
+                            {field.options?.map((option: any) => (
+                              <FormControlLabel
+                                key={option.value}
+                                value={option.value}
+                                control={<Radio color="default" />}
+                                label={option.name}
+                              />
+                            ))}
+                          </Box>
+                        </RadioGroup>
+                      </Box>
                     ) : null}
                   </Grid>
                 ))}
@@ -640,17 +760,13 @@ const TeacherProfile = () => {
               <Button
                 sx={{
                   minWidth: '100%',
-
-                  color: 'black',
-                  backgroundColor: 'containedSecondary',
-                  '&:hover': {
-                    backgroundColor: 'containedSecondary',
-                  },
+                  color: theme.palette.warning.A200,
+                  boxShadow: 'none',
                 }}
                 onClick={handleUpdateClick}
                 variant="contained"
               >
-                {t('COMMON.UPDATE')}
+                {t('COMMON.SAVE')}
               </Button>
             </Box>
           </Box>
