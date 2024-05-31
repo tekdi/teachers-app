@@ -1,7 +1,7 @@
 import { get, patch } from './RestClient';
 
 export const getUserId = async (): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/user`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/auth`;
   try {
     const response = await get(apiUrl);
     return response?.data?.result;

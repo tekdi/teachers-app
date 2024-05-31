@@ -21,7 +21,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import React, { useEffect } from 'react';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import {
-  attendanceInPercentageStatusList,
+  classesMissedAttendancePercentList,
   getCohortAttendance,
 } from '../services/AttendanceService';
 import {
@@ -29,6 +29,7 @@ import {
   getMonthName,
   getTodayDate,
   shortDateFormat,
+  toPascalCase,
 } from '../utils/Helper';
 import { isAfter, startOfDay } from 'date-fns';
 
@@ -41,13 +42,15 @@ import Loader from '../components/Loader';
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import OverviewCard from '@/components/OverviewCard';
 import WeekCalender from '@/components/WeekCalender';
+import { calculatePercentage } from '@/utils/attendanceStats';
 import { cohortList } from '../services/CohortServices';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { lowLearnerAttendanceLimit } from './../../app.config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { calculatePercentage } from '@/utils/attendanceStats';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -75,13 +78,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
     React.useState<string>(t('ATTENDANCE.N/A'));
   const [lowAttendanceLearnerList, setLowAttendanceLearnerList] =
     React.useState<any>(t('ATTENDANCE.N/A'));
-  const [startDateRange, setStartDateRange] = React.useState<
-    Date | string
-  >('');
-  const [endDateRange, setEndDateRange] = React.useState<Date | string>(
-    ''
-  );
+  const [startDateRange, setStartDateRange] = React.useState<Date | string>('');
+  const [endDateRange, setEndDateRange] = React.useState<Date | string>('');
   const [dateRange, setDateRange] = React.useState<Date | string>('');
+
   const [state, setState] = React.useState<State>({
     openModal: false,
     vertical: 'top',
@@ -161,28 +161,107 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   //API for getting student list
   useEffect(() => {
-    const cohortAttendancePercent = async () => {
+    const getCohortMemberList = async () => {
       setLoading(true);
       try {
-        const cohortAttendanceData: cohortAttendancePercentParam = {
-          limit: 0,
-          page: 0,
-          filters: {
-            scope: 'student',
-            fromDate: startDateRange,
-            toDate: endDateRange,
-            contextId: classId,
-          },
-          facets: ['contextId'],
-        };
-        const res = await getCohortAttendance(cohortAttendanceData);
-        const response = res?.data?.result;
-        console.log('Response Data:', response);
-        const contextData = response?.contextId?.[classId];
-        if (contextData && typeof contextData.present_percentage !== 'object') {
-          setCohortPresentPercentage(contextData.present_percentage.toString());
-        } else {
-          setCohortPresentPercentage(t('ATTENDANCE.N/A'));
+        if (classId) {
+          let limit = 300;
+          let page = 0;
+          let filters = { cohortId: classId };
+          const response = await getMyCohortMemberList({
+            limit,
+            page,
+            filters,
+          });
+          const resp = response?.result?.results?.userDetails;
+          if (resp) {
+            const nameUserIdArray = resp?.map((entry: any) => ({
+              userId: entry.userId,
+              name: toPascalCase(entry.name),
+            }));
+            if (nameUserIdArray) {
+              //Write logic to call class missed api
+              let fromDate = startDateRange;
+              let toDate = endDateRange;
+              let filters = {
+                contextId: classId,
+                fromDate,
+                toDate,
+                scope: 'student',
+              };
+              const response = await classesMissedAttendancePercentList({
+                filters,
+                facets: ['userId'],
+                sort: ['absent_percentage', 'asc'],
+              });
+              let resp = response?.data?.result?.userId;
+              if (resp) {
+                const filteredData = Object.keys(resp).map((userId) => ({
+                  userId,
+                  absent: resp[userId].absent,
+                  present_percent: resp[userId].present_percentage,
+                }));
+                if (nameUserIdArray && filteredData) {
+                  let mergedArray = filteredData.map((attendance) => {
+                    const user = nameUserIdArray.find(
+                      (user: { userId: string }) =>
+                        user.userId === attendance.userId
+                    );
+                    return Object.assign({}, attendance, {
+                      name: user ? user.name : 'Unknown',
+                    });
+                  });
+                  mergedArray = mergedArray.filter(
+                    (item) => item.name !== 'Unknown'
+                  );
+                  const studentsWithLowestAttendance = mergedArray.filter(
+                    (user) =>
+                      user.absent &&
+                      user.present_percent < lowLearnerAttendanceLimit //TODO: Modify here condition to show low attendance learners
+                  );
+
+                  // Extract names of these students
+                  if (studentsWithLowestAttendance.length) {
+                    const namesOfLowestAttendance: any[] =
+                      studentsWithLowestAttendance.map(
+                        (student) => student.name
+                      );
+                    setLowAttendanceLearnerList(namesOfLowestAttendance);
+                  } else {
+                    setLowAttendanceLearnerList([]);
+                  }
+                }
+              }
+            }
+          }
+          if (classId) {
+            const cohortAttendancePercent = async () => {
+              const cohortAttendanceData: cohortAttendancePercentParam = {
+                limit: 0,
+                page: 0,
+                filters: {
+                  scope: 'student',
+                  fromDate: startDateRange,
+                  toDate: endDateRange,
+                  contextId: classId,
+                },
+                facets: ['contextId'],
+              };
+              const res = await getCohortAttendance(cohortAttendanceData);
+              const response = res?.data?.result;
+              const contextData =
+                response?.contextId && response?.contextId[classId];
+              if (contextData?.present_percentage) {
+                let presentPercent = contextData?.present_percentage;
+                setCohortPresentPercentage(presentPercent);
+              } else if (contextData?.absent_percentage) {
+                setCohortPresentPercentage('0');
+              } else {
+                setCohortPresentPercentage(t('ATTENDANCE.N/A'));
+              }
+            };
+            cohortAttendancePercent();
+          }
         }
       } catch (error) {
         console.error('Error fetching cohort list:', error);
@@ -193,7 +272,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     };
 
     if (classId?.length) {
-      cohortAttendancePercent();
+      getCohortMemberList();
     }
   }, [classId, selectedDate]);
 
@@ -587,11 +666,21 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Grid>
                   <Grid item xs={8}>
                     <OverviewCard
-                      label="Low Attendance Learners"
+                      label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
+                      {...(loading && (
+                        <Loader
+                          loadingText={t('COMMON.LOADING')}
+                          showBackdrop={false}
+                        />
+                      ))}
                       value={
-                        cohortPresentPercentage === t('ATTENDANCE.N/A')
-                          ? cohortPresentPercentage
-                          : 'Bharat Kumar, Ankita Kulkarni, 3 more'
+                        lowAttendanceLearnerList.length > 2
+                          ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
+                          : lowAttendanceLearnerList.length === 2
+                            ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
+                            : lowAttendanceLearnerList.length === 1
+                              ? `${lowAttendanceLearnerList[0]}`
+                              : t('ATTENDANCE.N/A')
                       }
                     />
                   </Grid>
