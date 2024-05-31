@@ -13,8 +13,10 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import accountIcon from './../assets/images/account.svg';
 import dynamic from 'next/dynamic';
 import logoLight from '../../public/images/logo-light.png';
+import menuIcon from '../assets/images/menuIcon.svg';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
@@ -120,11 +122,11 @@ const Header: React.FC = () => {
       >
         <Stack
           width={'100%'}
-          padding={'8px 0'}
+          // padding={'8px 0'}
           direction="row"
           justifyContent={'space-between'}
           alignItems={'center'}
-          height="auto"
+          height="64px"
           boxShadow="0px 1px 3px 0px #0000004D"
         >
           <Box
@@ -133,11 +135,12 @@ const Header: React.FC = () => {
             sx={{ cursor: 'pointer' }}
             paddingLeft={'1rem'}
           >
-            <MenuIcon
-              style={{
-                fill: theme.palette.warning['A200'],
-              }}
-              className="menuSvg"
+            <Image
+              height={12}
+              width={18}
+              src={menuIcon}
+              alt="logo"
+              style={{ cursor: 'pointer' }}
             />
           </Box>
 
@@ -162,11 +165,18 @@ const Header: React.FC = () => {
             flexDirection={'column'}
             mt={'0.5rem'}
           >
-            <AccountCircleIcon
+            <Image
+              height={20}
+              width={20}
+              src={accountIcon}
+              alt="logo"
+              style={{ cursor: 'pointer' }}
+            />
+            {/* <AccountCircleIcon
               fontSize="large"
               className="accIcon"
               style={{ fill: theme.palette.warning['A200'] }}
-            />
+            /> */}
           </Box>
           <div style={{ position: 'absolute' }}>
             <StyledMenu
