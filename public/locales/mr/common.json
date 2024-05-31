@@ -46,7 +46,10 @@
     "SELECT_AN_OPTION": "एक पर्याय निवडा",
     "AND": "आणि",
     "MORE": "अधिक",
-    "CLOSE": "बंद"
+    "CLOSE": "बंद",
+    "CANCEL":"रद्द करा",
+    "OK":"ठीक आहे",
+    "FROM_TO_DATE":"पासून - तारखा"
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्ता नाव",

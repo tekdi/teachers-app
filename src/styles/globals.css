@@ -37,6 +37,23 @@ body {
 .fs-14 {
   font-size: 14px !important;
 }
+.fs-22 {
+  font-size: 22px !important;
+}
+.text-4D {
+  color: #4d4639;
+}
+.text-1F {
+  color: #1f1b13;
+}
+
+.text-0D {
+  color: #0d599e;
+}
+
+.pt-10 {
+  padding-top: 8px;
+}
 .fw-500 {
   font-weight: 500;
 }

@@ -48,7 +48,10 @@
     "SELECT_AN_OPTION": "Select an option",
     "AND": "and",
     "MORE": "more",
-    "CLOSE": "Close"
+    "CLOSE": "Close",
+    "CANCEL":"Cancel",
+    "OK":"OK",
+    "FROM_TO_DATE":"From - To dates"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
