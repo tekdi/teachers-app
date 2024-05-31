@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
 import WestIcon from '@mui/icons-material/West';
+import { useTranslation } from 'next-i18next';
 
 const style = {
   width: '300px', // Adjust width as needed
@@ -29,7 +30,7 @@ const CustomRangeModal: React.FC = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  const { t } = useTranslation();
   return (
     <div>
       <Button onClick={handleOpen}>Open modal</Button>
@@ -53,15 +54,19 @@ const CustomRangeModal: React.FC = () => {
                 gap: '20px',
               }}
             >
-              <WestIcon />
-              <Box className="text-4D">Custom Range</Box>
+              <Box>
+                <WestIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
+              </Box>
+              <Box className="text-4D">{t('COMMON.CUSTOM_RANGE')}</Box>
             </Box>
             <Box>
-              <CloseIcon />
+              <CloseIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
             </Box>
           </Box>
           <Box sx={{ paddingTop: '20px' }}>
-            <Box className="fs-14 fw-500 text-4D">From - To dates</Box>
+            <Box className="fs-14 fw-500 text-4D">
+              {t('COMMON.FROM_TO_DATE')}
+            </Box>
             <Box className="fs-22 fw-500 pt-10 text-1F">17 May – 23 May</Box>
           </Box>
 
@@ -75,8 +80,8 @@ const CustomRangeModal: React.FC = () => {
               justifyContent: 'end',
             }}
           >
-            <Box className="text-0D fs-14 fw-500">Cancel</Box>
-            <Box className="text-0D fs-14 fw-500">OK</Box>
+            <Box className="text-0D fs-14 fw-500">{t('COMMON.CANCEL')}</Box>
+            <Box className="text-0D fs-14 fw-500">{t('COMMON.OK')}</Box>
           </Box>
         </Box>
       </Modal>

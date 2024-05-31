@@ -47,7 +47,10 @@
     "DATE_RANGE": "Date Range",
     "SELECT_AN_OPTION": "Select an option",
     "AND": "and",
-    "MORE": "more"
+    "MORE": "more",
+    "CANCEL":"Cancel",
+    "OK":"OK",
+    "FROM_TO_DATE":"From - To dates"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
