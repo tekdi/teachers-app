@@ -68,10 +68,6 @@ export interface cohortMemberList {
   };
 }
 
-interface CustomField {
-  label: string;
-  value: string;
-}
 export interface UserData {
   id: number;
   name: string;
@@ -119,12 +115,25 @@ export interface AttendancePercentageProps {
   facets: Array<string>;
 }
 
+export interface LearnerAttendanceProps {
+  limit: number;
+  page: number;
+  filters: {
+    contextId: string;
+    scope: string;
+    toDate: string | Date;
+    fromDate: string | Date;
+    userId: string;
+  };
+}
+
 export interface updateCustomField {
   fieldId: string;
   value: string;
   type: string;
   label?: string;
   values?: string | string[];
+  name?: string;
 }
 export interface cohort {
   cohortId: string;
@@ -156,7 +165,6 @@ export interface assesmentListServiceParam {
   };
 }
 
-
 export interface cohortAttendancePercentParam {
   limit: number;
   page: number;
@@ -164,9 +172,25 @@ export interface cohortAttendancePercentParam {
     scope: string;
     fromDate: Date | string;
     toDate: Date | string;
-    contextId: string
+    contextId: string;
   };
   facets: Array<string>;
 }
+export interface gerDoIdServiceParam {
+  filters: {
+    program: string[];
+    se_boards: string[];
+    subject: string[];
+    assessment1: string;
+  };
+}
 
-
+export interface CustomField {
+  fieldId: string;
+  label: string;
+  value: string;
+  options: Record<string, any>;
+  type: string;
+  order: number;
+  name: string;
+}

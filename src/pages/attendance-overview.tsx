@@ -40,7 +40,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import {lowLearnerAttendanceLimit} from './../../app.config';
+import { lowLearnerAttendanceLimit } from './../../app.config';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -103,6 +103,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
           if (filteredData.length > 0) {
             setClassId(filteredData[0].cohortId);
+            localStorage.setItem('cohortId', filteredData[0]?.cohortId);
           }
         }
         setLoading(false);
@@ -180,7 +181,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 setDisplayStudentList(mergedArray);
 
                 const studentsWithLowestAttendance = mergedArray.filter(
-                  (user) => (user.absent && user.present_percent < lowLearnerAttendanceLimit ) //TODO: Modify here condition to show low attendance learners
+                  (user) =>
+                    user.absent &&
+                    user.present_percent < lowLearnerAttendanceLimit //TODO: Modify here condition to show low attendance learners
                 );
 
                 // Extract names of these students
@@ -212,15 +215,14 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             const response = res?.data?.result;
             const contextData =
               response?.contextId && response?.contextId[classId];
-              if ( contextData?.present_percentage){
-                const presentPercentage = (contextData?.present_percentage);
-                setPresentPercentage(presentPercentage);
-              }else if(contextData?.absent_percentage){
-            setPresentPercentage(0);
-              }else{
-                setPresentPercentage(t('ATTENDANCE.N/A'))
-              }
-                
+            if (contextData?.present_percentage) {
+              const presentPercentage = contextData?.present_percentage;
+              setPresentPercentage(presentPercentage);
+            } else if (contextData?.absent_percentage) {
+              setPresentPercentage(0);
+            } else {
+              setPresentPercentage(t('ATTENDANCE.N/A'));
+            }
           };
           cohortAttendancePercent();
         }
@@ -239,6 +241,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
+    localStorage.setItem('cohortId', event.target.value);
   };
 
   const handleSearchClear = () => {
@@ -344,7 +347,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         });
         break;
     }
-    
 
     setDisplayStudentList(sortedData);
   };
