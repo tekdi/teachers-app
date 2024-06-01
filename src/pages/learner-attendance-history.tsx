@@ -11,6 +11,7 @@ import MonthCalender from '@/components/MonthCalender';
 import { shortDateFormat } from '@/utils/Helper';
 import { LearnerAttendanceProps } from '@/utils/Interfaces';
 import { getLearnerAttendanceStatus } from '@/services/AttendanceService';
+import MarkAttendance from '@/components/MarkAttendance';
 
 const LearnerAttendanceHistory = () => {
   const { t } = useTranslation();
@@ -19,7 +20,8 @@ const LearnerAttendanceHistory = () => {
   const [loading, setLoading] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [open, setOpen] = useState(false);
-
+  const [modalOpen, setModalOpen] = useState(false);
+  const [attendanceUpdated, setAttendanceUpdated] = useState(false);
   const [learnerAttendance, setLearnerAttendance] = React.useState<any>(null);
 
   useEffect(() => {
@@ -37,6 +39,14 @@ const LearnerAttendanceHistory = () => {
 
   const handleOpen = () => {
     setOpen(true);
+  };
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -90,7 +100,7 @@ const LearnerAttendanceHistory = () => {
       }
     };
     getAttendanceStatus();
-  }, []);
+  }, [selectedDate, attendanceUpdated]);
 
   return (
     <Box minHeight="100vh" textAlign={'center'}>
@@ -156,7 +166,7 @@ const LearnerAttendanceHistory = () => {
         <Box>
           <AttendanceStatus
             date={selectedDate}
-            formattedAttendanceData={learnerAttendance}
+            learnerAttendanceData={learnerAttendance}
             onDateSelection={selectedDate}
             onUpdate={handleOpen}
           />
@@ -167,6 +177,16 @@ const LearnerAttendanceHistory = () => {
         learnerAttendanceDate={learnerAttendance}
         onChange={handleActiveStartDateChange}
         onDateChange={handleSelectedDateChange}
+      />
+      <MarkAttendance
+        isOpen={open}
+        date={shortDateFormat(selectedDate)}
+        isSelfAttendance={false}
+        currentStatus={
+          learnerAttendance?.[shortDateFormat(selectedDate)]?.attendanceStatus
+        }
+        handleClose={handleModalClose}
+        onAttendanceUpdate={() => setAttendanceUpdated(!attendanceUpdated)}
       />
     </Box>
   );

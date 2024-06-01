@@ -88,7 +88,6 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
       const dateString = shortDateFormat(date);
       const attendanceDate = learnerAttendanceDate?.[dateString];
       const status = attendanceDate?.attendanceStatus;
-      console.log('status ', status);
       switch (status) {
         case 'present':
           return (
