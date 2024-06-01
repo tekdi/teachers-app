@@ -192,8 +192,8 @@ main {
   overflow-x: auto;
 }
 .calender_body_width {
-  width: 2000px;
-  height: 120px;
+  width: 1840px;
+  height: 110px;
 }
 .col-center {
   font-size: 11px;
@@ -242,7 +242,7 @@ main {
   transition: 0.25s ease-out;
   font-size: 1.5em;
   border-radius: 4px;
-  height: 4.5rem;
+  height: 4rem;
 }
 
 .calendar .body .cell:hover {
@@ -584,4 +584,9 @@ main {
 .absent-marker svg path {
   color: var(--mui-palette-error-main) !important;
   width: fit-content !important;
+}
+.react-calendar__month-view__weekdays__weekday {
+  font-size: 16px;
+  font-weight: 400;
+  color: #1f1b13;
 }

@@ -511,7 +511,12 @@ const UserAttendanceHistory = () => {
             </Box>
           </Box>
           <Box
-            sx={{ minWidth: 120, gap: '15px', paddingBottom: '10px' }}
+            sx={{
+              minWidth: 120,
+              gap: '15px',
+              paddingBottom: '10px',
+              padding: '0 10px 10px',
+            }}
             display={'flex'}
           >
             <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
@@ -556,8 +561,8 @@ const UserAttendanceHistory = () => {
               boxShadow: '0px 4px 8px 3px #00000026',
               borderTop: '1px solid rgba(0, 0, 0, 0.15)',
               borderBottom: 'unset ',
+              padding: '5px 10px',
             }}
-            py={'5px'}
           >
             <Box>
               <AttendanceStatus

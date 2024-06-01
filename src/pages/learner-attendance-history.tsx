@@ -9,6 +9,10 @@ import Loader from '@/components/Loader';
 import MarkAttendance from '@/components/MarkAttendance';
 import MonthCalender from '@/components/MonthCalender';
 import { getLearnerAttendanceStatus } from '@/services/AttendanceService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { shortDateFormat } from '@/utils/Helper';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 const LearnerAttendanceHistory = () => {
   const { t } = useTranslation();
