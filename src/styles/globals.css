@@ -116,7 +116,7 @@ body {
   font-weight: 300;
   line-height: 1.5;
   color: var(--text-color);
-  background: var(--bg-color);
+  background: #fff;
   position: relative;
 }
 
@@ -189,6 +189,16 @@ main {
   display: block;
   position: relative;
   width: 100%;
+  overflow-x: auto;
+}
+.calender_body_width {
+  width: 2000px;
+  height: 120px;
+}
+.col-center {
+  font-size: 11px;
+  font-weight: 500;
+  color: #7c766f;
 }
 
 .calendar .header {
@@ -232,7 +242,7 @@ main {
   transition: 0.25s ease-out;
   font-size: 1.5em;
   border-radius: 4px;
-  height: 4rem;
+  height: 4.5rem;
 }
 
 .calendar .body .cell:hover {

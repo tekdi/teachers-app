@@ -378,8 +378,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
               <Typography
                 textAlign={'left'}
                 fontSize={'22px'}
-                m={'1rem 1rem 0.8rem'}
-                color={'black'}
+                m={'1.5rem 1rem 0.8rem'}
+                color={'#1F1B13'}
               >
                 {t('DASHBOARD.DASHBOARD')}
               </Typography>
@@ -390,11 +390,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
           )}
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
-              paddingBottom={'20px'}
+              paddingBottom={'25px'}
               width={'100%'}
               className="linerGradient"
             >
-              <Box display={'flex'} flexDirection={'column'} padding={'1rem'}>
+              <Box
+                display={'flex'}
+                flexDirection={'column'}
+                padding={'1.5rem 1rem 1rem'}
+              >
                 <Box display={'flex'} justifyContent={'space-between'}>
                   <Typography
                     variant="h2"
@@ -424,7 +428,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Box>
                 </Box>
 
-                <Box sx={{ mt: 1.5 }}>
+                <Box sx={{ mt: 2 }}>
                   <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
                     <FormControl
                       className="drawer-select"
@@ -449,12 +453,24 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             <MenuItem
                               key={cohort.cohortId}
                               value={cohort.cohortId}
+                              style={{
+                                fontWeight: '500',
+                                fontSize: '14px',
+                                color: '#4D4639',
+                              }}
                             >
                               {cohort.name}
                             </MenuItem>
                           ))
                         ) : (
-                          <Typography style={{ fontWeight: 'bold' }}>
+                          <Typography
+                            style={{
+                              fontWeight: '500',
+                              fontSize: '14px',
+                              color: '#4D4639',
+                              padding: '0 15px',
+                            }}
+                          >
                             {t('COMMON.NO_DATA_FOUND')}
                           </Typography>
                         )}
@@ -469,14 +485,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   />
                 </Box>
                 <Box
-                  border={'1px solid black'}
                   height={'auto'}
                   width={'auto'}
                   padding={'1rem'}
                   borderRadius={'1rem'}
-                  bgcolor={theme.palette.warning['A200']}
+                  bgcolor={'#4A4640'}
                   textAlign={'left'}
-                  margin={'25px 0 15px 0 '}
+                  margin={'15px 0 15px 0 '}
                 >
                   <Stack
                     direction="row"
@@ -510,7 +525,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             </Box>
                             <Box>
                               <Typography
-                                sx={{ color: theme.palette.warning['A400'] }}
+                                // sx={{ color: theme.palette.warning['A400'] }}
+                                sx={{
+                                  fontSize: '12px',
+                                  fontWeight: '600',
+                                  color: '#F4F4F4',
+                                }}
                                 variant="h6"
                                 className="word-break"
                               >
@@ -520,7 +540,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 })}
                               </Typography>
                               <Typography
-                                sx={{ color: theme.palette.warning['A400'] }}
+                                // sx={{ color: theme.palette.warning['A400'] }}
+                                sx={{
+                                  fontSize: '12px',
+                                  fontWeight: '600',
+                                  color: '#F4F4F4',
+                                }}
                                 variant="h6"
                                 className="word-break"
                               >
@@ -562,6 +587,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         minWidth: '33%',
                         height: '2.5rem',
                         padding: theme.spacing(1),
+                        fontWeight: '500',
                       }}
                       onClick={handleModalToggle}
                       disabled={currentAttendance === 'futureDate'}
@@ -594,7 +620,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 // action={action}
               />
 
-              <Divider sx={{ borderBottomWidth: '0.1rem' }} />
+              <Box sx={{ padding: '0 20px' }}>
+                <Divider sx={{ borderBottomWidth: '0.1rem' }} />
+              </Box>
 
               {/* Overview Card Section */}
               <Box
@@ -614,13 +642,20 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       variant="h2"
                       sx={{
                         color: '#1F1B13',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         fontWeight: '500',
                       }}
                     >
                       {t('DASHBOARD.OVERVIEW')}
                     </Typography>
-                    <Typography className="fs-14" variant="h2">
+                    <Typography
+                      sx={{
+                        color: '#7C766F',
+                        fontSize: '11px !important',
+                        fontWeight: '500',
+                      }}
+                      variant="h2"
+                    >
                       {t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
                         date_range: dateRange,
                       })}

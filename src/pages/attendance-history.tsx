@@ -19,8 +19,6 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { cohortMemberList } from '../utils/Interfaces';
-import { attendanceStatusList } from '../services/AttendanceService';
 import {
   debounce,
   getTodayDate,
@@ -40,14 +38,16 @@ import MonthCalender from '@/components/MonthCalender';
 import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '../components/SortingModal';
 import UpDownButton from '@/components/UpDownButton';
+import { attendanceStatusList } from '../services/AttendanceService';
+import { calculatePercentage } from '@/utils/attendanceStats';
 import { cohortList } from '@/services/CohortServices';
+import { cohortMemberList } from '../utils/Interfaces';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { calculatePercentage } from '@/utils/attendanceStats';
 
 interface user {
   userId: string;
@@ -471,7 +471,7 @@ const UserAttendanceHistory = () => {
       <Box display={'flex'} justifyContent={'center'}>
         <Box
           sx={{
-            width: '668px',
+            width: '100%',
             '@media (max-width: 700px)': {
               width: '100%',
             },
@@ -481,7 +481,7 @@ const UserAttendanceHistory = () => {
             display={'flex'}
             flexDirection={'column'}
             gap={'1rem'}
-            padding={'0.5rem 1rem'}
+            padding={'1rem 20px 0.5rem'}
             alignItems={'center'}
           >
             <Box
@@ -553,7 +553,8 @@ const UserAttendanceHistory = () => {
               backgroundColor: 'white',
               // boxShadow: '0px 1px 3px 0px #0000004D',
               boxShadow: '0px 4px 8px 3px #00000026',
-              border: '1px solid #D0C5B4',
+              borderTop: '1px solid rgba(0, 0, 0, 0.15)',
+              borderBottom: 'unset ',
             }}
             py={'5px'}
           >

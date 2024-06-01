@@ -117,7 +117,7 @@ const Header: React.FC = () => {
           zIndex: '999',
           width: '100%',
           bgcolor: ' #FFFFFF',
-          maxWidth: '896px',
+          maxWidth: '899px',
         }}
       >
         <Stack
@@ -133,7 +133,7 @@ const Header: React.FC = () => {
             onClick={toggleDrawer(true)}
             mt={'0.5rem'}
             sx={{ cursor: 'pointer' }}
-            paddingLeft={'1rem'}
+            paddingLeft={'20px'}
           >
             <Image
               height={12}
@@ -158,7 +158,7 @@ const Header: React.FC = () => {
             aria-controls={open ? 'account-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : 'false'}
-            paddingRight={'1rem'}
+            paddingRight={'20px'}
             display={'flex'}
             justifyContent={'center'}
             alignItems={'center'}
