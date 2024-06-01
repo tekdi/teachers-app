@@ -64,6 +64,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
+  const [manipulatedCohortData, setManipulatedCohortData] = React.useState<Array<cohort>>(cohortsData);
   const [classId, setClassId] = React.useState('');
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
@@ -148,7 +149,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
             }))
             ?.filter(Boolean);
           setCohortsData(filteredData);
-          setClassId(filteredData?.[0]?.cohortId);
+          if(filteredData.length > 0){
+            setClassId(filteredData?.[0]?.cohortId);
+            setManipulatedCohortData(filteredData.concat({ cohortId: 'all', name: 'All Centers' }));
+          }
           setLoading(false);
         }
       } catch (error) {
@@ -164,7 +168,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     const getCohortMemberList = async () => {
       setLoading(true);
       try {
-        if (classId) {
+        if (classId && classId != "all") {
           let limit = 300;
           let page = 0;
           let filters = { cohortId: classId };
@@ -217,7 +221,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   const studentsWithLowestAttendance = mergedArray.filter(
                     (user) =>
                       user.absent &&
-                      user.present_percent < lowLearnerAttendanceLimit //TODO: Modify here condition to show low attendance learners
+                      (user.present_percent < lowLearnerAttendanceLimit || user.present_percent === undefined) //TODO: Modify here condition to show low attendance learners
                   );
 
                   // Extract names of these students
@@ -262,6 +266,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
             };
             cohortAttendancePercent();
           }
+        }else if (classId && classId === "all"){
+          console.log('ALLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL CIkCKed')
         }
       } catch (error) {
         console.error('Error fetching cohort list:', error);
@@ -439,7 +445,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         onChange={handleCohortSelection}
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
-                        disabled={cohortsData?.length == 1 ? true : false}
+                        disabled={cohortsData?.length <= 1 ? true : false}
                         className="SelectLanguages fs-14 fw-500"
                         style={{
                           borderRadius: '0.5rem',
@@ -449,7 +455,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         }}
                       >
                         {cohortsData?.length !== 0 ? (
-                          cohortsData?.map((cohort) => (
+                          manipulatedCohortData?.map((cohort) => (
                             <MenuItem
                               key={cohort.cohortId}
                               value={cohort.cohortId}
@@ -714,8 +720,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           : lowAttendanceLearnerList.length === 2
                             ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                             : lowAttendanceLearnerList.length === 1
-                              ? `${lowAttendanceLearnerList[0]}`
-                              : t('ATTENDANCE.N/A')
+                              ? `${lowAttendanceLearnerList[0]}`:  (Array.isArray(lowAttendanceLearnerList) && lowAttendanceLearnerList.length === 0) ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'): 
+                               t('ATTENDANCE.N/A')
                       }
                     />
                   </Grid>

@@ -17,7 +17,7 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
     <Stack>
       {numberOfColumns == 3 ? (
         <Box
-          borderBottom={`1px solid ${theme.palette.warning['300']}`}
+          borderBottom={`1px solid ${theme.palette.warning['A100']}`}
           margin="0"
           alignItems={'center'}
           bgcolor={'#E6E6E6'}
@@ -52,12 +52,12 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
         </Box>
       ) : (
         <Box
-          borderBottom={`1px solid ${theme.palette.warning['300']}`}
-          margin="0"
-          alignItems={'center'}
-          bgcolor={'#E6E6E6'}
-          maxHeight={'auto'}
-        >
+        borderBottom={`1px solid ${theme.palette.warning['A100']}`}
+        margin="0"
+        alignItems={'center'}
+        bgcolor={'#E6E6E6'}
+        maxHeight={'auto'}
+      >
           <Grid
             container
             alignItems="center"
