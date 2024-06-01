@@ -183,7 +183,7 @@ const UserAttendanceHistory = () => {
       }
     };
     getAttendanceStats();
-  }, [classId, selectedDate]);
+  }, [classId, selectedDate, handleSaveHasRun]);
 
   const getCohortMemberList = async () => {
     setLoading(true);
