@@ -14,6 +14,17 @@ import { shortDateFormat } from '@/utils/Helper';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
+type LearnerAttendanceData = {
+  [date: string]: {
+    attendanceStatus: string;
+  };
+};
+
+type AttendanceRecord = {
+  attendanceDate: string;
+  attendance: string;
+};
+
 const LearnerAttendanceHistory = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -23,7 +34,9 @@ const LearnerAttendanceHistory = () => {
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [attendanceUpdated, setAttendanceUpdated] = useState(false);
-  const [learnerAttendance, setLearnerAttendance] = React.useState<any>(null);
+  const [learnerAttendance, setLearnerAttendance] = useState<
+    LearnerAttendanceData | undefined
+  >(undefined);
 
   useEffect(() => {
     handleSelectedDateChange(selectedDate);
@@ -84,12 +97,15 @@ const LearnerAttendanceHistory = () => {
           };
           const response = await getLearnerAttendanceStatus(attendanceRequest);
           const attendanceStats = response?.data?.attendanceList;
-          const attendanceData = attendanceStats?.reduce((acc, record) => {
-            acc[record.attendanceDate] = {
-              attendanceStatus: record.attendance,
-            };
-            return acc;
-          }, {});
+          const attendanceData = attendanceStats?.reduce(
+            (acc: LearnerAttendanceData, record: AttendanceRecord) => {
+              acc[record.attendanceDate] = {
+                attendanceStatus: record.attendance,
+              };
+              return acc;
+            },
+            {}
+          );
           setLearnerAttendance(attendanceData);
           setLoading(false);
         }
@@ -183,7 +199,8 @@ const LearnerAttendanceHistory = () => {
         date={shortDateFormat(selectedDate)}
         isSelfAttendance={false}
         currentStatus={
-          learnerAttendance?.[shortDateFormat(selectedDate)]?.attendanceStatus
+          learnerAttendance?.[shortDateFormat(selectedDate)]
+            ?.attendanceStatus || ''
         }
         handleClose={handleModalClose}
         onAttendanceUpdate={() => setAttendanceUpdated(!attendanceUpdated)}
