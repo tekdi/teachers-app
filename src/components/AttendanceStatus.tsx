@@ -8,7 +8,6 @@ import {
   CreateOutlined,
 } from '@mui/icons-material';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
 interface AttendanceStatusProps {
@@ -24,6 +23,7 @@ type AttendanceData = {
   present_percentage: number;
   present_students: number;
   total_students: number;
+  attendanceStatus: string;
 };
 
 type FormattedAttendanceData = {
@@ -31,7 +31,9 @@ type FormattedAttendanceData = {
 };
 
 type learnerAttendanceData = {
-  [date: string]: AttendanceData;
+  [date: string]: {
+    attendanceStatus: string;
+  };
 };
 
 function AttendanceStatus({
@@ -42,7 +44,6 @@ function AttendanceStatus({
   onUpdate,
 }: AttendanceStatusProps) {
   const { t } = useTranslation();
-  const theme = useTheme<any>();
   const determinePathColor = useDeterminePathColor();
   const selectedDate = shortDateFormat(onDateSelection);
   const dateString = shortDateFormat(onDateSelection);
@@ -92,7 +93,10 @@ function AttendanceStatus({
       break;
   }
 
-  const presentPercentage = currentAttendance?.present_percentage;
+  const presentPercentage =
+    typeof currentAttendance !== 'string'
+      ? currentAttendance.present_percentage
+      : 0;
   const pathColor = determinePathColor(presentPercentage);
 
   return (
@@ -144,8 +148,7 @@ function AttendanceStatus({
                         color={pathColor}
                       >
                         {t('DASHBOARD.PERCENT_ATTENDANCE', {
-                          percent_students:
-                            currentAttendance?.present_percentage,
+                          percent_students: presentPercentage,
                         })}
                       </Typography>
                       &nbsp;
@@ -155,8 +158,14 @@ function AttendanceStatus({
                         color={pathColor}
                       >
                         {t('DASHBOARD.PRESENT_STUDENTS', {
-                          present_students: currentAttendance?.present_students,
-                          total_students: currentAttendance?.totalcount,
+                          present_students:
+                            typeof currentAttendance !== 'string'
+                              ? currentAttendance.present_students
+                              : 0,
+                          total_students:
+                            typeof currentAttendance !== 'string'
+                              ? currentAttendance.totalcount
+                              : 0,
                         })}
                       </Typography>
                     </Box>
