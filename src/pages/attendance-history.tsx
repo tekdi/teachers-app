@@ -150,20 +150,21 @@ const UserAttendanceHistory = () => {
             role: 'Student',
           },
         };
-        const currentDate = new Date();
-        const dayOfWeek = currentDate.getDay();
-        const diffToMonday =
-          currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-        const weekStartDate = new Date(currentDate.setDate(diffToMonday));
-        const startDate = new Date(
-          currentDate.setDate(currentDate.getDate() - 30)
+        const currentDate = selectedDate || new Date();
+        const firstDayOfMonth = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          1
         );
-        startDate.setHours(0, 0, 0, 0);
-        const endDate = new Date(weekStartDate);
-        endDate.setDate(weekStartDate.getDate() + 6);
-        endDate.setHours(23, 59, 59, 999);
-        const fromDateFormatted = shortDateFormat(startDate);
-        const toDateFormatted = shortDateFormat(endDate);
+        firstDayOfMonth.setHours(0, 0, 0, 0);
+        const lastDayOfMonth = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth() + 1,
+          0
+        );
+        lastDayOfMonth.setHours(23, 59, 59, 999);
+        const fromDateFormatted = shortDateFormat(firstDayOfMonth);
+        const toDateFormatted = shortDateFormat(lastDayOfMonth);
         const attendanceRequest: AttendancePercentageProps = {
           limit: 300,
           page: 0,
@@ -318,7 +319,7 @@ const UserAttendanceHistory = () => {
   }, []);
 
   const handleActiveStartDateChange = (date: Date) => {
-    // setActiveStartDate(date);
+    setSelectedDate(date);
   };
 
   const formatDate = (date: Date | null | undefined) => {

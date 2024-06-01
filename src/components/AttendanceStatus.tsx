@@ -217,6 +217,7 @@ function AttendanceStatus({
               onClick={onUpdate}
               disabled={
                 attendanceStatus === 'futureDate' ||
+                learnerAttendanceStatus === 'notMarked' ||
                 (attendanceStatus !== 'futureDate' &&
                   formatedSevenDaysAgo > selectedDate)
               }
