@@ -150,10 +150,10 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       userAttendanceArray.push({
                         userId,
                         attendance: attendance?.attendance
-                        ? attendance.attendance
-                        : '',
-                        });
-                        });
+                          ? attendance.attendance
+                          : '',
+                      });
+                    });
                     return userAttendanceArray;
                   };
                   const userAttendanceArray = getUserAttendanceStatus(

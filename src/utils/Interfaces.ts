@@ -20,7 +20,6 @@ export interface MarkAttendanceProps {
   currentStatus: string;
   handleClose: () => void;
   onAttendanceUpdate: () => void;
-  handleSubmit: (attendanceDate: string, attendance: string) => void;
 }
 
 export interface AttendanceStatusListViewProps {

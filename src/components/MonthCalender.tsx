@@ -16,7 +16,8 @@ interface CalendarWithAttendanceProps {
 }
 
 type AttendanceData = {
-  present_percentage: number;
+  present_percentage?: number;
+  attendanceStatus?: string;
 };
 
 type FormattedAttendanceData = {
@@ -59,7 +60,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
       console.log('formattedAttendanceData', formattedAttendanceData);
       const attendanceData = formattedAttendanceData?.[dateString];
       if (!attendanceData) return null;
-      const presentPercentage = attendanceData?.present_percentage;
+      const presentPercentage = attendanceData?.present_percentage || 0;
 
       const pathColor = determinePathColor(presentPercentage);
 
