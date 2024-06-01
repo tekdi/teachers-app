@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-
 import { Box, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
+import React, { useState } from 'react';
+import { UserData, updateCustomField } from '@/utils/Interfaces';
+
+import LearnerModal from './LearnerModal';
+import Link from 'next/link';
+import Loader from './Loader';
+import { getUserDetails } from '@/services/ProfileService';
+import { lowLearnerAttendanceLimit } from '../../app.config';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import Link from 'next/link';
-import { lowLearnerAttendanceLimit } from '../../app.config';
-import LearnerModal from './LearnerModal';
-import { UserData, updateCustomField } from '@/utils/Interfaces';
-import { getUserDetails } from '@/services/ProfileService';
-import Loader from './Loader';
+
 interface StudentsStatsListProps {
   name: string;
   presentPercent: number;
@@ -108,7 +109,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
     .filter(Boolean);
 
   return (
-    <>
+    <Box>
       {' '}
       {loading ? (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -177,7 +178,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           </Grid>
         </Box>
       </Stack>
-    </>
+    </Box>
   );
 };
 

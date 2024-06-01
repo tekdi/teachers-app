@@ -1,23 +1,23 @@
-import { Box, Typography } from '@mui/material';
-
-import { ATTENDANCE_ENUM } from '../utils/Helper';
 import {
   AttendanceStatusListViewProps,
   UserData,
   updateCustomField,
 } from '../utils/Interfaces';
+import { Box, Typography } from '@mui/material';
+import React, { useState } from 'react';
+
+import { ATTENDANCE_ENUM } from '../utils/Helper';
 import { BorderBottom } from '@mui/icons-material';
 import CancelIcon from '@mui/icons-material/Cancel'; //absent
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; //present
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import React, { useState } from 'react';
+import LearnerModal from './LearnerModal';
+import Link from 'next/link';
+import Loader from './Loader';
+import { getUserDetails } from '@/services/ProfileService';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import Link from 'next/link';
-import LearnerModal from './LearnerModal';
-import { getUserDetails } from '@/services/ProfileService';
-import Loader from './Loader';
 
 const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   isDisabled = false,
@@ -119,7 +119,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
     .filter(Boolean);
 
   return (
-    <Box>
+    <Box sx={{ padding: '0 10px' }}>
       {loading ? (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       ) : (

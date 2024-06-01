@@ -582,7 +582,7 @@ const UserAttendanceHistory = () => {
           <Box mt={2}>
             {/*----------------------------search and Sort---------------------------------------*/}
             <Stack mr={1} ml={1}>
-              <Box mt={3} mb={3} boxShadow={'none'}>
+              <Box mt={3} mb={3} sx={{ padding: '0 10px' }} boxShadow={'none'}>
                 <Grid
                   container
                   alignItems="center"
@@ -679,7 +679,7 @@ const UserAttendanceHistory = () => {
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                padding: '8px 8px',
+                padding: '8px 18px',
                 borderBottom: '1px solid #D0C5B4',
                 bgcolor: '#E6E6E6',
               }}
