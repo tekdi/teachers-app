@@ -9,8 +9,8 @@ const refreshToken = async () => {
     try {
       const response = await refresh({ refresh_token });
       if (response) {
-        const accessToken = response?.access_token;
-        const newRefreshToken = response?.refresh_token;
+        const accessToken = response?.result?.access_token;
+        const newRefreshToken = response?.result?.refresh_token;
         localStorage.setItem('token', accessToken);
         localStorage.setItem('refreshToken', newRefreshToken);
         return accessToken;
