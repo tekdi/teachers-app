@@ -137,19 +137,22 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 
         <Box>
           <Button
-            className="fs-14 fw-600"
+            className="fs-14"
             sx={{
               width: '100%',
               display: 'flex',
               justifyContent: 'flex-start',
               background: isDashboard
                 ? theme.palette.primary.main
-                : 'rgba(29, 27, 32, 0.12)',
-              padding: '16px !important',
+                : 'transparent',
+              padding: '16px 18px !important',
               marginTop: '15px',
-              color: '#2E1500',
+              color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isDashboard ? '600' : 500,
               '&:hover': {
-                background: '#FDBE16',
+                background: isDashboard
+                  ? theme.palette.primary.main
+                  : 'transparent',
               },
             }}
             startIcon={<DashboardOutlinedIcon />}

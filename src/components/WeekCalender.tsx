@@ -25,15 +25,6 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   const determinePathColor = useDeterminePathColor();
 
-  // const changeMonthHandle = (btnType: string) => {
-  //   if (btnType === 'prev') {
-  //     setCurrentMonth(subMonths(currentMonth, 1));
-  //   }
-  //   if (btnType === 'next') {
-  //     setCurrentMonth(addMonths(currentMonth, 1));
-  //   }
-  // };
-
   const changeWeekHandle = (btnType: string) => {
     const today = new Date();
     const startDate = subDays(today, 29);
@@ -66,9 +57,12 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const renderDays = () => {
     const dateFormat = 'EEEEE';
     const days = [];
-    const startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
+    // const startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
+    const today = new Date();
+    const startDate = subDays(today, 29);
+    const endDate = subDays(today, 0);
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 30; i++) {
       const day = addDays(startDate, i);
       const isToday = isSameDay(day, new Date());
 
@@ -86,8 +80,9 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   };
 
   const renderCells = () => {
-    const startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
-    const endDate = lastDayOfWeek(currentMonth, { weekStartsOn: 1 });
+    const today = new Date();
+    const endDate = subDays(today, 0);
+    const startDate = subDays(endDate, 29);
     const dateFormat = 'd';
     const rows = [];
     let days = [];
@@ -96,7 +91,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
     let showCircularProgress = false;
 
     while (day <= endDate) {
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 30; i++) {
         formattedDate = format(day, dateFormat);
         const cloneDay = day;
         let percentage = 0;
@@ -186,18 +181,10 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
 
   return (
     <div className="calendar">
-      {!isPrevDisabled && (
-        <div className="prev_btn" onClick={() => changeWeekHandle('prev')}>
-          <ArrowDropDownCircleOutlinedIcon />
-        </div>
-      )}
-      {!isNextDisabled && (
-        <div className="next_btn" onClick={() => changeWeekHandle('next')}>
-          <ArrowDropDownCircleOutlinedIcon />
-        </div>
-      )}
-      {renderDays()}
-      {renderCells()}
+      <Box className="calender_body_width">
+        {renderDays()}
+        {renderCells()}
+      </Box>
     </div>
   );
 };

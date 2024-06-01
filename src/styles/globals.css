@@ -116,7 +116,7 @@ body {
   font-weight: 300;
   line-height: 1.5;
   color: var(--text-color);
-  background: var(--bg-color);
+  background: #fff;
   position: relative;
 }
 
@@ -189,6 +189,16 @@ main {
   display: block;
   position: relative;
   width: 100%;
+  overflow-x: auto;
+}
+.calender_body_width {
+  width: 1840px;
+  height: 110px;
+}
+.col-center {
+  font-size: 11px;
+  font-weight: 500;
+  color: #7c766f;
 }
 
 .calendar .header {
@@ -574,4 +584,9 @@ main {
 .absent-marker svg path {
   color: var(--mui-palette-error-main) !important;
   width: fit-content !important;
+}
+.react-calendar__month-view__weekdays__weekday {
+  font-size: 16px;
+  font-weight: 400;
+  color: #1f1b13;
 }

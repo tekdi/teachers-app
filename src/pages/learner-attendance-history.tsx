@@ -1,17 +1,18 @@
-import Header from '@/components/Header';
-import Loader from '@/components/Loader';
 import { Box, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'next-i18next';
-import { useTheme } from '@mui/material/styles';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+
 import AttendanceStatus from '@/components/AttendanceStatus';
-import MonthCalender from '@/components/MonthCalender';
-import { shortDateFormat } from '@/utils/Helper';
+import Header from '@/components/Header';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import { LearnerAttendanceProps } from '@/utils/Interfaces';
-import { getLearnerAttendanceStatus } from '@/services/AttendanceService';
+import Loader from '@/components/Loader';
 import MarkAttendance from '@/components/MarkAttendance';
+import MonthCalender from '@/components/MonthCalender';
+import { getLearnerAttendanceStatus } from '@/services/AttendanceService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { shortDateFormat } from '@/utils/Helper';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 type LearnerAttendanceData = {
   [date: string]: {
@@ -124,7 +125,7 @@ const LearnerAttendanceHistory = () => {
       <Box display={'flex'}>
         <Box
           sx={{
-            width: '668px',
+            width: '100%',
             '@media (max-width: 700px)': {
               width: '100%',
             },

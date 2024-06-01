@@ -64,7 +64,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-    Height: '585px',
+    Height: '526px',
   };
 
   const submitBulkAttendanceAction = (
@@ -301,7 +301,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
               padding: '15px 10px 0 10px',
             }}
             borderRadius={'1rem'}
-            height={'80%'}
+            height={'526px'}
           >
             <Box height={'100%'} width={'100%'}>
               <Box
@@ -386,7 +386,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
               </Box>
               {cohortMemberList && cohortMemberList?.length != 0 ? (
                 <Box
-                  height={'53vh'}
+                  height={'64%'}
                   sx={{
                     overflowY: 'scroll',
                     marginTop: '10px',
@@ -421,15 +421,15 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   </Box>
                   <Box
                     position={'absolute'}
-                    bottom="0"
+                    bottom="15px"
                     display={'flex'}
                     gap={'20px'}
                     flexDirection={'row'}
                     justifyContent={'space-evenly'}
-                    marginBottom={'8px'}
+                    // marginBottom={'8px'}
                     sx={{
                       background: '#fff',
-                      padding: '15px 0 10px 0',
+                      // padding: '0px 0 10px 0',
                       width: '93%',
                     }}
                   >
