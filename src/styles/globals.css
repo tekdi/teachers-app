@@ -383,14 +383,12 @@ main {
 
 .present-marker {
   color: var(--mui-palette-success-main);
-  margin: auto !important;
   width: fit-content !important;
 }
 
 .absent-marker {
   color: var(--mui-palette-error-main) !important;
   width: fit-content !important;
-  margin: auto !important;
 }
 
 .on-leave-marker {
@@ -580,12 +578,10 @@ main {
 
 .present-marker svg path {
   color: var(--mui-palette-success-main) !important;
-  margin: auto !important;
   width: fit-content !important;
 }
 
 .absent-marker svg path {
   color: var(--mui-palette-error-main) !important;
   width: fit-content !important;
-  margin: auto !important;
 }

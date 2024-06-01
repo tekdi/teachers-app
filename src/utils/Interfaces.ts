@@ -19,9 +19,8 @@ export interface MarkAttendanceProps {
   name?: string;
   currentStatus: string;
   handleClose: () => void;
-
+  onAttendanceUpdate: () => void;
   handleSubmit: (attendanceDate: string, attendance: string) => void;
-  message?: string;
 }
 
 export interface AttendanceStatusListViewProps {
@@ -50,7 +49,12 @@ export interface BulkAttendanceParams {
   contextId: string;
   userAttendance: UserAttendanceObj[];
 }
-
+export interface MarkAttendanceParams {
+  userId: string;
+  attendanceDate: string;
+  contextId: string;
+  attendance: string;
+}
 export interface cohortListParam {
   limit: number;
   page: number;

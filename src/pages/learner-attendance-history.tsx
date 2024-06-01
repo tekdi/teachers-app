@@ -6,12 +6,9 @@ import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import { LearnerAttendanceProps } from '@/utils/Interfaces';
 import Loader from '@/components/Loader';
+import MarkAttendance from '@/components/MarkAttendance';
 import MonthCalender from '@/components/MonthCalender';
 import { getLearnerAttendanceStatus } from '@/services/AttendanceService';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { shortDateFormat } from '@/utils/Helper';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
 
 const LearnerAttendanceHistory = () => {
   const { t } = useTranslation();
@@ -20,7 +17,8 @@ const LearnerAttendanceHistory = () => {
   const [loading, setLoading] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [open, setOpen] = useState(false);
-
+  const [modalOpen, setModalOpen] = useState(false);
+  const [attendanceUpdated, setAttendanceUpdated] = useState(false);
   const [learnerAttendance, setLearnerAttendance] = React.useState<any>(null);
 
   useEffect(() => {
@@ -32,12 +30,19 @@ const LearnerAttendanceHistory = () => {
   };
 
   const handleActiveStartDateChange = (date: Date) => {
-    date;
-    // setActiveStartDate(date);
+    setSelectedDate(date);
   };
 
   const handleOpen = () => {
     setOpen(true);
+  };
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -47,7 +52,7 @@ const LearnerAttendanceHistory = () => {
         const classId = localStorage.getItem('classId') || '';
         const userId = localStorage.getItem('learnerId') || '';
         if (classId !== '' && classId !== undefined) {
-          const currentDate = new Date();
+          const currentDate = selectedDate || new Date();
           const firstDayOfMonth = new Date(
             currentDate.getFullYear(),
             currentDate.getMonth(),
@@ -91,7 +96,7 @@ const LearnerAttendanceHistory = () => {
       }
     };
     getAttendanceStatus();
-  }, []);
+  }, [selectedDate, attendanceUpdated]);
 
   return (
     <Box minHeight="100vh" textAlign={'center'}>
@@ -157,7 +162,7 @@ const LearnerAttendanceHistory = () => {
         <Box>
           <AttendanceStatus
             date={selectedDate}
-            formattedAttendanceData={learnerAttendance}
+            learnerAttendanceData={learnerAttendance}
             onDateSelection={selectedDate}
             onUpdate={handleOpen}
           />
@@ -168,6 +173,16 @@ const LearnerAttendanceHistory = () => {
         learnerAttendanceDate={learnerAttendance}
         onChange={handleActiveStartDateChange}
         onDateChange={handleSelectedDateChange}
+      />
+      <MarkAttendance
+        isOpen={open}
+        date={shortDateFormat(selectedDate)}
+        isSelfAttendance={false}
+        currentStatus={
+          learnerAttendance?.[shortDateFormat(selectedDate)]?.attendanceStatus
+        }
+        handleClose={handleModalClose}
+        onAttendanceUpdate={() => setAttendanceUpdated(!attendanceUpdated)}
       />
     </Box>
   );
