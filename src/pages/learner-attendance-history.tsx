@@ -33,8 +33,7 @@ const LearnerAttendanceHistory = () => {
   };
 
   const handleActiveStartDateChange = (date: Date) => {
-    date;
-    // setActiveStartDate(date);
+    setSelectedDate(date);
   };
 
   const handleOpen = () => {
@@ -56,7 +55,7 @@ const LearnerAttendanceHistory = () => {
         const classId = localStorage.getItem('classId') || '';
         const userId = localStorage.getItem('learnerId') || '';
         if (classId !== '' && classId !== undefined) {
-          const currentDate = new Date();
+          const currentDate = selectedDate || new Date();
           const firstDayOfMonth = new Date(
             currentDate.getFullYear(),
             currentDate.getMonth(),
