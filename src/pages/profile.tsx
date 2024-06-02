@@ -685,35 +685,6 @@ const TeacherProfile = () => {
                     })
                   }
                 />
-                <TextField
-                  sx={{ marginTop: '20px' }}
-                  fullWidth
-                  name="name"
-                  label="Full Name"
-                  variant="outlined"
-                  value={formData.userData.name}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      userData: { name: e.target.value },
-                    })
-                  }
-                />
-
-                <TextField
-                  sx={{ marginTop: '20px' }}
-                  fullWidth
-                  name="name"
-                  label="Full Name"
-                  variant="outlined"
-                  value={formData.userData.name}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      userData: { name: e.target.value },
-                    })
-                  }
-                />
 
                 {customFieldsData
                   .filter((field) => field.isEditable)
