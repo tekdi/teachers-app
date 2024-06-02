@@ -17,7 +17,7 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
     <Stack>
       {numberOfColumns == 3 ? (
         <Box
-          borderBottom={`1px solid ${theme.palette.warning['300']}`}
+          borderBottom={`1px solid #D0C5B4`}
           margin="0"
           alignItems={'center'}
           bgcolor={'#E6E6E6'}
@@ -33,7 +33,11 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
             <Grid item xs={6}>
               <Typography
                 textAlign={'left'}
-                sx={{ fontSize: '11px', fontWeight: '500' }}
+                sx={{
+                  fontSize: '11px',
+                  fontWeight: '500',
+                  paddingLeft: '12px',
+                }}
               >
                 {t('COMMON.LEARNER_NAME')}
               </Typography>
@@ -52,7 +56,7 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
         </Box>
       ) : (
         <Box
-          borderBottom={`1px solid ${theme.palette.warning['300']}`}
+          borderBottom={`1px solid #E6E6E6`}
           margin="0"
           alignItems={'center'}
           bgcolor={'#E6E6E6'}

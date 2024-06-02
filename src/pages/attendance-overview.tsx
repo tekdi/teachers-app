@@ -369,24 +369,29 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           justifyContent: 'left',
           alignItems: 'center',
           color: '#4D4639',
+          paddingTop: '30px',
+          paddingBottom: '15px',
+          gap: '5px',
+          px: '20px',
         }}
         width={'100%'}
         onClick={handleBackEvent}
       >
-        <Box>
-          <KeyboardBackspaceOutlinedIcon
-            cursor={'pointer'}
-            sx={{ color: theme.palette.warning['A200'] }}
-          />
-        </Box>
-        <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
+        <KeyboardBackspaceOutlinedIcon
+          cursor={'pointer'}
+          sx={{ color: theme.palette.warning['A200'] }}
+        />
+        <Typography textAlign={'left'} fontSize={'22px'}>
           {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
         </Typography>
       </Box>
 
-      <Box sx={{ mt: 0.6 }}>
+      <Box sx={{ mt: 1 }}>
         <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
-          <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
+          <FormControl
+            className="drawer-select"
+            sx={{ width: '100%', padding: '0 20px' }}
+          >
             <Select
               value={classId}
               onChange={handleCohortSelection}
@@ -399,6 +404,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 color: theme.palette.warning['200'],
                 width: '100%',
                 marginBottom: '0rem',
+                fontSize: '14px',
               }}
             >
               {cohortsData?.length !== 0 ? (
@@ -424,46 +430,58 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         </Box>
       </Box>
 
-      <DateRangePopup
-        menuItems={menuItems}
-        selectedValue={selectedValue}
-        setSelectedValue={setSelectedValue}
-        onDateRangeSelected={handleDateRangeSelected}
-      />
+      <Box
+        className="linerGradient"
+        sx={{
+          padding: '1rem 0',
+          mt: '4px',
+        }}
+      >
+        <DateRangePopup
+          menuItems={menuItems}
+          selectedValue={selectedValue}
+          setSelectedValue={setSelectedValue}
+          onDateRangeSelected={handleDateRangeSelected}
+        />
 
-      <Box display={'flex'} className="card_overview">
-        <Grid container spacing={2}>
-          <Grid item xs={5}>
-            <OverviewCard
-              label={t('ATTENDANCE.CENTER_ATTENDANCE')}
-              value={
-                learnerData.length
-                  ? presentPercentage + ' %'
-                  : presentPercentage
-              }
-            />
+        <Box
+          display={'flex'}
+          sx={{ padding: '0 20px', marginTop: '1rem' }}
+          className="card_overview"
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={5}>
+              <OverviewCard
+                label={t('ATTENDANCE.CENTER_ATTENDANCE')}
+                value={
+                  learnerData.length
+                    ? presentPercentage + ' %'
+                    : presentPercentage
+                }
+              />
+            </Grid>
+            <Grid item xs={7}>
+              <OverviewCard
+                label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
+                {...(loading && (
+                  <Loader
+                    loadingText={t('COMMON.LOADING')}
+                    showBackdrop={false}
+                  />
+                ))}
+                value={
+                  lowAttendanceLearnerList.length > 2
+                    ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2}  ${t('COMMON.MORE')}`
+                    : lowAttendanceLearnerList.length === 2
+                      ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
+                      : lowAttendanceLearnerList.length === 1
+                        ? `${lowAttendanceLearnerList[0]}`
+                        : t('ATTENDANCE.N/A')
+                }
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={7}>
-            <OverviewCard
-              label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
-              {...(loading && (
-                <Loader
-                  loadingText={t('COMMON.LOADING')}
-                  showBackdrop={false}
-                />
-              ))}
-              value={
-                lowAttendanceLearnerList.length > 2
-                  ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2}  ${t('COMMON.MORE')}`
-                  : lowAttendanceLearnerList.length === 2
-                    ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
-                    : lowAttendanceLearnerList.length === 1
-                      ? `${lowAttendanceLearnerList[0]}`
-                      : t('ATTENDANCE.N/A')
-              }
-            />
-          </Grid>
-        </Grid>
+        </Box>
       </Box>
 
       <Stack mr={1} ml={1}>

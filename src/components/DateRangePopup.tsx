@@ -84,14 +84,14 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         break;
       case 2:
         {
-        const dayOfWeek = today.getDay();
-        const lastSaturday = new Date(today);
-        lastSaturday.setDate(today.getDate() - dayOfWeek - 1);
-        const lastSunday = new Date(lastSaturday);
-        lastSunday.setDate(lastSaturday.getDate() - 6);
-        fromDate = lastSunday;
-        toDate = formatDate(lastSaturday);
-      }
+          const dayOfWeek = today.getDay();
+          const lastSaturday = new Date(today);
+          lastSaturday.setDate(today.getDate() - dayOfWeek - 1);
+          const lastSunday = new Date(lastSaturday);
+          lastSunday.setDate(lastSaturday.getDate() - 6);
+          fromDate = lastSunday;
+          toDate = formatDate(lastSaturday);
+        }
         break;
       case 3:
         fromDate = new Date(today);
@@ -116,27 +116,28 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   };
 
   return (
-    <Box sx={{ mt: 0.6 }}>
-      <Grid container spacing={1}>
-        <Grid item sx={{ flex: 1 }}>
-          <FormControl fullWidth sx={{ m: 1 }}>
-            <Select
-              sx={{ height: '32px', width: '96%', borderRadius: '8px' }}
-              value={selectedValue}
-              displayEmpty
-              onClick={handleModalOpen}
-              inputProps={{ readOnly: true }}
-            >
-              <MenuItem value="" disabled>
-                {t('COMMON.SELECT_AN_OPTION')}
-              </MenuItem>
-              <MenuItem value={selectedValue}>
-                {selectedValue ? selectedValue : t('COMMON.SELECT_AN_OPTION')}
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-      </Grid>
+    <Box sx={{ mt: 1, padding: '0 20px' }}>
+      <FormControl sx={{ width: '100%' }}>
+        <Select
+          sx={{
+            height: '32px',
+            width: '100%',
+            borderRadius: '8px',
+            fontSize: '14px',
+          }}
+          value={selectedValue}
+          displayEmpty
+          onClick={handleModalOpen}
+          inputProps={{ readOnly: true }}
+        >
+          <MenuItem value="" disabled>
+            {t('COMMON.SELECT_AN_OPTION')}
+          </MenuItem>
+          <MenuItem value={selectedValue}>
+            {selectedValue ? selectedValue : t('COMMON.SELECT_AN_OPTION')}
+          </MenuItem>
+        </Select>
+      </FormControl>
 
       <Modal
         open={isModalOpen}
