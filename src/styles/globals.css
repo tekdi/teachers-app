@@ -590,3 +590,11 @@ main {
   font-weight: 400;
   color: #1f1b13;
 }
+
+.two-line-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

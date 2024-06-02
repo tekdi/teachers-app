@@ -144,6 +144,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             color: '#1F1B13',
           }}
           onClick={() => handleOpenModalLearner(userData?.userId!)}
+          className="two-line-text"
         >
           {isBulkAction ? (
             t('ATTENDANCE.MARK_ALL')
