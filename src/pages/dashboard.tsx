@@ -462,7 +462,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 textAlign={'left'}
                 fontSize={'22px'}
                 m={'1.5rem 1rem 0.8rem'}
-                color={'#1F1B13'}
+                color={theme?.palette?.warning['300']}
               >
                 {t('DASHBOARD.DASHBOARD')}
               </Typography>

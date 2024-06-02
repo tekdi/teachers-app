@@ -15,6 +15,7 @@ import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCi
 import { Box } from '@mui/material';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useEffect, useRef, useState } from 'react';
+import { dashboardDaysLimit } from '../../app.config';
 
 const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -109,7 +110,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
     let showCircularProgress = false;
 
     while (day <= endDate) {
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < dashboardDaysLimit; i++) {
         formattedDate = format(day, dateFormat);
         const cloneDay = day;
         let percentage = 0;
