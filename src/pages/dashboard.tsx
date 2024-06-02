@@ -819,12 +819,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         name: string;
                         presentPercentage: number;
                       }) => (
-                        <Grid item xs={6}>
-                        <OverviewCard
-                          key={item.cohortId}
-                          label={item.name}
-                          value={item.presentPercentage}
-                        />
+                        <Grid item xs={6} key={item.cohortId}>
+                          <OverviewCard
+                            label={item.name}
+                            value={item.presentPercentage}
+                          />
                         </Grid>
                       )
                     )}
