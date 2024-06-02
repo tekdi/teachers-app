@@ -25,6 +25,7 @@ import { debounce, getTodayDate, toPascalCase } from '@/utils/Helper';
 
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import ClearIcon from '@mui/icons-material/Clear';
+import CohortAttendanceListView from '@/components/CohortAttendanceListView';
 import DateRangePopup from '@/components/DateRangePopup';
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
@@ -43,7 +44,6 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import CohortAttendanceListView from '@/components/CohortAttendanceListView';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -241,13 +241,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           };
           cohortAttendancePercent();
         }
-      } 
-      else if (classId && classId === 'all' && cohortsData) {
-        const cohortIds = cohortsData.map(cohort => cohort.cohortId);
+      } else if (classId && classId === 'all' && cohortsData) {
+        const cohortIds = cohortsData.map((cohort) => cohort.cohortId);
         const limit = 300;
         const page = 0;
         const facets = ['contextId'];
-      
+
         const fetchAttendanceData = async (cohortIds: any[]) => {
           const fetchPromises = cohortIds.map(async (cohortId) => {
             const filters = {
@@ -257,7 +256,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               contextId: cohortId,
             };
             console.log('Filters:', filters); // Log filters to ensure contextId is set
-      
+
             try {
               const response = await getAllCenterAttendance({
                 limit,
@@ -268,42 +267,52 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               console.log(`Response for cohortId ${cohortId}:`, response); // Log the response
               return { cohortId, data: response?.data?.result };
             } catch (error) {
-              console.error(`Error fetching data for cohortId ${cohortId}:`, error);
+              console.error(
+                `Error fetching data for cohortId ${cohortId}:`,
+                error
+              );
               return { cohortId, error };
             }
           });
-      
+
           try {
             const results = await Promise.all(fetchPromises);
             console.log('Fetched data:', results);
-      
+
             const nameIDAttendanceArray = results
-              .filter(result => !result.error && result.data && result.data.contextId)
-              .map(result => {
+              .filter(
+                (result) =>
+                  !result.error && result.data && result.data.contextId
+              )
+              .map((result) => {
                 const cohortId = result.cohortId;
                 const contextData = result.data.contextId[cohortId] || {};
-                const presentPercentage = contextData.present_percentage || null;
-                const absentPercentage = contextData.absent_percentage ? 100 - contextData.absent_percentage : null;
+                const presentPercentage =
+                  contextData.present_percentage || null;
+                const absentPercentage = contextData.absent_percentage
+                  ? 100 - contextData.absent_percentage
+                  : null;
                 const percentage = presentPercentage || absentPercentage;
-      
-                const cohortItem = cohortsData.find(cohort => cohort.cohortId === cohortId);
-      
+
+                const cohortItem = cohortsData.find(
+                  (cohort) => cohort.cohortId === cohortId
+                );
+
                 return {
                   userId: cohortId,
                   name: cohortItem ? cohortItem.name : null,
                   presentPercentage: percentage,
                 };
               })
-              .filter(item => item.presentPercentage !== null); // Filter out items with no valid percentage
-      
+              .filter((item) => item.presentPercentage !== null); // Filter out items with no valid percentage
+
             console.log('Filtered and merged data:', nameIDAttendanceArray);
             setAllCenterAttendanceData(nameIDAttendanceArray);
-      
           } catch (error) {
             console.error('Error fetching attendance data:', error);
           }
         };
-      
+
         fetchAttendanceData(cohortIds);
       }
     } catch (error) {
@@ -447,6 +456,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             justifyContent: 'left',
             alignItems: 'center',
             color: '#4D4639',
+            padding: '15px 20px 5px',
           }}
           width={'100%'}
           onClick={handleBackEvent}
@@ -462,85 +472,86 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           </Typography>
         </Box>
 
-        <Box sx={{ mt: 0.6 }}>
-          <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
-            <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
-              <Select
-                value={classId}
-                onChange={handleCohortSelection}
-                displayEmpty
-                disabled={cohortsData?.length <= 1 ? true : false}
-                inputProps={{ 'aria-label': 'Without label' }}
-                className="SelectLanguages fs-14 fw-500"
-                style={{
-                  borderRadius: '0.5rem',
-                  color: theme.palette.warning['200'],
-                  width: '100%',
-                  marginBottom: '0rem',
-                }}
-              >
-                {cohortsData?.length !== 0 ? (
-                  manipulatedCohortData?.map((cohort) => (
-                    <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                      {cohort.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <Typography style={{ fontWeight: 'bold' }}>
-                    {t('COMMON.NO_DATA_FOUND')}
-                  </Typography>
-                )}
-              </Select>
-            </FormControl>
-          </Box>
+        <Box sx={{ px: '16px', width: '100%', gap: '15px' }} display={'flex'}>
+          <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
+            <Select
+              value={classId}
+              onChange={handleCohortSelection}
+              displayEmpty
+              disabled={cohortsData?.length <= 1 ? true : false}
+              inputProps={{ 'aria-label': 'Without label' }}
+              className="SelectLanguages fs-14 fw-500"
+              style={{
+                borderRadius: '0.5rem',
+                color: theme.palette.warning['200'],
+                width: '100%',
+                marginBottom: '0rem',
+                fontSize: '16px',
+              }}
+            >
+              {cohortsData?.length !== 0 ? (
+                manipulatedCohortData?.map((cohort) => (
+                  <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
+                    {cohort.name}
+                  </MenuItem>
+                ))
+              ) : (
+                <Typography style={{ fontWeight: 'bold' }}>
+                  {t('COMMON.NO_DATA_FOUND')}
+                </Typography>
+              )}
+            </Select>
+          </FormControl>
         </Box>
 
-        <DateRangePopup
-          menuItems={menuItems}
-          selectedValue={selectedValue}
-          setSelectedValue={setSelectedValue}
-          onDateRangeSelected={handleDateRangeSelected}
-        />
+        <Box className="linerGradient" sx={{ padding: '10px 20px' }}>
+          <DateRangePopup
+            menuItems={menuItems}
+            selectedValue={selectedValue}
+            setSelectedValue={setSelectedValue}
+            onDateRangeSelected={handleDateRangeSelected}
+          />
 
-        {classId !== 'all' ? (
-          <Box display={'flex'} className="card_overview" p={'1rem'}>
-            <Grid container spacing={2}>
-              <Grid item xs={5}>
-                <OverviewCard
-                  label={t('ATTENDANCE.CENTER_ATTENDANCE')}
-                  value={
-                    learnerData.length
-                      ? presentPercentage + ' %'
-                      : presentPercentage
-                  }
-                />
+          {classId !== 'all' ? (
+            <Box display={'flex'} className="card_overview" p={'1rem 0'}>
+              <Grid container spacing={2}>
+                <Grid item xs={5}>
+                  <OverviewCard
+                    label={t('ATTENDANCE.CENTER_ATTENDANCE')}
+                    value={
+                      learnerData.length
+                        ? presentPercentage + ' %'
+                        : presentPercentage
+                    }
+                  />
+                </Grid>
+                <Grid item xs={7}>
+                  <OverviewCard
+                    label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
+                    {...(loading && (
+                      <Loader
+                        loadingText={t('COMMON.LOADING')}
+                        showBackdrop={false}
+                      />
+                    ))}
+                    value={
+                      lowAttendanceLearnerList.length > 2
+                        ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2}  ${t('COMMON.MORE')}`
+                        : lowAttendanceLearnerList.length === 2
+                          ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
+                          : lowAttendanceLearnerList.length === 1
+                            ? `${lowAttendanceLearnerList[0]}`
+                            : Array.isArray(lowAttendanceLearnerList) &&
+                                lowAttendanceLearnerList.length === 0
+                              ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
+                              : t('ATTENDANCE.N/A')
+                    }
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={7}>
-                <OverviewCard
-                  label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
-                  {...(loading && (
-                    <Loader
-                      loadingText={t('COMMON.LOADING')}
-                      showBackdrop={false}
-                    />
-                  ))}
-                  value={
-                    lowAttendanceLearnerList.length > 2
-                      ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2}  ${t('COMMON.MORE')}`
-                      : lowAttendanceLearnerList.length === 2
-                        ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
-                        : lowAttendanceLearnerList.length === 1
-                          ? `${lowAttendanceLearnerList[0]}`
-                          : Array.isArray(lowAttendanceLearnerList) &&
-                              lowAttendanceLearnerList.length === 0
-                            ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
-                            : t('ATTENDANCE.N/A')
-                  }
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        ) : null}
+            </Box>
+          ) : null}
+        </Box>
       </Box>
 
       {learnerData?.length > 0 ? (
@@ -651,13 +662,19 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 numberOfColumns={2}
                 firstColumnName={t('COMMON.ATTENDANCE')}
               />
-              {allCenterAttendanceData.map((item: { cohortId: React.Key | null | undefined; name: string; presentPercentage: number; }) => (
-                <CohortAttendanceListView
-                  key={item.cohortId}
-                  cohortName={item.name}
-                  attendancePercent={item.presentPercentage}
-                />
-              ))}
+              {allCenterAttendanceData.map(
+                (item: {
+                  cohortId: React.Key | null | undefined;
+                  name: string;
+                  presentPercentage: number;
+                }) => (
+                  <CohortAttendanceListView
+                    key={item.cohortId}
+                    cohortName={item.name}
+                    attendancePercent={item.presentPercentage}
+                  />
+                )
+              )}
             </Box>
           )}
         </Box>

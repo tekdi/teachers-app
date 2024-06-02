@@ -33,7 +33,11 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
             <Grid item xs={6}>
               <Typography
                 textAlign={'left'}
-                sx={{ fontSize: '11px', fontWeight: '500' }}
+                sx={{
+                  fontSize: '11px',
+                  fontWeight: '500',
+                  paddingLeft: '12px',
+                }}
               >
                 {t('COMMON.LEARNER_NAME')}
               </Typography>
@@ -52,12 +56,12 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
         </Box>
       ) : (
         <Box
-        borderBottom={`1px solid ${theme.palette.warning['A100']}`}
-        margin="0"
-        alignItems={'center'}
-        bgcolor={'#E6E6E6'}
-        maxHeight={'auto'}
-      >
+          borderBottom={`1px solid ${theme.palette.warning['A100']}`}
+          margin="0"
+          alignItems={'center'}
+          bgcolor={'#E6E6E6'}
+          maxHeight={'auto'}
+        >
           <Grid
             container
             alignItems="center"

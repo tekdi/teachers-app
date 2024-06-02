@@ -15,9 +15,9 @@ import React, { useState } from 'react';
 import Check from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import MonthCalender from './MonthCalender';
 import WestIcon from '@mui/icons-material/West';
 import { useTranslation } from 'next-i18next';
-import MonthCalender from './MonthCalender';
 
 const modalStyle = {
   position: 'absolute',
@@ -72,12 +72,16 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const [selectedIndex, setSelectedIndex] = useState<number | null>(1);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
-  const toggleCalendarModal = () => setIsCalenderModalOpen(!isCalendarModalOpen);
+  const toggleCalendarModal = () =>
+    setIsCalenderModalOpen(!isCalendarModalOpen);
   const { t } = useTranslation();
 
   const handleMenuItemClick = (index: number, item: string) => {
     setSelectedIndex(index);
     setSelectedValue(item);
+    if (index === 4) {
+      toggleCalendarModal();
+    }
     if (index === 4) {
       toggleCalendarModal();
     }
@@ -90,21 +94,24 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     console.log(toDate, fromDate);
     onDateRangeSelected({ fromDate, toDate });
     toggleModal();
+    toggleModal();
   };
 
   const getDateRange = (index: number | null) => {
     const today = new Date();
     const formatDate = (date: Date) => {
-      console.log("date", date);
+      console.log('date', date);
       if (typeof date === 'object') {
         // return date?.toISOString()?.split('T')[0];}
-        const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
-          const year = localDate.getUTCFullYear();
-          const month = String(localDate.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed, so add 1
-          const day = String(localDate.getUTCDate()).padStart(2, '0');
-          return `${year}-${month}-${day}`;
-  
-      }}
+        const localDate = new Date(
+          date.getTime() - date.getTimezoneOffset() * 60000
+        );
+        const year = localDate.getUTCFullYear();
+        const month = String(localDate.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed, so add 1
+        const day = String(localDate.getUTCDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+    };
     let fromDate: any;
     let toDate = formatDate(today);
 
@@ -128,7 +135,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         fromDate.setDate(1); // Start of the period
         toDate = formatDate(new Date(today.getFullYear(), today.getMonth(), 0)); // End of last month
         break;
-        case 4:
+      case 4:
         //write here logic to open modal and return fromDate and toDate
         if (dateRangeArray) {
           fromDate = dateRangeArray[0];
@@ -144,6 +151,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       toDate,
     };
   };
+
   const handleCalendarDateChange = (date: Date | [Date, Date] | null) => {
     if (Array.isArray(date)) {
       setDateRangeArray(date);
@@ -156,27 +164,28 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   };
 
   return (
-    <Box sx={{ mt: 0.6 }}>
-      <Grid container spacing={1}>
-        <Grid item sx={{ flex: 1 }}>
-          <FormControl fullWidth sx={{ m: 1 }}>
-            <Select
-              sx={{ height: '32px', width: '96%', borderRadius: '8px' }}
-              value={selectedValue}
-              displayEmpty
-              onClick={toggleModal}
-              inputProps={{ readOnly: true }}
-            >
-              <MenuItem value="" disabled>
-                {t('COMMON.SELECT_AN_OPTION')}
-              </MenuItem>
-              <MenuItem value={selectedValue}>
-                {selectedValue ? selectedValue : t('COMMON.SELECT_AN_OPTION')}
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-      </Grid>
+    <Box sx={{ mt: 1.5, px: '2px' }}>
+      <FormControl sx={{ width: '100%' }}>
+        <Select
+          sx={{
+            height: '32px',
+            width: '100%',
+            borderRadius: '8px',
+            fontSize: '14px',
+          }}
+          value={selectedValue}
+          displayEmpty
+          onClick={toggleModal}
+          inputProps={{ readOnly: true }}
+        >
+          <MenuItem value="" disabled>
+            {t('COMMON.SELECT_AN_OPTION')}
+          </MenuItem>
+          <MenuItem value={selectedValue}>
+            {selectedValue ? selectedValue : t('COMMON.SELECT_AN_OPTION')}
+          </MenuItem>
+        </Select>
+      </FormControl>
 
       <Modal
         open={isModalOpen}
@@ -238,7 +247,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         </Box>
       </Modal>
 
-{/* CustomeCalendarModal */}
+      {/* CustomeCalendarModal */}
       <Modal
         open={isCalendarModalOpen}
         onClose={toggleCalendarModal}
@@ -260,12 +269,18 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
               }}
             >
               <Box>
-                <WestIcon onClick={toggleCalendarModal} style={{ cursor: 'pointer' }} />
+                <WestIcon
+                  onClick={toggleCalendarModal}
+                  style={{ cursor: 'pointer' }}
+                />
               </Box>
               <Box className="text-4D">{t('COMMON.CUSTOM_RANGE')}</Box>
             </Box>
             <Box>
-              <CloseIcon onClick={toggleCalendarModal} style={{ cursor: 'pointer' }} />
+              <CloseIcon
+                onClick={toggleCalendarModal}
+                style={{ cursor: 'pointer' }}
+              />
             </Box>
           </Box>
           <Box sx={{ paddingTop: '20px' }}>
@@ -276,11 +291,11 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           </Box>
 
           <Box>
-          <MonthCalender
-            onChange={handleActiveStartDateChange}
-            onDateChange={handleCalendarDateChange}
-            selectionType="range"
-          />
+            <MonthCalender
+              onChange={handleActiveStartDateChange}
+              onDateChange={handleCalendarDateChange}
+              selectionType="range"
+            />
           </Box>
           <Box
             sx={{
@@ -290,12 +305,15 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
               justifyContent: 'end',
             }}
           >
-            <Box className="text-0D fs-14 fw-500" onClick={toggleCalendarModal}>{t('COMMON.CANCEL')}</Box>
-            <Box className="text-0D fs-14 fw-500" onClick={toggleCalendarModal}>{t('COMMON.OK')}</Box>
+            <Box className="text-0D fs-14 fw-500" onClick={toggleCalendarModal}>
+              {t('COMMON.CANCEL')}
+            </Box>
+            <Box className="text-0D fs-14 fw-500" onClick={toggleCalendarModal}>
+              {t('COMMON.OK')}
+            </Box>
           </Box>
         </Box>
       </Modal>
-
     </Box>
   );
 };
