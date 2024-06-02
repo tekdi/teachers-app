@@ -84,17 +84,6 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
     }
   };
 
-  // React.useEffect(() => {
-  //   fetchUserDetails();
-  // }, [userId]);
-
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-
-  const labelValueArray = customFieldsData.map(({ label, value }) => ({
-    label,
-    value,
-  }));
-
   const names = [
     'name',
     'age',
@@ -105,7 +94,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   ];
 
   const filteredFields = names
-    .map((label) => customFieldsData.find((field) => field.name === label))
+    .map((name) => customFieldsData.find((field) => field.name === name))
     .filter(Boolean);
 
   return (

@@ -32,7 +32,6 @@ const LearnerModal = ({
 
   const theme = useTheme<any>();
   const router = useRouter();
-  console.log('data', data);
 
   const handleLearnerFullProfile = () => {
     router.push(`/learner/${userId}`);
