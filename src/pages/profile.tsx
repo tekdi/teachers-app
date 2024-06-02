@@ -202,7 +202,7 @@ const TeacherProfile = () => {
     ?.filter(Boolean)
     ?.join(', ');
 
-  //------------edit form fields------------
+  //------------edit teacher profile------------
 
   const [formData, setFormData] = useState<{
     userData: UserData;
@@ -515,8 +515,8 @@ const TeacherProfile = () => {
                                 border: `1px solid ${theme.palette.warning[900]}`,
                               }}
                             >
-                              {/* {getLabelForValue(subject)}  */}
-                              {subject}
+                              {getLabelForValue(subject)}
+                              {/* {subject} */}
                             </Button>
                           ))}
                       </Box>

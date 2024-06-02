@@ -48,9 +48,9 @@
     "AND": "और",
     "MORE": "अधिक",
     "CLOSE": "बंद करना",
-    "CANCEL":"रद्द करना",
-    "OK":"ठीक है",
-    "FROM_TO_DATE":"से - दिनांक तक"
+    "CANCEL": "रद्द करना",
+    "OK": "ठीक है",
+    "FROM_TO_DATE": "से - दिनांक तक"
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",
@@ -135,6 +135,12 @@
     "SUBMITTED_ON": "प्रस्तुत किया गया",
     "MARK_OBTAINED": "प्राप्त अंक",
     "TOTAL_QUESTIONS": "कुल प्रश्न",
-    "VIEW_FULL_PROFILE": "पूरा प्रोफाइल देखें"
+    "VIEW_FULL_PROFILE": "पूरा प्रोफाइल देखें",
+    "SUBJECT": "विषय",
+    "POST_TEST": "पोस्ट टेस्ट",
+    "PRE_TEST": "प्री टेस्ट",
+    "ENGLISH": "अंग्रेजी",
+    "MATH": "गणित",
+    "TEST": "परीक्षण"
   }
 }
