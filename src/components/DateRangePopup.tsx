@@ -82,6 +82,9 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     if (index === 4) {
       toggleCalendarModal();
     }
+    if (index === 4) {
+      toggleCalendarModal();
+    }
   };
 
   const onApply = () => {
@@ -90,6 +93,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     const { toDate, fromDate } = values;
     console.log(toDate, fromDate);
     onDateRangeSelected({ fromDate, toDate });
+    toggleModal();
     toggleModal();
   };
 
@@ -147,6 +151,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       toDate,
     };
   };
+
   const handleCalendarDateChange = (date: Date | [Date, Date] | null) => {
     if (Array.isArray(date)) {
       setDateRangeArray(date);

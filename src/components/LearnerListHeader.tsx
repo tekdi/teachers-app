@@ -17,7 +17,7 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
     <Stack>
       {numberOfColumns == 3 ? (
         <Box
-          borderBottom={`1px solid #D0C5B4`}
+          borderBottom={`1px solid ${theme.palette.warning['A100']}`}
           margin="0"
           alignItems={'center'}
           bgcolor={'#E6E6E6'}
@@ -56,7 +56,7 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
         </Box>
       ) : (
         <Box
-          borderBottom={`1px solid #E6E6E6`}
+          borderBottom={`1px solid ${theme.palette.warning['A100']}`}
           margin="0"
           alignItems={'center'}
           bgcolor={'#E6E6E6'}
