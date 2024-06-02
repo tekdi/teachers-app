@@ -1,8 +1,6 @@
-// components/CustomRangeModal.tsx
 import * as React from 'react';
 
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
 import WestIcon from '@mui/icons-material/West';
@@ -27,16 +25,16 @@ const style = {
 };
 
 const CustomRangeModal: React.FC = () => {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [isCalendarModalOpen, setIsCalenderModalOpen] = React.useState(false);
+  const toggleCalendarModal = () => setIsCalenderModalOpen(!isCalendarModalOpen);
+
   const { t } = useTranslation();
   return (
     <div>
       {/* <Button onClick={handleOpen}>Open modal</Button> */}
       <Modal
-        open={open}
-        onClose={handleClose}
+        open={isCalendarModalOpen}
+        onClose={toggleCalendarModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -55,12 +53,12 @@ const CustomRangeModal: React.FC = () => {
               }}
             >
               <Box>
-                <WestIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
+                <WestIcon onClick={toggleCalendarModal} style={{ cursor: 'pointer' }} />
               </Box>
               <Box className="text-4D">{t('COMMON.CUSTOM_RANGE')}</Box>
             </Box>
             <Box>
-              <CloseIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
+              <CloseIcon onClick={toggleCalendarModal} style={{ cursor: 'pointer' }} />
             </Box>
           </Box>
           <Box sx={{ paddingTop: '20px' }}>

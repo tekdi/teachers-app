@@ -105,7 +105,8 @@
     "LOW_ATTENDANCE_STUDENTS": "कमी उपस्थिती विद्यार्थी",
     "N/A": "उपलब्ध नाही",
     "CENTER_NAME": "केंद्राचे नाव",
-    "ALL_CENTERS": "सर्व केंद्रे"
+    "ALL_CENTERS": "सर्व केंद्रे",
+    "NO_LEARNER_WITH_LOW_ATTENDANCE": "कमी उपस्थिती असलेला कोणताही शिकणारा नाही"
   },
   "PROFILE": {
     "EDIT_PROFILE": "प्रोफाइल संपादित करा",

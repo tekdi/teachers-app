@@ -24,6 +24,7 @@ interface sortCardProps {
   handleCloseModal: () => void;
   isModalOpen: boolean;
   routeName: string;
+  forAllCenters? : boolean;
 }
 
 const SortingModal: React.FC<sortCardProps> = ({
@@ -31,6 +32,7 @@ const SortingModal: React.FC<sortCardProps> = ({
   isModalOpen,
   handleCloseModal,
   routeName,
+  forAllCenters
 }) => {
   const [sortByName, setSortByName] = React.useState('');
   const [sortByAttendance, setSortByAttendance] = React.useState('');
@@ -106,7 +108,7 @@ const SortingModal: React.FC<sortCardProps> = ({
         }}
       />
       <Grid container spacing={2}>
-        {routeName == '/attendance-overview' ? (
+        {(routeName == '/attendance-overview' && !forAllCenters) ? (
           <>
             <Grid item xs={12}>
               <FormControl component="fieldset" sx={{ width: '100%' }}>

@@ -12,7 +12,8 @@ interface CalendarWithAttendanceProps {
   formattedAttendanceData?: FormattedAttendanceData;
   learnerAttendanceDate?: learnerAttendanceDate;
   onChange: (date: Date) => void;
-  onDateChange: (date: Date) => void;
+  onDateChange: (date: Date | [Date, Date] | null) => void;
+  selectionType?: 'single' | 'range'; 
 }
 
 type AttendanceData = {
@@ -33,8 +34,9 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   learnerAttendanceDate,
   onChange,
   onDateChange,
+  selectionType,
 }) => {
-  const [date, setDate] = useState(() => new Date());
+  const [date, setDate] = useState<Date | [Date, Date] | null>(() => new Date());
   const determinePathColor = useDeterminePathColor();
 
   useEffect(() => {
@@ -138,10 +140,38 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     onChange(activeStartDate);
   };
 
-  const handleDateChange: (value: any) => void = (newDate) => {
-    setDate(newDate);
-    onDateChange(newDate);
+  // const handleDateChange: (value: Date | [Date, Date] | null) => void = (newDate) => {
+  //   // Handle the selected date here
+  //   console.log('Selected date:', newDate?.toDateString());
+  //   setDate(newDate); // Update state with the new selected date if needed
+  //   onDateChange(newDate);
+  // };
+
+  const handleDateChange: (value: Date | [Date, Date] | null) => void = (newDate) => {
+    const formatDate = (date: Date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+  
+    if (newDate === null) {
+      console.log('Selected date: null');
+      setDate(null);
+      onDateChange(null);
+    } else if (Array.isArray(newDate)) {
+      const formattedDates = newDate.map(date => formatDate(date));
+      console.log('Selected date range:', formattedDates); // Format--->["2024-06-01","2024-06-14"]
+      setDate(newDate); // Format--->["2024-06-04T18:30:00.000Z","2024-06-13T18:29:59.999Z"]
+      onDateChange(newDate);
+    } else {
+      const formattedDate = formatDate(newDate);
+      console.log('Selected date:', formattedDate);
+      setDate(newDate);
+      onDateChange(newDate);
+    }
   };
+  
 
   return (
     <div>
@@ -149,6 +179,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
         <Calendar
           onChange={handleDateChange}
           value={date}
+          selectRange={selectionType === 'range'} 
           tileContent={({ date, view }) =>
             tileContent({
               date,

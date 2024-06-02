@@ -17,6 +17,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import {
   classesMissedAttendancePercentList,
+  getAllCenterAttendance,
   getCohortAttendance,
 } from '@/services/AttendanceService';
 import { cohort, cohortAttendancePercentParam } from '@/utils/Interfaces';
@@ -42,6 +43,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import CohortAttendanceListView from '@/components/CohortAttendanceListView';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -52,6 +54,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const { t } = useTranslation();
   const [classId, setClassId] = React.useState('');
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
+  const [manipulatedCohortData, setManipulatedCohortData] =
+    React.useState<Array<cohort>>(cohortsData);
+  const [allCenterAttendanceData, setAllCenterAttendanceData] =
+    React.useState<any>(cohortsData);
+
   const [loading, setLoading] = React.useState(false);
   const [searchWord, setSearchWord] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -61,6 +68,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
   >([]);
+  const [userId, setUserId] = React.useState('');
   const [selectedValue, setSelectedValue] = React.useState<string>(
     t('COMMON.AS_OF_TODAY')
   );
@@ -76,7 +84,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const menuItems = [
     t('COMMON.LAST_SEVEN_DAYS'),
     t('COMMON.AS_OF_TODAY'),
-    t('COMMON.AS_OF_LAST_WEEK'),
     t('COMMON.LAST_MONTH'),
     t('COMMON.LAST_SIX_MONTHS'),
     t('COMMON.CUSTOM_RANGE'),
@@ -86,6 +93,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   useEffect(() => {
     const fetchCohortList = async () => {
       const userId = localStorage.getItem('userId');
+      if (userId) {
+        setUserId(userId);
+      }
       setLoading(true);
       try {
         if (userId) {
@@ -105,6 +115,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           if (filteredData.length > 0) {
             setClassId(filteredData[0].cohortId);
             localStorage.setItem('cohortId', filteredData[0]?.cohortId);
+            setManipulatedCohortData(
+              filteredData.concat({ cohortId: 'all', name: 'All Centers' })
+            );
           }
         }
         setLoading(false);
@@ -126,7 +139,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const getCohortMemberList = async () => {
     setLoading(true);
     try {
-      if (classId) {
+      if (classId && classId != 'all') {
         let limit = 300;
         let page = 0;
         let filters = { cohortId: classId };
@@ -184,7 +197,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 const studentsWithLowestAttendance = mergedArray.filter(
                   (user) =>
                     user.absent &&
-                    user.present_percent < lowLearnerAttendanceLimit //TODO: Modify here condition to show low attendance learners
+                    (user.present_percent < lowLearnerAttendanceLimit ||
+                      user.present_percent === undefined) //TODO: Modify here condition to show low attendance learners
                 );
 
                 // Extract names of these students
@@ -227,6 +241,70 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           };
           cohortAttendancePercent();
         }
+      } 
+      else if (classId && classId === 'all' && cohortsData) {
+        const cohortIds = cohortsData.map(cohort => cohort.cohortId);
+        const limit = 300;
+        const page = 0;
+        const facets = ['contextId'];
+      
+        const fetchAttendanceData = async (cohortIds: any[]) => {
+          const fetchPromises = cohortIds.map(async (cohortId) => {
+            const filters = {
+              fromDate: isFromDate,
+              toDate: isToDate,
+              scope: 'student',
+              contextId: cohortId,
+            };
+            console.log('Filters:', filters); // Log filters to ensure contextId is set
+      
+            try {
+              const response = await getAllCenterAttendance({
+                limit,
+                page,
+                filters,
+                facets,
+              });
+              console.log(`Response for cohortId ${cohortId}:`, response); // Log the response
+              return { cohortId, data: response?.data?.result };
+            } catch (error) {
+              console.error(`Error fetching data for cohortId ${cohortId}:`, error);
+              return { cohortId, error };
+            }
+          });
+      
+          try {
+            const results = await Promise.all(fetchPromises);
+            console.log('Fetched data:', results);
+      
+            const nameIDAttendanceArray = results
+              .filter(result => !result.error && result.data && result.data.contextId)
+              .map(result => {
+                const cohortId = result.cohortId;
+                const contextData = result.data.contextId[cohortId] || {};
+                const presentPercentage = contextData.present_percentage || null;
+                const absentPercentage = contextData.absent_percentage ? 100 - contextData.absent_percentage : null;
+                const percentage = presentPercentage || absentPercentage;
+      
+                const cohortItem = cohortsData.find(cohort => cohort.cohortId === cohortId);
+      
+                return {
+                  userId: cohortId,
+                  name: cohortItem ? cohortItem.name : null,
+                  presentPercentage: percentage,
+                };
+              })
+              .filter(item => item.presentPercentage !== null); // Filter out items with no valid percentage
+      
+            console.log('Filtered and merged data:', nameIDAttendanceArray);
+            setAllCenterAttendanceData(nameIDAttendanceArray);
+      
+          } catch (error) {
+            console.error('Error fetching attendance data:', error);
+          }
+        };
+      
+        fetchAttendanceData(cohortIds);
       }
     } catch (error) {
       console.error('Error fetching cohort list:', error);
@@ -362,212 +440,226 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )}
-
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'left',
-          alignItems: 'center',
-          color: '#4D4639',
-        }}
-        width={'100%'}
-        onClick={handleBackEvent}
-      >
-        <Box>
-          <KeyboardBackspaceOutlinedIcon
-            cursor={'pointer'}
-            sx={{ color: theme.palette.warning['A200'] }}
-          />
-        </Box>
-        <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
-          {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
-        </Typography>
-      </Box>
-
-      <Box sx={{ mt: 0.6 }}>
-        <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
-          <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
-            <Select
-              value={classId}
-              onChange={handleCohortSelection}
-              displayEmpty
-              disabled={cohortsData?.length == 1 ? true : false}
-              inputProps={{ 'aria-label': 'Without label' }}
-              className="SelectLanguages fs-14 fw-500"
-              style={{
-                borderRadius: '0.5rem',
-                color: theme.palette.warning['200'],
-                width: '100%',
-                marginBottom: '0rem',
-              }}
-            >
-              {cohortsData?.length !== 0 ? (
-                //  <>
-                // {
-                cohortsData?.map((cohort) => (
-                  <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                    {cohort.name}
-                  </MenuItem>
-                ))
-              ) : (
-                // }
-                //   <MenuItem key="all-cohorts" value="all">
-                //  { t('ATTENDANCE.ALL_CENTERS')}
-                //   </MenuItem>
-                //   </>
-                <Typography style={{ fontWeight: 'bold' }}>
-                  {t('COMMON.NO_DATA_FOUND')}
-                </Typography>
-              )}
-            </Select>
-          </FormControl>
-        </Box>
-      </Box>
-
-      <DateRangePopup
-        menuItems={menuItems}
-        selectedValue={selectedValue}
-        setSelectedValue={setSelectedValue}
-        onDateRangeSelected={handleDateRangeSelected}
-      />
-
-      <Box display={'flex'} className="card_overview">
-        <Grid container spacing={2}>
-          <Grid item xs={5}>
-            <OverviewCard
-              label={t('ATTENDANCE.CENTER_ATTENDANCE')}
-              value={
-                learnerData.length
-                  ? presentPercentage + ' %'
-                  : presentPercentage
-              }
+      <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'left',
+            alignItems: 'center',
+            color: '#4D4639',
+          }}
+          width={'100%'}
+          onClick={handleBackEvent}
+        >
+          <Box>
+            <KeyboardBackspaceOutlinedIcon
+              cursor={'pointer'}
+              sx={{ color: theme.palette.warning['A200'] }}
             />
-          </Grid>
-          <Grid item xs={7}>
-            <OverviewCard
-              label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
-              {...(loading && (
-                <Loader
-                  loadingText={t('COMMON.LOADING')}
-                  showBackdrop={false}
+          </Box>
+          <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
+            {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
+          </Typography>
+        </Box>
+
+        <Box sx={{ mt: 0.6 }}>
+          <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
+            <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
+              <Select
+                value={classId}
+                onChange={handleCohortSelection}
+                displayEmpty
+                disabled={cohortsData?.length <= 1 ? true : false}
+                inputProps={{ 'aria-label': 'Without label' }}
+                className="SelectLanguages fs-14 fw-500"
+                style={{
+                  borderRadius: '0.5rem',
+                  color: theme.palette.warning['200'],
+                  width: '100%',
+                  marginBottom: '0rem',
+                }}
+              >
+                {cohortsData?.length !== 0 ? (
+                  manipulatedCohortData?.map((cohort) => (
+                    <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
+                      {cohort.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <Typography style={{ fontWeight: 'bold' }}>
+                    {t('COMMON.NO_DATA_FOUND')}
+                  </Typography>
+                )}
+              </Select>
+            </FormControl>
+          </Box>
+        </Box>
+
+        <DateRangePopup
+          menuItems={menuItems}
+          selectedValue={selectedValue}
+          setSelectedValue={setSelectedValue}
+          onDateRangeSelected={handleDateRangeSelected}
+        />
+
+        {classId !== 'all' ? (
+          <Box display={'flex'} className="card_overview" p={'1rem'}>
+            <Grid container spacing={2}>
+              <Grid item xs={5}>
+                <OverviewCard
+                  label={t('ATTENDANCE.CENTER_ATTENDANCE')}
+                  value={
+                    learnerData.length
+                      ? presentPercentage + ' %'
+                      : presentPercentage
+                  }
+                />
+              </Grid>
+              <Grid item xs={7}>
+                <OverviewCard
+                  label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
+                  {...(loading && (
+                    <Loader
+                      loadingText={t('COMMON.LOADING')}
+                      showBackdrop={false}
+                    />
+                  ))}
+                  value={
+                    lowAttendanceLearnerList.length > 2
+                      ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2}  ${t('COMMON.MORE')}`
+                      : lowAttendanceLearnerList.length === 2
+                        ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
+                        : lowAttendanceLearnerList.length === 1
+                          ? `${lowAttendanceLearnerList[0]}`
+                          : Array.isArray(lowAttendanceLearnerList) &&
+                              lowAttendanceLearnerList.length === 0
+                            ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
+                            : t('ATTENDANCE.N/A')
+                  }
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        ) : null}
+      </Box>
+
+      {learnerData?.length > 0 ? (
+        <Box bgcolor={theme.palette.warning['A400']}>
+          <Stack mr={1} ml={1}>
+            <Box mt={3} mb={3} boxShadow={'none'}>
+              <Grid
+                container
+                alignItems="center"
+                display={'flex'}
+                justifyContent="space-between"
+              >
+                <Grid item xs={8}>
+                  <Paper
+                    component="form"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+
+                      borderRadius: '100px',
+                      background: theme.palette.warning.A700,
+                      boxShadow: 'none',
+                    }}
+                  >
+                    <InputBase
+                      value={searchWord}
+                      sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
+                      placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
+                      inputProps={{ 'aria-label': 'search student' }}
+                      onChange={handleSearch}
+                    />
+                    <IconButton
+                      type="button"
+                      sx={{ p: '10px' }}
+                      aria-label="search"
+                      onClick={handleSearchSubmit}
+                    >
+                      <SearchIcon />
+                    </IconButton>
+
+                    {searchWord?.length > 0 && (
+                      <IconButton
+                        type="button"
+                        aria-label="Clear"
+                        onClick={handleSearchClear}
+                      >
+                        <ClearIcon />
+                      </IconButton>
+                    )}
+                  </Paper>
+                </Grid>
+                <Grid item xs={4} display={'flex'} justifyContent={'flex-end'}>
+                  <Button
+                    onClick={handleOpenModal}
+                    sx={{
+                      color: theme.palette.warning.A200,
+
+                      borderRadius: '10px',
+                      fontSize: '14px',
+                    }}
+                    endIcon={<ArrowDropDownSharpIcon />}
+                    size="small"
+                    variant="outlined"
+                  >
+                    {t('COMMON.SORT_BY').length > 7
+                      ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
+                      : t('COMMON.SORT_BY')}
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+            <SortingModal
+              isModalOpen={modalOpen}
+              handleCloseModal={handleCloseModal}
+              handleSorting={handleSorting}
+              routeName={pathname}
+              forAllCenters={classId === 'all' ? true : false}
+            />
+          </Stack>
+          {loading && (
+            <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+          )}
+          {classId !== 'all' ? (
+            <Box>
+              <LearnerListHeader
+                numberOfColumns={3}
+                firstColumnName={t('COMMON.ATTENDANCE')}
+                secondColumnName={t('COMMON.CLASS_MISSED')}
+              />
+              <Box>
+                {displayStudentList?.map((user: any) => (
+                  <StudentsStatsList
+                    key={user.userId}
+                    name={user.name}
+                    presentPercent={
+                      Math.floor(parseFloat(user.present_percent)) || 0
+                    }
+                    classesMissed={user.absent || 0}
+                    userId={user.userId}
+                    cohortId={classId}
+                  />
+                ))}
+              </Box>
+            </Box>
+          ) : (
+            <Box>
+              <LearnerListHeader
+                numberOfColumns={2}
+                firstColumnName={t('COMMON.ATTENDANCE')}
+              />
+              {allCenterAttendanceData.map((item: { cohortId: React.Key | null | undefined; name: string; presentPercentage: number; }) => (
+                <CohortAttendanceListView
+                  key={item.cohortId}
+                  cohortName={item.name}
+                  attendancePercent={item.presentPercentage}
                 />
               ))}
-              value={
-                lowAttendanceLearnerList.length > 2
-                  ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2}  ${t('COMMON.MORE')}`
-                  : lowAttendanceLearnerList.length === 2
-                    ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
-                    : lowAttendanceLearnerList.length === 1
-                      ? `${lowAttendanceLearnerList[0]}`
-                      : t('ATTENDANCE.N/A')
-              }
-            />
-          </Grid>
-        </Grid>
-      </Box>
-
-      <Stack mr={1} ml={1}>
-        <Box mt={3} mb={3} boxShadow={'none'}>
-          <Grid
-            container
-            alignItems="center"
-            display={'flex'}
-            justifyContent="space-between"
-          >
-            <Grid item xs={8}>
-              <Paper
-                component="form"
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-
-                  borderRadius: '100px',
-                  background: theme.palette.warning.A700,
-                  boxShadow: 'none',
-                }}
-              >
-                <InputBase
-                  value={searchWord}
-                  sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
-                  placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
-                  inputProps={{ 'aria-label': 'search student' }}
-                  onChange={handleSearch}
-                />
-                <IconButton
-                  type="button"
-                  sx={{ p: '10px' }}
-                  aria-label="search"
-                  onClick={handleSearchSubmit}
-                >
-                  <SearchIcon />
-                </IconButton>
-
-                {searchWord?.length > 0 && (
-                  <IconButton
-                    type="button"
-                    aria-label="Clear"
-                    onClick={handleSearchClear}
-                  >
-                    <ClearIcon />
-                  </IconButton>
-                )}
-              </Paper>
-            </Grid>
-            <Grid item xs={4} display={'flex'} justifyContent={'flex-end'}>
-              <Button
-                onClick={handleOpenModal}
-                sx={{
-                  color: theme.palette.warning.A200,
-
-                  borderRadius: '10px',
-                  fontSize: '14px',
-                }}
-                endIcon={<ArrowDropDownSharpIcon />}
-                size="small"
-                variant="outlined"
-              >
-                {t('COMMON.SORT_BY').length > 7
-                  ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
-                  : t('COMMON.SORT_BY')}
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-        <SortingModal
-          isModalOpen={modalOpen}
-          handleCloseModal={handleCloseModal}
-          handleSorting={handleSorting}
-          routeName={pathname}
-        />
-      </Stack>
-      {classId !== 'all' ? (
-        <LearnerListHeader
-          numberOfColumns={3}
-          firstColumnName={t('COMMON.ATTENDANCE')}
-          secondColumnName={t('COMMON.CLASS_MISSED')}
-        />
-      ) : (
-        <LearnerListHeader
-          numberOfColumns={2}
-          firstColumnName={t('COMMON.ATTENDANCE')}
-        />
-      )}
-
-      {loading && (
-        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-      )}
-      {learnerData?.length > 0 ? (
-        <Box>
-          {displayStudentList?.map((user: any) => (
-            <StudentsStatsList
-              key={user.userId}
-              name={user.name}
-              presentPercent={Math.floor(parseFloat(user.present_percent)) || 0}
-              classesMissed={user.absent || 0}
-              userId={user.userId}
-              cohortId={classId}
-            />
-          ))}
+            </Box>
+          )}
         </Box>
       ) : (
         <Box
