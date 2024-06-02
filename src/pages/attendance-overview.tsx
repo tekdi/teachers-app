@@ -105,6 +105,20 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           if (filteredData.length > 0) {
             setClassId(filteredData[0].cohortId);
             localStorage.setItem('cohortId', filteredData[0]?.cohortId);
+
+            if (
+              cohortDetails.length > 0 &&
+              cohortDetails[0].cohortData.customFields
+            ) {
+              const customFields = cohortDetails[0].cohortData.customFields;
+              const stateNameField = customFields.find(
+                (field: any) => field.label === 'State Name'
+              );
+              if (stateNameField) {
+                const state_name = stateNameField.value;
+                localStorage.setItem('stateName', state_name);
+              }
+            }
           }
         }
         setLoading(false);

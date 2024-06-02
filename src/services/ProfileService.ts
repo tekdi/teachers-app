@@ -12,8 +12,8 @@ export const getUserId = async (): Promise<any> => {
 };
 
 export const editEditUser = async (
-  userId: string,
-  userDetails: object
+  userId?: string | string[],
+  userDetails?: object
 ): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/update/${userId}`;
   try {
