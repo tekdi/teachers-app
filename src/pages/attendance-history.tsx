@@ -304,7 +304,7 @@ const UserAttendanceHistory = () => {
 
   useEffect(() => {
     getCohortMemberList();
-  }, [classId, selectedDate]);
+  }, [classId, selectedDate, handleSaveHasRun]);
 
   useEffect(() => {
     console.log(status);
