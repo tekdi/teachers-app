@@ -14,6 +14,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  SelectChangeEvent,
   TextField,
   Typography,
   useMediaQuery,
@@ -21,7 +22,7 @@ import {
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { useTheme } from '@mui/material/styles';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import user_placeholder from '../assets/images/user_placeholder.png';
@@ -32,6 +33,26 @@ import { CustomField, updateCustomField } from '@/utils/Interfaces';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { getLabelForValue } from '@/utils/Helper';
+import Loader from '@/components/Loader';
+
+interface FieldOption {
+  name: string;
+  label: string;
+  value: string;
+  order: string;
+}
+
+interface UserData {
+  name: string;
+}
+
+interface EditFormProps {
+  userData: UserData;
+  customFieldsData: CustomField[];
+  updateUser: (payload: any) => void;
+}
+
 const TeacherProfile = () => {
   const user_placeholder_img: string = user_placeholder.src;
 
@@ -42,6 +63,7 @@ const TeacherProfile = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [userData, setUserData] = useState<any | null>(null);
+  const [userName, setUserName] = useState<any | null>(null);
   const [updatedCustomFields, setUpdatedCustomFields] = useState<any>([]);
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -56,78 +78,11 @@ const TeacherProfile = () => {
   const [blockName, setBlockName] = useState('');
   const [radioValues, setRadioValues] = useState<any>([]);
 
-  const handleFieldChange = (
-    fieldId: string,
-    value: string | string[],
-    type: string
-  ) => {
-    const updatedFields = [...updatedCustomFields];
-    const index = updatedFields?.findIndex(
-      (field) => field.fieldId === fieldId
-    );
-
-    if (index !== -1) {
-      if (type === 'checkbox' && Array.isArray(value)) {
-        updatedFields[index].values = value;
-      } else {
-        updatedFields[index].value = value as string;
-      }
-      updatedFields[index].type = type;
-    } else {
-      const newField = {
-        fieldId,
-        type,
-        ...(type === 'checkbox' && Array.isArray(value)
-          ? { values: value }
-          : { value: value as string }),
-      };
-      updatedFields.push(newField);
-    }
-
-    setUpdatedCustomFields(updatedFields);
+  const handleNameFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setUserName(value);
   };
 
-  const handleCheckboxChange = (
-    fieldId: string,
-    optionName: string,
-    checked: boolean
-  ) => {
-    const existingField = updatedCustomFields.find(
-      (field: any) => field.fieldId === fieldId
-    );
-
-    let updatedValues: string[] = [];
-
-    if (existingField && Array.isArray(existingField.values)) {
-      updatedValues = [...existingField.values];
-      if (checked) {
-        updatedValues.push(optionName);
-      } else {
-        updatedValues = updatedValues.filter((value) => value !== optionName);
-      }
-    } else {
-      if (checked) {
-        updatedValues.push(optionName);
-      }
-    }
-
-    handleFieldChange(fieldId, updatedValues, 'checkbox');
-  };
-
-  const handleDropdownChange = (fieldId: any, value: any) => {
-    setDropdownValues({
-      ...dropdownValues,
-      [fieldId]: value,
-    });
-    handleFieldChange(fieldId, value, 'dropdown');
-  };
-
-  const handleRadioChange = (fieldId: any, value: any) => {
-    setRadioValues((prev: any) => ({
-      ...prev,
-      [fieldId]: value,
-    }));
-  };
   const style = {
     position: 'absolute',
     top: '50%',
@@ -151,39 +106,6 @@ const TeacherProfile = () => {
     }
   }, []);
 
-  const handleUpdateClick = async () => {
-    setLoading(true);
-
-    try {
-      // Transform the custom fields based on their types
-      const transformedFields = updatedCustomFields?.map((field: any) => {
-        if (field.type === 'checkbox' && Array.isArray(field.value)) {
-          return {
-            ...field,
-            value: field.value.join(', '),
-          };
-        }
-        return field;
-      });
-
-      const userDetails = {
-        customFields:
-          transformedFields.length > 0 ? transformedFields : customFieldsData,
-      };
-
-      const userId = localStorage.getItem('userId');
-      if (userId) {
-        await editEditUser(userId, userDetails);
-        await fetchUserDetails();
-      }
-      setOpen(false);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  };
-
   // find Address
   const getFieldValue = (data: any, label: string) => {
     const field = data.find((item: any) => item.label === label);
@@ -204,6 +126,7 @@ const TeacherProfile = () => {
             const userData = data?.userData;
 
             setUserData(userData);
+            setUserName(userData?.name);
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
@@ -271,498 +194,647 @@ const TeacherProfile = () => {
 
   //fields  for edit popup by order
   const filteredSortedForEdit = [...customFieldsData]
-    ?.filter((field) => field.order !== 0)
+    ?.filter((field) => field.order !== 0 && field.isEditable)
     ?.sort((a, b) => a.order - b.order);
-
+  console.log('filteredSortedForEdit', filteredSortedForEdit);
   // address find
   const address = [unitName, blockName, userData?.district, userData?.state]
     ?.filter(Boolean)
     ?.join(', ');
 
+  //------------edit form fields------------
+
+  const [formData, setFormData] = useState<{
+    userData: UserData;
+    customFields: { fieldId: string; type: string; value: string[] | string }[];
+  }>({
+    userData: {
+      name: userName || '',
+    },
+    customFields: customFieldsData?.map((field) => ({
+      fieldId: field.fieldId,
+      type: field.type,
+      value: field.value,
+    })),
+  });
+
+  useEffect(() => {
+    setFormData({
+      userData: {
+        name: userName || '',
+      },
+      customFields: customFieldsData.map((field) => ({
+        fieldId: field.fieldId,
+        type: field.type,
+        value: field.value,
+      })),
+    });
+  }, [userData, customFieldsData]);
+
+  const handleFieldChange = (fieldId: string, value: string) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      customFields: prevState.customFields.map((field) =>
+        field.fieldId === fieldId ? { ...field, value: [value] } : field
+      ),
+    }));
+  };
+
+  const handleCheckboxChange = (
+    fieldId: string,
+    optionName: string,
+    isChecked: boolean
+  ) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      customFields: prevState.customFields.map((field) =>
+        field.fieldId === fieldId
+          ? {
+              ...field,
+              value: isChecked
+                ? [...(field.value as string[]), optionName]
+                : (field.value as string[]).filter(
+                    (item) => item !== optionName
+                  ),
+            }
+          : field
+      ),
+    }));
+  };
+
+  const handleDropdownChange = (fieldId: string, value: string) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      customFields: prevState.customFields.map((field) =>
+        field.fieldId === fieldId ? { ...field, value: [value] } : field
+      ),
+    }));
+  };
+
+  const handleRadioChange = (fieldId: string, value: string) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      customFields: prevState.customFields.map((field) =>
+        field.fieldId === fieldId ? { ...field, value: [value] } : field
+      ),
+    }));
+  };
+
+  const handleSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    setLoading(true);
+    const userId = localStorage.getItem('userId');
+    const data = {
+      userData: formData?.userData,
+      customFields: formData?.customFields?.map((field) => ({
+        fieldId: field.fieldId,
+        type: field.type,
+        value:
+          field.value.length > 1 ? field.value : (field.value as string[])[0],
+      })),
+    };
+    let userDetails = data;
+    try {
+      if (userId) {
+        const response = await editEditUser(userId, userDetails);
+
+        if (response.responseCode !== 200 || response.params.err) {
+          throw new Error(
+            response.params.errmsg ||
+              'An error occurred while updating the user.'
+          );
+        }
+
+        handleClose();
+
+        console.log(response.params.successmessage);
+        fetchUserDetails();
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+    console.log('payload', data);
+  };
+
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      minHeight="100vh"
-      minWidth={'100%'}
-    >
-      <Header />
+    <>
       <Box
         display="flex"
         flexDirection="column"
-        padding={2}
-        gap={'10px'}
-        justifyContent={'center'}
-        alignItems={'center'}
+        minHeight="100vh"
+        minWidth={'100%'}
       >
-        <Box
-          sx={{ flex: '1', minWidth: '100%' }}
-          display="flex"
-          flexDirection="row"
-          gap="5px"
-        >
-          <Typography
-            variant="h3"
-            style={{
-              letterSpacing: '0.1px',
-              textAlign: 'left',
-              marginBottom: '2px',
-            }}
-            fontSize={'22px'}
-            fontWeight={'400'}
-            lineHeight={'28px'}
-          >
-            {t('PROFILE.MY_PROFILE')}
-          </Typography>
-        </Box>
+        <Header />
 
         <Box
-          sx={{
-            flex: '1',
-            border: '2px solid',
-            borderColor: theme.palette.warning['A100'],
-          }}
-          minWidth={'100%'}
-          borderRadius={'12px'}
-          border={'1px'}
-          bgcolor={theme.palette.warning.A400}
           display="flex"
-          flexDirection="row"
-        >
-          <Grid container spacing={3}>
-            <Grid item xs={4}>
-              <Box m={2}>
-                <Image
-                  src={user_placeholder_img}
-                  alt="user"
-                  width={100}
-                  height={100}
-                />
-              </Box>
-            </Grid>
-            <Grid item xs={8}>
-              <Box>
-                <Typography
-                  ml={0.5}
-                  fontSize={'16px'}
-                  lineHeight={'16px'}
-                  fontWeight={'500'}
-                >
-                  <br />
-
-                  {userData?.name}
-                </Typography>
-              </Box>
-              <Box display={'flex'} mt={'3px'}>
-                {address ? (
-                  <PlaceOutlinedIcon
-                    sx={{
-                      fontSize: '1rem',
-                      marginTop: '1px',
-                      fontWeight: '11.7px',
-                      height: '14.4px',
-                    }}
-                  />
-                ) : (
-                  ''
-                )}
-
-                <Typography
-                  margin={0}
-                  color={theme.palette.warning.A200}
-                  fontSize={'12px'}
-                  fontWeight={'500'}
-                  lineHeight={'16px'}
-                >
-                  {address}
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
-        <Button
-          sx={{
-            fontSize: '14px',
-            lineHeight: '20px',
-            minWidth: '100%',
-
-            padding: '10px 24px 10px 16px',
-            gap: '8px',
-            borderRadius: '12px',
-            marginTop: '10px',
-            flex: '1',
-            textAlign: 'center',
-            color: theme.palette.warning.A200,
-            border: '1px solid black',
-            borderColor: theme.palette.warning['A100'],
-          }}
-          startIcon={<CreateOutlinedIcon />}
-          onClick={handleOpen}
-        >
-          <Typography
-            variant="h3"
-            style={{
-              letterSpacing: '0.1px',
-              textAlign: 'left',
-              marginBottom: '2px',
-            }}
-            fontSize={'14px'}
-            fontWeight={'500'}
-            lineHeight={'20px'}
-          >
-            {t('PROFILE.EDIT_PROFILE')}
-          </Typography>
-        </Button>
-
-        {/* modal for edit profile */}
-        <Box
-          sx={{
-            flex: '1',
-            // textAlign: 'center',
-            border: '2px solid',
-            borderColor: theme.palette.warning['A100'],
-            padding: '10px',
-          }}
-          minWidth={'100%'}
-          borderRadius={'12px'}
-          border={'1px'}
-          display="flex"
-          flexDirection="row"
-        >
-          <Grid container spacing={4}>
-            {filteredSortedForView?.map((item, index) => {
-              if (item.order === 5) {
-                return (
-                  <Grid item xs={12}>
-                    <Typography
-                      fontSize={'12px'}
-                      fontWeight={'600'}
-                      margin={0}
-                      lineHeight={'16px'}
-                      letterSpacing={'0.5px'}
-                    >
-                      {item?.label}
-                    </Typography>
-                    <Box
-                      mt={2}
-                      sx={{
-                        display: 'flex',
-                        gap: '10px',
-                        flexWrap: 'wrap',
-                      }}
-                    >
-                      {orderedSubjects &&
-                        orderedSubjects?.map((subject, index) => (
-                          <Button
-                            key={index}
-                            size="small"
-                            variant={
-                              mainSubjects?.includes(subject)
-                                ? 'contained'
-                                : 'outlined'
-                            }
-                            sx={{
-                              backgroundColor: mainSubjects?.includes(subject)
-                                ? theme.palette.info.contrastText
-                                : 'none',
-                              borderRadius: '8px',
-                              color: theme.palette.warning.A200,
-                              whiteSpace: 'nowrap',
-                              boxShadow: 'none',
-                              border: `1px solid ${theme.palette.warning[900]}`,
-                            }}
-                          >
-                            {subject}
-                          </Button>
-                        ))}
-                    </Box>
-                  </Grid>
-                );
-              } else if (item.order === 7) {
-                return (
-                  <Grid item xs={12} key={index}>
-                    <Typography
-                      variant="h4"
-                      margin={0}
-                      lineHeight={'16px'}
-                      fontSize={'12px'}
-                      fontWeight={'600'}
-                      letterSpacing={'0.5px'}
-                    >
-                      {item.label}
-                    </Typography>
-                    <Typography
-                      variant="h4"
-                      margin={0}
-                      color={theme.palette.warning.A200}
-                    >
-                      {item.value}
-                    </Typography>
-                  </Grid>
-                );
-              } else {
-                return (
-                  <Grid item xs={6} key={index}>
-                    <Typography
-                      variant="h4"
-                      margin={0}
-                      lineHeight={'16px'}
-                      fontSize={'12px'}
-                      fontWeight={'600'}
-                      letterSpacing={'0.5px'}
-                    >
-                      {item.label}
-                    </Typography>
-                    <Typography
-                      variant="h4"
-                      margin={0}
-                      color={theme.palette.warning.A200}
-                    >
-                      {item.value}
-                    </Typography>
-                  </Grid>
-                );
-              }
-            })}
-          </Grid>
-        </Box>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="edit-profile-modal"
-          aria-describedby="edit-profile-description"
+          flexDirection="column"
+          padding={2}
+          gap={'10px'}
+          justifyContent={'center'}
+          alignItems={'center'}
         >
           <Box
-            sx={style}
-            gap="10px"
+            sx={{ flex: '1', minWidth: '100%' }}
             display="flex"
-            flexDirection="column"
-            borderRadius={'1rem'}
+            flexDirection="row"
+            gap="5px"
+          >
+            <Typography
+              variant="h3"
+              style={{
+                letterSpacing: '0.1px',
+                textAlign: 'left',
+                marginBottom: '2px',
+              }}
+              fontSize={'22px'}
+              fontWeight={'400'}
+              lineHeight={'28px'}
+            >
+              {t('PROFILE.MY_PROFILE')}
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              flex: '1',
+              border: '2px solid',
+              borderColor: theme.palette.warning['A100'],
+            }}
+            minWidth={'100%'}
+            borderRadius={'12px'}
+            border={'1px'}
+            bgcolor={theme.palette.warning.A400}
+            display="flex"
+            flexDirection="row"
+          >
+            <Grid container spacing={3}>
+              <Grid item xs={4}>
+                <Box m={2}>
+                  <Image
+                    src={user_placeholder_img}
+                    alt="user"
+                    width={100}
+                    height={100}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={8}>
+                <Box>
+                  <Typography
+                    ml={0.5}
+                    fontSize={'16px'}
+                    lineHeight={'16px'}
+                    fontWeight={'500'}
+                  >
+                    <br />
+
+                    {userData?.name}
+                  </Typography>
+                </Box>
+                <Box display={'flex'} mt={'3px'}>
+                  {address ? (
+                    <PlaceOutlinedIcon
+                      sx={{
+                        fontSize: '1rem',
+                        marginTop: '1px',
+                        fontWeight: '11.7px',
+                        height: '14.4px',
+                      }}
+                    />
+                  ) : (
+                    ''
+                  )}
+
+                  <Typography
+                    margin={0}
+                    color={theme.palette.warning.A200}
+                    fontSize={'12px'}
+                    fontWeight={'500'}
+                    lineHeight={'16px'}
+                  >
+                    {address}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+          <Button
+            sx={{
+              fontSize: '14px',
+              lineHeight: '20px',
+              minWidth: '100%',
+
+              padding: '10px 24px 10px 16px',
+              gap: '8px',
+              borderRadius: '12px',
+              marginTop: '10px',
+              flex: '1',
+              textAlign: 'center',
+              color: theme.palette.warning.A200,
+              border: '1px solid black',
+              borderColor: theme.palette.warning['A100'],
+            }}
+            startIcon={<CreateOutlinedIcon />}
+            onClick={handleOpen}
+          >
+            <Typography
+              variant="h3"
+              style={{
+                letterSpacing: '0.1px',
+                textAlign: 'left',
+                marginBottom: '2px',
+              }}
+              fontSize={'14px'}
+              fontWeight={'500'}
+              lineHeight={'20px'}
+            >
+              {t('PROFILE.EDIT_PROFILE')}
+            </Typography>
+          </Button>
+
+          {/* modal for edit profile */}
+          <Box
+            sx={{
+              flex: '1',
+              // textAlign: 'center',
+              border: '2px solid',
+              borderColor: theme.palette.warning['A100'],
+              padding: '10px',
+            }}
+            minWidth={'100%'}
+            borderRadius={'12px'}
+            border={'1px'}
+            display="flex"
+            flexDirection="row"
+          >
+            <Grid container spacing={4}>
+              {filteredSortedForView?.map((item, index) => {
+                if (item.order === 5) {
+                  return (
+                    <Grid item xs={12}>
+                      <Typography
+                        fontSize={'12px'}
+                        fontWeight={'600'}
+                        margin={0}
+                        lineHeight={'16px'}
+                        letterSpacing={'0.5px'}
+                      >
+                        {item?.label}
+                      </Typography>
+                      <Box
+                        mt={2}
+                        sx={{
+                          display: 'flex',
+                          gap: '10px',
+                          flexWrap: 'wrap',
+                        }}
+                      >
+                        {orderedSubjects &&
+                          orderedSubjects?.map((subject, index) => (
+                            <Button
+                              key={index}
+                              size="small"
+                              variant={
+                                mainSubjects?.includes(subject)
+                                  ? 'contained'
+                                  : 'outlined'
+                              }
+                              sx={{
+                                backgroundColor: mainSubjects?.includes(subject)
+                                  ? theme.palette.info.contrastText
+                                  : 'none',
+                                borderRadius: '8px',
+                                color: theme.palette.warning.A200,
+                                whiteSpace: 'nowrap',
+                                boxShadow: 'none',
+                                border: `1px solid ${theme.palette.warning[900]}`,
+                              }}
+                            >
+                              {/* {getLabelForValue(subject)}  */}
+                              {subject}
+                            </Button>
+                          ))}
+                      </Box>
+                    </Grid>
+                  );
+                } else if (item.order === 7) {
+                  return (
+                    <Grid item xs={12} key={index}>
+                      <Typography
+                        variant="h4"
+                        margin={0}
+                        lineHeight={'16px'}
+                        fontSize={'12px'}
+                        fontWeight={'600'}
+                        letterSpacing={'0.5px'}
+                      >
+                        {item.label}
+                      </Typography>
+                      <Typography
+                        variant="h4"
+                        margin={0}
+                        color={theme.palette.warning.A200}
+                      >
+                        {item.value}
+                      </Typography>
+                    </Grid>
+                  );
+                } else {
+                  return (
+                    <Grid item xs={6} key={index}>
+                      <Typography
+                        variant="h4"
+                        margin={0}
+                        lineHeight={'16px'}
+                        fontSize={'12px'}
+                        fontWeight={'600'}
+                        letterSpacing={'0.5px'}
+                      >
+                        {item.label}
+                      </Typography>
+                      <Typography
+                        variant="h4"
+                        margin={0}
+                        color={theme.palette.warning.A200}
+                      >
+                        {item.value}
+                      </Typography>
+                    </Grid>
+                  );
+                }
+              })}
+            </Grid>
+          </Box>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="edit-profile-modal"
+            aria-describedby="edit-profile-description"
           >
             <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mb: 2,
-              }}
+              sx={style}
+              gap="10px"
+              display="flex"
+              flexDirection="column"
+              borderRadius={'1rem'}
             >
-              <Typography
-                variant="h2"
-                style={{
-                  textAlign: 'left',
-                  color: theme.palette.warning.A200,
-                }}
-              >
-                {t('PROFILE.EDIT_PROFILE')}
-              </Typography>
-
-              <IconButton
-                edge="end"
-                color="inherit"
-                onClick={handleClose}
-                aria-label="close"
-                style={{
-                  justifyContent: 'flex-end',
-                }}
-              >
-                <CloseIcon cursor="pointer" />
-              </IconButton>
-            </Box>
-            <Box
-              style={{
-                overflowY: 'auto',
-              }}
-              id="modal-modal-description"
-            >
+              {loading && (
+                <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+              )}
               <Box
                 sx={{
-                  flex: '1',
-                  textAlign: 'center',
-                  marginLeft: '5%',
+                  display: 'flex',
+                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  mb: 2,
                 }}
-                borderRadius={'12px'}
-                border={'1px'}
-                bgcolor={theme.palette.warning.A400}
-                display="flex"
-                flexDirection="column"
               >
-                <Image
-                  src={user_placeholder_img}
-                  alt="user"
-                  height={100}
-                  width={100}
-                  style={{ alignItems: 'center' }}
+                <Typography
+                  variant="h2"
+                  style={{
+                    textAlign: 'left',
+                    color: theme.palette.warning.A200,
+                  }}
+                >
+                  {t('PROFILE.EDIT_PROFILE')}
+                </Typography>
+
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  onClick={handleClose}
+                  aria-label="close"
+                  style={{
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  <CloseIcon cursor="pointer" />
+                </IconButton>
+              </Box>
+              <Box
+                style={{
+                  overflowY: 'auto',
+                }}
+                id="modal-modal-description"
+              >
+                <Box
+                  sx={{
+                    flex: '1',
+                    textAlign: 'center',
+                    marginLeft: '5%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  borderRadius={'12px'}
+                  border={'1px'}
+                  bgcolor={theme.palette.warning.A400}
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Image
+                    src={user_placeholder_img}
+                    alt="user"
+                    height={100}
+                    width={100}
+                    style={{ alignItems: 'center' }}
+                  />
+
+                  <Box>
+                    <input
+                      id=""
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                      style={{ display: 'none' }}
+                    />
+                    <Button
+                      sx={{
+                        minWidth: '100%',
+                        padding: '10px 24px 10px 16px',
+                        borderRadius: '12px',
+                        marginTop: '10px',
+                        flex: '1',
+                        textAlign: 'center',
+                        border: '1px solid ',
+                      }}
+                      disabled // commment for temp
+                      onClick={handleClickImage}
+                    >
+                      {t('PROFILE.UPDATE_PICTURE')}
+                    </Button>
+                  </Box>
+                </Box>
+                <TextField
+                  sx={{ marginTop: '20px' }}
+                  fullWidth
+                  name="name"
+                  label="Full Name"
+                  variant="outlined"
+                  value={formData.userData.name}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      userData: { name: e.target.value },
+                    })
+                  }
                 />
 
-                <Box>
-                  <input
-                    id=""
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    ref={fileInputRef}
-                    onChange={handleImageUpload}
-                    style={{ display: 'none' }}
-                  />
-                  <Button
-                    sx={{
-                      minWidth: '100%',
-                      padding: '10px 24px 10px 16px',
-                      borderRadius: '12px',
-                      marginTop: '10px',
-                      flex: '1',
-                      textAlign: 'center',
-                      border: '1px solid ',
-                    }}
-                    disabled // commment for temp
-                    onClick={handleClickImage}
-                  >
-                    {t('PROFILE.UPDATE_PICTURE')}
-                  </Button>
-                </Box>
-              </Box>
-
-              {filteredSortedForEdit &&
-                filteredSortedForEdit?.map((field) => (
-                  <Grid item xs={12} key={field.fieldId}>
-                    {field.type === 'text' || field.type === 'numeric' ? (
-                      <TextField
-                        sx={{ marginTop: '20px' }}
-                        fullWidth
-                        name={field.value}
-                        label={field.label}
-                        variant="outlined"
-                        defaultValue={field.value}
-                        onChange={(e) => {
-                          handleFieldChange(
-                            field.fieldId,
-                            e.target.value,
-                            field.type
-                          );
-                        }}
-                      />
-                    ) : field.type === 'checkbox' ? (
-                      <Box marginTop={3}>
-                        <Typography
-                          textAlign={'start'}
-                          variant="h4"
-                          margin={0}
-                          color={theme.palette.warning.A200}
-                        >
-                          {field.label}
-                        </Typography>
-
-                        {field?.options?.map((option: any) => (
-                          <FormGroup key={option.order}>
-                            <FormControlLabel
-                              sx={{ color: theme.palette.warning[300] }}
-                              control={
-                                <Checkbox
-                                  color="default"
-                                  checked={
-                                    (
-                                      updatedCustomFields?.find(
-                                        (f: any) => f.fieldId === field.fieldId
-                                      )?.values || []
-                                    ).includes(option.name) || false
-                                  }
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      field.fieldId,
-                                      option.name,
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              }
-                              label={option.name}
-                            />
-                          </FormGroup>
-                        ))}
-                      </Box>
-                    ) : field.type === 'Drop Down' ? (
-                      <Box marginTop={3} textAlign={'start'}>
-                        <FormControl fullWidth>
-                          <InputLabel id={`select-label-${field.fieldId}`}>
-                            {field.label}
-                          </InputLabel>
-                          <Select
-                            labelId={`select-label-${field.fieldId}`}
-                            id={`select-${field.fieldId}`}
-                            value={dropdownValues[field.fieldId] || ''}
-                            label={field.label}
-                            onChange={(e) =>
-                              handleDropdownChange(
-                                field.fieldId,
-                                e.target.value
-                              )
-                            }
-                          >
-                            {field.options?.map((option: any) => (
-                              <MenuItem key={option.value} value={option.value}>
-                                {option.name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </Box>
-                    ) : field.type === 'radio' ? (
-                      <Box marginTop={3}>
-                        <Typography
-                          textAlign={'start'}
-                          variant="h4"
-                          margin={0}
-                          color={theme.palette.warning.A200}
-                        >
-                          {field.label}
-                        </Typography>
-                        <RadioGroup
-                          name={field.fieldId}
+                {customFieldsData
+                  .filter((field) => field.isEditable)
+                  .map((field) => (
+                    <Grid item xs={12} key={field.fieldId}>
+                      {field.type === 'text' || field.type === 'numeric' ? (
+                        <TextField
+                          sx={{ marginTop: '20px' }}
+                          fullWidth
+                          name={field.name}
+                          label={field.label}
+                          variant="outlined"
                           value={
-                            radioValues[field.fieldId] || field.value[0] || ''
+                            formData.customFields.find(
+                              (f) => f.fieldId === field.fieldId
+                            )?.value[0] || ''
                           }
                           onChange={(e) =>
-                            handleRadioChange(field.fieldId, e.target.value)
+                            handleFieldChange(field.fieldId, e.target.value)
                           }
-                        >
-                          <Box display="flex" flexWrap="wrap">
-                            {field.options?.map((option: any) => (
+                        />
+                      ) : field.type === 'checkbox' ? (
+                        <Box marginTop={3}>
+                          <Typography
+                            textAlign={'start'}
+                            variant="h4"
+                            margin={0}
+                            color={theme.palette.warning.A200}
+                          >
+                            {field.label}
+                          </Typography>
+                          {field.options?.map((option: any) => (
+                            <FormGroup key={option.value}>
                               <FormControlLabel
-                                key={option.value}
-                                value={option.value}
-                                control={<Radio color="default" />}
-                                label={option.name}
+                                sx={{ color: theme.palette.warning[300] }}
+                                control={
+                                  <Checkbox
+                                    color="default"
+                                    checked={(
+                                      formData?.customFields.find(
+                                        (f) => f.fieldId === field.fieldId
+                                      )?.value || []
+                                    )?.includes(option.value)}
+                                    onChange={(e) =>
+                                      handleCheckboxChange(
+                                        field.fieldId,
+                                        option.value,
+                                        e.target.checked
+                                      )
+                                    }
+                                  />
+                                }
+                                label={option.label}
                               />
-                            ))}
-                          </Box>
-                        </RadioGroup>
-                      </Box>
-                    ) : null}
-                  </Grid>
-                ))}
-
-              <Box></Box>
+                            </FormGroup>
+                          ))}
+                        </Box>
+                      ) : field.type === 'Drop Down' ? (
+                        <Box marginTop={3} textAlign={'start'}>
+                          <FormControl fullWidth>
+                            <InputLabel id={`select-label-${field.fieldId}`}>
+                              {field.label}
+                            </InputLabel>
+                            <Select
+                              labelId={`select-label-${field.fieldId}`}
+                              id={`select-${field.fieldId}`}
+                              value={
+                                formData.customFields.find(
+                                  (f) => f.fieldId === field.fieldId
+                                )?.value[0] || ''
+                              }
+                              label={field.label}
+                              onChange={(e) =>
+                                handleDropdownChange(
+                                  field.fieldId,
+                                  e.target.value
+                                )
+                              }
+                            >
+                              {field.options.map((option: any) => (
+                                <MenuItem
+                                  key={option.value}
+                                  value={option.value}
+                                >
+                                  {option.label}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Box>
+                      ) : field.type === 'radio' ? (
+                        <Box marginTop={3}>
+                          <Typography
+                            textAlign={'start'}
+                            variant="h4"
+                            margin={0}
+                            color={theme.palette.warning.A200}
+                          >
+                            {field.label}
+                          </Typography>
+                          <RadioGroup
+                            name={field.fieldId}
+                            value={
+                              formData.customFields.find(
+                                (f) => f.fieldId === field.fieldId
+                              )?.value[0] || ''
+                            }
+                            onChange={(e) =>
+                              handleRadioChange(field.fieldId, e.target.value)
+                            }
+                          >
+                            <Box
+                              display="flex"
+                              flexWrap="wrap"
+                              color={theme.palette.warning.A200}
+                            >
+                              {field?.options?.map((option: any) => (
+                                <FormControlLabel
+                                  key={option.value}
+                                  value={option.label}
+                                  control={<Radio color="default" />}
+                                  label={option.label}
+                                />
+                              ))}
+                            </Box>
+                          </RadioGroup>
+                        </Box>
+                      ) : null}
+                    </Grid>
+                  ))}
+                <Box></Box>
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                <Button
+                  sx={{
+                    minWidth: '100%',
+                    color: theme.palette.warning.A200,
+                    boxShadow: 'none',
+                  }}
+                  onClick={handleSubmit}
+                  variant="contained"
+                >
+                  {t('COMMON.SAVE')}
+                </Button>
+              </Box>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-              <Button
-                sx={{
-                  minWidth: '100%',
-                  color: theme.palette.warning.A200,
-                  boxShadow: 'none',
-                }}
-                onClick={handleUpdateClick}
-                variant="contained"
-              >
-                {t('COMMON.SAVE')}
-              </Button>
-            </Box>
-          </Box>
-        </Modal>
+          </Modal>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

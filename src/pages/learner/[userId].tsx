@@ -282,26 +282,29 @@ const LearnerProfile: React.FC = () => {
   };
 
   const getDoIdForAssesmentReport = async (tests: string, subjects: string) => {
+    const steteName = localStorage.getItem('stateName');
     const filters = {
       program: ['Second chance'],
-      se_boards: ['Maharashtra'],
+      se_boards: [steteName ? steteName : ''],
       subject: [subjects ? subjects : subject],
       assessment1: tests ? tests : test,
     };
 
     try {
-      const searchResults = await getDoIdForAssesmentDetails({ filters });
+      if (filters) {
+        const searchResults = await getDoIdForAssesmentDetails({ filters });
 
-      if (searchResults?.responseCode === 'OK') {
-        const result = searchResults?.result;
-        if (result) {
-          const QuestionSet = result?.QuestionSet?.[0];
-          const getUniqueDoId = QuestionSet?.IL_UNIQUE_ID;
-          setUniqueDoId(getUniqueDoId);
-          console.log('results:', getUniqueDoId);
-          testReportDetails(getUniqueDoId);
-        } else {
-          console.log('NO Result found from getDoIdForAssesmentDetails ');
+        if (searchResults?.responseCode === 'OK') {
+          const result = searchResults?.result;
+          if (result) {
+            const QuestionSet = result?.QuestionSet?.[0];
+            const getUniqueDoId = QuestionSet?.IL_UNIQUE_ID;
+            setUniqueDoId(getUniqueDoId);
+            console.log('results:', getUniqueDoId);
+            testReportDetails(getUniqueDoId);
+          } else {
+            console.log('NO Result found from getDoIdForAssesmentDetails ');
+          }
         }
       } else {
         console.log('NO Data found from getDoIdForAssesmentDetails ');

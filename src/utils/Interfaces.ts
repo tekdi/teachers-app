@@ -182,10 +182,10 @@ export interface cohortAttendancePercentParam {
 }
 export interface gerDoIdServiceParam {
   filters: {
-    program: string[];
-    se_boards: string[];
-    subject: string[];
-    assessment1: string;
+    program?: string | string[];
+    se_boards?: (string | null)[];
+    subject?: string | string[];
+    assessment1?: string | string[];
   };
 }
 
@@ -197,6 +197,7 @@ export interface CustomField {
   type: string;
   order: number;
   name: string;
+  isEditable: boolean;
 }
 export interface  CohortAttendanceListViewProps{
   cohortName: string;

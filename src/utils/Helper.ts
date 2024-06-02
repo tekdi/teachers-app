@@ -111,6 +111,21 @@ export const toPascalCase = (name: string) => {
   return name
     .toLowerCase()
     .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
+};
+
+const valueToLabelMap: { [key: string]: string } = {
+  english: 'English',
+  math: 'Math',
+  language: 'Language',
+  home_science: 'Home Science',
+  social_science: 'Social Science',
+  life_skills: 'Life Skills',
+  science: 'Science',
+};
+
+// Function to transform a single value to its label
+export const getLabelForValue = (value: string): string => {
+  return valueToLabelMap[value] || 'Unknown';
 };
