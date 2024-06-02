@@ -144,6 +144,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             color: '#1F1B13',
           }}
           onClick={() => handleOpenModalLearner(userData?.userId!)}
+          className="two-line-text"
         >
           {isBulkAction ? (
             t('ATTENDANCE.MARK_ALL')
@@ -173,6 +174,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             ATTENDANCE_ENUM.PRESENT
           ) ? (
             <CheckCircleIcon
+            sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
               style={{
                 fill: isDisabled
                   ? theme.palette.success.main
@@ -181,6 +183,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             />
           ) : (
             <CheckCircleOutlineIcon
+            sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
               style={{
                 fill: isDisabled
                   ? theme.palette.warning['400']
@@ -213,9 +216,10 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           {[userData?.attendance, bulkAttendanceStatus].includes(
             ATTENDANCE_ENUM.ABSENT
           ) ? (
-            <CancelIcon style={{ fill: theme.palette.error.main }} />
+            <CancelIcon sx={{ cursor: isDisabled ? 'default' : 'pointer' }} style={{ fill: theme.palette.error.main }} />
           ) : (
             <HighlightOffIcon
+            sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
               style={{
                 fill: isDisabled
                   ? theme.palette.warning['400']

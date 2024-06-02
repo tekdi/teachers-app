@@ -18,10 +18,11 @@ import {
   Typography,
 } from '@mui/material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import {
   classesMissedAttendancePercentList,
+  getAllCenterAttendance,
   getCohortAttendance,
 } from '../services/AttendanceService';
 import {
@@ -64,7 +65,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
-  const [manipulatedCohortData, setManipulatedCohortData] = React.useState<Array<cohort>>(cohortsData);
+  const [manipulatedCohortData, setManipulatedCohortData] =
+    React.useState<Array<cohort>>(cohortsData);
   const [classId, setClassId] = React.useState('');
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
@@ -82,7 +84,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [startDateRange, setStartDateRange] = React.useState<Date | string>('');
   const [endDateRange, setEndDateRange] = React.useState<Date | string>('');
   const [dateRange, setDateRange] = React.useState<Date | string>('');
-
+  const [allCenterAttendanceData, setAllCenterAttendanceData] =
+    React.useState<any>(cohortsData);
   const [state, setState] = React.useState<State>({
     openModal: false,
     vertical: 'top',
@@ -149,9 +152,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
             }))
             ?.filter(Boolean);
           setCohortsData(filteredData);
-          if(filteredData.length > 0){
+          if (filteredData.length > 0) {
             setClassId(filteredData?.[0]?.cohortId);
-            setManipulatedCohortData(filteredData.concat({ cohortId: 'all', name: 'All Centers' }));
+            setManipulatedCohortData(
+              filteredData.concat({ cohortId: 'all', name: 'All Centers' })
+            );
           }
           setLoading(false);
         }
@@ -168,7 +173,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     const getCohortMemberList = async () => {
       setLoading(true);
       try {
-        if (classId && classId != "all") {
+        if (classId && classId !== 'all') {
           let limit = 300;
           let page = 0;
           let filters = { cohortId: classId };
@@ -221,7 +226,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   const studentsWithLowestAttendance = mergedArray.filter(
                     (user) =>
                       user.absent &&
-                      (user.present_percent < lowLearnerAttendanceLimit || user.present_percent === undefined) //TODO: Modify here condition to show low attendance learners
+                      (user.present_percent < lowLearnerAttendanceLimit ||
+                        user.present_percent === undefined) //TODO: Modify here condition to show low attendance learners
                   );
 
                   // Extract names of these students
@@ -266,8 +272,79 @@ const Dashboard: React.FC<DashboardProps> = () => {
             };
             cohortAttendancePercent();
           }
-        }else if (classId && classId === "all"){
-          console.log('ALLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL CIkCKed')
+        } else if (classId && classId === 'all' && cohortsData) {
+          const cohortIds = cohortsData.map((cohort) => cohort.cohortId);
+          const limit = 300;
+          const page = 0;
+          const facets = ['contextId'];
+
+          const fetchAttendanceData = async (cohortIds: any[]) => {
+            const fetchPromises = cohortIds.map(async (cohortId) => {
+              const filters = {
+                fromDate: startDateRange,
+                toDate: endDateRange,
+                scope: 'student',
+                contextId: cohortId,
+              };
+              console.log('Filters:', filters); // Log filters to ensure contextId is set
+
+              try {
+                const response = await getAllCenterAttendance({
+                  limit,
+                  page,
+                  filters,
+                  facets,
+                });
+                console.log(`Response for cohortId ${cohortId}:`, response); // Log the response
+                return { cohortId, data: response?.data?.result };
+              } catch (error) {
+                console.error(
+                  `Error fetching data for cohortId ${cohortId}:`,
+                  error
+                );
+                return { cohortId, error };
+              }
+            });
+
+            try {
+              const results = await Promise.all(fetchPromises);
+              console.log('Fetched data:', results);
+
+              const nameIDAttendanceArray = results
+                .filter(
+                  (result) =>
+                    !result.error && result.data && result.data.contextId
+                )
+                .map((result) => {
+                  const cohortId = result.cohortId;
+                  const contextData = result.data.contextId[cohortId] || {};
+                  const presentPercentage =
+                    contextData.present_percentage || null;
+                  const absentPercentage = contextData.absent_percentage
+                    ? 100 - contextData.absent_percentage
+                    : null;
+                  const percentage = presentPercentage || absentPercentage;
+
+                  const cohortItem = cohortsData.find(
+                    (cohort) => cohort.cohortId === cohortId
+                  );
+
+                  return {
+                    userId: cohortId,
+                    name: cohortItem ? cohortItem.name : null,
+                    presentPercentage: percentage,
+                  };
+                })
+                .filter((item) => item.presentPercentage !== null); // Filter out items with no valid percentage
+
+              console.log('Filtered and merged data:', nameIDAttendanceArray);
+              setAllCenterAttendanceData(nameIDAttendanceArray);
+            } catch (error) {
+              console.error('Error fetching attendance data:', error);
+            }
+          };
+
+          fetchAttendanceData(cohortIds);
         }
       } catch (error) {
         console.error('Error fetching cohort list:', error);
@@ -296,7 +373,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   useEffect(() => {
     const getAttendanceStats = async () => {
-      if (classId !== '') {
+      if (classId !== '' && classId !== "all") {
         const cohortMemberRequest: cohortMemberList = {
           limit: 300,
           page: 0,
@@ -340,7 +417,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       }
     };
     getAttendanceStats();
-  }, [classId, selectedDate]);
+  }, [classId !== 'all', selectedDate, handleSaveHasRun]);
 
   const viewAttendanceHistory = () => {
     router.push('/attendance-history');
@@ -385,7 +462,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 textAlign={'left'}
                 fontSize={'22px'}
                 m={'1.5rem 1rem 0.8rem'}
-                color={'#1F1B13'}
+                color={theme?.palette?.warning['300']}
               >
                 {t('DASHBOARD.DASHBOARD')}
               </Typography>
@@ -433,7 +510,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <CalendarMonthIcon />
                   </Box>
                 </Box>
-
                 <Box sx={{ mt: 2 }}>
                   <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
                     <FormControl
@@ -484,148 +560,156 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </FormControl>
                   </Box>
                 </Box>
-                <Box sx={{ mt: 1.5, position: 'relative' }}>
-                  <WeekCalender
-                    showDetailsHandle={showDetailsHandle}
-                    data={percentageAttendanceData}
-                  />
-                </Box>
-                <Box
-                  height={'auto'}
-                  width={'auto'}
-                  padding={'1rem'}
-                  borderRadius={'1rem'}
-                  bgcolor={'#4A4640'}
-                  textAlign={'left'}
-                  margin={'15px 0 15px 0 '}
-                >
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    marginTop={1}
-                    justifyContent={'space-between'}
+                {/* TODO: Write logic to disable this block on all select */}
+                <Box>
+                  <Box sx={{ mt: 1.5, position: 'relative' }}>
+                    <WeekCalender
+                      showDetailsHandle={showDetailsHandle}
+                      data={percentageAttendanceData}
+                    />
+                  </Box>
+                  <Box
+                    height={'auto'}
+                    width={'auto'}
+                    padding={'1rem'}
+                    borderRadius={'1rem'}
+                    bgcolor={'#4A4640'}
+                    textAlign={'left'}
+                    margin={'15px 0 15px 0 '}
+                    sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
                   >
-                    <Box display={'flex'}>
-                      {currentAttendance !== 'notMarked' &&
-                        currentAttendance !== 'futureDate' && (
-                          <>
-                            <Box
-                              width={'25px'}
-                              height={'2rem'}
-                              marginTop={'0.25rem'}
-                              margin={'5px'}
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      marginTop={1}
+                      justifyContent={'space-between'}
+                    >
+                      <Box display={'flex'}>
+                        {currentAttendance !== 'notMarked' &&
+                          currentAttendance !== 'futureDate' && (
+                            <>
+                              <Box
+                                width={'25px'}
+                                height={'2rem'}
+                                marginTop={'0.25rem'}
+                                margin={'5px'}
+                              >
+                                <CircularProgressbar
+                                  value={currentAttendance?.present_percentage}
+                                  background
+                                  backgroundPadding={8}
+                                  styles={buildStyles({
+                                    textColor: pathColor,
+                                    pathColor: pathColor,
+                                    trailColor: '#E6E6E6',
+                                    strokeLinecap: 'round',
+                                    backgroundColor: '#ffffff',
+                                  })}
+                                  strokeWidth={20}
+                                />
+                              </Box>
+                              <Box>
+                                <Typography
+                                  // sx={{ color: theme.palette.warning['A400'] }}
+                                  sx={{
+                                    fontSize: '12px',
+                                    fontWeight: '600',
+                                    color: '#F4F4F4',
+                                  }}
+                                  variant="h6"
+                                  className="word-break"
+                                >
+                                  {t('DASHBOARD.PERCENT_ATTENDANCE', {
+                                    percent_students:
+                                      currentAttendance?.present_percentage,
+                                  })}
+                                </Typography>
+                                <Typography
+                                  // sx={{ color: theme.palette.warning['A400'] }}
+                                  sx={{
+                                    fontSize: '12px',
+                                    fontWeight: '600',
+                                    color: '#F4F4F4',
+                                  }}
+                                  variant="h6"
+                                  className="word-break"
+                                >
+                                  {t('DASHBOARD.PRESENT_STUDENTS', {
+                                    present_students:
+                                      currentAttendance?.present_students,
+                                    total_students:
+                                      currentAttendance?.totalcount,
+                                  })}
+                                </Typography>
+                              </Box>
+                            </>
+                          )}
+                        {currentAttendance === 'notMarked' &&
+                          currentAttendance !== 'futureDate' && (
+                            <Typography
+                              sx={{ color: theme.palette.warning['A400'] }}
+                              fontSize={'0.8rem'}
+                              // variant="h6"
+                              // className="word-break"
                             >
-                              <CircularProgressbar
-                                value={currentAttendance?.present_percentage}
-                                background
-                                backgroundPadding={8}
-                                styles={buildStyles({
-                                  textColor: pathColor,
-                                  pathColor: pathColor,
-                                  trailColor: '#E6E6E6',
-                                  strokeLinecap: 'round',
-                                  backgroundColor: '#ffffff',
-                                })}
-                                strokeWidth={20}
-                              />
-                            </Box>
-                            <Box>
-                              <Typography
-                                // sx={{ color: theme.palette.warning['A400'] }}
-                                sx={{
-                                  fontSize: '12px',
-                                  fontWeight: '600',
-                                  color: '#F4F4F4',
-                                }}
-                                variant="h6"
-                                className="word-break"
-                              >
-                                {t('DASHBOARD.PERCENT_ATTENDANCE', {
-                                  percent_students:
-                                    currentAttendance?.present_percentage,
-                                })}
-                              </Typography>
-                              <Typography
-                                // sx={{ color: theme.palette.warning['A400'] }}
-                                sx={{
-                                  fontSize: '12px',
-                                  fontWeight: '600',
-                                  color: '#F4F4F4',
-                                }}
-                                variant="h6"
-                                className="word-break"
-                              >
-                                {t('DASHBOARD.PRESENT_STUDENTS', {
-                                  present_students:
-                                    currentAttendance?.present_students,
-                                  total_students: currentAttendance?.totalcount,
-                                })}
-                              </Typography>
-                            </Box>
-                          </>
-                        )}
-                      {currentAttendance === 'notMarked' &&
-                        currentAttendance !== 'futureDate' && (
+                              {t('DASHBOARD.NOT_MARKED')}
+                            </Typography>
+                          )}
+                        {currentAttendance === 'futureDate' && (
                           <Typography
                             sx={{ color: theme.palette.warning['A400'] }}
                             fontSize={'0.8rem'}
-                            // variant="h6"
-                            // className="word-break"
+                            fontStyle={'italic'}
+                            fontWeight={'500'}
                           >
-                            {t('DASHBOARD.NOT_MARKED')}
+                            {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
                           </Typography>
                         )}
-                      {currentAttendance === 'futureDate' && (
-                        <Typography
-                          sx={{ color: theme.palette.warning['A400'] }}
-                          fontSize={'0.8rem'}
-                          fontStyle={'italic'}
-                          fontWeight={'500'}
-                        >
-                          {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
-                        </Typography>
-                      )}
-                    </Box>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      style={{
-                        minWidth: '33%',
-                        height: '2.5rem',
-                        padding: theme.spacing(1),
-                        fontWeight: '500',
-                      }}
-                      onClick={handleModalToggle}
-                      disabled={currentAttendance === 'futureDate'}
-                    >
-                      {currentAttendance === 'notMarked' ||
-                      currentAttendance === 'futureDate'
-                        ? t('COMMON.MARK')
-                        : t('COMMON.MODIFY')}
-                    </Button>
-                  </Stack>
-                </Box>
+                      </Box>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        style={{
+                          minWidth: '33%',
+                          height: '2.5rem',
+                          padding: theme.spacing(1),
+                          fontWeight: '500',
+                        }}
+                        sx={{
+                          '&.Mui-disabled': {
+                            backgroundColor: theme?.palette?.primary?.main, // Custom disabled text color
+                          },
+                        }}
+                        onClick={handleModalToggle}
+                        disabled={currentAttendance === 'futureDate' || classId === 'all' }
+                      >
+                        {currentAttendance === 'notMarked' ||
+                        currentAttendance === 'futureDate'
+                          ? t('COMMON.MARK')
+                          : t('COMMON.MODIFY')}
+                      </Button>
+                    </Stack>
+                  </Box>
 
-                <MarkBulkAttendance
-                  open={open}
+                  <MarkBulkAttendance
+                    open={open}
+                    onClose={handleClose}
+                    classId={classId}
+                    selectedDate={new Date(selectedDate)}
+                    onSaveSuccess={() => setHandleSaveHasRun(!handleSaveHasRun)}
+                  />
+                </Box>
+                <Snackbar
+                  anchorOrigin={{ vertical, horizontal }}
+                  open={openModal}
                   onClose={handleClose}
-                  classId={classId}
-                  selectedDate={new Date(selectedDate)}
-                  onSaveSuccess={() => setHandleSaveHasRun(!handleSaveHasRun)}
+                  className="sample"
+                  autoHideDuration={5000}
+                  key={vertical + horizontal}
+                  message={t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY')}
+                  // action={action}
                 />
               </Box>
-
-              <Snackbar
-                anchorOrigin={{ vertical, horizontal }}
-                open={openModal}
-                onClose={handleClose}
-                className="sample"
-                autoHideDuration={5000}
-                key={vertical + horizontal}
-                message={t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY')}
-                // action={action}
-              />
-
               <Box sx={{ padding: '0 20px' }}>
                 <Divider sx={{ borderBottomWidth: '0.1rem' }} />
               </Box>
@@ -694,38 +778,62 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 )}
               </Box>
               <Box display={'flex'} className="card_overview" mx={'1rem'}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4}>
-                    <OverviewCard
-                      label="Centre Attendance"
-                      value={
-                        cohortPresentPercentage === t('ATTENDANCE.N/A')
-                          ? cohortPresentPercentage
-                          : cohortPresentPercentage + ' %'
-                      }
-                    />
+                {classId && classId !== 'all' && cohortsData ? (
+                  <Grid container spacing={2}>
+                    <Grid item xs={4}>
+                      <OverviewCard
+                        label={t('ATTENDANCE.CENTER_ATTENDANCE')}
+                        value={
+                          cohortPresentPercentage === t('ATTENDANCE.N/A')
+                            ? cohortPresentPercentage
+                           : `${cohortPresentPercentage} %`
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={8}>
+                      <OverviewCard
+                        label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
+                        {...(loading && (
+                          <Loader
+                            loadingText={t('COMMON.LOADING')}
+                            showBackdrop={false}
+                          />
+                        ))}
+                        value={
+                          lowAttendanceLearnerList.length > 2
+                            ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
+                            : lowAttendanceLearnerList.length === 2
+                              ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
+                              : lowAttendanceLearnerList.length === 1
+                                ? `${lowAttendanceLearnerList[0]}`
+                                : Array.isArray(lowAttendanceLearnerList) &&
+                                    lowAttendanceLearnerList.length === 0
+                                  ? t(
+                                      'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
+                                    )
+                                  : t('ATTENDANCE.N/A')
+                        }
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid item xs={8}>
-                    <OverviewCard
-                      label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
-                      {...(loading && (
-                        <Loader
-                          loadingText={t('COMMON.LOADING')}
-                          showBackdrop={false}
-                        />
-                      ))}
-                      value={
-                        lowAttendanceLearnerList.length > 2
-                          ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
-                          : lowAttendanceLearnerList.length === 2
-                            ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
-                            : lowAttendanceLearnerList.length === 1
-                              ? `${lowAttendanceLearnerList[0]}`:  (Array.isArray(lowAttendanceLearnerList) && lowAttendanceLearnerList.length === 0) ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'): 
-                               t('ATTENDANCE.N/A')
-                      }
-                    />
+                ) : (
+                  <Grid container spacing={2}>
+                    {allCenterAttendanceData.map(
+                      (item: {
+                        cohortId: React.Key | null | undefined;
+                        name: string;
+                        presentPercentage: number;
+                      }) => (
+                        <Grid item xs={6} key={item.cohortId}>
+                          <OverviewCard
+                            label={item.name}
+                            value={`${item.presentPercentage} %`}
+                          />
+                        </Grid>
+                      )
+                    )}
                   </Grid>
-                </Grid>
+                )}
               </Box>
             </Box>
           </Box>

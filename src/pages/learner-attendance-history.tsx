@@ -42,8 +42,8 @@ const LearnerAttendanceHistory = () => {
     handleSelectedDateChange(selectedDate);
   }, []);
 
-  const handleSelectedDateChange = (date: Date) => {
-    setSelectedDate(date);
+  const handleSelectedDateChange = (date: Date | Date[] | null) => {
+    setSelectedDate(date as Date);
   };
 
   const handleActiveStartDateChange = (date: Date) => {

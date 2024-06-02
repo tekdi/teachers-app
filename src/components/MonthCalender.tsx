@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Calendar from 'react-calendar';
+import Calendar, { CalendarProps } from 'react-calendar';
+import Value from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import {
   CheckCircleOutlineOutlined,
@@ -8,11 +9,12 @@ import {
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { shortDateFormat } from '@/utils/Helper';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
+
 interface CalendarWithAttendanceProps {
   formattedAttendanceData?: FormattedAttendanceData;
   learnerAttendanceDate?: learnerAttendanceDate;
   onChange: (date: Date) => void;
-  onDateChange: (date: Date | [Date, Date] | null) => void;
+  onDateChange: (date: Date | Date[] | null) => void;
   selectionType?: 'single' | 'range'; 
 }
 
@@ -36,7 +38,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   onDateChange,
   selectionType,
 }) => {
-  const [date, setDate] = useState<Date | [Date, Date] | null>(() => new Date());
+  const [date, setDate] = useState<Date | null | undefined | [Date | null, Date | null]>(() => new Date());
   const determinePathColor = useDeterminePathColor();
 
   useEffect(() => {
@@ -147,7 +149,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   //   onDateChange(newDate);
   // };
 
-  const handleDateChange: (value: Date | [Date, Date] | null) => void = (newDate) => {
+  const handleDateChange = (newDate: Date | null | undefined | [Date | null, Date | null]) => {
     const formatDate = (date: Date) => {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -160,15 +162,17 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
       setDate(null);
       onDateChange(null);
     } else if (Array.isArray(newDate)) {
-      const formattedDates = newDate.map(date => formatDate(date));
-      console.log('Selected date range:', formattedDates); // Format--->["2024-06-01","2024-06-14"]
-      setDate(newDate); // Format--->["2024-06-04T18:30:00.000Z","2024-06-13T18:29:59.999Z"]
-      onDateChange(newDate);
+      // const formattedDates = newDate.map(date => formatDate(date));
+      // console.log('Selected date range:', formattedDates); // Format--->["2024-06-01","2024-06-14"]
+      if (newDate) {
+        setDate(newDate); // Format--->["2024-06-04T18:30:00.000Z","2024-06-13T18:29:59.999Z"]
+        onDateChange(newDate as Date | Date [] | null);
+      }
     } else {
-      const formattedDate = formatDate(newDate);
+      const formattedDate = formatDate(newDate as Date);
       console.log('Selected date:', formattedDate);
       setDate(newDate);
-      onDateChange(newDate);
+      onDateChange(newDate as Date | Date [] | null);
     }
   };
   

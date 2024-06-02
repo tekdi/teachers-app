@@ -311,8 +311,8 @@ const LoginPage = () => {
               </Link>
             </Box>
             <Box marginTop={'1.2rem'} className="remember-me-checkbox">
-              <Checkbox onChange={(e) => setRememberMe(e.target.checked)} />
-              {t('LOGIN_PAGE.REMEMBER_ME')}
+              <Checkbox onChange={(e) => setRememberMe(e.target.checked)} checked={rememberMe} />
+              <span style={{ 'cursor': 'pointer'}} onClick={() => setRememberMe(!rememberMe)}>{t('LOGIN_PAGE.REMEMBER_ME')}</span>
             </Box>
             <Box
               alignContent={'center'}
