@@ -14,7 +14,7 @@ import {
 import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
 import { Box } from '@mui/material';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -23,7 +23,24 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   const [color, setColor] = useState(true);
   const [isPrevDisabled, setIsPrevDisabled] = useState(false);
   const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const selectedItemRef = useRef<HTMLDivElement>(null);
   const determinePathColor = useDeterminePathColor();
+
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    const selectedItem = selectedItemRef.current;
+
+    if (scrollContainer && selectedItem) {
+      const containerWidth = scrollContainer.offsetWidth;
+      const itemLeft = selectedItem.offsetLeft;
+      const itemWidth = selectedItem.offsetWidth;
+
+      const scrollPosition = itemLeft - (containerWidth / 2) + (itemWidth / 2);
+      scrollContainer.scrollTo({ left: scrollPosition });
+    }
+  }, []);
 
   const changeWeekHandle = (btnType: string) => {
     const today = new Date();
@@ -70,6 +87,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
         <div
           className={`col col-center${isToday ? ' currentDay' : ''}`}
           key={i}
+          ref={isToday ? selectedItemRef : null}
         >
           {isToday ? 'Today' : format(day, dateFormat)}
         </div>
@@ -180,7 +198,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   };
 
   return (
-    <div className="calendar">
+    <div className="calendar" ref={scrollContainerRef}>
       <Box className="calender_body_width">
         {renderDays()}
         {renderCells()}
