@@ -109,9 +109,10 @@
     "ATTENDANCE_OVERVIEW": "Attendance Overview",
     "CENTER_ATTENDANCE": "Center Attendance",
     "LOW_ATTENDANCE_STUDENTS": "Low Attendance Learners",
-    "N/A": "N/A.",
+    "N/A": "N/A",
     "CENTER_NAME": "Center Name",
-    "ALL_CENTERS": "All Centers"
+    "ALL_CENTERS": "All Centers",
+    "NO_LEARNER_WITH_LOW_ATTENDANCE": "No Learner with low attendance"
   },
   "PROFILE": {
     "EDIT_PROFILE": "Edit Profile",

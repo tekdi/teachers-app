@@ -139,6 +139,7 @@ export interface updateCustomField {
   name?: string;
 }
 export interface cohort {
+  presentPercentage: number;
   cohortId: string;
   name: string;
   value: string;
@@ -198,3 +199,20 @@ export interface CustomField {
   name: string;
   isEditable: boolean;
 }
+export interface  CohortAttendanceListViewProps{
+  cohortName: string;
+  attendancePercent: number;
+}
+
+export interface allCenterAttendancePercentParam {
+  limit: number;
+  page: number;
+  filters: {
+    scope: string;
+    fromDate: Date | string;
+    toDate: Date | string;
+    contextId : string;
+  };
+  facets: Array<string>;
+}
+

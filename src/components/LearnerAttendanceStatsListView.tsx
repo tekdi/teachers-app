@@ -125,7 +125,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
       <Stack>
         <Box
           height="60px"
-          borderTop={`1px solid  ${theme.palette.warning['300']}`}
+          borderTop={`1px solid  ${theme.palette.warning['A100']}`}
           margin="0px"
           alignItems={'center'}
           // padding="1rem"
