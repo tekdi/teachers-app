@@ -576,6 +576,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     bgcolor={'#4A4640'}
                     textAlign={'left'}
                     margin={'15px 0 15px 0 '}
+                    sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
                   >
                     <Stack
                       direction="row"
@@ -674,8 +675,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           padding: theme.spacing(1),
                           fontWeight: '500',
                         }}
+                        sx={{
+                          '&.Mui-disabled': {
+                            backgroundColor: theme?.palette?.primary?.main, // Custom disabled text color
+                          },
+                        }}
                         onClick={handleModalToggle}
-                        disabled={currentAttendance === 'futureDate'}
+                        disabled={currentAttendance === 'futureDate' || classId === 'all' }
                       >
                         {currentAttendance === 'notMarked' ||
                         currentAttendance === 'futureDate'

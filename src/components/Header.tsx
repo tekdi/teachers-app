@@ -188,11 +188,11 @@ const Header: React.FC = () => {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleProfileClick} disableRipple>
+              <MenuItem onClick={handleProfileClick} disableRipple sx={{ 'letter-spacing': 'normal'}}>
                 <PersonOutlineOutlinedIcon />
                 {t('PROFILE.MY_PROFILE')}{' '}
               </MenuItem>
-              <MenuItem onClick={handleLogoutClick} disableRipple>
+              <MenuItem onClick={handleLogoutClick} disableRipple sx={{ 'letter-spacing': 'normal'}}>
                 <LogoutOutlinedIcon />
                 {t('COMMON.LOGOUT')}
               </MenuItem>
