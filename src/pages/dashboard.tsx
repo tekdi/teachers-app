@@ -776,7 +776,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Grid container spacing={2}>
                     <Grid item xs={4}>
                       <OverviewCard
-                        label="Centre Attendance"
+                        label={t('ATTENDANCE.CENTER_ATTENDANCE')}
                         value={
                           cohortPresentPercentage === t('ATTENDANCE.N/A')
                             ? cohortPresentPercentage
