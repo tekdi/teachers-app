@@ -173,7 +173,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     const getCohortMemberList = async () => {
       setLoading(true);
       try {
-        if (classId && classId != 'all') {
+        if (classId && classId !== 'all') {
           let limit = 300;
           let page = 0;
           let filters = { cohortId: classId };
@@ -273,7 +273,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
             cohortAttendancePercent();
           }
         } else if (classId && classId === 'all' && cohortsData) {
-          console.log('ALLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL CIkCKed');
           const cohortIds = cohortsData.map((cohort) => cohort.cohortId);
           const limit = 300;
           const page = 0;
@@ -374,7 +373,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   useEffect(() => {
     const getAttendanceStats = async () => {
-      if (classId !== '') {
+      if (classId !== '' && classId !== "all") {
         const cohortMemberRequest: cohortMemberList = {
           limit: 300,
           page: 0,
@@ -418,7 +417,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       }
     };
     getAttendanceStats();
-  }, [classId, selectedDate]);
+  }, [classId !== 'all', selectedDate]);
 
   const viewAttendanceHistory = () => {
     router.push('/attendance-history');
@@ -781,7 +780,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         value={
                           cohortPresentPercentage === t('ATTENDANCE.N/A')
                             ? cohortPresentPercentage
-                            : cohortPresentPercentage + ' %'
+                           : `${cohortPresentPercentage} %`
                         }
                       />
                     </Grid>
