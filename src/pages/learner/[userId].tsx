@@ -189,7 +189,6 @@ const LearnerProfile: React.FC = () => {
   const menuItems = [
     t('COMMON.LAST_SEVEN_DAYS'),
     t('COMMON.AS_OF_TODAY'),
-    t('COMMON.AS_OF_LAST_WEEK'),
     t('COMMON.LAST_MONTH'),
     t('COMMON.LAST_SIX_MONTHS'),
     t('COMMON.CUSTOM_RANGE'),
