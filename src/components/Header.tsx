@@ -2,23 +2,20 @@
 
 import { Box, Stack } from '@mui/material';
 import Menu, { MenuProps } from '@mui/material/Menu';
-import React, { useEffect, useState } from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Divider from '@mui/material/Divider';
-import Image from 'next/image';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import MenuIcon from '@mui/icons-material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import accountIcon from './../assets/images/account.svg';
-import dynamic from 'next/dynamic';
-import logoLight from '../../public/images/logo-light.png';
-import menuIcon from '../assets/images/menuIcon.svg';
+import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import logoLight from '../../public/images/logo-light.png';
+import menuIcon from '../assets/images/menuIcon.svg';
+import accountIcon from './../assets/images/account.svg';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -188,7 +185,7 @@ const Header: React.FC = () => {
               open={open}
               onClose={handleClose}
             >
-              {pathname !== '/profile' ? (
+              {pathname !== '/profile' && (
                 <MenuItem
                   onClick={handleProfileClick}
                   disableRipple
@@ -197,8 +194,6 @@ const Header: React.FC = () => {
                   <PersonOutlineOutlinedIcon />
                   {t('PROFILE.MY_PROFILE')}{' '}
                 </MenuItem>
-              ) : (
-                <></>
               )}
               <MenuItem
                 onClick={handleLogoutClick}

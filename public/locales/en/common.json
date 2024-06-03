@@ -53,7 +53,8 @@
     "OK": "OK",
     "FROM_TO_DATE": "From - To dates",
     "REMOVE": "Remove",
-    "MARK_DROP_OUT":"Mark as Drop Out"
+    "MARK_DROP_OUT":"Mark as Drop Out",
+    "SOMETHING_WENT_WRONG": "Something went wrong"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -101,6 +102,7 @@
     "MARK_ALL": "Mark All",
     "CLEAR": "Clear",
     "ATTENDANCE_MARKED_SUCCESSFULLY": "Attendance marked successfully",
+    "ATTENDANCE_MODIFIED_SUCCESSFULLY": "Attendance modified successfully",
     "ATTENDANCE_MARKED_UNSUCCESSFULLY": "Attendance not marked",
     "MY_ATTENDANCE_HISTORY": "My Attendance History",
     "UPDATE_ATTENDANCE_ALERT": "Are you sure you want to update this attendance?",
