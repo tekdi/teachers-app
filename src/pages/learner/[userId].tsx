@@ -363,15 +363,12 @@ const LearnerProfile: React.FC = () => {
       });
 
       if (response?.responseCode === 200) {
-       
         const result = response.result;
         if (result) {
-          
           setSubmitedOn(result[0]?.createdOn);
 
           const questionValues = getQuestionValues(result);
           setAssesmentData(questionValues?.questions); // Use the parsed questions
-          
         } else {
           setUniqueDoId('');
           console.log('No Data Found');
@@ -455,13 +452,17 @@ const LearnerProfile: React.FC = () => {
   const style = {
     position: 'absolute',
     top: '50%',
+    maxWidth: 300, // Maximum width for responsiveness
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
     bgcolor: theme.palette.warning.A400,
     p: 4,
     textAlign: 'center',
-    height: '85vh',
+    '@media (max-width: 768px)': {
+      width: '95%', // Adjust width for smaller screens
+      padding: '15px', // Adjust padding for smaller screens
+    },
   };
 
   const [formData, setFormData] = useState<{

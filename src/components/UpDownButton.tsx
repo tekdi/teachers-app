@@ -17,10 +17,10 @@ const UpDownButton = () => {
     const viewportHeight = document.documentElement.clientHeight;
 
     const atBottom =
-      pathname === '/attendance-overview' ? scrolled >= 300 : scrolled >= 720;
+      pathname === '/attendance-overview' ? scrolled >= 294 : scrolled >= 700;
 
     const atTop =
-      pathname === '/attendance-overview' ? scrolled <= 320 : scrolled <= 720;
+      pathname === '/attendance-overview' ? scrolled <= 294 : scrolled <= 700;
 
     setIsVisible(atTop || atBottom);
     setIsAtBottom(atBottom);
@@ -30,7 +30,7 @@ const UpDownButton = () => {
     if (isAtBottom) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      const targetPosition = pathname === '/attendance-overview' ? 320 : 720;
+      const targetPosition = pathname === '/attendance-overview' ? 294 : 700;
       window.scrollTo({ top: targetPosition, behavior: 'smooth' });
     }
   };

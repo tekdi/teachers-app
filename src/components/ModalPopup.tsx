@@ -1,5 +1,3 @@
-import React from 'react';
-import Modal from '@mui/material/Modal';
 import {
   Box,
   Button,
@@ -10,10 +8,13 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { useTranslation } from 'next-i18next';
+
 import CloseIcon from '@mui/icons-material/Close';
+import Modal from '@mui/material/Modal';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
+import React from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 
 const ModalComponent = () => {
   const { t } = useTranslation();
