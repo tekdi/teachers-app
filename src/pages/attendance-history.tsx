@@ -213,8 +213,8 @@ const UserAttendanceHistory = () => {
                 filters: {
                   fromDate: shortDateFormat(selectedDate || currentDate),
                   toDate: shortDateFormat(selectedDate || currentDate),
-                  contextId: classId, 
-                  scope: "student"
+                  contextId: classId,
+                  scope: 'student',
                 },
               };
               const res = await attendanceStatusList(attendanceStatusData);
@@ -521,34 +521,43 @@ const UserAttendanceHistory = () => {
             }}
             display={'flex'}
           >
-            <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
-              <Select
-                value={classId}
-                onChange={handleCohortSelection}
-                displayEmpty
-                inputProps={{ 'aria-label': 'Without label' }}
-                disabled={cohortsData?.length === 1 ? true : false}
-                className="SelectLanguages fs-14 fw-500"
-                style={{
-                  borderRadius: '0.5rem',
-                  color: theme.palette.warning['200'],
-                  width: '100%',
-                  marginBottom: '0rem',
-                }}
+            {cohortsData?.length > 1 ? (
+              <FormControl
+                className="drawer-select"
+                sx={{ m: 1, width: '100%' }}
               >
-                {cohortsData?.length !== 0 ? (
-                  cohortsData?.map((cohort) => (
-                    <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                      {cohort.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <Typography style={{ fontWeight: 'bold' }}>
-                    {t('COMMON.NO_DATA_FOUND')}
-                  </Typography>
-                )}
-              </Select>
-            </FormControl>
+                <Select
+                  value={classId}
+                  onChange={handleCohortSelection}
+                  displayEmpty
+                  inputProps={{ 'aria-label': 'Without label' }}
+                  // disabled={cohortsData?.length === 1 ? true : false}
+                  className="SelectLanguages fs-14 fw-500"
+                  style={{
+                    borderRadius: '0.5rem',
+                    color: theme.palette.warning['200'],
+                    width: '100%',
+                    marginBottom: '0rem',
+                  }}
+                >
+                  {cohortsData?.length !== 0 ? (
+                    cohortsData?.map((cohort) => (
+                      <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
+                        {cohort.name}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <Typography style={{ fontWeight: 'bold' }}>
+                      {t('COMMON.NO_DATA_FOUND')}
+                    </Typography>
+                  )}
+                </Select>
+              </FormControl>
+            ) : (
+              <Typography color={theme.palette.warning['300']}>
+                {cohortsData[0]?.name}
+              </Typography>
+            )}
           </Box>
           <Box
             pl={1}
