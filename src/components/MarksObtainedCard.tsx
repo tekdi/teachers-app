@@ -45,20 +45,21 @@ const SmallCard: React.FC<SmallCardProps> = ({ item }) => {
 const MarksObtainedCard: React.FC<MarksObtainedCardProps> = ({ data }) => {
   const [showAllData, setShowAllData] = useState(false);
   const { t } = useTranslation();
-  
+ 
 
   const limitedData = showAllData ? data : data?.slice(0, 12);
 
   return (
     <div>
       <Grid container spacing={1}>
-        {limitedData?.map((item, i) => (
-          <Grid key={i} item xs={2}>
-            <SmallCard item={item} />
-          </Grid>
-        ))}
+        {data &&
+          limitedData?.map((item, i) => (
+            <Grid key={i} item xs={2}>
+              <SmallCard item={item} />
+            </Grid>
+          ))}
       </Grid>
-      {data.length > 12 && (
+      {data?.length > 12 && (
         <Box display="flex" justifyContent="center" mt={2}>
           {!showAllData ? (
             <>
