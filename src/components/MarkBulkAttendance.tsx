@@ -127,6 +127,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   filters: {
                     fromDate: formatSelectedDate,
                     toDate: formatSelectedDate,
+                    contextId: classId,
+                    scope: "student"
                   },
                 };
                 const res = await attendanceStatusList(attendanceStatusData);
