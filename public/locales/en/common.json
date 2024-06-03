@@ -52,6 +52,8 @@
     "CANCEL": "Cancel",
     "OK": "OK",
     "FROM_TO_DATE": "From - To dates",
+    "REMOVE": "Remove",
+    "MARK_DROP_OUT":"Mark as Drop Out",
     "SOMETHING_WENT_WRONG": "Something went wrong"
   },
   "LOGIN_PAGE": {

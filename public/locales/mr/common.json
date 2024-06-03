@@ -50,6 +50,8 @@
     "CANCEL": "रद्द करा",
     "OK": "ठीक आहे",
     "FROM_TO_DATE": "पासून - तारखा",
+    "REMOVE": "काढून टाका",
+    "MARK_DROP_OUT": "ड्रॉप आउट म्हणून चिन्हांकित करा",
     "SOMETHING_WENT_WRONG": "काहीतरी चूक झाली"
   },
   "LOGIN_PAGE": {
