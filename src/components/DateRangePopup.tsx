@@ -94,7 +94,6 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     console.log(toDate, fromDate);
     onDateRangeSelected({ fromDate, toDate });
     toggleModal();
-    toggleModal();
   };
 
   const getDateRange = (index: number | null) => {
