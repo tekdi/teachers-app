@@ -269,8 +269,8 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
             }}
           >
             {currentStatus === ATTENDANCE_ENUM.NOT_MARKED
-              ? t('COMMON.SAVE')
-              : t('COMMON.UPDATE')}
+              ? t('COMMON.MARK')
+              : t('COMMON.MODIFY')}
           </Button>
         </DialogActions>
       </BootstrapDialog>

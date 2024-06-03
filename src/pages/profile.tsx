@@ -171,6 +171,7 @@ const TeacherProfile = () => {
     (field) => field.name === 'main_subject'
   );
 
+ 
   const teachSubjects: string[] = Array.isArray(teachSubjectsField?.value)
     ? teachSubjectsField?.value
     : [];
@@ -187,6 +188,14 @@ const TeacherProfile = () => {
   );
   const orderedSubjects = [...mutualSubjects, ...remainingSubjects];
 
+  // Function to get label for a subject from the options array
+  const getLabelForSubject = (subject: string) => {
+    const option = teachSubjectsField?.options?.find(
+      (opt: any) => opt.value === subject
+    );
+    return option ? option.label : subject;
+  };
+
   //fields  for view profile by order
   const filteredSortedForView = [...customFieldsData]
     ?.filter((field) => field.order !== 0 && field.name !== 'main_subject')
@@ -202,7 +211,7 @@ const TeacherProfile = () => {
     ?.filter(Boolean)
     ?.join(', ');
 
-  //------------edit form fields------------
+  //------------edit teacher profile------------
 
   const [formData, setFormData] = useState<{
     userData: UserData;
@@ -515,8 +524,8 @@ const TeacherProfile = () => {
                                 border: `1px solid ${theme.palette.warning[900]}`,
                               }}
                             >
-                              {/* {getLabelForValue(subject)}  */}
-                              {subject}
+                              {getLabelForSubject(subject)}
+                              {/* {subject} */}
                             </Button>
                           ))}
                       </Box>
