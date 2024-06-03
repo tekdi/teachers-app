@@ -213,6 +213,8 @@ const UserAttendanceHistory = () => {
                 filters: {
                   fromDate: shortDateFormat(selectedDate || currentDate),
                   toDate: shortDateFormat(selectedDate || currentDate),
+                  contextId: classId, 
+                  scope: "student"
                 },
               };
               const res = await attendanceStatusList(attendanceStatusData);

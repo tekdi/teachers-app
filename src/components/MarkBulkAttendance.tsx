@@ -67,6 +67,12 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     Height: '526px',
   };
 
+  const updateBulkAttendanceStatus = (arr: any[]) => {
+    const isAllPresent = arr.every((user: any) => user.attendance === 'present');
+    const isAllAbsent = arr.every((user: any) => user.attendance === 'absent');
+    setBulkAttendanceStatus(isAllPresent ? 'present' : isAllAbsent ? 'absent' : '');``
+  }
+
   const submitBulkAttendanceAction = (
     isBulkAction: boolean,
     status: string,
@@ -85,6 +91,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
       return user;
     });
     setCohortMemberList(updatedAttendanceList);
+    updateBulkAttendanceStatus(updatedAttendanceList);
     const hasEmptyAttendance = () => {
       const allAttendance = updatedAttendanceList.some(
         (user) => user.attendance === ''
@@ -127,6 +134,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   filters: {
                     fromDate: formatSelectedDate,
                     toDate: formatSelectedDate,
+                    contextId: classId,
+                    scope: "student"
                   },
                 };
                 const res = await attendanceStatusList(attendanceStatusData);
@@ -209,6 +218,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                         setCohortMemberList(nameUserIdArray);
                         setNumberOfCohortMembers(nameUserIdArray?.length);
                       }
+                      updateBulkAttendanceStatus(newArray);
                       return newArray;
                     };
                     mergeArrays(nameUserIdArray, userAttendanceArray);
@@ -439,7 +449,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       onClick={() => submitBulkAttendanceAction(true, '', '')}
                     >
                       {' '}
-                      {t('COMMON.CLEAR_ALL')}
+                      {t('ATTENDANCE.CLEAR')}
                     </Button>
                     <Button
                       variant="contained"
@@ -448,7 +458,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       disabled={isAllAttendanceMarked ? false : true}
                       onClick={handleSave}
                     >
-                      {showUpdateButton ? t('COMMON.UPDATE') : t('COMMON.SAVE')}
+                      {(presentCount == 0 && absentCount == 0) ? t('COMMON.MARK') : t('COMMON.MODIFY')}
                     </Button>
                   </Box>
                 </Box>
