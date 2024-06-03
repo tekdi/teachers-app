@@ -37,6 +37,22 @@ const LearnerModal = ({
     router.push(`/learner/${userId}`);
   };
 
+  const learnerDetailsByOrder = [...data]?.map((field) => {
+    if (field.type === 'Drop Down' && field.options && field.value.length) {
+      const selectedOption = field?.options?.find(
+        (option: any) => option.value === field.value[0]
+      );
+      return {
+        ...field,
+        displayValue: selectedOption ? selectedOption?.label : field.value[0],
+      };
+    }
+    return {
+      ...field,
+      displayValue: field.value[0],
+    };
+  });
+
   return (
     <>
       {data && (
@@ -114,7 +130,7 @@ const LearnerModal = ({
                       </Typography>
                     </Box>
                   </Grid>
-                  {data?.map((item: any, index: number) => (
+                  {learnerDetailsByOrder?.map((item: any, index: number) => (
                     <>
                       <Grid item xs={6} key={index} textAlign="left">
                         <Typography
@@ -138,9 +154,9 @@ const LearnerModal = ({
                           }}
                           // noWrap
                         >
-                          {Array.isArray(item.value)
-                            ? item.value.join(', ')
-                            : item.value}
+                          {/* {Array.isArray(item.value) */}
+                          {/* // ? item.displayValue.join(', ') */}
+                          {item.displayValue}
                         </Typography>
                         {/* </Box> */}
                       </Grid>
