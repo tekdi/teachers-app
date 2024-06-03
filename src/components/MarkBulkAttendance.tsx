@@ -67,6 +67,12 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     Height: '526px',
   };
 
+  const updateBulkAttendanceStatus = (arr: any[]) => {
+    const isAllPresent = arr.every((user: any) => user.attendance === 'present');
+    const isAllAbsent = arr.every((user: any) => user.attendance === 'absent');
+    setBulkAttendanceStatus(isAllPresent ? 'present' : isAllAbsent ? 'absent' : '');``
+  }
+
   const submitBulkAttendanceAction = (
     isBulkAction: boolean,
     status: string,
@@ -85,6 +91,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
       return user;
     });
     setCohortMemberList(updatedAttendanceList);
+    updateBulkAttendanceStatus(updatedAttendanceList);
     const hasEmptyAttendance = () => {
       const allAttendance = updatedAttendanceList.some(
         (user) => user.attendance === ''
@@ -211,6 +218,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                         setCohortMemberList(nameUserIdArray);
                         setNumberOfCohortMembers(nameUserIdArray?.length);
                       }
+                      updateBulkAttendanceStatus(newArray);
                       return newArray;
                     };
                     mergeArrays(nameUserIdArray, userAttendanceArray);
