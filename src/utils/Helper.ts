@@ -78,7 +78,7 @@ export const getMonthName = () => {
 
 export const getDayAndMonthName = (dateString: Date | string) => {
   const date = new Date(dateString);
-  const day = date.getUTCDate();
+  const day = date.getDate(); ;
   const month = date.toLocaleString('default', { month: 'long' });
   return `${day} ${month}`;
 };
