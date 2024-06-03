@@ -76,6 +76,14 @@ export const getMonthName = () => {
   return monthNames[monthIndex];
 };
 
+export const getDayAndMonthName = (dateString: Date | string) => {
+  const date = new Date(dateString);
+  const day = date.getUTCDate();
+  const month = date.toLocaleString('default', { month: 'long' });
+  return `${day} ${month}`;
+};
+ 
+
 // Function to truncate URL if it's too long
 export const truncateURL = (
   url: string,

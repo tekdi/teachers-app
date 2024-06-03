@@ -17,7 +17,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useEffect, useRef, useState } from 'react';
 import { dashboardDaysLimit } from '../../app.config';
 
-const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
+const Calendar: React.FC<any> = ({ showDetailsHandle, data, disableDays }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -148,8 +148,12 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
                   : ''
             }`}
             onClick={() => {
-              const dayStr = format(cloneDay, 'ccc dd MMM yy');
-              onDateClickHandle(cloneDay, dayStr);
+              if (!disableDays){
+                const dayStr = format(cloneDay, 'ccc dd MMM yy');
+                onDateClickHandle(cloneDay, dayStr);
+              }else{
+                null
+              }   
             }}
           >
             <div className="circularProgress">
@@ -199,7 +203,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   };
 
   return (
-    <div className="calendar" ref={scrollContainerRef}>
+    <div className="calendar" ref={scrollContainerRef}  style={{ opacity: disableDays ? 0.5 : 1 }}>
       <Box className="calender_body_width">
         {renderDays()}
         {renderCells()}
