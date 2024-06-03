@@ -713,7 +713,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     onSaveSuccess={() => setHandleSaveHasRun(!handleSaveHasRun)}
                   />
                 </Box>
-                <Snackbar
+                {/* <Snackbar
                   anchorOrigin={{ vertical, horizontal }}
                   open={openModal}
                   onClose={handleClose}
@@ -723,7 +723,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   message={currentAttendance === 'notMarked' ||
                   currentAttendance === 'futureDate'? t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'): t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY')}
                   // action={action}
-                />
+                /> */}
               </Box>
               <Box sx={{ padding: '0 20px' }}>
                 <Divider sx={{ borderBottomWidth: '0.1rem' }} />

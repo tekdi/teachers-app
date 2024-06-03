@@ -43,6 +43,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   const [presentCount, setPresentCount] = React.useState(0);
   const [absentCount, setAbsentCount] = React.useState(0);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
+  const [isError, setIsError] = React.useState<any>('');
   const [isAllAttendanceMarked, setIsAllAttendanceMarked] =
     React.useState(false);
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
@@ -263,15 +264,19 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
         try {
           const response = await bulkAttendance(data);
           const resp = response?.data;
-          setShowUpdateButton(true);
+          if (resp){
+            setShowUpdateButton(true);
           onClose();
           setLoading(false);
+          isError(false)
+          }
           if (onSaveSuccess) {
             onSaveSuccess();
           }
         } catch (error) {
           console.error('Error fetching  cohort list:', error);
           setLoading(false);
+          setIsError(true)
         }
         handleClick({ vertical: 'bottom', horizontal: 'center' })();
       };
@@ -471,7 +476,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
           </Box>
         </Fade>
       </Modal>
-
+      { (!isError)? 
       <Snackbar
         anchorOrigin={{ vertical, horizontal }}
         open={openModal}
@@ -479,9 +484,18 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
         className="sample"
         autoHideDuration={5000}
         key={vertical + horizontal}
-        message={t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY')}
+        message={(presentCount == 0 && absentCount == 0) ? t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'): t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY')}
         // action={action}
-      />
+      />:  <Snackbar
+      anchorOrigin={{ vertical, horizontal }}
+      open={openModal}
+      onClose={handleClose}
+      className="sample"
+      autoHideDuration={5000}
+      key={vertical + horizontal}
+      message={ t('COMMON.SOMETHING_WENT_WRONG')}
+      // action={action}
+    />}
     </Box>
   );
 };
