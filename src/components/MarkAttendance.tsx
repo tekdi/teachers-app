@@ -313,7 +313,7 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
               width: '100%',
             }}
           >
-            {t('COMMON.UPDATE')}
+            {t('COMMON.MODIFY')}
           </Button>
         </DialogActions>
       </BootstrapDialog>
@@ -358,7 +358,7 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
         anchorOrigin={{ vertical, horizontal }}
         open={openModal}
         onClose={handleSnackbarClose}
-        message={t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY')}
+        message={t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY')}
         key={vertical + horizontal}
         className="sample"
         autoHideDuration={5000}

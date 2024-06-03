@@ -319,20 +319,20 @@ const Dashboard: React.FC<DashboardProps> = () => {
               const nameIDAttendanceArray = results
                 .filter(
                   (result) =>
-                    !result.error && result.data && result.data.contextId
+                    !result?.error && result?.data && result?.data?.contextId
                 )
                 .map((result) => {
-                  const cohortId = result.cohortId;
-                  const contextData = result.data.contextId[cohortId] || {};
+                  const cohortId = result?.cohortId;
+                  const contextData = result?.data?.contextId[cohortId] || {};
                   const presentPercentage =
                     contextData.present_percentage || null;
-                  const absentPercentage = contextData.absent_percentage
-                    ? 100 - contextData.absent_percentage
+                  const absentPercentage = contextData?.absent_percentage
+                    ? 100 - contextData?.absent_percentage
                     : null;
                   const percentage = presentPercentage || absentPercentage;
 
                   const cohortItem = cohortsData.find(
-                    (cohort) => cohort.cohortId === cohortId
+                    (cohort) => cohort?.cohortId === cohortId
                   );
 
                   return {
@@ -521,16 +521,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 </Box>
                 <Box sx={{ mt: 2 }}>
                   <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
+                  {
+                        cohortsData?.length > 1 ?  
                     <FormControl
                       className="drawer-select"
                       sx={{ m: 0, width: '100%' }}
-                    >
+                    >                     
                       <Select
                         value={classId}
                         onChange={handleCohortSelection}
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
-                        disabled={cohortsData?.length <= 1 ? true : false}
                         className="SelectLanguages fs-14 fw-500"
                         style={{
                           borderRadius: '0.5rem',
@@ -567,6 +568,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         )}
                       </Select>
                     </FormControl>
+                    : 
+                    <Typography color={theme.palette.warning['300']}>{cohortsData[0]?.name}</Typography>
+                  }
                   </Box>
                 </Box>
                 {/* TODO: Write logic to disable this block on all select */}
@@ -716,7 +720,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   className="sample"
                   autoHideDuration={5000}
                   key={vertical + horizontal}
-                  message={t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY')}
+                  message={currentAttendance === 'notMarked' ||
+                  currentAttendance === 'futureDate'? t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'): t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY')}
                   // action={action}
                 />
               </Box>

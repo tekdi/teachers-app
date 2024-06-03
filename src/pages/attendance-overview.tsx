@@ -488,35 +488,41 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         </Box>
 
         <Box sx={{ px: '16px', width: '100%', gap: '15px' }} display={'flex'}>
-          <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
-            <Select
-              value={classId}
-              onChange={handleCohortSelection}
-              displayEmpty
-              disabled={cohortsData?.length <= 1 ? true : false}
-              inputProps={{ 'aria-label': 'Without label' }}
-              className="SelectLanguages fs-14 fw-500"
-              style={{
-                borderRadius: '0.5rem',
-                color: theme.palette.warning['200'],
-                width: '100%',
-                marginBottom: '0rem',
-                fontSize: '16px',
-              }}
-            >
-              {cohortsData?.length !== 0 ? (
-                manipulatedCohortData?.map((cohort) => (
-                  <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                    {cohort.name}
-                  </MenuItem>
-                ))
-              ) : (
-                <Typography style={{ fontWeight: 'bold' }}>
-                  {t('COMMON.NO_DATA_FOUND')}
-                </Typography>
-              )}
-            </Select>
-          </FormControl>
+          {cohortsData?.length > 1 ? (
+            <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
+              <Select
+                value={classId}
+                onChange={handleCohortSelection}
+                displayEmpty
+                // disabled={cohortsData?.length <= 1 ? true : false}
+                inputProps={{ 'aria-label': 'Without label' }}
+                className="SelectLanguages fs-14 fw-500"
+                style={{
+                  borderRadius: '0.5rem',
+                  color: theme.palette.warning['200'],
+                  width: '100%',
+                  marginBottom: '0rem',
+                  fontSize: '16px',
+                }}
+              >
+                {cohortsData?.length !== 0 ? (
+                  manipulatedCohortData?.map((cohort) => (
+                    <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
+                      {cohort.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <Typography style={{ fontWeight: 'bold' }}>
+                    {t('COMMON.NO_DATA_FOUND')}
+                  </Typography>
+                )}
+              </Select>
+            </FormControl>
+          ) : (
+            <Typography color={theme.palette.warning['300']}>
+              {cohortsData[0]?.name}
+            </Typography>
+          )}
         </Box>
 
         <Box className="linerGradient" sx={{ padding: '10px 20px' }}>
@@ -643,7 +649,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               handleCloseModal={handleCloseModal}
               handleSorting={handleSorting}
               routeName={pathname}
-              forAllCenters={classId === 'all' ? true : false}
             />
           </Stack>
           {loading && (
