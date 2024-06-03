@@ -114,7 +114,8 @@ export interface AttendanceStatusListProps {
   filters: {
     fromDate: string | Date;
     toDate: string | Date;
-    contextId?: string;
+    contextId: string;
+    scope: string;
   };
 }
 
