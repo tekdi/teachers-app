@@ -465,7 +465,7 @@ main {
 .react-calendar button {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   /* border: 1px solid #d0c5b4 !important; */
 }
