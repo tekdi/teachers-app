@@ -439,7 +439,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       onClick={() => submitBulkAttendanceAction(true, '', '')}
                     >
                       {' '}
-                      {t('COMMON.CLEAR_ALL')}
+                      {t('ATTENDANCE.CLEAR')}
                     </Button>
                     <Button
                       variant="contained"
@@ -448,7 +448,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       disabled={isAllAttendanceMarked ? false : true}
                       onClick={handleSave}
                     >
-                      {showUpdateButton ? t('COMMON.UPDATE') : t('COMMON.SAVE')}
+                      {(presentCount == 0 && absentCount == 0) ? t('COMMON.MARK') : t('COMMON.MODIFY')}
                     </Button>
                   </Box>
                 </Box>
