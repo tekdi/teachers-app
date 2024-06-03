@@ -423,7 +423,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       }
     };
     getAttendanceStats();
-  }, [(classId && classId != "all"), selectedDate, handleSaveHasRun]);
+  }, [(classId && classId !== "all"), selectedDate, handleSaveHasRun]);
 
   const viewAttendanceHistory = () => {
     if (classId !== "all"){
