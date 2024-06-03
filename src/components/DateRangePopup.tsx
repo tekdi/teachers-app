@@ -18,6 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import MonthCalender from './MonthCalender';
 import WestIcon from '@mui/icons-material/West';
 import { useTranslation } from 'next-i18next';
+import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
 
 const modalStyle = {
   position: 'absolute',
@@ -70,6 +71,8 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const [isCalendarModalOpen, setIsCalenderModalOpen] = useState(false);
   const [dateRangeArray, setDateRangeArray] = useState<any[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(1);
+  const [displayCalendarFromDate, setDisplayCalendarFromDate]= React.useState(getDayAndMonthName(getTodayDate()));
+  const [displayCalendarToDate, setDisplayCalendarToDate]= React.useState(getDayAndMonthName(getTodayDate()));
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const toggleCalendarModal = () =>
@@ -136,9 +139,13 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         break;
       case 4:
         //write here logic to open modal and return fromDate and toDate
-        if (dateRangeArray) {
+        if (dateRangeArray.length === 2) {
           fromDate = dateRangeArray[0];
           toDate = formatDate(new Date(dateRangeArray[1]));
+          if (fromDate && toDate) {
+            setDisplayCalendarFromDate(getDayAndMonthName(new Date(fromDate)));
+            setDisplayCalendarToDate(getDayAndMonthName(new Date(toDate)));
+          }
         }
         break;
       default:
@@ -151,9 +158,11 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     };
   };
 
-  const handleCalendarDateChange = (date: Date | [Date, Date] | null) => {
+  const handleCalendarDateChange = (date: Date | Date[] | null) => {
     if (Array.isArray(date)) {
       setDateRangeArray(date);
+      setDisplayCalendarFromDate(getDayAndMonthName(date[0]));
+      setDisplayCalendarToDate(getDayAndMonthName(date[1]));
       // toggleCalendarModal();
     }
   };
@@ -286,7 +295,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
             <Box className="fs-14 fw-500 text-4D">
               {t('COMMON.FROM_TO_DATE')}
             </Box>
-            <Box className="fs-22 fw-500 pt-10 text-1F">17 May – 23 May</Box>
+            <Box className="fs-22 fw-500 pt-10 text-1F">{displayCalendarFromDate} – {displayCalendarToDate}</Box>
           </Box>
 
           <Box>

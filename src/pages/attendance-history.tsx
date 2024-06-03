@@ -345,8 +345,8 @@ const UserAttendanceHistory = () => {
     return datesArray;
   };
 
-  const handleSelectedDateChange = (date: Date) => {
-    setSelectedDate(date);
+  const handleSelectedDateChange = (date: Date | Date[] | null) => {
+    setSelectedDate(date as Date);
   };
 
   const handleUpdate = async (date: string, status: string) => {

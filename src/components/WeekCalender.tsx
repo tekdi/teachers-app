@@ -14,16 +14,34 @@ import {
 import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
 import { Box } from '@mui/material';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { dashboardDaysLimit } from '../../app.config';
 
-const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
+const Calendar: React.FC<any> = ({ showDetailsHandle, data, disableDays }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [color, setColor] = useState(true);
   const [isPrevDisabled, setIsPrevDisabled] = useState(false);
   const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const selectedItemRef = useRef<HTMLDivElement>(null);
   const determinePathColor = useDeterminePathColor();
+
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    const selectedItem = selectedItemRef.current;
+
+    if (scrollContainer && selectedItem) {
+      const containerWidth = scrollContainer.offsetWidth;
+      const itemLeft = selectedItem.offsetLeft;
+      const itemWidth = selectedItem.offsetWidth;
+
+      const scrollPosition = itemLeft - (containerWidth / 2) + (itemWidth / 2);
+      scrollContainer.scrollTo({ left: scrollPosition });
+    }
+  }, []);
 
   const changeWeekHandle = (btnType: string) => {
     const today = new Date();
@@ -70,6 +88,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
         <div
           className={`col col-center${isToday ? ' currentDay' : ''}`}
           key={i}
+          ref={isToday ? selectedItemRef : null}
         >
           {isToday ? 'Today' : format(day, dateFormat)}
         </div>
@@ -91,7 +110,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
     let showCircularProgress = false;
 
     while (day <= endDate) {
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < dashboardDaysLimit; i++) {
         formattedDate = format(day, dateFormat);
         const cloneDay = day;
         let percentage = 0;
@@ -129,8 +148,12 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
                   : ''
             }`}
             onClick={() => {
-              const dayStr = format(cloneDay, 'ccc dd MMM yy');
-              onDateClickHandle(cloneDay, dayStr);
+              if (!disableDays){
+                const dayStr = format(cloneDay, 'ccc dd MMM yy');
+                onDateClickHandle(cloneDay, dayStr);
+              }else{
+                null
+              }   
             }}
           >
             <div className="circularProgress">
@@ -180,7 +203,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data }) => {
   };
 
   return (
-    <div className="calendar">
+    <div className="calendar" ref={scrollContainerRef}  style={{ opacity: disableDays ? 0.5 : 1 }}>
       <Box className="calender_body_width">
         {renderDays()}
         {renderCells()}
