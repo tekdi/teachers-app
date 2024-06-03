@@ -49,9 +49,9 @@
     "AND": "and",
     "MORE": "more",
     "CLOSE": "Close",
-    "CANCEL":"Cancel",
-    "OK":"OK",
-    "FROM_TO_DATE":"From - To dates"
+    "CANCEL": "Cancel",
+    "OK": "OK",
+    "FROM_TO_DATE": "From - To dates"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -135,6 +135,12 @@
     "SUBMITTED_ON": "Submitted On",
     "MARK_OBTAINED": "Mark Obtained",
     "TOTAL_QUESTIONS": "Total Questions",
-    "VIEW_FULL_PROFILE": "View Full Profile"
+    "VIEW_FULL_PROFILE": "View Full Profile",
+    "SUBJECT": "Subject",
+    "POST_TEST": "Post Test",
+    "PRE_TEST": "Pre Test",
+    "ENGLISH": "English",
+    "MATH": "Math",
+    "TEST": "Test"
   }
 }
