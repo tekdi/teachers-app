@@ -135,5 +135,5 @@ const valueToLabelMap: { [key: string]: string } = {
 
 // Function to transform a single value to its label
 export const getLabelForValue = (value: string): string => {
-  return valueToLabelMap[value] || 'Unknown';
+  return valueToLabelMap[value] || 'NA';
 };

@@ -9,8 +9,11 @@ import {
   Button,
   Card,
   CardContent,
+  Checkbox,
   Divider,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   Grid,
   IconButton,
   InputLabel,
@@ -21,6 +24,8 @@ import {
   MenuItem,
   MenuList,
   Modal,
+  Radio,
+  RadioGroup,
   Select,
   SelectChangeEvent,
   Stack,
@@ -30,7 +35,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Theme, useTheme } from '@mui/material/styles';
-import { UserData, updateCustomField } from '@/utils/Interfaces';
+import { LearnerData, UserData, updateCustomField } from '@/utils/Interfaces';
 import { formatDate, getTodayDate } from '@/utils/Helper';
 
 import {
@@ -48,7 +53,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 // import { formatDate, getTodayDate } from '../utils/Helper';
 import StudentStatsCard from '@/components/StudentStatsCard';
 import WeekDays from '@/components/WeekDays';
-import { getUserDetails } from '@/services/ProfileService';
+import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/router';
@@ -60,6 +65,7 @@ import Menu, { MenuProps } from '@mui/material/Menu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Loader from '@/components/Loader';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -96,7 +102,6 @@ const LearnerProfile: React.FC = () => {
   const [test, setTest] = React.useState('Pre Test');
   const [subject, setSubject] = React.useState('English');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [openEdit, setOpenEdit] = React.useState(false);
   const [customFieldsData, setCustomFieldsData] = useState<updateCustomField[]>(
     []
   );
@@ -116,9 +121,6 @@ const LearnerProfile: React.FC = () => {
     t('COMMON.AS_OF_TODAY')
   );
   const open = Boolean(anchorEl);
-
-  const handleOpenEdit = () => setOpenEdit(true);
-  const handleCloseEdit = () => setOpenEdit(false);
 
   const [unitName, setUnitName] = useState('');
   const [blockName, setBlockName] = useState('');
@@ -187,7 +189,6 @@ const LearnerProfile: React.FC = () => {
   const menuItems = [
     t('COMMON.LAST_SEVEN_DAYS'),
     t('COMMON.AS_OF_TODAY'),
-    t('COMMON.AS_OF_LAST_WEEK'),
     t('COMMON.LAST_MONTH'),
     t('COMMON.LAST_SIX_MONTHS'),
     t('COMMON.CUSTOM_RANGE'),
@@ -246,8 +247,12 @@ const LearnerProfile: React.FC = () => {
                 setCustomFieldsData(customDataFields);
                 const unitName = getFieldValue(customDataFields, 'Unit Name');
                 setUnitName(unitName);
+
                 const blockName = getFieldValue(customDataFields, 'Block Name');
                 setBlockName(blockName);
+
+                setUserName(userData?.name);
+                setContactNumber(userData?.mobile);
               }
             } else {
               console.log('No data Found');
@@ -261,6 +266,12 @@ const LearnerProfile: React.FC = () => {
       }
     }
   };
+
+  // data by order to show on basic details
+
+  const learnerDetailsByOrder = [...customFieldsData].sort(
+    (a, b) => a.order - b.order
+  );
 
   // address find
   const address = [unitName, blockName, userData?.district]
@@ -403,6 +414,191 @@ const LearnerProfile: React.FC = () => {
     router.push('/learner-attendance-history');
   };
 
+  //-------Edit Learner Profile------------------
+
+  //fields  for edit popup by order
+
+  const filteredSortedForEdit = [...customFieldsData]
+    ?.filter((field) => field.order !== 0 && field.isEditable)
+    ?.sort((a, b) => a.order - b.order);
+
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  const [userName, setUserName] = useState<any | null>(null);
+  const [contactNumber, setContactNumber] = useState<any | null>(null);
+  const [openEdit, setOpenEdit] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const handleOpen = () => setOpenEdit(true);
+  const handleClose = () => setOpenEdit(false);
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isDesktop ? 700 : 400,
+    bgcolor: theme.palette.warning.A400,
+    p: 4,
+    textAlign: 'center',
+    height: '85vh',
+  };
+
+  const [formData, setFormData] = useState<{
+    userData: LearnerData;
+    customFields: { fieldId: string; type: string; value: string[] | string }[];
+  }>({
+    userData: {
+      name: userName || '',
+      id: 0,
+      role: '',
+      district: '',
+      state: '',
+      email: '',
+      customFields: [],
+    },
+    customFields: customFieldsData?.map((field) => ({
+      fieldId: field.fieldId,
+      type: field.type,
+      value: field.value,
+    })),
+  });
+
+  useEffect(() => {
+    setFormData({
+      userData: {
+        name: userName || '',
+        id: 0,
+        role: '',
+        district: '',
+        state: '',
+        email: '',
+        customFields: [],
+      },
+      customFields: customFieldsData?.map((field) => ({
+        fieldId: field.fieldId,
+        type: field.type,
+        value: field.value,
+      })),
+    });
+  }, [userData, customFieldsData]);
+
+  const handleFieldChange = (fieldId: string, value: string) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      customFields: prevState.customFields.map((field) =>
+        field.fieldId === fieldId ? { ...field, value: [value] } : field
+      ),
+    }));
+  };
+
+  const handleCheckboxChange = (
+    fieldId: string,
+    optionName: string,
+    isChecked: boolean
+  ) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      customFields: prevState.customFields.map((field) =>
+        field.fieldId === fieldId
+          ? {
+              ...field,
+              value: isChecked
+                ? [...(field.value as string[]), optionName]
+                : (field.value as string[]).filter(
+                    (item) => item !== optionName
+                  ),
+            }
+          : field
+      ),
+    }));
+  };
+
+  const handleDropdownChange = (fieldId: string, value: string) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      customFields: prevState.customFields.map((field) =>
+        field.fieldId === fieldId ? { ...field, value: [value] } : field
+      ),
+    }));
+  };
+
+  const handleRadioChange = (fieldId: string, value: string) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      customFields: prevState.customFields.map((field) =>
+        field.fieldId === fieldId ? { ...field, value: [value] } : field
+      ),
+    }));
+  };
+
+  const handleSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    setLoading(true);
+    const userId = localStorage.getItem('userId');
+    const data = {
+      userData: formData?.userData,
+      customFields: formData?.customFields?.map((field) => ({
+        fieldId: field.fieldId,
+        type: field.type,
+        value:
+          field.value.length > 1 ? field.value : (field.value as string[])[0],
+      })),
+    };
+    let userDetails = data;
+    try {
+      if (userId) {
+        const response = await editEditUser(userId, userDetails);
+
+        if (response.responseCode !== 200 || response.params.err) {
+          throw new Error(
+            response.params.errmsg ||
+              'An error occurred while updating the user.'
+          );
+        }
+
+        handleClose();
+
+        console.log(response.params.successmessage);
+        fetchUserDetails();
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+    console.log('payload', data);
+  };
+
+  const FieldComponent = ({
+    data,
+    label,
+    size,
+  }: {
+    data: any;
+    label: string;
+    size: number;
+  }) => (
+    <Grid item xs={size}>
+      {/* question */}
+      <Typography variant="h4" margin={0}>
+        {label}
+      </Typography>
+
+      {/* value */}
+      <Typography
+        variant="h4"
+        margin={0}
+        sx={{
+          wordBreak: 'break-word',
+        }}
+        color={'#4D4639'}
+      >
+        {data}
+      </Typography>
+    </Grid>
+  );
+
+  let contactNumberAdded = false;
   return (
     <>
       <Header />
@@ -567,7 +763,7 @@ const LearnerProfile: React.FC = () => {
               <Grid container display={'flex'} justifyContent={'space-between'}>
                 <Grid item xs={5}>
                   <StudentStatsCard
-                    label1="Attendance %"
+                    label1={t('COMMON.ATTENDANCE') + '%'}
                     value1={`${Math.round(overallAttendance?.present_percentage || 0)}%`}
                     label2={false}
                     value2="5"
@@ -575,7 +771,7 @@ const LearnerProfile: React.FC = () => {
                 </Grid>
                 <Grid item xs={5}>
                   <StudentStatsCard
-                    label1="Class missed"
+                    label1={t('COMMON.CLASS_MISSED')}
                     value1={overallAttendance?.absent || 0}
                     label2={false}
                     value2="5"
@@ -621,7 +817,7 @@ const LearnerProfile: React.FC = () => {
             },
           }}
           startIcon={<CreateOutlinedIcon />}
-          onClick={handleOpenEdit}
+          onClick={handleOpen}
         >
           {t('PROFILE.EDIT_PROFILE')}
         </Button>
@@ -641,26 +837,41 @@ const LearnerProfile: React.FC = () => {
           flexDirection="row"
         >
           <Grid container spacing={4}>
-            {customFieldsData &&
-              customFieldsData?.map((item: any, i: number) => (
-                <Grid item xs={6} key={i}>
-                  {/*  question */}
-                  <Typography variant="h4" margin={0}>
-                    {item?.label}
-                  </Typography>
+            <FieldComponent size={12} label={'Full Name'} data={userName} />
 
-                  {/* value  */}
-                  <Typography
-                    variant="h4"
-                    margin={0}
-                    sx={{
-                      wordBreak: 'break-word',
-                    }}
-                    color={'#4D4639'}
-                  >
-                    {item?.value}
-                  </Typography>
-                </Grid>
+            {learnerDetailsByOrder &&
+              learnerDetailsByOrder.map((item: any, i: number) => (
+                <React.Fragment key={i}>
+                  <Grid item xs={6}>
+                    {/* question */}
+                    <Typography variant="h4" margin={0}>
+                      {item?.label}
+                    </Typography>
+
+                    {/* value */}
+                    <Typography
+                      variant="h4"
+                      margin={0}
+                      sx={{
+                        wordBreak: 'break-word',
+                      }}
+                      color={'#4D4639'}
+                    >
+                      {item?.value}
+                    </Typography>
+                  </Grid>
+
+                  {item?.order === 3 && !contactNumberAdded && (
+                    <React.Fragment>
+                      <FieldComponent
+                        size={6}
+                        label={'Contact Number'}
+                        data={contactNumber}
+                      />
+                      {(contactNumberAdded = true)}
+                    </React.Fragment>
+                  )}
+                </React.Fragment>
               ))}
           </Grid>
         </Box>
@@ -689,7 +900,7 @@ const LearnerProfile: React.FC = () => {
             <Box>
               <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
                 <InputLabel id="demo-simple-select-helper-label">
-                  Test
+                  {t('PROFILE.TEST')}
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-helper-label"
@@ -701,13 +912,17 @@ const LearnerProfile: React.FC = () => {
                   {/* <MenuItem value="">
                     <em>Select Value</em>
                   </MenuItem> */}
-                  <MenuItem value={'Post Test'}>Post Test</MenuItem>
-                  <MenuItem value={'Pre Test'}>Pre Test</MenuItem>
+                  <MenuItem value={'Post Test'}>
+                    {t('PROFILE.POST_TEST')}
+                  </MenuItem>
+                  <MenuItem value={'Pre Test'}>
+                    {t('PROFILE.PRE_TEST')}
+                  </MenuItem>
                 </Select>
               </FormControl>
               <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
                 <InputLabel id="demo-simple-select-helper-label">
-                  Subject
+                  {t('PROFILE.SUBJECT')}
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-helper-label"
@@ -719,8 +934,8 @@ const LearnerProfile: React.FC = () => {
                   {/* <MenuItem value="">
                     <em>Select Value</em>
                   </MenuItem> */}
-                  <MenuItem value={'English'}>English</MenuItem>
-                  <MenuItem value={'Math'}>Math</MenuItem>
+                  <MenuItem value={'English'}>{t('PROFILE.ENGLISH')}</MenuItem>
+                  <MenuItem value={'Math'}>{t('PROFILE.MATH')}</MenuItem>
                 </Select>
               </FormControl>
             </Box>
@@ -767,9 +982,9 @@ const LearnerProfile: React.FC = () => {
         </Card>
       </Box>
 
-      {/* <Modal
-        open={openModal}
-        onClose={handleCloseModal}
+      <Modal
+        open={openEdit}
+        onClose={handleClose}
         aria-labelledby="edit-profile-modal"
         aria-describedby="edit-profile-description"
       >
@@ -780,48 +995,256 @@ const LearnerProfile: React.FC = () => {
           flexDirection="column"
           borderRadius={'1rem'}
         >
-          <Box>
-            <Grid container>
-              <Grid item xs={6}>
-                <Typography textAlign={'left'}>{t('DATA_RANAGE')}</Typography>
-              </Grid>
-              <Grid item xs={6} textAlign={'right'}>
-                <CloseIcon onClick={handleCloseModal} />
-              </Grid>
-            </Grid>
+          {loading && (
+            <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+          )}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 2,
+            }}
+          >
+            <Typography
+              variant="h2"
+              style={{
+                textAlign: 'left',
+                color: theme.palette.warning.A200,
+              }}
+            >
+              {t('PROFILE.EDIT_PROFILE')}
+            </Typography>
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+              style={{
+                justifyContent: 'flex-end',
+              }}
+            >
+              <CloseIcon cursor="pointer" />
+            </IconButton>
           </Box>
-          <Divider sx={dividerStyle} />
-          <MenuList dense>
-            {menuItems.map((item, index) => (
-              <MenuItem
-                key={index}
-                selected={selectedIndex === index}
-                // onClick={() => handleMenuItemClick(index, item)}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  paddingLeft: '32px',
-                }}
-              >
-                {selectedIndex === index && (
-                  <ListItemIcon
-                    sx={{
-                      position: 'absolute',
-                      left: '8px',
-                      minWidth: 'auto',
-                    }}
-                  >
-                    <Check fontSize="small" />
-                  </ListItemIcon>
-                )}
-                {item}
-              </MenuItem>
-            ))}
-          </MenuList>
-          <Divider sx={dividerStyle} />
-          <Button variant="contained">Apply</Button>
+          <Box
+            style={{
+              overflowY: 'auto',
+            }}
+            id="modal-modal-description"
+          >
+            {/* <Box
+              sx={{
+                flex: '1',
+                textAlign: 'center',
+                marginLeft: '5%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              borderRadius={'12px'}
+              border={'1px'}
+              bgcolor={theme.palette.warning.A400}
+              display="flex"
+              flexDirection="column"
+            >
+              <Image
+                src={user_placeholder_img}
+                alt="user"
+                height={100}
+                width={100}
+                style={{ alignItems: 'center' }}
+              />
+
+              <Box>
+                <input
+                  id=""
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  style={{ display: 'none' }}
+                />
+                <Button
+                  sx={{
+                    minWidth: '100%',
+                    padding: '10px 24px 10px 16px',
+                    borderRadius: '12px',
+                    marginTop: '10px',
+                    flex: '1',
+                    textAlign: 'center',
+                    border: '1px solid ',
+                  }}
+                  disabled // commment for temp
+                  onClick={handleClickImage}
+                >
+                  {t('PROFILE.UPDATE_PICTURE')}
+                </Button>
+              </Box>
+            </Box> */}
+            <TextField
+              sx={{ marginTop: '20px' }}
+              fullWidth
+              name="name"
+              label="Full Name"
+              variant="outlined"
+              value={formData.userData.name}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  userData: {
+                    name: e.target.value,
+                    id: 0,
+                    role: '',
+                    district: '',
+                    state: '',
+                    email: '',
+                    customFields: [],
+                  },
+                })
+              }
+            />
+
+            {filteredSortedForEdit
+              ?.filter((field) => field.isEditable)
+              ?.map((field) => (
+                <Grid item xs={12} key={field.fieldId}>
+                  {field.type === 'text' || field.type === 'numeric' ? (
+                    <TextField
+                      sx={{ marginTop: '20px' }}
+                      fullWidth
+                      name={field.name}
+                      label={field.label}
+                      variant="outlined"
+                      value={
+                        formData.customFields.find(
+                          (f) => f.fieldId === field.fieldId
+                        )?.value[0] || ''
+                      }
+                      onChange={(e) =>
+                        handleFieldChange(field.fieldId, e.target.value)
+                      }
+                    />
+                  ) : field.type === 'checkbox' ? (
+                    <Box marginTop={3}>
+                      <Typography
+                        textAlign={'start'}
+                        variant="h4"
+                        margin={0}
+                        color={theme.palette.warning.A200}
+                      >
+                        {field.label}
+                      </Typography>
+                      {field.options?.map((option: any) => (
+                        <FormGroup key={option.value}>
+                          <FormControlLabel
+                            sx={{ color: theme.palette.warning[300] }}
+                            control={
+                              <Checkbox
+                                color="default"
+                                checked={(
+                                  formData?.customFields.find(
+                                    (f) => f.fieldId === field.fieldId
+                                  )?.value || []
+                                )?.includes(option.value)}
+                                onChange={(e) =>
+                                  handleCheckboxChange(
+                                    field.fieldId,
+                                    option.value,
+                                    e.target.checked
+                                  )
+                                }
+                              />
+                            }
+                            label={option.label}
+                          />
+                        </FormGroup>
+                      ))}
+                    </Box>
+                  ) : field.type === 'Drop Down' ? (
+                    <Box marginTop={3} textAlign={'start'}>
+                      <FormControl fullWidth>
+                        <InputLabel id={`select-label-${field.fieldId}`}>
+                          {field.label}
+                        </InputLabel>
+                        <Select
+                          labelId={`select-label-${field.fieldId}`}
+                          id={`select-${field.fieldId}`}
+                          value={
+                            formData?.customFields?.find(
+                              (f) => f.fieldId === field.fieldId
+                            )?.value[0] || ''
+                          }
+                          label={field.label}
+                          onChange={(e) =>
+                            handleDropdownChange(field.fieldId, e.target.value)
+                          }
+                        >
+                          {field.options.map((option: any) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  ) : field.type === 'radio' ? (
+                    <Box marginTop={3}>
+                      <Typography
+                        textAlign={'start'}
+                        variant="h4"
+                        margin={0}
+                        color={theme.palette.warning.A200}
+                      >
+                        {field.label}
+                      </Typography>
+                      <RadioGroup
+                        name={field.fieldId}
+                        value={
+                          formData.customFields.find(
+                            (f) => f.fieldId === field.fieldId
+                          )?.value[0] || ''
+                        }
+                        onChange={(e) =>
+                          handleRadioChange(field.fieldId, e.target.value)
+                        }
+                      >
+                        <Box
+                          display="flex"
+                          flexWrap="wrap"
+                          color={theme.palette.warning.A200}
+                        >
+                          {field?.options?.map((option: any) => (
+                            <FormControlLabel
+                              key={option.value}
+                              value={option.label}
+                              control={<Radio color="default" />}
+                              label={option.label}
+                            />
+                          ))}
+                        </Box>
+                      </RadioGroup>
+                    </Box>
+                  ) : null}
+                </Grid>
+              ))}
+            <Box></Box>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Button
+              sx={{
+                minWidth: '100%',
+                color: theme.palette.warning.A200,
+                boxShadow: 'none',
+              }}
+              onClick={handleSubmit}
+              variant="contained"
+            >
+              {t('COMMON.SAVE')}
+            </Button>
+          </Box>
         </Box>
-      </Modal> */}
+      </Modal>
     </>
   );
 };

@@ -73,7 +73,19 @@ export interface cohortMemberList {
 
 export interface UserData {
   id: number;
-  name: string;
+  name?: any;
+  role: string;
+  district: string;
+  state: string;
+  email: string;
+  dob?: string;
+  mobile?: string;
+  customFields: CustomField[];
+}
+
+export interface LearnerData {
+  id: number;
+  name?: any;
   role: string;
   district: string;
   state: string;
@@ -131,12 +143,15 @@ export interface LearnerAttendanceProps {
 }
 
 export interface updateCustomField {
+  options: any;
   fieldId: string;
   value: string;
   type: string;
   label?: string;
   values?: string | string[];
   name?: string;
+  isEditable?: boolean;
+  order: number;
 }
 export interface cohort {
   presentPercentage: number;
@@ -199,7 +214,7 @@ export interface CustomField {
   name: string;
   isEditable: boolean;
 }
-export interface  CohortAttendanceListViewProps{
+export interface CohortAttendanceListViewProps {
   cohortName: string;
   attendancePercent: number;
 }
@@ -211,8 +226,7 @@ export interface allCenterAttendancePercentParam {
     scope: string;
     fromDate: Date | string;
     toDate: Date | string;
-    contextId : string;
+    contextId: string;
   };
   facets: Array<string>;
 }
-
