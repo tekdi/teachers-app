@@ -20,7 +20,6 @@ import {
   IconButton,
   InputLabel,
   MenuItem,
-  MenuList,
   Modal,
   Radio,
   RadioGroup,
@@ -33,27 +32,23 @@ import {
 import { LearnerData, UserData, updateCustomField } from '@/utils/Interfaces';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import React, { useEffect, useState } from 'react';
-import { Theme, useTheme } from '@mui/material/styles';
-import { alpha, styled } from '@mui/material/styles';
+import { alpha, styled, useTheme } from '@mui/material/styles';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
-import { formatDate, getTodayDate } from '@/utils/Helper';
 
 import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import DateRangePopup from '@/components/DateRangePopup';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { GetStaticPaths } from 'next';
 import Header from '@/components/Header';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Loader from '@/components/Loader';
 import MarksObtainedCard from '@/components/MarksObtainedCard';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import PersonOffIcon from '@mui/icons-material/PersonOff';
 // import Header from '../components/Header';
 // import { formatDate, getTodayDate } from '../utils/Helper';
 import StudentStatsCard from '@/components/StudentStatsCard';
-import WeekDays from '@/components/WeekDays';
 import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
+import { format } from 'date-fns';
+import { getTodayDate } from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -186,7 +181,6 @@ const LearnerProfile: React.FC = () => {
   ];
 
   const getAttendaceData = async (fromDates: any, toDates: any) => {
-    console.log('dates', fromDates, toDates);
     let fromDate = fromDates;
     let toDate = toDates;
     let filters = {
@@ -201,7 +195,6 @@ const LearnerProfile: React.FC = () => {
       facets: ['userId'],
     });
     if (response?.statusCode === 200) {
-      console.log('response for userData', response?.data?.result);
       const userData = response?.data.result.userId[userId];
       setOverallAttendance(userData);
 
@@ -224,10 +217,8 @@ const LearnerProfile: React.FC = () => {
         if (user) {
           const response = await getUserDetails(user, true);
 
-          console.log('response userId', response);
           if (response?.responseCode === 200) {
             const data = response?.result;
-            console.log('data', data);
             if (data) {
               const userData = data?.userData;
 
@@ -268,7 +259,12 @@ const LearnerProfile: React.FC = () => {
     ?.sort((a, b) => a.order - b.order)
     ?.filter((field) => field.order <= 12)
     ?.map((field) => {
-      if (field.type === 'Drop Down' && field.options && field.value.length) {
+      if (
+        field.type === 'Drop Down' ||
+        field.type === 'radio' ||
+        field.type === 'dropdown' ||
+        (field.type === 'Radio' && field.options && field.value.length)
+      ) {
         const selectedOption = field?.options?.find(
           (option: any) => option.value === field.value[0]
         );
@@ -321,7 +317,6 @@ const LearnerProfile: React.FC = () => {
             const QuestionSet = result?.QuestionSet?.[0];
             const getUniqueDoId = QuestionSet?.IL_UNIQUE_ID;
             setUniqueDoId(getUniqueDoId);
-            console.log('results:', getUniqueDoId);
             testReportDetails(getUniqueDoId);
           } else {
             console.log('NO Result found from getDoIdForAssesmentDetails ');
@@ -471,11 +466,9 @@ const LearnerProfile: React.FC = () => {
   }>({
     userData: {
       name: userName || '',
-      id: 0,
-      role: '',
       district: '',
       state: '',
-      email: '',
+      mobile: '',
       customFields: [],
     },
     customFields: customFieldsData?.map((field) => ({
@@ -489,11 +482,8 @@ const LearnerProfile: React.FC = () => {
     setFormData({
       userData: {
         name: userName || '',
-        id: 0,
-        role: '',
         district: '',
         state: '',
-        email: '',
         customFields: [],
       },
       customFields: customFieldsData?.map((field) => ({
@@ -589,8 +579,6 @@ const LearnerProfile: React.FC = () => {
     } catch (error) {
       console.error('Error:', error);
     }
-
-    console.log('payload', data);
   };
 
   const FieldComponent = ({
@@ -696,11 +684,11 @@ const LearnerProfile: React.FC = () => {
                 open={openOption}
                 onClose={handleCloseOption}
               >
+                {/* <MenuItem onClick={handleCloseOption} disableRipple>
+                  {t('COMMON.MARK_DROP_OUT')}
+                </MenuItem> */}
                 <MenuItem onClick={handleCloseOption} disableRipple>
-                  Mark as Drop Out
-                </MenuItem>
-                <MenuItem onClick={handleCloseOption} disableRipple>
-                  Remove
+                  {t('COMMON.REMOVE')}
                 </MenuItem>
               </StyledMenu>
             </Box>
@@ -765,7 +753,7 @@ const LearnerProfile: React.FC = () => {
           }}
         >
           <Box sx={{ mt: 2 }}>
-            <Typography
+            {/* <Typography
               sx={{
                 color: '#7C766F',
               }}
@@ -774,7 +762,7 @@ const LearnerProfile: React.FC = () => {
               lineHeight={'16px'}
             >
               Attendance Marked : 3 out of last 7 days
-            </Typography>
+            </Typography>  */}
             <Box
               gap={1}
               sx={{
@@ -979,7 +967,10 @@ const LearnerProfile: React.FC = () => {
               >
                 <Box>
                   <Typography variant="h5">
-                    {t('PROFILE.SUBMITTED_ON')} : {submittedOn}
+                    {t('PROFILE.SUBMITTED_ON')} :{' '}
+                    {submittedOn
+                      ? format(new Date(submittedOn), 'dd MMMM, yyyy')
+                      : ''}
                   </Typography>
                 </Box>
                 <Box display={'flex'} justifyContent={'space-between'} mt={1}>
@@ -1124,11 +1115,9 @@ const LearnerProfile: React.FC = () => {
                   ...formData,
                   userData: {
                     name: e.target.value,
-                    id: 0,
-                    role: '',
                     district: '',
                     state: '',
-                    email: '',
+                    mobile: '',
                     customFields: [],
                   },
                 })
@@ -1191,7 +1180,8 @@ const LearnerProfile: React.FC = () => {
                         </FormGroup>
                       ))}
                     </Box>
-                  ) : field.type === 'Drop Down' ? (
+                  ) : field.type === 'Drop Down' ||
+                    field.type === 'dropdown' ? (
                     <Box marginTop={3} textAlign={'start'}>
                       <FormControl fullWidth>
                         <InputLabel id={`select-label-${field.fieldId}`}>
@@ -1210,7 +1200,7 @@ const LearnerProfile: React.FC = () => {
                             handleDropdownChange(field.fieldId, e.target.value)
                           }
                         >
-                          {field.options.map((option: any) => (
+                          {field?.options?.map((option: any) => (
                             <MenuItem key={option.value} value={option.value}>
                               {option.label}
                             </MenuItem>
@@ -1218,7 +1208,7 @@ const LearnerProfile: React.FC = () => {
                         </Select>
                       </FormControl>
                     </Box>
-                  ) : field.type === 'radio' ? (
+                  ) : field.type === 'radio' || field.type === 'Radio' ? (
                     <Box marginTop={3}>
                       <Typography
                         textAlign={'start'}
@@ -1231,7 +1221,7 @@ const LearnerProfile: React.FC = () => {
                       <RadioGroup
                         name={field.fieldId}
                         value={
-                          formData.customFields.find(
+                          formData?.customFields.find(
                             (f) => f.fieldId === field.fieldId
                           )?.value[0] || ''
                         }
@@ -1247,7 +1237,7 @@ const LearnerProfile: React.FC = () => {
                           {field?.options?.map((option: any) => (
                             <FormControlLabel
                               key={option.value}
-                              value={option.label}
+                              value={option.value}
                               control={<Radio color="default" />}
                               label={option.label}
                             />

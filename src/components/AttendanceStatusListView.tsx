@@ -67,6 +67,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   // const userId = '12345'; // Replace with the actual user ID you want to pass
 
   const handleOpenModalLearner = (userId: string) => {
+    if (!showLink) { return } 
     fetchUserDetails(userId);
     setIsModalOpenLearner(true);
   };

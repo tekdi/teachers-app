@@ -72,25 +72,17 @@ export interface cohortMemberList {
 }
 
 export interface UserData {
-  id: number;
   name?: any;
-  role: string;
   district: string;
   state: string;
-  email: string;
-  dob?: string;
   mobile?: string;
   customFields: CustomField[];
 }
 
 export interface LearnerData {
-  id: number;
   name?: any;
-  role: string;
   district: string;
   state: string;
-  email: string;
-  dob?: string;
   mobile?: string;
   customFields: CustomField[];
 }
