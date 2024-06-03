@@ -51,7 +51,9 @@
     "CLOSE": "Close",
     "CANCEL": "Cancel",
     "OK": "OK",
-    "FROM_TO_DATE": "From - To dates"
+    "FROM_TO_DATE": "From - To dates",
+    "REMOVE": "Remove",
+    "MARK_DROP_OUT":"Mark as Drop Out"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",

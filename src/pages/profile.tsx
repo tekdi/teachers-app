@@ -171,7 +171,6 @@ const TeacherProfile = () => {
     (field) => field.name === 'main_subject'
   );
 
- 
   const teachSubjects: string[] = Array.isArray(teachSubjectsField?.value)
     ? teachSubjectsField?.value
     : [];
@@ -201,11 +200,27 @@ const TeacherProfile = () => {
     ?.filter((field) => field.order !== 0 && field.name !== 'main_subject')
     ?.sort((a, b) => a.order - b.order);
 
+  
+
   //fields  for edit popup by order
   const filteredSortedForEdit = [...customFieldsData]
     ?.filter((field) => field.order !== 0 && field.isEditable)
     ?.sort((a, b) => a.order - b.order);
-  console.log('filteredSortedForEdit', filteredSortedForEdit);
+
+  // fields for showing in  basic details
+  const getLabelForValue = (field: any, value: string) => {
+    if (
+      field.type === 'radio' ||
+      field.type === 'Radio' ||
+      field.type === 'Drop Down' ||
+      field.type === 'dropdown'
+    ) {
+      const option = field?.options?.find((opt: any) => opt?.value === value);
+      return option ? option?.label : value;
+    }
+    return value;
+  };
+
   // address find
   const address = [unitName, blockName, userData?.district, userData?.state]
     ?.filter(Boolean)
@@ -223,7 +238,7 @@ const TeacherProfile = () => {
     customFields: customFieldsData?.map((field) => ({
       fieldId: field.fieldId,
       type: field.type,
-      value: field.value,
+      value: field.value ? field.value : '',
     })),
   });
 
@@ -235,7 +250,7 @@ const TeacherProfile = () => {
       customFields: customFieldsData.map((field) => ({
         fieldId: field.fieldId,
         type: field.type,
-        value: field.value,
+        value: field.value ? field.value : '',
       })),
     });
   }, [userData, customFieldsData]);
@@ -300,8 +315,11 @@ const TeacherProfile = () => {
       customFields: formData?.customFields?.map((field) => ({
         fieldId: field.fieldId,
         type: field.type,
-        value:
-          field.value.length > 1 ? field.value : (field.value as string[])[0],
+        value: Array.isArray(field?.value)
+          ? field?.value?.length > 0
+            ? field?.value
+            : ''
+          : field?.value,
       })),
     };
     let userDetails = data;
@@ -571,7 +589,7 @@ const TeacherProfile = () => {
                         margin={0}
                         color={theme.palette.warning.A200}
                       >
-                        {item.value}
+                        {getLabelForValue(item, item.value[0])}
                       </Typography>
                     </Grid>
                   );
@@ -696,8 +714,9 @@ const TeacherProfile = () => {
                 />
 
                 {customFieldsData
-                  .filter((field) => field.isEditable)
-                  .map((field) => (
+                  ?.filter((field) => field.isEditable)
+                  ?.sort((a, b) => a.order - b.order)
+                  ?.map((field) => (
                     <Grid item xs={12} key={field.fieldId}>
                       {field.type === 'text' || field.type === 'numeric' ? (
                         <TextField
@@ -707,7 +726,7 @@ const TeacherProfile = () => {
                           label={field.label}
                           variant="outlined"
                           value={
-                            formData.customFields.find(
+                            formData?.customFields?.find(
                               (f) => f.fieldId === field.fieldId
                             )?.value[0] || ''
                           }
@@ -751,7 +770,8 @@ const TeacherProfile = () => {
                             </FormGroup>
                           ))}
                         </Box>
-                      ) : field.type === 'Drop Down' ? (
+                      ) : field.type === 'Drop Down' ||
+                        field.type === 'dropdown' ? (
                         <Box marginTop={3} textAlign={'start'}>
                           <FormControl fullWidth>
                             <InputLabel id={`select-label-${field.fieldId}`}>
@@ -761,7 +781,7 @@ const TeacherProfile = () => {
                               labelId={`select-label-${field.fieldId}`}
                               id={`select-${field.fieldId}`}
                               value={
-                                formData.customFields.find(
+                                formData?.customFields?.find(
                                   (f) => f.fieldId === field.fieldId
                                 )?.value[0] || ''
                               }
@@ -773,7 +793,7 @@ const TeacherProfile = () => {
                                 )
                               }
                             >
-                              {field.options.map((option: any) => (
+                              {field?.options?.map((option: any) => (
                                 <MenuItem
                                   key={option.value}
                                   value={option.value}
@@ -784,7 +804,7 @@ const TeacherProfile = () => {
                             </Select>
                           </FormControl>
                         </Box>
-                      ) : field.type === 'radio' ? (
+                      ) : field.type === 'radio' || field.type === 'Radio' ? (
                         <Box marginTop={3}>
                           <Typography
                             textAlign={'start'}
@@ -797,7 +817,7 @@ const TeacherProfile = () => {
                           <RadioGroup
                             name={field.fieldId}
                             value={
-                              formData.customFields.find(
+                              formData?.customFields?.find(
                                 (f) => f.fieldId === field.fieldId
                               )?.value[0] || ''
                             }
@@ -813,7 +833,7 @@ const TeacherProfile = () => {
                               {field?.options?.map((option: any) => (
                                 <FormControlLabel
                                   key={option.value}
-                                  value={option.label}
+                                  value={option.value}
                                   control={<Radio color="default" />}
                                   label={option.label}
                                 />
