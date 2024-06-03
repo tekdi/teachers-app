@@ -96,7 +96,7 @@ const LearnerProfile: React.FC = () => {
   const [currentDate, setCurrentDate] = React.useState(getTodayDate);
   const [selectedIndex, setSelectedIndex] = useState(null);
   // const [selectedValue, setSelectedValue] = useState('');
-  const [assesmentData, setAssesmentData] = useState([]);
+  const [assesmentData, setAssesmentData] = useState<any>(null);
   const [questionData, setQuestionData] = useState([]);
   const [age, setAge] = React.useState('');
   const [test, setTest] = React.useState('Pre Test');
@@ -269,9 +269,28 @@ const LearnerProfile: React.FC = () => {
 
   // data by order to show on basic details
 
-  const learnerDetailsByOrder = [...customFieldsData].sort(
-    (a, b) => a.order - b.order
-  );
+  // const learnerDetailsByOrder = [...customFieldsData]
+  //   .sort((a, b) => a.order - b.order)
+  //   .filter((field) => field.order <= 12);
+
+  const learnerDetailsByOrder = [...customFieldsData]
+    ?.sort((a, b) => a.order - b.order)
+    ?.filter((field) => field.order <= 12)
+    ?.map((field) => {
+      if (field.type === 'Drop Down' && field.options && field.value.length) {
+        const selectedOption = field?.options?.find(
+          (option: any) => option.value === field.value[0]
+        );
+        return {
+          ...field,
+          displayValue: selectedOption ? selectedOption?.label : field.value[0],
+        };
+      }
+      return {
+        ...field,
+        displayValue: field.value[0],
+      };
+    });
 
   // address find
   const address = [unitName, blockName, userData?.district]
@@ -345,40 +364,53 @@ const LearnerProfile: React.FC = () => {
       order: 'asc',
     };
 
-    const response = await AssesmentListService({ sort, pagination, filters });
-    console.log('statusCode', response?.response);
-    if (response?.response?.status === 200) {
-      if (response) {
-        const result = response?.result;
-        if (result?.length > 0) {
-          const data = result;
-          setSubmitedOn(data?.createdOn);
-          setAssesmentData(data);
-          console.log('Data', data);
+    if (do_Id) {
+      const response = await AssesmentListService({
+        sort,
+        pagination,
+        filters,
+      });
+
+      if (response?.responseCode === 200) {
+       
+        const result = response.result;
+        if (result) {
+          
+          setSubmitedOn(result[0]?.createdOn);
+
+          const questionValues = getQuestionValues(result);
+          setAssesmentData(questionValues?.questions); // Use the parsed questions
+          
         } else {
+          setUniqueDoId('');
+          console.log('No Data Found');
         }
       } else {
-        console.log('No Data Found');
+        setUniqueDoId('');
+        console.log(
+          'AssesmentListService data',
+          response?.response?.statusText
+        );
       }
     } else {
-      setUniqueDoId('');
-      console.log('AssesmentListService data', response?.response?.statusText);
+      console.log('No Do Id Found');
     }
   };
 
-  function getQuestionValues(data: any) {
+  function getQuestionValues(response: any) {
     const questionValues: any = {
       totalMaxScore: 0,
       totalScore: 0,
-      length: data.length,
+      length: response.length,
       questions: [],
       totalQuestions: 0,
     };
 
-    data?.forEach((item: any) => {
-      item?.assessmentSummary?.forEach((summary: any) => {
-        let questionNumber = 1;
-        summary?.data?.forEach((question: any) => {
+    response.forEach((assessment: any) => {
+      const assessmentSummary = JSON.parse(assessment.assessmentSummary);
+      let questionNumber = 1;
+      assessmentSummary?.forEach((section: any) => {
+        section?.data?.forEach((question: any, index: number) => {
           const questionValue: any = {
             question: `Q${questionNumber}`,
             mark_obtained: question.score,
@@ -396,7 +428,7 @@ const LearnerProfile: React.FC = () => {
     return questionValues;
   }
   // questionValues
-  const questionValues = getQuestionValues(assesmentData);
+  // const questionValues = getQuestionValues(assesmentData);
 
   // all function call when page render
   useEffect(() => {
@@ -857,7 +889,7 @@ const LearnerProfile: React.FC = () => {
                       }}
                       color={'#4D4639'}
                     >
-                      {item?.value}
+                      {item?.displayValue}
                     </Typography>
                   </Grid>
 
@@ -964,11 +996,11 @@ const LearnerProfile: React.FC = () => {
                 <Box mt={1}>
                   <Typography variant="h5">
                     {t('PROFILE.TOTAL_QUESTIONS')} :
-                    {questionValues?.questions?.length}
+                    {assesmentData?.questions?.length}
                   </Typography>
                 </Box>
                 <Box mt={2}>
-                  <MarksObtainedCard data={questionValues?.questions} />
+                  <MarksObtainedCard data={assesmentData} />
                 </Box>
               </Box>
             ) : (

@@ -105,6 +105,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
       console.error('Error fetching user details:', error);
     }
   };
+
   const names = [
     'name',
     'age',
@@ -123,13 +124,15 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
       {loading ? (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       ) : (
-        <LearnerModal
-          userId={userData?.userId}
-          open={isModalOpenLearner}
-          onClose={handleCloseModalLearner}
-          data={filteredFields}
-          userName={userName}
-        />
+        showLink && (
+          <LearnerModal
+            userId={userData?.userId}
+            open={isModalOpenLearner}
+            onClose={handleCloseModalLearner}
+            data={filteredFields}
+            userName={userName}
+          />
+        )
       )}
 
       <Box sx={boxStyling}>
@@ -174,7 +177,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             ATTENDANCE_ENUM.PRESENT
           ) ? (
             <CheckCircleIcon
-            sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+              sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
               style={{
                 fill: isDisabled
                   ? theme.palette.success.main
@@ -183,7 +186,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             />
           ) : (
             <CheckCircleOutlineIcon
-            sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+              sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
               style={{
                 fill: isDisabled
                   ? theme.palette.warning['400']
@@ -216,10 +219,13 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           {[userData?.attendance, bulkAttendanceStatus].includes(
             ATTENDANCE_ENUM.ABSENT
           ) ? (
-            <CancelIcon sx={{ cursor: isDisabled ? 'default' : 'pointer' }} style={{ fill: theme.palette.error.main }} />
+            <CancelIcon
+              sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+              style={{ fill: theme.palette.error.main }}
+            />
           ) : (
             <HighlightOffIcon
-            sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+              sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
               style={{
                 fill: isDisabled
                   ? theme.palette.warning['400']
