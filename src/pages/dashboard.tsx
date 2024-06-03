@@ -420,7 +420,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, [classId !== 'all', selectedDate, handleSaveHasRun]);
 
   const viewAttendanceHistory = () => {
-    router.push('/attendance-history');
+    if (classId !== "all"){
+      router.push('/attendance-history');
+    }
   };
 
   const handleClose = () => {
@@ -498,6 +500,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       cursor: 'pointer',
                       color: theme.palette.secondary.main,
                       gap: '2px',
+                      opacity: classId==='all' ? 0.5 : 1 
                     }}
                     onClick={viewAttendanceHistory}
                   >
@@ -566,6 +569,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <WeekCalender
                       showDetailsHandle={showDetailsHandle}
                       data={percentageAttendanceData}
+                      disableDays = {classId === "all" ? true : false}
                     />
                   </Box>
                   <Box
