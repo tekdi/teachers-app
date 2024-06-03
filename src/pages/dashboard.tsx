@@ -109,9 +109,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       let endDay = endRangeDate.getDate();
       let endDayMonth = endRangeDate.toLocaleString('default', { month: 'long' });
       if (startDayMonth == endDayMonth){
-        setDateRange(`(${startDay}-${endDay} ${endDayMonth}`);
+        setDateRange(`(${startDay}-${endDay} ${endDayMonth})`);
       }else{
-        setDateRange(`(${startDay} ${startDayMonth}-${endDay} ${endDayMonth}`);
+        setDateRange(`(${startDay} ${startDayMonth}-${endDay} ${endDayMonth})`);
       }
       
       setStartDateRange(shortDateFormat(startRangeDate));
