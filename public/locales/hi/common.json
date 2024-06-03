@@ -50,7 +50,8 @@
     "CLOSE": "बंद करना",
     "CANCEL": "रद्द करना",
     "OK": "ठीक है",
-    "FROM_TO_DATE": "से - दिनांक तक"
+    "FROM_TO_DATE": "से - दिनांक तक",
+    "SOMETHING_WENT_WRONG": "कुछ गलत हो गया"
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",
@@ -97,6 +98,7 @@
     "MARK_ALL": "सभी को चिन्हित करें",
     "CLEAR": "साफ़ करें",
     "ATTENDANCE_MARKED_SUCCESSFULLY": "उपस्थिति सफलतापूर्वक चिह्नित की गई है",
+    "ATTENDANCE_MODIFIED_SUCCESSFULLY": "उपस्थिति सफलतापूर्वक संशोधित की गई",
     "ATTENDANCE_MARKED_UNSUCCESSFULLY": "उपस्थिति चिह्नित नहीं की गई",
     "MY_ATTENDANCE_HISTORY": "मेरी उपस्थिति का इतिहास",
     "UPDATE_ATTENDANCE_ALERT": "आपलं खात्री करायला खात्री आहे का?",
