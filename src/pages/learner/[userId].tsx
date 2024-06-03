@@ -20,60 +20,43 @@ import {
   IconButton,
   InputLabel,
   MenuItem,
-<<<<<<< HEAD
-=======
   MenuList,
   Modal,
   Radio,
   RadioGroup,
->>>>>>> 22c0f9a71024dd9dddc93abae4a7e9bf99d322d9
   Select,
   SelectChangeEvent,
+  TextField,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
+import { LearnerData, UserData, updateCustomField } from '@/utils/Interfaces';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import React, { useEffect, useState } from 'react';
-<<<<<<< HEAD
-import { UserData, updateCustomField } from '@/utils/Interfaces';
-import { alpha, styled, useTheme } from '@mui/material/styles';
-=======
 import { Theme, useTheme } from '@mui/material/styles';
-import { LearnerData, UserData, updateCustomField } from '@/utils/Interfaces';
+import { alpha, styled } from '@mui/material/styles';
+import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { formatDate, getTodayDate } from '@/utils/Helper';
->>>>>>> 22c0f9a71024dd9dddc93abae4a7e9bf99d322d9
 
+import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import DateRangePopup from '@/components/DateRangePopup';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { GetStaticPaths } from 'next';
 import Header from '@/components/Header';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import Loader from '@/components/Loader';
 import MarksObtainedCard from '@/components/MarksObtainedCard';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import PersonOffIcon from '@mui/icons-material/PersonOff';
 // import Header from '../components/Header';
 // import { formatDate, getTodayDate } from '../utils/Helper';
 import StudentStatsCard from '@/components/StudentStatsCard';
-<<<<<<< HEAD
-import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
-// import { Link, useParams } from 'react-router-dom';
-import { getTodayDate } from '@/utils/Helper';
-import { getUserDetails } from '@/services/ProfileService';
-=======
 import WeekDays from '@/components/WeekDays';
-import { editEditUser, getUserDetails } from '@/services/ProfileService';
->>>>>>> 22c0f9a71024dd9dddc93abae4a7e9bf99d322d9
+import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-<<<<<<< HEAD
-=======
-import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
-import DateRangePopup from '@/components/DateRangePopup';
-import { styled, alpha } from '@mui/material/styles';
-import Menu, { MenuProps } from '@mui/material/Menu';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import PersonOffIcon from '@mui/icons-material/PersonOff';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Loader from '@/components/Loader';
->>>>>>> 22c0f9a71024dd9dddc93abae4a7e9bf99d322d9
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -588,7 +571,7 @@ const LearnerProfile: React.FC = () => {
   }) => (
     <Grid item xs={size}>
       {/* question */}
-      <Typography variant="h4" margin={0}>
+      <Typography variant="h4" sx={{ fontSize: '12px' }} margin={0}>
         {label}
       </Typography>
 
@@ -598,6 +581,7 @@ const LearnerProfile: React.FC = () => {
         margin={0}
         sx={{
           wordBreak: 'break-word',
+          fontSize: '16px',
         }}
         color={'#4D4639'}
       >
@@ -841,6 +825,7 @@ const LearnerProfile: React.FC = () => {
           bgcolor="warning.A400"
           display="flex"
           flexDirection="row"
+          padding="15px"
         >
           <Grid container spacing={4}>
             <FieldComponent size={12} label={'Full Name'} data={userName} />
@@ -850,7 +835,11 @@ const LearnerProfile: React.FC = () => {
                 <React.Fragment key={i}>
                   <Grid item xs={6}>
                     {/* question */}
-                    <Typography variant="h4" margin={0}>
+                    <Typography
+                      variant="h4"
+                      sx={{ fontSize: '12px', color: '#969088' }}
+                      margin={0}
+                    >
                       {item?.label}
                     </Typography>
 
@@ -860,6 +849,8 @@ const LearnerProfile: React.FC = () => {
                       margin={0}
                       sx={{
                         wordBreak: 'break-word',
+                        fontSize: '16px',
+                        color: '#4D4639',
                       }}
                       color={'#4D4639'}
                     >
