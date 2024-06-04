@@ -9,6 +9,7 @@ import {
   Modal,
   Select,
   Typography,
+  useStepContext,
 } from '@mui/material';
 import React, { useState } from 'react';
 import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
@@ -79,6 +80,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const [displayCalendarToDate, setDisplayCalendarToDate] = React.useState(
     getDayAndMonthName(getTodayDate())
   );
+  const [cancelClicked, setCancelClicked] = React.useState(false)
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const toggleCalendarModal = () =>
@@ -91,18 +93,24 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     if (index === 4) {
       toggleCalendarModal();
     }
-    if (index === 4) {
-      toggleCalendarModal();
-    }
   };
+  const handleCancelClicked = ()=>{
+    toggleCalendarModal();
+    setCancelClicked(true)
+  }
 
   const onApply = () => {
-    console.log('applied', selectedIndex, selectedValue);
-    const values = getDateRange(selectedIndex);
-    const { toDate, fromDate } = values;
-    console.log(toDate, fromDate);
-    onDateRangeSelected({ fromDate, toDate });
-    toggleModal();
+    if (cancelClicked){
+      toggleModal();
+      setCancelClicked(false)
+    }else{
+      console.log('applied', selectedIndex, selectedValue);
+      const values = getDateRange(selectedIndex);
+      const { toDate, fromDate } = values;
+      console.log(toDate, fromDate);
+      onDateRangeSelected({ fromDate, toDate });
+      toggleModal();
+    }
   };
 
   const getDateRange = (index: number | null) => {
@@ -264,7 +272,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         </Box>
       </Modal>
 
-      {/* CustomeCalendarModal */}
+      {/* Custom CalendarModal */}
       <Modal
         open={isCalendarModalOpen}
         onClose={toggleCalendarModal}
@@ -287,7 +295,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
             >
               <Box>
                 <WestIcon
-                  onClick={toggleCalendarModal}
+                  onClick={()=> handleCancelClicked()}
                   style={{ cursor: 'pointer' }}
                 />
               </Box>
@@ -295,7 +303,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
             </Box>
             <Box>
               <CloseIcon
-                onClick={toggleCalendarModal}
+                onClick={()=> handleCancelClicked()}
                 style={{ cursor: 'pointer' }}
               />
             </Box>
@@ -324,7 +332,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
               justifyContent: 'end',
             }}
           >
-            <Box className="text-0D fs-14 fw-500" onClick={toggleCalendarModal}>
+            <Box className="text-0D fs-14 fw-500" onClick={()=> handleCancelClicked()}>
               {t('COMMON.CANCEL')}
             </Box>
             <Box className="text-0D fs-14 fw-500" onClick={toggleCalendarModal}>
