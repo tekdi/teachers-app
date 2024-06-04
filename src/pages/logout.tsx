@@ -20,6 +20,7 @@ function Logout() {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('userId');
     localStorage.removeItem('parentCohortId');
+    localStorage.removeItem('learnerId');
 
     router.replace('/login');
   }, []);
