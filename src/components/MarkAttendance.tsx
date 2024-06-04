@@ -85,11 +85,11 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
         const response = await markAttendance(markAttendanceRequest);
         setUpdatedStatus(response?.data?.attendance);
         onAttendanceUpdate();
+        handleClick({ vertical: 'bottom', horizontal: 'center' })();
       }
     } catch (error) {
       console.log(error);
     }
-    handleClick({ vertical: 'bottom', horizontal: 'center' })();
     handleClose();
     // handleMarkUpdateAttendanceModal();
   };

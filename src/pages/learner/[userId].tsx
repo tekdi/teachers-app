@@ -87,6 +87,10 @@ const LearnerProfile: React.FC = () => {
 
   const router = useRouter();
   const { userId }: any = router.query;
+  console.log('userId', userId);
+  if (typeof window !== 'undefined' && window.localStorage) {
+    localStorage.setItem('learnerId', userId);
+  }
 
   const [userData, setUserData] = useState<UserData | null>(null);
   // const [attendanceReport, setAttendanceReport] = useState<any>(null);
@@ -590,7 +594,6 @@ const LearnerProfile: React.FC = () => {
     } catch (error) {
       console.error('Error:', error);
     }
-
   };
 
   const FieldComponent = ({
