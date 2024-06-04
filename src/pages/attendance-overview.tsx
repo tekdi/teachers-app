@@ -140,7 +140,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       };
       const res = await getCohortAttendance(cohortAttendanceData);
       const response = res?.data?.result?.attendanceDate;
-      setNumberOfDaysAttendanceMarked(Object.keys(response).length);
+      if (response) {
+        setNumberOfDaysAttendanceMarked(Object.keys(response)?.length);
+    } else {
+        setNumberOfDaysAttendanceMarked(0); 
+    }
     };
     if (classId) {
       getAttendanceMarkedDays();
