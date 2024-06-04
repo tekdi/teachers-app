@@ -128,7 +128,9 @@ const LearnerModal = ({
                           fontWeight={'400'}
                           lineHeight={'24px'}
                           margin={0}
-                          color={'#4D4639'}
+                          sx={{
+                            color: theme.palette.warning['A100'],
+                          }}
                         >
                           {userName}
                         </Typography>
