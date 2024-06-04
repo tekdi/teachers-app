@@ -69,10 +69,15 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   };
 
   const updateBulkAttendanceStatus = (arr: any[]) => {
-    const isAllPresent = arr.every((user: any) => user.attendance === 'present');
+    const isAllPresent = arr.every(
+      (user: any) => user.attendance === 'present'
+    );
     const isAllAbsent = arr.every((user: any) => user.attendance === 'absent');
-    setBulkAttendanceStatus(isAllPresent ? 'present' : isAllAbsent ? 'absent' : '');``
-  }
+    setBulkAttendanceStatus(
+      isAllPresent ? 'present' : isAllAbsent ? 'absent' : ''
+    );
+    ``;
+  };
 
   const submitBulkAttendanceAction = (
     isBulkAction: boolean,
@@ -136,7 +141,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                     fromDate: formatSelectedDate,
                     toDate: formatSelectedDate,
                     contextId: classId,
-                    scope: "student"
+                    scope: 'student',
                   },
                 };
                 const res = await attendanceStatusList(attendanceStatusData);
@@ -264,11 +269,11 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
         try {
           const response = await bulkAttendance(data);
           const resp = response?.data;
-          if (resp){
+          if (resp) {
             setShowUpdateButton(true);
-          onClose();
-          setLoading(false);
-          isError(false)
+            onClose();
+            setLoading(false);
+            isError(false);
           }
           if (onSaveSuccess) {
             onSaveSuccess();
@@ -276,7 +281,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
         } catch (error) {
           console.error('Error fetching  cohort list:', error);
           setLoading(false);
-          setIsError(true)
+          setIsError(true);
         }
         handleClick({ vertical: 'bottom', horizontal: 'center' })();
       };
@@ -405,7 +410,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   sx={{
                     overflowY: 'scroll',
                     marginTop: '10px',
-                    // padding: '0 10px',
+                    padding: '0 0 10px',
                   }}
                 >
                   <Box className="modalBulk">
@@ -452,6 +457,13 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       variant="outlined"
                       disabled={isAllAttendanceMarked ? false : true}
                       onClick={() => submitBulkAttendanceAction(true, '', '')}
+                      sx={{
+                        width: '128px',
+                        height: '40px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
                     >
                       {' '}
                       {t('ATTENDANCE.CLEAR')}
@@ -459,11 +471,19 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                     <Button
                       variant="contained"
                       color="primary"
-                      style={{ width: '8rem' }}
+                      sx={{
+                        width: '128px',
+                        height: '40px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
                       disabled={isAllAttendanceMarked ? false : true}
                       onClick={handleSave}
                     >
-                      {(presentCount == 0 && absentCount == 0) ? t('COMMON.MARK') : t('COMMON.MODIFY')}
+                      {presentCount == 0 && absentCount == 0
+                        ? t('COMMON.MARK')
+                        : t('COMMON.MODIFY')}
                     </Button>
                   </Box>
                 </Box>
@@ -476,26 +496,33 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
           </Box>
         </Fade>
       </Modal>
-      { (!isError)? 
-      <Snackbar
-        anchorOrigin={{ vertical, horizontal }}
-        open={openModal}
-        onClose={handleClose}
-        className="sample"
-        autoHideDuration={5000}
-        key={vertical + horizontal}
-        message={(presentCount == 0 && absentCount == 0) ? t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'): t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY')}
-        // action={action}
-      />:  <Snackbar
-      anchorOrigin={{ vertical, horizontal }}
-      open={openModal}
-      onClose={handleClose}
-      className="sample"
-      autoHideDuration={5000}
-      key={vertical + horizontal}
-      message={ t('COMMON.SOMETHING_WENT_WRONG')}
-      // action={action}
-    />}
+      {!isError ? (
+        <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={openModal}
+          onClose={handleClose}
+          className="sample"
+          autoHideDuration={5000}
+          key={vertical + horizontal}
+          message={
+            presentCount == 0 && absentCount == 0
+              ? t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY')
+              : t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY')
+          }
+          // action={action}
+        />
+      ) : (
+        <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={openModal}
+          onClose={handleClose}
+          className="sample"
+          autoHideDuration={5000}
+          key={vertical + horizontal}
+          message={t('COMMON.SOMETHING_WENT_WRONG')}
+          // action={action}
+        />
+      )}
     </Box>
   );
 };

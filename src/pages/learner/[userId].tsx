@@ -810,7 +810,7 @@ const LearnerProfile: React.FC = () => {
         <Typography
           fontWeight={'500'}
           fontSize={'16px'}
-          sx={{ color: '#4D4639' }}
+          sx={{ color: theme.palette.warning.main }}
         >
           {t('PROFILE.LEARNER_DETAILS')}
         </Typography>
@@ -862,7 +862,10 @@ const LearnerProfile: React.FC = () => {
                     {/* question */}
                     <Typography
                       variant="h4"
-                      sx={{ fontSize: '12px', color: '#969088' }}
+                      sx={{
+                        fontSize: '12px',
+                        color: theme.palette.warning.main,
+                      }}
                       margin={0}
                     >
                       {item?.label}
@@ -875,9 +878,8 @@ const LearnerProfile: React.FC = () => {
                       sx={{
                         wordBreak: 'break-word',
                         fontSize: '16px',
-                        color: '#4D4639',
+                        color: theme.palette.warning.main,
                       }}
-                      color={'#4D4639'}
                     >
                       {item?.displayValue}
                     </Typography>
