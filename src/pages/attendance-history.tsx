@@ -661,7 +661,7 @@ const UserAttendanceHistory = () => {
                   display={'flex'}
                   justifyContent="space-between"
                 >
-                  <Grid item xs={8}>
+                  <Grid item xs={8} ref={searchRef}>
                     <Paper
                       component="form"
                       sx={{
@@ -673,7 +673,6 @@ const UserAttendanceHistory = () => {
                         boxShadow: 'none',
                       }}
                       onFocus={hadleScroolDown}
-                      ref={searchRef}
                     >
                       <InputBase
                         value={searchWord}
