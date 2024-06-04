@@ -796,17 +796,34 @@ const UserAttendanceHistory = () => {
             </Box>
             {cohortMemberList?.length > 0 ? (
               <Box>
-                {displayStudentList?.map((user: any) => (
-                  <AttendanceStatusListView
-                    isDisabled={true}
-                    showLink={true}
-                    key={user.userId}
-                    userData={user}
-                    isEdit={false}
-                    bulkAttendanceStatus={bulkAttendanceStatus}
-                    handleBulkAction={submitBulkAttendanceAction}
-                  />
-                ))}
+                {displayStudentList.length >=1 ? (
+                  displayStudentList?.map((user: any) => (
+                    <AttendanceStatusListView
+                      isDisabled={true}
+                      showLink={true}
+                      key={user.userId}
+                      userData={user}
+                      isEdit={false}
+                      bulkAttendanceStatus={bulkAttendanceStatus}
+                      handleBulkAction={submitBulkAttendanceAction}
+                    />
+                  ))
+                ) : (
+                  <Box
+                    sx={{
+                      m: '1rem',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography
+                      style={{ fontWeight: 'bold', marginLeft: '1rem' }}
+                    >
+                      {t('COMMON.NO_DATA_FOUND')}
+                    </Typography>
+                  </Box>
+                )}
               </Box>
             ) : (
               <Box
@@ -815,7 +832,8 @@ const UserAttendanceHistory = () => {
                 mt={2}
                 p={'1rem'}
                 borderRadius={'1rem'}
-                bgcolor={'secondary.light'}
+                bgcolor={theme.palette.warning['A400']}
+                // bgcolor={'secondary.light'}
               >
                 <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
               </Box>
@@ -831,7 +849,7 @@ const UserAttendanceHistory = () => {
           />
         </Box>
       </Box>
-      {displayStudentList ? <UpDownButton /> : null}
+      {displayStudentList.length>=1 ? <UpDownButton /> : null}
     </Box>
   );
 };
