@@ -577,6 +577,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
       {learnerData?.length > 0 ? (
         <Box bgcolor={theme.palette.warning['A400']}>
+          {classId !== 'all' ? 
           <Stack mr={1} ml={1}>
             <Box mt={3} mb={3} boxShadow={'none'}>
               <Grid
@@ -651,6 +652,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               routeName={pathname}
             />
           </Stack>
+          : null}
           {loading && (
             <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
           )}
