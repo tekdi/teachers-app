@@ -169,6 +169,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           setCohortsData(filteredData);
           if (filteredData.length > 0) {
             setClassId(filteredData?.[0]?.cohortId);
+            localStorage.setItem('classId', filteredData?.[0]?.cohortId);
             setManipulatedCohortData(
               filteredData.concat({ cohortId: 'all', name: 'All Centers' })
             );
@@ -602,6 +603,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       showDetailsHandle={showDetailsHandle}
                       data={percentageAttendanceData}
                       disableDays={classId === 'all' ? true : false}
+                      classId={classId}
                     />
                   </Box>
                   <Box
