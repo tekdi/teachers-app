@@ -16,25 +16,26 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { CustomField, updateCustomField } from '@/utils/Interfaces';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { editEditUser, getUserDetails } from '@/services/ProfileService';
 
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
-import Header from '@/components/Header';
 import Image from 'next/image';
-import Loader from '@/components/Loader';
 import Modal from '@mui/material/Modal';
+import { useTheme, withStyles } from '@mui/material/styles';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import { getLabelForValue } from '@/utils/Helper';
+import user_placeholder from '../assets/images/user_placeholder.png';
+import userPicture from '@/assets/images/imageOne.jpg';
+import Header from '@/components/Header';
+import { editEditUser, getUserDetails } from '@/services/ProfileService';
+import { CustomField, UserDatas, updateCustomField } from '@/utils/Interfaces';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import userPicture from '@/assets/images/imageOne.jpg';
-import user_placeholder from '../assets/images/user_placeholder.png';
+import { getLabelForValue } from '@/utils/Helper';
+import Loader from '@/components/Loader';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 
 interface FieldOption {
   name: string;
@@ -117,6 +118,7 @@ const TeacherProfile = () => {
   };
 
   const fetchUserDetails = async () => {
+    setLoading(true);
     if (typeof window !== 'undefined' && window.localStorage) {
       const userId = localStorage.getItem('userId');
 
@@ -139,12 +141,14 @@ const TeacherProfile = () => {
               setUnitName(unitName);
               const blockName = getFieldValue(customDataFields, 'Block Name');
               setBlockName(blockName);
+              setLoading(false);
             }
           } else {
             console.log('No data Found');
           }
         }
       } catch (error) {
+        setLoading(false);
         console.error('Error fetching  user details:', error);
       }
     }
@@ -204,8 +208,6 @@ const TeacherProfile = () => {
     ?.filter((field) => field.order !== 0 && field.name !== 'main_subject')
     ?.sort((a, b) => a.order - b.order);
 
-  
-
   //fields  for edit popup by order
   const filteredSortedForEdit = [...customFieldsData]
     ?.filter((field) => field.order !== 0 && field.isEditable)
@@ -233,11 +235,14 @@ const TeacherProfile = () => {
   //------------edit teacher profile------------
 
   const [formData, setFormData] = useState<{
-    userData: UserData;
+    userData: UserDatas;
     customFields: { fieldId: string; type: string; value: string[] | string }[];
   }>({
     userData: {
       name: userName || '',
+      district: '',
+      state: '',
+      mobile: '',
     },
     customFields: customFieldsData?.map((field) => ({
       fieldId: field.fieldId,
@@ -250,6 +255,9 @@ const TeacherProfile = () => {
     setFormData({
       userData: {
         name: userName || '',
+        district: '',
+        state: '',
+        mobile: '',
       },
       customFields: customFieldsData.map((field) => ({
         fieldId: field.fieldId,
@@ -318,7 +326,7 @@ const TeacherProfile = () => {
       userData: formData?.userData,
       customFields: formData?.customFields?.map((field) => ({
         fieldId: field.fieldId,
-        type: field.type,
+        // type: field.type,
         value: Array.isArray(field?.value)
           ? field?.value?.length > 0
             ? field?.value
@@ -360,7 +368,9 @@ const TeacherProfile = () => {
         minWidth={'100%'}
       >
         <Header />
-
+        {loading && (
+          <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+        )}
         <Box
           display="flex"
           flexDirection="column"
@@ -459,18 +469,16 @@ const TeacherProfile = () => {
               fontSize: '14px',
               lineHeight: '20px',
               minWidth: '100%',
-
               padding: '10px 24px 10px 16px',
               gap: '8px',
-              borderRadius: '12px',
+              borderRadius: '100px',
               marginTop: '10px',
               flex: '1',
               textAlign: 'center',
               color: theme.palette.warning.A200,
-              border: '1px solid black',
+              border: `1px solid ${theme.palette.warning.A200}`,
               borderColor: theme.palette.warning['A100'],
             }}
-            startIcon={<CreateOutlinedIcon />}
             onClick={handleOpen}
           >
             <Typography
@@ -486,6 +494,9 @@ const TeacherProfile = () => {
             >
               {t('PROFILE.EDIT_PROFILE')}
             </Typography>
+            <Box>
+              <CreateOutlinedIcon sx={{ fontSize: '14px' }} />
+            </Box>
           </Button>
 
           {/* modal for edit profile */}
@@ -515,7 +526,10 @@ const TeacherProfile = () => {
                         lineHeight={'16px'}
                         letterSpacing={'0.5px'}
                       >
-                        {item?.label}
+                        {item?.label && item.name
+                          ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
+                          : item.label}
+                        {/* {item?.label} */}
                       </Typography>
                       <Box
                         mt={2}
@@ -544,6 +558,7 @@ const TeacherProfile = () => {
                                 whiteSpace: 'nowrap',
                                 boxShadow: 'none',
                                 border: `1px solid ${theme.palette.warning[900]}`,
+                                pointerEvents: 'none',
                               }}
                             >
                               {getLabelForSubject(subject)}
@@ -564,7 +579,10 @@ const TeacherProfile = () => {
                         fontWeight={'600'}
                         letterSpacing={'0.5px'}
                       >
-                        {item.label}
+                        {item?.label && item.name
+                          ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
+                          : item.label}
+                        {/* {item.label} */}
                       </Typography>
                       <Typography
                         variant="h4"
@@ -586,7 +604,10 @@ const TeacherProfile = () => {
                         fontWeight={'600'}
                         letterSpacing={'0.5px'}
                       >
-                        {item.label}
+                        {item?.label && item.name
+                          ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
+                          : item.label}
+                        {/* {item.label} */}
                       </Typography>
                       <Typography
                         variant="h4"
@@ -706,13 +727,18 @@ const TeacherProfile = () => {
                   sx={{ marginTop: '20px' }}
                   fullWidth
                   name="name"
-                  label="Full Name"
+                  label={t('PROFILE.FULL_NAME')}
                   variant="outlined"
                   value={formData.userData.name}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      userData: { name: e.target.value },
+                      userData: {
+                        name: e.target.value,
+                        district: '',
+                        state: '',
+                        mobile: '',
+                      },
                     })
                   }
                 />
@@ -727,7 +753,15 @@ const TeacherProfile = () => {
                           sx={{ marginTop: '20px' }}
                           fullWidth
                           name={field.name}
-                          label={field.label}
+                          // label={field.label}
+                          label={
+                            field?.label && field.name
+                              ? t(
+                                  `FIELDS.${field.name.toUpperCase()}`,
+                                  field.label
+                                )
+                              : field.label
+                          }
                           variant="outlined"
                           value={
                             formData?.customFields?.find(
@@ -746,7 +780,13 @@ const TeacherProfile = () => {
                             margin={0}
                             color={theme.palette.warning.A200}
                           >
-                            {field.label}
+                            {field?.label && field.name
+                              ? t(
+                                  `FIELDS.${field.name.toUpperCase()}`,
+                                  field.label
+                                )
+                              : field.label}
+                            {/* {field.label} */}
                           </Typography>
                           {field.options?.map((option: any) => (
                             <FormGroup key={option.value}>
@@ -779,7 +819,13 @@ const TeacherProfile = () => {
                         <Box marginTop={3} textAlign={'start'}>
                           <FormControl fullWidth>
                             <InputLabel id={`select-label-${field.fieldId}`}>
-                              {field.label}
+                              {field?.label && field.name
+                                ? t(
+                                    `FIELDS.${field.name.toUpperCase()}`,
+                                    field.label
+                                  )
+                                : field.label}
+                              {/* {field.label} */}
                             </InputLabel>
                             <Select
                               labelId={`select-label-${field.fieldId}`}
@@ -789,7 +835,15 @@ const TeacherProfile = () => {
                                   (f) => f.fieldId === field.fieldId
                                 )?.value[0] || ''
                               }
-                              label={field.label}
+                              // label={field.label}
+                              label={
+                                field?.label && field.name
+                                  ? t(
+                                      `FIELDS.${field.name.toUpperCase()}`,
+                                      field.label
+                                    )
+                                  : field.label
+                              }
                               onChange={(e) =>
                                 handleDropdownChange(
                                   field.fieldId,
@@ -816,7 +870,13 @@ const TeacherProfile = () => {
                             margin={0}
                             color={theme.palette.warning.A200}
                           >
-                            {field.label}
+                            {field?.label && field.name
+                              ? t(
+                                  `FIELDS.${field.name.toUpperCase()}`,
+                                  field.label
+                                )
+                              : field.label}
+                            {/* {field.label} */}
                           </Typography>
                           <RadioGroup
                             name={field.fieldId}

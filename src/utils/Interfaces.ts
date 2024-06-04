@@ -76,7 +76,13 @@ export interface UserData {
   district: string;
   state: string;
   mobile?: string;
-  customFields: CustomField[];
+}
+
+export interface UserDatas {
+  name?: any;
+  district: string;
+  state: string;
+  mobile?: string;
 }
 
 export interface LearnerData {
@@ -84,7 +90,6 @@ export interface LearnerData {
   district: string;
   state: string;
   mobile?: string;
-  customFields: CustomField[];
 }
 
 export interface TimeTableCardProps {

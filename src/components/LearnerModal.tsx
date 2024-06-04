@@ -66,7 +66,7 @@ const LearnerModal = ({
               top: '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              backgroundColor: 'white',
+              backgroundColor: theme.palette.warning.A400,
               borderRadius: '8px',
               zIndex: '9999',
               boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
@@ -144,7 +144,14 @@ const LearnerModal = ({
                             fontWeight={'600'}
                             color={theme.palette.warning['500']}
                           >
-                            {item.label}
+                            {item?.label && item.name
+                              ? t(
+                                  `FIELDS.${item.name.toUpperCase()}`,
+                                  item.label
+                                )
+                              : item.label}
+
+                            {/* {item.label} */}
                           </Typography>
                           {/* <Box display="flex"> */}
                           <Typography
@@ -179,13 +186,13 @@ const LearnerModal = ({
             <Box padding={'20px'} display="flex" justifyContent="space-between">
               <Button
                 sx={{
-                  border: '1px solid #1E1B16',
+                  border: `1px solid ${theme.components.MuiButton.styleOverrides.root.border}`,
                   width: '100px',
                   borderRadius: '100px',
                   boxShadow: 'none',
                   fontSize: '14px',
                   fontWeight: 500,
-                  color: '#1E1B16',
+                  color: theme.components.MuiButton.styleOverrides.root.color,
                 }}
                 onClick={onClose}
                 variant="outlined"
@@ -200,7 +207,7 @@ const LearnerModal = ({
                   boxShadow: 'none',
                   fontSize: '14px',
                   fontWeight: 500,
-                  color: '#1E1B16',
+                  color: theme.components.MuiButton.styleOverrides.root.color,
                 }}
                 variant="contained"
                 onClick={handleLearnerFullProfile}
