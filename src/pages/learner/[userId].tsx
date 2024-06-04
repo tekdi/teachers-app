@@ -632,7 +632,6 @@ const LearnerProfile: React.FC = () => {
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )}
-      
 
       <Grid container spacing={2} alignItems="flex-start" padding={'20px 18px'}>
         <Grid item>
@@ -676,9 +675,10 @@ const LearnerProfile: React.FC = () => {
             aria-expanded={openOption ? 'true' : undefined}
             aria-haspopup="true"
           >
-            <Box onClick={handleClickOption}>
+            {/* ---- comment for temp------------
+             <Box onClick={handleClickOption}>
               <MoreVertIcon />
-            </Box>
+            </Box> */}
 
             <Box>
               {/* <Button
@@ -693,6 +693,7 @@ const LearnerProfile: React.FC = () => {
               >
                 Options
               </Button> */}
+
               <StyledMenu
                 id="demo-customized-menu"
                 MenuListProps={{
@@ -702,9 +703,9 @@ const LearnerProfile: React.FC = () => {
                 open={openOption}
                 onClose={handleCloseOption}
               >
-                {/* <MenuItem onClick={handleCloseOption} disableRipple>
+                <MenuItem onClick={handleCloseOption} disableRipple>
                   {t('COMMON.MARK_DROP_OUT')}
-                </MenuItem> */}
+                </MenuItem>
                 <MenuItem onClick={handleCloseOption} disableRipple>
                   {t('COMMON.REMOVE')}
                 </MenuItem>
