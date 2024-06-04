@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useState } from 'react';
+import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
 
 import Check from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
@@ -18,7 +19,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import MonthCalender from './MonthCalender';
 import WestIcon from '@mui/icons-material/West';
 import { useTranslation } from 'next-i18next';
-import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
 
 const modalStyle = {
   position: 'absolute',
@@ -59,7 +59,7 @@ interface CustomSelectModalProps {
   selectedValue: string;
   setSelectedValue: (value: string) => void;
   onDateRangeSelected: any;
-  currentDayMonth:string;
+  currentDayMonth: string;
 }
 
 const DateRangePopup: React.FC<CustomSelectModalProps> = ({
@@ -67,14 +67,18 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   selectedValue,
   setSelectedValue,
   onDateRangeSelected,
-  currentDayMonth
+  currentDayMonth,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCalendarModalOpen, setIsCalenderModalOpen] = useState(false);
   const [dateRangeArray, setDateRangeArray] = useState<any[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(1);
-  const [displayCalendarFromDate, setDisplayCalendarFromDate]= React.useState(getDayAndMonthName(getTodayDate()));
-  const [displayCalendarToDate, setDisplayCalendarToDate]= React.useState(getDayAndMonthName(getTodayDate()));
+  const [displayCalendarFromDate, setDisplayCalendarFromDate] = React.useState(
+    getDayAndMonthName(getTodayDate())
+  );
+  const [displayCalendarToDate, setDisplayCalendarToDate] = React.useState(
+    getDayAndMonthName(getTodayDate())
+  );
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const toggleCalendarModal = () =>
@@ -177,6 +181,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     <Box sx={{ mt: 1.5, px: '2px' }}>
       <FormControl sx={{ width: '100%' }}>
         <Select
+          className="bg-white"
           sx={{
             height: '32px',
             width: '100%',
@@ -189,10 +194,12 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           inputProps={{ readOnly: true }}
         >
           <MenuItem value="" disabled>
-        {  t('DASHBOARD.AS_OF_TODAY_DATE', {day_date: currentDayMonth})}
+            {t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })}
           </MenuItem>
           <MenuItem value={selectedValue}>
-            {selectedValue ? selectedValue : t('DASHBOARD.AS_OF_TODAY_DATE', {day_date: currentDayMonth})}
+            {selectedValue
+              ? selectedValue
+              : t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })}
           </MenuItem>
         </Select>
       </FormControl>
@@ -297,7 +304,9 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
             <Box className="fs-14 fw-500 text-4D">
               {t('COMMON.FROM_TO_DATE')}
             </Box>
-            <Box className="fs-22 fw-500 pt-10 text-1F">{displayCalendarFromDate} – {displayCalendarToDate}</Box>
+            <Box className="fs-22 fw-500 pt-10 text-1F">
+              {displayCalendarFromDate} – {displayCalendarToDate}
+            </Box>
           </Box>
 
           <Box>

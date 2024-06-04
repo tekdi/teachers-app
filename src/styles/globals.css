@@ -336,7 +336,6 @@ main {
   text-decoration: none;
 }
 .card_overview div {
-  /* background: blue; */
   height: unset;
   font-size: 11px;
   line-height: 16px;
@@ -609,4 +608,7 @@ main {
 }
 .backgroundFaded div:first-child {
   background-color: unset !important;
+}
+.bg-white {
+  background-color: #fff;
 }

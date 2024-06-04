@@ -92,6 +92,7 @@ const TeacherProfile = () => {
     width: isDesktop ? 700 : 400,
     bgcolor: theme.palette.warning.A400,
     p: 4,
+    height: '526px',
     textAlign: 'center',
     '@media (max-width: 768px)': {
       width: '95%', // Adjust width for smaller screens
@@ -203,8 +204,6 @@ const TeacherProfile = () => {
   const filteredSortedForView = [...customFieldsData]
     ?.filter((field) => field.order !== 0 && field.name !== 'main_subject')
     ?.sort((a, b) => a.order - b.order);
-
-  
 
   //fields  for edit popup by order
   const filteredSortedForEdit = [...customFieldsData]

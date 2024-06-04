@@ -459,6 +459,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const pathColor = determinePathColor(presentPercentage);
 
+  const truncate = (str: string, length: number) => {
+    if (str.length <= length) return str;
+    return str.slice(0, length) + '...';
+  };
+
+  const renderValue = () => {
+    if (lowAttendanceLearnerList.length > 2) {
+      return `${truncate(lowAttendanceLearnerList[0], 50)}, ${truncate(lowAttendanceLearnerList[1], 10)} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`;
+    } else if (lowAttendanceLearnerList.length === 2) {
+      return `${truncate(lowAttendanceLearnerList[0], 10)}, ${truncate(lowAttendanceLearnerList[1], 10)}`;
+    } else if (lowAttendanceLearnerList.length === 1) {
+      return `${truncate(lowAttendanceLearnerList[0], 10)}`;
+    } else if (
+      Array.isArray(lowAttendanceLearnerList) &&
+      lowAttendanceLearnerList.length === 0
+    ) {
+      return t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE');
+    } else {
+      return t('ATTENDANCE.N/A');
+    }
+  };
+
   return (
     <>
       {!isAuthenticated && (
@@ -535,7 +557,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           onChange={handleCohortSelection}
                           displayEmpty
                           inputProps={{ 'aria-label': 'Without label' }}
-                          className="SelectLanguages fs-14 fw-500"
+                          className="SelectLanguages fs-14 fw-500 bg-white"
                           style={{
                             borderRadius: '0.5rem',
                             color: theme.palette.warning['200'],
@@ -833,20 +855,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             showBackdrop={false}
                           />
                         ))}
-                        value={
-                          lowAttendanceLearnerList.length > 2
-                            ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
-                            : lowAttendanceLearnerList.length === 2
-                              ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
-                              : lowAttendanceLearnerList.length === 1
-                                ? `${lowAttendanceLearnerList[0]}`
-                                : Array.isArray(lowAttendanceLearnerList) &&
-                                    lowAttendanceLearnerList.length === 0
-                                  ? t(
-                                      'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
-                                    )
-                                  : t('ATTENDANCE.N/A')
-                        }
+                        value={renderValue()}
                       />
                     </Grid>
                   </Grid>
