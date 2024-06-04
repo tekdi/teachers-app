@@ -704,7 +704,7 @@ const UserAttendanceHistory = () => {
               >
                 {t('COMMON.LEARNER_NAME')}
               </Box>
-              <Box sx={{ display: 'flex', gap: '13px' }}>
+              <Box sx={{ display: 'flex', gap: '20px' }}>
                 <Box
                   sx={{
                     color: theme.palette.warning[400],

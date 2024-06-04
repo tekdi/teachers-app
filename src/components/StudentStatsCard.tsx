@@ -1,8 +1,9 @@
+import { Box, Typography } from '@mui/material';
+
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
-import { Box, Typography } from '@mui/material';
 interface StudentStatsCard {
   label1: string;
   value1: string;
@@ -33,16 +34,11 @@ const StudentStatsCard: React.FC<StudentStatsCard> = ({
       sx={{ padding: '1rem' }}
     >
       <Box>
-        <Typography
-          fontSize={{ xs: '9px', md: '11px' }}
-          marginTop={'10px'}
-          fontWeight={600}
-          marginBottom={'4px'}
-        >
+        <Typography fontSize={'11px'} fontWeight={600} marginBottom={'4px'}>
           {label1}
         </Typography>
         <Typography
-          fontSize="1.375rem"
+          fontSize="16px"
           fontWeight={500}
           lineHeight="16px"
           marginBottom={'5px'}
@@ -53,11 +49,11 @@ const StudentStatsCard: React.FC<StudentStatsCard> = ({
 
       {label2 ? (
         <Typography
-          fontSize={{ xs: '9px', md: '11px' }}
           fontWeight="bold"
           lineHeight="1rem"
           sx={{ color: theme.palette.warning['400'] }}
           marginBottom={'0px'}
+          fontSize="16px"
         >
           {t('PROFILE.HELD_ON')}&nbsp;
           {value2}

@@ -465,7 +465,7 @@ main {
 .react-calendar button {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   /* border: 1px solid #d0c5b4 !important; */
 }
@@ -497,7 +497,7 @@ main {
   position: fixed;
   bottom: 40px;
   right: 22px;
-  z-index: 9999;
+  z-index: 999;
   box-shadow: 0px 1px 3px 0px #0000004d;
   display: flex !important;
   flex-direction: column;
@@ -599,4 +599,7 @@ main {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.backgroundFaded div:first-child {
+  background-color: unset !important;
 }

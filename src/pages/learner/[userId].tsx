@@ -1,9 +1,11 @@
 import {
   ArrowBack as ArrowBackIcon,
-  Check,
   East as EastIcon,
 } from '@mui/icons-material';
-// import { Link, useParams } from 'react-router-dom';
+import {
+  AssesmentListService,
+  getDoIdForAssesmentDetails,
+} from '@/services/AssesmentService';
 import {
   Box,
   Button,
@@ -17,56 +19,39 @@ import {
   Grid,
   IconButton,
   InputLabel,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   MenuItem,
-  MenuList,
   Modal,
   Radio,
   RadioGroup,
   Select,
   SelectChangeEvent,
-  Stack,
   TextField,
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { Theme, useTheme } from '@mui/material/styles';
 import { LearnerData, UserData, updateCustomField } from '@/utils/Interfaces';
-import { formatDate, getTodayDate } from '@/utils/Helper';
+import Menu, { MenuProps } from '@mui/material/Menu';
+import React, { useEffect, useState } from 'react';
+import { alpha, styled, useTheme } from '@mui/material/styles';
+import { editEditUser, getUserDetails } from '@/services/ProfileService';
 
-import {
-  AssesmentListService,
-  getDoIdForAssesmentDetails,
-} from '@/services/AssesmentService';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
-import CustomSelect from '@/components/CustomSelect';
+import DateRangePopup from '@/components/DateRangePopup';
 import { GetStaticPaths } from 'next';
 import Header from '@/components/Header';
+import Loader from '@/components/Loader';
 import MarksObtainedCard from '@/components/MarksObtainedCard';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 // import Header from '../components/Header';
 // import { formatDate, getTodayDate } from '../utils/Helper';
 import StudentStatsCard from '@/components/StudentStatsCard';
-import WeekDays from '@/components/WeekDays';
-import { editEditUser, getUserDetails } from '@/services/ProfileService';
+import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
+import { format } from 'date-fns';
+import { getTodayDate } from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
-import DateRangePopup from '@/components/DateRangePopup';
-import { styled, alpha } from '@mui/material/styles';
-import Menu, { MenuProps } from '@mui/material/Menu';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import PersonOffIcon from '@mui/icons-material/PersonOff';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Loader from '@/components/Loader';
-import { format } from 'date-fns';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -466,13 +451,17 @@ const LearnerProfile: React.FC = () => {
   const style = {
     position: 'absolute',
     top: '50%',
+    maxWidth: 300, // Maximum width for responsiveness
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
     bgcolor: theme.palette.warning.A400,
     p: 4,
     textAlign: 'center',
-    height: '85vh',
+    '@media (max-width: 768px)': {
+      width: '95%', // Adjust width for smaller screens
+      padding: '15px', // Adjust padding for smaller screens
+    },
   };
 
   const [formData, setFormData] = useState<{
@@ -607,7 +596,7 @@ const LearnerProfile: React.FC = () => {
   }) => (
     <Grid item xs={size}>
       {/* question */}
-      <Typography variant="h4" margin={0}>
+      <Typography variant="h4" sx={{ fontSize: '12px' }} margin={0}>
         {label}
       </Typography>
 
@@ -617,6 +606,7 @@ const LearnerProfile: React.FC = () => {
         margin={0}
         sx={{
           wordBreak: 'break-word',
+          fontSize: '16px',
         }}
         color={'#4D4639'}
       >
@@ -629,14 +619,14 @@ const LearnerProfile: React.FC = () => {
   return (
     <>
       <Header />
-      <Grid container spacing={2} alignItems="flex-start" mt={3}>
+
+      <Grid container spacing={2} alignItems="flex-start" padding={'20px 18px'}>
         <Grid item>
           <Box onClick={() => window.history.back()}>
             <ArrowBackIcon
               sx={{
                 color: (theme.palette.warning as any)['A200'],
                 fontSize: '1.5rem',
-                ml: 2,
                 cursor: 'pointer',
               }}
             />
@@ -665,7 +655,7 @@ const LearnerProfile: React.FC = () => {
           </Box>
         </Grid>
         <Grid item>
-          <IconButton
+          <Box
             aria-label="more"
             id="demo-customized-button"
             aria-controls={openOption ? 'demo-customized-menu' : undefined}
@@ -706,27 +696,26 @@ const LearnerProfile: React.FC = () => {
                 </MenuItem>
               </StyledMenu>
             </Box>
-          </IconButton>
+          </Box>
         </Grid>
       </Grid>
 
-      <Box
-        padding={2}
-        sx={{ background: 'linear-gradient(180deg, #FFFDF6 0%, #F8EFDA 100%)' }}
-      >
-        <Grid container justifyContent="space-between" alignItems="center">
+      <Box padding={'22px 18px'} className="linerGradient">
+        <Box
+          sx={{ display: 'flex', justifyContent: 'space-between', gap: '5px' }}
+        >
           <Typography
             sx={{
-              color: (theme.palette.warning as any)['A200'],
+              color: (theme.palette.warning as any)['300'],
               fontWeight: 500,
-              fontSize: '15px',
+              fontSize: '14px',
             }}
             variant="h6"
             gutterBottom
           >
             {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
           </Typography>
-          <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography
               sx={{
                 color: theme.palette.secondary.main,
@@ -747,37 +736,37 @@ const LearnerProfile: React.FC = () => {
                 marginBottom: '5px',
               }}
             />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
 
-        <Grid container spacing={1}>
-          <Grid item sx={{ flex: 1 }}>
+        <Box>
+          <Box>
             <DateRangePopup
               menuItems={menuItems}
               selectedValue={selectedValue}
               setSelectedValue={setSelectedValue}
               onDateRangeSelected={handleDateRangeSelected}
             />
-          </Grid>
-        </Grid>
-        <Card
+          </Box>
+        </Box>
+        <Box
           sx={{
-            background: 'linear-gradient(180deg, #FFFDF7 0%, #F8EFDA 100%)',
+            // background: 'linear-gradient(180deg, #FFFDF7 0%, #F8EFDA 100%)',
             borderRadius: theme.spacing(3),
             boxShadow: 'none',
           }}
         >
-          <CardContent>
+          <Box sx={{ mt: 2 }}>
             {/* <Typography
               sx={{
-                color: theme.palette.text.secondary,
+                color: '#7C766F',
               }}
-              fontSize={'14px'}
+              fontSize={'12px'}
               fontWeight={'500'}
               lineHeight={'16px'}
             >
               Attendance Marked : 3 out of last 7 days
-            </Typography> */}
+            </Typography>  */}
             <Box
               gap={1}
               sx={{
@@ -787,8 +776,8 @@ const LearnerProfile: React.FC = () => {
                 marginTop: 2,
               }}
             >
-              <Grid container display={'flex'} justifyContent={'space-between'}>
-                <Grid item xs={5}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
                   <StudentStatsCard
                     label1={t('COMMON.ATTENDANCE') + '%'}
                     value1={`${Math.round(overallAttendance?.present_percentage || 0)}%`}
@@ -796,7 +785,7 @@ const LearnerProfile: React.FC = () => {
                     value2="5"
                   />
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={6}>
                   <StudentStatsCard
                     label1={t('COMMON.CLASS_MISSED')}
                     value1={overallAttendance?.absent || 0}
@@ -806,13 +795,12 @@ const LearnerProfile: React.FC = () => {
                 </Grid>
               </Grid>
             </Box>
-          </CardContent>
-        </Card>
+          </Box>
+        </Box>
       </Box>
 
       <Box
         boxShadow={'none'}
-        mt={'10px'}
         overflow={'auto'}
         sx={{
           background: 'linear-gradient(180deg, #FFFDF6 0%, #F8EFDA 100%)',
@@ -822,7 +810,7 @@ const LearnerProfile: React.FC = () => {
         <Typography
           fontWeight={'500'}
           fontSize={'16px'}
-          sx={{ color: theme.palette.warning.main }}
+          sx={{ color: '#4D4639' }}
         >
           {t('PROFILE.LEARNER_DETAILS')}
         </Typography>
@@ -862,6 +850,7 @@ const LearnerProfile: React.FC = () => {
           bgcolor="warning.A400"
           display="flex"
           flexDirection="row"
+          padding="15px"
         >
           <Grid container spacing={4}>
             <FieldComponent size={12} label={'Full Name'} data={userName} />
@@ -871,7 +860,11 @@ const LearnerProfile: React.FC = () => {
                 <React.Fragment key={i}>
                   <Grid item xs={6}>
                     {/* question */}
-                    <Typography variant="h4" margin={0}>
+                    <Typography
+                      variant="h4"
+                      sx={{ fontSize: '12px', color: '#969088' }}
+                      margin={0}
+                    >
                       {item?.label}
                     </Typography>
 
@@ -881,6 +874,8 @@ const LearnerProfile: React.FC = () => {
                       margin={0}
                       sx={{
                         wordBreak: 'break-word',
+                        fontSize: '16px',
+                        color: '#4D4639',
                       }}
                       color={'#4D4639'}
                     >
