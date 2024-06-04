@@ -91,6 +91,7 @@ const TeacherProfile = () => {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
+    height: '75vh',
     bgcolor: theme.palette.warning.A400,
     p: 4,
     textAlign: 'center',
@@ -706,6 +707,7 @@ const TeacherProfile = () => {
                       onChange={handleImageUpload}
                       style={{ display: 'none' }}
                     />
+                    {/* ------- comment for temp 
                     <Button
                       sx={{
                         minWidth: '100%',
@@ -720,7 +722,7 @@ const TeacherProfile = () => {
                       onClick={handleClickImage}
                     >
                       {t('PROFILE.UPDATE_PICTURE')}
-                    </Button>
+                    </Button> */}
                   </Box>
                 </Box>
                 <TextField
