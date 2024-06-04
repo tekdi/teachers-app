@@ -148,5 +148,32 @@
     "ENGLISH": "अंग्रेजी",
     "MATH": "गणित",
     "TEST": "परीक्षण"
+  },
+
+  "FIELDS": {
+    "DESIGNATION": "पदनाम (पदनाम)",
+    "NO_OF_CLUSTERS": "मैं जितने क्लस्टर पढ़ाता हूँ",
+    "YEAR_OF_JOINING_SCP": "एससीपी में शामिल होने का वर्ष",
+    "MAIN_SUBJECT": "मेरे मुख्य विषय",
+    "SUBJECT_TAUGHT": "मैंने पढ़ाए गए विषय",
+    "GENDER": "लिंग",
+    "UNIT_NAME": "यूनिट का नाम",
+    "UNIT_CODE": "यूनिट कोड",
+    "ENROLLMENT_NUMBER": "नामांकन क्रमांक",
+    "BLOCK_NAME": "ब्लॉक नाम",
+    "STUDENT_TYPE": "छात्र प्रकार",
+    "STATE_NAME": "राज्य का नाम",
+    "SUPPORT_NEEDED": "आवश्यक सहायता",
+    "CLASS": "कक्षा",
+    "FATHER_NAME": "पिता का नाम",
+    "MARITAL_STATUS": "वैवाहिक स्थिति",
+    "OWN_PHONE_CHECK": "क्या शिक्षार्थी के पास अपना फोन है?",
+    "PHONE_TYPE_AVAILABLE": "उपलब्ध फोन का प्रकार",
+    "DISTRICT_NAME": "जिला नाम",
+    "AGE": "आयु",
+    "PRIMARY_WORK": "शिक्षार्थी का प्राथमिक कार्य",
+    "MOBILISATION_METHOD": "शिक्षार्थी को कैसे जोड़ा गया?",
+    "MONTH_MOBILISATION": "जोड़ने का महीना",
+    "DROP_OUT_REASON": "स्कूल छोड़ने का कारण"
   }
 }

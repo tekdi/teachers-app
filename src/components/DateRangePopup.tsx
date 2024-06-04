@@ -59,7 +59,7 @@ interface CustomSelectModalProps {
   selectedValue: string;
   setSelectedValue: (value: string) => void;
   onDateRangeSelected: any;
-  currentDayMonth: string;
+  currentDayMonth?: string;
 }
 
 const DateRangePopup: React.FC<CustomSelectModalProps> = ({

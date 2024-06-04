@@ -53,7 +53,7 @@
     "OK": "OK",
     "FROM_TO_DATE": "From - To dates",
     "REMOVE": "Remove",
-    "MARK_DROP_OUT":"Mark as Drop Out",
+    "MARK_DROP_OUT": "Mark as Drop Out",
     "SOMETHING_WENT_WRONG": "Something went wrong"
   },
   "LOGIN_PAGE": {
@@ -148,5 +148,32 @@
     "ENGLISH": "English",
     "MATH": "Math",
     "TEST": "Test"
+  },
+
+  "FIELDS": {
+    "DESIGNATION": "Designation",
+    "NO_OF_CLUSTERS": "Number of Clusters I Teach",
+    "YEAR_OF_JOINING_SCP": "Year of joining SCP",
+    "MAIN_SUBJECT": "My Main Subjects",
+    "SUBJECT_TAUGHT": "Subjects I Teach",
+    "GENDER": "Gender",
+    "UNIT_NAME": "Unit Name",
+    "UNIT_CODE": "Unit Code",
+    "ENROLLMENT_NUMBER": "Enrollment Number",
+    "BLOCK_NAME": "Block Name",
+    "STUDENT_TYPE": "Type of Learner",
+    "STATE_NAME": "State Name",
+    "SUPPORT_NEEDED": "Support needed",
+    "CLASS": "Class (Last passed grade)",
+    "FATHER_NAME": "Father’s Name",
+    "MARITAL_STATUS": "Marital Status",
+    "OWN_PHONE_CHECK": "Does the Learner Own the Phone?",
+    "PHONE_TYPE_AVAILABLE": "Type of Phone Available",
+    "DISTRICT_NAME": "District Name",
+    "AGE": "Age",
+    "PRIMARY_WORK": "Learner's Primary Work",
+    "MOBILISATION_METHOD": "How Was the Learner Mobilised?",
+    "MONTH_MOBILISATION": "Month of Mobilisation",
+    "DROP_OUT_REASON": "Reason for Drop Out From School"
   }
 }

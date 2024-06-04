@@ -97,15 +97,20 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const contextId = classId;
   const theme = useTheme<any>();
   const determinePathColor = useDeterminePathColor();
+  const currentDate = new Date();
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(currentDate.getDate() - 6);
+  const formatedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
+
   useEffect(() => {
     const calculateDateRange = () => {
-      let endRangeDate = new Date();
+      const endRangeDate = new Date();
       endRangeDate.setHours(23, 59, 59, 999);
-      let startRangeDate = new Date(endRangeDate);
+      const startRangeDate = new Date(endRangeDate);
       startRangeDate.setDate(startRangeDate.getDate() - 6);
       startRangeDate.setHours(0, 0, 0, 0);
-      let startDay = startRangeDate.getDate();
-      let startDayMonth = startRangeDate.toLocaleString('default', {
+      const startDay = startRangeDate.getDate();
+      const startDayMonth = startRangeDate.toLocaleString('default', {
         month: 'long',
       });
       let endDay = endRangeDate.getDate();
@@ -184,9 +189,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setLoading(true);
       try {
         if (classId && classId !== 'all') {
-          let limit = 300;
-          let page = 0;
-          let filters = { cohortId: classId };
+          const limit = 300;
+          const page = 0;
+          const filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -200,9 +205,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
             }));
             if (nameUserIdArray) {
               //Write logic to call class missed api
-              let fromDate = startDateRange;
-              let toDate = endDateRange;
-              let filters = {
+              const fromDate = startDateRange;
+              const toDate = endDateRange;
+              const filters = {
                 contextId: classId,
                 fromDate,
                 toDate,
@@ -213,7 +218,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 facets: ['userId'],
                 sort: ['absent_percentage', 'asc'],
               });
-              let resp = response?.data?.result?.userId;
+              const resp = response?.data?.result?.userId;
               if (resp) {
                 const filteredData = Object.keys(resp).map((userId) => ({
                   userId,
@@ -272,7 +277,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
               const contextData =
                 response?.contextId && response?.contextId[classId];
               if (contextData?.present_percentage) {
-                let presentPercent = contextData?.present_percentage;
+                const presentPercent = contextData?.present_percentage;
                 setCohortPresentPercentage(presentPercent);
               } else if (contextData?.absent_percentage) {
                 setCohortPresentPercentage('0');
@@ -724,7 +729,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         onClick={handleModalToggle}
                         disabled={
                           currentAttendance === 'futureDate' ||
-                          classId === 'all'
+                          classId === 'all' ||
+                          formatedSevenDaysAgo > selectedDate
                         }
                       >
                         {currentAttendance === 'notMarked' ||

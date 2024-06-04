@@ -23,7 +23,6 @@ const StudentStatsCard: React.FC<StudentStatsCard> = ({
   return (
     <Box
       gap="5rem"
-      border="1px solid #D0C5B4" //Add color from colorScheme
       borderRadius="1rem"
       display="flex"
       justifyContent="space-between"
@@ -34,13 +33,20 @@ const StudentStatsCard: React.FC<StudentStatsCard> = ({
       sx={{ padding: '1rem' }}
     >
       <Box>
-        <Typography fontSize={'11px'} fontWeight={600} marginBottom={'4px'}>
+        <Typography
+          variant="h4"
+          fontSize="11px"
+          marginTop={'10px'}
+          fontWeight={500}
+          marginBottom={'4px'}
+          color={theme.palette.warning[400]}
+        >
           {label1}
         </Typography>
         <Typography
           fontSize="16px"
           fontWeight={500}
-          lineHeight="16px"
+          lineHeight="24px"
           marginBottom={'5px'}
         >
           {value1}

@@ -143,5 +143,31 @@
     "ENGLISH": "इंग्रजी",
     "MATH": "गणित",
     "TEST": "चाचणी"
+  },
+  "FIELDS": {
+    "DESIGNATION": "नियुक्ती",
+    "NO_OF_CLUSTERS": "मी शिकवतो क्लस्टर्सची संख्या",
+    "YEAR_OF_JOINING_SCP": "एससीपीमध्ये सामील होण्याचे वर्ष",
+    "MAIN_SUBJECT": "माझे मुख्य विषय",
+    "SUBJECT_TAUGHT": "मी शिकवलेले विषय",
+    "GENDER": "लिंग",
+    "UNIT_NAME": "युनिट नाव",
+    "UNIT_CODE": "युनिट कोड",
+    "ENROLLMENT_NUMBER": "नोंदणी क्रमांक",
+    "BLOCK_NAME": "ब्लॉक नाव",
+    "STUDENT_TYPE": "शिक्षार्थी प्रकार",
+    "STATE_NAME": "राज्य नाव",
+    "SUPPORT_NEEDED": "आवश्यक असलेला पाठबळ",
+    "CLASS": "वर्ग",
+    "FATHER_NAME": "वडिलांचे नाव",
+    "MARITAL_STATUS": " वैवाहिक स्थिती",
+    "OWN_PHONE_CHECK": "शिक्षार्थ्याकडे स्वतःचा फोन आहे का?",
+    "PHONE_TYPE_AVAILABLE": "उपलब्ध असलेल्या फोनचा प्रकार",
+    "DISTRICT_NAME": "जिल्हा नाव",
+    "AGE": "वय",
+    "PRIMARY_WORK": "शिक्षार्थ्याचे प्राथमिक कार्य",
+    "MOBILISATION_METHOD": "शिक्षार्थ्याला कसे जळवून घेतले?",
+    "MONTH_MOBILISATION": "जळवळवणूचा महिना",
+    "DROP_OUT_REASON": "शाळा सोडण्याचे कारण"
   }
 }

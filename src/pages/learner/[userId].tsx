@@ -214,6 +214,7 @@ const LearnerProfile: React.FC = () => {
 
   // ger user information
   const fetchUserDetails = async () => {
+    setLoading(true);
     if (typeof window !== 'undefined' && window.localStorage) {
       const user: any = userId;
 
@@ -239,8 +240,10 @@ const LearnerProfile: React.FC = () => {
 
                 setUserName(userData?.name);
                 setContactNumber(userData?.mobile);
+                setLoading(false);
               }
             } else {
+              setLoading(false);
               console.log('No data Found');
             }
           } else {
@@ -248,6 +251,7 @@ const LearnerProfile: React.FC = () => {
           }
         }
       } catch (error) {
+        setLoading(false);
         console.error('Error fetching  user details:', error);
       }
     }
@@ -318,10 +322,13 @@ const LearnerProfile: React.FC = () => {
         if (searchResults?.responseCode === 'OK') {
           const result = searchResults?.result;
           if (result) {
+            setLoading(true);
+
             const QuestionSet = result?.QuestionSet?.[0];
             const getUniqueDoId = QuestionSet?.IL_UNIQUE_ID;
             setUniqueDoId(getUniqueDoId);
             testReportDetails(getUniqueDoId);
+            setLoading(false);
           } else {
             console.log('NO Result found from getDoIdForAssesmentDetails ');
           }
@@ -362,12 +369,14 @@ const LearnerProfile: React.FC = () => {
       });
 
       if (response?.responseCode === 200) {
+        setLoading(true);
         const result = response.result;
         if (result) {
           setSubmitedOn(result[0]?.createdOn);
 
           const questionValues = getQuestionValues(result);
           setAssesmentData(questionValues?.questions); // Use the parsed questions
+          setLoading(false);
         } else {
           setUniqueDoId('');
           console.log('No Data Found');
@@ -473,7 +482,6 @@ const LearnerProfile: React.FC = () => {
       district: '',
       state: '',
       mobile: '',
-      customFields: [],
     },
     customFields: customFieldsData?.map((field) => ({
       fieldId: field.fieldId,
@@ -488,7 +496,6 @@ const LearnerProfile: React.FC = () => {
         name: userName || '',
         district: '',
         state: '',
-        customFields: [],
       },
       customFields: customFieldsData?.map((field) => ({
         fieldId: field.fieldId,
@@ -552,20 +559,23 @@ const LearnerProfile: React.FC = () => {
   ) => {
     e.preventDefault();
     setLoading(true);
-    const userId = localStorage.getItem('userId');
+    const user_id = userId;
     const data = {
       userData: formData?.userData,
       customFields: formData?.customFields?.map((field) => ({
         fieldId: field.fieldId,
-        type: field.type,
-        value:
-          field.value.length > 1 ? field.value : (field.value as string[])[0],
+        // type: field.type,
+        value: Array.isArray(field?.value)
+          ? field?.value?.length > 0
+            ? field?.value
+            : ''
+          : field?.value,
       })),
     };
     let userDetails = data;
     try {
       if (userId) {
-        const response = await editEditUser(userId, userDetails);
+        const response = await editEditUser(user_id, userDetails);
 
         if (response.responseCode !== 200 || response.params.err) {
           throw new Error(
@@ -608,7 +618,7 @@ const LearnerProfile: React.FC = () => {
           wordBreak: 'break-word',
           fontSize: '16px',
         }}
-        color={'#4D4639'}
+        color={theme.palette.warning['A200']}
       >
         {data}
       </Typography>
@@ -619,6 +629,9 @@ const LearnerProfile: React.FC = () => {
   return (
     <>
       <Header />
+      {loading && (
+        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+      )}
 
       <Grid container spacing={2} alignItems="flex-start" padding={'20px 18px'}>
         <Grid item>
@@ -662,9 +675,10 @@ const LearnerProfile: React.FC = () => {
             aria-expanded={openOption ? 'true' : undefined}
             aria-haspopup="true"
           >
-            <Box onClick={handleClickOption}>
+            {/* ---- comment for temp------------
+             <Box onClick={handleClickOption}>
               <MoreVertIcon />
-            </Box>
+            </Box> */}
 
             <Box>
               {/* <Button
@@ -679,6 +693,7 @@ const LearnerProfile: React.FC = () => {
               >
                 Options
               </Button> */}
+
               <StyledMenu
                 id="demo-customized-menu"
                 MenuListProps={{
@@ -688,9 +703,9 @@ const LearnerProfile: React.FC = () => {
                 open={openOption}
                 onClose={handleCloseOption}
               >
-                {/* <MenuItem onClick={handleCloseOption} disableRipple>
+                <MenuItem onClick={handleCloseOption} disableRipple>
                   {t('COMMON.MARK_DROP_OUT')}
-                </MenuItem> */}
+                </MenuItem>
                 <MenuItem onClick={handleCloseOption} disableRipple>
                   {t('COMMON.REMOVE')}
                 </MenuItem>
@@ -782,7 +797,7 @@ const LearnerProfile: React.FC = () => {
                     label1={t('COMMON.ATTENDANCE') + '%'}
                     value1={`${Math.round(overallAttendance?.present_percentage || 0)}%`}
                     label2={false}
-                    value2="5"
+                    value2=""
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -790,7 +805,7 @@ const LearnerProfile: React.FC = () => {
                     label1={t('COMMON.CLASS_MISSED')}
                     value1={overallAttendance?.absent || 0}
                     label2={false}
-                    value2="5"
+                    value2=""
                   />
                 </Grid>
               </Grid>
@@ -853,7 +868,11 @@ const LearnerProfile: React.FC = () => {
           padding="15px"
         >
           <Grid container spacing={4}>
-            <FieldComponent size={12} label={'Full Name'} data={userName} />
+            <FieldComponent
+              size={12}
+              label={t('PROFILE.FULL_NAME')}
+              data={userName}
+            />
 
             {learnerDetailsByOrder &&
               learnerDetailsByOrder.map((item: any, i: number) => (
@@ -868,7 +887,9 @@ const LearnerProfile: React.FC = () => {
                       }}
                       margin={0}
                     >
-                      {item?.label}
+                      {item?.label && item.name
+                        ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
+                        : item.label}
                     </Typography>
 
                     {/* value */}
@@ -880,6 +901,7 @@ const LearnerProfile: React.FC = () => {
                         fontSize: '16px',
                         color: theme.palette.warning.main,
                       }}
+                      color={theme.palette.warning['A200']}
                     >
                       {item?.displayValue}
                     </Typography>
@@ -933,9 +955,6 @@ const LearnerProfile: React.FC = () => {
                   label="test"
                   onChange={handleChangeTest}
                 >
-                  {/* <MenuItem value="">
-                    <em>Select Value</em>
-                  </MenuItem> */}
                   <MenuItem value={'Post Test'}>
                     {t('PROFILE.POST_TEST')}
                   </MenuItem>
@@ -955,9 +974,6 @@ const LearnerProfile: React.FC = () => {
                   label="Subject"
                   onChange={handleChangeSubject}
                 >
-                  {/* <MenuItem value="">
-                    <em>Select Value</em>
-                  </MenuItem> */}
                   <MenuItem value={'English'}>{t('PROFILE.ENGLISH')}</MenuItem>
                   <MenuItem value={'Math'}>{t('PROFILE.MATH')}</MenuItem>
                 </Select>
@@ -990,8 +1006,7 @@ const LearnerProfile: React.FC = () => {
                 <Divider />
                 <Box mt={1}>
                   <Typography variant="h5">
-                    {t('PROFILE.TOTAL_QUESTIONS')} :
-                    {assesmentData?.questions?.length}
+                    {t('PROFILE.TOTAL_QUESTIONS')} :{assesmentData?.length}
                   </Typography>
                 </Box>
                 <Box mt={2}>
@@ -1113,7 +1128,7 @@ const LearnerProfile: React.FC = () => {
               sx={{ marginTop: '20px' }}
               fullWidth
               name="name"
-              label="Full Name"
+              label={t('PROFILE.FULL_NAME')}
               variant="outlined"
               value={formData.userData.name}
               onChange={(e) =>
@@ -1124,7 +1139,6 @@ const LearnerProfile: React.FC = () => {
                     district: '',
                     state: '',
                     mobile: '',
-                    customFields: [],
                   },
                 })
               }
@@ -1139,7 +1153,12 @@ const LearnerProfile: React.FC = () => {
                       sx={{ marginTop: '20px' }}
                       fullWidth
                       name={field.name}
-                      label={field.label}
+                      // label={field.label}
+                      label={
+                        field?.label && field.name
+                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
+                          : field.label
+                      }
                       variant="outlined"
                       value={
                         formData.customFields.find(
@@ -1158,7 +1177,10 @@ const LearnerProfile: React.FC = () => {
                         margin={0}
                         color={theme.palette.warning.A200}
                       >
-                        {field.label}
+                        {field?.label && field.name
+                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
+                          : field.label}
+                        {/* {field.label} */}
                       </Typography>
                       {field.options?.map((option: any) => (
                         <FormGroup key={option.value}>
@@ -1191,7 +1213,13 @@ const LearnerProfile: React.FC = () => {
                     <Box marginTop={3} textAlign={'start'}>
                       <FormControl fullWidth>
                         <InputLabel id={`select-label-${field.fieldId}`}>
-                          {field.label}
+                          {field?.label && field.name
+                            ? t(
+                                `FIELDS.${field.name.toUpperCase()}`,
+                                field.label
+                              )
+                            : field.label}
+                          {/* {field.label} */}
                         </InputLabel>
                         <Select
                           labelId={`select-label-${field.fieldId}`}
@@ -1201,7 +1229,15 @@ const LearnerProfile: React.FC = () => {
                               (f) => f.fieldId === field.fieldId
                             )?.value[0] || ''
                           }
-                          label={field.label}
+                          // label={field.label}
+                          label={
+                            field?.label && field.name
+                              ? t(
+                                  `FIELDS.${field.name.toUpperCase()}`,
+                                  field.label
+                                )
+                              : field.label
+                          }
                           onChange={(e) =>
                             handleDropdownChange(field.fieldId, e.target.value)
                           }
@@ -1222,7 +1258,10 @@ const LearnerProfile: React.FC = () => {
                         margin={0}
                         color={theme.palette.warning.A200}
                       >
-                        {field.label}
+                        {field?.label && field.name
+                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
+                          : field.label}
+                        {/* {field.label} */}
                       </Typography>
                       <RadioGroup
                         name={field.fieldId}

@@ -247,8 +247,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             if (resp) {
               const filteredData = Object.keys(resp).map((userId) => ({
                 userId,
-                absent: resp[userId].absent,
-                present_percent: resp[userId].present_percentage,
+              absent: resp[userId]?.absent || '0',
+                present: resp[userId]?.present || '0',
+                present_percent: resp[userId]?.present_percentage || '0',
+                absent_percent: resp[userId]?.absent_percentage || '0',
+
               }));
               if (nameUserIdArray && filteredData) {
                 let mergedArray = filteredData.map((attendance) => {
@@ -263,7 +266,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 mergedArray = mergedArray.filter(
                   (item) => item.name !== 'Unknown'
                 );
-                console.log(mergedArray);
+                // console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!`, mergedArray);
                 setLearnerData(mergedArray);
                 setDisplayStudentList(mergedArray);
 
@@ -469,7 +472,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     switch (sortByAttendanceNumber) {
       case 'high':
         sortedData.sort((a, b) => {
-          const aPercent = parseFloat(a.present_percent);
+          const aPercent = parseFloat(a.present_percent );
           const bPercent = parseFloat(b.present_percent);
           if (isNaN(aPercent) && isNaN(bPercent)) return 0;
           if (isNaN(aPercent)) return 1;

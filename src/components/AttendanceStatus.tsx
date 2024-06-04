@@ -52,7 +52,7 @@ function AttendanceStatus({
   const todayDate = shortDateFormat(new Date());
   const currentDate = new Date();
   const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(currentDate.getDate() - 7);
+  sevenDaysAgo.setDate(currentDate.getDate() - 6);
   const formatedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
   const currentAttendance =
     formattedAttendanceData?.[dateString] || 'notMarked';
