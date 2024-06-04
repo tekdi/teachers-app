@@ -97,23 +97,32 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const contextId = classId;
   const theme = useTheme<any>();
   const determinePathColor = useDeterminePathColor();
+  const currentDate = new Date();
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(currentDate.getDate() - 6);
+  const formatedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
+
   useEffect(() => {
     const calculateDateRange = () => {
-      let endRangeDate = new Date();
+      const endRangeDate = new Date();
       endRangeDate.setHours(23, 59, 59, 999);
-      let startRangeDate = new Date(endRangeDate);
+      const startRangeDate = new Date(endRangeDate);
       startRangeDate.setDate(startRangeDate.getDate() - 6);
       startRangeDate.setHours(0, 0, 0, 0);
-      let startDay = startRangeDate.getDate();
-      let startDayMonth = startRangeDate.toLocaleString('default', { month: 'long' });
+      const startDay = startRangeDate.getDate();
+      const startDayMonth = startRangeDate.toLocaleString('default', {
+        month: 'long',
+      });
       let endDay = endRangeDate.getDate();
-      let endDayMonth = endRangeDate.toLocaleString('default', { month: 'long' });
-      if (startDayMonth == endDayMonth){
+      let endDayMonth = endRangeDate.toLocaleString('default', {
+        month: 'long',
+      });
+      if (startDayMonth == endDayMonth) {
         setDateRange(`(${startDay}-${endDay} ${endDayMonth})`);
-      }else{
+      } else {
         setDateRange(`(${startDay} ${startDayMonth}-${endDay} ${endDayMonth})`);
       }
-      
+
       setStartDateRange(shortDateFormat(startRangeDate));
       setEndDateRange(shortDateFormat(endRangeDate));
     };
@@ -180,9 +189,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setLoading(true);
       try {
         if (classId && classId !== 'all') {
-          let limit = 300;
-          let page = 0;
-          let filters = { cohortId: classId };
+          const limit = 300;
+          const page = 0;
+          const filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -196,9 +205,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
             }));
             if (nameUserIdArray) {
               //Write logic to call class missed api
-              let fromDate = startDateRange;
-              let toDate = endDateRange;
-              let filters = {
+              const fromDate = startDateRange;
+              const toDate = endDateRange;
+              const filters = {
                 contextId: classId,
                 fromDate,
                 toDate,
@@ -209,7 +218,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 facets: ['userId'],
                 sort: ['absent_percentage', 'asc'],
               });
-              let resp = response?.data?.result?.userId;
+              const resp = response?.data?.result?.userId;
               if (resp) {
                 const filteredData = Object.keys(resp).map((userId) => ({
                   userId,
@@ -268,7 +277,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
               const contextData =
                 response?.contextId && response?.contextId[classId];
               if (contextData?.present_percentage) {
-                let presentPercent = contextData?.present_percentage;
+                const presentPercent = contextData?.present_percentage;
                 setCohortPresentPercentage(presentPercent);
               } else if (contextData?.absent_percentage) {
                 setCohortPresentPercentage('0');
@@ -379,7 +388,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   useEffect(() => {
     const getAttendanceStats = async () => {
-      if (classId !== '' && classId !== "all") {
+      if (classId !== '' && classId !== 'all') {
         const cohortMemberRequest: cohortMemberList = {
           limit: 300,
           page: 0,
@@ -423,10 +432,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
       }
     };
     getAttendanceStats();
-  }, [(classId && classId !== "all"), selectedDate, handleSaveHasRun]);
+  }, [classId && classId !== 'all', selectedDate, handleSaveHasRun]);
 
   const viewAttendanceHistory = () => {
-    if (classId !== "all"){
+    if (classId !== 'all') {
       router.push('/attendance-history');
     }
   };
@@ -506,7 +515,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       cursor: 'pointer',
                       color: theme.palette.secondary.main,
                       gap: '2px',
-                      opacity: classId==='all' ? 0.5 : 1 
+                      opacity: classId === 'all' ? 0.5 : 1,
                     }}
                     onClick={viewAttendanceHistory}
                   >
@@ -521,56 +530,57 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 </Box>
                 <Box sx={{ mt: 2 }}>
                   <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
-                  {
-                        cohortsData?.length > 1 ?  
-                    <FormControl
-                      className="drawer-select"
-                      sx={{ m: 0, width: '100%' }}
-                    >                     
-                      <Select
-                        value={classId}
-                        onChange={handleCohortSelection}
-                        displayEmpty
-                        inputProps={{ 'aria-label': 'Without label' }}
-                        className="SelectLanguages fs-14 fw-500"
-                        style={{
-                          borderRadius: '0.5rem',
-                          color: theme.palette.warning['200'],
-                          width: '100%',
-                          marginBottom: '0rem',
-                        }}
+                    {cohortsData?.length > 1 ? (
+                      <FormControl
+                        className="drawer-select"
+                        sx={{ m: 0, width: '100%' }}
                       >
-                        {cohortsData?.length !== 0 ? (
-                          manipulatedCohortData?.map((cohort) => (
-                            <MenuItem
-                              key={cohort.cohortId}
-                              value={cohort.cohortId}
+                        <Select
+                          value={classId}
+                          onChange={handleCohortSelection}
+                          displayEmpty
+                          inputProps={{ 'aria-label': 'Without label' }}
+                          className="SelectLanguages fs-14 fw-500"
+                          style={{
+                            borderRadius: '0.5rem',
+                            color: theme.palette.warning['200'],
+                            width: '100%',
+                            marginBottom: '0rem',
+                          }}
+                        >
+                          {cohortsData?.length !== 0 ? (
+                            manipulatedCohortData?.map((cohort) => (
+                              <MenuItem
+                                key={cohort.cohortId}
+                                value={cohort.cohortId}
+                                style={{
+                                  fontWeight: '500',
+                                  fontSize: '14px',
+                                  color: '#4D4639',
+                                }}
+                              >
+                                {cohort.name}
+                              </MenuItem>
+                            ))
+                          ) : (
+                            <Typography
                               style={{
                                 fontWeight: '500',
                                 fontSize: '14px',
                                 color: '#4D4639',
+                                padding: '0 15px',
                               }}
                             >
-                              {cohort.name}
-                            </MenuItem>
-                          ))
-                        ) : (
-                          <Typography
-                            style={{
-                              fontWeight: '500',
-                              fontSize: '14px',
-                              color: '#4D4639',
-                              padding: '0 15px',
-                            }}
-                          >
-                            {t('COMMON.NO_DATA_FOUND')}
-                          </Typography>
-                        )}
-                      </Select>
-                    </FormControl>
-                    : 
-                    <Typography color={theme.palette.warning['300']}>{cohortsData[0]?.name}</Typography>
-                  }
+                              {t('COMMON.NO_DATA_FOUND')}
+                            </Typography>
+                          )}
+                        </Select>
+                      </FormControl>
+                    ) : (
+                      <Typography color={theme.palette.warning['300']}>
+                        {cohortsData[0]?.name}
+                      </Typography>
+                    )}
                   </Box>
                 </Box>
                 {/* TODO: Write logic to disable this block on all select */}
@@ -579,7 +589,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <WeekCalender
                       showDetailsHandle={showDetailsHandle}
                       data={percentageAttendanceData}
-                      disableDays = {classId === "all" ? true : false}
+                      disableDays={classId === 'all' ? true : false}
                     />
                   </Box>
                   <Box
@@ -695,7 +705,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           },
                         }}
                         onClick={handleModalToggle}
-                        disabled={currentAttendance === 'futureDate' || classId === 'all' }
+                        disabled={
+                          currentAttendance === 'futureDate' ||
+                          classId === 'all' ||
+                          formatedSevenDaysAgo > selectedDate
+                        }
                       >
                         {currentAttendance === 'notMarked' ||
                         currentAttendance === 'futureDate'
@@ -720,8 +734,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   className="sample"
                   autoHideDuration={5000}
                   key={vertical + horizontal}
-                  message={currentAttendance === 'notMarked' ||
-                  currentAttendance === 'futureDate'? t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'): t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY')}
+                  message={
+                    currentAttendance === 'notMarked' ||
+                    currentAttendance === 'futureDate'
+                      ? t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY')
+                      : t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY')
+                  }
                   // action={action}
                 /> */}
               </Box>
@@ -742,17 +760,42 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   alignItems={'center'}
                   padding={'2px'}
                 >
-                  <Box>
-                    <Typography
-                      variant="h2"
-                      sx={{
-                        color: '#1F1B13',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                      }}
+                  <Box width="100%">
+                    <Box
+                      display={'flex'}
+                      justifyContent={'space-between'}
+                      alignItems={'center'}
+                      width="100%"
                     >
-                      {t('DASHBOARD.OVERVIEW')}
-                    </Typography>
+                      <Typography
+                        variant="h2"
+                        sx={{
+                          color: '#1F1B13',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                        }}
+                      >
+                        {t('DASHBOARD.OVERVIEW')}
+                      </Typography>
+                      <Box
+                        display={'flex'}
+                        justifyContent={'center'}
+                        alignItems={'center'}
+                        sx={{ color: theme.palette.secondary.main }}
+                      >
+                        <Link
+                          className="flex-center fs-14 text-decoration"
+                          href={'/attendance-overview'}
+                          style={{
+                            color: theme.palette.secondary.main,
+                            fontWeight: '500',
+                          }}
+                        >
+                          {t('DASHBOARD.MORE_DETAILS')}
+                          <ArrowForwardSharpIcon sx={{ height: '18px' }} />
+                        </Link>
+                      </Box>
+                    </Box>
                     <Typography
                       sx={{
                         color: '#7C766F',
@@ -765,24 +808,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         date_range: dateRange,
                       })}
                     </Typography>
-                  </Box>
-                  <Box
-                    display={'flex'}
-                    justifyContent={'center'}
-                    alignItems={'center'}
-                    sx={{ color: theme.palette.secondary.main }}
-                  >
-                    <Link
-                      className="flex-center fs-14 text-decoration"
-                      href={'/attendance-overview'}
-                      style={{
-                        color: theme.palette.secondary.main,
-                        fontWeight: '500',
-                      }}
-                    >
-                      {t('DASHBOARD.MORE_DETAILS')}
-                      <ArrowForwardSharpIcon sx={{ height: '18px' }} />
-                    </Link>
                   </Box>
                 </Stack>
                 {loading && (
@@ -801,7 +826,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         value={
                           cohortPresentPercentage === t('ATTENDANCE.N/A')
                             ? cohortPresentPercentage
-                           : `${cohortPresentPercentage} %`
+                            : `${cohortPresentPercentage} %`
                         }
                       />
                     </Grid>

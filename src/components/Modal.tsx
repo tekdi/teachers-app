@@ -5,6 +5,7 @@ import ButtonFunctional from './ButtonComponent';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+
 interface ModalProps {
   open: boolean;
   onClose: () => void;
@@ -71,6 +72,7 @@ const ModalComponent: React.FC<ModalProps> = ({
           padding: '20px',
           borderRadius: '8px',
           boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+          // height: '526px',
 
           // Responsive styles
           '@media (max-width: 768px)': {
@@ -109,7 +111,7 @@ ModalComponent.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   heading: PropTypes.string.isRequired,
-  SubHeading: PropTypes.string.isRequired,
+  SubHeading: PropTypes.string,
   btnText: PropTypes.string.isRequired,
   children: PropTypes.node,
 };

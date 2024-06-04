@@ -21,7 +21,12 @@ import {
   getCohortAttendance,
 } from '@/services/AttendanceService';
 import { cohort, cohortAttendancePercentParam } from '@/utils/Interfaces';
-import { debounce, getTodayDate, toPascalCase } from '@/utils/Helper';
+import {
+  debounce,
+  formatSelectedDate,
+  getTodayDate,
+  toPascalCase,
+} from '@/utils/Helper';
 
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -68,26 +73,82 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
   >([]);
+  const [currentDayMonth, setCurrentDayMonth] =  React.useState<string>('')
   const [userId, setUserId] = React.useState('');
-  const [selectedValue, setSelectedValue] = React.useState<string>(
-    t('COMMON.AS_OF_TODAY')
+  const [selectedValue, setSelectedValue] = React.useState<any>(
+
+''
   );
   const [presentPercentage, setPresentPercentage] = React.useState<
     string | number
   >('');
   const [lowAttendanceLearnerList, setLowAttendanceLearnerList] =
     React.useState<any>([]);
+  const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
+    useState(0);
+  const [dateRange, setDateRange] = React.useState<Date | string>('');
 
   const theme = useTheme<any>();
   const pathname = usePathname();
 
   const menuItems = [
-    t('COMMON.LAST_SEVEN_DAYS'),
-    t('COMMON.AS_OF_TODAY'),
+    t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+      date_range: dateRange
+    }),
+    t('DASHBOARD.AS_OF_TODAY_DATE', {
+      day_date: currentDayMonth
+    }),
     t('COMMON.LAST_MONTH'),
     t('COMMON.LAST_SIX_MONTHS'),
-    t('COMMON.CUSTOM_RANGE'),
+    t('COMMON.CUSTOM_RANGE' ),
   ];
+
+  useEffect(()=>{
+    setSelectedValue(currentDayMonth)
+  },[]);
+
+  useEffect(() => {
+    const getAttendanceMarkedDays = async () => {
+      const today = new Date();
+      const todayFormattedDate = formatSelectedDate(new Date());
+      const lastSeventhDayDate = new Date(
+        today.getTime() - 6 * 24 * 60 * 60 * 1000
+      );
+      const lastSeventhDayFormattedDate = formatSelectedDate(
+        new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000)
+      );
+
+      const endDay = today.getDate();
+      const endDayMonth = today.toLocaleString('default', { month: 'long' });
+      setCurrentDayMonth(`(${endDay} ${endDayMonth})`)
+      const startDay = lastSeventhDayDate.getDate();
+      const startDayMonth = lastSeventhDayDate.toLocaleString('default', {
+        month: 'long',
+      });
+      if (startDayMonth === endDayMonth) {
+        setDateRange(`(${startDay}-${endDay} ${endDayMonth})`);
+      } else {
+        setDateRange(`(${startDay} ${startDayMonth}-${endDay} ${endDayMonth})`);
+      }
+      const cohortAttendanceData: cohortAttendancePercentParam = {
+        limit: 0,
+        page: 0,
+        filters: {
+          scope: 'student',
+          fromDate: lastSeventhDayFormattedDate,
+          toDate: todayFormattedDate,
+          contextId: classId,
+        },
+        facets: ['attendanceDate'],
+      };
+      const res = await getCohortAttendance(cohortAttendanceData);
+      const response = res?.data?.result?.attendanceDate;
+      setNumberOfDaysAttendanceMarked(Object.keys(response).length);
+    };
+    if (classId) {
+      getAttendanceMarkedDays();
+    }
+  }, [classId, selectedValue === t('COMMON.LAST_SEVEN_DAYS')]);
 
   // API call to get center list
   useEffect(() => {
@@ -189,8 +250,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             if (resp) {
               const filteredData = Object.keys(resp).map((userId) => ({
                 userId,
-                absent: resp[userId].absent,
-                present_percent: resp[userId].present_percentage,
+              absent: resp[userId]?.absent || '0',
+                present: resp[userId]?.present || '0',
+                present_percent: resp[userId]?.present_percentage || '0',
+                absent_percent: resp[userId]?.absent_percentage || '0',
+
               }));
               if (nameUserIdArray && filteredData) {
                 let mergedArray = filteredData.map((attendance) => {
@@ -205,7 +269,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 mergedArray = mergedArray.filter(
                   (item) => item.name !== 'Unknown'
                 );
-                console.log(mergedArray);
+                // console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!`, mergedArray);
                 setLearnerData(mergedArray);
                 setDisplayStudentList(mergedArray);
 
@@ -411,8 +475,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     switch (sortByAttendanceNumber) {
       case 'high':
         sortedData.sort((a, b) => {
-          const aPercent = parseFloat(a.present_percent);
+          const aPercent = parseFloat(a.present_percent );
           const bPercent = parseFloat(b.present_percent);
+          if (isNaN(aPercent) && isNaN(bPercent)) return 0;
           if (isNaN(aPercent)) return 1;
           if (isNaN(bPercent)) return -1;
           return bPercent - aPercent;
@@ -422,6 +487,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         sortedData.sort((a, b) => {
           const aPercent = parseFloat(a.present_percent);
           const bPercent = parseFloat(b.present_percent);
+          if (isNaN(aPercent) && isNaN(bPercent)) return 0;
           if (isNaN(aPercent)) return 1;
           if (isNaN(bPercent)) return -1;
           return aPercent - bPercent;
@@ -435,6 +501,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         sortedData.sort((a, b) => {
           const aClassMissed = parseFloat(a.absent);
           const bClassMissed = parseFloat(b.absent);
+          if (isNaN(aClassMissed) && isNaN(bClassMissed)) return 0;
           if (isNaN(aClassMissed)) return 1;
           if (isNaN(bClassMissed)) return -1;
           return bClassMissed - aClassMissed;
@@ -444,6 +511,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         sortedData.sort((a, b) => {
           const aClassMissed = parseFloat(a.absent);
           const bClassMissed = parseFloat(b.absent);
+          if (isNaN(aClassMissed) && isNaN(bClassMissed)) return 0;
           if (isNaN(aClassMissed)) return 1;
           if (isNaN(bClassMissed)) return -1;
           return aClassMissed - bClassMissed;
@@ -476,12 +544,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           width={'100%'}
           onClick={handleBackEvent}
         >
-          <Box>
-            <KeyboardBackspaceOutlinedIcon
-              cursor={'pointer'}
-              sx={{ color: theme.palette.warning['A200'] }}
-            />
-          </Box>
+          <KeyboardBackspaceOutlinedIcon
+            cursor={'pointer'}
+            sx={{ color: theme.palette.warning['A200'] }}
+          />
           <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
             {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
           </Typography>
@@ -531,8 +597,23 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             selectedValue={selectedValue}
             setSelectedValue={setSelectedValue}
             onDateRangeSelected={handleDateRangeSelected}
+            currentDayMonth={currentDayMonth}
           />
-
+          {selectedValue ==
+          t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+            date_range: dateRange,
+          }) ? (
+            <Typography
+              color={theme.palette.warning['400']}
+              fontSize={'0.75rem'}
+              fontWeight={'500'}
+              pt={'1rem'}
+            >
+              {t('ATTENDANCE.ATTENDANCE_MARKED_OUT_OF_DAYS', {
+                count: numberOfDaysAttendanceMarked,
+              })}
+            </Typography>
+          ) : null}
           {classId !== 'all' ? (
             <Box display={'flex'} className="card_overview" p={'1rem 0'}>
               <Grid container spacing={2}>
@@ -577,80 +658,87 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
       {learnerData?.length > 0 ? (
         <Box bgcolor={theme.palette.warning['A400']}>
-          <Stack mr={1} ml={1}>
-            <Box mt={3} mb={3} boxShadow={'none'}>
-              <Grid
-                container
-                alignItems="center"
-                display={'flex'}
-                justifyContent="space-between"
-              >
-                <Grid item xs={8}>
-                  <Paper
-                    component="form"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
+          {classId !== 'all' ? (
+            <Stack mr={1} ml={1}>
+              <Box mt={3} mb={3} boxShadow={'none'}>
+                <Grid
+                  container
+                  alignItems="center"
+                  display={'flex'}
+                  justifyContent="space-between"
+                >
+                  <Grid item xs={8}>
+                    <Paper
+                      component="form"
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
 
-                      borderRadius: '100px',
-                      background: theme.palette.warning.A700,
-                      boxShadow: 'none',
-                    }}
-                  >
-                    <InputBase
-                      value={searchWord}
-                      sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
-                      placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
-                      inputProps={{ 'aria-label': 'search student' }}
-                      onChange={handleSearch}
-                    />
-                    <IconButton
-                      type="button"
-                      sx={{ p: '10px' }}
-                      aria-label="search"
-                      onClick={handleSearchSubmit}
+                        borderRadius: '100px',
+                        background: theme.palette.warning.A700,
+                        boxShadow: 'none',
+                      }}
                     >
-                      <SearchIcon />
-                    </IconButton>
-
-                    {searchWord?.length > 0 && (
+                      <InputBase
+                        value={searchWord}
+                        sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
+                        placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
+                        inputProps={{ 'aria-label': 'search student' }}
+                        onChange={handleSearch}
+                      />
                       <IconButton
                         type="button"
-                        aria-label="Clear"
-                        onClick={handleSearchClear}
+                        sx={{ p: '10px' }}
+                        aria-label="search"
+                        onClick={handleSearchSubmit}
                       >
-                        <ClearIcon />
+                        <SearchIcon />
                       </IconButton>
-                    )}
-                  </Paper>
-                </Grid>
-                <Grid item xs={4} display={'flex'} justifyContent={'flex-end'}>
-                  <Button
-                    onClick={handleOpenModal}
-                    sx={{
-                      color: theme.palette.warning.A200,
 
-                      borderRadius: '10px',
-                      fontSize: '14px',
-                    }}
-                    endIcon={<ArrowDropDownSharpIcon />}
-                    size="small"
-                    variant="outlined"
+                      {searchWord?.length > 0 && (
+                        <IconButton
+                          type="button"
+                          aria-label="Clear"
+                          onClick={handleSearchClear}
+                        >
+                          <ClearIcon />
+                        </IconButton>
+                      )}
+                    </Paper>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={4}
+                    display={'flex'}
+                    justifyContent={'flex-end'}
                   >
-                    {t('COMMON.SORT_BY').length > 7
-                      ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
-                      : t('COMMON.SORT_BY')}
-                  </Button>
+                    <Button
+                      onClick={handleOpenModal}
+                      sx={{
+                        color: theme.palette.warning.A200,
+
+                        borderRadius: '10px',
+                        fontSize: '14px',
+                      }}
+                      endIcon={<ArrowDropDownSharpIcon />}
+                      size="small"
+                      variant="outlined"
+                    >
+                      {t('COMMON.SORT_BY').length > 7
+                        ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
+                        : t('COMMON.SORT_BY')}
+                    </Button>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Box>
-            <SortingModal
-              isModalOpen={modalOpen}
-              handleCloseModal={handleCloseModal}
-              handleSorting={handleSorting}
-              routeName={pathname}
-            />
-          </Stack>
+              </Box>
+              <SortingModal
+                isModalOpen={modalOpen}
+                handleCloseModal={handleCloseModal}
+                handleSorting={handleSorting}
+                routeName={pathname}
+              />
+            </Stack>
+          ) : null}
           {loading && (
             <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
           )}

@@ -1,6 +1,3 @@
-import CloseIcon from '@mui/icons-material/Close';
-import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
-
 import {
   Box,
   Checkbox,
@@ -19,7 +16,11 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
+
 import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import Image from 'next/image';
 import Modal from '@mui/material/Modal';
 import { useTheme, withStyles } from '@mui/material/styles';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
@@ -31,7 +32,6 @@ import Header from '@/components/Header';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { CustomField, UserDatas, updateCustomField } from '@/utils/Interfaces';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { getLabelForValue } from '@/utils/Helper';
 import Loader from '@/components/Loader';
@@ -87,13 +87,17 @@ const TeacherProfile = () => {
   const style = {
     position: 'absolute',
     top: '50%',
+    maxWidth: 300, // Maximum width for responsiveness
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
     bgcolor: theme.palette.warning.A400,
     p: 4,
     textAlign: 'center',
-    height: '85vh',
+    '@media (max-width: 768px)': {
+      width: '95%', // Adjust width for smaller screens
+      padding: '15px', // Adjust padding for smaller screens
+    },
   };
 
   useEffect(() => {

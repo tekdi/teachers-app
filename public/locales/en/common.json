@@ -89,6 +89,7 @@
     "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
     "BACK_TO_TOP": "Back to Top",
     "LAST_SEVEN_DAYS_RANGE": "Last 7 Days {{date_range}}",
+    "AS_OF_TODAY_DATE": "As of Today {{day_date}}",
     "LEARNER": "Learners"
   },
   "ATTENDANCE": {
@@ -116,7 +117,8 @@
     "N/A": "N/A",
     "CENTER_NAME": "Center Name",
     "ALL_CENTERS": "All Centers",
-    "NO_LEARNER_WITH_LOW_ATTENDANCE": "No Learner with low attendance"
+    "NO_LEARNER_WITH_LOW_ATTENDANCE": "No Learner with low attendance",
+    "ATTENDANCE_MARKED_OUT_OF_DAYS": "Attendance marked: {{count}} out of last 7 days"
   },
   "PROFILE": {
     "EDIT_PROFILE": "Edit Profile",

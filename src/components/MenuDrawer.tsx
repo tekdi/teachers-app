@@ -60,7 +60,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     <Drawer
       open={isOpen}
       onClose={toggleDrawer(false)}
-      transitionDuration={{ enter: 500, exit: 500 }} // Transition duration in milliseconds
+      transitionDuration={{ enter: 500, exit: 500 }}
+      className="backgroundFaded"
     >
       <Box
         sx={{ padding: '16px 16px 12px 16px', width: '350px' }}

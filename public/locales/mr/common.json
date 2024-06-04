@@ -87,6 +87,7 @@
     "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्रे",
     "BACK_TO_TOP": "परत वर जा",
     "LAST_SEVEN_DAYS_RANGE": "शेवटचे 7 दिवस {{date_range}}",
+    "AS_OF_TODAY_DATE": "As of Today {{day_date}}",
     "LEARNER": "शिकणारे"
   },
   "ATTENDANCE": {
@@ -110,7 +111,8 @@
     "N/A": "उपलब्ध नाही",
     "CENTER_NAME": "केंद्राचे नाव",
     "ALL_CENTERS": "सर्व केंद्रे",
-    "NO_LEARNER_WITH_LOW_ATTENDANCE": "कमी उपस्थिती असलेला कोणताही शिकणारा नाही"
+    "NO_LEARNER_WITH_LOW_ATTENDANCE": "कमी उपस्थिती असलेला कोणताही शिकणारा नाही",
+    "ATTENDANCE_MARKED_OUT_OF_DAYS": "उपस्थिती नोंदवली: मागील 7 दिवसांपैकी {{count}} दिवस"
   },
   "PROFILE": {
     "EDIT_PROFILE": "प्रोफाइल संपादित करा",
