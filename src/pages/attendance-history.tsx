@@ -770,7 +770,7 @@ const UserAttendanceHistory = () => {
           />
         </Box>
       </Box>
-      <UpDownButton />
+      {displayStudentList ? <UpDownButton /> : null}
     </Box>
   );
 };

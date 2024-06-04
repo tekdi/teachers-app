@@ -230,7 +230,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             userId: entry.userId,
             name: toPascalCase(entry.name),
           }));
-          console.log('name..........', nameUserIdArray);
+          // console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
             //Write logic to call class missed api
             let fromDate = isFromDate;
@@ -406,6 +406,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     getCohortMemberList();
   }, [classId, isToDate, isFromDate]);
 
+  // useEffect(()=>{
+  //   setDisplayStudentList(learnerData);
+  // },[searchWord == ""])
+
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
     localStorage.setItem('cohortId', event.target.value);
@@ -422,12 +426,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       user.name.toLowerCase().includes(value.toLowerCase())
     );
     setDisplayStudentList(filteredList);
-  }, 200);
+  }, 2);
 
   // handle search student data
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchWord(event.target.value);
-    if (event.target.value.length >= 3) {
+    if (event.target.value.length >= 1) {
       debouncedSearch(event.target.value);
     } else {
       setDisplayStudentList(learnerData);
@@ -448,7 +452,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   // close modal of sort
   const handleCloseModal = () => {
-    setModalOpen(false);
+    setModalOpen(false)
   };
 
   //handel sorting
@@ -527,7 +531,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   return (
     <Box>
-      <UpDownButton />
+     {(displayStudentList.length) ? <UpDownButton /> : null}
       <Header />
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
