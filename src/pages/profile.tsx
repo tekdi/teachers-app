@@ -94,6 +94,7 @@ const TeacherProfile = () => {
     height: '75vh',
     bgcolor: theme.palette.warning.A400,
     p: 4,
+    height: '526px',
     textAlign: 'center',
     '@media (max-width: 768px)': {
       width: '95%', // Adjust width for smaller screens

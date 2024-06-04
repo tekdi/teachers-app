@@ -73,12 +73,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
   >([]);
-  const [currentDayMonth, setCurrentDayMonth] =  React.useState<string>('')
+  const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
   const [userId, setUserId] = React.useState('');
-  const [selectedValue, setSelectedValue] = React.useState<any>(
-
-''
-  );
+  const [selectedValue, setSelectedValue] = React.useState<any>('');
   const [presentPercentage, setPresentPercentage] = React.useState<
     string | number
   >('');
@@ -93,19 +90,19 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const menuItems = [
     t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-      date_range: dateRange
+      date_range: dateRange,
     }),
     t('DASHBOARD.AS_OF_TODAY_DATE', {
-      day_date: currentDayMonth
+      day_date: currentDayMonth,
     }),
     t('COMMON.LAST_MONTH'),
     t('COMMON.LAST_SIX_MONTHS'),
-    t('COMMON.CUSTOM_RANGE' ),
+    t('COMMON.CUSTOM_RANGE'),
   ];
 
-  useEffect(()=>{
-    setSelectedValue(currentDayMonth)
-  },[]);
+  useEffect(() => {
+    setSelectedValue(currentDayMonth);
+  }, []);
 
   useEffect(() => {
     const getAttendanceMarkedDays = async () => {
@@ -120,7 +117,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
       const endDay = today.getDate();
       const endDayMonth = today.toLocaleString('default', { month: 'long' });
-      setCurrentDayMonth(`(${endDay} ${endDayMonth})`)
+      setCurrentDayMonth(`(${endDay} ${endDayMonth})`);
       const startDay = lastSeventhDayDate.getDate();
       const startDayMonth = lastSeventhDayDate.toLocaleString('default', {
         month: 'long',
@@ -528,7 +525,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const handleBackEvent = () => {
     window.history.back();
   };
-
+  const truncate = (str: string, length: number) => {
+    if (str.length <= length) return str;
+    return str.slice(0, length) + '...';
+  };
   return (
     <Box>
      {(displayStudentList.length) ? <UpDownButton /> : null}
@@ -566,7 +566,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 displayEmpty
                 // disabled={cohortsData?.length <= 1 ? true : false}
                 inputProps={{ 'aria-label': 'Without label' }}
-                className="SelectLanguages fs-14 fw-500"
+                className="SelectLanguages fs-14 fw-500 bg-white"
                 style={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
@@ -642,11 +642,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     ))}
                     value={
                       lowAttendanceLearnerList.length > 2
-                        ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2}  ${t('COMMON.MORE')}`
+                        ? `${truncate(lowAttendanceLearnerList[0], 50)}, ${truncate(lowAttendanceLearnerList[1], 10)} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                         : lowAttendanceLearnerList.length === 2
-                          ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
+                          ? `${truncate(lowAttendanceLearnerList[0], 10)}, ${truncate(lowAttendanceLearnerList[1], 10)}`
                           : lowAttendanceLearnerList.length === 1
-                            ? `${lowAttendanceLearnerList[0]}`
+                            ? `${truncate(lowAttendanceLearnerList[0], 10)}`
                             : Array.isArray(lowAttendanceLearnerList) &&
                                 lowAttendanceLearnerList.length === 0
                               ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
