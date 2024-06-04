@@ -680,7 +680,7 @@ const UserAttendanceHistory = () => {
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
-                        onFocus={handleSearchFocus}
+                        // onFocus={handleSearchFocus}
                       />
                       <IconButton
                         type="button"
