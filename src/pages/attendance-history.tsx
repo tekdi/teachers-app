@@ -442,7 +442,7 @@ const UserAttendanceHistory = () => {
   const handleSearchFocus = () => {
     const scrollSearchBox = searchRef.current;
     if (scrollSearchBox) {
-      scrollSearchBox.scrollIntoView();
+      scrollSearchBox.scrollIntoView({block: 'start', behavior: 'smooth'});
     }
   }
 
@@ -521,7 +521,7 @@ const UserAttendanceHistory = () => {
     setDisplayStudentList(updatedAttendanceList);
   };
 
-  const hadleScroolDown = () => {};
+  // const hadleScroolDown = () => {};
 
   return (
     <Box minHeight="100vh" textAlign={'center'}>
@@ -648,7 +648,7 @@ const UserAttendanceHistory = () => {
           />
           <Box mt={2}>
             {/*----------------------------search and Sort---------------------------------------*/}
-            <Stack mr={1} ml={1} ref={searchRef}>
+            <Stack mr={1} ml={1}>
               <Box
                 mt={'16px'}
                 mb={3}
@@ -672,7 +672,8 @@ const UserAttendanceHistory = () => {
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',
                       }}
-                      onFocus={hadleScroolDown}
+                      // onFocus={hadleScroolDown}
+                      ref={searchRef}
                     >
                       <InputBase
                         value={searchWord}
@@ -680,7 +681,7 @@ const UserAttendanceHistory = () => {
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
-                        // onFocus={handleSearchFocus}
+                        onFocus={handleSearchFocus}
                       />
                       <IconButton
                         type="button"
