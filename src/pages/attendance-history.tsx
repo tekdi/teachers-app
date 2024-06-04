@@ -18,7 +18,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   debounce,
   getTodayDate,
@@ -82,6 +82,8 @@ const UserAttendanceHistory = () => {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
 
   const pathname = usePathname();
   let userId: string;
@@ -437,6 +439,17 @@ const UserAttendanceHistory = () => {
     }
   };
 
+  const handleSearchFocus = () => {
+    const scrollSearchBox = searchRef.current;
+    if (scrollSearchBox) {
+      scrollSearchBox.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        // top: 0,
+      });
+    }
+  }
+
   const handleSearchSubmit = () => {
     let filteredList = cohortMemberList?.filter((user: any) =>
       user.name.toLowerCase().includes(searchWord.toLowerCase())
@@ -639,7 +652,7 @@ const UserAttendanceHistory = () => {
           />
           <Box mt={2}>
             {/*----------------------------search and Sort---------------------------------------*/}
-            <Stack mr={1} ml={1}>
+            <Stack mr={1} ml={1} ref={searchRef}>
               <Box
                 mt={'16px'}
                 mb={3}
@@ -671,6 +684,8 @@ const UserAttendanceHistory = () => {
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
+                        onFocus={handleSearchFocus}
+
                       />
                       <IconButton
                         type="button"
