@@ -59,6 +59,7 @@ interface CustomSelectModalProps {
   selectedValue: string;
   setSelectedValue: (value: string) => void;
   onDateRangeSelected: any;
+  currentDayMonth:string;
 }
 
 const DateRangePopup: React.FC<CustomSelectModalProps> = ({
@@ -66,6 +67,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   selectedValue,
   setSelectedValue,
   onDateRangeSelected,
+  currentDayMonth
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCalendarModalOpen, setIsCalenderModalOpen] = useState(false);
@@ -187,10 +189,10 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           inputProps={{ readOnly: true }}
         >
           <MenuItem value="" disabled>
-            {t('COMMON.SELECT_AN_OPTION')}
+        {  t('DASHBOARD.AS_OF_TODAY_DATE', {day_date: currentDayMonth})}
           </MenuItem>
           <MenuItem value={selectedValue}>
-            {selectedValue ? selectedValue : t('COMMON.SELECT_AN_OPTION')}
+            {selectedValue ? selectedValue : t('DASHBOARD.AS_OF_TODAY_DATE', {day_date: currentDayMonth})}
           </MenuItem>
         </Select>
       </FormControl>
