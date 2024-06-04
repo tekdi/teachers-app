@@ -164,10 +164,19 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           const response = resp?.results;
           const cohortDetails = response?.cohortDetails || [];
 
-          const filteredData = cohortDetails.map((item: any) => ({
-            cohortId: item?.cohortData?.cohortId,
-            name: toPascalCase(item?.cohortData?.name),
-          }));
+          const filteredData = cohortDetails?.map((item: any) => {
+            const stateNameField = item?.cohortData?.customFields.find(
+              (field: any) => field.label === 'State Name'
+            );
+            const stateName = stateNameField ? stateNameField.value : '';
+
+            return {
+              cohortId: item?.cohortData?.cohortId,
+              name: toPascalCase(item?.cohortData?.name),
+              state: stateName,
+            };
+          });
+
           setCohortsData(filteredData);
 
           if (filteredData.length > 0) {
@@ -185,7 +194,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               );
               if (stateNameField) {
                 const state_name = stateNameField.value;
-                localStorage.setItem('stateName', state_name);
+                if (state_name) {
+                  localStorage.setItem('stateName', state_name);
+                } else {
+                  localStorage.setItem('stateName', '');
+                  console.log('No State Name');
+                }
               }
             }
             setManipulatedCohortData(
@@ -247,11 +261,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             if (resp) {
               const filteredData = Object.keys(resp).map((userId) => ({
                 userId,
-              absent: resp[userId]?.absent || '0',
+                absent: resp[userId]?.absent || '0',
                 present: resp[userId]?.present || '0',
                 present_percent: resp[userId]?.present_percentage || '0',
                 absent_percent: resp[userId]?.absent_percentage || '0',
-
               }));
               if (nameUserIdArray && filteredData) {
                 let mergedArray = filteredData.map((attendance) => {
@@ -409,8 +422,24 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
-    localStorage.setItem('cohortId', event.target.value);
+
+    // ---------- set cohortId and stateName-----------
+    const cohort_id = event.target.value;
+    localStorage.setItem('cohortId', cohort_id);
+
+    const get_state_name: string | null = getStateByCohortId(cohort_id);
+    if (get_state_name) {
+      localStorage.setItem('stateName', get_state_name);
+    } else {
+      localStorage.setItem('stateName', '');
+      console.log('NO State For Selected Cohort');
+    }
   };
+
+  function getStateByCohortId(cohortId: any) {
+    const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
+    return cohort ? cohort?.state : null;
+  }
 
   const handleSearchClear = () => {
     setSearchWord('');
@@ -476,7 +505,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     switch (sortByAttendanceNumber) {
       case 'high':
         sortedData.sort((a, b) => {
-          const aPercent = parseFloat(a.present_percent );
+          const aPercent = parseFloat(a.present_percent);
           const bPercent = parseFloat(b.present_percent);
           if (isNaN(aPercent) && isNaN(bPercent)) return 0;
           if (isNaN(aPercent)) return 1;

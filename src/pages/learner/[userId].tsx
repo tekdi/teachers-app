@@ -268,7 +268,7 @@ const LearnerProfile: React.FC = () => {
     ?.filter((field) => field.order <= 12)
     ?.map((field) => {
       if (
-        field.type === 'Drop Down' ||
+        field.type === 'drop_down' ||
         field.type === 'radio' ||
         field.type === 'dropdown' ||
         (field.type === 'Radio' && field.options && field.value.length)
@@ -316,25 +316,29 @@ const LearnerProfile: React.FC = () => {
     };
 
     try {
-      if (filters) {
-        const searchResults = await getDoIdForAssesmentDetails({ filters });
+      if (steteName) {
+        if (filters) {
+          const searchResults = await getDoIdForAssesmentDetails({ filters });
 
-        if (searchResults?.responseCode === 'OK') {
-          const result = searchResults?.result;
-          if (result) {
-            setLoading(true);
+          if (searchResults?.responseCode === 'OK') {
+            const result = searchResults?.result;
+            if (result) {
+              setLoading(true);
 
-            const QuestionSet = result?.QuestionSet?.[0];
-            const getUniqueDoId = QuestionSet?.IL_UNIQUE_ID;
-            setUniqueDoId(getUniqueDoId);
-            testReportDetails(getUniqueDoId);
-            setLoading(false);
-          } else {
-            console.log('NO Result found from getDoIdForAssesmentDetails ');
+              const QuestionSet = result?.QuestionSet?.[0];
+              const getUniqueDoId = QuestionSet?.IL_UNIQUE_ID;
+              setUniqueDoId(getUniqueDoId);
+              testReportDetails(getUniqueDoId);
+              setLoading(false);
+            } else {
+              console.log('NO Result found from getDoIdForAssesmentDetails ');
+            }
           }
+        } else {
+          console.log('NO Data found from getDoIdForAssesmentDetails ');
         }
       } else {
-        console.log('NO Data found from getDoIdForAssesmentDetails ');
+        console.log('NO State Found');
       }
     } catch (error) {
       console.error(
@@ -471,6 +475,7 @@ const LearnerProfile: React.FC = () => {
       width: '95%', // Adjust width for smaller screens
       padding: '15px', // Adjust padding for smaller screens
     },
+    height: '75vh',
   };
 
   const [formData, setFormData] = useState<{
@@ -648,11 +653,15 @@ const LearnerProfile: React.FC = () => {
         <Grid item xs>
           <Box>
             <Typography
-              variant="h3"
-              sx={{
-                fontFamily: theme.typography.fontFamily,
-                fontSize: '22px',
+              style={{
+                letterSpacing: '0.1px',
+                textAlign: 'left',
+                marginBottom: '2px',
               }}
+              fontSize={'22px'}
+              fontWeight={'400'}
+              lineHeight={'28px'}
+              color={theme.palette.warning['A200']}
             >
               {userData?.name}
             </Typography>
@@ -825,7 +834,8 @@ const LearnerProfile: React.FC = () => {
         <Typography
           fontWeight={'500'}
           fontSize={'16px'}
-          sx={{ color: theme.palette.warning.main }}
+          lineHeight={'28px'}
+          color={theme.palette.warning['A200']}
         >
           {t('PROFILE.LEARNER_DETAILS')}
         </Typography>
@@ -899,9 +909,8 @@ const LearnerProfile: React.FC = () => {
                       sx={{
                         wordBreak: 'break-word',
                         fontSize: '16px',
-                        color: theme.palette.warning.main,
+                        color: theme.palette.warning['A200'],
                       }}
-                      color={theme.palette.warning['A200']}
                     >
                       {item?.displayValue}
                     </Typography>
@@ -1150,6 +1159,7 @@ const LearnerProfile: React.FC = () => {
                 <Grid item xs={12} key={field.fieldId}>
                   {field.type === 'text' || field.type === 'numeric' ? (
                     <TextField
+                      type="number"
                       sx={{ marginTop: '20px' }}
                       fullWidth
                       name={field.name}
@@ -1165,9 +1175,12 @@ const LearnerProfile: React.FC = () => {
                           (f) => f.fieldId === field.fieldId
                         )?.value[0] || ''
                       }
-                      onChange={(e) =>
-                        handleFieldChange(field.fieldId, e.target.value)
-                      }
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+                        if (/^\d{0,3}$/.test(inputValue)) {
+                          handleFieldChange(field.fieldId, inputValue);
+                        }
+                      }}
                     />
                   ) : field.type === 'checkbox' ? (
                     <Box marginTop={3}>
@@ -1208,7 +1221,7 @@ const LearnerProfile: React.FC = () => {
                         </FormGroup>
                       ))}
                     </Box>
-                  ) : field.type === 'Drop Down' ||
+                  ) : field.type === 'drop_down' ||
                     field.type === 'dropdown' ? (
                     <Box marginTop={3} textAlign={'start'}>
                       <FormControl fullWidth>
