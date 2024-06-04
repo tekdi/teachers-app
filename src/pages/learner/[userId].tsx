@@ -899,9 +899,8 @@ const LearnerProfile: React.FC = () => {
                       sx={{
                         wordBreak: 'break-word',
                         fontSize: '16px',
-                        color: theme.palette.warning.main,
+                        color: theme.palette.warning['A200'],
                       }}
-                      color={theme.palette.warning['A200']}
                     >
                       {item?.displayValue}
                     </Typography>
