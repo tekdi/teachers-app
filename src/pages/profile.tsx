@@ -693,13 +693,13 @@ const TeacherProfile = () => {
                   display="flex"
                   flexDirection="column"
                 >
-                  <Image
+                  {/* <Image
                     src={user_placeholder_img}
                     alt="user"
                     height={80}
                     width={70}
                     style={{ alignItems: 'center' }}
-                  />
+                  /> */}
 
                   <Box>
                     <input
