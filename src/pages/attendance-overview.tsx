@@ -241,7 +241,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             userId: entry.userId,
             name: toPascalCase(entry.name),
           }));
-          console.log('name..........', nameUserIdArray);
+          // console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
             //Write logic to call class missed api
             let fromDate = isFromDate;
@@ -416,6 +416,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     getCohortMemberList();
   }, [classId, isToDate, isFromDate]);
 
+  // useEffect(()=>{
+  //   setDisplayStudentList(learnerData);
+  // },[searchWord == ""])
+
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
 
@@ -448,12 +452,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       user.name.toLowerCase().includes(value.toLowerCase())
     );
     setDisplayStudentList(filteredList);
-  }, 200);
+  }, 2);
 
   // handle search student data
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchWord(event.target.value);
-    if (event.target.value.length >= 3) {
+    if (event.target.value.length >= 1) {
       debouncedSearch(event.target.value);
     } else {
       setDisplayStudentList(learnerData);
@@ -474,7 +478,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   // close modal of sort
   const handleCloseModal = () => {
-    setModalOpen(false);
+    setModalOpen(false)
   };
 
   //handel sorting
@@ -550,10 +554,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const handleBackEvent = () => {
     window.history.back();
   };
-
+  const truncate = (str: string, length: number) => {
+    if (str.length <= length) return str;
+    return str.slice(0, length) + '...';
+  };
   return (
     <Box>
-      <UpDownButton />
+     {(displayStudentList.length) ? <UpDownButton /> : null}
       <Header />
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -588,7 +595,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 displayEmpty
                 // disabled={cohortsData?.length <= 1 ? true : false}
                 inputProps={{ 'aria-label': 'Without label' }}
-                className="SelectLanguages fs-14 fw-500"
+                className="SelectLanguages fs-14 fw-500 bg-white"
                 style={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
@@ -664,11 +671,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     ))}
                     value={
                       lowAttendanceLearnerList.length > 2
-                        ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2}  ${t('COMMON.MORE')}`
+                        ? `${truncate(lowAttendanceLearnerList[0], 50)}, ${truncate(lowAttendanceLearnerList[1], 10)} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                         : lowAttendanceLearnerList.length === 2
-                          ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
+                          ? `${truncate(lowAttendanceLearnerList[0], 10)}, ${truncate(lowAttendanceLearnerList[1], 10)}`
                           : lowAttendanceLearnerList.length === 1
-                            ? `${lowAttendanceLearnerList[0]}`
+                            ? `${truncate(lowAttendanceLearnerList[0], 10)}`
                             : Array.isArray(lowAttendanceLearnerList) &&
                                 lowAttendanceLearnerList.length === 0
                               ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')

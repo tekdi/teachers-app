@@ -17,7 +17,12 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useEffect, useRef, useState } from 'react';
 import { dashboardDaysLimit } from '../../app.config';
 
-const Calendar: React.FC<any> = ({ showDetailsHandle, data, disableDays }) => {
+const Calendar: React.FC<any> = ({
+  showDetailsHandle,
+  data,
+  disableDays,
+  classId,
+}) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -28,7 +33,6 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data, disableDays }) => {
   const selectedItemRef = useRef<HTMLDivElement>(null);
   const determinePathColor = useDeterminePathColor();
 
-
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     const selectedItem = selectedItemRef.current;
@@ -38,33 +42,10 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data, disableDays }) => {
       const itemLeft = selectedItem.offsetLeft;
       const itemWidth = selectedItem.offsetWidth;
 
-      const scrollPosition = itemLeft - (containerWidth / 2) + (itemWidth / 2);
+      const scrollPosition = itemLeft - containerWidth / 2 + itemWidth / 2;
       scrollContainer.scrollTo({ left: scrollPosition });
     }
   }, []);
-
-  const changeWeekHandle = (btnType: string) => {
-    const today = new Date();
-    const startDate = subDays(today, 29);
-    const newDate =
-      btnType === 'prev'
-        ? subWeeks(currentMonth, 1)
-        : addWeeks(currentMonth, 1);
-    const endDate =
-      btnType === 'prev'
-        ? subWeeks(currentMonth, 2)
-        : addWeeks(currentMonth, 2);
-    setCurrentMonth(newDate);
-    setCurrentWeek(getWeek(newDate));
-    setIsNextDisabled(false);
-    setIsPrevDisabled(false);
-    if (endDate <= startDate) {
-      setIsPrevDisabled(true);
-    }
-    if (endDate >= today) {
-      setIsNextDisabled(true);
-    }
-  };
 
   const onDateClickHandle = (day: any, dayStr: string) => {
     setColor(false);
@@ -77,10 +58,10 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data, disableDays }) => {
     const days = [];
     // const startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
     const today = new Date();
-    const startDate = subDays(today, 29);
+    const startDate = subDays(today, 7);
     const endDate = subDays(today, 0);
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < dashboardDaysLimit; i++) {
       const day = addDays(startDate, i);
       const isToday = isSameDay(day, new Date());
 
@@ -101,7 +82,7 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data, disableDays }) => {
   const renderCells = () => {
     const today = new Date();
     const endDate = subDays(today, 0);
-    const startDate = subDays(endDate, 29);
+    const startDate = subDays(endDate, 7);
     const dateFormat = 'd';
     const rows = [];
     let days = [];
@@ -148,12 +129,12 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data, disableDays }) => {
                   : ''
             }`}
             onClick={() => {
-              if (!disableDays){
+              if (!disableDays) {
                 const dayStr = format(cloneDay, 'ccc dd MMM yy');
                 onDateClickHandle(cloneDay, dayStr);
-              }else{
-                null
-              }   
+              } else {
+                null;
+              }
             }}
           >
             <div className="circularProgress">
@@ -203,7 +184,14 @@ const Calendar: React.FC<any> = ({ showDetailsHandle, data, disableDays }) => {
   };
 
   return (
-    <div className="calendar" ref={scrollContainerRef}  style={{ opacity: disableDays ? 0.5 : 1 }}>
+    <div
+      className="calendar"
+      ref={scrollContainerRef}
+      style={{
+        opacity: disableDays ? 0.5 : 1,
+        overflow: classId === 'all' ? 'hidden' : 'auto',
+      }}
+    >
       <Box className="calender_body_width">
         {renderDays()}
         {renderCells()}

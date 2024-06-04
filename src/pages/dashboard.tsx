@@ -32,7 +32,7 @@ import {
   shortDateFormat,
   toPascalCase,
 } from '../utils/Helper';
-import { isAfter, startOfDay } from 'date-fns';
+import { isAfter, isValid, startOfDay, parse, format } from 'date-fns';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -52,7 +52,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-
+import { modifyAttendanceLimit } from '../../app.config';
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
@@ -99,7 +99,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const determinePathColor = useDeterminePathColor();
   const currentDate = new Date();
   const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(currentDate.getDate() - 6);
+  sevenDaysAgo.setDate(currentDate.getDate() - modifyAttendanceLimit);
   const formatedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
 
   useEffect(() => {
@@ -169,6 +169,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           setCohortsData(filteredData);
           if (filteredData.length > 0) {
             setClassId(filteredData?.[0]?.cohortId);
+            localStorage.setItem('classId', filteredData?.[0]?.cohortId);
             setManipulatedCohortData(
               filteredData.concat({ cohortId: 'all', name: 'All Centers' })
             );
@@ -386,6 +387,18 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setHandleSaveHasRun(!handleSaveHasRun);
   };
 
+  const getMonthName = (dateString: string) => {
+    try {
+      const parsedDate = parse(dateString, 'yyyy-MM-dd', new Date());
+      if (!isValid(parsedDate)) {
+        throw new Error('Invalid Date');
+      }
+      return format(parsedDate, 'MMMM');
+    } catch (error) {
+      return 'Invalid Date';
+    }
+  };
+
   useEffect(() => {
     const getAttendanceStats = async () => {
       if (classId !== '' && classId !== 'all') {
@@ -464,6 +477,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const pathColor = determinePathColor(presentPercentage);
 
+  const truncate = (str: string, length: number) => {
+    if (str.length <= length) return str;
+    return str.slice(0, length) + '...';
+  };
+
+  const renderValue = () => {
+    if (lowAttendanceLearnerList.length > 2) {
+      return `${truncate(lowAttendanceLearnerList[0], 50)}, ${truncate(lowAttendanceLearnerList[1], 10)} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`;
+    } else if (lowAttendanceLearnerList.length === 2) {
+      return `${truncate(lowAttendanceLearnerList[0], 10)}, ${truncate(lowAttendanceLearnerList[1], 10)}`;
+    } else if (lowAttendanceLearnerList.length === 1) {
+      return `${truncate(lowAttendanceLearnerList[0], 10)}`;
+    } else if (
+      Array.isArray(lowAttendanceLearnerList) &&
+      lowAttendanceLearnerList.length === 0
+    ) {
+      return t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE');
+    } else {
+      return t('ATTENDANCE.N/A');
+    }
+  };
+
   return (
     <>
       {!isAuthenticated && (
@@ -523,7 +558,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       marginBottom={'0'}
                       style={{ fontWeight: '500' }}
                     >
-                      {getMonthName()}
+                      {getMonthName(selectedDate)}
                     </Typography>
                     <CalendarMonthIcon />
                   </Box>
@@ -540,7 +575,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           onChange={handleCohortSelection}
                           displayEmpty
                           inputProps={{ 'aria-label': 'Without label' }}
-                          className="SelectLanguages fs-14 fw-500"
+                          className="SelectLanguages fs-14 fw-500 bg-white"
                           style={{
                             borderRadius: '0.5rem',
                             color: theme.palette.warning['200'],
@@ -590,6 +625,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       showDetailsHandle={showDetailsHandle}
                       data={percentageAttendanceData}
                       disableDays={classId === 'all' ? true : false}
+                      classId={classId}
                     />
                   </Box>
                   <Box
@@ -839,20 +875,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             showBackdrop={false}
                           />
                         ))}
-                        value={
-                          lowAttendanceLearnerList.length > 2
-                            ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]} ${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
-                            : lowAttendanceLearnerList.length === 2
-                              ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
-                              : lowAttendanceLearnerList.length === 1
-                                ? `${lowAttendanceLearnerList[0]}`
-                                : Array.isArray(lowAttendanceLearnerList) &&
-                                    lowAttendanceLearnerList.length === 0
-                                  ? t(
-                                      'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
-                                    )
-                                  : t('ATTENDANCE.N/A')
-                        }
+                        value={renderValue()}
                       />
                     </Grid>
                   </Grid>
