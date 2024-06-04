@@ -68,7 +68,12 @@ const LearnerAttendanceHistory = () => {
       try {
         const classId = localStorage.getItem('classId') || '';
         const userId = localStorage.getItem('learnerId') || '';
-        if (classId !== '' && classId !== undefined) {
+        if (
+          classId !== '' &&
+          classId !== undefined &&
+          userId !== undefined &&
+          userId !== ''
+        ) {
           const currentDate = selectedDate || new Date();
           const firstDayOfMonth = new Date(
             currentDate.getFullYear(),
