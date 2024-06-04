@@ -88,7 +88,7 @@ const LearnerModal = ({
                 lineHeight={'0.15px'}
                 fontSize="16px"
                 fontWeight="500"
-                color={'#4D4639'}
+                color={theme.palette.warning['500']}
                 m={0}
               >
                 {t('PROFILE.LEARNER_DETAILS')}
@@ -154,7 +154,7 @@ const LearnerModal = ({
                             fontWeight={'400'}
                             lineHeight={'24px'}
                             margin={0}
-                            color={'#4D4639'}
+                            color={theme.palette.warning['500']}
                             style={{
                               wordBreak: 'break-word',
                               whiteSpace: 'normal',
