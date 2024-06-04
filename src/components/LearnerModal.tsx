@@ -88,7 +88,7 @@ const LearnerModal = ({
                 lineHeight={'0.15px'}
                 fontSize="16px"
                 fontWeight="500"
-                color={theme.palette.warning['500']}
+                color={theme.palette.warning['A200']}
                 m={0}
               >
                 {t('PROFILE.LEARNER_DETAILS')}
@@ -128,9 +128,7 @@ const LearnerModal = ({
                           fontWeight={'400'}
                           lineHeight={'24px'}
                           margin={0}
-                          sx={{
-                            color: theme.palette.warning['A100'],
-                          }}
+                          color={theme.palette.warning['A200']}
                         >
                           {userName}
                         </Typography>
@@ -154,7 +152,7 @@ const LearnerModal = ({
                             fontWeight={'400'}
                             lineHeight={'24px'}
                             margin={0}
-                            color={theme.palette.warning['500']}
+                            color={theme.palette.warning['A200']}
                             style={{
                               wordBreak: 'break-word',
                               whiteSpace: 'normal',
@@ -187,7 +185,7 @@ const LearnerModal = ({
                   boxShadow: 'none',
                   fontSize: '14px',
                   fontWeight: 500,
-                  color: theme.palette.warning['A100'],
+                  color: '#1E1B16',
                 }}
                 onClick={onClose}
                 variant="outlined"
@@ -202,7 +200,7 @@ const LearnerModal = ({
                   boxShadow: 'none',
                   fontSize: '14px',
                   fontWeight: 500,
-                  color: theme.palette.warning['A100'],
+                  color: '#1E1B16',
                 }}
                 variant="contained"
                 onClick={handleLearnerFullProfile}

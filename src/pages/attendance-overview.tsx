@@ -575,82 +575,87 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
       {learnerData?.length > 0 ? (
         <Box bgcolor={theme.palette.warning['A400']}>
-          {classId !== 'all' ? 
-          <Stack mr={1} ml={1}>
-            <Box mt={3} mb={3} boxShadow={'none'}>
-              <Grid
-                container
-                alignItems="center"
-                display={'flex'}
-                justifyContent="space-between"
-              >
-                <Grid item xs={8}>
-                  <Paper
-                    component="form"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
+          {classId !== 'all' ? (
+            <Stack mr={1} ml={1}>
+              <Box mt={3} mb={3} boxShadow={'none'}>
+                <Grid
+                  container
+                  alignItems="center"
+                  display={'flex'}
+                  justifyContent="space-between"
+                >
+                  <Grid item xs={8}>
+                    <Paper
+                      component="form"
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
 
-                      borderRadius: '100px',
-                      background: theme.palette.warning.A700,
-                      boxShadow: 'none',
-                    }}
-                  >
-                    <InputBase
-                      value={searchWord}
-                      sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
-                      placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
-                      inputProps={{ 'aria-label': 'search student' }}
-                      onChange={handleSearch}
-                    />
-                    <IconButton
-                      type="button"
-                      sx={{ p: '10px' }}
-                      aria-label="search"
-                      onClick={handleSearchSubmit}
+                        borderRadius: '100px',
+                        background: theme.palette.warning.A700,
+                        boxShadow: 'none',
+                      }}
                     >
-                      <SearchIcon />
-                    </IconButton>
-
-                    {searchWord?.length > 0 && (
+                      <InputBase
+                        value={searchWord}
+                        sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
+                        placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
+                        inputProps={{ 'aria-label': 'search student' }}
+                        onChange={handleSearch}
+                      />
                       <IconButton
                         type="button"
-                        aria-label="Clear"
-                        onClick={handleSearchClear}
+                        sx={{ p: '10px' }}
+                        aria-label="search"
+                        onClick={handleSearchSubmit}
                       >
-                        <ClearIcon />
+                        <SearchIcon />
                       </IconButton>
-                    )}
-                  </Paper>
-                </Grid>
-                <Grid item xs={4} display={'flex'} justifyContent={'flex-end'}>
-                  <Button
-                    onClick={handleOpenModal}
-                    sx={{
-                      color: theme.palette.warning.A200,
 
-                      borderRadius: '10px',
-                      fontSize: '14px',
-                    }}
-                    endIcon={<ArrowDropDownSharpIcon />}
-                    size="small"
-                    variant="outlined"
+                      {searchWord?.length > 0 && (
+                        <IconButton
+                          type="button"
+                          aria-label="Clear"
+                          onClick={handleSearchClear}
+                        >
+                          <ClearIcon />
+                        </IconButton>
+                      )}
+                    </Paper>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={4}
+                    display={'flex'}
+                    justifyContent={'flex-end'}
                   >
-                    {t('COMMON.SORT_BY').length > 7
-                      ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
-                      : t('COMMON.SORT_BY')}
-                  </Button>
+                    <Button
+                      onClick={handleOpenModal}
+                      sx={{
+                        color: theme.palette.warning.A200,
+
+                        borderRadius: '10px',
+                        fontSize: '14px',
+                      }}
+                      endIcon={<ArrowDropDownSharpIcon />}
+                      size="small"
+                      variant="outlined"
+                    >
+                      {t('COMMON.SORT_BY').length > 7
+                        ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
+                        : t('COMMON.SORT_BY')}
+                    </Button>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Box>
-            <SortingModal
-              isModalOpen={modalOpen}
-              handleCloseModal={handleCloseModal}
-              handleSorting={handleSorting}
-              routeName={pathname}
-            />
-          </Stack>
-          : null}
+              </Box>
+              <SortingModal
+                isModalOpen={modalOpen}
+                handleCloseModal={handleCloseModal}
+                handleSorting={handleSorting}
+                routeName={pathname}
+              />
+            </Stack>
+          ) : null}
           {loading && (
             <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
           )}

@@ -467,6 +467,8 @@ const UserAttendanceHistory = () => {
     setDisplayStudentList(updatedAttendanceList);
   };
 
+  const hadleScroolDown = () => {};
+
   return (
     <Box minHeight="100vh" textAlign={'center'}>
       <Header />
@@ -593,7 +595,12 @@ const UserAttendanceHistory = () => {
           <Box mt={2}>
             {/*----------------------------search and Sort---------------------------------------*/}
             <Stack mr={1} ml={1}>
-              <Box mt={3} mb={3} sx={{ padding: '0 10px' }} boxShadow={'none'}>
+              <Box
+                mt={'16px'}
+                mb={3}
+                sx={{ padding: '0 10px' }}
+                boxShadow={'none'}
+              >
                 <Grid
                   container
                   alignItems="center"
@@ -611,6 +618,7 @@ const UserAttendanceHistory = () => {
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',
                       }}
+                      onFocus={hadleScroolDown}
                     >
                       <InputBase
                         value={searchWord}
