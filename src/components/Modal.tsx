@@ -111,7 +111,7 @@ ModalComponent.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   heading: PropTypes.string.isRequired,
-  SubHeading: PropTypes.string.isRequired,
+  SubHeading: PropTypes.string,
   btnText: PropTypes.string.isRequired,
   children: PropTypes.node,
 };
