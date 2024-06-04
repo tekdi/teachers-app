@@ -521,7 +521,7 @@ const UserAttendanceHistory = () => {
     setDisplayStudentList(updatedAttendanceList);
   };
 
-  // const hadleScroolDown = () => {};
+  const hadleScroolDown = () => {};
 
   return (
     <Box minHeight="100vh" textAlign={'center'}>
@@ -672,7 +672,7 @@ const UserAttendanceHistory = () => {
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',
                       }}
-                      // onFocus={hadleScroolDown}
+                      onFocus={hadleScroolDown}
                       ref={searchRef}
                     >
                       <InputBase
