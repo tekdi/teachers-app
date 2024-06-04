@@ -32,7 +32,7 @@ import {
   shortDateFormat,
   toPascalCase,
 } from '../utils/Helper';
-import { isAfter, startOfDay } from 'date-fns';
+import { isAfter, isValid, startOfDay, parse, format } from 'date-fns';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -52,7 +52,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-
+import { modifyAttendanceLimit } from '../../app.config';
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
@@ -99,7 +99,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const determinePathColor = useDeterminePathColor();
   const currentDate = new Date();
   const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(currentDate.getDate() - 6);
+  sevenDaysAgo.setDate(currentDate.getDate() - modifyAttendanceLimit);
   const formatedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
 
   useEffect(() => {
@@ -386,6 +386,18 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setHandleSaveHasRun(!handleSaveHasRun);
   };
 
+  const getMonthName = (dateString: string) => {
+    try {
+      const parsedDate = parse(dateString, 'yyyy-MM-dd', new Date());
+      if (!isValid(parsedDate)) {
+        throw new Error('Invalid Date');
+      }
+      return format(parsedDate, 'MMMM');
+    } catch (error) {
+      return 'Invalid Date';
+    }
+  };
+
   useEffect(() => {
     const getAttendanceStats = async () => {
       if (classId !== '' && classId !== 'all') {
@@ -523,7 +535,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       marginBottom={'0'}
                       style={{ fontWeight: '500' }}
                     >
-                      {getMonthName()}
+                      {getMonthName(selectedDate)}
                     </Typography>
                     <CalendarMonthIcon />
                   </Box>

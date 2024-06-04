@@ -6,7 +6,7 @@ import {
 } from '@mui/icons-material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { formatToShowDateMonth, shortDateFormat } from '@/utils/Helper';
-
+import { modifyAttendanceLimit } from '../../app.config';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useTranslation } from 'next-i18next';
 
@@ -52,7 +52,7 @@ function AttendanceStatus({
   const todayDate = shortDateFormat(new Date());
   const currentDate = new Date();
   const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(currentDate.getDate() - 6);
+  sevenDaysAgo.setDate(currentDate.getDate() - modifyAttendanceLimit);
   const formatedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
   const currentAttendance =
     formattedAttendanceData?.[dateString] || 'notMarked';
