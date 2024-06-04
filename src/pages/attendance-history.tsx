@@ -127,7 +127,6 @@ const UserAttendanceHistory = () => {
             ?.filter(Boolean);
           setCohortsData(filteredData);
           setClassId(filteredData?.[0]?.cohortId);
-          localStorage.setItem('classId', filteredData?.[0]?.cohortId);
           setLoading(false);
         }
       } catch (error) {
