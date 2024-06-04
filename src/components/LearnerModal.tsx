@@ -120,7 +120,7 @@ const LearnerModal = ({
                         fontWeight={'600'}
                         color={theme.palette.warning['500']}
                       >
-                        Full Name
+                        {t('PROFILE.FULL_NAME')}
                       </Typography>
                       <Box display="flex">
                         <Typography
@@ -185,7 +185,7 @@ const LearnerModal = ({
                   boxShadow: 'none',
                   fontSize: '14px',
                   fontWeight: 500,
-                  color: '#1E1B16',
+                  color: theme.palette.warning['A100'],
                 }}
                 onClick={onClose}
                 variant="outlined"
@@ -200,7 +200,7 @@ const LearnerModal = ({
                   boxShadow: 'none',
                   fontSize: '14px',
                   fontWeight: 500,
-                  color: '#1E1B16',
+                  color: theme.palette.warning['A100'],
                 }}
                 variant="contained"
                 onClick={handleLearnerFullProfile}
