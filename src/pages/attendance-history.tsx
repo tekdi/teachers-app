@@ -120,14 +120,42 @@ const UserAttendanceHistory = () => {
           const resp = await cohortList({ limit, page, filters });
           const extractedNames = resp?.results?.cohortDetails;
           const filteredData = extractedNames
-            ?.map((item: any) => ({
-              cohortId: item?.cohortData?.cohortId,
-              name: item?.cohortData?.name,
-            }))
+            ?.map((item: any) => {
+              const stateNameField = item?.cohortData?.customFields.find(
+                (field: any) => field.label === 'State Name'
+              );
+              const stateName = stateNameField ? stateNameField.value : '';
+
+              return {
+                cohortId: item?.cohortData?.cohortId,
+                name: item?.cohortData?.name,
+                state: stateName,
+              };
+            })
             ?.filter(Boolean);
+
           setCohortsData(filteredData);
           setClassId(filteredData?.[0]?.cohortId);
           localStorage.setItem('classId', filteredData?.[0]?.cohortId);
+
+          // ----- add state name to localstorage----------
+          if (
+            extractedNames?.length > 0 &&
+            extractedNames?.[0].cohortData.customFields
+          ) {
+            const customFields = extractedNames?.[0].cohortData.customFields;
+            const stateNameField = customFields?.find(
+              (field: any) => field.label === 'State Name'
+            );
+            if (stateNameField) {
+              const state_name = stateNameField.value;
+              if (state_name) {
+                localStorage.setItem('stateName', state_name);
+              } else {
+                localStorage.setItem('stateName', '');
+              }
+            }
+          }
           setLoading(false);
         }
       } catch (error) {
@@ -367,7 +395,24 @@ const UserAttendanceHistory = () => {
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
     setHandleSaveHasRun(!handleSaveHasRun);
+
+    // ---------- set cohortId and stateName-----------
+    const cohort_id = event.target.value;
+    localStorage.setItem('cohortId', cohort_id);
+
+    const get_state_name: string | null = getStateByCohortId(cohort_id);
+    if (get_state_name) {
+      localStorage.setItem('stateName', get_state_name);
+    } else {
+      localStorage.setItem('stateName', '');
+      console.log('NO State For Selected Cohortksdbj');
+    }
   };
+
+  function getStateByCohortId(cohortId: any) {
+    const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
+    return cohort ? cohort?.state : null;
+  }
 
   const handleSearchClear = () => {
     setSearchWord('');

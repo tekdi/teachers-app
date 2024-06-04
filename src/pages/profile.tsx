@@ -87,7 +87,7 @@ const TeacherProfile = () => {
   const style = {
     position: 'absolute',
     top: '50%',
-    maxWidth: 300, // Maximum width for responsiveness
+    maxWidth: 350, // Maximum width for responsiveness
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
@@ -219,7 +219,7 @@ const TeacherProfile = () => {
     if (
       field.type === 'radio' ||
       field.type === 'Radio' ||
-      field.type === 'Drop Down' ||
+      field.type === 'drop_down' ||
       field.type === 'dropdown'
     ) {
       const option = field?.options?.find((opt: any) => opt?.value === value);
@@ -387,7 +387,7 @@ const TeacherProfile = () => {
             gap="5px"
           >
             <Typography
-              variant="h3"
+              // variant="h3"
               style={{
                 letterSpacing: '0.1px',
                 textAlign: 'left',
@@ -396,6 +396,7 @@ const TeacherProfile = () => {
               fontSize={'22px'}
               fontWeight={'400'}
               lineHeight={'28px'}
+              color={theme.palette.warning['A200']}
             >
               {t('PROFILE.MY_PROFILE')}
             </Typography>
@@ -420,8 +421,8 @@ const TeacherProfile = () => {
                   <Image
                     src={user_placeholder_img}
                     alt="user"
-                    width={100}
-                    height={100}
+                    width={60}
+                    height={60}
                   />
                 </Box>
               </Grid>
@@ -526,6 +527,7 @@ const TeacherProfile = () => {
                         margin={0}
                         lineHeight={'16px'}
                         letterSpacing={'0.5px'}
+                        sx={{ wordBreak: 'break-word' }}
                       >
                         {item?.label && item.name
                           ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
@@ -589,6 +591,7 @@ const TeacherProfile = () => {
                         variant="h4"
                         margin={0}
                         color={theme.palette.warning.A200}
+                        sx={{ wordBreak: 'break-word' }}
                       >
                         {item.value}
                       </Typography>
@@ -614,6 +617,7 @@ const TeacherProfile = () => {
                         variant="h4"
                         margin={0}
                         color={theme.palette.warning.A200}
+                        sx={{ wordBreak: 'break-word' }}
                       >
                         {getLabelForValue(item, item.value[0])}
                       </Typography>
@@ -692,8 +696,8 @@ const TeacherProfile = () => {
                   <Image
                     src={user_placeholder_img}
                     alt="user"
-                    height={100}
-                    width={100}
+                    height={80}
+                    width={70}
                     style={{ alignItems: 'center' }}
                   />
 
@@ -752,6 +756,8 @@ const TeacherProfile = () => {
                     <Grid item xs={12} key={field.fieldId}>
                       {field.type === 'text' || field.type === 'numeric' ? (
                         <TextField
+                          type="number"
+                          inputProps={{ maxLength: 3 }}
                           sx={{ marginTop: '20px' }}
                           fullWidth
                           name={field.name}
@@ -770,9 +776,12 @@ const TeacherProfile = () => {
                               (f) => f.fieldId === field.fieldId
                             )?.value[0] || ''
                           }
-                          onChange={(e) =>
-                            handleFieldChange(field.fieldId, e.target.value)
-                          }
+                          onChange={(e) => {
+                            const inputValue = e.target.value;
+                            if (/^\d{0,3}$/.test(inputValue)) {
+                              handleFieldChange(field.fieldId, inputValue);
+                            }
+                          }}
                         />
                       ) : field.type === 'checkbox' ? (
                         <Box marginTop={3}>
@@ -816,7 +825,7 @@ const TeacherProfile = () => {
                             </FormGroup>
                           ))}
                         </Box>
-                      ) : field.type === 'Drop Down' ||
+                      ) : field.type === 'drop_down' ||
                         field.type === 'dropdown' ? (
                         <Box marginTop={3} textAlign={'start'}>
                           <FormControl fullWidth>

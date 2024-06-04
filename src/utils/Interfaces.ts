@@ -156,6 +156,7 @@ export interface cohort {
   cohortId: string;
   name: string;
   value: string;
+  state: string;
 }
 
 export interface LearListHeaderProps {
