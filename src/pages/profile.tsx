@@ -91,7 +91,6 @@ const TeacherProfile = () => {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
-    height: '75vh',
     bgcolor: theme.palette.warning.A400,
     p: 4,
     height: '526px',
