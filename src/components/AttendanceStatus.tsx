@@ -1,12 +1,12 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { formatToShowDateMonth, shortDateFormat } from '@/utils/Helper';
-
 import {
   CancelOutlined,
   CheckCircleOutlineOutlined,
   CreateOutlined,
 } from '@mui/icons-material';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { formatToShowDateMonth, shortDateFormat } from '@/utils/Helper';
+
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useTranslation } from 'next-i18next';
 
@@ -120,16 +120,11 @@ function AttendanceStatus({
             </Typography>
           </Box>
           {formattedAttendanceData && (
-            <Box display={'flex'}>
+            <Box display={'flex'} gap={'4px'} ml={'8px'} alignItems={'center'}>
               {attendanceStatus !== 'notMarked' &&
                 attendanceStatus !== 'futureDate' && (
                   <>
-                    <Box
-                      width={'25px'}
-                      height={'2rem'}
-                      marginTop={'1rem'}
-                      margin={'5px'}
-                    >
+                    <Box width={'25px'} marginTop={'6px'} height={'2rem'}>
                       <CircularProgressbar
                         value={presentPercentage}
                         styles={buildStyles({
@@ -146,17 +141,19 @@ function AttendanceStatus({
                         variant="h6"
                         className="word-break"
                         color={pathColor}
+                        sx={{
+                          '@media (max-width: 412px)': {
+                            width: '200px',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          },
+                        }}
                       >
                         {t('DASHBOARD.PERCENT_ATTENDANCE', {
                           percent_students: presentPercentage,
                         })}
-                      </Typography>
-                      &nbsp;
-                      <Typography
-                        variant="h6"
-                        className="word-break"
-                        color={pathColor}
-                      >
+
                         {t('DASHBOARD.PRESENT_STUDENTS', {
                           present_students:
                             typeof currentAttendance !== 'string'
@@ -168,6 +165,7 @@ function AttendanceStatus({
                               : 0,
                         })}
                       </Typography>
+                      &nbsp;
                     </Box>
                   </>
                 )}
