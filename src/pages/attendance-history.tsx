@@ -442,11 +442,7 @@ const UserAttendanceHistory = () => {
   const handleSearchFocus = () => {
     const scrollSearchBox = searchRef.current;
     if (scrollSearchBox) {
-      scrollSearchBox.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        // top: 0,
-      });
+      scrollSearchBox.scrollIntoView();
     }
   }
 
@@ -684,8 +680,7 @@ const UserAttendanceHistory = () => {
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
-                        onFocus={handleSearchFocus}
-
+                        // onFocus={handleSearchFocus}
                       />
                       <IconButton
                         type="button"
