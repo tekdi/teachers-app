@@ -199,7 +199,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
           if (filteredData.length > 0) {
             // setClassId(filteredData[0].cohortId);
-            localStorage.setItem('cohortId', filteredData[0]?.cohortId);
+
+            localStorage.setItem('cohortId', classId);
 
             // add state name to localstorage
             if (
