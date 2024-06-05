@@ -58,7 +58,7 @@ const Calendar: React.FC<any> = ({
     const days = [];
     // const startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
     const today = new Date();
-    const startDate = subDays(today, 7);
+    const startDate = subDays(today, dashboardDaysLimit - 1);
     const endDate = subDays(today, 0);
 
     for (let i = 0; i < dashboardDaysLimit; i++) {
@@ -82,7 +82,7 @@ const Calendar: React.FC<any> = ({
   const renderCells = () => {
     const today = new Date();
     const endDate = subDays(today, 0);
-    const startDate = subDays(endDate, 7);
+    const startDate = subDays(endDate, dashboardDaysLimit - 1);
     const dateFormat = 'd';
     const rows = [];
     let days = [];
