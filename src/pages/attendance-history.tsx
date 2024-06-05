@@ -84,7 +84,6 @@ const UserAttendanceHistory = () => {
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-
   const pathname = usePathname();
   let userId: string;
   const currentDate = getTodayDate();
@@ -100,6 +99,7 @@ const UserAttendanceHistory = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
+      setClassId(localStorage.getItem('classId') || '');
       setLoading(false);
       if (token) {
         push('/attendance-history');
@@ -137,8 +137,8 @@ const UserAttendanceHistory = () => {
             ?.filter(Boolean);
 
           setCohortsData(filteredData);
-          setClassId(filteredData?.[0]?.cohortId);
-          localStorage.setItem('classId', filteredData?.[0]?.cohortId);
+          // setClassId(filteredData?.[0]?.cohortId);
+          // localStorage.setItem('classId', filteredData?.[0]?.cohortId);
 
           // ----- add state name to localstorage----------
           if (
@@ -442,9 +442,9 @@ const UserAttendanceHistory = () => {
   const handleSearchFocus = () => {
     const scrollSearchBox = searchRef.current;
     if (scrollSearchBox) {
-      scrollSearchBox.scrollIntoView({block: 'start', behavior: 'smooth'});
+      scrollSearchBox.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
-  }
+  };
 
   const handleSearchSubmit = () => {
     let filteredList = cohortMemberList?.filter((user: any) =>
@@ -610,7 +610,11 @@ const UserAttendanceHistory = () => {
                 </Select>
               </FormControl>
             ) : (
-              <Typography color={theme.palette.warning['300']} pl={'1rem'} variant='h1'>
+              <Typography
+                color={theme.palette.warning['300']}
+                pl={'1rem'}
+                variant="h1"
+              >
                 {cohortsData[0]?.name}
               </Typography>
             )}
@@ -795,7 +799,7 @@ const UserAttendanceHistory = () => {
             </Box>
             {cohortMemberList?.length > 0 ? (
               <Box>
-                {displayStudentList.length >=1 ? (
+                {displayStudentList.length >= 1 ? (
                   displayStudentList?.map((user: any) => (
                     <AttendanceStatusListView
                       isDisabled={true}
@@ -848,7 +852,7 @@ const UserAttendanceHistory = () => {
           />
         </Box>
       </Box>
-      {displayStudentList.length>=1 ? <UpDownButton /> : null}
+      {displayStudentList.length >= 1 ? <UpDownButton /> : null}
     </Box>
   );
 };
