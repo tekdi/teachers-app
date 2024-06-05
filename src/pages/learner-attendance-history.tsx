@@ -13,6 +13,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { shortDateFormat } from '@/utils/Helper';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 type LearnerAttendanceData = {
   [date: string]: {
@@ -28,15 +29,29 @@ type AttendanceRecord = {
 const LearnerAttendanceHistory = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+  const { push } = useRouter();
 
   const [loading, setLoading] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [attendanceUpdated, setAttendanceUpdated] = useState(false);
   const [learnerAttendance, setLearnerAttendance] = useState<
     LearnerAttendanceData | undefined
   >(undefined);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const token = localStorage.getItem('token');
+      setLoading(false);
+      if (token) {
+        push('/learner-attendance-history');
+      } else {
+        push('/login', undefined, { locale: 'en' });
+      }
+    }
+  }, []);
 
   useEffect(() => {
     handleSelectedDateChange(selectedDate);

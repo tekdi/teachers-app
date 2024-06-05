@@ -99,6 +99,7 @@ const UserAttendanceHistory = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
+      setClassId(localStorage.getItem('classId') || '');
       setLoading(false);
       if (token) {
         push('/attendance-history');
@@ -136,8 +137,8 @@ const UserAttendanceHistory = () => {
             ?.filter(Boolean);
 
           setCohortsData(filteredData);
-          setClassId(filteredData?.[0]?.cohortId);
-          localStorage.setItem('classId', filteredData?.[0]?.cohortId);
+          // setClassId(filteredData?.[0]?.cohortId);
+          // localStorage.setItem('classId', filteredData?.[0]?.cohortId);
 
           // ----- add state name to localstorage----------
           if (

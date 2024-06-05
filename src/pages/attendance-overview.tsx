@@ -57,6 +57,7 @@ interface AttendanceOverviewProps {
 const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const router = useRouter();
   const { t } = useTranslation();
+  const { push } = useRouter();
   const [classId, setClassId] = React.useState('');
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
@@ -102,6 +103,19 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   useEffect(() => {
     setSelectedValue(currentDayMonth);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const token = localStorage.getItem('token');
+      setClassId(localStorage.getItem('classId') || '');
+      setLoading(false);
+      if (token) {
+        push('/attendance-overview');
+      } else {
+        push('/login', undefined, { locale: 'en' });
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -184,7 +198,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           setCohortsData(filteredData);
 
           if (filteredData.length > 0) {
-            setClassId(filteredData[0].cohortId);
+            // setClassId(filteredData[0].cohortId);
             localStorage.setItem('cohortId', filteredData[0]?.cohortId);
 
             // add state name to localstorage
