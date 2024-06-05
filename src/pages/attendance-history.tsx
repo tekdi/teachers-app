@@ -610,7 +610,7 @@ const UserAttendanceHistory = () => {
                 </Select>
               </FormControl>
             ) : (
-              <Typography color={theme.palette.warning['300']}>
+              <Typography color={theme.palette.warning['300']} pl={'1rem'} variant='h1'>
                 {cohortsData[0]?.name}
               </Typography>
             )}

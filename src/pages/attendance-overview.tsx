@@ -622,7 +622,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               </Select>
             </FormControl>
           ) : (
-            <Typography color={theme.palette.warning['300']}>
+            <Typography color={theme.palette.warning['300']} pl={1} variant='h1'>
               {cohortsData[0]?.name}
             </Typography>
           )}
@@ -722,6 +722,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
+                        
                       />
                       <IconButton
                         type="button"
