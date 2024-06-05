@@ -351,20 +351,6 @@ const LoginPage = () => {
           </Box>
         </Box>
         {showToastMessage && (
-          // <Snackbar
-          //   anchorOrigin={{ vertical, horizontal }}
-          //   open={openModal}
-          //   onClose={handleClose}
-          //   className="alert"
-          //   autoHideDuration={5000}
-          //   key={vertical + horizontal}
-          //   message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')}
-          //   action={
-          //     <IconButton size="small" color="inherit" onClick={handleClose}>
-          //       <CloseIcon fontSize="small" />
-          //     </IconButton>
-          //   }
-          // />
           <ToastMessage message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')} />
         )}
       </form>

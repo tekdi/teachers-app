@@ -2,6 +2,7 @@ import React from 'react';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import { Alert } from '@mui/material';
 import { toastAutoHideDuration } from '../../app.config';
+import { generateRandomString } from '@/utils/Helper';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -16,7 +17,7 @@ const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
 
 function ToastMessage({
   message,
-  type="error",
+  type = 'error',
 }: {
   message: string;
   type?: ToastTypes;
@@ -36,22 +37,10 @@ function ToastMessage({
       anchorOrigin={{ vertical, horizontal }}
       open={state.openModal}
       onClose={handleClose}
-      // className="alert"
       autoHideDuration={toastAutoHideDuration}
-      key={vertical + horizontal}
-      // message={message}
-      // action={
-      //   <IconButton size="small" color="inherit" onClick={handleClose}>
-      //     <CloseIcon fontSize="small" />
-      //   </IconButton>
-      // }
+      key={'key_' + generateRandomString(3)}
     >
-      <Alert
-        onClose={handleClose}
-        severity={type}
-        variant="filled"
-        sx={{ width: '100%' }}
-      >
+      <Alert severity={type} variant="filled" sx={{ width: '100%' }}>
         {message}
       </Alert>
     </Snackbar>
