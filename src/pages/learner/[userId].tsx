@@ -73,7 +73,7 @@ const LearnerProfile: React.FC = () => {
 
   const router = useRouter();
   const { userId }: any = router.query;
-  console.log('userId', userId);
+
   if (typeof window !== 'undefined' && window.localStorage) {
     localStorage.setItem('learnerId', userId);
   }
@@ -460,7 +460,7 @@ const LearnerProfile: React.FC = () => {
   //fields  for edit popup by order
 
   const filteredSortedForEdit = [...customFieldsData]
-    ?.filter((field) => field.order !== 0 && field.isEditable)
+    ?.filter((field) => field.isEditable)
     ?.sort((a, b) => a.order - b.order);
 
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -869,25 +869,37 @@ const LearnerProfile: React.FC = () => {
         </Typography>
         <Button
           sx={{
+            fontSize: '14px',
+            lineHeight: '20px',
             minWidth: '100%',
             padding: '10px 24px 10px 16px',
             gap: '8px',
-            borderRadius: '20px',
+            borderRadius: '100px',
             marginTop: '10px',
             flex: '1',
             textAlign: 'center',
-            color: 'black',
-            border: '1px solid black',
-            borderColor: 'black',
-            backgroundColor: 'warning.A400',
-            '&:hover': {
-              backgroundColor: 'warning.A400',
-            },
+            color: theme.palette.warning.A200,
+            border: `1px solid ${theme.palette.warning.A200}`,
+            borderColor: theme.palette.warning['A100'],
           }}
-          startIcon={<CreateOutlinedIcon />}
           onClick={handleOpen}
         >
-          {t('PROFILE.EDIT_PROFILE')}
+          <Typography
+            variant="h3"
+            style={{
+              letterSpacing: '0.1px',
+              textAlign: 'left',
+              marginBottom: '2px',
+            }}
+            fontSize={'14px'}
+            fontWeight={'500'}
+            lineHeight={'20px'}
+          >
+            {t('PROFILE.EDIT_PROFILE')}
+          </Typography>
+          <Box>
+            <CreateOutlinedIcon sx={{ fontSize: '14px' }} />
+          </Box>
         </Button>
         <Box
           mt={2}
