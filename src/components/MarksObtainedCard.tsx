@@ -25,12 +25,18 @@ const SmallCard: React.FC<SmallCardProps> = ({ item }) => {
 
   return (
     <Card variant="outlined" sx={{ borderRadius: '8px' }}>
-      <Typography fontSize={'10px'} textAlign={'center'}>
+      <Typography
+      mt={1}
+        fontSize={'12px'}
+        fontWeight={500}
+        lineHeight={'16px'}
+        textAlign={'center'}
+      >
         {item.question}
       </Typography>
       <Typography
         //   variant="h6"
-        fontSize={'10px'}
+        fontSize={'11px'}
         textAlign={'center'}
         color={
           item.mark_obtained > 0
@@ -45,7 +51,6 @@ const SmallCard: React.FC<SmallCardProps> = ({ item }) => {
 const MarksObtainedCard: React.FC<MarksObtainedCardProps> = ({ data }) => {
   const [showAllData, setShowAllData] = useState(false);
   const { t } = useTranslation();
- 
 
   const limitedData = showAllData ? data : data?.slice(0, 12);
 

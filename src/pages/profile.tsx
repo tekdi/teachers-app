@@ -268,6 +268,23 @@ const TeacherProfile = () => {
     });
   }, [userData, customFieldsData]);
 
+  const [hasErrors, setHasErrors] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const sanitizedValue = value.replace(/[^a-zA-Z_ ]/g, '');
+
+    setFormData((prevData) => ({
+      ...prevData,
+      userData: {
+        ...prevData.userData,
+        name: sanitizedValue,
+      },
+    }));
+
+    setHasErrors(!sanitizedValue.trim());
+  };
+
   const handleFieldChange = (fieldId: string, value: string) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -731,22 +748,22 @@ const TeacherProfile = () => {
                 </Box>
                 <TextField
                   sx={{ marginTop: '20px' }}
+                  type="text"
                   fullWidth
                   name="name"
                   label={t('PROFILE.FULL_NAME')}
                   variant="outlined"
                   value={formData.userData.name}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      userData: {
-                        name: e.target.value,
-                        district: '',
-                        state: '',
-                        mobile: '',
-                      },
-                    })
+                  inputProps={{
+                    pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
+                    title: 'At least one letter or underscore is required',
+                    required: true,
+                  }}
+                  error={!formData.userData.name.trim()} // Show error if the input is empty
+                  helperText={
+                    !formData.userData.name.trim() && 'Please Enter Full Name'
                   }
+                  onChange={handleInputChange}
                 />
 
                 {customFieldsData
@@ -754,7 +771,33 @@ const TeacherProfile = () => {
                   ?.sort((a, b) => a.order - b.order)
                   ?.map((field) => (
                     <Grid item xs={12} key={field.fieldId}>
-                      {field.type === 'text' || field.type === 'numeric' ? (
+                      {field.type === 'text' ? (
+                        <TextField
+                          type="text"
+                          inputProps={{ maxLength: 3 }}
+                          sx={{ marginTop: '20px' }}
+                          fullWidth
+                          name={field.name}
+                          // label={field.label}
+                          label={
+                            field?.label && field.name
+                              ? t(
+                                  `FIELDS.${field.name.toUpperCase()}`,
+                                  field.label
+                                )
+                              : field.label
+                          }
+                          variant="outlined"
+                          value={
+                            formData?.customFields?.find(
+                              (f) => f.fieldId === field.fieldId
+                            )?.value[0] || ''
+                          }
+                          onChange={(e) => {
+                            handleFieldChange(field.fieldId, e.target.value);
+                          }}
+                        />
+                      ) : field.type === 'numeric' ? (
                         <TextField
                           type="number"
                           inputProps={{ maxLength: 3 }}
@@ -930,6 +973,7 @@ const TeacherProfile = () => {
                   }}
                   onClick={handleSubmit}
                   variant="contained"
+                  disabled={hasErrors}
                 >
                   {t('COMMON.SAVE')}
                 </Button>

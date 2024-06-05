@@ -208,7 +208,7 @@ export interface CustomField {
   label: string;
   value: string;
   options: Record<string, any>;
-  type: string;
+  type: any;
   order: number;
   name: string;
   isEditable: boolean;

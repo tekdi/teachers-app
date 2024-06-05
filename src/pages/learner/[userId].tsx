@@ -111,6 +111,8 @@ const LearnerProfile: React.FC = () => {
     t('COMMON.AS_OF_TODAY')
   );
   const open = Boolean(anchorEl);
+  const [totalMaxScore, setTotalMaxScore] = useState('');
+  const [totalScore, setTotalScore] = useState('');
 
   const [unitName, setUnitName] = useState('');
   const [blockName, setBlockName] = useState('');
@@ -377,7 +379,8 @@ const LearnerProfile: React.FC = () => {
         const result = response.result;
         if (result) {
           setSubmitedOn(result[0]?.createdOn);
-
+          setTotalMaxScore(result[0]?.totalMaxScore);
+          setTotalScore(result[0]?.totalScore);
           const questionValues = getQuestionValues(result);
           setAssesmentData(questionValues?.questions); // Use the parsed questions
           setLoading(false);
@@ -557,6 +560,23 @@ const LearnerProfile: React.FC = () => {
         field.fieldId === fieldId ? { ...field, value: [value] } : field
       ),
     }));
+  };
+
+  const [hasErrors, setHasErrors] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const sanitizedValue = value.replace(/[^a-zA-Z_ ]/g, '');
+
+    setFormData((prevData) => ({
+      ...prevData,
+      userData: {
+        ...prevData.userData,
+        name: sanitizedValue,
+      },
+    }));
+
+    setHasErrors(!sanitizedValue.trim());
   };
 
   const handleSubmit = async (
@@ -867,7 +887,7 @@ const LearnerProfile: React.FC = () => {
             flex: '1',
             border: '2px solid',
             borderColor: '#FFECB3',
-            padding: '10px',
+            padding: '15px',
           }}
           minWidth={'100%'}
           borderRadius={'12px'}
@@ -991,8 +1011,7 @@ const LearnerProfile: React.FC = () => {
             {uniqueDoId ? (
               <Box
                 sx={{
-                  background:
-                    'linear-gradient(180deg, #FFFDF6 0%, #F8EFDA 100%)',
+                  background: '#F8EFE7',
                   p: 2,
                 }}
               >
@@ -1009,7 +1028,8 @@ const LearnerProfile: React.FC = () => {
                     {t('PROFILE.MARK_OBTAINED')}
                   </Typography>
                   <Typography variant="h4" fontWeight={'bold'}>
-                    {/* 60/70 */}
+                    {totalScore ? totalScore : '0'}/
+                    {totalMaxScore ? totalMaxScore : '0'}
                   </Typography>
                 </Box>
                 <Divider />
@@ -1140,24 +1160,50 @@ const LearnerProfile: React.FC = () => {
               label={t('PROFILE.FULL_NAME')}
               variant="outlined"
               value={formData.userData.name}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  userData: {
-                    name: e.target.value,
-                    district: '',
-                    state: '',
-                    mobile: '',
-                  },
-                })
+              inputProps={{
+                pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
+                title: 'At least one letter or underscore is required',
+                required: true,
+              }}
+              error={!formData.userData.name.trim()} // Show error if the input is empty
+              helperText={
+                !formData.userData.name.trim() && 'Please Enter Full Name'
               }
+              onChange={handleInputChange}
             />
 
             {filteredSortedForEdit
               ?.filter((field) => field.isEditable)
               ?.map((field) => (
                 <Grid item xs={12} key={field.fieldId}>
-                  {field.type === 'text' || field.type === 'numeric' ? (
+                  {field.type === 'text' ? (
+                    <TextField
+                      type="text"
+                      sx={{ marginTop: '20px' }}
+                      fullWidth
+                      name={field.name}
+                      // label={field.label}
+                      label={
+                        field?.label && field.name
+                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
+                          : field.label
+                      }
+                      variant="outlined"
+                      inputProps={{
+                        pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
+                        title: 'At least one letter or underscore is required',
+                        required: true,
+                      }}
+                      value={
+                        formData.customFields.find(
+                          (f) => f.fieldId === field.fieldId
+                        )?.value[0] || ''
+                      }
+                      onChange={(e) => {
+                        handleFieldChange(field.fieldId, e.target.value);
+                      }}
+                    />
+                  ) : field.type === 'numeric' ? (
                     <TextField
                       type="number"
                       sx={{ marginTop: '20px' }}
@@ -1317,6 +1363,7 @@ const LearnerProfile: React.FC = () => {
               }}
               onClick={handleSubmit}
               variant="contained"
+              disabled={hasErrors}
             >
               {t('COMMON.SAVE')}
             </Button>
