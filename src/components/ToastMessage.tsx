@@ -19,7 +19,7 @@ function ToastMessage({
   type="error",
 }: {
   message: string;
-  type: ToastTypes;
+  type?: ToastTypes;
 }) {
   const [state, setState] = React.useState<State>({
     openModal: true,
