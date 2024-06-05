@@ -30,7 +30,7 @@ const SortingModal: React.FC<sortCardProps> = ({
   handleSorting,
   isModalOpen,
   handleCloseModal,
-  routeName
+  routeName,
 }) => {
   const [sortByName, setSortByName] = React.useState('');
   const [sortByAttendance, setSortByAttendance] = React.useState('');
@@ -106,7 +106,7 @@ const SortingModal: React.FC<sortCardProps> = ({
         }}
       />
       <Grid container spacing={2}>
-        {(routeName == '/attendance-overview') ? (
+        {routeName == '/attendance-overview' ? (
           <>
             <Grid item xs={12}>
               <FormControl component="fieldset" sx={{ width: '100%' }}>

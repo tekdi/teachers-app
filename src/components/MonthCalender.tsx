@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import Calendar, { CalendarProps } from 'react-calendar';
-import Value from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+
+import Calendar, { CalendarProps } from 'react-calendar';
 import {
-  CheckCircleOutlineOutlined,
   CancelOutlined,
+  CheckCircleOutlineOutlined,
 } from '@mui/icons-material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import React, { useEffect, useState } from 'react';
+
+import Value from 'react-calendar';
 import { shortDateFormat } from '@/utils/Helper';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 
@@ -127,7 +129,9 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
 
   function tileClassName({ date, view }: { date: Date; view: string }) {
     if (view !== 'month') return null;
-    const classes = ['tile-day'];
+    const classes = [
+      selectionType === 'range' ? 'custom-date-range-pop-up' : 'tile-day',
+    ];
     if (date.toDateString() === new Date().toDateString()) {
       classes.push('today');
     }

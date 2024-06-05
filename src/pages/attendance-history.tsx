@@ -84,7 +84,6 @@ const UserAttendanceHistory = () => {
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-
   const pathname = usePathname();
   let userId: string;
   const currentDate = getTodayDate();
@@ -442,9 +441,9 @@ const UserAttendanceHistory = () => {
   const handleSearchFocus = () => {
     const scrollSearchBox = searchRef.current;
     if (scrollSearchBox) {
-      scrollSearchBox.scrollIntoView({block: 'start', behavior: 'smooth'});
+      scrollSearchBox.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
-  }
+  };
 
   const handleSearchSubmit = () => {
     let filteredList = cohortMemberList?.filter((user: any) =>
@@ -522,6 +521,18 @@ const UserAttendanceHistory = () => {
   };
 
   const hadleScroolDown = () => {};
+
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleScrollDown = () => {
+    if (inputRef.current) {
+      const inputRect = inputRef.current.getBoundingClientRect();
+      const scrollMargin = 20;
+      const scrollY = window.scrollY;
+      const targetY = inputRect.top + scrollY - scrollMargin;
+      window.scrollTo({ top: targetY - 170, behavior: 'smooth' });
+    }
+  };
 
   return (
     <Box minHeight="100vh" textAlign={'center'}>
@@ -610,7 +621,11 @@ const UserAttendanceHistory = () => {
                 </Select>
               </FormControl>
             ) : (
-              <Typography color={theme.palette.warning['300']} pl={'1rem'} variant='h1'>
+              <Typography
+                color={theme.palette.warning['300']}
+                pl={'1rem'}
+                variant="h1"
+              >
                 {cohortsData[0]?.name}
               </Typography>
             )}
@@ -679,12 +694,13 @@ const UserAttendanceHistory = () => {
                       onFocus={hadleScroolDown}
                     >
                       <InputBase
+                        ref={inputRef}
                         value={searchWord}
                         sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
-                        // onFocus={handleSearchFocus}
+                        onClick={handleScrollDown}
                       />
                       <IconButton
                         type="button"
@@ -795,7 +811,7 @@ const UserAttendanceHistory = () => {
             </Box>
             {cohortMemberList?.length > 0 ? (
               <Box>
-                {displayStudentList.length >=1 ? (
+                {displayStudentList.length >= 1 ? (
                   displayStudentList?.map((user: any) => (
                     <AttendanceStatusListView
                       isDisabled={true}
@@ -848,7 +864,7 @@ const UserAttendanceHistory = () => {
           />
         </Box>
       </Box>
-      {displayStudentList.length>=1 ? <UpDownButton /> : null}
+      {displayStudentList.length >= 1 ? <UpDownButton /> : null}
     </Box>
   );
 };

@@ -415,6 +415,14 @@ main {
   /* margin-left: 2px !important; */
 }
 
+.custom-date-range-pop-up {
+  border: 1px solid #d0c5b4 !important;
+  height: 40px !important;
+  width: 100% !important;
+  border-radius: 5px;
+  margin-bottom: 5px !important;
+}
+
 .react-calendar__tile--active {
   background-color: #fbbc13 !important;
   color: black !important;

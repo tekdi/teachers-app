@@ -14,7 +14,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
@@ -562,6 +562,19 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     if (str.length <= length) return str;
     return str.slice(0, length) + '...';
   };
+
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleScrollDown = () => {
+    if (inputRef.current) {
+      const inputRect = inputRef.current.getBoundingClientRect();
+      const scrollMargin = 20;
+      const scrollY = window.scrollY;
+      const targetY = inputRect.top + scrollY - scrollMargin;
+      window.scrollTo({ top: targetY - 70, behavior: 'smooth' });
+    }
+  };
+
   return (
     <Box>
       {displayStudentList.length ? <UpDownButton /> : null}
@@ -622,7 +635,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               </Select>
             </FormControl>
           ) : (
-            <Typography color={theme.palette.warning['300']} pl={1} variant='h1'>
+            <Typography
+              color={theme.palette.warning['300']}
+              pl={1}
+              variant="h1"
+            >
               {cohortsData[0]?.name}
             </Typography>
           )}
@@ -720,12 +737,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       }}
                     >
                       <InputBase
+                        ref={inputRef}
                         value={searchWord}
                         sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
-                        
+                        onClick={handleScrollDown}
                       />
                       <IconButton
                         type="button"
