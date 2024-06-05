@@ -49,6 +49,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import ToastMessage from '@/components/ToastMessage';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -85,6 +86,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
     useState(0);
   const [dateRange, setDateRange] = React.useState<Date | string>('');
+  const [isError, setIsError] = React.useState<boolean>(false);
 
   const theme = useTheme<any>();
   const pathname = usePathname();
@@ -229,8 +231,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           }
         }
         setLoading(false);
+        setIsError(false);
       } catch (error) {
         console.error('Error fetching  cohort list:', error);
+        setIsError(true)
         setLoading(false);
       }
     };
@@ -427,6 +431,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       }
     } catch (error) {
       console.error('Error fetching cohort list:', error);
+      setIsError(true)
       setLoading(false);
     } finally {
       setLoading(false);
@@ -892,6 +897,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
         </Box>
       )}
+       { isError &&
+             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
+          }
     </Box>
   );
 };
