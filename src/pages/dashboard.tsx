@@ -393,6 +393,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       if (!isValid(parsedDate)) {
         throw new Error('Invalid Date');
       }
+      localStorage.setItem('selectedMonth', parsedDate.toISOString());
       return format(parsedDate, 'MMMM');
     } catch (error) {
       return 'Invalid Date';
