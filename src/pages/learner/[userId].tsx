@@ -52,6 +52,7 @@ import { getTodayDate } from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import ToastMessage from '@/components/ToastMessage';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -120,6 +121,7 @@ const LearnerProfile: React.FC = () => {
   const [anchorElOption, setAnchorElOption] =
     React.useState<null | HTMLElement>(null);
   const openOption = Boolean(anchorElOption);
+  const [isError, setIsError] = React.useState<boolean>(false);
 
   const StyledMenu = styled((props: MenuProps) => (
     <Menu
@@ -252,7 +254,9 @@ const LearnerProfile: React.FC = () => {
             console.log('No Response Found');
           }
         }
+        setIsError(false)
       } catch (error) {
+        setIsError(true)
         setLoading(false);
         console.error('Error fetching  user details:', error);
       }
@@ -342,7 +346,9 @@ const LearnerProfile: React.FC = () => {
       } else {
         console.log('NO State Found');
       }
+      setIsError(false)
     } catch (error) {
+      setIsError(true)
       console.error(
         'Error fetching getDoIdForAssesmentDetails results:',
         error
@@ -613,9 +619,11 @@ const LearnerProfile: React.FC = () => {
 
         console.log(response.params.successmessage);
         fetchUserDetails();
+        setIsError(false)
         setLoading(false);
       }
     } catch (error) {
+      setIsError(true)
       console.error('Error:', error);
     }
   };
@@ -1382,6 +1390,9 @@ const LearnerProfile: React.FC = () => {
           </Box>
         </Box>
       </Modal>
+      { isError &&
+             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
+          }
     </>
   );
 };
