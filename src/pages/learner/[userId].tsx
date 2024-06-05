@@ -1177,7 +1177,7 @@ const LearnerProfile: React.FC = () => {
                       }
                       onChange={(e) => {
                         const inputValue = e.target.value;
-                        if (/^\d{0,3}$/.test(inputValue)) {
+                        if (/^\d{0,4}$/.test(inputValue)) {
                           handleFieldChange(field.fieldId, inputValue);
                         }
                       }}
