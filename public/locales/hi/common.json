@@ -88,7 +88,7 @@
     "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्र",
     "BACK_TO_TOP": "वापस शीर्ष पर",
     "LAST_SEVEN_DAYS_RANGE": "पिछले 7 दिन {{date_range}}",
-    "AS_OF_TODAY_DATE": "As of Today {{dayDate}}",
+    "AS_OF_TODAY_DATE": "आज तक, {{day_date}}",
     "LEARNER": "शिक्षार्थियों"
   },
   "ATTENDANCE": {

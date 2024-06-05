@@ -25,6 +25,7 @@ import {
   getAllCenterAttendance,
   getCohortAttendance,
 } from '../services/AttendanceService';
+import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
 import {
   formatSelectedDate,
   getMonthName,
@@ -32,7 +33,6 @@ import {
   shortDateFormat,
   toPascalCase,
 } from '../utils/Helper';
-import { isAfter, isValid, startOfDay, parse, format } from 'date-fns';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -47,12 +47,13 @@ import { calculatePercentage } from '@/utils/attendanceStats';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { lowLearnerAttendanceLimit } from './../../app.config';
+import { modifyAttendanceLimit } from '../../app.config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { modifyAttendanceLimit } from '../../app.config';
+
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
@@ -133,6 +134,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
+      setClassId(localStorage.getItem('classId') || '');
       if (token) {
         setIsAuthenticated(true);
       } else {
@@ -168,8 +170,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
             ?.filter(Boolean);
           setCohortsData(filteredData);
           if (filteredData.length > 0) {
-            setClassId(filteredData?.[0]?.cohortId);
-            localStorage.setItem('classId', filteredData?.[0]?.cohortId);
+            // setClassId(filteredData?.[0]?.cohortId);
+            // localStorage.setItem('classId', filteredData?.[0]?.cohortId);
             setManipulatedCohortData(
               filteredData.concat({ cohortId: 'all', name: 'All Centers' })
             );
@@ -384,6 +386,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
+    localStorage.setItem('classId', event.target.value);
     setHandleSaveHasRun(!handleSaveHasRun);
   };
 
@@ -393,6 +396,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       if (!isValid(parsedDate)) {
         throw new Error('Invalid Date');
       }
+      localStorage.setItem('selectedMonth', parsedDate.toISOString());
       return format(parsedDate, 'MMMM');
     } catch (error) {
       return 'Invalid Date';

@@ -51,6 +51,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   };
 
   const navigateToDashboard = () => {
+    toggleDrawer(false)();
     router.push('/dashboard');
   };
 

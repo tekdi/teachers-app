@@ -6,6 +6,7 @@ import {
 } from '@mui/icons-material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { formatToShowDateMonth, shortDateFormat } from '@/utils/Helper';
+
 import { modifyAttendanceLimit } from '../../app.config';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useTranslation } from 'next-i18next';
@@ -139,9 +140,10 @@ function AttendanceStatus({
                     <Box display={'flex'} alignItems={'center'}>
                       <Typography
                         variant="h6"
-                        className="word-break"
+                        // className="word-break"
                         color={pathColor}
                         sx={{
+                          whiteSpace: 'nowrap',
                           '@media (max-width: 412px)': {
                             width: '200px',
                             whiteSpace: 'nowrap',

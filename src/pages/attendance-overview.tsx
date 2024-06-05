@@ -14,7 +14,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
@@ -57,6 +57,7 @@ interface AttendanceOverviewProps {
 const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const router = useRouter();
   const { t } = useTranslation();
+  const { push } = useRouter();
   const [classId, setClassId] = React.useState('');
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
@@ -102,6 +103,19 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   useEffect(() => {
     setSelectedValue(currentDayMonth);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const token = localStorage.getItem('token');
+      setClassId(localStorage.getItem('classId') || '');
+      setLoading(false);
+      if (token) {
+        push('/attendance-overview');
+      } else {
+        push('/login', undefined, { locale: 'en' });
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -184,7 +198,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           setCohortsData(filteredData);
 
           if (filteredData.length > 0) {
-            setClassId(filteredData[0].cohortId);
+            // setClassId(filteredData[0].cohortId);
             localStorage.setItem('cohortId', filteredData[0]?.cohortId);
 
             // add state name to localstorage
@@ -562,6 +576,19 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     if (str.length <= length) return str;
     return str.slice(0, length) + '...';
   };
+
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleScrollDown = () => {
+    if (inputRef.current) {
+      const inputRect = inputRef.current.getBoundingClientRect();
+      const scrollMargin = 20;
+      const scrollY = window.scrollY;
+      const targetY = inputRect.top + scrollY - scrollMargin;
+      window.scrollTo({ top: targetY - 70, behavior: 'smooth' });
+    }
+  };
+
   return (
     <Box>
       {displayStudentList.length ? <UpDownButton /> : null}
@@ -622,7 +649,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               </Select>
             </FormControl>
           ) : (
-            <Typography color={theme.palette.warning['300']}>
+            <Typography
+              color={theme.palette.warning['300']}
+              pl={1}
+              variant="h1"
+            >
               {cohortsData[0]?.name}
             </Typography>
           )}
@@ -707,21 +738,26 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                   <Grid item xs={8}>
                     <Paper
                       component="form"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        handleSearchSubmit();
+                      }}
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
-
                         borderRadius: '100px',
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',
                       }}
                     >
                       <InputBase
+                        ref={inputRef}
                         value={searchWord}
                         sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
+                        onClick={handleScrollDown}
                       />
                       <IconButton
                         type="button"
