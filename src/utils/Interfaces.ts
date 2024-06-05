@@ -80,16 +80,10 @@ export interface UserData {
 
 export interface UserDatas {
   name?: any;
-  district: string;
-  state: string;
-  mobile?: string;
 }
 
 export interface LearnerData {
   name?: any;
-  district: string;
-  state: string;
-  mobile?: string;
 }
 
 export interface TimeTableCardProps {
