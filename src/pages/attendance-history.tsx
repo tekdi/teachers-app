@@ -48,6 +48,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import ToastMessage from '@/components/ToastMessage';
 
 interface user {
   userId: string;
@@ -83,6 +84,7 @@ const UserAttendanceHistory = () => {
   const [open, setOpen] = useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [isError, setIsError] = React.useState<boolean>(false);
 
   const pathname = usePathname();
   let userId: string;
@@ -164,6 +166,7 @@ const UserAttendanceHistory = () => {
         }
       } catch (error) {
         console.error('Error fetching  cohort list:', error);
+        setIsError(true)
         setLoading(false);
       }
     };
@@ -330,6 +333,7 @@ const UserAttendanceHistory = () => {
       }
     } catch (error) {
       console.error('Error fetching cohort list:', error);
+      setIsError(true)
       setLoading(false);
     } finally {
       setLoading(false);
@@ -868,6 +872,9 @@ const UserAttendanceHistory = () => {
         </Box>
       </Box>
       {displayStudentList.length >= 1 ? <UpDownButton /> : null}
+      { isError &&
+             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
+          }
     </Box>
   );
 };

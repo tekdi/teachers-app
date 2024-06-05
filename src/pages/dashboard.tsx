@@ -103,7 +103,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const currentDate = new Date();
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(currentDate.getDate() - modifyAttendanceLimit);
-  const formatedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
+  const formattedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
 
   useEffect(() => {
     const calculateDateRange = () => {
@@ -761,7 +761,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         disabled={
                           currentAttendance === 'futureDate' ||
                           classId === 'all' ||
-                          formatedSevenDaysAgo > selectedDate
+                          formattedSevenDaysAgo > selectedDate
                         }
                       >
                         {currentAttendance === 'notMarked' ||
@@ -917,7 +917,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
               </Box>
             </Box>
           </Box>
-          { !isError &&
+          { isError &&
              <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
           }
           {/* <Box sx={{ background: '#fff' }}>

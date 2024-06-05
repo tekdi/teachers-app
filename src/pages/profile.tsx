@@ -36,6 +36,7 @@ import { useRouter } from 'next/router';
 import { getLabelForValue } from '@/utils/Helper';
 import Loader from '@/components/Loader';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import ToastMessage from '@/components/ToastMessage';
 
 interface FieldOption {
   name: string;
@@ -78,6 +79,7 @@ const TeacherProfile = () => {
   const [unitName, setUnitName] = useState('');
   const [blockName, setBlockName] = useState('');
   const [radioValues, setRadioValues] = useState<any>([]);
+  const [isError, setIsError] = React.useState<boolean>(false);
 
   const handleNameFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -148,8 +150,10 @@ const TeacherProfile = () => {
             console.log('No data Found');
           }
         }
+        setIsError(false)
       } catch (error) {
         setLoading(false);
+        setIsError(true)
         console.error('Error fetching  user details:', error);
       }
     }
@@ -368,9 +372,11 @@ const TeacherProfile = () => {
 
         console.log(response.params.successmessage);
         fetchUserDetails();
+        setIsError(false)
         setLoading(false);
       }
     } catch (error) {
+      setIsError(true)
       console.error('Error:', error);
     }
 
@@ -982,6 +988,9 @@ const TeacherProfile = () => {
           </Modal>
         </Box>
       </Box>
+      { isError &&
+             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
+          }
     </>
   );
 };
