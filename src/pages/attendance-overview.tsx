@@ -707,10 +707,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                   <Grid item xs={8}>
                     <Paper
                       component="form"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        handleSearchSubmit();
+                      }}
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
-
                         borderRadius: '100px',
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',

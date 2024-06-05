@@ -664,6 +664,10 @@ const UserAttendanceHistory = () => {
                   <Grid item xs={8} ref={searchRef}>
                     <Paper
                       component="form"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        handleSearchSubmit();
+                      }}
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
