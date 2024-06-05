@@ -109,6 +109,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
       setClassId(localStorage.getItem('classId') || '');
+      const class_Id = localStorage.getItem('classId') || '';
+      localStorage.setItem('cohortId', class_Id);
+
       setLoading(false);
       if (token) {
         push('/attendance-overview');
@@ -194,12 +197,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               state: stateName,
             };
           });
+          
 
           setCohortsData(filteredData);
 
           if (filteredData.length > 0) {
             // setClassId(filteredData[0].cohortId);
-            localStorage.setItem('cohortId', filteredData[0]?.cohortId);
 
             // add state name to localstorage
             if (
