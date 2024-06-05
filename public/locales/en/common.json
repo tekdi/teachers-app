@@ -89,7 +89,7 @@
     "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
     "BACK_TO_TOP": "Back to Top",
     "LAST_SEVEN_DAYS_RANGE": "Last 7 Days {{date_range}}",
-    "AS_OF_TODAY_DATE": "As of Today {{day_date}}",
+    "AS_OF_TODAY_DATE": "As of Today, {{day_date}}",
     "LEARNER": "Learners"
   },
   "ATTENDANCE": {
