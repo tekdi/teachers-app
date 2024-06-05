@@ -281,9 +281,36 @@ const TeacherProfile = () => {
         name: sanitizedValue,
       },
     }));
-
-    setHasErrors(!sanitizedValue.trim());
+    validateFields();
+    // setHasErrors(!sanitizedValue.trim());
   };
+
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+
+  const validateFields = () => {
+    const newErrors: { [key: string]: boolean } = {};
+
+    customFieldsData.forEach((field) => {
+      const value =
+        formData?.customFields?.find((f) => f.fieldId === field.fieldId)
+          ?.value[0] || '';
+
+      if (field.type === 'text') {
+        newErrors[field.fieldId] = !value.trim();
+      } else if (field.type === 'numeric') {
+        newErrors[field.fieldId] = !/^\d{1,4}$/.test(value);
+      }
+    });
+
+    newErrors['name'] = !formData.userData.name.trim();
+
+    setErrors(newErrors);
+    setHasErrors(Object.values(newErrors).some((error) => error));
+  };
+
+  useEffect(() => {
+    validateFields();
+  }, [formData, customFieldsData]);
 
   const handleFieldChange = (fieldId: string, value: string) => {
     setFormData((prevState) => ({
@@ -769,199 +796,193 @@ const TeacherProfile = () => {
                 {customFieldsData
                   ?.filter((field) => field.isEditable)
                   ?.sort((a, b) => a.order - b.order)
-                  ?.map((field) => (
-                    <Grid item xs={12} key={field.fieldId}>
-                      {field.type === 'text' ? (
-                        <TextField
-                          type="text"
-                          inputProps={{ maxLength: 3 }}
-                          sx={{ marginTop: '20px' }}
-                          fullWidth
-                          name={field.name}
-                          // label={field.label}
-                          label={
-                            field?.label && field.name
-                              ? t(
-                                  `FIELDS.${field.name.toUpperCase()}`,
-                                  field.label
-                                )
-                              : field.label
-                          }
-                          variant="outlined"
-                          value={
-                            formData?.customFields?.find(
-                              (f) => f.fieldId === field.fieldId
-                            )?.value[0] || ''
-                          }
-                          onChange={(e) => {
-                            handleFieldChange(field.fieldId, e.target.value);
-                          }}
-                        />
-                      ) : field.type === 'numeric' ? (
-                        <TextField
-                          type="number"
-                          inputProps={{ maxLength: 3 }}
-                          sx={{ marginTop: '20px' }}
-                          fullWidth
-                          name={field.name}
-                          // label={field.label}
-                          label={
-                            field?.label && field.name
-                              ? t(
-                                  `FIELDS.${field.name.toUpperCase()}`,
-                                  field.label
-                                )
-                              : field.label
-                          }
-                          variant="outlined"
-                          value={
-                            formData?.customFields?.find(
-                              (f) => f.fieldId === field.fieldId
-                            )?.value[0] || ''
-                          }
-                          onChange={(e) => {
-                            const inputValue = e.target.value;
-                            if (/^\d{0,4}$/.test(inputValue)) {
-                              handleFieldChange(field.fieldId, inputValue);
+                  ?.map((field) => {
+                    const fieldValue =
+                      formData?.customFields?.find(
+                        (f) => f.fieldId === field.fieldId
+                      )?.value[0] || '';
+                    const isError = errors[field.fieldId];
+
+                    return (
+                      <Grid item xs={12} key={field.fieldId}>
+                        {field.type === 'text' ? (
+                          <TextField
+                            type="text"
+                            inputProps={{ maxLength: 3 }}
+                            sx={{ marginTop: '20px' }}
+                            fullWidth
+                            name={field.name}
+                            label={
+                              field?.label && field.name
+                                ? t(
+                                    `FIELDS.${field.name.toUpperCase()}`,
+                                    field.label
+                                  )
+                                : field.label
                             }
-                          }}
-                        />
-                      ) : field.type === 'checkbox' ? (
-                        <Box marginTop={3}>
-                          <Typography
-                            textAlign={'start'}
-                            variant="h4"
-                            margin={0}
-                            color={theme.palette.warning.A200}
-                          >
-                            {field?.label && field.name
-                              ? t(
-                                  `FIELDS.${field.name.toUpperCase()}`,
-                                  field.label
-                                )
-                              : field.label}
-                            {/* {field.label} */}
-                          </Typography>
-                          {field.options?.map((option: any) => (
-                            <FormGroup key={option.value}>
-                              <FormControlLabel
-                                sx={{ color: theme.palette.warning[300] }}
-                                control={
-                                  <Checkbox
-                                    color="default"
-                                    checked={(
-                                      formData?.customFields.find(
-                                        (f) => f.fieldId === field.fieldId
-                                      )?.value || []
-                                    )?.includes(option.value)}
-                                    onChange={(e) =>
-                                      handleCheckboxChange(
-                                        field.fieldId,
-                                        option.value,
-                                        e.target.checked
-                                      )
-                                    }
-                                  />
-                                }
-                                label={option.label}
-                              />
-                            </FormGroup>
-                          ))}
-                        </Box>
-                      ) : field.type === 'drop_down' ||
-                        field.type === 'dropdown' ? (
-                        <Box marginTop={3} textAlign={'start'}>
-                          <FormControl fullWidth>
-                            <InputLabel id={`select-label-${field.fieldId}`}>
+                            variant="outlined"
+                            value={fieldValue}
+                            onChange={(e) => {
+                              handleFieldChange(field.fieldId, e.target.value);
+                              validateFields();
+                            }}
+                            error={isError}
+                            helperText={isError && t('PROFILE.ENTER_CHARACTER')}
+                          />
+                        ) : field.type === 'numeric' ? (
+                          <TextField
+                            type="number"
+                            inputProps={{ maxLength: 3 }}
+                            sx={{ marginTop: '20px' }}
+                            fullWidth
+                            name={field.name}
+                            label={
+                              field?.label && field.name
+                                ? t(
+                                    `FIELDS.${field.name.toUpperCase()}`,
+                                    field.label
+                                  )
+                                : field.label
+                            }
+                            variant="outlined"
+                            value={fieldValue}
+                            onChange={(e) => {
+                              const inputValue = e.target.value;
+                              if (/^\d{0,4}$/.test(inputValue)) {
+                                handleFieldChange(field.fieldId, inputValue);
+                              } else {
+                                handleFieldChange(field.fieldId, ''); // Clear the field value if it doesn't meet the validation criteria
+                              }
+                              validateFields();
+                            }}
+                            error={isError}
+                            helperText={isError && t('PROFILE.ENTER_NUMBER')}
+                          />
+                        ) : field.type === 'checkbox' ? (
+                          <Box marginTop={3}>
+                            <Typography
+                              textAlign={'start'}
+                              variant="h4"
+                              margin={0}
+                              color={theme.palette.warning.A200}
+                            >
                               {field?.label && field.name
                                 ? t(
                                     `FIELDS.${field.name.toUpperCase()}`,
                                     field.label
                                   )
                                 : field.label}
-                              {/* {field.label} */}
-                            </InputLabel>
-                            <Select
-                              labelId={`select-label-${field.fieldId}`}
-                              id={`select-${field.fieldId}`}
-                              value={
-                                formData?.customFields?.find(
-                                  (f) => f.fieldId === field.fieldId
-                                )?.value[0] || ''
-                              }
-                              // label={field.label}
-                              label={
-                                field?.label && field.name
+                            </Typography>
+                            {field.options?.map((option: any) => (
+                              <FormGroup key={option.value}>
+                                <FormControlLabel
+                                  sx={{ color: theme.palette.warning[300] }}
+                                  control={
+                                    <Checkbox
+                                      color="default"
+                                      checked={(
+                                        formData?.customFields.find(
+                                          (f) => f.fieldId === field.fieldId
+                                        )?.value || []
+                                      )?.includes(option.value)}
+                                      onChange={(e) =>
+                                        handleCheckboxChange(
+                                          field.fieldId,
+                                          option.value,
+                                          e.target.checked
+                                        )
+                                      }
+                                    />
+                                  }
+                                  label={option.label}
+                                />
+                              </FormGroup>
+                            ))}
+                          </Box>
+                        ) : field.type === 'drop_down' ||
+                          field.type === 'dropdown' ? (
+                          <Box marginTop={3} textAlign={'start'}>
+                            <FormControl fullWidth>
+                              <InputLabel id={`select-label-${field.fieldId}`}>
+                                {field?.label && field.name
                                   ? t(
                                       `FIELDS.${field.name.toUpperCase()}`,
                                       field.label
                                     )
-                                  : field.label
-                              }
-                              onChange={(e) =>
-                                handleDropdownChange(
-                                  field.fieldId,
-                                  e.target.value
-                                )
-                              }
-                            >
-                              {field?.options?.map((option: any) => (
-                                <MenuItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
-                                  {option.label}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                      ) : field.type === 'radio' || field.type === 'Radio' ? (
-                        <Box marginTop={3}>
-                          <Typography
-                            textAlign={'start'}
-                            variant="h4"
-                            margin={0}
-                            color={theme.palette.warning.A200}
-                          >
-                            {field?.label && field.name
-                              ? t(
-                                  `FIELDS.${field.name.toUpperCase()}`,
-                                  field.label
-                                )
-                              : field.label}
-                            {/* {field.label} */}
-                          </Typography>
-                          <RadioGroup
-                            name={field.fieldId}
-                            value={
-                              formData?.customFields?.find(
-                                (f) => f.fieldId === field.fieldId
-                              )?.value[0] || ''
-                            }
-                            onChange={(e) =>
-                              handleRadioChange(field.fieldId, e.target.value)
-                            }
-                          >
-                            <Box
-                              display="flex"
-                              flexWrap="wrap"
+                                  : field.label}
+                              </InputLabel>
+                              <Select
+                                labelId={`select-label-${field.fieldId}`}
+                                id={`select-${field.fieldId}`}
+                                value={fieldValue}
+                                label={
+                                  field?.label && field.name
+                                    ? t(
+                                        `FIELDS.${field.name.toUpperCase()}`,
+                                        field.label
+                                      )
+                                    : field.label
+                                }
+                                onChange={(e) =>
+                                  handleDropdownChange(
+                                    field.fieldId,
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                {field?.options?.map((option: any) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </Box>
+                        ) : field.type === 'radio' || field.type === 'Radio' ? (
+                          <Box marginTop={3}>
+                            <Typography
+                              textAlign={'start'}
+                              variant="h4"
+                              margin={0}
                               color={theme.palette.warning.A200}
                             >
-                              {field?.options?.map((option: any) => (
-                                <FormControlLabel
-                                  key={option.value}
-                                  value={option.value}
-                                  control={<Radio color="default" />}
-                                  label={option.label}
-                                />
-                              ))}
-                            </Box>
-                          </RadioGroup>
-                        </Box>
-                      ) : null}
-                    </Grid>
-                  ))}
+                              {field?.label && field.name
+                                ? t(
+                                    `FIELDS.${field.name.toUpperCase()}`,
+                                    field.label
+                                  )
+                                : field.label}
+                            </Typography>
+                            <RadioGroup
+                              name={field.fieldId}
+                              value={fieldValue}
+                              onChange={(e) =>
+                                handleRadioChange(field.fieldId, e.target.value)
+                              }
+                            >
+                              <Box
+                                display="flex"
+                                flexWrap="wrap"
+                                color={theme.palette.warning.A200}
+                              >
+                                {field?.options?.map((option: any) => (
+                                  <FormControlLabel
+                                    key={option.value}
+                                    value={option.value}
+                                    control={<Radio color="default" />}
+                                    label={option.label}
+                                  />
+                                ))}
+                              </Box>
+                            </RadioGroup>
+                          </Box>
+                        ) : null}
+                      </Grid>
+                    );
+                  })}
                 <Box></Box>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>

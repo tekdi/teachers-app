@@ -149,7 +149,9 @@
     "MATH": "Math",
     "TEST": "Test",
     "ENTER_NAME": "Please Enter Full Name",
-    "AT_REQUIRED_LETTER":"At least one letter or underscore is required"
+    "AT_REQUIRED_LETTER": "At least one letter or underscore is required",
+    "ENTER_NUMBER": "Please enter a number",
+    "ENTER_CHARACTER":"Please enter at least one character"
   },
 
   "FIELDS": {
