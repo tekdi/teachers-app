@@ -307,7 +307,7 @@ const LoginPage = () => {
               />
             </Box>
 
-            <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
+            {/* <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
               <Link
                 sx={{ color: theme.palette.secondary.main }}
                 href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=R-3zEZbbbyM"
@@ -315,7 +315,7 @@ const LoginPage = () => {
               >
                 {t('LOGIN_PAGE.FORGOT_PASSWORD')}
               </Link>
-            </Box>
+            </Box> */}
             <Box marginTop={'1.2rem'} className="remember-me-checkbox">
               <Checkbox
                 onChange={(e) => setRememberMe(e.target.checked)}
