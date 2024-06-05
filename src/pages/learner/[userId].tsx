@@ -952,8 +952,8 @@ const LearnerProfile: React.FC = () => {
             >
               {t('COMMON.TEST_REPORT')}
             </Typography>
-            <Box>
-              <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
+            <Box padding={0}>
+              <FormControl fullWidth sx={{ margin: 1, marginLeft: 0 }}>
                 <InputLabel id="demo-simple-select-helper-label">
                   {t('PROFILE.TEST')}
                 </InputLabel>
@@ -972,7 +972,7 @@ const LearnerProfile: React.FC = () => {
                   </MenuItem>
                 </Select>
               </FormControl>
-              <FormControl fullWidth sx={{ m: 1, gap: 2 }}>
+              <FormControl fullWidth sx={{ margin: 1, marginLeft: 0 }}>
                 <InputLabel id="demo-simple-select-helper-label">
                   {t('PROFILE.SUBJECT')}
                 </InputLabel>

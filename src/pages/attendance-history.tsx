@@ -18,7 +18,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   debounce,
   getTodayDate,
@@ -82,6 +82,8 @@ const UserAttendanceHistory = () => {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
 
   const pathname = usePathname();
   let userId: string;
@@ -437,6 +439,13 @@ const UserAttendanceHistory = () => {
     }
   };
 
+  const handleSearchFocus = () => {
+    const scrollSearchBox = searchRef.current;
+    if (scrollSearchBox) {
+      scrollSearchBox.scrollIntoView({block: 'start', behavior: 'smooth'});
+    }
+  }
+
   const handleSearchSubmit = () => {
     let filteredList = cohortMemberList?.filter((user: any) =>
       user.name.toLowerCase().includes(searchWord.toLowerCase())
@@ -652,7 +661,7 @@ const UserAttendanceHistory = () => {
                   display={'flex'}
                   justifyContent="space-between"
                 >
-                  <Grid item xs={8}>
+                  <Grid item xs={8} ref={searchRef}>
                     <Paper
                       component="form"
                       sx={{
@@ -671,6 +680,7 @@ const UserAttendanceHistory = () => {
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
+                        // onFocus={handleSearchFocus}
                       />
                       <IconButton
                         type="button"
@@ -781,17 +791,34 @@ const UserAttendanceHistory = () => {
             </Box>
             {cohortMemberList?.length > 0 ? (
               <Box>
-                {displayStudentList?.map((user: any) => (
-                  <AttendanceStatusListView
-                    isDisabled={true}
-                    showLink={true}
-                    key={user.userId}
-                    userData={user}
-                    isEdit={false}
-                    bulkAttendanceStatus={bulkAttendanceStatus}
-                    handleBulkAction={submitBulkAttendanceAction}
-                  />
-                ))}
+                {displayStudentList.length >=1 ? (
+                  displayStudentList?.map((user: any) => (
+                    <AttendanceStatusListView
+                      isDisabled={true}
+                      showLink={true}
+                      key={user.userId}
+                      userData={user}
+                      isEdit={false}
+                      bulkAttendanceStatus={bulkAttendanceStatus}
+                      handleBulkAction={submitBulkAttendanceAction}
+                    />
+                  ))
+                ) : (
+                  <Box
+                    sx={{
+                      m: '1rem',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography
+                      style={{ fontWeight: 'bold', marginLeft: '1rem' }}
+                    >
+                      {t('COMMON.NO_DATA_FOUND')}
+                    </Typography>
+                  </Box>
+                )}
               </Box>
             ) : (
               <Box
@@ -800,7 +827,8 @@ const UserAttendanceHistory = () => {
                 mt={2}
                 p={'1rem'}
                 borderRadius={'1rem'}
-                bgcolor={'secondary.light'}
+                bgcolor={theme.palette.warning['A400']}
+                // bgcolor={'secondary.light'}
               >
                 <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
               </Box>
@@ -816,7 +844,7 @@ const UserAttendanceHistory = () => {
           />
         </Box>
       </Box>
-      {displayStudentList ? <UpDownButton /> : null}
+      {displayStudentList.length>=1 ? <UpDownButton /> : null}
     </Box>
   );
 };

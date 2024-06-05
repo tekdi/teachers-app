@@ -140,7 +140,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       };
       const res = await getCohortAttendance(cohortAttendanceData);
       const response = res?.data?.result?.attendanceDate;
-      setNumberOfDaysAttendanceMarked(Object.keys(response).length);
+      if (response) {
+        setNumberOfDaysAttendanceMarked(Object.keys(response)?.length);
+      } else {
+        setNumberOfDaysAttendanceMarked(0);
+      }
     };
     if (classId) {
       getAttendanceMarkedDays();
@@ -478,7 +482,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   // close modal of sort
   const handleCloseModal = () => {
-    setModalOpen(false)
+    setModalOpen(false);
   };
 
   //handel sorting
@@ -560,7 +564,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   };
   return (
     <Box>
-     {(displayStudentList.length) ? <UpDownButton /> : null}
+      {displayStudentList.length ? <UpDownButton /> : null}
       <Header />
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -783,18 +787,35 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 secondColumnName={t('COMMON.CLASS_MISSED')}
               />
               <Box>
-                {displayStudentList?.map((user: any) => (
-                  <StudentsStatsList
-                    key={user.userId}
-                    name={user.name}
-                    presentPercent={
-                      Math.floor(parseFloat(user.present_percent)) || 0
-                    }
-                    classesMissed={user.absent || 0}
-                    userId={user.userId}
-                    cohortId={classId}
-                  />
-                ))}
+                {displayStudentList.length >= 1 ? (
+                  displayStudentList?.map((user: any) => (
+                    <StudentsStatsList
+                      key={user.userId}
+                      name={user.name}
+                      presentPercent={
+                        Math.floor(parseFloat(user.present_percent)) || 0
+                      }
+                      classesMissed={user.absent || 0}
+                      userId={user.userId}
+                      cohortId={classId}
+                    />
+                  ))
+                ) : (
+                  <Box
+                    sx={{
+                      mt: '1rem',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography
+                      style={{ fontWeight: 'bold', marginLeft: '1rem' }}
+                    >
+                      {t('COMMON.NO_DATA_FOUND')}
+                    </Typography>
+                  </Box>
+                )}
               </Box>
             </Box>
           ) : (
@@ -826,7 +847,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           mt={2}
           p={'1rem'}
           borderRadius={'1rem'}
-          bgcolor={'secondary.light'}
+          bgcolor={theme.palette.warning['A400']}
+          // bgcolor={'secondary.light'}
         >
           <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
         </Box>
