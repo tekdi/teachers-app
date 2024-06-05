@@ -150,10 +150,10 @@ const TeacherProfile = () => {
             console.log('No data Found');
           }
         }
-        setIsError(false)
+        setIsError(false);
       } catch (error) {
         setLoading(false);
-        setIsError(true)
+        setIsError(true);
         console.error('Error fetching  user details:', error);
       }
     }
@@ -245,9 +245,6 @@ const TeacherProfile = () => {
   }>({
     userData: {
       name: userName || '',
-      district: '',
-      state: '',
-      mobile: '',
     },
     customFields: customFieldsData?.map((field) => ({
       fieldId: field.fieldId,
@@ -260,9 +257,6 @@ const TeacherProfile = () => {
     setFormData({
       userData: {
         name: userName || '',
-        district: '',
-        state: '',
-        mobile: '',
       },
       customFields: customFieldsData.map((field) => ({
         fieldId: field.fieldId,
@@ -399,11 +393,11 @@ const TeacherProfile = () => {
 
         console.log(response.params.successmessage);
         fetchUserDetails();
-        setIsError(false)
+        setIsError(false);
         setLoading(false);
       }
     } catch (error) {
-      setIsError(true)
+      setIsError(true);
       console.error('Error:', error);
     }
 
@@ -1030,9 +1024,7 @@ const TeacherProfile = () => {
           </Modal>
         </Box>
       </Box>
-      { isError &&
-             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
-          }
+      {isError && <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />}
     </>
   );
 };

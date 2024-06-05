@@ -254,9 +254,9 @@ const LearnerProfile: React.FC = () => {
             console.log('No Response Found');
           }
         }
-        setIsError(false)
+        setIsError(false);
       } catch (error) {
-        setIsError(true)
+        setIsError(true);
         setLoading(false);
         console.error('Error fetching  user details:', error);
       }
@@ -346,9 +346,9 @@ const LearnerProfile: React.FC = () => {
       } else {
         console.log('NO State Found');
       }
-      setIsError(false)
+      setIsError(false);
     } catch (error) {
-      setIsError(true)
+      setIsError(true);
       console.error(
         'Error fetching getDoIdForAssesmentDetails results:',
         error
@@ -493,9 +493,6 @@ const LearnerProfile: React.FC = () => {
   }>({
     userData: {
       name: userName || '',
-      district: '',
-      state: '',
-      mobile: '',
     },
     customFields: customFieldsData?.map((field) => ({
       fieldId: field.fieldId,
@@ -508,8 +505,6 @@ const LearnerProfile: React.FC = () => {
     setFormData({
       userData: {
         name: userName || '',
-        district: '',
-        state: '',
       },
       customFields: customFieldsData?.map((field) => ({
         fieldId: field.fieldId,
@@ -619,11 +614,11 @@ const LearnerProfile: React.FC = () => {
 
         console.log(response.params.successmessage);
         fetchUserDetails();
-        setIsError(false)
+        setIsError(false);
         setLoading(false);
       }
     } catch (error) {
-      setIsError(true)
+      setIsError(true);
       console.error('Error:', error);
     }
   };
@@ -1390,9 +1385,7 @@ const LearnerProfile: React.FC = () => {
           </Box>
         </Box>
       </Modal>
-      { isError &&
-             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
-          }
+      {isError && <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />}
     </>
   );
 };
