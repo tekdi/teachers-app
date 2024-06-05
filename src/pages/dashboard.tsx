@@ -133,6 +133,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
+      setClassId(localStorage.getItem('classId') || '');
       if (token) {
         setIsAuthenticated(true);
       } else {
@@ -168,8 +169,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
             ?.filter(Boolean);
           setCohortsData(filteredData);
           if (filteredData.length > 0) {
-            setClassId(filteredData?.[0]?.cohortId);
-            localStorage.setItem('classId', filteredData?.[0]?.cohortId);
+            // setClassId(filteredData?.[0]?.cohortId);
+            // localStorage.setItem('classId', filteredData?.[0]?.cohortId);
             setManipulatedCohortData(
               filteredData.concat({ cohortId: 'all', name: 'All Centers' })
             );
@@ -384,6 +385,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
+    localStorage.setItem('classId', event.target.value);
     setHandleSaveHasRun(!handleSaveHasRun);
   };
 
