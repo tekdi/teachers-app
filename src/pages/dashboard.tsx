@@ -169,8 +169,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
             ?.filter(Boolean);
           setCohortsData(filteredData);
           if (filteredData.length > 0) {
-            // setClassId(filteredData?.[0]?.cohortId);
-            // localStorage.setItem('classId', filteredData?.[0]?.cohortId);
+            const cohort = localStorage.getItem('classId') || '';
+            if (cohort !== '') {
+              setClassId(localStorage.getItem('classId') || '');
+            } else {
+              localStorage.setItem('classId', filteredData?.[0]?.cohortId);
+              setClassId(filteredData?.[0]?.cohortId);
+            }
             setManipulatedCohortData(
               filteredData.concat({ cohortId: 'all', name: 'All Centers' })
             );
