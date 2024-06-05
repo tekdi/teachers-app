@@ -45,7 +45,6 @@ const calenderModalStyle = {
   padding: '12px 0 12px 0',
   borderRadius: '8px',
   boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-  height: '526px',
 
   // Responsive styles
   '@media (min-width: 768px)': {
@@ -297,7 +296,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                paddingTop: '20px',
+                paddingTop: '5px',
               }}
             >
               <Box
@@ -321,7 +320,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                 />
               </Box>
             </Box>
-            <Box sx={{ paddingTop: '20px' }}>
+            <Box sx={{ paddingTop: '10px' }}>
               <Box className="fs-14 fw-500 text-4D">
                 {t('COMMON.FROM_TO_DATE')}
               </Box>
@@ -342,7 +341,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           </Box>
           <Box
             sx={{
-              paddingTop: '20px',
+              padding: '20px 18px 10px',
               display: 'flex',
               gap: '10px',
               justifyContent: 'end',

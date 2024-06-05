@@ -1,7 +1,6 @@
 import React from 'react';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
-import { Alert, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Alert } from '@mui/material';
 import { toastAutoHideDuration } from '../../app.config';
 
 interface State extends SnackbarOrigin {
@@ -41,11 +40,11 @@ function ToastMessage({
       autoHideDuration={toastAutoHideDuration}
       key={vertical + horizontal}
       // message={message}
-      action={
-        <IconButton size="small" color="inherit" onClick={handleClose}>
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      }
+      // action={
+      //   <IconButton size="small" color="inherit" onClick={handleClose}>
+      //     <CloseIcon fontSize="small" />
+      //   </IconButton>
+      // }
     >
       <Alert
         onClose={handleClose}

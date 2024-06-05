@@ -52,6 +52,7 @@ import { getTodayDate } from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import ToastMessage from '@/components/ToastMessage';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -111,6 +112,8 @@ const LearnerProfile: React.FC = () => {
     t('COMMON.AS_OF_TODAY')
   );
   const open = Boolean(anchorEl);
+  const [totalMaxScore, setTotalMaxScore] = useState('');
+  const [totalScore, setTotalScore] = useState('');
 
   const [unitName, setUnitName] = useState('');
   const [blockName, setBlockName] = useState('');
@@ -118,6 +121,7 @@ const LearnerProfile: React.FC = () => {
   const [anchorElOption, setAnchorElOption] =
     React.useState<null | HTMLElement>(null);
   const openOption = Boolean(anchorElOption);
+  const [isError, setIsError] = React.useState<boolean>(false);
 
   const StyledMenu = styled((props: MenuProps) => (
     <Menu
@@ -250,7 +254,9 @@ const LearnerProfile: React.FC = () => {
             console.log('No Response Found');
           }
         }
+        setIsError(false)
       } catch (error) {
+        setIsError(true)
         setLoading(false);
         console.error('Error fetching  user details:', error);
       }
@@ -340,7 +346,9 @@ const LearnerProfile: React.FC = () => {
       } else {
         console.log('NO State Found');
       }
+      setIsError(false)
     } catch (error) {
+      setIsError(true)
       console.error(
         'Error fetching getDoIdForAssesmentDetails results:',
         error
@@ -377,7 +385,8 @@ const LearnerProfile: React.FC = () => {
         const result = response.result;
         if (result) {
           setSubmitedOn(result[0]?.createdOn);
-
+          setTotalMaxScore(result[0]?.totalMaxScore);
+          setTotalScore(result[0]?.totalScore);
           const questionValues = getQuestionValues(result);
           setAssesmentData(questionValues?.questions); // Use the parsed questions
           setLoading(false);
@@ -559,6 +568,23 @@ const LearnerProfile: React.FC = () => {
     }));
   };
 
+  const [hasErrors, setHasErrors] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const sanitizedValue = value.replace(/[^a-zA-Z_ ]/g, '');
+
+    setFormData((prevData) => ({
+      ...prevData,
+      userData: {
+        ...prevData.userData,
+        name: sanitizedValue,
+      },
+    }));
+
+    setHasErrors(!sanitizedValue.trim());
+  };
+
   const handleSubmit = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -593,9 +619,11 @@ const LearnerProfile: React.FC = () => {
 
         console.log(response.params.successmessage);
         fetchUserDetails();
+        setIsError(false)
         setLoading(false);
       }
     } catch (error) {
+      setIsError(true)
       console.error('Error:', error);
     }
   };
@@ -867,7 +895,7 @@ const LearnerProfile: React.FC = () => {
             flex: '1',
             border: '2px solid',
             borderColor: '#FFECB3',
-            padding: '10px',
+            padding: '15px',
           }}
           minWidth={'100%'}
           borderRadius={'12px'}
@@ -991,8 +1019,7 @@ const LearnerProfile: React.FC = () => {
             {uniqueDoId ? (
               <Box
                 sx={{
-                  background:
-                    'linear-gradient(180deg, #FFFDF6 0%, #F8EFDA 100%)',
+                  background: '#F8EFE7',
                   p: 2,
                 }}
               >
@@ -1009,7 +1036,8 @@ const LearnerProfile: React.FC = () => {
                     {t('PROFILE.MARK_OBTAINED')}
                   </Typography>
                   <Typography variant="h4" fontWeight={'bold'}>
-                    {/* 60/70 */}
+                    {totalScore ? totalScore : '0'}/
+                    {totalMaxScore ? totalMaxScore : '0'}
                   </Typography>
                 </Box>
                 <Divider />
@@ -1140,24 +1168,50 @@ const LearnerProfile: React.FC = () => {
               label={t('PROFILE.FULL_NAME')}
               variant="outlined"
               value={formData.userData.name}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  userData: {
-                    name: e.target.value,
-                    district: '',
-                    state: '',
-                    mobile: '',
-                  },
-                })
+              inputProps={{
+                pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
+                title: t('PROFILE.AT_REQUIRED_LETTER'),
+                required: true,
+              }}
+              error={!formData.userData.name.trim()} // Show error if the input is empty
+              helperText={
+                !formData.userData.name.trim() && t('PROFILE.ENTER_NAME')
               }
+              onChange={handleInputChange}
             />
 
             {filteredSortedForEdit
               ?.filter((field) => field.isEditable)
               ?.map((field) => (
                 <Grid item xs={12} key={field.fieldId}>
-                  {field.type === 'text' || field.type === 'numeric' ? (
+                  {field.type === 'text' ? (
+                    <TextField
+                      type="text"
+                      sx={{ marginTop: '20px' }}
+                      fullWidth
+                      name={field.name}
+                      // label={field.label}
+                      label={
+                        field?.label && field.name
+                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
+                          : field.label
+                      }
+                      variant="outlined"
+                      inputProps={{
+                        pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
+                        title: 'At least one letter or underscore is required',
+                        required: true,
+                      }}
+                      value={
+                        formData.customFields.find(
+                          (f) => f.fieldId === field.fieldId
+                        )?.value[0] || ''
+                      }
+                      onChange={(e) => {
+                        handleFieldChange(field.fieldId, e.target.value);
+                      }}
+                    />
+                  ) : field.type === 'numeric' ? (
                     <TextField
                       type="number"
                       sx={{ marginTop: '20px' }}
@@ -1317,12 +1371,16 @@ const LearnerProfile: React.FC = () => {
               }}
               onClick={handleSubmit}
               variant="contained"
+              disabled={hasErrors}
             >
               {t('COMMON.SAVE')}
             </Button>
           </Box>
         </Box>
       </Modal>
+      { isError &&
+             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
+          }
     </>
   );
 };

@@ -48,6 +48,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import ToastMessage from '@/components/ToastMessage';
 
 interface user {
   userId: string;
@@ -83,6 +84,7 @@ const UserAttendanceHistory = () => {
   const [open, setOpen] = useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [isError, setIsError] = React.useState<boolean>(false);
 
   const pathname = usePathname();
   let userId: string;
@@ -100,6 +102,8 @@ const UserAttendanceHistory = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
       setClassId(localStorage.getItem('classId') || '');
+      const classId = localStorage.getItem('classId') || '';
+      localStorage.setItem('cohortId', classId);
       setLoading(false);
       if (token) {
         push('/attendance-history');
@@ -162,6 +166,7 @@ const UserAttendanceHistory = () => {
         }
       } catch (error) {
         console.error('Error fetching  cohort list:', error);
+        setIsError(true)
         setLoading(false);
       }
     };
@@ -328,6 +333,7 @@ const UserAttendanceHistory = () => {
       }
     } catch (error) {
       console.error('Error fetching cohort list:', error);
+      setIsError(true)
       setLoading(false);
     } finally {
       setLoading(false);
@@ -523,6 +529,18 @@ const UserAttendanceHistory = () => {
 
   const hadleScroolDown = () => {};
 
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleScrollDown = () => {
+    if (inputRef.current) {
+      const inputRect = inputRef.current.getBoundingClientRect();
+      const scrollMargin = 20;
+      const scrollY = window.scrollY;
+      const targetY = inputRect.top + scrollY - scrollMargin;
+      window.scrollTo({ top: targetY - 170, behavior: 'smooth' });
+    }
+  };
+
   return (
     <Box minHeight="100vh" textAlign={'center'}>
       <Header />
@@ -683,12 +701,13 @@ const UserAttendanceHistory = () => {
                       onFocus={hadleScroolDown}
                     >
                       <InputBase
+                        ref={inputRef}
                         value={searchWord}
                         sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
-                        // onFocus={handleSearchFocus}
+                        onClick={handleScrollDown}
                       />
                       <IconButton
                         type="button"
@@ -853,6 +872,9 @@ const UserAttendanceHistory = () => {
         </Box>
       </Box>
       {displayStudentList.length >= 1 ? <UpDownButton /> : null}
+      { isError &&
+             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
+          }
     </Box>
   );
 };

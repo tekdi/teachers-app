@@ -16,26 +16,27 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
+import { CustomField, UserDatas, updateCustomField } from '@/utils/Interfaces';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { editEditUser, getUserDetails } from '@/services/ProfileService';
+import { useTheme, withStyles } from '@mui/material/styles';
 
 import Button from '@mui/material/Button';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
-import Image from 'next/image';
-import Modal from '@mui/material/Modal';
-import { useTheme, withStyles } from '@mui/material/styles';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'next-i18next';
-import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import user_placeholder from '../assets/images/user_placeholder.png';
-import userPicture from '@/assets/images/imageOne.jpg';
 import Header from '@/components/Header';
-import { editEditUser, getUserDetails } from '@/services/ProfileService';
-import { CustomField, UserDatas, updateCustomField } from '@/utils/Interfaces';
+import Image from 'next/image';
+import Loader from '@/components/Loader';
+import Modal from '@mui/material/Modal';
+import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
+import { getLabelForValue } from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { getLabelForValue } from '@/utils/Helper';
-import Loader from '@/components/Loader';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import { useTranslation } from 'next-i18next';
+import userPicture from '@/assets/images/imageOne.jpg';
+import user_placeholder from '../assets/images/user_placeholder.png';
+import ToastMessage from '@/components/ToastMessage';
 
 interface FieldOption {
   name: string;
@@ -78,6 +79,7 @@ const TeacherProfile = () => {
   const [unitName, setUnitName] = useState('');
   const [blockName, setBlockName] = useState('');
   const [radioValues, setRadioValues] = useState<any>([]);
+  const [isError, setIsError] = React.useState<boolean>(false);
 
   const handleNameFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -148,8 +150,10 @@ const TeacherProfile = () => {
             console.log('No data Found');
           }
         }
+        setIsError(false)
       } catch (error) {
         setLoading(false);
+        setIsError(true)
         console.error('Error fetching  user details:', error);
       }
     }
@@ -268,6 +272,23 @@ const TeacherProfile = () => {
     });
   }, [userData, customFieldsData]);
 
+  const [hasErrors, setHasErrors] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const sanitizedValue = value.replace(/[^a-zA-Z_ ]/g, '');
+
+    setFormData((prevData) => ({
+      ...prevData,
+      userData: {
+        ...prevData.userData,
+        name: sanitizedValue,
+      },
+    }));
+
+    setHasErrors(!sanitizedValue.trim());
+  };
+
   const handleFieldChange = (fieldId: string, value: string) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -351,9 +372,11 @@ const TeacherProfile = () => {
 
         console.log(response.params.successmessage);
         fetchUserDetails();
+        setIsError(false)
         setLoading(false);
       }
     } catch (error) {
+      setIsError(true)
       console.error('Error:', error);
     }
 
@@ -375,8 +398,7 @@ const TeacherProfile = () => {
         <Box
           display="flex"
           flexDirection="column"
-          padding={2}
-          gap={'10px'}
+          // padding={2}
           justifyContent={'center'}
           alignItems={'center'}
         >
@@ -385,6 +407,7 @@ const TeacherProfile = () => {
             display="flex"
             flexDirection="row"
             gap="5px"
+            padding="25px 19px  20px"
           >
             <Typography
               // variant="h3"
@@ -402,44 +425,47 @@ const TeacherProfile = () => {
             </Typography>
           </Box>
 
-          <Box
-            sx={{
-              flex: '1',
-              border: '2px solid',
-              borderColor: theme.palette.warning['A100'],
-            }}
-            minWidth={'100%'}
-            borderRadius={'12px'}
-            border={'1px'}
-            bgcolor={theme.palette.warning.A400}
-            display="flex"
-            flexDirection="row"
-          >
-            <Grid container spacing={3}>
-              <Grid item xs={4}>
-                <Box m={2}>
-                  <Image
-                    src={user_placeholder_img}
-                    alt="user"
-                    width={60}
-                    height={60}
-                  />
-                </Box>
-              </Grid>
-              <Grid item xs={8}>
+          <Box padding="5px 19px" className="w-100">
+            <Box
+              sx={{
+                flex: '1',
+                border: '1px solid #D0C5B4',
+                boxShadow: '0px 1px 2px 0px #0000004D',
+
+                borderColor: theme.palette.warning['A100'],
+              }}
+              minWidth={'100%'}
+              borderRadius={'12px'}
+              border={'1px'}
+              bgcolor={theme.palette.warning.A400}
+              display="flex"
+              gap={'25px'}
+              alignItems={'center'}
+            >
+              <Image
+                src={user_placeholder_img}
+                alt="user"
+                width={116}
+                height={120}
+                style={{
+                  borderTopLeftRadius: '12px',
+                  borderBottomLeftRadius: '12px',
+                }}
+              />
+              <Box>
                 <Box>
-                  <Typography
-                    ml={0.5}
+                  <Box
                     fontSize={'16px'}
                     lineHeight={'16px'}
+                    className="text-4d"
                     fontWeight={'500'}
                   >
                     <br />
 
                     {userData?.name}
-                  </Typography>
+                  </Box>
                 </Box>
-                <Box display={'flex'} mt={'3px'}>
+                <Box display={'flex'} gap={'4px'} mt={'5px'}>
                   {address ? (
                     <PlaceOutlinedIcon
                       sx={{
@@ -459,174 +485,192 @@ const TeacherProfile = () => {
                     fontSize={'12px'}
                     fontWeight={'500'}
                     lineHeight={'16px'}
+                    className="text-4d"
                   >
                     {address}
                   </Typography>
                 </Box>
-              </Grid>
-            </Grid>
-          </Box>
-          <Button
-            sx={{
-              fontSize: '14px',
-              lineHeight: '20px',
-              minWidth: '100%',
-              padding: '10px 24px 10px 16px',
-              gap: '8px',
-              borderRadius: '100px',
-              marginTop: '10px',
-              flex: '1',
-              textAlign: 'center',
-              color: theme.palette.warning.A200,
-              border: `1px solid ${theme.palette.warning.A200}`,
-              borderColor: theme.palette.warning['A100'],
-            }}
-            onClick={handleOpen}
-          >
-            <Typography
-              variant="h3"
-              style={{
-                letterSpacing: '0.1px',
-                textAlign: 'left',
-                marginBottom: '2px',
-              }}
-              fontSize={'14px'}
-              fontWeight={'500'}
-              lineHeight={'20px'}
-            >
-              {t('PROFILE.EDIT_PROFILE')}
-            </Typography>
-            <Box>
-              <CreateOutlinedIcon sx={{ fontSize: '14px' }} />
+              </Box>
             </Box>
-          </Button>
-
-          {/* modal for edit profile */}
-          <Box
-            sx={{
-              flex: '1',
-              // textAlign: 'center',
-              border: '2px solid',
-              borderColor: theme.palette.warning['A100'],
-              padding: '10px',
-            }}
-            minWidth={'100%'}
-            borderRadius={'12px'}
-            border={'1px'}
-            display="flex"
-            flexDirection="row"
-          >
-            <Grid container spacing={4}>
-              {filteredSortedForView?.map((item, index) => {
-                if (item.order === 5) {
-                  return (
-                    <Grid item xs={12}>
-                      <Typography
-                        fontSize={'12px'}
-                        fontWeight={'600'}
-                        margin={0}
-                        lineHeight={'16px'}
-                        letterSpacing={'0.5px'}
-                        sx={{ wordBreak: 'break-word' }}
-                      >
-                        {item?.label && item.name
-                          ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
-                          : item.label}
-                        {/* {item?.label} */}
-                      </Typography>
-                      <Box
-                        mt={2}
-                        sx={{
-                          display: 'flex',
-                          gap: '10px',
-                          flexWrap: 'wrap',
-                        }}
-                      >
-                        {orderedSubjects &&
-                          orderedSubjects?.map((subject, index) => (
-                            <Button
-                              key={index}
-                              size="small"
-                              variant={
-                                mainSubjects?.includes(subject)
-                                  ? 'contained'
-                                  : 'outlined'
-                              }
-                              sx={{
-                                backgroundColor: mainSubjects?.includes(subject)
-                                  ? theme.palette.info.contrastText
-                                  : 'none',
-                                borderRadius: '8px',
-                                color: theme.palette.warning.A200,
-                                whiteSpace: 'nowrap',
-                                boxShadow: 'none',
-                                border: `1px solid ${theme.palette.warning[900]}`,
-                                pointerEvents: 'none',
-                              }}
-                            >
-                              {getLabelForSubject(subject)}
-                              {/* {subject} */}
-                            </Button>
-                          ))}
-                      </Box>
-                    </Grid>
-                  );
-                } else if (item.order === 7) {
-                  return (
-                    <Grid item xs={12} key={index}>
-                      <Typography
-                        variant="h4"
-                        margin={0}
-                        lineHeight={'16px'}
-                        fontSize={'12px'}
-                        fontWeight={'600'}
-                        letterSpacing={'0.5px'}
-                      >
-                        {item?.label && item.name
-                          ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
-                          : item.label}
-                        {/* {item.label} */}
-                      </Typography>
-                      <Typography
-                        variant="h4"
-                        margin={0}
-                        color={theme.palette.warning.A200}
-                        sx={{ wordBreak: 'break-word' }}
-                      >
-                        {item.value}
-                      </Typography>
-                    </Grid>
-                  );
-                } else {
-                  return (
-                    <Grid item xs={6} key={index}>
-                      <Typography
-                        variant="h4"
-                        margin={0}
-                        lineHeight={'16px'}
-                        fontSize={'12px'}
-                        fontWeight={'600'}
-                        letterSpacing={'0.5px'}
-                      >
-                        {item?.label && item.name
-                          ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
-                          : item.label}
-                        {/* {item.label} */}
-                      </Typography>
-                      <Typography
-                        variant="h4"
-                        margin={0}
-                        color={theme.palette.warning.A200}
-                        sx={{ wordBreak: 'break-word' }}
-                      >
-                        {getLabelForValue(item, item.value[0])}
-                      </Typography>
-                    </Grid>
-                  );
-                }
-              })}
-            </Grid>
           </Box>
+          <Box
+            className="linerGradient"
+            sx={{ padding: '10px 16px 21px', mt: 3 }}
+          >
+            <Button
+              sx={{
+                fontSize: '14px',
+                lineHeight: '20px',
+                minWidth: '100%',
+                padding: '10px 24px 10px 16px',
+                gap: '8px',
+                borderRadius: '100px',
+                marginTop: '10px',
+                flex: '1',
+                textAlign: 'center',
+                color: theme.palette.warning.A200,
+                border: `1px solid ${theme.palette.warning.A200}`,
+                borderColor: theme.palette.warning['A100'],
+                background: '#fff',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItem: 'center',
+                '&:hover': {
+                  backgroundColor: '#fff',
+                },
+              }}
+              onClick={handleOpen}
+            >
+              <Typography
+                variant="h3"
+                style={{
+                  letterSpacing: '0.1px',
+                  textAlign: 'left',
+                  marginBottom: '2px',
+                }}
+                fontSize={'14px'}
+                fontWeight={'500'}
+                lineHeight={'20px'}
+              >
+                {t('PROFILE.EDIT_PROFILE')}
+              </Typography>
+              <Box>
+                <CreateOutlinedIcon sx={{ fontSize: '18px' }} />
+              </Box>
+            </Button>
+
+            <Box
+              sx={{
+                flex: '1',
+                // textAlign: 'center',
+                border: '1px solid',
+                borderColor: theme.palette.warning['A100'],
+                padding: '16px',
+              }}
+              minWidth={'100%'}
+              borderRadius={'16px'}
+              border={'1px'}
+              display="flex"
+              flexDirection="row"
+            >
+              <Grid container spacing={4}>
+                {filteredSortedForView?.map((item, index) => {
+                  if (item.order === 5) {
+                    return (
+                      <Grid item xs={12}>
+                        <Typography
+                          fontSize={'12px'}
+                          fontWeight={'600'}
+                          margin={0}
+                          lineHeight={'16px'}
+                          letterSpacing={'0.5px'}
+                          sx={{ wordBreak: 'break-word' }}
+                          color={theme.palette.warning['500']}
+                        >
+                          {item?.label && item.name
+                            ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
+                            : item.label}
+                          {/* {item?.label} */}
+                        </Typography>
+                        <Box
+                          mt={2}
+                          sx={{
+                            display: 'flex',
+                            gap: '10px',
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          {orderedSubjects &&
+                            orderedSubjects?.map((subject, index) => (
+                              <Button
+                                key={index}
+                                size="small"
+                                variant={
+                                  mainSubjects?.includes(subject)
+                                    ? 'contained'
+                                    : 'outlined'
+                                }
+                                sx={{
+                                  backgroundColor: mainSubjects?.includes(
+                                    subject
+                                  )
+                                    ? theme.palette.info.contrastText
+                                    : 'none',
+                                  borderRadius: '8px',
+                                  color: theme.palette.warning.A200,
+                                  whiteSpace: 'nowrap',
+                                  boxShadow: 'none',
+                                  border: `1px solid ${theme.palette.warning[900]}`,
+                                  pointerEvents: 'none',
+                                }}
+                              >
+                                {getLabelForSubject(subject)}
+                                {/* {subject} */}
+                              </Button>
+                            ))}
+                        </Box>
+                      </Grid>
+                    );
+                  } else if (item.order === 7) {
+                    return (
+                      <Grid item xs={12} key={index}>
+                        <Typography
+                          variant="h4"
+                          margin={0}
+                          lineHeight={'16px'}
+                          fontSize={'12px'}
+                          fontWeight={'600'}
+                          letterSpacing={'0.5px'}
+                          color={theme.palette.warning['500']}
+                        >
+                          {item?.label && item.name
+                            ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
+                            : item.label}
+                          {/* {item.label} */}
+                        </Typography>
+                        <Typography
+                          variant="h4"
+                          margin={0}
+                          color={theme.palette.warning.A200}
+                          sx={{ wordBreak: 'break-word' }}
+                        >
+                          {item.value}
+                        </Typography>
+                      </Grid>
+                    );
+                  } else {
+                    return (
+                      <Grid item xs={6} key={index}>
+                        <Typography
+                          variant="h4"
+                          margin={0}
+                          lineHeight={'16px'}
+                          fontSize={'12px'}
+                          fontWeight={'600'}
+                          letterSpacing={'0.5px'}
+                          color={theme.palette.warning['500']}
+                        >
+                          {item?.label && item.name
+                            ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
+                            : item.label}
+                          {/* {item.label} */}
+                        </Typography>
+                        <Typography
+                          variant="h4"
+                          margin={0}
+                          color={theme.palette.warning.A200}
+                          sx={{ wordBreak: 'break-word' }}
+                        >
+                          {getLabelForValue(item, item.value[0])}
+                        </Typography>
+                      </Grid>
+                    );
+                  }
+                })}
+              </Grid>
+            </Box>
+          </Box>
+          {/* modal for edit profile */}
           <Modal
             open={open}
             onClose={handleClose}
@@ -731,22 +775,22 @@ const TeacherProfile = () => {
                 </Box>
                 <TextField
                   sx={{ marginTop: '20px' }}
+                  type="text"
                   fullWidth
                   name="name"
                   label={t('PROFILE.FULL_NAME')}
                   variant="outlined"
                   value={formData.userData.name}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      userData: {
-                        name: e.target.value,
-                        district: '',
-                        state: '',
-                        mobile: '',
-                      },
-                    })
+                  inputProps={{
+                    pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
+                    title: t('PROFILE.AT_REQUIRED_LETTER'),
+                    required: true,
+                  }}
+                  error={!formData.userData.name.trim()} // Show error if the input is empty
+                  helperText={
+                    !formData.userData.name.trim() && t('PROFILE.ENTER_NAME')
                   }
+                  onChange={handleInputChange}
                 />
 
                 {customFieldsData
@@ -754,7 +798,33 @@ const TeacherProfile = () => {
                   ?.sort((a, b) => a.order - b.order)
                   ?.map((field) => (
                     <Grid item xs={12} key={field.fieldId}>
-                      {field.type === 'text' || field.type === 'numeric' ? (
+                      {field.type === 'text' ? (
+                        <TextField
+                          type="text"
+                          inputProps={{ maxLength: 3 }}
+                          sx={{ marginTop: '20px' }}
+                          fullWidth
+                          name={field.name}
+                          // label={field.label}
+                          label={
+                            field?.label && field.name
+                              ? t(
+                                  `FIELDS.${field.name.toUpperCase()}`,
+                                  field.label
+                                )
+                              : field.label
+                          }
+                          variant="outlined"
+                          value={
+                            formData?.customFields?.find(
+                              (f) => f.fieldId === field.fieldId
+                            )?.value[0] || ''
+                          }
+                          onChange={(e) => {
+                            handleFieldChange(field.fieldId, e.target.value);
+                          }}
+                        />
+                      ) : field.type === 'numeric' ? (
                         <TextField
                           type="number"
                           inputProps={{ maxLength: 3 }}
@@ -930,6 +1000,7 @@ const TeacherProfile = () => {
                   }}
                   onClick={handleSubmit}
                   variant="contained"
+                  disabled={hasErrors}
                 >
                   {t('COMMON.SAVE')}
                 </Button>
@@ -938,6 +1009,9 @@ const TeacherProfile = () => {
           </Modal>
         </Box>
       </Box>
+      { isError &&
+             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
+          }
     </>
   );
 };

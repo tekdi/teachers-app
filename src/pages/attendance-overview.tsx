@@ -14,7 +14,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
@@ -49,6 +49,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import ToastMessage from '@/components/ToastMessage';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -85,6 +86,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
     useState(0);
   const [dateRange, setDateRange] = React.useState<Date | string>('');
+  const [isError, setIsError] = React.useState<boolean>(false);
 
   const theme = useTheme<any>();
   const pathname = usePathname();
@@ -109,6 +111,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
       setClassId(localStorage.getItem('classId') || '');
+      const class_Id = localStorage.getItem('classId') || '';
+      localStorage.setItem('cohortId', class_Id);
+
       setLoading(false);
       if (token) {
         push('/attendance-overview');
@@ -194,12 +199,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               state: stateName,
             };
           });
+          
 
           setCohortsData(filteredData);
 
           if (filteredData.length > 0) {
             // setClassId(filteredData[0].cohortId);
-            localStorage.setItem('cohortId', filteredData[0]?.cohortId);
 
             // add state name to localstorage
             if (
@@ -226,8 +231,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           }
         }
         setLoading(false);
+        setIsError(false);
       } catch (error) {
         console.error('Error fetching  cohort list:', error);
+        setIsError(true)
         setLoading(false);
       }
     };
@@ -424,6 +431,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       }
     } catch (error) {
       console.error('Error fetching cohort list:', error);
+      setIsError(true)
       setLoading(false);
     } finally {
       setLoading(false);
@@ -576,6 +584,19 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     if (str.length <= length) return str;
     return str.slice(0, length) + '...';
   };
+
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleScrollDown = () => {
+    if (inputRef.current) {
+      const inputRect = inputRef.current.getBoundingClientRect();
+      const scrollMargin = 20;
+      const scrollY = window.scrollY;
+      const targetY = inputRect.top + scrollY - scrollMargin;
+      window.scrollTo({ top: targetY - 70, behavior: 'smooth' });
+    }
+  };
+
   return (
     <Box>
       {displayStudentList.length ? <UpDownButton /> : null}
@@ -738,11 +759,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       }}
                     >
                       <InputBase
+                        ref={inputRef}
                         value={searchWord}
                         sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
+                        onClick={handleScrollDown}
                       />
                       <IconButton
                         type="button"
@@ -874,6 +897,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
         </Box>
       )}
+       { isError &&
+             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
+          }
     </Box>
   );
 };
