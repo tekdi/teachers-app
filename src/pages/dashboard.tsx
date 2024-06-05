@@ -25,6 +25,7 @@ import {
   getAllCenterAttendance,
   getCohortAttendance,
 } from '../services/AttendanceService';
+import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
 import {
   formatSelectedDate,
   getMonthName,
@@ -32,7 +33,6 @@ import {
   shortDateFormat,
   toPascalCase,
 } from '../utils/Helper';
-import { isAfter, isValid, startOfDay, parse, format } from 'date-fns';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -47,12 +47,13 @@ import { calculatePercentage } from '@/utils/attendanceStats';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { lowLearnerAttendanceLimit } from './../../app.config';
+import { modifyAttendanceLimit } from '../../app.config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { modifyAttendanceLimit } from '../../app.config';
+
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }

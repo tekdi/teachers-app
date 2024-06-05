@@ -523,6 +523,18 @@ const UserAttendanceHistory = () => {
 
   const hadleScroolDown = () => {};
 
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleScrollDown = () => {
+    if (inputRef.current) {
+      const inputRect = inputRef.current.getBoundingClientRect();
+      const scrollMargin = 20;
+      const scrollY = window.scrollY;
+      const targetY = inputRect.top + scrollY - scrollMargin;
+      window.scrollTo({ top: targetY - 170, behavior: 'smooth' });
+    }
+  };
+
   return (
     <Box minHeight="100vh" textAlign={'center'}>
       <Header />
@@ -683,12 +695,13 @@ const UserAttendanceHistory = () => {
                       onFocus={hadleScroolDown}
                     >
                       <InputBase
+                        ref={inputRef}
                         value={searchWord}
                         sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
-                        // onFocus={handleSearchFocus}
+                        onClick={handleScrollDown}
                       />
                       <IconButton
                         type="button"
