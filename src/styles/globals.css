@@ -360,6 +360,7 @@ main {
 /* This is for react-calender month view and classes are from library */
 .react-calendar {
   width: 100% !important;
+  font-family: 'Poppins' !important;
 }
 
 .react-calendar_month-viewdays_day {
@@ -611,4 +612,17 @@ main {
 }
 .bg-white {
   background-color: #fff;
+}
+.customRange .Mui-selected {
+  background: unset !important;
+}
+
+.customRange li:last-child {
+  margin-bottom: 0px !important;
+}
+.w-100 {
+  width: 100%;
+}
+.p-20 {
+  padding: 10px 20px 20px;
 }
