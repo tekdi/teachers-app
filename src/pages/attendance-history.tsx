@@ -100,6 +100,8 @@ const UserAttendanceHistory = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
       setClassId(localStorage.getItem('classId') || '');
+      const classId = localStorage.getItem('classId') || '';
+      localStorage.setItem('cohortId', classId);
       setLoading(false);
       if (token) {
         push('/attendance-history');
