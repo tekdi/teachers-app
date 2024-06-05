@@ -756,12 +756,12 @@ const TeacherProfile = () => {
                   value={formData.userData.name}
                   inputProps={{
                     pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
-                    title: 'At least one letter or underscore is required',
+                    title: t('PROFILE.AT_REQUIRED_LETTER'),
                     required: true,
                   }}
                   error={!formData.userData.name.trim()} // Show error if the input is empty
                   helperText={
-                    !formData.userData.name.trim() && 'Please Enter Full Name'
+                    !formData.userData.name.trim() && t('PROFILE.ENTER_NAME')
                   }
                   onChange={handleInputChange}
                 />
