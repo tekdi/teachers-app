@@ -480,10 +480,12 @@ const TeacherProfile = () => {
                     lineHeight={'16px'}
                     className="text-4d"
                     fontWeight={'500'}
+                    sx={{ wordBreak: 'break-word' }}
                   >
                     <br />
-
-                    {userData?.name}
+                    {userData?.name?.length > 20
+                      ? `${userData?.name?.substring(0, 20)}...`
+                      : userData?.name}
                   </Box>
                 </Box>
                 <Box display={'flex'} gap={'4px'} mt={'5px'}>
