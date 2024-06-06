@@ -123,7 +123,7 @@ const Calendar: React.FC<any> = ({
             overflow={'auto'}
             className={`col cell  ${
               isSameDay(day, new Date()) && color
-                ? 'today'
+                ? 'WeekToday'
                 : isSameDay(day, selectedDate)
                   ? 'selected '
                   : ''
