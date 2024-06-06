@@ -780,14 +780,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       </Button>
                     </Stack>
                   </Box>
-
-                  <MarkBulkAttendance
-                    open={open}
-                    onClose={handleClose}
-                    classId={classId}
-                    selectedDate={new Date(selectedDate)}
-                    onSaveSuccess={() => setHandleSaveHasRun(!handleSaveHasRun)}
-                  />
+                  {open && (
+                    <MarkBulkAttendance
+                      open={open}
+                      onClose={handleClose}
+                      classId={classId}
+                      selectedDate={new Date(selectedDate)}
+                      onSaveSuccess={() =>
+                        setHandleSaveHasRun(!handleSaveHasRun)
+                      }
+                    />
+                  )}
                 </Box>
                 {/* <Snackbar
                   anchorOrigin={{ vertical, horizontal }}
