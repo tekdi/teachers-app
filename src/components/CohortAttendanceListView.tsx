@@ -4,7 +4,7 @@ import { CohortAttendanceListViewProps } from '@/utils/Interfaces';
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { lowLearnerAttendanceLimit } from '../../app.config';
+import useDeterminePathColor from '@/hooks/useDeterminePathColor';
 
 const CohortAttendanceListView: React.FC<CohortAttendanceListViewProps> = ({
   cohortName,
@@ -12,7 +12,8 @@ const CohortAttendanceListView: React.FC<CohortAttendanceListViewProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const textColor = attendancePercent > lowLearnerAttendanceLimit ? theme.palette.success.main : theme.palette.error.main;
+  const determinePathColor = useDeterminePathColor();
+  const textColor = determinePathColor(attendancePercent);
 
   return (
     <Stack>

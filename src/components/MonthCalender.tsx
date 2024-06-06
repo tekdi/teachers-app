@@ -54,12 +54,15 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     }
     return new Date();
   });
+
+  const [selectedDates, setSelectedDates] = useState<
+    [Date | null, Date | null] | null
+  >(null);
   const determinePathColor = useDeterminePathColor();
 
   useEffect(() => {
     const currentDate = new Date();
     localStorage.setItem('activeStartDate', currentDate.toDateString());
-    console.log('activeStartDate child', currentDate);
   }, []);
 
   function tileContent({
@@ -76,7 +79,6 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     if (formattedAttendanceData) {
       if (view !== 'month') return null;
       const dateString = shortDateFormat(date);
-      console.log('formattedAttendanceData', formattedAttendanceData);
       const attendanceData = formattedAttendanceData?.[dateString];
       if (!attendanceData) return null;
       const presentPercentage = attendanceData?.present_percentage || 0;
@@ -135,6 +137,19 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     if (date.toDateString() === new Date().toDateString()) {
       classes.push('today');
     }
+
+    if (selectedDates) {
+      const [start, end] = selectedDates;
+      if (start && end) {
+        const startDate = new Date(start).setHours(0, 0, 0, 0);
+        const endDate = new Date(end).setHours(0, 0, 0, 0);
+        const currentDate = new Date(date).setHours(0, 0, 0, 0);
+
+        if (currentDate > startDate && currentDate < endDate) {
+          classes.push('selected-range');
+        }
+      }
+    }
     return classes.join(' ');
   }
 
@@ -155,16 +170,8 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     value,
     view,
   }: any) => void = ({ activeStartDate }) => {
-    console.log('Active start date changed:', activeStartDate);
     onChange(activeStartDate);
   };
-
-  // const handleDateChange: (value: Date | [Date, Date] | null) => void = (newDate) => {
-  //   // Handle the selected date here
-  //   console.log('Selected date:', newDate?.toDateString());
-  //   setDate(newDate); // Update state with the new selected date if needed
-  //   onDateChange(newDate);
-  // };
 
   const handleDateChange = (
     newDate: Date | null | undefined | [Date | null, Date | null]
@@ -177,22 +184,25 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     };
 
     if (newDate === null) {
-      console.log('Selected date: null');
       setDate(null);
+      setSelectedDates(null);
       onDateChange(null);
     } else if (Array.isArray(newDate)) {
-      // const formattedDates = newDate.map(date => formatDate(date));
-      // console.log('Selected date range:', formattedDates); // Format--->["2024-06-01","2024-06-14"]
       if (newDate) {
-        setDate(newDate); // Format--->["2024-06-04T18:30:00.000Z","2024-06-13T18:29:59.999Z"]
+        setDate(newDate);
+        setSelectedDates(newDate);
         onDateChange(newDate as Date | Date[] | null);
       }
     } else {
       const formattedDate = formatDate(newDate as Date);
-      console.log('Selected date:', formattedDate);
       setDate(newDate);
+      setSelectedDates([newDate, newDate]);
       onDateChange(newDate as Date | Date[] | null);
     }
+  };
+
+  const handleClickDay = (clickedDate: Date) => {
+    setSelectedDates(null);
   };
 
   return (
@@ -215,6 +225,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
           className="calender-body"
           formatShortWeekday={formatShortWeekday}
           onActiveStartDateChange={handleActiveStartDateChange}
+          onClickDay={handleClickDay}
         />
       </div>
     </div>
