@@ -113,7 +113,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
       )}
       <Stack>
         <Box
-          height="60px"
+          // height="60px"
           borderTop={`1px solid  ${theme.palette.warning['A100']}`}
           margin="0px"
           alignItems={'center'}
@@ -127,7 +127,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
             p={2}
           >
             <Grid item xs={6} textAlign={'left'}>
-              <Link href={''}>
+              <Link className="word-break" href={''}>
                 <Typography
                   onClick={() => handleOpenModalLearner(userId!)}
                   sx={{
