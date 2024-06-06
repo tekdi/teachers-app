@@ -641,3 +641,7 @@ main {
 .text-4d {
   color: #4d4639;
 }
+
+.selected-range {
+  background-color: var(--mui-palette-Skeleton-bg) !important;
+}
