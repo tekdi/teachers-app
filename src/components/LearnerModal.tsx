@@ -166,9 +166,9 @@ const LearnerModal = ({
                             }}
                             // noWrap
                           >
-                            {Array.isArray(item.value)
-                              ? item.value.join(', ')
-                              : item.value}
+                            {Array.isArray(item.displayValue)
+                              ? item.displayValue.join(', ')
+                              : item?.displayValue}
                           </Typography>
                           {/* </Box> */}
                         </Grid>

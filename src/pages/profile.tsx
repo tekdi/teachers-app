@@ -473,17 +473,22 @@ const TeacherProfile = () => {
                   borderBottomLeftRadius: '12px',
                 }}
               />
-              <Box>
+              <Box width={'100%'}>
                 <Box>
                   <Box
                     fontSize={'16px'}
                     lineHeight={'16px'}
                     className="text-4d"
+                    width={'100%'}
                     fontWeight={'500'}
                   >
-                    <br />
-
-                    {userData?.name}
+                    <Typography
+                      sx={{ wordBreak: 'break-word' }}
+                      className="text-4d two-line-text"
+                      mr={'40px'}
+                    >
+                      {userData?.name}
+                    </Typography>
                   </Box>
                 </Box>
                 <Box display={'flex'} gap={'4px'} mt={'5px'}>
