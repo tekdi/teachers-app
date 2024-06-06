@@ -1,19 +1,27 @@
 import React from 'react';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
-import { IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Alert } from '@mui/material';
 import { toastAutoHideDuration } from '../../app.config';
+import { generateRandomString } from '@/utils/Helper';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
 }
+
+type ToastTypes = 'success' | 'error' | 'warning' | 'info';
 
 const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
   vertical: 'bottom',
   horizontal: 'center',
 };
 
-function ToastMessage({ message }: { message: string }) {
+function ToastMessage({
+  message,
+  type = 'error',
+}: {
+  message: string;
+  type?: ToastTypes;
+}) {
   const [state, setState] = React.useState<State>({
     openModal: true,
     ...DEFAULT_POSITION,
@@ -29,16 +37,13 @@ function ToastMessage({ message }: { message: string }) {
       anchorOrigin={{ vertical, horizontal }}
       open={state.openModal}
       onClose={handleClose}
-      className="alert"
       autoHideDuration={toastAutoHideDuration}
-      key={vertical + horizontal}
-      message={message}
-      action={
-        <IconButton size="small" color="inherit" onClick={handleClose}>
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      }
-    />
+      key={'key_' + generateRandomString(3)}
+    >
+      <Alert severity={type} variant="filled" sx={{ width: '100%' }}>
+        {message}
+      </Alert>
+    </Snackbar>
   );
 }
 

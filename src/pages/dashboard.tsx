@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import React, { useEffect, useState } from 'react';
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+// import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
@@ -53,10 +53,13 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import ToastMessage from '@/components/ToastMessage';
+import calendar from '../assets/images/calendar.svg';
+import Image from 'next/image';
 
-interface State extends SnackbarOrigin {
-  openModal: boolean;
-}
+// interface State extends SnackbarOrigin {
+//   openModal: boolean;
+// }
 
 interface DashboardProps {
   //   buttonText: string;
@@ -87,13 +90,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [dateRange, setDateRange] = React.useState<Date | string>('');
   const [allCenterAttendanceData, setAllCenterAttendanceData] =
     React.useState<any>(cohortsData);
-  const [state, setState] = React.useState<State>({
-    openModal: false,
-    vertical: 'top',
-    horizontal: 'center',
-  });
+  const [isError, setIsError] = React.useState<boolean>(false);
+  // const [state, setState] = React.useState<State>({
+  //   openModal: false,
+  //   vertical: 'top',
+  //   horizontal: 'center',
+  // });
+  // const { vertical, horizontal, openModal } = state;
 
-  const { vertical, horizontal, openModal } = state;
   const router = useRouter();
   const contextId = classId;
   const theme = useTheme<any>();
@@ -101,7 +105,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const currentDate = new Date();
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(currentDate.getDate() - modifyAttendanceLimit);
-  const formatedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
+  const formattedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
 
   useEffect(() => {
     const calculateDateRange = () => {
@@ -187,6 +191,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         }
       } catch (error) {
         console.error('Error fetching  cohort list:', error);
+        setIsError(true);
         setLoading(false);
       }
     };
@@ -320,13 +325,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   filters,
                   facets,
                 });
-                console.log(`Response for cohortId ${cohortId}:`, response); // Log the response
+                setIsError(false);
                 return { cohortId, data: response?.data?.result };
               } catch (error) {
                 console.error(
                   `Error fetching data for cohortId ${cohortId}:`,
                   error
                 );
+                setIsError(true);
                 return { cohortId, error };
               }
             });
@@ -362,10 +368,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 })
                 .filter((item) => item.presentPercentage !== null); // Filter out items with no valid percentage
 
-              console.log('Filtered and merged data:', nameIDAttendanceArray);
+              // console.log('Filtered and merged data:', nameIDAttendanceArray);
+              setIsError(false);
               setAllCenterAttendanceData(nameIDAttendanceArray);
             } catch (error) {
               console.error('Error fetching attendance data:', error);
+              setIsError(true);
             }
           };
 
@@ -560,7 +568,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     sx={{
                       cursor: 'pointer',
                       color: theme.palette.secondary.main,
-                      gap: '2px',
+                      gap: '4px',
                       opacity: classId === 'all' ? 0.5 : 1,
                     }}
                     onClick={viewAttendanceHistory}
@@ -571,7 +579,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     >
                       {getMonthName(selectedDate)}
                     </Typography>
-                    <CalendarMonthIcon />
+                    {/* <CalendarMonthIcon /> */}
+                    <Image
+                      height={18}
+                      width={18}
+                      src={calendar}
+                      alt="logo"
+                      style={{ cursor: 'pointer' }}
+                    />
                   </Box>
                 </Box>
                 <Box sx={{ mt: 2 }}>
@@ -755,7 +770,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         disabled={
                           currentAttendance === 'futureDate' ||
                           classId === 'all' ||
-                          formatedSevenDaysAgo > selectedDate
+                          formattedSevenDaysAgo > selectedDate
                         }
                       >
                         {currentAttendance === 'notMarked' ||
@@ -911,6 +926,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
               </Box>
             </Box>
           </Box>
+          {isError && (
+            <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
+          )}
           {/* <Box sx={{ background: '#fff' }}>
             <Typography
               textAlign={'left'}

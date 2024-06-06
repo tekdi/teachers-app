@@ -52,6 +52,7 @@ import { getTodayDate } from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import ToastMessage from '@/components/ToastMessage';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -72,7 +73,7 @@ const LearnerProfile: React.FC = () => {
 
   const router = useRouter();
   const { userId }: any = router.query;
-  console.log('userId', userId);
+
   if (typeof window !== 'undefined' && window.localStorage) {
     localStorage.setItem('learnerId', userId);
   }
@@ -120,6 +121,7 @@ const LearnerProfile: React.FC = () => {
   const [anchorElOption, setAnchorElOption] =
     React.useState<null | HTMLElement>(null);
   const openOption = Boolean(anchorElOption);
+  const [isError, setIsError] = React.useState<boolean>(false);
 
   const StyledMenu = styled((props: MenuProps) => (
     <Menu
@@ -252,7 +254,9 @@ const LearnerProfile: React.FC = () => {
             console.log('No Response Found');
           }
         }
+        setIsError(false);
       } catch (error) {
+        setIsError(true);
         setLoading(false);
         console.error('Error fetching  user details:', error);
       }
@@ -342,7 +346,9 @@ const LearnerProfile: React.FC = () => {
       } else {
         console.log('NO State Found');
       }
+      setIsError(false);
     } catch (error) {
+      setIsError(true);
       console.error(
         'Error fetching getDoIdForAssesmentDetails results:',
         error
@@ -454,7 +460,7 @@ const LearnerProfile: React.FC = () => {
   //fields  for edit popup by order
 
   const filteredSortedForEdit = [...customFieldsData]
-    ?.filter((field) => field.order !== 0 && field.isEditable)
+    ?.filter((field) => field.isEditable)
     ?.sort((a, b) => a.order - b.order);
 
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -487,9 +493,6 @@ const LearnerProfile: React.FC = () => {
   }>({
     userData: {
       name: userName || '',
-      district: '',
-      state: '',
-      mobile: '',
     },
     customFields: customFieldsData?.map((field) => ({
       fieldId: field.fieldId,
@@ -502,8 +505,6 @@ const LearnerProfile: React.FC = () => {
     setFormData({
       userData: {
         name: userName || '',
-        district: '',
-        state: '',
       },
       customFields: customFieldsData?.map((field) => ({
         fieldId: field.fieldId,
@@ -613,9 +614,11 @@ const LearnerProfile: React.FC = () => {
 
         console.log(response.params.successmessage);
         fetchUserDetails();
+        setIsError(false);
         setLoading(false);
       }
     } catch (error) {
+      setIsError(true);
       console.error('Error:', error);
     }
   };
@@ -861,25 +864,37 @@ const LearnerProfile: React.FC = () => {
         </Typography>
         <Button
           sx={{
+            fontSize: '14px',
+            lineHeight: '20px',
             minWidth: '100%',
             padding: '10px 24px 10px 16px',
             gap: '8px',
-            borderRadius: '20px',
+            borderRadius: '100px',
             marginTop: '10px',
             flex: '1',
             textAlign: 'center',
-            color: 'black',
-            border: '1px solid black',
-            borderColor: 'black',
-            backgroundColor: 'warning.A400',
-            '&:hover': {
-              backgroundColor: 'warning.A400',
-            },
+            color: theme.palette.warning.A200,
+            border: `1px solid ${theme.palette.warning.A200}`,
+            borderColor: theme.palette.warning['A100'],
           }}
-          startIcon={<CreateOutlinedIcon />}
           onClick={handleOpen}
         >
-          {t('PROFILE.EDIT_PROFILE')}
+          <Typography
+            variant="h3"
+            style={{
+              letterSpacing: '0.1px',
+              textAlign: 'left',
+              marginBottom: '2px',
+            }}
+            fontSize={'14px'}
+            fontWeight={'500'}
+            lineHeight={'20px'}
+          >
+            {t('PROFILE.EDIT_PROFILE')}
+          </Typography>
+          <Box>
+            <CreateOutlinedIcon sx={{ fontSize: '14px' }} />
+          </Box>
         </Button>
         <Box
           mt={2}
@@ -1370,6 +1385,7 @@ const LearnerProfile: React.FC = () => {
           </Box>
         </Box>
       </Modal>
+      {isError && <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />}
     </>
   );
 };

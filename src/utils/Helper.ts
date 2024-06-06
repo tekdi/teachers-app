@@ -82,6 +82,16 @@ export const getDayAndMonthName = (dateString: Date | string) => {
   const month = date.toLocaleString('default', { month: 'long' });
   return `${day} ${month}`;
 };
+
+export const getDayMonthYearFormat  = (dateString: string) => {
+  const [year, monthIndex, day] = dateString.split('-');
+  const date = new Date(parseInt(year, 10), parseInt(monthIndex, 10) - 1, parseInt(day, 10));
+  return date.toLocaleDateString('en-US', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+};
  
 
 // Function to truncate URL if it's too long
@@ -137,3 +147,15 @@ const valueToLabelMap: { [key: string]: string } = {
 export const getLabelForValue = (value: string): string => {
   return valueToLabelMap[value] || 'NA';
 };
+
+export const generateRandomString = (length: number): string => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+
+  for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  return result;
+}

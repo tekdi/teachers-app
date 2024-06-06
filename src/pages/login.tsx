@@ -25,6 +25,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import ToastMessage from '@/components/ToastMessage';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -113,7 +114,6 @@ const LoginPage = () => {
               openModal: false,
               ...DEFAULT_POSITION,
             });
-            setShowToastMessage(false);
           });
 
           if (typeof window !== 'undefined' && window.localStorage) {
@@ -129,6 +129,7 @@ const LoginPage = () => {
           }
         }
         setLoading(false);
+        setShowToastMessage(false);
         router.push('/dashboard');
       } catch (error: any) {
         setLoading(false);
@@ -137,6 +138,7 @@ const LoginPage = () => {
           setShowToastMessage(true);
         } else {
           console.error('Error:', error);
+           setShowToastMessage(true);
         }
       }
     }
@@ -349,20 +351,7 @@ const LoginPage = () => {
           </Box>
         </Box>
         {showToastMessage && (
-          <Snackbar
-            anchorOrigin={{ vertical, horizontal }}
-            open={openModal}
-            onClose={handleClose}
-            className="alert"
-            autoHideDuration={5000}
-            key={vertical + horizontal}
-            message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')}
-            action={
-              <IconButton size="small" color="inherit" onClick={handleClose}>
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            }
-          />
+          <ToastMessage message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')} />
         )}
       </form>
     </Box>
