@@ -89,7 +89,7 @@ const TeacherProfile = () => {
   const style = {
     position: 'absolute',
     top: '50%',
-    maxWidth: 300, // Maximum width for responsiveness
+    maxWidth: 350, // Maximum width for responsiveness
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
