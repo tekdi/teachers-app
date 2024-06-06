@@ -127,6 +127,8 @@ const LearnerProfile: React.FC = () => {
   const open = Boolean(anchorEl);
   const [totalMaxScore, setTotalMaxScore] = useState('');
   const [totalScore, setTotalScore] = useState('');
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+  const [hasErrors, setHasErrors] = useState(false);
 
   const [unitName, setUnitName] = useState('');
   const [blockName, setBlockName] = useState('');
@@ -341,18 +343,16 @@ const LearnerProfile: React.FC = () => {
     try {
       if (steteName) {
         if (filters) {
+          setLoading(true);
           const searchResults = await getDoIdForAssesmentDetails({ filters });
 
           if (searchResults?.responseCode === 'OK') {
             const result = searchResults?.result;
             if (result) {
-              setLoading(true);
-
               const QuestionSet = result?.QuestionSet?.[0];
               const getUniqueDoId = QuestionSet?.IL_UNIQUE_ID;
               setUniqueDoId(getUniqueDoId);
               testReportDetails(getUniqueDoId);
-              setLoading(false);
             } else {
               console.log('NO Result found from getDoIdForAssesmentDetails ');
             }
@@ -370,6 +370,8 @@ const LearnerProfile: React.FC = () => {
         'Error fetching getDoIdForAssesmentDetails results:',
         error
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -581,23 +583,6 @@ const LearnerProfile: React.FC = () => {
     }));
   };
 
-  const [hasErrors, setHasErrors] = useState(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    const sanitizedValue = value.replace(/[^a-zA-Z_ ]/g, '');
-
-    setFormData((prevData) => ({
-      ...prevData,
-      userData: {
-        ...prevData.userData,
-        name: sanitizedValue,
-      },
-    }));
-
-    setHasErrors(!sanitizedValue.trim());
-  };
-
   const handleSubmit = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -721,6 +706,52 @@ const LearnerProfile: React.FC = () => {
     }
   }, [classId, selectedValue === t('COMMON.LAST_SEVEN_DAYS')]);
 
+  //-------------validation for edit fields ---------------------------
+
+  const validateFields = () => {
+    const newErrors: { [key: string]: boolean } = {};
+
+    const fieldsToValidate = [...customFieldsData];
+
+    learnerDetailsByOrder.forEach((field) => {
+      const value =
+        formData?.customFields?.find((f) => f.fieldId === field.fieldId)
+          ?.value[0] || '';
+
+      if (field.type === 'text') {
+        newErrors[field.fieldId] = !value.trim();
+      } else if (field.type === 'numeric') {
+        newErrors[field.fieldId] = !/^\d{1,4}$/.test(value);
+      }
+    });
+
+    // Validate name field
+    newErrors['name'] = !formData.userData.name.trim();
+
+    setErrors(newErrors);
+    setHasErrors(Object.values(newErrors).some((error) => error));
+  };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const sanitizedValue = value.replace(/[^a-zA-Z_ ]/g, '');
+
+    setFormData((prevData) => ({
+      ...prevData,
+      userData: {
+        ...prevData.userData,
+        name: sanitizedValue,
+      },
+    }));
+
+    // setHasErrors(!sanitizedValue.trim());
+    validateFields();
+  };
+
+  useEffect(() => {
+    validateFields();
+  }, [formData, customFieldsData]);
+
+  // flag for contactNumberAdded in dynamic list fo fields in lerner basic details
   let contactNumberAdded = false;
   return (
     <>
@@ -1109,7 +1140,15 @@ const LearnerProfile: React.FC = () => {
                 </Select>
               </FormControl>
             </Box>
-            {uniqueDoId ? (
+            {loading ? (
+              <Typography textAlign="center">{t('COMMON.LOADING')}</Typography>
+            ) : !uniqueDoId || uniqueDoId === '' ? (
+              <Box mt={2}>
+                <Typography textAlign={'center'}>
+                  {t('COMMON.NO_DATA_FOUND')}
+                </Typography>
+              </Box>
+            ) : (
               <Box
                 sx={{
                   background: '#F8EFE7',
@@ -1142,12 +1181,6 @@ const LearnerProfile: React.FC = () => {
                 <Box mt={2}>
                   <MarksObtainedCard data={assesmentData} />
                 </Box>
-              </Box>
-            ) : (
-              <Box mt={2}>
-                <Typography textAlign={'center'}>
-                  {t('COMMON.NO_DATA_FOUND')}
-                </Typography>
               </Box>
             )}
           </CardContent>
@@ -1258,6 +1291,7 @@ const LearnerProfile: React.FC = () => {
             </Box> */}
             <TextField
               sx={{ marginTop: '20px' }}
+              type="text"
               fullWidth
               name="name"
               label={t('PROFILE.FULL_NAME')}
@@ -1274,10 +1308,13 @@ const LearnerProfile: React.FC = () => {
               }
               onChange={handleInputChange}
             />
+            {filteredSortedForEdit?.map((field) => {
+              const fieldValue =
+                formData?.customFields?.find((f) => f.fieldId === field.fieldId)
+                  ?.value[0] || '';
+              const isError = errors[field.fieldId];
 
-            {filteredSortedForEdit
-              ?.filter((field) => field.isEditable)
-              ?.map((field) => (
+              return (
                 <Grid item xs={12} key={field.fieldId}>
                   {field.type === 'text' ? (
                     <TextField
@@ -1285,7 +1322,6 @@ const LearnerProfile: React.FC = () => {
                       sx={{ marginTop: '20px' }}
                       fullWidth
                       name={field.name}
-                      // label={field.label}
                       label={
                         field?.label && field.name
                           ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
@@ -1297,14 +1333,15 @@ const LearnerProfile: React.FC = () => {
                         title: 'At least one letter or underscore is required',
                         required: true,
                       }}
-                      value={
-                        formData.customFields.find(
-                          (f) => f.fieldId === field.fieldId
-                        )?.value[0] || ''
-                      }
+                      value={fieldValue}
                       onChange={(e) => {
                         handleFieldChange(field.fieldId, e.target.value);
+                        validateFields();
                       }}
+                      error={isError}
+                      helperText={
+                        isError && t('PROFILE.ENTER_CHARACTER')
+                      }
                     />
                   ) : field.type === 'numeric' ? (
                     <TextField
@@ -1312,24 +1349,24 @@ const LearnerProfile: React.FC = () => {
                       sx={{ marginTop: '20px' }}
                       fullWidth
                       name={field.name}
-                      // label={field.label}
                       label={
                         field?.label && field.name
                           ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
                           : field.label
                       }
                       variant="outlined"
-                      value={
-                        formData.customFields.find(
-                          (f) => f.fieldId === field.fieldId
-                        )?.value[0] || ''
-                      }
+                      value={fieldValue}
                       onChange={(e) => {
                         const inputValue = e.target.value;
                         if (/^\d{0,4}$/.test(inputValue)) {
                           handleFieldChange(field.fieldId, inputValue);
+                          validateFields();
                         }
                       }}
+                      error={isError}
+                      helperText={
+                        isError && t('PROFILE.ENTER_NUMBER')}
+                      
                     />
                   ) : field.type === 'checkbox' ? (
                     <Box marginTop={3}>
@@ -1342,7 +1379,6 @@ const LearnerProfile: React.FC = () => {
                         {field?.label && field.name
                           ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
                           : field.label}
-                        {/* {field.label} */}
                       </Typography>
                       {field.options?.map((option: any) => (
                         <FormGroup key={option.value}>
@@ -1381,17 +1417,11 @@ const LearnerProfile: React.FC = () => {
                                 field.label
                               )
                             : field.label}
-                          {/* {field.label} */}
                         </InputLabel>
                         <Select
                           labelId={`select-label-${field.fieldId}`}
                           id={`select-${field.fieldId}`}
-                          value={
-                            formData?.customFields?.find(
-                              (f) => f.fieldId === field.fieldId
-                            )?.value[0] || ''
-                          }
-                          // label={field.label}
+                          value={fieldValue}
                           label={
                             field?.label && field.name
                               ? t(
@@ -1423,15 +1453,10 @@ const LearnerProfile: React.FC = () => {
                         {field?.label && field.name
                           ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
                           : field.label}
-                        {/* {field.label} */}
                       </Typography>
                       <RadioGroup
                         name={field.fieldId}
-                        value={
-                          formData?.customFields.find(
-                            (f) => f.fieldId === field.fieldId
-                          )?.value[0] || ''
-                        }
+                        value={fieldValue}
                         onChange={(e) =>
                           handleRadioChange(field.fieldId, e.target.value)
                         }
@@ -1454,7 +1479,8 @@ const LearnerProfile: React.FC = () => {
                     </Box>
                   ) : null}
                 </Grid>
-              ))}
+              );
+            })}
             <Box></Box>
           </Box>
           <Divider />

@@ -21,6 +21,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import MonthCalender from './MonthCalender';
 import WestIcon from '@mui/icons-material/West';
 import { useTranslation } from 'next-i18next';
+import { useTheme } from '@mui/material/styles';
 
 const modalStyle = {
   position: 'absolute',
@@ -87,6 +88,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const toggleCalendarModal = () =>
     setIsCalenderModalOpen(!isCalendarModalOpen);
   const { t } = useTranslation();
+  const theme = useTheme<any>();
 
   const handleMenuItemClick = (index: number, item: string) => {
     setSelectedIndex(index);
@@ -241,7 +243,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
             </Grid>
           </Box>
           <Divider />
-          <MenuList className="customRange" sx={{ margin: '0 9px' }} dense>
+          <MenuList className="customRange" sx={{ margin: '0 9px'}} dense>
             {menuItems.map((item, index) => (
               <MenuItem
                 key={index}
@@ -252,6 +254,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                   alignItems: 'center',
                   paddingLeft: '32px',
                   backgroundColor: 'transparent',
+                  color: index === 4 ? theme.palette.secondary.main : 'inherit',
                   '&:hover': {
                     backgroundColor: 'transparent',
                     color: '#0D599E'
@@ -275,7 +278,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           </MenuList>
           <Divider />
           <Box className="w-100 p-20">
-            <Button className="w-100" variant="contained" onClick={onApply}>
+            <Button className="w-100" sx={{boxShadow:"none"}} variant="contained" onClick={onApply}>
               {t('COMMON.APPLY')}
             </Button>
           </Box>
