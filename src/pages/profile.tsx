@@ -30,13 +30,13 @@ import Image from 'next/image';
 import Loader from '@/components/Loader';
 import Modal from '@mui/material/Modal';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
+import ToastMessage from '@/components/ToastMessage';
 import { getLabelForValue } from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../assets/images/user_placeholder.png';
-import ToastMessage from '@/components/ToastMessage';
 
 interface FieldOption {
   name: string;
@@ -89,7 +89,7 @@ const TeacherProfile = () => {
   const style = {
     position: 'absolute',
     top: '50%',
-    maxWidth: 350, // Maximum width for responsiveness
+    maxWidth: 300, // Maximum width for responsiveness
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
@@ -567,6 +567,7 @@ const TeacherProfile = () => {
                 borderColor: theme.palette.warning['A100'],
                 padding: '16px',
               }}
+              className="bg-white"
               minWidth={'100%'}
               borderRadius={'16px'}
               border={'1px'}

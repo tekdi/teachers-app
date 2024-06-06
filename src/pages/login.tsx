@@ -17,6 +17,7 @@ import Image from 'next/image';
 import Link from '@mui/material/Link';
 import Loader from '../components/Loader';
 import MenuItem from '@mui/material/MenuItem';
+import ToastMessage from '@/components/ToastMessage';
 import appLogo from '../../public/images/appLogo.png';
 import config from '../../config.json';
 import { getUserId } from '../services/ProfileService';
@@ -25,7 +26,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import ToastMessage from '@/components/ToastMessage';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -138,7 +138,7 @@ const LoginPage = () => {
           setShowToastMessage(true);
         } else {
           console.error('Error:', error);
-           setShowToastMessage(true);
+          setShowToastMessage(true);
         }
       }
     }
@@ -268,6 +268,7 @@ const LoginPage = () => {
                 value={username}
                 onChange={handleUsernameChange}
                 error={usernameError}
+                className="userName"
               />
             </Box>
             <Box
@@ -286,6 +287,7 @@ const LoginPage = () => {
                   shrink: true,
                 }}
                 onClick={() => setScrolling(!scrolling)}
+                className="password"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -324,7 +326,11 @@ const LoginPage = () => {
                 checked={rememberMe}
               />
               <span
-                style={{ cursor: 'pointer' }}
+                style={{
+                  cursor: 'pointer',
+                  color: theme.palette.warning['300'],
+                }}
+                className="fw-400"
                 onClick={() => setRememberMe(!rememberMe)}
               >
                 {t('LOGIN_PAGE.REMEMBER_ME')}
@@ -351,7 +357,9 @@ const LoginPage = () => {
           </Box>
         </Box>
         {showToastMessage && (
-          <ToastMessage message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')} />
+          <ToastMessage
+            message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')}
+          />
         )}
       </form>
     </Box>
