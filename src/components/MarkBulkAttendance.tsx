@@ -5,7 +5,7 @@ import {
   attendanceStatusList,
   bulkAttendance,
 } from '@/services/AttendanceService';
-import { shortDateFormat, toPascalCase } from '../utils/Helper';
+import { getDayMonthYearFormat, shortDateFormat, toPascalCase } from '../utils/Helper';
 
 import { AttendanceStatusListProps } from '../utils/Interfaces';
 import AttendanceStatusListView from './AttendanceStatusListView';
@@ -349,7 +349,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                     }}
                     component="h2"
                   >
-                    {shortDateFormat(selectedDate)}
+                    {getDayMonthYearFormat(shortDateFormat(selectedDate))}
                   </Typography>
                 </Box>
                 <Box onClick={() => onClose()}>

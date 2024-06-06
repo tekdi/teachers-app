@@ -98,6 +98,8 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const handleCancelClicked = () => {
     toggleCalendarModal();
     setCancelClicked(true);
+    setDisplayCalendarFromDate(getDayAndMonthName(getTodayDate()))
+    setDisplayCalendarToDate(getDayAndMonthName(getTodayDate()))
   };
 
   const onApply = () => {
@@ -252,6 +254,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                   backgroundColor: 'transparent',
                   '&:hover': {
                     backgroundColor: 'transparent',
+                    color: '#0D599E'
                   },
                 }}
               >

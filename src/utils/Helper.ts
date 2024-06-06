@@ -82,6 +82,16 @@ export const getDayAndMonthName = (dateString: Date | string) => {
   const month = date.toLocaleString('default', { month: 'long' });
   return `${day} ${month}`;
 };
+
+export const getDayMonthYearFormat  = (dateString: string) => {
+  const [year, monthIndex, day] = dateString.split('-');
+  const date = new Date(parseInt(year, 10), parseInt(monthIndex, 10) - 1, parseInt(day, 10));
+  return date.toLocaleDateString('en-US', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+};
  
 
 // Function to truncate URL if it's too long
