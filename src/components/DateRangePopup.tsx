@@ -275,7 +275,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           </MenuList>
           <Divider />
           <Box className="w-100 p-20">
-            <Button className="w-100" variant="contained" onClick={onApply}>
+            <Button className="w-100" sx={{boxShadow:"none"}} variant="contained" onClick={onApply}>
               {t('COMMON.APPLY')}
             </Button>
           </Box>

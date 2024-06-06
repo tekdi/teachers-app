@@ -537,13 +537,6 @@ const TeacherProfile = () => {
                 color: theme.palette.warning.A200,
                 border: `1px solid ${theme.palette.warning.A200}`,
                 borderColor: theme.palette.warning['A100'],
-                background: '#fff',
-                marginBottom: '20px',
-                display: 'flex',
-                alignItem: 'center',
-                '&:hover': {
-                  backgroundColor: '#fff',
-                },
               }}
               onClick={handleOpen}
             >
@@ -566,6 +559,7 @@ const TeacherProfile = () => {
             </Button>
 
             <Box
+              mt={2}
               sx={{
                 flex: '1',
                 // textAlign: 'center',

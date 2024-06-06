@@ -39,7 +39,10 @@ const LearnerModal = ({
   };
 
   const learnerDetailsByOrder = [...data]?.map((field) => {
-    if (field.type === 'drop_down' && field.options && field.value.length) {
+    if (
+      field.type === 'drop_down' ||
+      (field.type === 'radio' && field.options && field.value.length)
+    ) {
       const selectedOption = field?.options?.find(
         (option: any) => option.value === field.value[0]
       );
