@@ -641,3 +641,17 @@ main {
 .text-4d {
   color: #4d4639;
 }
+.userName label {
+  color: #1f1b13 !important;
+}
+.password label {
+  color: #1f1b13 !important;
+}
+
+.fs-24 {
+  font-size: 24px !important;
+}
+.htw-24 {
+  height: 24px;
+  width: 24px;
+}
