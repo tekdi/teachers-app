@@ -655,3 +655,6 @@ main {
   height: 24px;
   width: 24px;
 }
+.selected-range {
+  background-color: var(--mui-palette-Skeleton-bg) !important;
+}

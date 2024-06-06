@@ -48,6 +48,7 @@ const StudentStatsCard: React.FC<StudentStatsCard> = ({
           fontWeight={500}
           lineHeight="24px"
           marginBottom={'5px'}
+          className="text-1F"
         >
           {value1}
         </Typography>

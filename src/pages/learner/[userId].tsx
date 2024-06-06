@@ -29,7 +29,12 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { LearnerData, UserData, updateCustomField } from '@/utils/Interfaces';
+import {
+  LearnerData,
+  UserData,
+  cohortAttendancePercentParam,
+  updateCustomField,
+} from '@/utils/Interfaces';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import React, { useEffect, useState } from 'react';
 import { alpha, styled, useTheme } from '@mui/material/styles';
@@ -46,9 +51,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 // import Header from '../components/Header';
 // import { formatDate, getTodayDate } from '../utils/Helper';
 import StudentStatsCard from '@/components/StudentStatsCard';
-import { classesMissedAttendancePercentList } from '@/services/AttendanceService';
+import {
+  classesMissedAttendancePercentList,
+  getCohortAttendance,
+} from '@/services/AttendanceService';
 import { format } from 'date-fns';
-import { getTodayDate } from '@/utils/Helper';
+import { formatSelectedDate, getTodayDate } from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -111,6 +119,11 @@ const LearnerProfile: React.FC = () => {
   const [selectedValue, setSelectedValue] = React.useState<string>(
     t('COMMON.AS_OF_TODAY')
   );
+  const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
+    useState(0);
+  const [dateRange, setDateRange] = React.useState<Date | string>('');
+  const [classId, setClassId] = React.useState('');
+  const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
   const open = Boolean(anchorEl);
   const [totalMaxScore, setTotalMaxScore] = useState('');
   const [totalScore, setTotalScore] = useState('');
@@ -181,8 +194,12 @@ const LearnerProfile: React.FC = () => {
     // Handle the date range values as needed
   };
   const menuItems = [
-    t('COMMON.LAST_SEVEN_DAYS'),
-    t('COMMON.AS_OF_TODAY'),
+    t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+      date_range: dateRange,
+    }),
+    t('DASHBOARD.AS_OF_TODAY_DATE', {
+      day_date: currentDayMonth,
+    }),
     t('COMMON.LAST_MONTH'),
     t('COMMON.LAST_SIX_MONTHS'),
     t('COMMON.CUSTOM_RANGE'),
@@ -441,6 +458,9 @@ const LearnerProfile: React.FC = () => {
 
   // all function call when page render
   useEffect(() => {
+    const class_Id = localStorage.getItem('classId') || '';
+    setClassId(class_Id);
+
     const today = new Date();
     const formatDate = (date: Date) => date.toISOString().split('T')[0];
     let toDay = formatDate(today);
@@ -646,12 +666,62 @@ const LearnerProfile: React.FC = () => {
           wordBreak: 'break-word',
           fontSize: '16px',
         }}
+        className="text-4d two-line-text"
         color={theme.palette.warning['A200']}
       >
         {data}
       </Typography>
     </Grid>
   );
+
+  //----- code for Attendance Marked out of 7 days  ------------
+  useEffect(() => {
+    const getAttendanceMarkedDays = async () => {
+      const today = new Date();
+      const todayFormattedDate = formatSelectedDate(new Date());
+      const lastSeventhDayDate = new Date(
+        today.getTime() - 6 * 24 * 60 * 60 * 1000
+      );
+      const lastSeventhDayFormattedDate = formatSelectedDate(
+        new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000)
+      );
+
+      const endDay = today.getDate();
+      const endDayMonth = today.toLocaleString('default', { month: 'long' });
+      setCurrentDayMonth(`(${endDay} ${endDayMonth})`);
+      const startDay = lastSeventhDayDate.getDate();
+      const startDayMonth = lastSeventhDayDate.toLocaleString('default', {
+        month: 'long',
+      });
+      if (startDayMonth === endDayMonth) {
+        setDateRange(`(${startDay}-${endDay} ${endDayMonth})`);
+      } else {
+        setDateRange(`(${startDay} ${startDayMonth}-${endDay} ${endDayMonth})`);
+      }
+
+      const cohortAttendanceData: cohortAttendancePercentParam = {
+        limit: 0,
+        page: 0,
+        filters: {
+          scope: 'student',
+          fromDate: lastSeventhDayFormattedDate,
+          toDate: todayFormattedDate,
+          contextId: classId,
+        },
+        facets: ['attendanceDate'],
+      };
+      const res = await getCohortAttendance(cohortAttendanceData);
+      const response = res?.data?.result?.attendanceDate;
+      if (response) {
+        setNumberOfDaysAttendanceMarked(Object.keys(response)?.length);
+      } else {
+        setNumberOfDaysAttendanceMarked(0);
+      }
+    };
+    if (classId) {
+      getAttendanceMarkedDays();
+    }
+  }, [classId, selectedValue === t('COMMON.LAST_SEVEN_DAYS')]);
 
   let contactNumberAdded = false;
   return (
@@ -686,7 +756,9 @@ const LearnerProfile: React.FC = () => {
               lineHeight={'28px'}
               color={theme.palette.warning['A200']}
             >
-              {userData?.name}
+              {userData?.name?.length > 18
+                ? `${userData?.name?.substring(0, 18)}...`
+                : userData?.name}
             </Typography>
             <Typography
               variant="h5"
@@ -793,6 +865,7 @@ const LearnerProfile: React.FC = () => {
               selectedValue={selectedValue}
               setSelectedValue={setSelectedValue}
               onDateRangeSelected={handleDateRangeSelected}
+              currentDayMonth={currentDayMonth}
             />
           </Box>
         </Box>
@@ -814,6 +887,21 @@ const LearnerProfile: React.FC = () => {
             >
               Attendance Marked : 3 out of last 7 days
             </Typography>  */}
+            {selectedValue ==
+            t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+              date_range: dateRange,
+            }) ? (
+              <Typography
+                color={theme.palette.warning['400']}
+                fontSize={'0.75rem'}
+                fontWeight={'500'}
+                // pt={'1rem'}
+              >
+                {t('ATTENDANCE.ATTENDANCE_MARKED_OUT_OF_DAYS', {
+                  count: numberOfDaysAttendanceMarked,
+                })}
+              </Typography>
+            ) : null}
             <Box
               gap={1}
               sx={{

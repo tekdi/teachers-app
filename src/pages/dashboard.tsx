@@ -390,7 +390,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (classId?.length) {
       getCohortMemberList();
     }
-  }, [classId, selectedDate]);
+  }, [classId, selectedDate, handleSaveHasRun]);
 
   const showDetailsHandle = (dayStr: string) => {
     setSelectedDate(formatSelectedDate(dayStr));

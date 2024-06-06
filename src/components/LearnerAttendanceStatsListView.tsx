@@ -6,9 +6,9 @@ import LearnerModal from './LearnerModal';
 import Link from 'next/link';
 import Loader from './Loader';
 import { getUserDetails } from '@/services/ProfileService';
-import { lowLearnerAttendanceLimit } from '../../app.config';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import useDeterminePathColor from '@/hooks/useDeterminePathColor';
 
 interface StudentsStatsListProps {
   name: string;
@@ -27,10 +27,8 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const textColor =
-    presentPercent > lowLearnerAttendanceLimit
-      ? theme.palette.success.main
-      : theme.palette.error.main;
+  const determinePathColor = useDeterminePathColor();
+  const textColor = determinePathColor(presentPercent);
 
   //   const handleStudentDetails = () => {
   //     router.push(`/student-details/${cohortId}/${userId}`);
