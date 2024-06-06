@@ -7,10 +7,17 @@ import { useTheme } from '@mui/material/styles';
 
 interface OverviewCardProps {
   label: string;
-  value: string | number;
+  value?: string | number;
+  valuePartOne?: string | number;
+  valuePartTwo?: string | number | null;
 }
 
-const OverviewCard: React.FC<OverviewCardProps> = ({ label, value }) => {
+const OverviewCard: React.FC<OverviewCardProps> = ({
+  label,
+  value,
+  valuePartOne,
+  valuePartTwo,
+}) => {
   const theme = useTheme<any>();
   //   const { t } = useTranslation();
 
@@ -34,13 +41,32 @@ const OverviewCard: React.FC<OverviewCardProps> = ({ label, value }) => {
         >
           {label}
         </Typography>
-        <Typography
-          variant="h2"
-          sx={{ color: '#1F1B13', fontSize: '16px', fontWeight: '500' }}
-          fontWeight={500}
-        >
-          {value}
-        </Typography>
+        {value ? (
+          <Typography
+            variant="h2"
+            sx={{ color: '#1F1B13', fontSize: '16px', fontWeight: '500' }}
+            fontWeight={500}
+          >
+            {value}
+          </Typography>
+        ) : (
+          <Box>
+            <Typography
+              variant="h2"
+              sx={{ color: '#1F1B13', fontSize: '16px', fontWeight: '500' }}
+              fontWeight={500}
+            >
+              {valuePartOne}
+            </Typography>
+            <Typography
+              variant="h2"
+              sx={{ color: '#1F1B13', fontSize: '16px', fontWeight: '500' }}
+              fontWeight={500}
+            >
+              {valuePartTwo}
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   );
