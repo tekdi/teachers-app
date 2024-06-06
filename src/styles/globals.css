@@ -270,6 +270,10 @@ main {
   background-color: var(--mui-palette-primary-main) !important;
 }
 
+.WeekToday {
+  background-color: var(--mui-palette-primary-main);
+}
+
 .calendar .row {
   flex-wrap: nowrap;
 }
@@ -433,7 +437,7 @@ main {
 }
 
 .today {
-  /* border: 2px solid var(--mui-palette-warning-300) !important; */
+  border: 2px solid var(--mui-palette-warning-300) !important;
 }
 
 .attendance-not-marked abbr {
