@@ -38,12 +38,15 @@ import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import Divider from '@mui/material/Divider';
 import Header from '../components/Header';
+import Image from 'next/image';
 import Link from 'next/link';
 import Loader from '../components/Loader';
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import OverviewCard from '@/components/OverviewCard';
+import ToastMessage from '@/components/ToastMessage';
 import WeekCalender from '@/components/WeekCalender';
 import { calculatePercentage } from '@/utils/attendanceStats';
+import calendar from '../assets/images/calendar.svg';
 import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { lowLearnerAttendanceLimit } from './../../app.config';
@@ -53,9 +56,6 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import ToastMessage from '@/components/ToastMessage';
-import calendar from '../assets/images/calendar.svg';
-import Image from 'next/image';
 
 // interface State extends SnackbarOrigin {
 //   openModal: boolean;
@@ -667,33 +667,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Stack
                       direction="row"
                       spacing={1}
-                      marginTop={1}
+                      // marginTop={1}
                       justifyContent={'space-between'}
+                      alignItems={'center'}
                     >
-                      <Box display={'flex'}>
+                      <Box display={'flex'} gap={'5px'} alignItems={'center'}>
                         {currentAttendance !== 'notMarked' &&
                           currentAttendance !== 'futureDate' && (
                             <>
-                              <Box
-                                width={'25px'}
-                                height={'2rem'}
-                                marginTop={'0.25rem'}
-                                margin={'5px'}
-                              >
-                                <CircularProgressbar
-                                  value={currentAttendance?.present_percentage}
-                                  background
-                                  backgroundPadding={8}
-                                  styles={buildStyles({
-                                    textColor: pathColor,
-                                    pathColor: pathColor,
-                                    trailColor: '#E6E6E6',
-                                    strokeLinecap: 'round',
-                                    backgroundColor: '#ffffff',
-                                  })}
-                                  strokeWidth={20}
-                                />
-                              </Box>
+                              <CircularProgressbar
+                                value={currentAttendance?.present_percentage}
+                                background
+                                backgroundPadding={8}
+                                styles={buildStyles({
+                                  textColor: pathColor,
+                                  pathColor: pathColor,
+                                  trailColor: '#E6E6E6',
+                                  strokeLinecap: 'round',
+                                  backgroundColor: '#ffffff',
+                                })}
+                                className="fs-24 htw-24"
+                                strokeWidth={20}
+                              />
                               <Box>
                                 <Typography
                                   // sx={{ color: theme.palette.warning['A400'] }}

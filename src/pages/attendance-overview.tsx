@@ -40,6 +40,7 @@ import OverviewCard from '@/components/OverviewCard';
 import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '@/components/SortingModal';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
+import ToastMessage from '@/components/ToastMessage';
 import UpDownButton from '@/components/UpDownButton';
 import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
@@ -49,7 +50,6 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import ToastMessage from '@/components/ToastMessage';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -199,7 +199,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               state: stateName,
             };
           });
-          
 
           setCohortsData(filteredData);
 
@@ -234,7 +233,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         setIsError(false);
       } catch (error) {
         console.error('Error fetching  cohort list:', error);
-        setIsError(true)
+        setIsError(true);
         setLoading(false);
       }
     };
@@ -431,7 +430,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       }
     } catch (error) {
       console.error('Error fetching cohort list:', error);
-      setIsError(true)
+      setIsError(true);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -897,9 +896,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
         </Box>
       )}
-       { isError &&
-             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
-          }
+      {isError && <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />}
     </Box>
   );
 };
