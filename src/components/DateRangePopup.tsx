@@ -107,6 +107,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const onApply = () => {
     if (cancelClicked) {
       toggleModal();
+      setSelectedValue('');
       setCancelClicked(false);
     } else {
       console.log('applied', selectedIndex, selectedValue);
@@ -255,10 +256,10 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                   paddingLeft: '32px',
                   backgroundColor: 'transparent',
                   color: index === 4 ? theme.palette.secondary.main : 'inherit',
-                  '&:hover': {
-                    backgroundColor: 'transparent',
-                    color: '#0D599E'
-                  },
+                  // '&:hover': {
+                  //   backgroundColor: 'transparent',
+                  //   color: '#0D599E'
+                  // },
                 }}
               >
                 {selectedIndex === index && (

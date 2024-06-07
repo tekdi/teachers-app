@@ -8,7 +8,7 @@ import Loader from './Loader';
 import { getUserDetails } from '@/services/ProfileService';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import useDeterminePathColor from '@/hooks/useDeterminePathColor';
+import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
 
 interface StudentsStatsListProps {
   name: string;
@@ -27,7 +27,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const determinePathColor = useDeterminePathColor();
+  const determinePathColor = useAttendanceRangeColor();
   const textColor = determinePathColor(presentPercent);
 
   //   const handleStudentDetails = () => {
