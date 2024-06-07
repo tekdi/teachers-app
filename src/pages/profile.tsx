@@ -712,7 +712,7 @@ const TeacherProfile = () => {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  padding: '15px 20px',
+                  padding: '15px 20px 6px',
                 }}
               >
                 <Typography
@@ -741,7 +741,7 @@ const TeacherProfile = () => {
               <Box
                 style={{
                   overflowY: 'auto',
-                  padding: '10px 20px 10px',
+                  padding: '0px 20px 10px',
                 }}
                 id="modal-modal-description"
               >
@@ -1011,7 +1011,7 @@ const TeacherProfile = () => {
               <Box
                 sx={{
                   display: 'flex',
-                  padding: '5px 20px 20px 20px',
+                  padding: '6px 20px 20px 20px',
                   justifyContent: 'center',
                 }}
               >

@@ -63,8 +63,7 @@ const LearnerModal = ({
         <Modal open={open} onClose={onClose}>
           <Box
             sx={{
-              width: '90%',
-              maxWidth: 320,
+              width: '85%',
               position: 'absolute',
               top: '50%',
               left: '50%',
@@ -73,11 +72,8 @@ const LearnerModal = ({
               borderRadius: '8px',
               zIndex: '9999',
               boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-              '@media (max-width: 768px)': {
-                width: '95%',
-              },
-              '@media (max-width: 325px)': {
-                maxWidth: 300,
+              '@media (min-width: 600px)': {
+                width: '450px',
               },
             }}
           >

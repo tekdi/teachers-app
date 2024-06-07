@@ -20,8 +20,8 @@ import { Height } from '@mui/icons-material';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import MonthCalender from './MonthCalender';
 import WestIcon from '@mui/icons-material/West';
-import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 const modalStyle = {
   position: 'absolute',
@@ -36,8 +36,7 @@ const modalStyle = {
 };
 
 const calenderModalStyle = {
-  width: '300px', // Adjust width as needed
-  maxWidth: 300, // Maximum width for responsiveness
+  width: '85%',
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -45,11 +44,11 @@ const calenderModalStyle = {
   backgroundColor: 'white',
   padding: '12px 0 12px 0',
   borderRadius: '8px',
-  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-
+  // boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+  // height: '526px',
   // Responsive styles
-  '@media (min-width: 768px)': {
-    width: '70%', // Adjust width for smaller screens
+  '@media (min-width: 600px)': {
+    width: '450px',
   },
 };
 
@@ -100,8 +99,8 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const handleCancelClicked = () => {
     toggleCalendarModal();
     setCancelClicked(true);
-    setDisplayCalendarFromDate(getDayAndMonthName(getTodayDate()))
-    setDisplayCalendarToDate(getDayAndMonthName(getTodayDate()))
+    setDisplayCalendarFromDate(getDayAndMonthName(getTodayDate()));
+    setDisplayCalendarToDate(getDayAndMonthName(getTodayDate()));
   };
 
   const onApply = () => {
@@ -244,7 +243,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
             </Grid>
           </Box>
           <Divider />
-          <MenuList className="customRange" sx={{ margin: '0 9px'}} dense>
+          <MenuList className="customRange" sx={{ margin: '0 9px' }} dense>
             {menuItems.map((item, index) => (
               <MenuItem
                 key={index}
@@ -256,10 +255,10 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                   paddingLeft: '32px',
                   backgroundColor: 'transparent',
                   color: index === 4 ? theme.palette.secondary.main : 'inherit',
-                  // '&:hover': {
-                  //   backgroundColor: 'transparent',
-                  //   color: '#0D599E'
-                  // },
+                  '&:hover': {
+                    backgroundColor: 'transparent',
+                    color: '#0D599E',
+                  },
                 }}
               >
                 {selectedIndex === index && (
@@ -279,7 +278,12 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           </MenuList>
           <Divider />
           <Box className="w-100 p-20">
-            <Button className="w-100" sx={{boxShadow:"none"}} variant="contained" onClick={onApply}>
+            <Button
+              className="w-100"
+              sx={{ boxShadow: 'none' }}
+              variant="contained"
+              onClick={onApply}
+            >
               {t('COMMON.APPLY')}
             </Button>
           </Box>

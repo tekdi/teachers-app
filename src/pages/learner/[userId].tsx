@@ -495,16 +495,15 @@ const LearnerProfile: React.FC = () => {
   const style = {
     position: 'absolute',
     top: '50%',
-    maxWidth: 350, // Maximum width for responsiveness
+    '@media (min-width: 600px)': {
+      width: '450px',
+    },
     left: '50%',
+    width: '85%',
     transform: 'translate(-50%, -50%)',
-    width: isDesktop ? 700 : 400,
     bgcolor: theme.palette.warning.A400,
     height: '526px',
     textAlign: 'center',
-    '@media (max-width: 768px)': {
-      width: '95%', // Adjust width for smaller screen
-    },
   };
 
   const [formData, setFormData] = useState<{
@@ -1208,7 +1207,7 @@ const LearnerProfile: React.FC = () => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              padding: '15px 20px',
+              padding: '15px 20px 5px',
             }}
           >
             <Typography
@@ -1290,7 +1289,7 @@ const LearnerProfile: React.FC = () => {
               </Box>
             </Box> */}
             <TextField
-              sx={{ marginTop: '20px' }}
+              sx={{ marginTop: '8px' }}
               type="text"
               fullWidth
               name="name"
@@ -1339,9 +1338,7 @@ const LearnerProfile: React.FC = () => {
                         validateFields();
                       }}
                       error={isError}
-                      helperText={
-                        isError && t('PROFILE.ENTER_CHARACTER')
-                      }
+                      helperText={isError && t('PROFILE.ENTER_CHARACTER')}
                     />
                   ) : field.type === 'numeric' ? (
                     <TextField
@@ -1364,9 +1361,7 @@ const LearnerProfile: React.FC = () => {
                         }
                       }}
                       error={isError}
-                      helperText={
-                        isError && t('PROFILE.ENTER_NUMBER')}
-                      
+                      helperText={isError && t('PROFILE.ENTER_NUMBER')}
                     />
                   ) : field.type === 'checkbox' ? (
                     <Box marginTop={3}>
@@ -1489,7 +1484,7 @@ const LearnerProfile: React.FC = () => {
               display: 'flex',
               padding: '5px 20px 20px 20px',
               justifyContent: 'center',
-              mt: 2,
+              mt: 0.5,
             }}
           >
             <Button

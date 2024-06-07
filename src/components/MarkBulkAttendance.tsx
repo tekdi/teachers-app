@@ -5,7 +5,11 @@ import {
   attendanceStatusList,
   bulkAttendance,
 } from '@/services/AttendanceService';
-import { getDayMonthYearFormat, shortDateFormat, toPascalCase } from '../utils/Helper';
+import {
+  getDayMonthYearFormat,
+  shortDateFormat,
+  toPascalCase,
+} from '../utils/Helper';
 
 import { AttendanceStatusListProps } from '../utils/Interfaces';
 import AttendanceStatusListView from './AttendanceStatusListView';
@@ -60,12 +64,15 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 300,
+    width: '85%',
     bgcolor: theme.palette.warning['A400'],
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
     Height: '526px',
+    '@media (min-width: 600px)': {
+      width: '450px',
+    },
   };
 
   const updateBulkAttendanceStatus = (arr: any[]) => {
