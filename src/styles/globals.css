@@ -658,3 +658,8 @@ main {
 .selected-range {
   background-color: var(--mui-palette-Skeleton-bg) !important;
 }
+.flex-center {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}

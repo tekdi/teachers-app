@@ -713,11 +713,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     ))}
                     valuePartOne={
                       lowAttendanceLearnerList.length > 2
-                        ? `${truncate(lowAttendanceLearnerList[0], 50)}, ${truncate(lowAttendanceLearnerList[1], 10)}`
+                        ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                         : lowAttendanceLearnerList.length === 2
-                          ? `${truncate(lowAttendanceLearnerList[0], 10)}, ${truncate(lowAttendanceLearnerList[1], 10)}`
+                          ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                           : lowAttendanceLearnerList.length === 1
-                            ? `${truncate(lowAttendanceLearnerList[0], 10)}`
+                            ? `${lowAttendanceLearnerList[0]}`
                             : Array.isArray(lowAttendanceLearnerList) &&
                                 lowAttendanceLearnerList.length === 0
                               ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
@@ -725,7 +725,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     }
                     valuePartTwo={
                       lowAttendanceLearnerList.length > 2
-                      ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}` : null
+                        ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
+                        : null
                     }
                   />
                 </Grid>

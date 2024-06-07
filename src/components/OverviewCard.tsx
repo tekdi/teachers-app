@@ -28,9 +28,16 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
       borderRadius="1rem"
       alignItems="left"
       bgcolor="white"
-      sx={{ padding: '1rem' }}
       minHeight={'6.2rem'}
+      p={2}
       overflow={'hidden'}
+      className="flex-center"
+      sx={{
+        minHeight: '6.2rem',
+        '@media (max-width: 600px)': {
+          minHeight: '7.4rem',
+        },
+      }}
     >
       <Box>
         <Typography
@@ -50,21 +57,33 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
             {value}
           </Typography>
         ) : (
-          <Box>
-            <Typography
-              variant="h2"
-              sx={{ color: '#1F1B13', fontSize: '16px', fontWeight: '500' }}
-              fontWeight={500}
+          <Box sx={{ marginTop: '4px' }}>
+            <span
+              className="two-line-text"
+              style={{
+                color: theme.palette.warning['300'],
+                fontSize: '16px',
+                fontWeight: '500',
+                wordBreak: 'break-word',
+                lineHeight: '22px',
+                display: 'inline',
+              }}
             >
               {valuePartOne}
-            </Typography>
-            <Typography
-              variant="h2"
-              sx={{ color: '#1F1B13', fontSize: '16px', fontWeight: '500' }}
-              fontWeight={500}
+            </span>
+
+            <span
+              style={{
+                color: theme.palette.warning['300'],
+                fontSize: '12px',
+                fontWeight: '400',
+                lineHeight: '22px',
+                marginLeft: '3px',
+                display: 'inline',
+              }}
             >
               {valuePartTwo}
-            </Typography>
+            </span>
           </Box>
         )}
       </Box>
