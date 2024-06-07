@@ -8,7 +8,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { formatToShowDateMonth, shortDateFormat } from '@/utils/Helper';
 
 import { modifyAttendanceLimit } from '../../app.config';
-import useDeterminePathColor from '../hooks/useDeterminePathColor';
+import useAttendanceRangeColor from '../hooks/useAttendanceRangeColor';
 import { useTranslation } from 'next-i18next';
 
 interface AttendanceStatusProps {
@@ -45,7 +45,7 @@ function AttendanceStatus({
   onUpdate,
 }: AttendanceStatusProps) {
   const { t } = useTranslation();
-  const determinePathColor = useDeterminePathColor();
+  const determinePathColor = useAttendanceRangeColor();
   const selectedDate = shortDateFormat(onDateSelection);
   const dateString = shortDateFormat(onDateSelection);
   const attendanceData = formattedAttendanceData?.[dateString];

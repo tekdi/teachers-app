@@ -4,7 +4,7 @@ import { CohortAttendanceListViewProps } from '@/utils/Interfaces';
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import useDeterminePathColor from '@/hooks/useDeterminePathColor';
+import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
 
 const CohortAttendanceListView: React.FC<CohortAttendanceListViewProps> = ({
   cohortName,
@@ -12,7 +12,7 @@ const CohortAttendanceListView: React.FC<CohortAttendanceListViewProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const determinePathColor = useDeterminePathColor();
+  const determinePathColor = useAttendanceRangeColor();
   const textColor = determinePathColor(attendancePercent);
 
   return (
