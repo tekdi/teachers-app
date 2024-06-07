@@ -196,7 +196,9 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     } else {
       const formattedDate = formatDate(newDate as Date);
       setDate(newDate);
-      setSelectedDates([newDate, newDate]);
+      if (typeof newDate === 'object') {
+        setSelectedDates([newDate, newDate]);
+      }
       onDateChange(newDate as Date | Date[] | null);
     }
   };
