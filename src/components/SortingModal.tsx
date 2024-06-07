@@ -11,6 +11,7 @@ import {
 
 import Divider from '@mui/material/Divider';
 import ModalComponent from './Modal';
+import { Padding } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
@@ -101,11 +102,9 @@ const SortingModal: React.FC<sortCardProps> = ({
       <Divider
         style={{
           backgroundColor: theme.palette.warning['400'],
-          marginBottom: '10px',
-          marginTop: '15px',
         }}
       />
-      <Grid container spacing={2}>
+      <Grid container sx={{ padding: '10px 20px 0' }} spacing={2}>
         {routeName == '/attendance-overview' ? (
           <>
             <Grid item xs={12}>

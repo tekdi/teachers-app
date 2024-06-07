@@ -62,26 +62,26 @@ const ModalComponent: React.FC<ModalProps> = ({
     <Modal open={open} onClose={onClose}>
       <Box
         sx={{
-          width: '90%', // Adjust width as needed
-          maxWidth: 300, // Maximum width for responsiveness
           position: 'absolute',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          backgroundColor: 'white',
-          padding: '20px',
-          borderRadius: '8px',
-          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+          width: '85%',
+          bgcolor: 'white',
+          boxShadow: 24,
           // height: '526px',
-
-          // Responsive styles
-          '@media (max-width: 768px)': {
-            width: '95%', // Adjust width for smaller screens
-            padding: '15px', // Adjust padding for smaller screens
+          '@media (min-width: 600px)': {
+            width: '450px',
           },
+          borderRadius: '16px',
         }}
       >
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box
+          p={'20px 20px 15px'}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Typography variant="h4" fontSize="16px" fontWeight="500" m={0}>
             {heading}
           </Typography>
@@ -95,7 +95,7 @@ const ModalComponent: React.FC<ModalProps> = ({
         </Box>
         <Typography variant="h6">{SubHeading}</Typography>
         <Box mt={2}>{children}</Box>
-        <Box mt={2} display="flex" justifyContent="flex-end">
+        <Box mt={2} p={'0 20px 20px'} display="flex" justifyContent="flex-end">
           <ButtonFunctional
             handleClickButton={handleApplySort}
             buttonName={t('COMMON.APPLY')}
