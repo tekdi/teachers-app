@@ -38,7 +38,12 @@ import {
 import Menu, { MenuProps } from '@mui/material/Menu';
 import React, { useEffect, useState } from 'react';
 import { alpha, styled, useTheme } from '@mui/material/styles';
+import {
+  classesMissedAttendancePercentList,
+  getCohortAttendance,
+} from '@/services/AttendanceService';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
+import { formatSelectedDate, getTodayDate } from '@/utils/Helper';
 
 import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
@@ -51,16 +56,11 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 // import Header from '../components/Header';
 // import { formatDate, getTodayDate } from '../utils/Helper';
 import StudentStatsCard from '@/components/StudentStatsCard';
-import {
-  classesMissedAttendancePercentList,
-  getCohortAttendance,
-} from '@/services/AttendanceService';
+import ToastMessage from '@/components/ToastMessage';
 import { format } from 'date-fns';
-import { formatSelectedDate, getTodayDate } from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import ToastMessage from '@/components/ToastMessage';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -495,18 +495,16 @@ const LearnerProfile: React.FC = () => {
   const style = {
     position: 'absolute',
     top: '50%',
-    maxWidth: 300, // Maximum width for responsiveness
+    maxWidth: 350, // Maximum width for responsiveness
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
     bgcolor: theme.palette.warning.A400,
-    p: 4,
+    height: '526px',
     textAlign: 'center',
     '@media (max-width: 768px)': {
-      width: '95%', // Adjust width for smaller screens
-      padding: '15px', // Adjust padding for smaller screens
+      width: '95%', // Adjust width for smaller screen
     },
-    height: '75vh',
   };
 
   const [formData, setFormData] = useState<{
@@ -1210,7 +1208,7 @@ const LearnerProfile: React.FC = () => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              mb: 2,
+              padding: '15px 20px',
             }}
           >
             <Typography
@@ -1234,9 +1232,11 @@ const LearnerProfile: React.FC = () => {
               <CloseIcon cursor="pointer" />
             </IconButton>
           </Box>
+          <Divider />
           <Box
             style={{
               overflowY: 'auto',
+              padding: '10px 20px 10px',
             }}
             id="modal-modal-description"
           >
@@ -1483,7 +1483,15 @@ const LearnerProfile: React.FC = () => {
             })}
             <Box></Box>
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+          <Divider />
+          <Box
+            sx={{
+              display: 'flex',
+              padding: '5px 20px 20px 20px',
+              justifyContent: 'center',
+              mt: 2,
+            }}
+          >
             <Button
               sx={{
                 minWidth: '100%',

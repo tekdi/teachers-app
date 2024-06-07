@@ -1,6 +1,7 @@
 import {
   Box,
   Checkbox,
+  Divider,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -89,17 +90,15 @@ const TeacherProfile = () => {
   const style = {
     position: 'absolute',
     top: '50%',
-    maxWidth: 300, // Maximum width for responsiveness
+    maxWidth: 350, // Maximum width for responsiveness
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isDesktop ? 700 : 400,
     bgcolor: theme.palette.warning.A400,
-    p: 4,
     height: '526px',
     textAlign: 'center',
     '@media (max-width: 768px)': {
       width: '95%', // Adjust width for smaller screens
-      padding: '15px', // Adjust padding for smaller screens
     },
   };
 
@@ -713,7 +712,7 @@ const TeacherProfile = () => {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  mb: 2,
+                  padding: '15px 20px',
                 }}
               >
                 <Typography
@@ -738,9 +737,11 @@ const TeacherProfile = () => {
                   <CloseIcon cursor="pointer" />
                 </IconButton>
               </Box>
+              <Divider />
               <Box
                 style={{
                   overflowY: 'auto',
+                  padding: '10px 20px 10px',
                 }}
                 id="modal-modal-description"
               >
@@ -1006,7 +1007,14 @@ const TeacherProfile = () => {
                   })}
                 <Box></Box>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <Divider />
+              <Box
+                sx={{
+                  display: 'flex',
+                  padding: '5px 20px 20px 20px',
+                  justifyContent: 'center',
+                }}
+              >
                 <Button
                   sx={{
                     minWidth: '100%',
