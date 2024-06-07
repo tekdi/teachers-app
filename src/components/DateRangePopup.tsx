@@ -106,6 +106,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const onApply = () => {
     if (cancelClicked) {
       toggleModal();
+      setSelectedValue('');
       setCancelClicked(false);
     } else {
       console.log('applied', selectedIndex, selectedValue);
