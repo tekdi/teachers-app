@@ -712,7 +712,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       />
                     ))}
                     valuePartOne={
-                      lowAttendanceLearnerList.length > 2
+                      Array.isArray(lowAttendanceLearnerList) && lowAttendanceLearnerList.length > 2
                         ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                         : lowAttendanceLearnerList.length === 2
                           ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
@@ -724,7 +724,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                               : t('ATTENDANCE.N/A')
                     }
                     valuePartTwo={
-                      lowAttendanceLearnerList.length > 2
+                      Array.isArray(lowAttendanceLearnerList) && lowAttendanceLearnerList.length > 2
                         ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                         : null
                     }

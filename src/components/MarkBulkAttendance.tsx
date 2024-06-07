@@ -109,7 +109,9 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
       const allAttendance = updatedAttendanceList.some(
         (user) => user.attendance === ''
       );
-      setIsAllAttendanceMarked(!allAttendance);
+      if (updatedAttendanceList?.length) {
+        setIsAllAttendanceMarked(!allAttendance);
+      }
       if (!allAttendance) {
         setShowUpdateButton(true);
       }

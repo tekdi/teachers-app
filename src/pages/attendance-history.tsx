@@ -166,7 +166,7 @@ const UserAttendanceHistory = () => {
         }
       } catch (error) {
         console.error('Error fetching  cohort list:', error);
-        setIsError(true)
+        setIsError(true);
         setLoading(false);
       }
     };
@@ -329,11 +329,13 @@ const UserAttendanceHistory = () => {
             };
             userAttendanceStatusList();
           }
+        } else {
+          setDisplayStudentList([]);
         }
       }
     } catch (error) {
       console.error('Error fetching cohort list:', error);
-      setIsError(true)
+      setIsError(true);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -861,20 +863,19 @@ const UserAttendanceHistory = () => {
               </Box>
             )}
           </Box>
-
-          <MarkBulkAttendance
-            open={open}
-            onClose={handleClose}
-            classId={classId}
-            selectedDate={selectedDate}
-            onSaveSuccess={() => setHandleSaveHasRun(!handleSaveHasRun)}
-          />
+          {open && (
+            <MarkBulkAttendance
+              open={open}
+              onClose={handleClose}
+              classId={classId}
+              selectedDate={selectedDate}
+              onSaveSuccess={() => setHandleSaveHasRun(!handleSaveHasRun)}
+            />
+          )}
         </Box>
       </Box>
       {displayStudentList.length >= 1 ? <UpDownButton /> : null}
-      { isError &&
-             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
-          }
+      {isError && <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />}
     </Box>
   );
 };
