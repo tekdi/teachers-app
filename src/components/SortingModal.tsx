@@ -101,7 +101,7 @@ const SortingModal: React.FC<sortCardProps> = ({
     >
       <Divider
         style={{
-          backgroundColor: theme.palette.warning['400'],
+          backgroundColor: theme.palette.warning.A100,
         }}
       />
       <Grid container sx={{ padding: '10px 20px 0' }} spacing={2}>
@@ -253,7 +253,7 @@ const SortingModal: React.FC<sortCardProps> = ({
       </Grid>
       <Divider
         style={{
-          backgroundColor: theme.palette.warning['400'],
+          backgroundColor: theme.palette.warning.A100,
           marginBottom: '10px',
           marginTop: '15px',
         }}
