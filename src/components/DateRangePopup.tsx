@@ -233,12 +233,12 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           <Box>
             <Grid sx={{ padding: '20px 20px 5px' }} container>
               <Grid item xs={6}>
-                <Typography textAlign={'left'}>
+                <Typography className="text4D" textAlign={'left'}>
                   {t('COMMON.DATE_RANGE')}
                 </Typography>
               </Grid>
               <Grid item xs={6} textAlign={'right'}>
-                <CloseIcon onClick={toggleModal} />
+                <CloseIcon className="text4D" onClick={toggleModal} />
               </Grid>
             </Grid>
           </Box>
@@ -254,10 +254,9 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                   alignItems: 'center',
                   paddingLeft: '32px',
                   backgroundColor: 'transparent',
-                  color: index === 4 ? theme.palette.secondary.main : 'inherit',
+                  color: index === 4 ? '#4D4639' : 'inherit',
                   '&:hover': {
                     backgroundColor: 'transparent',
-                    color: '#0D599E',
                   },
                 }}
               >
@@ -268,8 +267,9 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                       left: '8px',
                       minWidth: 'auto',
                     }}
+                    className="text4D"
                   >
-                    <Check fontSize="small" />
+                    <Check className="text4D" fontSize="small" />
                   </ListItemIcon>
                 )}
                 {item}
