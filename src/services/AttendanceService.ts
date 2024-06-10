@@ -97,7 +97,7 @@ export const getLearnerAttendanceStatus = async ({
   return postAttendanceList({
     limit,
     page,
-    filters: { contextId, scope, toDate, fromDate, userId },
+    filters: { contextId, scope, toDate, fromDate, userId }
   });
 };
 
@@ -106,12 +106,14 @@ export const getCohortAttendance = async ({
   page,
   filters: { scope, fromDate, toDate, contextId },
   facets,
+  sort
 }: cohortAttendancePercentParam): Promise<any> => {
   return postAttendanceList({
     limit,
     page,
     filters: { scope, fromDate, toDate, contextId },
     facets,
+    sort
   });
 };
 
@@ -132,10 +134,11 @@ export const getAllCenterAttendance = async ({
 export const classesMissedAttendancePercentList = async ({
   filters,
   facets,
+  sort
 }: any): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance/list`;
   try {
-    const response = await post(apiUrl, { filters, facets });
+    const response = await post(apiUrl, { filters, facets, sort });
     return response?.data;
   } catch (error) {
     console.error('Error in fetching attendance list', error);
