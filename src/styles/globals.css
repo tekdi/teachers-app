@@ -500,7 +500,7 @@ main {
 .react-calendar *:after {
   text-decoration: none;
   color: var(--mui-palette-warning-300);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
 }
 .react-calendar__navigation button {
@@ -665,4 +665,7 @@ main {
 }
 .text4D {
   color: #4d4639 !important;
+}
+.selected-start-end {
+  background-color: var(--mui-palette-primary-main) !important;
 }
