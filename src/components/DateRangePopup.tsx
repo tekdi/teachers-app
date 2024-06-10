@@ -28,11 +28,14 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 300,
+  width: '85%',
   bgcolor: 'background.paper',
   // border: '2px solid #000',
   boxShadow: 24,
   // p: 4,
+  '@media (min-width: 600px)': {
+    width: '450px',
+  },
 };
 
 const calenderModalStyle = {

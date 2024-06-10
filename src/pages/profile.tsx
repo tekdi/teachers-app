@@ -90,15 +90,14 @@ const TeacherProfile = () => {
   const style = {
     position: 'absolute',
     top: '50%',
-    maxWidth: 350, // Maximum width for responsiveness
+    width: '85%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: isDesktop ? 700 : 400,
     bgcolor: theme.palette.warning.A400,
     height: '526px',
     textAlign: 'center',
-    '@media (max-width: 768px)': {
-      width: '95%', // Adjust width for smaller screens
+    '@media (min-width: 600px)': {
+      width: '450px',
     },
   };
 
