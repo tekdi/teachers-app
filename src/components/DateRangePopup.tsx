@@ -14,7 +14,7 @@ import {
 import React, { useState } from 'react';
 import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
 
-import Check from '@mui/icons-material/Check';
+import checkMark from '../assets/images/checkMark.svg';
 import CloseIcon from '@mui/icons-material/Close';
 import { Height } from '@mui/icons-material';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -22,6 +22,7 @@ import MonthCalender from './MonthCalender';
 import WestIcon from '@mui/icons-material/West';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
 
 const modalStyle = {
   position: 'absolute',
@@ -64,7 +65,7 @@ interface CustomSelectModalProps {
   selectedValue: string;
   setSelectedValue: (value: string) => void;
   onDateRangeSelected: any;
-  currentDayMonth?: string;
+  dateRange?: string | Date| undefined ;
 }
 
 const DateRangePopup: React.FC<CustomSelectModalProps> = ({
@@ -72,12 +73,12 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   selectedValue,
   setSelectedValue,
   onDateRangeSelected,
-  currentDayMonth,
+  dateRange,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCalendarModalOpen, setIsCalenderModalOpen] = useState(false);
   const [dateRangeArray, setDateRangeArray] = useState<any[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(1);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [displayCalendarFromDate, setDisplayCalendarFromDate] = React.useState(
     getDayAndMonthName(getTodayDate())
   );
@@ -210,12 +211,14 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           inputProps={{ readOnly: true }}
         >
           <MenuItem value="" disabled>
-            {t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })}
+            {t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+            date_range: dateRange})}
           </MenuItem>
           <MenuItem value={selectedValue}>
             {selectedValue
               ? selectedValue
-              : t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })}
+              :  t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+                date_range: dateRange})}
           </MenuItem>
         </Select>
       </FormControl>
@@ -257,7 +260,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                   alignItems: 'center',
                   paddingLeft: '32px',
                   backgroundColor: 'transparent',
-                  color: index === 4 ? '#4D4639' : 'inherit',
+                  color: index === 4 ? theme.palette.secondary.main : '#4D4639',
                   '&:hover': {
                     backgroundColor: 'transparent',
                   },
@@ -268,11 +271,17 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                     sx={{
                       position: 'absolute',
                       left: '8px',
-                      minWidth: 'auto',
+                      minWidth: 'auto'
                     }}
                     className="text4D"
                   >
-                    <Check className="text4D" fontSize="small" />
+                   <Image
+                      height={10}
+                      width={12}
+                      src={checkMark}
+                      alt="logo"
+                      style={{ cursor: 'pointer' }}
+                    />
                   </ListItemIcon>
                 )}
                 {item}
