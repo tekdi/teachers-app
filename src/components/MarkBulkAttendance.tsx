@@ -66,7 +66,6 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     transform: 'translate(-50%, -50%)',
     width: '85%',
     bgcolor: theme.palette.warning['A400'],
-    border: '2px solid #000',
     boxShadow: 24,
     p: 4,
     Height: '526px',

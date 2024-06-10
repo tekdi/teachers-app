@@ -842,7 +842,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Typography
                       sx={{
                         color: '#7C766F',
-                        fontSize: '11px !important',
+                        fontSize: '12px !important',
                         fontWeight: '500',
                       }}
                       variant="h2"
@@ -861,7 +861,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 )}
               </Box>
               <Box display={'flex'} className="card_overview" mx={'1rem'}>
-                {classId && classId !== 'all' && cohortsData  && lowAttendanceLearnerList ? (
+                {classId &&
+                classId !== 'all' &&
+                cohortsData &&
+                lowAttendanceLearnerList ? (
                   <Grid container spacing={2}>
                     <Grid item xs={4}>
                       <OverviewCard
@@ -883,7 +886,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           />
                         ))}
                         valuePartOne={
-                          Array.isArray(lowAttendanceLearnerList) && lowAttendanceLearnerList.length > 2
+                          Array.isArray(lowAttendanceLearnerList) &&
+                          lowAttendanceLearnerList.length > 2
                             ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                             : lowAttendanceLearnerList.length === 2
                               ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
@@ -897,7 +901,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   : t('ATTENDANCE.N/A')
                         }
                         valuePartTwo={
-                          Array.isArray(lowAttendanceLearnerList) && lowAttendanceLearnerList.length > 2
+                          Array.isArray(lowAttendanceLearnerList) &&
+                          lowAttendanceLearnerList.length > 2
                             ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                             : null
                         }
