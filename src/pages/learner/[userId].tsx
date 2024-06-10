@@ -78,7 +78,7 @@ interface QuestionValues {
 const LearnerProfile: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-
+  const today = new Date();
   const router = useRouter();
   const { userId }: any = router.query;
 
@@ -111,19 +111,19 @@ const LearnerProfile: React.FC = () => {
     present_percentage: any;
     // Add other properties as needed
   }
-  const [isFromDate, setIsFromDate] = useState(getTodayDate());
+  const [isFromDate, setIsFromDate] = useState(formatSelectedDate(
+    new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000)
+  ));
   const [isToDate, setIsToDate] = useState(getTodayDate());
   const [submittedOn, setSubmitedOn] = useState();
   const [overallAttendance, setOverallAttendance] =
     useState<OverallAttendance>();
-  const [selectedValue, setSelectedValue] = React.useState<string>(
-    t('COMMON.AS_OF_TODAY')
-  );
+    const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
+  const [selectedValue, setSelectedValue] = React.useState<any>('');
   const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
     useState(0);
   const [dateRange, setDateRange] = React.useState<Date | string>('');
   const [classId, setClassId] = React.useState('');
-  const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
   const open = Boolean(anchorEl);
   const [totalMaxScore, setTotalMaxScore] = useState('');
   const [totalScore, setTotalScore] = useState('');
@@ -192,7 +192,7 @@ const LearnerProfile: React.FC = () => {
   const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
     setIsFromDate(fromDate);
     setIsToDate(toDate);
-    getAttendaceData(fromDate, toDate);
+    getAttendanceData(fromDate, toDate);
     // Handle the date range values as needed
   };
   const menuItems = [
@@ -207,7 +207,11 @@ const LearnerProfile: React.FC = () => {
     t('COMMON.CUSTOM_RANGE'),
   ];
 
-  const getAttendaceData = async (fromDates: any, toDates: any) => {
+  useEffect(() => {
+    setSelectedValue(currentDayMonth);
+  }, []);
+
+  const getAttendanceData = async (fromDates: any, toDates: any) => {
     let fromDate = fromDates;
     let toDate = toDates;
     let filters = {
@@ -463,11 +467,11 @@ const LearnerProfile: React.FC = () => {
     const class_Id = localStorage.getItem('classId') || '';
     setClassId(class_Id);
 
-    const today = new Date();
+    // const today = new Date();
     const formatDate = (date: Date) => date.toISOString().split('T')[0];
     let toDay = formatDate(today);
 
-    getAttendaceData(toDay, toDay);
+    getAttendanceData(isFromDate, toDay);
     fetchUserDetails();
     // testReportDetails();
     getDoIdForAssesmentReport(test, subject);
@@ -659,7 +663,7 @@ const LearnerProfile: React.FC = () => {
   //----- code for Attendance Marked out of 7 days  ------------
   useEffect(() => {
     const getAttendanceMarkedDays = async () => {
-      const today = new Date();
+      // const today = new Date();
       const todayFormattedDate = formatSelectedDate(new Date());
       const lastSeventhDayDate = new Date(
         today.getTime() - 6 * 24 * 60 * 60 * 1000
@@ -691,6 +695,7 @@ const LearnerProfile: React.FC = () => {
           contextId: classId,
         },
         facets: ['attendanceDate'],
+        sort: ['present_percentage', 'asc']
       };
       const res = await getCohortAttendance(cohortAttendanceData);
       const response = res?.data?.result?.attendanceDate;
@@ -703,7 +708,9 @@ const LearnerProfile: React.FC = () => {
     if (classId) {
       getAttendanceMarkedDays();
     }
-  }, [classId, selectedValue === t('COMMON.LAST_SEVEN_DAYS')]);
+  }, [classId, selectedValue === t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+    date_range: dateRange,
+  })]);
 
   //-------------validation for edit fields ---------------------------
 
@@ -893,7 +900,7 @@ const LearnerProfile: React.FC = () => {
               selectedValue={selectedValue}
               setSelectedValue={setSelectedValue}
               onDateRangeSelected={handleDateRangeSelected}
-              currentDayMonth={currentDayMonth}
+              dateRange={dateRange}
             />
           </Box>
         </Box>
@@ -915,10 +922,10 @@ const LearnerProfile: React.FC = () => {
             >
               Attendance Marked : 3 out of last 7 days
             </Typography>  */}
-            {selectedValue ==
-            t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-              date_range: dateRange,
-            }) ? (
+            {(selectedValue ===
+          t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+            date_range: dateRange,
+          }) || selectedValue === "")? (
               <Typography
                 color={theme.palette.warning['400']}
                 fontSize={'0.75rem'}
@@ -942,7 +949,7 @@ const LearnerProfile: React.FC = () => {
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <StudentStatsCard
-                    label1={t('COMMON.ATTENDANCE') + '%'}
+                    label1={t('COMMON.ATTENDANCE') + ' (%)'}
                     value1={`${Math.round(overallAttendance?.present_percentage || 0)}%`}
                     label2={false}
                     value2=""
