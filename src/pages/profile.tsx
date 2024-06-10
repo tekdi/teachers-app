@@ -534,8 +534,7 @@ const TeacherProfile = () => {
                 flex: '1',
                 textAlign: 'center',
                 color: theme.palette.warning.A200,
-                border: `1px solid ${theme.palette.warning.A200}`,
-                borderColor: theme.palette.warning['A100'],
+                border: `1px solid #4D4639`,
               }}
               onClick={handleOpen}
             >

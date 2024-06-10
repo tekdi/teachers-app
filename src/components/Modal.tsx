@@ -94,8 +94,13 @@ const ModalComponent: React.FC<ModalProps> = ({
           />
         </Box>
         <Typography variant="h6">{SubHeading}</Typography>
-        <Box mt={2}>{children}</Box>
-        <Box mt={2} p={'0 20px 20px'} display="flex" justifyContent="flex-end">
+        <Box mt={0.6}>{children}</Box>
+        <Box
+          mt={2}
+          p={'4px 20px 20px'}
+          display="flex"
+          justifyContent="flex-end"
+        >
           <ButtonFunctional
             handleClickButton={handleApplySort}
             buttonName={t('COMMON.APPLY')}

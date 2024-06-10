@@ -106,7 +106,7 @@ const LearnerModal = ({
               />
               <Box sx={{ padding: ' 25px 20px' }}>
                 <Box
-                  style={{ border: '1px solid gray', borderRadius: '16px' }}
+                  style={{ border: '1px solid #D0C5B4', borderRadius: '16px' }}
                   p={2}
                 >
                   <Grid container spacing={2}>
