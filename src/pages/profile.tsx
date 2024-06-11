@@ -311,8 +311,7 @@ const TeacherProfile = () => {
   }, [formData, customFieldsData]);
 
   const handleFieldChange = (fieldId: string, value: string) => {
-    // remove blank space at start of text
-    const sanitizedValue = value.replace(/^\s+/, '');
+    const sanitizedValue = value.replace(/^\s+/, '').replace(/\s+/g, ' ');
 
     setFormData((prevState) => ({
       ...prevState,

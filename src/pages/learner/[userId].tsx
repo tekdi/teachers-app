@@ -538,7 +538,7 @@ const LearnerProfile: React.FC = () => {
   }, [userData, customFieldsData]);
 
   const handleFieldChange = (fieldId: string, value: string) => {
-    const sanitizedValue = value.replace(/^\s+/, '');
+    const sanitizedValue = value.replace(/^\s+/, '').replace(/\s+/g, ' ');
 
     setFormData((prevState) => ({
       ...prevState,
