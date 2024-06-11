@@ -61,13 +61,16 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   const [customFieldsData, setCustomFieldsData] = React.useState<
     updateCustomField[]
   >([]);
+  const [contactNumber, setContactNumber] = useState<any>('');
   const [userName, setUserName] = React.useState('');
   const [isModalOpenLearner, setIsModalOpenLearner] = useState(false);
   const [loading, setLoading] = useState(false);
   // const userId = '12345'; // Replace with the actual user ID you want to pass
 
   const handleOpenModalLearner = (userId: string) => {
-    if (!showLink) { return } 
+    if (!showLink) {
+      return;
+    }
     fetchUserDetails(userId);
     setIsModalOpenLearner(true);
   };
@@ -88,10 +91,9 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             const userData = data?.userData;
             // setUsersData(userData);
             setUserName(userData?.name);
-
+            setContactNumber(userData?.mobile);
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
-              console.log('customDataFields', customDataFields);
               setCustomFieldsData(customDataFields);
             }
             setLoading(false);
@@ -132,6 +134,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             onClose={handleCloseModalLearner}
             data={filteredFields}
             userName={userName}
+            contactNumber={contactNumber}
           />
         )
       )}
