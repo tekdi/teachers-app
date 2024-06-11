@@ -151,7 +151,8 @@
     "AT_REQUIRED_LETTER": "कम से कम एक अक्षर या अंडरस्कोर आवश्यक है",
     "ENTER_NUMBER": "कृपया एक नंबर दर्ज करें",
     "ENTER_CHARACTER": "कृपया कम से कम एक अक्षर दर्ज करें",
-    "CONTACT_NUMBER": "संपर्क नंबर"
+    "CONTACT_NUMBER": "संपर्क नंबर",
+    "SELECT_OPTION": "विकल्प चुनें"
   },
 
   "FIELDS": {

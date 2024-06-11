@@ -152,7 +152,8 @@
     "AT_REQUIRED_LETTER": "At least one letter or underscore is required",
     "ENTER_NUMBER": "Please enter a number",
     "ENTER_CHARACTER": "Please enter at least one character",
-    "CONTACT_NUMBER": "Contact Number"
+    "CONTACT_NUMBER": "Contact Number",
+    "SELECT_OPTION": "Select Option"
   },
 
   "FIELDS": {

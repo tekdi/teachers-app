@@ -152,7 +152,8 @@
     "AT_REQUIRED_LETTER": "किमान एक अक्षर किंवा अंडरस्कोर आवश्यक आहे",
     "ENTER_NUMBER": "कृपया क्रमांक प्रविष्ट करा",
     "ENTER_CHARACTER": "कृपया किमान एक वर्ण प्रविष्ट करा",
-    "CONTACT_NUMBER": "संपर्क क्रमांक"
+    "CONTACT_NUMBER": "संपर्क क्रमांक",
+    "SELECT_OPTION": "पर्याय निवडा"
   },
   "FIELDS": {
     "DESIGNATION": "पद",

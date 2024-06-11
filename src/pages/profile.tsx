@@ -5,6 +5,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   Grid,
   IconButton,
   InputLabel,
@@ -317,6 +318,8 @@ const TeacherProfile = () => {
         newErrors[field.fieldId] = !value.trim();
       } else if (field.type === 'numeric') {
         newErrors[field.fieldId] = !/^\d{1,4}$/.test(value);
+      } else if (field.type === 'dropdown' || field.type === 'drop_down') {
+        newErrors[field.fieldId] = !value.trim();
       }
     });
 
@@ -1031,6 +1034,13 @@ const TeacherProfile = () => {
                                     </MenuItem>
                                   ))}
                                 </Select>
+                                {errors[field.fieldId] && (
+                                  <FormHelperText
+                                    sx={{ color: theme.palette.error.main }}
+                                  >
+                                    {t('PROFILE.SELECT_OPTION')}
+                                  </FormHelperText>
+                                )}
                               </FormControl>
                             </Box>
                           ) : field.type === 'radio' ||
