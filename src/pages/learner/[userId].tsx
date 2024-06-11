@@ -16,6 +16,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   Grid,
   IconButton,
   InputLabel,
@@ -111,14 +112,14 @@ const LearnerProfile: React.FC = () => {
     present_percentage: any;
     // Add other properties as needed
   }
-  const [isFromDate, setIsFromDate] = useState(formatSelectedDate(
-    new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000)
-  ));
+  const [isFromDate, setIsFromDate] = useState(
+    formatSelectedDate(new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000))
+  );
   const [isToDate, setIsToDate] = useState(getTodayDate());
   const [submittedOn, setSubmitedOn] = useState();
   const [overallAttendance, setOverallAttendance] =
     useState<OverallAttendance>();
-    const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
+  const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
   const [selectedValue, setSelectedValue] = React.useState<any>('');
   const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
     useState(0);
@@ -129,7 +130,9 @@ const LearnerProfile: React.FC = () => {
   const [totalScore, setTotalScore] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [hasErrors, setHasErrors] = useState(false);
-
+  const [hasInputChanged, setHasInputChanged] = React.useState<boolean>(false);
+  const [isValidationTriggered, setIsValidationTriggered] =
+    React.useState<boolean>(false);
   const [unitName, setUnitName] = useState('');
   const [blockName, setBlockName] = useState('');
   const [uniqueDoId, setUniqueDoId] = useState('');
@@ -495,7 +498,13 @@ const LearnerProfile: React.FC = () => {
   const [openEdit, setOpenEdit] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const handleOpen = () => setOpenEdit(true);
-  const handleClose = () => setOpenEdit(false);
+  const handleClose = () => {
+    setOpenEdit(false);
+    initialFormData();
+    setHasInputChanged(false);
+    setHasErrors(false);
+    setErrors({});
+  };
   const style = {
     position: 'absolute',
     top: '50%',
@@ -524,7 +533,7 @@ const LearnerProfile: React.FC = () => {
     })),
   });
 
-  useEffect(() => {
+  const initialFormData = () => {
     setFormData({
       userData: {
         name: userName || '',
@@ -535,15 +544,26 @@ const LearnerProfile: React.FC = () => {
         value: field.value,
       })),
     });
+  };
+
+  useEffect(() => {
+    initialFormData();
   }, [userData, customFieldsData]);
 
   const handleFieldChange = (fieldId: string, value: string) => {
+    const sanitizedValue = value.replace(/^\s+/, '').replace(/\s+/g, ' ');
+
     setFormData((prevState) => ({
       ...prevState,
       customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId ? { ...field, value: [value] } : field
+        field.fieldId === fieldId
+          ? { ...field, value: [sanitizedValue] }
+          : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleCheckboxChange = (
@@ -566,6 +586,9 @@ const LearnerProfile: React.FC = () => {
           : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleDropdownChange = (fieldId: string, value: string) => {
@@ -575,6 +598,9 @@ const LearnerProfile: React.FC = () => {
         field.fieldId === fieldId ? { ...field, value: [value] } : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleRadioChange = (fieldId: string, value: string) => {
@@ -584,6 +610,9 @@ const LearnerProfile: React.FC = () => {
         field.fieldId === fieldId ? { ...field, value: [value] } : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleSubmit = async (
@@ -695,7 +724,7 @@ const LearnerProfile: React.FC = () => {
           contextId: classId,
         },
         facets: ['attendanceDate'],
-        sort: ['present_percentage', 'asc']
+        sort: ['present_percentage', 'asc'],
       };
       const res = await getCohortAttendance(cohortAttendanceData);
       const response = res?.data?.result?.attendanceDate;
@@ -708,9 +737,13 @@ const LearnerProfile: React.FC = () => {
     if (classId) {
       getAttendanceMarkedDays();
     }
-  }, [classId, selectedValue === t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-    date_range: dateRange,
-  })]);
+  }, [
+    classId,
+    selectedValue ===
+      t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+        date_range: dateRange,
+      }),
+  ]);
 
   //-------------validation for edit fields ---------------------------
 
@@ -725,9 +758,11 @@ const LearnerProfile: React.FC = () => {
           ?.value[0] || '';
 
       if (field.type === 'text') {
-        newErrors[field.fieldId] = !value.trim();
+        newErrors[field.fieldId] = !value.trim() || /^\s/.test(value);
       } else if (field.type === 'numeric') {
         newErrors[field.fieldId] = !/^\d{1,4}$/.test(value);
+      } else if (field.type === 'dropdown' || field.type === 'drop_down') {
+        newErrors[field.fieldId] = !value.trim();
       }
     });
 
@@ -739,7 +774,10 @@ const LearnerProfile: React.FC = () => {
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const sanitizedValue = value.replace(/[^a-zA-Z_ ]/g, '');
+    const sanitizedValue = value
+      .replace(/[^a-zA-Z_ ]/g, '')
+      .replace(/^\s+/, '')
+      .replace(/\s+/g, ' ');
 
     setFormData((prevData) => ({
       ...prevData,
@@ -750,11 +788,15 @@ const LearnerProfile: React.FC = () => {
     }));
 
     // setHasErrors(!sanitizedValue.trim());
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
     validateFields();
   };
 
   useEffect(() => {
-    validateFields();
+    if (hasInputChanged) {
+      validateFields();
+    }
   }, [formData, customFieldsData]);
 
   // flag for contactNumberAdded in dynamic list fo fields in lerner basic details
@@ -922,10 +964,10 @@ const LearnerProfile: React.FC = () => {
             >
               Attendance Marked : 3 out of last 7 days
             </Typography>  */}
-            {(selectedValue ===
-          t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-            date_range: dateRange,
-          }) || selectedValue === "")? (
+            {selectedValue ===
+              t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+                date_range: dateRange,
+              }) || selectedValue === '' ? (
               <Typography
                 color={theme.palette.warning['400']}
                 fontSize={'0.75rem'}
@@ -1359,6 +1401,20 @@ const LearnerProfile: React.FC = () => {
                       }
                       variant="outlined"
                       value={fieldValue}
+                      onKeyDown={(e) => {
+                        // Allow only numeric keys, Backspace, and Delete
+                        if (
+                          !(
+                            (
+                              /[0-9]/.test(e.key) ||
+                              e.key === 'Backspace' ||
+                              e.key === 'Delete'
+                            ) // Allow decimal point if needed
+                          )
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       onChange={(e) => {
                         const inputValue = e.target.value;
                         if (/^\d{0,4}$/.test(inputValue)) {
@@ -1441,6 +1497,13 @@ const LearnerProfile: React.FC = () => {
                             </MenuItem>
                           ))}
                         </Select>
+                        {errors[field.fieldId] && (
+                          <FormHelperText
+                            sx={{ color: theme.palette.error.main }}
+                          >
+                            {t('PROFILE.SELECT_OPTION')}
+                          </FormHelperText>
+                        )}
                       </FormControl>
                     </Box>
                   ) : field.type === 'radio' || field.type === 'Radio' ? (
@@ -1501,7 +1564,7 @@ const LearnerProfile: React.FC = () => {
               }}
               onClick={handleSubmit}
               variant="contained"
-              disabled={hasErrors}
+              disabled={!hasInputChanged || !isValidationTriggered || hasErrors}
             >
               {t('COMMON.SAVE')}
             </Button>
