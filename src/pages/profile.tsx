@@ -268,7 +268,9 @@ const TeacherProfile = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const sanitizedValue = value.replace(/[^a-zA-Z_ ]/g, '');
+    const sanitizedValue = value
+      .replace(/[^a-zA-Z_ ]/g, '')
+      .replace(/^\s+/, '');
 
     setFormData((prevData) => ({
       ...prevData,
@@ -309,10 +311,15 @@ const TeacherProfile = () => {
   }, [formData, customFieldsData]);
 
   const handleFieldChange = (fieldId: string, value: string) => {
+    // remove blank space at start of text
+    const sanitizedValue = value.replace(/^\s+/, '');
+
     setFormData((prevState) => ({
       ...prevState,
       customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId ? { ...field, value: [value] } : field
+        field.fieldId === fieldId
+          ? { ...field, value: [sanitizedValue] }
+          : field
       ),
     }));
   };

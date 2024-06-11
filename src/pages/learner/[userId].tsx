@@ -111,14 +111,14 @@ const LearnerProfile: React.FC = () => {
     present_percentage: any;
     // Add other properties as needed
   }
-  const [isFromDate, setIsFromDate] = useState(formatSelectedDate(
-    new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000)
-  ));
+  const [isFromDate, setIsFromDate] = useState(
+    formatSelectedDate(new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000))
+  );
   const [isToDate, setIsToDate] = useState(getTodayDate());
   const [submittedOn, setSubmitedOn] = useState();
   const [overallAttendance, setOverallAttendance] =
     useState<OverallAttendance>();
-    const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
+  const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
   const [selectedValue, setSelectedValue] = React.useState<any>('');
   const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
     useState(0);
@@ -538,10 +538,14 @@ const LearnerProfile: React.FC = () => {
   }, [userData, customFieldsData]);
 
   const handleFieldChange = (fieldId: string, value: string) => {
+    const sanitizedValue = value.replace(/^\s+/, '');
+
     setFormData((prevState) => ({
       ...prevState,
       customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId ? { ...field, value: [value] } : field
+        field.fieldId === fieldId
+          ? { ...field, value: [sanitizedValue] }
+          : field
       ),
     }));
   };
@@ -695,7 +699,7 @@ const LearnerProfile: React.FC = () => {
           contextId: classId,
         },
         facets: ['attendanceDate'],
-        sort: ['present_percentage', 'asc']
+        sort: ['present_percentage', 'asc'],
       };
       const res = await getCohortAttendance(cohortAttendanceData);
       const response = res?.data?.result?.attendanceDate;
@@ -708,9 +712,13 @@ const LearnerProfile: React.FC = () => {
     if (classId) {
       getAttendanceMarkedDays();
     }
-  }, [classId, selectedValue === t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-    date_range: dateRange,
-  })]);
+  }, [
+    classId,
+    selectedValue ===
+      t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+        date_range: dateRange,
+      }),
+  ]);
 
   //-------------validation for edit fields ---------------------------
 
@@ -725,7 +733,7 @@ const LearnerProfile: React.FC = () => {
           ?.value[0] || '';
 
       if (field.type === 'text') {
-        newErrors[field.fieldId] = !value.trim();
+        newErrors[field.fieldId] = !value.trim() || /^\s/.test(value);
       } else if (field.type === 'numeric') {
         newErrors[field.fieldId] = !/^\d{1,4}$/.test(value);
       }
@@ -739,7 +747,9 @@ const LearnerProfile: React.FC = () => {
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const sanitizedValue = value.replace(/[^a-zA-Z_ ]/g, '');
+    const sanitizedValue = value
+      .replace(/[^a-zA-Z_ ]/g, '')
+      .replace(/^\s+/, '');
 
     setFormData((prevData) => ({
       ...prevData,
@@ -922,10 +932,10 @@ const LearnerProfile: React.FC = () => {
             >
               Attendance Marked : 3 out of last 7 days
             </Typography>  */}
-            {(selectedValue ===
-          t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-            date_range: dateRange,
-          }) || selectedValue === "")? (
+            {selectedValue ===
+              t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+                date_range: dateRange,
+              }) || selectedValue === '' ? (
               <Typography
                 color={theme.palette.warning['400']}
                 fontSize={'0.75rem'}
