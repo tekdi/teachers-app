@@ -495,7 +495,10 @@ const LearnerProfile: React.FC = () => {
   const [openEdit, setOpenEdit] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const handleOpen = () => setOpenEdit(true);
-  const handleClose = () => setOpenEdit(false);
+  const handleClose = () => {
+    setOpenEdit(false);
+    initialFormData();
+  };
   const style = {
     position: 'absolute',
     top: '50%',
@@ -524,7 +527,7 @@ const LearnerProfile: React.FC = () => {
     })),
   });
 
-  useEffect(() => {
+  const initialFormData = () => {
     setFormData({
       userData: {
         name: userName || '',
@@ -535,6 +538,10 @@ const LearnerProfile: React.FC = () => {
         value: field.value,
       })),
     });
+  };
+
+  useEffect(() => {
+    initialFormData();
   }, [userData, customFieldsData]);
 
   const handleFieldChange = (fieldId: string, value: string) => {

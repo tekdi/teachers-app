@@ -64,7 +64,10 @@ const TeacherProfile = () => {
   const theme = useTheme<any>();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    initialFormData();
+  };
   const [userData, setUserData] = useState<any | null>(null);
   const [userName, setUserName] = useState<any | null>(null);
   const [updatedCustomFields, setUpdatedCustomFields] = useState<any>([]);
@@ -251,17 +254,21 @@ const TeacherProfile = () => {
     })),
   });
 
-  useEffect(() => {
+  const initialFormData = () => {
     setFormData({
       userData: {
         name: userName || '',
       },
-      customFields: customFieldsData.map((field) => ({
+      customFields: customFieldsData?.map((field) => ({
         fieldId: field.fieldId,
         type: field.type,
         value: field.value ? field.value : '',
       })),
     });
+  };
+
+  useEffect(() => {
+    initialFormData();
   }, [userData, customFieldsData]);
 
   const [hasErrors, setHasErrors] = useState(false);
