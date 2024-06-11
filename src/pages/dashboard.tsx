@@ -286,6 +286,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   contextId: classId,
                 },
                 facets: ['contextId'],
+                sort: ['present_percentage', 'asc']
               };
               const res = await getCohortAttendance(cohortAttendanceData);
               const response = res?.data?.result;
