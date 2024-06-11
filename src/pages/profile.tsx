@@ -870,10 +870,8 @@ const TeacherProfile = () => {
                               const inputValue = e.target.value;
                               if (/^\d{0,4}$/.test(inputValue)) {
                                 handleFieldChange(field.fieldId, inputValue);
-                              } else {
-                                handleFieldChange(field.fieldId, ''); // Clear the field value if it doesn't meet the validation criteria
+                                validateFields();
                               }
-                              validateFields();
                             }}
                             error={isError}
                             helperText={isError && t('PROFILE.ENTER_NUMBER')}
