@@ -7,7 +7,7 @@ import {
   useTheme,
 } from '@mui/material/styles';
 import * as React from 'react';
-
+import { useEffect } from 'react';
 import { Poppins } from 'next/font/google';
 
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -18,6 +18,7 @@ import IconButton from '@mui/material/IconButton';
 import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import customTheme from '../styles/customStyles';
+import {telemetryFactory} from '../utils/telemetry'
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -49,6 +50,9 @@ export function DarkTheme() {
 }
 
 function App({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    telemetryFactory.init();
+  }, []);
   function ModeToggle() {
     const { mode, setMode } = useColorScheme();
     return (
