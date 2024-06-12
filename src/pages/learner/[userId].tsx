@@ -751,8 +751,7 @@ const LearnerProfile: React.FC = () => {
     const newErrors: { [key: string]: boolean } = {};
 
     const fieldsToValidate = [...customFieldsData];
-
-    learnerDetailsByOrder.forEach((field) => {
+    filteredSortedForEdit?.forEach((field) => {
       const value =
         formData?.customFields?.find((f) => f.fieldId === field.fieldId)
           ?.value[0] || '';
@@ -761,8 +760,8 @@ const LearnerProfile: React.FC = () => {
         newErrors[field.fieldId] = !value.trim() || /^\s/.test(value);
       } else if (field.type === 'numeric') {
         newErrors[field.fieldId] = !/^\d{1,4}$/.test(value);
-      } else if (field.type === 'dropdown' || field.type === 'drop_down') {
-        newErrors[field.fieldId] = !value.trim();
+      } else if (field.type === 'drop_down') {
+        newErrors[field.fieldId] = !value.trim() || value === '';
       }
     });
 
@@ -1359,7 +1358,7 @@ const LearnerProfile: React.FC = () => {
               const fieldValue =
                 formData?.customFields?.find((f) => f.fieldId === field.fieldId)
                   ?.value[0] || '';
-              const isError = errors[field.fieldId];
+              const isError: any = errors[field.fieldId];
 
               return (
                 <Grid item xs={12} key={field.fieldId}>
@@ -1476,6 +1475,7 @@ const LearnerProfile: React.FC = () => {
                             : field.label}
                         </InputLabel>
                         <Select
+                          error={isError}
                           labelId={`select-label-${field.fieldId}`}
                           id={`select-${field.fieldId}`}
                           value={fieldValue}
@@ -1497,7 +1497,7 @@ const LearnerProfile: React.FC = () => {
                             </MenuItem>
                           ))}
                         </Select>
-                        {errors[field.fieldId] && (
+                        {isError && (
                           <FormHelperText
                             sx={{ color: theme.palette.error.main }}
                           >
