@@ -1,5 +1,7 @@
-import { generateUUID } from './Helper';
+import { generateUUID, getDeviceId } from './Helper';
+import FingerprintJS from 'fingerprintjs2';
 
+let hostURL = process.env.NEXT_PUBLIC_TELEMETRY_URL
 let CsTelemetryModule;
 let EkTelemetry;
 let jQuery;
@@ -14,25 +16,32 @@ if (typeof window !== 'undefined') {
 const telemetryConfig = {
   apislug: '',
   pdata: {
-    id: 'pratham.portal',
+    id: 'pratham-teacher-app',
     pid: '0.0.1',
-    ver: 'pratham.portal'
+    ver: 'pratham-teacher-app'
   },
-  env: 'pratham.portal',
+  env: 'pratham-teacher-app',
   channel: '',
   did: 'did',
   authtoken: '',
-  studentid: 'student-id',
-  uid: (typeof window !== 'undefined' && localStorage.getItem('id')) || 'id',
-  sid: 'session-id',
+  studentid: (typeof window !== 'undefined' && localStorage.getItem('userId')) || 'Anonymous',
+  uid: (typeof window !== 'undefined' && localStorage.getItem('id')) || 'Anonymous',
+  sid: generateUUID(),
   batchsize: 1,
   mode: '',
-  host: 'https://qa.prathamteacherapp.tekdinext.com', //TODO: Change this host and endpoint properly
+  host: hostURL, //TODO: Change this host and endpoint properly
   endpoint: '/telemetry/v1/telemetry',
   tags: []
 };
 
+if (typeof window !== 'undefined') {
+  getDeviceId().then((deviceId) => {
+    telemetryConfig.did = deviceId;
+  });
+}
+
 export const telemetryFactory = {
+  
   init: () => {
     if (typeof window !== 'undefined') {
       console.log('EkTelemetry', EkTelemetry);
@@ -111,9 +120,9 @@ export const telemetryFactory = {
       return {
         type: edata?.type,
         eid: generateUUID(),
-        $set: { id: localStorage.getItem('id') || 'testID' },
+        $set: { id: localStorage.getItem('id') || 'Anonymous' },
         actor: {
-          id: localStorage.getItem('id') || 'testID',
+          id: localStorage.getItem('id') || 'Anonymous',
           type: 'Teacher'
         },
         context: {
@@ -129,9 +138,9 @@ export const telemetryFactory = {
       return {
         type: edata?.type,
         eid: generateUUID(),
-        $set: { id: localStorage.getItem('id') },
+        $set: { id: localStorage.getItem('id') || 'Anonymous' },
         actor: {
-          id: localStorage.getItem('id'),
+          id: localStorage.getItem('id') || 'Anonymous',
           type: 'Teacher'
         },
         context: {
