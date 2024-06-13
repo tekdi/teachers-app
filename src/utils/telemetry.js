@@ -34,7 +34,6 @@ const telemetryConfig = {
   tags: []
 };
 
-
 if (typeof window !== 'undefined') {
   getDeviceId().then((deviceId) => {
     telemetryConfig.did = deviceId;
