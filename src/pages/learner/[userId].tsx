@@ -38,6 +38,7 @@ import {
 } from '@/utils/Interfaces';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import React, { useEffect, useState } from 'react';
+import ReactGA from 'react-ga4';
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import {
   classesMissedAttendancePercentList,
@@ -62,6 +63,7 @@ import { format } from 'date-fns';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import { logEvent } from '@/utils/googleAnalytics';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -329,12 +331,14 @@ const LearnerProfile: React.FC = () => {
   const handleChangeTest = (event: SelectChangeEvent) => {
     const test = event.target.value;
     setTest(test);
+    ReactGA.event("pre-post-test-selected", { testTypeSelected: test});
     getDoIdForAssesmentReport(test, subject);
   };
 
   const handleChangeSubject = (event: SelectChangeEvent) => {
     const subject = event.target.value;
     setSubject(event.target.value);
+    ReactGA.event("select-subject-learner-details-page", { subjectSelected: subject});
     getDoIdForAssesmentReport(test, subject);
   };
 
@@ -497,8 +501,19 @@ const LearnerProfile: React.FC = () => {
   const [contactNumber, setContactNumber] = useState<any | null>(null);
   const [openEdit, setOpenEdit] = React.useState(false);
   const [loading, setLoading] = useState(false);
-  const handleOpen = () => setOpenEdit(true);
+  const handleOpen = () => {setOpenEdit(true)
+    logEvent({
+      action: 'edit-learner-profile-modal-open',
+      category: 'Learner Detail Page',
+      label: 'Edit Learner Profile Modal Open',
+    });
+  };
   const handleClose = () => {
+    logEvent({
+      action: 'edit-learner-profile-modal-close',
+      category: 'Learner Detail Page',
+      label: 'Edit Learner Profile Modal Close',
+    });
     setOpenEdit(false);
     initialFormData();
     setHasInputChanged(false);
@@ -619,6 +634,11 @@ const LearnerProfile: React.FC = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
+    logEvent({
+      action: 'save-button-clicked-edit-learner-profile',
+      category: 'Learner Detail Page',
+      label: 'Learner Profile Save Button Clicked',
+    });
     setLoading(true);
     const user_id = userId;
     const data = {
@@ -637,8 +657,10 @@ const LearnerProfile: React.FC = () => {
     try {
       if (userId) {
         const response = await editEditUser(user_id, userDetails);
+        ReactGA.event("edit-learner-profile-successful", { userId: userId});
 
         if (response.responseCode !== 200 || response.params.err) {
+          ReactGA.event("edit-learner-profile-failed", { userId: userId});
           throw new Error(
             response.params.errmsg ||
               'An error occurred while updating the user.'
@@ -809,7 +831,13 @@ const LearnerProfile: React.FC = () => {
 
       <Grid container spacing={2} alignItems="flex-start" padding={'20px 18px'}>
         <Grid item>
-          <Box onClick={() => window.history.back()}>
+          <Box onClick={() => {
+            window.history.back()
+            logEvent({
+              action: 'back-button-clicked-learner-detail-page',
+              category: 'Learner Detail Page',
+              label: 'Back Button Clicked',
+            });}}>
             <ArrowBackIcon
               sx={{
                 color: (theme.palette.warning as any)['A200'],
@@ -1182,7 +1210,7 @@ const LearnerProfile: React.FC = () => {
                   onChange={handleChangeSubject}
                 >
                   <MenuItem value={'English'}>{t('PROFILE.ENGLISH')}</MenuItem>
-                  <MenuItem value={'Math'}>{t('PROFILE.MATH')}</MenuItem>
+                  <MenuItem value={'Hindi'}>{t('PROFILE.HINDI')}</MenuItem>
                 </Select>
               </FormControl>
             </Box>

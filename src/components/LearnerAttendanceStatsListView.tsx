@@ -1,5 +1,6 @@
 import { Box, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
+import ReactGA from 'react-ga4';
 import { UserData, updateCustomField } from '@/utils/Interfaces';
 
 import LearnerModal from './LearnerModal';
@@ -130,7 +131,9 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
             <Grid item xs={6} textAlign={'left'}>
               <Link className="word-break" href={''}>
                 <Typography
-                  onClick={() => handleOpenModalLearner(userId!)}
+                  onClick={() => {handleOpenModalLearner(userId!)
+                    ReactGA.event("learner-details-link-clicked", { userId: userId});
+                  }}
                   sx={{
                     textAlign: 'left',
                     fontSize: '14px',
