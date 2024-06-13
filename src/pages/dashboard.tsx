@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import React, { useEffect, useState } from 'react';
+import ReactGA from 'react-ga4';
 // import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import {
   classesMissedAttendancePercentList,
@@ -56,6 +57,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { logEvent } from '@/utils/googleAnalytics';
 
 // interface State extends SnackbarOrigin {
 //   openModal: boolean;
@@ -398,10 +400,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setShowDetails(true);
   };
 
-  const handleModalToggle = () => setOpen(!open);
+  const handleModalToggle = () => {setOpen(!open)
+    logEvent({
+      action: 'mark/modify-attendance-button-clicked-dashboard',
+      category: 'Dashboard Page',
+      label: 'Mark/ Modify Attendance',
+    })};
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
+    ReactGA.event("cohort-selection-dashboard", { selectedCohortID: event.target.value });
     localStorage.setItem('classId', event.target.value);
     setHandleSaveHasRun(!handleSaveHasRun);
   };
@@ -470,6 +478,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const viewAttendanceHistory = () => {
     if (classId !== 'all') {
       router.push('/attendance-history');
+      ReactGA.event("month-name-clicked", { selectedCohortID: classId });
     }
   };
 
@@ -500,6 +509,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const truncate = (str: string, length: number) => {
     if (str.length <= length) return str;
     return str.slice(0, length) + '...';
+  };
+
+  const handleMoreDetailsClicked = () => {
+    logEvent({
+      action: 'more-details-button-clicked',
+      category: 'Dashboard Page',
+      label: 'More Details Link Clicked',
+    });
   };
 
   return (
@@ -834,6 +851,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             color: theme.palette.secondary.main,
                             fontWeight: '500',
                           }}
+                          onClick={handleMoreDetailsClicked}
                         >
                           {t('DASHBOARD.MORE_DETAILS')}
                           <ArrowForwardSharpIcon sx={{ height: '18px' }} />

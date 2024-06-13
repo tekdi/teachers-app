@@ -12,6 +12,7 @@ import {
   useStepContext,
 } from '@mui/material';
 import React, { useState } from 'react';
+import ReactGA from 'react-ga4';
 import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
 
 import checkMark from '../assets/images/checkMark.svg';
@@ -86,8 +87,15 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     getDayAndMonthName(getTodayDate())
   );
   const [cancelClicked, setCancelClicked] = React.useState(false);
+  const [appliedOption, setAppliedOption] = React.useState<string>('');
+  const [appliedIndex, setAppliedIndex] = React.useState<number | null>(0);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
+  const handleModalClose = () =>{
+    setIsModalOpen(false)
+    setSelectedValue(appliedOption)
+    setSelectedIndex(appliedIndex)
+  }
   const toggleCalendarModal = () =>
     setIsCalenderModalOpen(!isCalendarModalOpen);
   const { t } = useTranslation();
@@ -113,10 +121,13 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       setSelectedValue('');
       setCancelClicked(false);
     } else {
-      console.log('applied', selectedIndex, selectedValue);
+      // console.log('applied', selectedIndex, selectedValue);
+      setAppliedOption(selectedValue)
+      setAppliedIndex(selectedIndex)
+      ReactGA.event("date-range-pop-up-clicked", { dateRangeType: selectedValue});
       const values = getDateRange(selectedIndex);
       const { toDate, fromDate } = values;
-      console.log(toDate, fromDate);
+      // console.log(toDate, fromDate);
       onDateRangeSelected({ fromDate, toDate });
       toggleModal();
     }
@@ -225,7 +236,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
 
       <Modal
         open={isModalOpen}
-        onClose={toggleModal}
+        onClose={handleModalClose}
         aria-labelledby="edit-profile-modal"
         aria-describedby="edit-profile-description"
       >
@@ -244,7 +255,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                 </Typography>
               </Grid>
               <Grid item xs={6} textAlign={'right'}>
-                <CloseIcon className="text4D" onClick={toggleModal} />
+                <CloseIcon className="text4D" onClick={handleModalClose} />
               </Grid>
             </Grid>
           </Box>
