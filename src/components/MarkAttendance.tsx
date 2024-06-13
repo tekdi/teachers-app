@@ -50,9 +50,13 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
   const { t } = useTranslation();
 
   const [updatedStatus, setUpdatedStatus] = React.useState(currentStatus);
+
   useEffect(() => {
-    setUpdatedStatus(currentStatus);
-  }, [currentStatus]);
+    if (isOpen) {
+      setUpdatedStatus(currentStatus);
+    }
+  }, [currentStatus, isOpen]);
+
   const theme = useTheme<any>();
   const [openMarkUpdateAttendance, setOpenMarkUpdateAttendance] =
     React.useState(false);
@@ -71,7 +75,6 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
   const { vertical, horizontal, openModal } = modal;
 
   const submitUpdateAttendance = async () => {
-    console.log(updatedStatus);
     try {
       const learnerId = localStorage.getItem('learnerId');
       const classId = localStorage.getItem('classId');
@@ -98,41 +101,9 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
     setModal({ ...newState, openModal: true });
   };
 
-  // const submitClearAttendance = () => {
-  // setStatus(ATTENDANCE_ENUM.NOT_MARKED);
-  // handleClose();
-  // handleMarkClearAttendanceModal();
-  // };
-
-  // const submitAttendance = (newState: SnackbarOrigin) => () => {
-  //   handleSubmit(date, status);
-  //   //  setOpenMarkUpdateAttendance(!openMarkUpdateAttendance);
-  //   setModal({ ...newState, openModal: true });
-  //   setTimeout(() => {
-  //     handleSnackbarClose();
-  //   }, SNACKBAR_AUTO_HIDE_DURATION);
-  // };
-
-  // const submitConfirmAttendance = (newState: SnackbarOrigin) => () => {
-  //   // setOpenMarkClearAttendance(!openMarkClearAttendance);
-  //   handleMarkUpdateAttendanceModal();
-  //   handleSubmit(date, status);
-
-  //   setModal({ ...newState, openModal: true });
-  //   setTimeout(() => {
-  //     handleSnackbarClose();
-  //   }, SNACKBAR_AUTO_HIDE_DURATION);
-  // };
-
   const handleSnackbarClose = () => {
     setModal({ ...modal, openModal: false });
   };
-
-  // const handleClear = () => {
-  //   if (status !== ATTENDANCE_ENUM.NOT_MARKED) {
-  //     setStatus(ATTENDANCE_ENUM.NOT_MARKED);
-  //   }
-  // };
 
   const getButtonComponent = (
     value: string,
@@ -141,7 +112,6 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
     text: string
   ) => {
     // setStatus(currentStatus);
-
     return (
       <Box
         display="flex"
@@ -249,16 +219,7 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
           <Button
             variant="contained"
             onClick={() => {
-              // if (currentStatus === ATTENDANCE_ENUM.NOT_MARKED) {
-              //   {
-              //     submitAttendance({
-              //       vertical: 'bottom',
-              //       horizontal: 'center',
-              //     })();
-              //   }
-              // } else {
               submitUpdateAttendance();
-              // }
             }}
             disabled={
               updatedStatus === ATTENDANCE_ENUM.NOT_MARKED ||
