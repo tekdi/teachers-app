@@ -59,6 +59,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const { push } = useRouter();
+  const today = new Date();
   const [classId, setClassId] = React.useState('');
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
@@ -70,7 +71,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [searchWord, setSearchWord] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
   const [learnerData, setLearnerData] = React.useState<Array<any>>([]);
-  const [isFromDate, setIsFromDate] = useState(getTodayDate());
+  const [isFromDate, setIsFromDate] = useState(formatSelectedDate(
+    new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000)
+  ));
   const [isToDate, setIsToDate] = useState(getTodayDate());
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
@@ -125,7 +128,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   useEffect(() => {
     const getAttendanceMarkedDays = async () => {
-      const today = new Date();
+      // const today = new Date();
       const todayFormattedDate = formatSelectedDate(new Date());
       const lastSeventhDayDate = new Date(
         today.getTime() - 6 * 24 * 60 * 60 * 1000
@@ -156,6 +159,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           contextId: classId,
         },
         facets: ['attendanceDate'],
+        sort: ['present_percentage', 'asc']
       };
       const res = await getCohortAttendance(cohortAttendanceData);
       const response = res?.data?.result?.attendanceDate;
@@ -168,7 +172,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     if (classId) {
       getAttendanceMarkedDays();
     }
-  }, [classId, selectedValue === t('COMMON.LAST_SEVEN_DAYS')]);
+  }, [classId, selectedValue === t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+    date_range: dateRange,
+  })]);
 
   // API call to get center list
   useEffect(() => {
@@ -279,7 +285,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             const response = await classesMissedAttendancePercentList({
               filters,
               facets: ['userId'],
-              sort: ['absent_percentage', 'asc'],
+              sort: ['present_percentage', 'asc'],
             });
             let resp = response?.data?.result?.userId;
             if (resp) {
@@ -338,6 +344,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 contextId: classId,
               },
               facets: ['contextId'],
+              sort: ['present_percentage', 'asc']
             };
             const res = await getCohortAttendance(cohortAttendanceData);
             const response = res?.data?.result;
@@ -672,12 +679,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             selectedValue={selectedValue}
             setSelectedValue={setSelectedValue}
             onDateRangeSelected={handleDateRangeSelected}
-            currentDayMonth={currentDayMonth}
+            dateRange={dateRange}
           />
-          {selectedValue ==
+          {(selectedValue ===
           t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
             date_range: dateRange,
-          }) ? (
+          }) || selectedValue === "") ? (
             <Typography
               color={theme.palette.warning['400']}
               fontSize={'0.75rem'}
@@ -724,7 +731,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                               : t('ATTENDANCE.N/A')
                     }
                     valuePartTwo={
-                      Array.isArray(lowAttendanceLearnerList) && lowAttendanceLearnerList.length > 2
+                      Array.isArray(lowAttendanceLearnerList) && 
+                      lowAttendanceLearnerList.length > 2
                         ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                         : null
                     }

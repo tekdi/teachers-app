@@ -38,6 +38,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   const [customFieldsData, setCustomFieldsData] = React.useState<
     updateCustomField[]
   >([]);
+  const [contactNumber, setContactNumber] = useState<any>('');
   const [userName, setUserName] = React.useState('');
   const [isModalOpenLearner, setIsModalOpenLearner] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -64,10 +65,11 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
             const userData = data?.userData;
             setUserData(userData);
             setUserName(userData?.name);
-
+            setContactNumber(userData?.mobile);
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
+
               setLoading(false);
             }
           } else {
@@ -107,6 +109,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           onClose={handleCloseModalLearner}
           data={filteredFields}
           userName={userName}
+          contactNumber={contactNumber}
         />
       )}
       <Stack>

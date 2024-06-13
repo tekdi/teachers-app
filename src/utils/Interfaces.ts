@@ -187,6 +187,7 @@ export interface cohortAttendancePercentParam {
     contextId: string;
   };
   facets: Array<string>;
+  sort?: Array<string>;
 }
 export interface gerDoIdServiceParam {
   filters: {
