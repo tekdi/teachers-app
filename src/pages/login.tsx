@@ -26,6 +26,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -130,6 +131,30 @@ const LoginPage = () => {
         }
         setLoading(false);
         setShowToastMessage(false);
+        const telemetryInteract = {
+          context: {
+            env: "sign-in",
+            cdata: [],
+          },
+          edata: {
+            id: "login-success",
+            type: "CLICK",
+            subtype: "",
+            pageid: "sign-in",
+            uid: "id",
+    
+            studentid: localStorage.getItem('userId'),
+    
+            userName: "userName",
+    
+            grade: "grade",
+    
+            medium: "medium",
+    
+            board: "board",
+          },
+        };
+        telemetryFactory.interact(telemetryInteract);
         router.push('/dashboard');
       } catch (error: any) {
         setLoading(false);
