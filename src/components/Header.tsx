@@ -16,6 +16,7 @@ import Image from 'next/image';
 import logoLight from '../../public/images/logo-light.png';
 import menuIcon from '../assets/images/menuIcon.svg';
 import accountIcon from './../assets/images/account.svg';
+import { logEvent } from '@/utils/googleAnalytics';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -69,10 +70,20 @@ const Header: React.FC = () => {
   const handleProfileClick = () => {
     if (pathname !== '/profile') {
       router.push('/profile');
+      logEvent({
+        action: 'my-profile-clicked-header',
+        category: 'Dashboard',
+        label: 'Profile Clicked',
+      });
     }
   };
   const handleLogoutClick = () => {
     router.replace('/logout');
+    logEvent({
+      action: 'logout-clicked-header',
+      category: 'Dashboard',
+      label: 'Logout Clicked',
+    });
   };
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 

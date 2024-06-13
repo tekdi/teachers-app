@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { CustomField, UserDatas, updateCustomField } from '@/utils/Interfaces';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import ReactGA from 'react-ga4';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { useTheme, withStyles } from '@mui/material/styles';
 
@@ -39,6 +40,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../assets/images/user_placeholder.png';
+import { logEvent } from '@/utils/googleAnalytics';
 
 interface FieldOption {
   name: string;
@@ -64,7 +66,13 @@ const TeacherProfile = () => {
   const router = useRouter();
   const theme = useTheme<any>();
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {setOpen(true)
+    logEvent({
+      action: 'edit-teacher-profile-modal-open',
+      category: 'Profile Page',
+      label: 'Edit Teacher Profile Modal Open',
+    });
+  };
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
   const handleClose = () => {
@@ -73,6 +81,11 @@ const TeacherProfile = () => {
     setHasInputChanged(false);
     setHasErrors(false);
     setErrors({});
+    logEvent({
+      action: 'edit-teacher-profile-modal-close',
+      category: 'Profile Page',
+      label: 'Edit Teacher Profile Modal Close',
+    });
   };
   const [userData, setUserData] = useState<any | null>(null);
   const [userName, setUserName] = useState<any | null>(null);
@@ -404,6 +417,11 @@ const TeacherProfile = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
+    logEvent({
+      action: 'save-button-clicked-edit-teacher-profile',
+      category: 'Profile Page',
+      label: 'Teacher Profile Save Button Clicked',
+    });
     setLoading(true);
     const userId = localStorage.getItem('userId');
     const data = {
@@ -422,8 +440,9 @@ const TeacherProfile = () => {
     try {
       if (userId) {
         const response = await editEditUser(userId, userDetails);
-
+        ReactGA.event("edit-teacher-profile-successful", { userId: userId});
         if (response.responseCode !== 200 || response.params.err) {
+          ReactGA.event("edit-teacher-profile-error", { userId: userId});
           throw new Error(
             response.params.errmsg ||
               'An error occurred while updating the user.'

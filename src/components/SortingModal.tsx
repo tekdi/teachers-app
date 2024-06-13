@@ -1,4 +1,5 @@
 import * as React from 'react';
+import ReactGA from 'react-ga4';
 
 import {
   FormControl,
@@ -88,6 +89,14 @@ const SortingModal: React.FC<sortCardProps> = ({
       sortByClassesMissed,
       sortByAttendanceNumber
     );
+    ReactGA.event('sort-by-applied', {
+      sortingBasis: [
+        sortByName,
+        sortByAttendance,
+        sortByClassesMissed,
+        sortByAttendanceNumber,
+      ],
+    });
     handleCloseModal();
   };
 

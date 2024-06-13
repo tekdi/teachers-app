@@ -19,6 +19,8 @@ import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import customTheme from '../styles/customStyles';
 import {telemetryFactory} from '../utils/telemetry'
+import { useRouter } from 'next/router';
+import { initGA, logPageView } from '../utils/googleAnalytics';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -50,9 +52,34 @@ export function DarkTheme() {
 }
 
 function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   useEffect(() => {
     telemetryFactory.init();
   }, []);
+
+  useEffect(() => {
+    // Initialize GA only once
+    if (!window.GA_INITIALIZED) {
+      initGA(`${process.env.NEXT_PUBLIC_MEASUREMENT_ID}`);
+      window.GA_INITIALIZED = true;
+    }
+
+    const handleRouteChange = (url: string) => {
+      logPageView(url);
+    };
+
+    // Log initial page load
+    handleRouteChange(window.location.pathname);
+
+    // Subscribe to route changes and log page views
+    router.events.on('routeChangeComplete', handleRouteChange);
+
+    // Clean up the subscription on unmount
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+
   function ModeToggle() {
     const { mode, setMode } = useColorScheme();
     return (

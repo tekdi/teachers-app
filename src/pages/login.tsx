@@ -10,6 +10,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import ReactGA from 'react-ga4';
 
 import Checkbox from '@mui/material/Checkbox';
 import CloseIcon from '@mui/icons-material/Close';
@@ -27,6 +28,7 @@ import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { telemetryFactory } from '@/utils/telemetry';
+import { logEvent } from '@/utils/googleAnalytics';
 
 interface State extends SnackbarOrigin {
   openModal: boolean;
@@ -92,7 +94,12 @@ const LoginPage = () => {
     setPassword(value);
   };
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowPassword = () => {setShowPassword((show) => !show);
+  logEvent({
+    action: 'show-password-icon-clicked',
+    category: 'Login Page',
+    label: 'Show Password',
+  })};
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -102,6 +109,11 @@ const LoginPage = () => {
 
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    logEvent({
+      action: 'login-button-clicked',
+      category: 'Login Page',
+      label: 'Login Button Clicked',
+    });
     if (!usernameError && !passwordError) {
       setLoading(true);
       try {
@@ -177,6 +189,7 @@ const LoginPage = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem('preferredLanguage', newLocale);
       setLanguage(event.target.value);
+      ReactGA.event("select-language-login-page", { selectedLanguage: event.target.value});
       router.push('/login', undefined, { locale: newLocale });
     }
   };
@@ -208,6 +221,14 @@ const LoginPage = () => {
       };
     }
   }, []);
+
+  const handleForgotPasswordClick = () => {
+    logEvent({
+      action: 'forgot-password-link-clicked',
+      category: 'Login Page',
+      label: 'Forgot Password Link Clicked',
+    });
+  };
 
   return (
     <Box sx={{ height: '100vh', overflowY: 'auto', background: 'white' }}>
@@ -336,15 +357,16 @@ const LoginPage = () => {
               />
             </Box>
 
-            {/* <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
+            <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
               <Link
                 sx={{ color: theme.palette.secondary.main }}
-                href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=R-3zEZbbbyM"
+                href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=rPJFHSFv50M"
                 underline="none"
+                onClick={handleForgotPasswordClick}
               >
                 {t('LOGIN_PAGE.FORGOT_PASSWORD')}
               </Link>
-            </Box> */}
+            </Box>
             <Box marginTop={'1.2rem'} className="remember-me-checkbox">
               <Checkbox
                 onChange={(e) => setRememberMe(e.target.checked)}
@@ -356,7 +378,13 @@ const LoginPage = () => {
                   color: theme.palette.warning['300'],
                 }}
                 className="fw-400"
-                onClick={() => setRememberMe(!rememberMe)}
+                onClick={() => {setRememberMe(!rememberMe)
+                logEvent({
+                  action: 'remember-me-button-clicked',
+                  category: 'Login Page',
+                  label: `Remember Me ${rememberMe ? 'Checked' : 'Unchecked'}`,
+                })
+              }}
               >
                 {t('LOGIN_PAGE.REMEMBER_ME')}
               </span>

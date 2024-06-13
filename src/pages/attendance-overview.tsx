@@ -15,6 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
+import ReactGA from 'react-ga4';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
@@ -50,6 +51,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { logEvent } from '@/utils/googleAnalytics';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -454,6 +456,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
+    ReactGA.event("cohort-selection-attendance-overview-page", { selectedCohortID: event.target.value });
 
     // ---------- set cohortId and stateName-----------
     const cohort_id = event.target.value;
@@ -491,6 +494,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     setSearchWord(event.target.value);
     if (event.target.value.length >= 1) {
       debouncedSearch(event.target.value);
+      ReactGA.event("search-by-keyword-attendance-overview-page", { keyword: event.target.value});
     } else {
       setDisplayStudentList(learnerData);
     }
@@ -585,6 +589,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   };
   const handleBackEvent = () => {
     window.history.back();
+    logEvent({
+      action: 'back-button-clicked-attendance-overview',
+      category: 'Attendance Overview Page',
+      label: 'Back Button Clicked',
+    });
   };
   const truncate = (str: string, length: number) => {
     if (str.length <= length) return str;
