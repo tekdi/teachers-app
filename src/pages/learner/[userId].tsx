@@ -1210,7 +1210,7 @@ const LearnerProfile: React.FC = () => {
                   onChange={handleChangeSubject}
                 >
                   <MenuItem value={'English'}>{t('PROFILE.ENGLISH')}</MenuItem>
-                  <MenuItem value={'Math'}>{t('PROFILE.MATH')}</MenuItem>
+                  <MenuItem value={'Hindi'}>{t('PROFILE.HINDI')}</MenuItem>
                 </Select>
               </FormControl>
             </Box>
