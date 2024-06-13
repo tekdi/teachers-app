@@ -35,6 +35,7 @@
     "sharp": "^0.33.3"
   },
   "devDependencies": {
+    "@types/fingerprintjs2": "^2.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

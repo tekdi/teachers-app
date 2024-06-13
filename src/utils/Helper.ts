@@ -1,3 +1,5 @@
+import FingerprintJS from 'fingerprintjs2';
+
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
   ABSENT: 'absent',
@@ -179,3 +181,13 @@ export const generateUUID = () => {
     return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16)
   })
 }
+
+export const getDeviceId = () => {
+  return new Promise((resolve) => {
+    FingerprintJS.get((components: any[]) => {
+      const values = components.map((component) => component.value);
+      const deviceId = FingerprintJS.x64hash128(values.join(''), 31);
+      resolve(deviceId);
+    });
+  });
+};

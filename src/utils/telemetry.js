@@ -1,4 +1,4 @@
-import { generateUUID } from './Helper';
+import { generateUUID, getDeviceId } from './Helper';
 import FingerprintJS from 'fingerprintjs2';
 
 let hostURL = process.env.NEXT_PUBLIC_TELEMETRY_URL
@@ -34,10 +34,9 @@ const telemetryConfig = {
   tags: []
 };
 
+
 if (typeof window !== 'undefined') {
-  FingerprintJS.get((components) => {
-    const values = components.map((component) => component.value);
-    const deviceId = FingerprintJS.x64hash128(values.join(''), 31);
+  getDeviceId().then((deviceId) => {
     telemetryConfig.did = deviceId;
   });
 }

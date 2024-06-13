@@ -141,7 +141,7 @@ const LoginPage = () => {
             type: "CLICK",
             subtype: "",
             pageid: "sign-in",
-            uid: "id",
+            uid: localStorage.getItem('userId') || 'Anonymous',
     
             studentid: localStorage.getItem('userId'),
     
