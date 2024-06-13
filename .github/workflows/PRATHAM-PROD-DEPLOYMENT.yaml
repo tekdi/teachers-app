@@ -4,7 +4,7 @@ on:
     branches:
       - june15-pilot
 jobs:
-  deploy:
+  PROD-DEPLOYMENT:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -17,4 +17,9 @@ jobs:
           port: ${{ secrets.PORT_PRATHAM_AWS }}
           script: |
             cd ${{ secrets.TARGET_DIR_PRATHAM_AWS_PROD }}
+            if [ -f .env ]; then
+            rm .env
+            fi
+            echo "${{ secrets.PROD_ENV }}" > .env
+            ls -ltra
             ./deploy.sh
