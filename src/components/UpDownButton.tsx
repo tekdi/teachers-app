@@ -5,6 +5,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Box } from '@mui/material';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from 'next-i18next';
+import { logEvent } from '@/utils/googleAnalytics';
 
 const UpDownButton = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -49,6 +50,22 @@ const UpDownButton = () => {
     }
   }, [pathname]);
 
+  const handleBackToTopButtonClicked = () =>{
+    logEvent({
+      action: 'back-to-top-button-clicked',
+      category: 'Attendance Overview/ History Page',
+      label: 'Back To Top Clicked',
+    });
+  }
+
+  const handleLearnerButtonClicked = () =>{
+    logEvent({
+      action: 'learners-button-clicked',
+      category: 'Attendance Overview/ History Page',
+      label: 'Learners Button Clicked',
+    });
+  }
+
   return (
     <div>
       {isVisible && (
@@ -61,6 +78,7 @@ const UpDownButton = () => {
               <Box
                 sx={{ height: '88px', width: '64px' }}
                 className="flex-column-center"
+                onClick={handleBackToTopButtonClicked}
               >
                 <ArrowUpwardIcon />
                 <span className="w-78"> {t('DASHBOARD.BACK_TO_TOP')}</span>
@@ -69,6 +87,7 @@ const UpDownButton = () => {
               <Box
                 sx={{ height: '80px', width: '64px' }}
                 className="flex-column-center"
+                onClick={handleLearnerButtonClicked}
               >
                 {t('COMMON.LEARNERS')}
                 <ArrowDownwardIcon />
