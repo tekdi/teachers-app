@@ -94,12 +94,14 @@ const LoginPage = () => {
     setPassword(value);
   };
 
-  const handleClickShowPassword = () => {setShowPassword((show) => !show);
-  logEvent({
-    action: 'show-password-icon-clicked',
-    category: 'Login Page',
-    label: 'Show Password',
-  })};
+  const handleClickShowPassword = () => {
+    setShowPassword((show) => !show);
+    logEvent({
+      action: 'show-password-icon-clicked',
+      category: 'Login Page',
+      label: 'Show Password',
+    });
+  };
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -145,25 +147,25 @@ const LoginPage = () => {
         setShowToastMessage(false);
         const telemetryInteract = {
           context: {
-            env: "sign-in",
+            env: 'sign-in',
             cdata: [],
           },
           edata: {
-            id: "login-success",
-            type: "CLICK",
-            subtype: "",
-            pageid: "sign-in",
+            id: 'login-success',
+            type: 'CLICK',
+            subtype: '',
+            pageid: 'sign-in',
             uid: localStorage.getItem('userId') || 'Anonymous',
-    
+
             studentid: localStorage.getItem('userId'),
-    
-            userName: "userName",
-    
-            grade: "grade",
-    
-            medium: "medium",
-    
-            board: "board",
+
+            userName: 'userName',
+
+            grade: 'grade',
+
+            medium: 'medium',
+
+            board: 'board',
           },
         };
         telemetryFactory.interact(telemetryInteract);
@@ -189,7 +191,9 @@ const LoginPage = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem('preferredLanguage', newLocale);
       setLanguage(event.target.value);
-      ReactGA.event("select-language-login-page", { selectedLanguage: event.target.value});
+      ReactGA.event('select-language-login-page', {
+        selectedLanguage: event.target.value,
+      });
       router.push('/login', undefined, { locale: newLocale });
     }
   };
@@ -357,16 +361,18 @@ const LoginPage = () => {
               />
             </Box>
 
-            <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
-              <Link
-                sx={{ color: theme.palette.secondary.main }}
-                href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=rPJFHSFv50M"
-                underline="none"
-                onClick={handleForgotPasswordClick}
-              >
-                {t('LOGIN_PAGE.FORGOT_PASSWORD')}
-              </Link>
-            </Box>
+            {
+              // <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
+              //   <Link
+              //     sx={{ color: theme.palette.secondary.main }}
+              //     href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=rPJFHSFv50M"
+              //     underline="none"
+              //     onClick={handleForgotPasswordClick}
+              //   >
+              //     {t('LOGIN_PAGE.FORGOT_PASSWORD')}
+              //   </Link>
+              // </Box>
+            }
             <Box marginTop={'1.2rem'} className="remember-me-checkbox">
               <Checkbox
                 onChange={(e) => setRememberMe(e.target.checked)}
@@ -378,13 +384,14 @@ const LoginPage = () => {
                   color: theme.palette.warning['300'],
                 }}
                 className="fw-400"
-                onClick={() => {setRememberMe(!rememberMe)
-                logEvent({
-                  action: 'remember-me-button-clicked',
-                  category: 'Login Page',
-                  label: `Remember Me ${rememberMe ? 'Checked' : 'Unchecked'}`,
-                })
-              }}
+                onClick={() => {
+                  setRememberMe(!rememberMe);
+                  logEvent({
+                    action: 'remember-me-button-clicked',
+                    category: 'Login Page',
+                    label: `Remember Me ${rememberMe ? 'Checked' : 'Unchecked'}`,
+                  });
+                }}
               >
                 {t('LOGIN_PAGE.REMEMBER_ME')}
               </span>
