@@ -103,6 +103,17 @@ body {
   --pink-color: #ff1a79;
   --custom-gradient: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%);
   --custom-gradient-pink: linear-gradient(45deg, #ff1a79 0%, #eb82b3 40%);
+
+  --toastify-color-success: #fff !important;
+  --toastify-icon-color-info: #fff !important;
+  --toastify-icon-color-success: #fff !important;
+  --toastify-icon-color-warning: #fff !important;
+  --toastify-icon-color-error: #fff !important;
+
+  --toastify-text-color-info: #fff !important;
+  --toastify-text-color-success: #fff !important;
+  --toastify-text-color-warning: #fff !important;
+  --toastify-text-color-error: #fff !important;
 }
 
 /* GENERAL */
