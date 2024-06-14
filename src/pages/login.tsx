@@ -8,17 +8,13 @@ import {
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import ReactGA from 'react-ga4';
 
 import Checkbox from '@mui/material/Checkbox';
-import CloseIcon from '@mui/icons-material/Close';
 import Image from 'next/image';
-import Link from '@mui/material/Link';
 import Loader from '../components/Loader';
 import MenuItem from '@mui/material/MenuItem';
-import ToastMessage from '@/components/ToastMessage';
 import appLogo from '../../public/images/appLogo.png';
 import config from '../../config.json';
 import { getUserId } from '../services/ProfileService';
@@ -29,10 +25,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { telemetryFactory } from '@/utils/telemetry';
 import { logEvent } from '@/utils/googleAnalytics';
-
-interface State extends SnackbarOrigin {
-  openModal: boolean;
-}
+import { showToastMessage } from '@/components/Toastify';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -40,7 +33,6 @@ const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const [showToastMessage, setShowToastMessage] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -54,16 +46,6 @@ const LoginPage = () => {
 
   const passwordRef = useRef<HTMLInputElement>(null);
   const loginButtonRef = useRef<HTMLButtonElement>(null);
-
-  const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
-    vertical: 'bottom',
-    horizontal: 'center',
-  };
-  const [state, setState] = React.useState<State>({
-    openModal: false,
-    ...DEFAULT_POSITION,
-  });
-  const { vertical, horizontal, openModal } = state;
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -124,13 +106,6 @@ const LoginPage = () => {
           password: password,
         });
         if (response) {
-          setTimeout(() => {
-            setState({
-              openModal: false,
-              ...DEFAULT_POSITION,
-            });
-          });
-
           if (typeof window !== 'undefined' && window.localStorage) {
             const token = response?.result?.access_token;
             const refreshToken = response?.result?.refresh_token;
@@ -144,7 +119,6 @@ const LoginPage = () => {
           }
         }
         setLoading(false);
-        setShowToastMessage(false);
         const telemetryInteract = {
           context: {
             env: 'sign-in',
@@ -156,8 +130,6 @@ const LoginPage = () => {
             subtype: '',
             pageid: 'sign-in',
             uid: localStorage.getItem('userId') || 'Anonymous',
-          
-
           },
         };
         telemetryFactory.interact(telemetryInteract);
@@ -165,11 +137,11 @@ const LoginPage = () => {
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 404) {
-          handleClick({ ...DEFAULT_POSITION })();
-          setShowToastMessage(true);
+          showToastMessage(t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'), 'error');          
+
         } else {
           console.error('Error:', error);
-          setShowToastMessage(true);
+          showToastMessage(t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'), 'error');          
         }
       }
     }
@@ -188,14 +160,6 @@ const LoginPage = () => {
       });
       router.push('/login', undefined, { locale: newLocale });
     }
-  };
-
-  const handleClick = (newState: SnackbarOrigin) => () => {
-    setState({ ...newState, openModal: true });
-  };
-
-  const handleClose = () => {
-    setState({ ...state, openModal: false });
   };
 
   useEffect(() => {
@@ -408,11 +372,6 @@ const LoginPage = () => {
             </Box>
           </Box>
         </Box>
-        {showToastMessage && (
-          <ToastMessage
-            message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')}
-          />
-        )}
       </form>
     </Box>
   );

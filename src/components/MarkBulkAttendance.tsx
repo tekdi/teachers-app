@@ -269,15 +269,17 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
           if (resp) {
             setShowUpdateButton(true);
             setLoading(false);
-          }
-          if (onSaveSuccess) {
-            if (presentCount === 0 && absentCount === 0) {
-              onSaveSuccess(false);
-            } else {
-              onSaveSuccess(true);
+            if (onSaveSuccess) {
+              if (presentCount === 0 && absentCount === 0) {
+                onSaveSuccess(false);
+              } else {
+                onSaveSuccess(true);
+              }
+              
+              onClose();
             }
-            
-            onClose();
+          } else {
+            showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
           }
         } catch (error) {
           console.error('Error fetching cohort list:', error);
