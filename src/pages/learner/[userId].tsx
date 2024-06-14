@@ -64,6 +64,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { logEvent } from '@/utils/googleAnalytics';
+import { showToastMessage } from '@/components/Toastify';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -285,6 +286,7 @@ const LearnerProfile: React.FC = () => {
         setIsError(false);
       } catch (error) {
         setIsError(true);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setLoading(false);
         console.error('Error fetching  user details:', error);
       }
@@ -377,6 +379,7 @@ const LearnerProfile: React.FC = () => {
       setIsError(false);
     } catch (error) {
       setIsError(true);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       console.error(
         'Error fetching getDoIdForAssesmentDetails results:',
         error
@@ -676,6 +679,7 @@ const LearnerProfile: React.FC = () => {
       }
     } catch (error) {
       setIsError(true);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       console.error('Error:', error);
     }
   };
@@ -1599,7 +1603,6 @@ const LearnerProfile: React.FC = () => {
           </Box>
         </Box>
       </Modal>
-      {isError && <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />}
     </>
   );
 };
