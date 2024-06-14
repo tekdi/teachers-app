@@ -22,12 +22,14 @@ const LearnerModal = ({
   onClose,
   data,
   userName,
+  contactNumber,
 }: {
   userId?: string;
   open: boolean;
   data: any;
   onClose: () => void;
   userName?: string;
+  contactNumber?: any;
 }) => {
   const { t } = useTranslation();
 
@@ -173,6 +175,32 @@ const LearnerModal = ({
                         </Grid>
                       </>
                     ))}
+                    <Grid item xs={6} textAlign="left">
+                      <Typography
+                        margin={0}
+                        lineHeight={'16px'}
+                        fontSize={'12px'}
+                        fontWeight={'600'}
+                        color={theme.palette.warning['500']}
+                      >
+                        {t('PROFILE.CONTACT_NUMBER')}
+                      </Typography>
+                      <Box display="flex">
+                        <Typography
+                          fontSize={'16px'}
+                          fontWeight={'400'}
+                          lineHeight={'24px'}
+                          margin={0}
+                          color={theme.palette.warning['A200']}
+                          style={{
+                            wordBreak: 'break-word',
+                            whiteSpace: 'normal',
+                          }}
+                        >
+                          {contactNumber ? contactNumber : ''}
+                        </Typography>
+                      </Box>
+                    </Grid>
                   </Grid>
                 </Box>
               </Box>

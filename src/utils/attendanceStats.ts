@@ -20,6 +20,10 @@ const getPresentStudentCount = async (
   const response = await attendanceInPercentageStatusList(attendanceRequest);
   const attendanceDates = response?.data?.result?.attendanceDate;
   const presentStudents: any = {};
+
+  if (!attendanceDates) {
+    return presentStudents;
+  }
   for (const date of Object.keys(attendanceDates)) {
     const attendance = attendanceDates[date];
     const present = attendance.present || 0;

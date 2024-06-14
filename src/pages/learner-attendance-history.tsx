@@ -15,6 +15,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import ToastMessage from '@/components/ToastMessage';
+import { logEvent } from '@/utils/googleAnalytics';
 
 type LearnerAttendanceData = {
   [date: string]: {
@@ -69,6 +70,11 @@ const LearnerAttendanceHistory = () => {
 
   const handleOpen = () => {
     setOpen(true);
+    logEvent({
+      action: 'individual-learner-attendance-modal-open',
+      category: 'Learner Attendance History Page',
+      label: 'Mark Individual Learner Modal Open',
+    });
   };
 
   const handleModalOpen = () => {
@@ -77,6 +83,11 @@ const LearnerAttendanceHistory = () => {
 
   const handleModalClose = () => {
     setOpen(false);
+    logEvent({
+      action: 'individual-learner-attendance-modal-close',
+      category: 'Learner Attendance History Page',
+      label: 'Mark Individual Learner Modal Close',
+    });
   };
 
   useEffect(() => {
