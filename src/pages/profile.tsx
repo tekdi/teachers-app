@@ -33,7 +33,6 @@ import Image from 'next/image';
 import Loader from '@/components/Loader';
 import Modal from '@mui/material/Modal';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import ToastMessage from '@/components/ToastMessage';
 import { getLabelForValue } from '@/utils/Helper';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
@@ -41,6 +40,7 @@ import { useTranslation } from 'next-i18next';
 import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../assets/images/user_placeholder.png';
 import { logEvent } from '@/utils/googleAnalytics';
+import { showToastMessage } from '@/components/Toastify';
 
 interface FieldOption {
   name: string;
@@ -182,6 +182,7 @@ const TeacherProfile = () => {
       } catch (error) {
         setLoading(false);
         setIsError(true);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         console.error('Error fetching  user details:', error);
       }
     }
@@ -459,6 +460,7 @@ const TeacherProfile = () => {
       }
     } catch (error) {
       setIsError(true);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       console.error('Error:', error);
     }
 
@@ -1145,7 +1147,6 @@ const TeacherProfile = () => {
           </Box>
         )}{' '}
       </Box>
-      {isError && <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />}
     </>
   );
 };

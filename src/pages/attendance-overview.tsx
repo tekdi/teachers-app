@@ -41,7 +41,6 @@ import OverviewCard from '@/components/OverviewCard';
 import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '@/components/SortingModal';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
-import ToastMessage from '@/components/ToastMessage';
 import UpDownButton from '@/components/UpDownButton';
 import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
@@ -52,6 +51,7 @@ import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { logEvent } from '@/utils/googleAnalytics';
+import { showToastMessage } from '@/components/Toastify';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -91,7 +91,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
     useState(0);
   const [dateRange, setDateRange] = React.useState<Date | string>('');
-  const [isError, setIsError] = React.useState<boolean>(false);
 
   const theme = useTheme<any>();
   const pathname = usePathname();
@@ -238,10 +237,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           }
         }
         setLoading(false);
-        setIsError(false);
       } catch (error) {
         console.error('Error fetching  cohort list:', error);
-        setIsError(true);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setLoading(false);
       }
     };
@@ -439,7 +437,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       }
     } catch (error) {
       console.error('Error fetching cohort list:', error);
-      setIsError(true);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       setLoading(false);
     } finally {
       setLoading(false);
@@ -918,7 +916,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
         </Box>
       )}
-      {isError && <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />}
     </Box>
   );
 };
