@@ -264,7 +264,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
         setLoading(true);
         try {
           const response = await bulkAttendance(data);
-          const resp = response?.data;
+          const resp = response?.responses;
 
           if (resp) {
             setShowUpdateButton(true);
