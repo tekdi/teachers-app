@@ -66,7 +66,8 @@ const TeacherProfile = () => {
   const router = useRouter();
   const theme = useTheme<any>();
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {setOpen(true)
+  const handleOpen = () => {
+    setOpen(true);
     logEvent({
       action: 'edit-teacher-profile-modal-open',
       category: 'Profile Page',
@@ -240,11 +241,6 @@ const TeacherProfile = () => {
     ?.filter((field) => field.order !== 0 && field.name !== 'main_subject')
     ?.sort((a, b) => a.order - b.order);
 
-  //fields  for edit popup by order
-  const filteredSortedForEdit = [...customFieldsData]
-    ?.filter((field) => field.order !== 0 && field.isEditable)
-    ?.sort((a, b) => a.order - b.order);
-
   // fields for showing in  basic details
   const getLabelForValue = (field: any, value: string) => {
     if (
@@ -319,10 +315,15 @@ const TeacherProfile = () => {
     // setHasErrors(!sanitizedValue.trim());
   };
 
+  //fields  for edit popup by order
+  const filteredSortedForEdit = [...customFieldsData]
+    ?.filter((field) => field.isEditable)
+    ?.sort((a, b) => a.order - b.order);
+
   const validateFields = () => {
     const newErrors: { [key: string]: boolean } = {};
 
-    customFieldsData.forEach((field) => {
+    filteredSortedForEdit?.forEach((field) => {
       const value =
         formData?.customFields?.find((f) => f.fieldId === field.fieldId)
           ?.value[0] || '';
@@ -440,9 +441,9 @@ const TeacherProfile = () => {
     try {
       if (userId) {
         const response = await editEditUser(userId, userDetails);
-        ReactGA.event("edit-teacher-profile-successful", { userId: userId});
+        ReactGA.event('edit-teacher-profile-successful', { userId: userId });
         if (response.responseCode !== 200 || response.params.err) {
-          ReactGA.event("edit-teacher-profile-error", { userId: userId});
+          ReactGA.event('edit-teacher-profile-error', { userId: userId });
           throw new Error(
             response.params.errmsg ||
               'An error occurred while updating the user.'
