@@ -154,16 +154,8 @@ const LoginPage = () => {
             subtype: "",
             pageid: "sign-in",
             uid: localStorage.getItem('userId') || 'Anonymous',
-    
-            studentid: localStorage.getItem('userId'),
-    
-            userName: "userName",
-    
-            grade: "grade",
-    
-            medium: "medium",
-    
-            board: "board",
+          
+
           },
         };
         telemetryFactory.interact(telemetryInteract);
