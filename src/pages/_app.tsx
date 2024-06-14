@@ -21,6 +21,8 @@ import customTheme from '../styles/customStyles';
 import { telemetryFactory } from '../utils/telemetry';
 import { useRouter } from 'next/router';
 import { initGA, logPageView } from '../utils/googleAnalytics';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -123,6 +125,7 @@ function App({ Component, pageProps }: AppProps) {
         {/* <ModeToggle /> */}
         <Container maxWidth="md" style={{ padding: 0 }}>
           <Component {...pageProps} />
+          <ToastContainer position="bottom-left" autoClose={3000} />
         </Container>
       </CssVarsProvider>
     </>

@@ -1,12 +1,6 @@
 'use client';
 
 import {
-  AttendancePercentageProps,
-  cohort,
-  cohortAttendancePercentParam,
-  cohortMemberList,
-} from '../utils/Interfaces';
-import {
   Box,
   Button,
   FormControl,
@@ -17,51 +11,52 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import React, { useEffect } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import React, { useEffect, useState } from 'react';
 import ReactGA from 'react-ga4';
+import {
+  AttendancePercentageProps,
+  cohort,
+  cohortAttendancePercentParam,
+  cohortMemberList,
+} from '../utils/Interfaces';
 // import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
   getCohortAttendance,
 } from '../services/AttendanceService';
-import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
 import {
   formatSelectedDate,
-  getMonthName,
   getTodayDate,
   shortDateFormat,
-  toPascalCase,
+  toPascalCase
 } from '../utils/Helper';
 
-import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import Divider from '@mui/material/Divider';
-import Header from '../components/Header';
-import Image from 'next/image';
-import Link from 'next/link';
-import Loader from '../components/Loader';
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import OverviewCard from '@/components/OverviewCard';
 import ToastMessage from '@/components/ToastMessage';
+import { showToastMessage } from '@/components/Toastify';
 import WeekCalender from '@/components/WeekCalender';
-import { calculatePercentage } from '@/utils/attendanceStats';
-import calendar from '../assets/images/calendar.svg';
-import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { lowLearnerAttendanceLimit } from './../../app.config';
-import { modifyAttendanceLimit } from '../../app.config';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { useRouter } from 'next/navigation';
+import { calculatePercentage } from '@/utils/attendanceStats';
+import { logEvent } from '@/utils/googleAnalytics';
+import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
+import Divider from '@mui/material/Divider';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { logEvent } from '@/utils/googleAnalytics';
-
-// interface State extends SnackbarOrigin {
-//   openModal: boolean;
-// }
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { modifyAttendanceLimit } from '../../app.config';
+import calendar from '../assets/images/calendar.svg';
+import Header from '../components/Header';
+import Loader from '../components/Loader';
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
+import { cohortList } from '../services/CohortServices';
+import { lowLearnerAttendanceLimit } from './../../app.config';
 
 interface DashboardProps {
   //   buttonText: string;
@@ -101,7 +96,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   // const { vertical, horizontal, openModal } = state;
 
   const router = useRouter();
-  const contextId = classId;
   const theme = useTheme<any>();
   const determinePathColor = useDeterminePathColor();
   const currentDate = new Date();
@@ -120,8 +114,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
       const startDayMonth = startRangeDate.toLocaleString('default', {
         month: 'long',
       });
-      let endDay = endRangeDate.getDate();
-      let endDayMonth = endRangeDate.toLocaleString('default', {
+      const endDay = endRangeDate.getDate();
+      const endDayMonth = endRangeDate.toLocaleString('default', {
         month: 'long',
       });
       if (startDayMonth == endDayMonth) {
@@ -288,7 +282,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   contextId: classId,
                 },
                 facets: ['contextId'],
-                sort: ['present_percentage', 'asc']
+                sort: ['present_percentage', 'asc'],
               };
               const res = await getCohortAttendance(cohortAttendanceData);
               const response = res?.data?.result;
@@ -400,16 +394,20 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setShowDetails(true);
   };
 
-  const handleModalToggle = () => {setOpen(!open)
+  const handleModalToggle = () => {
+    setOpen(!open);
     logEvent({
       action: 'mark/modify-attendance-button-clicked-dashboard',
       category: 'Dashboard Page',
       label: 'Mark/ Modify Attendance',
-    })};
+    });
+  };
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
-    ReactGA.event("cohort-selection-dashboard", { selectedCohortID: event.target.value });
+    ReactGA.event('cohort-selection-dashboard', {
+      selectedCohortID: event.target.value,
+    });
     localStorage.setItem('classId', event.target.value);
     setHandleSaveHasRun(!handleSaveHasRun);
   };
@@ -478,7 +476,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const viewAttendanceHistory = () => {
     if (classId !== 'all') {
       router.push('/attendance-history');
-      ReactGA.event("month-name-clicked", { selectedCohortID: classId });
+      ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
   };
 
@@ -503,13 +501,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   }
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
-
   const pathColor = determinePathColor(presentPercentage);
-
-  const truncate = (str: string, length: number) => {
-    if (str.length <= length) return str;
-    return str.slice(0, length) + '...';
-  };
 
   const handleMoreDetailsClicked = () => {
     logEvent({
@@ -782,27 +774,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       onClose={handleClose}
                       classId={classId}
                       selectedDate={new Date(selectedDate)}
-                      onSaveSuccess={() =>
-                        setHandleSaveHasRun(!handleSaveHasRun)
-                      }
+                      onSaveSuccess={(isModified) => {
+                        if (isModified) {
+                          showToastMessage(t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY'), 'success');
+                        } else {
+                          showToastMessage(t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'), 'success');
+                        }
+                        setHandleSaveHasRun(!handleSaveHasRun);
+                      }}
                     />
                   )}
                 </Box>
-                {/* <Snackbar
-                  anchorOrigin={{ vertical, horizontal }}
-                  open={openModal}
-                  onClose={handleClose}
-                  className="sample"
-                  autoHideDuration={5000}
-                  key={vertical + horizontal}
-                  message={
-                    currentAttendance === 'notMarked' ||
-                    currentAttendance === 'futureDate'
-                      ? t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY')
-                      : t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY')
-                  }
-                  // action={action}
-                /> */}
               </Box>
               <Box sx={{ padding: '0 20px' }}>
                 <Divider sx={{ borderBottomWidth: '0.1rem' }} />
@@ -952,6 +934,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           {isError && (
             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
           )}
+
           {/* <Box sx={{ background: '#fff' }}>
             <Typography
               textAlign={'left'}

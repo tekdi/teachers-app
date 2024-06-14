@@ -18,9 +18,11 @@ const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
 function ToastMessage({
   message,
   type = 'error',
+  onClose
 }: {
   message: string;
   type?: ToastTypes;
+  onClose?: () => void;
 }) {
   const [state, setState] = React.useState<State>({
     openModal: true,
@@ -30,6 +32,7 @@ function ToastMessage({
 
   const handleClose = () => {
     setState({ ...state, openModal: false });
+    onClose && onClose();
   };
 
   return (
@@ -38,6 +41,7 @@ function ToastMessage({
       open={state.openModal}
       onClose={handleClose}
       autoHideDuration={toastAutoHideDuration}
+      disableWindowBlurListener={true}
       key={'key_' + generateRandomString(3)}
     >
       <Alert severity={type} variant="filled" sx={{ width: '100%' }}>
