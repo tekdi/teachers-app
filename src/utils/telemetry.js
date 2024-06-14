@@ -46,11 +46,11 @@ export const telemetryFactory = {
     if (typeof window !== 'undefined') {
       console.log('EkTelemetry', EkTelemetry);
       if (!CsTelemetryModule.instance.isInitialised) {
-        CsTelemetryModule.instance.init({});
-        CsTelemetryModule.instance.telemetryService.initTelemetry({
-          config: telemetryConfig,
-          userOrgDetails: {}
-        });
+        // CsTelemetryModule.instance.init({});
+        // CsTelemetryModule.instance.telemetryService.initTelemetry({
+        //   config: telemetryConfig,
+        //   userOrgDetails: {}
+        // });
       }
     }
   },
