@@ -5,6 +5,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   Grid,
   IconButton,
   InputLabel,
@@ -19,6 +20,7 @@ import {
 } from '@mui/material';
 import { CustomField, UserDatas, updateCustomField } from '@/utils/Interfaces';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import ReactGA from 'react-ga4';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { useTheme, withStyles } from '@mui/material/styles';
 
@@ -38,6 +40,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../assets/images/user_placeholder.png';
+import { logEvent } from '@/utils/googleAnalytics';
 
 interface FieldOption {
   name: string;
@@ -63,8 +66,27 @@ const TeacherProfile = () => {
   const router = useRouter();
   const theme = useTheme<any>();
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => {setOpen(true)
+    logEvent({
+      action: 'edit-teacher-profile-modal-open',
+      category: 'Profile Page',
+      label: 'Edit Teacher Profile Modal Open',
+    });
+  };
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+
+  const handleClose = () => {
+    setOpen(false);
+    initialFormData();
+    setHasInputChanged(false);
+    setHasErrors(false);
+    setErrors({});
+    logEvent({
+      action: 'edit-teacher-profile-modal-close',
+      category: 'Profile Page',
+      label: 'Edit Teacher Profile Modal Close',
+    });
+  };
   const [userData, setUserData] = useState<any | null>(null);
   const [userName, setUserName] = useState<any | null>(null);
   const [updatedCustomFields, setUpdatedCustomFields] = useState<any>([]);
@@ -81,6 +103,10 @@ const TeacherProfile = () => {
   const [blockName, setBlockName] = useState('');
   const [radioValues, setRadioValues] = useState<any>([]);
   const [isError, setIsError] = React.useState<boolean>(false);
+  const [isData, setIsData] = React.useState<boolean>(false);
+  const [hasInputChanged, setHasInputChanged] = React.useState<boolean>(false);
+  const [isValidationTriggered, setIsValidationTriggered] =
+    React.useState<boolean>(false);
 
   const handleNameFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -126,15 +152,16 @@ const TeacherProfile = () => {
       try {
         if (userId) {
           const response = await getUserDetails(userId, true);
+          console.log('response', response);
 
           const data = response?.result;
 
           if (data) {
             const userData = data?.userData;
-
             setUserData(userData);
             setUserName(userData?.name);
             const customDataFields = userData?.customFields;
+            setIsData(true);
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
 
@@ -145,6 +172,8 @@ const TeacherProfile = () => {
               setLoading(false);
             }
           } else {
+            setLoading(false);
+            setIsData(false);
             console.log('No data Found');
           }
         }
@@ -251,24 +280,31 @@ const TeacherProfile = () => {
     })),
   });
 
-  useEffect(() => {
+  const initialFormData = () => {
     setFormData({
       userData: {
         name: userName || '',
       },
-      customFields: customFieldsData.map((field) => ({
+      customFields: customFieldsData?.map((field) => ({
         fieldId: field.fieldId,
         type: field.type,
         value: field.value ? field.value : '',
       })),
     });
+  };
+
+  useEffect(() => {
+    initialFormData();
   }, [userData, customFieldsData]);
 
   const [hasErrors, setHasErrors] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const sanitizedValue = value.replace(/[^a-zA-Z_ ]/g, '');
+    const sanitizedValue = value
+      .replace(/[^a-zA-Z_ ]/g, '')
+      .replace(/^\s+/, '')
+      .replace(/\s+/g, ' ');
 
     setFormData((prevData) => ({
       ...prevData,
@@ -277,11 +313,11 @@ const TeacherProfile = () => {
         name: sanitizedValue,
       },
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
     validateFields();
     // setHasErrors(!sanitizedValue.trim());
   };
-
-  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
   const validateFields = () => {
     const newErrors: { [key: string]: boolean } = {};
@@ -295,6 +331,8 @@ const TeacherProfile = () => {
         newErrors[field.fieldId] = !value.trim();
       } else if (field.type === 'numeric') {
         newErrors[field.fieldId] = !/^\d{1,4}$/.test(value);
+      } else if (field.type === 'dropdown' || field.type === 'drop_down') {
+        newErrors[field.fieldId] = !value.trim();
       }
     });
 
@@ -305,16 +343,25 @@ const TeacherProfile = () => {
   };
 
   useEffect(() => {
-    validateFields();
+    if (hasInputChanged) {
+      validateFields();
+    }
   }, [formData, customFieldsData]);
 
   const handleFieldChange = (fieldId: string, value: string) => {
+    const sanitizedValue = value.replace(/^\s+/, '').replace(/\s+/g, ' ');
+
     setFormData((prevState) => ({
       ...prevState,
       customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId ? { ...field, value: [value] } : field
+        field.fieldId === fieldId
+          ? { ...field, value: [sanitizedValue] }
+          : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleCheckboxChange = (
@@ -337,6 +384,9 @@ const TeacherProfile = () => {
           : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleDropdownChange = (fieldId: string, value: string) => {
@@ -346,6 +396,9 @@ const TeacherProfile = () => {
         field.fieldId === fieldId ? { ...field, value: [value] } : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleRadioChange = (fieldId: string, value: string) => {
@@ -355,12 +408,20 @@ const TeacherProfile = () => {
         field.fieldId === fieldId ? { ...field, value: [value] } : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleSubmit = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
+    logEvent({
+      action: 'save-button-clicked-edit-teacher-profile',
+      category: 'Profile Page',
+      label: 'Teacher Profile Save Button Clicked',
+    });
     setLoading(true);
     const userId = localStorage.getItem('userId');
     const data = {
@@ -379,8 +440,9 @@ const TeacherProfile = () => {
     try {
       if (userId) {
         const response = await editEditUser(userId, userDetails);
-
+        ReactGA.event("edit-teacher-profile-successful", { userId: userId});
         if (response.responseCode !== 200 || response.params.err) {
+          ReactGA.event("edit-teacher-profile-error", { userId: userId});
           throw new Error(
             response.params.errmsg ||
               'An error occurred while updating the user.'
@@ -414,350 +476,363 @@ const TeacherProfile = () => {
         {loading && (
           <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
         )}
-        <Box
-          display="flex"
-          flexDirection="column"
-          // padding={2}
-          justifyContent={'center'}
-          alignItems={'center'}
-        >
+        {isData && isData ? (
           <Box
-            sx={{ flex: '1', minWidth: '100%' }}
             display="flex"
-            flexDirection="row"
-            gap="5px"
-            padding="25px 19px  20px"
+            flexDirection="column"
+            // padding={2}
+            justifyContent={'center'}
+            alignItems={'center'}
           >
-            <Typography
-              // variant="h3"
-              style={{
-                letterSpacing: '0.1px',
-                textAlign: 'left',
-                marginBottom: '2px',
-              }}
-              fontSize={'22px'}
-              fontWeight={'400'}
-              lineHeight={'28px'}
-              color={theme.palette.warning['A200']}
-            >
-              {t('PROFILE.MY_PROFILE')}
-            </Typography>
-          </Box>
-
-          <Box padding="5px 19px" className="w-100">
             <Box
-              sx={{
-                flex: '1',
-                border: '1px solid #D0C5B4',
-                boxShadow: '0px 1px 2px 0px #0000004D',
-
-                borderColor: theme.palette.warning['A100'],
-              }}
-              minWidth={'100%'}
-              borderRadius={'12px'}
-              border={'1px'}
-              bgcolor={theme.palette.warning.A400}
+              sx={{ flex: '1', minWidth: '100%' }}
               display="flex"
-              gap={'25px'}
-              alignItems={'center'}
-            >
-              <Image
-                src={user_placeholder_img}
-                alt="user"
-                width={116}
-                height={120}
-                style={{
-                  borderTopLeftRadius: '12px',
-                  borderBottomLeftRadius: '12px',
-                }}
-              />
-              <Box width={'100%'}>
-                <Box>
-                  <Box
-                    fontSize={'16px'}
-                    lineHeight={'16px'}
-                    className="text-4d"
-                    width={'100%'}
-                    fontWeight={'500'}
-                  >
-                    <Typography
-                      sx={{ wordBreak: 'break-word' }}
-                      className="text-4d two-line-text"
-                      mr={'40px'}
-                    >
-                      {userData?.name}
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box display={'flex'} gap={'4px'} mt={'5px'}>
-                  {address ? (
-                    <PlaceOutlinedIcon
-                      sx={{
-                        fontSize: '1rem',
-                        marginTop: '1px',
-                        fontWeight: '11.7px',
-                        height: '14.4px',
-                      }}
-                    />
-                  ) : (
-                    ''
-                  )}
-
-                  <Typography
-                    margin={0}
-                    color={theme.palette.warning.A200}
-                    fontSize={'12px'}
-                    fontWeight={'500'}
-                    lineHeight={'16px'}
-                    className="text-4d"
-                  >
-                    {address}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            className="linerGradient"
-            sx={{ padding: '10px 16px 21px', mt: 3 }}
-          >
-            <Button
-              sx={{
-                fontSize: '14px',
-                lineHeight: '20px',
-                minWidth: '100%',
-                padding: '10px 24px 10px 16px',
-                gap: '8px',
-                borderRadius: '100px',
-                marginTop: '10px',
-                flex: '1',
-                textAlign: 'center',
-                color: theme.palette.warning.A200,
-                border: `1px solid #4D4639`,
-              }}
-              onClick={handleOpen}
+              flexDirection="row"
+              gap="5px"
+              padding="25px 19px  20px"
             >
               <Typography
-                variant="h3"
+                // variant="h3"
                 style={{
                   letterSpacing: '0.1px',
                   textAlign: 'left',
                   marginBottom: '2px',
                 }}
-                fontSize={'14px'}
-                fontWeight={'500'}
-                lineHeight={'20px'}
+                fontSize={'22px'}
+                fontWeight={'400'}
+                lineHeight={'28px'}
+                color={theme.palette.warning['A200']}
               >
-                {t('PROFILE.EDIT_PROFILE')}
+                {t('PROFILE.MY_PROFILE')}
               </Typography>
-              <Box>
-                <CreateOutlinedIcon sx={{ fontSize: '18px' }} />
-              </Box>
-            </Button>
-
-            <Box
-              mt={2}
-              sx={{
-                flex: '1',
-                // textAlign: 'center',
-                border: '1px solid',
-                borderColor: theme.palette.warning['A100'],
-                padding: '16px',
-              }}
-              className="bg-white"
-              minWidth={'100%'}
-              borderRadius={'16px'}
-              border={'1px'}
-              display="flex"
-              flexDirection="row"
-            >
-              <Grid container spacing={4}>
-                {filteredSortedForView?.map((item, index) => {
-                  if (item.order === 5) {
-                    return (
-                      <Grid item xs={12}>
-                        <Typography
-                          fontSize={'12px'}
-                          fontWeight={'600'}
-                          margin={0}
-                          lineHeight={'16px'}
-                          letterSpacing={'0.5px'}
-                          sx={{ wordBreak: 'break-word' }}
-                          color={theme.palette.warning['500']}
-                        >
-                          {item?.label && item.name
-                            ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
-                            : item.label}
-                          {/* {item?.label} */}
-                        </Typography>
-                        <Box
-                          mt={2}
-                          sx={{
-                            display: 'flex',
-                            gap: '10px',
-                            flexWrap: 'wrap',
-                          }}
-                        >
-                          {orderedSubjects &&
-                            orderedSubjects?.map((subject, index) => (
-                              <Button
-                                key={index}
-                                size="small"
-                                variant={
-                                  mainSubjects?.includes(subject)
-                                    ? 'contained'
-                                    : 'outlined'
-                                }
-                                sx={{
-                                  backgroundColor: mainSubjects?.includes(
-                                    subject
-                                  )
-                                    ? theme.palette.info.contrastText
-                                    : 'none',
-                                  borderRadius: '8px',
-                                  color: theme.palette.warning.A200,
-                                  whiteSpace: 'nowrap',
-                                  boxShadow: 'none',
-                                  border: `1px solid ${theme.palette.warning[900]}`,
-                                  pointerEvents: 'none',
-                                }}
-                              >
-                                {getLabelForSubject(subject)}
-                                {/* {subject} */}
-                              </Button>
-                            ))}
-                        </Box>
-                      </Grid>
-                    );
-                  } else if (item.order === 7) {
-                    return (
-                      <Grid item xs={12} key={index}>
-                        <Typography
-                          variant="h4"
-                          margin={0}
-                          lineHeight={'16px'}
-                          fontSize={'12px'}
-                          fontWeight={'600'}
-                          letterSpacing={'0.5px'}
-                          color={theme.palette.warning['500']}
-                        >
-                          {item?.label && item.name
-                            ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
-                            : item.label}
-                          {/* {item.label} */}
-                        </Typography>
-                        <Typography
-                          variant="h4"
-                          margin={0}
-                          color={theme.palette.warning.A200}
-                          sx={{ wordBreak: 'break-word' }}
-                        >
-                          {item.value}
-                        </Typography>
-                      </Grid>
-                    );
-                  } else {
-                    return (
-                      <Grid item xs={6} key={index}>
-                        <Typography
-                          variant="h4"
-                          margin={0}
-                          lineHeight={'16px'}
-                          fontSize={'12px'}
-                          fontWeight={'600'}
-                          letterSpacing={'0.5px'}
-                          color={theme.palette.warning['500']}
-                        >
-                          {item?.label && item.name
-                            ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
-                            : item.label}
-                          {/* {item.label} */}
-                        </Typography>
-                        <Typography
-                          variant="h4"
-                          margin={0}
-                          color={theme.palette.warning.A200}
-                          sx={{ wordBreak: 'break-word' }}
-                        >
-                          {getLabelForValue(item, item.value[0])}
-                        </Typography>
-                      </Grid>
-                    );
-                  }
-                })}
-              </Grid>
             </Box>
-          </Box>
-          {/* modal for edit profile */}
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="edit-profile-modal"
-            aria-describedby="edit-profile-description"
-          >
-            <Box
-              sx={style}
-              gap="10px"
-              display="flex"
-              flexDirection="column"
-              borderRadius={'1rem'}
-            >
-              {loading && (
-                <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-              )}
+
+            <Box padding="5px 19px" className="w-100">
               <Box
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '15px 20px 6px',
+                  flex: '1',
+                  border: '1px solid #D0C5B4',
+                  boxShadow: '0px 1px 2px 0px #0000004D',
+
+                  borderColor: theme.palette.warning['A100'],
                 }}
+                minWidth={'100%'}
+                borderRadius={'12px'}
+                border={'1px'}
+                bgcolor={theme.palette.warning.A400}
+                display="flex"
+                gap={'25px'}
+                alignItems={'center'}
+              >
+                <Image
+                  src={user_placeholder_img}
+                  alt="user"
+                  width={116}
+                  height={120}
+                  style={{
+                    borderTopLeftRadius: '12px',
+                    borderBottomLeftRadius: '12px',
+                  }}
+                />
+                <Box width={'100%'}>
+                  <Box>
+                    <Box
+                      fontSize={'16px'}
+                      lineHeight={'16px'}
+                      className="text-4d"
+                      width={'100%'}
+                      fontWeight={'500'}
+                    >
+                      <Typography
+                        sx={{ wordBreak: 'break-word' }}
+                        className="text-4d two-line-text"
+                        mr={'40px'}
+                      >
+                        {userData?.name}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box display={'flex'} gap={'4px'} mt={'5px'}>
+                    {address ? (
+                      <PlaceOutlinedIcon
+                        sx={{
+                          fontSize: '1rem',
+                          marginTop: '1px',
+                          fontWeight: '11.7px',
+                          height: '14.4px',
+                        }}
+                      />
+                    ) : (
+                      ''
+                    )}
+
+                    <Typography
+                      margin={0}
+                      color={theme.palette.warning.A200}
+                      fontSize={'12px'}
+                      fontWeight={'500'}
+                      lineHeight={'16px'}
+                      className="text-4d"
+                    >
+                      {address}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+            <Box
+              className="linerGradient"
+              sx={{ padding: '10px 16px 21px', mt: 3 }}
+            >
+              <Button
+                sx={{
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  minWidth: '100%',
+                  padding: '10px 24px 10px 16px',
+                  gap: '8px',
+                  borderRadius: '100px',
+                  marginTop: '10px',
+                  flex: '1',
+                  textAlign: 'center',
+                  color: theme.palette.warning.A200,
+                  border: `1px solid #4D4639`,
+                }}
+                onClick={handleOpen}
               >
                 <Typography
-                  variant="h2"
+                  variant="h3"
                   style={{
+                    letterSpacing: '0.1px',
                     textAlign: 'left',
-                    color: theme.palette.warning.A200,
+                    marginBottom: '2px',
                   }}
+                  fontSize={'14px'}
+                  fontWeight={'500'}
+                  lineHeight={'20px'}
                 >
                   {t('PROFILE.EDIT_PROFILE')}
                 </Typography>
+                <Box>
+                  <CreateOutlinedIcon sx={{ fontSize: '18px' }} />
+                </Box>
+              </Button>
 
-                <IconButton
-                  edge="end"
-                  color="inherit"
-                  onClick={handleClose}
-                  aria-label="close"
-                  style={{
-                    justifyContent: 'flex-end',
-                  }}
-                >
-                  <CloseIcon cursor="pointer" />
-                </IconButton>
-              </Box>
-              <Divider />
               <Box
-                style={{
-                  overflowY: 'auto',
-                  padding: '0px 20px 10px',
+                mt={2}
+                sx={{
+                  flex: '1',
+                  // textAlign: 'center',
+                  border: '1px solid',
+                  borderColor: theme.palette.warning['A100'],
+                  padding: '16px',
                 }}
-                id="modal-modal-description"
+                className="bg-white"
+                minWidth={'100%'}
+                borderRadius={'16px'}
+                border={'1px'}
+                display="flex"
+                flexDirection="row"
               >
+                <Grid container spacing={4}>
+                  {filteredSortedForView?.map((item, index) => {
+                    if (item.order === 5) {
+                      return (
+                        <Grid item xs={12}>
+                          <Typography
+                            fontSize={'12px'}
+                            fontWeight={'600'}
+                            margin={0}
+                            lineHeight={'16px'}
+                            letterSpacing={'0.5px'}
+                            sx={{ wordBreak: 'break-word' }}
+                            color={theme.palette.warning['500']}
+                          >
+                            {item?.label && item.name
+                              ? t(
+                                  `FIELDS.${item.name.toUpperCase()}`,
+                                  item.label
+                                )
+                              : item.label}
+                            {/* {item?.label} */}
+                          </Typography>
+                          <Box
+                            mt={2}
+                            sx={{
+                              display: 'flex',
+                              gap: '10px',
+                              flexWrap: 'wrap',
+                            }}
+                          >
+                            {orderedSubjects &&
+                              orderedSubjects?.map((subject, index) => (
+                                <Button
+                                  key={index}
+                                  size="small"
+                                  variant={
+                                    mainSubjects?.includes(subject)
+                                      ? 'contained'
+                                      : 'outlined'
+                                  }
+                                  sx={{
+                                    backgroundColor: mainSubjects?.includes(
+                                      subject
+                                    )
+                                      ? theme.palette.info.contrastText
+                                      : 'none',
+                                    borderRadius: '8px',
+                                    color: theme.palette.warning.A200,
+                                    whiteSpace: 'nowrap',
+                                    boxShadow: 'none',
+                                    border: `1px solid ${theme.palette.warning[900]}`,
+                                    pointerEvents: 'none',
+                                  }}
+                                >
+                                  {getLabelForSubject(subject)}
+                                  {/* {subject} */}
+                                </Button>
+                              ))}
+                          </Box>
+                        </Grid>
+                      );
+                    } else if (item.order === 7) {
+                      return (
+                        <Grid item xs={12} key={index}>
+                          <Typography
+                            variant="h4"
+                            margin={0}
+                            lineHeight={'16px'}
+                            fontSize={'12px'}
+                            fontWeight={'600'}
+                            letterSpacing={'0.5px'}
+                            color={theme.palette.warning['500']}
+                          >
+                            {item?.label && item.name
+                              ? t(
+                                  `FIELDS.${item.name.toUpperCase()}`,
+                                  item.label
+                                )
+                              : item.label}
+                            {/* {item.label} */}
+                          </Typography>
+                          <Typography
+                            variant="h4"
+                            margin={0}
+                            color={theme.palette.warning.A200}
+                            sx={{ wordBreak: 'break-word' }}
+                          >
+                            {item.value}
+                          </Typography>
+                        </Grid>
+                      );
+                    } else {
+                      return (
+                        <Grid item xs={6} key={index}>
+                          <Typography
+                            variant="h4"
+                            margin={0}
+                            lineHeight={'16px'}
+                            fontSize={'12px'}
+                            fontWeight={'600'}
+                            letterSpacing={'0.5px'}
+                            color={theme.palette.warning['500']}
+                          >
+                            {item?.label && item.name
+                              ? t(
+                                  `FIELDS.${item.name.toUpperCase()}`,
+                                  item.label
+                                )
+                              : item.label}
+                            {/* {item.label} */}
+                          </Typography>
+                          <Typography
+                            variant="h4"
+                            margin={0}
+                            color={theme.palette.warning.A200}
+                            sx={{ wordBreak: 'break-word' }}
+                          >
+                            {getLabelForValue(item, item.value[0])}
+                          </Typography>
+                        </Grid>
+                      );
+                    }
+                  })}
+                </Grid>
+              </Box>
+            </Box>
+            {/* modal for edit profile */}
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="edit-profile-modal"
+              aria-describedby="edit-profile-description"
+            >
+              <Box
+                sx={style}
+                gap="10px"
+                display="flex"
+                flexDirection="column"
+                borderRadius={'1rem'}
+              >
+                {loading && (
+                  <Loader
+                    showBackdrop={true}
+                    loadingText={t('COMMON.LOADING')}
+                  />
+                )}
                 <Box
                   sx={{
-                    flex: '1',
-                    textAlign: 'center',
-                    marginLeft: '5%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
-                    justifyContent: 'center',
+                    padding: '15px 20px 6px',
                   }}
-                  borderRadius={'12px'}
-                  border={'1px'}
-                  bgcolor={theme.palette.warning.A400}
-                  display="flex"
-                  flexDirection="column"
                 >
-                  {/* <Image
+                  <Typography
+                    variant="h2"
+                    style={{
+                      textAlign: 'left',
+                      color: theme.palette.warning.A200,
+                    }}
+                  >
+                    {t('PROFILE.EDIT_PROFILE')}
+                  </Typography>
+
+                  <IconButton
+                    edge="end"
+                    color="inherit"
+                    onClick={handleClose}
+                    aria-label="close"
+                    style={{
+                      justifyContent: 'flex-end',
+                    }}
+                  >
+                    <CloseIcon cursor="pointer" />
+                  </IconButton>
+                </Box>
+                <Divider />
+                <Box
+                  style={{
+                    overflowY: 'auto',
+                    padding: '0px 20px 10px',
+                  }}
+                  id="modal-modal-description"
+                >
+                  <Box
+                    sx={{
+                      flex: '1',
+                      textAlign: 'center',
+                      marginLeft: '5%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    borderRadius={'12px'}
+                    border={'1px'}
+                    bgcolor={theme.palette.warning.A400}
+                    display="flex"
+                    flexDirection="column"
+                  >
+                    {/* <Image
                     src={user_placeholder_img}
                     alt="user"
                     height={80}
@@ -765,17 +840,17 @@ const TeacherProfile = () => {
                     style={{ alignItems: 'center' }}
                   /> */}
 
-                  <Box>
-                    <input
-                      id=""
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      ref={fileInputRef}
-                      onChange={handleImageUpload}
-                      style={{ display: 'none' }}
-                    />
-                    {/* ------- comment for temp 
+                    <Box>
+                      <input
+                        id=""
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        ref={fileInputRef}
+                        onChange={handleImageUpload}
+                        style={{ display: 'none' }}
+                      />
+                      {/* ------- comment for temp 
                     <Button
                       sx={{
                         minWidth: '100%',
@@ -791,244 +866,283 @@ const TeacherProfile = () => {
                     >
                       {t('PROFILE.UPDATE_PICTURE')}
                     </Button> */}
+                    </Box>
                   </Box>
-                </Box>
-                <TextField
-                  sx={{ marginTop: '20px' }}
-                  type="text"
-                  fullWidth
-                  name="name"
-                  label={t('PROFILE.FULL_NAME')}
-                  variant="outlined"
-                  value={formData.userData.name}
-                  inputProps={{
-                    pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
-                    title: t('PROFILE.AT_REQUIRED_LETTER'),
-                    required: true,
-                  }}
-                  error={!formData.userData.name.trim()} // Show error if the input is empty
-                  helperText={
-                    !formData.userData.name.trim() && t('PROFILE.ENTER_NAME')
-                  }
-                  onChange={handleInputChange}
-                />
+                  <TextField
+                    sx={{ marginTop: '20px' }}
+                    type="text"
+                    fullWidth
+                    name="name"
+                    label={t('PROFILE.FULL_NAME')}
+                    variant="outlined"
+                    value={formData.userData.name}
+                    inputProps={{
+                      pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
+                      title: t('PROFILE.AT_REQUIRED_LETTER'),
+                      required: true,
+                    }}
+                    error={!formData.userData.name.trim()} // Show error if the input is empty
+                    helperText={
+                      !formData.userData.name.trim() && t('PROFILE.ENTER_NAME')
+                    }
+                    onChange={handleInputChange}
+                  />
 
-                {customFieldsData
-                  ?.filter((field) => field.isEditable)
-                  ?.sort((a, b) => a.order - b.order)
-                  ?.map((field) => {
-                    const fieldValue =
-                      formData?.customFields?.find(
-                        (f) => f.fieldId === field.fieldId
-                      )?.value[0] || '';
-                    const isError = errors[field.fieldId];
+                  {customFieldsData
+                    ?.filter((field) => field.isEditable)
+                    ?.sort((a, b) => a.order - b.order)
+                    ?.map((field) => {
+                      const fieldValue =
+                        formData?.customFields?.find(
+                          (f) => f.fieldId === field.fieldId
+                        )?.value[0] || '';
+                      const isError = errors[field.fieldId];
 
-                    return (
-                      <Grid item xs={12} key={field.fieldId}>
-                        {field.type === 'text' ? (
-                          <TextField
-                            type="text"
-                            inputProps={{ maxLength: 3 }}
-                            sx={{ marginTop: '20px' }}
-                            fullWidth
-                            name={field.name}
-                            label={
-                              field?.label && field.name
-                                ? t(
-                                    `FIELDS.${field.name.toUpperCase()}`,
-                                    field.label
-                                  )
-                                : field.label
-                            }
-                            variant="outlined"
-                            value={fieldValue}
-                            onChange={(e) => {
-                              handleFieldChange(field.fieldId, e.target.value);
-                              validateFields();
-                            }}
-                            error={isError}
-                            helperText={isError && t('PROFILE.ENTER_CHARACTER')}
-                          />
-                        ) : field.type === 'numeric' ? (
-                          <TextField
-                            type="number"
-                            inputProps={{ maxLength: 3 }}
-                            sx={{ marginTop: '20px' }}
-                            fullWidth
-                            name={field.name}
-                            label={
-                              field?.label && field.name
-                                ? t(
-                                    `FIELDS.${field.name.toUpperCase()}`,
-                                    field.label
-                                  )
-                                : field.label
-                            }
-                            variant="outlined"
-                            value={fieldValue}
-                            onChange={(e) => {
-                              const inputValue = e.target.value;
-                              if (/^\d{0,4}$/.test(inputValue)) {
-                                handleFieldChange(field.fieldId, inputValue);
-                              } else {
-                                handleFieldChange(field.fieldId, ''); // Clear the field value if it doesn't meet the validation criteria
+                      return (
+                        <Grid item xs={12} key={field.fieldId}>
+                          {field.type === 'text' ? (
+                            <TextField
+                              type="text"
+                              inputProps={{ maxLength: 3 }}
+                              sx={{ marginTop: '20px' }}
+                              fullWidth
+                              name={field.name}
+                              label={
+                                field?.label && field.name
+                                  ? t(
+                                      `FIELDS.${field.name.toUpperCase()}`,
+                                      field.label
+                                    )
+                                  : field.label
                               }
-                              validateFields();
-                            }}
-                            error={isError}
-                            helperText={isError && t('PROFILE.ENTER_NUMBER')}
-                          />
-                        ) : field.type === 'checkbox' ? (
-                          <Box marginTop={3}>
-                            <Typography
-                              textAlign={'start'}
-                              variant="h4"
-                              margin={0}
-                              color={theme.palette.warning.A200}
-                            >
-                              {field?.label && field.name
-                                ? t(
-                                    `FIELDS.${field.name.toUpperCase()}`,
-                                    field.label
+                              variant="outlined"
+                              value={fieldValue}
+                              onChange={(e) => {
+                                handleFieldChange(
+                                  field.fieldId,
+                                  e.target.value
+                                );
+                                validateFields();
+                              }}
+                              error={isError}
+                              helperText={
+                                isError && t('PROFILE.ENTER_CHARACTER')
+                              }
+                            />
+                          ) : field.type === 'numeric' ? (
+                            <TextField
+                              type="number"
+                              inputProps={{ maxLength: 3 }}
+                              sx={{ marginTop: '20px' }}
+                              fullWidth
+                              name={field.name}
+                              label={
+                                field?.label && field.name
+                                  ? t(
+                                      `FIELDS.${field.name.toUpperCase()}`,
+                                      field.label
+                                    )
+                                  : field.label
+                              }
+                              variant="outlined"
+                              value={fieldValue}
+                              onKeyDown={(e) => {
+                                // Allow only numeric keys, Backspace, and Delete
+                                if (
+                                  !(
+                                    (
+                                      /[0-9]/.test(e.key) ||
+                                      e.key === 'Backspace' ||
+                                      e.key === 'Delete'
+                                    ) // Allow decimal point if needed
                                   )
-                                : field.label}
-                            </Typography>
-                            {field.options?.map((option: any) => (
-                              <FormGroup key={option.value}>
-                                <FormControlLabel
-                                  sx={{ color: theme.palette.warning[300] }}
-                                  control={
-                                    <Checkbox
-                                      color="default"
-                                      checked={(
-                                        formData?.customFields.find(
-                                          (f) => f.fieldId === field.fieldId
-                                        )?.value || []
-                                      )?.includes(option.value)}
-                                      onChange={(e) =>
-                                        handleCheckboxChange(
-                                          field.fieldId,
-                                          option.value,
-                                          e.target.checked
-                                        )
-                                      }
-                                    />
-                                  }
-                                  label={option.label}
-                                />
-                              </FormGroup>
-                            ))}
-                          </Box>
-                        ) : field.type === 'drop_down' ||
-                          field.type === 'dropdown' ? (
-                          <Box marginTop={3} textAlign={'start'}>
-                            <FormControl fullWidth>
-                              <InputLabel id={`select-label-${field.fieldId}`}>
+                                ) {
+                                  e.preventDefault();
+                                }
+                              }}
+                              onChange={(e) => {
+                                const inputValue = e.target.value;
+                                if (/^\d{0,4}$/.test(inputValue)) {
+                                  handleFieldChange(field.fieldId, inputValue);
+                                  validateFields();
+                                }
+                              }}
+                              error={isError}
+                              helperText={isError && t('PROFILE.ENTER_NUMBER')}
+                            />
+                          ) : field.type === 'checkbox' ? (
+                            <Box marginTop={3}>
+                              <Typography
+                                textAlign={'start'}
+                                variant="h4"
+                                margin={0}
+                                color={theme.palette.warning.A200}
+                              >
                                 {field?.label && field.name
                                   ? t(
                                       `FIELDS.${field.name.toUpperCase()}`,
                                       field.label
                                     )
                                   : field.label}
-                              </InputLabel>
-                              <Select
-                                labelId={`select-label-${field.fieldId}`}
-                                id={`select-${field.fieldId}`}
-                                value={fieldValue}
-                                label={
-                                  field?.label && field.name
+                              </Typography>
+                              {field.options?.map((option: any) => (
+                                <FormGroup key={option.value}>
+                                  <FormControlLabel
+                                    sx={{ color: theme.palette.warning[300] }}
+                                    control={
+                                      <Checkbox
+                                        color="default"
+                                        checked={(
+                                          formData?.customFields.find(
+                                            (f) => f.fieldId === field.fieldId
+                                          )?.value || []
+                                        )?.includes(option.value)}
+                                        onChange={(e) =>
+                                          handleCheckboxChange(
+                                            field.fieldId,
+                                            option.value,
+                                            e.target.checked
+                                          )
+                                        }
+                                      />
+                                    }
+                                    label={option.label}
+                                  />
+                                </FormGroup>
+                              ))}
+                            </Box>
+                          ) : field.type === 'drop_down' ||
+                            field.type === 'dropdown' ? (
+                            <Box marginTop={3} textAlign={'start'}>
+                              <FormControl fullWidth>
+                                <InputLabel
+                                  id={`select-label-${field.fieldId}`}
+                                >
+                                  {field?.label && field.name
                                     ? t(
                                         `FIELDS.${field.name.toUpperCase()}`,
                                         field.label
                                       )
-                                    : field.label
-                                }
+                                    : field.label}
+                                </InputLabel>
+                                <Select
+                                  labelId={`select-label-${field.fieldId}`}
+                                  id={`select-${field.fieldId}`}
+                                  value={fieldValue}
+                                  label={
+                                    field?.label && field.name
+                                      ? t(
+                                          `FIELDS.${field.name.toUpperCase()}`,
+                                          field.label
+                                        )
+                                      : field.label
+                                  }
+                                  onChange={(e) =>
+                                    handleDropdownChange(
+                                      field.fieldId,
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  {field?.options?.map((option: any) => (
+                                    <MenuItem
+                                      key={option.value}
+                                      value={option.value}
+                                    >
+                                      {option.label}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                                {errors[field.fieldId] && (
+                                  <FormHelperText
+                                    sx={{ color: theme.palette.error.main }}
+                                  >
+                                    {t('PROFILE.SELECT_OPTION')}
+                                  </FormHelperText>
+                                )}
+                              </FormControl>
+                            </Box>
+                          ) : field.type === 'radio' ||
+                            field.type === 'Radio' ? (
+                            <Box marginTop={3}>
+                              <Typography
+                                textAlign={'start'}
+                                variant="h4"
+                                margin={0}
+                                color={theme.palette.warning.A200}
+                              >
+                                {field?.label && field.name
+                                  ? t(
+                                      `FIELDS.${field.name.toUpperCase()}`,
+                                      field.label
+                                    )
+                                  : field.label}
+                              </Typography>
+                              <RadioGroup
+                                name={field.fieldId}
+                                value={fieldValue}
                                 onChange={(e) =>
-                                  handleDropdownChange(
+                                  handleRadioChange(
                                     field.fieldId,
                                     e.target.value
                                   )
                                 }
                               >
-                                {field?.options?.map((option: any) => (
-                                  <MenuItem
-                                    key={option.value}
-                                    value={option.value}
-                                  >
-                                    {option.label}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                        ) : field.type === 'radio' || field.type === 'Radio' ? (
-                          <Box marginTop={3}>
-                            <Typography
-                              textAlign={'start'}
-                              variant="h4"
-                              margin={0}
-                              color={theme.palette.warning.A200}
-                            >
-                              {field?.label && field.name
-                                ? t(
-                                    `FIELDS.${field.name.toUpperCase()}`,
-                                    field.label
-                                  )
-                                : field.label}
-                            </Typography>
-                            <RadioGroup
-                              name={field.fieldId}
-                              value={fieldValue}
-                              onChange={(e) =>
-                                handleRadioChange(field.fieldId, e.target.value)
-                              }
-                            >
-                              <Box
-                                display="flex"
-                                flexWrap="wrap"
-                                color={theme.palette.warning.A200}
-                              >
-                                {field?.options?.map((option: any) => (
-                                  <FormControlLabel
-                                    key={option.value}
-                                    value={option.value}
-                                    control={<Radio color="default" />}
-                                    label={option.label}
-                                  />
-                                ))}
-                              </Box>
-                            </RadioGroup>
-                          </Box>
-                        ) : null}
-                      </Grid>
-                    );
-                  })}
-                <Box></Box>
-              </Box>
-              <Divider />
-              <Box
-                sx={{
-                  display: 'flex',
-                  padding: '6px 20px 20px 20px',
-                  justifyContent: 'center',
-                }}
-              >
-                <Button
+                                <Box
+                                  display="flex"
+                                  flexWrap="wrap"
+                                  color={theme.palette.warning.A200}
+                                >
+                                  {field?.options?.map((option: any) => (
+                                    <FormControlLabel
+                                      key={option.value}
+                                      value={option.value}
+                                      control={<Radio color="default" />}
+                                      label={option.label}
+                                    />
+                                  ))}
+                                </Box>
+                              </RadioGroup>
+                            </Box>
+                          ) : null}
+                        </Grid>
+                      );
+                    })}
+                  <Box></Box>
+                </Box>
+                <Divider />
+                <Box
                   sx={{
-                    minWidth: '100%',
-                    color: theme.palette.warning.A200,
-                    boxShadow: 'none',
+                    display: 'flex',
+                    padding: '6px 20px 20px 20px',
+                    justifyContent: 'center',
                   }}
-                  onClick={handleSubmit}
-                  variant="contained"
-                  disabled={hasErrors}
                 >
-                  {t('COMMON.SAVE')}
-                </Button>
+                  <Button
+                    sx={{
+                      minWidth: '100%',
+                      color: theme.palette.warning.A200,
+                      boxShadow: 'none',
+                    }}
+                    onClick={handleSubmit}
+                    variant="contained"
+                    disabled={
+                      !hasInputChanged || !isValidationTriggered || hasErrors
+                    }
+                  >
+                    {t('COMMON.SAVE')}
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-          </Modal>
-        </Box>
+            </Modal>
+          </Box>
+        ) : (
+          <Box mt={5}>
+            <Typography textAlign={'center'}>
+              {t('COMMON.SOMETHING_WENT_WRONG')}
+            </Typography>
+          </Box>
+        )}{' '}
       </Box>
       {isError && <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />}
     </>
