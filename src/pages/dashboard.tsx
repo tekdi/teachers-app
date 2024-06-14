@@ -36,7 +36,6 @@ import {
 
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import OverviewCard from '@/components/OverviewCard';
-import ToastMessage from '@/components/ToastMessage';
 import { showToastMessage } from '@/components/Toastify';
 import WeekCalender from '@/components/WeekCalender';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
@@ -87,13 +86,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [dateRange, setDateRange] = React.useState<Date | string>('');
   const [allCenterAttendanceData, setAllCenterAttendanceData] =
     React.useState<any>(cohortsData);
-  const [isError, setIsError] = React.useState<boolean>(false);
-  // const [state, setState] = React.useState<State>({
-  //   openModal: false,
-  //   vertical: 'top',
-  //   horizontal: 'center',
-  // });
-  // const { vertical, horizontal, openModal } = state;
 
   const router = useRouter();
   const theme = useTheme<any>();
@@ -187,7 +179,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         }
       } catch (error) {
         console.error('Error fetching  cohort list:', error);
-        setIsError(true);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setLoading(false);
       }
     };
@@ -322,14 +314,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   filters,
                   facets,
                 });
-                setIsError(false);
                 return { cohortId, data: response?.data?.result };
               } catch (error) {
                 console.error(
                   `Error fetching data for cohortId ${cohortId}:`,
                   error
                 );
-                setIsError(true);
+                showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
                 return { cohortId, error };
               }
             });
@@ -366,11 +357,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 .filter((item) => item.presentPercentage !== null); // Filter out items with no valid percentage
 
               // console.log('Filtered and merged data:', nameIDAttendanceArray);
-              setIsError(false);
               setAllCenterAttendanceData(nameIDAttendanceArray);
             } catch (error) {
               console.error('Error fetching attendance data:', error);
-              setIsError(true);
+              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
             }
           };
 
@@ -931,9 +921,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
               </Box>
             </Box>
           </Box>
-          {isError && (
-            <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
-          )}
 
           {/* <Box sx={{ background: '#fff' }}>
             <Typography
