@@ -50,21 +50,21 @@ const UpDownButton = () => {
     }
   }, [pathname]);
 
-  const handleBackToTopButtonClicked = () =>{
+  const handleBackToTopButtonClicked = () => {
     logEvent({
       action: 'back-to-top-button-clicked',
       category: 'Attendance Overview/ History Page',
       label: 'Back To Top Clicked',
     });
-  }
+  };
 
-  const handleLearnerButtonClicked = () =>{
+  const handleLearnerButtonClicked = () => {
     logEvent({
       action: 'learners-button-clicked',
       category: 'Attendance Overview/ History Page',
       label: 'Learners Button Clicked',
     });
-  }
+  };
 
   return (
     <div>

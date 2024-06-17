@@ -1,3 +1,3 @@
 interface Window {
-    GA_INITIALIZED: boolean;
-  }
+  GA_INITIALIZED: boolean;
+}

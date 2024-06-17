@@ -80,21 +80,24 @@ export const getMonthName = () => {
 
 export const getDayAndMonthName = (dateString: Date | string) => {
   const date = new Date(dateString);
-  const day = date.getDate(); ;
+  const day = date.getDate();
   const month = date.toLocaleString('default', { month: 'long' });
   return `${day} ${month}`;
 };
 
-export const getDayMonthYearFormat  = (dateString: string) => {
+export const getDayMonthYearFormat = (dateString: string) => {
   const [year, monthIndex, day] = dateString.split('-');
-  const date = new Date(parseInt(year, 10), parseInt(monthIndex, 10) - 1, parseInt(day, 10));
+  const date = new Date(
+    parseInt(year, 10),
+    parseInt(monthIndex, 10) - 1,
+    parseInt(day, 10)
+  );
   return date.toLocaleDateString('en-US', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
   });
 };
- 
 
 // Function to truncate URL if it's too long
 export const truncateURL = (
@@ -151,36 +154,37 @@ export const getLabelForValue = (value: string): string => {
 };
 
 export const generateRandomString = (length: number): string => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   const charactersLength = characters.length;
 
   for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
 
   return result;
-}
+};
 
 export const generateUUID = () => {
-  var d = new Date().getTime()
+  var d = new Date().getTime();
   var d2 =
     (typeof performance !== 'undefined' &&
       performance.now &&
       performance.now() * 1000) ||
-    0
+    0;
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = Math.random() * 16
+    var r = Math.random() * 16;
     if (d > 0) {
-      r = (d + r) % 16 | 0
-      d = Math.floor(d / 16)
+      r = (d + r) % 16 | 0;
+      d = Math.floor(d / 16);
     } else {
-      r = (d2 + r) % 16 | 0
-      d2 = Math.floor(d2 / 16)
+      r = (d2 + r) % 16 | 0;
+      d2 = Math.floor(d2 / 16);
     }
-    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16)
-  })
-}
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+};
 
 export const getDeviceId = () => {
   return new Promise((resolve) => {

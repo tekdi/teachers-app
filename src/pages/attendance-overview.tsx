@@ -73,9 +73,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [searchWord, setSearchWord] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
   const [learnerData, setLearnerData] = React.useState<Array<any>>([]);
-  const [isFromDate, setIsFromDate] = useState(formatSelectedDate(
-    new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000)
-  ));
+  const [isFromDate, setIsFromDate] = useState(
+    formatSelectedDate(new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000))
+  );
   const [isToDate, setIsToDate] = useState(getTodayDate());
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
@@ -160,7 +160,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           contextId: classId,
         },
         facets: ['attendanceDate'],
-        sort: ['present_percentage', 'asc']
+        sort: ['present_percentage', 'asc'],
       };
       const res = await getCohortAttendance(cohortAttendanceData);
       const response = res?.data?.result?.attendanceDate;
@@ -173,9 +173,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     if (classId) {
       getAttendanceMarkedDays();
     }
-  }, [classId, selectedValue === t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-    date_range: dateRange,
-  })]);
+  }, [
+    classId,
+    selectedValue ===
+      t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+        date_range: dateRange,
+      }),
+  ]);
 
   // API call to get center list
   useEffect(() => {
@@ -344,7 +348,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 contextId: classId,
               },
               facets: ['contextId'],
-              sort: ['present_percentage', 'asc']
+              sort: ['present_percentage', 'asc'],
             };
             const res = await getCohortAttendance(cohortAttendanceData);
             const response = res?.data?.result;
@@ -454,7 +458,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
-    ReactGA.event("cohort-selection-attendance-overview-page", { selectedCohortID: event.target.value });
+    ReactGA.event('cohort-selection-attendance-overview-page', {
+      selectedCohortID: event.target.value,
+    });
 
     // ---------- set cohortId and stateName-----------
     const cohort_id = event.target.value;
@@ -492,7 +498,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     setSearchWord(event.target.value);
     if (event.target.value.length >= 1) {
       debouncedSearch(event.target.value);
-      ReactGA.event("search-by-keyword-attendance-overview-page", { keyword: event.target.value});
+      ReactGA.event('search-by-keyword-attendance-overview-page', {
+        keyword: event.target.value,
+      });
     } else {
       setDisplayStudentList(learnerData);
     }
@@ -688,10 +696,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             onDateRangeSelected={handleDateRangeSelected}
             dateRange={dateRange}
           />
-          {(selectedValue ===
-          t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-            date_range: dateRange,
-          }) || selectedValue === "") ? (
+          {selectedValue ===
+            t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+              date_range: dateRange,
+            }) || selectedValue === '' ? (
             <Typography
               color={theme.palette.warning['400']}
               fontSize={'0.75rem'}
@@ -726,7 +734,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       />
                     ))}
                     valuePartOne={
-                      Array.isArray(lowAttendanceLearnerList) && lowAttendanceLearnerList.length > 2
+                      Array.isArray(lowAttendanceLearnerList) &&
+                      lowAttendanceLearnerList.length > 2
                         ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                         : lowAttendanceLearnerList.length === 2
                           ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
@@ -738,7 +747,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                               : t('ATTENDANCE.N/A')
                     }
                     valuePartTwo={
-                      Array.isArray(lowAttendanceLearnerList) && 
+                      Array.isArray(lowAttendanceLearnerList) &&
                       lowAttendanceLearnerList.length > 2
                         ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                         : null

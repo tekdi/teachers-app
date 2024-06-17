@@ -17,7 +17,7 @@ const CardStyled = styled(Card)(({ theme }) => ({
   border: '1px solid #ccc',
   boxShadow: 'none',
   backgroundImage: 'none',
-  overflow: 'visible'
+  overflow: 'visible',
 }));
 
 const WeekDays: React.FC<WeekDaysProps> = ({ useAbbreviation }) => {
@@ -41,13 +41,18 @@ const WeekDays: React.FC<WeekDaysProps> = ({ useAbbreviation }) => {
       const itemLeft = selectedItem.offsetLeft;
       const itemWidth = selectedItem.offsetWidth;
 
-      const scrollPosition = itemLeft - (containerWidth / 2) + (itemWidth / 2);
+      const scrollPosition = itemLeft - containerWidth / 2 + itemWidth / 2;
       scrollContainer.scrollTo({ left: scrollPosition, behavior: 'smooth' });
     }
   }, []);
 
   return (
-    <Box display="flex" justifyContent="flex-start" overflow="auto" ref={scrollContainerRef}>
+    <Box
+      display="flex"
+      justifyContent="flex-start"
+      overflow="auto"
+      ref={scrollContainerRef}
+    >
       {days.map((day, index) => (
         <CardStyled
           key={day}

@@ -405,7 +405,9 @@ const UserAttendanceHistory = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
-    ReactGA.event("cohort-selection-attendance-history-page", { selectedCohortID: event.target.value });
+    ReactGA.event('cohort-selection-attendance-history-page', {
+      selectedCohortID: event.target.value,
+    });
     setHandleSaveHasRun(!handleSaveHasRun);
 
     // ---------- set cohortId and stateName-----------
@@ -442,7 +444,9 @@ const UserAttendanceHistory = () => {
   // handle search student data
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchWord(event.target.value);
-    ReactGA.event("search-by-keyword-attendance-history-age", { keyword: event.target.value});
+    ReactGA.event('search-by-keyword-attendance-history-age', {
+      keyword: event.target.value,
+    });
     if (event.target.value.length >= 3) {
       debouncedSearch(event.target.value);
     } else {
@@ -573,12 +577,16 @@ const UserAttendanceHistory = () => {
               width={'100%'}
               paddingTop={'10px'}
             >
-                <Box onClick={() => {window.history.back()
-                logEvent({
-                  action: 'back-button-clicked-attendance-history-page',
-                  category: 'Attendance History Page',
-                  label: 'Back Button Clicked',
-                });}}>
+              <Box
+                onClick={() => {
+                  window.history.back();
+                  logEvent({
+                    action: 'back-button-clicked-attendance-history-page',
+                    category: 'Attendance History Page',
+                    label: 'Back Button Clicked',
+                  });
+                }}
+              >
                 <Box>
                   <KeyboardBackspaceOutlinedIcon
                     cursor={'pointer'}

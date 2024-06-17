@@ -87,7 +87,6 @@ function App({ Component, pageProps }: AppProps) {
       telemetryFactory.impression(telemetryImpression);
 
       logPageView(url);
-      
     };
 
     // Log initial page load
@@ -125,7 +124,11 @@ function App({ Component, pageProps }: AppProps) {
         {/* <ModeToggle /> */}
         <Container maxWidth="md" style={{ padding: 0 }}>
           <Component {...pageProps} />
-          <ToastContainer position="bottom-left" autoClose={3000} stacked={false} />
+          <ToastContainer
+            position="bottom-left"
+            autoClose={3000}
+            stacked={false}
+          />
         </Container>
       </CssVarsProvider>
     </>

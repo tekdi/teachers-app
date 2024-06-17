@@ -7,32 +7,30 @@ function Logout() {
   const router = useRouter();
   useEffect(() => {
     const userLogout = async () => {
-
       const telemetryInteract = {
         context: {
-          env: "sign-out",
+          env: 'sign-out',
           cdata: [],
         },
         edata: {
-          id: "logout-success",
-          type: "CLICK",
-          subtype: "",
-          pageid: "sign-out",
-          uid: "id",
-  
+          id: 'logout-success',
+          type: 'CLICK',
+          subtype: '',
+          pageid: 'sign-out',
+          uid: 'id',
+
           studentid: localStorage.getItem('userId'),
-  
-          userName: "userName",
-  
-          grade: "grade",
-  
-          medium: "medium",
-  
-          board: "board",
+
+          userName: 'userName',
+
+          grade: 'grade',
+
+          medium: 'medium',
+
+          board: 'board',
         },
       };
       telemetryFactory.interact(telemetryInteract);
-     
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');

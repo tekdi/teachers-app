@@ -66,7 +66,7 @@ interface CustomSelectModalProps {
   selectedValue: string;
   setSelectedValue: (value: string) => void;
   onDateRangeSelected: any;
-  dateRange?: string | Date| undefined ;
+  dateRange?: string | Date | undefined;
 }
 
 const DateRangePopup: React.FC<CustomSelectModalProps> = ({
@@ -91,11 +91,11 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const [appliedIndex, setAppliedIndex] = React.useState<number | null>(0);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
-  const handleModalClose = () =>{
-    setIsModalOpen(false)
-    setSelectedValue(appliedOption)
-    setSelectedIndex(appliedIndex)
-  }
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedValue(appliedOption);
+    setSelectedIndex(appliedIndex);
+  };
   const toggleCalendarModal = () =>
     setIsCalenderModalOpen(!isCalendarModalOpen);
   const { t } = useTranslation();
@@ -122,9 +122,11 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       setCancelClicked(false);
     } else {
       // console.log('applied', selectedIndex, selectedValue);
-      setAppliedOption(selectedValue)
-      setAppliedIndex(selectedIndex)
-      ReactGA.event("date-range-pop-up-clicked", { dateRangeType: selectedValue});
+      setAppliedOption(selectedValue);
+      setAppliedIndex(selectedIndex);
+      ReactGA.event('date-range-pop-up-clicked', {
+        dateRangeType: selectedValue,
+      });
       const values = getDateRange(selectedIndex);
       const { toDate, fromDate } = values;
       // console.log(toDate, fromDate);
@@ -223,13 +225,15 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         >
           <MenuItem value="" disabled>
             {t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-            date_range: dateRange})}
+              date_range: dateRange,
+            })}
           </MenuItem>
           <MenuItem value={selectedValue}>
             {selectedValue
               ? selectedValue
-              :  t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-                date_range: dateRange})}
+              : t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+                  date_range: dateRange,
+                })}
           </MenuItem>
         </Select>
       </FormControl>
@@ -282,11 +286,11 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                     sx={{
                       position: 'absolute',
                       left: '8px',
-                      minWidth: 'auto'
+                      minWidth: 'auto',
                     }}
                     className="text4D"
                   >
-                   <Image
+                    <Image
                       height={10}
                       width={12}
                       src={checkMark}

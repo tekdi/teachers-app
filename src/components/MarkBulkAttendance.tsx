@@ -275,7 +275,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
               } else {
                 onSaveSuccess(true);
               }
-              
+
               onClose();
             }
           } else {

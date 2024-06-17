@@ -137,11 +137,16 @@ const LoginPage = () => {
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 404) {
-          showToastMessage(t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'), 'error');          
-
+          showToastMessage(
+            t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
+            'error'
+          );
         } else {
           console.error('Error:', error);
-          showToastMessage(t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'), 'error');          
+          showToastMessage(
+            t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
+            'error'
+          );
         }
       }
     }

@@ -131,8 +131,11 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
             <Grid item xs={6} textAlign={'left'}>
               <Link className="word-break" href={''}>
                 <Typography
-                  onClick={() => {handleOpenModalLearner(userId!)
-                    ReactGA.event("learner-details-link-clicked", { userId: userId});
+                  onClick={() => {
+                    handleOpenModalLearner(userId!);
+                    ReactGA.event('learner-details-link-clicked', {
+                      userId: userId,
+                    });
                   }}
                   sx={{
                     textAlign: 'left',

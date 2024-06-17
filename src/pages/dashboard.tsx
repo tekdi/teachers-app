@@ -31,7 +31,7 @@ import {
   formatSelectedDate,
   getTodayDate,
   shortDateFormat,
-  toPascalCase
+  toPascalCase,
 } from '../utils/Helper';
 
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
@@ -766,9 +766,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       selectedDate={new Date(selectedDate)}
                       onSaveSuccess={(isModified) => {
                         if (isModified) {
-                          showToastMessage(t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY'), 'success');
+                          showToastMessage(
+                            t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY'),
+                            'success'
+                          );
                         } else {
-                          showToastMessage(t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'), 'success');
+                          showToastMessage(
+                            t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'),
+                            'success'
+                          );
                         }
                         setHandleSaveHasRun(!handleSaveHasRun);
                       }}
