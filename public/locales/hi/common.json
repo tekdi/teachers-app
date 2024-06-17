@@ -181,5 +181,17 @@
     "MOBILISATION_METHOD": "शिक्षार्थी को कैसे जोड़ा गया?",
     "MONTH_MOBILISATION": "जोड़ने का महीना",
     "DROP_OUT_REASON": "स्कूल छोड़ने का कारण"
+  },
+  "DROPOUT_REASONS":{
+    "UNABLE_TO_COPE_WITH_STUDIES": "पढ़ाई में असमर्थता",
+      "FAMILY_RESPONSIBILITIES": "पारिवारिक जिम्मेदारियाँ",
+      "NEED_TO_GO_TO_WORK_OWN_WORK": "काम पर जाने की आवश्यकता / खुद का काम",
+      "MARRIAGE": "शादी",
+      "ILLNESS": "बीमारी",
+      "MIGRATION": "प्रवास",
+      "PREGNANCY": "गर्भावस्था",
+      "DOCUMENT_ISSUE": "दस्तावेज़ मुद्दा",
+      "DISTANCE_ISSUE": "दूरी की समस्या",
+      "SCHOOL_ADMISSION": "स्कूल में प्रवेश"
   }
 }
