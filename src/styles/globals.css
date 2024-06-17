@@ -1,35 +1,41 @@
 .alert .MuiSnackbarContent-root {
-  background-color: var(--mui-palette-error-light) !important;
+  margin-top: 35%;
   color: var(--mui-palette-error-main);
   font-size: 0.75rem;
-  margin-top: 35%;
+  background-color: var(--mui-palette-error-light) !important;
 }
+
 .remember-me-checkbox span svg {
   fill: black !important;
 }
+
 .remember-me-checkbox span {
   padding: 6px 7px 6px 0 !important;
 }
+
 body {
+  box-sizing: border-box;
   margin: 0 !important;
   padding: 0 !important;
-  box-sizing: border-box;
   background-color: white;
 }
 
 .drawer-select div div {
-  height: 32px !important;
-  padding: 0 10px;
   display: flex;
   align-items: center;
+  height: 32px !important;
+  padding: 0 10px;
+  font-weight: 500;
+  font-size: 14px;
+
   /* border: 1px solid #1f1b13 !important; */
   border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
 }
+
 .word-break {
   word-break: break-all;
 }
+
 .fs-12 {
   font-size: 12px !important;
 }
@@ -37,12 +43,15 @@ body {
 .fs-14 {
   font-size: 14px !important;
 }
+
 .fs-22 {
   font-size: 22px !important;
 }
+
 .text-4D {
   color: #4d4639;
 }
+
 .text-1F {
   color: #1f1b13;
 }
@@ -54,40 +63,43 @@ body {
 .pt-10 {
   padding-top: 8px;
 }
+
 .fw-500 {
   font-weight: 500;
 }
+
 .fw-600 {
   font-weight: 600;
+
   .App {
-    font-family: sans-serif;
-    text-align: center;
+    width: 100%;
     min-height: 700px;
-    background-color: paleturquoise;
     margin: 0;
     padding: 20px;
-    width: 100%;
+    font-family: sans-serif;
+    text-align: center;
+    background-color: paleturquoise;
   }
 }
+
 /* FONT IMPORTS */
 
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
-@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
 .icon {
+  display: inline-block;
   font-family: 'Material Icons', serif;
   font-style: normal;
-  display: inline-block;
-  vertical-align: middle;
   line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
   direction: ltr;
-
+  letter-spacing: normal;
+  white-space: nowrap;
+  text-transform: none;
+  vertical-align: middle;
+  word-wrap: normal;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: 'liga';
 }
@@ -103,13 +115,11 @@ body {
   --pink-color: #ff1a79;
   --custom-gradient: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%);
   --custom-gradient-pink: linear-gradient(45deg, #ff1a79 0%, #eb82b3 40%);
-
   --toastify-color-success: #fff !important;
   --toastify-icon-color-info: #fff !important;
   --toastify-icon-color-success: #fff !important;
   --toastify-icon-color-warning: #fff !important;
   --toastify-icon-color-error: #fff !important;
-
   --toastify-text-color-info: #fff !important;
   --toastify-text-color-success: #fff !important;
   --toastify-text-color-warning: #fff !important;
@@ -124,27 +134,27 @@ body {
 }
 
 body {
-  font-size: 1em;
-  font-weight: 300;
-  line-height: 1.5;
-  color: var(--text-color);
-  background: #fff;
   position: relative;
+  color: var(--text-color);
+  font-weight: 300;
+  font-size: 1em;
+  line-height: 1.5;
+  background: #fff;
 }
 
 header {
   display: block;
   width: 100%;
   padding: 1.75em 0;
-  border-bottom: 1px solid var(--border-color);
   background: var(--mui-palette-success-contrastText);
+  border-bottom: 1px solid var(--border-color);
 }
 
 header #logo {
-  font-size: 175%;
-  text-align: center;
   color: var(--main-color);
+  font-size: 175%;
   line-height: 1;
+  text-align: center;
 }
 
 header #logo .icon {
@@ -153,21 +163,22 @@ header #logo .icon {
 
 main {
   display: block;
+  max-width: 50em;
   margin: 0 auto;
   margin-top: 5em;
-  max-width: 50em;
 }
 
 /* GRID */
 
 .row {
-  margin: 0;
-  padding: 0;
   display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+
   /* flex-wrap: wrap; */
   width: 100%;
-  justify-content: space-between;
-  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
 }
 
 .row-middle {
@@ -175,8 +186,8 @@ main {
 }
 
 .col {
-  flex-grow: 1;
   flex-basis: 0;
+  flex-grow: 1;
   max-width: 100%;
 }
 
@@ -198,26 +209,28 @@ main {
 /* Calendar */
 
 .calendar {
-  display: block;
   position: relative;
+  display: block;
   width: 100%;
   overflow-x: auto;
 }
+
 .calender_body_width {
   width: 1840px;
   height: 110px;
 }
+
 .col-center {
-  font-size: 11px;
-  font-weight: 500;
   color: #7c766f;
+  font-weight: 500;
+  font-size: 11px;
 }
 
 .calendar .header {
-  text-transform: uppercase;
+  padding: 1.5em 0;
   font-weight: 700;
   font-size: 115%;
-  padding: 1.5em 0;
+  text-transform: uppercase;
 }
 
 .calendar .header .icon {
@@ -226,8 +239,8 @@ main {
 }
 
 .calendar .header .icon:hover {
-  transition: 0.25s ease-out;
   color: var(--main-color);
+  transition: 0.25s ease-out;
 }
 
 .calendar .header .icon:first-of-type {
@@ -239,22 +252,22 @@ main {
 }
 
 .calendar .days {
-  text-transform: uppercase;
+  padding: 0.75em 0;
   font-weight: 600;
   font-size: 70%;
-  padding: 0.75em 0;
+  text-transform: uppercase;
 }
 
 .calendar .body .cell {
   position: relative;
+  height: 4rem;
   padding: 10px;
-  border: 1px solid var(--mui-palette-warning-A100);
   overflow: hidden;
+  font-size: 1.5em;
+  border: 1px solid var(--mui-palette-warning-A100);
+  border-radius: 4px;
   cursor: pointer;
   transition: 0.25s ease-out;
-  font-size: 1.5em;
-  border-radius: 4px;
-  height: 4rem;
 }
 
 .calendar .body .cell:hover {
@@ -269,6 +282,7 @@ main {
 .selected {
   background-color: var(--mui-palette-primary-main);
 }
+
 .selected:hover {
   background-color: var(--mui-palette-primary-main) !important;
 }
@@ -290,13 +304,13 @@ main {
 }
 
 .calendar .body .cell .number {
-  text-align: center;
-  width: 100%;
   display: block;
+  width: 100%;
+  color: var(--mui-palette-warning-300);
+  font-weight: 400;
   font-size: 14px;
   line-height: 1;
-  font-weight: 400;
-  color: var(--mui-palette-warning-300);
+  text-align: center;
 }
 
 .calendar .body .disabled {
@@ -305,16 +319,16 @@ main {
 }
 
 .calendar .body .cell .bg {
-  font-weight: 700;
-  line-height: 1;
-  color: var(--main-color);
-  opacity: 0;
-  font-size: 8em;
   position: absolute;
   top: -0.2em;
   right: -0.05em;
-  transition: 0.25s ease-out;
+  color: var(--main-color);
+  font-weight: 700;
+  font-size: 8em;
+  line-height: 1;
   letter-spacing: -0.07em;
+  opacity: 0;
+  transition: 0.25s ease-out;
 }
 
 .calendar .body .cell:hover .bg,
@@ -322,6 +336,7 @@ main {
   opacity: 0.05;
   transition: 0.5s ease-in;
 }
+
 .calendar .body .cell.today .bg {
   color: var(--pink-colo);
   opacity: 0.05;
@@ -332,42 +347,49 @@ main {
 }
 
 .circularProgress {
-  width: 100%;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
+
 .calenderTitle p {
   font-size: 14px !important;
 }
+
 .calenderTitle svg {
   font-size: 14px !important;
 }
+
 .flex-center {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
+
 .text-decoration {
   text-decoration: none;
 }
+
 .card_overview div {
   height: unset;
   font-size: 11px;
   line-height: 16px;
 }
+
 .card_overview div div h2 {
-  font-size: 16px;
-  line-height: 24px;
   margin-top: 4px;
+  font-size: 16px;
   line-height: 24px;
 }
 
 .linerGradient {
   background-image: var(--custom-gradient);
 }
+
 .icon_holder svg {
   color: #1e1b16 !important;
 }
+
 .w-100 {
   width: 100% !important;
 }
@@ -375,7 +397,7 @@ main {
 /* This is for react-calender month view and classes are from library */
 .react-calendar {
   width: 100% !important;
-  font-family: 'Poppins' !important;
+  font-family: Poppins !important;
 }
 
 .react-calendar_month-viewdays_day {
@@ -397,50 +419,54 @@ main {
 .react-calendar__month-view__days__day--neighboringMonth {
   visibility: hidden;
 }
+
 .react-calendar button abbr {
   color: #1f1b13;
-  font-family: 'Poppins' !important;
+  font-family: Poppins !important;
 }
+
 .react-calendar__month-view__weekdays__weekday abbr {
   color: #1f1b13;
-  font-family: 'Poppins' !important;
+  font-family: Poppins !important;
 }
+
 .present-marker {
-  color: var(--mui-palette-success-main);
   width: fit-content !important;
+  color: var(--mui-palette-success-main);
 }
 
 .absent-marker {
-  color: var(--mui-palette-error-main) !important;
   width: fit-content !important;
+  color: var(--mui-palette-error-main) !important;
 }
 
 .on-leave-marker {
-  color: var(--mui-palette-error-main) !important;
   width: fit-content !important;
   margin: auto !important;
+  color: var(--mui-palette-error-main) !important;
 }
 
 .tile-day {
-  border: 1px solid #d0c5b4 !important;
-  height: 70px !important;
   width: 100% !important;
-  border-radius: 5px;
+  height: 70px !important;
   margin-bottom: 5px !important;
+  border: 1px solid #d0c5b4 !important;
+  border-radius: 5px;
+
   /* margin-left: 2px !important; */
 }
 
 .custom-date-range-pop-up {
-  border: 1px solid #d0c5b4 !important;
-  height: 40px !important;
   width: 100% !important;
-  border-radius: 5px;
+  height: 40px !important;
   margin-bottom: 5px !important;
+  border: 1px solid #d0c5b4 !important;
+  border-radius: 5px;
 }
 
 .react-calendar__tile--active {
-  background-color: #fbbc13 !important;
   color: black !important;
+  background-color: #fbbc13 !important;
 }
 
 .react-calendar__tile {
@@ -452,15 +478,15 @@ main {
 }
 
 .attendance-not-marked abbr {
-  border: 1px dashed var(--mui-palette-error-main);
-  color: var(--mui-palette-error-main) !important;
-  border-radius: 50%;
-  padding: 5px;
-  height: 25px;
   display: flex;
-  width: 25px;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  color: var(--mui-palette-error-main) !important;
+  border: 1px dashed var(--mui-palette-error-main);
+  border-radius: 50%;
 }
 
 .sample .MuiSnackbarContent-root {
@@ -468,9 +494,9 @@ main {
 }
 
 .alert .MuiSnackbarContent-root {
-  background-color: var(--mui-palette-error-light) !important;
   color: var(--mui-palette-error-main);
   font-size: 0.75rem;
+  background-color: var(--mui-palette-error-light) !important;
 }
 
 .custom-calendar-container {
@@ -495,8 +521,10 @@ main {
 .react-calendar button {
   display: flex;
   flex-direction: column;
+
   /* justify-content: center; */
   align-items: center;
+
   /* border: 1px solid #d0c5b4 !important; */
 }
 
@@ -505,42 +533,45 @@ main {
   background: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%) !important;
   border: unset !important;
 }
+
 .react-calendar,
 .react-calendar *,
-.react-calendar *:before,
-.react-calendar *:after {
-  text-decoration: none;
+.react-calendar *::before,
+.react-calendar *::after {
   color: var(--mui-palette-warning-300);
-  font-size: 16px;
   font-weight: 400;
+  font-size: 16px;
+  text-decoration: none;
 }
+
 .react-calendar__navigation button {
   border: unset !important;
 }
 
 .circularProgressBar {
-  margin-top: 8px;
   width: 25px;
+  margin-top: 8px;
 }
 
 .up_down_btn {
   position: fixed;
-  bottom: 40px;
   right: 22px;
+  bottom: 40px;
   z-index: 999;
-  box-shadow: 0px 1px 3px 0px #0000004d;
   display: flex !important;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* padding: 20px 15px; */
-  border-radius: 100px;
-  box-shadow: 0px 4px 8px 3px #00000026;
-  background: #4a4640;
   color: #fff;
   text-align: center;
+  background: #4a4640;
+
+  /* padding: 20px 15px; */
+  border-radius: 100px;
+  box-shadow: 0 4px 8px 3px #00000026;
   cursor: pointer;
 }
+
 .w-98 {
   width: 98%;
 }
@@ -550,20 +581,24 @@ main {
 }
 
 .up_down_btn-disabled {
-  pointer-events: none;
   cursor: default;
   opacity: 0;
+  pointer-events: none;
 }
+
 .modal_mark .css-rsi8of {
   overflow: hidden;
 }
+
 .modal_label {
-  margin-left: 0px !important;
+  margin-left: 0 !important;
 }
+
 .modal_label span {
-  font-size: 14px !important;
   color: #1e1b16;
+  font-size: 14px !important;
 }
+
 .flex-column-center {
   display: flex;
   flex-direction: column;
@@ -575,6 +610,7 @@ main {
 .w-78 {
   width: 78%;
 }
+
 /* @media (min-width: 1350px) {
   .up_down_btn {
     right: 400px;
@@ -588,10 +624,11 @@ main {
 .prev_btn {
   position: absolute;
   top: 53px;
-  z-index: 999;
   left: -14px;
+  z-index: 999;
   transform: rotate(90deg);
 }
+
 .next_btn {
   position: absolute;
   top: 53px;
@@ -599,28 +636,31 @@ main {
   z-index: 999;
   transform: rotate(270deg);
 }
+
 .menuSvg path {
   width: 36px;
   height: 24px;
 }
+
 .accIcon path {
   width: 20;
   height: 20px;
 }
 
 .present-marker svg path {
-  color: var(--mui-palette-success-main) !important;
   width: fit-content !important;
+  color: var(--mui-palette-success-main) !important;
 }
 
 .absent-marker svg path {
-  color: var(--mui-palette-error-main) !important;
   width: fit-content !important;
+  color: var(--mui-palette-error-main) !important;
 }
+
 .react-calendar__month-view__weekdays__weekday {
-  font-size: 16px;
-  font-weight: 400;
   color: #1f1b13;
+  font-weight: 400;
+  font-size: 16px;
 }
 
 .two-line-text {
@@ -630,31 +670,39 @@ main {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .backgroundFaded div:first-child {
   background-color: unset !important;
 }
+
 .bg-white {
   background-color: #fff;
 }
+
 .customRange .Mui-selected {
   background: unset !important;
 }
 
 .customRange li:last-child {
-  margin-bottom: 0px !important;
+  margin-bottom: 0 !important;
 }
+
 .w-100 {
   width: 100%;
 }
+
 .p-20 {
   padding: 10px 20px 20px;
 }
+
 .text-4d {
   color: #4d4639;
 }
+
 .userName label {
   color: #1f1b13 !important;
 }
+
 .password label {
   color: #1f1b13 !important;
 }
@@ -662,18 +710,22 @@ main {
 .fs-24 {
   font-size: 24px !important;
 }
+
 .htw-24 {
-  height: 24px;
   width: 24px;
+  height: 24px;
 }
+
 .selected-range {
   background-color: var(--mui-palette-Skeleton-bg) !important;
 }
+
 .flex-center {
   display: flex !important;
-  justify-content: center !important;
   align-items: center !important;
+  justify-content: center !important;
 }
+
 .text4D {
   color: #4d4639 !important;
 }
