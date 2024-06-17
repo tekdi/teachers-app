@@ -6,7 +6,7 @@ import {
   CheckCircleOutlineOutlined,
 } from '@mui/icons-material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import Value from 'react-calendar';
 import { shortDateFormat } from '@/utils/Helper';
@@ -59,11 +59,82 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     [Date | null, Date | null] | null
   >(null);
   const determinePathColor = useDeterminePathColor();
+  //  useEffect(() => {
+  //   const currentDate = new Date();
+  //   localStorage.setItem('activeStartDate', currentDate.toDateString());
+  // }, []);
 
   useEffect(() => {
-    const currentDate = new Date();
-    localStorage.setItem('activeStartDate', currentDate.toDateString());
-  }, []);
+    const handleTouchStart = (event: TouchEvent) => {
+      if (selectionType === 'range') {
+        setDate(null);
+        const touch = event.touches[0];
+        const startDate = getDateFromTouch(touch);
+        console.log('startDate', startDate);
+        if (startDate) {
+          setSelectedDates([startDate, startDate]);
+          onDateChange([startDate, startDate]);
+        }
+      }
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (selectionType === 'range') {
+        const touch = event.touches[0];
+        const moveDate = getDateFromTouch(touch);
+        console.log('moveDate', moveDate);
+
+        if (moveDate && selectedDates) {
+          const [startDate] = selectedDates;
+          setSelectedDates([startDate, moveDate]);
+          if (startDate !== null) {
+            onDateChange([startDate, moveDate]);
+          }
+        }
+      }
+    };
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      if (selectionType === 'range') {
+        const touch = event.changedTouches[0];
+        const endDate = getDateFromTouch(touch);
+        console.log('endDate', endDate);
+        if (endDate && selectedDates) {
+          const [startDate] = selectedDates;
+          setSelectedDates([startDate, endDate]);
+          if (startDate !== null) {
+            onDateChange([startDate, endDate]);
+          }
+        }
+      }
+    };
+    const getDateFromTouch = (touch: Touch) => {
+      const element = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (element) {
+        const tile = element.closest('.react-calendar__tile');
+        if (tile) {
+          const abbr = tile.querySelector('abbr');
+          if (abbr) {
+            const dateString = abbr.getAttribute('aria-label');
+            if (dateString) {
+              return new Date(dateString);
+            }
+          }
+        }
+      }
+      return null;
+    };
+
+    document.addEventListener('touchstart', handleTouchStart);
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [selectedDates, onDateChange]);
 
   function tileContent({
     date,
@@ -147,6 +218,8 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
 
         if (currentDate > startDate && currentDate < endDate) {
           classes.push('selected-range');
+        } else if (currentDate === startDate || currentDate === endDate) {
+          classes.push('selected-start-end');
         }
       }
     }
@@ -182,6 +255,17 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     };
+    setDate(newDate);
+    if (newDate !== undefined) {
+      let datesToSet: [Date | null, Date | null];
+      if (Array.isArray(newDate)) {
+        datesToSet = [newDate[0] || null, newDate[1] || null];
+      } else {
+        datesToSet = [newDate || null, newDate || null];
+      }
+      setSelectedDates(datesToSet);
+    }
+    onDateChange(newDate as Date | Date[] | null);
 
     if (newDate === null) {
       setDate(null);

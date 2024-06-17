@@ -194,5 +194,17 @@
     "DOCUMENT_ISSUE": "Document issue",
     "DISTANCE_ISSUE": "Distance issue",
     "SCHOOL_ADMISSION": "School admission"
+  },
+  "GUIDE_TOUR": {
+    "STEP_1": "Welcome! let’s get you familiar with the dashboard",
+    "STEP_2": "Use the calendar to view day-wise attendance of learners",
+    "STEP_3": "Check daily attendance percentage for each Center",
+    "STEP_4": "Mark each day’s attendance of learners",
+    "STEP_5": "Check Center attendance over the last 7 days",
+    "STEP_6": "View learners with low attendance in the past 7 days",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "SKIP": "Skip",
+    "FINISH": "Finish"
   }
 }
