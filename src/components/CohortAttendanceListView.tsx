@@ -21,7 +21,6 @@ const CohortAttendanceListView: React.FC<CohortAttendanceListViewProps> = ({
         borderBottom={`1px solid ${theme.palette.warning['A100']}`}
         margin="0"
         alignItems={'center'}
-
         bgcolor={theme.palette.warning['A400']}
         maxHeight={'auto'}
       >
@@ -35,13 +34,19 @@ const CohortAttendanceListView: React.FC<CohortAttendanceListViewProps> = ({
           <Grid item xs={9}>
             <Typography
               textAlign={'left'}
-              sx={{ fontSize: '0.875rem', fontWeight: '400', color: theme.palette.warning['300'] }}
+              sx={{
+                fontSize: '0.875rem',
+                fontWeight: '400',
+                color: theme.palette.warning['300'],
+              }}
             >
               {cohortName}
             </Typography>
           </Grid>
           <Grid item xs={3}>
-            <Typography sx={{ fontSize: '1rem', fontWeight: '500', color: textColor }}>
+            <Typography
+              sx={{ fontSize: '1rem', fontWeight: '500', color: textColor }}
+            >
               {attendancePercent}%
             </Typography>
           </Grid>

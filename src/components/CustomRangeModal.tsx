@@ -26,7 +26,8 @@ const style = {
 
 const CustomRangeModal: React.FC = () => {
   const [isCalendarModalOpen, setIsCalenderModalOpen] = React.useState(false);
-  const toggleCalendarModal = () => setIsCalenderModalOpen(!isCalendarModalOpen);
+  const toggleCalendarModal = () =>
+    setIsCalenderModalOpen(!isCalendarModalOpen);
 
   const { t } = useTranslation();
   return (
@@ -53,12 +54,18 @@ const CustomRangeModal: React.FC = () => {
               }}
             >
               <Box>
-                <WestIcon onClick={toggleCalendarModal} style={{ cursor: 'pointer' }} />
+                <WestIcon
+                  onClick={toggleCalendarModal}
+                  style={{ cursor: 'pointer' }}
+                />
               </Box>
               <Box className="text-4D">{t('COMMON.CUSTOM_RANGE')}</Box>
             </Box>
             <Box>
-              <CloseIcon onClick={toggleCalendarModal} style={{ cursor: 'pointer' }} />
+              <CloseIcon
+                onClick={toggleCalendarModal}
+                style={{ cursor: 'pointer' }}
+              />
             </Box>
           </Box>
           <Box sx={{ paddingTop: '20px' }}>

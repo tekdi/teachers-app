@@ -56,7 +56,6 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
       setUpdatedStatus(currentStatus);
     }
   }, [currentStatus, isOpen]);
-
   const theme = useTheme<any>();
   const [openMarkUpdateAttendance, setOpenMarkUpdateAttendance] =
     React.useState(false);

@@ -15,6 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
+import ReactGA from 'react-ga4';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
@@ -40,7 +41,6 @@ import OverviewCard from '@/components/OverviewCard';
 import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '@/components/SortingModal';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
-import ToastMessage from '@/components/ToastMessage';
 import UpDownButton from '@/components/UpDownButton';
 import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
@@ -50,6 +50,8 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { logEvent } from '@/utils/googleAnalytics';
+import { showToastMessage } from '@/components/Toastify';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -71,9 +73,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [searchWord, setSearchWord] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
   const [learnerData, setLearnerData] = React.useState<Array<any>>([]);
-  const [isFromDate, setIsFromDate] = useState(formatSelectedDate(
-    new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000)
-  ));
+  const [isFromDate, setIsFromDate] = useState(
+    formatSelectedDate(new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000))
+  );
   const [isToDate, setIsToDate] = useState(getTodayDate());
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
@@ -89,7 +91,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
     useState(0);
   const [dateRange, setDateRange] = React.useState<Date | string>('');
-  const [isError, setIsError] = React.useState<boolean>(false);
 
   const theme = useTheme<any>();
   const pathname = usePathname();
@@ -159,7 +160,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           contextId: classId,
         },
         facets: ['attendanceDate'],
-        sort: ['present_percentage', 'asc']
+        sort: ['present_percentage', 'asc'],
       };
       const res = await getCohortAttendance(cohortAttendanceData);
       const response = res?.data?.result?.attendanceDate;
@@ -172,9 +173,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     if (classId) {
       getAttendanceMarkedDays();
     }
-  }, [classId, selectedValue === t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-    date_range: dateRange,
-  })]);
+  }, [
+    classId,
+    selectedValue ===
+      t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+        date_range: dateRange,
+      }),
+  ]);
 
   // API call to get center list
   useEffect(() => {
@@ -236,10 +241,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           }
         }
         setLoading(false);
-        setIsError(false);
       } catch (error) {
         console.error('Error fetching  cohort list:', error);
-        setIsError(true);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setLoading(false);
       }
     };
@@ -344,7 +348,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 contextId: classId,
               },
               facets: ['contextId'],
-              sort: ['present_percentage', 'asc']
+              sort: ['present_percentage', 'asc'],
             };
             const res = await getCohortAttendance(cohortAttendanceData);
             const response = res?.data?.result;
@@ -437,7 +441,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       }
     } catch (error) {
       console.error('Error fetching cohort list:', error);
-      setIsError(true);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       setLoading(false);
     } finally {
       setLoading(false);
@@ -454,6 +458,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const handleCohortSelection = (event: SelectChangeEvent) => {
     setClassId(event.target.value as string);
+    ReactGA.event('cohort-selection-attendance-overview-page', {
+      selectedCohortID: event.target.value,
+    });
 
     // ---------- set cohortId and stateName-----------
     const cohort_id = event.target.value;
@@ -491,6 +498,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     setSearchWord(event.target.value);
     if (event.target.value.length >= 1) {
       debouncedSearch(event.target.value);
+      ReactGA.event('search-by-keyword-attendance-overview-page', {
+        keyword: event.target.value,
+      });
     } else {
       setDisplayStudentList(learnerData);
     }
@@ -585,6 +595,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   };
   const handleBackEvent = () => {
     window.history.back();
+    logEvent({
+      action: 'back-button-clicked-attendance-overview',
+      category: 'Attendance Overview Page',
+      label: 'Back Button Clicked',
+    });
   };
   const truncate = (str: string, length: number) => {
     if (str.length <= length) return str;
@@ -681,10 +696,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             onDateRangeSelected={handleDateRangeSelected}
             dateRange={dateRange}
           />
-          {(selectedValue ===
-          t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-            date_range: dateRange,
-          }) || selectedValue === "") ? (
+          {selectedValue ===
+            t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+              date_range: dateRange,
+            }) || selectedValue === '' ? (
             <Typography
               color={theme.palette.warning['400']}
               fontSize={'0.75rem'}
@@ -719,7 +734,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       />
                     ))}
                     valuePartOne={
-                      Array.isArray(lowAttendanceLearnerList) && lowAttendanceLearnerList.length > 2
+                      Array.isArray(lowAttendanceLearnerList) &&
+                      lowAttendanceLearnerList.length > 2
                         ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                         : lowAttendanceLearnerList.length === 2
                           ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
@@ -731,7 +747,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                               : t('ATTENDANCE.N/A')
                     }
                     valuePartTwo={
-                      Array.isArray(lowAttendanceLearnerList) && 
+                      Array.isArray(lowAttendanceLearnerList) &&
                       lowAttendanceLearnerList.length > 2
                         ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                         : null
@@ -909,7 +925,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
         </Box>
       )}
-      {isError && <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />}
     </Box>
   );
 };

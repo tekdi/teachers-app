@@ -1,11 +1,14 @@
-import { generateUUID } from './Helper';
+import { generateUUID, getDeviceId } from './Helper';
+import FingerprintJS from 'fingerprintjs2';
 
+let hostURL = process.env.NEXT_PUBLIC_TELEMETRY_URL;
 let CsTelemetryModule;
 let EkTelemetry;
 let jQuery;
 
 if (typeof window !== 'undefined') {
-  CsTelemetryModule = require('@project-sunbird/client-services/telemetry').CsTelemetryModule;
+  CsTelemetryModule =
+    require('@project-sunbird/client-services/telemetry').CsTelemetryModule;
   EkTelemetry = require('@project-sunbird/telemetry-sdk');
   jQuery = require('jquery');
   window.jQuery = jQuery;
@@ -14,34 +17,44 @@ if (typeof window !== 'undefined') {
 const telemetryConfig = {
   apislug: '',
   pdata: {
-    id: 'pratham.portal',
+    id: 'pratham-teacher-app',
     pid: '0.0.1',
-    ver: 'pratham.portal'
+    ver: 'pratham-teacher-app',
   },
-  env: 'pratham.portal',
+  env: 'pratham-teacher-app',
   channel: '',
   did: 'did',
   authtoken: '',
-  studentid: 'student-id',
-  uid: (typeof window !== 'undefined' && localStorage.getItem('id')) || 'id',
-  sid: 'session-id',
+  studentid:
+    (typeof window !== 'undefined' && localStorage.getItem('userId')) ||
+    'Anonymous',
+  uid:
+    (typeof window !== 'undefined' && localStorage.getItem('id')) ||
+    'Anonymous',
+  sid: generateUUID(),
   batchsize: 1,
   mode: '',
-  host: 'https://qa.prathamteacherapp.tekdinext.com', //TODO: Change this host and endpoint properly
+  host: hostURL, //TODO: Change this host and endpoint properly
   endpoint: '/telemetry/v1/telemetry',
-  tags: []
+  tags: [],
 };
+
+if (typeof window !== 'undefined') {
+  getDeviceId().then((deviceId) => {
+    telemetryConfig.did = deviceId;
+  });
+}
 
 export const telemetryFactory = {
   init: () => {
     if (typeof window !== 'undefined') {
       console.log('EkTelemetry', EkTelemetry);
       if (!CsTelemetryModule.instance.isInitialised) {
-        CsTelemetryModule.instance.init({});
-        CsTelemetryModule.instance.telemetryService.initTelemetry({
-          config: telemetryConfig,
-          userOrgDetails: {}
-        });
+        // CsTelemetryModule.instance.init({});
+        // CsTelemetryModule.instance.telemetryService.initTelemetry({
+        //   config: telemetryConfig,
+        //   userOrgDetails: {}
+        // });
       }
     }
   },
@@ -52,7 +65,7 @@ export const telemetryFactory = {
       if (CsTelemetryModule.instance.isInitialised) {
         CsTelemetryModule.instance.telemetryService.raiseInteractTelemetry({
           options: eventData.options,
-          edata: eventData.edata
+          edata: eventData.edata,
         });
       }
     }
@@ -64,7 +77,7 @@ export const telemetryFactory = {
       if (CsTelemetryModule.instance.isInitialised) {
         CsTelemetryModule.instance.telemetryService.raiseImpressionTelemetry({
           options: eventData.options,
-          edata: eventData.edata
+          edata: eventData.edata,
         });
       }
     }
@@ -76,7 +89,7 @@ export const telemetryFactory = {
       if (CsTelemetryModule.instance.isInitialised) {
         CsTelemetryModule.instance.telemetryService.raiseAssesTelemetry({
           options: eventData.options,
-          edata: eventData.edata
+          edata: eventData.edata,
         });
       }
     }
@@ -88,7 +101,7 @@ export const telemetryFactory = {
       if (CsTelemetryModule.instance.isInitialised) {
         CsTelemetryModule.instance.telemetryService.raiseResponseTelemetry({
           options: eventData.options,
-          edata: eventData.edata
+          edata: eventData.edata,
         });
       }
     }
@@ -100,7 +113,7 @@ export const telemetryFactory = {
       if (CsTelemetryModule.instance.isInitialised) {
         CsTelemetryModule.instance.telemetryService.raiseInterruptTelemetry({
           options: eventData.options,
-          edata: eventData.edata
+          edata: eventData.edata,
         });
       }
     }
@@ -111,15 +124,15 @@ export const telemetryFactory = {
       return {
         type: edata?.type,
         eid: generateUUID(),
-        $set: { id: localStorage.getItem('id') || 'testID' },
+        $set: { id: localStorage.getItem('id') || 'Anonymous' },
         actor: {
-          id: localStorage.getItem('id') || 'testID',
-          type: 'Teacher'
+          id: localStorage.getItem('id') || 'Anonymous',
+          type: 'Teacher',
         },
         context: {
-          type: appName ? appName : 'Standalone'
+          type: appName ? appName : 'Standalone',
         },
-        edata
+        edata,
       };
     }
   },
@@ -129,18 +142,18 @@ export const telemetryFactory = {
       return {
         type: edata?.type,
         eid: generateUUID(),
-        $set: { id: localStorage.getItem('id') },
+        $set: { id: localStorage.getItem('id') || 'Anonymous' },
         actor: {
-          id: localStorage.getItem('id'),
-          type: 'Teacher'
+          id: localStorage.getItem('id') || 'Anonymous',
+          type: 'Teacher',
         },
         context: {
-          type: appName ? appName : 'Standalone'
+          type: appName ? appName : 'Standalone',
         },
-        edata
+        edata,
       };
     }
-  }
+  },
 };
 
 function getEventData(eventInput) {
@@ -150,9 +163,9 @@ function getEventData(eventInput) {
     options: {
       context: getEventContext(eventInput),
       object: getEventObject(eventInput),
-      tags: []
+      tags: [],
     },
-    ets: timestamp
+    ets: timestamp,
   };
   return event;
 }
@@ -163,7 +176,7 @@ function getEventObject(eventInput) {
       id: eventInput.object.id || '',
       type: eventInput.object.type || '',
       ver: eventInput.object.ver || '',
-      rollup: eventInput.object.rollup || {}
+      rollup: eventInput.object.rollup || {},
     };
     return eventObjectData;
   } else {
@@ -177,18 +190,20 @@ function getEventContext(eventInput) {
     pdata: eventInput.context.pdata || telemetryConfig.pdata,
     env: eventInput.context.env || telemetryConfig.env,
     sid: eventInput.sid || telemetryConfig.sid,
-    uid: (typeof window !== 'undefined' && localStorage.getItem('id')) || telemetryConfig.uid, //user id
-    cdata: eventInput.context.cdata || []
+    uid:
+      (typeof window !== 'undefined' && localStorage.getItem('id')) ||
+      telemetryConfig.uid, //user id
+    cdata: eventInput.context.cdata || [],
   };
   if (telemetryConfig.sid) {
     eventContextData.cdata.push({
       id: telemetryConfig.sid,
-      type: 'UserSession'
+      type: 'UserSession',
     });
   }
   eventContextData.cdata.push({
     id: 'uuid',
-    type: 'Device'
+    type: 'Device',
   });
   return eventContextData;
 }
