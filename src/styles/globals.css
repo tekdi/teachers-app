@@ -719,13 +719,14 @@ main {
 .selected-range {
   background-color: var(--mui-palette-Skeleton-bg) !important;
 }
-
 .flex-center {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 }
-
 .text4D {
   color: #4d4639 !important;
+}
+.selected-start-end {
+  background-color: var(--mui-palette-primary-main) !important;
 }
