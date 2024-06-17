@@ -87,7 +87,9 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
         if (moveDate && selectedDates) {
           const [startDate] = selectedDates;
           setSelectedDates([startDate, moveDate]);
-          onDateChange([startDate, moveDate]);
+          if (startDate !== null) {
+            onDateChange([startDate, moveDate]);
+          }
         }
       }
     };
@@ -100,7 +102,9 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
         if (endDate && selectedDates) {
           const [startDate] = selectedDates;
           setSelectedDates([startDate, endDate]);
-          onDateChange([startDate, endDate]);
+          if (startDate !== null) {
+            onDateChange([startDate, endDate]);
+          }
         }
       }
     };
@@ -252,8 +256,16 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
       return `${year}-${month}-${day}`;
     };
     setDate(newDate);
-    setSelectedDates(Array.isArray(newDate) ? newDate : [newDate, newDate]);
-    onDateChange(newDate);
+    if (newDate !== undefined) {
+      let datesToSet: [Date | null, Date | null];
+      if (Array.isArray(newDate)) {
+        datesToSet = [newDate[0] || null, newDate[1] || null];
+      } else {
+        datesToSet = [newDate || null, newDate || null];
+      }
+      setSelectedDates(datesToSet);
+    }
+    onDateChange(newDate as Date | Date[] | null);
 
     if (newDate === null) {
       setDate(null);
