@@ -25,11 +25,7 @@ const GuideTour = () => {
     setStepIndex(stepIndex);
     const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
 
-    if (!hasSeenTutorial) {
-      setRunTour(true);
-    } else {
-      setRunTour(false);
-    }
+    setRunTour(!hasSeenTutorial);
   }, []);
 
   const handleTourEnd = () => {
