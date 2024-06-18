@@ -66,7 +66,8 @@
     "REASON_FOR_DROPOUT":"Reason for Dropout",
     "SURE_LOGOUT" :"Are you sure you want to Logout?",
     "SURE_UPDATE" :"Are you sure you want to update this attendance?",
-    "SURE_CLOSE":"Are you sure you want to close?"
+    "SURE_CLOSE":"Are you sure you want to close?",
+    "LEARNER_LIST":"Learners List"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",

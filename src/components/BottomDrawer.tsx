@@ -36,11 +36,6 @@ export default function BottomDrawer({
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
-  // const handleAction = {
-  //   [t('COMMON.MARK_DROP_OUT')]: () => setShowModal(true),
-  //   [t('COMMON.REMOVE_FROM_CENTER')]: () => {},
-  // };
-
   const list = (anchor: Anchor) => (
     <Box
       sx={{

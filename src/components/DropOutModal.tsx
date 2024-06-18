@@ -40,7 +40,6 @@ function DropOutModal({ open, onClose }: DropOutModalProps) {
     },
   };
 
-
   const theme = useTheme<any>();
 
   return (
@@ -121,7 +120,7 @@ function DropOutModal({ open, onClose }: DropOutModalProps) {
               variant="contained"
               onClick={() => onClose(true)}
             >
-              {t('COMMON.ADD_NEW')}
+              {t('COMMON.MARK_DROP_OUT')}
             </Button>
           </Box>
         </Box>

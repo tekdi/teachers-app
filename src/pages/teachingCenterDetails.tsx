@@ -13,10 +13,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
-const teacherCenterDetail = () => {
-  const [value, setValue] = React.useState('one');
+const teachingCenterDetails = () => {
+  const [value, setValue] = React.useState(1);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -88,13 +88,11 @@ const teacherCenterDetail = () => {
             },
           }}
         >
-          {/* <Tab value="one" label="Center Sessions" />
-          <Tab value="two" label="Online Recordings" /> */}
-          <Tab value="one" label="Learners List" />
+          <Tab value={1} label={t('COMMON.LEARNER_LIST')} />
         </Tabs>
       </Box>
       <Box>
-        {value === 'one' && (
+        {value === 1 && (
           <>
             <Box mt={3} px={'18px'}>
               <Button
@@ -144,4 +142,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default teacherCenterDetail;
+export default teachingCenterDetails;

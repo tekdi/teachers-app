@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
-const teacherCenter = () => {
+const teachingCenters = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
@@ -54,7 +54,7 @@ const teacherCenter = () => {
         >
           <Box
             onClick={() => {
-              router.push(`/teacherCenterDetail`); // Check route
+              router.push(`/teachingCenterDetails`); // Check route
             }}
             sx={{ cursor: 'pointer' }}
           >
@@ -162,4 +162,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default teacherCenter;
+export default teachingCenters;
