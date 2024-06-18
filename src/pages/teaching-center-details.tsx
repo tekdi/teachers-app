@@ -13,7 +13,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
-const teachingCenterDetails = () => {
+const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -142,4 +142,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default teachingCenterDetails;
+export default TeachingCenterDetails;

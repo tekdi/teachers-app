@@ -760,6 +760,7 @@ main {
 }
 .textCD {
   color: #cdc5bd !important;
+}
 
 .selected-start-end {
   background-color: var(--mui-palette-primary-main) !important;
