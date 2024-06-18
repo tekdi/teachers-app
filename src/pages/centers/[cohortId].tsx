@@ -12,9 +12,13 @@ import Tabs from '@mui/material/Tabs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
+import { GetStaticPaths } from 'next';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
+  const router = useRouter();
+  const { cohortId }: any = router.query;
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -141,5 +145,11 @@ export async function getStaticProps({ locale }: any) {
     },
   };
 }
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+  return {
+    paths: [], //indicates that no page needs be created at build time
+    fallback: 'blocking', //indicates the type of fallback
+  };
+};
 
 export default TeachingCenterDetails;

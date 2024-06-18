@@ -56,7 +56,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   };
 
   const isDashboard = router.pathname === '/dashboard';
-  const isTeacherCenter = router.pathname === '/teachingCenters';
+  const isTeacherCenter = router.pathname === '/centers';
 
   return (
     <Drawer
@@ -191,7 +191,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             }}
             startIcon={<LocalLibraryOutlinedIcon />}
             onClick={() => {
-              router.push(`/teachingCenters`); // Check route
+              router.push(`/centers`); // Check route
             }}
           >
             {t('DASHBOARD.MY_TEACHING_CENTERS')}

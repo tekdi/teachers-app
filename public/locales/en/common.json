@@ -203,7 +203,7 @@
     "MONTH_MOBILISATION": "Month of Mobilisation",
     "DROP_OUT_REASON": "Reason for Drop Out From School"
   },
-  "DROPOUT_REASONS":{
+  "DROPOUT_REASONS": {
     "UNABLE_TO_COPE_WITH_STUDIES": "Unable to cope with studies",
     "FAMILY_RESPONSIBILITIES": "Family responsibilities",
     "NEED_TO_GO_TO_WORK_OWN_WORK": "Need to go to work / own work",

@@ -1,5 +1,5 @@
-/** @type {import('next').NextConfig} */
 import nextI18nextConfig from './next-i18next.config.js';
+import withPWA from 'next-pwa';
 
 const nextConfig = {
   eslint: {
@@ -9,14 +9,10 @@ const nextConfig = {
   trailingSlash: false,
   reactStrictMode: true,
   i18n: nextI18nextConfig.i18n,
-  // async rewrites () {
-  //   return [
-  //     {
-  //       source: '/dashboard',
-  //       destination: '/dashboard/',
-  //     },
-  //   ];
-  // }
 };
 
-export default nextConfig;
+const pwaConfig = withPWA({
+  dest: 'public',
+});
+
+export default pwaConfig(nextConfig);

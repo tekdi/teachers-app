@@ -1,5 +1,12 @@
 {
-  "extends": ["next", "next/core-web-vitals", "eslint:recommended", "plugin:testing-library/react", "plugin:jest-dom/recommended"],
+  "extends": [
+    "next",
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:testing-library/react",
+    "plugin:jest-dom/recommended",
+    "plugin:jest/recommended"
+  ],
   "globals": {
     "React": "readonly"
   },

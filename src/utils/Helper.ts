@@ -129,7 +129,7 @@ export const debounce = <T extends (...args: any[]) => any>(
   };
 };
 
-//Function to convert names in Pascal Case
+//Function to convert names in capitalize case
 export const toPascalCase = (name: string) => {
   return name
     .toLowerCase()
@@ -197,13 +197,13 @@ export const getDeviceId = () => {
 };
 
 export const getFieldValue = (customField: any[], fieldName: any) => {
-  const field = customField.find(field => field.fieldname === fieldName);
+  const field = customField.find((field) => field.fieldname === fieldName);
   return field ? field.fieldvalues : 'N/A';
 };
 
-export const capitalizeEachWord = (str: string) =>{
+export const capitalizeEachWord = (str: string) => {
   return str.toUpperCase();
-}
+};
 
 // Define the function type to handle the event
 export const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
