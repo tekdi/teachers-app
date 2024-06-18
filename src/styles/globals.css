@@ -49,7 +49,7 @@ body {
 }
 
 .text-4D {
-  color: #4d4639;
+  color: var(--mui-palette-warning-A200);
 }
 
 .text-1F {
@@ -696,7 +696,7 @@ main {
 }
 
 .text-4d {
-  color: #4d4639;
+  color: var(--mui-palette-warning-A200);
 }
 
 .userName label {
@@ -727,7 +727,7 @@ main {
 }
 
 .text4D {
-  color: #4d4639 !important;
+  color: var(--mui-palette-warning-A200) !important;
 }
 
 .p-10 {
@@ -754,7 +754,7 @@ main {
 .bg-grey {
   width: 32px;
   height: 4px;
-  background: #dadada !important;
+  background: var(--mui-palette-warning-900) !important;
 }
 
 .modal-bottom div:nth-child(1) {
@@ -762,19 +762,19 @@ main {
 }
 
 .textCD {
-  color: #cdc5bd !important;
+  color: var(--mui-palette-secondary-contrastText) !important;
 }
 
 .selected-start-end {
   background-color: var(--mui-palette-primary-main) !important;
 }
 .text-4D {
-  color: #4d4639 !important;
+  color: var(--mui-palette-warning-A200) !important;
 }
 
 .input_search div:first-child {
   height: 44px;
-  background: #ededed;
+  background: var(--mui-palette-warning-A700);
   padding-left: 16px;
   border-radius: 100px;
   border: unset !important;
@@ -784,18 +784,18 @@ main {
 }
 
 .input_search input {
-  color: #4d4639;
+  color: var(--mui-palette-warning-A200);
   font-size: 14px;
 }
 .color-FF {
-  background: #fff8f2;
+  background: var(--mui-palette-success-contrastText);
 }
 .text-4D {
-  color: #4d4639 !important;
+  color: var(--mui-palette-warning-A200) !important;
 }
 .mt--4 {
   margin-top: -4rem !important;
 }
 .checkBox_svg svg {
-  fill: #4d4639;
+  fill: var(--mui-palette-warning-A200);
 }

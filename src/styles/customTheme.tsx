@@ -11,10 +11,12 @@ const customTheme = extendTheme({
         secondary: {
           main: '#0D599E',
           light: '#E7F3F8',
+          contrastText: ' #cdc5bd',
         },
         success: {
           main: '#1A8825',
           light: '#C0FFC7',
+          contrastText: ' #fff8f2',
         },
         info: {
           main: '#064471',
