@@ -26,6 +26,7 @@ import {
   debounce,
   formatSelectedDate,
   getTodayDate,
+  handleKeyDown,
   toPascalCase,
 } from '@/utils/Helper';
 
@@ -720,7 +721,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     value={
                       learnerData.length
                         ? presentPercentage + ' %'
-                        : presentPercentage
+                        : t('ATTENDANCE.N/A')
                     }
                   />
                 </Grid>
@@ -794,6 +795,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
                         onClick={handleScrollDown}
+                        onKeyDown={handleKeyDown}
                       />
                       <IconButton
                         type="button"

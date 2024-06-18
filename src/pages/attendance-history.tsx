@@ -23,6 +23,7 @@ import ReactGA from 'react-ga4';
 import {
   debounce,
   getTodayDate,
+  handleKeyDown,
   shortDateFormat,
   toPascalCase,
 } from '@/utils/Helper';
@@ -726,6 +727,7 @@ const UserAttendanceHistory = () => {
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
                         onClick={handleScrollDown}
+                        onKeyDown={handleKeyDown}
                       />
                       <IconButton
                         type="button"
