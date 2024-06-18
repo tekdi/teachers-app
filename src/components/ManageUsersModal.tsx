@@ -105,7 +105,7 @@ export default function ManageUsersModal() {
               }}
               className="text-4D"
             >
-              Bhiwapur
+              Jabarbodi
             </Button>
             <Button
               sx={{
@@ -117,7 +117,7 @@ export default function ManageUsersModal() {
               }}
               className="text-4D"
             >
-              Bhiwapur
+              Kargaon
             </Button>
             <Button
               sx={{
@@ -129,7 +129,7 @@ export default function ManageUsersModal() {
               }}
               className="text-4D"
             >
-              Bhiwapur
+              Katol
             </Button>
             <Button
               sx={{
@@ -141,7 +141,19 @@ export default function ManageUsersModal() {
               }}
               className="text-4D"
             >
-              Bhiwapur
+              Kondhali
+            </Button>
+            <Button
+              sx={{
+                border: '1px solid #DADADA',
+                padding: '6px, 12px 6px 12px',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: 500,
+              }}
+              className="text-4D"
+            >
+              Metpanjara
             </Button>
           </Box>
         </Box>
