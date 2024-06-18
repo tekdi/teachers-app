@@ -5,7 +5,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Header from '@/components/Header';
 import Image from 'next/image';
-import building from '../assets/images/apartment.png';
+import building from '../../assets/images/apartment.png';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
@@ -54,7 +54,8 @@ const TeachingCenters = () => {
         >
           <Box
             onClick={() => {
-              router.push(`/teachingCenterDetails`); // Check route
+            //   router.push(`/centers/${cohortId}`); // Check route
+            router.push(`/centers/12345`) //TODO: Replace 12345 with cohortId
             }}
             sx={{ cursor: 'pointer' }}
           >
