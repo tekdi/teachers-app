@@ -24,7 +24,6 @@ interface DropOutModalProps {
 }
 
 function DropOutModal({ open, onClose }: DropOutModalProps) {
-  const [personName, setPersonName] = React.useState<string[]>([]);
   const { t } = useTranslation();
 
   const style = {
@@ -41,12 +40,7 @@ function DropOutModal({ open, onClose }: DropOutModalProps) {
     },
   };
 
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(typeof value === 'string' ? value.split(',') : value);
-  };
+
   const theme = useTheme<any>();
 
   return (
@@ -94,8 +88,6 @@ function DropOutModal({ open, onClose }: DropOutModalProps) {
               <Select
                 labelId="demo-multiple-name-label"
                 id="demo-multiple-name"
-                value={personName}
-                onChange={handleChange}
                 input={<OutlinedInput label="Reason for Dropout" />}
               >
                 <MenuItem
