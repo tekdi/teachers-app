@@ -224,3 +224,8 @@ export interface allCenterAttendancePercentParam {
   };
   facets: Array<string>;
 }
+
+export interface updateCohortMemberStatusParams {
+    memberStatus: string, 
+    statusReason?: string
+}
