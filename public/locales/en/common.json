@@ -67,7 +67,10 @@
     "SURE_LOGOUT" :"Are you sure you want to Logout?",
     "SURE_UPDATE" :"Are you sure you want to update this attendance?",
     "SURE_CLOSE":"Are you sure you want to close?",
-    "LEARNER_LIST":"Learners List"
+    "LEARNER_LIST":"Learners List",
+    "FILTERS":"Filters",
+    "MANAGE_USERS":"Manage Users",
+    "FACILITATORS":"Facilitators"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -195,18 +198,6 @@
     "MOBILISATION_METHOD": "How Was the Learner Mobilized?",
     "MONTH_MOBILISATION": "Month of Mobilisation",
     "DROP_OUT_REASON": "Reason for Drop Out From School"
-  },
-  "DROPOUT_REASONS":{
-    "UNABLE_TO_COPE_WITH_STUDIES": "Unable to cope with studies",
-    "FAMILY_RESPONSIBILITIES": "Family responsibilities",
-    "NEED_TO_GO_TO_WORK_OWN_WORK": "Need to go to work / own work",
-    "MARRIAGE": "Marriage",
-    "ILLNESS": "Illness",
-    "MIGRATION": "Migration",
-    "PREGNANCY": "Pregnancy",
-    "DOCUMENT_ISSUE": "Document issue",
-    "DISTANCE_ISSUE": "Distance issue",
-    "SCHOOL_ADMISSION": "School admission"
   },
   "GUIDE_TOUR": {
     "STEP_1": "Welcome! let’s get you familiar with the dashboard",

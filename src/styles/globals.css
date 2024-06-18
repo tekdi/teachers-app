@@ -728,7 +728,6 @@ main {
   color: #4d4639 !important;
 }
 
-
 .p-10 {
   padding: 10px;
 }
@@ -764,4 +763,26 @@ main {
 
 .selected-start-end {
   background-color: var(--mui-palette-primary-main) !important;
+}
+
+.input_search div:first-child {
+  height: 44px;
+  background: #ededed;
+  padding-left: 16px;
+  border-radius: 100px;
+  border: unset !important;
+}
+.input_search fieldset {
+  border: unset !important;
+}
+
+.input_search input {
+  color: #4d4639;
+  font-size: 14px;
+}
+.color-FF {
+  background: #fff8f2;
+}
+.text-4D {
+  color: #4d4639 !important;
 }
