@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
-const teachingCenters = () => {
+const TeachingCenters = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
@@ -162,4 +162,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default teachingCenters;
+export default TeachingCenters;
