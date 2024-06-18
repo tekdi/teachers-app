@@ -1,5 +1,5 @@
-/** @type {import('next').NextConfig} */
-const nextI18nextConfig = require ('./next-i18next.config.js')
+import nextI18nextConfig from './next-i18next.config.js';
+import withPWA from 'next-pwa';
 
 const nextConfig = {
   eslint: {
@@ -9,11 +9,10 @@ const nextConfig = {
   trailingSlash: false,
   reactStrictMode: true,
   i18n: nextI18nextConfig.i18n,
-
 };
 
-const withPWA = require('next-pwa')({
+const pwaConfig = withPWA({
   dest: 'public'
-})
+});
 
-module.exports =  withPWA(nextConfig);
+export default pwaConfig(nextConfig);
