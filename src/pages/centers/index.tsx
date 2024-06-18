@@ -55,7 +55,7 @@ const TeachingCenters = () => {
           <Box
             onClick={() => {
             //   router.push(`/centers/${cohortId}`); // Check route
-            router.push(`/centers/12345`)
+            router.push(`/centers/12345`) //TODO: Replace 12345 with cohortId
             }}
             sx={{ cursor: 'pointer' }}
           >
