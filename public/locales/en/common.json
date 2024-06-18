@@ -70,7 +70,10 @@
     "LEARNER_LIST":"Learners List",
     "FILTERS":"Filters",
     "MANAGE_USERS":"Manage Users",
-    "FACILITATORS":"Facilitators"
+    "FACILITATORS":"Facilitators",
+    "CENTERS_ASSIGNED":"Centers Assigned",
+    "MANAGE_CENTERS":"Manage Centers",
+    "ASSIGN":"Assign"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -135,6 +138,7 @@
     "ALL_CENTERS": "All Centers",
     "NO_LEARNER_WITH_LOW_ATTENDANCE": "No Learner with low attendance",
     "ATTENDANCE_MARKED_OUT_OF_DAYS": "Attendance marked: {{count}} out of last 7 days"
+    
   },
   "PROFILE": {
     "EDIT_PROFILE": "Edit Profile",

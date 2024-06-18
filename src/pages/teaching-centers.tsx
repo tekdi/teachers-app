@@ -54,7 +54,7 @@ const TeachingCenters = () => {
         >
           <Box
             onClick={() => {
-              router.push(`/teachingCenterDetails`); // Check route
+              router.push(`/teaching-center-details`);
             }}
             sx={{ cursor: 'pointer' }}
           >

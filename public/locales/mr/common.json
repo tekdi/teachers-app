@@ -70,7 +70,10 @@
     "LEARNER_LIST": "शिक्षार्थ्यांची यादी",
     "FILTERS": "फिल्टर्स",
     "MANAGE_USERS": "वापरकर्ते व्यवस्थापित करा",
-    "FACILITATORS": "सुविधासंचालक"
+    "FACILITATORS": "सुविधासंचालक",
+    "CENTERS_ASSIGNED": "केंद्र निरुपित",
+    "MANAGE_CENTERS": "केंद्र प्रबंधित करा",
+    "ASSIGN": "नियुक्त करा"
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्तानाव",

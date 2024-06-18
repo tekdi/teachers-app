@@ -2,21 +2,22 @@
 
 import { Box, Stack } from '@mui/material';
 import Menu, { MenuProps } from '@mui/material/Menu';
+import React, { useEffect, useState } from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
 
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import MenuItem from '@mui/material/MenuItem';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
+import ConfirmationModal from './ConfirmationModal';
 import Image from 'next/image';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import MenuItem from '@mui/material/MenuItem';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import accountIcon from './../assets/images/account.svg';
+import dynamic from 'next/dynamic';
+import { logEvent } from '@/utils/googleAnalytics';
 import logoLight from '../../public/images/logo-light.png';
 import menuIcon from '../assets/images/menuIcon.svg';
-import accountIcon from './../assets/images/account.svg';
-import { logEvent } from '@/utils/googleAnalytics';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -89,6 +90,7 @@ const Header: React.FC = () => {
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -120,6 +122,23 @@ const Header: React.FC = () => {
       hasSeenTutorial = storedValue === 'true'; // Convert string 'true' or 'false' to boolean
     }
   }
+
+  const getMessage = () => {
+    if (modalOpen) return t('COMMON.SURE_LOGOUT');
+    return '';
+  };
+
+  const handleAction = () => {
+    handleLogoutClick();
+  };
+
+  const handleCloseModel = () => {
+    setModalOpen(false);
+  };
+
+  const logoutOpen = () => {
+    setModalOpen(true);
+  };
 
   return (
     <Box sx={{ marginBottom: '4rem' }}>
@@ -214,7 +233,7 @@ const Header: React.FC = () => {
                 </MenuItem>
               )}
               <MenuItem
-                onClick={handleLogoutClick}
+                onClick={logoutOpen}
                 disableRipple
                 sx={{ 'letter-spacing': 'normal' }}
               >
@@ -225,6 +244,17 @@ const Header: React.FC = () => {
           </div>
         </Stack>
       </Box>
+
+      <ConfirmationModal
+        message={getMessage()}
+        handleAction={handleAction}
+        buttonNames={{
+          primary: t('COMMON.LOGOUT'),
+          secondary: t('COMMON.CANCEL'),
+        }}
+        handleCloseModel={handleCloseModel}
+        modalOpen={modalOpen}
+      />
 
       <MenuDrawer
         toggleDrawer={toggleDrawer}
