@@ -121,7 +121,6 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
             filters,
           });
           const resp = response?.result?.results?.userDetails;
-
           if (resp) {
             const nameUserIdArray = resp?.map((entry: any) => ({
               userId: entry.userId,
