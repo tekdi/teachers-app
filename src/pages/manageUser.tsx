@@ -25,7 +25,7 @@ const manageUser = () => {
   return (
     <>
       <Header />
-      <Box sx={{ padding: '0 18px' }}>
+      <Box sx={{ padding: '0 18px' }} className="mt--4">
         <Box
           textAlign={'left'}
           fontSize={'22px'}
