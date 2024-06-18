@@ -56,6 +56,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   };
 
   const isDashboard = router.pathname === '/dashboard';
+  const isTeacherCenter = router.pathname === '/teachingCenters';
 
   return (
     <Drawer
@@ -147,7 +148,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               background: isDashboard
                 ? theme.palette.primary.main
                 : 'transparent',
-              padding: '16px 18px !important',
+              padding: isDashboard
+                ? '16px 18px !important'
+                : '0px 18px !important',
               marginTop: '15px',
               color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
               fontWeight: isDashboard ? '600' : 500,
@@ -163,27 +166,36 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             {t('DASHBOARD.DASHBOARD')}
           </Button>
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            gap: '10px',
-            borderRadius: '100px',
-            alignItems: 'center',
-            marginTop: '12px',
-            marginLeft: '12px',
-          }}
-        >
-          <Box>
-            <LocalLibraryOutlinedIcon />
-          </Box>
-          <Box
+        <Box sx={{ marginTop: '12px' }}>
+          <Button
+            className="fs-14"
             sx={{
-              color: theme.palette.warning.A200,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: isTeacherCenter
+                ? theme.palette.primary.main
+                : 'transparent',
+
+              padding: isTeacherCenter
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              color: isTeacherCenter ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isTeacherCenter ? '600' : 500,
+              '&:hover': {
+                background: isTeacherCenter
+                  ? theme.palette.primary.main
+                  : 'transparent',
+              },
+              marginTop: '15px',
             }}
-            className="fs-14 fw-500"
+            startIcon={<LocalLibraryOutlinedIcon />}
+            onClick={() => {
+              router.push(`/teachingCenters`); // Check route
+            }}
           >
             {t('DASHBOARD.MY_TEACHING_CENTERS')}
-          </Box>
+          </Button>
         </Box>
       </Box>
     </Drawer>
