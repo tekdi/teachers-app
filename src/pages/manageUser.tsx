@@ -18,8 +18,8 @@ const manageUser = () => {
   const theme = useTheme<any>();
   const router = useRouter();
 
-  const [value, setValue] = React.useState('one');
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  const [value, setValue] = React.useState(1);
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
   return (
@@ -64,13 +64,11 @@ const manageUser = () => {
             },
           }}
         >
-          {/* <Tab value="one" label="Center Sessions" />
-          <Tab value="two" label="Online Recordings" /> */}
-          <Tab value="one" label={t('COMMON.FACILITATORS')} />
+          <Tab value={1} label={t('COMMON.FACILITATORS')} />
         </Tabs>
       </Box>
       <Box>
-        {value === 'one' && (
+        {value === 1 && (
           <>
             <Grid
               px={'18px'}
