@@ -55,19 +55,19 @@
     "REMOVE": "Remove",
     "MARK_DROP_OUT": "Mark as Drop Out",
     "SOMETHING_WENT_WRONG": "Something went wrong",
-    "NO_GO_BACK":"No, go back",
-    "YES":"Yes",
-    "REVIEW_ATTENDANCE":"Review Attendance",
-    "ADD_NEW":"Add New",
-    "ADD":"ADD",
-    "ADD_CENTER":"Add Centers to your view",
-    "REMOVE_FROM_CENTER":"Remove From Center",
-    "DROP_OUT":"Drop Out",
-    "REASON_FOR_DROPOUT":"Reason for Dropout",
-    "SURE_LOGOUT" :"Are you sure you want to Logout?",
-    "SURE_UPDATE" :"Are you sure you want to update this attendance?",
-    "SURE_CLOSE":"Are you sure you want to close?",
-    "LEARNER_LIST":"Learners List"
+    "NO_GO_BACK": "No, go back",
+    "YES": "Yes",
+    "REVIEW_ATTENDANCE": "Review Attendance",
+    "ADD_NEW": "Add New",
+    "ADD": "ADD",
+    "ADD_CENTER": "Add Centers to your view",
+    "REMOVE_FROM_CENTER": "Remove From Center",
+    "DROP_OUT": "Drop Out",
+    "REASON_FOR_DROPOUT": "Reason for Dropout",
+    "SURE_LOGOUT": "Are you sure you want to Logout?",
+    "SURE_UPDATE": "Are you sure you want to update this attendance?",
+    "SURE_CLOSE": "Are you sure you want to close?",
+    "LEARNER_LIST": "Learners List"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -196,7 +196,7 @@
     "MONTH_MOBILISATION": "Month of Mobilisation",
     "DROP_OUT_REASON": "Reason for Drop Out From School"
   },
-  "DROPOUT_REASONS":{
+  "DROPOUT_REASONS": {
     "UNABLE_TO_COPE_WITH_STUDIES": "Unable to cope with studies",
     "FAMILY_RESPONSIBILITIES": "Family responsibilities",
     "NEED_TO_GO_TO_WORK_OWN_WORK": "Need to go to work / own work",

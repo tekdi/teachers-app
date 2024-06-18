@@ -1,4 +1,7 @@
-import { cohortMemberList, updateCohortMemberStatusParams } from '../utils/Interfaces';
+import {
+  cohortMemberList,
+  updateCohortMemberStatusParams,
+} from '../utils/Interfaces';
 import { post, put } from './RestClient';
 
 export const getMyCohortMemberList = async ({
@@ -23,13 +26,13 @@ export const getMyCohortMemberList = async ({
 };
 
 // export const updateCohortMemberStatus = async ({
-//   memberStatus, 
+//   memberStatus,
 //   statusReason
 // }: updateCohortMemberStatusParams): Promise<any> => {
 //   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/update/${userId}`;
 //   try {
 //     const response = await put(apiUrl, {
-//       memberStatus, 
+//       memberStatus,
 //       statusReason
 //     });
 //     console.log('data', response?.data);
