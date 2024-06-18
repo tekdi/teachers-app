@@ -129,7 +129,7 @@ export const debounce = <T extends (...args: any[]) => any>(
   };
 };
 
-//Function to convert names in Pascal Case
+//Function to convert names in capitalize case
 export const toPascalCase = (name: string) => {
   return name
     .toLowerCase()
