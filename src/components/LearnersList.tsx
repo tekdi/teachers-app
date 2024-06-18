@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next';
 
 type Anchor = 'bottom';
 
-const CenterList = () => {
+const LearnersList = () => {
   const [state, setState] = React.useState({
     bottom: false,
   });
@@ -190,4 +190,4 @@ const CenterList = () => {
   );
 };
 
-export default CenterList;
+export default LearnersList;

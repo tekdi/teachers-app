@@ -3,9 +3,9 @@ import { Button, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
-import CenterList from '@/components/CenterList';
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import LearnersList from '@/components/LearnersList';
 import React from 'react';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -124,7 +124,7 @@ const teachingCenterDetails = () => {
               />
             </Box>
             <Box>
-              <CenterList />
+              <LearnersList />
             </Box>
           </>
         )}
