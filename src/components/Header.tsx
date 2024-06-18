@@ -16,6 +16,7 @@ import Image from 'next/image';
 import logoLight from '../../public/images/logo-light.png';
 import menuIcon from '../assets/images/menuIcon.svg';
 import accountIcon from './../assets/images/account.svg';
+import { logEvent } from '@/utils/googleAnalytics';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -69,10 +70,20 @@ const Header: React.FC = () => {
   const handleProfileClick = () => {
     if (pathname !== '/profile') {
       router.push('/profile');
+      logEvent({
+        action: 'my-profile-clicked-header',
+        category: 'Dashboard',
+        label: 'Profile Clicked',
+      });
     }
   };
   const handleLogoutClick = () => {
     router.replace('/logout');
+    logEvent({
+      action: 'logout-clicked-header',
+      category: 'Dashboard',
+      label: 'Logout Clicked',
+    });
   };
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
@@ -102,6 +113,13 @@ const Header: React.FC = () => {
   }, []);
 
   const [language, setLanguage] = React.useState(selectedLanguage);
+  let hasSeenTutorial = false;
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const storedValue = localStorage.getItem('hasSeenTutorial');
+    if (storedValue !== null) {
+      hasSeenTutorial = storedValue === 'true'; // Convert string 'true' or 'false' to boolean
+    }
+  }
 
   return (
     <Box sx={{ marginBottom: '4rem' }}>
@@ -109,7 +127,7 @@ const Header: React.FC = () => {
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          position: 'fixed',
+          position: hasSeenTutorial ? 'fixed' : 'relative',
           top: '0px',
           zIndex: '999',
           width: '100%',

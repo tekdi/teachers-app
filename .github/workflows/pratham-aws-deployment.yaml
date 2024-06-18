@@ -2,7 +2,7 @@ name: Deploy to Pratham-DEV-Deployment on Prahtam-AWS
 on:
   push:
     branches:
-      - shiksha-2.0
+      - june15-pilot
 jobs:
   deploy:
     runs-on: ubuntu-latest

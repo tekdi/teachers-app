@@ -4,7 +4,6 @@ import Typography from '@mui/material/Typography';
 import ErrorIcon from '../../public/images/404.png'; // Make sure to replace this with the actual path to your image
 import Image from 'next/image';
 
-
 const PageNotFound = () => {
   return (
     <Box

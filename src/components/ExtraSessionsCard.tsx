@@ -25,7 +25,9 @@ const ExtraSessionsCard: React.FC<ExtraSessionsCardProps> = ({
 
   const isMobile = useMediaQuery('(max-width:600px)');
   const theme = useTheme<any>();
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -33,7 +35,7 @@ const ExtraSessionsCard: React.FC<ExtraSessionsCardProps> = ({
 
   const open = Boolean(anchorEl);
   const id = open ? 'copy-text' : undefined;
-  
+
   const onCopyClick = (event: React.MouseEvent<SVGElement>) => {
     setAnchorEl(event.target as HTMLButtonElement);
     navigator.clipboard.writeText(meetingURL);

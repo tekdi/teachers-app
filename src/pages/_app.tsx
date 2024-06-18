@@ -7,7 +7,7 @@ import {
   useTheme,
 } from '@mui/material/styles';
 import * as React from 'react';
-
+import { useEffect } from 'react';
 import { Poppins } from 'next/font/google';
 
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -17,7 +17,12 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
-import customTheme from '../styles/customStyles';
+import customTheme from '../styles/customTheme';
+import { telemetryFactory } from '../utils/telemetry';
+import { useRouter } from 'next/router';
+import { initGA, logPageView } from '../utils/googleAnalytics';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -49,6 +54,53 @@ export function DarkTheme() {
 }
 
 function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  useEffect(() => {
+    telemetryFactory.init();
+  }, []);
+
+  useEffect(() => {
+    // Initialize GA only once
+    if (!window.GA_INITIALIZED) {
+      initGA(`${process.env.NEXT_PUBLIC_MEASUREMENT_ID}`);
+      window.GA_INITIALIZED = true;
+    }
+
+    const handleRouteChange = (url: string) => {
+      const windowUrl = url;
+
+      const cleanedUrl = windowUrl.replace(/^\//, '');
+
+      const telemetryImpression = {
+        context: {
+          env: cleanedUrl,
+          cdata: [],
+        },
+        edata: {
+          id: cleanedUrl,
+          type: 'VIEW',
+          subtype: '',
+          pageid: cleanedUrl,
+          uid: localStorage.getItem('userId') || 'Anonymous',
+        },
+      };
+      telemetryFactory.impression(telemetryImpression);
+
+      logPageView(url);
+    };
+
+    // Log initial page load
+    handleRouteChange(window.location.pathname);
+
+    // Subscribe to route changes and log page views
+    router.events.on('routeChangeComplete', handleRouteChange);
+
+    // Clean up the subscription on unmount
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+
   function ModeToggle() {
     const { mode, setMode } = useColorScheme();
     return (
@@ -70,8 +122,13 @@ function App({ Component, pageProps }: AppProps) {
       `}</style>
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}
-        <Container maxWidth="md" style={{padding: 0}}>
+        <Container maxWidth="md" style={{ padding: 0 }}>
           <Component {...pageProps} />
+          <ToastContainer
+            position="bottom-left"
+            autoClose={3000}
+            stacked={false}
+          />
         </Container>
       </CssVarsProvider>
     </>

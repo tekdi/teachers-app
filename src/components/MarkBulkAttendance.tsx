@@ -1,6 +1,6 @@
 import { Box, Button, Fade, Modal, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import ToastMessage from '@/components/ToastMessage';
 import {
   attendanceStatusList,
   bulkAttendance,
@@ -19,16 +19,14 @@ import Loader from './Loader';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { showToastMessage } from './Toastify';
 
-interface State extends SnackbarOrigin {
-  openModal: boolean;
-}
 interface MarkBulkAttendanceProps {
   open: boolean;
   onClose: () => void;
   classId: string;
   selectedDate: Date;
-  onSaveSuccess: () => void;
+  onSaveSuccess?: (isModified?: boolean) => void;
 }
 
 const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
@@ -41,24 +39,15 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const [loading, setLoading] = React.useState(false);
-  //   const [open, setOpen] = React.useState(false);
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
   const [presentCount, setPresentCount] = React.useState(0);
   const [absentCount, setAbsentCount] = React.useState(0);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
-  const [isError, setIsError] = React.useState<any>('');
   const [isAllAttendanceMarked, setIsAllAttendanceMarked] =
     React.useState(false);
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
-  const [state, setState] = React.useState<State>({
-    openModal: false,
-    vertical: 'top',
-    horizontal: 'center',
-  });
-  const { vertical, horizontal, openModal } = state;
 
-  //   const handleModalToggle = () => setOpen(!open);
   const modalContainer = {
     position: 'absolute',
     top: '50%',
@@ -82,7 +71,6 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     setBulkAttendanceStatus(
       isAllPresent ? 'present' : isAllAbsent ? 'absent' : ''
     );
-    ``;
   };
 
   const submitBulkAttendanceAction = (
@@ -133,7 +121,6 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
             filters,
           });
           const resp = response?.result?.results?.userDetails;
-
           if (resp) {
             const nameUserIdArray = resp?.map((entry: any) => ({
               userId: entry.userId,
@@ -276,34 +263,41 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
         setLoading(true);
         try {
           const response = await bulkAttendance(data);
-          const resp = response?.data;
+          const resp = response?.responses;
+
           if (resp) {
             setShowUpdateButton(true);
-            onClose();
             setLoading(false);
-            isError(false);
-          }
-          if (onSaveSuccess) {
-            onSaveSuccess();
+            if (onSaveSuccess) {
+              if (presentCount === 0 && absentCount === 0) {
+                onSaveSuccess(false);
+              } else {
+                onSaveSuccess(true);
+              }
+
+              onClose();
+            }
+          } else {
+            showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
           }
         } catch (error) {
-          console.error('Error fetching  cohort list:', error);
+          console.error('Error fetching cohort list:', error);
           setLoading(false);
-          setIsError(true);
+          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         }
-        handleClick({ vertical: 'bottom', horizontal: 'center' })();
+        // handleClick({ vertical: 'bottom', horizontal: 'center' })();
       };
       markBulkAttendance();
     }
   };
 
-  const handleClick = (newState: SnackbarOrigin) => () => {
-    setState({ ...newState, openModal: true });
-  };
+  // const handleClick = (newState: SnackbarOrigin) => () => {
+  // setState({ ...newState, openModal: true });
+  // };
 
-  const handleClose = () => {
-    setState({ ...state, openModal: false });
-  };
+  // const handleClose = () => {
+  // setState({ ...state, openModal: false });
+  // };
 
   return (
     <Box>
@@ -504,33 +498,6 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
           </Box>
         </Fade>
       </Modal>
-      {!isError ? (
-        <Snackbar
-          anchorOrigin={{ vertical, horizontal }}
-          open={openModal}
-          onClose={handleClose}
-          className="sample"
-          autoHideDuration={5000}
-          key={vertical + horizontal}
-          message={
-            presentCount == 0 && absentCount == 0
-              ? t('ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY')
-              : t('ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY')
-          }
-          // action={action}
-        />
-      ) : (
-        <Snackbar
-          anchorOrigin={{ vertical, horizontal }}
-          open={openModal}
-          onClose={handleClose}
-          className="sample"
-          autoHideDuration={5000}
-          key={vertical + horizontal}
-          message={t('COMMON.SOMETHING_WENT_WRONG')}
-          // action={action}
-        />
-      )}
     </Box>
   );
 };

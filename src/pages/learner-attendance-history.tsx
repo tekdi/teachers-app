@@ -14,7 +14,8 @@ import { shortDateFormat } from '@/utils/Helper';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import ToastMessage from '@/components/ToastMessage';
+import { logEvent } from '@/utils/googleAnalytics';
+import { showToastMessage } from '@/components/Toastify';
 
 type LearnerAttendanceData = {
   [date: string]: {
@@ -41,7 +42,6 @@ const LearnerAttendanceHistory = () => {
   const [learnerAttendance, setLearnerAttendance] = useState<
     LearnerAttendanceData | undefined
   >(undefined);
-  const [isError, setIsError] = React.useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -69,6 +69,11 @@ const LearnerAttendanceHistory = () => {
 
   const handleOpen = () => {
     setOpen(true);
+    logEvent({
+      action: 'individual-learner-attendance-modal-open',
+      category: 'Learner Attendance History Page',
+      label: 'Mark Individual Learner Modal Open',
+    });
   };
 
   const handleModalOpen = () => {
@@ -77,6 +82,11 @@ const LearnerAttendanceHistory = () => {
 
   const handleModalClose = () => {
     setOpen(false);
+    logEvent({
+      action: 'individual-learner-attendance-modal-close',
+      category: 'Learner Attendance History Page',
+      label: 'Mark Individual Learner Modal Close',
+    });
   };
 
   useEffect(() => {
@@ -129,11 +139,10 @@ const LearnerAttendanceHistory = () => {
             {}
           );
           setLearnerAttendance(attendanceData);
-          setIsError(false)
           setLoading(false);
         }
       } catch (err) {
-        setIsError(true)
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setLoading(false);
       } finally {
         setLoading(false);
@@ -229,9 +238,6 @@ const LearnerAttendanceHistory = () => {
         handleClose={handleModalClose}
         onAttendanceUpdate={() => setAttendanceUpdated(!attendanceUpdated)}
       />
-      { isError &&
-             <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />
-          }
     </Box>
   );
 };

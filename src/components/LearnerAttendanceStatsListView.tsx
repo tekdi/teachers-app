@@ -1,5 +1,6 @@
 import { Box, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
+import ReactGA from 'react-ga4';
 import { UserData, updateCustomField } from '@/utils/Interfaces';
 
 import LearnerModal from './LearnerModal';
@@ -38,6 +39,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   const [customFieldsData, setCustomFieldsData] = React.useState<
     updateCustomField[]
   >([]);
+  const [contactNumber, setContactNumber] = useState<any>('');
   const [userName, setUserName] = React.useState('');
   const [isModalOpenLearner, setIsModalOpenLearner] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -64,10 +66,11 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
             const userData = data?.userData;
             setUserData(userData);
             setUserName(userData?.name);
-
+            setContactNumber(userData?.mobile);
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
+
               setLoading(false);
             }
           } else {
@@ -107,6 +110,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           onClose={handleCloseModalLearner}
           data={filteredFields}
           userName={userName}
+          contactNumber={contactNumber}
         />
       )}
       <Stack>
@@ -127,7 +131,12 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
             <Grid item xs={6} textAlign={'left'}>
               <Link className="word-break" href={''}>
                 <Typography
-                  onClick={() => handleOpenModalLearner(userId!)}
+                  onClick={() => {
+                    handleOpenModalLearner(userId!);
+                    ReactGA.event('learner-details-link-clicked', {
+                      userId: userId,
+                    });
+                  }}
                   sx={{
                     textAlign: 'left',
                     fontSize: '14px',

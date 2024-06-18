@@ -1,0 +1,4 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-rational-order"],
+  "ignoreFiles": ["**/*.min.css", "**/*.min.js"]
+}

@@ -8,16 +8,13 @@ import {
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import ReactGA from 'react-ga4';
 
 import Checkbox from '@mui/material/Checkbox';
-import CloseIcon from '@mui/icons-material/Close';
 import Image from 'next/image';
-import Link from '@mui/material/Link';
 import Loader from '../components/Loader';
 import MenuItem from '@mui/material/MenuItem';
-import ToastMessage from '@/components/ToastMessage';
 import appLogo from '../../public/images/appLogo.png';
 import config from '../../config.json';
 import { getUserId } from '../services/ProfileService';
@@ -26,10 +23,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-
-interface State extends SnackbarOrigin {
-  openModal: boolean;
-}
+import { telemetryFactory } from '@/utils/telemetry';
+import { logEvent } from '@/utils/googleAnalytics';
+import { showToastMessage } from '@/components/Toastify';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -37,7 +33,6 @@ const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const [showToastMessage, setShowToastMessage] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -51,16 +46,6 @@ const LoginPage = () => {
 
   const passwordRef = useRef<HTMLInputElement>(null);
   const loginButtonRef = useRef<HTMLButtonElement>(null);
-
-  const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
-    vertical: 'bottom',
-    horizontal: 'center',
-  };
-  const [state, setState] = React.useState<State>({
-    openModal: false,
-    ...DEFAULT_POSITION,
-  });
-  const { vertical, horizontal, openModal } = state;
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -91,7 +76,14 @@ const LoginPage = () => {
     setPassword(value);
   };
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowPassword = () => {
+    setShowPassword((show) => !show);
+    logEvent({
+      action: 'show-password-icon-clicked',
+      category: 'Login Page',
+      label: 'Show Password',
+    });
+  };
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -101,6 +93,11 @@ const LoginPage = () => {
 
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    logEvent({
+      action: 'login-button-clicked',
+      category: 'Login Page',
+      label: 'Login Button Clicked',
+    });
     if (!usernameError && !passwordError) {
       setLoading(true);
       try {
@@ -109,13 +106,6 @@ const LoginPage = () => {
           password: password,
         });
         if (response) {
-          setTimeout(() => {
-            setState({
-              openModal: false,
-              ...DEFAULT_POSITION,
-            });
-          });
-
           if (typeof window !== 'undefined' && window.localStorage) {
             const token = response?.result?.access_token;
             const refreshToken = response?.result?.refresh_token;
@@ -129,16 +119,34 @@ const LoginPage = () => {
           }
         }
         setLoading(false);
-        setShowToastMessage(false);
+        const telemetryInteract = {
+          context: {
+            env: 'sign-in',
+            cdata: [],
+          },
+          edata: {
+            id: 'login-success',
+            type: 'CLICK',
+            subtype: '',
+            pageid: 'sign-in',
+            uid: localStorage.getItem('userId') || 'Anonymous',
+          },
+        };
+        telemetryFactory.interact(telemetryInteract);
         router.push('/dashboard');
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 404) {
-          handleClick({ ...DEFAULT_POSITION })();
-          setShowToastMessage(true);
+          showToastMessage(
+            t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
+            'error'
+          );
         } else {
           console.error('Error:', error);
-          setShowToastMessage(true);
+          showToastMessage(
+            t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
+            'error'
+          );
         }
       }
     }
@@ -152,16 +160,11 @@ const LoginPage = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem('preferredLanguage', newLocale);
       setLanguage(event.target.value);
+      ReactGA.event('select-language-login-page', {
+        selectedLanguage: event.target.value,
+      });
       router.push('/login', undefined, { locale: newLocale });
     }
-  };
-
-  const handleClick = (newState: SnackbarOrigin) => () => {
-    setState({ ...newState, openModal: true });
-  };
-
-  const handleClose = () => {
-    setState({ ...state, openModal: false });
   };
 
   useEffect(() => {
@@ -183,6 +186,14 @@ const LoginPage = () => {
       };
     }
   }, []);
+
+  const handleForgotPasswordClick = () => {
+    logEvent({
+      action: 'forgot-password-link-clicked',
+      category: 'Login Page',
+      label: 'Forgot Password Link Clicked',
+    });
+  };
 
   return (
     <Box sx={{ height: '100vh', overflowY: 'auto', background: 'white' }}>
@@ -311,15 +322,18 @@ const LoginPage = () => {
               />
             </Box>
 
-            {/* <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
-              <Link
-                sx={{ color: theme.palette.secondary.main }}
-                href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=R-3zEZbbbyM"
-                underline="none"
-              >
-                {t('LOGIN_PAGE.FORGOT_PASSWORD')}
-              </Link>
-            </Box> */}
+            {
+              // <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
+              //   <Link
+              //     sx={{ color: theme.palette.secondary.main }}
+              //     href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=rPJFHSFv50M"
+              //     underline="none"
+              //     onClick={handleForgotPasswordClick}
+              //   >
+              //     {t('LOGIN_PAGE.FORGOT_PASSWORD')}
+              //   </Link>
+              // </Box>
+            }
             <Box marginTop={'1.2rem'} className="remember-me-checkbox">
               <Checkbox
                 onChange={(e) => setRememberMe(e.target.checked)}
@@ -331,7 +345,14 @@ const LoginPage = () => {
                   color: theme.palette.warning['300'],
                 }}
                 className="fw-400"
-                onClick={() => setRememberMe(!rememberMe)}
+                onClick={() => {
+                  setRememberMe(!rememberMe);
+                  logEvent({
+                    action: 'remember-me-button-clicked',
+                    category: 'Login Page',
+                    label: `Remember Me ${rememberMe ? 'Checked' : 'Unchecked'}`,
+                  });
+                }}
               >
                 {t('LOGIN_PAGE.REMEMBER_ME')}
               </span>
@@ -356,11 +377,6 @@ const LoginPage = () => {
             </Box>
           </Box>
         </Box>
-        {showToastMessage && (
-          <ToastMessage
-            message={t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT')}
-          />
-        )}
       </form>
     </Box>
   );

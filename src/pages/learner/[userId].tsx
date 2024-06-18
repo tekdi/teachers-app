@@ -16,6 +16,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   Grid,
   IconButton,
   InputLabel,
@@ -37,6 +38,7 @@ import {
 } from '@/utils/Interfaces';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import React, { useEffect, useState } from 'react';
+import ReactGA from 'react-ga4';
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import {
   classesMissedAttendancePercentList,
@@ -61,6 +63,8 @@ import { format } from 'date-fns';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import { logEvent } from '@/utils/googleAnalytics';
+import { showToastMessage } from '@/components/Toastify';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -111,14 +115,14 @@ const LearnerProfile: React.FC = () => {
     present_percentage: any;
     // Add other properties as needed
   }
-  const [isFromDate, setIsFromDate] = useState(formatSelectedDate(
-    new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000)
-  ));
+  const [isFromDate, setIsFromDate] = useState(
+    formatSelectedDate(new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000))
+  );
   const [isToDate, setIsToDate] = useState(getTodayDate());
   const [submittedOn, setSubmitedOn] = useState();
   const [overallAttendance, setOverallAttendance] =
     useState<OverallAttendance>();
-    const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
+  const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
   const [selectedValue, setSelectedValue] = React.useState<any>('');
   const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
     useState(0);
@@ -129,7 +133,9 @@ const LearnerProfile: React.FC = () => {
   const [totalScore, setTotalScore] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [hasErrors, setHasErrors] = useState(false);
-
+  const [hasInputChanged, setHasInputChanged] = React.useState<boolean>(false);
+  const [isValidationTriggered, setIsValidationTriggered] =
+    React.useState<boolean>(false);
   const [unitName, setUnitName] = useState('');
   const [blockName, setBlockName] = useState('');
   const [uniqueDoId, setUniqueDoId] = useState('');
@@ -280,6 +286,7 @@ const LearnerProfile: React.FC = () => {
         setIsError(false);
       } catch (error) {
         setIsError(true);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setLoading(false);
         console.error('Error fetching  user details:', error);
       }
@@ -326,12 +333,16 @@ const LearnerProfile: React.FC = () => {
   const handleChangeTest = (event: SelectChangeEvent) => {
     const test = event.target.value;
     setTest(test);
+    ReactGA.event('pre-post-test-selected', { testTypeSelected: test });
     getDoIdForAssesmentReport(test, subject);
   };
 
   const handleChangeSubject = (event: SelectChangeEvent) => {
     const subject = event.target.value;
     setSubject(event.target.value);
+    ReactGA.event('select-subject-learner-details-page', {
+      subjectSelected: subject,
+    });
     getDoIdForAssesmentReport(test, subject);
   };
 
@@ -370,6 +381,7 @@ const LearnerProfile: React.FC = () => {
       setIsError(false);
     } catch (error) {
       setIsError(true);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       console.error(
         'Error fetching getDoIdForAssesmentDetails results:',
         error
@@ -494,8 +506,26 @@ const LearnerProfile: React.FC = () => {
   const [contactNumber, setContactNumber] = useState<any | null>(null);
   const [openEdit, setOpenEdit] = React.useState(false);
   const [loading, setLoading] = useState(false);
-  const handleOpen = () => setOpenEdit(true);
-  const handleClose = () => setOpenEdit(false);
+  const handleOpen = () => {
+    setOpenEdit(true);
+    logEvent({
+      action: 'edit-learner-profile-modal-open',
+      category: 'Learner Detail Page',
+      label: 'Edit Learner Profile Modal Open',
+    });
+  };
+  const handleClose = () => {
+    logEvent({
+      action: 'edit-learner-profile-modal-close',
+      category: 'Learner Detail Page',
+      label: 'Edit Learner Profile Modal Close',
+    });
+    setOpenEdit(false);
+    initialFormData();
+    setHasInputChanged(false);
+    setHasErrors(false);
+    setErrors({});
+  };
   const style = {
     position: 'absolute',
     top: '50%',
@@ -524,7 +554,7 @@ const LearnerProfile: React.FC = () => {
     })),
   });
 
-  useEffect(() => {
+  const initialFormData = () => {
     setFormData({
       userData: {
         name: userName || '',
@@ -535,15 +565,26 @@ const LearnerProfile: React.FC = () => {
         value: field.value,
       })),
     });
+  };
+
+  useEffect(() => {
+    initialFormData();
   }, [userData, customFieldsData]);
 
   const handleFieldChange = (fieldId: string, value: string) => {
+    const sanitizedValue = value.replace(/^\s+/, '').replace(/\s+/g, ' ');
+
     setFormData((prevState) => ({
       ...prevState,
       customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId ? { ...field, value: [value] } : field
+        field.fieldId === fieldId
+          ? { ...field, value: [sanitizedValue] }
+          : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleCheckboxChange = (
@@ -566,6 +607,9 @@ const LearnerProfile: React.FC = () => {
           : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleDropdownChange = (fieldId: string, value: string) => {
@@ -575,6 +619,9 @@ const LearnerProfile: React.FC = () => {
         field.fieldId === fieldId ? { ...field, value: [value] } : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleRadioChange = (fieldId: string, value: string) => {
@@ -584,12 +631,20 @@ const LearnerProfile: React.FC = () => {
         field.fieldId === fieldId ? { ...field, value: [value] } : field
       ),
     }));
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
+    validateFields();
   };
 
   const handleSubmit = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
+    logEvent({
+      action: 'save-button-clicked-edit-learner-profile',
+      category: 'Learner Detail Page',
+      label: 'Learner Profile Save Button Clicked',
+    });
     setLoading(true);
     const user_id = userId;
     const data = {
@@ -608,8 +663,10 @@ const LearnerProfile: React.FC = () => {
     try {
       if (userId) {
         const response = await editEditUser(user_id, userDetails);
+        ReactGA.event('edit-learner-profile-successful', { userId: userId });
 
         if (response.responseCode !== 200 || response.params.err) {
+          ReactGA.event('edit-learner-profile-failed', { userId: userId });
           throw new Error(
             response.params.errmsg ||
               'An error occurred while updating the user.'
@@ -625,6 +682,7 @@ const LearnerProfile: React.FC = () => {
       }
     } catch (error) {
       setIsError(true);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       console.error('Error:', error);
     }
   };
@@ -695,7 +753,7 @@ const LearnerProfile: React.FC = () => {
           contextId: classId,
         },
         facets: ['attendanceDate'],
-        sort: ['present_percentage', 'asc']
+        sort: ['present_percentage', 'asc'],
       };
       const res = await getCohortAttendance(cohortAttendanceData);
       const response = res?.data?.result?.attendanceDate;
@@ -708,9 +766,13 @@ const LearnerProfile: React.FC = () => {
     if (classId) {
       getAttendanceMarkedDays();
     }
-  }, [classId, selectedValue === t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-    date_range: dateRange,
-  })]);
+  }, [
+    classId,
+    selectedValue ===
+      t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+        date_range: dateRange,
+      }),
+  ]);
 
   //-------------validation for edit fields ---------------------------
 
@@ -718,16 +780,17 @@ const LearnerProfile: React.FC = () => {
     const newErrors: { [key: string]: boolean } = {};
 
     const fieldsToValidate = [...customFieldsData];
-
-    learnerDetailsByOrder.forEach((field) => {
+    filteredSortedForEdit?.forEach((field) => {
       const value =
         formData?.customFields?.find((f) => f.fieldId === field.fieldId)
           ?.value[0] || '';
 
       if (field.type === 'text') {
-        newErrors[field.fieldId] = !value.trim();
+        newErrors[field.fieldId] = !value.trim() || /^\s/.test(value);
       } else if (field.type === 'numeric') {
         newErrors[field.fieldId] = !/^\d{1,4}$/.test(value);
+      } else if (field.type === 'drop_down') {
+        newErrors[field.fieldId] = !value.trim() || value === '';
       }
     });
 
@@ -739,7 +802,10 @@ const LearnerProfile: React.FC = () => {
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const sanitizedValue = value.replace(/[^a-zA-Z_ ]/g, '');
+    const sanitizedValue = value
+      .replace(/[^a-zA-Z_ ]/g, '')
+      .replace(/^\s+/, '')
+      .replace(/\s+/g, ' ');
 
     setFormData((prevData) => ({
       ...prevData,
@@ -750,11 +816,15 @@ const LearnerProfile: React.FC = () => {
     }));
 
     // setHasErrors(!sanitizedValue.trim());
+    setHasInputChanged(true);
+    setIsValidationTriggered(true);
     validateFields();
   };
 
   useEffect(() => {
-    validateFields();
+    if (hasInputChanged) {
+      validateFields();
+    }
   }, [formData, customFieldsData]);
 
   // flag for contactNumberAdded in dynamic list fo fields in lerner basic details
@@ -768,7 +838,16 @@ const LearnerProfile: React.FC = () => {
 
       <Grid container spacing={2} alignItems="flex-start" padding={'20px 18px'}>
         <Grid item>
-          <Box onClick={() => window.history.back()}>
+          <Box
+            onClick={() => {
+              window.history.back();
+              logEvent({
+                action: 'back-button-clicked-learner-detail-page',
+                category: 'Learner Detail Page',
+                label: 'Back Button Clicked',
+              });
+            }}
+          >
             <ArrowBackIcon
               sx={{
                 color: (theme.palette.warning as any)['A200'],
@@ -922,10 +1001,10 @@ const LearnerProfile: React.FC = () => {
             >
               Attendance Marked : 3 out of last 7 days
             </Typography>  */}
-            {(selectedValue ===
-          t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-            date_range: dateRange,
-          }) || selectedValue === "")? (
+            {selectedValue ===
+              t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+                date_range: dateRange,
+              }) || selectedValue === '' ? (
               <Typography
                 color={theme.palette.warning['400']}
                 fontSize={'0.75rem'}
@@ -1141,7 +1220,7 @@ const LearnerProfile: React.FC = () => {
                   onChange={handleChangeSubject}
                 >
                   <MenuItem value={'English'}>{t('PROFILE.ENGLISH')}</MenuItem>
-                  <MenuItem value={'Math'}>{t('PROFILE.MATH')}</MenuItem>
+                  <MenuItem value={'Hindi'}>{t('PROFILE.HINDI')}</MenuItem>
                 </Select>
               </FormControl>
             </Box>
@@ -1317,7 +1396,7 @@ const LearnerProfile: React.FC = () => {
               const fieldValue =
                 formData?.customFields?.find((f) => f.fieldId === field.fieldId)
                   ?.value[0] || '';
-              const isError = errors[field.fieldId];
+              const isError: any = errors[field.fieldId];
 
               return (
                 <Grid item xs={12} key={field.fieldId}>
@@ -1359,6 +1438,20 @@ const LearnerProfile: React.FC = () => {
                       }
                       variant="outlined"
                       value={fieldValue}
+                      onKeyDown={(e) => {
+                        // Allow only numeric keys, Backspace, and Delete
+                        if (
+                          !(
+                            (
+                              /[0-9]/.test(e.key) ||
+                              e.key === 'Backspace' ||
+                              e.key === 'Delete'
+                            ) // Allow decimal point if needed
+                          )
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       onChange={(e) => {
                         const inputValue = e.target.value;
                         if (/^\d{0,4}$/.test(inputValue)) {
@@ -1420,6 +1513,7 @@ const LearnerProfile: React.FC = () => {
                             : field.label}
                         </InputLabel>
                         <Select
+                          error={isError}
                           labelId={`select-label-${field.fieldId}`}
                           id={`select-${field.fieldId}`}
                           value={fieldValue}
@@ -1441,6 +1535,13 @@ const LearnerProfile: React.FC = () => {
                             </MenuItem>
                           ))}
                         </Select>
+                        {isError && (
+                          <FormHelperText
+                            sx={{ color: theme.palette.error.main }}
+                          >
+                            {t('PROFILE.SELECT_OPTION')}
+                          </FormHelperText>
+                        )}
                       </FormControl>
                     </Box>
                   ) : field.type === 'radio' || field.type === 'Radio' ? (
@@ -1501,14 +1602,13 @@ const LearnerProfile: React.FC = () => {
               }}
               onClick={handleSubmit}
               variant="contained"
-              disabled={hasErrors}
+              disabled={!hasInputChanged || !isValidationTriggered || hasErrors}
             >
               {t('COMMON.SAVE')}
             </Button>
           </Box>
         </Box>
       </Modal>
-      {isError && <ToastMessage message={t('COMMON.SOMETHING_WENT_WRONG')} />}
     </>
   );
 };
