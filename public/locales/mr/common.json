@@ -54,7 +54,20 @@
     "FROM_TO_DATE": "पासून - पर्यंत तारीख",
     "REMOVE": "काढून टाका",
     "MARK_DROP_OUT": "ड्रॉप आउट म्हणून चिन्हांकित करा",
-    "SOMETHING_WENT_WRONG": "काहीतरी चूक झाली"
+    "SOMETHING_WENT_WRONG": "काहीतरी चूक झाली",
+    "NO_GO_BACK": "नाही, परत जा",
+    "YES": "होय",
+    "REVIEW_ATTENDANCE": "उपस्थिती पुनरावलोकन",
+    "ADD_NEW": "नवीन जोडा",
+    "ADD": "जोडा",
+    "ADD_CENTER": "तुमच्या दृश्यात केंद्रे जोडा",
+    "REMOVE_FROM_CENTER": "केंद्रातून काढून टाका",
+    "DROP_OUT": "गैरहजर",
+    "REASON_FOR_DROPOUT": "बाहेर पडण्याचे कारण",
+    "SURE_LOGOUT": "तुम्हाला खाते बंद करायचं आहे का?",
+    "SURE_UPDATE": "तुम्हाला ही उपस्थिती अपडेट करायची आहे का?",
+    "SURE_CLOSE": "तुम्हाला हे बंद करायचं आहे का?",
+     "LEARNER_LIST":"शिकणाऱ्यांची यादी"
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्तानाव",
@@ -181,6 +194,18 @@
     "MOBILISATION_METHOD": "शिकणाऱ्याला कसे एकत्रित केले गेले?",
     "MONTH_MOBILISATION": "एकत्रीकरणाचा महिना",
     "DROP_OUT_REASON": "शाळा सोडण्याचे कारण"
+  },
+  "DROPOUT_REASONS": {
+    "UNABLE_TO_COPE_WITH_STUDIES": "अभ्यासात असमर्थता",
+    "FAMILY_RESPONSIBILITIES": "कौटुंबिक जबाबदाऱ्या",
+    "NEED_TO_GO_TO_WORK_OWN_WORK": "कामावर जाण्याची आवश्यकता / स्वतःचे काम",
+    "MARRIAGE": "लग्न",
+    "ILLNESS": "आजार",
+    "MIGRATION": "स्थानांतरण",
+    "PREGNANCY": "गर्भधारणा",
+    "DOCUMENT_ISSUE": "दस्तऐवज समस्या",
+    "DISTANCE_ISSUE": "अंतराची समस्या",
+    "SCHOOL_ADMISSION": "शाळेत प्रवेश"
   },
   "GUIDE_TOUR": {
     "STEP_1": "स्वागत आहे! चला तुम्हाला डॅशबोर्डशी परिचित करून देतो",

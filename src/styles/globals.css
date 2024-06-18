@@ -727,6 +727,41 @@ main {
 .text4D {
   color: #4d4639 !important;
 }
+
+
+.p-10 {
+  padding: 10px;
+}
+
+.box_shadow_center {
+  box-shadow: 0px 2px 6px 2px #00000026;
+  height: 40px;
+  width: 40px;
+  box-shadow: 0px 1px 2px 0px #0000004d;
+  border: 1.5px solid #ffffff;
+  border-radius: 100px;
+  background-color: #ede1cf;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-bottom div:nth-child(3) {
+  border-top-left-radius: 28px !important;
+  border-top-right-radius: 28px !important;
+}
+.bg-grey {
+  background: #dadada !important;
+  width: 32px;
+  height: 4px;
+}
+
+.modal-bottom div:nth-child(1) {
+  position: unset !important;
+}
+.textCD {
+  color: #cdc5bd !important;
+}
+
 .selected-start-end {
   background-color: var(--mui-palette-primary-main) !important;
 }
