@@ -79,8 +79,10 @@ const LearnersList = () => {
                   19 y/o
                 </Box>
                 <FiberManualRecordIcon
-                  sx={{ fontSize: '9px' }}
-                  className="textCD"
+                  sx={{
+                    fontSize: '9px',
+                    color: theme.palette.secondary.contrastText,
+                  }}
                 />
                 <Box
                   sx={{ fontSize: '12px', color: theme.palette.warning['400'] }}
@@ -133,8 +135,10 @@ const LearnersList = () => {
                   19 y/o
                 </Box>
                 <FiberManualRecordIcon
-                  sx={{ fontSize: '9px' }}
-                  className="textCD"
+                  sx={{
+                    fontSize: '9px',
+                    color: theme.palette.secondary.contrastText,
+                  }}
                 />
                 <Box
                   sx={{

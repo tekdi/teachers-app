@@ -48,8 +48,8 @@ body {
   font-size: 22px !important;
 }
 
-.text-4D {
-  color: #4d4639;
+.text-dark-grey {
+  color: var(--mui-palette-warning-A200);
 }
 
 .text-1F {
@@ -695,10 +695,6 @@ main {
   padding: 10px 20px 20px;
 }
 
-.text-4d {
-  color: #4d4639;
-}
-
 .userName label {
   color: #1f1b13 !important;
 }
@@ -725,11 +721,6 @@ main {
   align-items: center !important;
   justify-content: center !important;
 }
-
-.text4D {
-  color: #4d4639 !important;
-}
-
 .p-10 {
   padding: 10px;
 }
@@ -754,17 +745,36 @@ main {
 .bg-grey {
   width: 32px;
   height: 4px;
-  background: #dadada !important;
+  background: var(--mui-palette-warning-900) !important;
 }
 
 .modal-bottom div:nth-child(1) {
   position: unset !important;
 }
 
-.textCD {
-  color: #cdc5bd !important;
-}
-
 .selected-start-end {
   background-color: var(--mui-palette-primary-main) !important;
+}
+
+.input_search div:first-child {
+  height: 44px;
+  background: var(--mui-palette-warning-A700);
+  padding-left: 16px;
+  border-radius: 100px;
+  border: unset !important;
+}
+.input_search fieldset {
+  border: unset !important;
+}
+
+.input_search input {
+  color: var(--mui-palette-warning-A200);
+  font-size: 14px;
+}
+
+.mt--4 {
+  margin-top: -4rem !important;
+}
+.checkBox_svg svg {
+  fill: var(--mui-palette-warning-A200);
 }

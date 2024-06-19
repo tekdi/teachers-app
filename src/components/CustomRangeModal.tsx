@@ -59,7 +59,7 @@ const CustomRangeModal: React.FC = () => {
                   style={{ cursor: 'pointer' }}
                 />
               </Box>
-              <Box className="text-4D">{t('COMMON.CUSTOM_RANGE')}</Box>
+              <Box className="text-dark-grey">{t('COMMON.CUSTOM_RANGE')}</Box>
             </Box>
             <Box>
               <CloseIcon
@@ -69,7 +69,7 @@ const CustomRangeModal: React.FC = () => {
             </Box>
           </Box>
           <Box sx={{ paddingTop: '20px' }}>
-            <Box className="fs-14 fw-500 text-4D">
+            <Box className="fs-14 fw-500 text-dark-grey">
               {t('COMMON.FROM_TO_DATE')}
             </Box>
             <Box className="fs-22 fw-500 pt-10 text-1F">17 May – 23 May</Box>
