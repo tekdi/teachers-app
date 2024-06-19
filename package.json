@@ -14,6 +14,7 @@
     "lint:css": "stylelint '**/*.{css,scss}'",
     "lint:css:fix": "stylelint '**/*.{css,scss}' --fix",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
   },
   "dependencies": {
