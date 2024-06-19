@@ -12,7 +12,13 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
-export default function ManageCentersModal() {
+interface ManageUsersModalProps {
+  centersName: string[];
+}
+
+const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
+  centersName,
+}) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
@@ -92,123 +98,36 @@ export default function ManageCentersModal() {
           </Box>
           <Box mx={'20px'}>
             <Box sx={{ height: '37vh', mt: '10px', overflowY: 'auto' }}>
-              <Box
-                borderBottom={theme.palette.warning['A100']}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Box
-                  sx={{
-                    fontSize: '16px',
-                    color: theme.palette.warning['300'],
-                    pb: '20px',
-                  }}
-                >
-                  Khapari Dharmu
-                </Box>
-                <Box>
-                  <Checkbox sx={{ py: '20px' }} className="checkBox_svg" />
-                </Box>
-              </Box>
-
-              <Box
-                borderBottom={theme.palette.warning['A100']}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Box
-                  sx={{
-                    fontSize: '16px',
-                    color: theme.palette.warning['300'],
-                    py: '20px',
-                  }}
-                >
-                  Kolara
-                </Box>
-                <Box>
-                  <Checkbox sx={{ py: '20px' }} className="checkBox_svg" />
-                </Box>
-              </Box>
-
-              <Box
-                borderBottom={theme.palette.warning['A100']}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Box
-                  sx={{
-                    fontSize: '16px',
-                    color: theme.palette.warning['300'],
-                    py: '20px',
-                  }}
-                >
-                  Madnapur
-                </Box>
-                <Box>
-                  <Checkbox
-                    sx={{ paddingBottom: '20px' }}
-                    className="checkBox_svg"
-                  />
-                </Box>
-              </Box>
-
-              <Box
-                borderBottom={theme.palette.warning['A100']}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Box
-                  sx={{
-                    fontSize: '16px',
-                    color: theme.palette.warning['300'],
-                    py: '20px',
-                  }}
-                >
-                  Piparda
-                </Box>
-                <Box>
-                  <Checkbox
-                    sx={{ paddingBottom: '20px' }}
-                    className="checkBox_svg"
-                  />
-                </Box>
-              </Box>
-              <Box
-                borderBottom={theme.palette.warning['A100']}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Box
-                  sx={{
-                    fontSize: '16px',
-                    color: theme.palette.warning['300'],
-                    py: '20px',
-                  }}
-                >
-                  Vihirgaon
-                </Box>
-                <Box>
-                  <Checkbox
-                    sx={{ paddingBottom: '20px' }}
-                    className="checkBox_svg"
-                  />
-                </Box>
-              </Box>
+              {centersName?.map((name, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <Box
+                      borderBottom={theme.palette.warning['A100']}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          fontSize: '16px',
+                          color: theme.palette.warning['300'],
+                          pb: '20px',
+                        }}
+                      >
+                        {name}
+                      </Box>
+                      <Box>
+                        <Checkbox
+                          sx={{ pb: '20px' }}
+                          className="checkBox_svg"
+                        />
+                      </Box>
+                    </Box>
+                  </React.Fragment>
+                );
+              })}
             </Box>
           </Box>
           <Divider />
@@ -225,4 +144,6 @@ export default function ManageCentersModal() {
       </Modal>
     </div>
   );
-}
+};
+
+export default ManageCentersModal;

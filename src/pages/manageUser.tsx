@@ -3,6 +3,8 @@ import { FormControl, Grid, MenuItem, Select, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Header from '@/components/Header';
 import InputAdornment from '@mui/material/InputAdornment';
+import ManageCentersModal from '@/components/ManageCentersModal';
+import ManageUsersModal from '@/components/ManageUsersModal';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
@@ -180,6 +182,28 @@ const manageUser = () => {
                   />
                 </Box>
               </Box>
+              <ManageUsersModal
+                leanerName={'Aditi Patel'}
+                centerName={[
+                  'Bhiwapur',
+                  'Jabarbodi',
+                  'Kargaon',
+                  'Katol',
+                  'Kondhali',
+                  'Metpanjara',
+                ]}
+              />
+              use this after you integrate in bottom modal
+              <ManageCentersModal
+                centersName={[
+                  'Khapari Dharmu',
+                  'Kolara',
+                  'Madnapur',
+                  'Piparda',
+                  'Kondhali',
+                  'Vihirgaon',
+                ]}
+              />
             </Box>
           </>
         )}

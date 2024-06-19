@@ -9,7 +9,15 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
-export default function ManageUsersModal() {
+interface ManageUsersModalProps {
+  leanerName: string;
+  centerName: string[];
+}
+
+const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
+  leanerName,
+  centerName,
+}) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
@@ -53,7 +61,7 @@ export default function ManageUsersModal() {
                 }}
                 component="h2"
               >
-                Aditi Patel
+                {leanerName}
               </Typography>
             </Box>
             <CloseIcon
@@ -83,81 +91,29 @@ export default function ManageUsersModal() {
               flexWrap: 'wrap',
             }}
           >
-            <Button
-              sx={{
-                padding: '6px 12px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: 500,
-                borderBottom: `1px solid ${theme.palette.warning[900]}`,
-              }}
-              className="text-dark-grey"
-            >
-              Bhiwapur
-            </Button>
-            <Button
-              sx={{
-                borderBottom: `1px solid ${theme.palette.warning[900]}`,
-                padding: '6px, 12px 6px 12px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: 500,
-              }}
-              className="text-dark-grey"
-            >
-              Jabarbodi
-            </Button>
-            <Button
-              sx={{
-                borderBottom: `1px solid ${theme.palette.warning[900]}`,
-                padding: '6px, 12px 6px 12px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: 500,
-              }}
-              className="text-dark-grey"
-            >
-              Kargaon
-            </Button>
-            <Button
-              sx={{
-                borderBottom: `1px solid ${theme.palette.warning[900]}`,
-                padding: '6px, 12px 6px 12px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: 500,
-              }}
-              className="text-dark-grey"
-            >
-              Katol
-            </Button>
-            <Button
-              sx={{
-                borderBottom: `1px solid ${theme.palette.warning[900]}`,
-                padding: '6px, 12px 6px 12px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: 500,
-              }}
-              className="text-dark-grey"
-            >
-              Kondhali
-            </Button>
-            <Button
-              sx={{
-                borderBottom: `1px solid ${theme.palette.warning[900]}`,
-                padding: '6px, 12px 6px 12px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: 500,
-              }}
-              className="text-dark-grey"
-            >
-              Metpanjara
-            </Button>
+            {centerName?.map((name, index) => {
+              return (
+                <React.Fragment key={index}>
+                  <Button
+                    sx={{
+                      padding: '6px 12px',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      borderBottom: `1px solid ${theme.palette.warning[900]}`,
+                    }}
+                    className="text-dark-grey"
+                  >
+                    {name}
+                  </Button>
+                </React.Fragment>
+              );
+            })}
           </Box>
         </Box>
       </Modal>
     </div>
   );
-}
+};
+
+export default ManageUsersModal;
