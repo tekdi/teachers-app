@@ -229,3 +229,9 @@ export interface updateCohortMemberStatusParams {
   memberStatus: string;
   statusReason?: string;
 }
+
+export interface LearnerListProps {
+  isDropout: boolean;
+  enrollmentId?: string | number;
+  learnerName: string;
+}
