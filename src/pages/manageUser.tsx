@@ -161,14 +161,24 @@ const manageUser = () => {
                       </Box>
                       <Box
                         sx={{
-                          fontSize: '12px',
-                          fontWeight: '500',
                           padding: '4px',
                           color: theme.palette.success.contrastText,
+                          fontSize: '12px',
+                          borderRadius: '8px',
                         }}
                       >
-                        Bhiwapur, Jabarbodi, Kargaon,
-                        <span style={{ color: theme.palette.warning['400'] }}>
+                        <span
+                          style={{
+                            color: theme.palette.warning.contrastText,
+
+                            fontWeight: '500',
+                          }}
+                        >
+                          Bhiwapur, Jabarbodi, Kargaon,
+                        </span>
+                        <span
+                          style={{ color: theme.palette.warning.contrastText }}
+                        >
                           and 3 more
                         </span>
                       </Box>
@@ -193,7 +203,7 @@ const manageUser = () => {
                   'Metpanjara',
                 ]}
               />
-              use this after you integrate in bottom modal
+              {/* use this after you integrate in bottom modal */}
               <ManageCentersModal
                 centersName={[
                   'Khapari Dharmu',
