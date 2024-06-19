@@ -20,7 +20,6 @@ import {
 } from '@mui/material';
 import { CustomField, UserDatas, updateCustomField } from '@/utils/Interfaces';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import ReactGA from 'react-ga4';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { useTheme, withStyles } from '@mui/material/styles';
 
@@ -33,14 +32,15 @@ import Image from 'next/image';
 import Loader from '@/components/Loader';
 import Modal from '@mui/material/Modal';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
+import ReactGA from 'react-ga4';
 import { getLabelForValue } from '@/utils/Helper';
+import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { showToastMessage } from '@/components/Toastify';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../assets/images/user_placeholder.png';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
 
 interface FieldOption {
   name: string;
@@ -542,13 +542,13 @@ const TeacherProfile = () => {
                     <Box
                       fontSize={'16px'}
                       lineHeight={'16px'}
-                      className="text-4d"
+                      className="text-dark-grey"
                       width={'100%'}
                       fontWeight={'500'}
                     >
                       <Typography
                         sx={{ wordBreak: 'break-word' }}
-                        className="text-4d two-line-text"
+                        className="text-dark-grey two-line-text"
                         mr={'40px'}
                       >
                         {userData?.name}
@@ -575,7 +575,7 @@ const TeacherProfile = () => {
                       fontSize={'12px'}
                       fontWeight={'500'}
                       lineHeight={'16px'}
-                      className="text-4d"
+                      className="text-dark-grey"
                     >
                       {address}
                     </Typography>

@@ -1,6 +1,5 @@
 import { Box, Button, Fade, Modal, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
-import ToastMessage from '@/components/ToastMessage';
 import {
   attendanceStatusList,
   bulkAttendance,
@@ -15,11 +14,12 @@ import { AttendanceStatusListProps } from '../utils/Interfaces';
 import AttendanceStatusListView from './AttendanceStatusListView';
 import Backdrop from '@mui/material/Backdrop';
 import CloseIcon from '@mui/icons-material/Close';
+import ConfirmationModal from './ConfirmationModal';
 import Loader from './Loader';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { showToastMessage } from './Toastify';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { showToastMessage } from './Toastify';
 
 interface MarkBulkAttendanceProps {
   open: boolean;
@@ -38,6 +38,18 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+
+  const [updateAttendance, setUpdateAttendance] = React.useState(false);
+  const [confirmation, setConfirmation] = React.useState(false);
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const attendanceUpdate = () => {
+    setUpdateAttendance(true);
+    setModalOpen(true);
+  };
+  const confirmationOpen = () => {
+    setConfirmation(true);
+    setModalOpen(true);
+  };
   const [loading, setLoading] = React.useState(false);
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
@@ -299,13 +311,34 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   // setState({ ...state, openModal: false });
   // };
 
+  const getMessage = () => {
+    if (updateAttendance) return t('COMMON.SURE_UPDATE');
+    if (confirmation) return t('COMMON.SURE_CLOSE');
+    return '';
+  };
+
+  const handleAction = () => {
+    if (updateAttendance) {
+      handleSave();
+    } else if (confirmation) {
+      onClose();
+    }
+    onClose();
+  };
+
+  const handleCloseModel = () => {
+    setUpdateAttendance(false);
+    setConfirmation(false);
+    setModalOpen(false);
+  };
+
   return (
     <Box>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={open}
-        onClose={onClose}
+        // onClose={onClose}
         closeAfterTransition
         slots={{ backdrop: Backdrop }}
         slotProps={{
@@ -353,13 +386,24 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   >
                     {getDayMonthYearFormat(shortDateFormat(selectedDate))}
                   </Typography>
+                  <ConfirmationModal
+                    message={getMessage()}
+                    handleAction={handleAction}
+                    handleCloseModel={handleCloseModel}
+                    buttonNames={{
+                      primary: t('COMMON.YES'),
+                      secondary: t('COMMON.NO_GO_BACK'),
+                    }}
+                    modalOpen={modalOpen}
+                  />
                 </Box>
-                <Box onClick={() => onClose()}>
+                <Box>
                   <CloseIcon
                     sx={{
                       cursor: 'pointer',
                       color: theme.palette.warning['A200'],
                     }}
+                    onClick={confirmationOpen}
                   />
                 </Box>
               </Box>
@@ -481,7 +525,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                         alignItems: 'center',
                       }}
                       disabled={isAllAttendanceMarked ? false : true}
-                      onClick={handleSave}
+                      onClick={attendanceUpdate}
                     >
                       {presentCount == 0 && absentCount == 0
                         ? t('COMMON.MARK')
