@@ -60,22 +60,8 @@ export const getTodayDate = () => {
 
 export const getMonthName = () => {
   const currentDate = new Date();
-  const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
   const monthIndex = currentDate.getMonth();
-  return monthNames[monthIndex];
+  return MONTHS[monthIndex];
 };
 
 export const getDayAndMonthName = (dateString: Date | string) => {
