@@ -38,7 +38,6 @@ import {
 } from '@/utils/Interfaces';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import React, { useEffect, useState } from 'react';
-import ReactGA from 'react-ga4';
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import {
   classesMissedAttendancePercentList,
@@ -55,16 +54,17 @@ import Header from '@/components/Header';
 import Loader from '@/components/Loader';
 import MarksObtainedCard from '@/components/MarksObtainedCard';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ReactGA from 'react-ga4';
 // import Header from '../components/Header';
 // import { formatDate, getTodayDate } from '../utils/Helper';
 import StudentStatsCard from '@/components/StudentStatsCard';
 import ToastMessage from '@/components/ToastMessage';
 import { format } from 'date-fns';
+import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { showToastMessage } from '@/components/Toastify';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -710,7 +710,7 @@ const LearnerProfile: React.FC = () => {
           wordBreak: 'break-word',
           fontSize: '16px',
         }}
-        className="text-4d two-line-text"
+        className="text-dark-grey two-line-text"
         color={theme.palette.warning['A200']}
       >
         {data}

@@ -111,7 +111,7 @@ const manageUser = () => {
                         marginBottom: '0rem',
                       }}
                     >
-                      <MenuItem className="text-4D fs-14 fw-500">
+                      <MenuItem className="text-dark-grey fs-14 fw-500">
                         {t('COMMON.FILTERS')}
                       </MenuItem>
                     </Select>

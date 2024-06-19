@@ -93,8 +93,8 @@ export default function ManageCentersModal() {
           <Box mx={'20px'}>
             <Box sx={{ height: '37vh', mt: '10px', overflowY: 'auto' }}>
               <Box
+                borderBottom={theme.palette.warning['A100']}
                 sx={{
-                  borderBottom: '1px solid #D0C5B4',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
@@ -115,8 +115,8 @@ export default function ManageCentersModal() {
               </Box>
 
               <Box
+                borderBottom={theme.palette.warning['A100']}
                 sx={{
-                  borderBottom: '1px solid #D0C5B4',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
@@ -137,8 +137,8 @@ export default function ManageCentersModal() {
               </Box>
 
               <Box
+                borderBottom={theme.palette.warning['A100']}
                 sx={{
-                  borderBottom: '1px solid #D0C5B4',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
@@ -162,8 +162,8 @@ export default function ManageCentersModal() {
               </Box>
 
               <Box
+                borderBottom={theme.palette.warning['A100']}
                 sx={{
-                  borderBottom: '1px solid #D0C5B4',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
@@ -186,8 +186,8 @@ export default function ManageCentersModal() {
                 </Box>
               </Box>
               <Box
+                borderBottom={theme.palette.warning['A100']}
                 sx={{
-                  borderBottom: '1px solid #D0C5B4',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',

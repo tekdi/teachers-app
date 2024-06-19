@@ -85,73 +85,73 @@ export default function ManageUsersModal() {
           >
             <Button
               sx={{
-                border: '1px solid #DADADA',
-                padding: '6px, 12px 6px 12px',
+                padding: '6px 12px',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: 500,
+                borderBottom: `1px solid ${theme.palette.warning[900]}`,
               }}
-              className="text-4D"
+              className="text-dark-grey"
             >
               Bhiwapur
             </Button>
             <Button
               sx={{
-                border: '1px solid #DADADA',
+                borderBottom: `1px solid ${theme.palette.warning[900]}`,
                 padding: '6px, 12px 6px 12px',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: 500,
               }}
-              className="text-4D"
+              className="text-dark-grey"
             >
               Jabarbodi
             </Button>
             <Button
               sx={{
-                border: '1px solid #DADADA',
+                borderBottom: `1px solid ${theme.palette.warning[900]}`,
                 padding: '6px, 12px 6px 12px',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: 500,
               }}
-              className="text-4D"
+              className="text-dark-grey"
             >
               Kargaon
             </Button>
             <Button
               sx={{
-                border: '1px solid #DADADA',
+                borderBottom: `1px solid ${theme.palette.warning[900]}`,
                 padding: '6px, 12px 6px 12px',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: 500,
               }}
-              className="text-4D"
+              className="text-dark-grey"
             >
               Katol
             </Button>
             <Button
               sx={{
-                border: '1px solid #DADADA',
+                borderBottom: `1px solid ${theme.palette.warning[900]}`,
                 padding: '6px, 12px 6px 12px',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: 500,
               }}
-              className="text-4D"
+              className="text-dark-grey"
             >
               Kondhali
             </Button>
             <Button
               sx={{
-                border: '1px solid #DADADA',
+                borderBottom: `1px solid ${theme.palette.warning[900]}`,
                 padding: '6px, 12px 6px 12px',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: 500,
               }}
-              className="text-4D"
+              className="text-dark-grey"
             >
               Metpanjara
             </Button>
