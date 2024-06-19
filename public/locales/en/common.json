@@ -73,7 +73,8 @@
     "FACILITATORS":"Facilitators",
     "CENTERS_ASSIGNED":"Centers Assigned",
     "MANAGE_CENTERS":"Manage Centers",
-    "ASSIGN":"Assign"
+    "ASSIGN":"Assign",
+    "SEARCH_FACILITATORS":"Search Facilitators.."
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",

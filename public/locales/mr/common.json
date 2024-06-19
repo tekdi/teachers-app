@@ -73,7 +73,8 @@
     "FACILITATORS": "सुविधासंचालक",
     "CENTERS_ASSIGNED": "केंद्र निरुपित",
     "MANAGE_CENTERS": "केंद्र प्रबंधित करा",
-    "ASSIGN": "नियुक्त करा"
+    "ASSIGN": "नियुक्त करा",
+    "SEARCH_FACILITATORS":"शोध सुविधा.."
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्तानाव",

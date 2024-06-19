@@ -7,6 +7,7 @@ const customTheme = extendTheme({
         primary: {
           main: '#FDBE16',
           light: '#FFDEA1',
+          contrastText: ' #EBE1D4',
         },
         secondary: {
           main: '#0D599E',

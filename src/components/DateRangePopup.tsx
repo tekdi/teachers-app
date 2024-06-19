@@ -12,18 +12,18 @@ import {
   useStepContext,
 } from '@mui/material';
 import React, { useState } from 'react';
-import ReactGA from 'react-ga4';
 import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
 
-import checkMark from '../assets/images/checkMark.svg';
 import CloseIcon from '@mui/icons-material/Close';
 import { Height } from '@mui/icons-material';
+import Image from 'next/image';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import MonthCalender from './MonthCalender';
+import ReactGA from 'react-ga4';
 import WestIcon from '@mui/icons-material/West';
+import checkMark from '../assets/images/checkMark.svg';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import Image from 'next/image';
 
 const modalStyle = {
   position: 'absolute',
@@ -254,12 +254,12 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           <Box>
             <Grid sx={{ padding: '20px 20px 5px' }} container>
               <Grid item xs={6}>
-                <Typography className="text4D" textAlign={'left'}>
+                <Typography className="text-4D" textAlign={'left'}>
                   {t('COMMON.DATE_RANGE')}
                 </Typography>
               </Grid>
               <Grid item xs={6} textAlign={'right'}>
-                <CloseIcon className="text4D" onClick={handleModalClose} />
+                <CloseIcon className="text-4D" onClick={handleModalClose} />
               </Grid>
             </Grid>
           </Box>
@@ -288,7 +288,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                       left: '8px',
                       minWidth: 'auto',
                     }}
-                    className="text4D"
+                    className="text-4D"
                   >
                     <Image
                       height={10}

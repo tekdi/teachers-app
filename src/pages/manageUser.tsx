@@ -43,14 +43,14 @@ const manageUser = () => {
           aria-label="secondary tabs example"
           sx={{
             fontSize: '14px',
-            borderBottom: '1px solid #EBE1D4',
+            borderBottom: (theme) => `1px solid ${theme.palette.primary.main}`,
 
             '& .MuiTab-root': {
-              color: '#4D4639',
+              color: theme.palette.warning['A200'],
               padding: '0 20px',
             },
             '& .Mui-selected': {
-              color: '#4D4639',
+              color: theme.palette.warning['A200'],
             },
             '& .MuiTabs-indicator': {
               display: 'flex',
@@ -81,7 +81,7 @@ const manageUser = () => {
                 <Box>
                   <TextField
                     className="input_search"
-                    placeholder="Search Facilitators.."
+                    placeholder={t('COMMON.SEARCH_FACILITATORS')}
                     color="secondary"
                     focused
                     sx={{
@@ -103,7 +103,6 @@ const manageUser = () => {
                 <Box>
                   <FormControl className="drawer-select" sx={{ width: '100%' }}>
                     <Select
-                      className="SelectLanguages"
                       displayEmpty
                       style={{
                         borderRadius: '0.5rem',
@@ -125,7 +124,7 @@ const manageUser = () => {
               <Box
                 px={'18px'}
                 mt={3}
-                sx={{ borderBottom: '1px solid #D0C5B4' }}
+                borderBottom={`1px solid ${theme.palette.warning['A100']}`}
               >
                 <Box
                   sx={{
@@ -161,11 +160,10 @@ const manageUser = () => {
                       <Box
                         sx={{
                           fontSize: '12px',
-                          color: theme.palette.warning['300'],
                           fontWeight: '500',
                           padding: '4px',
+                          color: theme.palette.success.contrastText,
                         }}
-                        className="color-FF"
                       >
                         Bhiwapur, Jabarbodi, Kargaon,
                         <span style={{ color: theme.palette.warning['400'] }}>

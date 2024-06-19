@@ -695,10 +695,6 @@ main {
   padding: 10px 20px 20px;
 }
 
-.text-4d {
-  color: var(--mui-palette-warning-A200);
-}
-
 .userName label {
   color: #1f1b13 !important;
 }
@@ -725,11 +721,6 @@ main {
   align-items: center !important;
   justify-content: center !important;
 }
-
-.text4D {
-  color: var(--mui-palette-warning-A200) !important;
-}
-
 .p-10 {
   padding: 10px;
 }
@@ -761,15 +752,8 @@ main {
   position: unset !important;
 }
 
-.textCD {
-  color: var(--mui-palette-secondary-contrastText) !important;
-}
-
 .selected-start-end {
   background-color: var(--mui-palette-primary-main) !important;
-}
-.text-4D {
-  color: var(--mui-palette-warning-A200) !important;
 }
 
 .input_search div:first-child {
@@ -787,12 +771,7 @@ main {
   color: var(--mui-palette-warning-A200);
   font-size: 14px;
 }
-.color-FF {
-  background: var(--mui-palette-success-contrastText);
-}
-.text-4D {
-  color: var(--mui-palette-warning-A200) !important;
-}
+
 .mt--4 {
   margin-top: -4rem !important;
 }
