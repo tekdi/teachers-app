@@ -10,7 +10,7 @@ import { limit } from '@/utils/app.constant';
 import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
 
-const DisplayLearnerList = () => {
+const CohortLearnerList = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userData, setUserData] = React.useState<{}[]>();
   const { t } = useTranslation();
@@ -73,4 +73,4 @@ const DisplayLearnerList = () => {
   );
 };
 
-export default DisplayLearnerList;
+export default CohortLearnerList;

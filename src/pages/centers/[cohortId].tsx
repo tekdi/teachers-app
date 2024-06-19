@@ -13,7 +13,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { GetStaticPaths } from 'next';
-import DisplayLearnerList from '@/components/LearnerList';
+import CohortLearnerList from '@/components/CohortLearnerList';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -128,7 +128,7 @@ const TeachingCenterDetails = () => {
               />
             </Box>
             <Box>
-              <DisplayLearnerList/>
+              <CohortLearnerList/>
             </Box>
           </>
         )}
