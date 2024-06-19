@@ -170,7 +170,6 @@ const manageUser = () => {
                         <span
                           style={{
                             color: theme.palette.warning.contrastText,
-
                             fontWeight: '500',
                           }}
                         >
