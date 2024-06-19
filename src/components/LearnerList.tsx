@@ -6,10 +6,14 @@ import {
   toPascalCase,
 } from '@/utils/Helper';
 import LearnersList from '@/components/LearnersList';
+import { limit } from '@/utils/app.constant';
+import { showToastMessage } from './Toastify';
+import { useTranslation } from 'next-i18next';
 
 const DisplayLearnerList = () => {
-  const [loading, setLoading] = React.useState(false);
-  const [userData, setUserData] = React.useState<any>();
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [userData, setUserData] = React.useState<{}[]>();
+  const { t } = useTranslation();
   // const classId = localStorage.getItem('classId');
   const classId = '18e800d0-11c4-4a8c-af97-8f9811976ed6'; // TODO: get userId as a prop or from localStorage dynamically
 
@@ -18,7 +22,6 @@ const DisplayLearnerList = () => {
       setLoading(true);
       try {
         if (classId) {
-          const limit = 300;
           const page = 0;
           const filters = { cohortId: classId };
           const response = await getMyCohortMemberList({
@@ -38,12 +41,13 @@ const DisplayLearnerList = () => {
                 getFieldValue(user.customField, 'Enrollment Number')
               ),
             }));
-            // console.log(`userDetails`, userDetails);
+            console.log(`userDetails`, userDetails);
             setUserData(userDetails);
           }
         }
       } catch (error) {
         console.error('Error fetching cohort list:', error);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setLoading(false);
       } finally {
         setLoading(false);
@@ -54,14 +58,14 @@ const DisplayLearnerList = () => {
 
   return (
     <div>
-        {userData &&
+        {
           userData?.map((userData: any) => {
             return (
               <LearnersList
                 key={userData.userId}
                 learnerName={userData.name}
                 enrollmentId={userData.enrollmentNumber}
-                isDropout={userData.memberStatus === 'dropout' ? true : false}
+                isDropout={userData.memberStatus === 'dropout'}
               />
             );
           })}

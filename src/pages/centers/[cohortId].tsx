@@ -13,7 +13,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { GetStaticPaths } from 'next';
-import DisplayLearnerList from '@/components/DisplayLearnerList';
+import DisplayLearnerList from '@/components/LearnerList';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
