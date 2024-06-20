@@ -154,6 +154,24 @@ const customTheme = extendTheme({
         },
       },
     },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focused': {
+            color:  '#1F1B13',
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            // borderColor: '#000', // Change to your desired color
+          },
+        },
+      },
+    },
   },
   typography: {
     fontFamily: 'inherit',
