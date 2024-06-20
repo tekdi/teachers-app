@@ -7,6 +7,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Header from '@/components/Header';
 import Image from 'next/image';
+import Loader from '@/components/Loader';
 import building from '../../assets/images/apartment.png';
 import { cohortList } from '@/services/CohortServices';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -51,6 +52,7 @@ const TeachingCenters = () => {
   return (
     <>
       <Header />
+      {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />}
       <Box sx={{ padding: '0 18px' }}>
         <Box
           textAlign={'left'}
