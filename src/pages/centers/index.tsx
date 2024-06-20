@@ -22,6 +22,8 @@ const TeachingCenters = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
+  const [customFields, setCustomFields] = React.useState<string[]>([]);
+
   const [classId, setClassId] = React.useState('');
   const [manipulatedCohortData, setManipulatedCohortData] =
     React.useState<Array<cohort>>(cohortsData);
@@ -30,22 +32,34 @@ const TeachingCenters = () => {
   useEffect(() => {
     const fetchCohortList = async () => {
       const userId = localStorage.getItem('userId');
+      if (!userId) {
+        return;
+      }
+
       setLoading(true);
+
       try {
-        if (userId) {
-          const limit = 0;
-          const page = 0;
-          const filters = { userId: userId };
-          const resp = await cohortList({ limit, page, filters });
-          setCohortsData(resp?.results?.cohortDetails);
-          setLoading(false);
-        }
+        const limit = 0;
+        const page = 0;
+        const filters = { userId: userId };
+        const resp = await cohortList({ limit, page, filters });
+
+        const extractedNames = resp?.results?.cohortDetails || [];
+        setCohortsData(extractedNames);
+
+        const customFieldLabels = extractedNames
+          .flatMap((cohort: any) => cohort.customFields || [])
+          .map((item: any) => item.label);
+
+        setCustomFields(customFieldLabels);
       } catch (error) {
-        console.error('Error fetching  cohort list:', error);
+        console.error('Error fetching cohort list:', error);
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      } finally {
         setLoading(false);
       }
     };
+
     fetchCohortList();
   }, []);
 
@@ -53,7 +67,7 @@ const TeachingCenters = () => {
     <>
       <Header />
       {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />}
-      <Box sx={{ padding: '0 18px' }}>
+      <Box sx={{ padding: '0 18px', marginTop: '-3.8rem' }}>
         <Box
           textAlign={'left'}
           fontSize={'22px'}
@@ -81,7 +95,11 @@ const TeachingCenters = () => {
             <Box className="fs-12 fw-500 ">{t('COMMON.ADD_CENTER')}</Box>
           </Box>
         </Box>
-        <Box className="linerGradient" sx={{ borderRadius: '16px' }} p={2}>
+        <Box
+          className="linerGradient"
+          sx={{ borderRadius: '16px', mt: 2 }}
+          padding={'16px 16px 2px'}
+        >
           {cohortsData?.map((item, index) => {
             return (
               <React.Fragment key={index}>
@@ -91,8 +109,7 @@ const TeachingCenters = () => {
                   }}
                   sx={{ cursor: 'pointer', marginBottom: '20px' }}
                 >
-                  <Box>Khapari Dharmu, Chimur, Chandrapur</Box>
-                  {/* will come from API */}
+                  <Box>{customFields}</Box>
                   <Box
                     sx={{
                       display: 'flex',
@@ -127,8 +144,6 @@ const TeachingCenters = () => {
                       }}
                     >
                       <Box>{item.name}</Box>
-                      {/* will come from API */}
-
                       <ChevronRightIcon />
                     </Box>
                   </Box>
@@ -136,54 +151,6 @@ const TeachingCenters = () => {
               </React.Fragment>
             );
           })}
-
-          {/* <Box mt={3}>
-            <Box sx={{ fontSize: '16px', color: theme.palette.warning['300'] }}>
-              Bhiwapur, Nagpur (Remote)
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '10px',
-                background: '#fff',
-                height: '56px',
-                borderRadius: '8px',
-              }}
-              mt={1}
-            >
-              <Box
-                sx={{
-                  width: '56px',
-                  display: 'flex',
-                  background: '#FFDEA1',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderTopLeftRadius: '8px',
-                  borderBottomLeftRadius: '8px',
-                }}
-              >
-                <Image src={building} alt="apartment" />
-              </Box>
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  width: '100%',
-                  padding: '0 10px',
-                }}
-              >
-                <Box
-                  sx={{ fontSize: '16px', color: theme.palette.warning['300'] }}
-                >
-                  Bhivapur
-                </Box>
-
-                <ChevronRightIcon />
-              </Box>
-            </Box>
-          </Box> */}
         </Box>
       </Box>
     </>
