@@ -13,18 +13,24 @@ import {
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
-import { Theme, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'next-i18next';
+import { dropoutReasons } from '../../app.config';
 
 interface DropOutModalProps {
   open: boolean;
-  onClose: (confirmed: boolean) => void;
+  onClose: (confirmed: boolean, reason?: string) => void;
 }
 
 function DropOutModal({ open, onClose }: DropOutModalProps) {
+  const [selectedReason, setSelectedReason] = React.useState<string>('');
+  const [isButtonDisabled, setIsButtonDisabled] = React.useState<boolean>(true);
+
+
   const { t } = useTranslation();
+  const theme = useTheme<any>();
 
   const style = {
     position: 'absolute',
@@ -40,7 +46,19 @@ function DropOutModal({ open, onClose }: DropOutModalProps) {
     },
   };
 
-  const theme = useTheme<any>();
+  const handleSelection = (event: SelectChangeEvent) => {
+    setSelectedReason(event.target.value);
+    setIsButtonDisabled(false)
+  };
+
+  const handleMarkDropout = () => {
+    onClose(true, selectedReason);
+    console.log('Dropout api called')
+    setIsButtonDisabled(true)
+    // console.log('!!!!!!!!!!!!!!!!!!!!!!!!', selectedReason)
+    // call dropout api here
+  };
+
 
   return (
     <React.Fragment>
@@ -88,25 +106,23 @@ function DropOutModal({ open, onClose }: DropOutModalProps) {
                 labelId="demo-multiple-name-label"
                 id="demo-multiple-name"
                 input={<OutlinedInput label="Reason for Dropout" />}
+                onChange={handleSelection}
               >
-                <MenuItem
-                  value="Unable to cope with studies"
-                  sx={{
-                    fontSize: '16px',
-                    color: theme.palette.warning['300'],
-                  }}
-                >
-                  Unable to cope with studies {/* come from API   */}
-                </MenuItem>
-                <MenuItem
-                  value="Family responsibilities"
-                  sx={{
-                    fontSize: '16px',
-                    color: theme.palette.warning['300'],
-                  }}
-                >
-                  Family responsibilities {/* come from API   */}
-                </MenuItem>
+                {dropoutReasons?.map((reason) => (
+                  <MenuItem
+                    key={reason.value}
+                    value={reason.value}
+                    sx={{
+                      fontSize: '16px',
+                      color: theme.palette.warning['300'],
+                    }}
+                  >
+                    {reason.label
+                      .replace(/_/g, ' ')
+                      .toLowerCase()
+                      .replace(/^\w/, (c) => c.toUpperCase())}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>
@@ -118,7 +134,8 @@ function DropOutModal({ open, onClose }: DropOutModalProps) {
               className="w-100"
               sx={{ boxShadow: 'none' }}
               variant="contained"
-              onClick={() => onClose(true)}
+              onClick={handleMarkDropout}
+              disabled={isButtonDisabled}
             >
               {t('COMMON.MARK_DROP_OUT')}
             </Button>

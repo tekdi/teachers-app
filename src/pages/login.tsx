@@ -26,6 +26,7 @@ import { useTranslation } from 'next-i18next';
 import { telemetryFactory } from '@/utils/telemetry';
 import { logEvent } from '@/utils/googleAnalytics';
 import { showToastMessage } from '@/components/Toastify';
+import Link from '@mui/material/Link';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -323,16 +324,16 @@ const LoginPage = () => {
             </Box>
 
             {
-              // <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
-              //   <Link
-              //     sx={{ color: theme.palette.secondary.main }}
-              //     href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=rPJFHSFv50M"
-              //     underline="none"
-              //     onClick={handleForgotPasswordClick}
-              //   >
-              //     {t('LOGIN_PAGE.FORGOT_PASSWORD')}
-              //   </Link>
-              // </Box>
+              <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
+                <Link
+                  sx={{ color: theme.palette.secondary.main }}
+                  href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=rPJFHSFv50M"
+                  underline="none"
+                  onClick={handleForgotPasswordClick}
+                >
+                  {t('LOGIN_PAGE.FORGOT_PASSWORD')}
+                </Link>
+              </Box>
             }
             <Box marginTop={'1.2rem'} className="remember-me-checkbox">
               <Checkbox

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import {
   capitalizeEachWord,
@@ -9,21 +9,29 @@ import LearnersList from '@/components/LearnersList';
 import { limit } from '@/utils/app.constant';
 import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
+import { Box, Typography } from '@mui/material';
 
-const CohortLearnerList = () => {
+interface UserDataProps {
+  name: string;
+  userId: string;
+  memberStatus: string;
+  cohortMembershipId: string;
+  enrollmentNumber: string;
+}
+
+const CohortLearnerList = (cohortId: any) => {
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [userData, setUserData] = React.useState<{}[]>();
+  const [userData, setUserData] = React.useState<UserDataProps[]>();
+
   const { t } = useTranslation();
-  // const classId = localStorage.getItem('classId');
-  const classId = '18e800d0-11c4-4a8c-af97-8f9811976ed6'; // TODO: get userId as a prop or from localStorage dynamically
 
   useEffect(() => {
     const getCohortMemberList = async () => {
       setLoading(true);
       try {
-        if (classId) {
+        if (cohortId) {
           const page = 0;
-          const filters = { cohortId: classId };
+          const filters = cohortId;
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -54,21 +62,34 @@ const CohortLearnerList = () => {
       }
     };
     getCohortMemberList();
-  }, [classId]);
+  }, [cohortId]);
 
   return (
     <div>
-        {
-          userData?.map((userData: any) => {
-            return (
-              <LearnersList
-                key={userData.userId}
-                learnerName={userData.name}
-                enrollmentId={userData.enrollmentNumber}
-                isDropout={userData.memberStatus === 'dropout'}
-              />
-            );
-          })}
+      {userData?.map((data: any) => {
+        return (
+          <LearnersList
+            key={data.userId}
+            learnerName={data.name}
+            enrollmentId={data.enrollmentNumber}
+            isDropout={data.memberStatus === 'dropout'}
+          />
+        );
+      })}
+      {!userData?.length && (
+        <Box
+          sx={{
+            m: '1.125rem',
+            display: 'flex',
+            justifyContent: 'left',
+            alignItems: 'center',
+          }}
+        >
+          <Typography style={{ fontWeight: 'bold' }}>
+            {t('COMMON.NO_DATA_FOUND')}
+          </Typography>
+        </Box>
+      )}
     </div>
   );
 };

@@ -29,7 +29,7 @@ export const getMyCohortMemberList = async ({
 //   memberStatus,
 //   statusReason
 // }: updateCohortMemberStatusParams): Promise<any> => {
-//   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/update/${userId}`;
+//   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/update/${membershipId}`;
 //   try {
 //     const response = await put(apiUrl, {
 //       memberStatus,

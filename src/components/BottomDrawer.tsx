@@ -1,15 +1,12 @@
 import * as React from 'react';
-
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import DropOutModal from './DropOutModal';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
 
 type Anchor = 'bottom';
 
@@ -25,15 +22,16 @@ interface BottomDrawerProps {
     name: string;
   }[];
   listItemClick: (event: React.MouseEvent, name: string) => void;
+  renderCustomContent?: () => React.ReactNode;
 }
 
-export default function BottomDrawer({
+const BottomDrawer: React.FC<BottomDrawerProps> = ({
   toggleDrawer,
   state,
   optionList,
   listItemClick,
-}: BottomDrawerProps) {
-  const { t } = useTranslation();
+  renderCustomContent
+}) => {
   const theme = useTheme<any>();
 
   const list = (anchor: Anchor) => (
@@ -53,6 +51,7 @@ export default function BottomDrawer({
       >
         <Box className="bg-grey"></Box>
       </Box>
+      {renderCustomContent?.()}
       <List>
         {optionList.map(({ label, icon, name }, index) => (
           <ListItem disablePadding key={index}>
@@ -81,4 +80,6 @@ export default function BottomDrawer({
       </Drawer>
     </div>
   );
-}
+};
+
+export default BottomDrawer;

@@ -1,23 +1,32 @@
 import BottomDrawer from './BottomDrawer';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DropOutModal from './DropOutModal';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 // import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NoAccountsIcon from '@mui/icons-material/NoAccounts';
-import React from 'react';
+import React, { useEffect } from 'react';
 // import Woman2Icon from '@mui/icons-material/Woman2';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { LearnerListProps } from '@/utils/Interfaces';
+import ConfirmationModal from './ConfirmationModal';
 
 type Anchor = 'bottom';
 
-const LearnersList: React.FC<LearnerListProps> = ({learnerName, isDropout, enrollmentId}) => {
+const LearnersList: React.FC<LearnerListProps> = ({
+  learnerName,
+  isDropout,
+  enrollmentId,
+}) => {
   const [state, setState] = React.useState({
     bottom: false,
   });
+
+  // useEffect(()=>{
+
+  // },[handleRemoveLearnerFromCohort, ]) //TODO: refresh page on mark/unmark dropout and remove learner
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
@@ -34,12 +43,74 @@ const LearnersList: React.FC<LearnerListProps> = ({learnerName, isDropout, enrol
     };
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [confirmationModalOpen, setConfirmationModalOpen] =
+    React.useState<boolean>(false);
 
   const listItemClick = (event: React.MouseEvent, name: string) => {
     if (name === 'mark-drop-out') {
       setShowModal(true);
+    } else if (name === 'unmark-drop-out') {
+      // call api to unmark as dropout
+    } 
+    else {
+      setConfirmationModalOpen(true);
     }
+  };
+
+  const handleAction = () => {
+    // handleRemoveLearnerFromCohort();
+    //Close all modals
+    //add toast messages on success and failure
+    console.log(
+      'handleRemoveLearnerFromCohort api call'
+    );
+    setConfirmationModalOpen(false);
+    handleCloseBottomDrawer()
+  };
+
+  const handleCloseModel = () => {
+    setConfirmationModalOpen(false);
+  };
+
+  const handleCloseBottomDrawer = () => {
+    setState({ ...state, bottom: false });
+  };
+
+  const handleDroppedOutLabelClick = () =>{
+    console.log('handleDroppedOutLabelClick')
+  }
+
+  const renderCustomContent = () => {
+    if (isDropout) {
+      return (
+        <Box
+          sx={{
+            padding: '10px 16px 10px 16px',
+            mx: '20px',
+            borderRadius: '12px',
+            bgcolor: theme.palette.success.contrastText,
+          }}
+        >
+          <Typography
+            variant="h5"
+            color={theme.palette.warning[400]}
+            fontWeight="600"
+          >
+            {t('COMMON.REASON_FOR_DROPOUT')}
+          </Typography>
+          <Typography
+            variant="h3"
+            color={theme.palette.warning[300]}
+            fontWeight="500"
+          >
+            {t('COMMON.REASON_FOR_DROPOUT')}
+          </Typography>
+          {/* TODO: Add reason dynamically from api */}
+        </Box>
+      );
+    }
+    return null;
   };
 
   return (
@@ -66,7 +137,11 @@ const LearnersList: React.FC<LearnerListProps> = ({learnerName, isDropout, enrol
             </Box> */}
             <Box>
               <Box
-                sx={{ fontSize: '16px', color: theme.palette.warning['300'], fontWeight: '600' }}
+                sx={{
+                  fontSize: '16px',
+                  color: theme.palette.warning['300'],
+                  fontWeight: '600',
+                }}
               >
                 {learnerName}
               </Box>
@@ -84,39 +159,43 @@ const LearnersList: React.FC<LearnerListProps> = ({learnerName, isDropout, enrol
                   19 y/o
                 </Box> */}
                 {isDropout ? (
-                <Box
-                  sx={{
-                    fontSize: '12px',
-                    color: theme.palette.warning['300'],
-                    background: theme.palette.error.light,
-                    fontWeight: '500',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '4px',
-                    padding: '4px 8px',
-                  }}
-                >
-                  <Box sx={{ marginTop: '1px' }}>Dropped Out</Box>
-                  <ErrorOutlineIcon style={{ fontSize: '13px' }} />
-                </Box>
-                 ) : ( 
+                  <Box
+                    sx={{
+                      fontSize: '12px',
+                      color: theme.palette.warning['300'],
+                      background: theme.palette.error.light,
+                      fontWeight: '500',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '4px',
+                      padding: '4px 8px',
+                    }}
+                    onClick={handleDroppedOutLabelClick}
+                  >
+                    <Box sx={{ marginTop: '1px' }}>Dropped Out</Box>
+                    <ErrorOutlineIcon style={{ fontSize: '13px' }} />
+                  </Box>
+                ) : (
                   <>
-                  
-                {/* <FiberManualRecordIcon
+                    {/* <FiberManualRecordIcon
                    sx={{
                     fontSize: '9px',
                     color: theme.palette.secondary.contrastText,
                   }}
                 /> */}
-                <Box
-                  sx={{ fontSize: '14px', color: theme.palette.warning['400']}}
-                >
-                  {enrollmentId}
-                </Box>
-                </>
-                )} 
+                    <Box
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '400',
+                        color: theme.palette.warning['400'],
+                      }}
+                    >
+                      {enrollmentId}
+                    </Box>
+                  </>
+                )}
               </Box>
             </Box>
           </Box>
@@ -133,11 +212,11 @@ const LearnersList: React.FC<LearnerListProps> = ({learnerName, isDropout, enrol
         listItemClick={listItemClick}
         optionList={[
           {
-            label: t('COMMON.MARK_DROP_OUT'),
+            label: isDropout ? t('COMMON.UNMARK_DROP_OUT') : t('COMMON.MARK_DROP_OUT'),
             icon: (
               <NoAccountsIcon sx={{ color: theme.palette.warning['300'] }} />
             ),
-            name: 'mark-drop-out',
+            name: isDropout ? 'unmark-drop-out' : 'mark-drop-out'
           },
           {
             label: t('COMMON.REMOVE_FROM_CENTER'),
@@ -147,9 +226,20 @@ const LearnersList: React.FC<LearnerListProps> = ({learnerName, isDropout, enrol
             name: 'remove-from-center',
           },
         ]}
+        renderCustomContent={renderCustomContent}
       />
 
       <DropOutModal open={showModal} onClose={() => setShowModal(false)} />
+      <ConfirmationModal
+        message={t('COMMON.SURE_REMOVE')}
+        handleAction={handleAction}
+        buttonNames={{
+          primary: t('COMMON.YES'),
+          secondary: t('COMMON.NO_GO_BACK'),
+        }}
+        handleCloseModel={handleCloseModel}
+        modalOpen={confirmationModalOpen}
+      />
     </>
   );
 };
