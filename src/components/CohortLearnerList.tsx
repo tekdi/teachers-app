@@ -11,7 +11,7 @@ import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
 import { Box, Typography } from '@mui/material';
 
-interface UserData {
+interface UserDataProps {
   name: string;
   userId: string;
   memberStatus: string;
@@ -21,7 +21,7 @@ interface UserData {
 
 const CohortLearnerList = (cohortId: any) => {
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [userData, setUserData] = React.useState<UserData[]>();
+  const [userData, setUserData] = React.useState<UserDataProps[]>();
 
   const { t } = useTranslation();
 
@@ -66,13 +66,13 @@ const CohortLearnerList = (cohortId: any) => {
 
   return (
     <div>
-      {userData?.map((userData: any) => {
+      {userData?.map((data: any) => {
         return (
           <LearnersList
-            key={userData.userId}
-            learnerName={userData.name}
-            enrollmentId={userData.enrollmentNumber}
-            isDropout={userData.memberStatus === 'dropout'}
+            key={data.userId}
+            learnerName={data.name}
+            enrollmentId={data.enrollmentNumber}
+            isDropout={data.memberStatus === 'dropout'}
           />
         );
       })}

@@ -26,7 +26,7 @@ interface DropOutModalProps {
 
 function DropOutModal({ open, onClose }: DropOutModalProps) {
   const [selectedReason, setSelectedReason] = React.useState<string>('');
-  const [isDisabled, setIsDisabled] = React.useState<boolean>(true);
+  const [isButtonDisabled, setIsButtonDisabled] = React.useState<boolean>(true);
 
 
   const { t } = useTranslation();
@@ -48,13 +48,13 @@ function DropOutModal({ open, onClose }: DropOutModalProps) {
 
   const handleSelection = (event: SelectChangeEvent) => {
     setSelectedReason(event.target.value);
-    setIsDisabled(false)
+    setIsButtonDisabled(false)
   };
 
   const handleMarkDropout = () => {
     onClose(true, selectedReason);
     console.log('Dropout api called')
-    setIsDisabled(true)
+    setIsButtonDisabled(true)
     // console.log('!!!!!!!!!!!!!!!!!!!!!!!!', selectedReason)
     // call dropout api here
   };
@@ -135,7 +135,7 @@ function DropOutModal({ open, onClose }: DropOutModalProps) {
               sx={{ boxShadow: 'none' }}
               variant="contained"
               onClick={handleMarkDropout}
-              disabled={isDisabled}
+              disabled={isButtonDisabled}
             >
               {t('COMMON.MARK_DROP_OUT')}
             </Button>
