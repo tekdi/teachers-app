@@ -128,7 +128,7 @@ const TeachingCenterDetails = () => {
               />
             </Box>
             <Box>
-              <CohortLearnerList/>
+              <CohortLearnerList cohortId = {cohortId}/>
             </Box>
           </>
         )}

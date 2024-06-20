@@ -19,28 +19,19 @@ interface UserData {
   enrollmentNumber: string;
 }
 
-const CohortLearnerList = () => {
+const CohortLearnerList = (cohortId: any) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userData, setUserData] = React.useState<UserData[]>();
-  const [classId, setClassId] = React.useState<string>('');
-  const { t } = useTranslation();
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const cohortId = localStorage.getItem('classId');
-      if (cohortId) {
-        setClassId(cohortId);
-      }
-    }
-  }, []);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const getCohortMemberList = async () => {
       setLoading(true);
       try {
-        if (classId) {
+        if (cohortId) {
           const page = 0;
-          const filters = { cohortId: classId };
+          const filters = cohortId;
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -71,7 +62,7 @@ const CohortLearnerList = () => {
       }
     };
     getCohortMemberList();
-  }, [classId != '']);
+  }, [cohortId]);
 
   return (
     <div>
