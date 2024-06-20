@@ -25,20 +25,21 @@ export const getMyCohortMemberList = async ({
   }
 };
 
-// export const updateCohortMemberStatus = async ({
-//   memberStatus,
-//   statusReason
-// }: updateCohortMemberStatusParams): Promise<any> => {
-//   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/update/${membershipId}`;
-//   try {
-//     const response = await put(apiUrl, {
-//       memberStatus,
-//       statusReason
-//     });
-//     console.log('data', response?.data);
-//     return response?.data;
-//   } catch (error) {
-//     console.error('error in attendance report api ', error);
-//     // throw error;
-//   }
-// };
+export const updateCohortMemberStatus = async ({
+  memberStatus,
+  statusReason,
+  membershipId
+}: updateCohortMemberStatusParams): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/update/${membershipId}`;
+  try {
+    const response = await put(apiUrl, {
+      memberStatus,
+      statusReason
+    });
+    console.log('data', response?.data);
+    return response?.data;
+  } catch (error) {
+    console.error('error in attendance report api ', error);
+    // throw error;
+  }
+};

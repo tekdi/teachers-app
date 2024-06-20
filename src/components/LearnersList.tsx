@@ -12,6 +12,8 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { LearnerListProps } from '@/utils/Interfaces';
 import ConfirmationModal from './ConfirmationModal';
+import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+import ReactGA from 'react-ga4';
 
 type Anchor = 'bottom';
 
@@ -19,6 +21,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
   learnerName,
   isDropout,
   enrollmentId,
+  cohortMembershipId
 }) => {
   const [state, setState] = React.useState({
     bottom: false,
@@ -51,7 +54,23 @@ const LearnersList: React.FC<LearnerListProps> = ({
     if (name === 'mark-drop-out') {
       setShowModal(true);
     } else if (name === 'unmark-drop-out') {
-      // call api to unmark as dropout
+      if (cohortMembershipId) {
+        let memberStatus = 'active';
+        let membershipId = cohortMembershipId;
+        const response = updateCohortMemberStatus({
+          memberStatus,
+          membershipId,
+        });
+        // console.log('!!!!!!!!!!!!!!!!!!!!!', response);
+        ReactGA.event('unmark-dropout-student-successful', {
+          cohortMembershipId: membershipId,
+        });
+        // if (response.responseCode !== 201 || response.params.err) {
+        //   ReactGA.event('unmark-dropout-student-error', { cohortMembershipId: membershipId });
+        throw new Error();
+        //   //   response.params.errmsg ||
+        //   //     'An error occurred while updating the user.'
+      }
     } 
     else {
       setConfirmationModalOpen(true);
@@ -59,12 +78,25 @@ const LearnersList: React.FC<LearnerListProps> = ({
   };
 
   const handleAction = () => {
-    // handleRemoveLearnerFromCohort();
     //Close all modals
     //add toast messages on success and failure
-    console.log(
-      'handleRemoveLearnerFromCohort api call'
-    );
+    if ( cohortMembershipId) {
+      let memberStatus = 'archived';
+      let membershipId = cohortMembershipId;
+      const response = updateCohortMemberStatus({
+        memberStatus,
+        membershipId,
+      });
+      // console.log('!!!!!!!!!!!!!!!!!!!!!', response);
+      ReactGA.event('remove-student-successful', {
+        cohortMembershipId: membershipId,
+      });
+      // if (response.responseCode !== 201 || response.params.err) {
+      //   ReactGA.event('remove-student-error', { cohortMembershipId: membershipId });
+      throw new Error();
+      //   //   response.params.errmsg ||
+      //   //     'An error occurred while updating the user.'
+    }
     setConfirmationModalOpen(false);
     handleCloseBottomDrawer()
   };
@@ -229,7 +261,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
         renderCustomContent={renderCustomContent}
       />
 
-      <DropOutModal open={showModal} onClose={() => setShowModal(false)} />
+      <DropOutModal open={showModal} onClose={() => setShowModal(false)} cohortMembershipId={cohortMembershipId}/>
       <ConfirmationModal
         message={t('COMMON.SURE_REMOVE')}
         handleAction={handleAction}
