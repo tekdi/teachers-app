@@ -22,6 +22,8 @@ const TeachingCenters = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
+  const [customFields, setCustomFields] = React.useState([]);
+
   const [classId, setClassId] = React.useState('');
   const [manipulatedCohortData, setManipulatedCohortData] =
     React.useState<Array<cohort>>(cohortsData);
@@ -30,22 +32,34 @@ const TeachingCenters = () => {
   useEffect(() => {
     const fetchCohortList = async () => {
       const userId = localStorage.getItem('userId');
+      if (!userId) {
+        return;
+      }
+
       setLoading(true);
+
       try {
-        if (userId) {
-          const limit = 0;
-          const page = 0;
-          const filters = { userId: userId };
-          const resp = await cohortList({ limit, page, filters });
-          setCohortsData(resp?.results?.cohortDetails);
-          setLoading(false);
-        }
+        const limit = 0;
+        const page = 0;
+        const filters = { userId: userId };
+        const resp = await cohortList({ limit, page, filters });
+
+        const extractedNames = resp?.results?.cohortDetails || [];
+        setCohortsData(extractedNames);
+
+        const customFieldLabels = extractedNames
+          .flatMap((cohort: any) => cohort.customFields || [])
+          .map((item: any) => item.label);
+
+        setCustomFields(customFieldLabels);
       } catch (error) {
-        console.error('Error fetching  cohort list:', error);
+        console.error('Error fetching cohort list:', error);
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      } finally {
         setLoading(false);
       }
     };
+
     fetchCohortList();
   }, []);
 
@@ -91,7 +105,7 @@ const TeachingCenters = () => {
                   }}
                   sx={{ cursor: 'pointer', marginBottom: '20px' }}
                 >
-                  <Box>Khapari Dharmu, Chimur, Chandrapur</Box>
+                  <Box>{customFields}</Box>
                   {/* will come from API */}
                   <Box
                     sx={{
