@@ -3,17 +3,18 @@ import { Box } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DropOutModal from './DropOutModal';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+// import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NoAccountsIcon from '@mui/icons-material/NoAccounts';
 import React from 'react';
-import Woman2Icon from '@mui/icons-material/Woman2';
+// import Woman2Icon from '@mui/icons-material/Woman2';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { LearnerListProps } from '@/utils/Interfaces';
 
 type Anchor = 'bottom';
 
-const LearnersList = () => {
+const LearnersList: React.FC<LearnerListProps> = ({learnerName, isDropout, enrollmentId}) => {
   const [state, setState] = React.useState({
     bottom: false,
   });
@@ -43,7 +44,11 @@ const LearnersList = () => {
 
   return (
     <>
-      <Box px={'18px'} mt={2} sx={{ borderBottom: '1px solid #D0C5B4' }}>
+      <Box
+        px={'18px'}
+        mt={2}
+        sx={{ borderBottom: `1px solid ${theme.palette.warning['A100']}` }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -54,92 +59,31 @@ const LearnersList = () => {
           }}
         >
           <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-            <Box className="box_shadow_center">
+            {/* <Box className="box_shadow_center">
               <Woman2Icon
                 sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
               />
-            </Box>
+            </Box> */}
             <Box>
               <Box
-                sx={{ fontSize: '16px', color: theme.palette.warning['300'] }}
+                sx={{ fontSize: '16px', color: theme.palette.warning['300'], fontWeight: '600' }}
               >
-                Aanya Gupta
+                {learnerName}
               </Box>
               <Box
                 sx={{
                   display: 'flex',
                   gap: '10px',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  justifyContent: 'left',
                 }}
               >
-                <Box
+                {/* <Box
                   sx={{ fontSize: '12px', color: theme.palette.warning['400'] }}
                 >
                   19 y/o
-                </Box>
-                <FiberManualRecordIcon
-                  sx={{
-                    fontSize: '9px',
-                    color: theme.palette.secondary.contrastText,
-                  }}
-                />
-                <Box
-                  sx={{ fontSize: '12px', color: theme.palette.warning['400'] }}
-                >
-                  1102929282
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-          <MoreVertIcon
-            onClick={toggleDrawer('bottom', true)}
-            sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
-          />
-        </Box>
-      </Box>
-
-      <Box px={'18px'} mt={2} sx={{ borderBottom: '1px solid #D0C5B4' }}>
-        <Box
-          sx={{
-            display: 'flex',
-            gap: '20px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingBottom: '15px',
-          }}
-        >
-          <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-            <Box className="box_shadow_center">
-              <Woman2Icon
-                sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
-              />
-            </Box>
-            <Box>
-              <Box
-                sx={{ fontSize: '16px', color: theme.palette.warning['300'] }}
-              >
-                Aanya Gupta
-              </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: '10px',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Box
-                  sx={{ fontSize: '12px', color: theme.palette.warning['300'] }}
-                >
-                  19 y/o
-                </Box>
-                <FiberManualRecordIcon
-                  sx={{
-                    fontSize: '9px',
-                    color: theme.palette.secondary.contrastText,
-                  }}
-                />
+                </Box> */}
+                {isDropout ? (
                 <Box
                   sx={{
                     fontSize: '12px',
@@ -157,6 +101,22 @@ const LearnersList = () => {
                   <Box sx={{ marginTop: '1px' }}>Dropped Out</Box>
                   <ErrorOutlineIcon style={{ fontSize: '13px' }} />
                 </Box>
+                 ) : ( 
+                  <>
+                  
+                {/* <FiberManualRecordIcon
+                   sx={{
+                    fontSize: '9px',
+                    color: theme.palette.secondary.contrastText,
+                  }}
+                /> */}
+                <Box
+                  sx={{ fontSize: '14px', color: theme.palette.warning['400']}}
+                >
+                  {enrollmentId}
+                </Box>
+                </>
+                )} 
               </Box>
             </Box>
           </Box>
@@ -165,30 +125,30 @@ const LearnersList = () => {
             sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
           />
         </Box>
-        <BottomDrawer
-          toggleDrawer={toggleDrawer}
-          state={state}
-          listItemClick={listItemClick}
-          optionList={[
-            {
-              label: t('COMMON.MARK_DROP_OUT'),
-              icon: (
-                <NoAccountsIcon sx={{ color: theme.palette.warning['300'] }} />
-              ),
-              name: 'mark-drop-out',
-            },
-            {
-              label: t('COMMON.REMOVE_FROM_CENTER'),
-              icon: (
-                <DeleteOutlineIcon
-                  sx={{ color: theme.palette.warning['300'] }}
-                />
-              ),
-              name: 'remove-from-center',
-            },
-          ]}
-        />
       </Box>
+
+      <BottomDrawer
+        toggleDrawer={toggleDrawer}
+        state={state}
+        listItemClick={listItemClick}
+        optionList={[
+          {
+            label: t('COMMON.MARK_DROP_OUT'),
+            icon: (
+              <NoAccountsIcon sx={{ color: theme.palette.warning['300'] }} />
+            ),
+            name: 'mark-drop-out',
+          },
+          {
+            label: t('COMMON.REMOVE_FROM_CENTER'),
+            icon: (
+              <DeleteOutlineIcon sx={{ color: theme.palette.warning['300'] }} />
+            ),
+            name: 'remove-from-center',
+          },
+        ]}
+      />
+
       <DropOutModal open={showModal} onClose={() => setShowModal(false)} />
     </>
   );

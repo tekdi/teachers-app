@@ -200,14 +200,14 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           const cohortDetails = response?.cohortDetails || [];
 
           const filteredData = cohortDetails?.map((item: any) => {
-            const stateNameField = item?.cohortData?.customFields.find(
+            const stateNameField = item?.customFields.find(
               (field: any) => field.label === 'State Name'
             );
             const stateName = stateNameField ? stateNameField.value : '';
 
             return {
-              cohortId: item?.cohortData?.cohortId,
-              name: toPascalCase(item?.cohortData?.name),
+              cohortId: item?.cohortId,
+              name: toPascalCase(item?.name),
               state: stateName,
             };
           });
@@ -218,11 +218,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             // setClassId(filteredData[0].cohortId);
 
             // add state name to localstorage
-            if (
-              cohortDetails?.length > 0 &&
-              cohortDetails?.[0].cohortData.customFields
-            ) {
-              const customFields = cohortDetails?.[0].cohortData.customFields;
+            if (cohortDetails?.length > 0 && cohortDetails?.[0].customFields) {
+              const customFields = cohortDetails?.[0].customFields;
               const stateNameField = customFields?.find(
                 (field: any) => field.label === 'State Name'
               );

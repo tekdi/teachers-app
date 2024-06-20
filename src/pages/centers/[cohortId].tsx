@@ -5,7 +5,6 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import LearnersList from '@/components/LearnersList';
 import React from 'react';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -14,6 +13,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { GetStaticPaths } from 'next';
+import CohortLearnerList from '@/components/CohortLearnerList';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -128,7 +128,7 @@ const TeachingCenterDetails = () => {
               />
             </Box>
             <Box>
-              <LearnersList />
+              <CohortLearnerList/>
             </Box>
           </>
         )}

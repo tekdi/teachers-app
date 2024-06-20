@@ -6,6 +6,7 @@ export default function Document() {
       <Head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/images/favicon.ico" />
+        <title>Pratham SCP Teachers app</title>
       </Head>
       <body>
         <Main />
