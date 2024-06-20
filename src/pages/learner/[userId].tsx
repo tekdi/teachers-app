@@ -218,9 +218,9 @@ const LearnerProfile: React.FC = () => {
   }, []);
 
   const getAttendanceData = async (fromDates: any, toDates: any) => {
-    let fromDate = fromDates;
-    let toDate = toDates;
-    let filters = {
+    const fromDate = fromDates;
+    const toDate = toDates;
+    const filters = {
       // contextId: classId,
       fromDate,
       toDate,
@@ -393,17 +393,17 @@ const LearnerProfile: React.FC = () => {
 
   const testReportDetails = async (do_Id: string) => {
     const cohortId = localStorage.getItem('cohortId');
-    let filters = {
+    const filters = {
       userId: userId,
       courseId: do_Id,
       batchId: cohortId, // user cohort id
       contentId: do_Id, // do_Id
     };
-    let pagination = {
+    const pagination = {
       pageSize: 1,
       page: 1,
     };
-    let sort = {
+    const sort = {
       field: 'userId',
       order: 'asc',
     };
@@ -481,7 +481,7 @@ const LearnerProfile: React.FC = () => {
 
     // const today = new Date();
     const formatDate = (date: Date) => date.toISOString().split('T')[0];
-    let toDay = formatDate(today);
+    const toDay = formatDate(today);
 
     getAttendanceData(isFromDate, toDay);
     fetchUserDetails();
@@ -659,7 +659,7 @@ const LearnerProfile: React.FC = () => {
           : field?.value,
       })),
     };
-    let userDetails = data;
+    const userDetails = data;
     try {
       if (userId) {
         const response = await editEditUser(user_id, userDetails);

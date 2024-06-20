@@ -21,7 +21,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
   learnerName,
   isDropout,
   enrollmentId,
-  cohortMembershipId
+  cohortMembershipId,
 }) => {
   const [state, setState] = React.useState({
     bottom: false,
@@ -55,8 +55,8 @@ const LearnersList: React.FC<LearnerListProps> = ({
       setShowModal(true);
     } else if (name === 'unmark-drop-out') {
       if (cohortMembershipId) {
-        let memberStatus = 'active';
-        let membershipId = cohortMembershipId;
+        const memberStatus = 'active';
+        const membershipId = cohortMembershipId;
         const response = updateCohortMemberStatus({
           memberStatus,
           membershipId,
@@ -71,8 +71,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
         //   //   response.params.errmsg ||
         //   //     'An error occurred while updating the user.'
       }
-    } 
-    else {
+    } else {
       setConfirmationModalOpen(true);
     }
   };
@@ -80,9 +79,9 @@ const LearnersList: React.FC<LearnerListProps> = ({
   const handleAction = () => {
     //Close all modals
     //add toast messages on success and failure
-    if ( cohortMembershipId) {
-      let memberStatus = 'archived';
-      let membershipId = cohortMembershipId;
+    if (cohortMembershipId) {
+      const memberStatus = 'archived';
+      const membershipId = cohortMembershipId;
       const response = updateCohortMemberStatus({
         memberStatus,
         membershipId,
@@ -98,7 +97,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
       //   //     'An error occurred while updating the user.'
     }
     setConfirmationModalOpen(false);
-    handleCloseBottomDrawer()
+    handleCloseBottomDrawer();
   };
 
   const handleCloseModel = () => {
@@ -109,9 +108,9 @@ const LearnersList: React.FC<LearnerListProps> = ({
     setState({ ...state, bottom: false });
   };
 
-  const handleDroppedOutLabelClick = () =>{
-    console.log('handleDroppedOutLabelClick')
-  }
+  const handleDroppedOutLabelClick = () => {
+    console.log('handleDroppedOutLabelClick');
+  };
 
   const renderCustomContent = () => {
     if (isDropout) {
@@ -244,11 +243,13 @@ const LearnersList: React.FC<LearnerListProps> = ({
         listItemClick={listItemClick}
         optionList={[
           {
-            label: isDropout ? t('COMMON.UNMARK_DROP_OUT') : t('COMMON.MARK_DROP_OUT'),
+            label: isDropout
+              ? t('COMMON.UNMARK_DROP_OUT')
+              : t('COMMON.MARK_DROP_OUT'),
             icon: (
               <NoAccountsIcon sx={{ color: theme.palette.warning['300'] }} />
             ),
-            name: isDropout ? 'unmark-drop-out' : 'mark-drop-out'
+            name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
           },
           {
             label: t('COMMON.REMOVE_FROM_CENTER'),
@@ -261,7 +262,11 @@ const LearnersList: React.FC<LearnerListProps> = ({
         renderCustomContent={renderCustomContent}
       />
 
-      <DropOutModal open={showModal} onClose={() => setShowModal(false)} cohortMembershipId={cohortMembershipId}/>
+      <DropOutModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        cohortMembershipId={cohortMembershipId}
+      />
       <ConfirmationModal
         message={t('COMMON.SURE_REMOVE')}
         handleAction={handleAction}

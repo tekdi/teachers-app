@@ -436,7 +436,7 @@ const UserAttendanceHistory = () => {
 
   // debounce use for searching time period is 2 sec
   const debouncedSearch = debounce((value: string) => {
-    let filteredList = cohortMemberList?.filter((user: any) =>
+    const filteredList = cohortMemberList?.filter((user: any) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
     setDisplayStudentList(filteredList);
@@ -463,7 +463,7 @@ const UserAttendanceHistory = () => {
   };
 
   const handleSearchSubmit = () => {
-    let filteredList = cohortMemberList?.filter((user: any) =>
+    const filteredList = cohortMemberList?.filter((user: any) =>
       user.name.toLowerCase().includes(searchWord.toLowerCase())
     );
     setDisplayStudentList(filteredList);
@@ -482,7 +482,7 @@ const UserAttendanceHistory = () => {
   // handle sorting data
   const handleSorting = (sortByName: string, sortByAttendance: string) => {
     handleCloseModal();
-    let sortedData = [...cohortMemberList];
+    const sortedData = [...cohortMemberList];
 
     // Sorting by name
     switch (sortByName) {

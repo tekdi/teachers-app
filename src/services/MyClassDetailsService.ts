@@ -28,13 +28,13 @@ export const getMyCohortMemberList = async ({
 export const updateCohortMemberStatus = async ({
   memberStatus,
   statusReason,
-  membershipId
+  membershipId,
 }: updateCohortMemberStatusParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/update/${membershipId}`;
   try {
     const response = await put(apiUrl, {
       memberStatus,
-      statusReason
+      statusReason,
     });
     console.log('data', response?.data);
     return response?.data;

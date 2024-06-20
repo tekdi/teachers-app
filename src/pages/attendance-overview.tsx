@@ -192,9 +192,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       setLoading(true);
       try {
         if (userId) {
-          let limit = 0;
-          let page = 0;
-          let filters = { userId: userId };
+          const limit = 0;
+          const page = 0;
+          const filters = { userId: userId };
           const resp = await cohortList({ limit, page, filters });
           const response = resp?.results;
           const cohortDetails = response?.cohortDetails || [];
@@ -259,9 +259,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     setLoading(true);
     try {
       if (classId && classId != 'all') {
-        let limit = 300;
-        let page = 0;
-        let filters = { cohortId: classId };
+        const limit = 300;
+        const page = 0;
+        const filters = { cohortId: classId };
         const response = await getMyCohortMemberList({
           limit,
           page,
@@ -276,9 +276,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           // console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
             //Write logic to call class missed api
-            let fromDate = isFromDate;
-            let toDate = isToDate;
-            let filters = {
+            const fromDate = isFromDate;
+            const toDate = isToDate;
+            const filters = {
               contextId: classId,
               fromDate,
               toDate,
@@ -289,7 +289,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               facets: ['userId'],
               sort: ['present_percentage', 'asc'],
             });
-            let resp = response?.data?.result?.userId;
+            const resp = response?.data?.result?.userId;
             if (resp) {
               const filteredData = Object.keys(resp).map((userId) => ({
                 userId,
@@ -485,7 +485,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   // debounce use for searching time period is 2 sec
   const debouncedSearch = debounce((value: string) => {
-    let filteredList = learnerData?.filter((user: any) =>
+    const filteredList = learnerData?.filter((user: any) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
     setDisplayStudentList(filteredList);
@@ -505,7 +505,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   };
 
   const handleSearchSubmit = () => {
-    let filteredList = learnerData?.filter((user: any) =>
+    const filteredList = learnerData?.filter((user: any) =>
       user.name.toLowerCase().includes(searchWord.toLowerCase())
     );
     setDisplayStudentList(filteredList);
@@ -529,7 +529,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     sortByAttendanceNumber: string
   ) => {
     handleCloseModal();
-    let sortedData = [...learnerData];
+    const sortedData = [...learnerData];
 
     // Sorting by name
     switch (sortByName) {

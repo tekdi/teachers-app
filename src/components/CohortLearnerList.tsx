@@ -77,7 +77,7 @@ const CohortLearnerList = (cohortId: any) => {
                 key={data.userId}
                 learnerName={data.name}
                 enrollmentId={data.enrollmentNumber}
-                cohortMembershipId= {data.cohortMembershipId}
+                cohortMembershipId={data.cohortMembershipId}
                 isDropout={data.memberStatus === 'dropout'}
               />
             );

@@ -137,11 +137,12 @@ const Header: React.FC = () => {
   };
 
   const logoutOpen = () => {
+    handleClose();
     setModalOpen(true);
   };
 
   return (
-    <Box sx={{ marginBottom: '4rem' }}>
+    <Box sx={{ height: '64px' }}>
       <Box
         sx={{
           display: 'flex',

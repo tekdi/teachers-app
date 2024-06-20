@@ -1,7 +1,7 @@
 import { generateUUID, getDeviceId } from './Helper';
 import FingerprintJS from 'fingerprintjs2';
 
-let hostURL = process.env.NEXT_PUBLIC_TELEMETRY_URL;
+const hostURL = process.env.NEXT_PUBLIC_TELEMETRY_URL;
 let CsTelemetryModule;
 let EkTelemetry;
 let jQuery;
@@ -53,7 +53,7 @@ export const telemetryFactory = {
         CsTelemetryModule.instance.init({});
         CsTelemetryModule.instance.telemetryService.initTelemetry({
           config: telemetryConfig,
-          userOrgDetails: {}
+          userOrgDetails: {},
         });
       }
     }

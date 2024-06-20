@@ -200,13 +200,14 @@ export interface gerDoIdServiceParam {
 
 export interface CustomField {
   fieldId: string;
-  label: string;
-  value: string;
-  options: Record<string, any>;
-  type: any;
-  order: number;
-  name: string;
   isEditable: boolean;
+  isRequired?: boolean;
+  label: string;
+  name: string;
+  options: Record<string, any>;
+  order: number;
+  type: any;
+  value: string;
 }
 export interface CohortAttendanceListViewProps {
   cohortName: string;

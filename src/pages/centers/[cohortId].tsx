@@ -5,7 +5,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -14,11 +14,35 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { GetStaticPaths } from 'next';
 import CohortLearnerList from '@/components/CohortLearnerList';
+import { getCohortDetails } from '@/services/CohortServices';
+import { CustomField } from '@/utils/Interfaces';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
   const router = useRouter();
   const { cohortId }: any = router.query;
+  const { t } = useTranslation();
+  const theme = useTheme<any>();
+
+  const [cohortDetails, setCohortDetails] = React.useState<any>({});
+
+  useEffect(() => {
+    const getCohortData = async () => {
+      const response = await getCohortDetails(cohortId);
+      console.log(response);
+
+      if (response?.cohortData) {
+        if (response.cohortData.customFields?.length) {
+          const addressField = response.cohortData.customFields.find(
+            (item: CustomField) => item.name === 'address'
+          );
+          response.cohortData.address = addressField?.value || '';
+        }
+        setCohortDetails(response.cohortData);
+      }
+    };
+    getCohortData();
+  }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -27,10 +51,6 @@ const TeachingCenterDetails = () => {
   const handleBackEvent = () => {
     window.history.back();
   };
-
-  const { t } = useTranslation();
-
-  const theme = useTheme<any>();
 
   return (
     <>
@@ -53,11 +73,11 @@ const TeachingCenterDetails = () => {
           />
           <Box m={'1rem 1rem 0.5rem'}>
             <Typography textAlign={'left'} fontSize={'22px'}>
-              Khapari Dharmu
+              {cohortDetails?.name}
             </Typography>
             <Box>
               <Typography textAlign={'left'} fontSize={'11px'} fontWeight={500}>
-                Chimur, Chandrapur
+                {cohortDetails?.address}
               </Typography>
             </Box>
           </Box>
@@ -128,7 +148,7 @@ const TeachingCenterDetails = () => {
               />
             </Box>
             <Box>
-              <CohortLearnerList cohortId = {cohortId}/>
+              <CohortLearnerList cohortId={cohortId} />
             </Box>
           </>
         )}

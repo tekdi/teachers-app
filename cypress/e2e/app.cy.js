@@ -22,6 +22,5 @@ context('App', () => {
     cy.get('div.col.cell').should('have.length', 30);
   });
 
-  it('Dashboard should have the 30 days cells', () => {
-  });
+  it('Dashboard should have the 30 days cells', () => {});
 });

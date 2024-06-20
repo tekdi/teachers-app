@@ -61,9 +61,9 @@ function DropOutModal({
     onClose(true, selectedReason);
     console.log('Dropout api called');
     if (selectedReason && cohortMembershipId) {
-      let memberStatus = 'dropout';
-      let statusReason = selectedReason;
-      let membershipId = cohortMembershipId;
+      const memberStatus = 'dropout';
+      const statusReason = selectedReason;
+      const membershipId = cohortMembershipId;
       const response = updateCohortMemberStatus({
         memberStatus,
         statusReason,

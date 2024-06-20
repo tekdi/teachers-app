@@ -23,6 +23,7 @@ import { useRouter } from 'next/router';
 import { initGA, logPageView } from '../utils/googleAnalytics';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Head from 'next/head';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -120,6 +121,9 @@ function App({ Component, pageProps }: AppProps) {
           font-family: ${poppins.style.fontFamily} !important;
         }
       `}</style>
+      <Head>
+        <title>Pratham SCP Teachers app</title>
+      </Head>
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}
         <Container maxWidth="md" style={{ padding: 0 }}>

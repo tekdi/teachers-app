@@ -438,7 +438,7 @@ const TeacherProfile = () => {
           : field?.value,
       })),
     };
-    let userDetails = data;
+    const userDetails = data;
     try {
       if (userId) {
         const response = await editEditUser(userId, userDetails);

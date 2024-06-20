@@ -721,6 +721,7 @@ main {
   align-items: center !important;
   justify-content: center !important;
 }
+
 .p-10 {
   padding: 10px;
 }
@@ -758,11 +759,12 @@ main {
 
 .input_search div:first-child {
   height: 44px;
-  background: var(--mui-palette-warning-A700);
   padding-left: 16px;
-  border-radius: 100px;
+  background: var(--mui-palette-warning-A700);
   border: unset !important;
+  border-radius: 100px;
 }
+
 .input_search fieldset {
   border: unset !important;
 }
@@ -775,6 +777,7 @@ main {
 .mt--4 {
   margin-top: -4rem !important;
 }
+
 .checkBox_svg svg {
   fill: var(--mui-palette-warning-A200);
 }

@@ -1,5 +1,5 @@
 import { cohortListParam } from '@/utils/Interfaces';
-import { post } from './RestClient';
+import { get, post } from './RestClient';
 
 export const cohortList = async ({
   limit,
@@ -12,6 +12,17 @@ export const cohortList = async ({
     return response?.data?.result;
   } catch (error) {
     console.error('error in getting cohort list', error);
+    throw error;
+  }
+};
+
+export const getCohortDetails = async (cohortId: string): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohort/read/${cohortId}`;
+  try {
+    const response = await get(apiUrl);
+    return response?.data?.result;
+  } catch (error) {
+    console.error('error in getting cohort details', error);
     throw error;
   }
 };

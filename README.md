@@ -1,13 +1,15 @@
 # Shiksha: Teachers-application
 
 ## What is Shiksha?
+
 Shiksha is a next-generation scalable open-source learning solution for teachers.
 
 ## Getting Started
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-  
-  ### Prerequisites
+
+### Prerequisites
+
   <table>
   <tr>
     <td colspan="2"><b>System Requirements</b></td>
@@ -26,39 +28,39 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
   </tr>
 </table>
 
-| Software dependencies |  |
-| :--- | ------- |
-| **[Node](https://nodejs.org/en/download/)** | > 18.19.0 (or Install the latest release of LTS version) |
-| **[npm](https://nodejs.org/en/learn/getting-started/an-introduction-to-the-npm-package-manager)** | 10.2.3 |
-
-
+| Software dependencies                                                                             |                                                          |
+| :------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| **[Node](https://nodejs.org/en/download/)**                                                       | > 18.19.0 (or Install the latest release of LTS version) |
+| **[npm](https://nodejs.org/en/learn/getting-started/an-introduction-to-the-npm-package-manager)** | 10.2.3                                                   |
 
 ### Project Setup
 
 1. Clone project
 
-    ```console
-    git clone https://github.com/tekdi/shiksha-frontend/tree/shiksha-2.0
-    ```
+   ```console
+   git clone https://github.com/tekdi/shiksha-frontend/tree/shiksha-2.0
+   ```
 
-    > ***Note***: Stable versions of the sunbird portal are available via tags for each release, and the master branch contains latest stable release. For latest stable release [refer](https://github.com/Sunbird-Ed/SunbirdEd-portal/branches)
+   > **_Note_**: Stable versions of the sunbird portal are available via tags for each release, and the master branch contains latest stable release. For latest stable release [refer](https://github.com/Sunbird-Ed/SunbirdEd-portal/branches)
 
 2. Install required dependencies
-	```console
-	npm install
-	```
+   ```console
+   npm install
+   ```
 3. Configuring the Environment
-	Refer the sample environment file: https://github.com/tekdi/shiksha-frontend/blob/shiksha-2.0/.env-sample
-	
+   Refer the sample environment file: https://github.com/tekdi/shiksha-frontend/blob/shiksha-2.0/.env-sample
+
 ### Running Application
 
 1. Run the application in development mode
-	```console
-	npm run dev
-	```
-	Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-2. To build the application use 
-	```console
-	npm run build
-	```	  
+   ```console
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+2. To build the application use
+   ```console
+   npm run build
+   ```

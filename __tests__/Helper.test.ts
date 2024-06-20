@@ -136,7 +136,6 @@ describe('Helper Functions', () => {
     expect(result).toBe(12345);
   });
 
-
   xtest('debounce should debounce function execution', () => {
     const mockFn = jest.fn();
     const debouncedFn = debounce(mockFn, 100);
@@ -175,8 +174,8 @@ describe('Helper Functions', () => {
 
   test('getDeviceId should return a non-empty string', () => {
     getDeviceId().then((deviceId) => {
-        expect(deviceId).toBeTruthy();
-        expect(typeof deviceId).toBe('string');
-      });
+      expect(deviceId).toBeTruthy();
+      expect(typeof deviceId).toBe('string');
+    });
   });
 });

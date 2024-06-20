@@ -30,7 +30,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
   state,
   optionList,
   listItemClick,
-  renderCustomContent
+  renderCustomContent,
 }) => {
   const theme = useTheme<any>();
 
