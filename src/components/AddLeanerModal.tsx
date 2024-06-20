@@ -64,7 +64,7 @@ const AddLeanerModal: React.FC<ManageUsersModalProps> = ({ learnersName }) => {
                 }}
                 component="h2"
               >
-                {t('COMMON.MANAGE_CENTERS')}
+                {t('COMMON.ADD_LEARNER')}
               </Typography>
             </Box>
             <CloseIcon
@@ -105,7 +105,7 @@ const AddLeanerModal: React.FC<ManageUsersModalProps> = ({ learnersName }) => {
                     fontWeight: '500',
                   }}
                 >
-                  Deselect All
+                  {t('COMMON.DESELECT_ALL')}
                 </Box>
 
                 <IndeterminateCheckBoxOutlinedIcon
@@ -131,7 +131,7 @@ const AddLeanerModal: React.FC<ManageUsersModalProps> = ({ learnersName }) => {
                     fontWeight: '500',
                   }}
                 >
-                  Select All
+                  {t('COMMON.SELECT_ALL')}
                 </Box>
                 <CheckBoxOutlinedIcon
                   sx={{
@@ -182,7 +182,7 @@ const AddLeanerModal: React.FC<ManageUsersModalProps> = ({ learnersName }) => {
               sx={{ boxShadow: 'none' }}
               variant="contained"
             >
-              {t('COMMON.ASSIGN')}
+              {t('COMMON.ADD')}
             </Button>
           </Box>
         </Box>
