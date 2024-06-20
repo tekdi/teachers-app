@@ -10,6 +10,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { Typography } from '@mui/material';
 
 type Anchor = 'bottom';
 
@@ -25,6 +26,7 @@ interface BottomDrawerProps {
     name: string;
   }[];
   listItemClick: (event: React.MouseEvent, name: string) => void;
+  isDropout: boolean;
 }
 
 export default function BottomDrawer({
@@ -32,6 +34,7 @@ export default function BottomDrawer({
   state,
   optionList,
   listItemClick,
+  isDropout,
 }: BottomDrawerProps) {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -53,6 +56,32 @@ export default function BottomDrawer({
       >
         <Box className="bg-grey"></Box>
       </Box>
+      {isDropout ? (
+        <Box
+          sx={{
+            padding: '10px 16px 10px 16px',
+            mx: '20px',
+            borderRadius: '12px',
+            bgcolor: theme.palette.success.contrastText,
+          }}
+        >
+          <Typography
+            variant="h5"
+            color={theme.palette.warning[400]}
+            fontWeight="600"
+          >
+            {t('COMMON.REASON_FOR_DROPOUT')}{' '}
+          </Typography>
+          <Typography
+            variant="h3"
+            color={theme.palette.warning[300]}
+            fontWeight="500"
+          >
+            {t('COMMON.REASON_FOR_DROPOUT')}
+          </Typography>{' '}
+          {/* TODO: Add reason dynamically from api */}
+        </Box>
+      ) : null}
       <List>
         {optionList.map(({ label, icon, name }, index) => (
           <ListItem disablePadding key={index}>

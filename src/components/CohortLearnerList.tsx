@@ -15,7 +15,8 @@ const CohortLearnerList = () => {
   const [userData, setUserData] = React.useState<{}[]>();
   const { t } = useTranslation();
   // const classId = localStorage.getItem('classId');
-  const classId = '18e800d0-11c4-4a8c-af97-8f9811976ed6'; // TODO: get userId as a prop or from localStorage dynamically
+  // const classId = '18e800d0-11c4-4a8c-af97-8f9811976ed6'; // TODO: get userId as a prop or from localStorage dynamically
+  const classId = 'd159ca3d-0c3c-4317-a431-924ba59d451c'; // TODO: get userId as a prop or from localStorage dynamically
 
   useEffect(() => {
     const getCohortMemberList = async () => {
