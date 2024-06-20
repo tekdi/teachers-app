@@ -12,18 +12,18 @@ import { useTranslation } from 'next-i18next';
 interface ManageUsersModalProps {
   leanerName: string;
   centerName: string[];
+  open: boolean;
+  onClose: () => void;
 }
 
 const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
   leanerName,
   centerName,
+  open,
+  onClose,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
   const style = {
     position: 'absolute',
     top: '50%',
@@ -42,7 +42,7 @@ const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
     <div>
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={onClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -69,7 +69,7 @@ const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
                 cursor: 'pointer',
                 color: theme.palette.warning['A200'],
               }}
-              onClick={() => handleClose()}
+              onClick={onClose}
             />
           </Box>
           <Divider />
