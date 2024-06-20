@@ -69,7 +69,7 @@ function DropOutModal({
         statusReason,
         membershipId,
       });
-      console.log('!!!!!!!!!!!!!!!!!!!!!', response);
+      // console.log('!!!!!!!!!!!!!!!!!!!!!', response);
       ReactGA.event('dropout-student-successful', {
         cohortMembershipId: membershipId,
       });

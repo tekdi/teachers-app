@@ -87,7 +87,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
         memberStatus,
         membershipId,
       });
-      console.log('!!!!!!!!!!!!!!!!!!!!!', response);
+      // console.log('!!!!!!!!!!!!!!!!!!!!!', response);
       ReactGA.event('remove-student-successful', {
         cohortMembershipId: membershipId,
       });
