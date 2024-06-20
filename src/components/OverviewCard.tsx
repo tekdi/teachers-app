@@ -31,11 +31,14 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
       minHeight={'6.2rem'}
       p={2}
       overflow={'hidden'}
-      className="flex-center"
       sx={{
-        minHeight: '6.2rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'start',
+        minHeight: 'fit-content',
+        // minHeight: '6.2rem',
         '@media (max-width: 600px)': {
-          minHeight: '7.4rem',
+          // minHeight: '7.4rem',
         },
       }}
     >
