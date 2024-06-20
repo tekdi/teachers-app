@@ -129,14 +129,14 @@ const UserAttendanceHistory = () => {
           const extractedNames = resp?.results?.cohortDetails;
           const filteredData = extractedNames
             ?.map((item: any) => {
-              const stateNameField = item?.cohortData?.customFields.find(
+              const stateNameField = item?.customFields.find(
                 (field: any) => field.label === 'State Name'
               );
               const stateName = stateNameField ? stateNameField.value : '';
 
               return {
-                cohortId: item?.cohortData?.cohortId,
-                name: item?.cohortData?.name,
+                cohortId: item?.cohortId,
+                name: item?.name,
                 state: stateName,
               };
             })
