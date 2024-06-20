@@ -22,7 +22,7 @@ const TeachingCenters = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
-  const [customFields, setCustomFields] = React.useState([]);
+  const [customFields, setCustomFields] = React.useState<string[]>([]);
 
   const [classId, setClassId] = React.useState('');
   const [manipulatedCohortData, setManipulatedCohortData] =
@@ -67,7 +67,7 @@ const TeachingCenters = () => {
     <>
       <Header />
       {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />}
-      <Box sx={{ padding: '0 18px' }}>
+      <Box sx={{ padding: '0 18px', marginTop: '-3.8rem' }}>
         <Box
           textAlign={'left'}
           fontSize={'22px'}
@@ -95,7 +95,11 @@ const TeachingCenters = () => {
             <Box className="fs-12 fw-500 ">{t('COMMON.ADD_CENTER')}</Box>
           </Box>
         </Box>
-        <Box className="linerGradient" sx={{ borderRadius: '16px' }} p={2}>
+        <Box
+          className="linerGradient"
+          sx={{ borderRadius: '16px', mt: 2 }}
+          padding={'16px 16px 2px'}
+        >
           {cohortsData?.map((item, index) => {
             return (
               <React.Fragment key={index}>
