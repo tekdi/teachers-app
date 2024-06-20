@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import {
   capitalizeEachWord,
@@ -9,15 +9,23 @@ import LearnersList from '@/components/LearnersList';
 import { limit } from '@/utils/app.constant';
 import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
+import { Box, Typography } from '@mui/material';
 
 const CohortLearnerList = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userData, setUserData] = React.useState<{}[]>();
+  const [classId, setClassId] = React.useState<string>('');
   const { t } = useTranslation();
-  // const classId = localStorage.getItem('classId');
-  // const classId = '18e800d0-11c4-4a8c-af97-8f9811976ed6'; // TODO: get userId as a prop or from localStorage dynamically
-  const classId = 'd159ca3d-0c3c-4317-a431-924ba59d451c'; // TODO: get userId as a prop or from localStorage dynamically
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const cohortId = localStorage.getItem('classId');
+      if (cohortId) {
+        setClassId(cohortId);
+      }
+    }
+  }, []); 
+  
   useEffect(() => {
     const getCohortMemberList = async () => {
       setLoading(true);
@@ -55,7 +63,7 @@ const CohortLearnerList = () => {
       }
     };
     getCohortMemberList();
-  }, [classId]);
+  }, [classId != ""]);
 
   return (
     <div>
@@ -70,6 +78,22 @@ const CohortLearnerList = () => {
               />
             );
           })}
+          { userData == undefined || userData.length == 0 ? 
+          <Box
+          sx={{
+            m: '1.125rem',
+            display: 'flex',
+            justifyContent: 'left',
+            alignItems: 'center',
+          }}
+        >
+          <Typography
+            style={{ fontWeight: 'bold'}}
+          >
+            {t('COMMON.NO_DATA_FOUND')}
+          </Typography>
+        </Box>
+          : null}
     </div>
   );
 };

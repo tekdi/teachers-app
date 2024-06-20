@@ -1,5 +1,5 @@
 import BottomDrawer from './BottomDrawer';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DropOutModal from './DropOutModal';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -80,6 +80,38 @@ const LearnersList: React.FC<LearnerListProps> = ({
   const handleDroppedOutLabelClick = () =>{
     console.log('handleDroppedOutLabelClick')
   }
+
+  const renderCustomContent = () => {
+    if (isDropout) {
+      return (
+        <Box
+          sx={{
+            padding: '10px 16px 10px 16px',
+            mx: '20px',
+            borderRadius: '12px',
+            bgcolor: theme.palette.success.contrastText,
+          }}
+        >
+          <Typography
+            variant="h5"
+            color={theme.palette.warning[400]}
+            fontWeight="600"
+          >
+            {t('COMMON.REASON_FOR_DROPOUT')}
+          </Typography>
+          <Typography
+            variant="h3"
+            color={theme.palette.warning[300]}
+            fontWeight="500"
+          >
+            {t('COMMON.REASON_FOR_DROPOUT')}
+          </Typography>
+          {/* TODO: Add reason dynamically from api */}
+        </Box>
+      );
+    }
+    return null;
+  };
 
   return (
     <>
@@ -194,7 +226,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
             name: 'remove-from-center',
           },
         ]}
-        isDropout={isDropout}
+        renderCustomContent={renderCustomContent}
       />
 
       <DropOutModal open={showModal} onClose={() => setShowModal(false)} />
