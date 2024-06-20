@@ -1,21 +1,22 @@
 import { Button, Typography } from '@mui/material';
+import React, { useEffect } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
+import AddLeanerModal from '@/components/AddLeanerModal';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
+import CohortLearnerList from '@/components/CohortLearnerList';
+import { CustomField } from '@/utils/Interfaces';
+import { GetStaticPaths } from 'next';
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import React, { useEffect } from 'react';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
+import { getCohortDetails } from '@/services/CohortServices';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
-import { GetStaticPaths } from 'next';
-import CohortLearnerList from '@/components/CohortLearnerList';
-import { getCohortDetails } from '@/services/CohortServices';
-import { CustomField } from '@/utils/Interfaces';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -152,6 +153,15 @@ const TeachingCenterDetails = () => {
             </Box>
           </>
         )}
+        <AddLeanerModal
+          learnersName={[
+            'Aanya Gupta',
+            'Aakash Sen',
+            'Aisha Bhatt',
+            'Ananya Umesh',
+            'Bhavana Gill',
+          ]}
+        />
       </Box>
     </>
   );
