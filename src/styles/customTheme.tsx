@@ -38,6 +38,7 @@ const customTheme = extendTheme({
           A200: '#4d4639',
           A400: '#FFFFFF',
           A700: '#EDEDED',
+          contrastText: ' #3B383E',
         },
         error: {
           main: '#BA1A1A',
