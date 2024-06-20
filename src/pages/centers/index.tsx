@@ -106,7 +106,6 @@ const TeachingCenters = () => {
                   sx={{ cursor: 'pointer', marginBottom: '20px' }}
                 >
                   <Box>{customFields}</Box>
-                  {/* will come from API */}
                   <Box
                     sx={{
                       display: 'flex',
@@ -141,8 +140,6 @@ const TeachingCenters = () => {
                       }}
                     >
                       <Box>{item.name}</Box>
-                      {/* will come from API */}
-
                       <ChevronRightIcon />
                     </Box>
                   </Box>
@@ -150,54 +147,6 @@ const TeachingCenters = () => {
               </React.Fragment>
             );
           })}
-
-          {/* <Box mt={3}>
-            <Box sx={{ fontSize: '16px', color: theme.palette.warning['300'] }}>
-              Bhiwapur, Nagpur (Remote)
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '10px',
-                background: '#fff',
-                height: '56px',
-                borderRadius: '8px',
-              }}
-              mt={1}
-            >
-              <Box
-                sx={{
-                  width: '56px',
-                  display: 'flex',
-                  background: '#FFDEA1',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderTopLeftRadius: '8px',
-                  borderBottomLeftRadius: '8px',
-                }}
-              >
-                <Image src={building} alt="apartment" />
-              </Box>
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  width: '100%',
-                  padding: '0 10px',
-                }}
-              >
-                <Box
-                  sx={{ fontSize: '16px', color: theme.palette.warning['300'] }}
-                >
-                  Bhivapur
-                </Box>
-
-                <ChevronRightIcon />
-              </Box>
-            </Box>
-          </Box> */}
         </Box>
       </Box>
     </>
