@@ -1,7 +1,7 @@
 import { FacilitatorListParam } from '@/utils/Interfaces';
 import { post } from './RestClient';
 
-export const getFacilitorList = async ({
+export const getFacilitatorList = async ({
   limit,
   page,
   filters,

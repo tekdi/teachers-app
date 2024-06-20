@@ -15,8 +15,9 @@ import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useEffect } from 'react';
-import { getFacilitorList } from '@/services/ManageUser';
+import { getFacilitatorList } from '@/services/ManageUser';
 import { cohortList } from '@/services/CohortServices';
+import { showToastMessage } from '@/components/Toastify';
 
 interface Cohort {
   cohortId: string;
@@ -49,6 +50,7 @@ const manageUser = () => {
 
   useEffect(() => {
     const getFacilitator = async () => {
+      setLoading(true);
       try {
         let state, district;
         if (typeof window !== 'undefined' && window.localStorage) {
@@ -64,7 +66,7 @@ const manageUser = () => {
             role: 'Teacher',
           };
 
-          const resp = await getFacilitorList({ limit, page, filters });
+          const resp = await getFacilitatorList({ limit, page, filters });
           console.log(resp);
           const extractedData = resp.map((user: any) => ({
             userId: user.userId,
@@ -76,6 +78,8 @@ const manageUser = () => {
         }
       } catch (error) {
         console.log(error);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        setLoading(false);
       }
     };
     getFacilitator();
@@ -115,6 +119,8 @@ const manageUser = () => {
         }
       } catch (error) {
         console.log(error);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        setLoading(false);
       } finally {
         setLoading(false);
       }
