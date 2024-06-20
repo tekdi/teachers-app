@@ -153,8 +153,6 @@ export interface cohort {
   state: string;
 }
 
-
-
 export interface LearListHeaderProps {
   numberOfColumns: number;
   firstColumnName: string;
