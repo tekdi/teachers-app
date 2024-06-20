@@ -14,6 +14,7 @@ import { LearnerListProps } from '@/utils/Interfaces';
 import ConfirmationModal from './ConfirmationModal';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import ReactGA from 'react-ga4';
+import { showToastMessage } from './Toastify';
 
 type Anchor = 'bottom';
 
@@ -22,14 +23,27 @@ const LearnersList: React.FC<LearnerListProps> = ({
   isDropout,
   enrollmentId,
   cohortMembershipId,
+  statusReason,
+  reloadState, 
+  setReloadState
 }) => {
   const [state, setState] = React.useState({
     bottom: false,
   });
+  const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [confirmationModalOpen, setConfirmationModalOpen] =
+    React.useState<boolean>(false);
+    const [loading, setLoading] = React.useState<boolean>(false);
 
-  // useEffect(()=>{
+    const theme = useTheme<any>();
+    const { t } = useTranslation();
 
-  // },[handleRemoveLearnerFromCohort, ]) //TODO: refresh page on mark/unmark dropout and remove learner
+  useEffect(()=>{
+    if (reloadState) {
+      setReloadState(false); 
+      window.location.reload();
+    }
+  },[reloadState, setReloadState]) 
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
@@ -44,57 +58,78 @@ const LearnersList: React.FC<LearnerListProps> = ({
 
       setState({ ...state, bottom: open });
     };
-  const theme = useTheme<any>();
-  const { t } = useTranslation();
-  const [showModal, setShowModal] = React.useState<boolean>(false);
-  const [confirmationModalOpen, setConfirmationModalOpen] =
-    React.useState<boolean>(false);
+  
+
+    const handleUnmarkDropout = async () => {
+      try {
+        setLoading(true);
+    
+        if (cohortMembershipId) {
+          const memberStatus = 'active';
+          const membershipId = cohortMembershipId;
+    
+          const response = await updateCohortMemberStatus({
+            memberStatus,
+            membershipId,
+          });
+    
+          if (response?.responseCode !== 200 || response?.params?.err) {
+            ReactGA.event('unmark-dropout-student-error', { cohortMembershipId: membershipId });
+            throw new Error(response.params?.errmsg || 'An error occurred while updating the user.');
+          } else {
+            ReactGA.event('unmark-dropout-student-successful', {
+              cohortMembershipId: membershipId,
+            });
+            showToastMessage(t('COMMON.LEARNER_UNMARKED_DROPOUT'), 'success');
+            setReloadState(true);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
 
   const listItemClick = (event: React.MouseEvent, name: string) => {
     if (name === 'mark-drop-out') {
       setShowModal(true);
     } else if (name === 'unmark-drop-out') {
-      if (cohortMembershipId) {
-        const memberStatus = 'active';
-        const membershipId = cohortMembershipId;
-        const response = updateCohortMemberStatus({
-          memberStatus,
-          membershipId,
-        });
-        // console.log('!!!!!!!!!!!!!!!!!!!!!', response);
-        ReactGA.event('unmark-dropout-student-successful', {
-          cohortMembershipId: membershipId,
-        });
-        // if (response.responseCode !== 201 || response.params.err) {
-        //   ReactGA.event('unmark-dropout-student-error', { cohortMembershipId: membershipId });
-        throw new Error();
-        //   //   response.params.errmsg ||
-        //   //     'An error occurred while updating the user.'
-      }
+      handleUnmarkDropout()
     } else {
       setConfirmationModalOpen(true);
     }
   };
 
-  const handleAction = () => {
-    //Close all modals
-    //add toast messages on success and failure
-    if (cohortMembershipId) {
-      const memberStatus = 'archived';
-      const membershipId = cohortMembershipId;
-      const response = updateCohortMemberStatus({
-        memberStatus,
-        membershipId,
-      });
-      // console.log('!!!!!!!!!!!!!!!!!!!!!', response);
-      ReactGA.event('remove-student-successful', {
-        cohortMembershipId: membershipId,
-      });
-      // if (response.responseCode !== 201 || response.params.err) {
-      //   ReactGA.event('remove-student-error', { cohortMembershipId: membershipId });
-      throw new Error();
-      //   //   response.params.errmsg ||
-      //   //     'An error occurred while updating the user.'
+  const handleAction = async () => {
+    try {
+      setLoading(true);
+      if (cohortMembershipId) {
+        const memberStatus = 'archived';
+        const membershipId = cohortMembershipId;
+  
+        const response = await updateCohortMemberStatus({
+          memberStatus,
+          membershipId,
+        });
+  
+        if (response?.responseCode !== 200 || response?.params?.err) {
+          ReactGA.event('remove-student-error', { cohortMembershipId: membershipId });
+          throw new Error(response.params?.errmsg || 'An error occurred while updating the user.');
+        } else {
+          ReactGA.event('remove-student-successful', {
+            cohortMembershipId: membershipId,
+          });
+          showToastMessage(t('COMMON.LEARNER_REMOVED'), 'success');
+          setReloadState(true)
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    } finally {
+      setLoading(false);
     }
     setConfirmationModalOpen(false);
     handleCloseBottomDrawer();
@@ -135,9 +170,8 @@ const LearnersList: React.FC<LearnerListProps> = ({
             color={theme.palette.warning[300]}
             fontWeight="500"
           >
-            {t('COMMON.REASON_FOR_DROPOUT')}
+            {statusReason}
           </Typography>
-          {/* TODO: Add reason dynamically from api */}
         </Box>
       );
     }
@@ -266,6 +300,8 @@ const LearnersList: React.FC<LearnerListProps> = ({
         open={showModal}
         onClose={() => setShowModal(false)}
         cohortMembershipId={cohortMembershipId}
+        reloadState={reloadState} 
+        setReloadState={setReloadState}
       />
       <ConfirmationModal
         message={t('COMMON.SURE_REMOVE')}

@@ -79,7 +79,10 @@
     "SEARCH_FACILITATORS": "शोध सुविधा..",
     "ADD_LEARNER": "शिक्षार्थी जोडा",
     "DESELECT_ALL": "सर्व निवड रद्द करा",
-    "SELECT_ALL": "सर्व निवडा"
+    "SELECT_ALL": "सर्व निवडा",
+    "LEARNER_MARKED_DROPOUT": "शिकणाऱ्याला ड्रॉप आऊट म्हणून चिन्हांकित केले",
+    "LEARNER_UNMARKED_DROPOUT": "शिकणाऱ्याला ड्रॉपआउट म्हणून अनचिन्हांकित केले",
+    "LEARNER_REMOVED": "शिकणाऱ्याचे हटवले गेले आहे"
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्तानाव",

@@ -79,7 +79,10 @@
     "SEARCH_FACILITATORS": "Search Facilitators..",
     "ADD_LEARNER":"Add Learners",
     "DESELECT_ALL":"Deselect All",
-    "SELECT_ALL":"Select All"
+    "SELECT_ALL":"Select All",
+    "LEARNER_MARKED_DROPOUT": "Learner marked as dropout",
+    "LEARNER_UNMARKED_DROPOUT": "Learner un-marked as dropout",
+    "LEARNER_REMOVED": "Learner has been removed"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",

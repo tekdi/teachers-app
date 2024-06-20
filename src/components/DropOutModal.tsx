@@ -20,23 +20,36 @@ import { useTranslation } from 'next-i18next';
 import { dropoutReasons } from '../../app.config';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import ReactGA from 'react-ga4';
+import { showToastMessage } from './Toastify';
 
 interface DropOutModalProps {
   open: boolean;
   onClose: (confirmed: boolean, reason?: string) => void;
   cohortMembershipId: string | number;
+  reloadState: boolean;
+  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function DropOutModal({
   open,
   onClose,
   cohortMembershipId,
+  reloadState, 
+  setReloadState
 }: DropOutModalProps) {
   const [selectedReason, setSelectedReason] = React.useState<string>('');
   const [isButtonDisabled, setIsButtonDisabled] = React.useState<boolean>(true);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const { t } = useTranslation();
   const theme = useTheme<any>();
+
+  React.useEffect(() => {
+    if (reloadState) {
+      setReloadState(false); 
+      window.location.reload();
+    }
+  }, [reloadState, setReloadState]);
 
   const style = {
     position: 'absolute',
@@ -57,30 +70,41 @@ function DropOutModal({
     setIsButtonDisabled(false);
   };
 
-  const handleMarkDropout = () => {
-    onClose(true, selectedReason);
-    console.log('Dropout api called');
-    if (selectedReason && cohortMembershipId) {
-      const memberStatus = 'dropout';
-      const statusReason = selectedReason;
-      const membershipId = cohortMembershipId;
-      const response = updateCohortMemberStatus({
-        memberStatus,
-        statusReason,
-        membershipId,
-      });
-      // console.log('!!!!!!!!!!!!!!!!!!!!!', response);
-      ReactGA.event('dropout-student-successful', {
-        cohortMembershipId: membershipId,
-      });
-      // if (response.responseCode !== 201 || response.params.err) {
-      //   ReactGA.event('dropout-student-error', { cohortMembershipId: membershipId });
-      throw new Error();
-      //   //   response.params.errmsg ||
-      //   //     'An error occurred while updating the user.'
+  const handleMarkDropout = async () => {
+    try {
+      onClose(true, selectedReason);
+      setLoading(true);
+      
+      if (selectedReason && cohortMembershipId) {
+        const memberStatus = 'dropout';
+        const statusReason = selectedReason;
+        const membershipId = cohortMembershipId;
+        
+        const response = await updateCohortMemberStatus({
+          memberStatus,
+          statusReason,
+          membershipId,
+        });
+  
+        if (response?.responseCode !== 200 || response?.params?.err) {
+          ReactGA.event('dropout-student-error', { cohortMembershipId: membershipId });
+          // throw new Error(response.params?.errmsg || 'An error occurred while updating the user.');
+        }else{
+          ReactGA.event('dropout-student-successful', {
+            cohortMembershipId: membershipId,
+          });
+          showToastMessage(t('COMMON.LEARNER_UNMARKED_DROPOUT'),'success');
+          setReloadState(true)
+        }
+        setIsButtonDisabled(true);
+      }
+    } catch (error) {
+      console.log(error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    } finally {
+      setLoading(false);
     }
-    setIsButtonDisabled(true);
-  };
+  }; 
 
   return (
     <React.Fragment>
