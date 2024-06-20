@@ -228,11 +228,13 @@ export interface allCenterAttendancePercentParam {
 export interface updateCohortMemberStatusParams {
   memberStatus: string;
   statusReason?: string;
+  membershipId: string | number;
 }
 
 export interface LearnerListProps {
   isDropout: boolean;
   enrollmentId?: string | number;
+  cohortMembershipId: string | number;
   learnerName: string;
 }
 export interface FacilitatorListParam {

@@ -18,16 +18,22 @@ import { useTheme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'next-i18next';
 import { dropoutReasons } from '../../app.config';
+import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+import ReactGA from 'react-ga4';
 
 interface DropOutModalProps {
   open: boolean;
   onClose: (confirmed: boolean, reason?: string) => void;
+  cohortMembershipId: string | number;
 }
 
-function DropOutModal({ open, onClose }: DropOutModalProps) {
+function DropOutModal({
+  open,
+  onClose,
+  cohortMembershipId,
+}: DropOutModalProps) {
   const [selectedReason, setSelectedReason] = React.useState<string>('');
   const [isButtonDisabled, setIsButtonDisabled] = React.useState<boolean>(true);
-
 
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -48,17 +54,33 @@ function DropOutModal({ open, onClose }: DropOutModalProps) {
 
   const handleSelection = (event: SelectChangeEvent) => {
     setSelectedReason(event.target.value);
-    setIsButtonDisabled(false)
+    setIsButtonDisabled(false);
   };
 
   const handleMarkDropout = () => {
     onClose(true, selectedReason);
-    console.log('Dropout api called')
-    setIsButtonDisabled(true)
-    // console.log('!!!!!!!!!!!!!!!!!!!!!!!!', selectedReason)
-    // call dropout api here
+    console.log('Dropout api called');
+    if (selectedReason && cohortMembershipId) {
+      let memberStatus = 'dropout';
+      let statusReason = selectedReason;
+      let membershipId = cohortMembershipId;
+      const response = updateCohortMemberStatus({
+        memberStatus,
+        statusReason,
+        membershipId,
+      });
+      console.log('!!!!!!!!!!!!!!!!!!!!!', response);
+      ReactGA.event('dropout-student-successful', {
+        cohortMembershipId: membershipId,
+      });
+      // if (response.responseCode !== 201 || response.params.err) {
+      //   ReactGA.event('dropout-student-error', { cohortMembershipId: membershipId });
+      throw new Error();
+      //   //   response.params.errmsg ||
+      //   //     'An error occurred while updating the user.'
+    }
+    setIsButtonDisabled(true);
   };
-
 
   return (
     <React.Fragment>

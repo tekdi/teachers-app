@@ -10,6 +10,7 @@ import { limit } from '@/utils/app.constant';
 import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
 import { Box, Typography } from '@mui/material';
+import Loader from './Loader';
 
 interface UserDataProps {
   name: string;
@@ -66,29 +67,36 @@ const CohortLearnerList = (cohortId: any) => {
 
   return (
     <div>
-      {userData?.map((data: any) => {
-        return (
-          <LearnersList
-            key={data.userId}
-            learnerName={data.name}
-            enrollmentId={data.enrollmentNumber}
-            isDropout={data.memberStatus === 'dropout'}
-          />
-        );
-      })}
-      {!userData?.length && (
-        <Box
-          sx={{
-            m: '1.125rem',
-            display: 'flex',
-            justifyContent: 'left',
-            alignItems: 'center',
-          }}
-        >
-          <Typography style={{ fontWeight: 'bold' }}>
-            {t('COMMON.NO_DATA_FOUND')}
-          </Typography>
-        </Box>
+      {loading ? (
+        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+      ) : (
+        <>
+          {userData?.map((data: any) => {
+            return (
+              <LearnersList
+                key={data.userId}
+                learnerName={data.name}
+                enrollmentId={data.enrollmentNumber}
+                cohortMembershipId= {data.cohortMembershipId}
+                isDropout={data.memberStatus === 'dropout'}
+              />
+            );
+          })}
+          {!userData?.length && (
+            <Box
+              sx={{
+                m: '1.125rem',
+                display: 'flex',
+                justifyContent: 'left',
+                alignItems: 'center',
+              }}
+            >
+              <Typography style={{ fontWeight: 'bold' }}>
+                {t('COMMON.NO_DATA_FOUND')}
+              </Typography>
+            </Box>
+          )}
+        </>
       )}
     </div>
   );
