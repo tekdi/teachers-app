@@ -117,6 +117,8 @@ const LoginPage = () => {
 
             const userResponse = await getUserId();
             localStorage.setItem('userId', userResponse?.userId);
+            localStorage.setItem('state', userResponse?.state);
+            localStorage.setItem('district', userResponse?.district);
           }
         }
         setLoading(false);

@@ -235,3 +235,12 @@ export interface LearnerListProps {
   enrollmentId?: string | number;
   learnerName: string;
 }
+export interface FacilitatorListParam {
+  limit: number;
+  page: number;
+  filters: {
+    state: string;
+    district: string;
+    role: string;
+  };
+}

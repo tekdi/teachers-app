@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { FormControl, Grid, MenuItem, Select, TextField } from '@mui/material';
 
 import Box from '@mui/material/Box';
@@ -6,7 +7,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import ManageCentersModal from '@/components/ManageCentersModal';
 import ManageUsersModal from '@/components/ManageUsersModal';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -14,6 +14,20 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { useEffect } from 'react';
+import { getFacilitatorList } from '@/services/ManageUser';
+import { cohortList } from '@/services/CohortServices';
+import { showToastMessage } from '@/components/Toastify';
+
+interface Cohort {
+  cohortId: string;
+  parentId: string;
+  name: string;
+}
+
+type CohortsData = {
+  [userId: string]: Cohort[];
+};
 
 const manageUser = () => {
   const { t } = useTranslation();
@@ -21,9 +35,117 @@ const manageUser = () => {
   const router = useRouter();
 
   const [value, setValue] = React.useState(1);
+  const [users, setUsers] = useState<
+    { name: string; district: string; userId: string }[]
+  >([]);
+  const [loading, setLoading] = React.useState(false);
+  const [cohortsData, setCohortsData] = useState<CohortsData>({});
+  const [open, setOpen] = React.useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUserName, setSelectedUserName] = useState(null);
+  const [centers, setCenters] = useState<string[]>([]);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    const getFacilitator = async () => {
+      setLoading(true);
+      try {
+        let state, district;
+        if (typeof window !== 'undefined' && window.localStorage) {
+          state = localStorage.getItem('state');
+          district = localStorage.getItem('district');
+        }
+        if (state && district) {
+          const limit = 0;
+          const page = 0;
+          const filters = {
+            state: state,
+            district: district,
+            role: 'Teacher',
+          };
+
+          const resp = await getFacilitatorList({ limit, page, filters });
+          console.log(resp);
+          const extractedData = resp.map((user: any) => ({
+            userId: user.userId,
+            name: user.name,
+          }));
+          setTimeout(() => {
+            setUsers(extractedData);
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        setLoading(false);
+      }
+    };
+    getFacilitator();
+  }, []);
+
+  useEffect(() => {
+    const fetchCohortListForUsers = async () => {
+      setLoading(true);
+      try {
+        if (users.length > 0) {
+          const fetchCohortPromises = users.map((user) => {
+            const limit = 0;
+            const page = 0;
+            const filters = { userId: user.userId };
+            return cohortList({ limit, page, filters }).then((resp) => ({
+              userId: user.userId,
+              cohorts: resp?.results?.cohortDetails || [],
+            }));
+          });
+
+          const cohortResponses = await Promise.all(fetchCohortPromises);
+          console.log('cohortResponses', cohortResponses);
+          const allCohortsData: CohortsData = cohortResponses.reduce(
+            (acc: CohortsData, curr) => {
+              acc[curr.userId] = curr.cohorts.map((item: Cohort) => ({
+                cohortId: item?.cohortId,
+                parentId: item?.parentId,
+                name: item?.name,
+              }));
+              return acc;
+            },
+            {}
+          );
+          console.log('allCohortsData', allCohortsData);
+
+          setCohortsData(allCohortsData);
+        }
+      } catch (error) {
+        console.log(error);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCohortListForUsers();
+  }, [users]);
+
+  const handleModalToggle = (user: any) => {
+    setSelectedUser(user);
+    setSelectedUserName(user.name);
+    setCenters(cohortsData[user.userId]?.map((cohort) => cohort.name) || []);
+    setOpen(true);
+    // logEvent({
+    //   action: 'mark/modify-attendance-button-clicked-dashboard',
+    //   category: 'Dashboard Page',
+    //   label: 'Mark/ Modify Attendance',
+    // });
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedUser(null);
+  };
+
   return (
     <>
       <Header />
@@ -123,11 +245,7 @@ const manageUser = () => {
             </Grid>
 
             <Box>
-              <Box
-                px={'18px'}
-                mt={3}
-                borderBottom={`1px solid ${theme.palette.warning['A100']}`}
-              >
+              <Box px={'18px'} mt={3}>
                 <Box
                   sx={{
                     display: 'flex',
@@ -138,69 +256,73 @@ const manageUser = () => {
                   }}
                 >
                   <Box
-                    sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}
+                    sx={{ gap: '15px', alignItems: 'center' }}
+                    width={'100%'}
                   >
-                    <Box>
-                      <Box
-                        sx={{
-                          fontSize: '16px',
-                          color: theme.palette.warning['300'],
-                        }}
-                      >
-                        Aditi Patel
-                      </Box>
-                      <Box
-                        sx={{
-                          fontSize: '12px',
-                          color: theme.palette.warning['300'],
-                          fontWeight: '500',
-                          marginTop: '2px',
-                        }}
-                      >
-                        Nagpur, Bhivapur
-                      </Box>
-                      <Box
-                        sx={{
-                          padding: '4px',
-                          color: theme.palette.success.contrastText,
-                          fontSize: '12px',
-                          borderRadius: '8px',
-                        }}
-                      >
-                        <span
-                          style={{
-                            color: theme.palette.warning.contrastText,
-                            fontWeight: '500',
-                          }}
+                    {users.length !== 0 &&
+                      users.map((user) => (
+                        <Box
+                          key={user.userId}
+                          display={'flex'}
+                          borderBottom={`1px solid ${theme.palette.warning['A100']}`}
+                          width={'100%'}
+                          justifyContent={'space-between'}
+                          sx={{ cursor: 'pointer' }}
                         >
-                          Bhiwapur, Jabarbodi, Kargaon,
-                        </span>
-                        <span
-                          style={{ color: theme.palette.warning.contrastText }}
-                        >
-                          and 3 more
-                        </span>
-                      </Box>
-                    </Box>
+                          <Box onClick={() => handleModalToggle(user)}>
+                            <Box
+                              sx={{
+                                fontSize: '16px',
+                                color: theme.palette.warning['300'],
+                              }}
+                            >
+                              {user.name}
+                            </Box>
+
+                            <Box display={'flex'}>
+                              {cohortsData[user.userId] &&
+                                cohortsData[user.userId].map((cohort) => (
+                                  <Box
+                                    key={cohort.cohortId}
+                                    sx={{
+                                      padding: '4px',
+                                      color: theme.palette.success.contrastText,
+                                      fontSize: '12px',
+                                      borderRadius: '8px',
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        color:
+                                          theme.palette.warning.contrastText,
+                                        fontWeight: '500',
+                                      }}
+                                    >
+                                      {cohort.name}
+                                    </span>
+                                  </Box>
+                                ))}
+                            </Box>
+                          </Box>
+                          <Box>
+                            <MoreVertIcon
+                              sx={{
+                                fontSize: '24px',
+                                color: theme.palette.warning['300'],
+                              }}
+                            />
+                          </Box>
+                        </Box>
+                      ))}
                   </Box>
-                  <MoreVertIcon
-                    sx={{
-                      fontSize: '24px',
-                      color: theme.palette.warning['300'],
-                    }}
-                  />
                 </Box>
               </Box>
+
               <ManageUsersModal
-                leanerName={'Aditi Patel'}
-                centerName={[
-                  'Bhiwapur',
-                  'Jabarbodi',
-                  'Kargaon',
-                  'Katol',
-                  'Kondhali',
-                  'Metpanjara',
-                ]}
+                open={open}
+                onClose={handleClose}
+                leanerName={selectedUserName ?? ''}
+                centerName={centers}
               />
               {/* use this after you integrate in bottom modal */}
               <ManageCentersModal
@@ -228,4 +350,5 @@ export async function getStaticProps({ locale }: any) {
     },
   };
 }
+
 export default manageUser;
