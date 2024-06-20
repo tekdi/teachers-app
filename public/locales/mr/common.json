@@ -76,7 +76,10 @@
     "CENTERS_ASSIGNED": "केंद्र निरुपित",
     "MANAGE_CENTERS": "केंद्र प्रबंधित करा",
     "ASSIGN": "नियुक्त करा",
-    "SEARCH_FACILITATORS": "शोध सुविधा.."
+    "SEARCH_FACILITATORS": "शोध सुविधा..",
+    "ADD_LEARNER": "शिक्षार्थी जोडा",
+    "DESELECT_ALL": "सर्व निवड रद्द करा",
+    "SELECT_ALL": "सर्व निवडा"
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्तानाव",

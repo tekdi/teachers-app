@@ -76,7 +76,10 @@
     "CENTERS_ASSIGNED": "Centers Assigned",
     "MANAGE_CENTERS": "Manage Centers",
     "ASSIGN": "Assign",
-    "SEARCH_FACILITATORS": "Search Facilitators.."
+    "SEARCH_FACILITATORS": "Search Facilitators..",
+    "ADD_LEARNER":"Add Learners",
+    "DESELECT_ALL":"Deselect All",
+    "SELECT_ALL":"Select All"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
