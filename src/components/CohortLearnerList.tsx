@@ -85,7 +85,7 @@ const CohortLearnerList = () => {
           />
         );
       })}
-      {userData == undefined || userData.length == 0 ? (
+      {!userData?.length && (
         <Box
           sx={{
             m: '1.125rem',
@@ -98,7 +98,7 @@ const CohortLearnerList = () => {
             {t('COMMON.NO_DATA_FOUND')}
           </Typography>
         </Box>
-      ) : null}
+      )}
     </div>
   );
 };

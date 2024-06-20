@@ -51,7 +51,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
       >
         <Box className="bg-grey"></Box>
       </Box>
-      {renderCustomContent && renderCustomContent()} {/* render custom content if provided */}
+      {renderCustomContent?.()}
       <List>
         {optionList.map(({ label, icon, name }, index) => (
           <ListItem disablePadding key={index}>
