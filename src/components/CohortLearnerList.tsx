@@ -11,9 +11,17 @@ import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
 import { Box, Typography } from '@mui/material';
 
+interface UserData {
+  name: string;
+  userId: string;
+  memberStatus: string;
+  cohortMembershipId: string;
+  enrollmentNumber: string;
+}
+
 const CohortLearnerList = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [userData, setUserData] = React.useState<{}[]>();
+  const [userData, setUserData] = React.useState<UserData[]>();
   const [classId, setClassId] = React.useState<string>('');
   const { t } = useTranslation();
 
@@ -24,8 +32,8 @@ const CohortLearnerList = () => {
         setClassId(cohortId);
       }
     }
-  }, []); 
-  
+  }, []);
+
   useEffect(() => {
     const getCohortMemberList = async () => {
       setLoading(true);
@@ -63,23 +71,22 @@ const CohortLearnerList = () => {
       }
     };
     getCohortMemberList();
-  }, [classId != ""]);
+  }, [classId != '']);
 
   return (
     <div>
-        {
-          userData?.map((userData: any) => {
-            return (
-              <LearnersList
-                key={userData.userId}
-                learnerName={userData.name}
-                enrollmentId={userData.enrollmentNumber}
-                isDropout={userData.memberStatus === 'dropout'}
-              />
-            );
-          })}
-          { userData == undefined || userData.length == 0 ? 
-          <Box
+      {userData?.map((userData: any) => {
+        return (
+          <LearnersList
+            key={userData.userId}
+            learnerName={userData.name}
+            enrollmentId={userData.enrollmentNumber}
+            isDropout={userData.memberStatus === 'dropout'}
+          />
+        );
+      })}
+      {userData == undefined || userData.length == 0 ? (
+        <Box
           sx={{
             m: '1.125rem',
             display: 'flex',
@@ -87,13 +94,11 @@ const CohortLearnerList = () => {
             alignItems: 'center',
           }}
         >
-          <Typography
-            style={{ fontWeight: 'bold'}}
-          >
+          <Typography style={{ fontWeight: 'bold' }}>
             {t('COMMON.NO_DATA_FOUND')}
           </Typography>
         </Box>
-          : null}
+      ) : null}
     </div>
   );
 };
