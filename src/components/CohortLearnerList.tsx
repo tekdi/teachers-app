@@ -19,8 +19,13 @@ interface UserDataProps {
   cohortMembershipId: string;
   enrollmentNumber: string;
 }
+interface CohortLearnerListProp{
+  cohortId: any, 
+  reloadState: boolean;
+  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const CohortLearnerList = (cohortId: any) => {
+const CohortLearnerList : React.FC<CohortLearnerListProp> = ({cohortId, reloadState, setReloadState}) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userData, setUserData] = React.useState<UserDataProps[]>();
 
@@ -45,6 +50,7 @@ const CohortLearnerList = (cohortId: any) => {
               name: toPascalCase(user.name),
               userId: user.userId,
               memberStatus: user.memberStatus,
+              statusReason: user.statusReason,
               cohortMembershipId: user.cohortMembershipId,
               enrollmentNumber: capitalizeEachWord(
                 getFieldValue(user.customField, 'Enrollment Number')
@@ -79,6 +85,9 @@ const CohortLearnerList = (cohortId: any) => {
                 enrollmentId={data.enrollmentNumber}
                 cohortMembershipId={data.cohortMembershipId}
                 isDropout={data.memberStatus === 'dropout'}
+                statusReason = {data.statusReason}
+                reloadState={reloadState} 
+                setReloadState={setReloadState}
               />
             );
           })}

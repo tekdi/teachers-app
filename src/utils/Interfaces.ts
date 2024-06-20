@@ -237,6 +237,9 @@ export interface LearnerListProps {
   enrollmentId?: string | number;
   cohortMembershipId: string | number;
   learnerName: string;
+  statusReason: string;
+  reloadState: boolean;
+  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export interface FacilitatorListParam {
   limit: number;

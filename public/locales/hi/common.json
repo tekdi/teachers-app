@@ -79,7 +79,10 @@
     "SEARCH_FACILITATORS": "खोज सुविधा प्रदाता..",
     "ADD_LEARNER": "शिक्षार्थियों को जोड़ें",
     "DESELECT_ALL": "सभी को अचयनित करें",
-    "SELECT_ALL": "सभी को चुनें"
+    "SELECT_ALL": "सभी को चुनें",
+    "LEARNER_MARKED_DROPOUT": "शिक्षार्थी को ड्रॉप आउट के रूप में चिह्नित किया गया",
+    "LEARNER_UNMARKED_DROPOUT": "शिक्षार्थी को ड्रॉपआउट के रूप में अनचिह्नित किया गया",
+    "LEARNER_REMOVED": "शिक्षार्थी को हटा दिया गया है"
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",

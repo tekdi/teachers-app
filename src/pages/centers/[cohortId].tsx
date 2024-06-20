@@ -26,6 +26,7 @@ const TeachingCenterDetails = () => {
   const theme = useTheme<any>();
 
   const [cohortDetails, setCohortDetails] = React.useState<any>({});
+  const [reloadState, setReloadState] = React.useState<boolean>(false);
 
   useEffect(() => {
     const getCohortData = async () => {
@@ -149,7 +150,7 @@ const TeachingCenterDetails = () => {
               />
             </Box>
             <Box>
-              <CohortLearnerList cohortId={cohortId} />
+              <CohortLearnerList cohortId={cohortId} reloadState={reloadState} setReloadState={setReloadState}/>
             </Box>
           </>
         )}
