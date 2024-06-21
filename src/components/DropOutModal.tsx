@@ -26,6 +26,8 @@ interface DropOutModalProps {
   open: boolean;
   onClose: (confirmed: boolean, reason?: string) => void;
   cohortMembershipId: string | number;
+  isButtonAbsent?: boolean;
+  statusReason?: string;
   reloadState: boolean;
   setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -34,6 +36,8 @@ function DropOutModal({
   open,
   onClose,
   cohortMembershipId,
+  isButtonAbsent,
+  statusReason,
   reloadState, 
   setReloadState
 }: DropOutModalProps) {
@@ -140,6 +144,34 @@ function DropOutModal({
             />
           </Box>
           <Divider />
+          {
+            isButtonAbsent ? 
+            
+          <Box sx={{ padding: '18px 16px', width: '100%' }}>
+          <Typography
+            variant="h2"
+            sx={{
+              color: theme.palette.warning['400'],
+              fontSize: '14px',
+            }}
+            component="h2"
+          >
+            {t('COMMON.REASON_FOR_DROPOUT')}
+          </Typography>
+
+          <Typography
+            variant="h2"
+            sx={{
+              color: theme.palette.warning['300'],
+              fontSize: '16px',
+            }}
+            component="h2"
+          >
+            {statusReason}
+          </Typography>
+        </Box>
+            :
+         <>
           <Box sx={{ padding: '10px 18px' }}>
             <FormControl sx={{ mt: 1, width: '100%' }}>
               <InputLabel
@@ -186,6 +218,7 @@ function DropOutModal({
               {t('COMMON.MARK_DROP_OUT')}
             </Button>
           </Box>
+          </> }
         </Box>
       </Modal>
     </React.Fragment>

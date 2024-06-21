@@ -146,6 +146,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
 
   const handleDroppedOutLabelClick = () => {
     console.log('handleDroppedOutLabelClick');
+    setShowModal(true);
   };
 
   const renderCustomContent = () => {
@@ -297,13 +298,27 @@ const LearnersList: React.FC<LearnerListProps> = ({
         renderCustomContent={renderCustomContent}
       />
 
-      <DropOutModal
+      {
+        isDropout? 
+        <DropOutModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        cohortMembershipId={cohortMembershipId}
+        isButtonAbsent = {true}
+        statusReason = {statusReason}
+        reloadState={reloadState} 
+        setReloadState={setReloadState}
+      />
+        :
+        <DropOutModal
         open={showModal}
         onClose={() => setShowModal(false)}
         cohortMembershipId={cohortMembershipId}
         reloadState={reloadState} 
         setReloadState={setReloadState}
       />
+      }
+      
       <ConfirmationModal
         message={t('COMMON.SURE_REMOVE')}
         handleAction={handleAction}
