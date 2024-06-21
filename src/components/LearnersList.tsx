@@ -41,7 +41,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
   useEffect(()=>{
     if (reloadState) {
       setReloadState(false); 
-      window.location.reload();
+      // window.location.reload();
     }
   },[reloadState, setReloadState]) 
 
@@ -100,6 +100,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
     } else {
       setConfirmationModalOpen(true);
     }
+    setState({ ...state, bottom: false });
   };
 
   const handleAction = async () => {
@@ -132,7 +133,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
       setLoading(false);
     }
     setConfirmationModalOpen(false);
-    handleCloseBottomDrawer();
+    setState({ ...state, bottom: false });
   };
 
   const handleCloseModel = () => {
@@ -145,6 +146,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
 
   const handleDroppedOutLabelClick = () => {
     console.log('handleDroppedOutLabelClick');
+    setShowModal(true);
   };
 
   const renderCustomContent = () => {
@@ -296,13 +298,27 @@ const LearnersList: React.FC<LearnerListProps> = ({
         renderCustomContent={renderCustomContent}
       />
 
-      <DropOutModal
+      {
+        isDropout? 
+        <DropOutModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        cohortMembershipId={cohortMembershipId}
+        isButtonAbsent = {true}
+        statusReason = {statusReason}
+        reloadState={reloadState} 
+        setReloadState={setReloadState}
+      />
+        :
+        <DropOutModal
         open={showModal}
         onClose={() => setShowModal(false)}
         cohortMembershipId={cohortMembershipId}
         reloadState={reloadState} 
         setReloadState={setReloadState}
       />
+      }
+      
       <ConfirmationModal
         message={t('COMMON.SURE_REMOVE')}
         handleAction={handleAction}

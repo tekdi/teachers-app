@@ -119,6 +119,7 @@ const LoginPage = () => {
             localStorage.setItem('userId', userResponse?.userId);
             localStorage.setItem('state', userResponse?.state);
             localStorage.setItem('district', userResponse?.district);
+            localStorage.setItem('role', userResponse?.tenantData[0]?.roleName)
           }
         }
         setLoading(false);

@@ -13,19 +13,21 @@ import {
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 
 import CloseIcon from '@mui/icons-material/Close';
-import { useTranslation } from 'next-i18next';
-import { dropoutReasons } from '../../app.config';
-import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import ReactGA from 'react-ga4';
+import { dropoutReasons } from '../../app.config';
 import { showToastMessage } from './Toastify';
+import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 interface DropOutModalProps {
   open: boolean;
   onClose: (confirmed: boolean, reason?: string) => void;
   cohortMembershipId: string | number;
+  isButtonAbsent?: boolean;
+  statusReason?: string;
   reloadState: boolean;
   setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -34,8 +36,10 @@ function DropOutModal({
   open,
   onClose,
   cohortMembershipId,
-  reloadState, 
-  setReloadState
+  isButtonAbsent,
+  statusReason,
+  reloadState,
+  setReloadState,
 }: DropOutModalProps) {
   const [selectedReason, setSelectedReason] = React.useState<string>('');
   const [isButtonDisabled, setIsButtonDisabled] = React.useState<boolean>(true);
@@ -46,8 +50,8 @@ function DropOutModal({
 
   React.useEffect(() => {
     if (reloadState) {
-      setReloadState(false); 
-      window.location.reload();
+      setReloadState(false);
+      // window.location.reload();
     }
   }, [reloadState, setReloadState]);
 
@@ -59,7 +63,7 @@ function DropOutModal({
     width: '85%',
     boxShadow: 24,
     bgcolor: '#fff',
-    borderRadius: '24px',
+    borderRadius: '16px',
     '@media (min-width: 600px)': {
       width: '450px',
     },
@@ -74,27 +78,29 @@ function DropOutModal({
     try {
       onClose(true, selectedReason);
       setLoading(true);
-      
+
       if (selectedReason && cohortMembershipId) {
         const memberStatus = 'dropout';
         const statusReason = selectedReason;
         const membershipId = cohortMembershipId;
-        
+
         const response = await updateCohortMemberStatus({
           memberStatus,
           statusReason,
           membershipId,
         });
-  
+
         if (response?.responseCode !== 200 || response?.params?.err) {
-          ReactGA.event('dropout-student-error', { cohortMembershipId: membershipId });
+          ReactGA.event('dropout-student-error', {
+            cohortMembershipId: membershipId,
+          });
           // throw new Error(response.params?.errmsg || 'An error occurred while updating the user.');
-        }else{
+        } else {
           ReactGA.event('dropout-student-successful', {
             cohortMembershipId: membershipId,
           });
-          showToastMessage(t('COMMON.LEARNER_UNMARKED_DROPOUT'),'success');
-          setReloadState(true)
+          showToastMessage(t('COMMON.LEARNER_MARKED_DROPOUT'), 'success');
+          setReloadState(true);
         }
         setIsButtonDisabled(true);
       }
@@ -104,7 +110,7 @@ function DropOutModal({
     } finally {
       setLoading(false);
     }
-  }; 
+  };
 
   return (
     <React.Fragment>
@@ -140,52 +146,83 @@ function DropOutModal({
             />
           </Box>
           <Divider />
-          <Box sx={{ padding: '10px 18px' }}>
-            <FormControl sx={{ mt: 1, width: '100%' }}>
-              <InputLabel
-                sx={{ fontSize: '16px', color: theme.palette.warning['300'] }}
-                id="demo-multiple-name-label"
+          {isButtonAbsent ? (
+            <Box sx={{ padding: '18px 16px', width: '100%' }}>
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme.palette.warning['400'],
+                  fontSize: '14px',
+                }}
+                component="h2"
               >
                 {t('COMMON.REASON_FOR_DROPOUT')}
-              </InputLabel>
-              <Select
-                labelId="demo-multiple-name-label"
-                id="demo-multiple-name"
-                input={<OutlinedInput label="Reason for Dropout" />}
-                onChange={handleSelection}
+              </Typography>
+
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme.palette.warning['300'],
+                  fontSize: '16px',
+                }}
+                component="h2"
               >
-                {dropoutReasons?.map((reason) => (
-                  <MenuItem
-                    key={reason.value}
-                    value={reason.value}
+                {statusReason}
+              </Typography>
+            </Box>
+          ) : (
+            <>
+              <Box sx={{ padding: '10px 18px' }}>
+                <FormControl sx={{ mt: 1, width: '100%' }}>
+                  <InputLabel
                     sx={{
                       fontSize: '16px',
                       color: theme.palette.warning['300'],
                     }}
+                    id="demo-multiple-name-label"
                   >
-                    {reason.label
-                      .replace(/_/g, ' ')
-                      .toLowerCase()
-                      .replace(/^\w/, (c) => c.toUpperCase())}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-          <Box mt={1.5}>
-            <Divider />
-          </Box>
-          <Box p={'18px'}>
-            <Button
-              className="w-100"
-              sx={{ boxShadow: 'none' }}
-              variant="contained"
-              onClick={handleMarkDropout}
-              disabled={isButtonDisabled}
-            >
-              {t('COMMON.MARK_DROP_OUT')}
-            </Button>
-          </Box>
+                    {t('COMMON.REASON_FOR_DROPOUT')}
+                  </InputLabel>
+                  <Select
+                    labelId="demo-multiple-name-label"
+                    id="demo-multiple-name"
+                    input={<OutlinedInput label="Reason for Dropout" />}
+                    onChange={handleSelection}
+                  >
+                    {dropoutReasons?.map((reason) => (
+                      <MenuItem
+                        key={reason.value}
+                        value={reason.value}
+                        sx={{
+                          fontSize: '16px',
+                          color: theme.palette.warning['300'],
+                        }}
+                      >
+                        {reason.label
+                          .replace(/_/g, ' ')
+                          .toLowerCase()
+                          .replace(/^\w/, (c) => c.toUpperCase())}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box mt={1.5}>
+                <Divider />
+              </Box>
+              <Box p={'18px'}>
+                <Button
+                  className="w-100"
+                  sx={{ boxShadow: 'none' }}
+                  variant="contained"
+                  onClick={handleMarkDropout}
+                  disabled={isButtonDisabled}
+                >
+                  {t('COMMON.MARK_DROP_OUT')}
+                </Button>
+              </Box>
+            </>
+          )}
         </Box>
       </Modal>
     </React.Fragment>
