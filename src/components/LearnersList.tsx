@@ -41,7 +41,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
   useEffect(()=>{
     if (reloadState) {
       setReloadState(false); 
-      window.location.reload();
+      // window.location.reload();
     }
   },[reloadState, setReloadState]) 
 
@@ -100,6 +100,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
     } else {
       setConfirmationModalOpen(true);
     }
+    setState({ ...state, bottom: false });
   };
 
   const handleAction = async () => {
@@ -132,7 +133,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
       setLoading(false);
     }
     setConfirmationModalOpen(false);
-    handleCloseBottomDrawer();
+    setState({ ...state, bottom: false });
   };
 
   const handleCloseModel = () => {
