@@ -33,7 +33,7 @@ export const updateCohortMemberStatus = async ({
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/update/${membershipId}`;
   try {
     const response = await put(apiUrl, {
-      memberStatus,
+      status: memberStatus,
       statusReason,
     });
     console.log('data', response?.data);
