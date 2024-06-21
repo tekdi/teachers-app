@@ -26,6 +26,8 @@ interface DropOutModalProps {
   open: boolean;
   onClose: (confirmed: boolean, reason?: string) => void;
   cohortMembershipId: string | number;
+  isButtonAbsent?: boolean;
+  statusReason?: string;
   reloadState: boolean;
   setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -34,6 +36,8 @@ function DropOutModal({
   open,
   onClose,
   cohortMembershipId,
+  isButtonAbsent,
+  statusReason,
   reloadState,
   setReloadState,
 }: DropOutModalProps) {
@@ -142,52 +146,83 @@ function DropOutModal({
             />
           </Box>
           <Divider />
-          <Box sx={{ padding: '10px 18px' }}>
-            <FormControl sx={{ mt: 1, width: '100%' }}>
-              <InputLabel
-                sx={{ fontSize: '16px', color: theme.palette.warning['300'] }}
-                id="demo-multiple-name-label"
+          {isButtonAbsent ? (
+            <Box sx={{ padding: '18px 16px', width: '100%' }}>
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme.palette.warning['400'],
+                  fontSize: '14px',
+                }}
+                component="h2"
               >
                 {t('COMMON.REASON_FOR_DROPOUT')}
-              </InputLabel>
-              <Select
-                labelId="demo-multiple-name-label"
-                id="demo-multiple-name"
-                input={<OutlinedInput label="Reason for Dropout" />}
-                onChange={handleSelection}
+              </Typography>
+
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme.palette.warning['300'],
+                  fontSize: '16px',
+                }}
+                component="h2"
               >
-                {dropoutReasons?.map((reason) => (
-                  <MenuItem
-                    key={reason.value}
-                    value={reason.value}
+                {statusReason}
+              </Typography>
+            </Box>
+          ) : (
+            <>
+              <Box sx={{ padding: '10px 18px' }}>
+                <FormControl sx={{ mt: 1, width: '100%' }}>
+                  <InputLabel
                     sx={{
                       fontSize: '16px',
                       color: theme.palette.warning['300'],
                     }}
+                    id="demo-multiple-name-label"
                   >
-                    {reason.label
-                      .replace(/_/g, ' ')
-                      .toLowerCase()
-                      .replace(/^\w/, (c) => c.toUpperCase())}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-          <Box mt={1.5}>
-            <Divider />
-          </Box>
-          <Box p={'18px'}>
-            <Button
-              className="w-100"
-              sx={{ boxShadow: 'none' }}
-              variant="contained"
-              onClick={handleMarkDropout}
-              disabled={isButtonDisabled}
-            >
-              {t('COMMON.MARK_DROP_OUT')}
-            </Button>
-          </Box>
+                    {t('COMMON.REASON_FOR_DROPOUT')}
+                  </InputLabel>
+                  <Select
+                    labelId="demo-multiple-name-label"
+                    id="demo-multiple-name"
+                    input={<OutlinedInput label="Reason for Dropout" />}
+                    onChange={handleSelection}
+                  >
+                    {dropoutReasons?.map((reason) => (
+                      <MenuItem
+                        key={reason.value}
+                        value={reason.value}
+                        sx={{
+                          fontSize: '16px',
+                          color: theme.palette.warning['300'],
+                        }}
+                      >
+                        {reason.label
+                          .replace(/_/g, ' ')
+                          .toLowerCase()
+                          .replace(/^\w/, (c) => c.toUpperCase())}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box mt={1.5}>
+                <Divider />
+              </Box>
+              <Box p={'18px'}>
+                <Button
+                  className="w-100"
+                  sx={{ boxShadow: 'none' }}
+                  variant="contained"
+                  onClick={handleMarkDropout}
+                  disabled={isButtonDisabled}
+                >
+                  {t('COMMON.MARK_DROP_OUT')}
+                </Button>
+              </Box>
+            </>
+          )}
         </Box>
       </Modal>
     </React.Fragment>
