@@ -1,6 +1,12 @@
 'use client';
 
 import {
+  AttendancePercentageProps,
+  cohort,
+  cohortAttendancePercentParam,
+  cohortMemberList,
+} from '../utils/Interfaces';
+import {
   Box,
   Button,
   FormControl,
@@ -11,22 +17,15 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React, { useEffect } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import ReactGA from 'react-ga4';
-import {
-  AttendancePercentageProps,
-  cohort,
-  cohortAttendancePercentParam,
-  cohortMemberList,
-} from '../utils/Interfaces';
-// import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
-import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
+import React, { useEffect } from 'react';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
   getCohortAttendance,
 } from '../services/AttendanceService';
+// import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
 import {
   formatSelectedDate,
   getTodayDate,
@@ -34,29 +33,31 @@ import {
   toPascalCase,
 } from '../utils/Helper';
 
-import MarkBulkAttendance from '@/components/MarkBulkAttendance';
-import OverviewCard from '@/components/OverviewCard';
-import { showToastMessage } from '@/components/Toastify';
-import WeekCalender from '@/components/WeekCalender';
-import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { calculatePercentage } from '@/utils/attendanceStats';
-import { logEvent } from '@/utils/googleAnalytics';
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import Divider from '@mui/material/Divider';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import GuideTour from '@/components/GuideTour';
+import Header from '../components/Header';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { modifyAttendanceLimit } from '../../app.config';
-import calendar from '../assets/images/calendar.svg';
-import Header from '../components/Header';
 import Loader from '../components/Loader';
-import useDeterminePathColor from '../hooks/useDeterminePathColor';
+import MarkBulkAttendance from '@/components/MarkBulkAttendance';
+import OverviewCard from '@/components/OverviewCard';
+import ReactGA from 'react-ga4';
+import WeekCalender from '@/components/WeekCalender';
+import { calculatePercentage } from '@/utils/attendanceStats';
+import calendar from '../assets/images/calendar.svg';
 import { cohortList } from '../services/CohortServices';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { logEvent } from '@/utils/googleAnalytics';
 import { lowLearnerAttendanceLimit } from './../../app.config';
-import GuideTour from '@/components/GuideTour';
+import { modifyAttendanceLimit } from '../../app.config';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { showToastMessage } from '@/components/Toastify';
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
+import { useRouter } from 'next/navigation';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
+
 interface DashboardProps {
   //   buttonText: string;
 }
@@ -529,7 +530,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       fontSize={'22px'}
                       m={
                         !hasSeenTutorial
-                          ? '-1rem 1rem 0.8rem'
+                          ? '1.5rem 1rem 0.8rem'
                           : '1.5rem 2rem 1rem'
                       }
                       color={theme?.palette?.warning['300']}
