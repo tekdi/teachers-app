@@ -13,14 +13,14 @@ import {
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 
 import CloseIcon from '@mui/icons-material/Close';
-import { useTranslation } from 'next-i18next';
-import { dropoutReasons } from '../../app.config';
-import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import ReactGA from 'react-ga4';
+import { dropoutReasons } from '../../app.config';
 import { showToastMessage } from './Toastify';
+import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 interface DropOutModalProps {
   open: boolean;
@@ -34,8 +34,8 @@ function DropOutModal({
   open,
   onClose,
   cohortMembershipId,
-  reloadState, 
-  setReloadState
+  reloadState,
+  setReloadState,
 }: DropOutModalProps) {
   const [selectedReason, setSelectedReason] = React.useState<string>('');
   const [isButtonDisabled, setIsButtonDisabled] = React.useState<boolean>(true);
@@ -46,7 +46,7 @@ function DropOutModal({
 
   React.useEffect(() => {
     if (reloadState) {
-      setReloadState(false); 
+      setReloadState(false);
       window.location.reload();
     }
   }, [reloadState, setReloadState]);
@@ -59,7 +59,7 @@ function DropOutModal({
     width: '85%',
     boxShadow: 24,
     bgcolor: '#fff',
-    borderRadius: '24px',
+    borderRadius: '16px',
     '@media (min-width: 600px)': {
       width: '450px',
     },
@@ -74,27 +74,29 @@ function DropOutModal({
     try {
       onClose(true, selectedReason);
       setLoading(true);
-      
+
       if (selectedReason && cohortMembershipId) {
         const memberStatus = 'dropout';
         const statusReason = selectedReason;
         const membershipId = cohortMembershipId;
-        
+
         const response = await updateCohortMemberStatus({
           memberStatus,
           statusReason,
           membershipId,
         });
-  
+
         if (response?.responseCode !== 200 || response?.params?.err) {
-          ReactGA.event('dropout-student-error', { cohortMembershipId: membershipId });
+          ReactGA.event('dropout-student-error', {
+            cohortMembershipId: membershipId,
+          });
           // throw new Error(response.params?.errmsg || 'An error occurred while updating the user.');
-        }else{
+        } else {
           ReactGA.event('dropout-student-successful', {
             cohortMembershipId: membershipId,
           });
-          showToastMessage(t('COMMON.LEARNER_UNMARKED_DROPOUT'),'success');
-          setReloadState(true)
+          showToastMessage(t('COMMON.LEARNER_UNMARKED_DROPOUT'), 'success');
+          setReloadState(true);
         }
         setIsButtonDisabled(true);
       }
@@ -104,7 +106,7 @@ function DropOutModal({
     } finally {
       setLoading(false);
     }
-  }; 
+  };
 
   return (
     <React.Fragment>
