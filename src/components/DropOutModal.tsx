@@ -47,7 +47,7 @@ function DropOutModal({
   React.useEffect(() => {
     if (reloadState) {
       setReloadState(false); 
-      window.location.reload();
+      // window.location.reload();
     }
   }, [reloadState, setReloadState]);
 
@@ -93,7 +93,7 @@ function DropOutModal({
           ReactGA.event('dropout-student-successful', {
             cohortMembershipId: membershipId,
           });
-          showToastMessage(t('COMMON.LEARNER_UNMARKED_DROPOUT'),'success');
+          showToastMessage(t('COMMON.LEARNER_MARKED_DROPOUT'),'success');
           setReloadState(true)
         }
         setIsButtonDisabled(true);
