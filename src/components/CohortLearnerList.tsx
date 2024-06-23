@@ -49,7 +49,7 @@ const CohortLearnerList : React.FC<CohortLearnerListProp> = ({cohortId, reloadSt
             const userDetails = resp.map((user: any) => ({
               name: toPascalCase(user.name),
               userId: user.userId,
-              memberStatus: user.memberStatus,
+              memberStatus: user.status,
               statusReason: user.statusReason,
               cohortMembershipId: user.cohortMembershipId,
               enrollmentNumber: capitalizeEachWord(
