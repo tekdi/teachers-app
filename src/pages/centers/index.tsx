@@ -72,6 +72,7 @@ const TeachingCenters = () => {
               borderRadius: '100px',
               height: '40px',
               width: '91px',
+               color: theme.palette.error.contrastText,
             }}
             className="text-1E"
             endIcon={<AddIcon />}
