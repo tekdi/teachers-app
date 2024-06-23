@@ -35,10 +35,10 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'start',
-        minHeight: 'fit-content',
-        // minHeight: '6.2rem',
+        // minHeight: 'fit-content',
+        minHeight: '6.2rem',
         '@media (max-width: 600px)': {
-          // minHeight: '7.4rem',
+          minHeight: '7.4rem',
         },
       }}
     >
