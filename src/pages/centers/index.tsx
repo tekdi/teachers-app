@@ -98,7 +98,15 @@ const TeachingCenters = () => {
                   }}
                   sx={{ cursor: 'pointer', marginBottom: '20px' }}
                 >
-                  <Box>{cohort?.['customFields']?.address?.value}</Box>
+                  <Box
+                    sx={{
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      color: theme.palette.warning['300'],
+                    }}
+                  >
+                    {cohort?.['customFields']?.address?.value}
+                  </Box>
                   <Box
                     sx={{
                       display: 'flex',
@@ -132,7 +140,15 @@ const TeachingCenters = () => {
                         padding: '0 10px',
                       }}
                     >
-                      <Box>{cohort?.name}</Box>
+                      <Box
+                        sx={{
+                          fontSize: '16px',
+                          fontWeight: '400',
+                          color: theme.palette.warning['300'],
+                        }}
+                      >
+                        {cohort?.name}
+                      </Box>
                       <ChevronRightIcon />
                     </Box>
                   </Box>
