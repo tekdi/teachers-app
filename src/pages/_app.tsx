@@ -24,7 +24,10 @@ import { initGA, logPageView } from '../utils/googleAnalytics';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Head from 'next/head';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+
+const queryClient = new QueryClient();
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
@@ -127,7 +130,9 @@ function App({ Component, pageProps }: AppProps) {
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}
         <Container maxWidth="md" style={{ padding: 0 }}>
+        <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />
+          </QueryClientProvider>
           <ToastContainer
             position="bottom-left"
             autoClose={3000}
