@@ -18,6 +18,7 @@ interface CalendarWithAttendanceProps {
   onChange: (date: Date) => void;
   onDateChange: (date: Date | Date[] | null) => void;
   selectionType?: 'single' | 'range';
+selectedRangeRetention?:Date | null | undefined | [Date | null, Date | null];
 }
 
 type AttendanceData = {
@@ -39,6 +40,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   onChange,
   onDateChange,
   selectionType,
+  selectedRangeRetention
 }) => {
   const [date, setDate] = useState<
     Date | null | undefined | [Date | null, Date | null]
@@ -200,6 +202,21 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     }
   }
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const retentionDate = localStorage.getItem('selectedRangeArray');
+      if (retentionDate) {
+        try {
+          let retention = JSON.parse(retentionDate);
+          if (retention) {
+            handleDateChange(retention);
+          }
+        } catch (error) {
+          console.error('Failed to parse date range:', error);
+        }
+      }
+    }
+  }, []);
   function tileClassName({ date, view }: { date: Date; view: string }) {
     if (view !== 'month') return null;
     const classes = [
@@ -257,6 +274,11 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     };
     setDate(newDate);
     if (newDate !== undefined) {
+      localStorage.setItem('selectedRangeArray', JSON.stringify(newDate));
+    } else {
+      console.error('newDate is undefined');
+    }
+        if (newDate !== undefined) {
       let datesToSet: [Date | null, Date | null];
       if (Array.isArray(newDate)) {
         datesToSet = [newDate[0] || null, newDate[1] || null];

@@ -11,7 +11,7 @@ import {
   Typography,
   useStepContext,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -78,6 +78,8 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCalendarModalOpen, setIsCalenderModalOpen] = useState(false);
+  const [selectedRangeArray, setSelectedRangeArray] = useState(null);
+
   const [dateRangeArray, setDateRangeArray] = useState<any[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [displayCalendarFromDate, setDisplayCalendarFromDate] = React.useState(
@@ -113,6 +115,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     setCancelClicked(true);
     setDisplayCalendarFromDate(getDayAndMonthName(getTodayDate()));
     setDisplayCalendarToDate(getDayAndMonthName(getTodayDate()));
+    localStorage.removeItem('selectedRangeArray');
   };
 
   const onApply = () => {
@@ -134,6 +137,20 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       toggleModal();
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedDates = localStorage.getItem('selectedRangeArray');
+      if (storedDates) {
+        try {
+          const dateArray = JSON.parse(storedDates);
+          setSelectedRangeArray(dateArray);
+        } catch (error) {
+          console.error('Failed to parse stored dates:', error);
+        }
+      } 
+    }
+  }, []);
 
   const getDateRange = (index: number | null) => {
     const today = new Date();
@@ -378,6 +395,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
               onChange={handleActiveStartDateChange}
               onDateChange={handleCalendarDateChange}
               selectionType="range"
+              selectedRangeRetention={selectedRangeArray}
             />
           </Box>
           <Box
