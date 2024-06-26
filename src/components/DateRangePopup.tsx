@@ -142,8 +142,12 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     if (typeof window !== 'undefined' && window.localStorage) {
       const storedDates = localStorage.getItem('selectedRangeArray');
       if (storedDates) {
-        const dateArray = JSON.parse(storedDates);
-        setSelectedRangeArray(dateArray);
+        try {
+          const dateArray = JSON.parse(storedDates);
+          setSelectedRangeArray(dateArray);
+        } catch (error) {
+          console.error('Failed to parse stored dates:', error);
+        }
       } 
     }
   }, []);

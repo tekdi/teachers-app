@@ -206,11 +206,15 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     if (typeof window !== 'undefined' && window.localStorage) {
       const retentionDate = localStorage.getItem('selectedRangeArray');
       if (retentionDate) {
+        try {
           let retention = JSON.parse(retentionDate);
           if (retention) {
             handleDateChange(retention);
           }
+        } catch (error) {
+          console.error('Failed to parse date range:', error);
         }
+      }
     }
   }, []);
   function tileClassName({ date, view }: { date: Date; view: string }) {
