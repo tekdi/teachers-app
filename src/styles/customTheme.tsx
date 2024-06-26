@@ -43,6 +43,7 @@ const customTheme = extendTheme({
         error: {
           main: '#BA1A1A',
           light: '#FFDAD6',
+          contrastText: ' #1E1B16',
         },
         action: {
           activeChannel: '#987100',
@@ -91,6 +92,7 @@ const customTheme = extendTheme({
         error: {
           main: '#BA1A1A',
           light: '#FFDAD6',
+          contrastText: ' #1E1B16',
         },
         action: {
           activeChannel: '#987100',
@@ -158,7 +160,7 @@ const customTheme = extendTheme({
       styleOverrides: {
         root: {
           '&.Mui-focused': {
-            color:  '#1F1B13',
+            color: '#1F1B13',
           },
         },
       },

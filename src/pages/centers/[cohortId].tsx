@@ -127,6 +127,7 @@ const TeachingCenterDetails = () => {
                   borderRadius: '100px',
                   height: '40px',
                   width: '126px',
+                  color: theme.palette.error.contrastText,
                 }}
                 className="text-1E"
                 endIcon={<AddIcon />}
@@ -150,7 +151,11 @@ const TeachingCenterDetails = () => {
               />
             </Box>
             <Box>
-              <CohortLearnerList cohortId={cohortId} reloadState={reloadState} setReloadState={setReloadState}/>
+              <CohortLearnerList
+                cohortId={cohortId}
+                reloadState={reloadState}
+                setReloadState={setReloadState}
+              />
             </Box>
           </>
         )}
