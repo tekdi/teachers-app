@@ -57,7 +57,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-
+import { useCohortList } from '@/services/queries';
 interface DashboardProps {
   //   buttonText: string;
 }
@@ -95,6 +95,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(currentDate.getDate() - modifyAttendanceLimit);
   const formattedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
+  const [userId, setUserId] = React.useState<string | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -128,29 +129,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
+      const storedUserId = localStorage.getItem('userId');
       setClassId(localStorage.getItem('classId') || '');
       if (token) {
         setIsAuthenticated(true);
       } else {
         router.push('/login');
       }
+      setUserId(storedUserId);
     }
   }, []);
 
-  // API call to get center list
-  useEffect(() => {
-    const fetchCohortList = async () => {
-      const userId = localStorage.getItem('userId');
-      setLoading(true);
-      try {
-        if (userId) {
+ 
           const limit = 0;
           const page = 0;
           const filters = { userId: userId };
-          const resp = await cohortList({ limit, page, filters });
+          const { data, error, isLoading } = useCohortList(limit, page, filters);
+            // API call to get center list
+  useEffect(() => {
+    if (data) {
 
-          const extractedNames = resp?.results?.cohortDetails;
-          localStorage.setItem('parentCohortId', extractedNames?.[0].parentId);
+      const extractedNames = data?.results?.cohortDetails;
+          localStorage.setItem('parentCohortId',  extractedNames?.[0].cohortData?.parentId);
 
           const filteredData = extractedNames
             ?.map((item: any) => ({
@@ -176,14 +176,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           }
           setLoading(false);
         }
-      } catch (error) {
-        console.error('Error fetching  cohort list:', error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-        setLoading(false);
-      }
-    };
-    fetchCohortList();
-  }, []);
+      }, [data]);
 
   //API for getting student list
   useEffect(() => {

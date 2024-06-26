@@ -41,6 +41,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../assets/images/user_placeholder.png';
+import { useProfileInfo } from '@/services/queries';
 
 interface FieldOption {
   name: string;
@@ -108,6 +109,7 @@ const TeacherProfile = () => {
   const [hasInputChanged, setHasInputChanged] = React.useState<boolean>(false);
   const [isValidationTriggered, setIsValidationTriggered] =
     React.useState<boolean>(false);
+    const [userId, setUserId] = useState<string | null>(null);
 
   const handleNameFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -131,12 +133,15 @@ const TeacherProfile = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
+      const storedUserId = localStorage.getItem('userId');
       if (token) {
         setIsAuthenticated(true);
       } else {
         router.push('/login');
       }
+      setUserId(storedUserId);
     }
+    
   }, []);
 
   // find Address
@@ -145,20 +150,21 @@ const TeacherProfile = () => {
     return field ? field.value[0] : null;
   };
 
-  const fetchUserDetails = async () => {
-    setLoading(true);
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const userId = localStorage.getItem('userId');
+  const { data, error, isLoading } = useProfileInfo(userId ?? '', true);
 
-      try {
-        if (userId) {
-          const response = await getUserDetails(userId, true);
-          console.log('response', response);
+  useEffect(() => {
+    setLoading(isLoading);
 
-          const data = response?.result;
+    if (error) {
+      setIsError(true);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      console.error('Error fetching user details:', error);
+    } else {
+      setIsError(false);
+    }
 
           if (data) {
-            const userData = data?.userData;
+            const userData = data?.result?.userData;
             setUserData(userData);
             setUserName(userData?.name);
             const customDataFields = userData?.customFields;
@@ -170,27 +176,15 @@ const TeacherProfile = () => {
               setUnitName(unitName);
               const blockName = getFieldValue(customDataFields, 'Block Name');
               setBlockName(blockName);
-              setLoading(false);
+             
             }
           } else {
-            setLoading(false);
+           
             setIsData(false);
             console.log('No data Found');
           }
-        }
-        setIsError(false);
-      } catch (error) {
-        setLoading(false);
-        setIsError(true);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-        console.error('Error fetching  user details:', error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchUserDetails();
-  }, []);
+        
+      }, [data, error, isLoading]);
 
   const handleClickImage = () => {
     fileInputRef.current && fileInputRef.current.click();
@@ -454,7 +448,7 @@ const TeacherProfile = () => {
         handleClose();
 
         console.log(response.params.successmessage);
-        fetchUserDetails();
+        
         setIsError(false);
         setLoading(false);
       }
@@ -1142,7 +1136,7 @@ const TeacherProfile = () => {
         ) : (
           <Box mt={5}>
             <Typography textAlign={'center'}>
-              {t('COMMON.SOMETHING_WENT_WRONG')}
+            {t('COMMON.LOADING')}
             </Typography>
           </Box>
         )}{' '}
