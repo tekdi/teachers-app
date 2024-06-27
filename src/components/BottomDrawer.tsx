@@ -13,7 +13,8 @@ type Anchor = 'bottom';
 interface BottomDrawerProps {
   toggleDrawer: (
     anchor: Anchor,
-    open: boolean
+    open: boolean,
+    user: any
   ) => (event: React.MouseEvent) => void;
   state: { [key in Anchor]?: boolean };
   optionList: {
@@ -23,6 +24,7 @@ interface BottomDrawerProps {
   }[];
   listItemClick: (event: React.MouseEvent, name: string) => void;
   renderCustomContent?: () => React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const BottomDrawer: React.FC<BottomDrawerProps> = ({
@@ -31,6 +33,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
   optionList,
   listItemClick,
   renderCustomContent,
+  children,
 }) => {
   const theme = useTheme<any>();
 
@@ -47,11 +50,12 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
           display: 'flex',
           justifyContent: 'center',
         }}
-        onClick={toggleDrawer(anchor, false)}
+        onClick={toggleDrawer(anchor, false, '')}
       >
         <Box className="bg-grey"></Box>
       </Box>
       {renderCustomContent?.()}
+      {children}
       <List>
         {optionList.map(({ label, icon, name }, index) => (
           <ListItem disablePadding key={index}>
