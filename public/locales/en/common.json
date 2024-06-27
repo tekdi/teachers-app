@@ -234,5 +234,14 @@
     "NEXT": "Next",
     "SKIP": "Skip",
     "FINISH": "Finish"
+  },
+  "BLOCKS": {
+    "TEACHING_BLOCKS": "Teaching Blocks",
+    "SEARCH" : "Search..",
+    "CREATE_NEW": "Create New",
+    "NEW_BLOCK": "New Block",
+    "BLOCK_NAME": "Block Name",
+    "CREATE": "Create",
+    "SEARCH_BLOCKS": "Search Blocks"
   }
 }
