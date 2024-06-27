@@ -547,6 +547,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     switch (sortByAttendanceNumber) {
       case 'high':
         sortedData.sort((a, b) => {
+          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
+          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
           const aPercent = parseFloat(a.present_percent);
           const bPercent = parseFloat(b.present_percent);
           if (isNaN(aPercent) && isNaN(bPercent)) return 0;
@@ -557,6 +559,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         break;
       case 'low':
         sortedData.sort((a, b) => {
+          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
+          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
           const aPercent = parseFloat(a.present_percent);
           const bPercent = parseFloat(b.present_percent);
           if (isNaN(aPercent) && isNaN(bPercent)) return 0;
@@ -571,6 +575,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     switch (sortByClassesMissed) {
       case 'more':
         sortedData.sort((a, b) => {
+          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
+          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
           const aClassMissed = parseFloat(a.absent);
           const bClassMissed = parseFloat(b.absent);
           if (isNaN(aClassMissed) && isNaN(bClassMissed)) return 0;
@@ -581,6 +587,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         break;
       case 'less':
         sortedData.sort((a, b) => {
+          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
+          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
           const aClassMissed = parseFloat(a.absent);
           const bClassMissed = parseFloat(b.absent);
           if (isNaN(aClassMissed) && isNaN(bClassMissed)) return 0;

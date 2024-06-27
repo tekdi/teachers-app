@@ -54,6 +54,7 @@ import { logEvent } from '@/utils/googleAnalytics';
 import { showToastMessage } from '@/components/Toastify';
 
 interface user {
+  memberStatus: string;
   userId: string;
   name: string;
   attendance?: string;
@@ -241,7 +242,7 @@ const UserAttendanceHistory = () => {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
             name: toPascalCase(entry.name),
-            memberStatus : entry.status
+            memberStatus: entry.status,
           }));
           if (nameUserIdArray && (selectedDate || currentDate)) {
             const userAttendanceStatusList = async () => {
@@ -288,7 +289,11 @@ const UserAttendanceHistory = () => {
 
                 if (nameUserIdArray && userAttendanceArray) {
                   const mergeArrays = (
-                    nameUserIdArray: { userId: string; name: string,  memberStatus : string}[],
+                    nameUserIdArray: {
+                      userId: string;
+                      name: string;
+                      memberStatus: string;
+                    }[],
                     userAttendanceArray: {
                       userId: string;
                       attendance: string;
@@ -296,13 +301,13 @@ const UserAttendanceHistory = () => {
                   ): {
                     userId: string;
                     name: string;
-                    memberStatus : string ;
+                    memberStatus: string;
                     attendance: string;
                   }[] => {
                     const newArray: {
                       userId: string;
                       name: string;
-                      memberStatus : string;
+                      memberStatus: string;
                       attendance: string;
                     }[] = [];
                     nameUserIdArray.forEach((user) => {
@@ -314,7 +319,7 @@ const UserAttendanceHistory = () => {
                         newArray.push({
                           userId,
                           name: user.name,
-                          memberStatus : user.memberStatus,
+                          memberStatus: user.memberStatus,
                           attendance: attendanceEntry.attendance,
                         });
                       }
@@ -502,6 +507,8 @@ const UserAttendanceHistory = () => {
     switch (sortByAttendance) {
       case 'pre':
         sortedData.sort((a, b) => {
+          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
+          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
           if (a.attendance === 'present' && b.attendance === 'absent')
             return -1;
           if (a.attendance === 'absent' && b.attendance === 'present') return 1;
@@ -510,6 +517,8 @@ const UserAttendanceHistory = () => {
         break;
       case 'abs':
         sortedData.sort((a, b) => {
+          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
+          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
           if (a.attendance === 'absent' && b.attendance === 'present')
             return -1;
           if (a.attendance === 'present' && b.attendance === 'absent') return 1;
