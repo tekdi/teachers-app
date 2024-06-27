@@ -122,6 +122,8 @@
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total Number of Learners: {{count}}",
+    "ACTIVE_STUDENTS": "Active Learners: {{count}}",
+    "DROPOUT_STUDENTS": "Dropout Learners: {{count}}",
     "PRESENT_STUDENTS": "Present Learners: {{count}}",
     "ABSENT_STUDENTS": "Absent Learners: {{count}}",
     "PRESENT": "Present",

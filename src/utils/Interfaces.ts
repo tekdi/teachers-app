@@ -41,6 +41,7 @@ export interface UserAttendanceObj {
   attendance: string; //Mandatory
   name?: string;
   attendanceDate?: Date | string;
+  memberStatus?: string; 
 }
 
 export interface BulkAttendanceParams {
@@ -68,6 +69,7 @@ export interface cohortMemberList {
   filters: {
     cohortId: string;
     role?: string;
+    status?: string[]
   };
 }
 
