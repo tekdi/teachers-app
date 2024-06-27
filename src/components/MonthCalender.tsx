@@ -49,7 +49,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
       const selectedMonth = localStorage.getItem('selectedMonth');
       if (selectedMonth) {
         const parsedDate = new Date(selectedMonth);
-        if (!isNaN(parsedDate.getTime())) {
+        if (!Number.isNaN(parsedDate.getTime())) {
           return parsedDate;
         }
       }
