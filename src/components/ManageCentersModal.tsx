@@ -13,17 +13,23 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
 interface ManageUsersModalProps {
-  centersName: string[];
+  open: boolean;
+  onClose: () => void;
+  centersName?: string[];
+  centers?: string[];
+  onAssign?: (selectedCenters: string[]) => void;
 }
 
 const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   centersName,
+  centers,
+  open,
+  onAssign,
+  onClose,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [checkedCenters, setCheckedCenters] = React.useState([]);
 
   const style = {
     position: 'absolute',
@@ -40,12 +46,35 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
     },
   };
 
+  React.useEffect(() => {
+    setCheckedCenters(centers);
+  }, [centers]);
+
+  const handleToggle = (name: string) => {
+    setCheckedCenters((prevCheckedCenters) => {
+      const currentIndex = prevCheckedCenters.indexOf(name);
+      const isCurrentlyChecked = currentIndex !== -1;
+
+      let newChecked = [...prevCheckedCenters];
+
+      if (isCurrentlyChecked) {
+        newChecked.splice(currentIndex, 1);
+      } else {
+        newChecked.push(name);
+      }
+      return newChecked;
+    });
+  };
+
+  const handleAssign = () => {
+    onAssign(checkedCenters);
+  };
+
   return (
     <div>
-      {/* <Button onClick={handleOpen}>Open modal</Button> */}
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={onClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -72,7 +101,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                 cursor: 'pointer',
                 color: theme.palette.warning['A200'],
               }}
-              onClick={() => handleClose()}
+              onClick={onClose}
             />
           </Box>
           <Divider />
@@ -122,6 +151,8 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                         <Checkbox
                           sx={{ pb: '20px' }}
                           className="checkBox_svg"
+                          checked={checkedCenters.includes(name)}
+                          onChange={() => handleToggle(name)}
                         />
                       </Box>
                     </Box>
@@ -136,6 +167,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
               className="w-100"
               sx={{ boxShadow: 'none' }}
               variant="contained"
+              onClick={handleAssign}
             >
               {t('COMMON.ASSIGN')}
             </Button>

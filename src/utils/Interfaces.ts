@@ -54,12 +54,21 @@ export interface MarkAttendanceParams {
   contextId: string;
   attendance: string;
 }
+
+export interface UserIdFilter {
+  userId: string;
+}
+
+export interface ParentIdFilter {
+  parentId: string[];
+}
+
+// Define a union type for the filters
+export type Filters = UserIdFilter | ParentIdFilter;
 export interface cohortListParam {
   limit: number;
   page: number;
-  filters: {
-    userId: string;
-  };
+  filters: Filters;
 }
 
 export interface cohortMemberList {
@@ -227,7 +236,7 @@ export interface allCenterAttendancePercentParam {
 }
 
 export interface updateCohortMemberStatusParams {
-  memberStatus: string;
+  status: string;
   statusReason?: string;
   membershipId: string | number;
 }
@@ -249,4 +258,9 @@ export interface FacilitatorListParam {
     district: string;
     role: string;
   };
+}
+
+export interface AssignCentersToFacilitatorListParam {
+  userId: string[];
+  cohortId: string[];
 }
