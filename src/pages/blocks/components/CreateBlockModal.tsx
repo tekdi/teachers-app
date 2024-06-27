@@ -98,7 +98,7 @@ const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
             sx={{
               width: '100%',
               border: 'none',
-              backgroundColor: '#FDBE16',
+              backgroundColor: theme?.palette?.primary?.main,
               mb: 2,
             }}
           >

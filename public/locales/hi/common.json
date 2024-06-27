@@ -237,16 +237,11 @@
   "BLOCKS": {
     "TEACHING_BLOCKS": "शिक्षण ब्लॉक्स",
     "SEARCH" : "खोजें..",
-    "FILTERS":"फिल्टर्स",
     "CREATE_NEW": "नया निर्माण",
     "NEW_BLOCK": "नया ब्लॉक",
     "BLOCK_NAME": "ब्लॉक का नाम",
     "CREATE": "बनाएँ",
-    "NAMES": "नाम",
-    "A_TO_Z": " ए से जेड तक",
-    "Z_TO_A": "जेड से ए तक",
-    "SEARCH_BLOCKS": "ब्लॉक खोजें",
-    "APPLY": "लागू करें"
+    "SEARCH_BLOCKS": "ब्लॉक खोजें"
     
   }
 }

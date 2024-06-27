@@ -14,7 +14,7 @@ import Search from '@mui/icons-material/Search';
 import { ArrowDropDown, KeyboardArrowRight } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from 'next/router';
-import { GetStaticPaths } from 'next';
+
 import CreateBlockModal from './components/CreateBlockModal';
 import FilterModal from './components/FilterModal';
 
@@ -26,7 +26,7 @@ const Blocks: React.FC<BlocksProps> = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
-  const { district } = router.query;
+  const  district = 'Nagpur';
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [openModal, setOpenModal] = useState(false); // State for modal
@@ -158,7 +158,7 @@ const Blocks: React.FC<BlocksProps> = () => {
                 fontWeight: '500',
               }}
             >
-              {t('BLOCKS.FILTERS')}
+              {t('COMMON.FILTERS')}
             </Button>
           </Box>
           <Button
@@ -223,13 +223,6 @@ const Blocks: React.FC<BlocksProps> = () => {
       </Box>
     </Box>
   );
-};
-
-export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
-  return {
-    paths: [],
-    fallback: 'blocking',
-  };
 };
 
 export async function getStaticProps({ locale }: any) {

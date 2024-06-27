@@ -238,15 +238,10 @@
   "BLOCKS": {
     "TEACHING_BLOCKS": "Teaching Blocks",
     "SEARCH" : "Search..",
-    "FILTERS": "Filters",
     "CREATE_NEW": "Create New",
     "NEW_BLOCK": "New Block",
     "BLOCK_NAME": "Block Name",
     "CREATE": "Create",
-    "NAMES": "Names",
-    "A_TO_Z": "A to Z",
-    "Z_TO_A": "Z to A",
-    "SEARCH_BLOCKS": "Search Blocks",
-    "APPLY": "Apply"
+    "SEARCH_BLOCKS": "Search Blocks"
   }
 }

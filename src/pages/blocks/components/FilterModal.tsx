@@ -89,7 +89,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
               variant="h3"
               mt={2}
             >
-              {t('BLOCKS.FILTERS')}
+              {t('COMMON.FILTERS')}
             </Typography>
             <IconButton onClick={handleClose}>
               <Close />
@@ -97,7 +97,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           </Box>
           <Divider sx={{ mb: 2, mx: -2 }} />
           <Typography fontSize="12px" variant="subtitle1">
-            {t('BLOCKS.NAMES')}
+            {t('COMMON.NAMES')}
           </Typography>
           <RadioGroup
             value={sortOrder}
@@ -118,7 +118,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
               }
               className="modal_label"
               labelPlacement="start"
-              label={t('BLOCKS.A_TO_Z')}
+              label={t('COMMON.A_TO_Z')}
             />
             <FormControlLabel
               sx={{ justifyContent: 'space-between' }}
@@ -135,18 +135,19 @@ const FilterModal: React.FC<FilterModalProps> = ({
               }
               className="modal_label"
               labelPlacement="start"
-              label={t('BLOCKS.Z_TO_A')}
+              label={t('COMMON.Z_TO_A')}
             />
           </RadioGroup>
           <Divider sx={{ mt: 2, mx: -2 }} />
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             fullWidth
             onClick={handleApplyClick}
-            sx={{ mt: 2 }}
+            sx={{ mt: 2,   border: 'none',
+              backgroundColor: theme?.palette?.primary?.main }}
           >
-            {t('BLOCKS.APPLY')}
+            {t('COMMON.APPLY')}
           </Button>
         </Box>
       </Fade>
