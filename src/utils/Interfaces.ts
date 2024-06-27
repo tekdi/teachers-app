@@ -238,7 +238,7 @@ export interface allCenterAttendancePercentParam {
 }
 
 export interface updateCohortMemberStatusParams {
-  status: string;
+  memberStatus: string;
   statusReason?: string;
   membershipId: string | number;
 }
