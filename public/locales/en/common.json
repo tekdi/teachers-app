@@ -82,7 +82,8 @@
     "SELECT_ALL":"Select All",
     "LEARNER_MARKED_DROPOUT": "Learner marked as dropout",
     "LEARNER_UNMARKED_DROPOUT": "Learner un-marked as dropout",
-    "LEARNER_REMOVED": "Learner has been removed"
+    "LEARNER_REMOVED": "Learner has been removed",
+    "DROPPED_OUT" : "Dropped Out"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",

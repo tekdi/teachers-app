@@ -1,10 +1,12 @@
 import { Box, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 import React from 'react'
 
 
 const DropoutLabel = () => {
     const theme = useTheme<any>();
+    const { t } = useTranslation();
   return (
     <Box
     sx={{
@@ -22,7 +24,7 @@ const DropoutLabel = () => {
       mr:'11px'
     }}
   >
-    <Typography sx={{ marginTop: '1px', fontWeight: 500, fontSize: '0.75rem' }}>Dropped Out</Typography>
+    <Typography sx={{ marginTop: '1px', fontWeight: 500, fontSize: '0.75rem' }}>{t('COMMON.DROPPED_OUT')}</Typography>
   </Box>
   )
 }
