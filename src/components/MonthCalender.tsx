@@ -203,7 +203,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   }
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
+    if (typeof window !== 'undefined' && window.localStorage && selectionType === "range") {
       const retentionDate = localStorage.getItem('selectedRangeArray');
       if (retentionDate) {
         try {
