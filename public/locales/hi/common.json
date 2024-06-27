@@ -121,6 +121,8 @@
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "कुल छात्रों की संख्या: {{count}}",
+    "ACTIVE_STUDENTS": "सक्रिय शिक्षार्थी: {{count}}",
+    "DROPOUT_STUDENTS": "छोड़े हुए छात्र: {{count}}",
     "PRESENT_STUDENTS": "उपस्थित छात्र: {{count}}",
     "ABSENT_STUDENTS": "अनुपस्थित छात्र: {{count}}",
     "PRESENT": "उपस्थित",

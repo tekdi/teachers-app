@@ -18,6 +18,7 @@ import Loader from './Loader';
 import { getUserDetails } from '@/services/ProfileService';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import DropoutLabel from './DropoutLabel';
 
 const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   isDisabled = false,
@@ -146,6 +147,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           marginY="auto"
           sx={{
             textAlign: 'left',
+            alignItems: 'center',
             fontSize: '14px',
             fontWeight: '400',
             color: '#1F1B13',
@@ -163,6 +165,10 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             userData?.name
           )}
         </Typography>
+        {userData?.memberStatus === "dropout" ?
+              <DropoutLabel/>
+          :
+        <>
         <Box
           display="flex"
           flexDirection="column"
@@ -245,6 +251,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             {t('ATTENDANCE.ABSENT')}
           </Typography>
         </Box>
+        </>}
       </Box>
     </Box>
   );

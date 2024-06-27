@@ -49,7 +49,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
       const selectedMonth = localStorage.getItem('selectedMonth');
       if (selectedMonth) {
         const parsedDate = new Date(selectedMonth);
-        if (!isNaN(parsedDate.getTime())) {
+        if (!Number.isNaN(parsedDate.getTime())) {
           return parsedDate;
         }
       }
@@ -203,7 +203,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   }
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
+    if (typeof window !== 'undefined' && window.localStorage && selectionType === "range") {
       const retentionDate = localStorage.getItem('selectedRangeArray');
       if (retentionDate) {
         try {
