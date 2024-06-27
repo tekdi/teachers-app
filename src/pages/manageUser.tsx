@@ -39,6 +39,11 @@ interface Cohort {
   name: string;
 }
 
+interface User {
+  name: string;
+  userId: string;
+}
+
 type CohortsData = {
   [userId: string]: Cohort[];
 };
@@ -58,7 +63,7 @@ const manageUsers = () => {
   const [centersData, setCentersData] = useState<Cohort[]>([]);
   const [open, setOpen] = React.useState(false);
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedUserName, setSelectedUserName] = useState(null);
   const [centers, setCenters] = useState<string[]>([]);
   const [centerList, setCenterList] = useState<string[]>([]);
@@ -245,10 +250,10 @@ const manageUsers = () => {
     }
   };
 
-  const handleAssignCenters = async (selectedCenters) => {
+  const handleAssignCenters = async (selectedCenters: any) => {
     console.log('selectedUser', selectedUser);
     try {
-      const selectedUserIds = [selectedUser.userId];
+      const selectedUserIds = [selectedUser?.userId];
 
       const matchedCohortIdsFromCohortsData = Object.values(cohortsData)
         .flatMap((cohorts) => cohorts)
