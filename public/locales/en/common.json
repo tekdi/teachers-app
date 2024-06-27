@@ -77,12 +77,13 @@
     "MANAGE_CENTERS": "Manage Centers",
     "ASSIGN": "Assign",
     "SEARCH_FACILITATORS": "Search Facilitators..",
-    "ADD_LEARNER":"Add Learners",
-    "DESELECT_ALL":"Deselect All",
-    "SELECT_ALL":"Select All",
+    "ADD_LEARNER": "Add Learners",
+    "DESELECT_ALL": "Deselect All",
+    "SELECT_ALL": "Select All",
     "LEARNER_MARKED_DROPOUT": "Learner marked as dropout",
     "LEARNER_UNMARKED_DROPOUT": "Learner un-marked as dropout",
-    "LEARNER_REMOVED": "Learner has been removed"
+    "LEARNER_REMOVED": "Learner has been removed",
+    "DELETE_USER": "Delete User"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
