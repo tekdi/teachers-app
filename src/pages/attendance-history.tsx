@@ -241,6 +241,7 @@ const UserAttendanceHistory = () => {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
             name: toPascalCase(entry.name),
+            memberStatus : entry.status
           }));
           if (nameUserIdArray && (selectedDate || currentDate)) {
             const userAttendanceStatusList = async () => {
@@ -287,7 +288,7 @@ const UserAttendanceHistory = () => {
 
                 if (nameUserIdArray && userAttendanceArray) {
                   const mergeArrays = (
-                    nameUserIdArray: { userId: string; name: string }[],
+                    nameUserIdArray: { userId: string; name: string,  memberStatus : string}[],
                     userAttendanceArray: {
                       userId: string;
                       attendance: string;
@@ -295,11 +296,13 @@ const UserAttendanceHistory = () => {
                   ): {
                     userId: string;
                     name: string;
+                    memberStatus : string ;
                     attendance: string;
                   }[] => {
                     const newArray: {
                       userId: string;
                       name: string;
+                      memberStatus : string;
                       attendance: string;
                     }[] = [];
                     nameUserIdArray.forEach((user) => {
@@ -311,6 +314,7 @@ const UserAttendanceHistory = () => {
                         newArray.push({
                           userId,
                           name: user.name,
+                          memberStatus : user.memberStatus,
                           attendance: attendanceEntry.attendance,
                         });
                       }

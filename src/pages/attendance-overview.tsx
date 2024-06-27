@@ -272,6 +272,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
             name: toPascalCase(entry.name),
+            memberStatus : entry.status
           }));
           // console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
@@ -306,12 +307,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                   );
                   return Object.assign({}, attendance, {
                     name: user ? user.name : 'Unknown',
+                    memberStatus: user ? user.memberStatus : 'Unknown',
                   });
                 });
                 mergedArray = mergedArray.filter(
                   (item) => item.name !== 'Unknown'
                 );
-                // console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!`, mergedArray);
+                console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!`, mergedArray);
                 setLearnerData(mergedArray);
                 setDisplayStudentList(mergedArray);
 
@@ -869,6 +871,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       classesMissed={user.absent || 0}
                       userId={user.userId}
                       cohortId={classId}
+                      memberStatus = {user.memberStatus}
                     />
                   ))
                 ) : (
