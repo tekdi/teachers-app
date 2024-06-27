@@ -122,6 +122,8 @@
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "एकूण विद्यार्थी: {{count}}",
+    "ACTIVE_STUDENTS": "सक्रिय शिकणारे: {{count}}",
+    "DROPOUT_STUDENTS": "काढून टाकलेले विद्यार्थी: {{count}}",
     "PRESENT_STUDENTS": "उपस्थित विद्यार्थी: {{count}}",
     "ABSENT_STUDENTS": "अनुपस्थित विद्यार्थी: {{count}}",
     "PRESENT": "उपस्थित",
@@ -233,5 +235,17 @@
     "NEXT": "पुढे",
     "SKIP": "वगळा",
     "FINISH": "पूर्ण"
+  },
+  "BLOCKS": {
+    "TEACHING_BLOCKS": "शिक्षण ब्लॉक्स",
+    "SEARCH" : "शोधा..",
+    
+    "CREATE_NEW": "नवीन तयार करा",
+    "NEW_BLOCK": "नवीन ब्लॉक",
+    "BLOCK_NAME": "ब्लॉकचं नाव",
+    "CREATE": "तयार करा",
+    
+    "SEARCH_BLOCKS": "ब्लॉक शोधा"
+  
   }
 }

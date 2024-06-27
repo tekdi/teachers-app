@@ -49,7 +49,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
       const selectedMonth = localStorage.getItem('selectedMonth');
       if (selectedMonth) {
         const parsedDate = new Date(selectedMonth);
-        if (!isNaN(parsedDate.getTime())) {
+        if (!Number.isNaN(parsedDate.getTime())) {
           return parsedDate;
         }
       }
@@ -138,6 +138,22 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     };
   }, [selectedDates, onDateChange]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage && selectionType === "range") {
+      const retentionDate = localStorage.getItem('selectedRangeArray');
+      if (retentionDate) {
+        try {
+          let retention = JSON.parse(retentionDate);
+          if (retention) {
+            handleDateChange(retention);
+          }
+        } catch (error) {
+          console.error('Failed to parse date range:', error);
+        }
+      }
+    }
+  }, []);
+
   function tileContent({
     date,
     view,
@@ -202,21 +218,6 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     }
   }
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const retentionDate = localStorage.getItem('selectedRangeArray');
-      if (retentionDate) {
-        try {
-          let retention = JSON.parse(retentionDate);
-          if (retention) {
-            handleDateChange(retention);
-          }
-        } catch (error) {
-          console.error('Failed to parse date range:', error);
-        }
-      }
-    }
-  }, []);
   function tileClassName({ date, view }: { date: Date; view: string }) {
     if (view !== 'month') return null;
     const classes = [
