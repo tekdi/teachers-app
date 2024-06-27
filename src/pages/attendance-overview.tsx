@@ -28,6 +28,8 @@ import {
   getTodayDate,
   handleKeyDown,
   toPascalCase,
+  sortClassesMissed,
+  sortAttendanceNumber,
 } from '@/utils/Helper';
 
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
@@ -272,7 +274,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
             name: toPascalCase(entry.name),
-            memberStatus : entry.status
+            memberStatus: entry.status,
           }));
           // console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
@@ -313,7 +315,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 mergedArray = mergedArray.filter(
                   (item) => item.name !== 'Unknown'
                 );
-                console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!`, mergedArray);
                 setLearnerData(mergedArray);
                 setDisplayStudentList(mergedArray);
 
@@ -531,7 +532,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     sortByAttendanceNumber: string
   ) => {
     handleCloseModal();
-    const sortedData = [...learnerData];
+    let sortedData = [...learnerData];
 
     // Sorting by name
     switch (sortByName) {
@@ -546,56 +547,20 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     // Sorting by attendance
     switch (sortByAttendanceNumber) {
       case 'high':
-        sortedData.sort((a, b) => {
-          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
-          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
-          const aPercent = parseFloat(a.present_percent);
-          const bPercent = parseFloat(b.present_percent);
-          if (isNaN(aPercent) && isNaN(bPercent)) return 0;
-          if (isNaN(aPercent)) return 1;
-          if (isNaN(bPercent)) return -1;
-          return bPercent - aPercent;
-        });
+        sortedData = sortAttendanceNumber(sortedData, 'high');
         break;
       case 'low':
-        sortedData.sort((a, b) => {
-          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
-          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
-          const aPercent = parseFloat(a.present_percent);
-          const bPercent = parseFloat(b.present_percent);
-          if (isNaN(aPercent) && isNaN(bPercent)) return 0;
-          if (isNaN(aPercent)) return 1;
-          if (isNaN(bPercent)) return -1;
-          return aPercent - bPercent;
-        });
+        sortedData = sortAttendanceNumber(sortedData, 'low');
         break;
     }
 
     // Sorting by classesMissed
     switch (sortByClassesMissed) {
       case 'more':
-        sortedData.sort((a, b) => {
-          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
-          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
-          const aClassMissed = parseFloat(a.absent);
-          const bClassMissed = parseFloat(b.absent);
-          if (isNaN(aClassMissed) && isNaN(bClassMissed)) return 0;
-          if (isNaN(aClassMissed)) return 1;
-          if (isNaN(bClassMissed)) return -1;
-          return bClassMissed - aClassMissed;
-        });
+        sortedData = sortClassesMissed(sortedData, 'more');
         break;
       case 'less':
-        sortedData.sort((a, b) => {
-          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
-          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
-          const aClassMissed = parseFloat(a.absent);
-          const bClassMissed = parseFloat(b.absent);
-          if (isNaN(aClassMissed) && isNaN(bClassMissed)) return 0;
-          if (isNaN(aClassMissed)) return 1;
-          if (isNaN(bClassMissed)) return -1;
-          return aClassMissed - bClassMissed;
-        });
+        sortedData = sortClassesMissed(sortedData, 'less');
         break;
     }
 
@@ -879,7 +844,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       classesMissed={user.absent || 0}
                       userId={user.userId}
                       cohortId={classId}
-                      memberStatus = {user.memberStatus}
+                      memberStatus={user.memberStatus}
                     />
                   ))
                 ) : (

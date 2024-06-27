@@ -200,3 +200,29 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     }
   }
 };
+
+export const sortAttendanceNumber = (data: any[], order: string) => {
+  return data.sort((a: { memberStatus: string; present_percent: string; }, b: { memberStatus: string; present_percent: string; }) => {
+    if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
+    if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
+    const aPercent = parseFloat(a.present_percent);
+    const bPercent = parseFloat(b.present_percent);
+    if (isNaN(aPercent) && isNaN(bPercent)) return 0;
+    if (isNaN(aPercent)) return 1;
+    if (isNaN(bPercent)) return -1;
+    return order === 'high' ? bPercent - aPercent : aPercent - bPercent;
+  });
+};
+
+export const sortClassesMissed = (data: any[], order: string) => {
+  return data.sort((a: { memberStatus: string; absent: string; }, b: { memberStatus: string; absent: string; }) => {
+    if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
+    if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
+    const aClassMissed = parseFloat(a.absent);
+    const bClassMissed = parseFloat(b.absent);
+    if (isNaN(aClassMissed) && isNaN(bClassMissed)) return 0;
+    if (isNaN(aClassMissed)) return 1;
+    if (isNaN(bClassMissed)) return -1;
+    return order === 'more' ? bClassMissed - aClassMissed : aClassMissed - bClassMissed;
+  });
+};

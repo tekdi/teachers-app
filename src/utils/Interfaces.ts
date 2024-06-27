@@ -252,3 +252,9 @@ export interface FacilitatorListParam {
     role: string;
   };
 }
+
+export interface DropoutMember {
+  userId: string | number; 
+  name: string;
+  memberStatus: string;
+}

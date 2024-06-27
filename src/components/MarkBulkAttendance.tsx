@@ -10,7 +10,7 @@ import {
   toPascalCase,
 } from '../utils/Helper';
 
-import { AttendanceStatusListProps } from '../utils/Interfaces';
+import { AttendanceStatusListProps, DropoutMember } from '../utils/Interfaces';
 import AttendanceStatusListView from './AttendanceStatusListView';
 import Backdrop from '@mui/material/Backdrop';
 import CloseIcon from '@mui/icons-material/Close';
@@ -53,7 +53,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   const [loading, setLoading] = React.useState(false);
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
-  const [dropoutMemberList, setDropoutMemberList] = React.useState<Array<{}>>([]);
+  const [dropoutMemberList, setDropoutMemberList] = React.useState<Array<DropoutMember>>([]);
   const [presentCount, setPresentCount] = React.useState(0);
   const [absentCount, setAbsentCount] = React.useState(0);
   const [dropoutCount, setDropoutCount] = React.useState(0);
