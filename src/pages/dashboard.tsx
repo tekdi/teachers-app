@@ -140,17 +140,18 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   }, []);
 
- 
-          const limit = 0;
-          const page = 0;
-          const filters = { userId: userId };
-          const { data, error, isLoading } = useCohortList(limit, page, filters);
-            // API call to get center list
-  useEffect(() => {
-    if (data) {
+  const limit = 0;
+  const page = 0;
+  const filters = { userId: userId || '' };
 
-      const extractedNames = data?.results?.cohortDetails;
-          localStorage.setItem('parentCohortId',  extractedNames?.[0].cohortData?.parentId);
+  useEffect(() => {
+    if (userId) {
+      setLoading(true);
+      const fetchCohorts = async () => {
+        try {
+          const response = await cohortList({ limit, page, filters });
+          const extractedNames = response?.results?.cohortDetails;
+          localStorage.setItem('parentCohortId', extractedNames?.[0].cohortData?.parentId);
 
           const filteredData = extractedNames
             ?.map((item: any) => ({
@@ -175,8 +176,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
             );
           }
           setLoading(false);
+        } catch (error) {
+          console.error('Error fetching cohort list', error);
+          setLoading(false);
         }
-      }, [data]);
+      };
+
+      fetchCohorts();
+    }
+  }, [userId]);
 
   //API for getting student list
   useEffect(() => {
