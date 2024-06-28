@@ -19,6 +19,7 @@ import { getUserDetails } from '@/services/ProfileService';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import DropoutLabel from './DropoutLabel';
+import { names } from '@/utils/app.constant';
 
 const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   isDisabled = false,
@@ -109,15 +110,6 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
       console.error('Error fetching user details:', error);
     }
   };
-
-  const names = [
-    'name',
-    'age',
-    'gender',
-    'student_type',
-    'enrollment_number',
-    'primary_work',
-  ];
 
   const filteredFields = names
     .map((label) => customFieldsData.find((field) => field.name === label))

@@ -81,6 +81,7 @@ const CohortLearnerList : React.FC<CohortLearnerListProp> = ({cohortId, reloadSt
             return (
               <LearnersList
                 key={data.userId}
+                userId = {data.userId}
                 learnerName={data.name}
                 enrollmentId={data.enrollmentNumber}
                 cohortMembershipId={data.cohortMembershipId}

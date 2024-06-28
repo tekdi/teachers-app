@@ -10,22 +10,28 @@ import React, { useEffect } from 'react';
 // import Woman2Icon from '@mui/icons-material/Woman2';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { LearnerListProps } from '@/utils/Interfaces';
+import { LearnerListProps, UserData, updateCustomField } from '@/utils/Interfaces';
 import ConfirmationModal from './ConfirmationModal';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import ReactGA from 'react-ga4';
 import { showToastMessage } from './Toastify';
+import Link from 'next/link';
+import { getUserDetails } from '@/services/ProfileService';
+import LearnerModal from './LearnerModal';
+import Loader from './Loader';
+import { names } from '@/utils/app.constant';
 
 type Anchor = 'bottom';
 
 const LearnersList: React.FC<LearnerListProps> = ({
+  userId,
   learnerName,
   isDropout,
   enrollmentId,
   cohortMembershipId,
   statusReason,
-  reloadState, 
-  setReloadState
+  reloadState,
+  setReloadState,
 }) => {
   const [state, setState] = React.useState({
     bottom: false,
@@ -33,17 +39,24 @@ const LearnersList: React.FC<LearnerListProps> = ({
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [confirmationModalOpen, setConfirmationModalOpen] =
     React.useState<boolean>(false);
-    const [loading, setLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [isModalOpenLearner, setIsModalOpenLearner] = React.useState<boolean>(false);
+  const [userData, setUserData] = React.useState<UserData | null>(null);
+  const [userName, setUserName] = React.useState('');
+  const [contactNumber, setContactNumber] =  React.useState<any>('');
+  const [customFieldsData, setCustomFieldsData] = React.useState<
+  updateCustomField[]
+>([]);
 
-    const theme = useTheme<any>();
-    const { t } = useTranslation();
+  const theme = useTheme<any>();
+  const { t } = useTranslation();
 
-  useEffect(()=>{
+  useEffect(() => {
     if (reloadState) {
-      setReloadState(false); 
+      setReloadState(false);
       // window.location.reload();
     }
-  },[reloadState, setReloadState]) 
+  }, [reloadState, setReloadState]);
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
@@ -58,45 +71,49 @@ const LearnersList: React.FC<LearnerListProps> = ({
 
       setState({ ...state, bottom: open });
     };
-  
 
-    const handleUnmarkDropout = async () => {
-      try {
-        setLoading(true);
-    
-        if (cohortMembershipId) {
-          const memberStatus = 'active';
-          const membershipId = cohortMembershipId;
-    
-          const response = await updateCohortMemberStatus({
-            memberStatus,
-            membershipId,
+  const handleUnmarkDropout = async () => {
+    try {
+      setLoading(true);
+
+      if (cohortMembershipId) {
+        const memberStatus = 'active';
+        const membershipId = cohortMembershipId;
+
+        const response = await updateCohortMemberStatus({
+          memberStatus,
+          membershipId,
+        });
+
+        if (response?.responseCode !== 200 || response?.params?.err) {
+          ReactGA.event('unmark-dropout-student-error', {
+            cohortMembershipId: membershipId,
           });
-    
-          if (response?.responseCode !== 200 || response?.params?.err) {
-            ReactGA.event('unmark-dropout-student-error', { cohortMembershipId: membershipId });
-            throw new Error(response.params?.errmsg || 'An error occurred while updating the user.');
-          } else {
-            ReactGA.event('unmark-dropout-student-successful', {
-              cohortMembershipId: membershipId,
-            });
-            showToastMessage(t('COMMON.LEARNER_UNMARKED_DROPOUT'), 'success');
-            setReloadState(true);
-          }
+          throw new Error(
+            response.params?.errmsg ||
+              'An error occurred while updating the user.'
+          );
+        } else {
+          ReactGA.event('unmark-dropout-student-successful', {
+            cohortMembershipId: membershipId,
+          });
+          showToastMessage(t('COMMON.LEARNER_UNMARKED_DROPOUT'), 'success');
+          setReloadState(true);
         }
-      } catch (error) {
-        console.log(error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.log(error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const listItemClick = (event: React.MouseEvent, name: string) => {
     if (name === 'mark-drop-out') {
       setShowModal(true);
     } else if (name === 'unmark-drop-out') {
-      handleUnmarkDropout()
+      handleUnmarkDropout();
     } else {
       setConfirmationModalOpen(true);
     }
@@ -109,21 +126,26 @@ const LearnersList: React.FC<LearnerListProps> = ({
       if (cohortMembershipId) {
         const memberStatus = 'archived';
         const membershipId = cohortMembershipId;
-  
+
         const response = await updateCohortMemberStatus({
           memberStatus,
           membershipId,
         });
-  
+
         if (response?.responseCode !== 200 || response?.params?.err) {
-          ReactGA.event('remove-student-error', { cohortMembershipId: membershipId });
-          throw new Error(response.params?.errmsg || 'An error occurred while updating the user.');
+          ReactGA.event('remove-student-error', {
+            cohortMembershipId: membershipId,
+          });
+          throw new Error(
+            response.params?.errmsg ||
+              'An error occurred while updating the user.'
+          );
         } else {
           ReactGA.event('remove-student-successful', {
             cohortMembershipId: membershipId,
           });
           showToastMessage(t('COMMON.LEARNER_REMOVED'), 'success');
-          setReloadState(true)
+          setReloadState(true);
         }
       }
     } catch (error) {
@@ -148,6 +170,51 @@ const LearnersList: React.FC<LearnerListProps> = ({
     console.log('handleDroppedOutLabelClick');
     setShowModal(true);
   };
+
+  const handleOpenModalLearner = (userId: string) => {
+    fetchUserDetails(userId);
+    setIsModalOpenLearner(true);
+  };
+
+
+  const handleCloseModalLearner = () => {
+    setIsModalOpenLearner(false);
+  };
+
+  const fetchUserDetails = async (userId: string) => {
+    try {
+      if (userId) {
+        setLoading(true);
+        const response = await getUserDetails(userId, true);
+        console.log('response for popup', response?.result);
+        if (response?.responseCode === 200) {
+          const data = response?.result;
+          if (data) {
+            const userData = data?.userData;
+            setUserData(userData);
+            setUserName(userData?.name);
+            setContactNumber(userData?.mobile);
+            const customDataFields = userData?.customFields;
+            if (customDataFields?.length > 0) {
+              setCustomFieldsData(customDataFields);
+
+              setLoading(false);
+            }
+          } else {
+            console.log('No data Found');
+          }
+        } else {
+          console.log('No Response Found');
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
+  };
+
+  const filteredFields = names
+  .map((name) => customFieldsData.find((field) => field.name === name))
+  .filter(Boolean);
 
   const renderCustomContent = () => {
     if (isDropout) {
@@ -182,6 +249,18 @@ const LearnersList: React.FC<LearnerListProps> = ({
 
   return (
     <>
+     {loading ? (
+        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+      ) : (
+        <LearnerModal
+          userId={userId}
+          open={isModalOpenLearner}
+          onClose={handleCloseModalLearner}
+          data={filteredFields}
+          userName={userName}
+          contactNumber={contactNumber}
+        />
+      )}
       <Box
         px={'18px'}
         mt={2}
@@ -203,15 +282,37 @@ const LearnersList: React.FC<LearnerListProps> = ({
               />
             </Box> */}
             <Box>
-              <Box
-                sx={{
-                  fontSize: '16px',
-                  color: theme.palette.warning['300'],
-                  fontWeight: '600',
-                }}
-              >
-                {learnerName}
-              </Box>
+              {isDropout ? (
+                <Box
+                  sx={{
+                    fontSize: '16px',
+                    color: theme.palette.warning['400'],
+                    fontWeight: '400',
+                  }}
+                >
+                  {learnerName}
+                </Box>
+              ) : (
+                <Link className="word-break" href="#">
+                  <Typography
+                    onClick={() => {
+                      handleOpenModalLearner(userId!);
+                      ReactGA.event('learner-details-link-clicked', {
+                        userId: userId,
+                      });
+                    }}
+                    sx={{
+                      textAlign: 'left',
+                      fontSize: '16px',
+                      fontWeight: '400',
+                      color: theme.palette.secondary.main,
+                    }}
+                  >
+                    {learnerName}
+                  </Typography>
+                </Link>
+              )}
+
               <Box
                 sx={{
                   display: 'flex',
@@ -241,7 +342,9 @@ const LearnersList: React.FC<LearnerListProps> = ({
                     }}
                     onClick={handleDroppedOutLabelClick}
                   >
-                    <Box sx={{ marginTop: '1px' }}>Dropped Out</Box>
+                    <Box sx={{ marginTop: '1px' }}>
+                      {t('COMMON.DROPPED_OUT')}
+                    </Box>
                     <ErrorOutlineIcon style={{ fontSize: '13px' }} />
                   </Box>
                 ) : (
@@ -298,27 +401,26 @@ const LearnersList: React.FC<LearnerListProps> = ({
         renderCustomContent={renderCustomContent}
       />
 
-      {
-        isDropout? 
+      {isDropout ? (
         <DropOutModal
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        cohortMembershipId={cohortMembershipId}
-        isButtonAbsent = {true}
-        statusReason = {statusReason}
-        reloadState={reloadState} 
-        setReloadState={setReloadState}
-      />
-        :
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          cohortMembershipId={cohortMembershipId}
+          isButtonAbsent={true}
+          statusReason={statusReason}
+          reloadState={reloadState}
+          setReloadState={setReloadState}
+        />
+      ) : (
         <DropOutModal
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        cohortMembershipId={cohortMembershipId}
-        reloadState={reloadState} 
-        setReloadState={setReloadState}
-      />
-      }
-      
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          cohortMembershipId={cohortMembershipId}
+          reloadState={reloadState}
+          setReloadState={setReloadState}
+        />
+      )}
+
       <ConfirmationModal
         message={t('COMMON.SURE_REMOVE')}
         handleAction={handleAction}

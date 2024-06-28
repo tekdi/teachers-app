@@ -11,6 +11,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
 import DropoutLabel from './DropoutLabel';
+import { names } from '@/utils/app.constant';
 
 interface StudentsStatsListProps {
   name: string;
@@ -87,15 +88,6 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
       console.error('Error fetching user details:', error);
     }
   };
-
-  const names = [
-    'name',
-    'age',
-    'gender',
-    'student_type',
-    'enrollment_number',
-    'primary_work',
-  ];
 
   const filteredFields = names
     .map((name) => customFieldsData.find((field) => field.name === name))
