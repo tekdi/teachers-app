@@ -22,9 +22,6 @@ import { useTheme } from '@mui/material/styles';
 interface FilterModalProps {
   open: boolean;
   handleClose: () => void;
-  blocks: string[];
-  selectedBlocks: string[];
-  setSelectedBlocks: (blocks: string[]) => void;
   sortOrder: string;
   setSortOrder: (order: string) => void;
   onApply: () => void;
@@ -33,32 +30,13 @@ interface FilterModalProps {
 const FilterModal: React.FC<FilterModalProps> = ({
   open,
   handleClose,
-  blocks,
-  selectedBlocks,
-  setSelectedBlocks,
   sortOrder,
   setSortOrder,
   onApply,
 }) => {
   const { t } = useTranslation();
-  const [searchInput, setSearchInput] = useState('');
+
   const theme = useTheme<any>();
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(event.target.value);
-  };
-
-  const handleBlockToggle = (block: string) => {
-    if (selectedBlocks.includes(block)) {
-      setSelectedBlocks(selectedBlocks.filter((b) => b !== block));
-    } else {
-      setSelectedBlocks([...selectedBlocks, block]);
-    }
-  };
-
-  const filteredBlocks = blocks.filter((block) =>
-    block.toLowerCase().includes(searchInput.toLowerCase())
-  );
 
   const handleApplyClick = () => {
     onApply();
@@ -77,10 +55,10 @@ const FilterModal: React.FC<FilterModalProps> = ({
             p: 2,
             borderRadius: 5,
             outline: 'none',
-             position: 'absolute',
+            position: 'absolute',
             top: '50%',
             left: '50%',
-            transform: 'translate(-50%, -50%)'
+            transform: 'translate(-50%, -50%)',
           }}
         >
           <Box display="flex" justifyContent="space-between" mb={2}>
@@ -144,8 +122,11 @@ const FilterModal: React.FC<FilterModalProps> = ({
             color="primary"
             fullWidth
             onClick={handleApplyClick}
-            sx={{ mt: 2,   border: 'none',
-              backgroundColor: theme?.palette?.primary?.main }}
+            sx={{
+              mt: 2,
+              border: 'none',
+              backgroundColor: theme?.palette?.primary?.main,
+            }}
           >
             {t('COMMON.APPLY')}
           </Button>
