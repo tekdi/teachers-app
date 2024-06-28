@@ -29,7 +29,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const [checkedCenters, setCheckedCenters] = React.useState([]);
+  const [checkedCenters, setCheckedCenters] = React.useState<string[]>([]);
 
   const style = {
     position: 'absolute',
@@ -47,7 +47,9 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   };
 
   React.useEffect(() => {
-    setCheckedCenters(centers);
+    if (centers) {
+      setCheckedCenters(centers as never[]);
+    }
   }, [centers]);
 
   const handleToggle = (name: string) => {
@@ -67,7 +69,9 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   };
 
   const handleAssign = () => {
-    onAssign(checkedCenters);
+    if (onAssign) {
+      onAssign(checkedCenters);
+    }
   };
 
   return (
