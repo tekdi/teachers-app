@@ -80,7 +80,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           </Button>
           <Button
             sx={{
-              width: '128px',
+              width: 'auto',
               height: '40px',
               fontSize: '14px',
               fontWeight: '500',
