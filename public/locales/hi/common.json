@@ -53,6 +53,7 @@
     "OK": "ठीक है",
     "FROM_TO_DATE": "से - दिनांक तक",
     "REMOVE": "हटाएं",
+    "SEND_REQUEST": "अनुरोध भेजें",
     "MARK_DROP_OUT": "ड्रॉप आउट के रूप में चिह्नित करें",
     "UNMARK_DROP_OUT": "ड्रॉप आउट के रूप में हटाएं",
     "SOMETHING_WENT_WRONG": "कुछ गलत हो गया",
@@ -73,8 +74,9 @@
     "FILTERS": "फिल्टर्स",
     "MANAGE_USERS": "उपयोगकर्ताओं का प्रबंधन",
     "FACILITATORS": "सुविधाकर्ता",
-    "CENTERS_ASSIGNED": "केंद्र निरुपित",
-    "MANAGE_CENTERS": "केंद्र प्रबंधित करें",
+    "CENTERS_ASSIGNED": "{{block}} में केंद्र आवंटित किए गए",
+    "REASSIGN_CENTERS": "केंद्रों को पुनः आवंटित करें",
+    "REASSIGN_BLOCKS_REQUEST": "ब्लॉक को पुनः आवंटित करने का अनुरोध",
     "ASSIGN": "निरुपण करें",
     "SEARCH_FACILITATORS": "खोज सुविधा प्रदाता..",
     "ADD_LEARNER": "शिक्षार्थियों को जोड़ें",
@@ -82,7 +84,8 @@
     "SELECT_ALL": "सभी को चुनें",
     "LEARNER_MARKED_DROPOUT": "शिक्षार्थी को ड्रॉप आउट के रूप में चिह्नित किया गया",
     "LEARNER_UNMARKED_DROPOUT": "शिक्षार्थी को ड्रॉपआउट के रूप में अनचिह्नित किया गया",
-    "LEARNER_REMOVED": "शिक्षार्थी को हटा दिया गया है"
+    "LEARNER_REMOVED": "शिक्षार्थी को हटा दिया गया है",
+    "DELETE_USER": "उपयोगकर्ता को स्थायी रूप से हटाएं"
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",
@@ -238,12 +241,11 @@
   },
   "BLOCKS": {
     "TEACHING_BLOCKS": "शिक्षण ब्लॉक्स",
-    "SEARCH" : "खोजें..",
+    "SEARCH": "खोजें..",
     "CREATE_NEW": "नया निर्माण",
     "NEW_BLOCK": "नया ब्लॉक",
     "BLOCK_NAME": "ब्लॉक का नाम",
     "CREATE": "बनाएँ",
     "SEARCH_BLOCKS": "ब्लॉक खोजें"
-    
   }
 }
