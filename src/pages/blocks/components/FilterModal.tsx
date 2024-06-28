@@ -18,6 +18,7 @@ import {
 import { Search, Close } from '@mui/icons-material';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 interface FilterModalProps {
   open: boolean;
@@ -154,5 +155,14 @@ const FilterModal: React.FC<FilterModalProps> = ({
     </Modal>
   );
 };
+
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Other props you want to pass to your component
+    },
+  };
+}
 
 export default FilterModal;
