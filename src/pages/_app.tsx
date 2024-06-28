@@ -1,31 +1,32 @@
 'use client';
 
 import '@/styles/globals.css';
+import 'react-toastify/dist/ReactToastify.css';
+
+import * as React from 'react';
+
+import { Button, Container } from '@mui/material';
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   useColorScheme,
   useTheme,
 } from '@mui/material/styles';
-import * as React from 'react';
-import { useEffect } from 'react';
-import { Poppins } from 'next/font/google';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { initGA, logPageView } from '../utils/googleAnalytics';
 
+import type { AppProps } from 'next/app';
+import Box from '@mui/material/Box';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { Button, Container } from '@mui/material';
-import Box from '@mui/material/Box';
+import Head from 'next/head';
 import IconButton from '@mui/material/IconButton';
+import { Poppins } from 'next/font/google';
+import { ToastContainer } from 'react-toastify';
 import { appWithTranslation } from 'next-i18next';
-import type { AppProps } from 'next/app';
 import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { initGA, logPageView } from '../utils/googleAnalytics';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Head from 'next/head';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
 
 const queryClient = new QueryClient();
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
@@ -129,16 +130,16 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}
-        <Container maxWidth="md" style={{ padding: 0 }}>
-        <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
+        <Box style={{ padding: 0 }}>
+          <QueryClientProvider client={queryClient}>
+            <Component {...pageProps} />
           </QueryClientProvider>
           <ToastContainer
             position="bottom-left"
             autoClose={3000}
             stacked={false}
           />
-        </Container>
+        </Box>
       </CssVarsProvider>
     </>
   );

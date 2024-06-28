@@ -152,7 +152,7 @@ const Header: React.FC = () => {
           zIndex: '999',
           width: '100%',
           bgcolor: ' #FFFFFF',
-          maxWidth: '899px',
+          // maxWidth: '899px',
         }}
       >
         <Stack

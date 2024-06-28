@@ -53,11 +53,12 @@ import { lowLearnerAttendanceLimit } from './../../app.config';
 import { modifyAttendanceLimit } from '../../app.config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
+import { useCohortList } from '@/services/queries';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { useCohortList } from '@/services/queries';
+
 interface DashboardProps {
   //   buttonText: string;
 }
@@ -140,43 +141,44 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   }, []);
 
- 
-          const limit = 0;
-          const page = 0;
-          const filters = { userId: userId };
-          const { data, error, isLoading } = useCohortList(limit, page, filters);
-            // API call to get center list
+  const limit = 0;
+  const page = 0;
+  const filters = { userId: userId };
+  const { data, error, isLoading } = useCohortList(limit, page, filters);
+  // API call to get center list
   useEffect(() => {
     if (data) {
-
       const extractedNames = data?.results?.cohortDetails;
-          localStorage.setItem('parentCohortId',  extractedNames?.[0].cohortData?.parentId);
+      localStorage.setItem(
+        'parentCohortId',
+        extractedNames?.[0].cohortData?.parentId
+      );
 
-          const filteredData = extractedNames
-            ?.map((item: any) => ({
-              cohortId: item?.cohortId,
-              parentId: item?.parentId,
-              name: item?.name,
-            }))
-            ?.filter(Boolean);
-          setCohortsData(filteredData);
-          if (filteredData.length > 0) {
-            if (typeof window !== 'undefined' && window.localStorage) {
-              const cohort = localStorage.getItem('classId') || '';
-              if (cohort !== '') {
-                setClassId(localStorage.getItem('classId') || '');
-              } else {
-                localStorage.setItem('classId', filteredData?.[0]?.cohortId);
-                setClassId(filteredData?.[0]?.cohortId);
-              }
-            }
-            setManipulatedCohortData(
-              filteredData.concat({ cohortId: 'all', name: 'All Centers' })
-            );
+      const filteredData = extractedNames
+        ?.map((item: any) => ({
+          cohortId: item?.cohortId,
+          parentId: item?.parentId,
+          name: item?.name,
+        }))
+        ?.filter(Boolean);
+      setCohortsData(filteredData);
+      if (filteredData.length > 0) {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          const cohort = localStorage.getItem('classId') || '';
+          if (cohort !== '') {
+            setClassId(localStorage.getItem('classId') || '');
+          } else {
+            localStorage.setItem('classId', filteredData?.[0]?.cohortId);
+            setClassId(filteredData?.[0]?.cohortId);
           }
-          setLoading(false);
         }
-      }, [data]);
+        setManipulatedCohortData(
+          filteredData.concat({ cohortId: 'all', name: 'All Centers' })
+        );
+      }
+      setLoading(false);
+    }
+  }, [data]);
 
   //API for getting student list
   useEffect(() => {
@@ -521,11 +523,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Typography
                       textAlign={'left'}
                       fontSize={'22px'}
-                      m={
-                        !hasSeenTutorial
-                          ? '1.5rem 1rem 0.8rem'
-                          : '1.5rem 2rem 1rem'
-                      }
+                      m={'1.5rem 1.2rem 0.8rem'}
                       color={theme?.palette?.warning['300']}
                       className="joyride-step-1"
                     >
@@ -548,7 +546,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Box
                       display={'flex'}
                       flexDirection={'column'}
-                      padding={'1.5rem 1rem 1rem'}
+                      padding={'1.5rem 1.2rem 1rem'}
                     >
                       <Box display={'flex'} justifyContent={'space-between'}>
                         <Typography
@@ -757,19 +755,23 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               )}
                             </Box>
                             <Button
-                              className="joyride-step-4"
+                              className="joyride-step-4 btn-mark-width"
                               variant="contained"
                               color="primary"
-                              style={{
-                                minWidth: '33%',
-                                height: '2.5rem',
-                                padding: theme.spacing(1),
-                                fontWeight: '500',
-                              }}
                               sx={{
                                 '&.Mui-disabled': {
                                   backgroundColor:
                                     theme?.palette?.primary?.main, // Custom disabled text color
+                                },
+                                minWidth: '84px',
+                                height: '2.5rem',
+                                padding: theme.spacing(1),
+                                fontWeight: '500',
+                                '@media (min-width: 500px)': {
+                                  width: '20%',
+                                },
+                                '@media (min-width: 700px)': {
+                                  width: '15%',
                                 },
                               }}
                               onClick={handleModalToggle}
@@ -823,7 +825,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       display={'flex'}
                       flexDirection={'column'}
                       gap={'1rem'}
-                      padding={'1rem'}
+                      padding={'1rem 1.2rem'}
                     >
                       <Stack
                         direction={'row'}
@@ -891,7 +893,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         />
                       )}
                     </Box>
-                    <Box display={'flex'} className="card_overview" mx={'1rem'}>
+                    <Box
+                      display={'flex'}
+                      className="card_overview"
+                      mx={'1.2rem'}
+                    >
                       {classId &&
                       classId !== 'all' &&
                       cohortsData &&

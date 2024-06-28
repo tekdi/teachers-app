@@ -781,3 +781,14 @@ main {
 .checkBox_svg svg {
   fill: var(--mui-palette-warning-A200);
 }
+.btn-mark-width {
+  min-width: 84px;
+  height: 2.5rem;
+  font-weight: 500;
+}
+
+@media (min-width: '500px') {
+  .btn-mark-width {
+    width: 20% !important;
+  }
+}
