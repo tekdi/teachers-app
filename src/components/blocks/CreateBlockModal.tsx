@@ -110,13 +110,6 @@ const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
   );
 };
 
-export async function getStaticProps({ locale }: any) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-      // Other props you want to pass to your component
-    },
-  };
-}
+
 
 export default CreateBlockModal;
