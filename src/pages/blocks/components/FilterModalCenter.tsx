@@ -7,7 +7,6 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
-  Checkbox,
   Button,
   Modal,
   Fade,
@@ -18,6 +17,8 @@ import { Search, Close } from '@mui/icons-material';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
 
+type CenterType = '' | 'regular' | 'remote';
+
 interface FilterModalProps {
   open: boolean;
   handleClose: () => void;
@@ -26,8 +27,8 @@ interface FilterModalProps {
   setSelectedCenters: (centers: string[]) => void;
   sortOrder: string;
   setSortOrder: (order: string) => void;
-  centerType: string;
-  setCenterType: (type: string) => void;
+  centerType: CenterType;
+  setCenterType: (type: CenterType) => void;
   onApply: () => void;
 }
 
@@ -52,7 +53,7 @@ const FilterModalCenter: React.FC<FilterModalProps> = ({
   };
 
   const handleCenterToggle = (center: string) => {
-    if (selectedCenters.includes(center)) {
+    if (selectedCenters?.includes(center)) {
       setSelectedCenters(selectedCenters?.filter((c) => c !== center));
     } else {
       setSelectedCenters([...selectedCenters, center]);
@@ -60,7 +61,7 @@ const FilterModalCenter: React.FC<FilterModalProps> = ({
   };
 
   const filteredCenters = centers?.filter((center) =>
-    center.toLowerCase().includes(searchInput.toLowerCase())
+    center?.toLowerCase().includes(searchInput?.toLowerCase())
   );
 
   const handleApplyClick = () => {
@@ -146,7 +147,7 @@ const FilterModalCenter: React.FC<FilterModalProps> = ({
           </Typography>
           <RadioGroup
             value={centerType}
-            onChange={(e) => setCenterType(e.target.value)}
+            onChange={(e) => setCenterType(e.target.value as CenterType)}
           >
             <FormControlLabel
               sx={{ justifyContent: 'space-between' }}
