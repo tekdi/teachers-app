@@ -100,6 +100,8 @@
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "ମୋଟ ଶିକ୍ଷାର୍ଥୀ ସଂଖ୍ୟା: {{count}}",
+    "ACTIVE_STUDENTS": "ସକ୍ରିୟ ଶିକ୍ଷାର୍ଥୀ: {{count}}",
+    "DROPOUT_STUDENTS": "ଛାଡ଼ିଦେଇଥିବା ଛାତ୍ରଛାତ୍ରୀ: {{count}}",
     "PRESENT_STUDENTS": "ଉପସ୍ଥିତ ଛାତ୍ର-ଛାତ୍ରୀ: {{count}}",
     "ABSENT_STUDENTS": "ଅନୁପସ୍ଥିତ ଛାତ୍ର-ଛାତ୍ରୀ: {{count}}",
     "PRESENT": "ଉପସ୍ଥିତ",
