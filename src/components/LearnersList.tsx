@@ -10,7 +10,11 @@ import React, { useEffect } from 'react';
 // import Woman2Icon from '@mui/icons-material/Woman2';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { LearnerListProps, UserData, updateCustomField } from '@/utils/Interfaces';
+import {
+  LearnerListProps,
+  UserData,
+  updateCustomField,
+} from '@/utils/Interfaces';
 import ConfirmationModal from './ConfirmationModal';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import ReactGA from 'react-ga4';
@@ -20,8 +24,13 @@ import { getUserDetails } from '@/services/ProfileService';
 import LearnerModal from './LearnerModal';
 import Loader from './Loader';
 import { Status, names } from '@/utils/app.constant';
+import ApartmentIcon from '@mui/icons-material/Apartment';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import ManageCentersModal from './ManageCentersModal';
 
 type Anchor = 'bottom';
+const centerList = ['Nashik', 'Shirdi', 'kamptee'];
+const centers = ['shirdi'];
 
 const LearnersList: React.FC<LearnerListProps> = ({
   userId,
@@ -32,6 +41,8 @@ const LearnersList: React.FC<LearnerListProps> = ({
   statusReason,
   reloadState,
   setReloadState,
+  block,
+  center,
 }) => {
   const [state, setState] = React.useState({
     bottom: false,
@@ -46,11 +57,12 @@ const LearnersList: React.FC<LearnerListProps> = ({
     userData: null as UserData | null,
     userName: '',
     contactNumber: '',
-    customFieldsData: [] as updateCustomField[]
+    customFieldsData: [] as updateCustomField[],
   });
 
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const [openCentersModal, setOpenCentersModal] = React.useState(false);
 
   useEffect(() => {
     if (reloadState) {
@@ -78,7 +90,10 @@ const LearnersList: React.FC<LearnerListProps> = ({
   };
 
   const setIsModalOpenLearner = (isOpen: boolean) => {
-    setLearnerState((prevState) => ({ ...prevState, isModalOpenLearner: isOpen }));
+    setLearnerState((prevState) => ({
+      ...prevState,
+      isModalOpenLearner: isOpen,
+    }));
   };
 
   const setUserData = (data: UserData | null) => {
@@ -94,7 +109,10 @@ const LearnersList: React.FC<LearnerListProps> = ({
   };
 
   const setCustomFieldsData = (fields: updateCustomField[]) => {
-    setLearnerState((prevState) => ({ ...prevState, customFieldsData: fields }));
+    setLearnerState((prevState) => ({
+      ...prevState,
+      customFieldsData: fields,
+    }));
   };
 
   const handleUnmarkDropout = async () => {
@@ -139,8 +157,10 @@ const LearnersList: React.FC<LearnerListProps> = ({
       setShowModal(true);
     } else if (name === 'unmark-drop-out') {
       handleUnmarkDropout();
-    } else {
-      setConfirmationModalOpen(true);
+    }
+    if (name === 'reassign-centers') {
+      setOpenCentersModal(true);
+      getTeamLeadersCenters();
     }
     setState({ ...state, bottom: false });
   };
@@ -183,7 +203,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
     setState({ ...state, bottom: false });
   };
 
-  const handleCloseModel = () => {
+  const handleCloseModal = () => {
     setConfirmationModalOpen(false);
   };
 
@@ -239,6 +259,20 @@ const LearnersList: React.FC<LearnerListProps> = ({
     }
     return acc;
   }, [] as updateCustomField[]);
+
+  const getTeamLeadersCenters = async () => {};
+
+  const handleCloseCentersModal = () => {
+    setOpenCentersModal(false);
+  };
+
+  const handleAssignCenters = async (selectedCenters: any) => {
+    setOpenCentersModal(false);
+    showToastMessage(
+      t('MANAGE_USERS.CENTERS_ASSIGNED_SUCCESSFULLY'),
+      'success'
+    );
+  };
 
   const renderCustomContent = () => {
     if (isDropout) {
@@ -299,7 +333,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
           }}
         >
           <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-              {/* <Box className="box_shadow_center">
+            {/* <Box className="box_shadow_center">
               <Woman2Icon
                 sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
               />
@@ -344,7 +378,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
                   justifyContent: 'left',
                 }}
               >
-                   {/* <Box
+                {/* <Box
                   sx={{ fontSize: '12px', color: theme.palette.warning['400'] }}
                 >
                   19 y/o
@@ -390,6 +424,34 @@ const LearnersList: React.FC<LearnerListProps> = ({
                   </>
                 )}
               </Box>
+              {!isDropout && (
+                <Box
+                  display={'flex'}
+                  gap={'10px'}
+                  alignItems={'center'}
+                  justifyContent={'left'}
+                >
+                  <Box
+                    sx={{
+                      fontSize: '14px',
+                      fontWeight: '400',
+                      color: theme.palette.warning['400'],
+                    }}
+                  >
+                    {block}
+                  </Box>
+
+                  <Box
+                    sx={{
+                      fontSize: '14px',
+                      fontWeight: '400',
+                      color: theme.palette.warning['400'],
+                    }}
+                  >
+                    {center}
+                  </Box>
+                </Box>
+              )}
             </Box>
           </Box>
           <MoreVertIcon
@@ -403,24 +465,71 @@ const LearnersList: React.FC<LearnerListProps> = ({
         toggleDrawer={toggleDrawer}
         state={state}
         listItemClick={listItemClick}
-        optionList={[
-          {
-            label: isDropout
-              ? t('COMMON.UNMARK_DROP_OUT')
-              : t('COMMON.MARK_DROP_OUT'),
-            icon: (
-              <NoAccountsIcon sx={{ color: theme.palette.warning['300'] }} />
-            ),
-            name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
-          },
-          {
-            label: t('COMMON.REMOVE_FROM_CENTER'),
-            icon: (
-              <DeleteOutlineIcon sx={{ color: theme.palette.warning['300'] }} />
-            ),
-            name: 'remove-from-center',
-          },
-        ]}
+        optionList={
+          block
+            ? [
+                {
+                  label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
+                  icon: (
+                    <LocationOnOutlinedIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'reassign-block-request',
+                },
+                {
+                  label: t('COMMON.REASSIGN_CENTERS'),
+                  icon: (
+                    <ApartmentIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'reassign-centers',
+                },
+                {
+                  label: isDropout
+                    ? t('COMMON.UNMARK_DROP_OUT')
+                    : t('COMMON.MARK_DROP_OUT'),
+                  icon: (
+                    <NoAccountsIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
+                },
+                {
+                  label: t('COMMON.DELETE_USER'),
+                  icon: (
+                    <DeleteOutlineIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'delete-User',
+                },
+              ]
+            : [
+                {
+                  label: isDropout
+                    ? t('COMMON.UNMARK_DROP_OUT')
+                    : t('COMMON.MARK_DROP_OUT'),
+                  icon: (
+                    <NoAccountsIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
+                },
+                {
+                  label: t('COMMON.REMOVE_FROM_CENTER'),
+                  icon: (
+                    <DeleteOutlineIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'remove-from-center',
+                },
+              ]
+        }
         renderCustomContent={renderCustomContent}
       />
 
@@ -451,8 +560,17 @@ const LearnersList: React.FC<LearnerListProps> = ({
           primary: t('COMMON.YES'),
           secondary: t('COMMON.NO_GO_BACK'),
         }}
-        handleCloseModel={handleCloseModel}
+        handleCloseModal={handleCloseModal}
         modalOpen={confirmationModalOpen}
+      />
+
+      <ManageCentersModal
+        open={openCentersModal}
+        onClose={handleCloseCentersModal}
+        centersName={centerList}
+        centers={centers}
+        onAssign={handleAssignCenters}
+        isForLearner={true}
       />
     </>
   );
