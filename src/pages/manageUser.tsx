@@ -31,7 +31,9 @@ import { showToastMessage } from '@/components/Toastify';
 import BottomDrawer from '@/components/BottomDrawer';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import { editEditUser } from '@/services/ProfileService';
+import ConfirmationModal from '@/components/ConfirmationModal';
 
 interface Cohort {
   cohortId: string;
@@ -42,6 +44,7 @@ interface Cohort {
 interface User {
   name: string;
   userId: string;
+  block: string;
 }
 
 type CohortsData = {
@@ -49,17 +52,42 @@ type CohortsData = {
 };
 type Anchor = 'bottom';
 
+const facilitatorsList = [
+  {
+    name: 'Radha Kale',
+    userId: 'R12345678',
+    block: 'Nashik',
+  },
+  {
+    name: 'Rushikesh Sonwane',
+    userId: 'S12345678',
+    block: 'Shirdi',
+  },
+];
+
+const centersList: CohortsData = {
+  R12345678: [
+    { cohortId: 'R1', parentId: 'R12345678', name: 'kamptee' },
+    { cohortId: 'R2', parentId: 'R12345678', name: 'chimur' },
+  ],
+  S12345678: [
+    { cohortId: 'S1', parentId: 'S12345678', name: 'Shirdi' },
+    { cohortId: 'S2', parentId: 'S12345678', name: 'Nashik' },
+  ],
+};
+
 const manageUsers = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
 
   const [value, setValue] = React.useState(1);
-  const [users, setUsers] = useState<
-    { name: string; district: string; userId: string }[]
-  >([]);
+  const [users, setUsers] =
+    useState<
+      { name: string; district?: string; userId: string; block?: string }[]
+    >(facilitatorsList);
   const [loading, setLoading] = React.useState(false);
-  const [cohortsData, setCohortsData] = useState<CohortsData>({});
+  const [cohortsData, setCohortsData] = useState<CohortsData>(centersList);
   const [centersData, setCentersData] = useState<Cohort[]>([]);
   const [open, setOpen] = React.useState(false);
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
@@ -73,6 +101,8 @@ const manageUsers = () => {
   const [state, setState] = React.useState({
     bottom: false,
   });
+  const [confirmationModalOpen, setConfirmationModalOpen] =
+    React.useState<boolean>(false);
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -99,7 +129,7 @@ const manageUsers = () => {
             name: user.name,
           }));
           setTimeout(() => {
-            setUsers(extractedData);
+            // setUsers(extractedData);
           });
         }
       } catch (error) {
@@ -141,7 +171,7 @@ const manageUsers = () => {
           );
           console.log('allCohortsData', allCohortsData);
 
-          setCohortsData(allCohortsData);
+          // setCohortsData(allCohortsData);
         }
       } catch (error) {
         console.log(error);
@@ -170,6 +200,10 @@ const manageUsers = () => {
   const handleClose = () => {
     setOpen(false);
     setSelectedUser(null);
+  };
+
+  const handleCloseModel = () => {
+    setConfirmationModalOpen(false);
   };
 
   const toggleDrawer =
@@ -208,8 +242,12 @@ const manageUsers = () => {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       }
     }
-    if (name === 'manage-centers') {
+    if (name === 'reassign-centers') {
       setOpenCentersModal(true);
+      getTeamLeadersCenters();
+    }
+    if (name === 'reassign-block-request') {
+      setConfirmationModalOpen(true);
       getTeamLeadersCenters();
     }
   };
@@ -288,6 +326,10 @@ const manageUsers = () => {
       console.error('Error assigning centers:', error);
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
     }
+  };
+
+  const handleReassignBlockRequest = () => {
+    showToastMessage('Request Send', 'success');
   };
 
   return (
@@ -424,6 +466,14 @@ const manageUsers = () => {
                             </Box>
 
                             <Box display={'flex'}>
+                              <span
+                                style={{
+                                  color: theme.palette.warning.contrastText,
+                                  fontWeight: '500',
+                                }}
+                              >
+                                {user.block}
+                              </span>
                               {cohortsData[user.userId] &&
                                 cohortsData[user.userId].map((cohort) => (
                                   <Box
@@ -466,6 +516,7 @@ const manageUsers = () => {
                 open={open}
                 onClose={handleClose}
                 leanerName={selectedUserName ?? ''}
+                blockName={selectedUser?.block ?? ''}
                 centerName={centers}
               />
               <BottomDrawer
@@ -474,13 +525,22 @@ const manageUsers = () => {
                 listItemClick={listItemClick}
                 optionList={[
                   {
-                    label: t('COMMON.MANAGE_CENTERS'),
+                    label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
+                    icon: (
+                      <LocationOnOutlinedIcon
+                        sx={{ color: theme.palette.warning['300'] }}
+                      />
+                    ),
+                    name: 'reassign-block-request',
+                  },
+                  {
+                    label: t('COMMON.REASSIGN_CENTERS'),
                     icon: (
                       <ApartmentIcon
                         sx={{ color: theme.palette.warning['300'] }}
                       />
                     ),
-                    name: 'manage-centers',
+                    name: 'reassign-centers',
                   },
                   {
                     label: t('COMMON.DELETE_USER'),
@@ -503,7 +563,11 @@ const manageUsers = () => {
                   padding={'1rem'}
                   borderRadius={'1rem'}
                 >
-                  <Box>{t('COMMON.CENTERS_ASSIGNED')}</Box>
+                  <Box>
+                    {t('COMMON.CENTERS_ASSIGNED', {
+                      block: selectedUser?.block ?? '',
+                    })}
+                  </Box>
                   <Box>
                     {centers.length > 0 &&
                       centers?.map((name) => (
@@ -533,6 +597,17 @@ const manageUsers = () => {
                 onAssign={handleAssignCenters}
               />
             </Box>
+
+            <ConfirmationModal
+              message="You are sending a request to the state Team Leader to re-assign the Block to this user"
+              handleAction={handleReassignBlockRequest}
+              buttonNames={{
+                primary: t('COMMON.SEND_REQUEST'),
+                secondary: t('COMMON.CANCEL'),
+              }}
+              handleCloseModel={handleCloseModel}
+              modalOpen={confirmationModalOpen}
+            />
           </>
         )}
       </Box>

@@ -13,12 +13,14 @@ interface ManageUsersModalProps {
   leanerName: string;
   centerName: string[];
   open: boolean;
+  blockName: string;
   onClose: () => void;
 }
 
 const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
   leanerName,
   centerName,
+  blockName,
   open,
   onClose,
 }) => {
@@ -78,7 +80,7 @@ const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
               className="fs-14 fw-500"
               sx={{ color: theme.palette.warning['400'] }}
             >
-              {t('COMMON.CENTERS_ASSIGNED')}
+              {t('COMMON.CENTERS_ASSIGNED', { block: blockName })}
             </Box>
           </Box>
 

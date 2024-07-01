@@ -14,10 +14,8 @@ import Search from '@mui/icons-material/Search';
 import { ArrowDropDown, KeyboardArrowRight } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from 'next/router';
-
-import CreateBlockModal from './components/CreateBlockModal';
-import FilterModal from './components/FilterModal';
-
+import CreateBlockModal from '@/components/blocks/CreateBlockModal';
+import FilterModal from '@/components/blocks/FilterBlockModal';
 interface BlocksProps {
   // Define any props if needed
 }
@@ -56,7 +54,7 @@ const Blocks: React.FC<BlocksProps> = () => {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchInput(value);
-    const filtered = blocks.filter((block) =>
+    const filtered = blocks?.filter((block) =>
       block.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredBlocks(filtered);
@@ -176,9 +174,7 @@ const Blocks: React.FC<BlocksProps> = () => {
           <FilterModal
             open={filterModalOpen}
             handleClose={handleFilterModalClose}
-            blocks={blocks}
-            selectedBlocks={selectedBlocks}
-            setSelectedBlocks={setSelectedBlocks}
+  
             sortOrder={sortOrder}
             setSortOrder={setSortOrder}
             onApply={handleApplyFilters}
