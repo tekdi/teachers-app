@@ -203,7 +203,7 @@ const Blocks: React.FC<BlocksProps> = () => {
               mt: 2,
               display: 'flex',
               flexDirection: 'column',
-              backgroundColor: theme?.palette?.warning?.A800,
+              backgroundColor: '#FBF4E4',
               borderRadius: '8px',
               p: 2,
             }}
@@ -233,7 +233,7 @@ const Blocks: React.FC<BlocksProps> = () => {
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Box
                       sx={{
-                        backgroundColor: theme?.palette?.warning?.A900,
+                        backgroundColor: theme?.palette?.primary?.light,
 
                         display: 'flex',
                         alignItems: 'center',
@@ -259,7 +259,7 @@ const Blocks: React.FC<BlocksProps> = () => {
               mt: 2,
               display: 'flex',
               flexDirection: 'column',
-              backgroundColor: theme?.palette?.warning?.A800,
+              backgroundColor: '#FBF4E4',
               borderRadius: '8px',
               p: 2,
             }}
@@ -289,7 +289,7 @@ const Blocks: React.FC<BlocksProps> = () => {
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Box
                       sx={{
-                        backgroundColor: theme?.palette?.warning?.A900,
+                        backgroundColor: theme?.palette?.primary?.light,
 
                         display: 'flex',
                         alignItems: 'center',
