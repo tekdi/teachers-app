@@ -41,6 +41,7 @@ export interface UserAttendanceObj {
   attendance: string; //Mandatory
   name?: string;
   attendanceDate?: Date | string;
+  memberStatus?: string; 
 }
 
 export interface BulkAttendanceParams {
@@ -54,12 +55,21 @@ export interface MarkAttendanceParams {
   contextId: string;
   attendance: string;
 }
+
+export interface UserIdFilter {
+  userId: string;
+}
+
+export interface ParentIdFilter {
+  parentId: string[];
+}
+
+// Define a union type for the filters
+export type Filters = UserIdFilter | ParentIdFilter;
 export interface cohortListParam {
   limit: number;
   page: number;
-  filters: {
-    userId: string;
-  };
+  filters: Filters;
 }
 
 export interface cohortMemberList {
@@ -68,6 +78,7 @@ export interface cohortMemberList {
   filters: {
     cohortId: string;
     role?: string;
+    status?: string[]
   };
 }
 
@@ -233,6 +244,7 @@ export interface updateCohortMemberStatusParams {
 }
 
 export interface LearnerListProps {
+  userId: string;
   isDropout: boolean;
   enrollmentId?: string | number;
   cohortMembershipId: string | number;
@@ -249,4 +261,14 @@ export interface FacilitatorListParam {
     district: string;
     role: string;
   };
+}
+
+export interface DropoutMember {
+  userId: string | number; 
+  name: string;
+  memberStatus: string;
+}
+export interface AssignCentersToFacilitatorListParam {
+  userId: string[];
+  cohortId: string[];
 }

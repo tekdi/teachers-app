@@ -53,6 +53,7 @@
     "OK": "OK",
     "FROM_TO_DATE": "From - To dates",
     "REMOVE": "Remove",
+    "SEND_REQUEST": "Send Request",
     "MARK_DROP_OUT": "Mark as Drop Out",
     "UNMARK_DROP_OUT": "Unmark as Drop Out",
     "SOMETHING_WENT_WRONG": "Something went wrong",
@@ -73,16 +74,19 @@
     "FILTERS": "Filters",
     "MANAGE_USERS": "Manage Users",
     "FACILITATORS": "Facilitators",
-    "CENTERS_ASSIGNED": "Centers Assigned",
-    "MANAGE_CENTERS": "Manage Centers",
+    "CENTERS_ASSIGNED": "Centers Assigned in {{block}}",
+    "REASSIGN_CENTERS": "Reassign Centers",
+    "REASSIGN_BLOCKS_REQUEST": "Request to Re-assign Block",
     "ASSIGN": "Assign",
     "SEARCH_FACILITATORS": "Search Facilitators..",
-    "ADD_LEARNER":"Add Learners",
-    "DESELECT_ALL":"Deselect All",
-    "SELECT_ALL":"Select All",
+    "ADD_LEARNER": "Add Learners",
+    "DESELECT_ALL": "Deselect All",
+    "SELECT_ALL": "Select All",
     "LEARNER_MARKED_DROPOUT": "Learner marked as dropout",
     "LEARNER_UNMARKED_DROPOUT": "Learner un-marked as dropout",
-    "LEARNER_REMOVED": "Learner has been removed"
+    "LEARNER_REMOVED": "Learner has been removed",
+    "DROPPED_OUT": "Dropped Out",
+    "DELETE_USER": "Delete User Permanently"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -122,6 +126,8 @@
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total Number of Learners: {{count}}",
+    "ACTIVE_STUDENTS": "Active Learners: {{count}}",
+    "DROPOUT_STUDENTS": "Dropout Learners: {{count}}",
     "PRESENT_STUDENTS": "Present Learners: {{count}}",
     "ABSENT_STUDENTS": "Absent Learners: {{count}}",
     "PRESENT": "Present",
@@ -234,5 +240,14 @@
     "NEXT": "Next",
     "SKIP": "Skip",
     "FINISH": "Finish"
+  },
+  "BLOCKS": {
+    "TEACHING_BLOCKS": "Teaching Blocks",
+    "SEARCH": "Search..",
+    "CREATE_NEW": "Create New",
+    "NEW_BLOCK": "New Block",
+    "BLOCK_NAME": "Block Name",
+    "CREATE": "Create",
+    "SEARCH_BLOCKS": "Search Blocks"
   }
 }

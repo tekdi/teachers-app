@@ -21,6 +21,7 @@ import { showToastMessage } from './Toastify';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { Status } from '@/utils/app.constant';
 
 interface DropOutModalProps {
   open: boolean;
@@ -80,7 +81,7 @@ function DropOutModal({
       setLoading(true);
 
       if (selectedReason && cohortMembershipId) {
-        const memberStatus = 'dropout';
+        const memberStatus = Status.DROPOUT;
         const statusReason = selectedReason;
         const membershipId = cohortMembershipId;
 

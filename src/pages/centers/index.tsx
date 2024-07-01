@@ -95,6 +95,7 @@ const TeachingCenters = () => {
                 <Box
                   onClick={() => {
                     router.push(`/centers/${cohort.cohortId}`);
+                    localStorage.setItem('classId', cohort.cohortId)
                   }}
                   sx={{ cursor: 'pointer', marginBottom: '20px' }}
                 >

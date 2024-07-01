@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { FormControl, Grid, MenuItem, Select, TextField } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  Grid,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material';
 
 import Box from '@mui/material/Box';
 import Header from '@/components/Header';
@@ -15,9 +22,19 @@ import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useEffect } from 'react';
-import { getFacilitatorList } from '@/services/ManageUser';
+import {
+  assignCentersToFacilitator,
+  getFacilitatorList,
+} from '@/services/ManageUser';
 import { cohortList } from '@/services/CohortServices';
 import { showToastMessage } from '@/components/Toastify';
+import BottomDrawer from '@/components/BottomDrawer';
+import ApartmentIcon from '@mui/icons-material/Apartment';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import { editEditUser } from '@/services/ProfileService';
+import ConfirmationModal from '@/components/ConfirmationModal';
+import { Status } from '@/utils/app.constant';
 
 interface Cohort {
   cohortId: string;
@@ -25,28 +42,68 @@ interface Cohort {
   name: string;
 }
 
+interface User {
+  name: string;
+  userId: string;
+  block: string;
+}
+
 type CohortsData = {
   [userId: string]: Cohort[];
 };
+type Anchor = 'bottom';
 
-const manageUser = () => {
+const facilitatorsList = [
+  {
+    name: 'Radha Kale',
+    userId: 'R12345678',
+    block: 'Nashik',
+  },
+  {
+    name: 'Rushikesh Sonwane',
+    userId: 'S12345678',
+    block: 'Shirdi',
+  },
+];
+
+const centersList: CohortsData = {
+  R12345678: [
+    { cohortId: 'R1', parentId: 'R12345678', name: 'kamptee' },
+    { cohortId: 'R2', parentId: 'R12345678', name: 'chimur' },
+  ],
+  S12345678: [
+    { cohortId: 'S1', parentId: 'S12345678', name: 'Shirdi' },
+    { cohortId: 'S2', parentId: 'S12345678', name: 'Nashik' },
+  ],
+};
+
+const manageUsers = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
 
   const [value, setValue] = React.useState(1);
-  const [users, setUsers] = useState<
-    { name: string; district: string; userId: string }[]
-  >([]);
+  const [users, setUsers] =
+    useState<
+      { name: string; district?: string; userId: string; block?: string }[]
+    >(facilitatorsList);
   const [loading, setLoading] = React.useState(false);
-  const [cohortsData, setCohortsData] = useState<CohortsData>({});
+  const [cohortsData, setCohortsData] = useState<CohortsData>(centersList);
+  const [centersData, setCentersData] = useState<Cohort[]>([]);
   const [open, setOpen] = React.useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [openCentersModal, setOpenCentersModal] = React.useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedUserName, setSelectedUserName] = useState(null);
   const [centers, setCenters] = useState<string[]>([]);
+  const [centerList, setCenterList] = useState<string[]>([]);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  const [state, setState] = React.useState({
+    bottom: false,
+  });
+  const [confirmationModalOpen, setConfirmationModalOpen] =
+    React.useState<boolean>(false);
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -73,7 +130,7 @@ const manageUser = () => {
             name: user.name,
           }));
           setTimeout(() => {
-            setUsers(extractedData);
+            // setUsers(extractedData);
           });
         }
       } catch (error) {
@@ -115,7 +172,7 @@ const manageUser = () => {
           );
           console.log('allCohortsData', allCohortsData);
 
-          setCohortsData(allCohortsData);
+          // setCohortsData(allCohortsData);
         }
       } catch (error) {
         console.log(error);
@@ -144,6 +201,136 @@ const manageUser = () => {
   const handleClose = () => {
     setOpen(false);
     setSelectedUser(null);
+  };
+
+  const handleCloseModel = () => {
+    setConfirmationModalOpen(false);
+  };
+
+  const toggleDrawer =
+    (anchor: Anchor, open: boolean, user: any) =>
+    (event: React.KeyboardEvent | React.MouseEvent) => {
+      setCenters(cohortsData[user.userId]?.map((cohort) => cohort.name) || []);
+      setSelectedUser(user);
+
+      if (
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
+
+      setState({ ...state, bottom: open });
+    };
+
+  const listItemClick = async (event: React.MouseEvent, name: string) => {
+    if (name === 'delete-User') {
+      const name = selectedUser?.name || '';
+      const userId = selectedUser?.userId || '';
+      console.log('user deleted', name, userId);
+      try {
+        if (userId) {
+          const userData = {
+            name: name,
+            status: Status.ARCHIVED,
+          };
+          const response = await editEditUser(userId, { userData });
+          console.log(response);
+        }
+      } catch (error) {
+        console.log(error);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      }
+    }
+    if (name === 'reassign-centers') {
+      setOpenCentersModal(true);
+      getTeamLeadersCenters();
+    }
+    if (name === 'reassign-block-request') {
+      setConfirmationModalOpen(true);
+      getTeamLeadersCenters();
+    }
+  };
+
+  const handleCloseCentersModal = () => {
+    setOpenCentersModal(false);
+  };
+
+  const getTeamLeadersCenters = async () => {
+    const parentId = localStorage.getItem('classId');
+    setLoading(true);
+    try {
+      if (parentId) {
+        const limit = 0;
+        const page = 0;
+        const filters = { parentId: [parentId] };
+        const resp = await cohortList({ limit, page, filters });
+
+        const extractedNames = resp?.results?.cohortDetails;
+        // localStorage.setItem('parentCohortId', extractedNames?.[0].parentId);
+
+        const filteredData = extractedNames
+          ?.map((item: any) => ({
+            cohortId: item?.cohortId,
+            parentId: item?.parentId,
+            name: item?.name,
+          }))
+          ?.filter(Boolean);
+        setCentersData(filteredData);
+        if (filteredData && Array.isArray(filteredData)) {
+          const teamLeaderCenters = filteredData?.map((center) => center.name);
+          setCenterList(teamLeaderCenters.concat(centers));
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    }
+  };
+
+  const handleAssignCenters = async (selectedCenters: any) => {
+    console.log('selectedUser', selectedUser);
+    try {
+      const selectedUserIds = [selectedUser?.userId];
+
+      const matchedCohortIdsFromCohortsData = Object.values(cohortsData)
+        .flatMap((cohorts) => cohorts)
+        .filter((cohort) => selectedCenters.includes(cohort.name))
+        .map((cohort) => cohort.cohortId);
+
+      const matchedCohortIdsFromCentersData = centersData
+        .filter((center) => selectedCenters.includes(center.name))
+        .map((center) => center.cohortId);
+
+      const matchedCohortIds = Array.from(
+        new Set([
+          ...matchedCohortIdsFromCohortsData,
+          ...matchedCohortIdsFromCentersData,
+        ])
+      );
+
+      console.log('matchedCohortIds', matchedCohortIds);
+      console.log('selectedUserIds', selectedUserIds);
+
+      // const response = await assignCentersToFacilitator({
+      //   userId: selectedUserIds,
+      //   cohortId: matchedCohortIds,
+      // });
+      // console.log(response);
+      // if (response) {
+      //   centers;
+      //   handleCloseCentersModal();
+      //   toggleDrawer('bottom', false, '');
+      // }
+    } catch (error) {
+      console.error('Error assigning centers:', error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    }
+  };
+
+  const handleReassignBlockRequest = () => {
+    showToastMessage('Request Send', 'success');
   };
 
   return (
@@ -280,6 +467,14 @@ const manageUser = () => {
                             </Box>
 
                             <Box display={'flex'}>
+                              <span
+                                style={{
+                                  color: theme.palette.warning.contrastText,
+                                  fontWeight: '500',
+                                }}
+                              >
+                                {user.block}
+                              </span>
                               {cohortsData[user.userId] &&
                                 cohortsData[user.userId].map((cohort) => (
                                   <Box
@@ -306,6 +501,7 @@ const manageUser = () => {
                           </Box>
                           <Box>
                             <MoreVertIcon
+                              onClick={toggleDrawer('bottom', true, user)}
                               sx={{
                                 fontSize: '24px',
                                 color: theme.palette.warning['300'],
@@ -317,25 +513,102 @@ const manageUser = () => {
                   </Box>
                 </Box>
               </Box>
-
               <ManageUsersModal
                 open={open}
                 onClose={handleClose}
                 leanerName={selectedUserName ?? ''}
+                blockName={selectedUser?.block ?? ''}
                 centerName={centers}
               />
-              {/* use this after you integrate in bottom modal */}
-              <ManageCentersModal
-                centersName={[
-                  'Khapari Dharmu',
-                  'Kolara',
-                  'Madnapur',
-                  'Piparda',
-                  'Kondhali',
-                  'Vihirgaon',
+              <BottomDrawer
+                toggleDrawer={toggleDrawer}
+                state={state}
+                listItemClick={listItemClick}
+                optionList={[
+                  {
+                    label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
+                    icon: (
+                      <LocationOnOutlinedIcon
+                        sx={{ color: theme.palette.warning['300'] }}
+                      />
+                    ),
+                    name: 'reassign-block-request',
+                  },
+                  {
+                    label: t('COMMON.REASSIGN_CENTERS'),
+                    icon: (
+                      <ApartmentIcon
+                        sx={{ color: theme.palette.warning['300'] }}
+                      />
+                    ),
+                    name: 'reassign-centers',
+                  },
+                  {
+                    label: t('COMMON.DELETE_USER'),
+                    icon: (
+                      <DeleteOutlineIcon
+                        sx={{ color: theme.palette.warning['300'] }}
+                      />
+                    ),
+                    name: 'delete-User',
+                  },
                 ]}
+              >
+                <Box
+                  bgcolor={theme.palette.success.contrastText}
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  margin={'0rem 0.5rem 0rem 0.5rem'}
+                  padding={'1rem'}
+                  borderRadius={'1rem'}
+                >
+                  <Box>
+                    {t('COMMON.CENTERS_ASSIGNED', {
+                      block: selectedUser?.block ?? '',
+                    })}
+                  </Box>
+                  <Box>
+                    {centers.length > 0 &&
+                      centers?.map((name) => (
+                        <Button
+                          sx={{
+                            padding: '6px 12px',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            border: `1px solid ${theme.palette.warning[900]}`,
+                            margin: '5px',
+                          }}
+                          className="text-dark-grey"
+                        >
+                          {name}
+                        </Button>
+                      ))}
+                  </Box>
+                </Box>
+              </BottomDrawer>
+
+              <ManageCentersModal
+                open={openCentersModal}
+                onClose={handleCloseCentersModal}
+                centersName={centerList}
+                centers={centers}
+                onAssign={handleAssignCenters}
               />
             </Box>
+
+            <ConfirmationModal
+              message="You are sending a request to the state Team Leader to re-assign the Block to this user"
+              handleAction={handleReassignBlockRequest}
+              buttonNames={{
+                primary: t('COMMON.SEND_REQUEST'),
+                secondary: t('COMMON.CANCEL'),
+              }}
+              handleCloseModel={handleCloseModel}
+              modalOpen={confirmationModalOpen}
+            />
           </>
         )}
       </Box>
@@ -350,5 +623,4 @@ export async function getStaticProps({ locale }: any) {
     },
   };
 }
-
-export default manageUser;
+export default manageUsers;

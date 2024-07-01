@@ -143,42 +143,49 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const limit = 0;
   const page = 0;
-  const filters = { userId: userId };
-  const { data, error, isLoading } = useCohortList(limit, page, filters);
-  // API call to get center list
-  useEffect(() => {
-    if (data) {
-      const extractedNames = data?.results?.cohortDetails;
-      localStorage.setItem(
-        'parentCohortId',
-        extractedNames?.[0].cohortData?.parentId
-      );
+  const filters = { userId: userId || '' };
 
-      const filteredData = extractedNames
-        ?.map((item: any) => ({
-          cohortId: item?.cohortId,
-          parentId: item?.parentId,
-          name: item?.name,
-        }))
-        ?.filter(Boolean);
-      setCohortsData(filteredData);
-      if (filteredData.length > 0) {
-        if (typeof window !== 'undefined' && window.localStorage) {
-          const cohort = localStorage.getItem('classId') || '';
-          if (cohort !== '') {
-            setClassId(localStorage.getItem('classId') || '');
-          } else {
-            localStorage.setItem('classId', filteredData?.[0]?.cohortId);
-            setClassId(filteredData?.[0]?.cohortId);
+  useEffect(() => {
+    if (userId) {
+      setLoading(true);
+      const fetchCohorts = async () => {
+        try {
+          const response = await cohortList({ limit, page, filters });
+          const extractedNames = response?.results?.cohortDetails;
+          localStorage.setItem('parentCohortId', extractedNames?.[0].cohortData?.parentId);
+
+          const filteredData = extractedNames
+            ?.map((item: any) => ({
+              cohortId: item?.cohortId,
+              parentId: item?.parentId,
+              name: item?.name,
+            }))
+            ?.filter(Boolean);
+          setCohortsData(filteredData);
+          if (filteredData.length > 0) {
+            if (typeof window !== 'undefined' && window.localStorage) {
+              const cohort = localStorage.getItem('classId') || '';
+              if (cohort !== '') {
+                setClassId(localStorage.getItem('classId') || '');
+              } else {
+                localStorage.setItem('classId', filteredData?.[0]?.cohortId);
+                setClassId(filteredData?.[0]?.cohortId);
+              }
+            }
+            setManipulatedCohortData(
+              filteredData.concat({ cohortId: 'all', name: 'All Centers' })
+            );
           }
+          setLoading(false);
+        } catch (error) {
+          console.error('Error fetching cohort list', error);
+          setLoading(false);
         }
-        setManipulatedCohortData(
-          filteredData.concat({ cohortId: 'all', name: 'All Centers' })
-        );
-      }
-      setLoading(false);
+      };
+
+      fetchCohorts();
     }
-  }, [data]);
+  }, [userId]);
 
   //API for getting student list
   useEffect(() => {

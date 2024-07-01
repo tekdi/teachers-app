@@ -10,22 +10,28 @@ import React, { useEffect } from 'react';
 // import Woman2Icon from '@mui/icons-material/Woman2';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { LearnerListProps } from '@/utils/Interfaces';
+import { LearnerListProps, UserData, updateCustomField } from '@/utils/Interfaces';
 import ConfirmationModal from './ConfirmationModal';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import ReactGA from 'react-ga4';
 import { showToastMessage } from './Toastify';
+import Link from 'next/link';
+import { getUserDetails } from '@/services/ProfileService';
+import LearnerModal from './LearnerModal';
+import Loader from './Loader';
+import { Status, names } from '@/utils/app.constant';
 
 type Anchor = 'bottom';
 
 const LearnersList: React.FC<LearnerListProps> = ({
+  userId,
   learnerName,
   isDropout,
   enrollmentId,
   cohortMembershipId,
   statusReason,
-  reloadState, 
-  setReloadState
+  reloadState,
+  setReloadState,
 }) => {
   const [state, setState] = React.useState({
     bottom: false,
@@ -33,17 +39,25 @@ const LearnersList: React.FC<LearnerListProps> = ({
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [confirmationModalOpen, setConfirmationModalOpen] =
     React.useState<boolean>(false);
-    const [loading, setLoading] = React.useState<boolean>(false);
 
-    const theme = useTheme<any>();
-    const { t } = useTranslation();
+  const [learnerState, setLearnerState] = React.useState({
+    loading: false,
+    isModalOpenLearner: false,
+    userData: null as UserData | null,
+    userName: '',
+    contactNumber: '',
+    customFieldsData: [] as updateCustomField[]
+  });
 
-  useEffect(()=>{
+  const theme = useTheme<any>();
+  const { t } = useTranslation();
+
+  useEffect(() => {
     if (reloadState) {
-      setReloadState(false); 
+      setReloadState(false);
       // window.location.reload();
     }
-  },[reloadState, setReloadState]) 
+  }, [reloadState, setReloadState]);
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
@@ -58,45 +72,73 @@ const LearnersList: React.FC<LearnerListProps> = ({
 
       setState({ ...state, bottom: open });
     };
-  
 
-    const handleUnmarkDropout = async () => {
-      try {
-        setLoading(true);
-    
-        if (cohortMembershipId) {
-          const memberStatus = 'active';
-          const membershipId = cohortMembershipId;
-    
-          const response = await updateCohortMemberStatus({
-            memberStatus,
-            membershipId,
+  const setLoading = (loading: boolean) => {
+    setLearnerState((prevState) => ({ ...prevState, loading }));
+  };
+
+  const setIsModalOpenLearner = (isOpen: boolean) => {
+    setLearnerState((prevState) => ({ ...prevState, isModalOpenLearner: isOpen }));
+  };
+
+  const setUserData = (data: UserData | null) => {
+    setLearnerState((prevState) => ({ ...prevState, userData: data }));
+  };
+
+  const setUserName = (name: string) => {
+    setLearnerState((prevState) => ({ ...prevState, userName: name }));
+  };
+
+  const setContactNumber = (number: string) => {
+    setLearnerState((prevState) => ({ ...prevState, contactNumber: number }));
+  };
+
+  const setCustomFieldsData = (fields: updateCustomField[]) => {
+    setLearnerState((prevState) => ({ ...prevState, customFieldsData: fields }));
+  };
+
+  const handleUnmarkDropout = async () => {
+    try {
+      setLoading(true);
+
+      if (cohortMembershipId) {
+        const memberStatus = Status.ACTIVE;
+        const membershipId = cohortMembershipId;
+
+        const response = await updateCohortMemberStatus({
+          memberStatus,
+          membershipId,
+        });
+
+        if (response?.responseCode !== 200 || response?.params?.err) {
+          ReactGA.event('unmark-dropout-student-error', {
+            cohortMembershipId: membershipId,
           });
-    
-          if (response?.responseCode !== 200 || response?.params?.err) {
-            ReactGA.event('unmark-dropout-student-error', { cohortMembershipId: membershipId });
-            throw new Error(response.params?.errmsg || 'An error occurred while updating the user.');
-          } else {
-            ReactGA.event('unmark-dropout-student-successful', {
-              cohortMembershipId: membershipId,
-            });
-            showToastMessage(t('COMMON.LEARNER_UNMARKED_DROPOUT'), 'success');
-            setReloadState(true);
-          }
+          throw new Error(
+            response.params?.errmsg ||
+              'An error occurred while updating the user.'
+          );
+        } else {
+          ReactGA.event('unmark-dropout-student-successful', {
+            cohortMembershipId: membershipId,
+          });
+          showToastMessage(t('COMMON.LEARNER_UNMARKED_DROPOUT'), 'success');
+          setReloadState(true);
         }
-      } catch (error) {
-        console.log(error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.log(error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const listItemClick = (event: React.MouseEvent, name: string) => {
     if (name === 'mark-drop-out') {
       setShowModal(true);
     } else if (name === 'unmark-drop-out') {
-      handleUnmarkDropout()
+      handleUnmarkDropout();
     } else {
       setConfirmationModalOpen(true);
     }
@@ -107,23 +149,28 @@ const LearnersList: React.FC<LearnerListProps> = ({
     try {
       setLoading(true);
       if (cohortMembershipId) {
-        const memberStatus = 'archived';
+        const memberStatus = Status.ARCHIVED;
         const membershipId = cohortMembershipId;
-  
+
         const response = await updateCohortMemberStatus({
           memberStatus,
           membershipId,
         });
-  
+
         if (response?.responseCode !== 200 || response?.params?.err) {
-          ReactGA.event('remove-student-error', { cohortMembershipId: membershipId });
-          throw new Error(response.params?.errmsg || 'An error occurred while updating the user.');
+          ReactGA.event('remove-student-error', {
+            cohortMembershipId: membershipId,
+          });
+          throw new Error(
+            response.params?.errmsg ||
+              'An error occurred while updating the user.'
+          );
         } else {
           ReactGA.event('remove-student-successful', {
             cohortMembershipId: membershipId,
           });
           showToastMessage(t('COMMON.LEARNER_REMOVED'), 'success');
-          setReloadState(true)
+          setReloadState(true);
         }
       }
     } catch (error) {
@@ -148,6 +195,50 @@ const LearnersList: React.FC<LearnerListProps> = ({
     console.log('handleDroppedOutLabelClick');
     setShowModal(true);
   };
+
+  const handleOpenModalLearner = (userId: string) => {
+    fetchUserDetails(userId);
+    setIsModalOpenLearner(true);
+  };
+
+  const handleCloseModalLearner = () => {
+    setIsModalOpenLearner(false);
+  };
+
+  const fetchUserDetails = async (userId: string) => {
+    try {
+      if (userId) {
+        setLoading(true);
+        const response = await getUserDetails(userId, true);
+        console.log('response for popup', response?.result);
+        if (response?.responseCode === 200) {
+          const data = response?.result;
+          if (data) {
+            const userData = data?.userData;
+            setUserData(userData);
+            setUserName(userData?.name);
+            setContactNumber(userData?.mobile);
+            const customDataFields = userData?.customFields;
+            if (customDataFields?.length > 0) {
+              setCustomFieldsData(customDataFields);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const nameSet = new Set<string>(names);
+  const filteredFields = learnerState.customFieldsData.reduce((acc, field) => {
+    if (field.name && nameSet.has(field.name)) {
+      acc.push(field);
+    }
+    return acc;
+  }, [] as updateCustomField[]);
 
   const renderCustomContent = () => {
     if (isDropout) {
@@ -182,9 +273,20 @@ const LearnersList: React.FC<LearnerListProps> = ({
 
   return (
     <>
+      {learnerState.loading ? (
+        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+      ) : (
+        <LearnerModal
+          userId={userId}
+          open={learnerState.isModalOpenLearner}
+          onClose={handleCloseModalLearner}
+          data={filteredFields}
+          userName={learnerState.userName}
+          contactNumber={learnerState.contactNumber}
+        />
+      )}
       <Box
-        px={'18px'}
-        mt={2}
+        px={2}
         sx={{ borderBottom: `1px solid ${theme.palette.warning['A100']}` }}
       >
         <Box
@@ -197,21 +299,43 @@ const LearnersList: React.FC<LearnerListProps> = ({
           }}
         >
           <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-            {/* <Box className="box_shadow_center">
+              {/* <Box className="box_shadow_center">
               <Woman2Icon
                 sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
               />
             </Box> */}
             <Box>
-              <Box
-                sx={{
-                  fontSize: '16px',
-                  color: theme.palette.warning['300'],
-                  fontWeight: '600',
-                }}
-              >
-                {learnerName}
-              </Box>
+              {isDropout ? (
+                <Box
+                  sx={{
+                    fontSize: '16px',
+                    color: theme.palette.warning['400'],
+                    fontWeight: '400',
+                  }}
+                >
+                  {learnerName}
+                </Box>
+              ) : (
+                <Link className="word-break" href="#">
+                  <Typography
+                    onClick={() => {
+                      handleOpenModalLearner(userId!);
+                      ReactGA.event('learner-details-link-clicked', {
+                        userId: userId,
+                      });
+                    }}
+                    sx={{
+                      textAlign: 'left',
+                      fontSize: '16px',
+                      fontWeight: '400',
+                      color: theme.palette.secondary.main,
+                    }}
+                  >
+                    {learnerName}
+                  </Typography>
+                </Link>
+              )}
+
               <Box
                 sx={{
                   display: 'flex',
@@ -220,7 +344,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
                   justifyContent: 'left',
                 }}
               >
-                {/* <Box
+                   {/* <Box
                   sx={{ fontSize: '12px', color: theme.palette.warning['400'] }}
                 >
                   19 y/o
@@ -241,7 +365,9 @@ const LearnersList: React.FC<LearnerListProps> = ({
                     }}
                     onClick={handleDroppedOutLabelClick}
                   >
-                    <Box sx={{ marginTop: '1px' }}>Dropped Out</Box>
+                    <Box sx={{ marginTop: '1px' }}>
+                      {t('COMMON.DROPPED_OUT')}
+                    </Box>
                     <ErrorOutlineIcon style={{ fontSize: '13px' }} />
                   </Box>
                 ) : (
@@ -298,27 +424,26 @@ const LearnersList: React.FC<LearnerListProps> = ({
         renderCustomContent={renderCustomContent}
       />
 
-      {
-        isDropout? 
+      {isDropout ? (
         <DropOutModal
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        cohortMembershipId={cohortMembershipId}
-        isButtonAbsent = {true}
-        statusReason = {statusReason}
-        reloadState={reloadState} 
-        setReloadState={setReloadState}
-      />
-        :
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          cohortMembershipId={cohortMembershipId}
+          isButtonAbsent={true}
+          statusReason={statusReason}
+          reloadState={reloadState}
+          setReloadState={setReloadState}
+        />
+      ) : (
         <DropOutModal
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        cohortMembershipId={cohortMembershipId}
-        reloadState={reloadState} 
-        setReloadState={setReloadState}
-      />
-      }
-      
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          cohortMembershipId={cohortMembershipId}
+          reloadState={reloadState}
+          setReloadState={setReloadState}
+        />
+      )}
+
       <ConfirmationModal
         message={t('COMMON.SURE_REMOVE')}
         handleAction={handleAction}
