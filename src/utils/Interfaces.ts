@@ -41,7 +41,7 @@ export interface UserAttendanceObj {
   attendance: string; //Mandatory
   name?: string;
   attendanceDate?: Date | string;
-  memberStatus?: string; 
+  memberStatus?: string;
 }
 
 export interface BulkAttendanceParams {
@@ -78,7 +78,7 @@ export interface cohortMemberList {
   filters: {
     cohortId: string;
     role?: string;
-    status?: string[]
+    status?: string[];
   };
 }
 
@@ -252,6 +252,8 @@ export interface LearnerListProps {
   statusReason: string;
   reloadState: boolean;
   setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
+  block?: string;
+  center?: string;
 }
 export interface FacilitatorListParam {
   limit: number;
@@ -264,7 +266,7 @@ export interface FacilitatorListParam {
 }
 
 export interface DropoutMember {
-  userId: string | number; 
+  userId: string | number;
   name: string;
   memberStatus: string;
 }
