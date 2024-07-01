@@ -52,7 +52,6 @@ function DropOutModal({
   React.useEffect(() => {
     if (reloadState) {
       setReloadState(false);
-      // window.location.reload();
     }
   }, [reloadState, setReloadState]);
 
