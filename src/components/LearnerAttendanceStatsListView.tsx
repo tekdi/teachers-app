@@ -11,7 +11,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
 import DropoutLabel from './DropoutLabel';
-import { names } from '@/utils/app.constant';
+import { Status, names } from '@/utils/app.constant';
 
 interface StudentsStatsListProps {
   name: string;
@@ -143,7 +143,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
                 </Typography>
               </Link>
             </Grid>
-            {memberStatus === "dropout" ?
+            {memberStatus === Status.DROPOUT ?
             <Grid item xs={6}>
              <DropoutLabel/>
           </Grid>

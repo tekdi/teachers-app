@@ -34,6 +34,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import { editEditUser } from '@/services/ProfileService';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { Status } from '@/utils/app.constant';
 
 interface Cohort {
   cohortId: string;
@@ -232,7 +233,7 @@ const manageUsers = () => {
         if (userId) {
           const userData = {
             name: name,
-            status: 'archived',
+            status: Status.ARCHIVED,
           };
           const response = await editEditUser(userId, { userData });
           console.log(response);

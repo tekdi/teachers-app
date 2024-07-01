@@ -6,7 +6,7 @@ import {
   toPascalCase,
 } from '@/utils/Helper';
 import LearnersList from '@/components/LearnersList';
-import { limit } from '@/utils/app.constant';
+import { Status, limit } from '@/utils/app.constant';
 import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
 import { Box, Typography } from '@mui/material';
@@ -85,7 +85,7 @@ const CohortLearnerList : React.FC<CohortLearnerListProp> = ({cohortId, reloadSt
                 learnerName={data.name}
                 enrollmentId={data.enrollmentNumber}
                 cohortMembershipId={data.cohortMembershipId}
-                isDropout={data.memberStatus === 'dropout'}
+                isDropout={data.memberStatus === Status.DROPOUT}
                 statusReason = {data.statusReason}
                 reloadState={reloadState} 
                 setReloadState={setReloadState}

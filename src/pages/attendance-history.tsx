@@ -52,6 +52,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { logEvent } from '@/utils/googleAnalytics';
 import { showToastMessage } from '@/components/Toastify';
+import { Status } from '@/utils/app.constant';
 
 interface user {
   memberStatus: string;
@@ -507,8 +508,8 @@ const UserAttendanceHistory = () => {
     switch (sortByAttendance) {
       case 'pre':
         sortedData.sort((a, b) => {
-          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
-          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
+          if (a.memberStatus === Status.DROPOUT && b.memberStatus !== Status.DROPOUT) return 1;
+          if (a.memberStatus !== Status.DROPOUT && b.memberStatus === Status.DROPOUT) return -1;
           if (a.attendance === 'present' && b.attendance === 'absent')
             return -1;
           if (a.attendance === 'absent' && b.attendance === 'present') return 1;
@@ -517,8 +518,8 @@ const UserAttendanceHistory = () => {
         break;
       case 'abs':
         sortedData.sort((a, b) => {
-          if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
-          if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
+          if (a.memberStatus === Status.DROPOUT && b.memberStatus !== Status.DROPOUT) return 1;
+          if (a.memberStatus !== Status.DROPOUT && b.memberStatus === Status.DROPOUT) return -1;
           if (a.attendance === 'absent' && b.attendance === 'present')
             return -1;
           if (a.attendance === 'present' && b.attendance === 'absent') return 1;

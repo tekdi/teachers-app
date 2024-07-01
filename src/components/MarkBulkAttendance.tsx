@@ -20,6 +20,7 @@ import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { showToastMessage } from './Toastify';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { Status } from '@/utils/app.constant';
 
 interface MarkBulkAttendanceProps {
   open: boolean;
@@ -223,10 +224,10 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       });
                       if (newArray.length != 0) {
                         setNumberOfCohortMembers(newArray?.length);
-                        const hasDropout = newArray.some((user) => user.memberStatus === 'dropout');
+                        const hasDropout = newArray.some((user) => user.memberStatus === Status.DROPOUT);
                         if (hasDropout){
-                          setCohortMemberList(newArray.filter(user => user.memberStatus === 'active'));
-                          setDropoutMemberList(newArray.filter(user => user.memberStatus === 'dropout'));
+                          setCohortMemberList(newArray.filter(user => user.memberStatus === Status.ACTIVE));
+                          setDropoutMemberList(newArray.filter(user => user.memberStatus === Status.DROPOUT));
                           setPresentCount(
                             newArray.filter(
                               (user) => user.attendance === 'present'
@@ -239,13 +240,13 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                           );
                           setDropoutCount(
                             newArray.filter(
-                              (user) => user.memberStatus === 'dropout'
+                              (user) => user.memberStatus === Status.DROPOUT
                             ).length
                           );
                         }
                       } else {
-                        setCohortMemberList(nameUserIdArray.filter(user => user.memberStatus === 'active'));
-                        setDropoutMemberList(nameUserIdArray.filter(user => user.memberStatus === 'dropout'))
+                        setCohortMemberList(nameUserIdArray.filter(user => user.memberStatus === Status.ACTIVE));
+                        setDropoutMemberList(nameUserIdArray.filter(user => user.memberStatus === Status.DROPOUT))
                         setNumberOfCohortMembers(nameUserIdArray?.length);
                       }
                       updateBulkAttendanceStatus(newArray);

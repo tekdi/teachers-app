@@ -19,7 +19,7 @@ import Link from 'next/link';
 import { getUserDetails } from '@/services/ProfileService';
 import LearnerModal from './LearnerModal';
 import Loader from './Loader';
-import { names } from '@/utils/app.constant';
+import { Status, names } from '@/utils/app.constant';
 
 type Anchor = 'bottom';
 
@@ -39,14 +39,15 @@ const LearnersList: React.FC<LearnerListProps> = ({
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [confirmationModalOpen, setConfirmationModalOpen] =
     React.useState<boolean>(false);
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [isModalOpenLearner, setIsModalOpenLearner] = React.useState<boolean>(false);
-  const [userData, setUserData] = React.useState<UserData | null>(null);
-  const [userName, setUserName] = React.useState('');
-  const [contactNumber, setContactNumber] =  React.useState<any>('');
-  const [customFieldsData, setCustomFieldsData] = React.useState<
-  updateCustomField[]
->([]);
+
+  const [learnerState, setLearnerState] = React.useState({
+    loading: false,
+    isModalOpenLearner: false,
+    userData: null as UserData | null,
+    userName: '',
+    contactNumber: '',
+    customFieldsData: [] as updateCustomField[]
+  });
 
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -72,12 +73,36 @@ const LearnersList: React.FC<LearnerListProps> = ({
       setState({ ...state, bottom: open });
     };
 
+  const setLoading = (loading: boolean) => {
+    setLearnerState((prevState) => ({ ...prevState, loading }));
+  };
+
+  const setIsModalOpenLearner = (isOpen: boolean) => {
+    setLearnerState((prevState) => ({ ...prevState, isModalOpenLearner: isOpen }));
+  };
+
+  const setUserData = (data: UserData | null) => {
+    setLearnerState((prevState) => ({ ...prevState, userData: data }));
+  };
+
+  const setUserName = (name: string) => {
+    setLearnerState((prevState) => ({ ...prevState, userName: name }));
+  };
+
+  const setContactNumber = (number: string) => {
+    setLearnerState((prevState) => ({ ...prevState, contactNumber: number }));
+  };
+
+  const setCustomFieldsData = (fields: updateCustomField[]) => {
+    setLearnerState((prevState) => ({ ...prevState, customFieldsData: fields }));
+  };
+
   const handleUnmarkDropout = async () => {
     try {
       setLoading(true);
 
       if (cohortMembershipId) {
-        const memberStatus = 'active';
+        const memberStatus = Status.ACTIVE;
         const membershipId = cohortMembershipId;
 
         const response = await updateCohortMemberStatus({
@@ -124,7 +149,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
     try {
       setLoading(true);
       if (cohortMembershipId) {
-        const memberStatus = 'archived';
+        const memberStatus = Status.ARCHIVED;
         const membershipId = cohortMembershipId;
 
         const response = await updateCohortMemberStatus({
@@ -176,7 +201,6 @@ const LearnersList: React.FC<LearnerListProps> = ({
     setIsModalOpenLearner(true);
   };
 
-
   const handleCloseModalLearner = () => {
     setIsModalOpenLearner(false);
   };
@@ -197,24 +221,24 @@ const LearnersList: React.FC<LearnerListProps> = ({
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
-
-              setLoading(false);
             }
-          } else {
-            console.log('No data Found');
           }
-        } else {
-          console.log('No Response Found');
         }
       }
     } catch (error) {
       console.error('Error fetching user details:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const filteredFields = names
-  .map((name) => customFieldsData.find((field) => field.name === name))
-  .filter(Boolean);
+  const nameSet = new Set<string>(names);
+  const filteredFields = learnerState.customFieldsData.reduce((acc, field) => {
+    if (field.name && nameSet.has(field.name)) {
+      acc.push(field);
+    }
+    return acc;
+  }, [] as updateCustomField[]);
 
   const renderCustomContent = () => {
     if (isDropout) {
@@ -249,21 +273,20 @@ const LearnersList: React.FC<LearnerListProps> = ({
 
   return (
     <>
-     {loading ? (
+      {learnerState.loading ? (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       ) : (
         <LearnerModal
           userId={userId}
-          open={isModalOpenLearner}
+          open={learnerState.isModalOpenLearner}
           onClose={handleCloseModalLearner}
           data={filteredFields}
-          userName={userName}
-          contactNumber={contactNumber}
+          userName={learnerState.userName}
+          contactNumber={learnerState.contactNumber}
         />
       )}
       <Box
-        px={'18px'}
-        mt={2}
+        px={2}
         sx={{ borderBottom: `1px solid ${theme.palette.warning['A100']}` }}
       >
         <Box
@@ -276,7 +299,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
           }}
         >
           <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-            {/* <Box className="box_shadow_center">
+              {/* <Box className="box_shadow_center">
               <Woman2Icon
                 sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
               />
@@ -321,7 +344,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
                   justifyContent: 'left',
                 }}
               >
-                {/* <Box
+                   {/* <Box
                   sx={{ fontSize: '12px', color: theme.palette.warning['400'] }}
                 >
                   19 y/o

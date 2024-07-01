@@ -19,7 +19,7 @@ import { getUserDetails } from '@/services/ProfileService';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import DropoutLabel from './DropoutLabel';
-import { names } from '@/utils/app.constant';
+import { Status, names } from '@/utils/app.constant';
 
 const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   isDisabled = false,
@@ -157,7 +157,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             userData?.name
           )}
         </Typography>
-        {userData?.memberStatus === "dropout" ?
+        {userData?.memberStatus === Status.DROPOUT ?
               <DropoutLabel/>
           :
         <>

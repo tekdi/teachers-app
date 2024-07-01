@@ -1,4 +1,5 @@
 import FingerprintJS from 'fingerprintjs2';
+import { Status } from './app.constant';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -203,8 +204,8 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
 
 export const sortAttendanceNumber = (data: any[], order: string) => {
   return data.sort((a: { memberStatus: string; present_percent: string; }, b: { memberStatus: string; present_percent: string; }) => {
-    if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
-    if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
+    if (a.memberStatus === Status.DROPOUT && b.memberStatus !== Status.DROPOUT) return 1;
+    if (a.memberStatus !== Status.DROPOUT && b.memberStatus === Status.DROPOUT) return -1;
     const aPercent = parseFloat(a.present_percent);
     const bPercent = parseFloat(b.present_percent);
     if (isNaN(aPercent) && isNaN(bPercent)) return 0;
@@ -216,8 +217,8 @@ export const sortAttendanceNumber = (data: any[], order: string) => {
 
 export const sortClassesMissed = (data: any[], order: string) => {
   return data.sort((a: { memberStatus: string; absent: string; }, b: { memberStatus: string; absent: string; }) => {
-    if (a.memberStatus === 'dropout' && b.memberStatus !== 'dropout') return 1;
-    if (a.memberStatus !== 'dropout' && b.memberStatus === 'dropout') return -1;
+    if (a.memberStatus === Status.DROPOUT && b.memberStatus !== Status.DROPOUT) return 1;
+    if (a.memberStatus !== Status.DROPOUT && b.memberStatus === Status.DROPOUT) return -1;
     const aClassMissed = parseFloat(a.absent);
     const bClassMissed = parseFloat(b.absent);
     if (isNaN(aClassMissed) && isNaN(bClassMissed)) return 0;
