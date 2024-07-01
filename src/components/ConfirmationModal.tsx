@@ -8,7 +8,7 @@ import { useTheme } from '@mui/material/styles';
 
 interface ConfirmationModalProps {
   message: string;
-  handleAction: () => void;
+  handleAction?: () => void;
   buttonNames: ButtonNames;
   handleCloseModel: () => void;
   modalOpen: boolean;
@@ -88,8 +88,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             variant="contained"
             color="primary"
             onClick={() => {
-              handleAction();
-              handleCloseModel();
+              if (handleAction !== undefined) {
+                handleAction();
+                handleCloseModel();
+              } else {
+                handleCloseModel();
+              }
             }}
           >
             {buttonNames.primary}

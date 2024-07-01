@@ -1,6 +1,12 @@
 import * as React from 'react';
 
-import { Checkbox, Divider, InputAdornment, TextField } from '@mui/material';
+import {
+  Checkbox,
+  Divider,
+  InputAdornment,
+  Radio,
+  TextField,
+} from '@mui/material';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -18,6 +24,7 @@ interface ManageUsersModalProps {
   centersName?: string[];
   centers?: string[];
   onAssign?: (selectedCenters: string[]) => void;
+  isForLearner?: boolean;
 }
 
 const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
@@ -26,10 +33,12 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   open,
   onAssign,
   onClose,
+  isForLearner,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [checkedCenters, setCheckedCenters] = React.useState<string[]>([]);
+  const [selectedValue, setSelectedValue] = React.useState('');
 
   const style = {
     position: 'absolute',
@@ -66,6 +75,11 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
       }
       return newChecked;
     });
+  };
+
+  const handleRadioChange = (name: string) => {
+    console.log(name);
+    setSelectedValue(name);
   };
 
   const handleAssign = () => {
@@ -152,12 +166,22 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                         {name}
                       </Box>
                       <Box>
-                        <Checkbox
-                          sx={{ pb: '20px' }}
-                          className="checkBox_svg"
-                          checked={checkedCenters.includes(name)}
-                          onChange={() => handleToggle(name)}
-                        />
+                        {isForLearner ? (
+                          <Radio
+                            sx={{ pb: '20px' }}
+                            className="radio_svg"
+                            checked={selectedValue.includes(name)}
+                            onChange={() => handleRadioChange(name)}
+                            value={selectedValue}
+                          />
+                        ) : (
+                          <Checkbox
+                            sx={{ pb: '20px' }}
+                            className="checkBox_svg"
+                            checked={checkedCenters.includes(name)}
+                            onChange={() => handleToggle(name)}
+                          />
+                        )}
                       </Box>
                     </Box>
                   </React.Fragment>

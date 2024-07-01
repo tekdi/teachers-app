@@ -36,6 +36,7 @@ import { editEditUser } from '@/services/ProfileService';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { Status } from '@/utils/app.constant';
 
+import LearnersList from '@/components/LearnersList';
 interface Cohort {
   cohortId: string;
   parentId: string;
@@ -77,7 +78,46 @@ const centersList: CohortsData = {
   ],
 };
 
-const manageUsers = () => {
+interface LearnerDataProps {
+  name: string;
+  userId: string;
+  memberStatus: string;
+  cohortMembershipId: string;
+  enrollmentNumber: string;
+  statusReason: string;
+  block: string;
+}
+const learnersList = [
+  {
+    cohortMembershipId: '2b935062-df60-4289-b74a-00bb3cd6ae34',
+    enrollmentNumber: '123456',
+    memberStatus: 'active',
+    name: 'Harshita Sahu',
+    statusReason: 'Illness',
+    userId: '15d077f9-bf63-4533-8435-31b343db6853',
+    block: 'Chimur',
+    center: 'Shivajinagar',
+  },
+  {
+    cohortMembershipId: '2b935062-df60-4289-b74a-00bb3cd6ae34',
+    enrollmentNumber: '123456',
+    memberStatus: 'dropout',
+    name: 'Akshata Sahu',
+    statusReason: 'Migration',
+    userId: '15d077f9-bf63-4533-8435-31b343db6853',
+    block: 'Hinjewadi',
+    center: 'pune',
+  },
+];
+interface ManageUsersProps {
+  reloadState: boolean;
+  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const manageUsers: React.FC<ManageUsersProps> = ({
+  reloadState,
+  setReloadState,
+}) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
@@ -103,6 +143,10 @@ const manageUsers = () => {
     bottom: false,
   });
   const [confirmationModalOpen, setConfirmationModalOpen] =
+    React.useState<boolean>(false);
+  const [learnerData, setLearnerData] =
+    React.useState<LearnerDataProps[]>(learnersList);
+  const [reassignBlockRequestModalOpen, setReassignBlockRequestModalOpen] =
     React.useState<boolean>(false);
 
   useEffect(() => {
@@ -291,6 +335,11 @@ const manageUsers = () => {
 
   const handleAssignCenters = async (selectedCenters: any) => {
     console.log('selectedUser', selectedUser);
+    handleCloseCentersModal();
+    showToastMessage(
+      t('MANAGE_USERS.CENTERS_ASSIGNED_SUCCESSFULLY'),
+      'success'
+    );
     try {
       const selectedUserIds = [selectedUser?.userId];
 
@@ -331,6 +380,10 @@ const manageUsers = () => {
 
   const handleReassignBlockRequest = () => {
     showToastMessage('Request Send', 'success');
+  };
+
+  const handleReassignBlockRequestCloseModel = () => {
+    setReassignBlockRequestModalOpen(false);
   };
 
   return (
@@ -376,6 +429,7 @@ const manageUsers = () => {
           }}
         >
           <Tab value={1} label={t('COMMON.FACILITATORS')} />
+          <Tab value={2} label={t('COMMON.LEARNERS')} />
         </Tabs>
       </Box>
       <Box>
@@ -600,14 +654,94 @@ const manageUsers = () => {
             </Box>
 
             <ConfirmationModal
-              message="You are sending a request to the state Team Leader to re-assign the Block to this user"
-              handleAction={handleReassignBlockRequest}
+              message={t('BLOCKS.BLOCK_REQUEST')}
               buttonNames={{
                 primary: t('COMMON.SEND_REQUEST'),
                 secondary: t('COMMON.CANCEL'),
               }}
               handleCloseModel={handleCloseModel}
               modalOpen={confirmationModalOpen}
+            />
+          </>
+        )}
+
+        {/* Learners list */}
+        {value === 2 && (
+          <>
+            <Grid
+              px={'18px'}
+              spacing={2}
+              mt={1}
+              sx={{ display: 'flex', alignItems: 'center' }}
+              container
+            >
+              <Grid item xs={8}>
+                <Box>
+                  <TextField
+                    className="input_search"
+                    placeholder={t('COMMON.SEARCH_FACILITATORS')}
+                    color="secondary"
+                    focused
+                    sx={{
+                      borderRadius: '100px',
+                      height: '40px',
+                      // width: '225px',
+                    }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={4} marginTop={'8px'}>
+                <Box>
+                  <FormControl className="drawer-select" sx={{ width: '100%' }}>
+                    <Select
+                      displayEmpty
+                      style={{
+                        borderRadius: '0.5rem',
+                        color: theme.palette.warning['200'],
+                        width: '100%',
+                        marginBottom: '0rem',
+                      }}
+                    >
+                      <MenuItem className="text-dark-grey fs-14 fw-500">
+                        {t('COMMON.FILTERS')}
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </Grid>
+            </Grid>
+            {learnerData?.map((data: any) => (
+              <LearnersList
+                key={data.userId}
+                learnerName={data.name}
+                isDropout={data.memberStatus === 'dropout'}
+                enrollmentId={data.enrollmentNumber}
+                cohortMembershipId={data.cohortMembershipId}
+                statusReason={data.statusReason}
+                reloadState={reloadState}
+                setReloadState={setReloadState}
+                block={data.block}
+                center={data.center}
+                userId={data.userId}
+              />
+            ))}
+
+            <ConfirmationModal
+              message={t('BLOCKS.BLOCK_REQUEST')}
+              handleAction={handleReassignBlockRequest}
+              buttonNames={{
+                primary: t('COMMON.SEND_REQUEST'),
+                secondary: t('COMMON.CANCEL'),
+              }}
+              handleCloseModel={handleReassignBlockRequestCloseModel}
+              modalOpen={reassignBlockRequestModalOpen}
             />
           </>
         )}

@@ -13,7 +13,8 @@ import config from '../../config.json';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-
+import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 interface DrawerProps {
   toggleDrawer: (open: boolean) => () => void;
   open: boolean;
@@ -55,8 +56,14 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     router.push('/dashboard');
   };
 
+  const navigateToManageUser = () => {
+    toggleDrawer(false)();
+    router.push('/manageUser');
+  };
+
   const isDashboard = router.pathname === '/dashboard';
   const isTeacherCenter = router.pathname === '/centers';
+  const isManageUser = router.pathname === '/manageUser';
 
   return (
     <Drawer
@@ -195,6 +202,57 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             }}
           >
             {t('DASHBOARD.MY_TEACHING_CENTERS')}
+          </Button>
+        </Box>
+        <Box sx={{ marginTop: '12px' }}>
+          <Button
+            className="fs-14"
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: 'transparent',
+              padding: '0px 18px !important',
+              color: theme.palette.warning.A200,
+              fontWeight: 500,
+              '&:hover': {
+                background: 'transparent',
+              },
+              marginTop: '15px',
+            }}
+            startIcon={<EditNoteIcon />}
+            // onClick={navigateToManageUser}
+          >
+            {t('COMMON.OBSERVATIONS_FORMS')}
+          </Button>
+        </Box>
+        <Box sx={{ marginTop: '12px' }}>
+          <Button
+            className="fs-14"
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: isManageUser
+                ? theme.palette.primary.main
+                : 'transparent',
+
+              padding: isManageUser
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              color: isManageUser ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isManageUser ? '600' : 500,
+              '&:hover': {
+                background: isManageUser
+                  ? theme.palette.primary.main
+                  : 'transparent',
+              },
+              marginTop: '15px',
+            }}
+            startIcon={<PeopleOutlineOutlinedIcon />}
+            onClick={navigateToManageUser}
+          >
+            {t('COMMON.MANAGE_USERS')}
           </Button>
         </Box>
       </Box>
