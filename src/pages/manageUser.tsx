@@ -65,9 +65,15 @@ const facilitatorsList = [
   },
 ];
 
-const centersList = {
-  R12345678: [{ name: 'kamptee' }, { name: 'chimur' }],
-  S12345678: [{ name: 'Shirdi' }, { name: 'Nashik' }],
+const centersList: CohortsData = {
+  R12345678: [
+    { cohortId: 'R1', parentId: 'R12345678', name: 'kamptee' },
+    { cohortId: 'R2', parentId: 'R12345678', name: 'chimur' },
+  ],
+  S12345678: [
+    { cohortId: 'S1', parentId: 'S12345678', name: 'Shirdi' },
+    { cohortId: 'S2', parentId: 'S12345678', name: 'Nashik' },
+  ],
 };
 
 const manageUsers = () => {
