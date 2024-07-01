@@ -203,7 +203,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
     setState({ ...state, bottom: false });
   };
 
-  const handleCloseModel = () => {
+  const handleCloseModal = () => {
     setConfirmationModalOpen(false);
   };
 
@@ -560,7 +560,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
           primary: t('COMMON.YES'),
           secondary: t('COMMON.NO_GO_BACK'),
         }}
-        handleCloseModel={handleCloseModel}
+        handleCloseModal={handleCloseModal}
         modalOpen={confirmationModalOpen}
       />
 

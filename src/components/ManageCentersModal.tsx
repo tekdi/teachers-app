@@ -169,7 +169,6 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                         {isForLearner ? (
                           <Radio
                             sx={{ pb: '20px' }}
-                            className="radio_svg"
                             checked={selectedValue.includes(name)}
                             onChange={() => handleRadioChange(name)}
                             value={selectedValue}

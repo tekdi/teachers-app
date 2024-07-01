@@ -247,7 +247,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     setSelectedUser(null);
   };
 
-  const handleCloseModel = () => {
+  const handleCloseModal = () => {
     setConfirmationModalOpen(false);
   };
 
@@ -382,7 +382,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     showToastMessage('Request Send', 'success');
   };
 
-  const handleReassignBlockRequestCloseModel = () => {
+  const handleReassignBlockRequestCloseModal = () => {
     setReassignBlockRequestModalOpen(false);
   };
 
@@ -659,7 +659,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                 primary: t('COMMON.SEND_REQUEST'),
                 secondary: t('COMMON.CANCEL'),
               }}
-              handleCloseModel={handleCloseModel}
+              handleCloseModal={handleCloseModal}
               modalOpen={confirmationModalOpen}
             />
           </>
@@ -721,7 +721,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               <LearnersList
                 key={data.userId}
                 learnerName={data.name}
-                isDropout={data.memberStatus === 'dropout'}
+                isDropout={data.memberStatus === Status.DROPOUT}
                 enrollmentId={data.enrollmentNumber}
                 cohortMembershipId={data.cohortMembershipId}
                 statusReason={data.statusReason}
@@ -740,7 +740,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                 primary: t('COMMON.SEND_REQUEST'),
                 secondary: t('COMMON.CANCEL'),
               }}
-              handleCloseModel={handleReassignBlockRequestCloseModel}
+              handleCloseModal={handleReassignBlockRequestCloseModal}
               modalOpen={reassignBlockRequestModalOpen}
             />
           </>
