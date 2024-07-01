@@ -9,6 +9,7 @@
     "UPDATE_ATTENDANCE": "उपस्थिती अद्यतनित करा",
     "LOADING": "लोड होत आहे",
     "SAVE": "जतन करा",
+    "SEARCH" : "शोधा..",
     "UPDATE": "अपडेट करा",
     "CLEAR_ALL": "सर्व काढा",
     "SEARCH_STUDENT": "विद्यार्थी शोधा",
@@ -241,13 +242,22 @@
   },
   "BLOCKS": {
     "TEACHING_BLOCKS": "शिक्षण ब्लॉक्स",
-    "SEARCH": "शोधा..",
-
+    
+    
     "CREATE_NEW": "नवीन तयार करा",
     "NEW_BLOCK": "नवीन ब्लॉक",
     "BLOCK_NAME": "ब्लॉकचं नाव",
     "CREATE": "तयार करा",
 
     "SEARCH_BLOCKS": "ब्लॉक शोधा"
-  }
-}
+  
+  },
+ "CENTERS": {
+    "REGULAR_CENTERS": "नियमित केंद्र",
+    "REMOTE_CENTERS": "दूरस्थ केंद्र",
+    "CENTER_TYPE": "केंद्र प्रकार",
+    "REGULAR": "नियमित",
+    "REMOTE": "दूरस्थ"
+   }
+ }
+ 

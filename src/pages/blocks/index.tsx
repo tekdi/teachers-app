@@ -115,7 +115,7 @@ const Blocks: React.FC<BlocksProps> = () => {
             <TextField
               value={searchInput}
               onChange={handleSearchChange}
-              placeholder={t('BLOCKS.SEARCH')}
+              placeholder={t('COMMON.SEARCH')}
               variant="outlined"
               size="medium"
               sx={{
