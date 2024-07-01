@@ -8,6 +8,7 @@
     "MARK_ATTENDANCE": "Mark Attendance",
     "UPDATE_ATTENDANCE": "Update Attendance",
     "SAVE": "Save",
+    "SEARCH" : "Search..",
     "UPDATE": "Update",
     "MODIFY": "Modify",
     "CLEAR_ALL": "Clear All",
@@ -237,11 +238,16 @@
   },
   "BLOCKS": {
     "TEACHING_BLOCKS": "Teaching Blocks",
-    "SEARCH" : "Search..",
     "CREATE_NEW": "Create New",
     "NEW_BLOCK": "New Block",
     "BLOCK_NAME": "Block Name",
     "CREATE": "Create",
     "SEARCH_BLOCKS": "Search Blocks"
+  },
+  "CENTERS" : {
+   "REGULAR_CENTERS": "Regular Centers",
+   "REMOTE_CENTERS" : "Remote Center",
+   "REGULAR" : "Regular",
+   "REMOTE" : "Remote"
   }
 }
