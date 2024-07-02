@@ -24,6 +24,7 @@ import WestIcon from '@mui/icons-material/West';
 import checkMark from '../assets/images/checkMark.svg';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import useStore from '@/store/store';
 
 const modalStyle = {
   position: 'absolute',
@@ -79,7 +80,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCalendarModalOpen, setIsCalenderModalOpen] = useState(false);
   const [selectedRangeArray, setSelectedRangeArray] = useState(null);
-
+  const store = useStore();
   const [dateRangeArray, setDateRangeArray] = useState<any[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [displayCalendarFromDate, setDisplayCalendarFromDate] = React.useState(
@@ -140,7 +141,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const storedDates = localStorage.getItem('selectedRangeArray');
+      const storedDates = store.value
       if (storedDates) {
         try {
           const dateArray = JSON.parse(storedDates);
