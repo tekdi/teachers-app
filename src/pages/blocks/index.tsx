@@ -24,7 +24,7 @@ const Blocks: React.FC<BlocksProps> = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
-  const  district = 'Nagpur';
+  const district = 'Nagpur';
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [openModal, setOpenModal] = useState(false); // State for modal
@@ -61,7 +61,7 @@ const Blocks: React.FC<BlocksProps> = () => {
   };
 
   const handleApplyFilters = () => {
-    let sortedBlocks = [...blocks];
+    const sortedBlocks = [...blocks];
     if (sortOrder === 'asc') {
       sortedBlocks.sort();
     } else {
@@ -174,7 +174,6 @@ const Blocks: React.FC<BlocksProps> = () => {
           <FilterModal
             open={filterModalOpen}
             handleClose={handleFilterModalClose}
-  
             sortOrder={sortOrder}
             setSortOrder={setSortOrder}
             onApply={handleApplyFilters}

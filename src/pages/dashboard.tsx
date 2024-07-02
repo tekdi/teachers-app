@@ -151,7 +151,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
         try {
           const response = await cohortList({ limit, page, filters });
           const extractedNames = response?.results?.cohortDetails;
-          localStorage.setItem('parentCohortId', extractedNames?.[0].cohortData?.parentId);
+          localStorage.setItem(
+            'parentCohortId',
+            extractedNames?.[0].cohortData?.parentId
+          );
 
           const filteredData = extractedNames
             ?.map((item: any) => ({

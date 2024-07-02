@@ -148,14 +148,13 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         } catch (error) {
           console.error('Failed to parse stored dates:', error);
         }
-      } 
+      }
     }
   }, []);
 
   const getDateRange = (index: number | null) => {
     const today = new Date();
     const formatDate = (date: Date) => {
-      console.log('date', date);
       if (typeof date === 'object') {
         // return date?.toISOString()?.split('T')[0];}
         const localDate = new Date(
@@ -216,7 +215,6 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       setDateRangeArray(date);
       setDisplayCalendarFromDate(getDayAndMonthName(date[0]));
       setDisplayCalendarToDate(getDayAndMonthName(date[1]));
-      // toggleCalendarModal();
     }
   };
 
@@ -298,6 +296,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                   color: index === 4 ? theme.palette.secondary.main : '#4D4639',
                   '&:hover': {
                     backgroundColor: 'transparent',
+                    color: '#0D599E',
                   },
                 }}
               >
