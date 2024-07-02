@@ -8,7 +8,7 @@
     "MARK_ATTENDANCE": "Mark Attendance",
     "UPDATE_ATTENDANCE": "Update Attendance",
     "SAVE": "Save",
-    "SEARCH" : "Search..",
+    "SEARCH": "Search..",
     "UPDATE": "Update",
     "MODIFY": "Modify",
     "CLEAR_ALL": "Clear All",
@@ -253,16 +253,15 @@
 
     "SEARCH_BLOCKS": "Search Blocks"
   },
-  "CENTERS" : {
-   "REGULAR_CENTERS": "Regular Centers",
-   "REMOTE_CENTERS" : "Remote Center",
-   "REGULAR" : "Regular",
-   "REMOTE" : "Remote"
+  "CENTERS": {
+    "REGULAR_CENTERS": "Regular Centers",
+    "REMOTE_CENTERS": "Remote Center",
+    "REGULAR": "Regular",
+    "REMOTE": "Remote",
     "SEARCH_BLOCKS": "Search Blocks",
     "BLOCK_REQUEST": "You are sending a request to the state Team Leader to re-assign the Block to this user"
   },
   "MANAGE_USERS": {
     "CENTERS_ASSIGNED_SUCCESSFULLY": "Center Assigned Successfully"
-
   }
 }
