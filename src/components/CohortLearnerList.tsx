@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import {
   capitalizeEachWord,
@@ -69,7 +69,7 @@ const CohortLearnerList : React.FC<CohortLearnerListProp> = ({cohortId, reloadSt
       }
     };
     getCohortMemberList();
-  }, [cohortId]);
+  }, [cohortId, reloadState]);
 
   return (
     <div>
