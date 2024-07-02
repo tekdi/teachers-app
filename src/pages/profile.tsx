@@ -577,15 +577,15 @@ const TeacherProfile = () => {
               className="linerGradient"
               sx={{
                 padding: '10px 16px 21px',
+                width: '100%',
                 mt: 3,
-                '@media (min-width: 900px)': {
-                  borderRadius: '8px',
-                  width: '100%',
-                  display: 'flex',
-                  gap: '15px',
-                  alignItems: 'center',
-                  flexDirection: 'row-reverse',
-                },
+                // '@media (min-width: 900px)': {
+                //   borderRadius: '8px',
+                //   display: 'flex',
+                //   gap: '15px',
+                //   alignItems: 'center',
+                //   flexDirection: 'row-reverse',
+                // },
               }}
             >
               <Button
@@ -602,8 +602,7 @@ const TeacherProfile = () => {
                   color: theme.palette.warning.A200,
                   border: `1px solid #4D4639`,
                   '@media (min-width: 900px)': {
-                    minWidth: '30%',
-                    height: '40px',
+                    minWidth: '40%',
                   },
                 }}
                 onClick={handleOpen}
@@ -634,10 +633,10 @@ const TeacherProfile = () => {
                   border: '1px solid',
                   borderColor: theme.palette.warning['A100'],
                   padding: '16px',
-                  '@media (min-width: 900px)': {
-                    minWidth: '60%',
-                    width: '60%',
-                  },
+                  // '@media (min-width: 900px)': {
+                  //   minWidth: '60%',
+                  //   width: '60%',
+                  // },
                 }}
                 className="bg-white"
                 minWidth={'100%'}

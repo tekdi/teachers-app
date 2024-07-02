@@ -660,7 +660,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           </Box>
                         </Box>
                         <Box
-                          className="calenderTitle flex-center joyride-step-2"
+                          className="calenderTitle  joyride-step-2"
                           display={'flex'}
                           flexBasis={'10%'}
                           sx={{
@@ -669,6 +669,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             gap: '4px',
                             opacity: classId === 'all' ? 0.5 : 1,
                             justifyContent: 'end !important',
+                            alignItems: 'center',
                             '@media (max-width: 900px)': {
                               position: 'absolute',
                               right: '20px',

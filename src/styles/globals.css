@@ -787,17 +787,21 @@ main {
   margin-top: 0px !important;
 }
 
-@media (min-width: '500px') {
+@media (min-width: 500px) {
   .btn-mark-width {
     width: 20% !important;
   }
 }
-@media (min-width: '900px') {
+@media (min-width: 900px) {
   .pl-20 {
     padding-left: 20px !important;
   }
+
+  .calender-container .calender-body {
+    padding: 20px 140px !important;
+  }
 }
-@media (max-width: '900px') {
+@media (max-width: 900px) {
   .backgroundFaded div:first-child {
     background-color: unset !important;
   }
