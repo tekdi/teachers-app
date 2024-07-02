@@ -110,6 +110,4 @@ const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
   );
 };
 
-
-
 export default CreateBlockModal;

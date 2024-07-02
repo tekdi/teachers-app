@@ -668,7 +668,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             color: theme.palette.secondary.main,
                             gap: '4px',
                             opacity: classId === 'all' ? 0.5 : 1,
-
+                            justifyContent: 'end !important',
                             '@media (max-width: 900px)': {
                               position: 'absolute',
                               right: '20px',

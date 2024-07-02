@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import {
   capitalizeEachWord,
@@ -19,13 +19,17 @@ interface UserDataProps {
   cohortMembershipId: string;
   enrollmentNumber: string;
 }
-interface CohortLearnerListProp{
-  cohortId: any, 
+interface CohortLearnerListProp {
+  cohortId: any;
   reloadState: boolean;
   setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CohortLearnerList : React.FC<CohortLearnerListProp> = ({cohortId, reloadState, setReloadState}) => {
+const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
+  cohortId,
+  reloadState,
+  setReloadState,
+}) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userData, setUserData] = React.useState<UserDataProps[]>();
 
@@ -37,7 +41,7 @@ const CohortLearnerList : React.FC<CohortLearnerListProp> = ({cohortId, reloadSt
       try {
         if (cohortId) {
           const page = 0;
-          const filters = {cohortId: cohortId};
+          const filters = { cohortId: cohortId };
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -69,8 +73,9 @@ const CohortLearnerList : React.FC<CohortLearnerListProp> = ({cohortId, reloadSt
       }
     };
     getCohortMemberList();
-  }, [cohortId]);
+  }, [cohortId, reloadState]);
 
+  console.log('userData', userData);
   return (
     <div>
       {loading ? (
@@ -81,13 +86,13 @@ const CohortLearnerList : React.FC<CohortLearnerListProp> = ({cohortId, reloadSt
             return (
               <LearnersList
                 key={data.userId}
-                userId = {data.userId}
+                userId={data.userId}
                 learnerName={data.name}
                 enrollmentId={data.enrollmentNumber}
                 cohortMembershipId={data.cohortMembershipId}
                 isDropout={data.memberStatus === Status.DROPOUT}
-                statusReason = {data.statusReason}
-                reloadState={reloadState} 
+                statusReason={data.statusReason}
+                reloadState={reloadState}
                 setReloadState={setReloadState}
               />
             );

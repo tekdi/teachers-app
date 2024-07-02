@@ -8,6 +8,7 @@
     "MARK_ATTENDANCE": "Mark Attendance",
     "UPDATE_ATTENDANCE": "Update Attendance",
     "SAVE": "Save",
+    "SEARCH": "Search..",
     "UPDATE": "Update",
     "MODIFY": "Modify",
     "CLEAR_ALL": "Clear All",
@@ -86,7 +87,8 @@
     "LEARNER_UNMARKED_DROPOUT": "Learner un-marked as dropout",
     "LEARNER_REMOVED": "Learner has been removed",
     "DROPPED_OUT": "Dropped Out",
-    "DELETE_USER": "Delete User Permanently"
+    "DELETE_USER": "Delete User Permanently",
+    "OBSERVATIONS_FORMS": "Observations and Forms"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -248,6 +250,18 @@
     "NEW_BLOCK": "New Block",
     "BLOCK_NAME": "Block Name",
     "CREATE": "Create",
+
     "SEARCH_BLOCKS": "Search Blocks"
+  },
+  "CENTERS": {
+    "REGULAR_CENTERS": "Regular Centers",
+    "REMOTE_CENTERS": "Remote Center",
+    "REGULAR": "Regular",
+    "REMOTE": "Remote",
+    "SEARCH_BLOCKS": "Search Blocks",
+    "BLOCK_REQUEST": "You are sending a request to the state Team Leader to re-assign the Block to this user"
+  },
+  "MANAGE_USERS": {
+    "CENTERS_ASSIGNED_SUCCESSFULLY": "Center Assigned Successfully"
   }
 }

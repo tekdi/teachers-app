@@ -54,7 +54,9 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   const [loading, setLoading] = React.useState(false);
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
-  const [dropoutMemberList, setDropoutMemberList] = React.useState<Array<DropoutMember>>([]);
+  const [dropoutMemberList, setDropoutMemberList] = React.useState<
+    Array<DropoutMember>
+  >([]);
   const [presentCount, setPresentCount] = React.useState(0);
   const [absentCount, setAbsentCount] = React.useState(0);
   const [dropoutCount, setDropoutCount] = React.useState(0);
@@ -140,7 +142,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
             const nameUserIdArray = resp?.map((entry: any) => ({
               userId: entry.userId,
               name: toPascalCase(entry.name),
-              memberStatus : entry.status
+              memberStatus: entry.status,
             }));
             if (nameUserIdArray && selectedDate) {
               const formatSelectedDate = shortDateFormat(selectedDate);
@@ -190,7 +192,11 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
 
                   if (nameUserIdArray && userAttendanceArray) {
                     const mergeArrays = (
-                      nameUserIdArray: { userId: string; name: string, memberStatus: string }[],
+                      nameUserIdArray: {
+                        userId: string;
+                        name: string;
+                        memberStatus: string;
+                      }[],
                       userAttendanceArray: {
                         userId: string;
                         attendance: string;
@@ -219,15 +225,24 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             memberStatus: user.memberStatus,
                             attendance: attendanceEntry.attendance,
                           });
-                          
                         }
                       });
                       if (newArray.length != 0) {
                         setNumberOfCohortMembers(newArray?.length);
-                        const hasDropout = newArray.some((user) => user.memberStatus === Status.DROPOUT);
-                        if (hasDropout){
-                          setCohortMemberList(newArray.filter(user => user.memberStatus === Status.ACTIVE));
-                          setDropoutMemberList(newArray.filter(user => user.memberStatus === Status.DROPOUT));
+                        const hasDropout = newArray.some(
+                          (user) => user.memberStatus === Status.DROPOUT
+                        );
+                        if (hasDropout) {
+                          setCohortMemberList(
+                            newArray.filter(
+                              (user) => user.memberStatus === Status.ACTIVE
+                            )
+                          );
+                          setDropoutMemberList(
+                            newArray.filter(
+                              (user) => user.memberStatus === Status.DROPOUT
+                            )
+                          );
                           setPresentCount(
                             newArray.filter(
                               (user) => user.attendance === 'present'
@@ -245,8 +260,16 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                           );
                         }
                       } else {
-                        setCohortMemberList(nameUserIdArray.filter(user => user.memberStatus === Status.ACTIVE));
-                        setDropoutMemberList(nameUserIdArray.filter(user => user.memberStatus === Status.DROPOUT))
+                        setCohortMemberList(
+                          nameUserIdArray.filter(
+                            (user) => user.memberStatus === Status.ACTIVE
+                          )
+                        );
+                        setDropoutMemberList(
+                          nameUserIdArray.filter(
+                            (user) => user.memberStatus === Status.DROPOUT
+                          )
+                        );
                         setNumberOfCohortMembers(nameUserIdArray?.length);
                       }
                       updateBulkAttendanceStatus(newArray);
@@ -407,7 +430,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   <ConfirmationModal
                     message={getMessage()}
                     handleAction={handleAction}
-                    handleCloseModel={handleCloseModel}
+                    handleCloseModal={handleCloseModel}
                     buttonNames={{
                       primary: t('COMMON.YES'),
                       secondary: t('COMMON.NO_GO_BACK'),
@@ -430,48 +453,50 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
               )}
 
-{dropoutCount > 0 ? <Box display={'flex'} justifyContent={'space-between'}>
-<Typography
-                sx={{
-                  marginTop: '10px',
-                  fontSize: '12px',
-                  color: theme.palette.warning['A200'],
-                  padding: '0 10px',
-                }}
-              >
-                {t('ATTENDANCE.ACTIVE_STUDENTS', {
-                  count: (numberOfCohortMembers - dropoutCount),
-                })}
-              </Typography>
-              <Typography
-                sx={{
-                  marginTop: '10px',
-                  marginLeft: '0.5rem',
-                  fontSize: '12px',
-                  color: theme.palette.warning['A200'],
-                  padding: '0 10px',
-                }}
-              >
-                {t('ATTENDANCE.DROPOUT_STUDENTS', {
-                  count: dropoutCount,
-                })}
-              </Typography>
-</Box> :
-<Typography
-                sx={{
-                  marginTop: '10px',
-                  marginLeft: '0.5rem',
-                  fontSize: '12px',
-                  color: theme.palette.warning['A200'],
-                  padding: '0 10px',
-                }}
-              >
-                {t('ATTENDANCE.TOTAL_STUDENTS', {
-                  count: numberOfCohortMembers,
-                })}
-              </Typography>
-}
-             
+              {dropoutCount > 0 ? (
+                <Box display={'flex'} justifyContent={'space-between'}>
+                  <Typography
+                    sx={{
+                      marginTop: '10px',
+                      fontSize: '12px',
+                      color: theme.palette.warning['A200'],
+                      padding: '0 10px',
+                    }}
+                  >
+                    {t('ATTENDANCE.ACTIVE_STUDENTS', {
+                      count: numberOfCohortMembers - dropoutCount,
+                    })}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      marginTop: '10px',
+                      marginLeft: '0.5rem',
+                      fontSize: '12px',
+                      color: theme.palette.warning['A200'],
+                      padding: '0 10px',
+                    }}
+                  >
+                    {t('ATTENDANCE.DROPOUT_STUDENTS', {
+                      count: dropoutCount,
+                    })}
+                  </Typography>
+                </Box>
+              ) : (
+                <Typography
+                  sx={{
+                    marginTop: '10px',
+                    marginLeft: '0.5rem',
+                    fontSize: '12px',
+                    color: theme.palette.warning['A200'],
+                    padding: '0 10px',
+                  }}
+                >
+                  {t('ATTENDANCE.TOTAL_STUDENTS', {
+                    count: numberOfCohortMembers,
+                  })}
+                </Typography>
+              )}
+
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Typography
                   sx={{
@@ -491,7 +516,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                     marginLeft: '0.5rem',
                     fontSize: '12px',
                     color: theme.palette.warning['A200'],
-                    padding: '0 10px'
+                    padding: '0 10px',
                   }}
                 >
                   {t('ATTENDANCE.ABSENT_STUDENTS', {
@@ -526,7 +551,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             attendance: user.attendance,
                             attendanceDate: selectedDate,
                             name: user.name,
-                            memberStatus: user.memberStatus
+                            memberStatus: user.memberStatus,
                           }}
                           isEdit={true}
                           bulkAttendanceStatus={bulkAttendanceStatus}
@@ -545,7 +570,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             attendance: user.attendance,
                             attendanceDate: selectedDate,
                             name: user.name,
-                            memberStatus: user.memberStatus
+                            memberStatus: user.memberStatus,
                           }}
                           isEdit={true}
                           bulkAttendanceStatus={bulkAttendanceStatus}

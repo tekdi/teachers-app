@@ -271,7 +271,7 @@ const Header: React.FC = () => {
           primary: t('COMMON.LOGOUT'),
           secondary: t('COMMON.CANCEL'),
         }}
-        handleCloseModel={handleCloseModel}
+        handleCloseModal={handleCloseModel}
         modalOpen={modalOpen}
       />
 

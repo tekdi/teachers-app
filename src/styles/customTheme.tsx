@@ -111,6 +111,7 @@ const customTheme = extendTheme({
         },
         containedPrimary: {
           backgroundColor: '#FDBE16',
+
           border: 'none',
           //   '&:hover': {
           //     backgroundColor: '#FDBE161F'

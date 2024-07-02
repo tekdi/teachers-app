@@ -8,9 +8,9 @@ import { useTheme } from '@mui/material/styles';
 
 interface ConfirmationModalProps {
   message: string;
-  handleAction: () => void;
+  handleAction?: () => void;
   buttonNames: ButtonNames;
-  handleCloseModel: () => void;
+  handleCloseModal: () => void;
   modalOpen: boolean;
 }
 
@@ -24,7 +24,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   message,
   handleAction,
   buttonNames,
-  handleCloseModel,
+  handleCloseModal,
 }) => {
   const theme = useTheme();
 
@@ -45,7 +45,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   return (
     <Modal
       open={modalOpen}
-      onClose={handleCloseModel}
+      onClose={handleCloseModal}
       aria-labelledby="confirmation-modal-title"
       aria-describedby="confirmation-modal-description"
     >
@@ -74,7 +74,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               },
             }}
             variant="outlined"
-            onClick={handleCloseModel}
+            onClick={handleCloseModal}
           >
             {buttonNames.secondary}
           </Button>
@@ -88,8 +88,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             variant="contained"
             color="primary"
             onClick={() => {
-              handleAction();
-              handleCloseModel();
+              if (handleAction !== undefined) {
+                handleAction();
+                handleCloseModal();
+              } else {
+                handleCloseModal();
+              }
             }}
           >
             {buttonNames.primary}
