@@ -109,7 +109,7 @@ const TeacherProfile = () => {
   const [hasInputChanged, setHasInputChanged] = React.useState<boolean>(false);
   const [isValidationTriggered, setIsValidationTriggered] =
     React.useState<boolean>(false);
-    const [userId, setUserId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const handleNameFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -141,7 +141,6 @@ const TeacherProfile = () => {
       }
       setUserId(storedUserId);
     }
-    
   }, []);
 
   // find Address
@@ -163,28 +162,25 @@ const TeacherProfile = () => {
       setIsError(false);
     }
 
-          if (data) {
-            const userData = data?.result?.userData;
-            setUserData(userData);
-            setUserName(userData?.name);
-            const customDataFields = userData?.customFields;
-            setIsData(true);
-            if (customDataFields?.length > 0) {
-              setCustomFieldsData(customDataFields);
+    if (data) {
+      const userData = data?.result?.userData;
+      setUserData(userData);
+      setUserName(userData?.name);
+      const customDataFields = userData?.customFields;
+      setIsData(true);
+      if (customDataFields?.length > 0) {
+        setCustomFieldsData(customDataFields);
 
-              const unitName = getFieldValue(customDataFields, 'Unit Name');
-              setUnitName(unitName);
-              const blockName = getFieldValue(customDataFields, 'Block Name');
-              setBlockName(blockName);
-             
-            }
-          } else {
-           
-            setIsData(false);
-            console.log('No data Found');
-          }
-        
-      }, [data, error, isLoading]);
+        const unitName = getFieldValue(customDataFields, 'Unit Name');
+        setUnitName(unitName);
+        const blockName = getFieldValue(customDataFields, 'Block Name');
+        setBlockName(blockName);
+      }
+    } else {
+      setIsData(false);
+      console.log('No data Found');
+    }
+  }, [data, error, isLoading]);
 
   const handleClickImage = () => {
     fileInputRef.current && fileInputRef.current.click();
@@ -448,7 +444,7 @@ const TeacherProfile = () => {
         handleClose();
 
         console.log(response.params.successmessage);
-        
+
         setIsError(false);
         setLoading(false);
       }
@@ -1135,9 +1131,7 @@ const TeacherProfile = () => {
           </Box>
         ) : (
           <Box mt={5}>
-            <Typography textAlign={'center'}>
-            {t('COMMON.LOADING')}
-            </Typography>
+            <Typography textAlign={'center'}>{t('COMMON.LOADING')}</Typography>
           </Box>
         )}{' '}
       </Box>

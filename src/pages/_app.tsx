@@ -26,7 +26,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import Head from 'next/head';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-
 const queryClient = new QueryClient();
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -130,8 +129,8 @@ function App({ Component, pageProps }: AppProps) {
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}
         <Container maxWidth="md" style={{ padding: 0 }}>
-        <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
+          <QueryClientProvider client={queryClient}>
+            <Component {...pageProps} />
           </QueryClientProvider>
           <ToastContainer
             position="bottom-left"

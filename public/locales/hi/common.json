@@ -9,7 +9,7 @@
     "UPDATE_ATTENDANCE": "उपस्थिति अपडेट करें",
     "LOADING": "लोडिंग",
     "SAVE": "सहेजें",
-    "SEARCH" : "खोजें..",
+    "SEARCH": "खोजें..",
     "UPDATE": "अद्यतन करें",
     "CLEAR_ALL": "सब हटाएं",
     "SEARCH_STUDENT": "छात्र खोजें",
@@ -249,7 +249,7 @@
     "CREATE": "बनाएँ",
     "SEARCH_BLOCKS": "ब्लॉक खोजें"
   },
- "CENTERS": {
+  "CENTERS": {
     "REGULAR_CENTERS": "नियमित केंद्र",
     "REMOTE_CENTERS": "दूरस्थ केंद्र",
     "CENTER_TYPE": "केंद्र प्रकार",

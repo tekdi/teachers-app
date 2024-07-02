@@ -55,21 +55,17 @@ export const calculatePercentage = async (
 ): Promise<Result> => {
   const totalStudentsCount = await getTotalStudentCount(cohortMemberRequest);
   const presentStudents = await getPresentStudentCount(attendanceRequest);
-
   const result: Result = {};
-
   for (const date of Object.keys(presentStudents)) {
     const presentCount = presentStudents[date].present_students;
     const presentPercentage = parseFloat(
       ((presentCount / totalStudentsCount) * 100).toFixed(2)
     );
-
     result[date] = {
       present_students: presentCount,
       totalcount: totalStudentsCount,
       present_percentage: presentPercentage,
     };
   }
-
   return result;
 };

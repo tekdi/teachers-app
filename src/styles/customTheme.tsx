@@ -88,7 +88,6 @@ const customTheme = extendTheme({
           A200: '#4d4639',
           A400: '#FFFFFF',
           A700: '#EDEDED',
-
         },
         error: {
           main: '#BA1A1A',
@@ -112,7 +111,7 @@ const customTheme = extendTheme({
         },
         containedPrimary: {
           backgroundColor: '#FDBE16',
-          
+
           border: 'none',
           //   '&:hover': {
           //     backgroundColor: '#FDBE161F'
