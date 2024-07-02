@@ -15,7 +15,6 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import ReactGA from 'react-ga4';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
@@ -27,9 +26,9 @@ import {
   formatSelectedDate,
   getTodayDate,
   handleKeyDown,
-  toPascalCase,
-  sortClassesMissed,
   sortAttendanceNumber,
+  sortClassesMissed,
+  toPascalCase,
 } from '@/utils/Helper';
 
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
@@ -41,20 +40,21 @@ import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspace
 import LearnerListHeader from '@/components/LearnerListHeader';
 import Loader from '@/components/Loader';
 import OverviewCard from '@/components/OverviewCard';
+import ReactGA from 'react-ga4';
 import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '@/components/SortingModal';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
 import UpDownButton from '@/components/UpDownButton';
 import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { logEvent } from '@/utils/googleAnalytics';
 import { lowLearnerAttendanceLimit } from './../../app.config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { showToastMessage } from '@/components/Toastify';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -619,71 +619,111 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           </Typography>
         </Box>
 
-        <Box sx={{ px: '16px', width: '100%', gap: '15px' }} display={'flex'}>
-          {cohortsData?.length > 1 ? (
-            <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
-              <Select
-                value={classId}
-                onChange={handleCohortSelection}
-                displayEmpty
-                // disabled={cohortsData?.length <= 1 ? true : false}
-                inputProps={{ 'aria-label': 'Without label' }}
-                className="SelectLanguages fs-14 fw-500 bg-white"
-                style={{
-                  borderRadius: '0.5rem',
-                  color: theme.palette.warning['200'],
-                  width: '100%',
-                  marginBottom: '0rem',
-                  fontSize: '16px',
-                }}
-              >
-                {cohortsData?.length !== 0 ? (
-                  manipulatedCohortData?.map((cohort) => (
-                    <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                      {cohort.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <Typography style={{ fontWeight: 'bold' }}>
-                    {t('COMMON.NO_DATA_FOUND')}
-                  </Typography>
-                )}
-              </Select>
-            </FormControl>
-          ) : (
-            <Typography
-              color={theme.palette.warning['300']}
-              pl={1}
-              variant="h1"
+        <Box
+          className="linerGradient"
+          sx={{
+            padding: '20px 20px',
+            '@media (min-width: 900px)': {
+              borderRadius: '8px',
+            },
+          }}
+        >
+          <Box
+            sx={{
+              '@media (min-width: 900px)': {
+                display: 'flex',
+                gap: '10px',
+              },
+            }}
+          >
+            <Box
+              sx={{
+                width: '100%',
+                gap: '15px',
+                '@media (min-width: 900px)': {
+                  flexBasis: '50%',
+                },
+              }}
+              display={'flex'}
             >
-              {cohortsData[0]?.name}
-            </Typography>
-          )}
-        </Box>
+              {cohortsData?.length > 1 ? (
+                <FormControl className="drawer-select" sx={{ width: '100%' }}>
+                  <Select
+                    value={classId}
+                    onChange={handleCohortSelection}
+                    displayEmpty
+                    // disabled={cohortsData?.length <= 1 ? true : false}
+                    inputProps={{ 'aria-label': 'Without label' }}
+                    className="SelectLanguages fs-14 fw-500 bg-white"
+                    style={{
+                      borderRadius: '0.5rem',
+                      color: theme.palette.warning['200'],
+                      width: '100%',
+                      marginBottom: '0rem',
+                      fontSize: '16px',
+                    }}
+                  >
+                    {cohortsData?.length !== 0 ? (
+                      manipulatedCohortData?.map((cohort) => (
+                        <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
+                          {cohort.name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <Typography style={{ fontWeight: 'bold' }}>
+                        {t('COMMON.NO_DATA_FOUND')}
+                      </Typography>
+                    )}
+                  </Select>
+                </FormControl>
+              ) : (
+                <Typography
+                  color={theme.palette.warning['300']}
+                  pl={1}
+                  variant="h1"
+                >
+                  {cohortsData[0]?.name}
+                </Typography>
+              )}
+            </Box>
+            <Box
+              sx={{
+                '@media (min-width: 900px)': {
+                  flexBasis: '50%',
+                },
+                '@media (max-width: 900px)': {
+                  marginTop: '12px',
+                },
+                width: '100%',
+              }}
+              className="overview-date-select"
+            >
+              <DateRangePopup
+                menuItems={menuItems}
+                selectedValue={selectedValue}
+                setSelectedValue={setSelectedValue}
+                onDateRangeSelected={handleDateRangeSelected}
+                dateRange={dateRange}
+              />
+              {selectedValue ===
+                t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+                  date_range: dateRange,
+                }) || selectedValue === '' ? (
+                <Typography
+                  color={theme.palette.warning['400']}
+                  fontSize={'0.75rem'}
+                  fontWeight={'500'}
+                  pt={'0.4rem'}
+                  mt={'0px'}
+                >
+                  {t('ATTENDANCE.ATTENDANCE_MARKED_OUT_OF_DAYS', {
+                    count: numberOfDaysAttendanceMarked,
+                  })}
+                </Typography>
+              ) : null}
+            </Box>
+          </Box>
 
-        <Box className="linerGradient" sx={{ padding: '10px 20px' }}>
-          <DateRangePopup
-            menuItems={menuItems}
-            selectedValue={selectedValue}
-            setSelectedValue={setSelectedValue}
-            onDateRangeSelected={handleDateRangeSelected}
-            dateRange={dateRange}
-          />
-          {selectedValue ===
-            t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-              date_range: dateRange,
-            }) || selectedValue === '' ? (
-            <Typography
-              color={theme.palette.warning['400']}
-              fontSize={'0.75rem'}
-              fontWeight={'500'}
-              pt={'1rem'}
-            >
-              {t('ATTENDANCE.ATTENDANCE_MARKED_OUT_OF_DAYS', {
-                count: numberOfDaysAttendanceMarked,
-              })}
-            </Typography>
-          ) : null}
           {classId !== 'all' ? (
             <Box display={'flex'} className="card_overview" p={'1rem 0'}>
               <Grid container spacing={2}>
@@ -757,6 +797,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                         borderRadius: '100px',
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',
+                        '@media (min-width: 900px)': {
+                          width: '60% !important',
+                        },
                       }}
                     >
                       <InputBase

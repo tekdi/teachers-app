@@ -10,6 +10,7 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import Drawer from '@mui/material/Drawer';
 import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
 import config from '../../config.json';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -28,6 +29,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   setLanguage,
 }) => {
   const theme = useTheme<any>();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [isOpen, setIsOpen] = useState(open);
   const { t } = useTranslation();
   const router = useRouter();
@@ -60,10 +62,16 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 
   return (
     <Drawer
-      open={isOpen}
+      open={isDesktop || isOpen}
       onClose={toggleDrawer(false)}
       transitionDuration={{ enter: 500, exit: 500 }}
       className="backgroundFaded"
+      variant={isDesktop ? 'persistent' : 'temporary'}
+      sx={{
+        '& .MuiPaper-root': {
+          borderRight: `1px solid theme.palette.warning['A100']`,
+        },
+      }}
     >
       <Box
         sx={{ padding: '16px 16px 12px 16px', width: '350px' }}
@@ -82,11 +90,13 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           >
             {t('DASHBOARD.MENU')}
           </Box>
-          <Box>
-            <IconButton onClick={toggleDrawer(false)}>
-              <ClearIcon />
-            </IconButton>
-          </Box>
+          {!isDesktop && (
+            <Box>
+              <IconButton onClick={toggleDrawer(false)}>
+                <ClearIcon />
+              </IconButton>
+            </Box>
+          )}
         </Box>
 
         <Box

@@ -933,7 +933,15 @@ const LearnerProfile: React.FC = () => {
         </Grid>
       </Grid>
 
-      <Box padding={'22px 18px'} className="linerGradient">
+      <Box
+        padding={'22px 18px'}
+        className="linerGradient"
+        sx={{
+          '@media (min-width: 900px)': {
+            borderRadius: '8px',
+          },
+        }}
+      >
         <Box
           sx={{ display: 'flex', justifyContent: 'space-between', gap: '5px' }}
         >

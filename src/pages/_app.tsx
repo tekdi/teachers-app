@@ -130,7 +130,19 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}
-        <Box style={{ padding: 0 }}>
+        <Box
+          sx={{
+            padding: '0',
+            '@media (min-width: 900px)': {
+              width: '76.5%',
+              marginLeft: '351px',
+            },
+            '@media (min-width: 1600px)': {
+              width: '100%',
+              marginLeft: '400x',
+            },
+          }}
+        >
           <QueryClientProvider client={queryClient}>
             <Component {...pageProps} />
           </QueryClientProvider>

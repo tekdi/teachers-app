@@ -37,11 +37,11 @@ import { getLabelForValue } from '@/utils/Helper';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
+import { useProfileInfo } from '@/services/queries';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../assets/images/user_placeholder.png';
-import { useProfileInfo } from '@/services/queries';
 
 interface FieldOption {
   name: string;
@@ -109,7 +109,7 @@ const TeacherProfile = () => {
   const [hasInputChanged, setHasInputChanged] = React.useState<boolean>(false);
   const [isValidationTriggered, setIsValidationTriggered] =
     React.useState<boolean>(false);
-    const [userId, setUserId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const handleNameFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -141,7 +141,6 @@ const TeacherProfile = () => {
       }
       setUserId(storedUserId);
     }
-    
   }, []);
 
   // find Address
@@ -163,28 +162,25 @@ const TeacherProfile = () => {
       setIsError(false);
     }
 
-          if (data) {
-            const userData = data?.result?.userData;
-            setUserData(userData);
-            setUserName(userData?.name);
-            const customDataFields = userData?.customFields;
-            setIsData(true);
-            if (customDataFields?.length > 0) {
-              setCustomFieldsData(customDataFields);
+    if (data) {
+      const userData = data?.result?.userData;
+      setUserData(userData);
+      setUserName(userData?.name);
+      const customDataFields = userData?.customFields;
+      setIsData(true);
+      if (customDataFields?.length > 0) {
+        setCustomFieldsData(customDataFields);
 
-              const unitName = getFieldValue(customDataFields, 'Unit Name');
-              setUnitName(unitName);
-              const blockName = getFieldValue(customDataFields, 'Block Name');
-              setBlockName(blockName);
-             
-            }
-          } else {
-           
-            setIsData(false);
-            console.log('No data Found');
-          }
-        
-      }, [data, error, isLoading]);
+        const unitName = getFieldValue(customDataFields, 'Unit Name');
+        setUnitName(unitName);
+        const blockName = getFieldValue(customDataFields, 'Block Name');
+        setBlockName(blockName);
+      }
+    } else {
+      setIsData(false);
+      console.log('No data Found');
+    }
+  }, [data, error, isLoading]);
 
   const handleClickImage = () => {
     fileInputRef.current && fileInputRef.current.click();
@@ -448,7 +444,7 @@ const TeacherProfile = () => {
         handleClose();
 
         console.log(response.params.successmessage);
-        
+
         setIsError(false);
         setLoading(false);
       }
@@ -579,7 +575,18 @@ const TeacherProfile = () => {
             </Box>
             <Box
               className="linerGradient"
-              sx={{ padding: '10px 16px 21px', mt: 3 }}
+              sx={{
+                padding: '10px 16px 21px',
+                mt: 3,
+                '@media (min-width: 900px)': {
+                  borderRadius: '8px',
+                  width: '100%',
+                  display: 'flex',
+                  gap: '15px',
+                  alignItems: 'center',
+                  flexDirection: 'row-reverse',
+                },
+              }}
             >
               <Button
                 sx={{
@@ -594,6 +601,10 @@ const TeacherProfile = () => {
                   textAlign: 'center',
                   color: theme.palette.warning.A200,
                   border: `1px solid #4D4639`,
+                  '@media (min-width: 900px)': {
+                    minWidth: '30%',
+                    height: '40px',
+                  },
                 }}
                 onClick={handleOpen}
               >
@@ -623,6 +634,10 @@ const TeacherProfile = () => {
                   border: '1px solid',
                   borderColor: theme.palette.warning['A100'],
                   padding: '16px',
+                  '@media (min-width: 900px)': {
+                    minWidth: '60%',
+                    width: '60%',
+                  },
                 }}
                 className="bg-white"
                 minWidth={'100%'}
@@ -1135,9 +1150,7 @@ const TeacherProfile = () => {
           </Box>
         ) : (
           <Box mt={5}>
-            <Typography textAlign={'center'}>
-            {t('COMMON.LOADING')}
-            </Typography>
+            <Typography textAlign={'center'}>{t('COMMON.LOADING')}</Typography>
           </Box>
         )}{' '}
       </Box>

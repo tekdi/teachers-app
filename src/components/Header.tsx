@@ -142,7 +142,11 @@ const Header: React.FC = () => {
   };
 
   return (
-    <Box sx={{ height: '64px' }}>
+    <Box
+      sx={{
+        height: '64px',
+      }}
+    >
       <Box
         sx={{
           display: 'flex',
@@ -153,6 +157,11 @@ const Header: React.FC = () => {
           width: '100%',
           bgcolor: ' #FFFFFF',
           // maxWidth: '899px',
+          '@media (min-width: 900px)': {
+            width: '100% !important',
+            // marginLeft: '-48px',
+            position: 'relative',
+          },
         }}
       >
         <Stack
@@ -163,11 +172,21 @@ const Header: React.FC = () => {
           alignItems={'center'}
           height="64px"
           boxShadow="0px 1px 3px 0px #0000004D"
+          sx={{
+            '@media (min-width: 900px)': {
+              paddingLeft: '20px !important',
+            },
+          }}
         >
           <Box
             onClick={toggleDrawer(true)}
             mt={'0.5rem'}
-            sx={{ cursor: 'pointer' }}
+            sx={{
+              cursor: 'pointer',
+              '@media (min-width: 900px)': {
+                display: 'none',
+              },
+            }}
             paddingLeft={'20px'}
           >
             <Image
@@ -185,7 +204,6 @@ const Header: React.FC = () => {
             src={logoLight}
             alt="logo"
             onClick={() => router.push('/dashboard')}
-            style={{ cursor: 'pointer' }}
           />
           <Box
             onClick={handleClick}

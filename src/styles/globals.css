@@ -671,10 +671,6 @@ main {
   text-overflow: ellipsis;
 }
 
-.backgroundFaded div:first-child {
-  background-color: unset !important;
-}
-
 .bg-white {
   background-color: #fff;
 }
@@ -787,8 +783,25 @@ main {
   font-weight: 500;
 }
 
+.overview-date-select div:first-child {
+  margin-top: 0px !important;
+}
+
 @media (min-width: '500px') {
   .btn-mark-width {
     width: 20% !important;
+  }
+}
+@media (min-width: '900px') {
+  .pl-20 {
+    padding-left: 20px !important;
+  }
+}
+@media (max-width: '900px') {
+  .backgroundFaded div:first-child {
+    background-color: unset !important;
+  }
+  .overview-date-select {
+    margin-top: 12px !important;
   }
 }

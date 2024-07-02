@@ -19,7 +19,6 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import ReactGA from 'react-ga4';
 import {
   debounce,
   getTodayDate,
@@ -37,22 +36,23 @@ import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspace
 import Loader from '../components/Loader';
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import MonthCalender from '@/components/MonthCalender';
+import ReactGA from 'react-ga4';
 import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '../components/SortingModal';
+import { Status } from '@/utils/app.constant';
 import UpDownButton from '@/components/UpDownButton';
 import { attendanceStatusList } from '../services/AttendanceService';
 import { calculatePercentage } from '@/utils/attendanceStats';
 import { cohortList } from '@/services/CohortServices';
 import { cohortMemberList } from '../utils/Interfaces';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { showToastMessage } from '@/components/Toastify';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
-import { Status } from '@/utils/app.constant';
 
 interface user {
   memberStatus: string;
@@ -508,8 +508,16 @@ const UserAttendanceHistory = () => {
     switch (sortByAttendance) {
       case 'pre':
         sortedData.sort((a, b) => {
-          if (a.memberStatus === Status.DROPOUT && b.memberStatus !== Status.DROPOUT) return 1;
-          if (a.memberStatus !== Status.DROPOUT && b.memberStatus === Status.DROPOUT) return -1;
+          if (
+            a.memberStatus === Status.DROPOUT &&
+            b.memberStatus !== Status.DROPOUT
+          )
+            return 1;
+          if (
+            a.memberStatus !== Status.DROPOUT &&
+            b.memberStatus === Status.DROPOUT
+          )
+            return -1;
           if (a.attendance === 'present' && b.attendance === 'absent')
             return -1;
           if (a.attendance === 'absent' && b.attendance === 'present') return 1;
@@ -518,8 +526,16 @@ const UserAttendanceHistory = () => {
         break;
       case 'abs':
         sortedData.sort((a, b) => {
-          if (a.memberStatus === Status.DROPOUT && b.memberStatus !== Status.DROPOUT) return 1;
-          if (a.memberStatus !== Status.DROPOUT && b.memberStatus === Status.DROPOUT) return -1;
+          if (
+            a.memberStatus === Status.DROPOUT &&
+            b.memberStatus !== Status.DROPOUT
+          )
+            return 1;
+          if (
+            a.memberStatus !== Status.DROPOUT &&
+            b.memberStatus === Status.DROPOUT
+          )
+            return -1;
           if (a.attendance === 'absent' && b.attendance === 'present')
             return -1;
           if (a.attendance === 'present' && b.attendance === 'absent') return 1;
@@ -676,7 +692,7 @@ const UserAttendanceHistory = () => {
             borderTop={1}
             sx={{
               position: 'sticky',
-              top: '62px',
+              top: '65px',
               zIndex: 1000,
               backgroundColor: 'white',
               // boxShadow: '0px 1px 3px 0px #0000004D',
@@ -726,10 +742,13 @@ const UserAttendanceHistory = () => {
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
-
+                        width: '100%',
                         borderRadius: '100px',
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',
+                        '@media (min-width: 900px)': {
+                          width: '60% !important',
+                        },
                       }}
                       onFocus={hadleScroolDown}
                     >
@@ -817,6 +836,11 @@ const UserAttendanceHistory = () => {
                 padding: '8px 18px',
                 borderBottom: '1px solid #D0C5B4',
                 bgcolor: '#E6E6E6',
+
+                '@media (min-width: 900px)': {
+                  borderTopLeftRadius: '8px',
+                  borderTopRightRadius: '8px',
+                },
               }}
             >
               <Box
