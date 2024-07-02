@@ -602,7 +602,7 @@ const TeacherProfile = () => {
                   color: theme.palette.warning.A200,
                   border: `1px solid #4D4639`,
                   '@media (min-width: 900px)': {
-                    minWidth: '40%',
+                    minWidth: '20%',
                   },
                 }}
                 onClick={handleOpen}

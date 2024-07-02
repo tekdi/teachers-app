@@ -156,10 +156,8 @@ const Header: React.FC = () => {
           zIndex: '999',
           width: '100%',
           bgcolor: ' #FFFFFF',
-          // maxWidth: '899px',
           '@media (min-width: 900px)': {
             width: '100% !important',
-            // marginLeft: '-48px',
             position: 'relative',
           },
         }}
