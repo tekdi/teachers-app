@@ -11,6 +11,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Value from 'react-calendar';
 import { shortDateFormat } from '@/utils/Helper';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
+import useStore from '../store/store';
 
 interface CalendarWithAttendanceProps {
   formattedAttendanceData?: FormattedAttendanceData;
@@ -42,6 +43,8 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   selectionType,
   selectedRangeRetention,
 }) => {
+  const store = useStore();
+  const setValue = useStore((state) => state.setValue);
   const [date, setDate] = useState<
     Date | null | undefined | [Date | null, Date | null]
   >(() => {
@@ -279,7 +282,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     };
     setDate(newDate);
     if (newDate !== undefined) {
-      localStorage.setItem('selectedRangeArray', JSON.stringify(newDate));
+      setValue(JSON.stringify(newDate));
     } else {
       console.error('newDate is undefined');
     }
