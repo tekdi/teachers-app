@@ -6,7 +6,7 @@ const useStore = create(persist((set) => ({
     value: '',
     setValue: (newValue) => set((state) => ({ value: newValue })),
 }), {
-name: 'teacherZustand',
+name: 'teacherApp',
 getStorage: () => localStorage,
 }));
 
