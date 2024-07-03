@@ -865,6 +865,9 @@ main {
   .align-md-center {
     align-items: center !important;
   }
+  .align-md-start {
+    align-items: start !important;
+  }
   .w-md-111 {
     width: 111%;
   }
@@ -875,7 +878,7 @@ main {
     position: absolute;
   }
   .right-md-20 {
-    right: 20;
+    right: 20px;
   }
   .mt-md-3 {
     margin-top: 3px;

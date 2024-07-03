@@ -553,12 +553,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Box
                     paddingBottom={'25px'}
                     width={'100%'}
-                    className="linerGradient"
-                    sx={{
-                      '@media (min-width: 900px)': {
-                        borderRadius: '8px',
-                      },
-                    }}
+                    className="linerGradient br-md-8"
                   >
                     <Box
                       display={'flex'}
@@ -571,12 +566,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           justifyContent={'space-between'}
                           alignItems={'center'}
                           flexBasis={'90%'}
-                          sx={{
-                            '@media (max-width: 900px)': {
-                              flexDirection: 'column',
-                              alignItems: 'start',
-                            },
-                          }}
+                          className="fl-dir-md-col align-md-start"
                         >
                           <Typography
                             variant="h2"
@@ -588,12 +578,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
                           </Typography>
                           <Box
+                            className="w-md-111 mt-md-16"
                             sx={{
                               width: '40%',
-                              '@media (max-width: 900px)': {
-                                width: '111% !important',
-                                marginTop: '16px',
-                              },
                             }}
                           >
                             <Box
@@ -660,7 +647,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           </Box>
                         </Box>
                         <Box
-                          className="calenderTitle  joyride-step-2"
+                          className="calenderTitle  joyride-step-2 ps-md-ab right-md-20 mt-md-3"
                           display={'flex'}
                           flexBasis={'10%'}
                           sx={{
@@ -670,11 +657,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             opacity: classId === 'all' ? 0.5 : 1,
                             justifyContent: 'end !important',
                             alignItems: 'center',
-                            '@media (max-width: 900px)': {
-                              position: 'absolute',
-                              right: '20px',
-                              marginTop: '3px',
-                            },
                           }}
                           onClick={viewAttendanceHistory}
                         >
