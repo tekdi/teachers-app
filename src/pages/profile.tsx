@@ -589,6 +589,7 @@ const TeacherProfile = () => {
               }}
             >
               <Button
+                className="min-width-md-20"
                 sx={{
                   fontSize: '14px',
                   lineHeight: '20px',
@@ -601,9 +602,6 @@ const TeacherProfile = () => {
                   textAlign: 'center',
                   color: theme.palette.warning.A200,
                   border: `1px solid #4D4639`,
-                  '@media (min-width: 900px)': {
-                    minWidth: '20%',
-                  },
                 }}
                 onClick={handleOpen}
               >

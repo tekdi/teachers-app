@@ -594,15 +594,7 @@ const UserAttendanceHistory = () => {
             },
           }}
         >
-          <Box
-            sx={{
-              '@media (min-width: 900px)': {
-                display: 'flex',
-                gap: '10',
-                justifyContent: 'space-between',
-              },
-            }}
-          >
+          <Box className="d-md-flex space-md-between gap-md-10">
             <Box
               display={'flex'}
               flexDirection={'column'}
@@ -646,17 +638,12 @@ const UserAttendanceHistory = () => {
             </Box>
 
             <Box
+              className="w-md-40 mt-1-rem "
               sx={{
                 minWidth: 120,
                 gap: '15px',
                 paddingBottom: '10px',
                 padding: '0 10px 10px',
-                '@media (min-width: 900px)': {
-                  marginTop: '1rem',
-                  '@media (min-width: 900px)': {
-                    width: '40%',
-                  },
-                },
               }}
               display={'flex'}
             >
@@ -708,6 +695,7 @@ const UserAttendanceHistory = () => {
             pl={1}
             borderBottom={1}
             borderTop={1}
+            className="top-md-0"
             sx={{
               position: 'sticky',
               top: '65px',
@@ -718,9 +706,6 @@ const UserAttendanceHistory = () => {
               borderTop: '1px solid rgba(0, 0, 0, 0.15)',
               borderBottom: 'unset ',
               padding: '5px 10px',
-              '@media (min-width: 900px)': {
-                top: '0px',
-              },
             }}
           >
             <Box>
@@ -761,6 +746,7 @@ const UserAttendanceHistory = () => {
                         event.preventDefault();
                         handleSearchSubmit();
                       }}
+                      className="w-md-60"
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -768,9 +754,6 @@ const UserAttendanceHistory = () => {
                         borderRadius: '100px',
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',
-                        '@media (min-width: 900px)': {
-                          width: '60% !important',
-                        },
                       }}
                       onFocus={hadleScroolDown}
                     >
@@ -814,7 +797,6 @@ const UserAttendanceHistory = () => {
                       onClick={handleOpenModal}
                       sx={{
                         color: theme.palette.warning.A200,
-
                         borderRadius: '10px',
                         fontSize: '14px',
                       }}
@@ -852,17 +834,13 @@ const UserAttendanceHistory = () => {
               secondColumnName={t('ATTENDANCE.ABSENT')}
             /> */}
             <Box
+              className="br-md-tlr-8"
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 padding: '8px 18px',
                 borderBottom: '1px solid #D0C5B4',
                 bgcolor: '#E6E6E6',
-
-                '@media (min-width: 900px)': {
-                  borderTopLeftRadius: '8px',
-                  borderTopRightRadius: '8px',
-                },
               }}
             >
               <Box

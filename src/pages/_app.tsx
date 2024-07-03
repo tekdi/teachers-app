@@ -2,7 +2,6 @@
 
 import '@/styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
-import 'react-toastify/dist/ReactToastify.css';
 
 import * as React from 'react';
 

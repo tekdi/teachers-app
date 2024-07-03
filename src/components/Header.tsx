@@ -148,6 +148,7 @@ const Header: React.FC = () => {
       }}
     >
       <Box
+        className="w-md-100 ps-md-relative"
         sx={{
           display: 'flex',
           justifyContent: 'center',
@@ -156,10 +157,6 @@ const Header: React.FC = () => {
           zIndex: '999',
           width: '100%',
           bgcolor: ' #FFFFFF',
-          '@media (min-width: 900px)': {
-            width: '100% !important',
-            position: 'relative',
-          },
         }}
       >
         <Stack
@@ -170,21 +167,12 @@ const Header: React.FC = () => {
           alignItems={'center'}
           height="64px"
           boxShadow="0px 1px 3px 0px #0000004D"
-          sx={{
-            '@media (min-width: 900px)': {
-              paddingLeft: '20px !important',
-            },
-          }}
+          className="pl-md-20"
         >
           <Box
             onClick={toggleDrawer(true)}
             mt={'0.5rem'}
-            sx={{
-              cursor: 'pointer',
-              '@media (min-width: 900px)': {
-                display: 'none',
-              },
-            }}
+            className="display-md-none"
             paddingLeft={'20px'}
           >
             <Image

@@ -620,29 +620,17 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         </Box>
 
         <Box
-          className="linerGradient"
+          className="linerGradient br-md-8"
           sx={{
             padding: '20px 20px',
-            '@media (min-width: 900px)': {
-              borderRadius: '8px',
-            },
           }}
         >
-          <Box
-            sx={{
-              '@media (min-width: 900px)': {
-                display: 'flex',
-                gap: '10px',
-              },
-            }}
-          >
+          <Box className="d-md-flex gap-md-10">
             <Box
+              className="flex-basis-md-50"
               sx={{
                 width: '100%',
                 gap: '15px',
-                '@media (min-width: 900px)': {
-                  flexBasis: '50%',
-                },
               }}
               display={'flex'}
             >
@@ -686,18 +674,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 </Typography>
               )}
             </Box>
-            <Box
-              sx={{
-                '@media (min-width: 900px)': {
-                  flexBasis: '50%',
-                },
-                '@media (max-width: 900px)': {
-                  marginTop: '12px',
-                },
-                width: '100%',
-              }}
-              className="overview-date-select"
-            >
+            <Box className="overview-date-select flex-basis-md-50 mt-md-12 w-100">
               <DateRangePopup
                 menuItems={menuItems}
                 selectedValue={selectedValue}
@@ -791,15 +768,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                         event.preventDefault();
                         handleSearchSubmit();
                       }}
+                      className="w-md-60"
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
                         borderRadius: '100px',
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',
-                        '@media (min-width: 900px)': {
-                          width: '60% !important',
-                        },
                       }}
                     >
                       <InputBase

@@ -933,15 +933,7 @@ const LearnerProfile: React.FC = () => {
         </Grid>
       </Grid>
 
-      <Box
-        padding={'22px 18px'}
-        className="linerGradient"
-        sx={{
-          '@media (min-width: 900px)': {
-            borderRadius: '8px',
-          },
-        }}
-      >
+      <Box padding={'22px 18px'} className="linerGradient br-md-8">
         <Box
           sx={{ display: 'flex', justifyContent: 'space-between', gap: '5px' }}
         >
@@ -1084,6 +1076,7 @@ const LearnerProfile: React.FC = () => {
         // }}
         >
           <Button
+            className="min-width-md-20"
             sx={{
               fontSize: '14px',
               lineHeight: '20px',
@@ -1096,9 +1089,6 @@ const LearnerProfile: React.FC = () => {
               textAlign: 'center',
               color: theme.palette.warning.A200,
               border: `1px solid #4D4639`,
-              '@media (min-width: 900px)': {
-                minWidth: '20%',
-              },
             }}
             onClick={handleOpen}
           >
