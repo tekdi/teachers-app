@@ -163,7 +163,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
       selectedCohortID: event.target.value,
     });
     localStorage.setItem('classId', event.target.value);
-    {setHandleSaveHasRun? setHandleSaveHasRun(!handleSaveHasRun): null}
+    setHandleSaveHasRun?.(!handleSaveHasRun)
     
 
         // ---------- set cohortId and stateName-----------
