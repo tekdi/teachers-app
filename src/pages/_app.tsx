@@ -36,6 +36,7 @@ const poppins = Poppins({
   fallback: ['sans-serif'],
   subsets: ['latin'],
 });
+
 export function DarkTheme() {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
@@ -61,6 +62,7 @@ export function DarkTheme() {
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const Login = router.pathname === '/login';
   useEffect(() => {
     telemetryFactory.init();
   }, []);
@@ -135,12 +137,12 @@ function App({ Component, pageProps }: AppProps) {
           sx={{
             padding: '0',
             '@media (min-width: 900px)': {
-              width: '76.5%',
-              marginLeft: '351px',
+              width: !Login ? '76.5%' : '100%',
+              marginLeft: !Login ? '351px' : '0',
             },
             '@media (min-width: 1600px)': {
               width: '100%',
-              marginLeft: '400x',
+              marginLeft: !Login ? '351px' : '0',
             },
           }}
         >
