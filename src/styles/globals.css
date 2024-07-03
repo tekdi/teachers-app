@@ -848,6 +848,9 @@ main {
     width: 25% !important;
     min-width: 25% !important;
   }
+  .__floater__open {
+    z-index: 9999 !important;
+  }
 }
 @media (max-width: 900px) {
   .backgroundFaded div:first-child {
