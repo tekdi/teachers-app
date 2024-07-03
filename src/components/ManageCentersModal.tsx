@@ -66,7 +66,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
       const currentIndex = prevCheckedCenters.indexOf(name);
       const isCurrentlyChecked = currentIndex !== -1;
 
-      let newChecked = [...prevCheckedCenters];
+      const newChecked = [...prevCheckedCenters];
 
       if (isCurrentlyChecked) {
         newChecked.splice(currentIndex, 1);

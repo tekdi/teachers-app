@@ -8,7 +8,7 @@
     "MARK_ATTENDANCE": "ଉପସ୍ଥିତି ଚିହ୍ନିତ କର",
     "UPDATE_ATTENDANCE": "ଉପସ୍ଥିତି ଅପଡେଟ କର",
     "SAVE": "ସେଭ କର",
-    "SEARCH" : "ସନ୍ଧାନ କରନ୍ତୁ..",
+    "SEARCH": "ସନ୍ଧାନ କରନ୍ତୁ..",
     "UPDATE": "ଅପଡେଟ",
     "MODIFY": "ସଂଶୋଧିତ କର",
     "CLEAR_ALL": "ସବୁ ସଫା କର",
@@ -191,12 +191,12 @@
   },
   "BLOCKS": {
     "TEACHING_BLOCKS": "ଶିକ୍ଷା ବ୍ଲକ୍ସ",
-    
+
     "CREATE_NEW": "ନୂତନ ସୃଷ୍ଟି କରନ୍ତୁ",
     "NEW_BLOCK": "ନୂଆ ବ୍ଲକ୍",
     "BLOCK_NAME": "ବ୍ଲକ୍ ନାମ",
     "CREATE": "ତିଆରି କରନ୍ତୁ",
-    
+
     "SEARCH_BLOCKS": "ବ୍ଲକ୍‌ ଖୋଜନ୍ତୁ"
   },
   "CENTERS": {
@@ -205,5 +205,5 @@
     "CENTER_TYPE": "କେନ୍ଦ୍ର ପ୍ରକାର",
     "REGULAR": "ସାଧାରଣ",
     "REMOTE": "ଦୂରସ୍ଥ"
-    }
   }
+}

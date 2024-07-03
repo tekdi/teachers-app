@@ -11,8 +11,11 @@ export const getMyCohortMemberList = async ({
   filters,
 }: cohortMemberList): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/list`;
-  filters = { ...filters, role: Role.STUDENT, 
-    status: [Status.DROPOUT, Status.ACTIVE]};
+  filters = {
+    ...filters,
+    role: Role.STUDENT,
+    status: [Status.DROPOUT, Status.ACTIVE],
+  };
   try {
     const response = await post(apiUrl, {
       limit,

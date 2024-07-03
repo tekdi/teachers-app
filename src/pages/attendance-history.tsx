@@ -508,8 +508,16 @@ const UserAttendanceHistory = () => {
     switch (sortByAttendance) {
       case 'pre':
         sortedData.sort((a, b) => {
-          if (a.memberStatus === Status.DROPOUT && b.memberStatus !== Status.DROPOUT) return 1;
-          if (a.memberStatus !== Status.DROPOUT && b.memberStatus === Status.DROPOUT) return -1;
+          if (
+            a.memberStatus === Status.DROPOUT &&
+            b.memberStatus !== Status.DROPOUT
+          )
+            return 1;
+          if (
+            a.memberStatus !== Status.DROPOUT &&
+            b.memberStatus === Status.DROPOUT
+          )
+            return -1;
           if (a.attendance === 'present' && b.attendance === 'absent')
             return -1;
           if (a.attendance === 'absent' && b.attendance === 'present') return 1;
@@ -518,8 +526,16 @@ const UserAttendanceHistory = () => {
         break;
       case 'abs':
         sortedData.sort((a, b) => {
-          if (a.memberStatus === Status.DROPOUT && b.memberStatus !== Status.DROPOUT) return 1;
-          if (a.memberStatus !== Status.DROPOUT && b.memberStatus === Status.DROPOUT) return -1;
+          if (
+            a.memberStatus === Status.DROPOUT &&
+            b.memberStatus !== Status.DROPOUT
+          )
+            return 1;
+          if (
+            a.memberStatus !== Status.DROPOUT &&
+            b.memberStatus === Status.DROPOUT
+          )
+            return -1;
           if (a.attendance === 'absent' && b.attendance === 'present')
             return -1;
           if (a.attendance === 'present' && b.attendance === 'absent') return 1;

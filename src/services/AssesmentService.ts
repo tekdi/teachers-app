@@ -10,7 +10,7 @@ export const AssesmentListService = async ({
   filters,
 }: assesmentListServiceParam): Promise<any> => {
   const apiUrl: string =
-    'https://tracking-pratham.tekdinext.com/tracking-assessment/v1/list';
+    `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/tracking-assessment/v1/list`;
   try {
     const response = await post(apiUrl, { pagination, filters, sort });
     return response?.data;

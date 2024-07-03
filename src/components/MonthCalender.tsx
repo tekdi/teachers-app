@@ -19,7 +19,7 @@ interface CalendarWithAttendanceProps {
   onChange: (date: Date) => void;
   onDateChange: (date: Date | Date[] | null) => void;
   selectionType?: 'single' | 'range';
-selectedRangeRetention?:Date | null | undefined | [Date | null, Date | null];
+  selectedRangeRetention?: Date | null | undefined | [Date | null, Date | null];
 }
 
 type AttendanceData = {
@@ -41,7 +41,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   onChange,
   onDateChange,
   selectionType,
-  selectedRangeRetention
+  selectedRangeRetention,
 }) => {
   const store = useStore();
   const setValue = useStore((state) => state.setValue);
@@ -142,11 +142,15 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   }, [selectedDates, onDateChange]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage && selectionType === "range") {
-      const retentionDate =  store.value
+    if (
+      typeof window !== 'undefined' &&
+      window.localStorage &&
+      selectionType === 'range'
+    ) {
+      const retentionDate = localStorage.getItem('selectedRangeArray');
       if (retentionDate) {
         try {
-          let retention = JSON.parse(retentionDate);
+          const retention = JSON.parse(retentionDate);
           if (retention) {
             handleDateChange(retention);
           }
@@ -282,7 +286,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     } else {
       console.error('newDate is undefined');
     }
-        if (newDate !== undefined) {
+    if (newDate !== undefined) {
       let datesToSet: [Date | null, Date | null];
       if (Array.isArray(newDate)) {
         datesToSet = [newDate[0] || null, newDate[1] || null];

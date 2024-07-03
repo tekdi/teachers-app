@@ -19,7 +19,7 @@ interface StudentsStatsListProps {
   classesMissed: number;
   userId?: string;
   cohortId?: string;
-  memberStatus? : string;
+  memberStatus?: string;
 }
 
 const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
@@ -28,7 +28,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   classesMissed,
   userId,
   cohortId,
-  memberStatus
+  memberStatus,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -143,37 +143,37 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
                 </Typography>
               </Link>
             </Grid>
-            {memberStatus === Status.DROPOUT ?
-            <Grid item xs={6}>
-             <DropoutLabel/>
-          </Grid>
-          : 
-          <>
-            <Grid item xs={3}>
-              <Typography
-                fontSize="1rem"
-                fontWeight="bold"
-                lineHeight="1.5rem"
-                // color={theme.palette.text.primary}
-                color={textColor}
-                textAlign="center"
-              >
-                {presentPercent}%
-              </Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Typography
-                fontSize="1rem"
-                fontWeight="bold"
-                lineHeight="1.5rem"
-                color={theme.palette.text.primary}
-                textAlign="center"
-              >
-                {classesMissed}
-              </Typography>
-            </Grid>
-            </>
-            }
+            {memberStatus === Status.DROPOUT ? (
+              <Grid item xs={6}>
+                <DropoutLabel />
+              </Grid>
+            ) : (
+              <>
+                <Grid item xs={3}>
+                  <Typography
+                    fontSize="1rem"
+                    fontWeight="bold"
+                    lineHeight="1.5rem"
+                    // color={theme.palette.text.primary}
+                    color={textColor}
+                    textAlign="center"
+                  >
+                    {presentPercent}%
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography
+                    fontSize="1rem"
+                    fontWeight="bold"
+                    lineHeight="1.5rem"
+                    color={theme.palette.text.primary}
+                    textAlign="center"
+                  >
+                    {classesMissed}
+                  </Typography>
+                </Grid>
+              </>
+            )}
           </Grid>
         </Box>
       </Stack>
