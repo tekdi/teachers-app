@@ -70,13 +70,14 @@
     "SURE_LOGOUT": "Are you sure you want to Logout?",
     "SURE_UPDATE": "Are you sure you want to update this attendance?",
     "SURE_REMOVE": "Are you sure you want to remove this learner?",
+    "SURE_REASSIGN_CENTER": "Are you sure you want to re-assign Center to this user?",
     "SURE_CLOSE": "Are you sure you want to close?",
     "LEARNER_LIST": "Learners List",
     "FILTERS": "Filters",
     "MANAGE_USERS": "Manage Users",
     "FACILITATORS": "Facilitators",
     "CENTERS_ASSIGNED": "Centers Assigned in {{block}}",
-    "REASSIGN_CENTERS": "Reassign Centers",
+    "REASSIGN_CENTERS": "Re-assign Centers",
     "REASSIGN_BLOCKS_REQUEST": "Request to Re-assign Block",
     "ASSIGN": "Assign",
     "SEARCH_FACILITATORS": "Search Facilitators..",
@@ -264,6 +265,6 @@
     "BLOCK_REQUEST": "You are sending a request to the state Team Leader to re-assign the Block to this user"
   },
   "MANAGE_USERS": {
-    "CENTERS_ASSIGNED_SUCCESSFULLY": "Center Assigned Successfully"
+    "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"
   }
 }

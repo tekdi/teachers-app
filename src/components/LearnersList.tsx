@@ -50,6 +50,10 @@ const LearnersList: React.FC<LearnerListProps> = ({
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [confirmationModalOpen, setConfirmationModalOpen] =
     React.useState<boolean>(false);
+  const [
+    confirmationModalReassignCentersOpen,
+    setConfirmationModalReassignCentersOpen,
+  ] = React.useState<boolean>(false);
 
   const [learnerState, setLearnerState] = React.useState({
     loading: false,
@@ -205,6 +209,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
 
   const handleCloseModal = () => {
     setConfirmationModalOpen(false);
+    setConfirmationModalReassignCentersOpen(false);
   };
 
   const handleCloseBottomDrawer = () => {
@@ -268,8 +273,12 @@ const LearnersList: React.FC<LearnerListProps> = ({
 
   const handleAssignCenters = async (selectedCenters: any) => {
     setOpenCentersModal(false);
+    setConfirmationModalReassignCentersOpen(true);
+  };
+
+  const handleReassignCenterRequest = () => {
     showToastMessage(
-      t('MANAGE_USERS.CENTERS_ASSIGNED_SUCCESSFULLY'),
+      t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'),
       'success'
     );
   };
@@ -509,6 +518,15 @@ const LearnersList: React.FC<LearnerListProps> = ({
               ]
             : [
                 {
+                  label: t('COMMON.REASSIGN_CENTERS'),
+                  icon: (
+                    <ApartmentIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'reassign-centers',
+                },
+                {
                   label: isDropout
                     ? t('COMMON.UNMARK_DROP_OUT')
                     : t('COMMON.MARK_DROP_OUT'),
@@ -552,6 +570,17 @@ const LearnersList: React.FC<LearnerListProps> = ({
           setReloadState={setReloadState}
         />
       )}
+
+      <ConfirmationModal
+        message={t('COMMON.SURE_REASSIGN_CENTER')}
+        handleAction={handleReassignCenterRequest}
+        buttonNames={{
+          primary: t('COMMON.YES'),
+          secondary: t('COMMON.NO_GO_BACK'),
+        }}
+        handleCloseModal={handleCloseModal}
+        modalOpen={confirmationModalReassignCentersOpen}
+      />
 
       <ConfirmationModal
         message={t('COMMON.SURE_REMOVE')}
