@@ -497,16 +497,38 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       padding={'1.5rem 1.2rem 1rem'}
                     >
                       <Box display={'flex'} justifyContent={'space-between'}>
-                        <Typography
-                          variant="h2"
-                          sx={{ fontSize: '14px' }}
-                          color={'black'}
-                          fontWeight={'500'}
-                        >
-                          {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
-                        </Typography>
+                        <Box className="d-md-flex flex-basis-md-90 space-md-between w-100">
+                          <Typography
+                            variant="h2"
+                            sx={{ fontSize: '14px' }}
+                            color={'black'}
+                            fontWeight={'500'}
+                          >
+                            {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
+                          </Typography>
+                          <CohortSelectionSection
+                            classId={classId}
+                            setClassId={setClassId}
+                            userId={userId}
+                            setUserId={setUserId}
+                            isAuthenticated={isAuthenticated}
+                            setIsAuthenticated={setIsAuthenticated}
+                            loading={loading}
+                            setLoading={setLoading}
+                            cohortsData={cohortsData}
+                            setCohortsData={setCohortsData}
+                            manipulatedCohortData={manipulatedCohortData}
+                            setManipulatedCohortData={setManipulatedCohortData}
+                            blockName={blockName}
+                            setBlockName={setBlockName}
+                            handleSaveHasRun={handleSaveHasRun}
+                            setHandleSaveHasRun={setHandleSaveHasRun}
+                            isCustomFieldRequired={false}
+                          />
+                        </Box>
+
                         <Box
-                          className="calenderTitle flex-center joyride-step-2"
+                          className="calenderTitle flex-center joyride-step-2 ps-md-ab right-md-20"
                           display={'flex'}
                           sx={{
                             cursor: 'pointer',
@@ -532,27 +554,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           />
                         </Box>
                       </Box>
-                      <CohortSelectionSection
-                        classId={classId}
-                        setClassId={setClassId}
-                        userId={userId}
-                        setUserId={setUserId}
-                        isAuthenticated={isAuthenticated}
-                        setIsAuthenticated={setIsAuthenticated}
-                        loading={loading}
-                        setLoading={setLoading}
-                        cohortsData={cohortsData}
-                        setCohortsData={setCohortsData}
-                        manipulatedCohortData={manipulatedCohortData}
-                        setManipulatedCohortData={setManipulatedCohortData}
-                        blockName={blockName}
-                        setBlockName={setBlockName}
-                        handleSaveHasRun={handleSaveHasRun}
-                        setHandleSaveHasRun={setHandleSaveHasRun}
-                        isCustomFieldRequired={false}
-                      />
+
                       {/* Logic to disable this block on all select */}
-                      <Box>
+                      <Box className="flex-basis-md-10">
                         <Box sx={{ mt: 1.5, position: 'relative' }}>
                           <WeekCalender
                             showDetailsHandle={showDetailsHandle}

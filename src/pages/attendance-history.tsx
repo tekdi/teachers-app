@@ -27,6 +27,7 @@ import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import AttendanceStatus from '@/components/AttendanceStatus';
 import AttendanceStatusListView from '@/components/AttendanceStatusListView';
 import ClearIcon from '@mui/icons-material/Clear';
+import CohortSelectionSection from '@/components/CohortSelectionSection';
 import Header from '../components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import Loader from '../components/Loader';
@@ -48,10 +49,6 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
-import { Status } from '@/utils/app.constant';
-import CohortSelectionSection from '@/components/CohortSelectionSection';
 
 interface user {
   memberStatus: string;
@@ -518,79 +515,81 @@ const UserAttendanceHistory = () => {
             },
           }}
         >
-          <Box className="d-md-flex space-md-between gap-md-10">
+          <Box
+            display={'flex'}
+            flexDirection={'column'}
+            gap={'1rem'}
+            padding={'1rem 20px 0.5rem'}
+            alignItems={'center'}
+          >
             <Box
               display={'flex'}
-              flexDirection={'column'}
-              gap={'1rem'}
-              padding={'1rem 20px 0.5rem'}
-              alignItems={'center'}
+              sx={{ color: theme.palette.warning['A200'] }}
+              gap={'10px'}
+              width={'100%'}
+              paddingTop={'10px'}
             >
-              <Box
-                display={'flex'}
-                sx={{ color: theme.palette.warning['A200'] }}
-                gap={'10px'}
-                width={'100%'}
-                paddingTop={'10px'}
-              >
-                <Box
-                  onClick={() => {
-                    window.history.back();
-                    logEvent({
-                      action: 'back-button-clicked-attendance-history-page',
-                      category: 'Attendance History Page',
-                      label: 'Back Button Clicked',
-                    });
-                  }}
-                >
-                  <Box>
-                    <KeyboardBackspaceOutlinedIcon
-                      cursor={'pointer'}
-                      sx={{ color: theme.palette.warning['A200'] }}
-                    />
+              <Box className="d-md-flex w-100 space-md-between min-align-md-center">
+                <Box display={'flex'} gap={'10px'}>
+                  <Box
+                    onClick={() => {
+                      window.history.back();
+                      logEvent({
+                        action: 'back-button-clicked-attendance-history-page',
+                        category: 'Attendance History Page',
+                        label: 'Back Button Clicked',
+                      });
+                    }}
+                  >
+                    <Box>
+                      <KeyboardBackspaceOutlinedIcon
+                        cursor={'pointer'}
+                        sx={{ color: theme.palette.warning['A200'] }}
+                      />
+                    </Box>
                   </Box>
+                  <Typography
+                    marginBottom={'0px'}
+                    fontSize={'22px'}
+                    color={theme.palette.warning['A200']}
+                    className="flex-basis-md-30"
+                    sx={{ whiteSpace: 'nowrap' }}
+                  >
+                    {t('ATTENDANCE.DAY_WISE_ATTENDANCE')}
+                  </Typography>
                 </Box>
 
-              <Typography
-                marginBottom={'0px'}
-                fontSize={'22px'}
-                color={theme.palette.warning['A200']}
-              >
-                {t('ATTENDANCE.DAY_WISE_ATTENDANCE')}
-              </Typography>
+                <Box className="w-100 d-md-flex flex-md-end">
+                  <CohortSelectionSection
+                    classId={classId}
+                    setClassId={setClassId}
+                    userId={userId}
+                    setUserId={setUserId}
+                    isAuthenticated={isAuthenticated}
+                    setIsAuthenticated={setIsAuthenticated}
+                    loading={loading}
+                    setLoading={setLoading}
+                    cohortsData={cohortsData}
+                    setCohortsData={setCohortsData}
+                    manipulatedCohortData={manipulatedCohortData}
+                    setManipulatedCohortData={setManipulatedCohortData}
+                    isManipulationRequired={false}
+                    blockName={blockName}
+                    setBlockName={setBlockName}
+                    handleSaveHasRun={handleSaveHasRun}
+                    setHandleSaveHasRun={setHandleSaveHasRun}
+                    isCustomFieldRequired={true}
+                  />
+                </Box>
+              </Box>
             </Box>
           </Box>
-<Box className="w-md-40 mt-1-rem ">
 
-
-          <Box p={'10px 20px'}>
-            <CohortSelectionSection
-              classId={classId}
-              setClassId={setClassId}
-              userId={userId}
-              setUserId={setUserId}
-              isAuthenticated={isAuthenticated}
-              setIsAuthenticated={setIsAuthenticated}
-              loading={loading}
-              setLoading={setLoading}
-              cohortsData={cohortsData}
-              setCohortsData={setCohortsData}
-              manipulatedCohortData={manipulatedCohortData}
-              setManipulatedCohortData={setManipulatedCohortData}
-              isManipulationRequired={false}
-              blockName={blockName}
-              setBlockName={setBlockName}
-              handleSaveHasRun={handleSaveHasRun}
-              setHandleSaveHasRun={setHandleSaveHasRun}
-              isCustomFieldRequired={true}
-            />
-          </Box>
-          </Box>
           <Box
             pl={1}
             borderBottom={1}
-            borderTop={1}
             className="top-md-0"
+            borderTop={1}
             sx={{
               position: 'sticky',
               top: '65px',
@@ -612,6 +611,7 @@ const UserAttendanceHistory = () => {
               />
             </Box>
           </Box>
+
           <Box className="calender-container">
             <MonthCalender
               formattedAttendanceData={percentageAttendance}
@@ -641,11 +641,10 @@ const UserAttendanceHistory = () => {
                         event.preventDefault();
                         handleSearchSubmit();
                       }}
-                      className="w-md-60"
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        width: '100%',
+
                         borderRadius: '100px',
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',
@@ -692,6 +691,7 @@ const UserAttendanceHistory = () => {
                       onClick={handleOpenModal}
                       sx={{
                         color: theme.palette.warning.A200,
+
                         borderRadius: '10px',
                         fontSize: '14px',
                       }}
@@ -729,7 +729,6 @@ const UserAttendanceHistory = () => {
               secondColumnName={t('ATTENDANCE.ABSENT')}
             /> */}
             <Box
-              className="br-md-tlr-8"
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',

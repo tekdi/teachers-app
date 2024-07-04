@@ -823,6 +823,13 @@ main {
   .space-md-between {
     justify-content: space-between;
   }
+
+  .min-align-md-center {
+    align-items: center;
+  }
+  .flex-md-end {
+    justify-content: end;
+  }
   .gap-md-10 {
     gap: 10px;
   }
@@ -841,8 +848,17 @@ main {
   .br-md-8 {
     border-radius: 8px;
   }
+  .flex-basis-md-30 {
+    flex-basis: 50%;
+  }
   .flex-basis-md-50 {
     flex-basis: 50%;
+  }
+  .flex-basis-md-90 {
+    flex-basis: 90%;
+  }
+  .flex-basis-md-10 {
+    flex-basis: 10%;
   }
   .min-width-md-20 {
     width: 25% !important;
@@ -871,9 +887,9 @@ main {
   .align-md-start {
     align-items: start !important;
   }
-  .w-md-111 {
+  /* .w-md-111 {
     width: 111%;
-  }
+  } */
   .mt-md-16 {
     margin-top: 16px;
   }

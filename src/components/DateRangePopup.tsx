@@ -22,9 +22,9 @@ import MonthCalender from './MonthCalender';
 import ReactGA from 'react-ga4';
 import WestIcon from '@mui/icons-material/West';
 import checkMark from '../assets/images/checkMark.svg';
+import useStore from '@/store/store';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import useStore from '@/store/store';
 
 const modalStyle = {
   position: 'absolute',
@@ -141,7 +141,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const storedDates = store.value
+      const storedDates = store.value;
       if (storedDates) {
         try {
           const dateArray = JSON.parse(storedDates);
@@ -224,7 +224,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   };
 
   return (
-    <Box sx={{ mt: 1.5, px: '2px' }}>
+    <Box className="mt-md-16" sx={{ px: '2px' }}>
       <FormControl sx={{ width: '100%' }}>
         <Select
           className="bg-white"

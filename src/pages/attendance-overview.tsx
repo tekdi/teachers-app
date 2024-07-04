@@ -526,39 +526,44 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
           </Typography>
         </Box>
+
         <Box
           className="linerGradient br-md-8"
           sx={{
             padding: '20px 20px',
           }}
         >
-          <CohortSelectionSection
-            classId={classId}
-            setClassId={setClassId}
-            userId={userId}
-            setUserId={setUserId}
-            loading={loading}
-            setLoading={setLoading}
-            cohortsData={cohortsData}
-            setCohortsData={setCohortsData}
-            isAuthenticated={isAuthenticated}
-            setIsAuthenticated={setIsAuthenticated}
-            manipulatedCohortData={manipulatedCohortData}
-            setManipulatedCohortData={setManipulatedCohortData}
-            blockName={blockName}
-            setBlockName={setBlockName}
-            isCustomFieldRequired={true}
-          />
-        </Box>
+          <Box className="d-md-flex space-md-between gap-md-10 w-100">
+            <Box className="flex-basis-md-50">
+              <CohortSelectionSection
+                classId={classId}
+                setClassId={setClassId}
+                userId={userId}
+                setUserId={setUserId}
+                loading={loading}
+                setLoading={setLoading}
+                cohortsData={cohortsData}
+                setCohortsData={setCohortsData}
+                isAuthenticated={isAuthenticated}
+                setIsAuthenticated={setIsAuthenticated}
+                manipulatedCohortData={manipulatedCohortData}
+                setManipulatedCohortData={setManipulatedCohortData}
+                blockName={blockName}
+                setBlockName={setBlockName}
+                isCustomFieldRequired={true}
+              />
+            </Box>
+            <Box className="flex-basis-md-50">
+              <DateRangePopup
+                menuItems={menuItems}
+                selectedValue={selectedValue}
+                setSelectedValue={setSelectedValue}
+                onDateRangeSelected={handleDateRangeSelected}
+                dateRange={dateRange}
+              />
+            </Box>
+          </Box>
 
-        <Box className="linerGradient" sx={{ padding: '10px 20px' }}>
-          <DateRangePopup
-            menuItems={menuItems}
-            selectedValue={selectedValue}
-            setSelectedValue={setSelectedValue}
-            onDateRangeSelected={handleDateRangeSelected}
-            dateRange={dateRange}
-          />
           {selectedValue ===
             t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
               date_range: dateRange,
