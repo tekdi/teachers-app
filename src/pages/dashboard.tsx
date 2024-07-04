@@ -756,7 +756,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             <Typography
                               variant="h2"
                               sx={{
-                                color: '#1F1B13',
+                                color: theme.palette.warning['300'],
                                 fontSize: '14px',
                                 fontWeight: '500',
                               }}
@@ -787,7 +787,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           </Box>
                           <Typography
                             sx={{
-                              color: '#7C766F',
+                              color: theme.palette.warning['400'],
                               fontSize: '12px !important',
                               fontWeight: '500',
                             }}

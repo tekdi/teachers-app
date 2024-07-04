@@ -6,6 +6,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Typography,
 } from '@mui/material';
 
 import Box from '@mui/material/Box';
@@ -181,7 +182,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
         }
       } catch (error) {
         console.log(error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        // showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setLoading(false);
       }
     };
@@ -222,7 +223,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
         }
       } catch (error) {
         console.log(error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        // showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setLoading(false);
       } finally {
         setLoading(false);
@@ -286,7 +287,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
         }
       } catch (error) {
         console.log(error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        // showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       }
     }
     if (name === 'reassign-centers') {
@@ -331,7 +332,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
       }
     } catch (error) {
       console.log(error);
-      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      // showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
     }
   };
 
@@ -443,7 +444,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
       <Box>
         {value === 1 && (
           <>
-            <Grid
+            {/* <Grid
               px={'18px'}
               spacing={2}
               mt={1}
@@ -460,7 +461,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                     sx={{
                       borderRadius: '100px',
                       height: '40px',
-                      // width: '225px',
+                      width: '225px',
                     }}
                     InputProps={{
                       endAdornment: (
@@ -505,12 +506,12 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                 >
                   {t('COMMON.ADD_NEW')}
                 </Button>
-                {/* <Box sx={{ display: 'flex', gap: '5px' }}>
+                <Box sx={{ display: 'flex', gap: '5px' }}>
                   <ErrorOutlineIcon style={{ fontSize: '15px' }} />
                   <Box className="fs-12 fw-500 ">{t('COMMON.ADD_CENTER')}</Box>
-                </Box> */}
+                </Box>
               </Box>
-            </Grid>
+            </Grid> */}
 
             <Box>
               <Box px={'18px'} mt={3}>
@@ -538,8 +539,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                           sx={{ cursor: 'pointer' }}
                         >
                           <Box
-                            // onClick={() => handleModalToggle(user)}
-                            onClick={() => handleLearnerFullProfile()}
+                          // onClick={() => handleModalToggle(user)}
+                          // onClick={() => handleLearnerFullProfile()}
                           >
                             <Box
                               sx={{
@@ -547,7 +548,24 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                                 color: theme.palette.warning['300'],
                               }}
                             >
-                              <Link href={'/profile'}>{user.name}</Link>
+                              <Link className="word-break" href="#">
+                                <Typography
+                                  // onClick={() => {
+                                  //   handleOpenModalLearner(userId!);
+                                  //   ReactGA.event('learner-details-link-clicked', {
+                                  //     userId: userId,
+                                  //   });
+                                  // }}
+                                  sx={{
+                                    textAlign: 'left',
+                                    fontSize: '16px',
+                                    fontWeight: '400',
+                                    color: theme.palette.secondary.main,
+                                  }}
+                                >
+                                  {user.name}
+                                </Typography>
+                              </Link>
                             </Box>
 
                             <Box display={'flex'}>
@@ -588,6 +606,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                               onClick={toggleDrawer('bottom', true, user)}
                               sx={{
                                 fontSize: '24px',
+                                marginTop: '1rem',
                                 color: theme.palette.warning['300'],
                               }}
                             />
@@ -638,7 +657,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                   },
                 ]}
               >
-                <Box
+                {/* <Box
                   bgcolor={theme.palette.success.contrastText}
                   display="flex"
                   flexDirection="column"
@@ -671,7 +690,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                         </Button>
                       ))}
                   </Box>
-                </Box>
+                </Box> */}
               </BottomDrawer>
 
               <ManageCentersModal
