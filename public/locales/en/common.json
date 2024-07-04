@@ -250,7 +250,6 @@
     "NEW_BLOCK": "New Block",
     "BLOCK_NAME": "Block Name",
     "CREATE": "Create",
-
     "SEARCH_BLOCKS": "Search Blocks"
   },
   "CENTERS": {
@@ -259,7 +258,11 @@
     "REGULAR": "Regular",
     "REMOTE": "Remote",
     "SEARCH_BLOCKS": "Search Blocks",
-    "BLOCK_REQUEST": "You are sending a request to the state Team Leader to re-assign the Block to this user"
+    "BLOCK_REQUEST": "You are sending a request to the state Team Leader to re-assign the Block to this user",
+    "NEW_CENTER": "New Center",
+    "CENTER_TYPE": "Center Type",
+    "UNIT_NAME": "Unit Name",
+    "NOTE": "Note: This will be the center name"
   },
   "MANAGE_USERS": {
     "CENTERS_ASSIGNED_SUCCESSFULLY": "Center Assigned Successfully"
