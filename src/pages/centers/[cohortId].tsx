@@ -73,10 +73,15 @@ const TeachingCenterDetails = () => {
             cursor={'pointer'}
             sx={{ color: theme.palette.warning['A200'], marginTop: '15px' }}
           />
-          <Box m={'1rem 1rem 0.5rem'}>
+          <Box m={'1rem 1rem 0.5rem'} display={'flex'} gap={'5px'}>
             <Typography textAlign={'left'} fontSize={'22px'}>
               {cohortDetails?.name}
             </Typography>
+            {cohortDetails?.centerType && (
+              <Typography textAlign={'left'} fontSize={'22px'}>
+                (cohortDetails?.centerType)
+              </Typography>
+            )}
             <Box>
               <Typography textAlign={'left'} fontSize={'11px'} fontWeight={500}>
                 {cohortDetails?.address}
