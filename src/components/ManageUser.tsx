@@ -23,10 +23,7 @@ import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useEffect } from 'react';
-import {
-  assignCentersToFacilitator,
-  getFacilitatorList,
-} from '@/services/ManageUser';
+import { assignCentersToFacilitator } from '@/services/ManageUser';
 import { cohortList } from '@/services/CohortServices';
 import { showToastMessage } from '@/components/Toastify';
 import BottomDrawer from '@/components/BottomDrawer';
@@ -40,12 +37,12 @@ import AddIcon from '@mui/icons-material/Add';
 
 import LearnersList from '@/components/LearnersList';
 import Link from 'next/link';
+import { getFacilitatorList } from '@/services/MyClassDetailsService';
 interface Cohort {
   cohortId: string;
   parentId: string;
   name: string;
 }
-
 interface User {
   name: string;
   userId: string;
@@ -56,31 +53,6 @@ type CohortsData = {
   [userId: string]: Cohort[];
 };
 type Anchor = 'bottom';
-
-const facilitatorsList = [
-  {
-    name: 'Radha Kale',
-    userId: 'R12345678',
-    block: 'Nashik',
-  },
-  {
-    name: 'Rushikesh Sonwane',
-    userId: 'S12345678',
-    block: 'Shirdi',
-  },
-];
-
-const centersList: CohortsData = {
-  R12345678: [
-    { cohortId: 'R1', parentId: 'R12345678', name: 'kamptee' },
-    { cohortId: 'R2', parentId: 'R12345678', name: 'chimur' },
-  ],
-  S12345678: [
-    { cohortId: 'S1', parentId: 'S12345678', name: 'Shirdi' },
-    { cohortId: 'S2', parentId: 'S12345678', name: 'Nashik' },
-  ],
-};
-
 interface LearnerDataProps {
   name: string;
   userId: string;
@@ -90,48 +62,32 @@ interface LearnerDataProps {
   statusReason: string;
   block: string;
 }
-const learnersList = [
-  {
-    cohortMembershipId: '2b935062-df60-4289-b74a-00bb3cd6ae34',
-    enrollmentNumber: '123456',
-    memberStatus: 'active',
-    name: 'Harshita Sahu',
-    statusReason: 'Illness',
-    userId: '15d077f9-bf63-4533-8435-31b343db6853',
-    block: 'Chimur',
-    center: 'Shivajinagar',
-  },
-  {
-    cohortMembershipId: '2b935062-df60-4289-b74a-00bb3cd6ae34',
-    enrollmentNumber: '123456',
-    memberStatus: 'dropout',
-    name: 'Akshata Sahu',
-    statusReason: 'Migration',
-    userId: '15d077f9-bf63-4533-8435-31b343db6853',
-    block: 'Hinjewadi',
-    center: 'pune',
-  },
-];
+
 interface ManageUsersProps {
   reloadState?: boolean;
   setReloadState?: React.Dispatch<React.SetStateAction<boolean>>;
+  cohortData?: any;
 }
 
 const manageUsers: React.FC<ManageUsersProps> = ({
   reloadState,
   setReloadState,
+  cohortData,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
 
   const [value, setValue] = React.useState(1);
-  const [users, setUsers] =
-    useState<
-      { name: string; district?: string; userId: string; block?: string }[]
-    >(facilitatorsList);
+  const [users, setUsers] = useState<
+    {
+      name: string;
+      userId: string;
+      age?: number;
+    }[]
+  >();
   const [loading, setLoading] = React.useState(false);
-  const [cohortsData, setCohortsData] = useState<CohortsData>(centersList);
+  const [cohortsData, setCohortsData] = useState<CohortsData>();
   const [centersData, setCentersData] = useState<Cohort[]>([]);
   const [open, setOpen] = React.useState(false);
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
@@ -147,8 +103,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   });
   const [confirmationModalOpen, setConfirmationModalOpen] =
     React.useState<boolean>(false);
-  const [learnerData, setLearnerData] =
-    React.useState<LearnerDataProps[]>(learnersList);
+  const [learnerData, setLearnerData] = React.useState<LearnerDataProps[]>();
   const [reassignBlockRequestModalOpen, setReassignBlockRequestModalOpen] =
     React.useState<boolean>(false);
 
@@ -156,28 +111,30 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     const getFacilitator = async () => {
       setLoading(true);
       try {
-        let state, district;
-        if (typeof window !== 'undefined' && window.localStorage) {
-          state = localStorage.getItem('state');
-          district = localStorage.getItem('district');
-        }
-        if (state && district) {
+        let cohortId = cohortData
+          .map((block: any) => {
+            return block.blockId;
+          })
+          .join('');
+
+        if (cohortId) {
           const limit = 0;
           const page = 0;
           const filters = {
-            state: state,
-            district: district,
+            cohortId: cohortId,
             role: 'Teacher',
           };
 
           const resp = await getFacilitatorList({ limit, page, filters });
-          console.log(resp);
-          const extractedData = resp.map((user: any) => ({
+          const facilitatorList = resp.result?.results?.userDetails;
+          const extractedData = facilitatorList?.map((user: any) => ({
             userId: user.userId,
             name: user.name,
+            age: user?.age,
           }));
+          console.log(extractedData);
           setTimeout(() => {
-            // setUsers(extractedData);
+            setUsers(extractedData);
           });
         }
       } catch (error) {
@@ -193,8 +150,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     const fetchCohortListForUsers = async () => {
       setLoading(true);
       try {
-        if (users.length > 0) {
-          const fetchCohortPromises = users.map((user) => {
+        if (users && users?.length > 0) {
+          const fetchCohortPromises = users?.map((user) => {
             const limit = 0;
             const page = 0;
             const filters = { userId: user.userId };
@@ -236,7 +193,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const handleModalToggle = (user: any) => {
     setSelectedUser(user);
     setSelectedUserName(user.name);
-    setCenters(cohortsData[user.userId]?.map((cohort) => cohort.name) || []);
+    setCenters(cohortsData?.[user.userId]?.map((cohort) => cohort.name) || []);
     setOpen(true);
     // logEvent({
     //   action: 'mark/modify-attendance-button-clicked-dashboard',
@@ -257,7 +214,9 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const toggleDrawer =
     (anchor: Anchor, open: boolean, user: any) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
-      setCenters(cohortsData[user.userId]?.map((cohort) => cohort.name) || []);
+      setCenters(
+        cohortsData?.[user.userId]?.map((cohort) => cohort.name) || []
+      );
       setSelectedUser(user);
 
       if (
@@ -346,8 +305,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     try {
       const selectedUserIds = [selectedUser?.userId];
 
-      const matchedCohortIdsFromCohortsData = Object.values(cohortsData)
-        .flatMap((cohorts) => cohorts)
+      const matchedCohortIdsFromCohortsData = Object.values(cohortsData!)
+        .flat()
         .filter((cohort) => selectedCenters.includes(cohort.name))
         .map((cohort) => cohort.cohortId);
 
@@ -389,9 +348,9 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     setReassignBlockRequestModalOpen(false);
   };
 
-  const handleLearnerFullProfile = () => {
+  const handleLearnerFullProfile = (userId: string) => {
     // router.push(`/learner/${userId}`);
-    router.push(`/profile`);
+    // router.push(`/profile/${userId}`);
   };
   const noop = () => {};
 
@@ -528,7 +487,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                     sx={{ gap: '15px', alignItems: 'center' }}
                     width={'100%'}
                   >
-                    {users.length !== 0 &&
+                    {users &&
+                      users.length !== 0 &&
                       users.map((user) => (
                         <Box
                           key={user.userId}
@@ -550,12 +510,9 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                             >
                               <Link className="word-break" href="#">
                                 <Typography
-                                  // onClick={() => {
-                                  //   handleOpenModalLearner(userId!);
-                                  //   ReactGA.event('learner-details-link-clicked', {
-                                  //     userId: userId,
-                                  //   });
-                                  // }}
+                                  onClick={() => {
+                                    handleLearnerFullProfile(user.userId!);
+                                  }}
                                   sx={{
                                     textAlign: 'left',
                                     fontSize: '16px',
@@ -566,17 +523,18 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                                   {user.name}
                                 </Typography>
                               </Link>
-                            </Box>
 
-                            <Box display={'flex'}>
-                              <span
-                                style={{
-                                  color: theme.palette.warning.contrastText,
-                                  fontWeight: '500',
+                              <Box
+                                sx={{
+                                  fontSize: '12px',
+                                  color: theme.palette.warning['400'],
                                 }}
                               >
-                                {user.block}
-                              </span>
+                                {user?.age ? user.age + 'y/o' : 'N/A'}
+                              </Box>
+                            </Box>
+
+                            {/* <Box display={'flex'}>
                               {cohortsData[user.userId] &&
                                 cohortsData[user.userId].map((cohort) => (
                                   <Box
@@ -599,7 +557,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                                     </span>
                                   </Box>
                                 ))}
-                            </Box>
+                            </Box> */}
                           </Box>
                           <Box>
                             <MoreVertIcon
@@ -715,7 +673,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
         )}
 
         {/* Learners list */}
-        {value === 2 && (
+        {/* {value === 2 && (
           <>
             <Grid
               px={'18px'}
@@ -793,7 +751,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               modalOpen={reassignBlockRequestModalOpen}
             />
           </>
-        )}
+        )} */}
       </Box>
     </>
   );

@@ -5,17 +5,12 @@ import {
 } from '../utils/Interfaces';
 import { post, put } from './RestClient';
 
-export const getMyCohortMemberList = async ({
+const fetchCohortMemberList = async ({
   limit,
   page,
   filters,
 }: cohortMemberList): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/list`;
-  filters = {
-    ...filters,
-    role: Role.STUDENT,
-    status: [Status.DROPOUT, Status.ACTIVE],
-  };
   try {
     const response = await post(apiUrl, {
       limit,
@@ -25,9 +20,30 @@ export const getMyCohortMemberList = async ({
     console.log('data', response?.data);
     return response?.data;
   } catch (error) {
-    console.error('error in attendance report api ', error);
+    console.error('error in cohort member list API ', error);
     // throw error;
   }
+};
+
+export const getMyCohortMemberList = async ({
+  limit,
+  page,
+  filters,
+}: cohortMemberList): Promise<any> => {
+  const studentFilters = {
+    ...filters,
+    role: Role.STUDENT,
+    status: [Status.DROPOUT, Status.ACTIVE],
+  };
+  return fetchCohortMemberList({ limit, page, filters: studentFilters });
+};
+
+export const getFacilitatorList = async ({
+  limit,
+  page,
+  filters,
+}: cohortMemberList): Promise<any> => {
+  return fetchCohortMemberList({ limit, page, filters });
 };
 
 export const updateCohortMemberStatus = async ({
