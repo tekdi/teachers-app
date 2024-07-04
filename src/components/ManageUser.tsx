@@ -306,7 +306,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
       const selectedUserIds = [selectedUser?.userId];
 
       const matchedCohortIdsFromCohortsData = Object.values(cohortsData!)
-        .flatMap((cohorts) => cohorts)
+        .flat()
         .filter((cohort) => selectedCenters.includes(cohort.name))
         .map((cohort) => cohort.cohortId);
 
