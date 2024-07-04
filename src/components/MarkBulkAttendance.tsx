@@ -565,6 +565,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       ) => (
                         <AttendanceStatusListView
                           key={user.userId}
+                          isDisabled = {true}
                           userData={{
                             userId: user.userId,
                             attendance: user.attendance,
@@ -572,9 +573,9 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             name: user.name,
                             memberStatus: user.memberStatus,
                           }}
-                          isEdit={true}
-                          bulkAttendanceStatus={bulkAttendanceStatus}
-                          handleBulkAction={submitBulkAttendanceAction}
+                          // isEdit={true}
+                          // bulkAttendanceStatus={bulkAttendanceStatus}
+                          // handleBulkAction={submitBulkAttendanceAction}
                         />
                       )
                     )}
