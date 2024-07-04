@@ -144,9 +144,34 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
               </Link>
             </Grid>
             {memberStatus === Status.DROPOUT ? (
-              <Grid item xs={6}>
-                <DropoutLabel />
-              </Grid>
+              <>
+                <Grid item xs={3}>
+                  <Typography
+                    fontSize="1rem"
+                    fontWeight="bold"
+                    lineHeight="1.5rem"
+                    // color={theme.palette.text.primary}
+                    color={textColor}
+                    textAlign="center"
+                  >
+                    {presentPercent}%
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography
+                    fontSize="1rem"
+                    fontWeight="bold"
+                    lineHeight="1.5rem"
+                    color={theme.palette.text.primary}
+                    textAlign="center"
+                  >
+                    {classesMissed}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <DropoutLabel />
+                </Grid>
+              </>
             ) : (
               <>
                 <Grid item xs={3}>
