@@ -510,7 +510,7 @@ const TeachingCenters = () => {
             </>
           )}
         </Box>
-        <Box>{value === 2 && <ManageUser />}</Box>
+        <Box>{value === 2 && <ManageUser cohortData={blockData} />}</Box>
       </Box>
     </>
   );
