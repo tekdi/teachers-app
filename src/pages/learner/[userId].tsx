@@ -972,7 +972,7 @@ const LearnerProfile: React.FC = () => {
           </Box>
         </Box>
 
-        <Box>
+        <Box sx={{ mt: '10px' }}>
           <Box>
             <DateRangePopup
               menuItems={menuItems}

@@ -232,7 +232,7 @@ const TeachingCenters = () => {
                 container
               >
                 <Grid item xs={8}>
-                  <Box>
+                  <Box className="w-md-60">
                     <TextField
                       className="input_search"
                       placeholder={t('COMMON.SEARCH_FACILITATORS')}
@@ -241,7 +241,6 @@ const TeachingCenters = () => {
                       sx={{
                         borderRadius: '100px',
                         height: '40px',
-                        // width: '225px',
                       }}
                       InputProps={{
                         endAdornment: (
