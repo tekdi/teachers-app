@@ -21,3 +21,9 @@ export enum Status {
   ACTIVE = 'active',
   ARCHIVED = 'archived',
 }
+
+export enum cohortHierarchy {
+  BLOCK = 'BLOCK',
+  COHORT = 'COHORT',
+}
+

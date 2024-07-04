@@ -14,6 +14,7 @@ import ReactGA from 'react-ga4';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import Loader from './Loader';
+import { cohortHierarchy } from '@/utils/app.constant';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -87,7 +88,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
           const response = await getCohortList(userId, {customField: isCustomFieldRequired.toString()});
           console.log('Response:', response);
           if (response && response.length > 0) {
-            if (response[0].type === 'COHORT') {
+            if (response[0].type === cohortHierarchy.COHORT) {
               let filteredData = response
                 ?.map((item: any) => ({
                   cohortId: item?.cohortId,
@@ -118,7 +119,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                 }
                 
               }
-            } else if (response[0].type === 'BLOCK') {
+            } else if (response[0].type === cohortHierarchy.BLOCK) {
               setBlockName(response[0].name || response[0].cohortName);
               const filteredData = response[0].childData
                 ?.map((item: any) => ({
