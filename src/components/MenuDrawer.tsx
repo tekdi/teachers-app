@@ -32,6 +32,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const theme = useTheme<any>();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [isOpen, setIsOpen] = useState(open);
+  const [isTeamLeader, setIsTeamLeader] = useState(false);
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -41,6 +42,10 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     if (typeof window !== 'undefined' && window.localStorage) {
       const lang = localStorage.getItem('preferredLanguage') || 'en';
       setLanguage(lang);
+      const role = localStorage.getItem('role');
+      if (role === 'Team Leader') {
+        setIsTeamLeader(true);
+      }
     }
   }, [setLanguage]);
 
@@ -65,7 +70,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 
   const isDashboard = router.pathname === '/dashboard';
   const isTeacherCenter = router.pathname === '/centers';
-  const isManageUser = router.pathname === '/manageUser';
+  // const isManageUser = router.pathname === '/manageUser';
 
   return (
     <Drawer
@@ -211,7 +216,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               router.push(`/centers`); // Check route
             }}
           >
-            {t('DASHBOARD.MY_TEACHING_CENTERS')}
+            {isTeamLeader
+              ? t('DASHBOARD.TEACHING_CENTERS')
+              : t('DASHBOARD.MY_TEACHING_CENTERS')}
           </Button>
         </Box>
         <Box sx={{ marginTop: '12px' }}>
@@ -236,7 +243,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             {t('COMMON.OBSERVATIONS_FORMS')}
           </Button>
         </Box>
-        <Box sx={{ marginTop: '12px' }}>
+        {/* <Box sx={{ marginTop: '12px' }}>
           <Button
             className="fs-14"
             sx={{
@@ -264,7 +271,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           >
             {t('COMMON.MANAGE_USERS')}
           </Button>
-        </Box>
+        </Box> */}
       </Box>
     </Drawer>
   );

@@ -7,14 +7,10 @@ import {
 import {
   Box,
   Button,
-  FormControl,
   Grid,
   IconButton,
   InputBase,
-  MenuItem,
   Paper,
-  Select,
-  SelectChangeEvent,
   Stack,
   Typography,
 } from '@mui/material';
@@ -43,7 +39,6 @@ import { Status } from '@/utils/app.constant';
 import UpDownButton from '@/components/UpDownButton';
 import { attendanceStatusList } from '../services/AttendanceService';
 import { calculatePercentage } from '@/utils/attendanceStats';
-import { cohortList } from '@/services/CohortServices';
 import { cohortMemberList } from '../utils/Interfaces';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { logEvent } from '@/utils/googleAnalytics';
@@ -53,6 +48,10 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { logEvent } from '@/utils/googleAnalytics';
+import { showToastMessage } from '@/components/Toastify';
+import { Status } from '@/utils/app.constant';
+import CohortSelectionSection from '@/components/CohortSelectionSection';
 
 interface user {
   memberStatus: string;
@@ -88,10 +87,15 @@ const UserAttendanceHistory = () => {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
+  const [blockName, setBlockName] = React.useState<string>('');
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [userId, setUserId] = React.useState<string | null>(null);
+  const [manipulatedCohortData, setManipulatedCohortData] =
+    React.useState<Array<cohort>>(cohortsData);
   const searchRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
-  let userId: string;
+  // let userId: string;
   const currentDate = getTodayDate();
 
   const handleOpen = () => {
@@ -115,66 +119,6 @@ const UserAttendanceHistory = () => {
         push('/login', undefined, { locale: 'en' });
       }
     }
-  }, []);
-
-  // API call to get center list
-  useEffect(() => {
-    const fetchCohortList = async () => {
-      const userId = localStorage.getItem('userId');
-      setLoading(true);
-      try {
-        if (userId) {
-          const limit = 0;
-          const page = 0;
-          const filters = { userId: userId };
-          const resp = await cohortList({ limit, page, filters });
-          const extractedNames = resp?.results?.cohortDetails;
-          const filteredData = extractedNames
-            ?.map((item: any) => {
-              const stateNameField = item?.customFields.find(
-                (field: any) => field.label === 'State Name'
-              );
-              const stateName = stateNameField ? stateNameField.value : '';
-
-              return {
-                cohortId: item?.cohortId,
-                name: item?.name,
-                state: stateName,
-              };
-            })
-            ?.filter(Boolean);
-
-          setCohortsData(filteredData);
-          // setClassId(filteredData?.[0]?.cohortId);
-          // localStorage.setItem('classId', filteredData?.[0]?.cohortId);
-
-          // ----- add state name to localstorage----------
-          if (
-            extractedNames?.length > 0 &&
-            extractedNames?.[0].cohortData.customFields
-          ) {
-            const customFields = extractedNames?.[0].cohortData.customFields;
-            const stateNameField = customFields?.find(
-              (field: any) => field.label === 'State Name'
-            );
-            if (stateNameField) {
-              const state_name = stateNameField.value;
-              if (state_name) {
-                localStorage.setItem('stateName', state_name);
-              } else {
-                localStorage.setItem('stateName', '');
-              }
-            }
-          }
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Error fetching  cohort list:', error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-        setLoading(false);
-      }
-    };
-    fetchCohortList();
   }, []);
 
   useEffect(() => {
@@ -414,26 +358,6 @@ const UserAttendanceHistory = () => {
     }
   };
 
-  const handleCohortSelection = (event: SelectChangeEvent) => {
-    setClassId(event.target.value as string);
-    ReactGA.event('cohort-selection-attendance-history-page', {
-      selectedCohortID: event.target.value,
-    });
-    setHandleSaveHasRun(!handleSaveHasRun);
-
-    // ---------- set cohortId and stateName-----------
-    const cohort_id = event.target.value;
-    localStorage.setItem('cohortId', cohort_id);
-
-    const get_state_name: string | null = getStateByCohortId(cohort_id);
-    if (get_state_name) {
-      localStorage.setItem('stateName', get_state_name);
-    } else {
-      localStorage.setItem('stateName', '');
-      console.log('NO State For Selected Cohortksdbj');
-    }
-  };
-
   function getStateByCohortId(cohortId: any) {
     const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
     return cohort ? cohort?.state : null;
@@ -627,70 +551,41 @@ const UserAttendanceHistory = () => {
                   </Box>
                 </Box>
 
-                <Typography
-                  marginBottom={'0px'}
-                  fontSize={'22px'}
-                  color={theme.palette.warning['A200']}
-                >
-                  {t('ATTENDANCE.DAY_WISE_ATTENDANCE')}
-                </Typography>
-              </Box>
-            </Box>
-
-            <Box
-              className="w-md-40 mt-1-rem "
-              sx={{
-                minWidth: 120,
-                gap: '15px',
-                paddingBottom: '10px',
-                padding: '0 10px 10px',
-              }}
-              display={'flex'}
-            >
-              {cohortsData?.length > 1 ? (
-                <FormControl
-                  className="drawer-select"
-                  sx={{ m: 1, width: '100%' }}
-                >
-                  <Select
-                    value={classId}
-                    onChange={handleCohortSelection}
-                    displayEmpty
-                    inputProps={{ 'aria-label': 'Without label' }}
-                    // disabled={cohortsData?.length === 1 ? true : false}
-                    className="SelectLanguages fs-14 fw-500"
-                    style={{
-                      borderRadius: '0.5rem',
-                      color: theme.palette.warning['200'],
-                      width: '100%',
-                      marginBottom: '0rem',
-                    }}
-                  >
-                    {cohortsData?.length !== 0 ? (
-                      cohortsData?.map((cohort) => (
-                        <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                          {cohort.name}
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <Typography style={{ fontWeight: 'bold' }}>
-                        {t('COMMON.NO_DATA_FOUND')}
-                      </Typography>
-                    )}
-                  </Select>
-                </FormControl>
-              ) : (
-                <Typography
-                  color={theme.palette.warning['300']}
-                  pl={'1rem'}
-                  variant="h1"
-                >
-                  {cohortsData[0]?.name}
-                </Typography>
-              )}
+              <Typography
+                marginBottom={'0px'}
+                fontSize={'22px'}
+                color={theme.palette.warning['A200']}
+              >
+                {t('ATTENDANCE.DAY_WISE_ATTENDANCE')}
+              </Typography>
             </Box>
           </Box>
+<Box className="w-md-40 mt-1-rem ">
 
+
+          <Box p={'10px 20px'}>
+            <CohortSelectionSection
+              classId={classId}
+              setClassId={setClassId}
+              userId={userId}
+              setUserId={setUserId}
+              isAuthenticated={isAuthenticated}
+              setIsAuthenticated={setIsAuthenticated}
+              loading={loading}
+              setLoading={setLoading}
+              cohortsData={cohortsData}
+              setCohortsData={setCohortsData}
+              manipulatedCohortData={manipulatedCohortData}
+              setManipulatedCohortData={setManipulatedCohortData}
+              isManipulationRequired={false}
+              blockName={blockName}
+              setBlockName={setBlockName}
+              handleSaveHasRun={handleSaveHasRun}
+              setHandleSaveHasRun={setHandleSaveHasRun}
+              isCustomFieldRequired={true}
+            />
+          </Box>
+          </Box>
           <Box
             pl={1}
             borderBottom={1}
