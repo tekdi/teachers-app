@@ -35,8 +35,10 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import { editEditUser } from '@/services/ProfileService';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { Status } from '@/utils/app.constant';
+import AddIcon from '@mui/icons-material/Add';
 
 import LearnersList from '@/components/LearnersList';
+import Link from 'next/link';
 interface Cohort {
   cohortId: string;
   parentId: string;
@@ -110,8 +112,8 @@ const learnersList = [
   },
 ];
 interface ManageUsersProps {
-  reloadState: boolean;
-  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
+  reloadState?: boolean;
+  setReloadState?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const manageUsers: React.FC<ManageUsersProps> = ({
@@ -386,20 +388,26 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     setReassignBlockRequestModalOpen(false);
   };
 
+  const handleLearnerFullProfile = () => {
+    // router.push(`/learner/${userId}`);
+    router.push(`/profile`);
+  };
+  const noop = () => {};
+
   return (
     <>
-      <Header />
-      <Box sx={{ padding: '0 18px' }} className="mt--4">
-        <Box
+      {/* <Header /> */}
+      <Box>
+        {/* <Box
           textAlign={'left'}
           fontSize={'22px'}
           p={'18px 0'}
           color={theme?.palette?.warning['300']}
         >
           {t('COMMON.MANAGE_USERS')}
-        </Box>
+        </Box> */}
       </Box>
-      <Box sx={{ width: '100%' }}>
+      {/* <Box sx={{ width: '100%' }}>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -431,7 +439,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
           <Tab value={1} label={t('COMMON.FACILITATORS')} />
           <Tab value={2} label={t('COMMON.LEARNERS')} />
         </Tabs>
-      </Box>
+      </Box> */}
       <Box>
         {value === 1 && (
           <>
@@ -483,6 +491,25 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                   </FormControl>
                 </Box>
               </Grid>
+              <Box mt={'18px'} px={'18px'}>
+                <Button
+                  sx={{
+                    border: '1px solid #1E1B16',
+                    borderRadius: '100px',
+                    height: '40px',
+                    width: '8rem',
+                    color: theme.palette.error.contrastText,
+                  }}
+                  className="text-1E"
+                  endIcon={<AddIcon />}
+                >
+                  {t('COMMON.ADD_NEW')}
+                </Button>
+                {/* <Box sx={{ display: 'flex', gap: '5px' }}>
+                  <ErrorOutlineIcon style={{ fontSize: '15px' }} />
+                  <Box className="fs-12 fw-500 ">{t('COMMON.ADD_CENTER')}</Box>
+                </Box> */}
+              </Box>
             </Grid>
 
             <Box>
@@ -510,14 +537,17 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                           justifyContent={'space-between'}
                           sx={{ cursor: 'pointer' }}
                         >
-                          <Box onClick={() => handleModalToggle(user)}>
+                          <Box
+                            // onClick={() => handleModalToggle(user)}
+                            onClick={() => handleLearnerFullProfile()}
+                          >
                             <Box
                               sx={{
                                 fontSize: '16px',
                                 color: theme.palette.warning['300'],
                               }}
                             >
-                              {user.name}
+                              <Link href={'/profile'}>{user.name}</Link>
                             </Box>
 
                             <Box display={'flex'}>
@@ -588,15 +618,15 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                     ),
                     name: 'reassign-block-request',
                   },
-                  {
-                    label: t('COMMON.REASSIGN_CENTERS'),
-                    icon: (
-                      <ApartmentIcon
-                        sx={{ color: theme.palette.warning['300'] }}
-                      />
-                    ),
-                    name: 'reassign-centers',
-                  },
+                  // {
+                  //   label: t('COMMON.REASSIGN_CENTERS'),
+                  //   icon: (
+                  //     <ApartmentIcon
+                  //       sx={{ color: theme.palette.warning['300'] }}
+                  //     />
+                  //   ),
+                  //   name: 'reassign-centers',
+                  // },
                   {
                     label: t('COMMON.DELETE_USER'),
                     icon: (
@@ -654,7 +684,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             </Box>
 
             <ConfirmationModal
-              message={t('BLOCKS.BLOCK_REQUEST')}
+              message={t('CENTERS.BLOCK_REQUEST')}
               buttonNames={{
                 primary: t('COMMON.SEND_REQUEST'),
                 secondary: t('COMMON.CANCEL'),
@@ -725,8 +755,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                 enrollmentId={data.enrollmentNumber}
                 cohortMembershipId={data.cohortMembershipId}
                 statusReason={data.statusReason}
-                reloadState={reloadState}
-                setReloadState={setReloadState}
+                reloadState={reloadState || false}
+                setReloadState={setReloadState || noop}
                 block={data.block}
                 center={data.center}
                 userId={data.userId}
@@ -734,7 +764,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             ))}
 
             <ConfirmationModal
-              message={t('BLOCKS.BLOCK_REQUEST')}
+              message={t('CENTERS.BLOCK_REQUEST')}
               handleAction={handleReassignBlockRequest}
               buttonNames={{
                 primary: t('COMMON.SEND_REQUEST'),
@@ -749,12 +779,12 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     </>
   );
 };
-export async function getStaticProps({ locale }: any) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-      // Will be passed to the page component as props
-    },
-  };
-}
+// export async function getStaticProps({ locale }: any) {
+//   return {
+//     props: {
+//       ...(await serverSideTranslations(locale, ['common'])),
+//       // Will be passed to the page component as props
+//     },
+//   };
+// }
 export default manageUsers;

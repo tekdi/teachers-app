@@ -6,17 +6,7 @@ import {
   cohortAttendancePercentParam,
   cohortMemberList,
 } from '../utils/Interfaces';
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import React, { useEffect } from 'react';
 import {
@@ -24,7 +14,6 @@ import {
   getAllCenterAttendance,
   getCohortAttendance,
 } from '../services/AttendanceService';
-// import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
 import {
   formatSelectedDate,
@@ -46,7 +35,6 @@ import ReactGA from 'react-ga4';
 import WeekCalender from '@/components/WeekCalender';
 import { calculatePercentage } from '@/utils/attendanceStats';
 import calendar from '../assets/images/calendar.svg';
-import { cohortList } from '../services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { logEvent } from '@/utils/googleAnalytics';
 import { lowLearnerAttendanceLimit } from './../../app.config';
@@ -57,7 +45,8 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { useCohortList } from '@/services/queries';
+import CohortSelectionSection from '@/components/CohortSelectionSection';
+
 interface DashboardProps {
   //   buttonText: string;
 }
@@ -96,6 +85,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   sevenDaysAgo.setDate(currentDate.getDate() - modifyAttendanceLimit);
   const formattedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
   const [userId, setUserId] = React.useState<string | null>(null);
+  const [blockName, setBlockName] = React.useState<string>('');
 
   useEffect(() => {
     setIsClient(true);
@@ -144,48 +134,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const page = 0;
   const filters = { userId: userId || '' };
 
-  useEffect(() => {
-    if (userId) {
-      setLoading(true);
-      const fetchCohorts = async () => {
-        try {
-          const response = await cohortList({ limit, page, filters });
-          const extractedNames = response?.results?.cohortDetails;
-          localStorage.setItem('parentCohortId', extractedNames?.[0].cohortData?.parentId);
-
-          const filteredData = extractedNames
-            ?.map((item: any) => ({
-              cohortId: item?.cohortId,
-              parentId: item?.parentId,
-              name: item?.name,
-            }))
-            ?.filter(Boolean);
-          setCohortsData(filteredData);
-          if (filteredData.length > 0) {
-            if (typeof window !== 'undefined' && window.localStorage) {
-              const cohort = localStorage.getItem('classId') || '';
-              if (cohort !== '') {
-                setClassId(localStorage.getItem('classId') || '');
-              } else {
-                localStorage.setItem('classId', filteredData?.[0]?.cohortId);
-                setClassId(filteredData?.[0]?.cohortId);
-              }
-            }
-            setManipulatedCohortData(
-              filteredData.concat({ cohortId: 'all', name: 'All Centers' })
-            );
-          }
-          setLoading(false);
-        } catch (error) {
-          console.error('Error fetching cohort list', error);
-          setLoading(false);
-        }
-      };
-
-      fetchCohorts();
-    }
-  }, [userId]);
-
   //API for getting student list
   useEffect(() => {
     const getCohortMemberList = async () => {
@@ -207,7 +155,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
               name: toPascalCase(entry.name),
             }));
             if (nameUserIdArray) {
-              //Write logic to call class missed api
+              //Logic to call class missed api
               const fromDate = startDateRange;
               const toDate = endDateRange;
               const filters = {
@@ -245,7 +193,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     (user) =>
                       user.absent &&
                       (user.present_percent < lowLearnerAttendanceLimit ||
-                        user.present_percent === undefined) //TODO: Modify here condition to show low attendance learners
+                        user.present_percent === undefined)
                   );
 
                   // Extract names of these students
@@ -305,7 +253,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 scope: 'student',
                 contextId: cohortId,
               };
-              console.log('Filters:', filters); // Log filters to ensure contextId is set
+              // console.log('Filters:', filters);
 
               try {
                 const response = await getAllCenterAttendance({
@@ -391,15 +339,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
       category: 'Dashboard Page',
       label: 'Mark/ Modify Attendance',
     });
-  };
-
-  const handleCohortSelection = (event: SelectChangeEvent) => {
-    setClassId(event.target.value as string);
-    ReactGA.event('cohort-selection-dashboard', {
-      selectedCohortID: event.target.value,
-    });
-    localStorage.setItem('classId', event.target.value);
-    setHandleSaveHasRun(!handleSaveHasRun);
   };
 
   const getMonthName = (dateString: string) => {
@@ -594,65 +533,26 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           />
                         </Box>
                       </Box>
-                      <Box sx={{ mt: 2 }}>
-                        <Box
-                          sx={{ minWidth: 120, gap: '15px' }}
-                          display={'flex'}
-                        >
-                          {cohortsData?.length > 1 ? (
-                            <FormControl
-                              className="drawer-select"
-                              sx={{ m: 0, width: '100%' }}
-                            >
-                              <Select
-                                value={classId}
-                                onChange={handleCohortSelection}
-                                displayEmpty
-                                inputProps={{ 'aria-label': 'Without label' }}
-                                className="SelectLanguages fs-14 fw-500 bg-white"
-                                style={{
-                                  borderRadius: '0.5rem',
-                                  color: theme.palette.warning['200'],
-                                  width: '100%',
-                                  marginBottom: '0rem',
-                                }}
-                              >
-                                {cohortsData?.length !== 0 ? (
-                                  manipulatedCohortData?.map((cohort) => (
-                                    <MenuItem
-                                      key={cohort.cohortId}
-                                      value={cohort.cohortId}
-                                      style={{
-                                        fontWeight: '500',
-                                        fontSize: '14px',
-                                        color: '#4D4639',
-                                      }}
-                                    >
-                                      {cohort.name}
-                                    </MenuItem>
-                                  ))
-                                ) : (
-                                  <Typography
-                                    style={{
-                                      fontWeight: '500',
-                                      fontSize: '14px',
-                                      color: '#4D4639',
-                                      padding: '0 15px',
-                                    }}
-                                  >
-                                    {t('COMMON.NO_DATA_FOUND')}
-                                  </Typography>
-                                )}
-                              </Select>
-                            </FormControl>
-                          ) : (
-                            <Typography color={theme.palette.warning['300']}>
-                              {cohortsData[0]?.name}
-                            </Typography>
-                          )}
-                        </Box>
-                      </Box>
-                      {/* TODO: Write logic to disable this block on all select */}
+                      <CohortSelectionSection
+                        classId={classId}
+                        setClassId={setClassId}
+                        userId={userId}
+                        setUserId={setUserId}
+                        isAuthenticated={isAuthenticated}
+                        setIsAuthenticated={setIsAuthenticated}
+                        loading={loading}
+                        setLoading={setLoading}
+                        cohortsData={cohortsData}
+                        setCohortsData={setCohortsData}
+                        manipulatedCohortData={manipulatedCohortData}
+                        setManipulatedCohortData={setManipulatedCohortData}
+                        blockName={blockName}
+                        setBlockName={setBlockName}
+                        handleSaveHasRun={handleSaveHasRun}
+                        setHandleSaveHasRun={setHandleSaveHasRun}
+                        isCustomFieldRequired = {false}
+                      />
+                      {/* Logic to disable this block on all select */}
                       <Box>
                         <Box sx={{ mt: 1.5, position: 'relative' }}>
                           <WeekCalender

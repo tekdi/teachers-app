@@ -3,14 +3,10 @@
 import {
   Box,
   Button,
-  FormControl,
   Grid,
   IconButton,
   InputBase,
-  MenuItem,
   Paper,
-  Select,
-  SelectChangeEvent,
   Stack,
   Typography,
 } from '@mui/material';
@@ -45,7 +41,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '@/components/SortingModal';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
 import UpDownButton from '@/components/UpDownButton';
-import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { lowLearnerAttendanceLimit } from './../../app.config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -55,6 +50,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { logEvent } from '@/utils/googleAnalytics';
 import { showToastMessage } from '@/components/Toastify';
+import CohortSelectionSection from '@/components/CohortSelectionSection';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -71,6 +67,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     React.useState<Array<cohort>>(cohortsData);
   const [allCenterAttendanceData, setAllCenterAttendanceData] =
     React.useState<any>(cohortsData);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   const [loading, setLoading] = React.useState(false);
   const [searchWord, setSearchWord] = React.useState('');
@@ -84,7 +81,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     Array<any>
   >([]);
   const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
-  const [userId, setUserId] = React.useState('');
+  const [userId, setUserId] = React.useState<string | null>(null);
   const [selectedValue, setSelectedValue] = React.useState<any>('');
   const [presentPercentage, setPresentPercentage] = React.useState<
     string | number
@@ -94,6 +91,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
     useState(0);
   const [dateRange, setDateRange] = React.useState<Date | string>('');
+  const [blockName, setBlockName] = React.useState<string>('');
 
   const theme = useTheme<any>();
   const pathname = usePathname();
@@ -183,72 +181,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         date_range: dateRange,
       }),
   ]);
-
-  // API call to get center list
-  useEffect(() => {
-    const fetchCohortList = async () => {
-      const userId = localStorage.getItem('userId');
-      if (userId) {
-        setUserId(userId);
-      }
-      setLoading(true);
-      try {
-        if (userId) {
-          const limit = 0;
-          const page = 0;
-          const filters = { userId: userId };
-          const resp = await cohortList({ limit, page, filters });
-          const response = resp?.results;
-          const cohortDetails = response?.cohortDetails || [];
-
-          const filteredData = cohortDetails?.map((item: any) => {
-            const stateNameField = item?.customFields.find(
-              (field: any) => field.label === 'State Name'
-            );
-            const stateName = stateNameField ? stateNameField.value : '';
-
-            return {
-              cohortId: item?.cohortId,
-              name: toPascalCase(item?.name),
-              state: stateName,
-            };
-          });
-
-          setCohortsData(filteredData);
-
-          if (filteredData.length > 0) {
-            // setClassId(filteredData[0].cohortId);
-
-            // add state name to localstorage
-            if (cohortDetails?.length > 0 && cohortDetails?.[0].customFields) {
-              const customFields = cohortDetails?.[0].customFields;
-              const stateNameField = customFields?.find(
-                (field: any) => field.label === 'State Name'
-              );
-              if (stateNameField) {
-                const state_name = stateNameField.value;
-                if (state_name) {
-                  localStorage.setItem('stateName', state_name);
-                } else {
-                  localStorage.setItem('stateName', '');
-                  console.log('No State Name');
-                }
-              }
-            }
-            setManipulatedCohortData(
-              filteredData.concat({ cohortId: 'all', name: 'All Centers' })
-            );
-          }
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching  cohort list:', error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-        setLoading(false);
-      }
-    };
-    fetchCohortList();
-  }, []);
 
   const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
     console.log('Date Range Selected:', { fromDate, toDate });
@@ -457,30 +389,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   //   setDisplayStudentList(learnerData);
   // },[searchWord == ""])
 
-  const handleCohortSelection = (event: SelectChangeEvent) => {
-    setClassId(event.target.value as string);
-    ReactGA.event('cohort-selection-attendance-overview-page', {
-      selectedCohortID: event.target.value,
-    });
-
-    // ---------- set cohortId and stateName-----------
-    const cohort_id = event.target.value;
-    localStorage.setItem('cohortId', cohort_id);
-
-    const get_state_name: string | null = getStateByCohortId(cohort_id);
-    if (get_state_name) {
-      localStorage.setItem('stateName', get_state_name);
-    } else {
-      localStorage.setItem('stateName', '');
-      console.log('NO State For Selected Cohort');
-    }
-  };
-
-  function getStateByCohortId(cohortId: any) {
-    const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
-    return cohort ? cohort?.state : null;
-  }
-
   const handleSearchClear = () => {
     setSearchWord('');
     setDisplayStudentList(learnerData);
@@ -618,47 +526,24 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
           </Typography>
         </Box>
-
-        <Box sx={{ px: '16px', width: '100%', gap: '15px' }} display={'flex'}>
-          {cohortsData?.length > 1 ? (
-            <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
-              <Select
-                value={classId}
-                onChange={handleCohortSelection}
-                displayEmpty
-                // disabled={cohortsData?.length <= 1 ? true : false}
-                inputProps={{ 'aria-label': 'Without label' }}
-                className="SelectLanguages fs-14 fw-500 bg-white"
-                style={{
-                  borderRadius: '0.5rem',
-                  color: theme.palette.warning['200'],
-                  width: '100%',
-                  marginBottom: '0rem',
-                  fontSize: '16px',
-                }}
-              >
-                {cohortsData?.length !== 0 ? (
-                  manipulatedCohortData?.map((cohort) => (
-                    <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                      {cohort.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <Typography style={{ fontWeight: 'bold' }}>
-                    {t('COMMON.NO_DATA_FOUND')}
-                  </Typography>
-                )}
-              </Select>
-            </FormControl>
-          ) : (
-            <Typography
-              color={theme.palette.warning['300']}
-              pl={1}
-              variant="h1"
-            >
-              {cohortsData[0]?.name}
-            </Typography>
-          )}
+        <Box p={'10px 20px'}>
+          <CohortSelectionSection
+            classId={classId}
+            setClassId={setClassId}
+            userId={userId}
+            setUserId={setUserId}
+            loading={loading}
+            setLoading={setLoading}
+            cohortsData={cohortsData}
+            setCohortsData={setCohortsData}
+            isAuthenticated={isAuthenticated}
+            setIsAuthenticated={setIsAuthenticated}
+            manipulatedCohortData={manipulatedCohortData}
+            setManipulatedCohortData={setManipulatedCohortData}
+            blockName={blockName}
+            setBlockName={setBlockName}
+            isCustomFieldRequired={true}
+          />
         </Box>
 
         <Box className="linerGradient" sx={{ padding: '10px 20px' }}>

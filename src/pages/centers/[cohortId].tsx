@@ -143,7 +143,9 @@ const TeachingCenterDetails = () => {
               <Box
                 sx={{ color: theme.palette.secondary.main }}
                 className="fs-14 fw-500"
-                onClick={()=>{router.push('/attendance-overview')}}
+                onClick={() => {
+                  router.push('/attendance-overview');
+                }}
               >
                 {t('COMMON.REVIEW_ATTENDANCE')}
               </Box>

@@ -78,19 +78,23 @@ const Blocks: React.FC<BlocksProps> = () => {
 
     // Apply sorting
     if (sortOrder === 'asc') {
-      updatedCenters = updatedCenters?.sort((a, b) => a?.name?.localeCompare(b.name));
+      updatedCenters = updatedCenters?.sort((a, b) =>
+        a?.name?.localeCompare(b.name)
+      );
     } else if (sortOrder === 'desc') {
-      updatedCenters = updatedCenters?.sort((a, b) => b?.name?.localeCompare(a.name));
+      updatedCenters = updatedCenters?.sort((a, b) =>
+        b?.name?.localeCompare(a.name)
+      );
     }
 
     // Apply center type filter
     if (centerType === 'regular') {
-      updatedCenters = updatedCenters?.filter((center) =>
-        center?.type === 'regular'
+      updatedCenters = updatedCenters?.filter(
+        (center) => center?.type === 'regular'
       );
     } else if (centerType === 'remote') {
-      updatedCenters = updatedCenters?.filter((center) =>
-        center?.type === 'remote'
+      updatedCenters = updatedCenters?.filter(
+        (center) => center?.type === 'remote'
       );
     }
 
@@ -333,6 +337,5 @@ export async function getStaticProps({ locale }: any) {
     },
   };
 }
-
 
 export default Blocks;
