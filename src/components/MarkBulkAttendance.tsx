@@ -573,6 +573,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             name: user.name,
                             memberStatus: user.memberStatus,
                           }}
+                          presentCount = {presentCount}
+                          absentCount = {absentCount}
                           // isEdit={true}
                           // bulkAttendanceStatus={bulkAttendanceStatus}
                           // handleBulkAction={submitBulkAttendanceAction}

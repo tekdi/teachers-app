@@ -34,6 +34,8 @@ export interface AttendanceStatusListViewProps {
     id?: string | undefined
   ) => void;
   bulkAttendanceStatus?: string;
+  presentCount?: number;
+  absentCount?: number;
 }
 
 export interface UserAttendanceObj {
