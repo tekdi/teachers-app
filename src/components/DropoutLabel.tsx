@@ -1,7 +1,8 @@
 import { Box, Typography } from '@mui/material';
+
+import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import React from 'react';
 
 const DropoutLabel = () => {
   const theme = useTheme<any>();
