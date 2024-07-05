@@ -23,7 +23,7 @@ export const getCohortDetails = async (cohortId: string): Promise<any> => {
     return response?.data?.result;
   } catch (error) {
     console.error('error in getting cohort details', error);
-    throw error;
+    // throw error;
   }
 };
 

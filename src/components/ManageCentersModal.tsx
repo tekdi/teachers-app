@@ -49,7 +49,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
     bgcolor: theme.palette.warning['A400'],
     boxShadow: 24,
     borderRadius: '16px',
-    height: '526px',
+    height: 'auto',
     '@media (min-width: 600px)': {
       width: '450px',
     },
@@ -111,7 +111,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                 }}
                 component="h2"
               >
-                {t('COMMON.MANAGE_CENTERS')}
+                {t('COMMON.REASSIGN_CENTERS')}
               </Typography>
             </Box>
             <CloseIcon

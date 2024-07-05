@@ -27,6 +27,7 @@ import { Status, names } from '@/utils/app.constant';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import ManageCentersModal from './ManageCentersModal';
+import { styled } from '@mui/system';
 
 type Anchor = 'bottom';
 const centerList = ['Nashik', 'Shirdi', 'kamptee'];
@@ -67,6 +68,12 @@ const LearnersList: React.FC<LearnerListProps> = ({
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
+
+  const CustomLink = styled(Link)(({ theme }) => ({
+    textDecoration: 'underline',
+    textDecorationColor: theme?.palette?.secondary.main,
+    textDecorationThickness: '1px',
+  }));
 
   useEffect(() => {
     if (reloadState) {
@@ -359,7 +366,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
                   {learnerName}
                 </Box>
               ) : (
-                <Link className="word-break" href="#">
+                <CustomLink className="word-break" href="#">
                   <Typography
                     onClick={() => {
                       handleOpenModalLearner(userId!);
@@ -376,7 +383,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
                   >
                     {learnerName}
                   </Typography>
-                </Link>
+                </CustomLink>
               )}
 
               <Box
@@ -538,7 +545,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
                   name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
                 },
                 {
-                  label: t('COMMON.REMOVE_FROM_CENTER'),
+                  label: t('COMMON.DELETE_USER'),
                   icon: (
                     <DeleteOutlineIcon
                       sx={{ color: theme.palette.warning['300'] }}
