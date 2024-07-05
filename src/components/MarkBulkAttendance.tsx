@@ -229,6 +229,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       });
                       if (newArray.length != 0) {
                         setNumberOfCohortMembers(newArray?.length);
+                        setCohortMemberList(newArray)
                         const hasDropout = newArray.some(
                           (user) => user.memberStatus === Status.DROPOUT
                         );
