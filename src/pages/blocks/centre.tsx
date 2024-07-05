@@ -256,7 +256,7 @@ const Blocks: React.FC<BlocksProps> = () => {
               ))}
           </Box>
           <Typography variant="h5" color={theme?.palette?.text?.primary} mt={2}>
-            {t('CENTERS.REMOTE_CENTERS')}
+            {t('CENTERS.REMOTE_CENTER')}
           </Typography>
           <Box
             sx={{

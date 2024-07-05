@@ -33,14 +33,22 @@ const TeachingCenterDetails = () => {
       const response = await getCohortDetails(cohortId);
       console.log(response);
 
-      if (response?.cohortData) {
-        if (response.cohortData.customFields?.length) {
-          const addressField = response.cohortData.customFields.find(
-            (item: CustomField) => item.name === 'address'
+      let cohortData = null;
+
+      if (response?.cohortData?.length) {
+        cohortData = response?.cohortData[0];
+
+        if (cohortData?.customField?.length) {
+          const district = cohortData.customField.find(
+            (item: CustomField) => item.label === "District"
           );
-          response.cohortData.address = addressField?.value || '';
+          const state = cohortData.customField.find(
+            (item: CustomField) => item.label === 'State'
+          );
+
+          cohortData.address = `${district?.value}, ${state?.value}` || '';
         }
-        setCohortDetails(response.cohortData);
+        setCohortDetails(cohortData);
       }
     };
     getCohortData();

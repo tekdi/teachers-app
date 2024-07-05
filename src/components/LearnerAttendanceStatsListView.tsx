@@ -1,17 +1,17 @@
 import { Box, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
-import ReactGA from 'react-ga4';
+import { Status, names } from '@/utils/app.constant';
 import { UserData, updateCustomField } from '@/utils/Interfaces';
 
+import DropoutLabel from './DropoutLabel';
 import LearnerModal from './LearnerModal';
 import Link from 'next/link';
 import Loader from './Loader';
+import ReactGA from 'react-ga4';
 import { getUserDetails } from '@/services/ProfileService';
+import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
-import DropoutLabel from './DropoutLabel';
-import { Status, names } from '@/utils/app.constant';
 
 interface StudentsStatsListProps {
   name: string;
@@ -144,9 +144,38 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
               </Link>
             </Grid>
             {memberStatus === Status.DROPOUT ? (
-              <Grid item xs={6}>
-                <DropoutLabel />
-              </Grid>
+              <>
+                <Grid item xs={6}>
+                  <Grid container>
+                    <Grid xs={6}>
+                      <Typography
+                        fontSize="1rem"
+                        fontWeight="bold"
+                        lineHeight="1.5rem"
+                        // color={theme.palette.text.primary}
+                        color={textColor}
+                        textAlign="center"
+                        ml={'15px'}
+                      >
+                        {presentPercent}%
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography
+                        fontSize="1rem"
+                        fontWeight="bold"
+                        lineHeight="1.5rem"
+                        color={theme.palette.text.primary}
+                        textAlign="center"
+                        ml={'20px'}
+                      >
+                        {classesMissed}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <DropoutLabel />
+                </Grid>
+              </>
             ) : (
               <>
                 <Grid item xs={3}>

@@ -13,6 +13,7 @@ export const names = [
 export enum Role {
   STUDENT = 'Student',
   TEACHER = 'Teacher',
+  TEAM_LEADER = 'Team Leader',
   ADMIN = 'Admin',
 }
 
