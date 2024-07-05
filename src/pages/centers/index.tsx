@@ -31,6 +31,7 @@ import ManageUser from '@/components/ManageUser';
 import { setTimeout } from 'timers';
 import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
 import CreateCenterModal from '@/components/center/CreateCenterModal';
+import { toPascalCase } from '@/utils/Helper';
 
 const TeachingCenters = () => {
   const [loading, setLoading] = React.useState(false);
@@ -149,7 +150,7 @@ const TeachingCenters = () => {
                   {block.blockName}
                   {block?.district && (
                     <Box textAlign={'left'} fontSize={'16px'}>
-                      {block.district}, {block.state}
+                      {block.district}, {toPascalCase(block.state)}
                     </Box>
                   )}
                 </Box>
