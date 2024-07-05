@@ -217,7 +217,7 @@ const TeachingCenters = () => {
                   <Box>
                     <TextField
                       className="input_search"
-                      placeholder={t('COMMON.SEARCH_FACILITATORS')}
+                      placeholder={t('COMMON.SEARCH')}
                       color="secondary"
                       focused
                       sx={{
