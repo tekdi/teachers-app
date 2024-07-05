@@ -17,7 +17,7 @@ export const cohortList = async ({
 };
 
 export const getCohortDetails = async (cohortId: string): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohort/read/${cohortId}`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohort/cohortHierarchy/${cohortId}`;
   try {
     const response = await get(apiUrl);
     return response?.data?.result;

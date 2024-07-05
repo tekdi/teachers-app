@@ -1,3 +1,5 @@
+import { Role } from '@/utils/app.constant';
+
 export const lowLearnerAttendanceLimit: number = 32;
 export const avgLearnerAttendanceLimit: number = 66;
 export const dashboardDaysLimit: number = 30;
@@ -22,3 +24,9 @@ export const dropoutReasons = [
   { label: 'DISTANCE_ISSUE', value: 'Distance issue' },
   { label: 'SCHOOL_ADMISSION', value: 'School admission' },
 ];
+
+export const accessControl: { [key: string]: Role[] } = {
+  viewDashboard: [Role.TEACHER, Role.TEAM_LEADER],
+  viewAttendance: [Role.TEACHER, Role.TEAM_LEADER],
+  createLearner: [Role.TEACHER, Role.TEAM_LEADER],
+};
