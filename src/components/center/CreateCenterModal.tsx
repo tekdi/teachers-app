@@ -18,6 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme, styled } from '@mui/material/styles';
+import { showToastMessage } from '../Toastify';
 
 interface CreateBlockModalProps {
   open: boolean;
@@ -54,7 +55,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   const handleCreateButtonClick = () => {
     console.log('Entered Center Name:', centerName);
     console.log('Selected Center Type:', centerType);
-
+    showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
     handleClose();
   };
 
@@ -101,12 +102,10 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
           </Box>
           <Divider sx={{ mb: 2, mx: -2 }} />
           <FormControl component="fieldset" sx={{ mb: 2 }}>
-            <FormLabel sx={{ fontSize: '12px' }} component="legend">{t('CENTERS.CENTER_TYPE')}</FormLabel>
-            <RadioGroup
-              row
-              value={centerType}
-              onChange={handleRadioChange}
-            >
+            <FormLabel sx={{ fontSize: '12px' }} component="legend">
+              {t('CENTERS.CENTER_TYPE')}
+            </FormLabel>
+            <RadioGroup row value={centerType} onChange={handleRadioChange}>
               <FormControlLabel
                 value="Regular"
                 control={<CustomRadio />}

@@ -34,9 +34,10 @@ import { editEditUser } from '@/services/ProfileService';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { Status } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
-
 import LearnersList from '@/components/LearnersList';
 import Link from 'next/link';
+import { styled } from '@mui/system';
+
 import { getFacilitatorList } from '@/services/MyClassDetailsService';
 interface Cohort {
   cohortId: string;
@@ -106,6 +107,12 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const [learnerData, setLearnerData] = React.useState<LearnerDataProps[]>();
   const [reassignBlockRequestModalOpen, setReassignBlockRequestModalOpen] =
     React.useState<boolean>(false);
+
+  const CustomLink = styled(Link)(({ theme }) => ({
+    textDecoration: 'underline',
+    textDecorationColor: theme?.palette?.secondary.main,
+    textDecorationThickness: '1px',
+  }));
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -332,7 +339,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
       // if (response) {
       //   centers;
       //   handleCloseCentersModal();
-      //   toggleDrawer('bottom', false, '');
+      //      setState({ ...state, bottom: false });
       // }
     } catch (error) {
       console.error('Error assigning centers:', error);
@@ -353,6 +360,11 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     // router.push(`/profile/${userId}`);
   };
   const noop = () => {};
+
+  const handleRequestBlockAction = () => {
+    showToastMessage(t('BLOCKS.REASSIGN_BLOCK_REQUESTED'), 'success');
+    setState({ ...state, bottom: false });
+  };
 
   return (
     <>
@@ -508,7 +520,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                                 color: theme.palette.warning['300'],
                               }}
                             >
-                              <Link className="word-break" href="#">
+                              <CustomLink className="word-break" href="#">
                                 <Typography
                                   onClick={() => {
                                     handleLearnerFullProfile(user.userId!);
@@ -522,7 +534,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                                 >
                                   {user.name}
                                 </Typography>
-                              </Link>
+                              </CustomLink>
 
                               <Box
                                 sx={{
@@ -571,6 +583,20 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                           </Box>
                         </Box>
                       ))}
+                    {!users?.length && (
+                      <Box
+                        sx={{
+                          m: '1.125rem',
+                          display: 'flex',
+                          justifyContent: 'left',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography style={{ fontWeight: 'bold' }}>
+                          {t('COMMON.NO_DATA_FOUND')}
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
                 </Box>
               </Box>
@@ -662,6 +688,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
             <ConfirmationModal
               message={t('CENTERS.BLOCK_REQUEST')}
+              handleAction={handleRequestBlockAction}
               buttonNames={{
                 primary: t('COMMON.SEND_REQUEST'),
                 secondary: t('COMMON.CANCEL'),
