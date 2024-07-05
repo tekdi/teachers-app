@@ -54,35 +54,6 @@ const TeachingCenters = () => {
   const [openCreateCenterModal, setOpenCreateCenterModal] =
     React.useState(false);
 
-  // API call to get center list
-  useEffect(() => {
-    const fetchCohortList = async () => {
-      const userId = localStorage.getItem('userId');
-      if (!userId) {
-        return;
-      }
-
-      setLoading(true);
-
-      try {
-        const limit = 0;
-        const page = 0;
-        const filters = { userId: userId };
-        const resp = await cohortList({ limit, page, filters });
-
-        const cohorts = resp?.results?.cohortDetails || [];
-        setCohortsData(cohorts);
-      } catch (error) {
-        console.error('Error fetching cohort list:', error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCohortList();
-  }, []);
-
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
