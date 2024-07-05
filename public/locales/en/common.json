@@ -67,6 +67,7 @@
     "REMOVE_FROM_CENTER": "Remove From Center",
     "DROP_OUT": "Drop Out",
     "REASON_FOR_DROPOUT": "Reason for Dropout",
+    "REASON_FOR_DELETION": "Reason for Deletion",
     "SURE_LOGOUT": "Are you sure you want to Logout?",
     "SURE_UPDATE": "Are you sure you want to update this attendance?",
     "SURE_REMOVE": "Are you sure you want to remove this learner?",
@@ -89,7 +90,11 @@
     "LEARNER_REMOVED": "Learner has been removed",
     "DROPPED_OUT": "Dropped Out",
     "DELETE_USER": "Delete User Permanently",
-    "OBSERVATIONS_FORMS": "Observations and Forms"
+    "DELETE_USER_WITH_REASON": "Delete User",
+    "USER_DELETED_PERMANENTLY": "User Successfully Deleted!",
+    "OBSERVATIONS_FORMS": "Observations and Forms",
+    "OTHER_REASON": "Other Reason",
+    "OTHER_REASON_PLACEHOLDER": "Enter Other Reason"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
