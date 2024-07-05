@@ -10,9 +10,9 @@ import {
   Tabs,
   TextField,
 } from '@mui/material';
-import React, { useEffect } from 'react';
-import { cohort, cohortAttendancePercentParam } from '@/utils/Interfaces';
-
+import React, { useEffect, useState } from 'react';
+import { cohort } from '@/utils/Interfaces';
+import FilterModalCenter from '../blocks/components/FilterModalCenter';
 import AddIcon from '@mui/icons-material/Add';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -20,7 +20,7 @@ import Header from '@/components/Header';
 import Image from 'next/image';
 import Loader from '@/components/Loader';
 import building from '../../assets/images/apartment.png';
-import { cohortList, getCohortList } from '@/services/CohortServices';
+import { getCohortList } from '@/services/CohortServices';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
 import { useRouter } from 'next/router';
@@ -32,28 +32,35 @@ import { setTimeout } from 'timers';
 import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
 import CreateCenterModal from '@/components/center/CreateCenterModal';
 import { toPascalCase } from '@/utils/Helper';
+import { ArrowDropDown, Search } from '@mui/icons-material';
 
 const TeachingCenters = () => {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
-  const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
-  const [value, setValue] = React.useState(1);
-  const [blockData, setBlockData] =
-    React.useState<
-      { bockName: string; district?: string; blockId: string; state?: string }[]
-    >();
-  const [centerData, setCenterData] =
-    React.useState<
-      { cohortName: string; centerType?: string; cohortId: string }[]
-    >();
-  const [isTeamLeader, setIsTeamLeader] = React.useState(false);
+  const [cohortsData, setCohortsData] = useState<Array<cohort>>([]);
+  const [value, setValue] = useState(1);
+  const [blockData, setBlockData] = useState<
+    { bockName: string; district?: string; blockId: string; state?: string }[]
+  >([]);
+  const [centerData, setCenterData] = useState<
+    { cohortName: string; centerType?: string; cohortId: string }[]
+  >([]);
+  const [isTeamLeader, setIsTeamLeader] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false); 
+  const [filteredCenters, setFilteredCenters] = useState(centerData);
+  const [searchInput, setSearchInput] = useState(''); 
+  const [selectedCenters, setSelectedCenters] = useState<string[]>([]);
+  const [sortOrder, setSortOrder] = useState('');
+  const [centerType, setCenterType] = useState<'regular' | 'remote' | ''>('');
+  const [openCreateCenterModal, setOpenCreateCenterModal] = React.useState(false);
+  const handleFilterModalOpen = () => setFilterModalOpen(true);
+  const handleFilterModalClose = () => setFilterModalOpen(false);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  const [openCreateCenterModal, setOpenCreateCenterModal] =
-    React.useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -65,6 +72,14 @@ const TeachingCenters = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    setFilteredCenters(centerData);
+  }, [centerData]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.target.value);
+  };
 
   useEffect(() => {
     const getCohortListForTL = async () => {
@@ -103,8 +118,8 @@ const TeachingCenters = () => {
                 const centerType = centerTypeField ? centerTypeField.value : '';
                 return { cohortName, cohortId, centerType };
               });
-              console.log(centerData);
               setCenterData(centerData);
+              console.log(centerData);
             });
           }
           if (userId && !isTeamLeader) {
@@ -126,6 +141,30 @@ const TeachingCenters = () => {
     };
     getCohortListForTL();
   }, [isTeamLeader]);
+
+  useEffect(() => {
+    const filtered = centerData.filter((center) =>
+      center.cohortName.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    setFilteredCenters(filtered);
+  }, [searchInput, centerData]);
+
+  const handleFilterApply = () => {
+    let filtered = [...centerData];
+
+    if (centerType) {
+      filtered = filtered.filter((center) => center.centerType && center.centerType.toLowerCase() === centerType.toLowerCase());
+    }
+
+    if (sortOrder === 'asc') {
+      filtered.sort((a, b) => a.cohortName.localeCompare(b.cohortName));
+    } else if (sortOrder === 'desc') {
+      filtered.sort((a, b) => b.cohortName.localeCompare(a.cohortName));
+    }
+
+    setFilteredCenters(filtered);
+    handleFilterModalClose();
+  };
 
   const handleCreateCenterClose = () => {
     setOpenCreateCenterModal(false);
@@ -215,24 +254,35 @@ const TeachingCenters = () => {
               >
                 <Grid item xs={8}>
                   <Box>
-                    <TextField
-                      className="input_search"
-                      placeholder={t('COMMON.SEARCH_FACILITATORS')}
-                      color="secondary"
-                      focused
-                      sx={{
-                        borderRadius: '100px',
-                        height: '40px',
-                        // width: '225px',
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <SearchIcon />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
+                  <TextField
+        value={searchInput}
+        onChange={handleSearchChange}
+        placeholder={t('COMMON.SEARCH')}
+        variant="outlined"
+        size="medium"
+        sx={{
+          p: 2,
+          justifyContent: 'center',
+          height: '48px',
+          flexGrow: 1,
+          mr: 1,
+          backgroundColor: theme?.palette?.warning?.A700,
+          borderRadius: '40px',
+          '& .MuiOutlinedInput-notchedOutline': {
+            border: 'none',
+          },
+          '& .MuiOutlinedInput-root': {
+            boxShadow: 'none',
+          },
+        }}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="start">
+              <Search />
+            </InputAdornment>
+          ),
+        }}
+      />
                   </Box>
                 </Grid>
                 <Grid item xs={4} marginTop={'8px'}>
@@ -241,19 +291,21 @@ const TeachingCenters = () => {
                       className="drawer-select"
                       sx={{ width: '100%' }}
                     >
-                      <Select
-                        displayEmpty
-                        style={{
-                          borderRadius: '0.5rem',
-                          color: theme.palette.warning['200'],
-                          width: '100%',
-                          marginBottom: '0rem',
-                        }}
-                      >
-                        <MenuItem className="text-dark-grey fs-14 fw-500">
-                          {t('COMMON.FILTERS')}
-                        </MenuItem>
-                      </Select>
+                        <Button
+              variant="outlined"
+              onClick={handleFilterModalOpen}
+              size="medium"
+              endIcon={<ArrowDropDown />}
+              sx={{
+                borderRadius: '7px',
+                border: `1px solid ${theme?.palette?.warning?.A700}`,
+                pl: 3,
+                fontSize: '13px',
+                fontWeight: '500',
+              }}
+            >
+              {t('COMMON.FILTERS')}
+            </Button>
                     </FormControl>
                   </Box>
                 </Grid>
@@ -290,10 +342,10 @@ const TeachingCenters = () => {
                 sx={{ borderRadius: '16px', mt: 2 }}
                 padding={'10px 16px 2px'}
               >
-                {isTeamLeader && centerData && (
+                {isTeamLeader && filteredCenters && (
                   <>
                     {/* Regular Centers */}
-                    {centerData.some(
+                    {filteredCenters.some(
                       (center) =>
                         center.centerType === 'Regular' ||
                         center.centerType === ''
@@ -308,7 +360,7 @@ const TeachingCenters = () => {
                         >
                           {t('CENTERS.REGULAR_CENTERS')}
                         </Box>
-                        {centerData
+                        {filteredCenters
                           .filter(
                             (center) =>
                               center.centerType === 'Regular' ||
@@ -349,7 +401,7 @@ const TeachingCenters = () => {
                                   >
                                     <Image src={building} alt="center" />
                                   </Box>
-
+                                 
                                   <Box
                                     sx={{
                                       display: 'flex',
@@ -378,7 +430,7 @@ const TeachingCenters = () => {
                     )}
 
                     {/* Remote Centers */}
-                    {centerData.some(
+                    {filteredCenters.some(
                       (center) => center.centerType === 'Remote'
                     ) && (
                       <div>
@@ -391,7 +443,7 @@ const TeachingCenters = () => {
                         >
                           {t('CENTERS.REMOTE_CENTERS')}
                         </Box>
-                        {centerData
+                        {filteredCenters
                           .filter((center) => center.centerType === 'Remote')
                           .map((center) => (
                             <React.Fragment key={center.cohortId}>
@@ -523,6 +575,7 @@ const TeachingCenters = () => {
                               </Box>
                               <ChevronRightIcon />
                             </Box>
+                            
                           </Box>
                         </Box>
                       </React.Fragment>
@@ -534,6 +587,18 @@ const TeachingCenters = () => {
         </Box>
         <Box>{value === 2 && <ManageUser cohortData={blockData} />}</Box>
       </Box>
+      <FilterModalCenter
+        open={filterModalOpen}
+        handleClose={handleFilterModalClose}
+        centers={centerData.map(center => center.cohortName)}
+        selectedCenters={selectedCenters}
+        setSelectedCenters={setSelectedCenters}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        centerType={centerType}
+        setCenterType={setCenterType}
+        onApply={handleFilterApply}
+      />
     </>
   );
 };
