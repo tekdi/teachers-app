@@ -1,34 +1,35 @@
-import BottomDrawer from './BottomDrawer';
 import { Box, Typography } from '@mui/material';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import DropOutModal from './DropOutModal';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-// import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import NoAccountsIcon from '@mui/icons-material/NoAccounts';
-import React, { useEffect } from 'react';
-// import Woman2Icon from '@mui/icons-material/Woman2';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
 import {
   LearnerListProps,
   UserData,
   updateCustomField,
 } from '@/utils/Interfaces';
-import ConfirmationModal from './ConfirmationModal';
-import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
-import ReactGA from 'react-ga4';
-import { showToastMessage } from './Toastify';
-import Link from 'next/link';
-import { getUserDetails } from '@/services/ProfileService';
-import LearnerModal from './LearnerModal';
-import Loader from './Loader';
+import React, { useEffect } from 'react';
 import { Status, names } from '@/utils/app.constant';
+
 import ApartmentIcon from '@mui/icons-material/Apartment';
+import BottomDrawer from './BottomDrawer';
+import ConfirmationModal from './ConfirmationModal';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteUserModal from './DeleteUserModal';
+import DropOutModal from './DropOutModal';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import LearnerModal from './LearnerModal';
+import Link from 'next/link';
+import Loader from './Loader';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import ManageCentersModal from './ManageCentersModal';
+// import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import NoAccountsIcon from '@mui/icons-material/NoAccounts';
+import ReactGA from 'react-ga4';
+import { getUserDetails } from '@/services/ProfileService';
+import { showToastMessage } from './Toastify';
 import { styled } from '@mui/system';
-import DeleteUserModal from './DeleteUserModal';
+import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+// import Woman2Icon from '@mui/icons-material/Woman2';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 type Anchor = 'bottom';
 const centerList = ['Nashik', 'Shirdi', 'kamptee'];
@@ -351,7 +352,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
             gap: '20px',
             alignItems: 'center',
             justifyContent: 'space-between',
-            paddingBottom: '15px',
+            padding: '15px 0',
           }}
         >
           <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
