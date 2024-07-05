@@ -28,6 +28,7 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import ManageCentersModal from './ManageCentersModal';
 import { styled } from '@mui/system';
+import DeleteUserModal from './DeleteUserModal';
 
 type Anchor = 'bottom';
 const centerList = ['Nashik', 'Shirdi', 'kamptee'];
@@ -68,6 +69,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
+  const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
 
   const CustomLink = styled(Link)(({ theme }) => ({
     textDecoration: 'underline',
@@ -173,6 +175,9 @@ const LearnersList: React.FC<LearnerListProps> = ({
       setOpenCentersModal(true);
       getTeamLeadersCenters();
     }
+    if (name === 'delete-User') {
+      setOpenDeleteUserModal(true);
+    }
     setState({ ...state, bottom: false });
   };
 
@@ -217,6 +222,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
   const handleCloseModal = () => {
     setConfirmationModalOpen(false);
     setConfirmationModalReassignCentersOpen(false);
+    setOpenDeleteUserModal(false);
   };
 
   const handleCloseBottomDrawer = () => {
@@ -551,7 +557,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
                       sx={{ color: theme.palette.warning['300'] }}
                     />
                   ),
-                  name: 'remove-from-center',
+                  name: 'delete-User',
                 },
               ]
         }
@@ -608,6 +614,8 @@ const LearnersList: React.FC<LearnerListProps> = ({
         onAssign={handleAssignCenters}
         isForLearner={true}
       />
+
+      <DeleteUserModal open={openDeleteUserModal} onClose={handleCloseModal} />
     </>
   );
 };

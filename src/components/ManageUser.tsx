@@ -39,6 +39,7 @@ import Link from 'next/link';
 import { styled } from '@mui/system';
 
 import { getFacilitatorList } from '@/services/MyClassDetailsService';
+import DeleteUserModal from './DeleteUserModal';
 interface Cohort {
   cohortId: string;
   parentId: string;
@@ -107,6 +108,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const [learnerData, setLearnerData] = React.useState<LearnerDataProps[]>();
   const [reassignBlockRequestModalOpen, setReassignBlockRequestModalOpen] =
     React.useState<boolean>(false);
+  const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
 
   const CustomLink = styled(Link)(({ theme }) => ({
     textDecoration: 'underline',
@@ -216,6 +218,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
   const handleCloseModal = () => {
     setConfirmationModalOpen(false);
+    setOpenDeleteUserModal(false);
+    setState({ ...state, bottom: false });
   };
 
   const toggleDrawer =
@@ -239,22 +243,24 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
-      const name = selectedUser?.name || '';
-      const userId = selectedUser?.userId || '';
-      console.log('user deleted', name, userId);
-      try {
-        if (userId) {
-          const userData = {
-            name: name,
-            status: Status.ARCHIVED,
-          };
-          const response = await editEditUser(userId, { userData });
-          console.log(response);
-        }
-      } catch (error) {
-        console.log(error);
-        // showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-      }
+      setOpenDeleteUserModal(true);
+
+      // const name = selectedUser?.name || '';
+      // const userId = selectedUser?.userId || '';
+      // console.log('user deleted', name, userId);
+      // try {
+      //   if (userId) {
+      //     const userData = {
+      //       name: name,
+      //       status: Status.ARCHIVED,
+      //     };
+      //     const response = await editEditUser(userId, { userData });
+      //     console.log(response);
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+      //   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      // }
     }
     if (name === 'reassign-centers') {
       setOpenCentersModal(true);
@@ -695,6 +701,11 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               }}
               handleCloseModal={handleCloseModal}
               modalOpen={confirmationModalOpen}
+            />
+
+            <DeleteUserModal
+              open={openDeleteUserModal}
+              onClose={handleCloseModal}
             />
           </>
         )}
