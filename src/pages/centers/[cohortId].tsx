@@ -17,6 +17,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { toPascalCase } from '@/utils/Helper';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -46,7 +47,7 @@ const TeachingCenterDetails = () => {
             (item: CustomField) => item.label === 'State'
           );
 
-          cohortData.address = `${district?.value}, ${state?.value}` || '';
+          cohortData.address = `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` || '';
         }
         setCohortDetails(cohortData);
       }

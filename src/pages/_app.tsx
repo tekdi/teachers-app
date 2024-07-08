@@ -136,7 +136,7 @@ function App({ Component, pageProps }: AppProps) {
           sx={{
             padding: '0',
             '@media (min-width: 900px)': {
-              width: !Login ? '76.5%' : '100%',
+              width: !Login ? 'calc(100% - 22rem)' : '100%',
               marginLeft: !Login ? '351px' : '0',
             },
             '@media (min-width: 1600px)': {

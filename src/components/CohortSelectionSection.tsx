@@ -14,6 +14,7 @@ import ReactGA from 'react-ga4';
 import { cohort } from '@/utils/Interfaces';
 import { cohortHierarchy } from '@/utils/app.constant';
 import { getCohortList } from '@/services/CohortServices';
+import { showToastMessage } from './Toastify';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
@@ -154,6 +155,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
         } catch (error) {
           console.error('Error fetching cohort list', error);
           setLoading(false);
+          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         }
       };
 
