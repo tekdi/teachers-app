@@ -34,10 +34,12 @@ import { editEditUser } from '@/services/ProfileService';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { Status } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
-
 import LearnersList from '@/components/LearnersList';
 import Link from 'next/link';
+import { styled } from '@mui/system';
+
 import { getFacilitatorList } from '@/services/MyClassDetailsService';
+import DeleteUserModal from './DeleteUserModal';
 interface Cohort {
   cohortId: string;
   parentId: string;
@@ -106,6 +108,13 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const [learnerData, setLearnerData] = React.useState<LearnerDataProps[]>();
   const [reassignBlockRequestModalOpen, setReassignBlockRequestModalOpen] =
     React.useState<boolean>(false);
+  const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
+
+  const CustomLink = styled(Link)(({ theme }) => ({
+    textDecoration: 'underline',
+    textDecorationColor: theme?.palette?.secondary.main,
+    textDecorationThickness: '1px',
+  }));
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -209,6 +218,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
   const handleCloseModal = () => {
     setConfirmationModalOpen(false);
+    setOpenDeleteUserModal(false);
+    setState({ ...state, bottom: false });
   };
 
   const toggleDrawer =
@@ -232,22 +243,24 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
-      const name = selectedUser?.name || '';
-      const userId = selectedUser?.userId || '';
-      console.log('user deleted', name, userId);
-      try {
-        if (userId) {
-          const userData = {
-            name: name,
-            status: Status.ARCHIVED,
-          };
-          const response = await editEditUser(userId, { userData });
-          console.log(response);
-        }
-      } catch (error) {
-        console.log(error);
-        // showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-      }
+      setOpenDeleteUserModal(true);
+
+      // const name = selectedUser?.name || '';
+      // const userId = selectedUser?.userId || '';
+      // console.log('user deleted', name, userId);
+      // try {
+      //   if (userId) {
+      //     const userData = {
+      //       name: name,
+      //       status: Status.ARCHIVED,
+      //     };
+      //     const response = await editEditUser(userId, { userData });
+      //     console.log(response);
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+      //   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      // }
     }
     if (name === 'reassign-centers') {
       setOpenCentersModal(true);
@@ -332,7 +345,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
       // if (response) {
       //   centers;
       //   handleCloseCentersModal();
-      //   toggleDrawer('bottom', false, '');
+      //      setState({ ...state, bottom: false });
       // }
     } catch (error) {
       console.error('Error assigning centers:', error);
@@ -353,6 +366,11 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     // router.push(`/profile/${userId}`);
   };
   const noop = () => {};
+
+  const handleRequestBlockAction = () => {
+    showToastMessage(t('BLOCKS.REASSIGN_BLOCK_REQUESTED'), 'success');
+    setState({ ...state, bottom: false });
+  };
 
   return (
     <>
@@ -508,7 +526,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                                 color: theme.palette.warning['300'],
                               }}
                             >
-                              <Link className="word-break" href="#">
+                              <CustomLink className="word-break" href="#">
                                 <Typography
                                   onClick={() => {
                                     handleLearnerFullProfile(user.userId!);
@@ -522,7 +540,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                                 >
                                   {user.name}
                                 </Typography>
-                              </Link>
+                              </CustomLink>
 
                               <Box
                                 sx={{
@@ -571,6 +589,20 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                           </Box>
                         </Box>
                       ))}
+                    {!users?.length && (
+                      <Box
+                        sx={{
+                          m: '1.125rem',
+                          display: 'flex',
+                          justifyContent: 'left',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography style={{ fontWeight: 'bold' }}>
+                          {t('COMMON.NO_DATA_FOUND')}
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
                 </Box>
               </Box>
@@ -662,12 +694,18 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
             <ConfirmationModal
               message={t('CENTERS.BLOCK_REQUEST')}
+              handleAction={handleRequestBlockAction}
               buttonNames={{
                 primary: t('COMMON.SEND_REQUEST'),
                 secondary: t('COMMON.CANCEL'),
               }}
               handleCloseModal={handleCloseModal}
               modalOpen={confirmationModalOpen}
+            />
+
+            <DeleteUserModal
+              open={openDeleteUserModal}
+              onClose={handleCloseModal}
             />
           </>
         )}

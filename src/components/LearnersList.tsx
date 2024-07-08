@@ -11,6 +11,7 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import BottomDrawer from './BottomDrawer';
 import ConfirmationModal from './ConfirmationModal';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteUserModal from './DeleteUserModal';
 import DropOutModal from './DropOutModal';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import LearnerModal from './LearnerModal';
@@ -24,6 +25,7 @@ import NoAccountsIcon from '@mui/icons-material/NoAccounts';
 import ReactGA from 'react-ga4';
 import { getUserDetails } from '@/services/ProfileService';
 import { showToastMessage } from './Toastify';
+import { styled } from '@mui/system';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 // import Woman2Icon from '@mui/icons-material/Woman2';
 import { useTheme } from '@mui/material/styles';
@@ -68,6 +70,13 @@ const LearnersList: React.FC<LearnerListProps> = ({
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
+  const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
+
+  const CustomLink = styled(Link)(({ theme }) => ({
+    textDecoration: 'underline',
+    textDecorationColor: theme?.palette?.secondary.main,
+    textDecorationThickness: '1px',
+  }));
 
   useEffect(() => {
     if (reloadState) {
@@ -167,6 +176,9 @@ const LearnersList: React.FC<LearnerListProps> = ({
       setOpenCentersModal(true);
       getTeamLeadersCenters();
     }
+    if (name === 'delete-User') {
+      setOpenDeleteUserModal(true);
+    }
     setState({ ...state, bottom: false });
   };
 
@@ -211,6 +223,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
   const handleCloseModal = () => {
     setConfirmationModalOpen(false);
     setConfirmationModalReassignCentersOpen(false);
+    setOpenDeleteUserModal(false);
   };
 
   const handleCloseBottomDrawer = () => {
@@ -360,7 +373,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
                   {learnerName}
                 </Box>
               ) : (
-                <Link className="word-break" href="#">
+                <CustomLink className="word-break" href="#">
                   <Typography
                     onClick={() => {
                       handleOpenModalLearner(userId!);
@@ -377,7 +390,7 @@ const LearnersList: React.FC<LearnerListProps> = ({
                   >
                     {learnerName}
                   </Typography>
-                </Link>
+                </CustomLink>
               )}
 
               <Box
@@ -539,13 +552,13 @@ const LearnersList: React.FC<LearnerListProps> = ({
                   name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
                 },
                 {
-                  label: t('COMMON.REMOVE_FROM_CENTER'),
+                  label: t('COMMON.DELETE_USER'),
                   icon: (
                     <DeleteOutlineIcon
                       sx={{ color: theme.palette.warning['300'] }}
                     />
                   ),
-                  name: 'remove-from-center',
+                  name: 'delete-User',
                 },
               ]
         }
@@ -602,6 +615,8 @@ const LearnersList: React.FC<LearnerListProps> = ({
         onAssign={handleAssignCenters}
         isForLearner={true}
       />
+
+      <DeleteUserModal open={openDeleteUserModal} onClose={handleCloseModal} />
     </>
   );
 };

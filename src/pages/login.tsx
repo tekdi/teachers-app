@@ -27,9 +27,12 @@ import { telemetryFactory } from '@/utils/telemetry';
 import { logEvent } from '@/utils/googleAnalytics';
 import { showToastMessage } from '@/components/Toastify';
 import Link from '@mui/material/Link';
+import useStore from '@/store/store';
 
 const LoginPage = () => {
   const { t } = useTranslation();
+  const store = useStore();
+  const setUserRole = useStore((state: { setUserRole: any }) => state.setUserRole);
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -120,6 +123,7 @@ const LoginPage = () => {
             localStorage.setItem('state', userResponse?.state);
             localStorage.setItem('district', userResponse?.district);
             localStorage.setItem('role', userResponse?.tenantData[0]?.roleName);
+            setUserRole(userResponse?.tenantData[0]?.roleName)
           }
         }
         setLoading(false);

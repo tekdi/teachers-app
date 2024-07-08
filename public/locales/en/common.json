@@ -67,6 +67,7 @@
     "REMOVE_FROM_CENTER": "Remove From Center",
     "DROP_OUT": "Drop Out",
     "REASON_FOR_DROPOUT": "Reason for Dropout",
+    "REASON_FOR_DELETION": "Reason for Deletion",
     "SURE_LOGOUT": "Are you sure you want to Logout?",
     "SURE_UPDATE": "Are you sure you want to update this attendance?",
     "SURE_REMOVE": "Are you sure you want to remove this learner?",
@@ -77,7 +78,7 @@
     "MANAGE_USERS": "Manage Users",
     "FACILITATORS": "Facilitators",
     "CENTERS_ASSIGNED": "Centers Assigned in {{block}}",
-    "REASSIGN_CENTERS": "Re-assign Centers",
+    "REASSIGN_CENTERS": "Re-assign Center",
     "REASSIGN_BLOCKS_REQUEST": "Request to Re-assign Block",
     "ASSIGN": "Assign",
     "SEARCH_FACILITATORS": "Search Facilitators..",
@@ -89,7 +90,11 @@
     "LEARNER_REMOVED": "Learner has been removed",
     "DROPPED_OUT": "Dropped Out",
     "DELETE_USER": "Delete User Permanently",
-    "OBSERVATIONS_FORMS": "Observations and Forms"
+    "DELETE_USER_WITH_REASON": "Delete User",
+    "USER_DELETED_PERMANENTLY": "User Successfully Deleted!",
+    "OBSERVATIONS_FORMS": "Observations and Forms",
+    "OTHER_REASON": "Other Reason",
+    "OTHER_REASON_PLACEHOLDER": "Enter Other Reason"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -252,12 +257,14 @@
     "NEW_BLOCK": "New Block",
     "BLOCK_NAME": "Block Name",
     "CREATE": "Create",
-    "SEARCH_BLOCKS": "Search Blocks"
+    "SEARCH_BLOCKS": "Search Blocks",
+    "REASSIGN_BLOCK_REQUESTED": "Reassign Block Requested Successfully!"
   },
   "CENTERS": {
     "CENTERS": "Centers",
     "REGULAR_CENTERS": "Regular Centers",
-    "REMOTE_CENTERS": "Remote Center",
+    "REMOTE_CENTERS": "Remote Centers",
+    "REMOTE_CENTER": "Remote Center",
     "REGULAR": "Regular",
     "REMOTE": "Remote",
     "SEARCH_BLOCKS": "Search Blocks",
@@ -265,7 +272,8 @@
     "NEW_CENTER": "New Center",
     "CENTER_TYPE": "Center Type",
     "UNIT_NAME": "Unit Name",
-    "NOTE": "Note: This will be the center name"
+    "NOTE": "Note: This will be the center name",
+    "CENTER_CREATED": "Center Created Successfully!"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"

@@ -33,14 +33,22 @@ const TeachingCenterDetails = () => {
       const response = await getCohortDetails(cohortId);
       console.log(response);
 
-      if (response?.cohortData) {
-        if (response.cohortData.customFields?.length) {
-          const addressField = response.cohortData.customFields.find(
-            (item: CustomField) => item.name === 'address'
+      let cohortData = null;
+
+      if (response?.cohortData?.length) {
+        cohortData = response?.cohortData[0];
+
+        if (cohortData?.customField?.length) {
+          const district = cohortData.customField.find(
+            (item: CustomField) => item.label === "District"
           );
-          response.cohortData.address = addressField?.value || '';
+          const state = cohortData.customField.find(
+            (item: CustomField) => item.label === 'State'
+          );
+
+          cohortData.address = `${district?.value}, ${state?.value}` || '';
         }
-        setCohortDetails(response.cohortData);
+        setCohortDetails(cohortData);
       }
     };
     getCohortData();
@@ -73,7 +81,7 @@ const TeachingCenterDetails = () => {
             cursor={'pointer'}
             sx={{ color: theme.palette.warning['A200'], marginTop: '15px' }}
           />
-          <Box m={'1rem 1rem 0.5rem'} display={'flex'} gap={'5px'}>
+          <Box m={'1rem 1rem 0.5rem'} display={'column'} gap={'5px'}>
             <Typography textAlign={'left'} fontSize={'22px'}>
               {cohortDetails?.name}
             </Typography>
@@ -83,10 +91,13 @@ const TeachingCenterDetails = () => {
               </Typography>
             )}
             <Box>
+            </Box>
+            <Box>
               <Typography textAlign={'left'} fontSize={'11px'} fontWeight={500}>
                 {cohortDetails?.address}
               </Typography>
-            </Box>
+              </Box>
+            
           </Box>
         </Box>
       </Box>

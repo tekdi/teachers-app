@@ -48,6 +48,13 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
+// import withAccessControl from '@/utils/hoc/withAccessControl';
+// import useStore from '@/store/store';
+// import { Role } from '@/utils/app.constant';
+// import { accessControl } from '../../app.config';
+// const store = useStore();
+// const userRole: string = store.userRole;
+
 interface DashboardProps {
   //   buttonText: string;
 }
@@ -955,3 +962,5 @@ export async function getStaticProps({ locale }: any) {
 }
 
 export default Dashboard;
+
+// export default withAccessControl(Role.TEACHER, accessControl)(Dashboard);
