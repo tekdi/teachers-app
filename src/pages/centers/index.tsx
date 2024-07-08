@@ -31,13 +31,19 @@ import ManageUser from '@/components/ManageUser';
 import { setTimeout } from 'timers';
 import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
 import CreateCenterModal from '@/components/center/CreateCenterModal';
-import { toPascalCase } from '@/utils/Helper';
+import { accessGranted, toPascalCase } from '@/utils/Helper';
+import { Role } from '@/utils/app.constant';
+import useStore from '@/store/store';
+import { accessControl } from '../../../app.config';
 
 const TeachingCenters = () => {
   const [loading, setLoading] = React.useState(false);
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
+  const store = useStore();
+  const userRole = store.userRole;
+
   const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
   const [value, setValue] = React.useState(1);
   const [blockData, setBlockData] =
@@ -71,7 +77,7 @@ const TeachingCenters = () => {
       try {
         if (typeof window !== 'undefined' && window.localStorage) {
           const userId = localStorage.getItem('userId');
-          if (userId && isTeamLeader) {
+          if (userId && accessGranted('showBlockLevelCohort', accessControl, userRole)) {
             const response = await getCohortList(userId, {
               customField: 'true',
             });
@@ -107,7 +113,7 @@ const TeachingCenters = () => {
               setCenterData(centerData);
             });
           }
-          if (userId && !isTeamLeader) {
+          if (userId && accessGranted('showTeacherCohorts', accessControl, userRole)) {
             const response = await getCohortList(userId);
             const cohortData = response.map((block: any) => {
               const cohortName = block.cohortName;
@@ -136,7 +142,7 @@ const TeachingCenters = () => {
       <Header />
       {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />}
       <Box sx={{ padding: '0 18px' }}>
-        {isTeamLeader ? (
+        {accessGranted('showBlockLevelData', accessControl, userRole) ? (
           <>
             {blockData?.length !== 0 &&
               blockData?.map((block: any) => (
@@ -166,7 +172,7 @@ const TeachingCenters = () => {
             {t('DASHBOARD.MY_TEACHING_CENTERS')}
           </Box>
         )}
-        {isTeamLeader && (
+        {accessGranted('showBlockLevelData', accessControl, userRole) && (
           <Box sx={{ width: '100%' }}>
             <Tabs
               value={value}
@@ -257,7 +263,7 @@ const TeachingCenters = () => {
                     </FormControl>
                   </Box>
                 </Grid>
-                {isTeamLeader && (
+                {accessGranted('showCreateCenterButton', accessControl, userRole) && (
                   <Box mt={'18px'} px={'18px'}>
                     <Button
                       sx={{
@@ -290,7 +296,7 @@ const TeachingCenters = () => {
                 sx={{ borderRadius: '16px', mt: 2 }}
                 padding={'10px 16px 2px'}
               >
-                {isTeamLeader && centerData && (
+                {accessGranted('showBlockLevelCenterData', accessControl, userRole) && centerData && (
                   <>
                     {/* Regular Centers */}
                     {centerData.some(
@@ -458,7 +464,7 @@ const TeachingCenters = () => {
                   </>
                 )}
 
-                {!isTeamLeader &&
+                {accessGranted('showTeacherLevelCenterData', accessControl, userRole)  &&
                   cohortsData &&
                   cohortsData?.map((cohort: any) => {
                     return (
