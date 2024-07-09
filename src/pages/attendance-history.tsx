@@ -38,6 +38,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '../components/SortingModal';
 import { Status } from '@/utils/app.constant';
 import UpDownButton from '@/components/UpDownButton';
+import { accessControl } from '../../app.config';
 import { attendanceStatusList } from '../services/AttendanceService';
 import { calculatePercentage } from '@/utils/attendanceStats';
 import { cohortMemberList } from '../utils/Interfaces';
@@ -49,12 +50,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
-import { Status } from '@/utils/app.constant';
-import CohortSelectionSection from '@/components/CohortSelectionSection';
 import withAccessControl from '@/utils/hoc/withAccessControl';
-import { accessControl } from '../../app.config';
 
 interface user {
   memberStatus: string;
