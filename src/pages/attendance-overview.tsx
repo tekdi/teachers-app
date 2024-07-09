@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import ReactGA from 'react-ga4';
+import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
@@ -23,34 +23,34 @@ import {
   formatSelectedDate,
   getTodayDate,
   handleKeyDown,
-  toPascalCase,
-  sortClassesMissed,
   sortAttendanceNumber,
+  sortClassesMissed,
+  toPascalCase,
 } from '@/utils/Helper';
 
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import ClearIcon from '@mui/icons-material/Clear';
 import CohortAttendanceListView from '@/components/CohortAttendanceListView';
+import CohortSelectionSection from '@/components/CohortSelectionSection';
 import DateRangePopup from '@/components/DateRangePopup';
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import LearnerListHeader from '@/components/LearnerListHeader';
 import Loader from '@/components/Loader';
 import OverviewCard from '@/components/OverviewCard';
+import ReactGA from 'react-ga4';
 import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '@/components/SortingModal';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
 import UpDownButton from '@/components/UpDownButton';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
+import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { showToastMessage } from '@/components/Toastify';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
-import CohortSelectionSection from '@/components/CohortSelectionSection';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 
 interface AttendanceOverviewProps {
@@ -527,34 +527,44 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
           </Typography>
         </Box>
-        <Box p={'10px 20px'}>
-          <CohortSelectionSection
-            classId={classId}
-            setClassId={setClassId}
-            userId={userId}
-            setUserId={setUserId}
-            loading={loading}
-            setLoading={setLoading}
-            cohortsData={cohortsData}
-            setCohortsData={setCohortsData}
-            isAuthenticated={isAuthenticated}
-            setIsAuthenticated={setIsAuthenticated}
-            manipulatedCohortData={manipulatedCohortData}
-            setManipulatedCohortData={setManipulatedCohortData}
-            blockName={blockName}
-            setBlockName={setBlockName}
-            isCustomFieldRequired={true}
-          />
-        </Box>
 
-        <Box className="linerGradient" sx={{ padding: '10px 20px' }}>
-          <DateRangePopup
-            menuItems={menuItems}
-            selectedValue={selectedValue}
-            setSelectedValue={setSelectedValue}
-            onDateRangeSelected={handleDateRangeSelected}
-            dateRange={dateRange}
-          />
+        <Box
+          className="linerGradient br-md-8"
+          sx={{
+            padding: '20px 20px',
+          }}
+        >
+          <Box className="d-md-flex space-md-between gap-md-10 w-100">
+            <Box className="flex-basis-md-50">
+              <CohortSelectionSection
+                classId={classId}
+                setClassId={setClassId}
+                userId={userId}
+                setUserId={setUserId}
+                loading={loading}
+                setLoading={setLoading}
+                cohortsData={cohortsData}
+                setCohortsData={setCohortsData}
+                isAuthenticated={isAuthenticated}
+                setIsAuthenticated={setIsAuthenticated}
+                manipulatedCohortData={manipulatedCohortData}
+                setManipulatedCohortData={setManipulatedCohortData}
+                blockName={blockName}
+                setBlockName={setBlockName}
+                isCustomFieldRequired={true}
+              />
+            </Box>
+            <Box className="flex-basis-md-50">
+              <DateRangePopup
+                menuItems={menuItems}
+                selectedValue={selectedValue}
+                setSelectedValue={setSelectedValue}
+                onDateRangeSelected={handleDateRangeSelected}
+                dateRange={dateRange}
+              />
+            </Box>
+          </Box>
+
           {selectedValue ===
             t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
               date_range: dateRange,
@@ -637,6 +647,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                         event.preventDefault();
                         handleSearchSubmit();
                       }}
+                      className="w-md-60"
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -800,5 +811,7 @@ export async function getStaticProps({ locale }: any) {
 }
 
 // export default AttendanceOverview;
-export default withAccessControl('accessAttendanceOverview', accessControl)(AttendanceOverview);
-
+export default withAccessControl(
+  'accessAttendanceOverview',
+  accessControl
+)(AttendanceOverview);

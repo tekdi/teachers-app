@@ -8,16 +8,16 @@ import { LearnerAttendanceProps } from '@/utils/Interfaces';
 import Loader from '@/components/Loader';
 import MarkAttendance from '@/components/MarkAttendance';
 import MonthCalender from '@/components/MonthCalender';
+import { accessControl } from '../../app.config';
 import { getLearnerAttendanceStatus } from '@/services/AttendanceService';
+import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { shortDateFormat } from '@/utils/Helper';
+import { showToastMessage } from '@/components/Toastify';
+import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
 import withAccessControl from '@/utils/hoc/withAccessControl';
-import { accessControl } from '../../app.config';
 
 type LearnerAttendanceData = {
   [date: string]: {
@@ -206,7 +206,7 @@ const LearnerAttendanceHistory = () => {
         borderTop={1}
         sx={{
           position: 'sticky',
-          top: '62px',
+          top: '65px',
           zIndex: 1000,
           backgroundColor: 'white',
           boxShadow: '0px 4px 8px 3px #00000026',
@@ -253,4 +253,7 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default withAccessControl('accessLearnerAttendanceHistory', accessControl)(LearnerAttendanceHistory);
+export default withAccessControl(
+  'accessLearnerAttendanceHistory',
+  accessControl
+)(LearnerAttendanceHistory);

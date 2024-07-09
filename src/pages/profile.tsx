@@ -33,17 +33,17 @@ import Loader from '@/components/Loader';
 import Modal from '@mui/material/Modal';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import ReactGA from 'react-ga4';
+import { accessControl } from '../../app.config';
 import { getLabelForValue } from '@/utils/Helper';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
+import { useProfileInfo } from '@/services/queries';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../assets/images/user_placeholder.png';
-import { useProfileInfo } from '@/services/queries';
 import withAccessControl from '@/utils/hoc/withAccessControl';
-import { accessControl } from '../../app.config';
 
 interface FieldOption {
   name: string;
@@ -577,9 +577,21 @@ const TeacherProfile = () => {
             </Box>
             <Box
               className="linerGradient"
-              sx={{ padding: '10px 16px 21px', mt: 3 }}
+              sx={{
+                padding: '10px 16px 21px',
+                width: '100%',
+                mt: 3,
+                // '@media (min-width: 900px)': {
+                //   borderRadius: '8px',
+                //   display: 'flex',
+                //   gap: '15px',
+                //   alignItems: 'center',
+                //   flexDirection: 'row-reverse',
+                // },
+              }}
             >
               <Button
+                className="min-width-md-20"
                 sx={{
                   fontSize: '14px',
                   lineHeight: '20px',
@@ -621,6 +633,10 @@ const TeacherProfile = () => {
                   border: '1px solid',
                   borderColor: theme.palette.warning['A100'],
                   padding: '16px',
+                  // '@media (min-width: 900px)': {
+                  //   minWidth: '60%',
+                  //   width: '60%',
+                  // },
                 }}
                 className="bg-white"
                 minWidth={'100%'}
@@ -1150,4 +1166,7 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default withAccessControl('accessProfile', accessControl)(TeacherProfile);
+export default withAccessControl(
+  'accessProfile',
+  accessControl
+)(TeacherProfile);

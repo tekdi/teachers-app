@@ -1,7 +1,3 @@
-import { getCohortList } from '@/services/CohortServices';
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { cohort } from '@/utils/Interfaces';
 import {
   Box,
   FormControl,
@@ -10,12 +6,17 @@ import {
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
+import React, { useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+
+import Loader from './Loader';
 import ReactGA from 'react-ga4';
+import { cohort } from '@/utils/Interfaces';
+import { cohortHierarchy } from '@/utils/app.constant';
+import { getCohortList } from '@/services/CohortServices';
+import { showToastMessage } from './Toastify';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import Loader from './Loader';
-import { cohortHierarchy } from '@/utils/app.constant';
-import { showToastMessage } from './Toastify';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -29,7 +30,9 @@ interface CohortSelectionSectionProps {
   cohortsData: Array<cohort>;
   setCohortsData: React.Dispatch<React.SetStateAction<Array<cohort>>>;
   manipulatedCohortData?: Array<cohort>;
-  setManipulatedCohortData?: React.Dispatch<React.SetStateAction<Array<cohort>>>;
+  setManipulatedCohortData?: React.Dispatch<
+    React.SetStateAction<Array<cohort>>
+  >;
   blockName: string;
   isManipulationRequired?: boolean;
   setBlockName: React.Dispatch<React.SetStateAction<string>>;
@@ -37,7 +40,6 @@ interface CohortSelectionSectionProps {
   setHandleSaveHasRun?: React.Dispatch<React.SetStateAction<boolean>>;
   isCustomFieldRequired?: boolean;
 }
-
 
 const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   classId,
@@ -61,6 +63,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
 }) => {
   const router = useRouter();
   const theme = useTheme<any>();
+  const pathname = usePathname(); // Get the current pathname
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -78,15 +81,13 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   }, [router, setClassId, setIsAuthenticated, setUserId]);
 
   useEffect(() => {
-    // const userId = localStorage.getItem('userId');
-    // if (userId) {
-    //   setUserId(userId);
-    // }
     if (userId) {
       setLoading(true);
       const fetchCohorts = async () => {
         try {
-          const response = await getCohortList(userId, {customField: isCustomFieldRequired.toString()});
+          const response = await getCohortList(userId, {
+            customField: isCustomFieldRequired.toString(),
+          });
           console.log('Response:', response);
           if (response && response.length > 0) {
             if (response[0].type === cohortHierarchy.COHORT) {
@@ -111,14 +112,16 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                     setClassId(filteredData?.[0]?.cohortId);
                   }
                 }
-                if(isManipulationRequired){
+                if (isManipulationRequired) {
                   setManipulatedCohortData?.(
-                    filteredData.concat({ cohortId: 'all', name: 'All Centers' })
+                    filteredData.concat({
+                      cohortId: 'all',
+                      name: 'All Centers',
+                    })
                   );
-                }else{
+                } else {
                   setManipulatedCohortData?.(filteredData);
                 }
-                
               }
             } else if (response[0].type === cohortHierarchy.BLOCK) {
               setBlockName(response[0].name || response[0].cohortName);
@@ -158,7 +161,15 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
 
       fetchCohorts();
     }
-  }, [userId, setCohortsData, setLoading, setClassId, setManipulatedCohortData, setBlockName, isCustomFieldRequired]);
+  }, [
+    userId,
+    setCohortsData,
+    setLoading,
+    setClassId,
+    setManipulatedCohortData,
+    setBlockName,
+    isCustomFieldRequired,
+  ]);
 
   const handleCohortSelection = (event: SelectChangeEvent<string>) => {
     setClassId(event.target.value as string);
@@ -166,28 +177,29 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
       selectedCohortID: event.target.value,
     });
     localStorage.setItem('classId', event.target.value);
-    setHandleSaveHasRun?.(!handleSaveHasRun)
-    
+    setHandleSaveHasRun?.(!handleSaveHasRun);
 
-        // ---------- set cohortId and stateName-----------
-        const cohort_id = event.target.value;
-        localStorage.setItem('cohortId', cohort_id);
-    
-        const get_state_name: string | null = getStateByCohortId(cohort_id);
-        if (get_state_name) {
-          localStorage.setItem('stateName', get_state_name);
-        } else {
-          localStorage.setItem('stateName', '');
-          console.log('NO State For Selected Cohort');
-        }
-        function getStateByCohortId(cohortId: any) {
-            const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
-            return cohort ? cohort?.state : null;
-          }
+    // ---------- set cohortId and stateName-----------
+    const cohort_id = event.target.value;
+    localStorage.setItem('cohortId', cohort_id);
+
+    const get_state_name: string | null = getStateByCohortId(cohort_id);
+    if (get_state_name) {
+      localStorage.setItem('stateName', get_state_name);
+    } else {
+      localStorage.setItem('stateName', '');
+      console.log('NO State For Selected Cohort');
+    }
+    function getStateByCohortId(cohortId: any) {
+      const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
+      return cohort ? cohort?.state : null;
+    }
   };
 
+  const isAttendanceOverview = pathname === '/attendance-overview';
+
   return (
-    <Box>
+    <Box className={isAttendanceOverview ? 'w-100' : 'w-md-40'}>
       {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />}
       {!loading && cohortsData && (
         <Box>
@@ -196,10 +208,13 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             <Box>
               {blockName ? (
                 <Box>
-                  <Typography color={theme.palette.warning['300']} textAlign={'left'}>
+                  <Typography
+                    color={theme.palette.warning['300']}
+                    textAlign={'left'}
+                  >
                     {blockName}
                   </Typography>
-                  <Box sx={{ mt: 1 }}>
+                  <Box className="mt-md-16">
                     <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
                       {cohortsData?.length > 1 ? (
                         <FormControl
@@ -257,11 +272,11 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                 </Box>
               ) : (
                 <Box>
-                  <Box sx={{ mt: 2 }}>
+                  <Box className="mt-md-16">
                     <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
                       {cohortsData?.length > 1 ? (
                         <FormControl
-                          className="drawer-select"
+                          className="drawer-select "
                           sx={{ m: 0, width: '100%' }}
                         >
                           <Select
