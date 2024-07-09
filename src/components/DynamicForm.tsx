@@ -4,6 +4,7 @@ import ISubmitEvent from '@rjsf/core';
 import validator from '@rjsf/validator-ajv8';
 import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { withTheme } from '@rjsf/core';
+import { RJSFSchema } from '@rjsf/utils';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -11,7 +12,10 @@ interface DynamicFormProps {
   schema: object;
   uiSchema: object;
   formData?: object;
-  onSubmit: (data: ISubmitEvent<any>, event: React.FormEvent<any>) => void;
+  onSubmit: (
+    data: IChangeEvent<any, RJSFSchema, any>,
+    event: React.FormEvent<any>
+  ) => void | undefined;
   onChange: (event: IChangeEvent<any>) => void;
   onError: (errors: any) => void;
   showErrorList: boolean;
