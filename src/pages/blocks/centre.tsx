@@ -19,6 +19,7 @@ import {
 } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import FilterModalCenter from './components/FilterModalCenter';
+import { toPascalCase } from '@/utils/Helper';
 
 interface BlocksProps {
   // Define any props if needed
@@ -110,10 +111,10 @@ const Blocks: React.FC<BlocksProps> = () => {
 
   useEffect(() => {
     const storedDistrict = localStorage.getItem('selectedBlockDistrict') || '';
-    setDistrict(storedDistrict);
+    setDistrict(toPascalCase(storedDistrict));
 
     const storedBlock = localStorage.getItem('selectedBlock') || '';
-    setBlocks(storedBlock);
+    setBlocks(toPascalCase(storedBlock));
   }, []);
 
   useEffect(() => {
@@ -142,7 +143,7 @@ const Blocks: React.FC<BlocksProps> = () => {
             fontWeight={'500'}
             color={theme?.palette?.text?.primary}
           >
-            {districts}, {state}
+            {districts}, {toPascalCase(state)}
           </Typography>
           <Box display={'flex'} alignItems={'center'} mb={2}>
             <TextField

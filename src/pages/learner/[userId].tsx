@@ -65,6 +65,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import { accessControl } from '../../../app.config';
 
 // import { UserData, updateCustomField } from '../utils/Interfaces';
 
@@ -1628,4 +1630,4 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default LearnerProfile;
+export default withAccessControl('accessLearnerProfile', accessControl)(LearnerProfile);

@@ -15,6 +15,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import Loader from './Loader';
 import { cohortHierarchy } from '@/utils/app.constant';
+import { showToastMessage } from './Toastify';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -151,6 +152,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
         } catch (error) {
           console.error('Error fetching cohort list', error);
           setLoading(false);
+          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         }
       };
 
