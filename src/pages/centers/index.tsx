@@ -52,13 +52,14 @@ const TeachingCenters = () => {
     { cohortName: string; centerType?: string; cohortId: string }[]
   >([]);
   const [isTeamLeader, setIsTeamLeader] = useState(false);
-  const [filterModalOpen, setFilterModalOpen] = useState(false); 
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [filteredCenters, setFilteredCenters] = useState(centerData);
-  const [searchInput, setSearchInput] = useState(''); 
+  const [searchInput, setSearchInput] = useState('');
   const [selectedCenters, setSelectedCenters] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState('');
   const [centerType, setCenterType] = useState<'regular' | 'remote' | ''>('');
-  const [openCreateCenterModal, setOpenCreateCenterModal] = React.useState(false);
+  const [openCreateCenterModal, setOpenCreateCenterModal] =
+    React.useState(false);
   const handleFilterModalOpen = () => setFilterModalOpen(true);
   const handleFilterModalClose = () => setFilterModalOpen(false);
 
@@ -166,7 +167,11 @@ const TeachingCenters = () => {
     let filtered = [...centerData];
 
     if (centerType) {
-      filtered = filtered.filter((center) => center.centerType && center.centerType.toLowerCase() === centerType.toLowerCase());
+      filtered = filtered.filter(
+        (center) =>
+          center.centerType &&
+          center.centerType.toLowerCase() === centerType.toLowerCase()
+      );
     }
 
     if (sortOrder === 'asc') {
@@ -267,35 +272,35 @@ const TeachingCenters = () => {
               >
                 <Grid item xs={8}>
                   <Box>
-                  <TextField
-        value={searchInput}
-        onChange={handleSearchChange}
-        placeholder={t('COMMON.SEARCH')}
-        variant="outlined"
-        size="medium"
-        sx={{
-          p: 2,
-          justifyContent: 'center',
-          height: '48px',
-          flexGrow: 1,
-          mr: 1,
-          backgroundColor: theme?.palette?.warning?.A700,
-          borderRadius: '40px',
-          '& .MuiOutlinedInput-notchedOutline': {
-            border: 'none',
-          },
-          '& .MuiOutlinedInput-root': {
-            boxShadow: 'none',
-          },
-        }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="start">
-              <Search />
-            </InputAdornment>
-          ),
-        }}
-      />
+                    <TextField
+                      value={searchInput}
+                      onChange={handleSearchChange}
+                      placeholder={t('COMMON.SEARCH')}
+                      variant="outlined"
+                      size="medium"
+                      sx={{
+                        p: 2,
+                        justifyContent: 'center',
+                        height: '48px',
+                        flexGrow: 1,
+                        mr: 1,
+                        backgroundColor: theme?.palette?.warning?.A700,
+                        borderRadius: '40px',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          border: 'none',
+                        },
+                        '& .MuiOutlinedInput-root': {
+                          boxShadow: 'none',
+                        },
+                      }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="start">
+                            <Search />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
                   </Box>
                 </Grid>
                 <Grid item xs={4} marginTop={'8px'}>
@@ -304,21 +309,21 @@ const TeachingCenters = () => {
                       className="drawer-select"
                       sx={{ width: '100%' }}
                     >
-                        <Button
-              variant="outlined"
-              onClick={handleFilterModalOpen}
-              size="medium"
-              endIcon={<ArrowDropDown />}
-              sx={{
-                borderRadius: '7px',
-                border: `1px solid ${theme?.palette?.warning?.A700}`,
-                pl: 3,
-                fontSize: '13px',
-                fontWeight: '500',
-              }}
-            >
-              {t('COMMON.FILTERS')}
-            </Button>
+                      <Button
+                        variant="outlined"
+                        onClick={handleFilterModalOpen}
+                        size="medium"
+                        endIcon={<ArrowDropDown />}
+                        sx={{
+                          borderRadius: '7px',
+                          border: `1px solid ${theme?.palette?.warning?.A700}`,
+                          pl: 3,
+                          fontSize: '13px',
+                          fontWeight: '500',
+                        }}
+                      >
+                        {t('COMMON.FILTERS')}
+                      </Button>
                     </FormControl>
                   </Box>
                 </Grid>
@@ -406,23 +411,10 @@ const TeachingCenters = () => {
                                   <Box
                                     sx={{
                                       display: 'flex',
-                                      background: theme.palette.primary.light,
-                                      justifyContent: 'center',
-                                      alignItems: 'center',
-                                      borderTopLeftRadius: '8px',
-                                      borderBottomLeftRadius: '8px',
-                                    }}
-                                  >
-                                    <Image src={building} alt="center" />
-                                  </Box>
-                                 
-                                  <Box
-                                    sx={{
-                                      display: 'flex',
-                                      justifyContent: 'space-between',
-                                      alignItems: 'center',
-                                      width: '100%',
-                                      padding: '0 10px',
+                                      gap: '10px',
+                                      background: '#fff',
+                                      height: '56px',
+                                      borderRadius: '8px',
                                     }}
                                     mt={1}
                                   >
@@ -620,7 +612,6 @@ const TeachingCenters = () => {
                               </Box>
                               <ChevronRightIcon />
                             </Box>
-                            
                           </Box>
                         </Box>
                       </React.Fragment>
@@ -635,7 +626,7 @@ const TeachingCenters = () => {
       <FilterModalCenter
         open={filterModalOpen}
         handleClose={handleFilterModalClose}
-        centers={centerData.map(center => center.cohortName)}
+        centers={centerData.map((center) => center.cohortName)}
         selectedCenters={selectedCenters}
         setSelectedCenters={setSelectedCenters}
         sortOrder={sortOrder}
