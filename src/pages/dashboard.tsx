@@ -9,6 +9,7 @@ import {
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import React, { useEffect } from 'react';
+import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
@@ -23,6 +24,7 @@ import {
 } from '../utils/Helper';
 
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
+import CohortSelectionSection from '@/components/CohortSelectionSection';
 import Divider from '@mui/material/Divider';
 import GuideTour from '@/components/GuideTour';
 import Header from '../components/Header';
@@ -37,25 +39,22 @@ import { calculatePercentage } from '@/utils/attendanceStats';
 import calendar from '../assets/images/calendar.svg';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { logEvent } from '@/utils/googleAnalytics';
-import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
 import { modifyAttendanceLimit } from '../../app.config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
+import { useCohortList } from '@/services/queries';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import CohortSelectionSection from '@/components/CohortSelectionSection';
-
-
 import withAccessControl from '@/utils/hoc/withAccessControl';
+
 // import { Role } from '@/utils/app.constant';
 // import { accessControl } from '../../app.config';
 
 // import useStore from '@/store/store';
 // const store = useStore();
-// const userRole: string = store.userRole; 
-
+// const userRole: string = store.userRole;
 
 interface DashboardProps {
   //   buttonText: string;
@@ -468,7 +467,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
             {isAuthenticated && (
               <Box minHeight="100vh">
-                <Header />
+                <Box>
+                  <Header />
+                </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Box
                     display={'flex'}
@@ -478,11 +479,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Typography
                       textAlign={'left'}
                       fontSize={'22px'}
-                      m={
-                        !hasSeenTutorial
-                          ? '1.5rem 1rem 0.8rem'
-                          : '1.5rem 2rem 1rem'
-                      }
+                      m={'1.5rem 1.2rem 0.8rem'}
                       color={theme?.palette?.warning['300']}
                       className="joyride-step-1"
                     >
@@ -500,24 +497,46 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Box
                     paddingBottom={'25px'}
                     width={'100%'}
-                    className="linerGradient"
+                    className="linerGradient br-md-8"
                   >
                     <Box
                       display={'flex'}
                       flexDirection={'column'}
-                      padding={'1.5rem 1rem 1rem'}
+                      padding={'1.5rem 1.2rem 1rem'}
                     >
                       <Box display={'flex'} justifyContent={'space-between'}>
-                        <Typography
-                          variant="h2"
-                          sx={{ fontSize: '14px' }}
-                          color={'black'}
-                          fontWeight={'500'}
-                        >
-                          {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
-                        </Typography>
+                        <Box className="d-md-flex flex-basis-md-90 space-md-between w-100">
+                          <Typography
+                            variant="h2"
+                            sx={{ fontSize: '14px' }}
+                            color={'black'}
+                            fontWeight={'500'}
+                          >
+                            {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
+                          </Typography>
+                          <CohortSelectionSection
+                            classId={classId}
+                            setClassId={setClassId}
+                            userId={userId}
+                            setUserId={setUserId}
+                            isAuthenticated={isAuthenticated}
+                            setIsAuthenticated={setIsAuthenticated}
+                            loading={loading}
+                            setLoading={setLoading}
+                            cohortsData={cohortsData}
+                            setCohortsData={setCohortsData}
+                            manipulatedCohortData={manipulatedCohortData}
+                            setManipulatedCohortData={setManipulatedCohortData}
+                            blockName={blockName}
+                            setBlockName={setBlockName}
+                            handleSaveHasRun={handleSaveHasRun}
+                            setHandleSaveHasRun={setHandleSaveHasRun}
+                            isCustomFieldRequired={false}
+                          />
+                        </Box>
+
                         <Box
-                          className="calenderTitle flex-center joyride-step-2"
+                          className="calenderTitle flex-center joyride-step-2 ps-md-ab right-md-20"
                           display={'flex'}
                           sx={{
                             cursor: 'pointer',
@@ -543,27 +562,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           />
                         </Box>
                       </Box>
-                      <CohortSelectionSection
-                        classId={classId}
-                        setClassId={setClassId}
-                        userId={userId}
-                        setUserId={setUserId}
-                        isAuthenticated={isAuthenticated}
-                        setIsAuthenticated={setIsAuthenticated}
-                        loading={loading}
-                        setLoading={setLoading}
-                        cohortsData={cohortsData}
-                        setCohortsData={setCohortsData}
-                        manipulatedCohortData={manipulatedCohortData}
-                        setManipulatedCohortData={setManipulatedCohortData}
-                        blockName={blockName}
-                        setBlockName={setBlockName}
-                        handleSaveHasRun={handleSaveHasRun}
-                        setHandleSaveHasRun={setHandleSaveHasRun}
-                        isCustomFieldRequired = {false}
-                      />
+
                       {/* Logic to disable this block on all select */}
-                      <Box>
+                      <Box className="flex-basis-md-10">
                         <Box sx={{ mt: 1.5, position: 'relative' }}>
                           <WeekCalender
                             showDetailsHandle={showDetailsHandle}
@@ -675,19 +676,23 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               )}
                             </Box>
                             <Button
-                              className="joyride-step-4"
+                              className="joyride-step-4 btn-mark-width"
                               variant="contained"
                               color="primary"
-                              style={{
-                                minWidth: '33%',
-                                height: '2.5rem',
-                                padding: theme.spacing(1),
-                                fontWeight: '500',
-                              }}
                               sx={{
                                 '&.Mui-disabled': {
                                   backgroundColor:
                                     theme?.palette?.primary?.main, // Custom disabled text color
+                                },
+                                minWidth: '84px',
+                                height: '2.5rem',
+                                padding: theme.spacing(1),
+                                fontWeight: '500',
+                                '@media (min-width: 500px)': {
+                                  width: '20%',
+                                },
+                                '@media (min-width: 700px)': {
+                                  width: '15%',
                                 },
                               }}
                               onClick={handleModalToggle}
@@ -741,7 +746,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       display={'flex'}
                       flexDirection={'column'}
                       gap={'1rem'}
-                      padding={'1rem'}
+                      padding={'1rem 1.2rem'}
                     >
                       <Stack
                         direction={'row'}
@@ -809,7 +814,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         />
                       )}
                     </Box>
-                    <Box display={'flex'} className="card_overview" mx={'1rem'}>
+                    <Box
+                      display={'flex'}
+                      className="card_overview"
+                      mx={'1.2rem'}
+                    >
                       {classId &&
                       classId !== 'all' &&
                       cohortsData &&

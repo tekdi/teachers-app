@@ -935,7 +935,7 @@ const LearnerProfile: React.FC = () => {
         </Grid>
       </Grid>
 
-      <Box padding={'22px 18px'} className="linerGradient">
+      <Box padding={'22px 18px'} className="linerGradient br-md-8">
         <Box
           sx={{ display: 'flex', justifyContent: 'space-between', gap: '5px' }}
         >
@@ -974,7 +974,7 @@ const LearnerProfile: React.FC = () => {
           </Box>
         </Box>
 
-        <Box>
+        <Box sx={{ mt: '10px' }}>
           <Box>
             <DateRangePopup
               menuItems={menuItems}
@@ -1066,107 +1066,124 @@ const LearnerProfile: React.FC = () => {
         >
           {t('PROFILE.LEARNER_DETAILS')}
         </Typography>
-        <Button
-          sx={{
-            fontSize: '14px',
-            lineHeight: '20px',
-            minWidth: '100%',
-            padding: '10px 24px 10px 16px',
-            gap: '8px',
-            borderRadius: '100px',
-            marginTop: '10px',
-            flex: '1',
-            textAlign: 'center',
-            color: theme.palette.warning.A200,
-            border: `1px solid #4D4639`,
-          }}
-          onClick={handleOpen}
-        >
-          <Typography
-            variant="h3"
-            style={{
-              letterSpacing: '0.1px',
-              textAlign: 'left',
-              marginBottom: '2px',
-            }}
-            fontSize={'14px'}
-            fontWeight={'500'}
-            lineHeight={'20px'}
-          >
-            {t('PROFILE.EDIT_PROFILE')}
-          </Typography>
-          <Box>
-            <CreateOutlinedIcon sx={{ fontSize: '14px' }} />
-          </Box>
-        </Button>
+
         <Box
-          mt={2}
-          sx={{
-            flex: '1',
-            border: '2px solid',
-            borderColor: '#FFECB3',
-            padding: '15px',
-          }}
-          minWidth={'100%'}
-          borderRadius={'12px'}
-          border={'1px'}
-          bgcolor="warning.A400"
-          display="flex"
-          flexDirection="row"
-          padding="15px"
+        // sx={{
+        //   '@media (min-width: 900px)': {
+        //     display: 'flex',
+        //     gap: '15px',
+        //     flexDirection: 'row-reverse',
+        //     alignItems: 'center',
+        //   },
+        // }}
         >
-          <Grid container spacing={4}>
-            <FieldComponent
-              size={12}
-              label={t('PROFILE.FULL_NAME')}
-              data={userName}
-            />
+          <Button
+            className="min-width-md-20"
+            sx={{
+              fontSize: '14px',
+              lineHeight: '20px',
+              minWidth: '100%',
+              padding: '10px 24px 10px 16px',
+              gap: '8px',
+              borderRadius: '100px',
+              marginTop: '10px',
+              flex: '1',
+              textAlign: 'center',
+              color: theme.palette.warning.A200,
+              border: `1px solid #4D4639`,
+            }}
+            onClick={handleOpen}
+          >
+            <Typography
+              variant="h3"
+              style={{
+                letterSpacing: '0.1px',
+                textAlign: 'left',
+                marginBottom: '2px',
+              }}
+              fontSize={'14px'}
+              fontWeight={'500'}
+              lineHeight={'20px'}
+            >
+              {t('PROFILE.EDIT_PROFILE')}
+            </Typography>
+            <Box>
+              <CreateOutlinedIcon sx={{ fontSize: '14px' }} />
+            </Box>
+          </Button>
+          <Box
+            mt={2}
+            sx={{
+              flex: '1',
+              border: '2px solid',
+              borderColor: '#FFECB3',
+              padding: '15px',
+              // '@media (min-width: 900px)': {
+              //   minWidth: '30%',
+              //   width: '30%',
+              // },
+            }}
+            minWidth={'100%'}
+            borderRadius={'12px'}
+            border={'1px'}
+            bgcolor="warning.A400"
+            display="flex"
+            flexDirection="row"
+            padding="15px"
+          >
+            <Grid container spacing={4}>
+              <FieldComponent
+                size={12}
+                label={t('PROFILE.FULL_NAME')}
+                data={userName}
+              />
 
-            {learnerDetailsByOrder &&
-              learnerDetailsByOrder.map((item: any, i: number) => (
-                <React.Fragment key={i}>
-                  <Grid item xs={6}>
-                    {/* question */}
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        fontSize: '12px',
-                        color: theme.palette.warning.main,
-                      }}
-                      margin={0}
-                    >
-                      {item?.label && item.name
-                        ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
-                        : item.label}
-                    </Typography>
+              {learnerDetailsByOrder &&
+                learnerDetailsByOrder.map((item: any, i: number) => (
+                  <React.Fragment key={i}>
+                    <Grid item xs={6}>
+                      {/* question */}
+                      <Typography
+                        variant="h4"
+                        sx={{
+                          fontSize: '12px',
+                          color: theme.palette.warning.main,
+                        }}
+                        margin={0}
+                      >
+                        {item?.label && item.name
+                          ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
+                          : item.label}
+                      </Typography>
 
-                    {/* value */}
-                    <Typography
-                      variant="h4"
-                      margin={0}
-                      sx={{
-                        wordBreak: 'break-word',
-                        fontSize: '16px',
-                        color: theme.palette.warning['A200'],
-                      }}
-                    >
-                      {item?.displayValue}
-                    </Typography>
-                  </Grid>
+                      {/* value */}
+                      <Typography
+                        variant="h4"
+                        margin={0}
+                        sx={{
+                          wordBreak: 'break-word',
+                          fontSize: '16px',
+                          color: theme.palette.warning['A200'],
+                        }}
+                      >
+                        {item?.displayValue}
+                      </Typography>
+                    </Grid>
 
-                  {item?.order === 3 && !contactNumberAdded && (
-                    <React.Fragment>
-                      <FieldComponent
-                        size={6}
-                        label={'Contact Number'}
-                        data={contactNumber}
-                      />
-                      {(contactNumberAdded = true)}
-                    </React.Fragment>
-                  )}
-                </React.Fragment>
-              ))}
-          </Grid>
+                    {item?.order === 3 && !contactNumberAdded && (
+                      <React.Fragment>
+                        <FieldComponent
+                          size={6}
+                          label={'Contact Number'}
+                          data={contactNumber}
+                        />
+                        {(contactNumberAdded = true)}
+                      </React.Fragment>
+                    )}
+                  </React.Fragment>
+                ))}
+            </Grid>
+          </Box>
         </Box>
       </Box>
 
