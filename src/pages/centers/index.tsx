@@ -10,7 +10,8 @@ import {
   Tabs,
   TextField,
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import FilterModalCenter from '../blocks/components/FilterModalCenter';
 import { accessGranted, toPascalCase } from '@/utils/Helper';
 import { cohort, cohortAttendancePercentParam } from '@/utils/Interfaces';
 import { cohortList, getCohortList } from '@/services/CohortServices';
@@ -35,42 +36,58 @@ import { useRouter } from 'next/router';
 import useStore from '@/store/store';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { ArrowDropDown, Search } from '@mui/icons-material';
 
 const TeachingCenters = () => {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
+  const [cohortsData, setCohortsData] = useState<Array<cohort>>([]);
+  const [value, setValue] = useState(1);
+  const [blockData, setBlockData] = useState<
+    { bockName: string; district?: string; blockId: string; state?: string }[]
+  >([]);
+  const [centerData, setCenterData] = useState<
+    { cohortName: string; centerType?: string; cohortId: string }[]
+  >([]);
+  const [isTeamLeader, setIsTeamLeader] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [filteredCenters, setFilteredCenters] = useState(centerData);
+  const [searchInput, setSearchInput] = useState('');
+  const [selectedCenters, setSelectedCenters] = useState<string[]>([]);
+  const [sortOrder, setSortOrder] = useState('');
+  const [centerType, setCenterType] = useState<'regular' | 'remote' | ''>('');
+  const [openCreateCenterModal, setOpenCreateCenterModal] =
+    React.useState(false);
+  const handleFilterModalOpen = () => setFilterModalOpen(true);
+  const handleFilterModalClose = () => setFilterModalOpen(false);
+
   const store = useStore();
   const userRole = store.userRole;
 
-  const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
-  const [value, setValue] = React.useState(1);
-  const [blockData, setBlockData] =
-    React.useState<
-      { bockName: string; district?: string; blockId: string; state?: string }[]
-    >();
-  const [centerData, setCenterData] =
-    React.useState<
-      { cohortName: string; centerType?: string; cohortId: string }[]
-    >();
-  const [isTeamLeader, setIsTeamLeader] = React.useState(false);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  const [openCreateCenterModal, setOpenCreateCenterModal] =
-    React.useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
-      if (role === 'Team Leader') {
+      if (role === Role.TEAM_LEADER) {
         setIsTeamLeader(true);
       } else {
         setIsTeamLeader(false);
       }
     }
   }, []);
+
+  useEffect(() => {
+    setFilteredCenters(centerData);
+  }, [centerData]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.target.value);
+  };
 
   useEffect(() => {
     const getCohortListForTL = async () => {
@@ -112,8 +129,8 @@ const TeachingCenters = () => {
                 const centerType = centerTypeField ? centerTypeField.value : '';
                 return { cohortName, cohortId, centerType };
               });
-              console.log(centerData);
               setCenterData(centerData);
+              console.log(centerData);
             });
           }
           if (
@@ -138,6 +155,34 @@ const TeachingCenters = () => {
     };
     getCohortListForTL();
   }, [isTeamLeader]);
+
+  useEffect(() => {
+    const filtered = centerData.filter((center) =>
+      center.cohortName.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    setFilteredCenters(filtered);
+  }, [searchInput, centerData]);
+
+  const handleFilterApply = () => {
+    let filtered = [...centerData];
+
+    if (centerType) {
+      filtered = filtered.filter(
+        (center) =>
+          center.centerType &&
+          center.centerType.toLowerCase() === centerType.toLowerCase()
+      );
+    }
+
+    if (sortOrder === 'asc') {
+      filtered.sort((a, b) => a.cohortName.localeCompare(b.cohortName));
+    } else if (sortOrder === 'desc') {
+      filtered.sort((a, b) => b.cohortName.localeCompare(a.cohortName));
+    }
+
+    setFilteredCenters(filtered);
+    handleFilterModalClose();
+  };
 
   const handleCreateCenterClose = () => {
     setOpenCreateCenterModal(false);
@@ -226,20 +271,32 @@ const TeachingCenters = () => {
                 container
               >
                 <Grid item xs={8}>
-                  <Box className="w-md-60">
+                  <Box>
                     <TextField
-                      className="input_search"
+                      value={searchInput}
+                      onChange={handleSearchChange}
                       placeholder={t('COMMON.SEARCH')}
-                      color="secondary"
-                      focused
+                      variant="outlined"
+                      size="medium"
                       sx={{
-                        borderRadius: '100px',
-                        height: '40px',
+                        p: 2,
+                        justifyContent: 'center',
+                        height: '48px',
+                        flexGrow: 1,
+                        mr: 1,
+                        backgroundColor: theme?.palette?.warning?.A700,
+                        borderRadius: '40px',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          border: 'none',
+                        },
+                        '& .MuiOutlinedInput-root': {
+                          boxShadow: 'none',
+                        },
                       }}
                       InputProps={{
                         endAdornment: (
-                          <InputAdornment position="end">
-                            <SearchIcon />
+                          <InputAdornment position="start">
+                            <Search />
                           </InputAdornment>
                         ),
                       }}
@@ -252,19 +309,21 @@ const TeachingCenters = () => {
                       className="drawer-select"
                       sx={{ width: '100%' }}
                     >
-                      <Select
-                        displayEmpty
-                        style={{
-                          borderRadius: '0.5rem',
-                          color: theme.palette.warning['200'],
-                          width: '100%',
-                          marginBottom: '0rem',
+                      <Button
+                        variant="outlined"
+                        onClick={handleFilterModalOpen}
+                        size="medium"
+                        endIcon={<ArrowDropDown />}
+                        sx={{
+                          borderRadius: '7px',
+                          border: `1px solid ${theme?.palette?.warning?.A700}`,
+                          pl: 3,
+                          fontSize: '13px',
+                          fontWeight: '500',
                         }}
                       >
-                        <MenuItem className="text-dark-grey fs-14 fw-500">
-                          {t('COMMON.FILTERS')}
-                        </MenuItem>
-                      </Select>
+                        {t('COMMON.FILTERS')}
+                      </Button>
                     </FormControl>
                   </Box>
                 </Grid>
@@ -310,10 +369,10 @@ const TeachingCenters = () => {
                   accessControl,
                   userRole
                 ) &&
-                  centerData && (
+                  filteredCenters && (
                     <>
                       {/* Regular Centers */}
-                      {centerData.some(
+                      {filteredCenters.some(
                         (center) =>
                           center.centerType === 'Regular' ||
                           center.centerType === ''
@@ -328,7 +387,7 @@ const TeachingCenters = () => {
                           >
                             {t('CENTERS.REGULAR_CENTERS')}
                           </Box>
-                          {centerData
+                          {filteredCenters
                             .filter(
                               (center) =>
                                 center.centerType === 'Regular' ||
@@ -401,7 +460,7 @@ const TeachingCenters = () => {
                       )}
 
                       {/* Remote Centers */}
-                      {centerData.some(
+                      {filteredCenters.some(
                         (center) => center.centerType === 'Remote'
                       ) && (
                         <div>
@@ -414,7 +473,7 @@ const TeachingCenters = () => {
                           >
                             {t('CENTERS.REMOTE_CENTERS')}
                           </Box>
-                          {centerData
+                          {filteredCenters
                             .filter((center) => center.centerType === 'Remote')
                             .map((center) => (
                               <React.Fragment key={center.cohortId}>
@@ -564,6 +623,18 @@ const TeachingCenters = () => {
         </Box>
         <Box>{value === 2 && <ManageUser cohortData={blockData} />}</Box>
       </Box>
+      <FilterModalCenter
+        open={filterModalOpen}
+        handleClose={handleFilterModalClose}
+        centers={centerData.map((center) => center.cohortName)}
+        selectedCenters={selectedCenters}
+        setSelectedCenters={setSelectedCenters}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        centerType={centerType}
+        setCenterType={setCenterType}
+        onApply={handleFilterApply}
+      />
     </>
   );
 };
