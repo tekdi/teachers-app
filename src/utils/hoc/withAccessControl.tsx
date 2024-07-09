@@ -3,21 +3,20 @@ import { useEffect } from 'react';
 import useStore from '@/store/store';
 import { Role } from '../app.constant';
 
-const withAccessControl = (requiredRole: Role, accessControl: any) => (Component: React.ComponentType<any>) => {
+const withAccessControl = (action: string, accessControl: { [key: string]: Role[] }) => (Component: React.ComponentType<any>) => {
   return (props: any) => {
-    debugger;
     const store = useStore();
-    const userRole = store.userRole;  
+    const userRole = store.userRole;
     const router = useRouter();
-    
-    useEffect(() => {
-      if (!userRole || !accessControl[requiredRole]?.includes(userRole)) {
-        router.replace('/unauthorized'); // Redirect to an unauthorized page
-      }
-    }, [userRole, requiredRole, router]);
 
-    if (!userRole || !accessControl[requiredRole]?.includes(userRole)) {
-      return null; // or a loading spinner
+    useEffect(() => {
+      if (!userRole || !accessControl[action]?.includes(userRole)) {
+        router.replace('/unauthorized'); 
+      }
+    }, [userRole, action, router]);
+
+    if (!userRole || !accessControl[action]?.includes(userRole)) {
+      return null; 
     }
 
     return <Component {...props} />;

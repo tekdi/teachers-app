@@ -1,5 +1,5 @@
 import FingerprintJS from 'fingerprintjs2';
-import { Status } from './app.constant';
+import { Role, Status } from './app.constant';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -254,4 +254,12 @@ export const sortClassesMissed = (data: any[], order: string) => {
         : aClassMissed - bClassMissed;
     }
   );
+};
+
+
+export const accessGranted = (action: string, accessControl: { [key: string]: Role[] }, currentRole: Role): boolean => {
+  if (accessControl[action]?.includes(currentRole)) {
+    return true;
+  }
+  return false;
 };

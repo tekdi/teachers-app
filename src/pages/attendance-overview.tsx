@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
+import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
@@ -44,13 +45,13 @@ import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
 import UpDownButton from '@/components/UpDownButton';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { logEvent } from '@/utils/googleAnalytics';
-import { lowLearnerAttendanceLimit } from './../../app.config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -809,4 +810,8 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default AttendanceOverview;
+// export default AttendanceOverview;
+export default withAccessControl(
+  'accessAttendanceOverview',
+  accessControl
+)(AttendanceOverview);

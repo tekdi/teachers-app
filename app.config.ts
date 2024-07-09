@@ -26,7 +26,18 @@ export const dropoutReasons = [
 ];
 
 export const accessControl: { [key: string]: Role[] } = {
-  viewDashboard: [Role.TEACHER, Role.TEAM_LEADER],
-  viewAttendance: [Role.TEACHER, Role.TEAM_LEADER],
-  createLearner: [Role.TEACHER, Role.TEAM_LEADER],
+  accessDashboard: [Role.TEACHER, Role.TEAM_LEADER],
+  accessAttendanceHistory: [Role.TEACHER, Role.TEAM_LEADER],
+  accessAttendanceOverview: [Role.TEACHER, Role.TEAM_LEADER],
+  accessProfile: [Role.TEACHER, Role.TEAM_LEADER],
+  accessLearnerProfile: [Role.TEACHER, Role.TEAM_LEADER],
+  accessLearnerAttendanceHistory: [Role.TEACHER, Role.TEAM_LEADER],
+  showTeachingCenter : [Role.TEAM_LEADER],
+  showBlockLevelCohort : [Role.TEAM_LEADER],
+  showTeacherCohorts: [Role.TEACHER],
+  showBlockLevelData: [Role.TEAM_LEADER],
+  showCreateCenterButton: [Role.TEAM_LEADER],
+  showBlockLevelCenterData: [Role.TEAM_LEADER],
+  showTeacherLevelCenterData: [Role.TEACHER],
 };
+

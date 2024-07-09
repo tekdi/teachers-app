@@ -8,6 +8,7 @@ import { LearnerAttendanceProps } from '@/utils/Interfaces';
 import Loader from '@/components/Loader';
 import MarkAttendance from '@/components/MarkAttendance';
 import MonthCalender from '@/components/MonthCalender';
+import { accessControl } from '../../app.config';
 import { getLearnerAttendanceStatus } from '@/services/AttendanceService';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -16,6 +17,7 @@ import { showToastMessage } from '@/components/Toastify';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 
 type LearnerAttendanceData = {
   [date: string]: {
@@ -250,4 +252,8 @@ export async function getStaticProps({ locale }: any) {
     },
   };
 }
-export default LearnerAttendanceHistory;
+
+export default withAccessControl(
+  'accessLearnerAttendanceHistory',
+  accessControl
+)(LearnerAttendanceHistory);

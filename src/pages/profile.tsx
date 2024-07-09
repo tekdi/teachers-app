@@ -33,6 +33,7 @@ import Loader from '@/components/Loader';
 import Modal from '@mui/material/Modal';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import ReactGA from 'react-ga4';
+import { accessControl } from '../../app.config';
 import { getLabelForValue } from '@/utils/Helper';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -42,6 +43,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../assets/images/user_placeholder.png';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 
 interface FieldOption {
   name: string;
@@ -1164,4 +1166,7 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default TeacherProfile;
+export default withAccessControl(
+  'accessProfile',
+  accessControl
+)(TeacherProfile);

@@ -9,6 +9,7 @@ import {
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import React, { useEffect } from 'react';
+import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
@@ -38,7 +39,6 @@ import { calculatePercentage } from '@/utils/attendanceStats';
 import calendar from '../assets/images/calendar.svg';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { logEvent } from '@/utils/googleAnalytics';
-import { lowLearnerAttendanceLimit } from './../../app.config';
 import { modifyAttendanceLimit } from '../../app.config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
@@ -47,11 +47,12 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 
-// import withAccessControl from '@/utils/hoc/withAccessControl';
-// import useStore from '@/store/store';
 // import { Role } from '@/utils/app.constant';
 // import { accessControl } from '../../app.config';
+
+// import useStore from '@/store/store';
 // const store = useStore();
 // const userRole: string = store.userRole;
 
@@ -961,6 +962,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default Dashboard;
-
-// export default withAccessControl(Role.TEACHER, accessControl)(Dashboard);
+export default withAccessControl('accessDashboard', accessControl)(Dashboard);
