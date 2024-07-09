@@ -49,6 +49,8 @@ import { logEvent } from '@/utils/googleAnalytics';
 import { showToastMessage } from '@/components/Toastify';
 import { Status } from '@/utils/app.constant';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import { accessControl } from '../../app.config';
 
 interface user {
   memberStatus: string;
@@ -829,4 +831,5 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default UserAttendanceHistory;
+// export default UserAttendanceHistory;
+export default withAccessControl('accessAttendanceHistory', accessControl)(UserAttendanceHistory);

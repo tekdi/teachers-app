@@ -16,6 +16,8 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { logEvent } from '@/utils/googleAnalytics';
 import { showToastMessage } from '@/components/Toastify';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import { accessControl } from '../../app.config';
 
 type LearnerAttendanceData = {
   [date: string]: {
@@ -250,4 +252,5 @@ export async function getStaticProps({ locale }: any) {
     },
   };
 }
-export default LearnerAttendanceHistory;
+
+export default withAccessControl('accessLearnerAttendanceHistory', accessControl)(LearnerAttendanceHistory);

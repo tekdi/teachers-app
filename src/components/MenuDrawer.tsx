@@ -15,6 +15,10 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import { Role } from '@/utils/app.constant';
+import useStore from '@/store/store';
+import { accessGranted } from '@/utils/Helper';
+import { accessControl } from '../../app.config';
 interface DrawerProps {
   toggleDrawer: (open: boolean) => () => void;
   open: boolean;
@@ -33,6 +37,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const [isTeamLeader, setIsTeamLeader] = useState(false);
   const { t } = useTranslation();
   const router = useRouter();
+  const store = useStore();
+  const userRole = store.userRole;
 
   useEffect(() => setIsOpen(open), [open]);
 
@@ -206,7 +212,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               router.push(`/centers`); // Check route
             }}
           >
-            {isTeamLeader
+            {accessGranted('showTeachingCenter', accessControl, userRole)
               ? t('DASHBOARD.TEACHING_CENTERS')
               : t('DASHBOARD.MY_TEACHING_CENTERS')}
           </Button>
