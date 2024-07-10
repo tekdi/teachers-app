@@ -5,11 +5,11 @@ import { useTranslation } from 'next-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import { showToastMessage } from './Toastify';
 
-interface DeleteUserModalProps {
+interface SendCredentialModalProps {
   open: boolean;
   onClose: () => void;
 }
-const SendCredentialModal: React.FC<DeleteUserModalProps> = ({
+const SendCredentialModal: React.FC<SendCredentialModalProps> = ({
   open,
   onClose,
 }) => {
