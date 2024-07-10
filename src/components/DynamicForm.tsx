@@ -1,13 +1,10 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { IChangeEvent } from '@rjsf/core';
-import ISubmitEvent from '@rjsf/core';
 import validator from '@rjsf/validator-ajv8';
 import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { withTheme } from '@rjsf/core';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
-import CustomCheckboxWidget from './CustomCheckboxWidget';
 import CustomRadioWidget from './CustomRadioWidget';
-import CustomErrorList from './CustomErrorList';
 import { RJSFSchema, WidgetProps } from '@rjsf/utils';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
@@ -37,15 +34,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
-    CustomCheckboxWidget: CustomCheckboxWidget,
     CustomRadioWidget: CustomRadioWidget,
   };
-  console.log('CustomErrorList', CustomErrorList);
+  // console.log('CustomErrorList', CustomErrorList);
 
   const handleError = (errors: any) => {
     if (errors.length > 0) {
       // Adjust the selector based on the actual structure of the form element names
-      const property = errors[0].property.replace(/^root\./, '');
+      const property = errors[0].property?.replace(/^root\./, '');
       const errorField = document.querySelector(
         `[name$="${property}"]`
       ) as HTMLElement;
