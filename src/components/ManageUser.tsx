@@ -40,6 +40,8 @@ import { styled } from '@mui/system';
 
 import { getMyUserList } from '@/services/MyClassDetailsService';
 import DeleteUserModal from './DeleteUserModal';
+import Image from 'next/image';
+import profileALT from "../assets/images/ProfileALT.png"
 interface Cohort {
   cohortId: string;
   parentId: string;
@@ -499,119 +501,92 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             </Grid> */}
 
             <Box>
-              <Box px={'18px'} mt={3}>
-                <Box
+            <Box px={'18px'} mt={3}>
+  <Box
+    sx={{
+      display: 'flex',
+      gap: '20px',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingBottom: '15px',
+    }}
+  >
+    <Box
+      sx={{ gap: '15px', alignItems: 'center' }}
+      width={'100%'}
+    >
+      {users && users.length !== 0 && users.map((user) => (
+        <Box
+          key={user.userId}
+          display={'flex'}
+          borderBottom={`1px solid ${theme.palette.warning['A100']}`}
+          width={'100%'}
+          justifyContent={'space-between'}
+          sx={{ cursor: 'pointer' }}
+        >
+          <Box display="flex" alignItems="center" gap="5px" >
+            <Image
+              src={profileALT}
+              alt="img"
+            />
+            <Box>
+              <CustomLink className="word-break" href="#">
+                <Typography
+                  onClick={() => {
+                    handleLearnerFullProfile(user.userId!);
+                  }}
                   sx={{
-                    display: 'flex',
-                    gap: '20px',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    paddingBottom: '15px',
+                    textAlign: 'left',
+                    fontSize: '16px',
+                    fontWeight: '400',
+                    marginTop: '5px',
+                    color: theme.palette.secondary.main,
                   }}
                 >
-                  <Box
-                    sx={{ gap: '15px', alignItems: 'center' }}
-                    width={'100%'}
-                  >
-                    {users &&
-                      users.length !== 0 &&
-                      users.map((user) => (
-                        <Box
-                          key={user.userId}
-                          display={'flex'}
-                          borderBottom={`1px solid ${theme.palette.warning['A100']}`}
-                          width={'100%'}
-                          justifyContent={'space-between'}
-                          sx={{ cursor: 'pointer' }}
-                        >
-                          <Box
-                          // onClick={() => handleModalToggle(user)}
-                          // onClick={() => handleLearnerFullProfile()}
-                          >
-                            <Box
-                              sx={{
-                                fontSize: '16px',
-                                color: theme.palette.warning['300'],
-                              }}
-                            >
-                              <Typography
-                                onClick={() => {
-                                  handleLearnerFullProfile(user.userId!);
-                                }}
-                                sx={{
-                                  textAlign: 'left',
-                                  fontSize: '16px',
-                                  fontWeight: '400',
-                                  marginTop: '10px',
-                                }}
-                              >
-                                {user.name}
-                              </Typography>
-                              <Box
-                                sx={{
-                                  fontSize: '12px',
-                                  color: theme.palette.warning['400'],
-                                  marginBottom: '10px',
-                                }}
-                              >
-                                {user?.age ? user.age + ' y/o' : 'N/A'}
-                              </Box>
-                            </Box>
-
-                            {/* <Box display={'flex'}>
-                              {cohortsData[user.userId] &&
-                                cohortsData[user.userId].map((cohort) => (
-                                  <Box
-                                    key={cohort.cohortId}
-                                    sx={{
-                                      padding: '4px',
-                                      color: theme.palette.success.contrastText,
-                                      fontSize: '12px',
-                                      borderRadius: '8px',
-                                    }}
-                                  >
-                                    <span
-                                      style={{
-                                        color:
-                                          theme.palette.warning.contrastText,
-                                        fontWeight: '500',
-                                      }}
-                                    >
-                                      {cohort.name}
-                                    </span>
-                                  </Box>
-                                ))}
-                            </Box> */}
-                          </Box>
-                          <Box>
-                            <MoreVertIcon
-                              onClick={toggleDrawer('bottom', true, user)}
-                              sx={{
-                                fontSize: '24px',
-                                marginTop: '1rem',
-                                color: theme.palette.warning['300'],
-                              }}
-                            />
-                          </Box>
-                        </Box>
-                      ))}
-                    {!users?.length && (
-                      <Box
-                        sx={{
-                          m: '1.125rem',
-                          display: 'flex',
-                          justifyContent: 'left',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Typography style={{ fontWeight: 'bold' }}>
-                          {t('COMMON.NO_DATA_FOUND')}
-                        </Typography>
-                      </Box>
-                    )}
-                  </Box>
-                </Box>
+                  {user.name}
+                </Typography>
+              </CustomLink>
+              <Box
+                sx={{
+                  fontSize: '12px',
+                  color: theme.palette.warning['400'],
+                  marginBottom: '10px',
+                }}
+              >
+                {user?.age ? user.age + ' y/o' : 'N/A'}
               </Box>
+            </Box>
+          </Box>
+          <Box>
+            <MoreVertIcon
+              onClick={toggleDrawer('bottom', true, user)}
+              sx={{
+                fontSize: '24px',
+                marginTop: '1rem',
+                color: theme.palette.warning['300'],
+              }}
+            />
+          </Box>
+        </Box>
+      ))}
+      {!users?.length && (
+        <Box
+          sx={{
+            m: '1.125rem',
+            display: 'flex',
+            justifyContent: 'left',
+            alignItems: 'center',
+          }}
+        >
+          <Typography style={{ fontWeight: 'bold' }}>
+            {t('COMMON.NO_DATA_FOUND')}
+          </Typography>
+        </Box>
+      )}
+    </Box>
+  </Box>
+</Box>
+
               <ManageUsersModal
                 open={open}
                 onClose={handleClose}
