@@ -1,16 +1,22 @@
 import DynamicForm from '@/components/DynamicForm';
 import React from 'react';
 import { schema, uiSchema } from '@/utils/schema';
+// import { schema, uiSchema } from '@/components/GeneratedSchemas';
 import { IChangeEvent } from '@rjsf/core';
 import ISubmitEvent from '@rjsf/core';
 import { Box } from '@mui/material';
 import { RJSFSchema } from '@rjsf/utils';
+import SendCredentialModal from '@/components/SendCredentialModal';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const addLearner = () => {
+  const [openModal, setOpenModal] = React.useState(false);
+
   const handleSubmit = (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
+    setOpenModal(true);
     const target = event.target as HTMLFormElement;
     const elementsArray = Array.from(target.elements);
 
@@ -37,6 +43,10 @@ const addLearner = () => {
     console.log('Form errors:', errors);
   };
 
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <Box margin={'5rem'}>
       <DynamicForm
@@ -48,8 +58,18 @@ const addLearner = () => {
         widgets={{}}
         showErrorList={true}
       />
+
+      <SendCredentialModal open={openModal} onClose={handleCloseModal} />
     </Box>
   );
 };
 
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  };
+}
 export default addLearner;
