@@ -290,3 +290,7 @@ export interface Session {
   topic?: string;
   subtopic?: string;
 }
+
+export interface SessionCardFooterProps {
+  item: Session;
+}

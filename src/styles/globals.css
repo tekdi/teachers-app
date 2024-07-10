@@ -910,3 +910,6 @@ main {
 .accordion-summary div:first-child {
   margin: 0px !important;
 }
+.text-7C {
+  color: var(--mui-palette-warning-400) !important;
+}
