@@ -84,6 +84,18 @@ export interface cohortMemberList {
   };
 }
 
+export interface userList {
+  limit: number;
+  page: number;
+  filters: {
+    state: string;
+    district: string;
+    block:string
+    role?: string;
+  },
+  fields: string[]
+}
+
 export interface UserData {
   name?: any;
   district: string;

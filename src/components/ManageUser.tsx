@@ -38,7 +38,7 @@ import LearnersList from '@/components/LearnersList';
 import Link from 'next/link';
 import { styled } from '@mui/system';
 
-import { getFacilitatorList } from '@/services/MyClassDetailsService';
+import { getMyUserList } from '@/services/MyClassDetailsService';
 import DeleteUserModal from './DeleteUserModal';
 interface Cohort {
   cohortId: string;
@@ -130,17 +130,25 @@ const manageUsers: React.FC<ManageUsersProps> = ({
           const limit = 0;
           const page = 0;
           const filters = {
-            cohortId: cohortId,
+            state: 'MH',
+            district: 'PN',
+            block: 'BA',
             role: 'Teacher',
           };
+          const fields = ['age'];
 
-          const resp = await getFacilitatorList({ limit, page, filters });
-          const facilitatorList = resp.result?.results?.userDetails;
-          const extractedData = facilitatorList?.map((user: any) => ({
-            userId: user.userId,
-            name: user.name,
-            age: user?.age,
-          }));
+          const resp = await getMyUserList({ limit, page, filters, fields });
+          const facilitatorList = resp.result?.getUserDetails;
+          const extractedData = facilitatorList?.map((user: any) => {
+            const ageField = user.customFields.find(
+              (field: any) => field.name === 'age'
+            );
+            return {
+              userId: user.userId,
+              name: user.name,
+              age: ageField ? ageField.value : null,
+            };
+          });
           console.log(extractedData);
           setTimeout(() => {
             setUsers(extractedData);
@@ -526,29 +534,27 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                                 color: theme.palette.warning['300'],
                               }}
                             >
-                              <CustomLink className="word-break" href="#">
-                                <Typography
-                                  onClick={() => {
-                                    handleLearnerFullProfile(user.userId!);
-                                  }}
-                                  sx={{
-                                    textAlign: 'left',
-                                    fontSize: '16px',
-                                    fontWeight: '400',
-                                    color: theme.palette.secondary.main,
-                                  }}
-                                >
-                                  {user.name}
-                                </Typography>
-                              </CustomLink>
-
+                              <Typography
+                                onClick={() => {
+                                  handleLearnerFullProfile(user.userId!);
+                                }}
+                                sx={{
+                                  textAlign: 'left',
+                                  fontSize: '16px',
+                                  fontWeight: '400',
+                                  marginTop: '10px',
+                                }}
+                              >
+                                {user.name}
+                              </Typography>
                               <Box
                                 sx={{
                                   fontSize: '12px',
                                   color: theme.palette.warning['400'],
+                                  marginBottom: '10px',
                                 }}
                               >
-                                {user?.age ? user.age + 'y/o' : 'N/A'}
+                                {user?.age ? user.age + ' y/o' : 'N/A'}
                               </Box>
                             </Box>
 
