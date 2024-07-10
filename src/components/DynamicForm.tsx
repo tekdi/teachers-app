@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { IChangeEvent } from '@rjsf/core';
 import ISubmitEvent from '@rjsf/core';
 import validator from '@rjsf/validator-ajv8';
 import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { withTheme } from '@rjsf/core';
-import { RJSFSchema } from '@rjsf/utils';
+import MultiSelectCheckboxes from './MultiSelectCheckboxes';
+import CustomCheckboxWidget from './CustomCheckboxWidget';
+import CustomRadioWidget from './CustomRadioWidget';
+import CustomErrorList from './CustomErrorList';
+import { RJSFSchema, WidgetProps } from '@rjsf/utils';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -19,6 +23,9 @@ interface DynamicFormProps {
   onChange: (event: IChangeEvent<any>) => void;
   onError: (errors: any) => void;
   showErrorList: boolean;
+  widgets: {
+    [key: string]: React.FC<WidgetProps<any, RJSFSchema, any>>;
+  };
 }
 const DynamicForm: React.FC<DynamicFormProps> = ({
   schema,
@@ -28,6 +35,34 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   onChange,
   onError,
 }) => {
+  const widgets = {
+    MultiSelectCheckboxes: MultiSelectCheckboxes,
+    CustomCheckboxWidget: CustomCheckboxWidget,
+    CustomRadioWidget: CustomRadioWidget,
+  };
+  console.log('CustomErrorList', CustomErrorList);
+
+  const handleError = (errors: any) => {
+    if (errors.length > 0) {
+      // Adjust the selector based on the actual structure of the form element names
+      const property = errors[0].property.replace(/^root\./, '');
+      const errorField = document.querySelector(
+        `[name$="${property}"]`
+      ) as HTMLElement;
+
+      if (errorField) {
+        errorField.focus();
+      } else {
+        // If the name-based selector fails, try to select by ID as a fallback
+        const fallbackField = document.getElementById(property) as HTMLElement;
+        if (fallbackField) {
+          fallbackField.focus();
+        }
+      }
+    }
+    onError(errors);
+  };
+
   return (
     <FormWithMaterialUI
       schema={schema}
@@ -35,10 +70,13 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       formData={formData}
       onChange={onChange}
       onSubmit={onSubmit}
-      onError={onError}
       validator={validator}
       liveValidate
       showErrorList={false}
+      widgets={widgets}
+      noHtml5Validate
+      onError={handleError}
+      // ErrorList={CustomErrorList}
     />
   );
 };
