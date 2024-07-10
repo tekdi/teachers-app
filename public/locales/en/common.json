@@ -94,7 +94,12 @@
     "USER_DELETED_PERMANENTLY": "User Successfully Deleted!",
     "OBSERVATIONS_FORMS": "Observations and Forms",
     "OTHER_REASON": "Other Reason",
-    "OTHER_REASON_PLACEHOLDER": "Enter Other Reason"
+    "OTHER_REASON_PLACEHOLDER": "Enter Other Reason",
+    "BACK": "Back",
+    "SEND_CREDENTIALS": "Send Credentials",
+    "CREDENTIALS_EMAILED": "The login credentials will be emailed to the user at",
+    "NEW": "New {{role}}",
+    "USER_CREDENTIAL_SEND_SUCCESSFULLY": "User Credentials Sent Successfully!"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
