@@ -41,7 +41,7 @@ import { styled } from '@mui/system';
 import { getMyUserList } from '@/services/MyClassDetailsService';
 import DeleteUserModal from './DeleteUserModal';
 import Image from 'next/image';
-import profileALT from "../assets/images/ProfileALT.png"
+import profileALT from "../assets/images/Profile.png"
 interface Cohort {
   cohortId: string;
   parentId: string;
