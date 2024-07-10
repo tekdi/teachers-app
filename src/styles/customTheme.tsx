@@ -52,7 +52,9 @@ const customTheme = extendTheme({
         Skeleton: {
           bg: '#FFDCC2',
         },
-        background: {},
+        background: {
+          default: '#F3EDF7',
+        },
       },
     },
     dark: {

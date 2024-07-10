@@ -99,7 +99,13 @@
     "SEND_CREDENTIALS": "Send Credentials",
     "CREDENTIALS_EMAILED": "The login credentials will be emailed to the user at",
     "NEW": "New {{role}}",
-    "USER_CREDENTIAL_SEND_SUCCESSFULLY": "User Credentials Sent Successfully!"
+    "USER_CREDENTIAL_SEND_SUCCESSFULLY": "User Credentials Sent Successfully!",
+    "CENTER_SESSIONS": "Center Sessions",
+    "SCHEDULE_NEW": "Schedule New",
+    "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
+    "NO_SESSIONS_SCHEDULED": "No sessions scheduled",
+    "TO_BE_TAUGHT": "What is going to be taught:",
+    "SELECT_TOPIC": "Select Topic, Sub-topic"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
