@@ -553,7 +553,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                   marginBottom: '10px',
                 }}
               >
-                {user?.age ? user.age + ' y/o' : 'N/A'}
+                {user?.age ? `${user.age} y/o` : 'N/A'}
               </Box>
             </Box>
           </Box>
