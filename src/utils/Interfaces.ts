@@ -112,6 +112,11 @@ export interface ExtraSessionsCardProps {
   onEditClick?: () => void;
   onCopyClick?: () => void;
 }
+
+export interface SessionsCardProps {
+  data: Session;
+  children?: React.ReactNode;
+}
 export interface AttendanceStatusListProps {
   limit: number;
   page: number;
@@ -275,4 +280,13 @@ export interface DropoutMember {
 export interface AssignCentersToFacilitatorListParam {
   userId: string[];
   cohortId: string[];
+}
+
+export interface Session {
+  id: number;
+  subject: string;
+  time: string;
+  teacherName: string;
+  topic?: string;
+  subtopic?: string;
 }

@@ -903,3 +903,10 @@ main {
     margin-top: 3px;
   }
 }
+
+.italic {
+  font-style: italic !important;
+}
+.accordion-summary div:first-child {
+  margin: 0px !important;
+}
