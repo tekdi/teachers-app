@@ -903,3 +903,13 @@ main {
     margin-top: 3px;
   }
 }
+
+.italic {
+  font-style: italic !important;
+}
+.accordion-summary div:first-child {
+  margin: 0px !important;
+}
+.text-7C {
+  color: var(--mui-palette-warning-400) !important;
+}

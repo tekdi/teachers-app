@@ -1,33 +1,52 @@
 import { Button, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
+import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
 
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 import AddIcon from '@mui/icons-material/Add';
 import AddLeanerModal from '@/components/AddLeanerModal';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
 import CohortLearnerList from '@/components/CohortLearnerList';
 import { CustomField } from '@/utils/Interfaces';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { GetStaticPaths } from 'next';
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import { Session } from '../../utils/Interfaces';
+import SessionCard from '@/components/SessionCard';
+import SessionCardFooter from '@/components/SessionCardFooter';
+import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
+import WeekCalender from '@/components/WeekCalender';
 import { getCohortDetails } from '@/services/CohortServices';
+import { getSessions } from '@/services/Sessionservice';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { toPascalCase } from '@/utils/Helper';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
+  const [showDetails, setShowDetails] = React.useState(false);
+  const [classId, setClassId] = React.useState('');
   const router = useRouter();
   const { cohortId }: any = router.query;
   const { t } = useTranslation();
   const theme = useTheme<any>();
+  const [selectedDate, setSelectedDate] =
+    React.useState<string>(getTodayDate());
 
   const [cohortDetails, setCohortDetails] = React.useState<any>({});
   const [reloadState, setReloadState] = React.useState<boolean>(false);
+  const [sessions, setSessions] = React.useState<Session[]>();
+  const [percentageAttendanceData, setPercentageAttendanceData] =
+    React.useState<any>(null);
 
   useEffect(() => {
     const getCohortData = async () => {
@@ -41,18 +60,29 @@ const TeachingCenterDetails = () => {
 
         if (cohortData?.customField?.length) {
           const district = cohortData.customField.find(
-            (item: CustomField) => item.label === "District"
+            (item: CustomField) => item.label === 'District'
           );
           const state = cohortData.customField.find(
             (item: CustomField) => item.label === 'State'
           );
 
-          cohortData.address = `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` || '';
+          cohortData.address =
+            `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
+            '';
         }
         setCohortDetails(cohortData);
       }
     };
     getCohortData();
+  }, []);
+
+  useEffect(() => {
+    const getSessionsData = async () => {
+      const response: Session[] = await getSessions('cohortId'); // Todo add dynamic cohortId
+      setSessions(response);
+    };
+
+    getSessionsData();
   }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -61,6 +91,11 @@ const TeachingCenterDetails = () => {
 
   const handleBackEvent = () => {
     window.history.back();
+  };
+
+  const showDetailsHandle = (dayStr: string) => {
+    setSelectedDate(formatSelectedDate(dayStr));
+    setShowDetails(true);
   };
 
   return (
@@ -91,14 +126,12 @@ const TeachingCenterDetails = () => {
                 (cohortDetails?.centerType)
               </Typography>
             )}
-            <Box>
-            </Box>
+
             <Box>
               <Typography textAlign={'left'} fontSize={'11px'} fontWeight={500}>
                 {cohortDetails?.address}
               </Typography>
-              </Box>
-            
+            </Box>
           </Box>
         </Box>
       </Box>
@@ -131,11 +164,62 @@ const TeachingCenterDetails = () => {
             },
           }}
         >
-          <Tab value={1} label={t('COMMON.LEARNER_LIST')} />
+          <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
+          <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
         </Tabs>
       </Box>
+
+      {value === 1 && (
+        <>
+          <Box mt={3} px={'18px'}>
+            <Button
+              sx={{
+                border: `1px solid ${theme.palette.error.contrastText}`,
+                borderRadius: '100px',
+                height: '40px',
+                width: '163px',
+                color: theme.palette.error.contrastText,
+              }}
+              className="text-1E"
+              endIcon={<AddIcon />}
+            >
+              {t('COMMON.SCHEDULE_NEW')}
+            </Button>
+          </Box>
+          <Box mt={3} px={'18px'}>
+            <Box
+              className="fs-14 fw-500"
+              sx={{ color: theme.palette.warning['300'] }}
+            >
+              {t('COMMON.UPCOMING_EXTRA_SESSION')}
+            </Box>
+            <Box
+              className="fs-12 fw-400 italic"
+              sx={{ color: theme.palette.warning['300'] }}
+            >
+              {t('COMMON.NO_SESSIONS_SCHEDULED')}
+            </Box>
+          </Box>
+          <Box>
+            <WeekCalender
+              showDetailsHandle={showDetailsHandle}
+              data={percentageAttendanceData}
+              disableDays={classId === 'all' ? true : false}
+              classId={classId}
+            />
+          </Box>
+          <Box mt={3} px="18px">
+            {sessions &&
+              sessions.map((item: Session, index: number) => (
+                <SessionCard data={item} key={item.id}>
+                  <SessionCardFooter item={item} />
+                </SessionCard>
+              ))}
+          </Box>
+        </>
+      )}
       <Box>
-        {value === 1 && (
+        {value === 2 && (
           <>
             <Box mt={3} px={'18px'}>
               <Button

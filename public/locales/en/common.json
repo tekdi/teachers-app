@@ -94,7 +94,13 @@
     "USER_DELETED_PERMANENTLY": "User Successfully Deleted!",
     "OBSERVATIONS_FORMS": "Observations and Forms",
     "OTHER_REASON": "Other Reason",
-    "OTHER_REASON_PLACEHOLDER": "Enter Other Reason"
+    "OTHER_REASON_PLACEHOLDER": "Enter Other Reason",
+    "CENTER_SESSIONS": "Center Sessions",
+    "SCHEDULE_NEW": "Schedule New",
+    "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
+    "NO_SESSIONS_SCHEDULED": "No sessions scheduled",
+    "TO_BE_TAUGHT": "What is going to be taught:",
+    "SELECT_TOPIC": "Select Topic, Sub-topic"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
