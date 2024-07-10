@@ -1,7 +1,6 @@
 import DynamicForm from '@/components/DynamicForm';
 import React from 'react';
-import { schema, uiSchema } from '@/utils/schema';
-// import { schema, uiSchema } from '@/components/GeneratedSchemas';
+import { schema, uiSchema } from '@/components/GeneratedSchemas';
 import { IChangeEvent } from '@rjsf/core';
 import ISubmitEvent from '@rjsf/core';
 import { Box } from '@mui/material';
