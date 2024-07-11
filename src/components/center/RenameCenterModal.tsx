@@ -40,7 +40,6 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
   const theme = useTheme<any>();
 
   const [centerName, setCenterName] = useState<string>('');
-  const [centerType, setCenterType] = useState<string>('Regular');
 
   const handleTextFieldChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -48,9 +47,6 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
     setCenterName(event.target.value);
   };
 
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCenterType(event.target.value);
-  };
 
   const handleCreateButtonClick = () => {
     console.log('Entered Center Name:', centerName);
