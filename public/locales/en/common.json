@@ -287,7 +287,8 @@
     "CENTER_CREATED": "Center Created Successfully!",
     "RENAME_CENTER": "Rename Center",
     "REQUEST_TO_DELETE": "Request to Delete",
-    "RENAME": "Rename"
+    "RENAME": "Rename",
+    "CENTER_RENAMED": "Center Renamed Successfully!"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"

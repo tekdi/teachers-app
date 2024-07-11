@@ -49,8 +49,8 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
 
 
   const handleCreateButtonClick = () => {
-    console.log('Entered Center Name:', centerName);
-    showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
+    console.log('Entered Rename Name:', centerName);
+    showToastMessage(t('CENTERS.CENTER_RENAMED'), 'success');
     handleClose();
   };
 
