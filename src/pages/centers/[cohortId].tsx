@@ -1,5 +1,12 @@
-import { Button, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import {
+  Button,
+  IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Typography,
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
 
 import Accordion from '@mui/material/Accordion';
@@ -30,6 +37,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import RenameCenterModal from '@/components/center/RenameCenterModal';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -47,6 +58,8 @@ const TeachingCenterDetails = () => {
   const [sessions, setSessions] = React.useState<Session[]>();
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState<any>(null);
+  const [openRenameCenterModal, setOpenRenameCenterModal] =
+    React.useState(false);
 
   useEffect(() => {
     const getCohortData = async () => {
@@ -98,6 +111,20 @@ const TeachingCenterDetails = () => {
     setShowDetails(true);
   };
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleRenameCenterClose = () => {
+    setOpenRenameCenterModal(false);
+  };
+
   return (
     <>
       <Header />
@@ -105,34 +132,77 @@ const TeachingCenterDetails = () => {
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'left',
-            // alignItems: 'center',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             color: '#4D4639',
             padding: '15px 17px 5px',
+            width: '100%',
           }}
-          width={'100%'}
-          onClick={handleBackEvent}
         >
-          <KeyboardBackspaceOutlinedIcon
-            cursor={'pointer'}
-            sx={{ color: theme.palette.warning['A200'], marginTop: '15px' }}
-          />
-          <Box m={'1rem 1rem 0.5rem'} display={'column'} gap={'5px'}>
-            <Typography textAlign={'left'} fontSize={'22px'}>
-              {cohortDetails?.name}
-            </Typography>
-            {cohortDetails?.centerType && (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+            }}
+            onClick={handleBackEvent}
+          >
+            <KeyboardBackspaceOutlinedIcon
+              sx={{ color: theme.palette.warning['A200'], marginTop: '15px' }}
+            />
+            <Box m={'1rem 1rem 0.5rem'} display={'column'} gap={'5px'}>
               <Typography textAlign={'left'} fontSize={'22px'}>
-                (cohortDetails?.centerType)
+                {cohortDetails?.name}
               </Typography>
-            )}
-
-            <Box>
-              <Typography textAlign={'left'} fontSize={'11px'} fontWeight={500}>
-                {cohortDetails?.address}
-              </Typography>
+              {cohortDetails?.centerType && (
+                <Typography textAlign={'left'} fontSize={'22px'}>
+                  {cohortDetails?.centerType}
+                </Typography>
+              )}
+              <Box>
+                <Typography
+                  textAlign={'left'}
+                  fontSize={'11px'}
+                  fontWeight={500}
+                >
+                  {cohortDetails?.address}
+                </Typography>
+              </Box>
             </Box>
           </Box>
+          <IconButton
+            aria-label="more"
+            aria-controls="long-menu"
+            aria-haspopup="true"
+            onClick={handleMenuOpen}
+            sx={{ color: theme.palette.warning['A200'] }}
+          >
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            id="long-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={() => setOpenRenameCenterModal(true)}>
+              <ListItemIcon  sx={{ color: theme.palette.warning['A200'] }}>
+                <ModeEditOutlineOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              {t('CENTERS.RENAME_CENTER')}
+            </MenuItem>
+            <MenuItem onClick={handleMenuClose}>
+              <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>
+                <DeleteOutlineOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              {t('CENTERS.REQUEST_TO_DELETE')}
+            </MenuItem>
+          </Menu>
+          <RenameCenterModal
+            open={openRenameCenterModal}
+            handleClose={handleRenameCenterClose}
+          />
         </Box>
       </Box>
       <Box sx={{ width: '100%' }}>

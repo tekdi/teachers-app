@@ -284,7 +284,10 @@
     "CENTER_TYPE": "Center Type",
     "UNIT_NAME": "Unit Name",
     "NOTE": "Note: This will be the center name",
-    "CENTER_CREATED": "Center Created Successfully!"
+    "CENTER_CREATED": "Center Created Successfully!",
+    "RENAME_CENTER": "Rename Center",
+    "REQUEST_TO_DELETE": "Request to Delete",
+    "RENAME": "Rename"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"
