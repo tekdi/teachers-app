@@ -288,7 +288,10 @@
     "RENAME_CENTER": "Rename Center",
     "REQUEST_TO_DELETE": "Request to Delete",
     "RENAME": "Rename",
-    "CENTER_RENAMED": "Center Renamed Successfully!"
+    "CENTER_RENAMED": "Center Renamed Successfully!",
+    "SEND_REQUEST":"Send Request",
+    "REQUEST_TO_DELETE_HAS_BEEN_SENT": "Request to Delete has been sent",
+    "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "You are sending a request to the State Admin to delete this Center"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"

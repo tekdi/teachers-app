@@ -41,6 +41,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import RenameCenterModal from '@/components/center/RenameCenterModal';
+import DeleteCenterModal from '@/components/center/DeleteCenterModal';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -59,6 +60,8 @@ const TeachingCenterDetails = () => {
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState<any>(null);
   const [openRenameCenterModal, setOpenRenameCenterModal] =
+    React.useState(false);
+    const [openDeleteCenterModal, setOpenDeleteCenterModal] =
     React.useState(false);
 
   useEffect(() => {
@@ -125,6 +128,10 @@ const TeachingCenterDetails = () => {
     setOpenRenameCenterModal(false);
   };
 
+  const handleDeleteCenterClose = () => {
+    setOpenDeleteCenterModal(false);
+  };
+
   return (
     <>
       <Header />
@@ -186,13 +193,13 @@ const TeachingCenterDetails = () => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => setOpenRenameCenterModal(true)}>
-              <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>
+            <MenuItem onClick={() => { setOpenRenameCenterModal(true); handleMenuClose(); }}>
+              <ListItemIcon  sx={{ color: theme.palette.warning['A200'] }}>
                 <ModeEditOutlineOutlinedIcon fontSize="small" />
               </ListItemIcon>
               {t('CENTERS.RENAME_CENTER')}
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
+            <MenuItem onClick={() => {setOpenDeleteCenterModal(true); handleMenuClose(); }}>
               <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>
                 <DeleteOutlineOutlinedIcon fontSize="small" />
               </ListItemIcon>
@@ -202,6 +209,10 @@ const TeachingCenterDetails = () => {
           <RenameCenterModal
             open={openRenameCenterModal}
             handleClose={handleRenameCenterClose}
+          />
+            <DeleteCenterModal
+            open={openDeleteCenterModal}
+            handleClose={handleDeleteCenterClose}
           />
         </Box>
       </Box>
