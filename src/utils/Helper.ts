@@ -256,8 +256,11 @@ export const sortClassesMissed = (data: any[], order: string) => {
   );
 };
 
-
-export const accessGranted = (action: string, accessControl: { [key: string]: Role[] }, currentRole: Role): boolean => {
+export const accessGranted = (
+  action: string,
+  accessControl: { [key: string]: Role[] },
+  currentRole: Role
+): boolean => {
   if (accessControl[action]?.includes(currentRole)) {
     return true;
   }

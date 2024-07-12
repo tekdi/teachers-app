@@ -3,24 +3,26 @@ import { useEffect } from 'react';
 import useStore from '@/store/store';
 import { Role } from '../app.constant';
 
-const withAccessControl = (action: string, accessControl: { [key: string]: Role[] }) => (Component: React.ComponentType<any>) => {
-  return (props: any) => {
-    const store = useStore();
-    const userRole = store.userRole;
-    const router = useRouter();
+const withAccessControl =
+  (action: string, accessControl: { [key: string]: Role[] }) =>
+  (Component: React.ComponentType<any>) => {
+    return (props: any) => {
+      const store = useStore();
+      const userRole = store.userRole;
+      const router = useRouter();
 
-    useEffect(() => {
+      useEffect(() => {
+        if (!userRole || !accessControl[action]?.includes(userRole)) {
+          router.replace('/unauthorized');
+        }
+      }, [userRole, action, router]);
+
       if (!userRole || !accessControl[action]?.includes(userRole)) {
-        router.replace('/unauthorized'); 
+        return null;
       }
-    }, [userRole, action, router]);
 
-    if (!userRole || !accessControl[action]?.includes(userRole)) {
-      return null; 
-    }
-
-    return <Component {...props} />;
+      return <Component {...props} />;
+    };
   };
-};
 
 export default withAccessControl;

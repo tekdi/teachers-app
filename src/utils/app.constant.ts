@@ -27,4 +27,3 @@ export enum cohortHierarchy {
   BLOCK = 'BLOCK',
   COHORT = 'COHORT',
 }
-

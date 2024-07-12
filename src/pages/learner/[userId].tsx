@@ -1647,4 +1647,7 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default withAccessControl('accessLearnerProfile', accessControl)(LearnerProfile);
+export default withAccessControl(
+  'accessLearnerProfile',
+  accessControl
+)(LearnerProfile);

@@ -187,7 +187,7 @@ const TeachingCenterDetails = () => {
             onClose={handleMenuClose}
           >
             <MenuItem onClick={() => setOpenRenameCenterModal(true)}>
-              <ListItemIcon  sx={{ color: theme.palette.warning['A200'] }}>
+              <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>
                 <ModeEditOutlineOutlinedIcon fontSize="small" />
               </ListItemIcon>
               {t('CENTERS.RENAME_CENTER')}
