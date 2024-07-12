@@ -270,6 +270,7 @@
     "RENAME": "नाव बदला",
     "CENTER_RENAMED": "केंद्राचे नाव यशस्वीरित्या बदलले गेले!",
     "SEND_REQUEST":"विनंती पाठवा",
-    "REQUEST_TO_DELETE_HAS_BEEN_SENT": "हटवण्याची विनंती पाठवली आहे"
+    "REQUEST_TO_DELETE_HAS_BEEN_SENT": "हटवण्याची विनंती पाठवली आहे",
+    "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "आपण या केंद्राला हटविण्याचे विनंती राज्य प्रशासनाला पाठवत आहात"
   }
 }

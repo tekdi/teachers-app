@@ -269,6 +269,7 @@
     "RENAME": "नाम बदलें",
     "CENTER_RENAMED": "केंद्र का नाम सफलतापूर्वक बदल दिया गया!",
     "SEND_REQUEST":"अनुरोध भेजें",
-    "REQUEST_TO_DELETE_HAS_BEEN_SENT": " हटाने का अनुरोध भेजा गया है"
+    "REQUEST_TO_DELETE_HAS_BEEN_SENT": " हटाने का अनुरोध भेजा गया है",
+    "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "आप राज्य प्रशासन को इस केंद्र को हटाने का अनुरोध भेज रहे हैं"
   }
 }

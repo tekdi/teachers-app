@@ -66,12 +66,9 @@ const DeleteCenterModal: React.FC<CreateBlockModalProps> = ({
             transform: 'translate(-50%, -50%)',
           }}
         >
-         
-  
-         
-       
           <Typography variant="body2" color="textSecondary" sx={{ mb: 2, mt: 2 }}>
-          You are sending a request to the State Admin to delete this Center
+          
+          {t('CENTERS.YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN')}
           </Typography>
           <Divider sx={{ mb: 2, mx: -2 }} />
           <Box
