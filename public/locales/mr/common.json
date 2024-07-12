@@ -268,6 +268,8 @@
     "RENAME_CENTER": "केंद्राचे नाव बदला",
     "REQUEST_TO_DELETE": "हटवण्याची विनंती",
     "RENAME": "नाव बदला",
-    "CENTER_RENAMED": "केंद्राचे नाव यशस्वीरित्या बदलले गेले!"
+    "CENTER_RENAMED": "केंद्राचे नाव यशस्वीरित्या बदलले गेले!",
+    "SEND_REQUEST":"विनंती पाठवा",
+    "REQUEST_TO_DELETE_HAS_BEEN_SENT": "हटवण्याची विनंती पाठवली आहे"
   }
 }

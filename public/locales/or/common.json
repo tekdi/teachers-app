@@ -212,7 +212,9 @@
 "RENAME_CENTER": "କେନ୍ଦ୍ରର ନାମ ପରିବର୍ତ୍ତନ କରନ୍ତୁ",
 "REQUEST_TO_DELETE": "ହଟାଇବାକୁ ଅନୁରୋଧ",
     "RENAME": "ପୁନ ame ନାମ କରନ୍ତୁ",
-    "CENTER_RENAMED": "କେନ୍ଦ୍ରର ନାମ ସଫଳତାର ସହ ଚାଲିଛି!"
+    "CENTER_RENAMED": "କେନ୍ଦ୍ରର ନାମ ସଫଳତାର ସହ ଚାଲିଛି!",
+    "SEND_REQUEST":"ଅନୁରୋଧ ପଠାନ୍ତୁ",
+    "REQUEST_TO_DELETE_HAS_BEEN_SENT": "ହଟାଇବାକୁ ଅନୁରୋଧ ପଠାଯାଇଛି"
 
     }
   }
