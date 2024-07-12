@@ -32,12 +32,11 @@ export const accessControl: { [key: string]: Role[] } = {
   accessProfile: [Role.TEACHER, Role.TEAM_LEADER],
   accessLearnerProfile: [Role.TEACHER, Role.TEAM_LEADER],
   accessLearnerAttendanceHistory: [Role.TEACHER, Role.TEAM_LEADER],
-  showTeachingCenter : [Role.TEAM_LEADER],
-  showBlockLevelCohort : [Role.TEAM_LEADER],
+  showTeachingCenter: [Role.TEAM_LEADER],
+  showBlockLevelCohort: [Role.TEAM_LEADER],
   showTeacherCohorts: [Role.TEACHER],
   showBlockLevelData: [Role.TEAM_LEADER],
   showCreateCenterButton: [Role.TEAM_LEADER],
   showBlockLevelCenterData: [Role.TEAM_LEADER],
   showTeacherLevelCenterData: [Role.TEACHER],
 };
-

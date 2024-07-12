@@ -51,11 +51,11 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
       dependsOn,
     } = field;
 
-    let fieldSchema: any = {
+    const fieldSchema: any = {
       title: label,
     };
 
-    let fieldUiSchema: any = {};
+    const fieldUiSchema: any = {};
 
     switch (type) {
       case 'text':

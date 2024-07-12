@@ -30,7 +30,7 @@ export const getMyUserList = async ({
   limit,
   page,
   filters,
-  fields
+  fields,
 }: userList): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/list`;
   try {
@@ -38,7 +38,7 @@ export const getMyUserList = async ({
       limit,
       page,
       filters,
-      fields
+      fields,
     });
     console.log('data', response?.data);
     return response?.data;

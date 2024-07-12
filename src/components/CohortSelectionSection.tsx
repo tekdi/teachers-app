@@ -91,7 +91,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
           console.log('Response:', response);
           if (response && response.length > 0) {
             if (response[0].type === cohortHierarchy.COHORT) {
-              let filteredData = response
+              const filteredData = response
                 ?.map((item: any) => ({
                   cohortId: item?.cohortId,
                   parentId: item?.parentId,

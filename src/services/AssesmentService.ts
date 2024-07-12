@@ -9,8 +9,7 @@ export const AssesmentListService = async ({
   pagination,
   filters,
 }: assesmentListServiceParam): Promise<any> => {
-  const apiUrl: string =
-    `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/tracking-assessment/v1/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/tracking-assessment/v1/list`;
   try {
     const response = await post(apiUrl, { pagination, filters, sort });
     return response?.data;

@@ -777,6 +777,7 @@ main {
 .checkBox_svg svg {
   fill: var(--mui-palette-warning-A200);
 }
+
 .btn-mark-width {
   min-width: 84px;
   height: 2.5rem;
@@ -784,15 +785,16 @@ main {
 }
 
 .overview-date-select div:first-child {
-  margin-top: 0px !important;
+  margin-top: 0 !important;
 }
 
-@media (min-width: 500px) {
+@media (width >= 500px) {
   .btn-mark-width {
     width: 20% !important;
   }
 }
-@media (min-width: 900px) {
+
+@media (width >= 900px) {
   .pl-20 {
     padding-left: 20px !important;
   }
@@ -804,22 +806,28 @@ main {
   .w-md-100 {
     width: 100% !important;
   }
+
   .ps-md-relative {
     position: relative;
   }
+
   .pl-md-20 {
     padding-left: 20px;
   }
+
   .display-md-none {
     display: none !important;
   }
+
   .br-md-tlr-8 {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
   }
+
   .d-md-flex {
     display: flex;
   }
+
   .space-md-between {
     justify-content: space-between;
   }
@@ -827,78 +835,101 @@ main {
   .min-align-md-center {
     align-items: center;
   }
+
   .flex-md-end {
     justify-content: end;
   }
+
   .gap-md-10 {
     gap: 10px;
   }
+
   .w-md-40 {
     width: 40%;
   }
+
   .w-md-60 {
     width: 60%;
   }
+
   .mt-1-rem {
     margin-top: 1rem;
   }
+
   .top-md-0 {
     top: 0;
   }
+
   .br-md-8 {
     border-radius: 8px;
   }
+
   .flex-basis-md-30 {
     flex-basis: 50%;
   }
+
   .flex-basis-md-50 {
     flex-basis: 50%;
   }
+
   .flex-basis-md-90 {
     flex-basis: 90%;
   }
+
   .flex-basis-md-10 {
     flex-basis: 10%;
   }
+
   .min-width-md-20 {
     width: 25% !important;
     min-width: 25% !important;
   }
+
   .__floater__open {
     z-index: 9999 !important;
   }
 }
-@media (max-width: 900px) {
+
+@media (width <= 900px) {
   .backgroundFaded div:first-child {
     background-color: unset !important;
   }
+
   .overview-date-select {
     margin-top: 12px !important;
   }
+
   .mt-md-12 {
     margin-top: 12px;
   }
+
   .fl-dir-md-col {
     flex-direction: column !important;
   }
+
   .align-md-center {
     align-items: center !important;
   }
+
   .align-md-start {
     align-items: start !important;
   }
+
   /* .w-md-111 {
     width: 111%;
   } */
   .mt-md-16 {
     margin-top: 16px;
   }
+
   .ps-md-ab {
     position: absolute;
   }
+
   .right-md-20 {
     right: 20px;
   }
+
   .mt-md-3 {
     margin-top: 3px;
   }
@@ -907,9 +938,11 @@ main {
 .italic {
   font-style: italic !important;
 }
+
 .accordion-summary div:first-child {
-  margin: 0px !important;
+  margin: 0 !important;
 }
+
 .text-7C {
   color: var(--mui-palette-warning-400) !important;
 }

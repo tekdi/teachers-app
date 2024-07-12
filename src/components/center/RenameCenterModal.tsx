@@ -47,7 +47,6 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
     setCenterName(event.target.value);
   };
 
-
   const handleCreateButtonClick = () => {
     console.log('Entered Rename Name:', centerName);
     showToastMessage(t('CENTERS.CENTER_RENAMED'), 'success');
@@ -96,7 +95,7 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
             </IconButton>
           </Box>
           <Divider sx={{ mb: 2, mx: -2 }} />
-        
+
           <TextField
             fullWidth
             label={t('CENTERS.UNIT_NAME')}

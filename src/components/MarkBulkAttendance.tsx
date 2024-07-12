@@ -229,7 +229,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       });
                       if (newArray.length != 0) {
                         setNumberOfCohortMembers(newArray?.length);
-                        setCohortMemberList(newArray)
+                        setCohortMemberList(newArray);
                         const hasDropout = newArray.some(
                           (user) => user.memberStatus === Status.DROPOUT
                         );
@@ -566,7 +566,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       ) => (
                         <AttendanceStatusListView
                           key={user.userId}
-                          isDisabled = {true}
+                          isDisabled={true}
                           userData={{
                             userId: user.userId,
                             attendance: user.attendance,
@@ -574,8 +574,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             name: user.name,
                             memberStatus: user.memberStatus,
                           }}
-                          presentCount = {presentCount}
-                          absentCount = {absentCount}
+                          presentCount={presentCount}
+                          absentCount={absentCount}
                           // isEdit={true}
                           // bulkAttendanceStatus={bulkAttendanceStatus}
                           // handleBulkAction={submitBulkAttendanceAction}

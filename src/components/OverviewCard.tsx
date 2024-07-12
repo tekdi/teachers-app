@@ -54,7 +54,11 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
         {value ? (
           <Typography
             variant="h2"
-            sx={{ color: theme.palette.warning['300'], fontSize: '16px', fontWeight: '500' }}
+            sx={{
+              color: theme.palette.warning['300'],
+              fontSize: '16px',
+              fontWeight: '500',
+            }}
             fontWeight={500}
           >
             {value}

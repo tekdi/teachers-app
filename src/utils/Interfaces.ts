@@ -90,10 +90,10 @@ export interface userList {
   filters: {
     state: string;
     district: string;
-    block:string
+    block: string;
     role?: string;
-  },
-  fields: string[]
+  };
+  fields: string[];
 }
 
 export interface UserData {
