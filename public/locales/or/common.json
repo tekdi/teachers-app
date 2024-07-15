@@ -97,7 +97,10 @@
     "BACK_TO_TOP": "ଉପରକୁ ଫେରିଯାଇ",
     "LAST_SEVEN_DAYS_RANGE": "ଗତ 7 ଦିନ {{date_range}}",
     "AS_OF_TODAY_DATE": "ଆଜି ଅନୁସାରେ {{day_date}}",
-    "LEARNER": "ଶିକ୍ଷାର୍ଥୀ"
+    "LEARNER": "ଶିକ୍ଷାର୍ଥୀ",
+    "ATTENDANCE_COMPARISON": "ଉପସ୍ଥିତି ତୁଳନ",
+    "CENTER_TYPE":"କେନ୍ଦ୍ର ପ୍ରକାର",
+    "BLOCK_AVERAGE_ATTENDANCE": "ବ୍ଲକ ହାରାହାର ଉପସ୍ଥିତି"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "ମୋଟ ଶିକ୍ଷାର୍ଥୀ ସଂଖ୍ୟା: {{count}}",
@@ -219,4 +222,4 @@
 
     }
   }
-}
+

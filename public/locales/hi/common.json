@@ -127,7 +127,10 @@
     "BACK_TO_TOP": "वापस शीर्ष पर",
     "LAST_SEVEN_DAYS_RANGE": "पिछले 7 दिन {{date_range}}",
     "AS_OF_TODAY_DATE": "आज तक, {{day_date}}",
-    "LEARNER": "शिक्षार्थियों"
+    "LEARNER": "शिक्षार्थियों",
+    "ATTENDANCE_COMPARISON": "उपस्थिति तुलना",
+    "CENTER_TYPE":"केंद्र प्रकार",
+    "BLOCK_AVERAGE_ATTENDANCE": "ब्लॉक औसत उपस्थिति"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "कुल छात्रों की संख्या: {{count}}",

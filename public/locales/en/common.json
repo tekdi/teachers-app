@@ -142,7 +142,10 @@
     "BACK_TO_TOP": "Back to Top",
     "LAST_SEVEN_DAYS_RANGE": "Last 7 Days {{date_range}}",
     "AS_OF_TODAY_DATE": "As of Today, {{day_date}}",
-    "LEARNER": "Learners"
+    "LEARNER": "Learners",
+    "ATTENDANCE_COMPARISON": "Attendance Comparison",
+    "CENTER_TYPE":"Center Type",
+    "BLOCK_AVERAGE_ATTENDANCE": "Block Average Attendance"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total Number of Learners: {{count}}",
@@ -296,4 +299,5 @@
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"
   }
+  
 }

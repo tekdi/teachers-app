@@ -48,6 +48,7 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import AttendanceComparison from '@/components/AttendanceComparison';
 
 // import { Role } from '@/utils/app.constant';
 // import { accessControl } from '../../app.config';
@@ -890,7 +891,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </Box>
                   </Box>
                 </Box>
-
+                <Box  p={2}>
+                      <AttendanceComparison />
+                    </Box>
                 {/* <Box sx={{ background: '#fff' }}>
             <Typography
               textAlign={'left'}
