@@ -269,8 +269,31 @@
     "REQUEST_TO_DELETE": "हटवण्याची विनंती",
     "RENAME": "नाव बदला",
     "CENTER_RENAMED": "केंद्राचे नाव यशस्वीरित्या बदलले गेले!",
-    "SEND_REQUEST":"विनंती पाठवा",
+    "SEND_REQUEST": "विनंती पाठवा",
     "REQUEST_TO_DELETE_HAS_BEEN_SENT": "हटवण्याची विनंती पाठवली आहे",
     "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "आपण या केंद्राला हटविण्याचे विनंती राज्य प्रशासनाला पाठवत आहात"
+  },
+  "CENTER_SESSION": {
+    "THIS_SESSION": "हे सत्र",
+    "FOLLOWING_SESSIONS": "हे आणि पुढील सत्र",
+    "MODE_OF_SESSION": "सत्राचा प्रकार",
+    "OFFLINE": "ऑफलाइन",
+    "ONLINE": "ऑनलाइन",
+    "SUBJECT": "विषय",
+    "MEETING_LINK": "बैठक लिंक",
+    "MEETING_PASSCODE": "बैठक पासकोड (जर लागू असेल तर)",
+    "START_TIME": "सुरवातीचा वेळ",
+    "END_TIME": "समाप्तीचा वेळ",
+    "START_DATE": "सुरवात तारीख",
+    "END_DATE": "समाप्ती तारीख",
+    "REMOVE_THIS_SESSION": "हे सत्र काढून टाका",
+    "PLANNED_SESSION": "नियोजित सत्र",
+    "FIXES_SUBJECTS": "वेळापत्रकात निश्चित विषयांसाठी",
+    "EXTRA_SESSION": "अतिरिक्त सत्र",
+    "DOUBT_CLEARING": "शंका निरसन, वेबिनार इत्यादीसाठी",
+    "TOPIC": "विषय",
+    "SUBTOPIC": "उपविषय",
+    "FACILITATORS": "सुविधादात्यांची पूर्व आवश्यकताएं",
+    "TITLE": "शीर्षक"
   }
 }

@@ -27,3 +27,8 @@ export enum cohortHierarchy {
   BLOCK = 'BLOCK',
   COHORT = 'COHORT',
 }
+
+export enum sessionModeConstant {
+  ONLINE = 'online',
+  OFFLINE = 'offline',
+}

@@ -26,7 +26,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
       }}
     >
       <Accordion
-        defaultExpanded
+        //defaultExpanded
         sx={{
           boxShadow: 'none',
           border: 'none',
@@ -46,7 +46,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
         </AccordionSummary>
         <AccordionDetails sx={{ padding: '0px' }}>
           <Box sx={{ display: 'flex', gap: '10px' }}>
-            <MenuBookIcon />
+            <MenuBookIcon  sx={{ color: theme.palette.secondary.main }} />
             <Typography color={theme.palette.secondary.main} variant="h5">
               {item?.topic}
             </Typography>
@@ -88,7 +88,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
           {t('COMMON.SELECT_TOPIC')}
         </Box>
       </Box>
-      <ArrowForwardIcon />
+      <ArrowForwardIcon sx={{ color: theme.palette.secondary.main }} />
     </Box>
   );
 };
