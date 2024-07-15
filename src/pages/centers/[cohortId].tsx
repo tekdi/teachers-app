@@ -9,25 +9,25 @@ import {
 import React, { useEffect, useState } from 'react';
 import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
 
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
 import AddIcon from '@mui/icons-material/Add';
 import AddLeanerModal from '@/components/AddLeanerModal';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
+import CenterSessionModal from '@/components/CenterSessionModal';
 import CohortLearnerList from '@/components/CohortLearnerList';
 import { CustomField } from '@/utils/Interfaces';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DeleteCenterModal from '@/components/center/DeleteCenterModal';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { GetStaticPaths } from 'next';
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import RenameCenterModal from '@/components/center/RenameCenterModal';
+import Schedule from './../../components/Schedule';
 import { Session } from '../../utils/Interfaces';
 import SessionCard from '@/components/SessionCard';
 import SessionCardFooter from '@/components/SessionCardFooter';
-import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import WeekCalender from '@/components/WeekCalender';
@@ -37,11 +37,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import RenameCenterModal from '@/components/center/RenameCenterModal';
-import DeleteCenterModal from '@/components/center/DeleteCenterModal';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -50,6 +45,7 @@ const TeachingCenterDetails = () => {
   const router = useRouter();
   const { cohortId }: any = router.query;
   const { t } = useTranslation();
+  const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
   const [selectedDate, setSelectedDate] =
     React.useState<string>(getTodayDate());
@@ -61,8 +57,11 @@ const TeachingCenterDetails = () => {
     React.useState<any>(null);
   const [openRenameCenterModal, setOpenRenameCenterModal] =
     React.useState(false);
-    const [openDeleteCenterModal, setOpenDeleteCenterModal] =
+  const [openDeleteCenterModal, setOpenDeleteCenterModal] =
     React.useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     const getCohortData = async () => {
@@ -193,13 +192,23 @@ const TeachingCenterDetails = () => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => { setOpenRenameCenterModal(true); handleMenuClose(); }}>
-              <ListItemIcon  sx={{ color: theme.palette.warning['A200'] }}>
+            <MenuItem
+              onClick={() => {
+                setOpenRenameCenterModal(true);
+                handleMenuClose();
+              }}
+            >
+              <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>
                 <ModeEditOutlineOutlinedIcon fontSize="small" />
               </ListItemIcon>
               {t('CENTERS.RENAME_CENTER')}
             </MenuItem>
-            <MenuItem onClick={() => {setOpenDeleteCenterModal(true); handleMenuClose(); }}>
+            <MenuItem
+              onClick={() => {
+                setOpenDeleteCenterModal(true);
+                handleMenuClose();
+              }}
+            >
               <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>
                 <DeleteOutlineOutlinedIcon fontSize="small" />
               </ListItemIcon>
@@ -210,7 +219,7 @@ const TeachingCenterDetails = () => {
             open={openRenameCenterModal}
             handleClose={handleRenameCenterClose}
           />
-            <DeleteCenterModal
+          <DeleteCenterModal
             open={openDeleteCenterModal}
             handleClose={handleDeleteCenterClose}
           />
@@ -261,12 +270,21 @@ const TeachingCenterDetails = () => {
                 width: '163px',
                 color: theme.palette.error.contrastText,
               }}
+              onClick={handleOpen}
               className="text-1E"
               endIcon={<AddIcon />}
             >
               {t('COMMON.SCHEDULE_NEW')}
             </Button>
           </Box>
+          <CenterSessionModal
+            open={open}
+            handleClose={handleClose}
+            title={'Schedule'}
+            primary={'Next'}
+          >
+            <Schedule />
+          </CenterSessionModal>
           <Box mt={3} px={'18px'}>
             <Box
               className="fs-14 fw-500"
@@ -281,7 +299,7 @@ const TeachingCenterDetails = () => {
               {t('COMMON.NO_SESSIONS_SCHEDULED')}
             </Box>
           </Box>
-          <Box>
+          <Box sx={{ padding: '10px 16px' }}>
             <WeekCalender
               showDetailsHandle={showDetailsHandle}
               data={percentageAttendanceData}
