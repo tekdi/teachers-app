@@ -1,12 +1,11 @@
 name: Deploy to Tekdi-QA Server
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
       - release-1.0.0
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
