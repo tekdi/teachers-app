@@ -128,7 +128,10 @@
     "BACK_TO_TOP": "परत वर जा",
     "LAST_SEVEN_DAYS_RANGE": "शेवटचे 7 दिवस {{date_range}}",
     "AS_OF_TODAY_DATE": "आजपर्यंत, {{day_date}}",
-    "LEARNER": "शिकणारे"
+    "LEARNER": "शिकणारे",
+    "ATTENDANCE_COMPARISON": "उपस्थिती तुलना",
+    "CENTER_TYPE":"केंद्र प्रकार",
+    "BLOCK_AVERAGE_ATTENDANCE": "ब्लॉक सरासरी उपस्थिती"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "एकूण विद्यार्थी: {{count}}",

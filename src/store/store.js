@@ -6,8 +6,10 @@ const useStore = create(
     (set) => ({
       value: '',
       role: '',
+      pairs: [],
       setValue: (newValue) => set((state) => ({ value: newValue })),
       setUserRole: (newRole) => set((state) => ({ userRole: newRole })),
+      setPairs: (newPairs) => set(() => ({ pairs: newPairs })),
     }),
     {
       name: 'teacherApp',

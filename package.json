@@ -50,6 +50,7 @@
     "react-joyride": "^2.8.2",
     "react-select": "^5.8.0",
     "react-toastify": "^10.0.5",
+    "recharts": "^2.12.7",
     "sharp": "^0.33.3",
     "zustand": "^4.5.4"
   },
