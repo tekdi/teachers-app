@@ -289,9 +289,32 @@
     "REQUEST_TO_DELETE": "Request to Delete",
     "RENAME": "Rename",
     "CENTER_RENAMED": "Center Renamed Successfully!",
-    "SEND_REQUEST":"Send Request",
+    "SEND_REQUEST": "Send Request",
     "REQUEST_TO_DELETE_HAS_BEEN_SENT": "Request to Delete has been sent",
     "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "You are sending a request to the State Admin to delete this Center"
+  },
+  "CENTER_SESSION": {
+    "THIS_SESSION": "This session",
+    "FOLLOWING_SESSIONS": "This and following sessions",
+    "MODE_OF_SESSION": "Mode of Session",
+    "OFFLINE": "Offline",
+    "ONLINE": "Online",
+    "SUBJECT": "Subject",
+    "MEETING_LINK": "Meeting Link",
+    "MEETING_PASSCODE": "Meeting Passcode (if applicable)",
+    "START_TIME": "Start Time",
+    "END_TIME": "End Time",
+    "START_DATE": "Start Date",
+    "END_DATE": "End Date",
+    "REMOVE_THIS_SESSION": "Remove this session",
+    "PLANNED_SESSION": "Planned Session",
+    "FIXES_SUBJECTS": "For fixed subjects in the timetable",
+    "EXTRA_SESSION": "Extra Session",
+    "DOUBT_CLEARING": "For doubt clearing, webinars, etc",
+    "TOPIC": "Topic",
+    "SUBTOPIC": "Sub Topic",
+    "FACILITATORS": " Facilitators Pre-requisites",
+    "TITLE": "Title"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"
