@@ -23,6 +23,7 @@ import {
   toPascalCase,
 } from '../utils/Helper';
 
+
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
 import Divider from '@mui/material/Divider';
@@ -96,6 +97,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const formattedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
   const [userId, setUserId] = React.useState<string | null>(null);
   const [blockName, setBlockName] = React.useState<string>('');
+  
 
   useEffect(() => {
     setIsClient(true);

@@ -17,6 +17,8 @@ import { getCohortList } from '@/services/CohortServices';
 import { showToastMessage } from './Toastify';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import useStore from '@/store/store';
+
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -41,6 +43,20 @@ interface CohortSelectionSectionProps {
   isCustomFieldRequired?: boolean;
 }
 
+interface ChildData {
+  cohortId: string;
+  name: string;
+  parentId: string;
+  type: string;
+  customField: any[];
+  childData: ChildData[];
+}
+interface NameTypePair {
+  name: string;
+  cohortType: string;
+}
+
+
 const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   classId,
   setClassId,
@@ -59,12 +75,13 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   setBlockName,
   handleSaveHasRun,
   setHandleSaveHasRun,
-  isCustomFieldRequired = false,
+  isCustomFieldRequired = true,
 }) => {
   const router = useRouter();
   const theme = useTheme<any>();
   const pathname = usePathname(); // Get the current pathname
   const { t } = useTranslation();
+  const setPairs = useStore((state) => state.setPairs);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -86,18 +103,45 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
       const fetchCohorts = async () => {
         try {
           const response = await getCohortList(userId, {
-            customField: isCustomFieldRequired.toString(),
+            customField: 'true',
           });
           console.log('Response:', response);
+          if (response && response?.length > 0) {
+
+            const extractNamesAndCohortTypes = (data: ChildData[]): NameTypePair[] => {
+              let nameTypePairs: NameTypePair[] = [];
+              
+              const recursiveExtract = (items: ChildData[]) => {
+                items.forEach(item => {
+                  const cohortType = item?.customField?.find(field => field.label === "Type of Cohort")?.value || "Unknown";
+                  if (item && item?.name) {
+                    nameTypePairs.push({ name: item?.name, cohortType });
+                  }
+                  if (item?.childData && item?.childData?.length > 0) {
+                    recursiveExtract(item?.childData);
+                  }
+                });
+              };
+              recursiveExtract(data);
+              return nameTypePairs;
+            };
+            
+            if (response && response?.length > 0) {
+              const nameTypePairs = extractNamesAndCohortTypes(response);
+              setPairs(nameTypePairs); 
+              console.log("HELLO", nameTypePairs);
+            }
+          }
           if (response && response.length > 0) {
             if (response[0].type === cohortHierarchy.COHORT) {
+              
               const filteredData = response
                 ?.map((item: any) => ({
                   cohortId: item?.cohortId,
                   parentId: item?.parentId,
                   name: item?.cohortName || item?.name,
                 }))
-                ?.filter(Boolean);
+                ?.filter(Boolean);               
               setCohortsData(filteredData);
               if (filteredData.length > 0) {
                 if (typeof window !== 'undefined' && window.localStorage) {
