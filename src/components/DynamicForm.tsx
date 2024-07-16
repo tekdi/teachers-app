@@ -5,7 +5,7 @@ import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { withTheme } from '@rjsf/core';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import CustomRadioWidget from './CustomRadioWidget';
-import { RJSFSchema, WidgetProps } from '@rjsf/utils';
+import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -23,6 +23,9 @@ interface DynamicFormProps {
   widgets: {
     [key: string]: React.FC<WidgetProps<any, RJSFSchema, any>>;
   };
+  customFields: {
+    [key: string]: React.FC<RegistryFieldsType<any, RJSFSchema, any>>;
+  };
 }
 const DynamicForm: React.FC<DynamicFormProps> = ({
   schema,
@@ -31,6 +34,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   onSubmit,
   onChange,
   onError,
+  customFields
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
@@ -70,8 +74,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
 
   function handleChange(event: any) {
-    console.log('Form data changed:', event);
+    console.log('Form data event:', event);
     onChange(event);
+    
   }
 
   return (
@@ -88,6 +93,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       noHtml5Validate
       onError={handleError}
       transformErrors={transformErrors}
+      fields={customFields}
       // ErrorList={CustomErrorList}
     />
   );

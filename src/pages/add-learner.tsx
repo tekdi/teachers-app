@@ -1,6 +1,6 @@
 import DynamicForm from '@/components/DynamicForm';
 import React from 'react';
-import { schema, uiSchema } from '@/components/GeneratedSchemas';
+import { schema, uiSchema, customFields } from '@/components/GeneratedSchemas';
 import { IChangeEvent } from '@rjsf/core';
 import ISubmitEvent from '@rjsf/core';
 import { Box } from '@mui/material';
@@ -56,6 +56,7 @@ const addLearner = () => {
         onError={handleError}
         widgets={{}}
         showErrorList={true}
+        customFields={customFields}
       />
 
       <SendCredentialModal open={openModal} onClose={handleCloseModal} />

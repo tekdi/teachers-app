@@ -252,7 +252,6 @@ export const apiResponse = {
           "order": "1",
           "fieldId": "null",
           "options": [],
-          "pattern": null,
           "coreField": 1,
           "dependsOn": null,
           "maxLength": 10,
@@ -265,7 +264,8 @@ export const apiResponse = {
           "placeholder": "ENTER_CONTACT_NUMBER",
           "isMultiSelect": false,
           "maxSelections": 0,
-          "sourceDetails": {}
+          "sourceDetails": {},
+          "pattern": "^\\d*$/"
       },
       // {
       //     "label": "How Was the Learner Mobilised?", //HOW_WAS_LEARNER_MOBILISED

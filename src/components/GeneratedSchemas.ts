@@ -1,8 +1,7 @@
 import { UiSchema } from '@rjsf/utils';
 import { JSONSchema7 } from 'json-schema';
 import { apiResponse } from '@/utils/schema';
-import { i18n } from 'next-i18next';
-import { getTranslatedText } from '@/utils/Helper';
+import NumberInputField from './form/NumberInputField';
 
 interface FieldOption {
   label: string;
@@ -16,7 +15,7 @@ interface Field {
   isEditable: boolean;
   isPIIField?: boolean | null;
   placeholder?: string;
-  validation?: any[];
+  validation?: string[];
   options: FieldOption[];
   isMultiSelect: boolean;
   maxSelections?: number | null;
@@ -28,6 +27,10 @@ interface Field {
   dependsOn: boolean;
   required?: boolean;
 }
+
+const customFields = {
+  NumberInputField: NumberInputField
+};
 
 const GenerateSchemaAndUiSchema = (apiResponse: any) => {
 
@@ -58,7 +61,7 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
     } = field;
 
     const fieldSchema: any = {
-      title: getTranslatedText(label),
+      title: label,
     };
 
     const fieldUiSchema: any = {};
@@ -69,6 +72,7 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
         break;
       case 'numeric':
         fieldSchema.type = 'number';
+        fieldUiSchema['ui:field'] = 'NumberInputField';
         break;
       case 'drop_down':
         fieldSchema.type = 'string';
@@ -153,6 +157,10 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
       fieldSchema.maxLength = Number(field.maxLength);
     }
 
+    if (field?.validation?.includes('numeric')) {
+      fieldUiSchema['ui:field'] = 'NumberInputField'; 
+    }
+
     if (schema !== undefined && schema.properties) {
       schema.properties[name] = fieldSchema;
       uiSchema[name] = fieldUiSchema;
@@ -165,4 +173,4 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
 const { schema, uiSchema } = GenerateSchemaAndUiSchema(apiResponse);
 console.log(schema, uiSchema);
 
-export { schema, uiSchema };
+export { schema, uiSchema, customFields };
