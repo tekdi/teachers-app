@@ -18,7 +18,7 @@ const Schedule = () => {
       <Box sx={{ padding: '10px 16px' }}>
         <Box
           sx={{
-            border: `2px solid ${clickedBox === 'PLANNED_SESSION' ? theme.palette.primary.main : '#E2D9CC'}`,
+            border: `2px solid ${clickedBox === 'PLANNED_SESSION' ? theme.palette.primary.main : theme.palette.action.active}`,
             borderRadius: '8px',
             padding: '15px',
             mb: 2,
@@ -39,7 +39,7 @@ const Schedule = () => {
         </Box>
         <Box
           sx={{
-            border: `2px solid ${clickedBox === 'EXTRA_SESSION' ? theme.palette.primary.main : '#E2D9CC'}`,
+            border: `2px solid ${clickedBox === 'EXTRA_SESSION' ? theme.palette.primary.main : theme.palette.action.active}`,
             borderRadius: '8px',
             padding: '15px',
             mb: 2,
