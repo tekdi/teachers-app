@@ -34,6 +34,6 @@ export enum sessionModeConstant {
 }
 
 export enum cohortConstant {
-  STUDENT = 'Student',
+  STUDENT = 'student',
   
 }
