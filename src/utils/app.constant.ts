@@ -33,7 +33,7 @@ export enum sessionModeConstant {
   OFFLINE = 'offline',
 }
 
-export enum cohortConstant {
-  COHORT_PRIVILEGES = 'student',
+export enum cohortPrivileges {
+  STUDENT = 'student',
   
 }

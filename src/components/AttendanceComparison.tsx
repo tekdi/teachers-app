@@ -26,15 +26,15 @@ import {
   attendanceStatusList,
   overallAttendanceInPercentageStatusList,
 } from '@/services/AttendanceService';
-import { cohortConstant } from '@/utils/app.constant';
+import { cohortPrivileges } from '@/utils/app.constant';
 
 const AttendanceComparison: React.FC = () => {
   const { t } = useTranslation();
   const [centerType, setCenterType] = useState('Regular');
   const store = useStore();
   const theme = useTheme<any>();
-  const scope = cohortConstant?.COHORT_PRIVILEGES;
-
+  const scope = cohortPrivileges?.STUDENT;
+  
   const handleCenterTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
