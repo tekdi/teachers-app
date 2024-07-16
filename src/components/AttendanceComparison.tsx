@@ -33,8 +33,8 @@ const AttendanceComparison: React.FC = () => {
   const [centerType, setCenterType] = useState('Regular');
   const store = useStore();
   const theme = useTheme<any>();
-  const scope = cohortConstant?.STUDENT;
-  
+  const scope = cohortConstant?.COHORT_PRIVILEGES;
+
   const handleCenterTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
