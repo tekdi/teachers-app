@@ -19,7 +19,6 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import useStore from '@/store/store';
 
-
 interface CohortSelectionSectionProps {
   classId: string;
   setClassId: React.Dispatch<React.SetStateAction<string>>;
@@ -52,10 +51,10 @@ interface ChildData {
   childData: ChildData[];
 }
 interface NameTypePair {
+  cohortId: string;
   name: string;
   cohortType: string;
 }
-
 
 const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   classId,
@@ -107,15 +106,23 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
           });
           console.log('Response:', response);
           if (response && response?.length > 0) {
-
-            const extractNamesAndCohortTypes = (data: ChildData[]): NameTypePair[] => {
+            const extractNamesAndCohortTypes = (
+              data: ChildData[]
+            ): NameTypePair[] => {
               let nameTypePairs: NameTypePair[] = [];
-              
+
               const recursiveExtract = (items: ChildData[]) => {
-                items.forEach(item => {
-                  const cohortType = item?.customField?.find(field => field.label === "Type of Cohort")?.value || "Unknown";
-                  if (item && item?.name) {
-                    nameTypePairs.push({ name: item?.name, cohortType });
+                items.forEach((item) => {
+                  const cohortType =
+                    item?.customField?.find(
+                      (field) => field.label === 'Type of Cohort'
+                    )?.value || 'Unknown';
+                  if (item?.cohortId && item && item?.name) {
+                    nameTypePairs.push({
+                      cohortId: item?.cohortId,
+                      name: item?.name,
+                      cohortType,
+                    });
                   }
                   if (item?.childData && item?.childData?.length > 0) {
                     recursiveExtract(item?.childData);
@@ -125,23 +132,21 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
               recursiveExtract(data);
               return nameTypePairs;
             };
-            
+
             if (response && response?.length > 0) {
               const nameTypePairs = extractNamesAndCohortTypes(response);
-              setPairs(nameTypePairs); 
-              console.log("HELLO", nameTypePairs);
+              setPairs(nameTypePairs);
             }
           }
           if (response && response.length > 0) {
             if (response[0].type === cohortHierarchy.COHORT) {
-              
               const filteredData = response
                 ?.map((item: any) => ({
                   cohortId: item?.cohortId,
                   parentId: item?.parentId,
                   name: item?.cohortName || item?.name,
                 }))
-                ?.filter(Boolean);               
+                ?.filter(Boolean);
               setCohortsData(filteredData);
               if (filteredData.length > 0) {
                 if (typeof window !== 'undefined' && window.localStorage) {
