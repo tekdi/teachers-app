@@ -48,6 +48,7 @@ const customTheme = extendTheme({
         action: {
           activeChannel: '#987100',
           selectedChannel: '#dba403',
+          active: '#E2D9CC',
         },
         Skeleton: {
           bg: '#FFDCC2',

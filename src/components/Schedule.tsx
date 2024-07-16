@@ -1,21 +1,30 @@
+import React, { useState } from 'react';
+
 import { Box } from '@mui/material';
-import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
 const Schedule = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const [clickedBox, setClickedBox] = useState<string | null>(null);
+
+  const handleClick = (selection: string) => {
+    setClickedBox(selection);
+  };
+
   return (
     <>
       <Box sx={{ padding: '10px 16px' }}>
         <Box
           sx={{
-            border: `2px solid ${theme.palette.primary.main}`,
+            border: `2px solid ${clickedBox === 'PLANNED_SESSION' ? theme.palette.primary.main : theme.palette.action.active}`,
             borderRadius: '8px',
             padding: '15px',
             mb: 2,
+            cursor: 'pointer',
           }}
+          onClick={() => handleClick('PLANNED_SESSION')}
         >
           <Box
             sx={{
@@ -30,11 +39,13 @@ const Schedule = () => {
         </Box>
         <Box
           sx={{
-            border: `2px solid ${theme.palette.primary.main}`,
+            border: `2px solid ${clickedBox === 'EXTRA_SESSION' ? theme.palette.primary.main : theme.palette.action.active}`,
             borderRadius: '8px',
             padding: '15px',
             mb: 2,
+            cursor: 'pointer',
           }}
+          onClick={() => handleClick('EXTRA_SESSION')}
         >
           <Box
             sx={{
