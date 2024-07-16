@@ -26,13 +26,14 @@ import {
   attendanceStatusList,
   overallAttendanceInPercentageStatusList,
 } from '@/services/AttendanceService';
+import { cohortConstant } from '@/utils/app.constant';
 
 const AttendanceComparison: React.FC = () => {
   const { t } = useTranslation();
   const [centerType, setCenterType] = useState('Regular');
   const store = useStore();
   const theme = useTheme<any>();
-  const scope = 'student';
+  const scope = cohortConstant.STUDENT;
 
   const handleCenterTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -41,7 +42,7 @@ const AttendanceComparison: React.FC = () => {
   };
 
   useEffect(() => {
-    const data = store?.pairs?.map((pair: { cohortId: any }) => pair?.cohortId);
+    const data = store?.cohorts?.map((pair: { cohortId: any }) => pair?.cohortId);
     const fetchData = async () => {
       data.map((pair: { cohortId: any }) => pair.cohortId);
       const promises = data.map((cohortId: any) =>
@@ -58,7 +59,7 @@ const AttendanceComparison: React.FC = () => {
     fetchData();
   }, []);
 
-  const data = store?.pairs
+  const data = store?.cohorts
     ?.filter((pair: { cohortType: string }) => pair?.cohortType === centerType)
     .map((pair: { name: any }) => ({
       name: pair.name,

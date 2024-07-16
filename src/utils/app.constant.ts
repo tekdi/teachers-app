@@ -32,3 +32,8 @@ export enum sessionModeConstant {
   ONLINE = 'online',
   OFFLINE = 'offline',
 }
+
+export enum cohortConstant {
+  STUDENT = 'Student',
+  
+}

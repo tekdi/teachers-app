@@ -80,7 +80,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   const theme = useTheme<any>();
   const pathname = usePathname(); // Get the current pathname
   const { t } = useTranslation();
-  const setPairs = useStore((state) => state.setPairs);
+  const setCohorts = useStore((state) => state.setCohorts);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -135,7 +135,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
 
             if (response && response?.length > 0) {
               const nameTypePairs = extractNamesAndCohortTypes(response);
-              setPairs(nameTypePairs);
+              setCohorts(nameTypePairs);
             }
           }
           if (response && response.length > 0) {
