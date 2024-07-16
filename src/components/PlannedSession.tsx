@@ -16,16 +16,15 @@ import { ChangeEvent, useState } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { sessionModeConstant } from '@/utils/app.constant';
+import { modeSession } from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
-type SessionMode =
-  (typeof sessionModeConstant)[keyof typeof sessionModeConstant];
+type SessionMode = (typeof modeSession)[keyof typeof modeSession];
 
 const PlannedSession = () => {
   const [sessionMode, setSessionMode] = useState<SessionMode>(
-    sessionModeConstant.OFFLINE
+    modeSession.OFFLINE
   );
 
   const handleSessionModeChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -54,23 +53,33 @@ const PlannedSession = () => {
               onChange={handleSessionModeChange}
             >
               <FormControlLabel
-                value={sessionModeConstant.OFFLINE}
+                value={modeSession.OFFLINE}
                 control={
                   <Radio style={{ color: theme?.palette?.warning['300'] }} />
                 }
                 label={
-                  <span style={{ color: theme?.palette?.warning['300'] }}>
+                  <span
+                    style={{
+                      color: theme?.palette?.warning['300'],
+                      fontSize: '16px',
+                    }}
+                  >
                     {t('CENTER_SESSION.OFFLINE')}
                   </span>
                 }
               />
               <FormControlLabel
-                value={sessionModeConstant.ONLINE}
+                value={modeSession.ONLINE}
                 control={
                   <Radio style={{ color: theme?.palette?.warning['300'] }} />
                 }
                 label={
-                  <span style={{ color: theme?.palette?.warning['300'] }}>
+                  <span
+                    style={{
+                      color: theme?.palette?.warning['300'],
+                      fontSize: '16px',
+                    }}
+                  >
                     {t('CENTER_SESSION.ONLINE')}
                   </span>
                 }
@@ -94,7 +103,7 @@ const PlannedSession = () => {
           </FormControl>
         </Box>
 
-        {sessionMode === sessionModeConstant.ONLINE && (
+        {sessionMode === modeSession.ONLINE && (
           <>
             <Box sx={{ mt: 2 }}>
               <FormControl fullWidth>
