@@ -946,3 +946,17 @@ main {
 .text-7C {
   color: var(--mui-palette-warning-400) !important;
 }
+
+
+/* To Hide the caret icon on input type number */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  margin: 0;
+ -webkit-appearance: none;
+}
+
+/* To hide the input type number arrows */

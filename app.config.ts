@@ -40,3 +40,13 @@ export const accessControl: { [key: string]: Role[] } = {
   showBlockLevelCenterData: [Role.TEAM_LEADER],
   showTeacherLevelCenterData: [Role.TEACHER],
 };
+
+export const fullWidthPages = [
+  '/login',
+  '/forgot-password',
+  '/reset-password',
+  '/404',
+  '/500',
+  '/offline',
+  '/unauthorized',
+];

@@ -55,8 +55,9 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
+      let lang;
       if (localStorage.getItem('preferredLanguage')) {
-        var lang = localStorage.getItem('preferredLanguage') || 'en';
+        lang = localStorage.getItem('preferredLanguage') || 'en';
       } else {
         lang = 'en';
       }

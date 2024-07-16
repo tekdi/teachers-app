@@ -1,6 +1,8 @@
 import { UiSchema } from '@rjsf/utils';
 import { JSONSchema7 } from 'json-schema';
 import { apiResponse } from '@/utils/schema';
+import { i18n } from 'next-i18next';
+import { getTranslatedText } from '@/utils/Helper';
 
 interface FieldOption {
   label: string;
@@ -24,10 +26,12 @@ interface Field {
   minLength?: number | null;
   fieldId: string;
   dependsOn: boolean;
+  required?: boolean;
 }
 
 const GenerateSchemaAndUiSchema = (apiResponse: any) => {
-  const schema: JSONSchema7 = {
+
+  const schema: JSONSchema7 = { //Form schema
     title: 'A registration form',
     description: 'A simple form example',
     type: 'object',
@@ -36,9 +40,9 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
     dependencies: {},
   };
 
-  const uiSchema: UiSchema = {};
+  const uiSchema: UiSchema = {}; //form ui schema
 
-  apiResponse.result.forEach((field: Field) => {
+  apiResponse.fields.forEach((field: Field) => {
     const {
       label,
       name,
@@ -49,10 +53,12 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
       isMultiSelect,
       maxSelections,
       dependsOn,
+      pattern,
+      required
     } = field;
 
     const fieldSchema: any = {
-      title: label,
+      title: getTranslatedText(label),
     };
 
     const fieldUiSchema: any = {};
@@ -130,6 +136,23 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
       fieldUiSchema['ui:widget'] = 'MultiSelectCheckboxes';
     }
 
+    if (pattern) {
+      fieldSchema.pattern = pattern;
+      fieldUiSchema["ui:help"]= "Only alphabetic characters are allowed.";
+    }
+
+    if (required) {
+      schema.required?.push(name);
+    }
+
+    if (field?.minLength) {
+      fieldSchema.minLength = Number(field.minLength);
+    }
+
+    if (field?.maxLength) {
+      fieldSchema.maxLength = Number(field.maxLength);
+    }
+
     if (schema !== undefined && schema.properties) {
       schema.properties[name] = fieldSchema;
       uiSchema[name] = fieldUiSchema;
@@ -140,5 +163,6 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
 };
 
 const { schema, uiSchema } = GenerateSchemaAndUiSchema(apiResponse);
+console.log(schema, uiSchema);
 
 export { schema, uiSchema };

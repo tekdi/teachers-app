@@ -59,12 +59,27 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     onError(errors);
   };
 
+  function transformErrors(errors: any) {
+    return errors.map((error: any) => {
+      if (error.name === 'pattern') {
+        error.message = 'Only digits are allowed';
+      }
+      return error;
+    });
+  }
+
+
+  function handleChange(event: any) {
+    console.log('Form data changed:', event);
+    onChange(event);
+  }
+
   return (
     <FormWithMaterialUI
       schema={schema}
       uiSchema={uiSchema}
       formData={formData}
-      onChange={onChange}
+      onChange={handleChange}
       onSubmit={onSubmit}
       validator={validator}
       liveValidate
@@ -72,6 +87,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       widgets={widgets}
       noHtml5Validate
       onError={handleError}
+      transformErrors={transformErrors}
       // ErrorList={CustomErrorList}
     />
   );

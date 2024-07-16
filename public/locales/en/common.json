@@ -105,7 +105,10 @@
     "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
     "NO_SESSIONS_SCHEDULED": "No sessions scheduled",
     "TO_BE_TAUGHT": "What is going to be taught:",
-    "SELECT_TOPIC": "Select Topic, Sub-topic"
+    "SELECT_TOPIC": "Select Topic, Sub-topic",
+    "PAGE_NOT_FOUND": "पृष्ठ नहीं मिला",
+    "ACCESS_DENIED": "पहुंच निषेधित",
+    "YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE": "आपके पास इस पृष्ठ तक पहुंचने की अनुमति नहीं है"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
