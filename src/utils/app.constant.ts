@@ -28,7 +28,7 @@ export enum cohortHierarchy {
   COHORT = 'COHORT',
 }
 
-export enum modeSession {
+export enum sessionMode {
   ONLINE = 'online',
   OFFLINE = 'offline',
 }
