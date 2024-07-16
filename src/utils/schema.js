@@ -235,14 +235,14 @@ export const apiResponse = {
           "isEditable": true,
           "isPIIField": null,
           "validation": [
-              "string"
+              "characters-with-space"
           ],
           "placeholder": "ENTER_FULL_NAME",
           "isMultiSelect": true, //false
           "maxSelections": 1, //0
           "sourceDetails": {},
           "required": true,
-          "pattern": "/[a-zA-Z]+/"
+          "pattern": "^[a-z A-Z]+$"
       },
       {
           "hint": null,
@@ -265,61 +265,64 @@ export const apiResponse = {
           "isMultiSelect": false,
           "maxSelections": 0,
           "sourceDetails": {},
-          "pattern": "^\\d*$/"
+          "pattern": "^\\d*$",
+          "required": true
       },
-      // {
-      //     "label": "How Was the Learner Mobilised?", //HOW_WAS_LEARNER_MOBILISED
-      //     "name": "mobilisation_method",
-      //     "type": "drop_down",
-      //     "coreField": 0,
-      //     "isEditable": true,
-      //     "isPIIField": null,
-      //     "placeholder": "",
-      //     "validation": [],
-      //     "options": [
-      //         {
-      //             "label": "Second Chance Alumni", //SECOND_CHANCE_ALUMNI
-      //             "value": "second_chance_alumni"
-      //         },
-      //         {
-      //             "label": "Pratham Team Member", //PRATHAM_TEAM_MEMBER
-      //             "value": "pratham_team_member"
-      //         },
-      //         {
-      //             "label": "Other",//OTHER
-      //             "value": "other"
-      //         }
-      //     ],
-      //     "isMultiSelect": true, // false
-      //     "maxSelections": 1,
-      //     "hint": null,
-      //     "pattern": null,
-      //     "maxLength": null,
-      //     "minLength": null,
-      //     "fieldId": "7adad9b7-0cf2-4a48-bc60-56a80dc02107",
-      //     "dependsOn": false,
-      //     "order": "2"
-      // },
-      // {
-      //     "label": "Age", //AGE
-      //     "name": "age",
-      //     "type": "numeric", //TEXT
-      //     "coreField": 0,
-      //     "isEditable": true,
-      //     "isPIIField": null,
-      //     "placeholder": "",
-      //     "validation": [], //NUMERIC
-      //     "options": [],
-      //     "isMultiSelect": false,
-      //     "maxSelections": null,
-      //     "hint": null,
-      //     "pattern": null,
-      //     "maxLength": null,
-      //     "minLength": null,
-      //     "fieldId": "2f07caa6-61b8-4a6a-92f4-94b5596a4864",
-      //     "dependsOn": false,
-      //     "order": "3"
-      // },
+      {
+          "label": "HOW_WAS_LEARNER_MOBILISED", //HOW_WAS_LEARNER_MOBILISED
+          "name": "mobilisation_method",
+          "type": "drop_down",
+          "coreField": 0,
+          "isEditable": true,
+          "isPIIField": null,
+          "placeholder": "",
+          "validation": [],
+          "options": [
+              {
+                  "label": "Second Chance Alumni", //SECOND_CHANCE_ALUMNI
+                  "value": "second_chance_alumni"
+              },
+              {
+                  "label": "Pratham Team Member", //PRATHAM_TEAM_MEMBER
+                  "value": "pratham_team_member"
+              },
+              {
+                  "label": "Other",//OTHER
+                  "value": "other"
+              }
+          ],
+          "isMultiSelect": false, // false
+          "maxSelections": 1,
+          "hint": null,
+          "pattern": null,
+          "maxLength": null,
+          "minLength": null,
+          "fieldId": "7adad9b7-0cf2-4a48-bc60-56a80dc02107",
+          "dependsOn": false,
+          "order": "2",
+          "required": true
+      },
+      {
+          "label": "AGE", //AGE
+          "name": "age",
+          "type": "numeric", //TEXT
+          "coreField": 0,
+          "isEditable": true,
+          "isPIIField": null,
+          "placeholder": "",
+          "validation": [], //NUMERIC
+          "options": [],
+          "isMultiSelect": false,
+          "maxSelections": null,
+          "hint": null,
+          "pattern": null,
+          "maxLength": 100,
+          "minLength": 0,
+          "fieldId": "2f07caa6-61b8-4a6a-92f4-94b5596a4864",
+          "dependsOn": false,
+          "order": "3",
+          "required": true
+      },
       // {
       //     "label": "Gender", //GENDER
       //     "name": "gender",

@@ -374,5 +374,16 @@
     "IS_IT_YOUR_OWN_PHONE": "Is it your own phone?",
     "YES": "Yes",
     "NO": "No"
+  },
+  "FORM_ERROR_MESSAGES": {
+    "INVALID_INPUT": "Invalid Input.",
+    "FIELD_REQUIRED": "{{field}} is required",
+    "THIS_IS_REQUIRED_FIELD": "This is required field",
+    "ENTER_ONLY_DIGITS": "Please enter only digits",
+    "MIN_LENGTH_DIGITS_ERROR": "Minimum {{minLength}} Digits required",
+    "MAX_LENGTH_DIGITS_ERROR": "Maximum {{maxLength}} Digits allowed",
+    "MIN_LENGTH_CHARACTERS_ERROR": "Minimum {{minLength}} characters required",
+    "MAX_LENGTH_CHARACTERS_ERROR": "Maximum {{maxLength}} characters allowed",
+    "NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "Numbers and special characters are not allowed"
   }
 }

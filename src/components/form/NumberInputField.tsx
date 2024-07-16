@@ -1,8 +1,11 @@
-import { TextField } from '@mui/material';
+import { TextField, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 
+
 const NumberInputField = (props: any) => {
+  const theme = useTheme<any>();
   const { onChange, ...rest } = props;
+
   const [error, setError] = useState("");
 
   console.log('NumberInputField', props);
@@ -21,8 +24,6 @@ const NumberInputField = (props: any) => {
           onChange(undefined); // Clear the form data
         }
       }
-    } else {
-      setError("Only digits are allowed");
     }
   };
 
@@ -35,15 +36,15 @@ const NumberInputField = (props: any) => {
     <>
     <TextField
       {...rest}
-      id="outlined-number"
-      label="Number"
+      id={props.schema.name}
+      label={props.schema.title}
       type="number"
       InputLabelProps={{
         shrink: true,
       }}
       onChange={handleChange}
       />
-    <p>{error}</p>
+    <p color={'red'}>{error}</p>
       </>
   );
 };

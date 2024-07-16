@@ -72,7 +72,16 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
         break;
       case 'numeric':
         fieldSchema.type = 'number';
-        fieldUiSchema['ui:field'] = 'NumberInputField';
+        
+        if (field?.maxLength) {
+          fieldSchema.maximum = Number(field.maxLength);
+        }
+
+        if (field?.minLength !== undefined && field?.minLength !== null) {
+          fieldSchema.minimum = Number(field.minLength);
+        }
+
+        // fieldUiSchema['ui:field'] = 'NumberInputField';
         break;
       case 'drop_down':
         fieldSchema.type = 'string';
@@ -142,7 +151,7 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
 
     if (pattern) {
       fieldSchema.pattern = pattern;
-      fieldUiSchema["ui:help"]= "Only alphabetic characters are allowed.";
+      // fieldUiSchema["ui:help"]= "Only alphabetic characters are allowed.";
     }
 
     if (required) {
@@ -157,8 +166,12 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
       fieldSchema.maxLength = Number(field.maxLength);
     }
 
-    if (field?.validation?.includes('numeric')) {
-      fieldUiSchema['ui:field'] = 'NumberInputField'; 
+    if (field?.validation) {
+      if (field?.validation?.includes('numeric')) {
+        // fieldUiSchema['ui:field'] = 'NumberInputField'; 
+      }
+      fieldSchema.validation = field.validation;
+
     }
 
     if (schema !== undefined && schema.properties) {

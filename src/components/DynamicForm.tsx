@@ -6,11 +6,12 @@ import { withTheme } from '@rjsf/core';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import CustomRadioWidget from './CustomRadioWidget';
 import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
+import { useTranslation } from 'next-i18next';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
 interface DynamicFormProps {
-  schema: object;
+  schema: any;
   uiSchema: object;
   formData?: object;
   onSubmit: (
@@ -34,12 +35,15 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   onSubmit,
   onChange,
   onError,
-  customFields
+  customFields,
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
   };
+
+  const { t } = useTranslation();
+
   // console.log('CustomErrorList', CustomErrorList);
 
   const handleError = (errors: any) => {
@@ -64,19 +68,55 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
 
   function transformErrors(errors: any) {
+    console.log('errors', errors);
+    console.log('schema', schema);
     return errors.map((error: any) => {
-      if (error.name === 'pattern') {
-        error.message = 'Only digits are allowed';
+      switch (error.name) {
+        case 'required': {
+          // error.message = t('FORM_ERROR_MESSAGES.FIELD_REQUIRED', {
+          //   field: t(`FORM.${schema.properties[error.property].title}`),
+          // });
+
+          error.message = t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD');
+          break;
+        }
+        case 'pattern': {
+          const property = error.property.substring(1);
+          console.log('schema===>', schema);
+          if (schema.properties?.[property]?.validation?.includes('numeric')) {
+            error.message = t('FORM_ERROR_MESSAGES.ENTER_ONLY_DIGITS');
+          } else if (schema.properties?.[property]?.validation?.includes('characters-with-space')) {
+            error.message = t('FORM_ERROR_MESSAGES.NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED');
+          }
+          break;
+        }
+        case 'minLength': {
+          const property = error.property.substring(1);
+          if (schema.properties?.[property]?.validation?.includes('numeric')) {
+            error.message = t('FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR', {
+              minLength: schema.properties?.[property]?.minLength,
+            });
+          }
+          break;
+        }
+        case 'maxLength': {
+          const property = error.property.substring(1);
+          if (schema.properties?.[property]?.validation?.includes('numeric')) {
+            error.message = t('FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR', {
+              maxLength: schema.properties?.[property]?.maxLength,
+            });
+          }
+          break;
+        }
       }
+
       return error;
     });
   }
 
-
   function handleChange(event: any) {
     console.log('Form data event:', event);
     onChange(event);
-    
   }
 
   return (
