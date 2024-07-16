@@ -21,20 +21,46 @@ import {
 import { useTranslation } from 'next-i18next';
 import useStore from '../store/store';
 import { useTheme } from '@mui/material/styles';
+import {
+  attendanceInPercentageStatusList,
+  attendanceStatusList,
+  overallAttendanceInPercentageStatusList,
+} from '@/services/AttendanceService';
+import { cohortPrivileges } from '@/utils/app.constant';
 
 const AttendanceComparison: React.FC = () => {
   const { t } = useTranslation();
   const [centerType, setCenterType] = useState('Regular');
   const store = useStore();
   const theme = useTheme<any>();
-
+  const scope = cohortPrivileges?.STUDENT;
+  
   const handleCenterTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setCenterType(event.target.value);
   };
 
-  const data = store?.pairs?.filter((pair: { cohortType: string }) => pair?.cohortType === centerType)
+  useEffect(() => {
+    const data = store?.cohorts?.map((pair: { cohortId: any }) => pair?.cohortId);
+    const fetchData = async () => {
+      data.map((pair: { cohortId: any }) => pair.cohortId);
+      const promises = data.map((cohortId: any) =>
+        overallAttendanceInPercentageStatusList({
+          limit: 0,
+          page: 0,
+          filters: { contextId: cohortId, scope },
+          facets: ['contextId'],
+        })
+      );
+      const results = await Promise.all(promises);
+      console.log(results);
+    };
+    fetchData();
+  }, []);
+
+  const data = store?.cohorts
+    ?.filter((pair: { cohortType: string }) => pair?.cohortType === centerType)
     .map((pair: { name: any }) => ({
       name: pair.name,
       Attendance: Math.floor(Math.random() * 100),
@@ -101,7 +127,12 @@ const AttendanceComparison: React.FC = () => {
             <YAxis type="category" dataKey="name" />
             <Tooltip formatter={(value: number) => `${value}`} />
             <Legend />
-            <Bar dataKey="Attendance" fill={theme.palette.primary.main} barSize={35} radius={2}>
+            <Bar
+              dataKey="Attendance"
+              fill={theme.palette.primary.main}
+              barSize={35}
+              radius={2}
+            >
               <LabelList dataKey="Attendance" content={renderCustomLabel} />
             </Bar>
           </BarChart>

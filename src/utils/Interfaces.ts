@@ -159,6 +159,18 @@ export interface AttendancePercentageProps {
   facets: Array<string>;
 }
 
+
+export interface OverallAttendancePercentageProps {
+  limit: number;
+  page: number;
+  filters: {
+    contextId: string;
+    scope: string;
+  };
+  facets: Array<string>;
+}
+
+
 export interface LearnerAttendanceProps {
   limit: number;
   page: number;
