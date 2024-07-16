@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import {
   Box,
   Button,
@@ -7,30 +9,47 @@ import {
   FormLabel,
   Grid,
   InputLabel,
-  MenuItem,
   Radio,
   RadioGroup,
   Select,
+  TextField,
+  styled,
 } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
+import dayjs, { Dayjs } from 'dayjs';
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { sessionModeConstant } from '@/utils/app.constant';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import Stack from '@mui/material/Stack';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { sessionMode } from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
-type SessionMode =
-  (typeof sessionModeConstant)[keyof typeof sessionModeConstant];
+type mode = (typeof sessionMode)[keyof typeof sessionMode];
 
 const PlannedSession = () => {
-  const [sessionMode, setSessionMode] = useState<SessionMode>(
-    sessionModeConstant.OFFLINE
-  );
+  const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
 
   const handleSessionModeChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSessionMode(event.target.value as SessionMode);
+    setMode(event.target.value as mode);
   };
+
+  const [date, setDate] = React.useState<Dayjs | null>(
+    dayjs('2014-08-18T21:11:54')
+  );
+
+  const handleChange = (newValue: Dayjs | null) => {
+    setDate(newValue);
+  };
+  const CustomTimePicker = styled(TimePicker)(({ theme }) => ({
+    '& .MuiInputAdornment-root': {
+      display: 'none',
+    },
+  }));
 
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -42,7 +61,12 @@ const PlannedSession = () => {
           <FormControl>
             <FormLabel
               id="demo-row-radio-buttons-group-label"
-              style={{ color: theme?.palette?.warning['300'] }}
+              style={{
+                color: theme?.palette?.warning['A200'],
+                fontSize: '12px',
+                fontWeight: '400',
+                marginTop: '10px',
+              }}
             >
               {t('CENTER_SESSION.MODE_OF_SESSION')}
             </FormLabel>
@@ -50,27 +74,37 @@ const PlannedSession = () => {
               row
               aria-labelledby="demo-row-radio-buttons-group-label"
               name="row-radio-buttons-group"
-              value={sessionMode}
+              value={mode}
               onChange={handleSessionModeChange}
             >
               <FormControlLabel
-                value={sessionModeConstant.OFFLINE}
+                value={sessionMode.OFFLINE}
                 control={
                   <Radio style={{ color: theme?.palette?.warning['300'] }} />
                 }
                 label={
-                  <span style={{ color: theme?.palette?.warning['300'] }}>
+                  <span
+                    style={{
+                      color: theme?.palette?.warning['300'],
+                      fontSize: '16px',
+                    }}
+                  >
                     {t('CENTER_SESSION.OFFLINE')}
                   </span>
                 }
               />
               <FormControlLabel
-                value={sessionModeConstant.ONLINE}
+                value={sessionMode.ONLINE}
                 control={
                   <Radio style={{ color: theme?.palette?.warning['300'] }} />
                 }
                 label={
-                  <span style={{ color: theme?.palette?.warning['300'] }}>
+                  <span
+                    style={{
+                      color: theme?.palette?.warning['300'],
+                      fontSize: '16px',
+                    }}
+                  >
                     {t('CENTER_SESSION.ONLINE')}
                   </span>
                 }
@@ -81,20 +115,24 @@ const PlannedSession = () => {
 
         <Box sx={{ mt: 2 }}>
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">
+            <InputLabel
+              style={{ color: theme?.palette?.warning['A200'] }}
+              id="demo-simple-select-label"
+            >
               {t('CENTER_SESSION.SUBJECT')}
             </InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               label="Subject"
+              style={{ borderRadius: '4px' }}
             >
               {/* <MenuItem value={'Mathematics'}>Mathematics</MenuItem> */}
             </Select>
           </FormControl>
         </Box>
 
-        {sessionMode === sessionModeConstant.ONLINE && (
+        {mode === sessionMode.ONLINE && (
           <>
             <Box sx={{ mt: 2 }}>
               <FormControl fullWidth>
@@ -126,39 +164,30 @@ const PlannedSession = () => {
             </Box>
           </>
         )}
-
         <Box sx={{ mt: 2 }}>
           <Grid container spacing={2}>
             <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-              <Box sx={{ mt: 2 }}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    {t('CENTER_SESSION.START_TIME')}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+              <Box sx={{ mt: 3 }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <CustomTimePicker
                     label="Start Time"
-                  >
-                    {/* <MenuItem value={'Time1'}>Time 1</MenuItem> */}
-                  </Select>
-                </FormControl>
+                    value={date}
+                    onChange={handleChange}
+                    sx={{ borderRadius: '4px' }}
+                  />
+                </LocalizationProvider>
               </Box>
             </Grid>
             <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-              <Box sx={{ my: 2 }}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    {t('CENTER_SESSION.END_TIME')}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+              <Box sx={{ mt: 3 }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <CustomTimePicker
                     label="End Time"
-                  >
-                    {/* <MenuItem value={'Time2'}>Time 2</MenuItem> */}
-                  </Select>
-                </FormControl>
+                    value={date}
+                    onChange={handleChange}
+                    sx={{ borderRadius: '4px' }}
+                  />
+                </LocalizationProvider>
               </Box>
             </Grid>
           </Grid>
@@ -167,35 +196,33 @@ const PlannedSession = () => {
         <Box sx={{ mt: 2 }}>
           <Grid container spacing={2}>
             <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-              <Box>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    {t('CENTER_SESSION.START_DATE')}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Start Date"
-                  >
-                    {/* <MenuItem value={'Date1'}>Date 1</MenuItem> */}
-                  </Select>
-                </FormControl>
+              <Box sx={{ mt: 3 }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Stack spacing={3}>
+                    <MobileDatePicker
+                      label="Start Date"
+                      value={date}
+                      onChange={handleChange}
+                      format="DD MMM, YYYY"
+                      sx={{ borderRadius: '4px' }}
+                    />
+                  </Stack>
+                </LocalizationProvider>
               </Box>
             </Grid>
             <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-              <Box>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    {t('CENTER_SESSION.END_DATE')}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="End Date"
-                  >
-                    {/* <MenuItem value={'Date2'}>Date 2</MenuItem> */}
-                  </Select>
-                </FormControl>
+              <Box sx={{ mt: 3 }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Stack spacing={3}>
+                    <MobileDatePicker
+                      label="End Time"
+                      value={date}
+                      onChange={handleChange}
+                      format="DD MMM, YYYY"
+                      sx={{ borderRadius: '4px' }}
+                    />
+                  </Stack>
+                </LocalizationProvider>
               </Box>
             </Grid>
           </Grid>
