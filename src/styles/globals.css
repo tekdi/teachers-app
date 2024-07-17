@@ -946,3 +946,18 @@ main {
 .text-7C {
   color: var(--mui-palette-warning-400) !important;
 }
+
+.facilitator-bg {
+  background-image: url('./../assets/images/decorationBg.png');
+  /* width: 140px; */
+  height: 180px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  object-fit: cover;
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding: 15px;
+}
