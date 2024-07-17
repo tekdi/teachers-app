@@ -33,12 +33,12 @@ function SelectTopic() {
           <InputLabel
             style={{
               color: theme?.palette?.warning['A200'],
-              background: '#fff',
+              background: theme?.palette?.warning['A400'],
               padding: '2px 8px',
             }}
             id="demo-multiple-select-label"
           >
-            Topic
+            {t('CENTER_SESSION.TOPIC')}
           </InputLabel>
           <Select
             labelId="demo-multiple-select-label"
@@ -54,7 +54,7 @@ function SelectTopic() {
               <Checkbox
                 sx={{
                   '&.Mui-checked': {
-                    color: '#1F1B13',
+                    color: theme?.palette?.warning['300'],
                   },
                 }}
                 checked={selectedValues.indexOf('Mathematics') > -1}
@@ -73,7 +73,7 @@ function SelectTopic() {
             style={{ color: theme?.palette?.warning['A200'] }}
             id="demo-simple-select-label"
           >
-            Sub Topic
+            {t('CENTER_SESSION.SUBTOPIC')}
           </InputLabel>
           <Select
             labelId="demo-simple-select-label"
