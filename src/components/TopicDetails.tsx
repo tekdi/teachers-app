@@ -120,28 +120,44 @@ const TopicDetails = () => {
             <Grid item xs={6} sx={{ mt: 2 }}>
               <Box className="facilitator-bg">
                 <Box
-                  sx={{ fontSize: '16px', fontWeight: '500', color: '#fff' }}
+                  sx={{
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    color: theme?.palette?.warning['A400'],
+                  }}
                 >
                   {t('CENTER_SESSION.TITLE')}
                 </Box>
                 <Box
-                  sx={{ fontSize: '11px', fontWeight: '500', color: '#fff' }}
+                  sx={{
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: theme?.palette?.warning['A400'],
+                  }}
                 >
-                  Video
+                  Video {/*   will came from API */}
                 </Box>
               </Box>
             </Grid>
             <Grid item xs={6} sx={{ mt: 2 }}>
               <Box className="facilitator-bg">
                 <Box
-                  sx={{ fontSize: '16px', fontWeight: '500', color: '#fff' }}
+                  sx={{
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    color: theme?.palette?.warning['A400'],
+                  }}
                 >
                   {t('CENTER_SESSION.TITLE')}
                 </Box>
                 <Box
-                  sx={{ fontSize: '11px', fontWeight: '500', color: '#fff' }}
+                  sx={{
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: theme?.palette?.warning['A400'],
+                  }}
                 >
-                  Game
+                  Game {/*   will came from API */}
                 </Box>
               </Box>
             </Grid>
