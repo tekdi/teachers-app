@@ -36,7 +36,7 @@ const TopicDetails = () => {
               <Box
                 sx={{ fontSize: '16px', fontWeight: '400', color: '#4D4639' }}
               >
-                Real Numbers
+                Real Numbers {/*   will came from API */}
               </Box>
             </Box>
             <CreateOutlinedIcon sx={{ fontSize: '18px', color: '#0D599E' }} />
@@ -53,7 +53,7 @@ const TopicDetails = () => {
             {t('CENTER_SESSION.SUBTOPIC')}
           </Box>
           <Box sx={{ fontSize: '16px', fontWeight: '400', color: '#4D4639' }}>
-            Revisiting Irrational Numbers
+            Revisiting Irrational Numbers {/*   will came from API */}
           </Box>
         </Box>
 
