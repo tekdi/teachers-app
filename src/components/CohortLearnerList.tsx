@@ -47,7 +47,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             page,
             filters,
           });
-          const resp = response?.result?.results?.userDetails;
+          const resp = response?.result?.userDetails;
 
           if (resp) {
             const userDetails = resp.map((user: any) => ({
