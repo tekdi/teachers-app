@@ -5,7 +5,7 @@ const manageUserStore = create(
   persist(
     (set) => ({
       deleteId: '',
-      setDeleteId: (newDeleteId) => set((state) => ({ deleteId: newDeleteId })),
+      setCohortDeleteId: (newCohortDeleteId) => set((state) => ({ deleteId: newCohortDeleteId })),
     }),
     {
       name: 'teacherApp',
