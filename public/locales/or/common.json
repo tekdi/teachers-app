@@ -61,7 +61,10 @@
     "SURE_REMOVE": "ଆପଣ ନିଶ୍ଚିତ ଏହି ଶିକ୍ଷାର୍ଥୀକୁ ହଟାଇବାକୁ ଚାହୁଁଛନ୍ତି କି?",
     "LEARNER_MARKED_DROPOUT": "ଶିକ୍ଷାର୍ଥୀକୁ ଡ୍ରପ୍ ଆଉଟ୍ ଭାବେ ଚିହ୍ନିତ କରାଯାଇଛି",
     "LEARNER_UNMARKED_DROPOUT": "ଶିକ୍ଷାର୍ଥୀକୁ ଡ୍ରପ୍ ଆଉଟ୍ ଭାବେ ଅଚିହ୍ନିତ କରାଯାଇଛି",
-    "LEARNER_REMOVED": "ଶିକ୍ଷାର୍ଥୀ କୁ ହଟାଇ ଦିଆଯାଇଛି"
+    "LEARNER_REMOVED": "ଶିକ୍ଷାର୍ଥୀ କୁ ହଟାଇ ଦିଆଯାଇଛି",
+    "PAGE_NOT_FOUND": "ପୃଷ୍ଠା ଖୋଜିପାରିବନାହି",
+    "ACCESS_DENIED": "ପ୍ରବେଶ ନିଷେଧ",
+    "YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE": "ଆପଣଙ୍କୁ ଏହି ପୃଷ୍ଠା ପ୍ରବେଶ କରିବା ଅଧିକାର ନାହି"
   },
   "LOGIN_PAGE": {
     "USERNAME": "ଉପଯୋଗକର୍ତା ନାମ",
@@ -97,7 +100,10 @@
     "BACK_TO_TOP": "ଉପରକୁ ଫେରିଯାଇ",
     "LAST_SEVEN_DAYS_RANGE": "ଗତ 7 ଦିନ {{date_range}}",
     "AS_OF_TODAY_DATE": "ଆଜି ଅନୁସାରେ {{day_date}}",
-    "LEARNER": "ଶିକ୍ଷାର୍ଥୀ"
+    "LEARNER": "ଶିକ୍ଷାର୍ଥୀ",
+    "ATTENDANCE_COMPARISON": "ଉପସ୍ଥିତି ତୁଳନ",
+    "CENTER_TYPE":"କେନ୍ଦ୍ର ପ୍ରକାର",
+    "BLOCK_AVERAGE_ATTENDANCE": "ବ୍ଲକ ହାରାହାର ଉପସ୍ଥିତି"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "ମୋଟ ଶିକ୍ଷାର୍ଥୀ ସଂଖ୍ୟା: {{count}}",
@@ -219,4 +225,4 @@
 
     }
   }
-}
+

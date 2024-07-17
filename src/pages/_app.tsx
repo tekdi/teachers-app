@@ -22,11 +22,13 @@ import Head from 'next/head';
 import IconButton from '@mui/material/IconButton';
 import { Poppins } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
-import { appWithTranslation } from 'next-i18next';
+import { UserConfig, appWithTranslation } from 'next-i18next';
 import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { fullWidthPages } from '../../app.config';
+import nextI18NextConfig from '../../next-i18next.config.js';
 
 const queryClient = new QueryClient();
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
@@ -35,6 +37,13 @@ const poppins = Poppins({
   fallback: ['sans-serif'],
   subsets: ['latin'],
 });
+
+const emptyInitialI18NextConfig: UserConfig = {
+  i18n: {
+    defaultLocale: nextI18NextConfig.i18n.defaultLocale,
+    locales: nextI18NextConfig.i18n.locales,
+  },
+};
 
 export function DarkTheme() {
   const theme = useTheme();
@@ -61,7 +70,7 @@ export function DarkTheme() {
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const Login = router.pathname === '/login';
+  const isFullWidthPage =  fullWidthPages.includes(router.pathname);
   useEffect(() => {
     telemetryFactory.init();
   }, []);
@@ -136,12 +145,12 @@ function App({ Component, pageProps }: AppProps) {
           sx={{
             padding: '0',
             '@media (min-width: 900px)': {
-              width: !Login ? 'calc(100% - 22rem)' : '100%',
-              marginLeft: !Login ? '351px' : '0',
+              width: !isFullWidthPage ? 'calc(100% - 22rem)' : '100%',
+              marginLeft: !isFullWidthPage ? '351px' : '0',
             },
             '@media (min-width: 1600px)': {
               width: '100%',
-              marginLeft: !Login ? '351px' : '0',
+              marginLeft: !isFullWidthPage ? '351px' : '0',
             },
           }}
         >
@@ -159,4 +168,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default appWithTranslation(App);
+export default appWithTranslation(App, emptyInitialI18NextConfig);

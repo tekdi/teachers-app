@@ -7,6 +7,7 @@ import {
   LearnerAttendanceProps,
   MarkAttendanceParams,
   allCenterAttendancePercentParam,
+  OverallAttendancePercentageProps,
 } from '../utils/Interfaces';
 
 export const bulkAttendance = async ({
@@ -85,6 +86,20 @@ export const attendanceInPercentageStatusList = async ({
     limit,
     page,
     filters: { contextId, scope, toDate, fromDate },
+    facets,
+  });
+};
+
+export const overallAttendanceInPercentageStatusList = async ({
+  limit,
+  page,
+  filters: { contextId, scope },
+  facets,
+}: OverallAttendancePercentageProps): Promise<any> => {
+  return postAttendanceList({
+    limit,
+    page,
+    filters: { contextId, scope },
     facets,
   });
 };

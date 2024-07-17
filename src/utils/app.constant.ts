@@ -32,3 +32,8 @@ export enum sessionMode {
   ONLINE = 'online',
   OFFLINE = 'offline',
 }
+
+export enum cohortPrivileges {
+  STUDENT = 'student',
+  
+}

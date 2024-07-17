@@ -88,9 +88,9 @@ export interface userList {
   limit: number;
   page: number;
   filters: {
-    state: string;
-    district: string;
-    block: string;
+    states: string;
+    districts: string;
+    blocks: string;
     role?: string;
   };
   fields: string[];
@@ -158,6 +158,18 @@ export interface AttendancePercentageProps {
   };
   facets: Array<string>;
 }
+
+
+export interface OverallAttendancePercentageProps {
+  limit: number;
+  page: number;
+  filters: {
+    contextId: string;
+    scope: string;
+  };
+  facets: Array<string>;
+}
+
 
 export interface LearnerAttendanceProps {
   limit: number;

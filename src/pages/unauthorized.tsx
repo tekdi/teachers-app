@@ -1,13 +1,13 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import ErrorIcon from '../../public/images/404.png'; // Make sure to replace this with the actual path to your image
-import Image from 'next/image';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
+import { useTheme } from '@mui/material';
 
-const PageNotFound = () => {
+const Unauthorized = () => {
   const { t } = useTranslation();
+  const theme = useTheme<any>();
 
   return (
     <Box
@@ -18,17 +18,29 @@ const PageNotFound = () => {
       alignItems="center"
       sx={{ height: '100vh' }} // '-webkit-fill-available' can be approximated with '100vh'
     >
-      <Image width={270} src={ErrorIcon} alt="Error icon" />
+      {/* <Image width={270} src={ErrorIcon} alt="Error icon" /> */}
       <Typography
         mt={4}
         variant="h2"
-        fontSize="20px"
+        fontSize="24px"
         lineHeight="30px"
         fontWeight="600"
         color="black"
       >
-        {t('COMMON.PAGE_NOT_FOUND')}
+        {t('COMMON.ACCESS_DENIED')}
       </Typography>
+
+      <Typography
+        mt={4}
+        variant="subtitle2"
+        fontSize="16px"
+        lineHeight="16px"
+        fontWeight="600"
+        color={theme.palette.warning['400']}
+      >
+        {t('COMMON.YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE')}
+      </Typography>
+
     </Box>
   );
 };
@@ -42,4 +54,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default PageNotFound;
+export default Unauthorized;

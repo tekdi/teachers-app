@@ -1,5 +1,6 @@
 import FingerprintJS from 'fingerprintjs2';
 import { Role, Status } from './app.constant';
+import { i18n } from 'next-i18next';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -266,3 +267,11 @@ export const accessGranted = (
   }
   return false;
 };
+
+
+export function getTranslatedText(key: string, options?: any): string {
+  if (!i18n?.t) {
+    throw new Error('i18n instance is not initialized');
+  }
+  return i18n.t(key, options) as string;
+}

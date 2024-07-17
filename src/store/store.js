@@ -5,9 +5,12 @@ const useStore = create(
   persist(
     (set) => ({
       value: '',
-      role: '',
+      cohorts: [],
+      userRole: '',
+      pairs: [],
       setValue: (newValue) => set((state) => ({ value: newValue })),
       setUserRole: (newRole) => set((state) => ({ userRole: newRole })),
+      setCohorts: (newCohorts) => set(() => ({ cohorts: newCohorts })),
     }),
     {
       name: 'teacherApp',

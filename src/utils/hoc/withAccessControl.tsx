@@ -12,6 +12,11 @@ const withAccessControl =
       const router = useRouter();
 
       useEffect(() => {
+        console.log("userRole", userRole);
+        if (userRole === '') {
+          router.replace('/logout');
+          return;
+        }
         if (!userRole || !accessControl[action]?.includes(userRole)) {
           router.replace('/unauthorized');
         }

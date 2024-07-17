@@ -1,6 +1,7 @@
 import { UiSchema } from '@rjsf/utils';
 import { JSONSchema7 } from 'json-schema';
 import { apiResponse } from '@/utils/schema';
+import NumberInputField from './form/NumberInputField';
 
 interface FieldOption {
   label: string;
@@ -14,7 +15,7 @@ interface Field {
   isEditable: boolean;
   isPIIField?: boolean | null;
   placeholder?: string;
-  validation?: any[];
+  validation?: string[];
   options: FieldOption[];
   isMultiSelect: boolean;
   maxSelections?: number | null;
@@ -24,10 +25,16 @@ interface Field {
   minLength?: number | null;
   fieldId: string;
   dependsOn: boolean;
+  required?: boolean;
 }
 
+const customFields = {
+  NumberInputField: NumberInputField
+};
+
 const GenerateSchemaAndUiSchema = (apiResponse: any) => {
-  const schema: JSONSchema7 = {
+
+  const schema: JSONSchema7 = { //Form schema
     title: 'A registration form',
     description: 'A simple form example',
     type: 'object',
@@ -36,9 +43,9 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
     dependencies: {},
   };
 
-  const uiSchema: UiSchema = {};
+  const uiSchema: UiSchema = {}; //form ui schema
 
-  apiResponse.result.forEach((field: Field) => {
+  apiResponse.fields.forEach((field: Field) => {
     const {
       label,
       name,
@@ -49,6 +56,8 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
       isMultiSelect,
       maxSelections,
       dependsOn,
+      pattern,
+      required
     } = field;
 
     const fieldSchema: any = {
@@ -63,6 +72,16 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
         break;
       case 'numeric':
         fieldSchema.type = 'number';
+        
+        if (field?.maxLength) {
+          fieldSchema.maximum = Number(field.maxLength);
+        }
+
+        if (field?.minLength !== undefined && field?.minLength !== null) {
+          fieldSchema.minimum = Number(field.minLength);
+        }
+
+        // fieldUiSchema['ui:field'] = 'NumberInputField';
         break;
       case 'drop_down':
         fieldSchema.type = 'string';
@@ -130,6 +149,31 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
       fieldUiSchema['ui:widget'] = 'MultiSelectCheckboxes';
     }
 
+    if (pattern) {
+      fieldSchema.pattern = pattern;
+      // fieldUiSchema["ui:help"]= "Only alphabetic characters are allowed.";
+    }
+
+    if (required) {
+      schema.required?.push(name);
+    }
+
+    if (field?.minLength) {
+      fieldSchema.minLength = Number(field.minLength);
+    }
+
+    if (field?.maxLength) {
+      fieldSchema.maxLength = Number(field.maxLength);
+    }
+
+    if (field?.validation) {
+      if (field?.validation?.includes('numeric')) {
+        // fieldUiSchema['ui:field'] = 'NumberInputField'; 
+      }
+      fieldSchema.validation = field.validation;
+
+    }
+
     if (schema !== undefined && schema.properties) {
       schema.properties[name] = fieldSchema;
       uiSchema[name] = fieldUiSchema;
@@ -140,5 +184,6 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
 };
 
 const { schema, uiSchema } = GenerateSchemaAndUiSchema(apiResponse);
+console.log(schema, uiSchema);
 
-export { schema, uiSchema };
+export { schema, uiSchema, customFields };

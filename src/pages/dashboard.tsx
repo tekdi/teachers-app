@@ -23,6 +23,7 @@ import {
   toPascalCase,
 } from '../utils/Helper';
 
+
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
 import Divider from '@mui/material/Divider';
@@ -48,6 +49,7 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import AttendanceComparison from '@/components/AttendanceComparison';
 
 // import { Role } from '@/utils/app.constant';
 // import { accessControl } from '../../app.config';
@@ -95,6 +97,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const formattedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
   const [userId, setUserId] = React.useState<string | null>(null);
   const [blockName, setBlockName] = React.useState<string>('');
+  
 
   useEffect(() => {
     setIsClient(true);
@@ -890,7 +893,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </Box>
                   </Box>
                 </Box>
-
+                <Box  p={2}>
+                      <AttendanceComparison />
+                    </Box>
                 {/* <Box sx={{ background: '#fff' }}>
             <Typography
               textAlign={'left'}
