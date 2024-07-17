@@ -8,8 +8,8 @@ import {
 } from '@mui/material';
 
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import EditIcon from '@mui/icons-material/Edit';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
@@ -18,24 +18,43 @@ const TopicDetails = () => {
   const theme = useTheme<any>();
   return (
     <>
-      <Box sx={{ padding: '8px 16px' }}>
+      <Box sx={{ padding: '8px 10px' }}>
         <Box
           sx={{
             background: theme?.palette?.action?.selected,
             borderRadius: '16px',
-            padding: '16px',
+            padding: '16px 8px',
           }}
         >
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box>
-              <Box>{t('CENTER_SESSION.TOPIC')}</Box>
-              {/* <Box>Real Numbers</Box> */}
+              <Box
+                sx={{ fontSize: '12px', color: '#969088', fontWeight: '600' }}
+              >
+                {t('CENTER_SESSION.TOPIC')}
+              </Box>
+              <Box
+                sx={{ fontSize: '16px', fontWeight: '400', color: '#4D4639' }}
+              >
+                Real Numbers {/*   will came from API */}
+              </Box>
             </Box>
-            <EditIcon />
+            <CreateOutlinedIcon sx={{ fontSize: '18px', color: '#0D599E' }} />
           </Box>
 
-          <Box>{t('CENTER_SESSION.SUBTOPIC')}</Box>
-          {/* <Box>Revisiting Irrational Numbers</Box> */}
+          <Box
+            sx={{
+              fontSize: '12px',
+              color: '#969088',
+              fontWeight: '600',
+              mt: '8px',
+            }}
+          >
+            {t('CENTER_SESSION.SUBTOPIC')}
+          </Box>
+          <Box sx={{ fontSize: '16px', fontWeight: '400', color: '#4D4639' }}>
+            Revisiting Irrational Numbers {/*   will came from API */}
+          </Box>
         </Box>
 
         <Box
@@ -80,6 +99,10 @@ const TopicDetails = () => {
             m: 0,
             background: theme?.palette?.background.paper,
             px: '16px',
+            height: '10px !important',
+            '&.Mui-expanded': {
+              minHeight: '48px',
+            },
           }}
         >
           <Typography
@@ -96,12 +119,46 @@ const TopicDetails = () => {
           <Grid container spacing={2} sx={{ px: '16px !important' }}>
             <Grid item xs={6} sx={{ mt: 2 }}>
               <Box className="facilitator-bg">
-                <Box> {t('CENTER_SESSION.TITLE')}</Box>
+                <Box
+                  sx={{
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    color: theme?.palette?.warning['A400'],
+                  }}
+                >
+                  {t('CENTER_SESSION.TITLE')}
+                </Box>
+                <Box
+                  sx={{
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: theme?.palette?.warning['A400'],
+                  }}
+                >
+                  Video {/*   will came from API */}
+                </Box>
               </Box>
             </Grid>
             <Grid item xs={6} sx={{ mt: 2 }}>
               <Box className="facilitator-bg">
-                <Box> {t('CENTER_SESSION.TITLE')}</Box>
+                <Box
+                  sx={{
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    color: theme?.palette?.warning['A400'],
+                  }}
+                >
+                  {t('CENTER_SESSION.TITLE')}
+                </Box>
+                <Box
+                  sx={{
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    color: theme?.palette?.warning['A400'],
+                  }}
+                >
+                  Game {/*   will came from API */}
+                </Box>
               </Box>
             </Grid>
           </Grid>

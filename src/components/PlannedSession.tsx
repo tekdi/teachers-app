@@ -173,7 +173,7 @@ const PlannedSession = () => {
                     label="Start Time"
                     value={date}
                     onChange={handleChange}
-                    sx={{ borderRadius: '4px' }}
+                    sx={{ borderRadius: '4px', fontSize: '2px' }}
                   />
                 </LocalizationProvider>
               </Box>

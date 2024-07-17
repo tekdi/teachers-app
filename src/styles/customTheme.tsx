@@ -49,12 +49,14 @@ const customTheme = extendTheme({
           activeChannel: '#987100',
           selectedChannel: '#dba403',
           active: '#E2D9CC',
+          selected: '#FBF4E4',
         },
         Skeleton: {
           bg: '#FFDCC2',
         },
         background: {
           default: '#F3EDF7',
+          paper: '#F1E7D9',
         },
       },
     },
