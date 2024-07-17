@@ -273,7 +273,9 @@
     "CENTER_RENAMED": "केंद्र का नाम सफलतापूर्वक बदल दिया गया!",
     "SEND_REQUEST": "अनुरोध भेजें",
     "REQUEST_TO_DELETE_HAS_BEEN_SENT": " हटाने का अनुरोध भेजा गया है",
-    "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "आप राज्य प्रशासन को इस केंद्र को हटाने का अनुरोध भेज रहे हैं"
+    "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "आप राज्य प्रशासन को इस केंद्र को हटाने का अनुरोध भेज रहे हैं",
+    "THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT": "उपयोगकर्ता निम्नलिखित समूह का सदस्य है: ",
+    "PLEASE_REMOVE_THE_USER_FROM_COHORT": "कृपया हटाने से पहले उपयोगकर्ता को इन समूहों से हटा दें।"
   },
   "CENTER_SESSION": {
     "THIS_SESSION": "यह सत्र",

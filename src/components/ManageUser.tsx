@@ -43,6 +43,8 @@ import { getMyUserList } from '@/services/MyClassDetailsService';
 import DeleteUserModal from './DeleteUserModal';
 import Image from 'next/image';
 import profileALT from '../assets/images/Profile.png';
+import RemoveFacilitatorAlert from './SimpleModal';
+import SimpleModal from './SimpleModal';
 interface Cohort {
   cohortId: string;
   parentId: string;
@@ -82,7 +84,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
-const store = manageUserStore();
+  const store = manageUserStore();
   const [value, setValue] = React.useState(1);
   const [users, setUsers] = useState<
     {
@@ -112,13 +114,14 @@ const store = manageUserStore();
   const [reassignBlockRequestModalOpen, setReassignBlockRequestModalOpen] =
     React.useState<boolean>(false);
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
-
+  const [openRemoveUserModal, setOpenRemoveUserModal] = React.useState(false);
+  const [removeCohortNames, setRemoveCohortNames] = React.useState('');
   const CustomLink = styled(Link)(({ theme }) => ({
     textDecoration: 'underline',
     textDecorationColor: theme?.palette?.secondary.main,
     textDecorationThickness: '1px',
   }));
-  const setDeleteId = manageUserStore((state) => state.setDeleteId);
+  const setCohortDeleteId = manageUserStore((state) => state.setCohortDeleteId);
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -148,22 +151,26 @@ const store = manageUserStore();
             return;
           }
           const userIds = facilitatorList.map((user: any) => user.userId);
-          const cohortDetailsPromises = userIds.map((userId: string) => 
+          const cohortDetailsPromises = userIds.map((userId: string) =>
             getCohortList(userId, { filter: 'true' })
           );
           const cohortDetails = await Promise.all(cohortDetailsPromises);
           console.log('Cohort Details:', cohortDetails);
-          
-          const extractedData = facilitatorList.map((user: any, index: number) => {
-            const cohorts = cohortDetails[index] || [];
-            const cohortNames = cohorts.map((cohort: any) => cohort.cohortName).join(', ');
-            
-            return {
-              userId: user.userId,
-              name: user.name,
-              cohortNames: cohortNames || null,
-            };
-          });
+
+          const extractedData = facilitatorList.map(
+            (user: any, index: number) => {
+              const cohorts = cohortDetails[index] || [];
+              const cohortNames = cohorts
+                .map((cohort: any) => cohort.cohortName)
+                .join(', ');
+
+              return {
+                userId: user.userId,
+                name: user.name,
+                cohortNames: cohortNames || null,
+              };
+            }
+          );
           setTimeout(() => {
             setUsers(extractedData);
           });
@@ -244,10 +251,14 @@ const store = manageUserStore();
     setState({ ...state, bottom: false });
   };
 
+  const handleCloseRemoveModal = () => {
+    setOpenRemoveUserModal(false);
+  };
+
   const toggleDrawer =
     (anchor: Anchor, open: boolean, user: any) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
-      setDeleteId(user.userId);
+      setCohortDeleteId(user.userId);
       setCenters(
         cohortsData?.[user.userId]?.map((cohort) => cohort.name) || []
       );
@@ -266,7 +277,24 @@ const store = manageUserStore();
 
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
-      setOpenDeleteUserModal(true);
+      const userId = store.deleteId;
+      console.log(userId);
+
+      const cohortList = await getCohortList(userId);
+      console.log('Cohort List:', cohortList);
+
+      if (cohortList && cohortList.length > 0) {
+        const cohortNames = cohortList
+          .map((cohort: { cohortName: any }) => cohort.cohortName)
+          .join(', ');
+        setOpenRemoveUserModal(true);
+        setRemoveCohortNames(cohortNames);
+      } else {
+        console.log(
+          'User does not belong to any cohorts, proceed with deletion'
+        );
+        setOpenDeleteUserModal(true);
+      }
 
       // const name = selectedUser?.name || '';
       // const userId = selectedUser?.userId || '';
@@ -565,11 +593,13 @@ const store = manageUserStore();
                                   borderRadius: '5px',
                                   fontSize: '12px',
                                   fontWeight: '600',
-                               color: 'black',
-                               marginBottom: '10px',
+                                  color: 'black',
+                                  marginBottom: '10px',
                                 }}
                               >
-                                {user?.cohortNames ? `${user.cohortNames}` : 'N/A'}
+                                {user?.cohortNames
+                                  ? `${user.cohortNames}`
+                                  : 'N/A'}
                               </Box>
                             </Box>
                           </Box>
@@ -704,6 +734,21 @@ const store = manageUserStore();
               open={openDeleteUserModal}
               onClose={handleCloseModal}
             />
+            <SimpleModal
+              primaryText="Ok"
+              primaryActionHandler={handleCloseRemoveModal}
+              open={openRemoveUserModal}
+              onClose={handleCloseRemoveModal}
+            >
+              {' '}
+              <Box mt={1.5}>
+                <Typography>
+                  {t('CENTERS.THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT')}{' '}
+                  {removeCohortNames}.{' '}
+                  {t('CENTERS.PLEASE_REMOVE_THE_USER_FROM_COHORT')}
+                </Typography>
+              </Box>
+            </SimpleModal>
           </>
         )}
 

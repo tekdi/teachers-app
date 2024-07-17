@@ -16,6 +16,8 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import { showToastMessage } from './Toastify';
+import manageUserStore from '@/store/manageUserStore';
+import { getCohortList } from '@/services/CohortServices';
 
 interface DeleteUserModalProps {
   open: boolean;
@@ -23,6 +25,7 @@ interface DeleteUserModalProps {
 }
 const DeleteUserModal: React.FC<DeleteUserModalProps> = ({ open, onClose }) => {
   const { t } = useTranslation();
+  const store = manageUserStore();
   const theme = useTheme<any>();
   const style = {
     position: 'absolute',
@@ -53,16 +56,8 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({ open, onClose }) => {
   };
 
   const handleDeleteAction = () => {
-    
-    
-      
-
-
     // setOtherReason('');
     setSelectedValue('');
-
-
-
     onClose();
     showToastMessage(t('COMMON.USER_DELETED_PERMANENTLY'), 'success');
   };
