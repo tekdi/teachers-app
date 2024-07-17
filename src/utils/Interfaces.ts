@@ -88,9 +88,9 @@ export interface userList {
   limit: number;
   page: number;
   filters: {
-    state: string;
-    district: string;
-    block: string;
+    states: string;
+    districts: string;
+    blocks: string;
     role?: string;
   };
   fields: string[];

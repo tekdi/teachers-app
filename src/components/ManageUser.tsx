@@ -24,7 +24,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useEffect } from 'react';
 import { assignCentersToFacilitator } from '@/services/ManageUser';
-import { cohortList } from '@/services/CohortServices';
+import { cohortList, getCohortList } from '@/services/CohortServices';
 import { showToastMessage } from '@/components/Toastify';
 import BottomDrawer from '@/components/BottomDrawer';
 import ApartmentIcon from '@mui/icons-material/Apartment';
@@ -37,6 +37,7 @@ import AddIcon from '@mui/icons-material/Add';
 import LearnersList from '@/components/LearnersList';
 import Link from 'next/link';
 import { styled } from '@mui/system';
+import manageUserStore from '../store/manageUserStore';
 
 import { getMyUserList } from '@/services/MyClassDetailsService';
 import DeleteUserModal from './DeleteUserModal';
@@ -81,13 +82,13 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
-
+const store = manageUserStore();
   const [value, setValue] = React.useState(1);
   const [users, setUsers] = useState<
     {
       name: string;
       userId: string;
-      age?: number;
+      cohortNames?: string;
     }[]
   >();
   const [loading, setLoading] = React.useState(false);
@@ -117,6 +118,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     textDecorationColor: theme?.palette?.secondary.main,
     textDecorationThickness: '1px',
   }));
+  const setDeleteId = manageUserStore((state) => state.setDeleteId);
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -132,26 +134,36 @@ const manageUsers: React.FC<ManageUsersProps> = ({
           const limit = 0;
           const page = 0;
           const filters = {
-            state: 'MH',
-            district: 'PN',
-            block: 'BA',
+            states: 'MH',
+            districts: 'PN',
+            blocks: 'BA',
             role: 'Teacher',
           };
           const fields = ['age'];
 
           const resp = await getMyUserList({ limit, page, filters, fields });
           const facilitatorList = resp.result?.getUserDetails;
-          const extractedData = facilitatorList?.map((user: any) => {
-            const ageField = user.customFields.find(
-              (field: any) => field.name === 'age'
-            );
+          if (!facilitatorList || facilitatorList.length === 0) {
+            console.log('No users found.');
+            return;
+          }
+          const userIds = facilitatorList.map((user: any) => user.userId);
+          const cohortDetailsPromises = userIds.map((userId: string) => 
+            getCohortList(userId, { filter: 'true' })
+          );
+          const cohortDetails = await Promise.all(cohortDetailsPromises);
+          console.log('Cohort Details:', cohortDetails);
+          
+          const extractedData = facilitatorList.map((user: any, index: number) => {
+            const cohorts = cohortDetails[index] || [];
+            const cohortNames = cohorts.map((cohort: any) => cohort.cohortName).join(', ');
+            
             return {
               userId: user.userId,
               name: user.name,
-              age: ageField ? ageField.value : null,
+              cohortNames: cohortNames || null,
             };
           });
-          console.log(extractedData);
           setTimeout(() => {
             setUsers(extractedData);
           });
@@ -235,6 +247,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const toggleDrawer =
     (anchor: Anchor, open: boolean, user: any) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
+      setDeleteId(user.userId);
       setCenters(
         cohortsData?.[user.userId]?.map((cohort) => cohort.name) || []
       );
@@ -547,12 +560,16 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                               </CustomLink>
                               <Box
                                 sx={{
+                                  backgroundColor: '#FFF8F2',
+                                  padding: '5px',
+                                  borderRadius: '5px',
                                   fontSize: '12px',
-                                  color: theme.palette.warning['400'],
-                                  marginBottom: '10px',
+                                  fontWeight: '600',
+                               color: 'black',
+                               marginBottom: '10px',
                                 }}
                               >
-                                {user?.age ? `${user.age} y/o` : 'N/A'}
+                                {user?.cohortNames ? `${user.cohortNames}` : 'N/A'}
                               </Box>
                             </Box>
                           </Box>

@@ -39,12 +39,12 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({ open, onClose }) => {
   };
 
   const [selectedValue, setSelectedValue] = useState('');
-  const [otherReason, setOtherReason] = useState('');
+  // const [otherReason, setOtherReason] = useState('');
 
   const reasons = [
     { value: 'Incorrect Data Entry', label: 'Incorrect Data Entry' },
     { value: 'Duplicated User', label: 'Duplicated User' },
-    { value: 'Other', label: 'Other' },
+    // { value: 'Other', label: 'Other' },
   ];
 
   const handleRadioChange = (value: string) => {
@@ -53,15 +53,23 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({ open, onClose }) => {
   };
 
   const handleDeleteAction = () => {
+    
+    
+      
+
+
+    // setOtherReason('');
+    setSelectedValue('');
+
+
+
     onClose();
     showToastMessage(t('COMMON.USER_DELETED_PERMANENTLY'), 'success');
-    setOtherReason('');
-    setSelectedValue('');
   };
 
-  const handleOtherReasonChange = (event: any) => {
-    setOtherReason(event.target.value);
-  };
+  // const handleOtherReasonChange = (event: any) => {
+  //   setOtherReason(event.target.value);
+  // };
 
   return (
     <Modal
@@ -139,7 +147,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({ open, onClose }) => {
                 <Divider />
               </>
             ))}
-            {selectedValue === 'Other' && (
+            {/* {selectedValue === 'Other' && (
               <FormControl sx={{ mt: 2, width: '100%' }}>
                 <TextField
                   id="otherReason"
@@ -152,7 +160,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({ open, onClose }) => {
                   onChange={(e) => handleOtherReasonChange(e)}
                 />
               </FormControl>
-            )}
+            )} */}
           </Box>
           <Box mt={1.5}>
             <Divider />
