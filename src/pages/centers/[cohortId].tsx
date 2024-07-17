@@ -26,6 +26,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PlannedSession from '@/components/PlannedSession';
 import RenameCenterModal from '@/components/center/RenameCenterModal';
 import Schedule from './../../components/Schedule';
+import SelectTopic from '@/components/SelectTopic';
 import { Session } from '../../utils/Interfaces';
 import SessionCard from '@/components/SessionCard';
 import SessionCardFooter from '@/components/SessionCardFooter';
@@ -285,7 +286,7 @@ const TeachingCenterDetails = () => {
             title={'Schedule'}
             primary={'Next'}
           >
-            <TopicDetails />
+            <SelectTopic />
           </CenterSessionModal>
           <Box mt={3} px={'18px'}>
             <Box
