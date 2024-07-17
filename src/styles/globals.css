@@ -962,21 +962,6 @@ main {
   padding: 15px;
 }
 
-.facilitator-bg {
-  background-image: url('./../assets/images/decorationBg.png');
-  /* width: 140px; */
-  height: 180px;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  object-fit: cover;
-  border-radius: 28px;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-  padding: 15px;
-}
-
 /* To Hide the caret icon on input type number */
 input[type='number'] {
   -moz-appearance: textfield;
