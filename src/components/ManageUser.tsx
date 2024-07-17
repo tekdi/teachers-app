@@ -43,7 +43,8 @@ import { getMyUserList } from '@/services/MyClassDetailsService';
 import DeleteUserModal from './DeleteUserModal';
 import Image from 'next/image';
 import profileALT from '../assets/images/Profile.png';
-import RemoveFacilitatorAlert from './RemoveFacilitatorAlert';
+import RemoveFacilitatorAlert from './SimpleModal';
+import SimpleModal from './SimpleModal';
 interface Cohort {
   cohortId: string;
   parentId: string;
@@ -252,7 +253,6 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
   const handleCloseRemoveModal = () => {
     setOpenRemoveUserModal(false);
-  
   };
 
   const toggleDrawer =
@@ -279,21 +279,22 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     if (name === 'delete-User') {
       const userId = store.deleteId;
       console.log(userId);
-  
+
       const cohortList = await getCohortList(userId);
       console.log('Cohort List:', cohortList);
-  
+
       if (cohortList && cohortList.length > 0) {
         const cohortNames = cohortList
           .map((cohort: { cohortName: any }) => cohort.cohortName)
           .join(', ');
         setOpenRemoveUserModal(true);
-        setRemoveCohortNames(cohortNames)
+        setRemoveCohortNames(cohortNames);
       } else {
-        console.log('User does not belong to any cohorts, proceed with deletion');
+        console.log(
+          'User does not belong to any cohorts, proceed with deletion'
+        );
         setOpenDeleteUserModal(true);
       }
-      
 
       // const name = selectedUser?.name || '';
       // const userId = selectedUser?.userId || '';
@@ -733,13 +734,21 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               open={openDeleteUserModal}
               onClose={handleCloseModal}
             />
-            <RemoveFacilitatorAlert
-            removeCohortNames={removeCohortNames}
-            open={openRemoveUserModal}
-            onClose={handleCloseRemoveModal}
-            />
-
-           
+            <SimpleModal
+              primaryText="Ok"
+              primaryActionHandler={handleCloseRemoveModal}
+              open={openRemoveUserModal}
+              onClose={handleCloseRemoveModal}
+            >
+              {' '}
+              <Box mt={1.5}>
+                <Typography>
+                  {t('CENTERS.THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT')}{' '}
+                  {removeCohortNames}.{' '}
+                  {t('CENTERS.PLEASE_REMOVE_THE_USER_FROM_COHORT')}
+                </Typography>
+              </Box>
+            </SimpleModal>
           </>
         )}
 
