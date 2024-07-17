@@ -155,7 +155,6 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
                         // color={theme.palette.text.primary}
                         color={textColor}
                         textAlign="center"
-                        ml={'15px'}
                       >
                         {presentPercent}%
                       </Typography>
@@ -167,7 +166,6 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
                         lineHeight="1.5rem"
                         color={theme.palette.text.primary}
                         textAlign="center"
-                        ml={'20px'}
                       >
                         {classesMissed}
                       </Typography>

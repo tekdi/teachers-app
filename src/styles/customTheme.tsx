@@ -56,7 +56,7 @@ const customTheme = extendTheme({
         },
         background: {
           default: '#F3EDF7',
-          paper: '#F1E7D9',
+          paper: '#fff',
         },
       },
     },
