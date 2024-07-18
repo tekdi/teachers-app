@@ -19,6 +19,8 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme, styled } from '@mui/material/styles';
 import { showToastMessage } from '../Toastify';
+import { renameFacilitator } from '@/services/ManageUser';
+import { useRouter } from 'next/router';
 
 interface CreateBlockModalProps {
   open: boolean;
@@ -36,8 +38,11 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
   open,
   handleClose,
 }) => {
+  const router = useRouter();
   const { t } = useTranslation();
   const theme = useTheme<any>();
+
+  const { cohortId }: any = router.query;
 
   const [centerName, setCenterName] = useState<string>('');
 
@@ -47,8 +52,13 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
     setCenterName(event.target.value);
   };
 
-  const handleCreateButtonClick = () => {
+  const handleCreateButtonClick = async () => {
     console.log('Entered Rename Name:', centerName);
+
+    const name = centerName;
+
+    const response = await renameFacilitator(cohortId, name);
+
     showToastMessage(t('CENTERS.CENTER_RENAMED'), 'success');
     handleClose();
   };
