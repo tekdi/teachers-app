@@ -37,3 +37,13 @@ export enum cohortPrivileges {
   STUDENT = 'student',
   
 }
+
+export enum FormContext {
+  USERS = 'USERS'
+}
+
+export enum FormContextType {
+  STUDENT = 'STUDENT',
+  TEACHER = 'TEACHER',
+  TEAM_LEADER = 'TEAMLEADER',
+}
