@@ -85,8 +85,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
           console.log('schema===>', schema);
           if (schema.properties?.[property]?.validation?.includes('numeric')) {
             error.message = t('FORM_ERROR_MESSAGES.ENTER_ONLY_DIGITS');
-          } else if (schema.properties?.[property]?.validation?.includes('characters-with-space')) {
-            error.message = t('FORM_ERROR_MESSAGES.NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED');
+          } else if (
+            schema.properties?.[property]?.validation?.includes(
+              'characters-with-space'
+            )
+          ) {
+            error.message = t(
+              'FORM_ERROR_MESSAGES.NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
+            );
           }
           break;
         }
