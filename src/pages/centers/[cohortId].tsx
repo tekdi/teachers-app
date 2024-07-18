@@ -422,15 +422,7 @@ const TeachingCenterDetails = () => {
             </Box>
           </>
         )}
-        <AddLeanerModal
-          learnersName={[
-            'Aanya Gupta',
-            'Aakash Sen',
-            'Aisha Bhatt',
-            'Ananya Umesh',
-            'Bhavana Gill',
-          ]}
-        />
+     
       </Box>
     </>
   );
