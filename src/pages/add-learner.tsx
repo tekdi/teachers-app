@@ -1,6 +1,9 @@
 import DynamicForm from '@/components/DynamicForm';
 import React, { useEffect } from 'react';
-import { GenerateSchemaAndUiSchema, customFields } from '@/components/GeneratedSchemas';
+import {
+  GenerateSchemaAndUiSchema,
+  customFields,
+} from '@/components/GeneratedSchemas';
 import { IChangeEvent } from '@rjsf/core';
 import ISubmitEvent from '@rjsf/core';
 import { Box } from '@mui/material';
@@ -10,8 +13,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { getFormRead } from '@/services/CreateUserService';
 import { FormData } from '@/utils/Interfaces';
 import { FormContext, FormContextType } from '@/utils/app.constant';
+import { useTranslation } from 'next-i18next';
 
 const addLearner = () => {
+  const { t } = useTranslation();
   const [openModal, setOpenModal] = React.useState(false);
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
@@ -19,11 +24,14 @@ const addLearner = () => {
   useEffect(() => {
     const getAddLearnerFormData = async () => {
       try {
-        const response: FormData = await getFormRead(FormContext.USERS, FormContextType.STUDENT);
+        const response: FormData = await getFormRead(
+          FormContext.USERS,
+          FormContextType.STUDENT
+        );
         console.log('sortedFields', response);
 
         if (response) {
-          const { schema, uiSchema } = GenerateSchemaAndUiSchema(response);
+          const { schema, uiSchema } = GenerateSchemaAndUiSchema(response, t);
           setSchema(schema);
           setUiSchema(uiSchema);
         }

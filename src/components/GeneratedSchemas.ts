@@ -7,7 +7,7 @@ export const customFields = {
   NumberInputField: NumberInputField
 };
 
-export const GenerateSchemaAndUiSchema = (formData: FormData) => {
+export const GenerateSchemaAndUiSchema = (formData: FormData, t: (key: string) => string) => {
   const schema: JSONSchema7 = { //Form schema
     title: formData.title,
     description: '',
@@ -36,7 +36,7 @@ formData?.fields?.forEach((field: Field) => {
     } = field;
 
     const fieldSchema: any = {
-      title: label,
+      title: t(`FORM.${label}`),
     };
 
     const fieldUiSchema: any = {};
