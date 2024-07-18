@@ -735,7 +735,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               onClose={handleCloseModal}
             />
             <SimpleModal
-              primaryText="Ok"
+              primaryText={t('COMMON.OK')}
               primaryActionHandler={handleCloseRemoveModal}
               open={openRemoveUserModal}
               onClose={handleCloseRemoveModal}
