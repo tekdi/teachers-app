@@ -116,6 +116,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
   const [openRemoveUserModal, setOpenRemoveUserModal] = React.useState(false);
   const [removeCohortNames, setRemoveCohortNames] = React.useState('');
+  const [deleteFacilitatorId, setDeleteFacilitatorId] = React.useState('');
   const CustomLink = styled(Link)(({ theme }) => ({
     textDecoration: 'underline',
     textDecorationColor: theme?.palette?.secondary.main,
@@ -299,7 +300,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
       const userId = store?.deleteId;
-      console.log(userId);
+      setDeleteFacilitatorId(userId);
 
       const cohortList = await getCohortList(userId);
       console.log('Cohort List:', cohortList);
@@ -753,6 +754,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             />
 
             <DeleteUserModal
+              deleteFacilitatorId={deleteFacilitatorId}
               open={openDeleteUserModal}
               onClose={handleCloseModal}
             />

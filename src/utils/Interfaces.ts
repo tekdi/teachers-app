@@ -360,3 +360,8 @@ export interface FormData {
   title: string;
   fields: Field[];
 }
+
+export interface FacilitatorDeleteUserData {
+  status: string;
+  reason: string;
+}

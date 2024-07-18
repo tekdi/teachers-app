@@ -18,12 +18,18 @@ import CloseIcon from '@mui/icons-material/Close';
 import { showToastMessage } from './Toastify';
 import manageUserStore from '@/store/manageUserStore';
 import { getCohortList } from '@/services/CohortServices';
+import updateFacilitator from '@/services/ManageUser';
 
 interface DeleteUserModalProps {
+  deleteFacilitatorId: string;
   open: boolean;
   onClose: () => void;
 }
-const DeleteUserModal: React.FC<DeleteUserModalProps> = ({ open, onClose }) => {
+const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
+  deleteFacilitatorId,
+  open,
+  onClose,
+}) => {
   const { t } = useTranslation();
   const store = manageUserStore();
   const theme = useTheme<any>();
@@ -55,8 +61,16 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({ open, onClose }) => {
     setSelectedValue(value);
   };
 
-  const handleDeleteAction = () => {
-    // setOtherReason('');
+  const handleDeleteAction = async () => {
+    const userData = {
+      status: 'archived',
+      reason: selectedValue,
+    };
+
+    const response = await updateFacilitator(deleteFacilitatorId, userData);
+
+    console.log(response);
+
     setSelectedValue('');
     onClose();
     showToastMessage(t('COMMON.USER_DELETED_PERMANENTLY'), 'success');
