@@ -12,6 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
 import CenterSessionModal from '@/components/CenterSessionModal';
+import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 import CohortLearnerList from '@/components/CohortLearnerList';
 import { CustomField } from '@/utils/Interfaces';
 import DeleteCenterModal from '@/components/center/DeleteCenterModal';
@@ -21,16 +22,13 @@ import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import PlannedSession from '@/components/PlannedSession';
 import RenameCenterModal from '@/components/center/RenameCenterModal';
 import Schedule from './../../components/Schedule';
-import SelectTopic from '@/components/SelectTopic';
 import { Session } from '../../utils/Interfaces';
 import SessionCard from '@/components/SessionCard';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import TopicDetails from '@/components/TopicDetails';
 import WeekCalender from '@/components/WeekCalender';
 import { getCohortDetails } from '@/services/CohortServices';
 import { getSessions } from '@/services/Sessionservice';
@@ -296,7 +294,7 @@ const TeachingCenterDetails = () => {
             title={'Schedule'}
             primary={'Next'}
           >
-            <SelectTopic />
+            <Schedule />
           </CenterSessionModal>
           <Box mt={3} px={'18px'}>
             <Box
