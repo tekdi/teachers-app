@@ -40,6 +40,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -259,6 +260,7 @@ const TeachingCenterDetails = () => {
         >
           <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
+          <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
         </Tabs>
       </Box>
 
@@ -358,6 +360,61 @@ const TeachingCenterDetails = () => {
             </Box>
             <Box>
               <CohortLearnerList
+                cohortId={cohortId}
+                reloadState={reloadState}
+                setReloadState={setReloadState}
+              />
+            </Box>
+          </>
+        )}
+        <AddLeanerModal
+          learnersName={[
+            'Aanya Gupta',
+            'Aakash Sen',
+            'Aisha Bhatt',
+            'Ananya Umesh',
+            'Bhavana Gill',
+          ]}
+        />
+      </Box>
+      <Box>
+        {value === 3 && (
+          <>
+            <Box mt={3} px={'18px'}>
+              <Button
+                sx={{
+                  border: '1px solid #1E1B16',
+                  borderRadius: '100px',
+                  height: '40px',
+                  width: '126px',
+                  color: theme.palette.error.contrastText,
+                }}
+                className="text-1E"
+                endIcon={<AddIcon />}
+              >
+                {t('COMMON.ADD_NEW')}
+              </Button>
+            </Box>
+            <Box
+              px={'18px'}
+              mt={2}
+              sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}
+            >
+              <Box
+                sx={{ color: theme.palette.secondary.main }}
+                className="fs-14 fw-500"
+                onClick={() => {
+                  router.push('/attendance-overview');
+                }}
+              >
+                {t('COMMON.REVIEW_ATTENDANCE')}
+              </Box>
+              <ArrowForwardIcon
+                sx={{ fontSize: '18px', color: theme.palette.secondary.main }}
+              />
+            </Box>
+            <Box>
+              <CohortFacilitatorList
                 cohortId={cohortId}
                 reloadState={reloadState}
                 setReloadState={setReloadState}

@@ -61,6 +61,20 @@ export const getMyCohortMemberList = async ({
   return fetchCohortMemberList({ limit, page, filters: studentFilters });
 };
 
+
+export const getMyCohortFacilitatorList = async ({
+  limit,
+  page,
+  filters,
+}: cohortMemberList): Promise<any> => {
+  const studentFilters = {
+    ...filters,
+    role: Role.TEACHER,
+    status: [Status.DROPOUT, Status.ACTIVE],
+  };
+  return fetchCohortMemberList({ limit, page, filters: studentFilters });
+};
+
 export const getFacilitatorList = async ({
   limit,
   page,

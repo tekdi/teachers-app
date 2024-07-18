@@ -129,7 +129,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
       try {
         const cohortId = cohortData
           .map((block: any) => {
-            return block.blockId;
+            return block?.blockId;
           })
           .join('');
 
@@ -146,32 +146,52 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
           const resp = await getMyUserList({ limit, page, filters, fields });
           const facilitatorList = resp.result?.getUserDetails;
-          if (!facilitatorList || facilitatorList.length === 0) {
+
+            console.log(facilitatorList);
+            
+
+          if (!facilitatorList || facilitatorList?.length === 0) {
             console.log('No users found.');
             return;
           }
-          const userIds = facilitatorList.map((user: any) => user.userId);
-          const cohortDetailsPromises = userIds.map((userId: string) =>
+          const userIds = facilitatorList?.map((user: any) => user.userId);
+          console.log(userIds);
+          
+          const cohortDetailsPromises = userIds?.map((userId: string) =>
             getCohortList(userId, { filter: 'true' })
           );
-          const cohortDetails = await Promise.all(cohortDetailsPromises);
+          const cohortDetailsResults = await Promise.allSettled(cohortDetailsPromises);
+          
+          const cohortDetails = cohortDetailsResults.map((result) => {
+            if (result.status === 'fulfilled') {
+              return result.value;
+            } else {
+              console.error('Error fetching cohort details for a user:', result.reason);
+              return null; // or handle the error as needed
+            }
+          });
+          
           console.log('Cohort Details:', cohortDetails);
 
-          const extractedData = facilitatorList.map(
+          const extractedData = facilitatorList?.map(
             (user: any, index: number) => {
               const cohorts = cohortDetails[index] || [];
               const cohortNames = cohorts
-                .map((cohort: any) => cohort.cohortName)
+                .map((cohort: any) => cohort?.cohortName)
                 .join(', ');
 
               return {
-                userId: user.userId,
-                name: user.name,
+                userId: user?.userId,
+                name: user?.name,
                 cohortNames: cohortNames || null,
               };
             }
           );
+
+
           setTimeout(() => {
+            console.log('extractedData');
+            
             setUsers(extractedData);
           });
         }
@@ -201,9 +221,9 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
           const cohortResponses = await Promise.all(fetchCohortPromises);
           console.log('cohortResponses', cohortResponses);
-          const allCohortsData: CohortsData = cohortResponses.reduce(
+          const allCohortsData: CohortsData = cohortResponses?.reduce(
             (acc: CohortsData, curr) => {
-              acc[curr.userId] = curr.cohorts.map((item: Cohort) => ({
+              acc[curr.userId] = curr?.cohorts?.map((item: Cohort) => ({
                 cohortId: item?.cohortId,
                 parentId: item?.parentId,
                 name: item?.name,
@@ -260,7 +280,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     (event: React.KeyboardEvent | React.MouseEvent) => {
       setCohortDeleteId(user.userId);
       setCenters(
-        cohortsData?.[user.userId]?.map((cohort) => cohort.name) || []
+        cohortsData?.[user?.userId]?.map((cohort) => cohort?.name) || []
       );
       setSelectedUser(user);
 
@@ -277,16 +297,17 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
-      const userId = store.deleteId;
+      const userId = store?.deleteId;
       console.log(userId);
 
       const cohortList = await getCohortList(userId);
       console.log('Cohort List:', cohortList);
 
-      if (cohortList && cohortList.length > 0) {
+      if (cohortList && cohortList?.length > 0 ) {
         const cohortNames = cohortList
-          .map((cohort: { cohortName: any }) => cohort.cohortName)
+          .map((cohort: { cohortName: any }) => cohort?.cohortName)
           .join(', ');
+        
         setOpenRemoveUserModal(true);
         setRemoveCohortNames(cohortNames);
       } else {
@@ -349,7 +370,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
           ?.filter(Boolean);
         setCentersData(filteredData);
         if (filteredData && Array.isArray(filteredData)) {
-          const teamLeaderCenters = filteredData?.map((center) => center.name);
+          const teamLeaderCenters = filteredData?.map((center) => center?.name);
           setCenterList(teamLeaderCenters.concat(centers));
         }
       }
@@ -371,12 +392,12 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
       const matchedCohortIdsFromCohortsData = Object.values(cohortsData!)
         .flat()
-        .filter((cohort) => selectedCenters.includes(cohort.name))
-        .map((cohort) => cohort.cohortId);
+        .filter((cohort) => selectedCenters?.includes(cohort?.name))
+        .map((cohort) => cohort?.cohortId);
 
       const matchedCohortIdsFromCentersData = centersData
-        .filter((center) => selectedCenters.includes(center.name))
-        .map((center) => center.cohortId);
+        .filter((center) => selectedCenters?.includes(center?.name))
+        .map((center) => center?.cohortId);
 
       const matchedCohortIds = Array.from(
         new Set([
@@ -599,7 +620,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                               >
                                 {user?.cohortNames
                                   ? `${user.cohortNames}`
-                                  : 'N/A'}
+                                  : 'N/a'}
                               </Box>
                             </Box>
                           </Box>
@@ -741,12 +762,13 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               onClose={handleCloseRemoveModal}
             >
               {' '}
-              <Box mt={1.5}>
-                <Typography>
-                  {t('CENTERS.THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT')}{' '}
-                  {removeCohortNames}.{' '}
-                  {t('CENTERS.PLEASE_REMOVE_THE_USER_FROM_COHORT')}
-                </Typography>
+              <Box mt={1.5} mb={1.5}>
+              <Typography>
+  {t('CENTERS.THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT')}{' '}
+  <strong>{removeCohortNames}</strong>
+  <br />
+  {t('CENTERS.PLEASE_REMOVE_THE_USER_FROM_COHORT')}
+</Typography>
               </Box>
             </SimpleModal>
           </>

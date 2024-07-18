@@ -64,7 +64,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
       <Box sx={{ ...style }}>
         <Box
           display={'flex'}
-          justifyContent={'space-between'}
+          justifyContent={'center'}
           sx={{ padding: '18px 16px' }}
         >
           <Box marginBottom={'0px'}>
@@ -72,20 +72,14 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
               variant="h2"
               sx={{
                 color: theme.palette.warning['A200'],
-                fontSize: '14px',
+                
               }}
               component="h2"
             >
               {t('COMMON.DELETE_USER')}
             </Typography>
           </Box>
-          <CloseIcon
-            sx={{
-              cursor: 'pointer',
-              color: theme.palette.warning['A200'],
-            }}
-            onClick={onClose}
-          />
+          
         </Box>
         <Divider />
         {children}

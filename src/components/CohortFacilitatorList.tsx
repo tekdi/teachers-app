@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { getMyCohortFacilitatorList, getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import {
   capitalizeEachWord,
   getFieldValue,
@@ -42,11 +42,13 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
         if (cohortId) {
           const page = 0;
           const filters = { cohortId: cohortId };
-          const response = await getMyCohortMemberList({
+          const response = await getMyCohortFacilitatorList({
             limit,
             page,
             filters,
           });
+
+          console.log(response);
           
           const resp = response?.result?.userDetails;
 
