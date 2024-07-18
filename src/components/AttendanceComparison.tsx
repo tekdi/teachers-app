@@ -21,20 +21,45 @@ import {
 import { useTranslation } from 'next-i18next';
 import useStore from '../store/store';
 import { useTheme } from '@mui/material/styles';
-import {
-  attendanceInPercentageStatusList,
-  attendanceStatusList,
-  overallAttendanceInPercentageStatusList,
-} from '@/services/AttendanceService';
+import { overallAttendanceInPercentageStatusList } from '@/services/AttendanceService';
 import { cohortPrivileges } from '@/utils/app.constant';
+
+interface Cohort {
+  cohortId: string;
+  cohortType: string;
+  name: string;
+}
+
+interface AttendanceResult {
+  present_percentage?: string;
+  absent_percentage?: string;
+  present?: number;
+  absent?: number;
+}
+
+interface AttendanceResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    result: {
+      contextId: {
+        [key: string]: AttendanceResult;
+      };
+    };
+  };
+}
 
 const AttendanceComparison: React.FC = () => {
   const { t } = useTranslation();
   const [centerType, setCenterType] = useState('Regular');
+  const [attendanceData, setAttendanceData] = useState<Record<string, string>>(
+    {}
+  );
+  const [averageAttendance, setAverageAttendance] = useState(0);
   const store = useStore();
   const theme = useTheme<any>();
   const scope = cohortPrivileges?.STUDENT;
-  
+
   const handleCenterTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -42,10 +67,11 @@ const AttendanceComparison: React.FC = () => {
   };
 
   useEffect(() => {
-    const data = store?.cohorts?.map((pair: { cohortId: any }) => pair?.cohortId);
+    const cohortIds =
+      store?.cohorts?.map((pair: Cohort) => pair?.cohortId) || [];
+
     const fetchData = async () => {
-      data.map((pair: { cohortId: any }) => pair.cohortId);
-      const promises = data.map((cohortId: any) =>
+      const promises = cohortIds?.map((cohortId: string) =>
         overallAttendanceInPercentageStatusList({
           limit: 0,
           page: 0,
@@ -53,18 +79,40 @@ const AttendanceComparison: React.FC = () => {
           facets: ['contextId'],
         })
       );
-      const results = await Promise.all(promises);
-      console.log(results);
-    };
-    fetchData();
-  }, []);
 
-  const data = store?.cohorts
-    ?.filter((pair: { cohortType: string }) => pair?.cohortType === centerType)
-    .map((pair: { name: any }) => ({
-      name: pair.name,
-      Attendance: Math.floor(Math.random() * 100),
-    }));
+      const results: AttendanceResponse[] = await Promise.all(promises);
+      const dataMap: Record<string, string> = {};
+
+      results.forEach((result) => {
+        if (result.statusCode === 200 && result?.data?.result?.contextId) {
+          Object.keys(result?.data?.result?.contextId).forEach((id) => {
+            dataMap[id] =
+              result?.data?.result?.contextId[id]?.present_percentage || '0';
+          });
+        }
+      });
+
+      setAttendanceData(dataMap);
+
+      const totalAttendance = Object.values(dataMap).reduce(
+        (acc, curr) => acc + parseFloat(curr),
+        0
+      );
+      const average =
+        cohortIds.length > 0 ? totalAttendance / cohortIds.length : 0;
+      setAverageAttendance(average);
+    };
+
+    fetchData();
+  }, [store?.cohorts, scope]);
+
+  const data =
+    store?.cohorts
+      ?.filter((pair: Cohort) => pair?.cohortType === centerType)
+      .map((pair: Cohort) => ({
+        name: pair.name,
+        Attendance: Number(attendanceData[pair?.cohortId]) || 0,
+      })) || [];
 
   const renderCustomLabel = (props: any) => {
     const { x, y, width, value } = props;
@@ -114,7 +162,8 @@ const AttendanceComparison: React.FC = () => {
       </FormControl>
       <Box sx={{ mt: 2 }}>
         <Typography align="left">
-          {t('DASHBOARD.BLOCK_AVERAGE_ATTENDANCE')}: 76%
+          {t('DASHBOARD.BLOCK_AVERAGE_ATTENDANCE')}:{' '}
+          {averageAttendance.toFixed(2)}%
         </Typography>
         <ResponsiveContainer width="100%" height={400}>
           <BarChart
@@ -125,7 +174,7 @@ const AttendanceComparison: React.FC = () => {
             <CartesianGrid stroke={theme.palette.warning.A700} />
             <XAxis type="number" tickFormatter={(value: any) => `${value}%`} />
             <YAxis type="category" dataKey="name" />
-            <Tooltip formatter={(value: number) => `${value}`} />
+            <Tooltip formatter={(value: number) => `${value}%`} />
             <Legend />
             <Bar
               dataKey="Attendance"
