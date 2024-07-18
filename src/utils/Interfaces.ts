@@ -134,7 +134,9 @@ export interface SessionsModalProps {
   open: boolean;
   handleClose: () => void;
   title: string;
-  primary: string;
+  primary?: string;
+  center?: string;
+  date?: string;
 }
 export interface AttendanceStatusListProps {
   limit: number;
@@ -159,7 +161,6 @@ export interface AttendancePercentageProps {
   facets: Array<string>;
 }
 
-
 export interface OverallAttendancePercentageProps {
   limit: number;
   page: number;
@@ -169,7 +170,6 @@ export interface OverallAttendancePercentageProps {
   };
   facets: Array<string>;
 }
-
 
 export interface LearnerAttendanceProps {
   limit: number;
@@ -325,7 +325,6 @@ export interface Session {
 export interface SessionCardFooterProps {
   item: Session;
 }
-
 
 export interface FieldOption {
   label: string;
