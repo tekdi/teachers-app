@@ -34,7 +34,7 @@ import { editEditUser } from '@/services/ProfileService';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { Status } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
-import LearnersList from '@/components/LearnersList';
+import LearnersList from '@/components/LearnersListItem';
 import Link from 'next/link';
 import { styled } from '@mui/system';
 import manageUserStore from '../store/manageUserStore';
@@ -116,7 +116,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
   const [openRemoveUserModal, setOpenRemoveUserModal] = React.useState(false);
   const [removeCohortNames, setRemoveCohortNames] = React.useState('');
-  const [deleteFacilitatorId, setDeleteFacilitatorId] = React.useState('');
+  const [userId, setUserId] = React.useState('');
   const CustomLink = styled(Link)(({ theme }) => ({
     textDecoration: 'underline',
     textDecorationColor: theme?.palette?.secondary.main,
@@ -303,7 +303,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
       const userId = store?.deleteId;
-      setDeleteFacilitatorId(userId);
+      setUserId(userId);
 
       const cohortList = await getCohortList(userId);
       console.log('Cohort List:', cohortList);
@@ -757,7 +757,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             />
 
             <DeleteUserModal
-              deleteFacilitatorId={deleteFacilitatorId}
+              userId={userId}
               open={openDeleteUserModal}
               onClose={handleCloseModal}
             />

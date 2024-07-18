@@ -5,7 +5,7 @@ import {
   getFieldValue,
   toPascalCase,
 } from '@/utils/Helper';
-import LearnersList from '@/components/LearnersList';
+import LearnersListItem from '@/components/LearnersListItem';
 import { Status, limit } from '@/utils/app.constant';
 import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
@@ -84,7 +84,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
         <>
           {userData?.map((data: any) => {
             return (
-              <LearnersList
+              <LearnersListItem
                 key={data.userId}
                 userId={data.userId}
                 learnerName={data.name}

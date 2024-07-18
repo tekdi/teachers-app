@@ -21,12 +21,12 @@ import { getCohortList } from '@/services/CohortServices';
 import { updateFacilitator } from '@/services/ManageUser';
 
 interface DeleteUserModalProps {
-  deleteFacilitatorId: string;
+  userId: string;
   open: boolean;
   onClose: () => void;
 }
 const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
-  deleteFacilitatorId,
+  userId,
   open,
   onClose,
 }) => {
@@ -67,7 +67,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
       reason: selectedValue,
     };
 
-    const response = await updateFacilitator(deleteFacilitatorId, userData);
+    const response = await updateFacilitator(userId, userData);
 
     console.log(response);
 

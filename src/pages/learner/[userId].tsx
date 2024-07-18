@@ -664,6 +664,8 @@ const LearnerProfile: React.FC = () => {
     const userDetails = data;
     try {
       if (userId) {
+        console.log("HELLO");
+        
         const response = await editEditUser(user_id, userDetails);
         ReactGA.event('edit-learner-profile-successful', { userId: userId });
 
