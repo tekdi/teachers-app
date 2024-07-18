@@ -65,7 +65,7 @@ export const GenerateSchemaAndUiSchema = (
       case 'drop_down':
         fieldSchema.type = 'string';
         fieldSchema.oneOf = options.map((opt: FieldOption) => ({
-          const: t(`FORM.${opt.value}`),
+          const: opt.value,
           title: t(`FORM.${opt.label}`),
         }));
         fieldUiSchema['ui:widget'] = 'select';
@@ -75,7 +75,7 @@ export const GenerateSchemaAndUiSchema = (
         fieldSchema.items = {
           type: 'string',
           oneOf: options.map((opt: FieldOption) => ({
-            const: t(`FORM.${opt.value}`),
+            const: opt.value,
             title: t(`FORM.${opt.label}`),
           })),
         };
@@ -85,7 +85,7 @@ export const GenerateSchemaAndUiSchema = (
       case 'radio':
         fieldSchema.type = 'string';
         fieldSchema.oneOf = options.map((opt: FieldOption) => ({
-          const: t(`FORM.${opt.value}`),
+          const: opt.value,
           title: t(`FORM.${opt.label}`),
         }));
         fieldUiSchema['ui:widget'] = 'CustomRadioWidget';
@@ -107,7 +107,7 @@ export const GenerateSchemaAndUiSchema = (
       fieldSchema.items = {
         type: 'string',
         oneOf: options.map((opt: FieldOption) => ({
-          const: t(`FORM.${opt.value}`),
+          const: opt.value,
           title: t(`FORM.${opt.label}`),
         })),
       };
@@ -120,7 +120,7 @@ export const GenerateSchemaAndUiSchema = (
       fieldSchema.items = {
         type: 'string',
         oneOf: options.map((opt: FieldOption) => ({
-          const: t(`FORM.${opt.value}`),
+          const: opt.value,
           title: t(`FORM.${opt.label}`),
         })),
       };
