@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import CircleIcon from '@mui/icons-material/Circle';
 import CloseIcon from '@mui/icons-material/Close';
 import { Divider } from '@mui/material';
 import Modal from '@mui/material/Modal';
@@ -15,6 +16,8 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
   handleClose,
   title,
   primary,
+  center,
+  date,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -27,6 +30,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
     bgcolor: theme?.palette?.warning['A400'],
     boxShadow: 24,
     borderRadius: '16px',
+    border: 'none',
     '@media (min-width: 600px)': {
       width: '450px',
     },
@@ -52,11 +56,42 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
                   sx={{
                     color: theme?.palette?.warning['A200'],
                     fontSize: '14px',
+                    fontWeight: '500',
                   }}
                   component="h2"
                 >
                   {title}
                 </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      color: theme?.palette?.warning['A200'],
+                      fontSize: '14px',
+                      fontWeight: '400',
+                    }}
+                    component="h2"
+                  >
+                    {center}
+                  </Typography>
+                  <CircleIcon
+                    sx={{
+                      fontSize: '6px',
+                      color: theme.palette.secondary.contrastText,
+                    }}
+                  />
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      color: theme?.palette?.warning['A200'],
+                      fontSize: '14px',
+                      fontWeight: '400',
+                    }}
+                    component="h2"
+                  >
+                    {date}
+                  </Typography>
+                </Box>
               </Box>
               <CloseIcon
                 onClick={handleClose}
