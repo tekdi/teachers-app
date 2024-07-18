@@ -18,7 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { showToastMessage } from './Toastify';
 import manageUserStore from '@/store/manageUserStore';
 import { getCohortList } from '@/services/CohortServices';
-import updateFacilitator from '@/services/ManageUser';
+import { updateFacilitator } from '@/services/ManageUser';
 
 interface DeleteUserModalProps {
   deleteFacilitatorId: string;
