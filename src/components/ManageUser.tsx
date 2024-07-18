@@ -141,6 +141,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             districts: 'PN',
             blocks: 'BA',
             role: 'Teacher',
+            status: 'active',
           };
           const fields = ['age'];
 
