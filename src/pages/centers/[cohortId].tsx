@@ -8,9 +8,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
-
 import AddIcon from '@mui/icons-material/Add';
-import AddLeanerModal from '@/components/AddLeanerModal';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
 import CenterSessionModal from '@/components/CenterSessionModal';
@@ -38,6 +36,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import CohortFacilitatorList from '@/components/CohortFacilitatorList';
+import AddLearnerModal from '@/components/AddLeanerModal';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -60,6 +60,7 @@ const TeachingCenterDetails = () => {
     React.useState(false);
   const [openDeleteCenterModal, setOpenDeleteCenterModal] =
     React.useState(false);
+  const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -130,6 +131,14 @@ const TeachingCenterDetails = () => {
 
   const handleDeleteCenterClose = () => {
     setOpenDeleteCenterModal(false);
+  };
+
+  const handleOpenAddLearnerModal = () => {
+    setOpenAddLearnerModal(true);
+  };
+
+  const handleCloseAddLearnerModal = () => {
+    setOpenAddLearnerModal(false);
   };
 
   return (
@@ -333,6 +342,7 @@ const TeachingCenterDetails = () => {
                 }}
                 className="text-1E"
                 endIcon={<AddIcon />}
+                onClick={handleOpenAddLearnerModal}
               >
                 {t('COMMON.ADD_NEW')}
               </Button>
@@ -362,17 +372,12 @@ const TeachingCenterDetails = () => {
                 setReloadState={setReloadState}
               />
             </Box>
+            <AddLearnerModal
+              open={openAddLearnerModal}
+              onClose={handleCloseAddLearnerModal}
+            />
           </>
         )}
-        <AddLeanerModal
-          learnersName={[
-            'Aanya Gupta',
-            'Aakash Sen',
-            'Aisha Bhatt',
-            'Ananya Umesh',
-            'Bhavana Gill',
-          ]}
-        />
       </Box>
       <Box>
         {value === 3 && (

@@ -1,8 +1,10 @@
 import {
   AssignCentersToFacilitatorListParam,
+  FacilitatorDeleteUserData,
   FacilitatorListParam,
+  UserData,
 } from '@/utils/Interfaces';
-import { post } from './RestClient';
+import { patch, post, put } from './RestClient';
 
 export const getFacilitatorList = async ({
   limit,
@@ -32,3 +34,36 @@ export const assignCentersToFacilitator = async ({
     throw error;
   }
 };
+
+export const updateFacilitator = async (
+  userId: string,
+  userData: FacilitatorDeleteUserData,
+): Promise<any> => {
+  const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/update/${userId}`;
+  try {
+    const response = await patch(
+      apiUrl,{ userData }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error('Error in updating Facilitator', error);
+    throw error;
+  }
+};
+
+export const renameFacilitator = async (
+  userId: string,
+  name: string,
+): Promise<any> => {
+  const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/cohort/update/${userId}`;
+  try {
+    const response = await put(
+      apiUrl,{ name }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error('Error in updating Facilitator', error);
+    throw error;
+  }
+};
+

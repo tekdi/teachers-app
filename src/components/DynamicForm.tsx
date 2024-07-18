@@ -7,6 +7,8 @@ import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import CustomRadioWidget from './CustomRadioWidget';
 import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
 import { useTranslation } from 'next-i18next';
+import { Button, Divider } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -27,6 +29,7 @@ interface DynamicFormProps {
   customFields: {
     [key: string]: React.FC<RegistryFieldsType<any, RJSFSchema, any>>;
   };
+  showTwoButtons?: boolean;
 }
 const DynamicForm: React.FC<DynamicFormProps> = ({
   schema,
@@ -36,6 +39,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   onChange,
   onError,
   customFields,
+  showTwoButtons = false,
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
@@ -43,6 +47,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
 
   const { t } = useTranslation();
+  const theme = useTheme<any>();
 
   // console.log('CustomErrorList', CustomErrorList);
 
@@ -85,8 +90,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
           console.log('schema===>', schema);
           if (schema.properties?.[property]?.validation?.includes('numeric')) {
             error.message = t('FORM_ERROR_MESSAGES.ENTER_ONLY_DIGITS');
-          } else if (schema.properties?.[property]?.validation?.includes('characters-with-space')) {
-            error.message = t('FORM_ERROR_MESSAGES.NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED');
+          } else if (
+            schema.properties?.[property]?.validation?.includes(
+              'characters-with-space'
+            )
+          ) {
+            error.message = t(
+              'FORM_ERROR_MESSAGES.NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
+            );
           }
           break;
         }
@@ -119,23 +130,109 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     onChange(event);
   }
 
+  const primaryActionHandler = () => {
+    const formElement = document.getElementById(
+      'dynamic-form'
+    ) as HTMLFormElement;
+    if (formElement) {
+      formElement.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true })
+      );
+    }
+  };
+
+  const secondaryActionHandler = () => {
+    console.log('Secondary action handler clicked');
+  };
+
+  const CustomSubmitButton = () => (
+    <div
+      style={{
+        marginTop: '16px',
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}
+    >
+      {showTwoButtons ? (
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              '&.Mui-disabled': {
+                backgroundColor: theme?.palette?.primary?.main,
+              },
+              minWidth: '84px',
+              height: '2.5rem',
+              padding: theme.spacing(1),
+              fontWeight: '500',
+              width: '48%',
+            }}
+            onClick={primaryActionHandler}
+          >
+          {t('COMMON.BACK')}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              '&.Mui-disabled': {
+                backgroundColor: theme?.palette?.primary?.main,
+              },
+              minWidth: '84px',
+              height: '2.5rem',
+              padding: theme.spacing(1),
+              fontWeight: '500',
+              width: '48%',
+            }}
+            onClick={secondaryActionHandler}
+          >
+            {t('COMMON.SUBMIT')}
+          </Button>
+        </>
+      ) : (
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{
+            '&.Mui-disabled': {
+              backgroundColor: theme?.palette?.primary?.main,
+            },
+            minWidth: '84px',
+            height: '2.5rem',
+            padding: theme.spacing(1),
+            fontWeight: '500',
+            width: '100%',
+          }}
+          onClick={secondaryActionHandler}
+        >
+          Submit
+        </Button>
+      )}
+    </div>
+  );
+
   return (
-    <FormWithMaterialUI
-      schema={schema}
-      uiSchema={uiSchema}
-      formData={formData}
-      onChange={handleChange}
-      onSubmit={onSubmit}
-      validator={validator}
-      liveValidate
-      showErrorList={false}
-      widgets={widgets}
-      noHtml5Validate
-      onError={handleError}
-      transformErrors={transformErrors}
-      fields={customFields}
-      // ErrorList={CustomErrorList}
-    />
+    <div>
+      <FormWithMaterialUI
+        schema={schema}
+        uiSchema={uiSchema}
+        formData={formData}
+        onChange={handleChange}
+        onSubmit={onSubmit}
+        validator={validator}
+        liveValidate
+        showErrorList={false}
+        widgets={widgets}
+        noHtml5Validate
+        onError={handleError}
+        transformErrors={transformErrors}
+        fields={customFields}
+      >
+        <Divider />
+        <CustomSubmitButton />
+      </FormWithMaterialUI>
+    </div>
   );
 };
 

@@ -116,6 +116,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
   const [openRemoveUserModal, setOpenRemoveUserModal] = React.useState(false);
   const [removeCohortNames, setRemoveCohortNames] = React.useState('');
+  const [deleteFacilitatorId, setDeleteFacilitatorId] = React.useState('');
   const CustomLink = styled(Link)(({ theme }) => ({
     textDecoration: 'underline',
     textDecorationColor: theme?.palette?.secondary.main,
@@ -141,14 +142,14 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             districts: 'PN',
             blocks: 'BA',
             role: 'Teacher',
+            status: 'active',
           };
           const fields = ['age'];
 
           const resp = await getMyUserList({ limit, page, filters, fields });
           const facilitatorList = resp.result?.getUserDetails;
 
-            console.log(facilitatorList);
-            
+          console.log(facilitatorList);
 
           if (!facilitatorList || facilitatorList?.length === 0) {
             console.log('No users found.');
@@ -156,21 +157,26 @@ const manageUsers: React.FC<ManageUsersProps> = ({
           }
           const userIds = facilitatorList?.map((user: any) => user.userId);
           console.log(userIds);
-          
+
           const cohortDetailsPromises = userIds?.map((userId: string) =>
             getCohortList(userId, { filter: 'true' })
           );
-          const cohortDetailsResults = await Promise.allSettled(cohortDetailsPromises);
-          
+          const cohortDetailsResults = await Promise.allSettled(
+            cohortDetailsPromises
+          );
+
           const cohortDetails = cohortDetailsResults.map((result) => {
             if (result.status === 'fulfilled') {
               return result.value;
             } else {
-              console.error('Error fetching cohort details for a user:', result.reason);
+              console.error(
+                'Error fetching cohort details for a user:',
+                result.reason
+              );
               return null; // or handle the error as needed
             }
           });
-          
+
           console.log('Cohort Details:', cohortDetails);
 
           const extractedData = facilitatorList?.map(
@@ -188,10 +194,9 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             }
           );
 
-
           setTimeout(() => {
             console.log('extractedData');
-            
+
             setUsers(extractedData);
           });
         }
@@ -298,16 +303,16 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
       const userId = store?.deleteId;
-      console.log(userId);
+      setDeleteFacilitatorId(userId);
 
       const cohortList = await getCohortList(userId);
       console.log('Cohort List:', cohortList);
 
-      if (cohortList && cohortList?.length > 0 ) {
+      if (cohortList && cohortList?.length > 0) {
         const cohortNames = cohortList
           .map((cohort: { cohortName: any }) => cohort?.cohortName)
           .join(', ');
-        
+
         setOpenRemoveUserModal(true);
         setRemoveCohortNames(cohortNames);
       } else {
@@ -752,6 +757,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             />
 
             <DeleteUserModal
+              deleteFacilitatorId={deleteFacilitatorId}
               open={openDeleteUserModal}
               onClose={handleCloseModal}
             />
@@ -760,15 +766,16 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               primaryActionHandler={handleCloseRemoveModal}
               open={openRemoveUserModal}
               onClose={handleCloseRemoveModal}
+              modalTitle={t('COMMON.DELETE_USER')}
             >
               {' '}
               <Box mt={1.5} mb={1.5}>
-              <Typography>
-  {t('CENTERS.THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT')}{' '}
-  <strong>{removeCohortNames}</strong>
-  <br />
-  {t('CENTERS.PLEASE_REMOVE_THE_USER_FROM_COHORT')}
-</Typography>
+                <Typography>
+                  {t('CENTERS.THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT')}{' '}
+                  <strong>{removeCohortNames}</strong>
+                  <br />
+                  {t('CENTERS.PLEASE_REMOVE_THE_USER_FROM_COHORT')}
+                </Typography>
               </Box>
             </SimpleModal>
           </>

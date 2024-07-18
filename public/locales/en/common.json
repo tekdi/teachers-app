@@ -107,9 +107,11 @@
     "NO_SESSIONS_SCHEDULED": "No sessions scheduled",
     "TO_BE_TAUGHT": "What is going to be taught:",
     "SELECT_TOPIC": "Select Topic, Sub-topic",
-    "PAGE_NOT_FOUND": "पृष्ठ नहीं मिला",
-    "ACCESS_DENIED": "पहुंच निषेधित",
-    "YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE": "आपके पास इस पृष्ठ तक पहुंचने की अनुमति नहीं है"
+    "PAGE_NOT_FOUND": "Page not found",
+    "ACCESS_DENIED": "Access Denied",
+    "YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE": "You don't have access to this page",
+    "NEW_LEARNER": "New Learner",
+    "SUBMIT": "Submit"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -148,7 +150,7 @@
     "AS_OF_TODAY_DATE": "As of Today, {{day_date}}",
     "LEARNER": "Learners",
     "ATTENDANCE_COMPARISON": "Attendance Comparison",
-    "CENTER_TYPE":"Center Type",
+    "CENTER_TYPE": "Center Type",
     "BLOCK_AVERAGE_ATTENDANCE": "Block Average Attendance"
   },
   "ATTENDANCE": {
@@ -327,18 +329,17 @@
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"
-    
   },
   "FORM": {
-    "FULL_NAME":"Full Name",
+    "FULL_NAME": "Full Name",
     "ENTER_FULL_NAME": "Enter FUll Name",
-    "CONTACT_NUMBER":"Contact Number",
+    "CONTACT_NUMBER": "Contact Number",
     "ENTER_CONTACT_NUMBER": "Enter Contact Number",
     "HOW_WAS_LEARNER_MOBILISED": "How Was the Learner Mobilised?",
     "SECOND_CHANCE_ALUMNI": "Second Chance Alumni",
     "PRATHAM_TEAM_MEMBER": "Pratham Team Member",
     "OTHER": "Other",
-    "AGE":"Age",
+    "AGE": "Age",
     "GENDER": "Gender",
     "MALE": "Male",
     "FEMALE": "Female",
@@ -367,7 +368,7 @@
     "STARTED_VOCATIONAL_COURSE": "Started vocational course",
     "STARTED_A_JOB": "Started a job",
     "SCHOOL_CLOSURE_DUE_TO_COVID": "School closure due to covid",
-    "MARITAL_STATUS":"Marital Status",
+    "MARITAL_STATUS": "Marital Status",
     "UNMARRIED": "Unmarried",
     "MARRIED": "Married",
     "DIVORCED": "Divorced",
@@ -377,7 +378,9 @@
     "NO_PHONE": "No Phone",
     "IS_IT_YOUR_OWN_PHONE": "Is it your own phone?",
     "YES": "Yes",
-    "NO": "No"
+    "NO": "No",
+    "TYPE_OF_PHONE_AVAILABLE": "Type of Phone Available",
+    "REASON_FOR_DROP_OUT_FROM_SCHOOL": "Reason for drop out from School"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",

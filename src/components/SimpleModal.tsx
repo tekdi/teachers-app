@@ -18,24 +18,29 @@ import CloseIcon from '@mui/icons-material/Close';
 import { showToastMessage } from './Toastify';
 import manageUserStore from '@/store/manageUserStore';
 import { getCohortList } from '@/services/CohortServices';
+import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 
 interface SimpleModalProps {
   secondaryActionHandler?: () => void;
-  primaryActionHandler: () => void;
+  primaryActionHandler?: () => void;
   secondaryText?: string;
-  primaryText: string;
+  primaryText?: string;
+  showFooter?: boolean;
   children: ReactNode;
   open: boolean;
   onClose: () => void;
+  modalTitle: string;
 }
 const SimpleModal: React.FC<SimpleModalProps> = ({
   open,
   onClose,
   primaryText,
   secondaryText,
+  showFooter = true,
   primaryActionHandler,
   secondaryActionHandler,
   children,
+  modalTitle,
 }) => {
   const { t } = useTranslation();
   const store = manageUserStore();
@@ -52,6 +57,8 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
     borderRadius: '16px',
     '@media (min-width: 600px)': {
       width: '450px',
+      maxHeight: '80vh',
+      overflowY: 'auto',
     },
   };
 
@@ -64,7 +71,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
       <Box sx={{ ...style }}>
         <Box
           display={'flex'}
-          justifyContent={'center'}
+          justifyContent={'space-between'}
           sx={{ padding: '18px 16px' }}
         >
           <Box marginBottom={'0px'}>
@@ -72,60 +79,69 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
               variant="h2"
               sx={{
                 color: theme.palette.warning['A200'],
-                
               }}
               component="h2"
             >
-              {t('COMMON.DELETE_USER')}
+              {modalTitle}
             </Typography>
           </Box>
-          
+          <Box>
+            <CloseSharpIcon
+              sx={{
+                cursor: 'pointer',
+              }}
+              onClick={onClose}
+              aria-label="Close"
+            />
+          </Box>
         </Box>
         <Divider />
         {children}
         <Divider />
 
-        <Box sx={{ padding: '20px 16px' }}>
-          {primaryText && (
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                '&.Mui-disabled': {
-                  backgroundColor: theme?.palette?.primary?.main,
-                },
-                minWidth: '84px',
-                height: '2.5rem',
-                padding: theme.spacing(1),
-                fontWeight: '500',
-                width: '100%',
-              }}
-              onClick={primaryActionHandler}
-            >
-              {primaryText}
-            </Button>
-          )}
+        {showFooter ? (
+          <Box sx={{ padding: '20px 16px' }} display={'flex'}>
+            {primaryText && (
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  '&.Mui-disabled': {
+                    backgroundColor: theme?.palette?.primary?.main,
+                  },
+                  minWidth: '84px',
+                  height: '2.5rem',
+                  padding: theme.spacing(1),
+                  fontWeight: '500',
+                  width: '100%',
+                }}
+                onClick={primaryActionHandler}
+              >
+                {primaryText}
+              </Button>
+            )}
 
-          {secondaryText && (
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                '&.Mui-disabled': {
-                  backgroundColor: theme?.palette?.primary?.main,
-                },
-                minWidth: '84px',
-                height: '2.5rem',
-                padding: theme.spacing(1),
-                fontWeight: '500',
-                width: '100%',
-              }}
-              onClick={secondaryActionHandler}
-            >
-              {secondaryText}
-            </Button>
-          )}
-        </Box>
+            {secondaryText && (
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  '&.Mui-disabled': {
+                    backgroundColor: theme?.palette?.primary?.main,
+                  },
+                  minWidth: '84px',
+                  height: '2.5rem',
+                  padding: theme.spacing(1),
+                  fontWeight: '500',
+                  width: '100%',
+                }}
+                onClick={secondaryActionHandler}
+              >
+                {secondaryText}
+              </Button>
+            )}
+          </Box>
+        ) : null}
       </Box>
     </Modal>
   );
