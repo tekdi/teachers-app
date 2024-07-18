@@ -761,6 +761,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               primaryActionHandler={handleCloseRemoveModal}
               open={openRemoveUserModal}
               onClose={handleCloseRemoveModal}
+              modalTitle={t('COMMON.DELETE_USER')}
             >
               {' '}
               <Box mt={1.5} mb={1.5}>
