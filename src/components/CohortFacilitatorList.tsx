@@ -5,7 +5,7 @@ import {
   getFieldValue,
   toPascalCase,
 } from '@/utils/Helper';
-import LearnersList from '@/components/LearnersList';
+import LearnersList from '@/components/LearnersListItem';
 import { Status, limit } from '@/utils/app.constant';
 import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';

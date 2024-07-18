@@ -30,12 +30,13 @@ import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 // import Woman2Icon from '@mui/icons-material/Woman2';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 type Anchor = 'bottom';
 const centerList = ['Nashik', 'Shirdi', 'kamptee'];
 const centers = ['shirdi'];
 
-const LearnersList: React.FC<LearnerListProps> = ({
+const LearnersListItem: React.FC<LearnerListProps> = ({
   userId,
   learnerName,
   isDropout,
@@ -58,6 +59,9 @@ const LearnersList: React.FC<LearnerListProps> = ({
     setConfirmationModalReassignCentersOpen,
   ] = React.useState<boolean>(false);
 
+  console.log(userId);
+  
+
   const [learnerState, setLearnerState] = React.useState({
     loading: false,
     isModalOpenLearner: false,
@@ -68,6 +72,8 @@ const LearnersList: React.FC<LearnerListProps> = ({
   });
 
   const theme = useTheme<any>();
+  const router = useRouter();
+  const { learnerId }: any = router.query;
   const { t } = useTranslation();
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
@@ -616,9 +622,9 @@ const LearnersList: React.FC<LearnerListProps> = ({
         isForLearner={true}
       />
 
-      <DeleteUserModal open={openDeleteUserModal} onClose={handleCloseModal} />
+      <DeleteUserModal userId={userId} open={openDeleteUserModal} onClose={handleCloseModal} />
     </>
   );
 };
 
-export default LearnersList;
+export default LearnersListItem;
