@@ -4,11 +4,15 @@ import NumberInputField from './form/NumberInputField';
 import { FormData, Field, FieldOption } from '@/utils/Interfaces';
 
 export const customFields = {
-  NumberInputField: NumberInputField
+  NumberInputField: NumberInputField,
 };
 
-export const GenerateSchemaAndUiSchema = (formData: FormData, t: (key: string) => string) => {
-  const schema: JSONSchema7 = { //Form schema
+export const GenerateSchemaAndUiSchema = (
+  formData: FormData,
+  t: (key: string) => string
+) => {
+  const schema: JSONSchema7 = {
+    //Form schema
     title: formData.title,
     description: '',
     type: 'object',
@@ -19,8 +23,8 @@ export const GenerateSchemaAndUiSchema = (formData: FormData, t: (key: string) =
 
   const uiSchema: UiSchema = {}; //form ui schema
 
-// console.log('FormData', formData)
-formData?.fields?.forEach((field: Field) => {
+  // console.log('FormData', formData)
+  formData?.fields?.forEach((field: Field) => {
     const {
       label,
       name,
@@ -32,7 +36,7 @@ formData?.fields?.forEach((field: Field) => {
       maxSelections,
       dependsOn,
       pattern,
-      required
+      required,
     } = field;
 
     const fieldSchema: any = {
@@ -47,7 +51,7 @@ formData?.fields?.forEach((field: Field) => {
         break;
       case 'numeric':
         fieldSchema.type = 'number';
-        
+
         if (field?.maxLength) {
           fieldSchema.maximum = Number(field.maxLength);
         }
@@ -61,8 +65,8 @@ formData?.fields?.forEach((field: Field) => {
       case 'drop_down':
         fieldSchema.type = 'string';
         fieldSchema.oneOf = options.map((opt: FieldOption) => ({
-          const: opt.value,
-          title: opt.label,
+          const: t(`FORM.${opt.value}`),
+          title: t(`FORM.${opt.label}`),
         }));
         fieldUiSchema['ui:widget'] = 'select';
         break;
@@ -71,8 +75,8 @@ formData?.fields?.forEach((field: Field) => {
         fieldSchema.items = {
           type: 'string',
           oneOf: options.map((opt: FieldOption) => ({
-            const: opt.value,
-            title: opt.label,
+            const: t(`FORM.${opt.value}`),
+            title: t(`FORM.${opt.label}`),
           })),
         };
         fieldSchema.uniqueItems = true;
@@ -81,8 +85,8 @@ formData?.fields?.forEach((field: Field) => {
       case 'radio':
         fieldSchema.type = 'string';
         fieldSchema.oneOf = options.map((opt: FieldOption) => ({
-          const: opt.value,
-          title: opt.label,
+          const: t(`FORM.${opt.value}`),
+          title: t(`FORM.${opt.label}`),
         }));
         fieldUiSchema['ui:widget'] = 'CustomRadioWidget';
         break;
@@ -103,8 +107,8 @@ formData?.fields?.forEach((field: Field) => {
       fieldSchema.items = {
         type: 'string',
         oneOf: options.map((opt: FieldOption) => ({
-          const: opt.value,
-          title: opt.label,
+          const: t(`FORM.${opt.value}`),
+          title: t(`FORM.${opt.label}`),
         })),
       };
       fieldSchema.uniqueItems = true;
@@ -116,8 +120,8 @@ formData?.fields?.forEach((field: Field) => {
       fieldSchema.items = {
         type: 'string',
         oneOf: options.map((opt: FieldOption) => ({
-          const: opt.value,
-          title: opt.label,
+          const: t(`FORM.${opt.value}`),
+          title: t(`FORM.${opt.label}`),
         })),
       };
       fieldSchema.uniqueItems = true;
@@ -143,10 +147,9 @@ formData?.fields?.forEach((field: Field) => {
 
     if (field?.validation) {
       if (field?.validation?.includes('numeric')) {
-        // fieldUiSchema['ui:field'] = 'NumberInputField'; 
+        // fieldUiSchema['ui:field'] = 'NumberInputField';
       }
       fieldSchema.validation = field.validation;
-
     }
 
     if (schema !== undefined && schema.properties) {
