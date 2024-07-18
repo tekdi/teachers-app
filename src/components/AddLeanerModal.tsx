@@ -82,19 +82,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
       <SimpleModal
         open={open}
         onClose={onClose}
-        primaryText="Back"
-        primaryActionHandler={() => {
-          const formElement = document.getElementById(
-            'dynamic-form'
-          ) as HTMLFormElement;
-          if (formElement) {
-            formElement.dispatchEvent(
-              new Event('submit', { cancelable: true, bubbles: true })
-            );
-          }
-        }}
-        secondaryText="Create"
-        secondaryActionHandler={onClose}
+        showFooter={false}
         modalTitle={t('COMMON.NEW_LEARNER')}
       >
         {schema && uiSchema && (
@@ -107,6 +95,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
             widgets={{}}
             showErrorList={true}
             customFields={customFields}
+            showTwoButtons={true} 
           />
         )}
       </SimpleModal>

@@ -13,7 +13,7 @@ export const GenerateSchemaAndUiSchema = (
 ) => {
   const schema: JSONSchema7 = {
     //Form schema
-    title: formData.title,
+    title: '',
     description: '',
     type: 'object',
     required: [],
