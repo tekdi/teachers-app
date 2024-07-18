@@ -45,21 +45,34 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   const { t } = useTranslation();
   const store = manageUserStore();
   const theme = useTheme<any>();
-  const style = {
-    padding: '20px',
+
+  const modalStyle = {
+    paddingTop: '0', 
+    paddingLeft: theme.spacing(2), 
+    paddingRight: theme.spacing(2), 
+    paddingBottom: theme.spacing(2), 
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: '85%',
-    boxShadow: 24,
-    bgcolor: '#fff',
-    borderRadius: '16px',
+    maxHeight: '80vh',
+    overflowY: 'auto',
+    backgroundColor: '#fff',
+    borderRadius: theme.shape.borderRadius,
+    boxShadow: theme.shadows[5],
     '@media (min-width: 600px)': {
       width: '450px',
-      maxHeight: '80vh',
-      overflowY: 'auto',
     },
+  };
+
+  const titleStyle = {
+    position: 'sticky',
+    top: '0',
+    backgroundColor: '#fff',
+    padding: theme.spacing(2),
+    zIndex: 9999,
+    borderBottom: `1px solid ${theme.palette.divider}`,
   };
 
   return (
@@ -68,11 +81,12 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
     >
-      <Box sx={{ ...style }}>
+      <Box sx={modalStyle}>
         <Box
           display={'flex'}
           justifyContent={'space-between'}
-          sx={{ padding: '18px 16px' }}
+          // sx={{ padding: '18px 16px' }}
+          sx={titleStyle}
         >
           <Box marginBottom={'0px'}>
             <Typography
