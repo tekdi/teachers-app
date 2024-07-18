@@ -12,7 +12,6 @@ import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
 import CenterSessionModal from '@/components/CenterSessionModal';
-import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 import CohortLearnerList from '@/components/CohortLearnerList';
 import { CustomField } from '@/utils/Interfaces';
 import DeleteCenterModal from '@/components/center/DeleteCenterModal';
