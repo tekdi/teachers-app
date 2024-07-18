@@ -160,7 +160,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             page,
             filters,
           });
-          const resp = response?.result?.results?.userDetails;
+          const resp = response?.result?.userDetails;
           if (resp) {
             const nameUserIdArray = resp?.map((entry: any) => ({
               userId: entry.userId,

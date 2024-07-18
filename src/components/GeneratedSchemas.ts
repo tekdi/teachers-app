@@ -1,42 +1,16 @@
 import { UiSchema } from '@rjsf/utils';
 import { JSONSchema7 } from 'json-schema';
-import { apiResponse } from '@/utils/schema';
 import NumberInputField from './form/NumberInputField';
+import { FormData, Field, FieldOption } from '@/utils/Interfaces';
 
-interface FieldOption {
-  label: string;
-  value: string;
-}
-
-interface Field {
-  label: string;
-  name: string;
-  type: 'text' | 'numeric' | 'drop_down' | 'checkbox' | 'radio';
-  isEditable: boolean;
-  isPIIField?: boolean | null;
-  placeholder?: string;
-  validation?: string[];
-  options: FieldOption[];
-  isMultiSelect: boolean;
-  maxSelections?: number | null;
-  hint?: string | null;
-  pattern?: string | null;
-  maxLength?: number | null;
-  minLength?: number | null;
-  fieldId: string;
-  dependsOn: boolean;
-  required?: boolean;
-}
-
-const customFields = {
+export const customFields = {
   NumberInputField: NumberInputField
 };
 
-const GenerateSchemaAndUiSchema = (apiResponse: any) => {
-
+export const GenerateSchemaAndUiSchema = (formData: FormData) => {
   const schema: JSONSchema7 = { //Form schema
-    title: 'A registration form',
-    description: 'A simple form example',
+    title: formData.title,
+    description: '',
     type: 'object',
     required: [],
     properties: {},
@@ -45,7 +19,8 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
 
   const uiSchema: UiSchema = {}; //form ui schema
 
-  apiResponse.fields.forEach((field: Field) => {
+// console.log('FormData', formData)
+formData?.fields?.forEach((field: Field) => {
     const {
       label,
       name,
@@ -180,10 +155,5 @@ const GenerateSchemaAndUiSchema = (apiResponse: any) => {
     }
   });
 
-  return { schema, uiSchema };
+  return { schema, uiSchema, customFields };
 };
-
-const { schema, uiSchema } = GenerateSchemaAndUiSchema(apiResponse);
-console.log(schema, uiSchema);
-
-export { schema, uiSchema, customFields };

@@ -47,7 +47,6 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             page,
             filters,
           });
-          
           const resp = response?.result?.userDetails;
 
           if (resp) {

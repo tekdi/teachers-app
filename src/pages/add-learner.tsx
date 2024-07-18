@@ -1,15 +1,38 @@
 import DynamicForm from '@/components/DynamicForm';
-import React from 'react';
-import { schema, uiSchema, customFields } from '@/components/GeneratedSchemas';
+import React, { useEffect } from 'react';
+import { GenerateSchemaAndUiSchema, customFields } from '@/components/GeneratedSchemas';
 import { IChangeEvent } from '@rjsf/core';
 import ISubmitEvent from '@rjsf/core';
 import { Box } from '@mui/material';
 import { RJSFSchema } from '@rjsf/utils';
 import SendCredentialModal from '@/components/SendCredentialModal';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { getFormRead } from '@/services/CreateUserService';
+import { FormData } from '@/utils/Interfaces';
+import { FormContext, FormContextType } from '@/utils/app.constant';
 
 const addLearner = () => {
   const [openModal, setOpenModal] = React.useState(false);
+  const [schema, setSchema] = React.useState<any>();
+  const [uiSchema, setUiSchema] = React.useState<any>();
+
+  useEffect(() => {
+    const getAddLearnerFormData = async () => {
+      try {
+        const response: FormData = await getFormRead(FormContext.USERS, FormContextType.STUDENT);
+        console.log('sortedFields', response);
+
+        if (response) {
+          const { schema, uiSchema } = GenerateSchemaAndUiSchema(response);
+          setSchema(schema);
+          setUiSchema(uiSchema);
+        }
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+      }
+    };
+    getAddLearnerFormData();
+  }, []);
 
   const handleSubmit = (
     data: IChangeEvent<any, RJSFSchema, any>,
@@ -47,20 +70,24 @@ const addLearner = () => {
   };
 
   return (
-    <Box margin={'5rem'}>
-      <DynamicForm
-        schema={schema}
-        uiSchema={uiSchema}
-        onSubmit={handleSubmit}
-        onChange={handleChange}
-        onError={handleError}
-        widgets={{}}
-        showErrorList={true}
-        customFields={customFields}
-      />
+    <>
+      {schema && uiSchema && (
+        <Box margin={'5rem'}>
+          <DynamicForm
+            schema={schema}
+            uiSchema={uiSchema}
+            onSubmit={handleSubmit}
+            onChange={handleChange}
+            onError={handleError}
+            widgets={{}}
+            showErrorList={true}
+            customFields={customFields}
+          />
 
-      <SendCredentialModal open={openModal} onClose={handleCloseModal} />
-    </Box>
+          <SendCredentialModal open={openModal} onClose={handleCloseModal} />
+        </Box>
+      )}
+    </>
   );
 };
 
