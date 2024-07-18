@@ -1,8 +1,6 @@
 name: Deploy to Pratham-DEV-Deployment on Prahtam-AWS
 on:
-  push:
-    branches:
-      - june15-pilot
+  workflow_dispatch:
 jobs:
   deploy:
     runs-on: ubuntu-latest
