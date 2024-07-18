@@ -110,7 +110,8 @@
     "PAGE_NOT_FOUND": "Page not found",
     "ACCESS_DENIED": "Access Denied",
     "YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE": "You don't have access to this page",
-    "NEW_LEARNER": "New Learner"
+    "NEW_LEARNER": "New Learner",
+    "SUBMIT": "Submit"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
