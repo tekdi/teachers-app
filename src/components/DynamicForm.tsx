@@ -156,7 +156,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       {showTwoButtons ? (
         <>
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             sx={{
               '&.Mui-disabled': {
