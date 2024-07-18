@@ -27,6 +27,7 @@ interface SimpleModalProps {
   children: ReactNode;
   open: boolean;
   onClose: () => void;
+  modalTitle: string;
 }
 const SimpleModal: React.FC<SimpleModalProps> = ({
   open,
@@ -36,6 +37,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   primaryActionHandler,
   secondaryActionHandler,
   children,
+  modalTitle
 }) => {
   const { t } = useTranslation();
   const store = manageUserStore();
@@ -52,6 +54,8 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
     borderRadius: '16px',
     '@media (min-width: 600px)': {
       width: '450px',
+      maxHeight: '80vh',
+      overflowY: 'auto', 
     },
   };
 
@@ -76,7 +80,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
               }}
               component="h2"
             >
-              {t('COMMON.DELETE_USER')}
+              {modalTitle}
             </Typography>
           </Box>
           
@@ -85,7 +89,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
         {children}
         <Divider />
 
-        <Box sx={{ padding: '20px 16px' }}>
+        <Box sx={{ padding: '20px 16px' }} display={'flex'}>
           {primaryText && (
             <Button
               variant="contained"
