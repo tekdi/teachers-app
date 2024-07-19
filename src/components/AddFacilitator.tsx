@@ -1,21 +1,22 @@
-import DynamicForm from '@/components/DynamicForm';
-import React, { useEffect } from 'react';
+import { FormContext, FormContextType } from '@/utils/app.constant';
 import {
   GenerateSchemaAndUiSchema,
   customFields,
 } from '@/components/GeneratedSchemas';
+import React, { useEffect } from 'react';
+
+import { Box } from '@mui/material';
+import DynamicForm from '@/components/DynamicForm';
+import { Field } from '@/utils/Interfaces';
+import { FormData } from '@/utils/Interfaces';
 import { IChangeEvent } from '@rjsf/core';
 import ISubmitEvent from '@rjsf/core';
-import { Box } from '@mui/material';
 import { RJSFSchema } from '@rjsf/utils';
 import SendCredentialModal from '@/components/SendCredentialModal';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { getFormRead } from '@/services/CreateUserService';
-import { FormData } from '@/utils/Interfaces';
-import { FormContext, FormContextType } from '@/utils/app.constant';
 import SimpleModal from '@/components/SimpleModal';
+import { getFormRead } from '@/services/CreateUserService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'react-i18next';
-import { Field } from '@/utils/Interfaces';
 
 interface AddFacilitatorModalprops {
   open: boolean;
@@ -132,7 +133,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             widgets={{}}
             showErrorList={true}
             customFields={customFields}
-            showTwoButtons={true}
+            // showTwoButtons={true}
           />
         )}
       </SimpleModal>
