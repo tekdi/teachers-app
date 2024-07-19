@@ -6,15 +6,16 @@ import {
 } from '@/components/GeneratedSchemas';
 import { IChangeEvent } from '@rjsf/core';
 import ISubmitEvent from '@rjsf/core';
-import { Box } from '@mui/material';
+import { Box, Button, useTheme } from '@mui/material';
 import { RJSFSchema } from '@rjsf/utils';
 import SendCredentialModal from '@/components/SendCredentialModal';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { getFormRead } from '@/services/CreateUserService';
+import { createUser, getFormRead } from '@/services/CreateUserService';
 import { FormData } from '@/utils/Interfaces';
 import { FormContext, FormContextType } from '@/utils/app.constant';
 import SimpleModal from '@/components/SimpleModal';
 import { useTranslation } from 'react-i18next';
+import { generateUsernameAndPassword } from '@/utils/Helper';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -23,7 +24,16 @@ interface AddLearnerModalProps {
 const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
+  const [credentials, setCredentials] = React.useState({ username: '', password: '' });
+  // const [learnerFormData, setLearnerFormData] = React.useState<any>();
   const { t } = useTranslation();
+  const theme = useTheme<any>();
+
+  const handleGenerateCredentials = () => {
+    const stateCode = 'MH';
+    const newCredentials = generateUsernameAndPassword(stateCode);
+    setCredentials(newCredentials);
+  };
 
   useEffect(() => {
     const getAddLearnerFormData = async () => {
@@ -71,10 +81,77 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
 
   const handleChange = (event: IChangeEvent<any>) => {
     console.log('Form data changed:', event.formData);
+    // setFormData({
+    //   ...formData,
+    //   [event.target.name]: event.target.value
+    // });
   };
 
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
+  };
+
+  const CustomSubmitButton: React.FC<{ onClose: () => void }> = ({ onClose }) => (
+    <div
+      style={{
+        marginTop: '16px',
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}
+    >
+      <>
+        <Button
+          variant="outlined"
+          color="primary"
+          sx={{
+            '&.Mui-disabled': {
+              backgroundColor: theme?.palette?.primary?.main,
+            },
+            minWidth: '84px',
+            height: '2.5rem',
+            padding: theme.spacing(1),
+            fontWeight: '500',
+            width: '48%',
+          }}
+          onClick={onClose}
+        >
+          {t('COMMON.BACK')}
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{
+            '&.Mui-disabled': {
+              backgroundColor: theme?.palette?.primary?.main,
+            },
+            minWidth: '84px',
+            height: '2.5rem',
+            padding: theme.spacing(1),
+            fontWeight: '500',
+            width: '48%',
+          }}
+          onClick={secondaryActionHandler}
+        >
+          {t('COMMON.SUBMIT')}
+        </Button>
+      </>
+    </div>
+  );
+
+  const primaryActionHandler = () => {
+    onClose();
+  };
+
+  const secondaryActionHandler = async (e: React.FormEvent) => {
+    // console.log('Secondary action handler clicked');
+    e.preventDefault();
+    handleGenerateCredentials();
+    // try {
+    //   const response = await createUser(learnerFormData);
+    //   console.log('User created successfully', response);
+    // } catch (error) {
+    //   console.error('Error creating user', error);
+    // }
   };
 
   return (
@@ -95,8 +172,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
             widgets={{}}
             showErrorList={true}
             customFields={customFields}
-            showTwoButtons={true} 
-          />
+          >
+            <CustomSubmitButton onClose={primaryActionHandler}/>
+            </DynamicForm>
         )}
       </SimpleModal>
     </>

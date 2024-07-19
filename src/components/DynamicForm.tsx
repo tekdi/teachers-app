@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { IChangeEvent } from '@rjsf/core';
 import validator from '@rjsf/validator-ajv8';
 import { Theme as MaterialUITheme } from '@rjsf/mui';
@@ -29,7 +29,7 @@ interface DynamicFormProps {
   customFields: {
     [key: string]: React.FC<RegistryFieldsType<any, RJSFSchema, any>>;
   };
-  showTwoButtons?: boolean;
+  children?: ReactNode
 }
 const DynamicForm: React.FC<DynamicFormProps> = ({
   schema,
@@ -39,15 +39,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   onChange,
   onError,
   customFields,
-  showTwoButtons = false,
+  children
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
   };
-
   const { t } = useTranslation();
-  const theme = useTheme<any>();
+
 
   // console.log('CustomErrorList', CustomErrorList);
 
@@ -130,87 +129,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     onChange(event);
   }
 
-  const primaryActionHandler = () => {
-    const formElement = document.getElementById(
-      'dynamic-form'
-    ) as HTMLFormElement;
-    if (formElement) {
-      formElement.dispatchEvent(
-        new Event('submit', { cancelable: true, bubbles: true })
-      );
-    }
-  };
-
-  const secondaryActionHandler = () => {
-    console.log('Secondary action handler clicked');
-  };
-
-  const CustomSubmitButton = () => (
-    <div
-      style={{
-        marginTop: '16px',
-        display: 'flex',
-        justifyContent: 'space-between',
-      }}
-    >
-      {showTwoButtons ? (
-        <>
-          <Button
-            variant="outlined"
-            color="primary"
-            sx={{
-              '&.Mui-disabled': {
-                backgroundColor: theme?.palette?.primary?.main,
-              },
-              minWidth: '84px',
-              height: '2.5rem',
-              padding: theme.spacing(1),
-              fontWeight: '500',
-              width: '48%',
-            }}
-            onClick={primaryActionHandler}
-          >
-          {t('COMMON.BACK')}
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              '&.Mui-disabled': {
-                backgroundColor: theme?.palette?.primary?.main,
-              },
-              minWidth: '84px',
-              height: '2.5rem',
-              padding: theme.spacing(1),
-              fontWeight: '500',
-              width: '48%',
-            }}
-            onClick={secondaryActionHandler}
-          >
-            {t('COMMON.SUBMIT')}
-          </Button>
-        </>
-      ) : (
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            '&.Mui-disabled': {
-              backgroundColor: theme?.palette?.primary?.main,
-            },
-            minWidth: '84px',
-            height: '2.5rem',
-            padding: theme.spacing(1),
-            fontWeight: '500',
-            width: '100%',
-          }}
-          onClick={secondaryActionHandler}
-        >
-          Submit
-        </Button>
-      )}
-    </div>
-  );
 
   return (
     <div>
@@ -229,8 +147,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         transformErrors={transformErrors}
         fields={customFields}
       >
-        <Divider />
-        <CustomSubmitButton />
+        {children}
       </FormWithMaterialUI>
     </div>
   );

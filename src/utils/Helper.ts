@@ -267,3 +267,13 @@ export const accessGranted = (
   }
   return false;
 };
+
+export const generateUsernameAndPassword = (stateCode: string) => {
+  const currentYear = new Date().getFullYear().toString().slice(-2);
+  const randomNum = Math.floor(10000 + Math.random() * 90000).toString(); 
+
+  const username = `SC${stateCode}${currentYear}${randomNum}`;
+  const password = randomNum;
+
+  return { username, password };
+};

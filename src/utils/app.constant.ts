@@ -47,3 +47,10 @@ export enum FormContextType {
   TEACHER = 'TEACHER',
   TEAM_LEADER = 'TEAMLEADER',
 }
+
+export enum RoleId {
+  STUDENT = '493c04e2-a9db-47f2-b304-503da358d5f4',
+  TEACHER = '3bde0028-6900-4900-9d05-eeb608843718',
+  TEAM_LEADER = '9dd9328f-1bc7-444f-96e3-c5e1daa3514a',
+  ADMIN = 'ee482faf-8a41-45fe-9656-5533dd6a787c'
+}
