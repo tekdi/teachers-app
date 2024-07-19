@@ -38,6 +38,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
