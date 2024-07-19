@@ -38,6 +38,7 @@ const centerList = ['Nashik', 'Shirdi', 'kamptee'];
 const centers = ['shirdi'];
 
 const LearnersListItem: React.FC<LearnerListProps> = ({
+  type,
   userId,
   learnerName,
   isDropout,
@@ -496,85 +497,85 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       </Box>
 
       <BottomDrawer
-        toggleDrawer={toggleDrawer}
-        state={state}
-        listItemClick={listItemClick}
-        optionList={
-          block
-            ? [
-                {
-                  label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
-                  icon: (
-                    <LocationOnOutlinedIcon
-                      sx={{ color: theme.palette.warning['300'] }}
-                    />
-                  ),
-                  name: 'reassign-block-request',
-                },
-                {
-                  label: t('COMMON.REASSIGN_CENTERS'),
-                  icon: (
-                    <ApartmentIcon
-                      sx={{ color: theme.palette.warning['300'] }}
-                    />
-                  ),
-                  name: 'reassign-centers',
-                },
-                {
-                  label: isDropout
-                    ? t('COMMON.UNMARK_DROP_OUT')
-                    : t('COMMON.MARK_DROP_OUT'),
-                  icon: (
-                    <NoAccountsIcon
-                      sx={{ color: theme.palette.warning['300'] }}
-                    />
-                  ),
-                  name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
-                },
-                {
-                  label: t('COMMON.DELETE_USER'),
-                  icon: (
-                    <DeleteOutlineIcon
-                      sx={{ color: theme.palette.warning['300'] }}
-                    />
-                  ),
-                  name: 'delete-User',
-                },
-              ]
-            : [
-                {
-                  label: t('COMMON.REASSIGN_CENTERS'),
-                  icon: (
-                    <ApartmentIcon
-                      sx={{ color: theme.palette.warning['300'] }}
-                    />
-                  ),
-                  name: 'reassign-centers',
-                },
-                {
-                  label: isDropout
-                    ? t('COMMON.UNMARK_DROP_OUT')
-                    : t('COMMON.MARK_DROP_OUT'),
-                  icon: (
-                    <NoAccountsIcon
-                      sx={{ color: theme.palette.warning['300'] }}
-                    />
-                  ),
-                  name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
-                },
-                {
-                  label: t('COMMON.DELETE_USER'),
-                  icon: (
-                    <DeleteOutlineIcon
-                      sx={{ color: theme.palette.warning['300'] }}
-                    />
-                  ),
-                  name: 'delete-User',
-                },
-              ]
-        }
-        renderCustomContent={renderCustomContent}
-      />
+      toggleDrawer={toggleDrawer}
+      state={state}
+      listItemClick={listItemClick}
+      optionList={
+        block
+          ? [
+              {
+                label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
+                icon: (
+                  <LocationOnOutlinedIcon
+                    sx={{ color: theme.palette.warning['300'] }}
+                  />
+                ),
+                name: 'reassign-block-request',
+              },
+              {
+                label: t('COMMON.REASSIGN_CENTERS'),
+                icon: (
+                  <ApartmentIcon
+                    sx={{ color: theme.palette.warning['300'] }}
+                  />
+                ),
+                name: 'reassign-centers',
+              },
+              {
+                label: isDropout
+                  ? t('COMMON.UNMARK_DROP_OUT')
+                  : t('COMMON.MARK_DROP_OUT'),
+                icon: (
+                  <NoAccountsIcon
+                    sx={{ color: theme.palette.warning['300'] }}
+                  />
+                ),
+                name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
+              },
+              {
+                label: t('COMMON.DELETE_USER'),
+                icon: (
+                  <DeleteOutlineIcon
+                    sx={{ color: theme.palette.warning['300'] }}
+                  />
+                ),
+                name: 'delete-User',
+              },
+            ].filter(option => type == Role.STUDENT || option.name !== 'mark-drop-out' && option.name !== 'unmark-drop-out')
+          : [
+              {
+                label: t('COMMON.REASSIGN_CENTERS'),
+                icon: (
+                  <ApartmentIcon
+                    sx={{ color: theme.palette.warning['300'] }}
+                  />
+                ),
+                name: 'reassign-centers',
+              },
+              {
+                label: isDropout
+                  ? t('COMMON.UNMARK_DROP_OUT')
+                  : t('COMMON.MARK_DROP_OUT'),
+                icon: (
+                  <NoAccountsIcon
+                    sx={{ color: theme.palette.warning['300'] }}
+                  />
+                ),
+                name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
+              },
+              {
+                label: t('COMMON.DELETE_USER'),
+                icon: (
+                  <DeleteOutlineIcon
+                    sx={{ color: theme.palette.warning['300'] }}
+                  />
+                ),
+                name: 'delete-User',
+              },
+            ].filter(option => type == Role.STUDENT || option.name !== 'mark-drop-out' && option.name !== 'unmark-drop-out')
+      }
+      renderCustomContent={renderCustomContent}
+    />
 
       {isDropout ? (
         <DropOutModal
