@@ -112,7 +112,6 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
         title={item.subject}
         center={'Khapari Dharmu'}
         date={'25 May, 2024'}
-        primary={'save'}
       >
         {item?.topic ? <TopicDetails /> : <SelectTopic />}
       </CenterSessionModal>
