@@ -1,4 +1,5 @@
-import { get } from "./RestClient";
+import { get, post } from "./RestClient";
+import {createUserParam} from '../utils/Interfaces'
 
 export const getFormRead = async (context: string, contextType: string): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/form/read?context=${context}&contextType=${contextType}`;
@@ -16,5 +17,17 @@ export const getFormRead = async (context: string, contextType: string): Promise
   } catch (error) {
     console.error('error in getting cohort details', error);
     // throw error;
+  }
+};
+
+export const createUser = async (
+  userData: createUserParam): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/create`;
+  try {
+    const response = await post(apiUrl, { userData });
+    return response?.data?.result;
+  } catch (error) {
+    console.error('error in getting cohort list', error);
+    throw error;
   }
 };
