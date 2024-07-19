@@ -364,3 +364,22 @@ export interface FacilitatorDeleteUserData {
   status: string;
   reason: string;
 }
+
+export interface TenantCohortRoleMapping {
+  tenantId: string;
+  roleId: string;
+}
+
+export interface CustomField {
+  fieldId: string;
+  value: string;
+}
+
+export interface createUserParam {
+  username: string;
+  name: string;
+  email: string;
+  password: string;
+  tenantCohortRoleMapping: TenantCohortRoleMapping[];
+  customFields: CustomField[];
+}
