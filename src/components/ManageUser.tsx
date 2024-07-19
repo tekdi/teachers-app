@@ -32,7 +32,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import { editEditUser } from '@/services/ProfileService';
 import ConfirmationModal from '@/components/ConfirmationModal';
-import { Status } from '@/utils/app.constant';
+import { Role, Status } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import LearnersList from '@/components/LearnersListItem';
 import Link from 'next/link';
@@ -757,7 +757,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             />
 
             <DeleteUserModal
-              type='teacher'
+              type={Role.TEACHER}
               userId={userId}
               open={openDeleteUserModal}
               onClose={handleCloseModal}

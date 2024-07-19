@@ -5,7 +5,7 @@ import {
   updateCustomField,
 } from '@/utils/Interfaces';
 import React, { useEffect } from 'react';
-import { Status, names } from '@/utils/app.constant';
+import { Status, names, Role } from '@/utils/app.constant';
 
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import BottomDrawer from './BottomDrawer';
@@ -627,7 +627,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         isForLearner={true}
       />
 
-      <DeleteUserModal type='student'  userId={userId} open={openDeleteUserModal} onClose={handleCloseModal} />
+      <DeleteUserModal type={Role.STUDENT}  userId={userId} open={openDeleteUserModal} onClose={handleCloseModal} />
     </>
   );
 };
