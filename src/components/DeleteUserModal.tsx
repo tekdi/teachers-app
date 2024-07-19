@@ -19,11 +19,11 @@ import { showToastMessage } from './Toastify';
 import { getCohortList } from '@/services/CohortServices';
 import { updateFacilitator } from '@/services/ManageUser';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
-import { Status } from '@/utils/app.constant';
+import { Role, Status } from '@/utils/app.constant';
 import manageUserStore from '@/store/manageUserStore';
 
 interface DeleteUserModalProps {
-  type: 'student' | 'teacher';
+  type: Role.STUDENT | Role.TEACHER;
   userId: string;
   open: boolean;
   onClose: () => void;
@@ -67,14 +67,14 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
   };
 
   const handleDeleteAction = async () => {
-    if (type == 'teacher') {
+    if (type == Role.TEACHER) {
       const studentData = {
-        status: 'archived',
+        status: Status.ARCHIVED,
         reason: selectedValue,
       };
 
       const studentResponse = await updateFacilitator(userId, studentData);
-    } else if (type == 'student') {
+    } else if (type == Role.STUDENT) {
       const memberStatus = Status.ARCHIVED;
       const statusReason = selectedValue;
       const membershipId = store?.learnerDeleteId;
