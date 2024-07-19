@@ -50,18 +50,18 @@ function SelectTopic() {
             style={{ borderRadius: '4px' }}
             className="topic-select"
           >
-            {/* <MenuItem value={'Mathematics'}>
+            <MenuItem value={'Food & Nutrition'}>
               <Checkbox
                 sx={{
                   '&.Mui-checked': {
                     color: theme?.palette?.warning['300'],
                   },
                 }}
-                checked={selectedValues.indexOf('Mathematics') > -1}
+                checked={selectedValues.indexOf('Food & Nutrition') > -1}
               />
-              <ListItemText primary="Mathematics" />
+              <ListItemText primary="Food & Nutrition" />
             </MenuItem>
-            
+
             {/* Add more MenuItem components as needed */}
           </Select>
         </FormControl>
