@@ -18,7 +18,7 @@ const TopicDetails = () => {
   const theme = useTheme<any>();
   return (
     <>
-      <Box sx={{ padding: '8px 10px' }}>
+      <Box sx={{ padding: '8px 16px' }}>
         <Box
           sx={{
             background: theme?.palette?.action?.selected,
