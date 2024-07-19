@@ -111,6 +111,7 @@
     "ACCESS_DENIED": "Access Denied",
     "YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE": "You don't have access to this page",
     "NEW_LEARNER": "New Learner",
+    "NEW_FACILITATOR": "New Facilitator",
     "SUBMIT": "Submit"
   },
   "LOGIN_PAGE": {
@@ -380,7 +381,10 @@
     "YES": "Yes",
     "NO": "No",
     "TYPE_OF_PHONE_AVAILABLE": "Type of Phone Available",
-    "REASON_FOR_DROP_OUT_FROM_SCHOOL": "Reason for drop out from School"
+    "REASON_FOR_DROP_OUT_FROM_SCHOOL": "Reason for drop out from School",
+    "EMAIL": "Email",
+    "YEAR_OF_ JOINING_SCP": "Year of joining SCP",
+    "ASSIGN_CENTERS": "Assign Centers"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",

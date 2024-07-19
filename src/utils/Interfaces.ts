@@ -334,7 +334,7 @@ export interface FieldOption {
 
 export interface Field {
   name: string;
-  type: 'text' | 'numeric' | 'drop_down' | 'checkbox' | 'radio';
+  type: 'text' | 'numeric' | 'drop_down' | 'checkbox' | 'radio' | 'email';
   label: string;
   order: string;
   coreField: number;

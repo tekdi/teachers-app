@@ -45,6 +45,8 @@ import Image from 'next/image';
 import profileALT from '../assets/images/Profile.png';
 import RemoveFacilitatorAlert from './SimpleModal';
 import SimpleModal from './SimpleModal';
+import AddFacilitatorModal from './AddFacilitator';
+
 interface Cohort {
   cohortId: string;
   parentId: string;
@@ -123,6 +125,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     textDecorationThickness: '1px',
   }));
   const setCohortDeleteId = manageUserStore((state) => state.setCohortDeleteId);
+  const [openAddFacilitatorModal, setOpenFacilitatorModal] =
+    React.useState(false);
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -449,6 +453,14 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     setState({ ...state, bottom: false });
   };
 
+  const handleOpenAddFaciModal = () => {
+    setOpenFacilitatorModal(true);
+  };
+
+  const handleCloseAddFaciModal = () => {
+    setOpenFacilitatorModal(false);
+  };
+
   return (
     <>
       {/* <Header /> */}
@@ -498,7 +510,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
       <Box>
         {value === 1 && (
           <>
-            {/* <Grid
+            <Grid
               px={'18px'}
               spacing={2}
               mt={1}
@@ -506,7 +518,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               container
             >
               <Grid item xs={8}>
-                <Box>
+                {/* <Box>
                   <TextField
                     className="input_search"
                     placeholder={t('COMMON.SEARCH_FACILITATORS')}
@@ -525,10 +537,10 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                       ),
                     }}
                   />
-                </Box>
+                </Box> */}
               </Grid>
               <Grid item xs={4} marginTop={'8px'}>
-                <Box>
+                {/* <Box>
                   <FormControl className="drawer-select" sx={{ width: '100%' }}>
                     <Select
                       displayEmpty
@@ -544,7 +556,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                       </MenuItem>
                     </Select>
                   </FormControl>
-                </Box>
+                </Box> */}
               </Grid>
               <Box mt={'18px'} px={'18px'}>
                 <Button
@@ -556,16 +568,17 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                     color: theme.palette.error.contrastText,
                   }}
                   className="text-1E"
+                  onClick={handleOpenAddFaciModal}
                   endIcon={<AddIcon />}
                 >
                   {t('COMMON.ADD_NEW')}
                 </Button>
-                <Box sx={{ display: 'flex', gap: '5px' }}>
+                {/* <Box sx={{ display: 'flex', gap: '5px' }}>
                   <ErrorOutlineIcon style={{ fontSize: '15px' }} />
                   <Box className="fs-12 fw-500 ">{t('COMMON.ADD_CENTER')}</Box>
-                </Box>
+                </Box> */}
               </Box>
-            </Grid> */}
+            </Grid>
 
             <Box>
               <Box px={'18px'} mt={3}>
@@ -779,6 +792,12 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                 </Typography>
               </Box>
             </SimpleModal>
+            {openAddFacilitatorModal && (
+              <AddFacilitatorModal
+                open={openAddFacilitatorModal}
+                onClose={handleCloseAddFaciModal}
+              />
+            )}
           </>
         )}
 

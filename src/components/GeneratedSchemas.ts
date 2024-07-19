@@ -49,6 +49,9 @@ export const GenerateSchemaAndUiSchema = (
       case 'text':
         fieldSchema.type = 'string';
         break;
+      case 'email':
+        fieldSchema.type = 'string';
+        break;
       case 'numeric':
         fieldSchema.type = 'number';
 
@@ -66,7 +69,10 @@ export const GenerateSchemaAndUiSchema = (
         fieldSchema.type = 'string';
         fieldSchema.oneOf = options.map((opt: FieldOption) => ({
           const: opt.value,
-          title: t(`FORM.${opt.label}`) === `FORM.${opt.label}` ? opt.label : t(`FORM.${opt.label}`),
+          title:
+            t(`FORM.${opt.label}`) === `FORM.${opt.label}`
+              ? opt.label
+              : t(`FORM.${opt.label}`),
         }));
         fieldUiSchema['ui:widget'] = 'select';
         break;
@@ -76,7 +82,10 @@ export const GenerateSchemaAndUiSchema = (
           type: 'string',
           oneOf: options.map((opt: FieldOption) => ({
             const: opt.value,
-            title: t(`FORM.${opt.label}`) === `FORM.${opt.label}` ? opt.label : t(`FORM.${opt.label}`),
+            title:
+              t(`FORM.${opt.label}`) === `FORM.${opt.label}`
+                ? opt.label
+                : t(`FORM.${opt.label}`),
           })),
         };
         fieldSchema.uniqueItems = true;
@@ -86,7 +95,10 @@ export const GenerateSchemaAndUiSchema = (
         fieldSchema.type = 'string';
         fieldSchema.oneOf = options.map((opt: FieldOption) => ({
           const: opt.value,
-          title: t(`FORM.${opt.label}`) === `FORM.${opt.label}` ? opt.label : t(`FORM.${opt.label}`),
+          title:
+            t(`FORM.${opt.label}`) === `FORM.${opt.label}`
+              ? opt.label
+              : t(`FORM.${opt.label}`),
         }));
         fieldUiSchema['ui:widget'] = 'CustomRadioWidget';
         break;
@@ -108,7 +120,10 @@ export const GenerateSchemaAndUiSchema = (
         type: 'string',
         oneOf: options.map((opt: FieldOption) => ({
           const: opt.value,
-          title: t(`FORM.${opt.label}`) === `FORM.${opt.label}` ? opt.label : t(`FORM.${opt.label}`),
+          title:
+            t(`FORM.${opt.label}`) === `FORM.${opt.label}`
+              ? opt.label
+              : t(`FORM.${opt.label}`),
         })),
       };
       fieldSchema.uniqueItems = true;
@@ -121,7 +136,10 @@ export const GenerateSchemaAndUiSchema = (
         type: 'string',
         oneOf: options.map((opt: FieldOption) => ({
           const: opt.value,
-          title: t(`FORM.${opt.label}`) === `FORM.${opt.label}` ? opt.label : t(`FORM.${opt.label}`),
+          title:
+            t(`FORM.${opt.label}`) === `FORM.${opt.label}`
+              ? opt.label
+              : t(`FORM.${opt.label}`),
         })),
       };
       fieldSchema.uniqueItems = true;
