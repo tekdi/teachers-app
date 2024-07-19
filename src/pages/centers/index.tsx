@@ -131,6 +131,7 @@ const TeachingCenters = () => {
               });
               setCenterData(centerData);
               console.log(centerData);
+              localStorage.setItem('CenterList', JSON.stringify(centerData));
             });
           }
           if (
@@ -144,6 +145,7 @@ const TeachingCenters = () => {
               return { cohortName, cohortId };
             });
             console.log(cohortData);
+
             setTimeout(() => {
               setCohortsData(cohortData);
             });
@@ -179,7 +181,6 @@ const TeachingCenters = () => {
     } else if (sortOrder === 'desc') {
       filtered.sort((a, b) => b.cohortName.localeCompare(a.cohortName));
     }
-
     setFilteredCenters(filtered);
     handleFilterModalClose();
   };
