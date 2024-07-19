@@ -757,6 +757,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             />
 
             <DeleteUserModal
+              type='teacher'
               userId={userId}
               open={openDeleteUserModal}
               onClose={handleCloseModal}

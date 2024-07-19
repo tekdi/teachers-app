@@ -31,6 +31,7 @@ import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
+import manageUserStore from '../store/manageUserStore';
 
 type Anchor = 'bottom';
 const centerList = ['Nashik', 'Shirdi', 'kamptee'];
@@ -58,8 +59,6 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     confirmationModalReassignCentersOpen,
     setConfirmationModalReassignCentersOpen,
   ] = React.useState<boolean>(false);
-
-  console.log(userId);
   
 
   const [learnerState, setLearnerState] = React.useState({
@@ -77,12 +76,14 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const { t } = useTranslation();
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
+  const store = manageUserStore();
 
   const CustomLink = styled(Link)(({ theme }) => ({
     textDecoration: 'underline',
     textDecorationColor: theme?.palette?.secondary.main,
     textDecorationThickness: '1px',
   }));
+  const setCohortLearnerDeleteId = manageUserStore((state) => state.setCohortLearnerDeleteId);
 
   useEffect(() => {
     if (reloadState) {
@@ -94,6 +95,9 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
+      setCohortLearnerDeleteId(cohortMembershipId);
+      console.log(cohortMembershipId);
+      
       if (
         event.type === 'keydown' &&
         ((event as React.KeyboardEvent).key === 'Tab' ||
@@ -192,6 +196,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     try {
       setLoading(true);
       if (cohortMembershipId) {
+
         const memberStatus = Status.ARCHIVED;
         const membershipId = cohortMembershipId;
 
@@ -622,7 +627,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         isForLearner={true}
       />
 
-      <DeleteUserModal userId={userId} open={openDeleteUserModal} onClose={handleCloseModal} />
+      <DeleteUserModal type='student'  userId={userId} open={openDeleteUserModal} onClose={handleCloseModal} />
     </>
   );
 };
