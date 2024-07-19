@@ -1,12 +1,17 @@
 import { Box, Typography } from '@mui/material';
 import { Session, SessionsCardProps } from '@/utils/Interfaces';
 
+import CenterSessionModal from './CenterSessionModal';
 import EditOutlined from '@mui/icons-material/EditOutlined';
+import PlannedSession from './PlannedSession';
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 
 const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
   const theme = useTheme<any>();
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   return (
     <Box
       sx={{
@@ -39,8 +44,17 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
             {data?.teacherName}
           </Typography>
         </Box>
-        <EditOutlined />
+        <EditOutlined onClick={handleOpen} sx={{ cursor: 'pointer' }} />
       </Box>
+      <CenterSessionModal
+        open={open}
+        handleClose={handleClose}
+        title={'Home Science'}
+        primary={'Schedule'}
+      >
+        <PlannedSession />
+      </CenterSessionModal>
+
       <Box>{children}</Box>
     </Box>
   );

@@ -17,7 +17,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
 const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
-  const theme = useTheme();
+  const theme = useTheme<any>();
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -29,7 +29,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
         <Box
           sx={{
             background: theme.palette.background.default,
-            padding: '4px 16px',
+            padding: '1px 16px',
             borderRadius: '8px',
           }}
         >
@@ -42,11 +42,21 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
             }}
           >
             <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
+              expandIcon={
+                <ExpandMoreIcon
+                  sx={{ color: theme?.palette?.warning['300'] }}
+                />
+              }
               aria-controls="panel1-content"
               id="panel1-header"
               className="accordion-summary"
-              sx={{ px: 0, m: 0 }}
+              sx={{
+                px: 0,
+                m: 0,
+                '&.Mui-expanded': {
+                  minHeight: '35px',
+                },
+              }}
             >
               <Typography fontWeight="500" fontSize="14px" className="text-7C">
                 {t('COMMON.TO_BE_TAUGHT')}
@@ -57,7 +67,9 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
                 onClick={handleOpen}
                 sx={{ display: 'flex', gap: '10px', cursor: 'pointer' }}
               >
-                <MenuBookIcon sx={{ color: theme.palette.secondary.main }} />
+                <MenuBookIcon
+                  sx={{ color: theme.palette.secondary.main, fontSize: '18px' }}
+                />
                 <Typography color={theme.palette.secondary.main} variant="h5">
                   {item?.topic}
                 </Typography>
@@ -72,7 +84,14 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
                 }}
                 onClick={handleOpen}
               >
-                <SubdirectoryArrowRightIcon />
+                <SubdirectoryArrowRightIcon
+                  sx={{
+                    color: theme.palette.secondary.main,
+                    fontSize: '18px',
+                    marginTop: '-4px',
+                    marginLeft: '-5px',
+                  }}
+                />
                 <Typography color={theme.palette.secondary.main} variant="h5">
                   {item?.subtopic}
                 </Typography>
@@ -89,11 +108,14 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
             padding: '8px 16px',
             borderRadius: '8px',
             cursor: 'pointer',
+            alignItems: 'center',
           }}
           onClick={handleOpen}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <PriorityHighIcon sx={{ color: theme.palette.error.main }} />
+            <PriorityHighIcon
+              sx={{ color: theme.palette.error.main, fontSize: '18px' }}
+            />
             <Box
               fontSize={'14px'}
               fontWeight={500}
@@ -103,7 +125,9 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
               {t('COMMON.SELECT_TOPIC')}
             </Box>
           </Box>
-          <ArrowForwardIcon sx={{ color: theme.palette.secondary.main }} />
+          <ArrowForwardIcon
+            sx={{ color: theme.palette.secondary.main, fontSize: '18px' }}
+          />
         </Box>
       )}
       <CenterSessionModal
