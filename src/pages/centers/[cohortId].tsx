@@ -8,7 +8,9 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
+
 import AddIcon from '@mui/icons-material/Add';
+import AddLearnerModal from '@/components/AddLeanerModal';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
 import CenterSessionModal from '@/components/CenterSessionModal';
@@ -22,6 +24,7 @@ import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import PlannedSession from '@/components/PlannedSession';
 import RenameCenterModal from '@/components/center/RenameCenterModal';
 import Schedule from './../../components/Schedule';
 import { Session } from '../../utils/Interfaces';
@@ -36,8 +39,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import CohortFacilitatorList from '@/components/CohortFacilitatorList';
-import AddLearnerModal from '@/components/AddLeanerModal';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -61,6 +62,15 @@ const TeachingCenterDetails = () => {
   const [openDeleteCenterModal, setOpenDeleteCenterModal] =
     React.useState(false);
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
+  const [openSchedule, setOpenSchedule] = React.useState(false);
+
+  const handleCentermodel = () => {
+    setOpenSchedule(true);
+  };
+
+  const handleSchedule = () => {
+    console.log('API Call');
+  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -292,10 +302,14 @@ const TeachingCenterDetails = () => {
             open={open}
             handleClose={handleClose}
             title={'Schedule'}
-            primary={'Next'}
+            primary={openSchedule ? 'Schedule' : 'Next'}
+            handlePrimaryModel={
+              openSchedule ? handleSchedule : handleCentermodel
+            }
           >
-            <Schedule />
+            {openSchedule ? <PlannedSession /> : <Schedule />}
           </CenterSessionModal>
+
           <Box mt={3} px={'18px'}>
             <Box
               className="fs-14 fw-500"

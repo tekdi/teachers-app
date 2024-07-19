@@ -20,6 +20,8 @@ import dayjs, { Dayjs } from 'dayjs';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import AddIcon from '@mui/icons-material/Add';
+import CenterSessionModal from './CenterSessionModal';
+import DeleteCenterModal from './center/DeleteCenterModal';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
@@ -33,6 +35,10 @@ type mode = (typeof sessionMode)[keyof typeof sessionMode];
 
 const PlannedSession = () => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true);
 
   const handleSessionModeChange = (event: ChangeEvent<HTMLInputElement>) => {
     setMode(event.target.value as mode);
@@ -242,6 +248,7 @@ const PlannedSession = () => {
               color: theme?.palette?.secondary.main,
               fontWeight: '500',
             }}
+            onClick={handleOpen}
           >
             {t('CENTER_SESSION.REMOVE_THIS_SESSION')}
           </Box>
@@ -249,6 +256,20 @@ const PlannedSession = () => {
             sx={{ fontSize: '18px', color: theme?.palette?.error.main }}
           />
         </Box>
+
+        <CenterSessionModal
+          open={open}
+          handleClose={handleClose}
+          title={'Delete Session'}
+          date={'25 May, 2024'}
+        >
+          <DeleteCenterModal
+            open={false}
+            handleClose={function (): void {
+              throw new Error('Function not implemented.');
+            }}
+          />
+        </CenterSessionModal>
 
         <Box sx={{ mt: 2 }}>
           <Divider />

@@ -18,6 +18,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
   primary,
   center,
   date,
+  handlePrimaryModel,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -35,97 +36,101 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
       width: '450px',
     },
   };
+
   return (
-    <>
-      <div>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Box
-              display={'flex'}
-              justifyContent={'space-between'}
-              sx={{ padding: '18px 16px' }}
-            >
-              <Box marginBottom={0}>
+    <div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            sx={{ padding: '18px 16px' }}
+          >
+            <Box marginBottom={0}>
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme?.palette?.warning['A200'],
+                  fontSize: '14px',
+                  fontWeight: '500',
+                }}
+                component="h2"
+              >
+                {title}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <Typography
                   variant="h2"
                   sx={{
                     color: theme?.palette?.warning['A200'],
                     fontSize: '14px',
-                    fontWeight: '500',
+                    fontWeight: '400',
                   }}
                   component="h2"
                 >
-                  {title}
+                  {center}
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <Typography
-                    variant="h2"
-                    sx={{
-                      color: theme?.palette?.warning['A200'],
-                      fontSize: '14px',
-                      fontWeight: '400',
-                    }}
-                    component="h2"
-                  >
-                    {center}
-                  </Typography>
-                  <CircleIcon
-                    sx={{
-                      fontSize: '6px',
-                      color: theme.palette.secondary.contrastText,
-                    }}
-                  />
-                  <Typography
-                    variant="h2"
-                    sx={{
-                      color: theme?.palette?.warning['A200'],
-                      fontSize: '14px',
-                      fontWeight: '400',
-                    }}
-                    component="h2"
-                  >
-                    {date}
-                  </Typography>
-                </Box>
+                <CircleIcon
+                  sx={{
+                    fontSize: '6px',
+                    color: theme.palette.secondary.contrastText,
+                  }}
+                />
+                <Typography
+                  variant="h2"
+                  sx={{
+                    color: theme?.palette?.warning['A200'],
+                    fontSize: '14px',
+                    fontWeight: '400',
+                  }}
+                  component="h2"
+                >
+                  {date}
+                </Typography>
               </Box>
-              <CloseIcon
-                onClick={handleClose}
-                sx={{
-                  cursor: 'pointer',
-                  color: theme?.palette?.warning['A200'],
-                }}
-              />
             </Box>
-            <Divider />
-            {children}
-            <Divider />
-            <Box sx={{ padding: '20px 16px' }}>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  '&.Mui-disabled': {
-                    backgroundColor: theme?.palette?.primary?.main,
-                  },
-                  minWidth: '84px',
-                  height: '2.5rem',
-                  padding: theme.spacing(1),
-                  fontWeight: '500',
-                  width: '100%',
-                }}
-              >
-                {primary}
-              </Button>
-            </Box>
+            <CloseIcon
+              onClick={handleClose}
+              sx={{
+                cursor: 'pointer',
+                color: theme?.palette?.warning['A200'],
+              }}
+            />
           </Box>
-        </Modal>
-      </div>
-    </>
+          <Divider />
+          {children}
+          {primary && (
+            <>
+              <Divider />
+              <Box sx={{ padding: '20px 16px' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    '&.Mui-disabled': {
+                      backgroundColor: theme?.palette?.primary?.main,
+                    },
+                    minWidth: '84px',
+                    height: '2.5rem',
+                    padding: theme.spacing(1),
+                    fontWeight: '500',
+                    width: '100%',
+                  }}
+                  onClick={handlePrimaryModel}
+                >
+                  {primary}
+                </Button>
+              </Box>
+            </>
+          )}
+        </Box>
+      </Modal>
+    </div>
   );
 };
 
