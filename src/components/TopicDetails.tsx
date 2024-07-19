@@ -80,90 +80,95 @@ const TopicDetails = () => {
         </Box>
       </Box>
 
-      <Accordion
-        // defaultExpanded
-        sx={{
-          boxShadow: 'none !important',
-          border: 'none !important',
-          mt: 1.5,
-        }}
-      >
-        <AccordionSummary
-          expandIcon={
-            <ArrowDropDownIcon sx={{ color: theme?.palette?.warning['300'] }} />
-          }
-          aria-controls="panel1-content"
-          id="panel1-header"
-          className="accordion-summary"
+      <Box sx={{ mb: 1.5 }}>
+        <Accordion
+          // defaultExpanded
           sx={{
-            m: 0,
-            background: theme?.palette?.background.paper,
-            px: '16px',
-            height: '10px !important',
-            '&.Mui-expanded': {
-              minHeight: '48px',
-            },
+            boxShadow: 'none !important',
+            border: 'none !important',
+            mt: 1.5,
+            background: theme?.palette?.action?.selected,
           }}
         >
-          <Typography
-            fontWeight="500"
-            fontSize="14px"
-            sx={{ color: theme?.palette?.warning['300'] }}
+          <AccordionSummary
+            expandIcon={
+              <ArrowDropDownIcon
+                sx={{ color: theme?.palette?.warning['300'] }}
+              />
+            }
+            aria-controls="panel1-content"
+            id="panel1-header"
+            className="accordion-summary"
+            sx={{
+              m: 0,
+              background: theme?.palette?.action?.selected,
+              px: '16px',
+              height: '10px !important',
+              '&.Mui-expanded': {
+                minHeight: '48px',
+              },
+            }}
           >
-            {t('CENTER_SESSION.FACILITATORS')}
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails
-          sx={{ padding: '0px', background: theme?.palette?.warning['A400'] }}
-        >
-          <Grid container spacing={2} sx={{ px: '16px !important' }}>
-            <Grid item xs={6} sx={{ mt: 2 }}>
-              <Box className="facilitator-bg">
-                <Box
-                  sx={{
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    color: theme?.palette?.warning['A400'],
-                  }}
-                >
-                  {t('CENTER_SESSION.TITLE')}
+            <Typography
+              fontWeight="500"
+              fontSize="14px"
+              sx={{ color: theme?.palette?.warning['300'] }}
+            >
+              {t('CENTER_SESSION.FACILITATORS')}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails
+            sx={{ padding: '0px', background: theme?.palette?.warning['A400'] }}
+          >
+            <Grid container spacing={2} sx={{ px: '16px !important' }}>
+              <Grid item xs={6} sx={{ mt: 2 }}>
+                <Box className="facilitator-bg">
+                  <Box
+                    sx={{
+                      fontSize: '16px',
+                      fontWeight: '500',
+                      color: theme?.palette?.warning['A400'],
+                    }}
+                  >
+                    {t('CENTER_SESSION.TITLE')}
+                  </Box>
+                  <Box
+                    sx={{
+                      fontSize: '11px',
+                      fontWeight: '500',
+                      color: theme?.palette?.warning['A400'],
+                    }}
+                  >
+                    Video {/*   will came from API */}
+                  </Box>
                 </Box>
-                <Box
-                  sx={{
-                    fontSize: '11px',
-                    fontWeight: '500',
-                    color: theme?.palette?.warning['A400'],
-                  }}
-                >
-                  Video {/*   will came from API */}
+              </Grid>
+              <Grid item xs={6} sx={{ mt: 2 }}>
+                <Box className="facilitator-bg">
+                  <Box
+                    sx={{
+                      fontSize: '16px',
+                      fontWeight: '500',
+                      color: theme?.palette?.warning['A400'],
+                    }}
+                  >
+                    {t('CENTER_SESSION.TITLE')}
+                  </Box>
+                  <Box
+                    sx={{
+                      fontSize: '11px',
+                      fontWeight: '500',
+                      color: theme?.palette?.warning['A400'],
+                    }}
+                  >
+                    Game {/*   will came from API */}
+                  </Box>
                 </Box>
-              </Box>
+              </Grid>
             </Grid>
-            <Grid item xs={6} sx={{ mt: 2 }}>
-              <Box className="facilitator-bg">
-                <Box
-                  sx={{
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    color: theme?.palette?.warning['A400'],
-                  }}
-                >
-                  {t('CENTER_SESSION.TITLE')}
-                </Box>
-                <Box
-                  sx={{
-                    fontSize: '11px',
-                    fontWeight: '500',
-                    color: theme?.palette?.warning['A400'],
-                  }}
-                >
-                  Game {/*   will came from API */}
-                </Box>
-              </Box>
-            </Grid>
-          </Grid>
-        </AccordionDetails>
-      </Accordion>
+          </AccordionDetails>
+        </Accordion>
+      </Box>
     </>
   );
 };
