@@ -115,7 +115,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                 items.forEach((item) => {
                   const cohortType =
                     item?.customField?.find(
-                      (field) => field.label === 'Type of Cohort'
+                      (field) => field.label === 'TYPE_OF_COHORT'
                     )?.value || 'Unknown';
                   if (item?.cohortId && item && item?.name) {
                     nameTypePairs.push({

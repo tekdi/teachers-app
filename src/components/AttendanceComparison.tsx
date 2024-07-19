@@ -51,7 +51,7 @@ interface AttendanceResponse {
 
 const AttendanceComparison: React.FC = () => {
   const { t } = useTranslation();
-  const [centerType, setCenterType] = useState('Regular');
+  const [centerType, setCenterType] = useState('REGULAR');
   const [attendanceData, setAttendanceData] = useState<Record<string, string>>(
     {}
   );
@@ -153,11 +153,11 @@ const AttendanceComparison: React.FC = () => {
           onChange={handleCenterTypeChange}
         >
           <FormControlLabel
-            value="Regular"
+            value="REGULAR"
             control={<Radio />}
             label="Regular"
           />
-          <FormControlLabel value="Remote" control={<Radio />} label="Remote" />
+          <FormControlLabel value="REMOTE" control={<Radio />} label="Remote" />
         </RadioGroup>
       </FormControl>
       <Box sx={{ mt: 2 }}>

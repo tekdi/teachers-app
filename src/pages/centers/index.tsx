@@ -123,7 +123,7 @@ const TeachingCenters = () => {
                 const cohortName = child.name;
                 const cohortId = child.cohortId;
                 const centerTypeField = child?.customField.find(
-                  (field: any) => field.label === 'Type of Cohort'
+                  (field: any) => field.label === 'TYPE_OF_COHORT'
                 );
 
                 const centerType = centerTypeField ? centerTypeField.value : '';
@@ -375,7 +375,7 @@ const TeachingCenters = () => {
                       {/* Regular Centers */}
                       {filteredCenters.some(
                         (center) =>
-                          center.centerType === 'Regular' ||
+                          center.centerType === 'REGULAR' ||
                           center.centerType === ''
                       ) && (
                         <div>
@@ -391,7 +391,7 @@ const TeachingCenters = () => {
                           {filteredCenters
                             .filter(
                               (center) =>
-                                center.centerType === 'Regular' ||
+                                center.centerType === 'REGULAR' ||
                                 center.centerType === ''
                             )
                             .map((center) => (
@@ -462,7 +462,7 @@ const TeachingCenters = () => {
 
                       {/* Remote Centers */}
                       {filteredCenters.some(
-                        (center) => center.centerType === 'Remote'
+                        (center) => center.centerType === 'REMOTE'
                       ) && (
                         <div>
                           <Box
@@ -475,7 +475,7 @@ const TeachingCenters = () => {
                             {t('CENTERS.REMOTE_CENTERS')}
                           </Box>
                           {filteredCenters
-                            .filter((center) => center.centerType === 'Remote')
+                            .filter((center) => center.centerType === 'REMOTE')
                             .map((center) => (
                               <React.Fragment key={center.cohortId}>
                                 <Box
