@@ -16,22 +16,26 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import { showToastMessage } from './Toastify';
-import manageUserStore from '@/store/manageUserStore';
 import { getCohortList } from '@/services/CohortServices';
 import { updateFacilitator } from '@/services/ManageUser';
+import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+import { Status } from '@/utils/app.constant';
+import manageUserStore from '@/store/manageUserStore';
 
 interface DeleteUserModalProps {
+  type: 'student' | 'teacher';
   userId: string;
   open: boolean;
   onClose: () => void;
 }
 const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
+  type,
   userId,
   open,
   onClose,
 }) => {
-  const { t } = useTranslation();
   const store = manageUserStore();
+  const { t } = useTranslation();
   const theme = useTheme<any>();
   const style = {
     position: 'absolute',
@@ -55,6 +59,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
     { value: 'Duplicated User', label: 'Duplicated User' },
     // { value: 'Other', label: 'Other' },
   ];
+  
 
   const handleRadioChange = (value: string) => {
     console.log(value);
@@ -62,14 +67,24 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
   };
 
   const handleDeleteAction = async () => {
-    const userData = {
-      status: 'archived',
-      reason: selectedValue,
-    };
+    if (type == 'teacher') {
+      const studentData = {
+        status: 'archived',
+        reason: selectedValue,
+      };
 
-    const response = await updateFacilitator(userId, userData);
+      const studentResponse = await updateFacilitator(userId, studentData);
+    } else if (type == 'student') {
+      const memberStatus = Status.ARCHIVED;
+      const statusReason = selectedValue;
+      const membershipId = store?.learnerDeleteId;
 
-    console.log(response);
+      const teacherResponse = await updateCohortMemberStatus({
+        memberStatus,
+        statusReason,
+        membershipId,
+      });
+    }
 
     setSelectedValue('');
     onClose();
