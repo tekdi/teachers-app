@@ -81,7 +81,11 @@ const TeachingCenterDetails = () => {
   };
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setOpenSchedule(false);
+    setDeleteModal(false);
+  };
 
   useEffect(() => {
     const getCohortData = async () => {
@@ -310,12 +314,18 @@ const TeachingCenterDetails = () => {
           <CenterSessionModal
             open={open}
             handleClose={handleClose}
-            title={deleteModal ? 'Delete Session' : 'Schedule'}
+            title={
+              deleteModal
+                ? 'Delete Session'
+                : openSchedule
+                  ? 'planned session'
+                  : 'Schedule'
+            }
             primary={deleteModal ? 'OK' : openSchedule ? 'Schedule' : 'Next'}
-            secondary={deleteModal ? 'Cancel' : null}
+            secondary={deleteModal ? 'Cancel' : undefined}
             handlePrimaryModel={
               deleteModal
-                ? null
+                ? undefined
                 : openSchedule
                   ? handleSchedule
                   : handleCentermodel

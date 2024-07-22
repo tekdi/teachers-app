@@ -142,7 +142,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
               </Box>
             )}
             {primary && (
-              <Box>
+              <Box sx={{ width: secondary ? 'unset' : '100%' }}>
                 <Box sx={{ padding: '20px 16px' }}>
                   <Button
                     variant="contained"
@@ -154,7 +154,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
                       minWidth: '84px',
                       padding: theme.spacing(1),
                       fontWeight: '500',
-                      width: '128px',
+                      width: secondary ? '128px' : '100%',
                       height: '40px',
                       '@media (max-width: 430px)': {
                         width: '100%',
