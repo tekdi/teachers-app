@@ -290,7 +290,7 @@ const TeachingCenterDetails = () => {
 
       {value === 1 && (
         <>
-          <Box mt={3} px={'18px'}>
+          <Box mt={3} px="18px">
             <Button
               sx={{
                 border: `1px solid ${theme.palette.error.contrastText}`,
@@ -306,35 +306,31 @@ const TeachingCenterDetails = () => {
               {t('COMMON.SCHEDULE_NEW')}
             </Button>
           </Box>
-          {!deleteModal ? (
-            <CenterSessionModal
-              open={open}
-              handleClose={handleClose}
-              title={'Schedule'}
-              primary={openSchedule ? 'Schedule' : 'Next'}
-              handlePrimaryModel={
-                openSchedule ? handleSchedule : handleCentermodel
-              }
-            >
-              {openSchedule ? (
-                <PlannedSession removeModal={removeModal} />
-              ) : (
-                <Schedule />
-              )}
-            </CenterSessionModal>
-          ) : (
-            <CenterSessionModal
-              open={open}
-              handleClose={handleClose}
-              title={'Delete Session'}
-              primary={'OK'}
-              secondary={'Cancel'}
-            >
-              <DeleteSession />
-            </CenterSessionModal>
-          )}
 
-          <Box mt={3} px={'18px'}>
+          <CenterSessionModal
+            open={open}
+            handleClose={handleClose}
+            title={deleteModal ? 'Delete Session' : 'Schedule'}
+            primary={deleteModal ? 'OK' : openSchedule ? 'Schedule' : 'Next'}
+            secondary={deleteModal ? 'Cancel' : null}
+            handlePrimaryModel={
+              deleteModal
+                ? null
+                : openSchedule
+                  ? handleSchedule
+                  : handleCentermodel
+            }
+          >
+            {deleteModal ? (
+              <DeleteSession />
+            ) : openSchedule ? (
+              <PlannedSession removeModal={removeModal} />
+            ) : (
+              <Schedule />
+            )}
+          </CenterSessionModal>
+
+          <Box mt={3} px="18px">
             <Box
               className="fs-14 fw-500"
               sx={{ color: theme.palette.warning['300'] }}
@@ -348,24 +344,26 @@ const TeachingCenterDetails = () => {
               {t('COMMON.NO_SESSIONS_SCHEDULED')}
             </Box>
           </Box>
+
           <Box sx={{ padding: '10px 16px' }}>
             <WeekCalender
               showDetailsHandle={showDetailsHandle}
               data={percentageAttendanceData}
-              disableDays={classId === 'all' ? true : false}
+              disableDays={classId === 'all'}
               classId={classId}
             />
           </Box>
+
           <Box mt={3} px="18px">
-            {sessions &&
-              sessions.map((item: Session, index: number) => (
-                <SessionCard data={item} key={item.id}>
-                  <SessionCardFooter item={item} />
-                </SessionCard>
-              ))}
+            {sessions?.map((item) => (
+              <SessionCard data={item} key={item.id}>
+                <SessionCardFooter item={item} />
+              </SessionCard>
+            ))}
           </Box>
         </>
       )}
+
       <Box>
         {value === 2 && (
           <>
