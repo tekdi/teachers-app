@@ -14,10 +14,12 @@ import AddLearnerModal from '@/components/AddLeanerModal';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
 import CenterSessionModal from '@/components/CenterSessionModal';
+import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 import CohortLearnerList from '@/components/CohortLearnerList';
 import { CustomField } from '@/utils/Interfaces';
 import DeleteCenterModal from '@/components/center/DeleteCenterModal';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import DeleteSession from '@/components/DeleteSession';
 import { GetStaticPaths } from 'next';
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
@@ -38,7 +40,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -63,6 +64,13 @@ const TeachingCenterDetails = () => {
     React.useState(false);
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
+
+  const [deleteModal, setDeleteModal] = React.useState(false);
+
+  const removeModal = () => {
+    setDeleteModal(true);
+    console.log('hello');
+  };
 
   const handleCentermodel = () => {
     setOpenSchedule(true);
@@ -298,17 +306,33 @@ const TeachingCenterDetails = () => {
               {t('COMMON.SCHEDULE_NEW')}
             </Button>
           </Box>
-          <CenterSessionModal
-            open={open}
-            handleClose={handleClose}
-            title={'Schedule'}
-            primary={openSchedule ? 'Schedule' : 'Next'}
-            handlePrimaryModel={
-              openSchedule ? handleSchedule : handleCentermodel
-            }
-          >
-            {openSchedule ? <PlannedSession /> : <Schedule />}
-          </CenterSessionModal>
+          {!deleteModal ? (
+            <CenterSessionModal
+              open={open}
+              handleClose={handleClose}
+              title={'Schedule'}
+              primary={openSchedule ? 'Schedule' : 'Next'}
+              handlePrimaryModel={
+                openSchedule ? handleSchedule : handleCentermodel
+              }
+            >
+              {openSchedule ? (
+                <PlannedSession removeModal={removeModal} />
+              ) : (
+                <Schedule />
+              )}
+            </CenterSessionModal>
+          ) : (
+            <CenterSessionModal
+              open={open}
+              handleClose={handleClose}
+              title={'Delete Session'}
+              primary={'OK'}
+              secondary={'Cancel'}
+            >
+              <DeleteSession />
+            </CenterSessionModal>
+          )}
 
           <Box mt={3} px={'18px'}>
             <Box
