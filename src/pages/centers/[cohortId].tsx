@@ -69,7 +69,6 @@ const TeachingCenterDetails = () => {
 
   const removeModal = () => {
     setDeleteModal(true);
-    console.log('hello');
   };
 
   const handleCentermodel = () => {
@@ -316,13 +315,19 @@ const TeachingCenterDetails = () => {
             handleClose={handleClose}
             title={
               deleteModal
-                ? 'Delete Session'
+                ? t('CENTER_SESSION.DELETE_SESSION')
                 : openSchedule
-                  ? 'planned session'
-                  : 'Schedule'
+                  ? t('CENTER_SESSION.PLANNED_SESSION')
+                  : t('CENTER_SESSION.SCHEDULE')
             }
-            primary={deleteModal ? 'OK' : openSchedule ? 'Schedule' : 'Next'}
-            secondary={deleteModal ? 'Cancel' : undefined}
+            primary={
+              deleteModal
+                ? t('COMMON.OK')
+                : openSchedule
+                  ? t('CENTER_SESSION.SCHEDULE')
+                  : t('GUIDE_TOUR.NEXT')
+            }
+            secondary={deleteModal ? t('COMMON.CANCEL') : undefined}
             handlePrimaryModel={
               deleteModal
                 ? undefined
