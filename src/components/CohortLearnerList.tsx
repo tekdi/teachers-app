@@ -6,7 +6,7 @@ import {
   toPascalCase,
 } from '@/utils/Helper';
 import LearnersListItem from '@/components/LearnersListItem';
-import { Status, limit } from '@/utils/app.constant';
+import { Role, Status, limit } from '@/utils/app.constant';
 import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
 import { Box, Typography } from '@mui/material';
@@ -85,6 +85,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
           {userData?.map((data: any) => {
             return (
               <LearnersListItem
+               type={Role.STUDENT}
                 key={data.userId}
                 userId={data.userId}
                 learnerName={data.name}
