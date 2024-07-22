@@ -138,6 +138,7 @@ export interface SessionsModalProps {
   center?: string;
   date?: string;
   handlePrimaryModel?: () => void;
+  secondary?: string;
 }
 export interface AttendanceStatusListProps {
   limit: number;

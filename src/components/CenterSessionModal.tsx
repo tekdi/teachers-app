@@ -18,6 +18,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
   primary,
   center,
   date,
+  secondary,
   handlePrimaryModel,
 }) => {
   const theme = useTheme<any>();
@@ -104,30 +105,69 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
           </Box>
           <Divider />
           {children}
-          {primary && (
-            <>
-              <Divider />
-              <Box sx={{ padding: '20px 16px' }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    '&.Mui-disabled': {
-                      backgroundColor: theme?.palette?.primary?.main,
-                    },
-                    minWidth: '84px',
-                    height: '2.5rem',
-                    padding: theme.spacing(1),
-                    fontWeight: '500',
-                    width: '100%',
-                  }}
-                  onClick={handlePrimaryModel}
-                >
-                  {primary}
-                </Button>
+          <Divider />
+
+          <Box
+            sx={{
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'center',
+              gap: '10px',
+            }}
+          >
+            {secondary && (
+              <Box>
+                <Box sx={{ padding: '20px 16px' }}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    sx={{
+                      '&.Mui-disabled': {
+                        backgroundColor: theme?.palette?.primary?.main,
+                      },
+                      minWidth: '84px',
+                      padding: theme.spacing(1),
+                      fontWeight: '500',
+                      width: '128px',
+                      height: '40px',
+                      '@media (max-width: 430px)': {
+                        width: '100%',
+                      },
+                    }}
+                    onClick={handlePrimaryModel}
+                  >
+                    {secondary}
+                  </Button>
+                </Box>
               </Box>
-            </>
-          )}
+            )}
+            {primary && (
+              <Box>
+                <Box sx={{ padding: '20px 16px' }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      '&.Mui-disabled': {
+                        backgroundColor: theme?.palette?.primary?.main,
+                      },
+                      minWidth: '84px',
+                      padding: theme.spacing(1),
+                      fontWeight: '500',
+                      width: '128px',
+                      height: '40px',
+                      '@media (max-width: 430px)': {
+                        width: '100%',
+                      },
+                    }}
+                    onClick={handlePrimaryModel}
+                  >
+                    {primary}
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </Box>
         </Box>
       </Modal>
     </div>
