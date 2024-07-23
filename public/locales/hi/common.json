@@ -130,7 +130,7 @@
     "AS_OF_TODAY_DATE": "आज तक, {{day_date}}",
     "LEARNER": "शिक्षार्थियों",
     "ATTENDANCE_COMPARISON": "उपस्थिति तुलना",
-    "CENTER_TYPE":"केंद्र प्रकार",
+    "CENTER_TYPE": "केंद्र प्रकार",
     "BLOCK_AVERAGE_ATTENDANCE": "ब्लॉक औसत उपस्थिति"
   },
   "ATTENDANCE": {
@@ -299,6 +299,8 @@
     "TOPIC": "विषय",
     "SUBTOPIC": "उप विषय",
     "FACILITATORS": "सुविधादाताओं की पूर्व आवश्यकताएँ",
-    "TITLE": "शीर्षक"
+    "TITLE": "शीर्षक",
+    "DELETE_SESSION": "सत्र हटाएँ",
+    "SCHEDULE": "अनुसूची"
   }
 }

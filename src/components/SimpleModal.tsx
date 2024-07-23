@@ -12,13 +12,14 @@ import {
   Typography,
 } from '@mui/material';
 import React, { ReactNode, useState } from 'react';
+
+import CloseIcon from '@mui/icons-material/Close';
+import CloseSharpIcon from '@mui/icons-material/CloseSharp';
+import { getCohortList } from '@/services/CohortServices';
+import manageUserStore from '@/store/manageUserStore';
+import { showToastMessage } from './Toastify';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import CloseIcon from '@mui/icons-material/Close';
-import { showToastMessage } from './Toastify';
-import manageUserStore from '@/store/manageUserStore';
-import { getCohortList } from '@/services/CohortServices';
-import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 
 interface SimpleModalProps {
   secondaryActionHandler?: () => void;
@@ -47,10 +48,10 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   const theme = useTheme<any>();
 
   const modalStyle = {
-    paddingTop: '0', 
-    paddingLeft: theme.spacing(2), 
-    paddingRight: theme.spacing(2), 
-    paddingBottom: theme.spacing(2), 
+    paddingTop: '0',
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
     position: 'absolute',
     top: '50%',
     left: '50%',
