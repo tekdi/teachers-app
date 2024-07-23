@@ -131,7 +131,7 @@
     "AS_OF_TODAY_DATE": "आजपर्यंत, {{day_date}}",
     "LEARNER": "शिकणारे",
     "ATTENDANCE_COMPARISON": "उपस्थिती तुलना",
-    "CENTER_TYPE":"केंद्र प्रकार",
+    "CENTER_TYPE": "केंद्र प्रकार",
     "BLOCK_AVERAGE_ATTENDANCE": "ब्लॉक सरासरी उपस्थिती"
   },
   "ATTENDANCE": {
@@ -300,6 +300,8 @@
     "TOPIC": "विषय",
     "SUBTOPIC": "उपविषय",
     "FACILITATORS": "सुविधादात्यांची पूर्व आवश्यकताएं",
-    "TITLE": "शीर्षक"
+    "TITLE": "शीर्षक",
+    "DELETE_SESSION": "सत्र हटवा",
+    "SCHEDULE": "वेळापत्रक"
   }
 }

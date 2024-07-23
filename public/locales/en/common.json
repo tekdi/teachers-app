@@ -326,7 +326,9 @@
     "TOPIC": "Topic",
     "SUBTOPIC": "Sub Topic",
     "FACILITATORS": " Facilitators Pre-requisites",
-    "TITLE": "Title"
+    "TITLE": "Title",
+    "DELETE_SESSION": "Delete Session",
+    "SCHEDULE": "Schedule"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"

@@ -31,7 +31,7 @@ import { useTranslation } from 'next-i18next';
 
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
 
-const PlannedSession = () => {
+const PlannedSession = ({ removeModal }) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
 
   const handleSessionModeChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -242,6 +242,7 @@ const PlannedSession = () => {
               color: theme?.palette?.secondary.main,
               fontWeight: '500',
             }}
+            onClick={removeModal}
           >
             {t('CENTER_SESSION.REMOVE_THIS_SESSION')}
           </Box>
