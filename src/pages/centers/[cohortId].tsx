@@ -52,7 +52,12 @@ const TeachingCenterDetails = () => {
   const setDistrictCode = manageUserStore(
     (state: { setDistrictCode: any }) => state.setDistrictCode
   );
+  const setDistrictId = manageUserStore(
+    (state: { setDistrictId: any }) => state.setDistrictId
+  );
   const setStateCode = manageUserStore((state: { setStateCode: any }) => state.setStateCode);
+  const setStateId = manageUserStore((state: { setStateId: any }) => state.setStateId);
+ 
   const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
   const [selectedDate, setSelectedDate] =
@@ -97,11 +102,15 @@ const TeachingCenterDetails = () => {
           );
           const districtCode = district?.code || '';
           setDistrictCode(districtCode);
+          const districtId = district?.fieldId || '';
+          setDistrictId(districtId);
           const state = cohortData.customField.find(
             (item: CustomField) => item.label === 'State'
           );
           const stateCode = state?.code || '';
           setStateCode(stateCode)
+          const stateId = state?.fieldId || '';
+          setStateId(stateId);
 
           cohortData.address =
             `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
