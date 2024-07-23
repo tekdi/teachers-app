@@ -7,12 +7,14 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
 import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
 
 import AddIcon from '@mui/icons-material/Add';
 import AddLearnerModal from '@/components/AddLeanerModal';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CenterSessionModal from '@/components/CenterSessionModal';
 import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 import CohortLearnerList from '@/components/CohortLearnerList';
@@ -26,6 +28,7 @@ import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspace
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PlannedSession from '@/components/PlannedSession';
+import ReactGA from 'react-ga4';
 import RenameCenterModal from '@/components/center/RenameCenterModal';
 import Schedule from './../../components/Schedule';
 import { Session } from '../../utils/Interfaces';
@@ -34,6 +37,7 @@ import SessionCardFooter from '@/components/SessionCardFooter';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import WeekCalender from '@/components/WeekCalender';
+import calendar from '../../assets/images/calendar.svg';
 import { getCohortDetails } from '@/services/CohortServices';
 import { getSessions } from '@/services/Sessionservice';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -160,6 +164,26 @@ const TeachingCenterDetails = () => {
 
   const handleCloseAddLearnerModal = () => {
     setOpenAddLearnerModal(false);
+  };
+
+  const viewAttendanceHistory = () => {
+    if (classId !== 'all') {
+      router.push('/attendance-history');
+      ReactGA.event('month-name-clicked', { selectedCohortID: classId });
+    }
+  };
+
+  const getMonthName = (dateString: string) => {
+    try {
+      const parsedDate = parse(dateString, 'yyyy-MM-dd', new Date());
+      if (!isValid(parsedDate)) {
+        throw new Error('Invalid Date');
+      }
+      localStorage.setItem('selectedMonth', parsedDate.toISOString());
+      return format(parsedDate, 'MMMM');
+    } catch (error) {
+      return 'Invalid Date';
+    }
   };
 
   return (
@@ -361,6 +385,32 @@ const TeachingCenterDetails = () => {
           </Box>
 
           <Box sx={{ padding: '10px 16px' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Box>Planned Sessions</Box>
+              <Box>
+                <Box
+                  display={'flex'}
+                  sx={{
+                    cursor: 'pointer',
+                    color: theme.palette.secondary.main,
+                    gap: '4px',
+                    opacity: classId === 'all' ? 0.5 : 1,
+                  }}
+                  onClick={viewAttendanceHistory}
+                >
+                  <Typography marginBottom={'0'} style={{ fontWeight: '500' }}>
+                    {getMonthName(selectedDate)}
+                  </Typography>
+                  <CalendarMonthIcon />
+                </Box>
+              </Box>
+            </Box>
             <WeekCalender
               showDetailsHandle={showDetailsHandle}
               data={percentageAttendanceData}

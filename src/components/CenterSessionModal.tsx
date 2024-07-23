@@ -39,7 +39,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
   };
 
   return (
-    <div>
+    <>
       <Modal
         open={open}
         onClose={handleClose}
@@ -170,7 +170,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
           </Box>
         </Box>
       </Modal>
-    </div>
+    </>
   );
 };
 
