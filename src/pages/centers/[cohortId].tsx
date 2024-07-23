@@ -16,7 +16,6 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CenterSessionModal from '@/components/CenterSessionModal';
-import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 import CohortLearnerList from '@/components/CohortLearnerList';
 import { CustomField } from '@/utils/Interfaces';
 import DeleteCenterModal from '@/components/center/DeleteCenterModal';
@@ -44,6 +43,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import CohortFacilitatorList from '@/components/CohortFacilitatorList';
+import manageUserStore from '@/store/manageUserStore';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -52,6 +53,16 @@ const TeachingCenterDetails = () => {
   const router = useRouter();
   const { cohortId }: any = router.query;
   const { t } = useTranslation();
+  const store = manageUserStore();
+  const setDistrictCode = manageUserStore(
+    (state: { setDistrictCode: any }) => state.setDistrictCode
+  );
+  const setDistrictId = manageUserStore(
+    (state: { setDistrictId: any }) => state.setDistrictId
+  );
+  const setStateCode = manageUserStore((state: { setStateCode: any }) => state.setStateCode);
+  const setStateId = manageUserStore((state: { setStateId: any }) => state.setStateId);
+ 
   const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
   const [selectedDate, setSelectedDate] =
@@ -104,9 +115,17 @@ const TeachingCenterDetails = () => {
           const district = cohortData.customField.find(
             (item: CustomField) => item.label === 'District'
           );
+          const districtCode = district?.code || '';
+          setDistrictCode(districtCode);
+          const districtId = district?.fieldId || '';
+          setDistrictId(districtId);
           const state = cohortData.customField.find(
             (item: CustomField) => item.label === 'State'
           );
+          const stateCode = state?.code || '';
+          setStateCode(stateCode)
+          const stateId = state?.fieldId || '';
+          setStateId(stateId);
 
           cohortData.address =
             `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
