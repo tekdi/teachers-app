@@ -16,6 +16,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Box from '@mui/material/Box';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CenterSessionModal from '@/components/CenterSessionModal';
+import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 import CohortLearnerList from '@/components/CohortLearnerList';
 import { CustomField } from '@/utils/Interfaces';
 import DeleteCenterModal from '@/components/center/DeleteCenterModal';
@@ -43,8 +44,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import CohortFacilitatorList from '@/components/CohortFacilitatorList';
-import manageUserStore from '@/store/manageUserStore';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -53,18 +52,9 @@ const TeachingCenterDetails = () => {
   const router = useRouter();
   const { cohortId }: any = router.query;
   const { t } = useTranslation();
-  const store = manageUserStore();
-  const setDistrictCode = manageUserStore(
-    (state: { setDistrictCode: any }) => state.setDistrictCode
-  );
-  const setDistrictId = manageUserStore(
-    (state: { setDistrictId: any }) => state.setDistrictId
-  );
-  const setStateCode = manageUserStore((state: { setStateCode: any }) => state.setStateCode);
-  const setStateId = manageUserStore((state: { setStateId: any }) => state.setStateId);
- 
   const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
+  const currentDate = getTodayDate();
   const [selectedDate, setSelectedDate] =
     React.useState<string>(getTodayDate());
 
@@ -115,17 +105,9 @@ const TeachingCenterDetails = () => {
           const district = cohortData.customField.find(
             (item: CustomField) => item.label === 'District'
           );
-          const districtCode = district?.code || '';
-          setDistrictCode(districtCode);
-          const districtId = district?.fieldId || '';
-          setDistrictId(districtId);
           const state = cohortData.customField.find(
             (item: CustomField) => item.label === 'State'
           );
-          const stateCode = state?.code || '';
-          setStateCode(stateCode)
-          const stateId = state?.fieldId || '';
-          setStateId(stateId);
 
           cohortData.address =
             `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
@@ -187,7 +169,7 @@ const TeachingCenterDetails = () => {
 
   const viewAttendanceHistory = () => {
     if (classId !== 'all') {
-      router.push('/attendance-history');
+      router.push('/center-session');
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
   };
@@ -228,7 +210,7 @@ const TeachingCenterDetails = () => {
             onClick={handleBackEvent}
           >
             <KeyboardBackspaceOutlinedIcon
-              sx={{ color: theme.palette.warning['A200'], marginTop: '15px' }}
+              sx={{ color: theme.palette.warning['A200'], marginTop: '8px' }}
             />
             <Box m={'1rem 1rem 0.5rem'} display={'column'} gap={'5px'}>
               <Typography textAlign={'left'} fontSize={'22px'}>
@@ -403,7 +385,7 @@ const TeachingCenterDetails = () => {
             </Box>
           </Box>
 
-          <Box sx={{ padding: '10px 16px' }}>
+          <Box sx={{ padding: '10px 16px', mt: 1 }}>
             <Box
               sx={{
                 display: 'flex',
@@ -411,7 +393,15 @@ const TeachingCenterDetails = () => {
                 alignItems: 'center',
               }}
             >
-              <Box>Planned Sessions</Box>
+              <Box
+                sx={{
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: theme?.palette?.warning['300'],
+                }}
+              >
+                {t('CENTER_SESSION.PLANNED_SESSIONS')}
+              </Box>
               <Box>
                 <Box
                   display={'flex'}
@@ -420,13 +410,14 @@ const TeachingCenterDetails = () => {
                     color: theme.palette.secondary.main,
                     gap: '4px',
                     opacity: classId === 'all' ? 0.5 : 1,
+                    alignItems: 'center',
                   }}
                   onClick={viewAttendanceHistory}
                 >
                   <Typography marginBottom={'0'} style={{ fontWeight: '500' }}>
                     {getMonthName(selectedDate)}
                   </Typography>
-                  <CalendarMonthIcon />
+                  <CalendarMonthIcon sx={{ fontSize: '18px' }} />
                 </Box>
               </Box>
             </Box>

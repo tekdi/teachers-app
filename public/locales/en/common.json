@@ -328,7 +328,8 @@
     "FACILITATORS": " Facilitators Pre-requisites",
     "TITLE": "Title",
     "DELETE_SESSION": "Delete Session",
-    "SCHEDULE": "Schedule"
+    "SCHEDULE": "Schedule",
+    "PLANNED_SESSIONS": "Planned Sessions"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"
