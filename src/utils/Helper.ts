@@ -1,5 +1,6 @@
-import FingerprintJS from 'fingerprintjs2';
 import { Role, Status } from './app.constant';
+
+import FingerprintJS from 'fingerprintjs2';
 import { i18n } from 'next-i18next';
 
 export const ATTENDANCE_ENUM = {
@@ -25,10 +26,15 @@ export const MONTHS = [
   'December',
 ];
 
-export const formatDate = (dateString: string) => {
-  const [year, monthIndex, day] = dateString.split('-');
-  const month = MONTHS[parseInt(monthIndex, 10) - 1];
-  return `${day} ${month}, ${year}`;
+// utils/Helper.js
+
+export const formatDate = (date: Date | string | null): string => {
+  if (!date) return '';
+  const d = new Date(date);
+  const month = `${d.getMonth() + 1}`.padStart(2, '0');
+  const day = `${d.getDate()}`.padStart(2, '0');
+  const year = d.getFullYear();
+  return `${year}-${month}-${day}`;
 };
 
 export const formatToShowDateMonth = (date: Date) => {
@@ -270,7 +276,7 @@ export const accessGranted = (
 
 export const generateUsernameAndPassword = (stateCode: string) => {
   const currentYear = new Date().getFullYear().toString().slice(-2);
-  const randomNum = Math.floor(10000 + Math.random() * 90000).toString(); 
+  const randomNum = Math.floor(10000 + Math.random() * 90000).toString();
 
   const username = `SC${stateCode}${currentYear}${randomNum}`;
   const password = randomNum;

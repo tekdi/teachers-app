@@ -9,6 +9,7 @@ import MonthCalender from '@/components/MonthCalender';
 import { Session } from '../utils/Interfaces';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import SessionsCard from '@/components/SessionCard';
+import { formatDate } from '../utils/Helper';
 import { getSessions } from '@/services/Sessionservice';
 import { getTodayDate } from '@/utils/Helper';
 import { logEvent } from '@/utils/googleAnalytics';
@@ -23,29 +24,24 @@ const centerSession: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>(getTodayDate());
   const [percentageAttendance, setPercentageAttendance] = useState<any>(null);
-  const [sessions, setSessions] = React.useState<Session[]>();
+  const [sessions, setSessions] = useState<Session[]>([]);
 
   const handleOpen = () => {
     setOpen(true);
   };
 
-  const formatDate = (date: Date | null | undefined): string => {
-    if (!date) {
-      return '';
-    }
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
   const handleActiveStartDateChange = (date: Date): void => {
     setSelectedDate(formatDate(date));
   };
+
   useEffect(() => {
     const getSessionsData = async () => {
-      const response: Session[] = await getSessions('cohortId'); // Todo add dynamic cohortId
-      setSessions(response);
+      try {
+        const response: Session[] = await getSessions('cohortId'); // Todo add dynamic cohortId
+        setSessions(response);
+      } catch (error) {
+        console.error('Error fetching sessions:', error);
+      }
     };
 
     getSessionsData();
@@ -58,7 +54,9 @@ const centerSession: React.FC = () => {
   };
 
   useEffect(() => {
-    handleSelectedDateChange(new Date(selectedDate));
+    if (selectedDate) {
+      handleSelectedDateChange(new Date(selectedDate));
+    }
   }, [selectedDate]);
 
   return (
@@ -133,7 +131,7 @@ const centerSession: React.FC = () => {
         </Box>
       </Box>
       <Box mt={3} px="18px">
-        {sessions?.map((item) => (
+        {sessions.map((item) => (
           <SessionsCard data={item} key={item.id}>
             <SessionCardFooter item={item} />
           </SessionsCard>
@@ -149,7 +147,6 @@ export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
-      // Will be passed to the page component as props
     },
   };
 }
