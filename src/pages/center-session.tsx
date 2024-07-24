@@ -13,7 +13,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
-const centerSession: React.FC = () => {
+const CenterSession: React.FC = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
@@ -110,7 +110,7 @@ const centerSession: React.FC = () => {
   );
 };
 
-export default centerSession;
+export default CenterSession;
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
