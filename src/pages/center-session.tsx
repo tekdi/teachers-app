@@ -1,17 +1,13 @@
 import { Box, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import AttendanceStatus from '@/components/AttendanceStatus';
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import Loader from '../components/Loader';
-import MonthCalender from '@/components/MonthCalender';
 import { Session } from '../utils/Interfaces';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import SessionsCard from '@/components/SessionCard';
-import { formatDate } from '../utils/Helper';
 import { getSessions } from '@/services/Sessionservice';
-import { getTodayDate } from '@/utils/Helper';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
@@ -20,10 +16,7 @@ import { useTranslation } from 'next-i18next';
 const centerSession: React.FC = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<string>(getTodayDate());
-  const [percentageAttendance, setPercentageAttendance] = useState<any>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {
