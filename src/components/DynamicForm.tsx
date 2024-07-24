@@ -19,7 +19,7 @@ interface DynamicFormProps {
   onSubmit: (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
-  ) => void | undefined;
+  ) => void | Promise<void>;
   onChange: (event: IChangeEvent<any>) => void;
   onError: (errors: any) => void;
   showErrorList: boolean;
@@ -29,7 +29,7 @@ interface DynamicFormProps {
   customFields: {
     [key: string]: React.FC<RegistryFieldsType<any, RJSFSchema, any>>;
   };
-  children?: ReactNode
+  children?: ReactNode;
 }
 const DynamicForm: React.FC<DynamicFormProps> = ({
   schema,
@@ -39,14 +39,13 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   onChange,
   onError,
   customFields,
-  children
+  children,
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
   };
   const { t } = useTranslation();
-
 
   // console.log('CustomErrorList', CustomErrorList);
 
@@ -128,7 +127,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     console.log('Form data event:', event);
     onChange(event);
   }
-
 
   return (
     <div>

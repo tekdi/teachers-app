@@ -41,6 +41,7 @@ export const GenerateSchemaAndUiSchema = (
 
     const fieldSchema: any = {
       title: t(`FORM.${label}`),
+      fieldId: field.fieldId ?? field.fieldId,
     };
 
     const fieldUiSchema: any = {};
@@ -67,17 +68,19 @@ export const GenerateSchemaAndUiSchema = (
         break;
       case 'drop_down':
         fieldSchema.type = 'string';
-        fieldSchema.oneOf = options.map((opt: FieldOption) => ({
-          const: opt.value,
-          title:
-            t(`FORM.${opt.label}`) === `FORM.${opt.label}`
-              ? opt.label
-              : t(`FORM.${opt.label}`),
-        }));
+        fieldSchema.isDropdown = true;
+        // fieldSchema.oneOf = options.map((opt: FieldOption) => ({
+        //   const: opt.value,
+        //   title:
+        //     t(`FORM.${opt.label}`) === `FORM.${opt.label}`
+        //       ? opt.label
+        //       : t(`FORM.${opt.label}`),
+        // }));
         fieldUiSchema['ui:widget'] = 'select';
         break;
       case 'checkbox':
         fieldSchema.type = 'array';
+        fieldSchema.checkbox = true;
         fieldSchema.items = {
           type: 'string',
           oneOf: options.map((opt: FieldOption) => ({
@@ -114,19 +117,50 @@ export const GenerateSchemaAndUiSchema = (
       // Handle dependencies logic if needed
     }
 
+    // if (isMultiSelect && type === 'drop_down') {
+    //   fieldSchema.type = 'array';
+    //   fieldSchema.items = {
+    //     type: 'string',
+    //     oneOf: options.map((opt: FieldOption) => ({
+    //       const: opt.value,
+    //       title:
+    //         t(`FORM.${opt.label}`) === `FORM.${opt.label}`
+    //           ? opt.label
+    //           : t(`FORM.${opt.label}`),
+    //     })),
+    //   };
+    //   fieldSchema.uniqueItems = true;
+    //   fieldUiSchema['ui:widget'] = 'select';
+    // }
+
     if (isMultiSelect && type === 'drop_down') {
       fieldSchema.type = 'array';
       fieldSchema.items = {
         type: 'string',
-        oneOf: options.map((opt: FieldOption) => ({
-          const: opt.value,
-          title:
-            t(`FORM.${opt.label}`) === `FORM.${opt.label}`
-              ? opt.label
-              : t(`FORM.${opt.label}`),
-        })),
+        enum: options.map((opt: FieldOption) => opt.value),
       };
       fieldSchema.uniqueItems = true;
+      fieldSchema.enumNames = options.map((opt: FieldOption) =>
+        t(`FORM.${opt.label}`) === `FORM.${opt.label}`
+          ? opt.label
+          : t(`FORM.${opt.label}`)
+      );
+      if (maxSelections) {
+        fieldSchema.maxItems = maxSelections;
+      }
+      fieldUiSchema['ui:widget'] = 'select';
+    }
+
+    if (!isMultiSelect && type === 'drop_down') {
+      fieldSchema.type = 'string';
+      fieldSchema.isDropdown = true;
+      fieldSchema.oneOf = options.map((opt: FieldOption) => ({
+        const: opt.value,
+        title:
+          t(`FORM.${opt.label}`) === `FORM.${opt.label}`
+            ? opt.label
+            : t(`FORM.${opt.label}`),
+      }));
       fieldUiSchema['ui:widget'] = 'select';
     }
 
