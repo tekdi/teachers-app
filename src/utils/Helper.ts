@@ -1,5 +1,6 @@
-import FingerprintJS from 'fingerprintjs2';
 import { Role, Status } from './app.constant';
+
+import FingerprintJS from 'fingerprintjs2';
 import { i18n } from 'next-i18next';
 
 export const ATTENDANCE_ENUM = {
@@ -270,7 +271,7 @@ export const accessGranted = (
 
 export const generateUsernameAndPassword = (stateCode: string) => {
   const currentYear = new Date().getFullYear().toString().slice(-2);
-  const randomNum = Math.floor(10000 + Math.random() * 90000).toString(); 
+  const randomNum = Math.floor(10000 + Math.random() * 90000).toString();
 
   const username = `SC${stateCode}${currentYear}${randomNum}`;
   const password = randomNum;
