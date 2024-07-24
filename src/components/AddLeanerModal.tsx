@@ -16,6 +16,8 @@ import { FormContext, FormContextType } from '@/utils/app.constant';
 import SimpleModal from '@/components/SimpleModal';
 import { useTranslation } from 'react-i18next';
 import { generateUsernameAndPassword } from '@/utils/Helper';
+import { RoleId } from '@/utils/app.constant';
+import { showToastMessage } from './Toastify';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -24,16 +26,13 @@ interface AddLearnerModalProps {
 const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
-  const [credentials, setCredentials] = React.useState({ username: '', password: '' });
+  const [credentials, setCredentials] = React.useState({
+    username: '',
+    password: '',
+  });
   // const [learnerFormData, setLearnerFormData] = React.useState<any>();
   const { t } = useTranslation();
   const theme = useTheme<any>();
-
-  const handleGenerateCredentials = () => {
-    const stateCode = 'MH';
-    const newCredentials = generateUsernameAndPassword(stateCode);
-    setCredentials(newCredentials);
-  };
 
   useEffect(() => {
     const getAddLearnerFormData = async () => {
@@ -56,7 +55,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
     getAddLearnerFormData();
   }, []);
 
-  const handleSubmit = (
+  const handleSubmit = async (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
@@ -77,6 +76,80 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
       }
     }
     console.log('Form data submitted:', data.formData);
+
+    const formData = data.formData;
+    console.log('Form data submitted:', formData);
+    const schemaProperties = schema.properties;
+    let cohortId;
+    if (typeof window !== 'undefined' && window.localStorage) {
+      var teacherData = JSON.parse(localStorage.getItem('teacherApp') || '');
+      cohortId =
+        localStorage.getItem('cohortId') || localStorage.getItem('classId');
+    }
+    const { username, password } = generateUsernameAndPassword(
+      teacherData?.state?.stateCode,
+      ''
+    );
+
+    let apiBody: any = {
+      username: username,
+      password: password,
+      tenantCohortRoleMapping: [
+        {
+          tenantId: 'ef99949b-7f3a-4a5f-806a-e67e683e38f3',
+          roleId: RoleId.STUDENT,
+          cohortId: [cohortId],
+        },
+      ],
+      customFields: [],
+    };
+
+    Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
+      const fieldSchema = schemaProperties[fieldKey];
+      const fieldId = fieldSchema?.fieldId;
+      console.log(
+        `FieldID: ${fieldId}, FieldValue: ${fieldValue}, type: ${typeof fieldValue}`
+      );
+
+      if (fieldId === null || fieldId === 'null') {
+        if (typeof fieldValue !== 'object') {
+          apiBody[fieldKey] = fieldValue;
+        }
+      } else {
+        if (
+          fieldSchema?.hasOwnProperty('isDropdown') ||
+          fieldSchema.hasOwnProperty('isCheckbox')
+        ) {
+          apiBody.customFields.push({
+            fieldId: fieldId,
+            value: [String(fieldValue)],
+          });
+        } else {
+          apiBody.customFields.push({
+            fieldId: fieldId,
+            value: String(fieldValue),
+          });
+        }
+      }
+    });
+
+    apiBody.customFields.push({
+      fieldId: teacherData?.state?.blockId,
+      value: [teacherData?.state?.blockCode],
+    });
+    apiBody.customFields.push({
+      fieldId: teacherData?.state?.stateId,
+      value: [teacherData?.state?.stateCode],
+    });
+    apiBody.customFields.push({
+      fieldId: teacherData?.state?.districtId,
+      value: [teacherData?.state?.districtCode],
+    });
+    console.log(apiBody);
+
+    const response = await createUser(apiBody);
+    onClose();
+    showToastMessage(t('COMMON.LEARNER_CREATED_SUCCESSFULLY'), 'success');
   };
 
   const handleChange = (event: IChangeEvent<any>) => {
@@ -91,7 +164,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
     console.log('Form errors:', errors);
   };
 
-  const CustomSubmitButton: React.FC<{ onClose: () => void }> = ({ onClose }) => (
+  const CustomSubmitButton: React.FC<{ onClose: () => void }> = ({
+    onClose,
+  }) => (
     <div
       style={{
         marginTop: '16px',
@@ -145,7 +220,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
   const secondaryActionHandler = async (e: React.FormEvent) => {
     // console.log('Secondary action handler clicked');
     e.preventDefault();
-    handleGenerateCredentials();
+    // handleGenerateCredentials();
     // try {
     //   const response = await createUser(learnerFormData);
     //   console.log('User created successfully', response);
@@ -173,8 +248,8 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
             showErrorList={true}
             customFields={customFields}
           >
-            <CustomSubmitButton onClose={primaryActionHandler}/>
-            </DynamicForm>
+            {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+          </DynamicForm>
         )}
       </SimpleModal>
     </>
