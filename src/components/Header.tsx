@@ -24,7 +24,14 @@ const Header: React.FC = () => {
   const { t } = useTranslation();
   const pathname = usePathname();
   const theme = useTheme<any>();
-  const userId = localStorage.getItem('userId');
+  const [userId, setUserId] = React.useState<string>('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedUserId = localStorage.getItem('userId') as string;
+      setUserId(storedUserId);
+    }
+  }, []);
 
   const StyledMenu = styled((props: MenuProps) => (
     <Menu
