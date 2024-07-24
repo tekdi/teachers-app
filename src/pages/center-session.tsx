@@ -16,13 +16,13 @@ import { useTranslation } from 'next-i18next';
 const CenterSession: React.FC = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const [loading, setLoading] = useState<boolean>(false);
+
   const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {
     const getSessionsData = async () => {
       try {
-        const response: Session[] = await getSessions('cohortId'); // Todo add dynamic cohortId
+        const response: Session[] = getSessions('cohortId'); // Todo add dynamic cohortId
         setSessions(response);
       } catch (error) {
         console.error('Error fetching sessions:', error);
@@ -36,7 +36,7 @@ const CenterSession: React.FC = () => {
     <>
       <Box textAlign={'center'}>
         <Header />
-        {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />}
+        {/* {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />} */}
         <Box display={'flex'} justifyContent={'center'}>
           <Box
             sx={{

@@ -119,7 +119,7 @@ const TeachingCenterDetails = () => {
 
   useEffect(() => {
     const getSessionsData = async () => {
-      const response: Session[] = await getSessions('cohortId'); // Todo add dynamic cohortId
+      const response: Session[] = getSessions('cohortId'); // Todo add dynamic cohortId
       setSessions(response);
     };
 
