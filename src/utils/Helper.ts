@@ -26,15 +26,10 @@ export const MONTHS = [
   'December',
 ];
 
-// utils/Helper.js
-
-export const formatDate = (date: Date | string | null): string => {
-  if (!date) return '';
-  const d = new Date(date);
-  const month = `${d.getMonth() + 1}`.padStart(2, '0');
-  const day = `${d.getDate()}`.padStart(2, '0');
-  const year = d.getFullYear();
-  return `${year}-${month}-${day}`;
+export const formatDate = (dateString: string) => {
+  const [year, monthIndex, day] = dateString.split('-');
+  const month = MONTHS[parseInt(monthIndex, 10) - 1];
+  return `${day} ${month}, ${year}`;
 };
 
 export const formatToShowDateMonth = (date: Date) => {

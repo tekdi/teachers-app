@@ -26,14 +26,6 @@ const centerSession: React.FC = () => {
   const [percentageAttendance, setPercentageAttendance] = useState<any>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleActiveStartDateChange = (date: Date): void => {
-    setSelectedDate(formatDate(date));
-  };
-
   useEffect(() => {
     const getSessionsData = async () => {
       try {
@@ -46,18 +38,6 @@ const centerSession: React.FC = () => {
 
     getSessionsData();
   }, []);
-
-  const handleSelectedDateChange = (date: Date | Date[] | null): void => {
-    if (date && !Array.isArray(date)) {
-      setSelectedDate(formatDate(date));
-    }
-  };
-
-  useEffect(() => {
-    if (selectedDate) {
-      handleSelectedDateChange(new Date(selectedDate));
-    }
-  }, [selectedDate]);
 
   return (
     <>
@@ -121,11 +101,7 @@ const centerSession: React.FC = () => {
             </Box>
 
             <Box className="calender-container">
-              <MonthCalender
-                formattedAttendanceData={percentageAttendance}
-                onChange={handleActiveStartDateChange}
-                onDateChange={handleSelectedDateChange}
-              />
+              {/* month calender will come here  */}
             </Box>
           </Box>
         </Box>
