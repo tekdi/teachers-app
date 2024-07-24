@@ -24,6 +24,7 @@ const Header: React.FC = () => {
   const { t } = useTranslation();
   const pathname = usePathname();
   const theme = useTheme<any>();
+  const userId = localStorage.getItem('userId');
 
   const StyledMenu = styled((props: MenuProps) => (
     <Menu
@@ -69,8 +70,8 @@ const Header: React.FC = () => {
   }));
 
   const handleProfileClick = () => {
-    if (pathname !== '/profile') {
-      router.push('/profile');
+    if (pathname !== `/user-profile/${userId}`) {
+      router.push(`/user-profile/${userId}`);
       logEvent({
         action: 'my-profile-clicked-header',
         category: 'Dashboard',
@@ -227,7 +228,7 @@ const Header: React.FC = () => {
               open={open}
               onClose={handleClose}
             >
-              {pathname !== '/profile' && (
+              {pathname !== `/user-profile/${userId}` && (
                 <MenuItem
                   onClick={handleProfileClick}
                   disableRipple
