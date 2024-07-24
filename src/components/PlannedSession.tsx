@@ -23,6 +23,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { PlannedModalProps } from '@/utils/Interfaces';
 import Stack from '@mui/material/Stack';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { sessionMode } from '@/utils/app.constant';
@@ -31,7 +32,7 @@ import { useTranslation } from 'next-i18next';
 
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
 
-const PlannedSession = ({ removeModal }) => {
+const PlannedSession: React.FC<PlannedModalProps> = ({ removeModal }) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
 
   const handleSessionModeChange = (event: ChangeEvent<HTMLInputElement>) => {

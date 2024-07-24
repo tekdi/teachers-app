@@ -52,7 +52,6 @@ const TeachingCenterDetails = () => {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
-  const currentDate = getTodayDate();
   const [selectedDate, setSelectedDate] =
     React.useState<string>(getTodayDate());
 

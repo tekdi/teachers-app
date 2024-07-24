@@ -140,6 +140,11 @@ export interface SessionsModalProps {
   handlePrimaryModel?: () => void;
   secondary?: string;
 }
+
+export interface PlannedModalProps {
+  removeModal?: () => void;
+}
+
 export interface AttendanceStatusListProps {
   limit: number;
   page: number;
