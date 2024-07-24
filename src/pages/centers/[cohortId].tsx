@@ -7,7 +7,6 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
 import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -37,7 +36,6 @@ import SessionCardFooter from '@/components/SessionCardFooter';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import WeekCalender from '@/components/WeekCalender';
-import calendar from '../../assets/images/calendar.svg';
 import { getCohortDetails } from '@/services/CohortServices';
 import { getSessions } from '@/services/Sessionservice';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -171,19 +169,6 @@ const TeachingCenterDetails = () => {
     if (classId !== 'all') {
       router.push('/center-session');
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
-    }
-  };
-
-  const getMonthName = (dateString: string) => {
-    try {
-      const parsedDate = parse(dateString, 'yyyy-MM-dd', new Date());
-      if (!isValid(parsedDate)) {
-        throw new Error('Invalid Date');
-      }
-      localStorage.setItem('selectedMonth', parsedDate.toISOString());
-      return format(parsedDate, 'MMMM');
-    } catch (error) {
-      return 'Invalid Date';
     }
   };
 
@@ -415,7 +400,7 @@ const TeachingCenterDetails = () => {
                   onClick={viewAttendanceHistory}
                 >
                   <Typography marginBottom={'0'} style={{ fontWeight: '500' }}>
-                    {getMonthName(selectedDate)}
+                    July
                   </Typography>
                   <CalendarMonthIcon sx={{ fontSize: '18px' }} />
                 </Box>
