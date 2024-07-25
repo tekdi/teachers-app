@@ -300,6 +300,7 @@ export interface LearnerListProps {
   setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
   block?: string;
   center?: string;
+  showMiniProfile?: boolean;
 }
 export interface FacilitatorListParam {
   limit: number;

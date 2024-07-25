@@ -97,6 +97,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 statusReason={data.statusReason}
                 reloadState={reloadState}
                 setReloadState={setReloadState}
+                showMiniProfile={false}
               />
             );
           })}
