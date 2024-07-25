@@ -302,6 +302,12 @@
     "TITLE": "शीर्षक",
     "DELETE_SESSION": "सत्र हटाएँ",
     "SCHEDULE": "अनुसूची",
-    "PLANNED_SESSIONS": "नियोजित सत्र"
+    "PLANNED_SESSIONS": "नियोजित सत्र",
+    "ADD_SESSION": "सत्र जोड़ें",
+    "SESSION_DETAILS": "सत्र विवरण",
+    "SESSION_TITLE": "सत्र का शीर्षक",
+    "TYPE_OF_SESSION": "सत्र का प्रकार",
+    "REPEATING": "पुनरावृत्ति",
+    "JUST_ONCE": "केवल एक बार"
   }
 }

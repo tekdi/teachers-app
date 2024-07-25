@@ -303,6 +303,12 @@
     "TITLE": "शीर्षक",
     "DELETE_SESSION": "सत्र हटवा",
     "SCHEDULE": "वेळापत्रक",
-    "PLANNED_SESSIONS": "नियोजित सत्रे"
+    "PLANNED_SESSIONS": "नियोजित सत्र",
+    "ADD_SESSION": "सत्र जोडा",
+    "SESSION_DETAILS": "सत्र तपशील",
+    "SESSION_TITLE": "सत्र शीर्षक",
+    "TYPE_OF_SESSION": "सत्र प्रकार",
+    "REPEATING": "पुन्हा होणारे",
+    "JUST_ONCE": "फक्त एकदाच"
   }
 }
