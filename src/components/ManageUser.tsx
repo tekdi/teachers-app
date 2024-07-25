@@ -442,9 +442,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     setReassignBlockRequestModalOpen(false);
   };
 
-  const handleLearnerFullProfile = (userId: string) => {
-    // router.push(`/learner/${userId}`);
-    // router.push(`/profile/${userId}`);
+  const handleTeacherFullProfile = (userId: string) => {
+    router.push(`/user-profile/${userId}`);
   };
   const noop = () => {};
 
@@ -612,7 +611,10 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                               <CustomLink className="word-break" href="#">
                                 <Typography
                                   onClick={() => {
-                                    handleLearnerFullProfile(user.userId!);
+                                    handleTeacherFullProfile(user.userId!);
+                                    // ReactGA.event('teacher-details-link-clicked', {
+                                    //   userId: userId,
+                                    // });
                                   }}
                                   sx={{
                                     textAlign: 'left',
@@ -638,7 +640,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                               >
                                 {user?.cohortNames
                                   ? `${user.cohortNames}`
-                                  : 'N/a'}
+                                  : t('ATTENDANCE.N/A')}
                               </Box>
                             </Box>
                           </Box>

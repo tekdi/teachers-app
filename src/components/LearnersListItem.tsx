@@ -49,6 +49,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   setReloadState,
   block,
   center,
+  showMiniProfile
 }) => {
   const [state, setState] = React.useState({
     bottom: false,
@@ -256,6 +257,10 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     setIsModalOpenLearner(false);
   };
 
+  const handleTeacherFullProfile = (userId: string) => {
+    router.push(`/user-profile/${userId}`);
+  };
+
   const fetchUserDetails = async (userId: string) => {
     try {
       if (userId) {
@@ -388,10 +393,10 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 <CustomLink className="word-break" href="#">
                   <Typography
                     onClick={() => {
-                      handleOpenModalLearner(userId!);
-                      ReactGA.event('learner-details-link-clicked', {
-                        userId: userId,
-                      });
+                      showMiniProfile ? handleOpenModalLearner(userId!) : handleTeacherFullProfile(userId!);
+                      // ReactGA.event('teacher-details-link-clicked', {
+                      //   userId: userId,
+                      // });
                     }}
                     sx={{
                       textAlign: 'left',

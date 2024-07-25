@@ -92,7 +92,7 @@ export const getDayMonthYearFormat = (dateString: string) => {
 export const truncateURL = (
   url: string,
   maxLength: number,
-  isMobile: boolean
+  isMobile?: boolean
 ) => {
   if (isMobile) {
     return url.length > maxLength ? `${url.substring(0, maxLength)} ...` : url;
