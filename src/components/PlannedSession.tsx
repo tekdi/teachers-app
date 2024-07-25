@@ -90,7 +90,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                label="Subject"
+                label={t('CENTER_SESSION.SUBJECT')}
                 style={{ borderRadius: '4px' }}
               >
                 {/* <MenuItem value={'Mathematics'}>Mathematics</MenuItem> */}
@@ -111,7 +111,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     mt: 1.5,
                   }}
                 >
-                  Set-Up
+                  {t('CENTER_SESSION.SET_UP')}
                 </Box>
               </>
             )}
@@ -140,12 +140,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 color: theme?.palette?.warning['300'],
               }}
             >
-              Session Details
+              {t('CENTER_SESSION.SESSION_DETAILS')}
             </Box>
             <Box sx={{ mt: 2 }}>
               <TextField
                 id="outlined-basic"
-                label="Session Title"
+                label={t('CENTER_SESSION.SESSION_TITLE')}
                 variant="outlined"
               />
             </Box>
@@ -159,9 +159,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 mode={type}
                 handleSessionModeChange={handleSessionTypeChange}
                 sessions={{
-                  tile: 'Type of Session',
-                  mode1: 'Repeating',
-                  mode2: 'Just Once',
+                  tile: t('CENTER_SESSION.TYPE_OF_SESSION'),
+                  mode1: t('CENTER_SESSION.REPEATING'),
+                  mode2: t('CENTER_SESSION.JUST_ONCE'),
                 }}
               />
               {type === sessionType.JUST && (
@@ -189,7 +189,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               <Box sx={{ mt: 3 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <CustomTimePicker
-                    label="Start Time"
+                    label={t('CENTER_SESSION.START_TIME')}
                     value={date}
                     onChange={handleChange}
                     sx={{ borderRadius: '4px', fontSize: '2px' }}
@@ -201,7 +201,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               <Box sx={{ mt: 3 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <CustomTimePicker
-                    label="End Time"
+                    label={t('CENTER_SESSION.END_TIME')}
                     value={date}
                     onChange={handleChange}
                     sx={{ borderRadius: '4px' }}
@@ -220,7 +220,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Stack spacing={3}>
                       <MobileDatePicker
-                        label="Start Date"
+                        label={t('CENTER_SESSION.START_DATE')}
                         value={date}
                         onChange={handleChange}
                         format="DD MMM, YYYY"
@@ -235,7 +235,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Stack spacing={3}>
                       <MobileDatePicker
-                        label="End Time"
+                        label={t('CENTER_SESSION.END_DATE')}
                         value={date}
                         onChange={handleChange}
                         format="DD MMM, YYYY"

@@ -367,7 +367,7 @@ const TeachingCenterDetails = () => {
               deleteModal
                 ? t('CENTER_SESSION.DELETE_SESSION')
                 : openSchedule
-                  ? clickedBox === 'EXTRA_SESSION'
+                  ? clickedBox === t('CENTER_SESSION.EXTRA_SESSION')
                     ? 'Extra Session'
                     : t('CENTER_SESSION.PLANNED_SESSION')
                   : t('CENTER_SESSION.SCHEDULE')

@@ -23,7 +23,7 @@ const Schedule: React.FC<ScheduleModalProps> = ({
             mb: 2,
             cursor: 'pointer',
           }}
-          onClick={() => handleClick?.('PLANNED_SESSION')} // Use optional chaining here
+          onClick={() => handleClick?.('PLANNED_SESSION')}
         >
           <Box
             sx={{
@@ -44,7 +44,7 @@ const Schedule: React.FC<ScheduleModalProps> = ({
             mb: 2,
             cursor: 'pointer',
           }}
-          onClick={() => handleClick?.('EXTRA_SESSION')} // Use optional chaining here
+          onClick={() => handleClick?.('EXTRA_SESSION')}
         >
           <Box
             sx={{
