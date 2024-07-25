@@ -330,7 +330,8 @@
     "TITLE": "Title",
     "DELETE_SESSION": "Delete Session",
     "SCHEDULE": "Schedule",
-    "PLANNED_SESSIONS": "Planned Sessions"
+    "PLANNED_SESSIONS": "Planned Sessions",
+    "ADD_SESSION": "Add Session"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"

@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
+import { sessionMode, sessionType } from '@/utils/app.constant';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import AddIcon from '@mui/icons-material/Add';
@@ -24,19 +25,27 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { PlannedModalProps } from '@/utils/Interfaces';
+import SessionMode from './SessionMode';
 import Stack from '@mui/material/Stack';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { sessionMode } from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
+type type = (typeof sessionType)[keyof typeof sessionType];
 
-const PlannedSession: React.FC<PlannedModalProps> = ({ removeModal }) => {
+const PlannedSession: React.FC<PlannedModalProps> = ({
+  removeModal,
+  clickedBox,
+}) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
+  const [type, setType] = useState<type>(sessionType.REPEATING);
 
   const handleSessionModeChange = (event: ChangeEvent<HTMLInputElement>) => {
     setMode(event.target.value as mode);
+  };
+  const handleSessionTypeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setType(event.target.value as type);
   };
 
   const [date, setDate] = React.useState<Dayjs | null>(
@@ -59,112 +68,121 @@ const PlannedSession: React.FC<PlannedModalProps> = ({ removeModal }) => {
     <>
       <Box sx={{ padding: '10px 16px' }}>
         <Box>
-          <FormControl>
-            <FormLabel
-              id="demo-row-radio-buttons-group-label"
-              style={{
-                color: theme?.palette?.warning['A200'],
-                fontSize: '12px',
-                fontWeight: '400',
-                marginTop: '10px',
-              }}
-            >
-              {t('CENTER_SESSION.MODE_OF_SESSION')}
-            </FormLabel>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-              value={mode}
-              onChange={handleSessionModeChange}
-            >
-              <FormControlLabel
-                value={sessionMode.OFFLINE}
-                control={
-                  <Radio style={{ color: theme?.palette?.warning['300'] }} />
-                }
-                label={
-                  <span
-                    style={{
-                      color: theme?.palette?.warning['300'],
-                      fontSize: '16px',
-                    }}
-                  >
-                    {t('CENTER_SESSION.OFFLINE')}
-                  </span>
-                }
-              />
-              <FormControlLabel
-                value={sessionMode.ONLINE}
-                control={
-                  <Radio style={{ color: theme?.palette?.warning['300'] }} />
-                }
-                label={
-                  <span
-                    style={{
-                      color: theme?.palette?.warning['300'],
-                      fontSize: '16px',
-                    }}
-                  >
-                    {t('CENTER_SESSION.ONLINE')}
-                  </span>
-                }
-              />
-            </RadioGroup>
-          </FormControl>
+          <SessionMode
+            mode={mode}
+            handleSessionModeChange={handleSessionModeChange}
+            sessions={{
+              tile: t('CENTER_SESSION.MODE_OF_SESSION'),
+              mode1: t('CENTER_SESSION.ONLINE'),
+              mode2: t('CENTER_SESSION.OFFLINE'),
+            }}
+          />
         </Box>
-
-        <Box sx={{ mt: 2 }}>
-          <FormControl fullWidth>
-            <InputLabel
-              style={{ color: theme?.palette?.warning['A200'] }}
-              id="demo-simple-select-label"
-            >
-              {t('CENTER_SESSION.SUBJECT')}
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Subject"
-              style={{ borderRadius: '4px' }}
-            >
-              {/* <MenuItem value={'Mathematics'}>Mathematics</MenuItem> */}
-            </Select>
-          </FormControl>
-        </Box>
+        {clickedBox === 'PLANNED_SESSION' && (
+          <Box sx={{ mt: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel
+                style={{ color: theme?.palette?.warning['A200'] }}
+                id="demo-simple-select-label"
+              >
+                {t('CENTER_SESSION.SUBJECT')}
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Subject"
+                style={{ borderRadius: '4px' }}
+              >
+                {/* <MenuItem value={'Mathematics'}>Mathematics</MenuItem> */}
+              </Select>
+            </FormControl>
+          </Box>
+        )}
 
         {mode === sessionMode.ONLINE && (
           <>
-            <Box sx={{ mt: 2 }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  {t('CENTER_SESSION.MEETING_LINK')}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Meeting Link"
+            {clickedBox === 'EXTRA_SESSION' && (
+              <>
+                <Box
+                  sx={{
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: theme?.palette?.warning['300'],
+                    mt: 1.5,
+                  }}
                 >
-                  {/* <MenuItem value={'Link1'}>Link 1</MenuItem> */}
-                </Select>
-              </FormControl>
+                  Set-Up
+                </Box>
+              </>
+            )}
+            <Box sx={{ mt: 2 }}>
+              <TextField
+                id="outlined-basic"
+                label={t('CENTER_SESSION.MEETING_LINK')}
+                variant="outlined"
+              />
             </Box>
             <Box sx={{ mt: 2 }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  {t('CENTER_SESSION.MEETING_PASSCODE')}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Meeting Passcode"
-                >
-                  {/* <MenuItem value={'Passcode1'}>Passcode 1</MenuItem> */}
-                </Select>
-              </FormControl>
+              <TextField
+                id="outlined-basic"
+                label={t('CENTER_SESSION.MEETING_PASSCODE')}
+                variant="outlined"
+              />
             </Box>
           </>
         )}
+        {clickedBox === 'EXTRA_SESSION' && (
+          <Box sx={{ mt: 2 }}>
+            <Box
+              sx={{
+                fontSize: '14px',
+                fontWeight: '500',
+                color: theme?.palette?.warning['300'],
+              }}
+            >
+              Session Details
+            </Box>
+            <Box sx={{ mt: 2 }}>
+              <TextField
+                id="outlined-basic"
+                label="Session Title"
+                variant="outlined"
+              />
+            </Box>
+          </Box>
+        )}
+
+        {clickedBox === 'EXTRA_SESSION' && (
+          <>
+            <Box sx={{ mt: 2 }}>
+              <SessionMode
+                mode={type}
+                handleSessionModeChange={handleSessionTypeChange}
+                sessions={{
+                  tile: 'Type of Session',
+                  mode1: 'Repeating',
+                  mode2: 'Just Once',
+                }}
+              />
+              {type === sessionType.JUST && (
+                <Box sx={{ mt: 3 }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Stack spacing={3}>
+                      <MobileDatePicker
+                        label="Date"
+                        value={date}
+                        onChange={handleChange}
+                        format="DD MMM, YYYY"
+                        sx={{ borderRadius: '4px' }}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
+                </Box>
+              )}
+            </Box>
+          </>
+        )}
+
         <Box sx={{ mt: 2 }}>
           <Grid container spacing={2}>
             <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
@@ -194,40 +212,42 @@ const PlannedSession: React.FC<PlannedModalProps> = ({ removeModal }) => {
           </Grid>
         </Box>
 
-        <Box sx={{ mt: 2 }}>
-          <Grid container spacing={2}>
-            <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-              <Box sx={{ mt: 3 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <Stack spacing={3}>
-                    <MobileDatePicker
-                      label="Start Date"
-                      value={date}
-                      onChange={handleChange}
-                      format="DD MMM, YYYY"
-                      sx={{ borderRadius: '4px' }}
-                    />
-                  </Stack>
-                </LocalizationProvider>
-              </Box>
+        {type !== sessionType.JUST && (
+          <Box sx={{ mt: 2 }}>
+            <Grid container spacing={2}>
+              <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Box sx={{ mt: 3 }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Stack spacing={3}>
+                      <MobileDatePicker
+                        label="Start Date"
+                        value={date}
+                        onChange={handleChange}
+                        format="DD MMM, YYYY"
+                        sx={{ borderRadius: '4px' }}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
+                </Box>
+              </Grid>
+              <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Box sx={{ mt: 3 }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Stack spacing={3}>
+                      <MobileDatePicker
+                        label="End Time"
+                        value={date}
+                        onChange={handleChange}
+                        format="DD MMM, YYYY"
+                        sx={{ borderRadius: '4px' }}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
+                </Box>
+              </Grid>
             </Grid>
-            <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-              <Box sx={{ mt: 3 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <Stack spacing={3}>
-                    <MobileDatePicker
-                      label="End Time"
-                      value={date}
-                      onChange={handleChange}
-                      format="DD MMM, YYYY"
-                      sx={{ borderRadius: '4px' }}
-                    />
-                  </Stack>
-                </LocalizationProvider>
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
+          </Box>
+        )}
 
         <Box
           sx={{
@@ -270,7 +290,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({ removeModal }) => {
             className="text-1E"
             endIcon={<AddIcon />}
           >
-            {t('COMMON.SCHEDULE_NEW')}
+            {t('CENTER_SESSION.ADD_SESSION')}
           </Button>
         </Box>
       </Box>
