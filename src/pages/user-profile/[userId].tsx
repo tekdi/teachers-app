@@ -34,7 +34,7 @@ import Modal from '@mui/material/Modal';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import ReactGA from 'react-ga4';
 import { accessControl } from '../../../app.config';
-import { getLabelForValue } from '@/utils/Helper';
+import { getLabelForValue, toPascalCase } from '@/utils/Helper';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
@@ -544,7 +544,7 @@ const TeacherProfile = () => {
                         className="text-dark-grey two-line-text"
                         mr={'40px'}
                       >
-                        {userData?.name}
+                        {toPascalCase(userData?.name)}
                       </Typography>
                     </Box>
                   </Box>
@@ -660,13 +660,8 @@ const TeacherProfile = () => {
                             sx={{ wordBreak: 'break-word' }}
                             color={theme.palette.warning['500']}
                           >
-                            {item?.label && item.name
-                              ? t(
-                                  `FIELDS.${item.name.toUpperCase()}`,
-                                  item.label
-                                )
-                              : item.label}
-                            {/* {item?.label} */}
+                            {item?.label &&
+                              t(`FIELDS.${item.label}`, item.label)}
                           </Typography>
                           <Box
                             mt={2}
@@ -719,21 +714,16 @@ const TeacherProfile = () => {
                             letterSpacing={'0.5px'}
                             color={theme.palette.warning['500']}
                           >
-                            {item?.label && item.name
-                              ? t(
-                                  `FIELDS.${item.name.toUpperCase()}`,
-                                  item.label
-                                )
-                              : item.label}
-                            {/* {item.label} */}
-                          </Typography>
+                            {item?.label &&
+                              t(`FIELDS.${item.label}`, item.label)}
+                          </Typography>  {/* No of cluster */}
                           <Typography
                             variant="h4"
                             margin={0}
                             color={theme.palette.warning.A200}
                             sx={{ wordBreak: 'break-word' }}
                           >
-                            {item.value}
+                            {item.value ? toPascalCase(item.value): t('ATTENDANCE.N/A')}
                           </Typography>
                         </Grid>
                       );
@@ -749,13 +739,7 @@ const TeacherProfile = () => {
                             letterSpacing={'0.5px'}
                             color={theme.palette.warning['500']}
                           >
-                            {item?.label && item.name
-                              ? t(
-                                  `FIELDS.${item.name.toUpperCase()}`,
-                                  item.label
-                                )
-                              : item.label}
-                            {/* {item.label} */}
+                            {item?.label && t(`FIELDS.${item.label}`, item.label)}
                           </Typography>
                           <Typography
                             variant="h4"
@@ -763,7 +747,8 @@ const TeacherProfile = () => {
                             color={theme.palette.warning.A200}
                             sx={{ wordBreak: 'break-word' }}
                           >
-                            {getLabelForValue(item, item.value[0])}
+                            {item.value? toPascalCase(getLabelForValue(item, item.value)): t('ATTENDANCE.N/A')}{' '}
+                            {/* apply elipses/ truncating here */}
                           </Typography>
                         </Grid>
                       );
