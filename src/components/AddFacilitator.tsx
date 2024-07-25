@@ -13,10 +13,12 @@ import { IChangeEvent } from '@rjsf/core';
 import ISubmitEvent from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import SendCredentialModal from '@/components/SendCredentialModal';
-import SimpleModal from '@/components/SimpleModal';
-import { getFormRead } from '@/services/CreateUserService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTranslation } from 'react-i18next';
+import { createUser, getFormRead } from '@/services/CreateUserService';
+import { RoleId } from '@/utils/app.constant';
+import SimpleModal from '@/components/SimpleModal';
+import { generateUsernameAndPassword } from '@/utils/Helper';
+import { useTranslation } from 'next-i18next';
 
 interface AddFacilitatorModalprops {
   open: boolean;
@@ -27,6 +29,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   onClose,
 }) => {
   const [schema, setSchema] = React.useState<any>();
+  const [openModal, setOpenModal] = React.useState(false);
   const [uiSchema, setUiSchema] = React.useState<any>();
   const { t } = useTranslation();
 
@@ -84,11 +87,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     getAddLearnerFormData();
   }, []);
 
-  const handleSubmit = (
+  const handleSubmit = async (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
-    // setOpenModal(true);
+    setOpenModal(true);
     const target = event.target as HTMLFormElement;
     const elementsArray = Array.from(target.elements);
 
@@ -104,7 +107,77 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         return;
       }
     }
-    console.log('Form data submitted:', data.formData);
+
+    const formData = data.formData;
+    console.log('Form data submitted:', formData);
+    const schemaProperties = schema.properties;
+
+    const { username, password } = generateUsernameAndPassword('MH', 'F');
+
+    let apiBody: any = {
+      username: username,
+      password: password,
+      tenantCohortRoleMapping: [
+        {
+          tenantId: 'ef99949b-7f3a-4a5f-806a-e67e683e38f3',
+          roleId: RoleId.TEACHER,
+          cohortId: formData?.assignCenters,
+        },
+      ],
+      customFields: [],
+    };
+
+    Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
+      const fieldSchema = schemaProperties[fieldKey];
+      const fieldId = fieldSchema?.fieldId;
+      console.log(
+        `FieldID: ${fieldId}, FieldValue: ${fieldValue}, type: ${typeof fieldValue}`
+      );
+
+      if (fieldId === null || fieldId === 'null') {
+        if (typeof fieldValue !== 'object') {
+          apiBody[fieldKey] = fieldValue;
+        }
+      } else {
+        if (
+          fieldSchema?.hasOwnProperty('isDropdown') ||
+          fieldSchema.hasOwnProperty('isCheckbox')
+        ) {
+          apiBody.customFields.push({
+            fieldId: fieldId,
+            value: [String(fieldValue)],
+          });
+        } else {
+          apiBody.customFields.push({
+            fieldId: fieldId,
+            value: String(fieldValue),
+          });
+        }
+      }
+    });
+
+    if (typeof window !== 'undefined' && window.localStorage) {
+      var teamLeaderData = JSON.parse(
+        localStorage.getItem('teamLeadApp') || ''
+      );
+      console.log(teamLeaderData);
+    }
+    // apiBody.customFields.push({
+    //   fieldId: teamLeaderData?.state?.blockId,
+    //   value: [teamLeaderData?.state?.blockCode],
+    // });
+    // apiBody.customFields.push({
+    //   fieldId: teamLeaderData?.state?.stateId,
+    //   value: [teamLeaderData?.state?.stateCode],
+    // });
+    // apiBody.customFields.push({
+    //   fieldId: teamLeaderData?.state?.districtId,
+    //   value: [teamLeaderData?.state?.districtCode],
+    // });
+    console.log(apiBody);
+
+    const response = await createUser(apiBody);
+    console.log(response);
   };
 
   const handleChange = (event: IChangeEvent<any>) => {
@@ -113,6 +186,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
+  };
+
+  const onCloseModal = () => {
+    setOpenModal(false);
+    onClose();
   };
 
   return (
@@ -133,10 +211,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             widgets={{}}
             showErrorList={true}
             customFields={customFields}
-            // showTwoButtons={true}
           />
         )}
       </SimpleModal>
+
+      <SendCredentialModal open={openModal} onClose={onCloseModal} />
     </>
   );
 };

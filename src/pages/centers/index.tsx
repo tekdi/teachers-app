@@ -37,6 +37,7 @@ import useStore from '@/store/store';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { ArrowDropDown, Search } from '@mui/icons-material';
+import teamLeadStore from '@/store/mangageTLStore';
 
 const TeachingCenters = () => {
   const [loading, setLoading] = useState(false);
@@ -69,6 +70,26 @@ const TeachingCenters = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const TLstore = teamLeadStore();
+  const setDistrictCode = teamLeadStore(
+    (state: { setDistrictCode: any }) => state.setDistrictCode
+  );
+  const setDistrictFieldId = teamLeadStore(
+    (state: { setDistrictFieldId: any }) => state.setDistrictFieldId
+  );
+  const setStateCode = teamLeadStore(
+    (state: { setStateCode: any }) => state.setStateCode
+  );
+  const setStateFieldId = teamLeadStore(
+    (state: { setStateFieldId: any }) => state.setStateFieldId
+  );
+  const setBlockCode = teamLeadStore(
+    (state: { setBlockCode: any }) => state.setBlockCode
+  );
+  const setBlockFieldId = teamLeadStore(
+    (state: { blockFieldId: any }) => state.blockFieldId
+  );
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -107,12 +128,25 @@ const TeachingCenters = () => {
               const stateField = block?.customField.find(
                 (field: any) => field.label === 'State'
               );
+              setStateCode(stateField.code);
+              // setStateFieldId(stateField.fieldId);
+
               const districtField = block?.customField.find(
                 (field: any) => field.label === 'District'
               );
+              setDistrictCode(districtField.code);
+              // setDistrictFieldId(districtField.fieldId);
+
+              const blockField = block?.customField.find(
+                (field: any) => field.label === 'Block'
+              );
+              setBlockCode(blockField.code);
+              // setBlockFieldId(blockField.fieldId);
 
               const state = stateField ? stateField.value : '';
+
               const district = districtField ? districtField.value : '';
+
               return { blockName, blockId, state, district };
             });
             console.log(blockData);
