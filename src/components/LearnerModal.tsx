@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { toPascalCase } from '@/utils/Helper';
 
 const LearnerModal = ({
   userId,
@@ -46,16 +47,16 @@ const LearnerModal = ({
       (field.type === 'radio' && field.options && field.value.length)
     ) {
       const selectedOption = field?.options?.find(
-        (option: any) => option.value === field.value[0]
+        (option: any) => option.value === field.value
       );
       return {
         ...field,
-        displayValue: selectedOption ? selectedOption?.label : field.value[0],
+        displayValue: selectedOption ? selectedOption?.label : field.value,
       };
     }
     return {
       ...field,
-      displayValue: field.value[0],
+      displayValue: field.value,
     };
   });
 
@@ -131,7 +132,7 @@ const LearnerModal = ({
                           margin={0}
                           color={theme.palette.warning['A200']}
                         >
-                          {userName}
+                          {userName ? toPascalCase(userName) : ''}
                         </Typography>
                       </Box>
                     </Grid>
@@ -145,14 +146,12 @@ const LearnerModal = ({
                             fontWeight={'600'}
                             color={theme.palette.warning['500']}
                           >
-                            {item?.label && item.name
+                            {item?.label
                               ? t(
-                                  `FIELDS.${item.name.toUpperCase()}`,
+                                  `FIELDS.${item.label.toUpperCase()}`,
                                   item.label
                                 )
                               : item.label}
-
-                            {/* {item.label} */}
                           </Typography>
                           {/* <Box display="flex"> */}
                           <Typography
@@ -168,8 +167,10 @@ const LearnerModal = ({
                             // noWrap
                           >
                             {Array.isArray(item.displayValue)
-                              ? item.displayValue.join(', ')
-                              : item?.displayValue}
+                              ? toPascalCase(item.displayValue.join(', '))
+                              : item?.displayValue
+                                ? toPascalCase(item.displayValue)
+                                : t('ATTENDANCE.N/A')}
                           </Typography>
                           {/* </Box> */}
                         </Grid>
@@ -197,7 +198,7 @@ const LearnerModal = ({
                             whiteSpace: 'normal',
                           }}
                         >
-                          {contactNumber ? contactNumber : ''}
+                          {contactNumber ? contactNumber : t('ATTENDANCE.N/A')}
                         </Typography>
                       </Box>
                     </Grid>
