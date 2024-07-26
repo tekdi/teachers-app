@@ -49,6 +49,7 @@ export const GenerateSchemaAndUiSchema = (
     switch (type) {
       case 'text':
         fieldSchema.type = 'string';
+        fieldUiSchema['ui:help'] = t(`FORM.${field?.hint}`);
         break;
       case 'email':
         fieldSchema.type = 'string';

@@ -143,6 +143,12 @@ export interface SessionsModalProps {
 
 export interface PlannedModalProps {
   removeModal?: () => void;
+  clickedBox?: String | null;
+}
+
+export interface ScheduleModalProps {
+  handleClick?: (selection: string) => void;
+  clickedBox?: String | null;
 }
 
 export interface AttendanceStatusListProps {
@@ -177,7 +183,15 @@ export interface OverallAttendancePercentageProps {
   };
   facets: Array<string>;
 }
-
+export interface SessionModeProps {
+  handleSessionModeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  mode: string;
+  sessions: {
+    tile: string;
+    mode1: string;
+    mode2: string;
+  };
+}
 export interface LearnerAttendanceProps {
   limit: number;
   page: number;
@@ -329,6 +343,7 @@ export interface Session {
   teacherName: string;
   topic?: string;
   subtopic?: string;
+  url?: string;
 }
 
 export interface SessionCardFooterProps {

@@ -11,12 +11,14 @@ export const getSessions = (cohortId: string) => {
       teacherName: 'Mahima Shastri',
       topic: 'real numbers',
       subtopic: 'irrational numbers',
+      url: 'https://zoom.us/j/92735086013?a3t2172..',
     },
     {
       id: 2,
       subject: 'Mathematics',
       time: '11 am - 12 pm',
       teacherName: 'vivek kasture',
+      url: 'https://zoom.us/j/92735086013?a3t2172',
     },
     {
       id: 3,

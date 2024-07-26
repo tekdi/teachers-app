@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 
 import { Box } from '@mui/material';
+import { ScheduleModalProps } from '../utils/Interfaces';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
-const Schedule = () => {
+const Schedule: React.FC<ScheduleModalProps> = ({
+  handleClick,
+  clickedBox,
+}) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const [clickedBox, setClickedBox] = useState<string | null>(null);
-
-  const handleClick = (selection: string) => {
-    setClickedBox(selection);
-  };
 
   return (
     <>
@@ -24,7 +23,7 @@ const Schedule = () => {
             mb: 2,
             cursor: 'pointer',
           }}
-          onClick={() => handleClick('PLANNED_SESSION')}
+          onClick={() => handleClick?.('PLANNED_SESSION')}
         >
           <Box
             sx={{
@@ -45,7 +44,7 @@ const Schedule = () => {
             mb: 2,
             cursor: 'pointer',
           }}
-          onClick={() => handleClick('EXTRA_SESSION')}
+          onClick={() => handleClick?.('EXTRA_SESSION')}
         >
           <Box
             sx={{
