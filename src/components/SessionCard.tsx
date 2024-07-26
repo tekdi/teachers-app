@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Snackbar, Typography } from '@mui/material';
 import { Session, SessionsCardProps } from '@/utils/Interfaces';
 
 import CenterSessionModal from './CenterSessionModal';
@@ -11,10 +11,24 @@ import { useTheme } from '@mui/material/styles';
 const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
   const theme = useTheme<any>();
   const [open, setOpen] = React.useState(false);
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleSnackbarClose = () => setSnackbarOpen(false);
 
-  console.log(data.url, 'shreyas');
+  const handleCopyUrl = () => {
+    if (data?.url) {
+      navigator.clipboard
+        .writeText(data.url)
+        .then(() => {
+          setSnackbarOpen(true);
+        })
+        .catch((err) => {
+          console.error('Failed to copy: ', err);
+        });
+    }
+  };
 
   return (
     <Box
@@ -57,6 +71,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
           justifyContent: 'space-between',
           gap: '30px',
         }}
+        onClick={handleCopyUrl}
       >
         <Box
           sx={{
@@ -67,11 +82,14 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
             textOverflow: 'ellipsis',
             overflow: 'hidden',
             width: '100%',
+            cursor: 'pointer',
           }}
         >
           {data?.url}
         </Box>
-        <ContentCopyIcon sx={{ fontSize: '18px', color: '#0D599E' }} />
+        <ContentCopyIcon
+          sx={{ fontSize: '18px', color: '#0D599E', cursor: 'pointer' }}
+        />
       </Box>
       <CenterSessionModal
         open={open}
@@ -83,6 +101,12 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
       </CenterSessionModal>
 
       <Box>{children}</Box>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        onClose={handleSnackbarClose}
+        message="URL copied to clipboard"
+      />
     </Box>
   );
 };
