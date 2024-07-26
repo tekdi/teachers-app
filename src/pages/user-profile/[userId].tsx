@@ -202,15 +202,15 @@ const TeacherProfile = () => {
   const teachSubjectsField = customFieldsData?.find(
     (field) => field.name === 'subject_taught'
   );
-  const mainSubjectsField = customFieldsData?.find(
+  const mainSubjectsField: any = customFieldsData?.find(
     (field) => field.name === 'main_subject'
   );
 
-  const teachSubjects: string[] = Array.isArray(teachSubjectsField?.value)
-    ? teachSubjectsField?.value
+  const teachSubjects: string[] = teachSubjectsField
+    ? teachSubjectsField?.value.split(',')
     : [];
-  const mainSubjects: string[] = Array.isArray(mainSubjectsField?.value)
-    ? mainSubjectsField?.value
+  const mainSubjects: string[] = mainSubjectsField
+    ? mainSubjectsField?.value.split(',')
     : [];
 
   // Find mutual and remaining subjects
@@ -661,7 +661,7 @@ const TeacherProfile = () => {
                             color={theme.palette.warning['500']}
                           >
                             {item?.label &&
-                              t(`FIELDS.${item.label}`, item.label)}
+                              t(`FORM.${item.label}`, item.label)}
                           </Typography>
                           <Box
                             mt={2}
@@ -715,7 +715,7 @@ const TeacherProfile = () => {
                             color={theme.palette.warning['500']}
                           >
                             {item?.label &&
-                              t(`FIELDS.${item.label}`, item.label)}
+                              t(`FORM.${item.label}`, item.label)}
                           </Typography>  {/* No of cluster */}
                           <Typography
                             variant="h4"
@@ -723,7 +723,7 @@ const TeacherProfile = () => {
                             color={theme.palette.warning.A200}
                             sx={{ wordBreak: 'break-word' }}
                           >
-                            {item.value ? toPascalCase(item.value): t('ATTENDANCE.N/A')}
+                            {item.value ? toPascalCase(item.value): "-"}
                           </Typography>
                         </Grid>
                       );
@@ -739,7 +739,7 @@ const TeacherProfile = () => {
                             letterSpacing={'0.5px'}
                             color={theme.palette.warning['500']}
                           >
-                            {item?.label && t(`FIELDS.${item.label}`, item.label)}
+                            {item?.label && t(`FORM.${item.label}`, item.label)}
                           </Typography>
                           <Typography
                             variant="h4"
@@ -747,7 +747,7 @@ const TeacherProfile = () => {
                             color={theme.palette.warning.A200}
                             sx={{ wordBreak: 'break-word' }}
                           >
-                            {item.value? toPascalCase(getLabelForValue(item, item.value)): t('ATTENDANCE.N/A')}{' '}
+                            {item.value? toPascalCase(getLabelForValue(item, item.value)): "-"}{' '}
                             {/* apply elipses/ truncating here */}
                           </Typography>
                         </Grid>
@@ -907,7 +907,7 @@ const TeacherProfile = () => {
                               label={
                                 field?.label && field.name
                                   ? t(
-                                      `FIELDS.${field.name.toUpperCase()}`,
+                                      `FORM.${field.name.toUpperCase()}`,
                                       field.label
                                     )
                                   : field.label
@@ -936,7 +936,7 @@ const TeacherProfile = () => {
                               label={
                                 field?.label && field.name
                                   ? t(
-                                      `FIELDS.${field.name.toUpperCase()}`,
+                                      `FORM.${field.name.toUpperCase()}`,
                                       field.label
                                     )
                                   : field.label
@@ -977,7 +977,7 @@ const TeacherProfile = () => {
                               >
                                 {field?.label && field.name
                                   ? t(
-                                      `FIELDS.${field.name.toUpperCase()}`,
+                                      `FORM.${field.name.toUpperCase()}`,
                                       field.label
                                     )
                                   : field.label}
@@ -1017,7 +1017,7 @@ const TeacherProfile = () => {
                                 >
                                   {field?.label && field.name
                                     ? t(
-                                        `FIELDS.${field.name.toUpperCase()}`,
+                                        `FORM.${field.name.toUpperCase()}`,
                                         field.label
                                       )
                                     : field.label}
@@ -1029,7 +1029,7 @@ const TeacherProfile = () => {
                                   label={
                                     field?.label && field.name
                                       ? t(
-                                          `FIELDS.${field.name.toUpperCase()}`,
+                                          `FORM.${field.name.toUpperCase()}`,
                                           field.label
                                         )
                                       : field.label
@@ -1070,7 +1070,7 @@ const TeacherProfile = () => {
                               >
                                 {field?.label && field.name
                                   ? t(
-                                      `FIELDS.${field.name.toUpperCase()}`,
+                                      `FORM.${field.name.toUpperCase()}`,
                                       field.label
                                     )
                                   : field.label}
