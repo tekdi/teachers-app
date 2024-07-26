@@ -38,11 +38,11 @@ import Tabs from '@mui/material/Tabs';
 import WeekCalender from '@/components/WeekCalender';
 import { getCohortDetails } from '@/services/CohortServices';
 import { getSessions } from '@/services/Sessionservice';
+import manageUserStore from '@/store/manageUserStore';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import manageUserStore from '@/store/manageUserStore';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -89,6 +89,12 @@ const TeachingCenterDetails = () => {
   const [openSchedule, setOpenSchedule] = React.useState(false);
 
   const [deleteModal, setDeleteModal] = React.useState(false);
+
+  const [clickedBox, setClickedBox] = useState<string | null>(null);
+
+  const handleClick = (selection: string) => {
+    setClickedBox(selection);
+  };
 
   const removeModal = () => {
     setDeleteModal(true);
@@ -361,7 +367,9 @@ const TeachingCenterDetails = () => {
               deleteModal
                 ? t('CENTER_SESSION.DELETE_SESSION')
                 : openSchedule
-                  ? t('CENTER_SESSION.PLANNED_SESSION')
+                  ? clickedBox === t('CENTER_SESSION.EXTRA_SESSION')
+                    ? 'Extra Session'
+                    : t('CENTER_SESSION.PLANNED_SESSION')
                   : t('CENTER_SESSION.SCHEDULE')
             }
             primary={
@@ -383,9 +391,12 @@ const TeachingCenterDetails = () => {
             {deleteModal ? (
               <DeleteSession />
             ) : openSchedule ? (
-              <PlannedSession removeModal={removeModal} />
+              <PlannedSession
+                clickedBox={clickedBox}
+                removeModal={removeModal}
+              />
             ) : (
-              <Schedule />
+              <Schedule clickedBox={clickedBox} handleClick={handleClick} />
             )}
           </CenterSessionModal>
 
