@@ -22,8 +22,13 @@ import { showToastMessage } from './Toastify';
 interface AddLearnerModalProps {
   open: boolean;
   onClose: () => void;
+  onLearnerAdded: () => void;
 }
-const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
+const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
+  open,
+  onClose,
+  onLearnerAdded,
+}) => {
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [credentials, setCredentials] = React.useState({
@@ -148,8 +153,13 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({ open, onClose }) => {
     console.log(apiBody);
 
     const response = await createUser(apiBody);
-    onClose();
-    showToastMessage(t('COMMON.LEARNER_CREATED_SUCCESSFULLY'), 'success');
+    if (response) {
+      onClose();
+      onLearnerAdded();
+      showToastMessage(t('COMMON.LEARNER_CREATED_SUCCESSFULLY'), 'success');
+    } else {
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'success');
+    }
   };
 
   const handleChange = (event: IChangeEvent<any>) => {

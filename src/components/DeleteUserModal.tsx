@@ -27,12 +27,14 @@ interface DeleteUserModalProps {
   userId: string;
   open: boolean;
   onClose: () => void;
+  onUserDelete: () => void;
 }
 const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
   type,
   userId,
   open,
   onClose,
+  onUserDelete,
 }) => {
   const store = manageUserStore();
   const { t } = useTranslation();
@@ -59,7 +61,6 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
     { value: 'Duplicated User', label: 'Duplicated User' },
     // { value: 'Other', label: 'Other' },
   ];
-  
 
   const handleRadioChange = (value: string) => {
     console.log(value);
@@ -88,6 +89,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
 
     setSelectedValue('');
     onClose();
+    onUserDelete();
     showToastMessage(t('COMMON.USER_DELETED_PERMANENTLY'), 'success');
   };
 

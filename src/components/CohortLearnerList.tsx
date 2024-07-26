@@ -23,15 +23,19 @@ interface CohortLearnerListProp {
   cohortId: any;
   reloadState: boolean;
   setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
+  isLearnerAdded: boolean;
 }
 
 const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   cohortId,
   reloadState,
   setReloadState,
+  isLearnerAdded,
 }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userData, setUserData] = React.useState<UserDataProps[]>();
+  const [isLearnerDeleted, setIsLearnerDeleted] =
+    React.useState<boolean>(false);
 
   const { t } = useTranslation();
 
@@ -73,7 +77,11 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       }
     };
     getCohortMemberList();
-  }, [cohortId, reloadState]);
+  }, [cohortId, reloadState, isLearnerAdded, isLearnerDeleted]);
+
+  const handleLearnerDelete = () => {
+    setIsLearnerDeleted(true);
+  };
 
   console.log('userData', userData);
   return (
@@ -85,7 +93,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
           {userData?.map((data: any) => {
             return (
               <LearnersListItem
-               type={Role.STUDENT}
+                type={Role.STUDENT}
                 key={data.userId}
                 userId={data.userId}
                 learnerName={data.name}
@@ -95,7 +103,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 statusReason={data.statusReason}
                 reloadState={reloadState}
                 setReloadState={setReloadState}
-                showMiniProfile= {true}
+                showMiniProfile={true}
+                onLearnerDelete={handleLearnerDelete}
               />
             );
           })}
