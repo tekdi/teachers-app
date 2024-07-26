@@ -44,7 +44,7 @@ import {
   getCohortAttendance,
 } from '@/services/AttendanceService';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
-import { formatSelectedDate, getTodayDate } from '@/utils/Helper';
+import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
 
 import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
@@ -316,12 +316,18 @@ const LearnerProfile: React.FC = () => {
         );
         return {
           ...field,
-          displayValue: selectedOption ? selectedOption?.label : field.value[0],
+          displayValue: selectedOption
+            ? selectedOption.label
+            : field.value
+              ? toPascalCase(field.value)
+              : "-",
         };
       }
       return {
         ...field,
-        displayValue: field.value[0],
+        displayValue: field.value
+          ? toPascalCase(field.value)
+          : "-",
       };
     });
 
@@ -664,8 +670,8 @@ const LearnerProfile: React.FC = () => {
     const userDetails = data;
     try {
       if (userId) {
-        console.log("HELLO");
-        
+        console.log('HELLO');
+
         const response = await editEditUser(user_id, userDetails);
         ReactGA.event('edit-learner-profile-successful', { userId: userId });
 
@@ -1153,8 +1159,8 @@ const LearnerProfile: React.FC = () => {
                         }}
                         margin={0}
                       >
-                        {item?.label && item.name
-                          ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
+                        {item?.label
+                          ? t(`FORM.${item.label.toUpperCase()}`, item.label)
                           : item.label}
                       </Typography>
 
@@ -1426,11 +1432,10 @@ const LearnerProfile: React.FC = () => {
                       type="text"
                       sx={{ marginTop: '20px' }}
                       fullWidth
-                      name={field.name}
+                      name={field.label}
                       label={
-                        field?.label && field.name
-                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
-                          : field.label
+                        field?.label &&
+                        t(`FORM.${field.label.toUpperCase()}`, field.label)
                       }
                       variant="outlined"
                       inputProps={{
@@ -1451,11 +1456,10 @@ const LearnerProfile: React.FC = () => {
                       type="number"
                       sx={{ marginTop: '20px' }}
                       fullWidth
-                      name={field.name}
+                      name={field.label}
                       label={
-                        field?.label && field.name
-                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
-                          : field.label
+                        field?.label &&
+                        t(`FORM.${field.label.toUpperCase()}`, field.label)
                       }
                       variant="outlined"
                       value={fieldValue}
@@ -1491,9 +1495,8 @@ const LearnerProfile: React.FC = () => {
                         margin={0}
                         color={theme.palette.warning.A200}
                       >
-                        {field?.label && field.name
-                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
-                          : field.label}
+                        {field?.label &&
+                          t(`FORM.${field.label.toUpperCase()}`, field.label)}
                       </Typography>
                       {field.options?.map((option: any) => (
                         <FormGroup key={option.value}>
@@ -1526,12 +1529,11 @@ const LearnerProfile: React.FC = () => {
                     <Box marginTop={3} textAlign={'start'}>
                       <FormControl fullWidth>
                         <InputLabel id={`select-label-${field.fieldId}`}>
-                          {field?.label && field.name
-                            ? t(
-                                `FIELDS.${field.name.toUpperCase()}`,
-                                field.label
-                              )
-                            : field.label}
+                          {field?.label &&
+                            t(
+                              `FORM.${field.label.toUpperCase()}`,
+                              field.label
+                            )}
                         </InputLabel>
                         <Select
                           error={isError}
@@ -1539,12 +1541,11 @@ const LearnerProfile: React.FC = () => {
                           id={`select-${field.fieldId}`}
                           value={fieldValue}
                           label={
-                            field?.label && field.name
-                              ? t(
-                                  `FIELDS.${field.name.toUpperCase()}`,
-                                  field.label
-                                )
-                              : field.label
+                            field?.label &&
+                            t(
+                              `FORM.${field.label.toUpperCase()}`,
+                              field.label
+                            )
                           }
                           onChange={(e) =>
                             handleDropdownChange(field.fieldId, e.target.value)
@@ -1573,9 +1574,8 @@ const LearnerProfile: React.FC = () => {
                         margin={0}
                         color={theme.palette.warning.A200}
                       >
-                        {field?.label && field.name
-                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
-                          : field.label}
+                        {field?.label &&
+                          t(`FORM.${field.label.toUpperCase()}`, field.label)}
                       </Typography>
                       <RadioGroup
                         name={field.fieldId}

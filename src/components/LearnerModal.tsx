@@ -170,7 +170,7 @@ const LearnerModal = ({
                               ? toPascalCase(item.displayValue.join(', '))
                               : item?.displayValue
                                 ? toPascalCase(item.displayValue)
-                                : t('ATTENDANCE.N/A')}
+                                : "-"}
                           </Typography>
                           {/* </Box> */}
                         </Grid>
@@ -198,7 +198,7 @@ const LearnerModal = ({
                             whiteSpace: 'normal',
                           }}
                         >
-                          {contactNumber ? contactNumber : t('ATTENDANCE.N/A')}
+                          {contactNumber ? contactNumber : "-"}
                         </Typography>
                       </Box>
                     </Grid>
