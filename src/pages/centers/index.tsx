@@ -63,6 +63,7 @@ const TeachingCenters = () => {
     React.useState(false);
   const handleFilterModalOpen = () => setFilterModalOpen(true);
   const handleFilterModalClose = () => setFilterModalOpen(false);
+  const [isCenterAdded, setIsCenterAdded] = useState(false);
 
   const store = useStore();
   const userRole = store.userRole;
@@ -125,6 +126,7 @@ const TeachingCenters = () => {
             const blockData = response.map((block: any) => {
               const blockName = block.cohortName;
               const blockId = block.cohortId;
+              localStorage.setItem('blockParentId', blockId);
               const stateField = block?.customField.find(
                 (field: any) => field.label === 'State'
               );
@@ -190,7 +192,11 @@ const TeachingCenters = () => {
       }
     };
     getCohortListForTL();
-  }, [isTeamLeader]);
+  }, [isTeamLeader, isCenterAdded]);
+
+  const handleCenterAdded = () => {
+    setIsCenterAdded(true);
+  };
 
   useEffect(() => {
     const filtered = centerData.filter((center) =>
@@ -393,6 +399,7 @@ const TeachingCenters = () => {
               <CreateCenterModal
                 open={openCreateCenterModal}
                 handleClose={handleCreateCenterClose}
+                onCenterAdded={handleCenterAdded}
               />
               <Box
                 className="linerGradient"

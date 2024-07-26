@@ -26,7 +26,7 @@ interface DynamicFormProps {
   widgets: {
     [key: string]: React.FC<WidgetProps<any, RJSFSchema, any>>;
   };
-  customFields: {
+  customFields?: {
     [key: string]: React.FC<RegistryFieldsType<any, RJSFSchema, any>>;
   };
   children?: ReactNode;
