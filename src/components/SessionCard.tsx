@@ -76,7 +76,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         <Box
           sx={{
             fontSize: '14px',
-            color: '#0D599E',
+            color: theme.palette.secondary.main,
             fontWeight: '500',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
@@ -88,7 +88,11 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
           {data?.url}
         </Box>
         <ContentCopyIcon
-          sx={{ fontSize: '18px', color: '#0D599E', cursor: 'pointer' }}
+          sx={{
+            fontSize: '18px',
+            color: theme.palette.secondary.main,
+            cursor: 'pointer',
+          }}
         />
       </Box>
       <CenterSessionModal
