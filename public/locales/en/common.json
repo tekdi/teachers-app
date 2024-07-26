@@ -394,7 +394,10 @@
     "REASON_FOR_DROP_OUT_FROM_SCHOOL": "Reason for drop out from School",
     "EMAIL": "Email",
     "YEAR_OF_JOINING_SCP": "Year of joining SCP",
-    "ASSIGN_CENTERS": "Assign Centers"
+    "ASSIGN_CENTERS": "Assign Centers",
+    "TYPE_OF_COHORT": "Type of cohort",
+    "UNIT_NAME": "Unit name",
+    "NOTE_THIS_WILL_BE_CENTER_NAME": "Note this will be Center name"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
