@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react';
-import { getMyCohortFacilitatorList, getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import {
+  getMyCohortFacilitatorList,
+  getMyCohortMemberList,
+} from '@/services/MyClassDetailsService';
 import {
   capitalizeEachWord,
   getFieldValue,
@@ -49,7 +52,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
           });
 
           console.log(response);
-          
+
           const resp = response?.result?.userDetails;
 
           if (resp) {
@@ -78,6 +81,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
     getCohortMemberList();
   }, [cohortId, reloadState]);
 
+  const onDelete = () => {};
+
   console.log('userData', userData);
   return (
     <div>
@@ -98,6 +103,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 reloadState={reloadState}
                 setReloadState={setReloadState}
                 showMiniProfile={false}
+                onLearnerDelete={onDelete}
               />
             );
           })}

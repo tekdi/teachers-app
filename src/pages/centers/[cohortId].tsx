@@ -91,6 +91,7 @@ const TeachingCenterDetails = () => {
   const [deleteModal, setDeleteModal] = React.useState(false);
 
   const [clickedBox, setClickedBox] = useState<string | null>(null);
+  const [isLearnerAdded, setIsLearnerAdded] = useState(false);
 
   const handleClick = (selection: string) => {
     setClickedBox(selection);
@@ -144,7 +145,7 @@ const TeachingCenterDetails = () => {
           const blockField = cohortData?.customField.find(
             (field: any) => field.label === 'Block'
           );
-          setBlockCode(blockField.code);
+          setBlockCode(blockField?.code);
           // setBlockId(blockField.fieldId);
 
           cohortData.address =
@@ -210,6 +211,10 @@ const TeachingCenterDetails = () => {
       router.push('/center-session');
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
+  };
+
+  const handleLearnerAdded = () => {
+    setIsLearnerAdded(true);
   };
 
   return (
@@ -511,11 +516,13 @@ const TeachingCenterDetails = () => {
                 cohortId={cohortId}
                 reloadState={reloadState}
                 setReloadState={setReloadState}
+                isLearnerAdded={isLearnerAdded}
               />
             </Box>
             <AddLearnerModal
               open={openAddLearnerModal}
               onClose={handleCloseAddLearnerModal}
+              onLearnerAdded={handleLearnerAdded}
             />
           </>
         )}

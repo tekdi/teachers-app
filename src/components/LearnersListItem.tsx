@@ -49,19 +49,20 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   setReloadState,
   block,
   center,
-  showMiniProfile
+  showMiniProfile,
+  onLearnerDelete,
 }) => {
   const [state, setState] = React.useState({
     bottom: false,
   });
   const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [isUserDeleted, setIsUserDeleted] = React.useState<boolean>(false);
   const [confirmationModalOpen, setConfirmationModalOpen] =
     React.useState<boolean>(false);
   const [
     confirmationModalReassignCentersOpen,
     setConfirmationModalReassignCentersOpen,
   ] = React.useState<boolean>(false);
-  
 
   const [learnerState, setLearnerState] = React.useState({
     loading: false,
@@ -85,7 +86,9 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     textDecorationColor: theme?.palette?.secondary.main,
     textDecorationThickness: '1px',
   }));
-  const setCohortLearnerDeleteId = manageUserStore((state) => state.setCohortLearnerDeleteId);
+  const setCohortLearnerDeleteId = manageUserStore(
+    (state) => state.setCohortLearnerDeleteId
+  );
 
   useEffect(() => {
     if (reloadState) {
@@ -99,7 +102,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     (event: React.KeyboardEvent | React.MouseEvent) => {
       setCohortLearnerDeleteId(cohortMembershipId);
       console.log(cohortMembershipId);
-      
+
       if (
         event.type === 'keydown' &&
         ((event as React.KeyboardEvent).key === 'Tab' ||
@@ -198,7 +201,6 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     try {
       setLoading(true);
       if (cohortMembershipId) {
-
         const memberStatus = Status.ARCHIVED;
         const membershipId = cohortMembershipId;
 
@@ -345,6 +347,11 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     return null;
   };
 
+  const handleUserDelete = () => {
+    setIsUserDeleted(true);
+    onLearnerDelete();
+  };
+
   return (
     <>
       {learnerState.loading ? (
@@ -393,7 +400,9 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 <CustomLink className="word-break" href="#">
                   <Typography
                     onClick={() => {
-                      showMiniProfile ? handleOpenModalLearner(userId!) : handleTeacherFullProfile(userId!);
+                      showMiniProfile
+                        ? handleOpenModalLearner(userId!)
+                        : handleTeacherFullProfile(userId!);
                       // ReactGA.event('teacher-details-link-clicked', {
                       //   userId: userId,
                       // });
@@ -502,85 +511,95 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       </Box>
 
       <BottomDrawer
-      toggleDrawer={toggleDrawer}
-      state={state}
-      listItemClick={listItemClick}
-      optionList={
-        block
-          ? [
-              {
-                label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
-                icon: (
-                  <LocationOnOutlinedIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'reassign-block-request',
-              },
-              {
-                label: t('COMMON.REASSIGN_CENTERS'),
-                icon: (
-                  <ApartmentIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'reassign-centers',
-              },
-              {
-                label: isDropout
-                  ? t('COMMON.UNMARK_DROP_OUT')
-                  : t('COMMON.MARK_DROP_OUT'),
-                icon: (
-                  <NoAccountsIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
-              },
-              {
-                label: t('COMMON.DELETE_USER'),
-                icon: (
-                  <DeleteOutlineIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'delete-User',
-              },
-            ].filter(option => type == Role.STUDENT || option.name !== 'mark-drop-out' && option.name !== 'unmark-drop-out')
-          : [
-              {
-                label: t('COMMON.REASSIGN_CENTERS'),
-                icon: (
-                  <ApartmentIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'reassign-centers',
-              },
-              {
-                label: isDropout
-                  ? t('COMMON.UNMARK_DROP_OUT')
-                  : t('COMMON.MARK_DROP_OUT'),
-                icon: (
-                  <NoAccountsIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
-              },
-              {
-                label: t('COMMON.DELETE_USER'),
-                icon: (
-                  <DeleteOutlineIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'delete-User',
-              },
-            ].filter(option => type == Role.STUDENT || option.name !== 'mark-drop-out' && option.name !== 'unmark-drop-out')
-      }
-      renderCustomContent={renderCustomContent}
-    />
+        toggleDrawer={toggleDrawer}
+        state={state}
+        listItemClick={listItemClick}
+        optionList={
+          block
+            ? [
+                {
+                  label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
+                  icon: (
+                    <LocationOnOutlinedIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'reassign-block-request',
+                },
+                {
+                  label: t('COMMON.REASSIGN_CENTERS'),
+                  icon: (
+                    <ApartmentIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'reassign-centers',
+                },
+                {
+                  label: isDropout
+                    ? t('COMMON.UNMARK_DROP_OUT')
+                    : t('COMMON.MARK_DROP_OUT'),
+                  icon: (
+                    <NoAccountsIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
+                },
+                {
+                  label: t('COMMON.DELETE_USER'),
+                  icon: (
+                    <DeleteOutlineIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'delete-User',
+                },
+              ].filter(
+                (option) =>
+                  type == Role.STUDENT ||
+                  (option.name !== 'mark-drop-out' &&
+                    option.name !== 'unmark-drop-out')
+              )
+            : [
+                {
+                  label: t('COMMON.REASSIGN_CENTERS'),
+                  icon: (
+                    <ApartmentIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'reassign-centers',
+                },
+                {
+                  label: isDropout
+                    ? t('COMMON.UNMARK_DROP_OUT')
+                    : t('COMMON.MARK_DROP_OUT'),
+                  icon: (
+                    <NoAccountsIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
+                },
+                {
+                  label: t('COMMON.DELETE_USER'),
+                  icon: (
+                    <DeleteOutlineIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'delete-User',
+                },
+              ].filter(
+                (option) =>
+                  type == Role.STUDENT ||
+                  (option.name !== 'mark-drop-out' &&
+                    option.name !== 'unmark-drop-out')
+              )
+        }
+        renderCustomContent={renderCustomContent}
+      />
 
       {isDropout ? (
         <DropOutModal
@@ -633,7 +652,13 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         isForLearner={true}
       />
 
-      <DeleteUserModal type={Role.STUDENT}  userId={userId} open={openDeleteUserModal} onClose={handleCloseModal} />
+      <DeleteUserModal
+        type={Role.STUDENT}
+        userId={userId}
+        open={openDeleteUserModal}
+        onClose={handleCloseModal}
+        onUserDelete={handleUserDelete}
+      />
     </>
   );
 };
