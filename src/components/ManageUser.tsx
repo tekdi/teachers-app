@@ -460,6 +460,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     setOpenFacilitatorModal(false);
   };
 
+  const handleDeleteUser = () => {};
   return (
     <>
       {/* <Header /> */}
@@ -776,6 +777,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               userId={userId}
               open={openDeleteUserModal}
               onClose={handleCloseModal}
+              onUserDelete={handleDeleteUser}
             />
             <SimpleModal
               primaryText={t('COMMON.OK')}

@@ -5,6 +5,7 @@ import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { withTheme } from '@rjsf/core';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import CustomRadioWidget from './CustomRadioWidget';
+import MultiSelectDropdown from './MultiSelectDropdown';
 import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
 import { useTranslation } from 'next-i18next';
 import { Button, Divider } from '@mui/material';
@@ -44,6 +45,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
+    MultiSelectDropdown: MultiSelectDropdown,
   };
   const { t } = useTranslation();
 

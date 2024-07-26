@@ -149,7 +149,7 @@ export const GenerateSchemaAndUiSchema = (
       if (maxSelections) {
         fieldSchema.maxItems = maxSelections;
       }
-      fieldUiSchema['ui:widget'] = 'select';
+      fieldUiSchema['ui:widget'] = 'MultiSelectDropdown';
     }
 
     if (!isMultiSelect && type === 'drop_down') {
