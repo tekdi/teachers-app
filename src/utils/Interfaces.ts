@@ -342,6 +342,7 @@ export interface Session {
   teacherName: string;
   topic?: string;
   subtopic?: string;
+  url?: string;
 }
 
 export interface SessionCardFooterProps {

@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { Session, SessionsCardProps } from '@/utils/Interfaces';
 
 import CenterSessionModal from './CenterSessionModal';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import PlannedSession from './PlannedSession';
 import React from 'react';
@@ -12,6 +13,9 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  console.log(data.url, 'shreyas');
+
   return (
     <Box
       sx={{
@@ -24,7 +28,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          padding: '8px 16px',
+          padding: '8px 16px 4px',
         }}
       >
         <Box>
@@ -45,6 +49,29 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
           </Typography>
         </Box>
         <EditOutlined onClick={handleOpen} sx={{ cursor: 'pointer' }} />
+      </Box>
+      <Box
+        sx={{
+          padding: '0px 16px 8px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          gap: '30px',
+        }}
+      >
+        <Box
+          sx={{
+            fontSize: '14px',
+            color: '#0D599E',
+            fontWeight: '500',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            width: '100%',
+          }}
+        >
+          {data?.url}
+        </Box>
+        <ContentCopyIcon sx={{ fontSize: '18px', color: '#0D599E' }} />
       </Box>
       <CenterSessionModal
         open={open}
