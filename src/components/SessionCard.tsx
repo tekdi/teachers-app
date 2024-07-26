@@ -1,7 +1,8 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Snackbar, Typography } from '@mui/material';
 import { Session, SessionsCardProps } from '@/utils/Interfaces';
 
 import CenterSessionModal from './CenterSessionModal';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import PlannedSession from './PlannedSession';
 import React from 'react';
@@ -10,8 +11,25 @@ import { useTheme } from '@mui/material/styles';
 const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
   const theme = useTheme<any>();
   const [open, setOpen] = React.useState(false);
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleSnackbarClose = () => setSnackbarOpen(false);
+
+  const handleCopyUrl = () => {
+    if (data?.url) {
+      navigator.clipboard
+        .writeText(data.url)
+        .then(() => {
+          setSnackbarOpen(true);
+        })
+        .catch((err) => {
+          console.error('Failed to copy: ', err);
+        });
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -24,7 +42,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          padding: '8px 16px',
+          padding: '8px 16px 4px',
         }}
       >
         <Box>
@@ -46,6 +64,37 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         </Box>
         <EditOutlined onClick={handleOpen} sx={{ cursor: 'pointer' }} />
       </Box>
+      <Box
+        sx={{
+          padding: '0px 16px 8px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          gap: '30px',
+        }}
+        onClick={handleCopyUrl}
+      >
+        <Box
+          sx={{
+            fontSize: '14px',
+            color: theme.palette.secondary.main,
+            fontWeight: '500',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            width: '100%',
+            cursor: 'pointer',
+          }}
+        >
+          {data?.url}
+        </Box>
+        <ContentCopyIcon
+          sx={{
+            fontSize: '18px',
+            color: theme.palette.secondary.main,
+            cursor: 'pointer',
+          }}
+        />
+      </Box>
       <CenterSessionModal
         open={open}
         handleClose={handleClose}
@@ -56,6 +105,12 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
       </CenterSessionModal>
 
       <Box>{children}</Box>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        onClose={handleSnackbarClose}
+        message="URL copied to clipboard"
+      />
     </Box>
   );
 };
