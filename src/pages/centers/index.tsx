@@ -398,8 +398,11 @@ const TeachingCenters = () => {
                 onCenterAdded={handleCenterAdded}
               />
               <Box
-                className="linerGradient"
-                sx={{ borderRadius: '16px', mt: 2 }}
+                sx={{
+                  borderRadius: '16px',
+                  mt: 2,
+                  background: theme.palette.action.selected,
+                }}
                 padding={'10px 16px 2px'}
               >
                 {accessGranted(
