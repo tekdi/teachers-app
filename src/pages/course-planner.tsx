@@ -55,7 +55,7 @@ const CoursePlanner = () => {
         width={'100%'}
       >
         <Typography textAlign={'left'} fontSize={'22px'}>
-          Course Plan
+          {t('COURSE_PLANNER.COURSE_PLANNER')}
         </Typography>
       </Box>
 
@@ -75,7 +75,7 @@ const CoursePlanner = () => {
                   }}
                 >
                   <MenuItem className="text-truncate">
-                    Khapari Dharmu (Chimur, Chandrap
+                    Khapari Dharmu (Chimur, Chandrap {/* will come from API */}
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -115,11 +115,11 @@ const CoursePlanner = () => {
           <Tabs
             value={value}
             onChange={handleChange}
-            textColor="inherit" // Use "inherit" to apply custom color
+            textColor="inherit"
             aria-label="secondary tabs example"
             sx={{
               fontSize: '14px',
-              borderBottom: '1px solid #EBE1D4',
+              borderBottom: `1px solid ${theme.palette.primary.contrastText}`,
 
               '& .MuiTab-root': {
                 color: '#4D4639',
@@ -140,22 +140,22 @@ const CoursePlanner = () => {
               },
             }}
           >
-            <Tab value={1} label="Foundation Course" />
-            <Tab value={2} label="Main Course" />
+            <Tab value={1} label={t('COURSE_PLANNER.FOUNDATION_COURSE')} />
+            <Tab value={2} label={t('COURSE_PLANNER.MAIN_COURSE')} />
           </Tabs>
         </Box>
         {value === 1 && (
           <Box sx={{ px: '16px', mt: 2 }}>
             <Box
               sx={{
-                background: '#FBF4E4',
+                background: theme.palette.action.selected,
                 padding: '14px',
                 borderRadius: '8px',
               }}
             >
               <Box
                 sx={{
-                  border: '1px solid #D0C5B4',
+                  border: `1px solid ${theme.palette.warning.A100}`,
                   borderRadius: '8px',
                   padding: '12px',
                   cursor: 'pointer',
@@ -182,19 +182,26 @@ const CoursePlanner = () => {
                           strokeWidth={12}
                           styles={buildStyles({
                             pathColor: '#06A816',
-                            trailColor: '#E6E6E6',
+                            trailColor: '#E2D9CC',
                             strokeLinecap: 'round',
-                            textColor: '#000',
+                            textColor: theme.palette.warning['300'],
                           })}
                         />
                       </Box>
-                      <Box sx={{ fontSize: '16px', color: '#1F1B13' }}>
-                        Mathematics
+                      <Box
+                        sx={{
+                          fontSize: '16px',
+                          color: theme.palette.warning['300'],
+                        }}
+                      >
+                        Mathematics {/*  will come form API */}
                       </Box>
                     </Box>
                   </Box>
                   <Box>
-                    <KeyboardArrowRightIcon sx={{ color: '#1F1B13' }} />
+                    <KeyboardArrowRightIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
                   </Box>
                 </Box>
               </Box>

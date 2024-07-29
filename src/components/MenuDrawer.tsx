@@ -252,7 +252,6 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           </Button>
         </Box>
 
-
         <Box sx={{ marginTop: '12px' }}>
           <Button
             className="fs-14"
@@ -281,10 +280,10 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               router.push(`/course-planner`); // Check route
             }}
           >
-            Course Plan
+            {t('COURSE_PLANNER.COURSE_PLANNER')}
           </Button>
         </Box>
-        
+
         {/* <Box sx={{ marginTop: '12px' }}>
           <Button
             className="fs-14"
