@@ -177,7 +177,7 @@ const CoursePlanner = () => {
                       }}
                     >
                       <Box sx={{ width: '40px', height: '40px' }}>
-                        <CircularProgressbar
+                        {/* <CircularProgressbar
                           value={50}
                           strokeWidth={12}
                           styles={buildStyles({
@@ -186,7 +186,7 @@ const CoursePlanner = () => {
                             strokeLinecap: 'round',
                             textColor: theme.palette.warning['300'],
                           })}
-                        />
+                        /> */}
                       </Box>
                       <Box
                         sx={{
