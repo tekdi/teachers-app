@@ -32,10 +32,9 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import manageUserStore from '../store/manageUserStore';
+import useStore from '@/store/store';
 
 type Anchor = 'bottom';
-const centerList = ['Nashik', 'Shirdi', 'kamptee'];
-const centers = ['shirdi'];
 
 const LearnersListItem: React.FC<LearnerListProps> = ({
   type,
@@ -72,13 +71,14 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     contactNumber: '',
     customFieldsData: [] as updateCustomField[],
   });
-
+  const userStore = useStore();
   const theme = useTheme<any>();
   const router = useRouter();
   const { learnerId }: any = router.query;
   const { t } = useTranslation();
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
+const [centers, setCenters] = React.useState();
   const store = manageUserStore();
 
   const CustomLink = styled(Link)(({ theme }) => ({
@@ -95,6 +95,10 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       setReloadState(false);
       // window.location.reload();
     }
+    const cohorts = userStore.cohorts
+      const centerList = cohorts.map((cohort: { name: any; }) => cohort.name);
+      setCenters(centerList);
+
   }, [reloadState, setReloadState]);
 
   const toggleDrawer =
@@ -646,7 +650,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       <ManageCentersModal
         open={openCentersModal}
         onClose={handleCloseCentersModal}
-        centersName={centerList}
+        centersName={centers}
         centers={centers}
         onAssign={handleAssignCenters}
         isForLearner={true}
