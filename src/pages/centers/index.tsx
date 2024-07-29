@@ -416,7 +416,7 @@ const TeachingCenters = () => {
                       {/* Regular Centers */}
                       {filteredCenters.some(
                         (center) =>
-                          center.centerType === 'REGULAR' ||
+                          center.centerType?.toUpperCase() === 'REGULAR' ||
                           center.centerType === ''
                       ) && (
                         <div>
@@ -432,8 +432,8 @@ const TeachingCenters = () => {
                           {filteredCenters
                             .filter(
                               (center) =>
-                                center.centerType === 'REGULAR' ||
-                                center.centerType === ''
+                                center.centerType?.toUpperCase() ===
+                                  'REGULAR' || center.centerType === ''
                             )
                             .map((center) => (
                               <React.Fragment key={center.cohortId}>
@@ -503,7 +503,8 @@ const TeachingCenters = () => {
 
                       {/* Remote Centers */}
                       {filteredCenters.some(
-                        (center) => center.centerType === 'REMOTE'
+                        (center) =>
+                          center.centerType?.toUpperCase() === 'REMOTE'
                       ) && (
                         <div>
                           <Box
@@ -516,7 +517,10 @@ const TeachingCenters = () => {
                             {t('CENTERS.REMOTE_CENTERS')}
                           </Box>
                           {filteredCenters
-                            .filter((center) => center.centerType === 'REMOTE')
+                            .filter(
+                              (center) =>
+                                center.centerType?.toUpperCase() === 'REMOTE'
+                            )
                             .map((center) => (
                               <React.Fragment key={center.cohortId}>
                                 <Box
