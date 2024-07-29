@@ -70,7 +70,7 @@ export function DarkTheme() {
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const isFullWidthPage =  fullWidthPages.includes(router.pathname);
+  const isFullWidthPage = fullWidthPages.includes(router.pathname);
   useEffect(() => {
     telemetryFactory.init();
   }, []);
@@ -148,7 +148,7 @@ function App({ Component, pageProps }: AppProps) {
               width: !isFullWidthPage ? 'calc(100% - 22rem)' : '100%',
               marginLeft: !isFullWidthPage ? '351px' : '0',
             },
-            '@media (min-width: 1600px)': {
+            '@media (min-width: 2000px)': {
               width: '100%',
               marginLeft: !isFullWidthPage ? '351px' : '0',
             },

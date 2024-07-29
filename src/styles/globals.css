@@ -974,3 +974,12 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 /* To hide the input type number arrows */
+
+
+.text-truncate{
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  text-overflow: ellipsis;
+  padding-right: 20px;
+}
