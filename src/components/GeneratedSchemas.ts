@@ -134,7 +134,7 @@ export const GenerateSchemaAndUiSchema = (
     //   fieldUiSchema['ui:widget'] = 'select';
     // }
 
-    if (isMultiSelect && type === 'drop_down') {
+    if (isMultiSelect && type === 'drop_down' && maxSelections !== 1) {
       fieldSchema.type = 'array';
       fieldSchema.items = {
         type: 'string',
@@ -149,7 +149,24 @@ export const GenerateSchemaAndUiSchema = (
       if (maxSelections) {
         fieldSchema.maxItems = maxSelections;
       }
-      fieldUiSchema['ui:widget'] = 'MultiSelectDropdown';
+      if (maxSelections === 1) {
+        fieldUiSchema['ui:widget'] = 'select';
+      } else {
+        fieldUiSchema['ui:widget'] = 'MultiSelectDropdown';
+      }
+    }
+
+    if (isMultiSelect && maxSelections === 1 && type === 'drop_down') {
+      fieldSchema.type = 'string';
+      fieldSchema.isDropdown = true;
+      fieldSchema.oneOf = options.map((opt: FieldOption) => ({
+        const: opt.value,
+        title:
+          t(`FORM.${opt.label}`) === `FORM.${opt.label}`
+            ? opt.label
+            : t(`FORM.${opt.label}`),
+      }));
+      fieldUiSchema['ui:widget'] = 'select';
     }
 
     if (!isMultiSelect && type === 'drop_down') {
