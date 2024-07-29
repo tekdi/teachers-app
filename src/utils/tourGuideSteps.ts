@@ -1,4 +1,5 @@
 import { TFunction } from 'next-i18next';
+import { modifyAttendanceLimit } from '../../app.config';
 export const getSteps = (t: TFunction) => [
   {
     target: 'joyride-step-0',
@@ -22,10 +23,10 @@ export const getSteps = (t: TFunction) => [
   },
   {
     target: '.joyride-step-5',
-    content: t('GUIDE_TOUR.STEP_5'),
+    content: t('GUIDE_TOUR.STEP_5', { numberOfDays: modifyAttendanceLimit + 1 }),
   },
   {
     target: '.joyride-step-6',
-    content: t('GUIDE_TOUR.STEP_6'),
+    content: t('GUIDE_TOUR.STEP_6', { numberOfDays: modifyAttendanceLimit + 1 }),
   },
 ];

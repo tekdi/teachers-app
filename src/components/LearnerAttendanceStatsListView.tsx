@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
+import { Box, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { Status, names } from '@/utils/app.constant';
 import { UserData, updateCustomField } from '@/utils/Interfaces';
@@ -144,7 +144,6 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
               </Link>
             </Grid>
             {memberStatus === Status.DROPOUT ? (
-              <>
                 <Grid item xs={6}>
                   <Grid container>
                     <Grid xs={6}>
@@ -173,7 +172,6 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
                   </Grid>
                   <DropoutLabel />
                 </Grid>
-              </>
             ) : (
               <>
                 <Grid item xs={3}>
