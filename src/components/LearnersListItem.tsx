@@ -96,7 +96,7 @@ const [centers, setCenters] = React.useState();
       // window.location.reload();
     }
     const cohorts = userStore.cohorts
-      const centerList = cohorts.map((cohort: { name: any; }) => cohort.name);
+      const centerList = cohorts.map((cohort: { name: string; }) => cohort.name);
       setCenters(centerList);
 
   }, [reloadState, setReloadState]);

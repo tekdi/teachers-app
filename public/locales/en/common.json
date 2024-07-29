@@ -290,6 +290,7 @@
     "REGULAR": "Regular",
     "REMOTE": "Remote",
     "SEARCH_BLOCKS": "Search Blocks",
+    "SEARCH_CENTERS": "Search Centers",
     "BLOCK_REQUEST": "You are sending a request to the state Team Leader to re-assign the Block to this user",
     "NEW_CENTER": "New Center",
     "CENTER_TYPE": "Center Type",

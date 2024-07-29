@@ -131,7 +131,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
           <Box sx={{ display: 'flex', justifyContent: 'center', p: '20px' }}>
             <TextField
               className="input_search"
-              placeholder="Search Centers..."
+              placeholder={t('CENTERS.SEARCH_CENTERS')}
               color="secondary"
               focused
               value={searchQuery}
