@@ -1,43 +1,39 @@
+import { getCohortList } from '@/services/CohortServices';
+import { accessGranted, toPascalCase } from '@/utils/Helper';
+import { cohort } from '@/utils/Interfaces';
 import {
   Box,
   Button,
   FormControl,
   Grid,
   InputAdornment,
-  MenuItem,
-  Select,
   Tab,
   Tabs,
   TextField,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
-import { accessGranted, toPascalCase } from '@/utils/Helper';
-import { cohort, cohortAttendancePercentParam } from '@/utils/Interfaces';
-import { cohortList, getCohortList } from '@/services/CohortServices';
 
-import AddIcon from '@mui/icons-material/Add';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import CreateCenterModal from '@/components/center/CreateCenterModal';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Header from '@/components/Header';
-import Image from 'next/image';
 import Loader from '@/components/Loader';
 import ManageUser from '@/components/ManageUser';
-import { Role } from '@/utils/app.constant';
-import SearchIcon from '@mui/icons-material/Search';
-import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
-import { accessControl } from '../../../app.config';
-import building from '../../assets/images/apartment.png';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { setTimeout } from 'timers';
 import { showToastMessage } from '@/components/Toastify';
-import { useRouter } from 'next/router';
+import CreateCenterModal from '@/components/center/CreateCenterModal';
+import teamLeadStore from '@/store/mangageTLStore';
 import useStore from '@/store/store';
+import { Role } from '@/utils/app.constant';
+import { ArrowDropDown, Search } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { ArrowDropDown, Search } from '@mui/icons-material';
-import teamLeadStore from '@/store/mangageTLStore';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { setTimeout } from 'timers';
+import { accessControl } from '../../../app.config';
+import building from '../../assets/images/apartment.png';
 
 const TeachingCenters = () => {
   const [loading, setLoading] = useState(false);
@@ -416,7 +412,7 @@ const TeachingCenters = () => {
                       {/* Regular Centers */}
                       {filteredCenters.some(
                         (center) =>
-                          center.centerType === 'REGULAR' ||
+                          center.centerType?.toUpperCase() === 'REGULAR' ||
                           center.centerType === ''
                       ) && (
                         <div>
@@ -432,8 +428,8 @@ const TeachingCenters = () => {
                           {filteredCenters
                             .filter(
                               (center) =>
-                                center.centerType === 'REGULAR' ||
-                                center.centerType === ''
+                                center.centerType?.toUpperCase() ===
+                                  'REGULAR' || center.centerType === ''
                             )
                             .map((center) => (
                               <React.Fragment key={center.cohortId}>
@@ -503,7 +499,8 @@ const TeachingCenters = () => {
 
                       {/* Remote Centers */}
                       {filteredCenters.some(
-                        (center) => center.centerType === 'REMOTE'
+                        (center) =>
+                          center.centerType?.toUpperCase() === 'REMOTE'
                       ) && (
                         <div>
                           <Box
@@ -516,7 +513,10 @@ const TeachingCenters = () => {
                             {t('CENTERS.REMOTE_CENTERS')}
                           </Box>
                           {filteredCenters
-                            .filter((center) => center.centerType === 'REMOTE')
+                            .filter(
+                              (center) =>
+                                center.centerType?.toUpperCase() === 'REMOTE'
+                            )
                             .map((center) => (
                               <React.Fragment key={center.cohortId}>
                                 <Box

@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 export const limit: number = 300;
-export const refetchInterval: number = 5 * 60 * 1000;
-export const gcTime: number = 10 * 60 * 1000;
+export const refetchInterval: number = 5 * 60 * 1000; // 5 min
+export const gcTime: number = 10 * 60 * 1000; // 10 Min
 export const names = [
   'name',
   'age',
@@ -49,6 +50,11 @@ export enum FormContextType {
   STUDENT = 'STUDENT',
   TEACHER = 'TEACHER',
   TEAM_LEADER = 'TEAMLEADER',
+}
+
+export enum CenterType {
+  REGULAR = 'REGULAR',
+  REMOTE = 'REMOTE'
 }
 
 export enum RoleId {

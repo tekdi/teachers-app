@@ -6,18 +6,18 @@ import {
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
-import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 
-import Loader from './Loader';
-import ReactGA from 'react-ga4';
+import { getCohortList } from '@/services/CohortServices';
+import useStore from '@/store/store';
 import { cohort } from '@/utils/Interfaces';
 import { cohortHierarchy } from '@/utils/app.constant';
-import { getCohortList } from '@/services/CohortServices';
-import { showToastMessage } from './Toastify';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import useStore from '@/store/store';
+import ReactGA from 'react-ga4';
+import Loader from './Loader';
+import { showToastMessage } from './Toastify';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -109,15 +109,14 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             const extractNamesAndCohortTypes = (
               data: ChildData[]
             ): NameTypePair[] => {
-              let nameTypePairs: NameTypePair[] = [];
-
+              const nameTypePairs: NameTypePair[] = [];
               const recursiveExtract = (items: ChildData[]) => {
                 items.forEach((item) => {
                   const cohortType =
                     item?.customField?.find(
                       (field) => field.label === 'TYPE_OF_COHORT'
                     )?.value || 'Unknown';
-                  if (item?.cohortId && item && item?.name) {
+                  if (item?.cohortId && item?.name) {
                     nameTypePairs.push({
                       cohortId: item?.cohortId,
                       name: item?.name,
@@ -133,7 +132,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
               return nameTypePairs;
             };
 
-            if (response && response?.length > 0) {
+            if (response?.length > 0) {
               const nameTypePairs = extractNamesAndCohortTypes(response);
               setCohorts(nameTypePairs);
             }
@@ -292,6 +291,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     fontWeight: '500',
                                     fontSize: '14px',
                                     color: '#4D4639',
+                                    textTransform: 'capitalize'
                                   }}
                                 >
                                   {cohort.name}
@@ -350,9 +350,10 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     fontWeight: '500',
                                     fontSize: '14px',
                                     color: '#4D4639',
+                                    textTransform: 'capitalize'
                                   }}
                                 >
-                                  {cohort.name}
+                                  {cohort?.name}
                                 </MenuItem>
                               ))
                             ) : (
