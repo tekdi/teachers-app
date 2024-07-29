@@ -1,21 +1,16 @@
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import {
   addDays,
-  addWeeks,
   format,
   getWeek,
   isSameDay,
-  lastDayOfWeek,
-  startOfWeek,
-  subDays,
-  subWeeks,
+  subDays
 } from 'date-fns';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
-import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
 import { Box } from '@mui/material';
-import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useEffect, useRef, useState } from 'react';
 import { dashboardDaysLimit } from '../../app.config';
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
 
 const Calendar: React.FC<any> = ({
   showDetailsHandle,

@@ -4,14 +4,14 @@ import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
-interface StudentStatsCard {
+interface IStudentStatsCard {
   label1: string;
   value1: string;
   label2: boolean;
   value2: string;
 }
 
-const StudentStatsCard: React.FC<StudentStatsCard> = ({
+const StudentStatsCard: React.FC<IStudentStatsCard> = ({
   label1,
   value1,
   label2,

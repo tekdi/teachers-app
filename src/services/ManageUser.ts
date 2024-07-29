@@ -2,7 +2,6 @@ import {
   AssignCentersToFacilitatorListParam,
   FacilitatorDeleteUserData,
   FacilitatorListParam,
-  UserData,
 } from '@/utils/Interfaces';
 import { patch, post, put } from './RestClient';
 

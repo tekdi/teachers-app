@@ -1,7 +1,7 @@
+import { Field, FieldOption, FormData } from '@/utils/Interfaces';
 import { UiSchema } from '@rjsf/utils';
 import { JSONSchema7 } from 'json-schema';
 import NumberInputField from './form/NumberInputField';
-import { FormData, Field, FieldOption } from '@/utils/Interfaces';
 
 export const customFields = {
   NumberInputField: NumberInputField,

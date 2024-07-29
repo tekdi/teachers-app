@@ -33,8 +33,8 @@ import {
 import {
   LearnerData,
   UserData,
-  cohortAttendancePercentParam,
-  updateCustomField,
+  CohortAttendancePercentParam,
+  UpdateCustomField,
 } from '@/utils/Interfaces';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import React, { useEffect, useState } from 'react';
@@ -68,7 +68,7 @@ import { useTranslation } from 'next-i18next';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { accessControl } from '../../../app.config';
 
-// import { UserData, updateCustomField } from '../utils/Interfaces';
+// import { UserData, UpdateCustomField } from '../utils/Interfaces';
 
 interface QuestionValue {
   question: string;
@@ -107,7 +107,7 @@ const LearnerProfile: React.FC = () => {
   const [test, setTest] = React.useState('Pre Test');
   const [subject, setSubject] = React.useState('English');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [customFieldsData, setCustomFieldsData] = useState<updateCustomField[]>(
+  const [customFieldsData, setCustomFieldsData] = useState<UpdateCustomField[]>(
     []
   );
   interface OverallAttendance {
@@ -751,7 +751,7 @@ const LearnerProfile: React.FC = () => {
         setDateRange(`(${startDay} ${startDayMonth}-${endDay} ${endDayMonth})`);
       }
 
-      const cohortAttendanceData: cohortAttendancePercentParam = {
+      const cohortAttendanceData: CohortAttendancePercentParam = {
         limit: 0,
         page: 0,
         filters: {

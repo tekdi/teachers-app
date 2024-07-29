@@ -150,7 +150,7 @@ const TeachingCenters = () => {
             console.log(blockData);
             setBlockData(blockData);
 
-            const cohortData = response.map((res: any) => {
+            response.map((res: any) => {
               const centerData = res?.childData.map((child: any) => {
                 const cohortName = child.name;
                 const cohortId = child.cohortId;

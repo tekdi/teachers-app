@@ -3,10 +3,10 @@ import {
   BulkAttendanceParams,
   AttendanceStatusListProps,
   AttendancePercentageProps,
-  cohortAttendancePercentParam,
+  CohortAttendancePercentParam,
   LearnerAttendanceProps,
   MarkAttendanceParams,
-  allCenterAttendancePercentParam,
+  AllCenterAttendancePercentParam,
   OverallAttendancePercentageProps,
 } from '../utils/Interfaces';
 
@@ -122,7 +122,7 @@ export const getCohortAttendance = async ({
   filters: { scope, fromDate, toDate, contextId },
   facets,
   sort,
-}: cohortAttendancePercentParam): Promise<any> => {
+}: CohortAttendancePercentParam): Promise<any> => {
   return postAttendanceList({
     limit,
     page,
@@ -137,7 +137,7 @@ export const getAllCenterAttendance = async ({
   page,
   filters: { scope, fromDate, toDate, contextId },
   facets,
-}: allCenterAttendancePercentParam): Promise<any> => {
+}: AllCenterAttendancePercentParam): Promise<any> => {
   return postAttendanceList({
     limit,
     page,

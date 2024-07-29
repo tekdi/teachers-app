@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import Loader from '../components/Loader';
 import { Session } from '../utils/Interfaces';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import SessionsCard from '@/components/SessionCard';

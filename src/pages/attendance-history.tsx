@@ -1,9 +1,10 @@
 import {
-  AttendanceParams,
-  AttendancePercentageProps,
-  AttendanceStatusListProps,
-  cohort,
-} from '../utils/Interfaces';
+  debounce,
+  getTodayDate,
+  handleKeyDown,
+  shortDateFormat,
+  toPascalCase,
+} from '@/utils/Helper';
 import {
   Box,
   Button,
@@ -16,41 +17,40 @@ import {
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  debounce,
-  getTodayDate,
-  handleKeyDown,
-  shortDateFormat,
-  toPascalCase,
-} from '@/utils/Helper';
+  AttendanceParams,
+  AttendancePercentageProps,
+  AttendanceStatusListProps,
+  cohort,
+  cohortMemberList
+} from '../utils/Interfaces';
 
-import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import AttendanceStatus from '@/components/AttendanceStatus';
 import AttendanceStatusListView from '@/components/AttendanceStatusListView';
-import ClearIcon from '@mui/icons-material/Clear';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
-import Header from '../components/Header';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import Loader from '../components/Loader';
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import MonthCalender from '@/components/MonthCalender';
-import ReactGA from 'react-ga4';
-import SearchIcon from '@mui/icons-material/Search';
-import SortingModal from '../components/SortingModal';
-import { Status } from '@/utils/app.constant';
-import UpDownButton from '@/components/UpDownButton';
-import { accessControl } from '../../app.config';
-import { attendanceStatusList } from '../services/AttendanceService';
-import { calculatePercentage } from '@/utils/attendanceStats';
-import { cohortMemberList } from '../utils/Interfaces';
-import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { logEvent } from '@/utils/googleAnalytics';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/router';
+import UpDownButton from '@/components/UpDownButton';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { Status } from '@/utils/app.constant';
+import { calculatePercentage } from '@/utils/attendanceStats';
+import { logEvent } from '@/utils/googleAnalytics';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
+import ClearIcon from '@mui/icons-material/Clear';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import withAccessControl from '@/utils/hoc/withAccessControl';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
+import ReactGA from 'react-ga4';
+import { accessControl } from '../../app.config';
+import Header from '../components/Header';
+import Loader from '../components/Loader';
+import SortingModal from '../components/SortingModal';
+import { attendanceStatusList } from '../services/AttendanceService';
 
 interface user {
   memberStatus: string;
@@ -79,7 +79,6 @@ const UserAttendanceHistory = () => {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
   const [status, setStatus] = useState('');
-  const [center, setCenter] = useState('');
   const [openMarkAttendance, setOpenMarkAttendance] = useState(false);
   const handleMarkAttendanceModal = () =>
     setOpenMarkAttendance(!openMarkAttendance);
@@ -94,7 +93,6 @@ const UserAttendanceHistory = () => {
   const searchRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
-  // let userId: string;
   const currentDate = getTodayDate();
 
   const handleOpen = () => {
@@ -108,8 +106,8 @@ const UserAttendanceHistory = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
-      setClassId(localStorage.getItem('classId') || '');
-      const classId = localStorage.getItem('classId') || '';
+      setClassId(localStorage.getItem('classId') ?? '');
+      const classId = localStorage.getItem('classId') ?? '';
       localStorage.setItem('cohortId', classId);
       setLoading(false);
       if (token) {
@@ -202,7 +200,7 @@ const UserAttendanceHistory = () => {
               };
               const res = await attendanceStatusList(attendanceStatusData);
               const response = res?.data?.attendanceList;
-              if (nameUserIdArray && response) {
+              if (response) {
                 const getUserAttendanceStatus = (
                   nameUserIdArray: any[],
                   response: any[]
@@ -231,7 +229,7 @@ const UserAttendanceHistory = () => {
                   response
                 );
 
-                if (nameUserIdArray && userAttendanceArray) {
+                if (userAttendanceArray) {
                   const mergeArrays = (
                     nameUserIdArray: {
                       userId: string;
@@ -305,10 +303,6 @@ const UserAttendanceHistory = () => {
     console.log(status);
   }, [status]);
 
-  // useEffect(() => {
-  //   localStorage.setItem('activeStartDate', activeStartDate.toISOString());
-  // }, [activeStartDate]);
-
   useEffect(() => {
     handleSelectedDateChange(selectedDate);
   }, []);
@@ -317,15 +311,6 @@ const UserAttendanceHistory = () => {
     setSelectedDate(date);
   };
 
-  const formatDate = (date: Date | null | undefined) => {
-    if (!date) {
-      return '';
-    }
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
 
   const getAllDatesInRange = (startDate: string, endDate: string): string[] => {
     const datesArray: string[] = [];
@@ -385,13 +370,6 @@ const UserAttendanceHistory = () => {
       debouncedSearch(event.target.value);
     } else {
       setDisplayStudentList(cohortMemberList);
-    }
-  };
-
-  const handleSearchFocus = () => {
-    const scrollSearchBox = searchRef.current;
-    if (scrollSearchBox) {
-      scrollSearchBox.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
   };
 
@@ -489,8 +467,6 @@ const UserAttendanceHistory = () => {
     setCohortMemberList(updatedAttendanceList);
     setDisplayStudentList(updatedAttendanceList);
   };
-
-  const hadleScroolDown = () => {};
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -651,7 +627,6 @@ const UserAttendanceHistory = () => {
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',
                       }}
-                      onFocus={hadleScroolDown}
                     >
                       <InputBase
                         ref={inputRef}

@@ -1,23 +1,10 @@
 'use client';
 
 import {
-  Box,
-  Button,
-  Grid,
-  IconButton,
-  InputBase,
-  Paper,
-  Stack,
-  Typography,
-} from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
-import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
-import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
   getCohortAttendance,
 } from '@/services/AttendanceService';
-import { cohort, cohortAttendancePercentParam } from '@/utils/Interfaces';
 import {
   debounce,
   formatSelectedDate,
@@ -27,38 +14,50 @@ import {
   sortClassesMissed,
   toPascalCase,
 } from '@/utils/Helper';
+import { CohortAttendancePercentParam, cohort } from '@/utils/Interfaces';
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  InputBase,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
 
-import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
-import ClearIcon from '@mui/icons-material/Clear';
 import CohortAttendanceListView from '@/components/CohortAttendanceListView';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
 import DateRangePopup from '@/components/DateRangePopup';
 import Header from '@/components/Header';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
 import LearnerListHeader from '@/components/LearnerListHeader';
 import Loader from '@/components/Loader';
 import OverviewCard from '@/components/OverviewCard';
-import ReactGA from 'react-ga4';
-import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '@/components/SortingModal';
-import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
+import { showToastMessage } from '@/components/Toastify';
 import UpDownButton from '@/components/UpDownButton';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { logEvent } from '@/utils/googleAnalytics';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { showToastMessage } from '@/components/Toastify';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/router';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
+import ClearIcon from '@mui/icons-material/Clear';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import withAccessControl from '@/utils/hoc/withAccessControl';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
+import ReactGA from 'react-ga4';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
 }
 
 const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
-  const router = useRouter();
   const { t } = useTranslation();
   const { push } = useRouter();
   const today = new Date();
@@ -116,8 +115,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
-      setClassId(localStorage.getItem('classId') || '');
-      const class_Id = localStorage.getItem('classId') || '';
+      setClassId(localStorage.getItem('classId') ?? '');
+      const class_Id = localStorage.getItem('classId') ?? '';
       localStorage.setItem('cohortId', class_Id);
 
       setLoading(false);
@@ -131,7 +130,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   useEffect(() => {
     const getAttendanceMarkedDays = async () => {
-      // const today = new Date();
       const todayFormattedDate = formatSelectedDate(new Date());
       const lastSeventhDayDate = new Date(
         today.getTime() - 6 * 24 * 60 * 60 * 1000
@@ -152,7 +150,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       } else {
         setDateRange(`(${startDay} ${startDayMonth}-${endDay} ${endDayMonth})`);
       }
-      const cohortAttendanceData: cohortAttendancePercentParam = {
+      const cohortAttendanceData: CohortAttendancePercentParam = {
         limit: 0,
         page: 0,
         filters: {
@@ -234,7 +232,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 present_percent: resp[userId]?.present_percentage || '0',
                 absent_percent: resp[userId]?.absent_percentage || '0',
               }));
-              if (nameUserIdArray && filteredData) {
+              if (filteredData) {
                 let mergedArray = filteredData.map((attendance) => {
                   const user = nameUserIdArray.find(
                     (user: { userId: string }) =>
@@ -272,7 +270,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         }
         if (classId) {
           const cohortAttendancePercent = async () => {
-            const cohortAttendanceData: cohortAttendancePercentParam = {
+            const cohortAttendanceData: CohortAttendancePercentParam = {
               limit: 0,
               page: 0,
               filters: {
@@ -286,8 +284,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             };
             const res = await getCohortAttendance(cohortAttendanceData);
             const response = res?.data?.result;
-            const contextData =
-              response?.contextId && response?.contextId[classId];
+            const contextData = response?.contextId?.[classId];
             if (contextData?.present_percentage) {
               const presentPercentage = contextData?.present_percentage;
               setPresentPercentage(presentPercentage);
@@ -340,7 +337,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             const nameIDAttendanceArray = results
               .filter(
                 (result) =>
-                  !result.error && result.data && result.data.contextId
+                  !result.error && result?.data?.contextId
               )
               .map((result) => {
                 const cohortId = result.cohortId;
@@ -482,10 +479,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       category: 'Attendance Overview Page',
       label: 'Back Button Clicked',
     });
-  };
-  const truncate = (str: string, length: number) => {
-    if (str.length <= length) return str;
-    return str.slice(0, length) + '...';
   };
 
   const inputRef = React.useRef<HTMLInputElement>(null);

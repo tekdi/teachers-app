@@ -1,7 +1,7 @@
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { Status, names } from '@/utils/app.constant';
-import { UserData, updateCustomField } from '@/utils/Interfaces';
+import { UserData, UpdateCustomField } from '@/utils/Interfaces';
 
 import DropoutLabel from './DropoutLabel';
 import LearnerModal from './LearnerModal';
@@ -41,7 +41,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
 
   const [userData, setUserData] = React.useState<UserData | null>(null);
   const [customFieldsData, setCustomFieldsData] = React.useState<
-    updateCustomField[]
+    UpdateCustomField[]
   >([]);
   const [contactNumber, setContactNumber] = useState<any>('');
   const [userName, setUserName] = React.useState('');

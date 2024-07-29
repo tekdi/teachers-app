@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Modal, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import CloseIcon from '@mui/icons-material/Close';

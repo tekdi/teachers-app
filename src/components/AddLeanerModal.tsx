@@ -1,22 +1,18 @@
 import DynamicForm from '@/components/DynamicForm';
-import React, { useEffect } from 'react';
 import {
   GenerateSchemaAndUiSchema,
   customFields,
 } from '@/components/GeneratedSchemas';
-import { IChangeEvent } from '@rjsf/core';
-import ISubmitEvent from '@rjsf/core';
-import { Box, Button, useTheme } from '@mui/material';
-import { RJSFSchema } from '@rjsf/utils';
-import SendCredentialModal from '@/components/SendCredentialModal';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { createUser, getFormRead } from '@/services/CreateUserService';
-import { FormData } from '@/utils/Interfaces';
-import { FormContext, FormContextType } from '@/utils/app.constant';
 import SimpleModal from '@/components/SimpleModal';
-import { useTranslation } from 'react-i18next';
+import { createUser, getFormRead } from '@/services/CreateUserService';
 import { generateUsernameAndPassword } from '@/utils/Helper';
-import { RoleId } from '@/utils/app.constant';
+import { FormData } from '@/utils/Interfaces';
+import { FormContext, FormContextType, RoleId } from '@/utils/app.constant';
+import { Button, useTheme } from '@mui/material';
+import { IChangeEvent } from '@rjsf/core';
+import { RJSFSchema } from '@rjsf/utils';
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { showToastMessage } from './Toastify';
 
 interface AddLearnerModalProps {
@@ -87,9 +83,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     const schemaProperties = schema.properties;
     let cohortId, teacherData;
     if (typeof window !== 'undefined' && window.localStorage) {
-      teacherData = JSON.parse(localStorage.getItem('teacherApp') || '');
+      teacherData = JSON.parse(localStorage.getItem('teacherApp') ?? '');
       cohortId =
-        localStorage.getItem('cohortId') || localStorage.getItem('classId');
+        localStorage.getItem('cohortId') ?? localStorage.getItem('classId');
     }
     const { username, password } = generateUsernameAndPassword(
       teacherData?.state?.stateCode,
@@ -120,21 +116,19 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         if (typeof fieldValue !== 'object') {
           apiBody[fieldKey] = fieldValue;
         }
+      } else if (
+        Object.hasOwn(fieldSchema, 'isDropdown') ||
+        Object.hasOwn(fieldSchema, 'isCheckbox')
+      ) {
+        apiBody.customFields.push({
+          fieldId: fieldId,
+          value: [String(fieldValue)],
+        });
       } else {
-        if (
-          fieldSchema?.hasOwnProperty('isDropdown') ||
-          fieldSchema.hasOwnProperty('isCheckbox')
-        ) {
-          apiBody.customFields.push({
-            fieldId: fieldId,
-            value: [String(fieldValue)],
-          });
-        } else {
-          apiBody.customFields.push({
-            fieldId: fieldId,
-            value: String(fieldValue),
-          });
-        }
+        apiBody.customFields.push({
+          fieldId: fieldId,
+          value: String(fieldValue),
+        });
       }
     });
 
@@ -184,42 +178,40 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         justifyContent: 'space-between',
       }}
     >
-      <>
-        <Button
-          variant="outlined"
-          color="primary"
-          sx={{
-            '&.Mui-disabled': {
-              backgroundColor: theme?.palette?.primary?.main,
-            },
-            minWidth: '84px',
-            height: '2.5rem',
-            padding: theme.spacing(1),
-            fontWeight: '500',
-            width: '48%',
-          }}
-          onClick={onClose}
-        >
-          {t('COMMON.BACK')}
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            '&.Mui-disabled': {
-              backgroundColor: theme?.palette?.primary?.main,
-            },
-            minWidth: '84px',
-            height: '2.5rem',
-            padding: theme.spacing(1),
-            fontWeight: '500',
-            width: '48%',
-          }}
-          onClick={secondaryActionHandler}
-        >
-          {t('COMMON.SUBMIT')}
-        </Button>
-      </>
+      <Button
+        variant="outlined"
+        color="primary"
+        sx={{
+          '&.Mui-disabled': {
+            backgroundColor: theme?.palette?.primary?.main,
+          },
+          minWidth: '84px',
+          height: '2.5rem',
+          padding: theme.spacing(1),
+          fontWeight: '500',
+          width: '48%',
+        }}
+        onClick={onClose}
+      >
+        {t('COMMON.BACK')}
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        sx={{
+          '&.Mui-disabled': {
+            backgroundColor: theme?.palette?.primary?.main,
+          },
+          minWidth: '84px',
+          height: '2.5rem',
+          padding: theme.spacing(1),
+          fontWeight: '500',
+          width: '48%',
+        }}
+        onClick={secondaryActionHandler}
+      >
+        {t('COMMON.SUBMIT')}
+      </Button>
     </div>
   );
 
@@ -240,29 +232,27 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   };
 
   return (
-    <>
-      <SimpleModal
-        open={open}
-        onClose={onClose}
-        showFooter={false}
-        modalTitle={t('COMMON.NEW_LEARNER')}
-      >
-        {schema && uiSchema && (
-          <DynamicForm
-            schema={schema}
-            uiSchema={uiSchema}
-            onSubmit={handleSubmit}
-            onChange={handleChange}
-            onError={handleError}
-            widgets={{}}
-            showErrorList={true}
-            customFields={customFields}
-          >
-            {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
-          </DynamicForm>
-        )}
-      </SimpleModal>
-    </>
+    <SimpleModal
+      open={open}
+      onClose={onClose}
+      showFooter={false}
+      modalTitle={t('COMMON.NEW_LEARNER')}
+    >
+      {schema && uiSchema && (
+        <DynamicForm
+          schema={schema}
+          uiSchema={uiSchema}
+          onSubmit={handleSubmit}
+          onChange={handleChange}
+          onError={handleError}
+          widgets={{}}
+          showErrorList={true}
+          customFields={customFields}
+        >
+          {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+        </DynamicForm>
+      )}
+    </SimpleModal>
   );
 };
 

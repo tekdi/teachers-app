@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import {
   LearnerListProps,
   UserData,
-  updateCustomField,
+  UpdateCustomField,
 } from '@/utils/Interfaces';
 import React, { useEffect } from 'react';
 import { Status, names, Role } from '@/utils/app.constant';
@@ -69,7 +69,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     userData: null as UserData | null,
     userName: '',
     contactNumber: '',
-    customFieldsData: [] as updateCustomField[],
+    customFieldsData: [] as UpdateCustomField[],
   });
   const userStore = useStore();
   const theme = useTheme<any>();
@@ -140,7 +140,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     setLearnerState((prevState) => ({ ...prevState, contactNumber: number }));
   };
 
-  const setCustomFieldsData = (fields: updateCustomField[]) => {
+  const setCustomFieldsData = (fields: UpdateCustomField[]) => {
     setLearnerState((prevState) => ({
       ...prevState,
       customFieldsData: fields,
@@ -299,7 +299,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       acc.push(field);
     }
     return acc;
-  }, [] as updateCustomField[]);
+  }, [] as UpdateCustomField[]);
 
   const getTeamLeadersCenters = async () => {};
 

@@ -18,7 +18,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { CustomField, UserDatas, updateCustomField } from '@/utils/Interfaces';
+import { CustomField, UserDatas, UpdateCustomField } from '@/utils/Interfaces';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { useTheme, withStyles } from '@mui/material/styles';

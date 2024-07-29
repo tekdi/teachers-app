@@ -1,10 +1,7 @@
 import {
   Box,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
   Radio,
-  RadioGroup,
+  RadioGroup
 } from '@mui/material';
 import React, { useState } from 'react';
 
@@ -21,7 +18,6 @@ const DeleteSession = () => {
   };
 
   return (
-    <>
       <Box sx={{ padding: '8px 16px' }}>
         <RadioGroup value={selectedValue} onChange={handleChange}>
           <Box
@@ -54,7 +50,6 @@ const DeleteSession = () => {
           </Box>
         </RadioGroup>
       </Box>
-    </>
   );
 };
 

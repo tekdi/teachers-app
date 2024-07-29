@@ -1,23 +1,15 @@
-import React, { useState } from 'react';
 import {
   Box,
-  Typography,
-  TextField,
   Button,
-  Modal,
-  Fade,
   Divider,
-  IconButton,
+  Fade,
+  Modal,
   Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
+  Typography
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { styled, useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTheme, styled } from '@mui/material/styles';
+import React from 'react';
 import { showToastMessage } from '../Toastify';
 
 interface CreateBlockModalProps {

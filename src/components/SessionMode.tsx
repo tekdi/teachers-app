@@ -6,18 +6,16 @@ import {
   RadioGroup,
 } from '@mui/material';
 
-import React from 'react';
-import { SessionModeProps } from '../utils/Interfaces';
-import { sessionMode } from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
+import { SessionModeProps } from '../utils/Interfaces';
 
 const SessionMode: React.FC<SessionModeProps> = ({
   handleSessionModeChange,
   mode,
   sessions,
 }) => {
-  const { t } = useTranslation();
   const theme = useTheme<any>();
 
   console.log('SessionMode Rendered with mode:', mode);

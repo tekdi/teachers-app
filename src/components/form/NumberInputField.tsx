@@ -1,10 +1,8 @@
 import { TextField, useTheme } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const NumberInputField = (props: any) => {
-  const theme = useTheme<any>();
   const { onChange, ...rest } = props;
-
   const [error, setError] = useState('');
 
   console.log('NumberInputField', props);
