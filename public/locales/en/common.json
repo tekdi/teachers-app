@@ -426,5 +426,10 @@
     "MIN_LENGTH_CHARACTERS_ERROR": "Minimum {{minLength}} characters required",
     "MAX_LENGTH_CHARACTERS_ERROR": "Maximum {{maxLength}} characters allowed",
     "NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "Numbers and special characters are not allowed"
+  },
+  "COURSE_PLANNER":{
+    "COURSE_PLANNER" :"Course Plan",
+    "FOUNDATION_COURSE":"Foundation Course",
+    "MAIN_COURSE":"Main Course"
   }
 }
