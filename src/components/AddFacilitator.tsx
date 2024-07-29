@@ -1,23 +1,18 @@
-import { FormContext, FormContextType } from '@/utils/app.constant';
 import {
   GenerateSchemaAndUiSchema,
   customFields,
 } from '@/components/GeneratedSchemas';
+import { FormContext, FormContextType, RoleId } from '@/utils/app.constant';
 import React, { useEffect } from 'react';
 
-import { Box } from '@mui/material';
 import DynamicForm from '@/components/DynamicForm';
-import { Field } from '@/utils/Interfaces';
-import { FormData } from '@/utils/Interfaces';
-import { IChangeEvent } from '@rjsf/core';
-import ISubmitEvent from '@rjsf/core';
-import { RJSFSchema } from '@rjsf/utils';
 import SendCredentialModal from '@/components/SendCredentialModal';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { createUser, getFormRead } from '@/services/CreateUserService';
-import { RoleId } from '@/utils/app.constant';
 import SimpleModal from '@/components/SimpleModal';
+import { createUser, getFormRead } from '@/services/CreateUserService';
 import { generateUsernameAndPassword } from '@/utils/Helper';
+import { Field, FormData } from '@/utils/Interfaces';
+import { IChangeEvent } from '@rjsf/core';
+import { RJSFSchema } from '@rjsf/utils';
 import { useTranslation } from 'next-i18next';
 
 interface AddFacilitatorModalprops {
@@ -41,10 +36,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           FormContextType.TEACHER
         );
         console.log('sortedFields', response);
+        let centerOptionsList;
         if (typeof window !== 'undefined' && window.localStorage) {
           const CenterList = localStorage.getItem('CenterList');
           const centerOptions = CenterList ? JSON.parse(CenterList) : [];
-          var centerOptionsList = centerOptions.map(
+          centerOptionsList = centerOptions.map(
             (center: { cohortId: string; cohortName: string }) => ({
               value: center.cohortId,
               label: center.cohortName,
@@ -114,7 +110,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
     const { username, password } = generateUsernameAndPassword('MH', 'F');
 
-    let apiBody: any = {
+    const apiBody: any = {
       username: username,
       password: password,
       tenantCohortRoleMapping: [
@@ -138,27 +134,25 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         if (typeof fieldValue !== 'object') {
           apiBody[fieldKey] = fieldValue;
         }
+      } else if (
+        Object.hasOwn(fieldSchema, 'isDropdown') ||
+        Object.hasOwn(fieldSchema, 'isCheckbox')
+      ) {
+        apiBody.customFields.push({
+          fieldId: fieldId,
+          value: [String(fieldValue)],
+        });
       } else {
-        if (
-          fieldSchema?.hasOwnProperty('isDropdown') ||
-          fieldSchema.hasOwnProperty('isCheckbox')
-        ) {
-          apiBody.customFields.push({
-            fieldId: fieldId,
-            value: [String(fieldValue)],
-          });
-        } else {
-          apiBody.customFields.push({
-            fieldId: fieldId,
-            value: String(fieldValue),
-          });
-        }
+        apiBody.customFields.push({
+          fieldId: fieldId,
+          value: String(fieldValue),
+        });
       }
     });
 
     if (typeof window !== 'undefined' && window.localStorage) {
-      var teamLeaderData = JSON.parse(
-        localStorage.getItem('teamLeadApp') || ''
+      const teamLeaderData = JSON.parse(
+        localStorage.getItem('teamLeadApp') ?? ''
       );
       console.log(teamLeaderData);
     }

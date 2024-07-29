@@ -320,14 +320,12 @@ const LearnerProfile: React.FC = () => {
             ? selectedOption.label
             : field.value
               ? toPascalCase(field.value)
-              : "-",
+              : '-',
         };
       }
       return {
         ...field,
-        displayValue: field.value
-          ? toPascalCase(field.value)
-          : "-",
+        displayValue: field.value ? toPascalCase(field.value) : '-',
       };
     });
 
@@ -1530,10 +1528,7 @@ const LearnerProfile: React.FC = () => {
                       <FormControl fullWidth>
                         <InputLabel id={`select-label-${field.fieldId}`}>
                           {field?.label &&
-                            t(
-                              `FORM.${field.label.toUpperCase()}`,
-                              field.label
-                            )}
+                            t(`FORM.${field.label.toUpperCase()}`, field.label)}
                         </InputLabel>
                         <Select
                           error={isError}
@@ -1542,10 +1537,7 @@ const LearnerProfile: React.FC = () => {
                           value={fieldValue}
                           label={
                             field?.label &&
-                            t(
-                              `FORM.${field.label.toUpperCase()}`,
-                              field.label
-                            )
+                            t(`FORM.${field.label.toUpperCase()}`, field.label)
                           }
                           onChange={(e) =>
                             handleDropdownChange(field.fieldId, e.target.value)

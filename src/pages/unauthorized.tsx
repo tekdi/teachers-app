@@ -40,7 +40,6 @@ const Unauthorized = () => {
       >
         {t('COMMON.YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE')}
       </Typography>
-
     </Box>
   );
 };

@@ -85,9 +85,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     const formData = data.formData;
     console.log('Form data submitted:', formData);
     const schemaProperties = schema.properties;
-    let cohortId;
+    let cohortId, teacherData;
     if (typeof window !== 'undefined' && window.localStorage) {
-      var teacherData = JSON.parse(localStorage.getItem('teacherApp') || '');
+      teacherData = JSON.parse(localStorage.getItem('teacherApp') || '');
       cohortId =
         localStorage.getItem('cohortId') || localStorage.getItem('classId');
     }
@@ -96,7 +96,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       ''
     );
 
-    let apiBody: any = {
+    const apiBody: any = {
       username: username,
       password: password,
       tenantCohortRoleMapping: [

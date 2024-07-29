@@ -244,7 +244,8 @@ const TeachingCenters = () => {
                   {block.blockName}
                   {block?.district && (
                     <Box textAlign={'left'} fontSize={'16px'}>
-                      {block.district}, {toPascalCase(block.state)}
+                      {toPascalCase(block?.district)},{' '}
+                      {toPascalCase(block?.state)}
                     </Box>
                   )}
                 </Box>
@@ -593,7 +594,6 @@ const TeachingCenters = () => {
                   accessControl,
                   userRole
                 ) &&
-                  cohortsData &&
                   cohortsData?.map((cohort: any) => {
                     return (
                       <React.Fragment key={cohort?.cohortId}>

@@ -61,7 +61,6 @@ export const getMyCohortMemberList = async ({
   return fetchCohortMemberList({ limit, page, filters: studentFilters });
 };
 
-
 export const getMyCohortFacilitatorList = async ({
   limit,
   page,
