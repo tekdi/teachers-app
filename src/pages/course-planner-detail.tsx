@@ -1,9 +1,10 @@
 import Header from '@/components/Header';
 import { logEvent } from '@/utils/googleAnalytics';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
-import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import {
   Accordion,
   AccordionDetails,
@@ -15,9 +16,6 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
@@ -127,6 +125,7 @@ const CoursePlannerDetail = () => {
             color: theme.palette.warning['300'],
           }}
         >
+          {t('COURSE_PLANNER.COLLAPSE_ALL')}
           Collapse All
         </Box>
         <ArrowDropUpIcon
@@ -147,7 +146,6 @@ const CoursePlannerDetail = () => {
               boxShadow: 'none',
               background: '#F1E7D9',
               border: 'none',
-              //   background: 'none',
             }}
           >
             <AccordionSummary
@@ -192,17 +190,27 @@ const CoursePlannerDetail = () => {
                     fontSize="14px"
                     color={theme.palette.warning['300']}
                   >
-                    Topic 1 - Real Numbers
+                    Topic 1 - Real Numbers {/* will came from API */}
                   </Typography>
                 </Box>
                 <Typography fontWeight="600" fontSize="12px" color="#7C766F">
-                  Jan, Feb
+                  Jan, Feb {/* will came from API */}
                 </Typography>
               </Box>
             </AccordionSummary>
             <AccordionDetails sx={{ padding: '0' }}>
-              <Box sx={{ borderBottom: '2px solid #D0C5B4' }}>
-                <Box sx={{ py: '10px', px: '16px', background: '#fff' }}>
+              <Box
+                sx={{
+                  borderBottom: `1px solid ${theme.palette.warning['A100']}`,
+                }}
+              >
+                <Box
+                  sx={{
+                    py: '10px',
+                    px: '16px',
+                    background: theme.palette.warning['A400'],
+                  }}
+                >
                   <Box
                     sx={{
                       display: 'flex',
@@ -211,7 +219,16 @@ const CoursePlannerDetail = () => {
                       gap: '20px',
                     }}
                   >
-                    <Box>The Fundamental Theorem of Arithmetic</Box>
+                    <Box
+                      sx={{
+                        fontSize: '16px',
+                        fontWeight: '400',
+                        color: theme.palette.warning['300'],
+                      }}
+                    >
+                      The Fundamental Theorem of Arithmetic{' '}
+                      {/* will came from API */}
+                    </Box>
                     <Box
                       sx={{
                         display: 'flex',
@@ -237,7 +254,7 @@ const CoursePlannerDetail = () => {
                   </Box>
                   <Box
                     sx={{
-                      color: '#0D599E',
+                      color: theme.palette.secondary.main,
                       display: 'flex',
                       alignItems: 'center',
                       gap: '4px',
@@ -245,7 +262,7 @@ const CoursePlannerDetail = () => {
                     }}
                   >
                     <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
-                      5 Resources
+                      5 {t('COURSE_PLANNER.RESOURCES')}
                     </Box>
                     <ArrowForwardIcon sx={{ fontSize: '16px' }} />
                   </Box>

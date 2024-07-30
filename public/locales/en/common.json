@@ -432,6 +432,8 @@
   "COURSE_PLANNER": {
     "COURSE_PLANNER": "Course Plan",
     "FOUNDATION_COURSE": "Foundation Course",
-    "MAIN_COURSE": "Main Course"
+    "MAIN_COURSE": "Main Course",
+    "COLLAPSE_ALL":"Collapse All",
+    "RESOURCES":"Resources"
   }
 }
