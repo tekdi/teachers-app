@@ -1,6 +1,8 @@
 import { Role, Status } from './app.constant';
 
 import FingerprintJS from 'fingerprintjs2';
+import { i18n } from 'next-i18next';
+import { CustomField } from './Interfaces';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -118,7 +120,11 @@ export const debounce = <T extends (...args: any[]) => any>(
 };
 
 //Function to convert names in capitalize case
-export const toPascalCase = (name: string) => {
+export const toPascalCase = (name: string | any) => {
+  if (typeof name !== 'string') {
+    return name;
+  }
+
   return name
     .toLowerCase()
     .split(' ')
@@ -283,3 +289,11 @@ export const generateUsernameAndPassword = (
 
   return { username, password };
 };
+
+export const mapFieldIdToValue = (fields: CustomField[]): { [key: string]: string } => {
+  return fields.reduce((acc: { [key: string]: string }, field: CustomField) => {
+    acc[field.fieldId] = field.value;
+    return acc;
+  }, {});
+};
+

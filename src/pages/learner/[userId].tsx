@@ -31,6 +31,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import {
+  CustomField,
   LearnerData,
   UserData,
   CohortAttendancePercentParam,
@@ -44,7 +45,12 @@ import {
   getCohortAttendance,
 } from '@/services/AttendanceService';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
-import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
+import {
+  formatSelectedDate,
+  getTodayDate,
+  mapFieldIdToValue,
+  toPascalCase,
+} from '@/utils/Helper';
 
 import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
@@ -67,6 +73,8 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { accessControl } from '../../../app.config';
+import { getFormRead } from '@/services/CreateUserService';
+import { FormContext, FormContextType } from '@/utils/app.constant';
 
 // import { UserData, UpdateCustomField } from '../utils/Interfaces';
 
@@ -258,24 +266,89 @@ const LearnerProfile: React.FC = () => {
           const response = await getUserDetails(user, true);
 
           if (response?.responseCode === 200) {
-            const data = response?.result;
+            const data = response;
             if (data) {
-              const userData = data?.userData;
+              if (data) {
+                const coreFieldData = data?.result?.userData;
+                setUserName(coreFieldData?.name);
+                const fields: CustomField[] =
+                  data?.result?.userData?.customFields;
+                const fieldIdToValueMap: { [key: string]: string } =
+                  mapFieldIdToValue(fields);
+                console.log(`coreFieldData`, coreFieldData);
 
-              setUserData(userData);
+                const fetchFormData = async () => {
+                  try {
+                    const response: FormData = await getFormRead(
+                      FormContext.USERS,
+                      FormContextType.STUDENT
+                    );
+                    console.log('response', response);
+                    if (response) {
+                      const mergeData = (
+                        fieldIdToValueMap: { [key: string]: string },
+                        response: any
+                      ): any => {
+                        response.fields.forEach(
+                          (field: {
+                            name: any;
+                            fieldId: string | number;
+                            value: string;
+                            coreField: number;
+                          }) => {
+                            if (
+                              field.fieldId &&
+                              fieldIdToValueMap[field.fieldId]
+                            ) {
+                              // Update field value from fieldIdToValueMap if fieldId is available
+                              field.value =
+                                fieldIdToValueMap[field.fieldId] || '-';
+                            } else if (field.coreField === 1) {
+                              // Set field value from fieldIdToValueMap if coreField is 1 and fieldId is not in the map
+                              field.value = coreFieldData[field.name] || '-';
+                            }
+                          }
+                        );
+                        return response;
+                      };
 
-              const customDataFields = userData?.customFields;
-              if (customDataFields?.length > 0) {
-                setCustomFieldsData(customDataFields);
-                const unitName = getFieldValue(customDataFields, 'Unit Name');
-                setUnitName(unitName);
+                      const mergedProfileData = mergeData(
+                        fieldIdToValueMap,
+                        response
+                      );
+                      console.log(`mergedProfileData`, mergedProfileData);
+                      if (mergedProfileData) {
+                        setUserData(mergedProfileData?.fields);
+                        const nameField = mergedProfileData.fields.find(
+                          (field: { name: string }) => field.name === 'name'
+                        );
+                        const customDataFields = mergedProfileData?.fields;
+                        // setIsData(true);
 
-                const blockName = getFieldValue(customDataFields, 'Block Name');
-                setBlockName(blockName);
+                        if (customDataFields?.length > 0) {
+                          setCustomFieldsData(customDataFields);
 
-                setUserName(userData?.name);
-                setContactNumber(userData?.mobile);
-                setLoading(false);
+                          const unitName = getFieldValue(
+                            customDataFields,
+                            'Unit Name'
+                          );
+                          setUnitName(unitName);
+                          const blockName = getFieldValue(
+                            customDataFields,
+                            'Block Name'
+                          );
+                          setBlockName(blockName);
+                        }
+                      }
+                    } else {
+                      // setIsData(false);
+                      console.log('No data Found');
+                    }
+                  } catch (error) {
+                    console.error('Error fetching form data:', error);
+                  }
+                };
+                fetchFormData();
               }
             } else {
               setLoading(false);
@@ -305,22 +378,29 @@ const LearnerProfile: React.FC = () => {
     ?.sort((a, b) => a.order - b.order)
     ?.filter((field) => field.order <= 12)
     ?.map((field) => {
+      const getSelectedOption = (field: any) => {
+        return (
+          field?.options?.find(
+            (option: any) => option?.value === field?.value?.[0]
+          ) || '-'
+        );
+      };
+
       if (
         field.type === 'drop_down' ||
         field.type === 'radio' ||
         field.type === 'dropdown' ||
         (field.type === 'Radio' && field.options && field.value.length)
       ) {
-        const selectedOption = field?.options?.find(
-          (option: any) => option.value === field.value[0]
-        );
+        const selectedOption = getSelectedOption(field);
         return {
           ...field,
-          displayValue: selectedOption
-            ? selectedOption.label
-            : field.value
-              ? toPascalCase(field.value)
-              : '-',
+          displayValue:
+            selectedOption !== '-'
+              ? selectedOption.label
+              : field.value
+                ? toPascalCase(field.value)
+                : '-',
         };
       }
       return {
@@ -791,7 +871,7 @@ const LearnerProfile: React.FC = () => {
     filteredSortedForEdit?.forEach((field) => {
       const value =
         formData?.customFields?.find((f) => f.fieldId === field.fieldId)
-          ?.value[0] || '';
+          ?.value?.[0] || '';
 
       if (field.type === 'text') {
         newErrors[field.fieldId] = !value.trim() || /^\s/.test(value);
@@ -878,9 +958,9 @@ const LearnerProfile: React.FC = () => {
               lineHeight={'28px'}
               color={theme.palette.warning['A200']}
             >
-              {userData?.name?.length > 18
-                ? `${userData?.name?.substring(0, 18)}...`
-                : userData?.name}
+              {userName?.length > 18
+                ? `${userName?.substring(0, 18)}...`
+                : userName}
             </Typography>
             <Typography
               variant="h5"
@@ -1138,12 +1218,6 @@ const LearnerProfile: React.FC = () => {
             padding="15px"
           >
             <Grid container spacing={4}>
-              <FieldComponent
-                size={12}
-                label={t('PROFILE.FULL_NAME')}
-                data={userName}
-              />
-
               {learnerDetailsByOrder &&
                 learnerDetailsByOrder.map((item: any, i: number) => (
                   <React.Fragment key={i}>
@@ -1420,7 +1494,7 @@ const LearnerProfile: React.FC = () => {
             {filteredSortedForEdit?.map((field) => {
               const fieldValue =
                 formData?.customFields?.find((f) => f.fieldId === field.fieldId)
-                  ?.value[0] || '';
+                  ?.value?.[0] || '';
               const isError: any = errors[field.fieldId];
 
               return (

@@ -29,6 +29,7 @@ import { getMyUserList } from '@/services/MyClassDetailsService';
 import Image from 'next/image';
 import profileALT from '../assets/images/Profile.png';
 import AddFacilitatorModal from './AddFacilitator';
+import ReassignModal from './ReassignModal';
 import DeleteUserModal from './DeleteUserModal';
 import SimpleModal from './SimpleModal';
 
@@ -96,6 +97,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     bottom: false,
   });
   const [confirmationModalOpen, setConfirmationModalOpen] =
+    React.useState<boolean>(false);
+    const [reassignModalOpen, setReassignModalOpen] =
     React.useState<boolean>(false);
   const [learnerData, setLearnerData] = React.useState<LearnerDataProps[]>();
   const [reassignBlockRequestModalOpen, setReassignBlockRequestModalOpen] =
@@ -265,6 +268,10 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     setState({ ...state, bottom: false });
   };
 
+  const handleCloseReassignModal = () => {
+    setReassignModalOpen(false);
+  };
+
   const handleCloseRemoveModal = () => {
     setOpenRemoveUserModal(false);
   };
@@ -327,13 +334,16 @@ const manageUsers: React.FC<ManageUsersProps> = ({
       //   console.log(error);
       //   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       // }
+    }if (name === 'reassign-block') {
+      setReassignModalOpen(true);
+      getTeamLeadersCenters();
     }
     if (name === 'reassign-centers') {
       setOpenCentersModal(true);
       getTeamLeadersCenters();
     }
     if (name === 'reassign-block-request') {
-      setConfirmationModalOpen(true);
+      setReassignModalOpen(true);
       getTeamLeadersCenters();
     }
   };
@@ -673,6 +683,15 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                 listItemClick={listItemClick}
                 optionList={[
                   {
+                    label: t('COMMON.REASSIGN_BLOCKS'),
+                    icon: (
+                      <LocationOnOutlinedIcon
+                        sx={{ color: theme.palette.warning['300'] }}
+                      />
+                    ),
+                    name: 'reassign-block',
+                  },
+                  {
                     label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
                     icon: (
                       <LocationOnOutlinedIcon
@@ -755,6 +774,12 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               }}
               handleCloseModal={handleCloseModal}
               modalOpen={confirmationModalOpen}
+            />
+              <ReassignModal
+              message={t('COMMON.REASSIGN_BLOCKS')}
+              handleAction={handleRequestBlockAction}
+              handleCloseReassignModal={handleCloseReassignModal}
+              modalOpen={reassignModalOpen}
             />
 
             <DeleteUserModal
