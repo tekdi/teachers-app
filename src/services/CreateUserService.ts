@@ -1,5 +1,5 @@
 import { get, post } from './RestClient';
-import { createUserParam } from '../utils/Interfaces';
+import { CreateUserParam } from '../utils/Interfaces';
 
 export const getFormRead = async (
   context: string,
@@ -7,7 +7,7 @@ export const getFormRead = async (
 ): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/form/read?context=${context}&contextType=${contextType}`;
   try {
-    let response = await get(apiUrl);
+    const response = await get(apiUrl);
 
     const sortedFields = response?.data?.result.fields?.sort(
       (a: { order: string }, b: { order: string }) =>

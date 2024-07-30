@@ -1,3 +1,4 @@
+import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
 import {
   Button,
   IconButton,
@@ -7,42 +8,41 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
 
-import AddIcon from '@mui/icons-material/Add';
 import AddLearnerModal from '@/components/AddLeanerModal';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Box from '@mui/material/Box';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CenterSessionModal from '@/components/CenterSessionModal';
 import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 import CohortLearnerList from '@/components/CohortLearnerList';
-import { CustomField } from '@/utils/Interfaces';
-import DeleteCenterModal from '@/components/center/DeleteCenterModal';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import DeleteSession from '@/components/DeleteSession';
-import { GetStaticPaths } from 'next';
 import Header from '@/components/Header';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PlannedSession from '@/components/PlannedSession';
-import ReactGA from 'react-ga4';
-import RenameCenterModal from '@/components/center/RenameCenterModal';
-import Schedule from './../../components/Schedule';
-import { Session } from '../../utils/Interfaces';
 import SessionCard from '@/components/SessionCard';
 import SessionCardFooter from '@/components/SessionCardFooter';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import WeekCalender from '@/components/WeekCalender';
+import DeleteCenterModal from '@/components/center/DeleteCenterModal';
+import RenameCenterModal from '@/components/center/RenameCenterModal';
 import { getCohortDetails } from '@/services/CohortServices';
 import { getSessions } from '@/services/Sessionservice';
 import manageUserStore from '@/store/manageUserStore';
+import { CustomField } from '@/utils/Interfaces';
+import AddIcon from '@mui/icons-material/Add';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import { useTheme } from '@mui/material/styles';
+import { GetStaticPaths } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
+import ReactGA from 'react-ga4';
+import { Session } from '../../utils/Interfaces';
+import Schedule from './../../components/Schedule';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);

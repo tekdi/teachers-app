@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import {
   LearnerListProps,
   UserData,
-  updateCustomField,
+  UpdateCustomField,
 } from '@/utils/Interfaces';
 import React, { useEffect } from 'react';
 import { Status, names, Role } from '@/utils/app.constant';
@@ -69,7 +69,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     userData: null as UserData | null,
     userName: '',
     contactNumber: '',
-    customFieldsData: [] as updateCustomField[],
+    customFieldsData: [] as UpdateCustomField[],
   });
   const userStore = useStore();
   const theme = useTheme<any>();
@@ -78,7 +78,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const { t } = useTranslation();
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
-const [centers, setCenters] = React.useState();
+  const [centers, setCenters] = React.useState();
   const store = manageUserStore();
 
   const CustomLink = styled(Link)(({ theme }) => ({
@@ -95,10 +95,9 @@ const [centers, setCenters] = React.useState();
       setReloadState(false);
       // window.location.reload();
     }
-    const cohorts = userStore.cohorts
-      const centerList = cohorts.map((cohort: { name: string; }) => cohort.name);
-      setCenters(centerList);
-
+    const cohorts = userStore.cohorts;
+    const centerList = cohorts.map((cohort: { name: string }) => cohort.name);
+    setCenters(centerList);
   }, [reloadState, setReloadState]);
 
   const toggleDrawer =
@@ -141,7 +140,7 @@ const [centers, setCenters] = React.useState();
     setLearnerState((prevState) => ({ ...prevState, contactNumber: number }));
   };
 
-  const setCustomFieldsData = (fields: updateCustomField[]) => {
+  const setCustomFieldsData = (fields: UpdateCustomField[]) => {
     setLearnerState((prevState) => ({
       ...prevState,
       customFieldsData: fields,
@@ -300,7 +299,7 @@ const [centers, setCenters] = React.useState();
       acc.push(field);
     }
     return acc;
-  }, [] as updateCustomField[]);
+  }, [] as UpdateCustomField[]);
 
   const getTeamLeadersCenters = async () => {};
 

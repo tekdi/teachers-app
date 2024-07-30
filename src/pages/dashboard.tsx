@@ -1,66 +1,55 @@
 'use client';
 
-import {
-  AttendancePercentageProps,
-  cohort,
-  cohortAttendancePercentParam,
-  cohortMemberList,
-} from '../utils/Interfaces';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
 import React, { useEffect } from 'react';
-import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
   getCohortAttendance,
 } from '../services/AttendanceService';
-import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
 import {
   formatSelectedDate,
   getTodayDate,
   shortDateFormat,
   toPascalCase,
 } from '../utils/Helper';
+import {
+  AttendancePercentageProps,
+  CohortAttendancePercentParam,
+  cohort,
+  cohortMemberList,
+} from '../utils/Interfaces';
+import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
 
-
-import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
+import AttendanceComparison from '@/components/AttendanceComparison';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
-import Divider from '@mui/material/Divider';
 import GuideTour from '@/components/GuideTour';
-import Header from '../components/Header';
-import Image from 'next/image';
-import Link from 'next/link';
-import Loader from '../components/Loader';
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import OverviewCard from '@/components/OverviewCard';
-import ReactGA from 'react-ga4';
-import WeekCalender from '@/components/WeekCalender';
-import { calculatePercentage } from '@/utils/attendanceStats';
-import calendar from '../assets/images/calendar.svg';
-import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { logEvent } from '@/utils/googleAnalytics';
-import { modifyAttendanceLimit } from '../../app.config';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
-import { useCohortList } from '@/services/queries';
-import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { useRouter } from 'next/navigation';
+import WeekCalender from '@/components/WeekCalender';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { calculatePercentage } from '@/utils/attendanceStats';
+import { logEvent } from '@/utils/googleAnalytics';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
+import Divider from '@mui/material/Divider';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import withAccessControl from '@/utils/hoc/withAccessControl';
-import AttendanceComparison from '@/components/AttendanceComparison';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import ReactGA from 'react-ga4';
+import { modifyAttendanceLimit } from '../../app.config';
+import calendar from '../assets/images/calendar.svg';
+import Header from '../components/Header';
+import Loader from '../components/Loader';
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
 
-// import { Role } from '@/utils/app.constant';
-// import { accessControl } from '../../app.config';
-
-// import useStore from '@/store/store';
-// const store = useStore();
-// const userRole: string = store.userRole;
-
-interface DashboardProps {
-  //   buttonText: string;
-}
+interface DashboardProps {}
 
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
@@ -97,7 +86,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const formattedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
   const [userId, setUserId] = React.useState<string | null>(null);
   const [blockName, setBlockName] = React.useState<string>('');
-  
 
   useEffect(() => {
     setIsClient(true);
@@ -132,7 +120,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
       const storedUserId = localStorage.getItem('userId');
-      setClassId(localStorage.getItem('classId') || '');
+      setClassId(localStorage.getItem('classId') ?? '');
       if (token) {
         setIsAuthenticated(true);
       } else {
@@ -141,10 +129,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setUserId(storedUserId);
     }
   }, []);
-
-  const limit = 0;
-  const page = 0;
-  const filters = { userId: userId || '' };
 
   //API for getting student list
   useEffect(() => {
@@ -188,7 +172,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   absent: resp[userId].absent,
                   present_percent: resp[userId].present_percentage,
                 }));
-                if (nameUserIdArray && filteredData) {
+                if (filteredData) {
                   let mergedArray = filteredData.map((attendance) => {
                     const user = nameUserIdArray.find(
                       (user: { userId: string }) =>
@@ -224,7 +208,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           }
           if (classId) {
             const cohortAttendancePercent = async () => {
-              const cohortAttendanceData: cohortAttendancePercentParam = {
+              const cohortAttendanceData: CohortAttendancePercentParam = {
                 limit: 0,
                 page: 0,
                 filters: {
@@ -238,8 +222,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
               };
               const res = await getCohortAttendance(cohortAttendanceData);
               const response = res?.data?.result;
-              const contextData =
-                response?.contextId && response?.contextId[classId];
+              const contextData = response?.contextId?.[classId];
               if (contextData?.present_percentage) {
                 const presentPercent = contextData?.present_percentage;
                 setCohortPresentPercentage(presentPercent);
@@ -290,10 +273,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
               console.log('Fetched data:', results);
 
               const nameIDAttendanceArray = results
-                .filter(
-                  (result) =>
-                    !result?.error && result?.data && result?.data?.contextId
-                )
+                .filter((result) => !result?.error && result?.data?.contextId)
                 .map((result) => {
                   const cohortId = result?.cohortId;
                   const contextData = result?.data?.contextId[cohortId] || {};
@@ -572,7 +552,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           <WeekCalender
                             showDetailsHandle={showDetailsHandle}
                             data={percentageAttendanceData}
-                            disableDays={classId === 'all' ? true : false}
+                            disableDays={classId === 'all'}
                             classId={classId}
                           />
                         </Box>
@@ -893,9 +873,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </Box>
                   </Box>
                 </Box>
-                <Box  p={2}>
-                      <AttendanceComparison />
-                    </Box>
+                <Box p={2}>
+                  <AttendanceComparison />
+                </Box>
                 {/* <Box sx={{ background: '#fff' }}>
             <Typography
               textAlign={'left'}

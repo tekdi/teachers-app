@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import * as React from 'react';
 
-import { Button, Container } from '@mui/material';
+import { Button } from '@mui/material';
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   useColorScheme,
@@ -14,21 +14,21 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initGA, logPageView } from '../utils/googleAnalytics';
 
-import type { AppProps } from 'next/app';
-import Box from '@mui/material/Box';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import Head from 'next/head';
+import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import { Poppins } from 'next/font/google';
-import { ToastContainer } from 'react-toastify';
 import { UserConfig, appWithTranslation } from 'next-i18next';
-import customTheme from '../styles/customTheme';
-import { telemetryFactory } from '../utils/telemetry';
-import { useEffect } from 'react';
+import type { AppProps } from 'next/app';
+import { Poppins } from 'next/font/google';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
 import { fullWidthPages } from '../../app.config';
 import nextI18NextConfig from '../../next-i18next.config.js';
+import customTheme from '../styles/customTheme';
+import { telemetryFactory } from '../utils/telemetry';
 
 const queryClient = new QueryClient();
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
@@ -70,7 +70,7 @@ export function DarkTheme() {
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const isFullWidthPage =  fullWidthPages.includes(router.pathname);
+  const isFullWidthPage = fullWidthPages.includes(router.pathname);
   useEffect(() => {
     telemetryFactory.init();
   }, []);
@@ -148,7 +148,7 @@ function App({ Component, pageProps }: AppProps) {
               width: !isFullWidthPage ? 'calc(100% - 22rem)' : '100%',
               marginLeft: !isFullWidthPage ? '351px' : '0',
             },
-            '@media (min-width: 1600px)': {
+            '@media (min-width: 2000px)': {
               width: '100%',
               marginLeft: !isFullWidthPage ? '351px' : '0',
             },

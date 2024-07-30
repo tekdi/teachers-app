@@ -948,29 +948,38 @@ main {
 }
 
 .facilitator-bg {
-  background-image: url('./../assets/images/decorationBg.png');
-  /* width: 140px; */
-  height: 180px;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  object-fit: cover;
-  border-radius: 28px;
   display: flex;
   flex-direction: column;
   justify-content: end;
+
+  /* width: 140px; */
+  height: 180px;
   padding: 15px;
+  object-fit: cover;
+  background-image: url('./../assets/images/decorationBg.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  border-radius: 28px;
 }
 
 /* To Hide the caret icon on input type number */
 input[type='number'] {
-  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   margin: 0;
-  -webkit-appearance: none;
+  appearance: none;
 }
 
 /* To hide the input type number arrows */
+
+.text-truncate {
+  width: 100%;
+  padding-right: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

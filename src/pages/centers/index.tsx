@@ -1,43 +1,39 @@
+import { getCohortList } from '@/services/CohortServices';
+import { accessGranted, toPascalCase } from '@/utils/Helper';
+import { cohort } from '@/utils/Interfaces';
 import {
   Box,
   Button,
   FormControl,
   Grid,
   InputAdornment,
-  MenuItem,
-  Select,
   Tab,
   Tabs,
   TextField,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
-import { accessGranted, toPascalCase } from '@/utils/Helper';
-import { cohort, cohortAttendancePercentParam } from '@/utils/Interfaces';
-import { cohortList, getCohortList } from '@/services/CohortServices';
 
-import AddIcon from '@mui/icons-material/Add';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import CreateCenterModal from '@/components/center/CreateCenterModal';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Header from '@/components/Header';
-import Image from 'next/image';
 import Loader from '@/components/Loader';
 import ManageUser from '@/components/ManageUser';
-import { Role } from '@/utils/app.constant';
-import SearchIcon from '@mui/icons-material/Search';
-import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
-import { accessControl } from '../../../app.config';
-import building from '../../assets/images/apartment.png';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { setTimeout } from 'timers';
 import { showToastMessage } from '@/components/Toastify';
-import { useRouter } from 'next/router';
+import CreateCenterModal from '@/components/center/CreateCenterModal';
+import teamLeadStore from '@/store/mangageTLStore';
 import useStore from '@/store/store';
+import { Role } from '@/utils/app.constant';
+import { ArrowDropDown, Search } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { ArrowDropDown, Search } from '@mui/icons-material';
-import teamLeadStore from '@/store/mangageTLStore';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { setTimeout } from 'timers';
+import { accessControl } from '../../../app.config';
+import building from '../../assets/images/apartment.png';
 
 const TeachingCenters = () => {
   const [loading, setLoading] = useState(false);
@@ -154,7 +150,7 @@ const TeachingCenters = () => {
             console.log(blockData);
             setBlockData(blockData);
 
-            const cohortData = response.map((res: any) => {
+            response.map((res: any) => {
               const centerData = res?.childData.map((child: any) => {
                 const cohortName = child.name;
                 const cohortId = child.cohortId;
@@ -248,7 +244,8 @@ const TeachingCenters = () => {
                   {block.blockName}
                   {block?.district && (
                     <Box textAlign={'left'} fontSize={'16px'}>
-                      {block.district}, {toPascalCase(block.state)}
+                      {toPascalCase(block?.district)},{' '}
+                      {toPascalCase(block?.state)}
                     </Box>
                   )}
                 </Box>
@@ -402,8 +399,11 @@ const TeachingCenters = () => {
                 onCenterAdded={handleCenterAdded}
               />
               <Box
-                className="linerGradient"
-                sx={{ borderRadius: '16px', mt: 2 }}
+                sx={{
+                  borderRadius: '16px',
+                  mt: 2,
+                  background: theme.palette.action.selected,
+                }}
                 padding={'10px 16px 2px'}
               >
                 {accessGranted(
@@ -594,7 +594,6 @@ const TeachingCenters = () => {
                   accessControl,
                   userRole
                 ) &&
-                  cohortsData &&
                   cohortsData?.map((cohort: any) => {
                     return (
                       <React.Fragment key={cohort?.cohortId}>

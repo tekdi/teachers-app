@@ -42,7 +42,6 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
       sx={{
         width: 'auto',
       }}
-      role="presentation"
     >
       <Box
         sx={{
@@ -57,8 +56,8 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
       {renderCustomContent?.()}
       {children}
       <List>
-        {optionList.map(({ label, icon, name }, index) => (
-          <ListItem disablePadding key={index}>
+        {optionList.map(({ label, icon, name }) => (
+          <ListItem disablePadding key={name}>
             <ListItemButton
               sx={{
                 borderBottom: '1px solid #D0C5B4',

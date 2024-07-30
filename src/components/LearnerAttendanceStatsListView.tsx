@@ -1,7 +1,7 @@
-import { Box, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
+import { Box, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { Status, names } from '@/utils/app.constant';
-import { UserData, updateCustomField } from '@/utils/Interfaces';
+import { UserData, UpdateCustomField } from '@/utils/Interfaces';
 
 import DropoutLabel from './DropoutLabel';
 import LearnerModal from './LearnerModal';
@@ -41,7 +41,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
 
   const [userData, setUserData] = React.useState<UserData | null>(null);
   const [customFieldsData, setCustomFieldsData] = React.useState<
-    updateCustomField[]
+    UpdateCustomField[]
   >([]);
   const [contactNumber, setContactNumber] = useState<any>('');
   const [userName, setUserName] = React.useState('');
@@ -144,36 +144,34 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
               </Link>
             </Grid>
             {memberStatus === Status.DROPOUT ? (
-              <>
-                <Grid item xs={6}>
-                  <Grid container>
-                    <Grid xs={6}>
-                      <Typography
-                        fontSize="1rem"
-                        fontWeight="bold"
-                        lineHeight="1.5rem"
-                        // color={theme.palette.text.primary}
-                        color={textColor}
-                        textAlign="center"
-                      >
-                        {presentPercent}%
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography
-                        fontSize="1rem"
-                        fontWeight="bold"
-                        lineHeight="1.5rem"
-                        color={theme.palette.text.primary}
-                        textAlign="center"
-                      >
-                        {classesMissed}
-                      </Typography>
-                    </Grid>
+              <Grid item xs={6}>
+                <Grid container>
+                  <Grid xs={6}>
+                    <Typography
+                      fontSize="1rem"
+                      fontWeight="bold"
+                      lineHeight="1.5rem"
+                      // color={theme.palette.text.primary}
+                      color={textColor}
+                      textAlign="center"
+                    >
+                      {presentPercent}%
+                    </Typography>
                   </Grid>
-                  <DropoutLabel />
+                  <Grid item xs={6}>
+                    <Typography
+                      fontSize="1rem"
+                      fontWeight="bold"
+                      lineHeight="1.5rem"
+                      color={theme.palette.text.primary}
+                      textAlign="center"
+                    >
+                      {classesMissed}
+                    </Typography>
+                  </Grid>
                 </Grid>
-              </>
+                <DropoutLabel />
+              </Grid>
             ) : (
               <>
                 <Grid item xs={3}>

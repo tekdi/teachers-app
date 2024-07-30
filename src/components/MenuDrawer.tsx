@@ -20,6 +20,7 @@ import { Role } from '@/utils/app.constant';
 import useStore from '@/store/store';
 import { accessGranted } from '@/utils/Helper';
 import { accessControl } from '../../app.config';
+import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 interface DrawerProps {
   toggleDrawer: (open: boolean) => () => void;
   open: boolean;
@@ -76,6 +77,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 
   const isDashboard = router.pathname === '/dashboard';
   const isTeacherCenter = router.pathname === '/centers';
+  const isCoursePlanner = router.pathname === '/course-planner';
   // const isManageUser = router.pathname === '/manageUser';
 
   return (
@@ -249,6 +251,41 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             {t('COMMON.OBSERVATIONS_FORMS')}
           </Button>
         </Box>
+
+        <Box sx={{ marginTop: '12px' }}>
+          <Button
+            className="fs-14"
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: isCoursePlanner
+                ? theme.palette.primary.main
+                : 'transparent',
+
+              padding: isCoursePlanner
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              color: isCoursePlanner
+                ? theme.palette.action.focus
+                : theme.palette.warning.A200,
+              fontWeight: isCoursePlanner ? '600' : 500,
+              '&:hover': {
+                background: isCoursePlanner
+                  ? theme.palette.primary.main
+                  : 'transparent',
+              },
+              marginTop: '15px',
+            }}
+            startIcon={<EventAvailableOutlinedIcon />}
+            onClick={() => {
+              router.push(`/course-planner`); // Check route
+            }}
+          >
+            {t('COURSE_PLANNER.COURSE_PLANNER')}
+          </Button>
+        </Box>
+
         {/* <Box sx={{ marginTop: '12px' }}>
           <Button
             className="fs-14"

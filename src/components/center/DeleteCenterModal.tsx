@@ -1,23 +1,15 @@
-import React, { useState } from 'react';
 import {
   Box,
-  Typography,
-  TextField,
   Button,
-  Modal,
-  Fade,
   Divider,
-  IconButton,
+  Fade,
+  Modal,
   Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
+  Typography
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { styled, useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTheme, styled } from '@mui/material/styles';
+import React from 'react';
 import { showToastMessage } from '../Toastify';
 
 interface CreateBlockModalProps {
@@ -38,8 +30,6 @@ const DeleteCenterModal: React.FC<CreateBlockModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-
-
 
   const handleDeleteButtonClick = () => {
     console.log('Delete request sent');
@@ -66,9 +56,12 @@ const DeleteCenterModal: React.FC<CreateBlockModalProps> = ({
             transform: 'translate(-50%, -50%)',
           }}
         >
-          <Typography variant="body2" color="textSecondary" sx={{ mb: 2, mt: 2 }}>
-          
-          {t('CENTERS.YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN')}
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            sx={{ mb: 2, mt: 2 }}
+          >
+            {t('CENTERS.YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN')}
           </Typography>
           <Divider sx={{ mb: 2, mx: -2 }} />
           <Box
@@ -76,37 +69,35 @@ const DeleteCenterModal: React.FC<CreateBlockModalProps> = ({
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-            
+
               pl: 1,
               pr: 2,
             }}
           >
-          <Button
-            variant="outlined"
-            onClick={handleClose}
-            sx={{
-              width: '60%',
-              border: 'none',
-              color: theme?.palette?.secondary?.main,
-              mb: 2,
-            }}
-          >
-            
-            {t('COMMON.CANCEL')}
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={handleDeleteButtonClick}
-            sx={{
-              width: '100%',
-              border: 'none',
-              backgroundColor: theme?.palette?.primary?.main,
-              mb: 2,
-            }}
-          >
-            
-            {t('CENTERS.SEND_REQUEST')}
-          </Button>
+            <Button
+              variant="outlined"
+              onClick={handleClose}
+              sx={{
+                width: '60%',
+                border: 'none',
+                color: theme?.palette?.secondary?.main,
+                mb: 2,
+              }}
+            >
+              {t('COMMON.CANCEL')}
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleDeleteButtonClick}
+              sx={{
+                width: '100%',
+                border: 'none',
+                backgroundColor: theme?.palette?.primary?.main,
+                mb: 2,
+              }}
+            >
+              {t('CENTERS.SEND_REQUEST')}
+            </Button>
           </Box>
         </Box>
       </Fade>
