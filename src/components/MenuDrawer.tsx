@@ -266,9 +266,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               padding: isCoursePlanner
                 ? '16px 18px !important'
                 : '0px 18px !important',
-              color: isCoursePlanner
-                ? theme.palette.action.focus
-                : theme.palette.warning.A200,
+              color: isCoursePlanner ? '#2E1500' : theme.palette.warning.A200,
               fontWeight: isCoursePlanner ? '600' : 500,
               '&:hover': {
                 background: isCoursePlanner
