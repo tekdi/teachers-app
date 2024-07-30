@@ -43,6 +43,7 @@ import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
 import { Session } from '../../utils/Interfaces';
 import Schedule from './../../components/Schedule';
+import reassignLearnerStore from '@/store/reassignLearnerStore';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -115,6 +116,8 @@ const TeachingCenterDetails = () => {
     setOpenSchedule(false);
     setDeleteModal(false);
   };
+  const setRemoveCohortId = reassignLearnerStore((state) => state.setRemoveCohortId);
+  
 
   useEffect(() => {
     const getCohortData = async () => {
@@ -125,7 +128,8 @@ const TeachingCenterDetails = () => {
 
       if (response?.cohortData?.length) {
         cohortData = response?.cohortData[0];
-
+        setRemoveCohortId(cohortData?.cohortId)
+        
         if (cohortData?.customField?.length) {
           const district = cohortData.customField.find(
             (item: CustomField) => item.label === 'District'
