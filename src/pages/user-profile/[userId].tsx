@@ -18,7 +18,11 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { CustomField, UserDatas, UpdateCustomField } from '@/utils/Interfaces';
+import {
+  ArrowBack as ArrowBackIcon,
+  East as EastIcon,
+} from '@mui/icons-material';
+import { CustomField, UserDatas } from '@/utils/Interfaces';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { useTheme, withStyles } from '@mui/material/styles';
@@ -34,7 +38,11 @@ import Modal from '@mui/material/Modal';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import ReactGA from 'react-ga4';
 import { accessControl } from '../../../app.config';
-import { getLabelForValue, toPascalCase } from '@/utils/Helper';
+import {
+  getLabelForValue,
+  toPascalCase,
+  mapFieldIdToValue,
+} from '@/utils/Helper';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
@@ -44,6 +52,9 @@ import { useTranslation } from 'next-i18next';
 import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../../assets/images/user_placeholder.png';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import { getFormRead } from '@/services/CreateUserService';
+import { FormContext, FormContextType } from '@/utils/app.constant';
+import manageUserStore from '@/store/manageUserStore';
 
 interface FieldOption {
   name: string;
@@ -68,6 +79,9 @@ const TeacherProfile = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { userId }: any = router.query;
+
+  const userStore = manageUserStore();
+  const selfUserId = userStore.userId;
   const theme = useTheme<any>();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
@@ -166,22 +180,72 @@ const TeacherProfile = () => {
     }
 
     if (data) {
-      const userData = data?.result?.userData;
-      setUserData(userData);
-      setUserName(userData?.name);
-      const customDataFields = userData?.customFields;
-      setIsData(true);
-      if (customDataFields?.length > 0) {
-        setCustomFieldsData(customDataFields);
+      const coreFieldData = data?.result?.userData;
+      setUserName(toPascalCase(coreFieldData?.name));
+      const fields: CustomField[] = data?.result?.userData?.customFields;
+      const fieldIdToValueMap: { [key: string]: string } =
+        mapFieldIdToValue(fields);
+      console.log(`coreFieldData`, coreFieldData);
 
-        const unitName = getFieldValue(customDataFields, 'Unit Name');
-        setUnitName(unitName);
-        const blockName = getFieldValue(customDataFields, 'Block Name');
-        setBlockName(blockName);
-      }
-    } else {
-      setIsData(false);
-      console.log('No data Found');
+      const fetchFormData = async () => {
+        try {
+          const response: FormData = await getFormRead(
+            FormContext.USERS,
+            FormContextType.TEACHER
+          );
+          console.log('response', response);
+          if (response) {
+            const mergeData = (
+              fieldIdToValueMap: { [key: string]: string },
+              response: any
+            ): any => {
+              response.fields.forEach(
+                (field: {
+                  name: any;
+                  fieldId: string | number;
+                  value: string;
+                  coreField: number;
+                }) => {
+                  if (field.fieldId && fieldIdToValueMap[field.fieldId]) {
+                    // Update field value from fieldIdToValueMap if fieldId is available
+                    field.value = fieldIdToValueMap[field.fieldId] || '-';
+                  } else if (field.coreField === 1) {
+                    // Set field value from fieldIdToValueMap if coreField is 1 and fieldId is not in the map
+                    field.value = coreFieldData[field.name] || '-';
+                  }
+                }
+              );
+              return response;
+            };
+
+            const mergedProfileData = mergeData(fieldIdToValueMap, response);
+            console.log(`mergedProfileData`, mergedProfileData);
+            if (mergedProfileData) {
+              setUserData(mergedProfileData?.fields);
+              const nameField = mergedProfileData.fields.find(
+                (field: { name: string }) => field.name === 'name'
+              );
+              const customDataFields = mergedProfileData?.fields;
+              setIsData(true);
+
+              if (customDataFields?.length > 0) {
+                setCustomFieldsData(customDataFields);
+
+                const unitName = getFieldValue(customDataFields, 'Unit Name');
+                setUnitName(unitName);
+                const blockName = getFieldValue(customDataFields, 'Block Name');
+                setBlockName(blockName);
+              }
+            }
+          } else {
+            setIsData(false);
+            console.log('No data Found');
+          }
+        } catch (error) {
+          console.error('Error fetching form data:', error);
+        }
+      };
+      fetchFormData();
     }
   }, [data, error, isLoading]);
 
@@ -207,10 +271,10 @@ const TeacherProfile = () => {
   );
 
   const teachSubjects: string[] = teachSubjectsField
-    ? teachSubjectsField?.value.split(',')
+    ? teachSubjectsField?.value?.split(',')
     : [];
   const mainSubjects: string[] = mainSubjectsField
-    ? mainSubjectsField?.value.split(',')
+    ? mainSubjectsField?.value?.split(',')
     : [];
 
   // Find mutual and remaining subjects
@@ -261,7 +325,7 @@ const TeacherProfile = () => {
     customFields: { fieldId: string; type: string; value: string[] | string }[];
   }>({
     userData: {
-      name: userName || '',
+      name: 'userName' || '',
     },
     customFields: customFieldsData?.map((field) => ({
       fieldId: field.fieldId,
@@ -418,7 +482,6 @@ const TeacherProfile = () => {
       label: 'Teacher Profile Save Button Clicked',
     });
     setLoading(true);
-    // const userId = localStorage.getItem('userId');
     const data = {
       userData: formData?.userData,
       customFields: formData?.customFields?.map((field) => ({
@@ -443,11 +506,8 @@ const TeacherProfile = () => {
               'An error occurred while updating the user.'
           );
         }
-
         handleClose();
-
         console.log(response.params.successmessage);
-
         setIsError(false);
         setLoading(false);
       }
@@ -480,28 +540,87 @@ const TeacherProfile = () => {
             justifyContent={'center'}
             alignItems={'center'}
           >
-            <Box
-              sx={{ flex: '1', minWidth: '100%' }}
-              display="flex"
-              flexDirection="row"
-              gap="5px"
-              padding="25px 19px  20px"
-            >
-              <Typography
-                // variant="h3"
-                style={{
-                  letterSpacing: '0.1px',
-                  textAlign: 'left',
-                  marginBottom: '2px',
-                }}
-                fontSize={'22px'}
-                fontWeight={'400'}
-                lineHeight={'28px'}
-                color={theme.palette.warning['A200']}
+            {selfUserId === userId ? (
+              <Box
+                sx={{ flex: '1', minWidth: '100%' }}
+                display="flex"
+                flexDirection="row"
+                gap="5px"
+                padding="25px 19px  20px"
               >
-                {t('PROFILE.MY_PROFILE')}
-              </Typography>
-            </Box>
+                <Typography
+                  // variant="h3"
+                  style={{
+                    letterSpacing: '0.1px',
+                    textAlign: 'left',
+                    marginBottom: '2px',
+                  }}
+                  fontSize={'22px'}
+                  fontWeight={'400'}
+                  lineHeight={'28px'}
+                  color={theme.palette.warning['A200']}
+                >
+                  {t('PROFILE.MY_PROFILE')}
+                </Typography>
+              </Box>
+            ) : (
+              <Box
+                sx={{ flex: '1', minWidth: '100%' }}
+                display="flex"
+                flexDirection="row"
+                gap="10px"
+                padding="25px 19px  20px"
+              >
+                <Box display={'flex'}>
+                  <Box
+                    onClick={() => {
+                      window.history.back();
+                      // logEvent({
+                      //   action: 'back-button-clicked-teacher-profile-page',
+                      //   category: 'Teacher Profile Page',
+                      //   label: 'Back Button Clicked',
+                      // });
+                    }}
+                  >
+                    <ArrowBackIcon
+                      sx={{
+                        color: (theme.palette.warning as any)['A200'],
+                        height: '1.5rem',
+                        width: '1.5rem',
+                        cursor: 'pointer',
+                        pr: '5px',
+                      }}
+                    />
+                  </Box>
+                  <Box>
+                    <Typography
+                      style={{
+                        letterSpacing: '0.1px',
+                        textAlign: 'left',
+                        marginBottom: '2px',
+                      }}
+                      fontSize={'1.375rem'}
+                      fontWeight={'400'}
+                      lineHeight={'1.75rem'}
+                      color={theme.palette.warning['A200']}
+                    >
+                      {userName?.length > 18
+                        ? `${userName?.substring(0, 18)}...`
+                        : userName}
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontFamily: theme.typography.fontFamily,
+                        fontSize: '12px',
+                      }}
+                    >
+                      {address}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            )}
 
             <Box padding="5px 19px" className="w-100">
               <Box
@@ -544,7 +663,11 @@ const TeacherProfile = () => {
                         className="text-dark-grey two-line-text"
                         mr={'40px'}
                       >
-                        {toPascalCase(userData?.name)}
+                        {toPascalCase(
+                          userData?.find(
+                            (field: { name: string }) => field.name === 'name'
+                          )?.value
+                        )}
                       </Typography>
                     </Box>
                   </Box>
@@ -722,7 +845,7 @@ const TeacherProfile = () => {
                             color={theme.palette.warning.A200}
                             sx={{ wordBreak: 'break-word' }}
                           >
-                            {item.value ? toPascalCase(item.value) : '-'}
+                            {item.value ? toPascalCase(item?.value) : '-'}
                           </Typography>
                         </Grid>
                       );
@@ -747,7 +870,9 @@ const TeacherProfile = () => {
                             sx={{ wordBreak: 'break-word' }}
                           >
                             {item.value
-                              ? toPascalCase(getLabelForValue(item, item.value))
+                              ? toPascalCase(
+                                  getLabelForValue(item, item?.value)
+                                )
                               : '-'}{' '}
                             {/* apply elipses/ truncating here */}
                           </Typography>

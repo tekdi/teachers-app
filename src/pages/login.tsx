@@ -28,9 +28,13 @@ import appLogo from '../../public/images/appLogo.png';
 import Loader from '../components/Loader';
 import { login } from '../services/LoginService';
 import { getUserId } from '../services/ProfileService';
+import manageUserStore from '@/store/manageUserStore';
 
 const LoginPage = () => {
   const { t } = useTranslation();
+  const store = useStore();
+  const userStore = manageUserStore();
+  const setUserId = manageUserStore((state) => state.setUserId);
   const setUserRole = useStore(
     (state: { setUserRole: any }) => state.setUserRole
   );
@@ -122,6 +126,7 @@ const LoginPage = () => {
 
             const userResponse = await getUserId();
             localStorage.setItem('userId', userResponse?.userId);
+            setUserId(userResponse?.userId);
             localStorage.setItem('state', userResponse?.state);
             localStorage.setItem('district', userResponse?.district);
             localStorage.setItem('role', userResponse?.tenantData[0]?.roleName);
