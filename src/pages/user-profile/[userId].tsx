@@ -53,8 +53,9 @@ import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../../assets/images/user_placeholder.png';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { getFormRead } from '@/services/CreateUserService';
-import { FormContext, FormContextType } from '@/utils/app.constant';
+import { FormContext, FormContextType, Role } from '@/utils/app.constant';
 import manageUserStore from '@/store/manageUserStore';
+import useStore from '@/store/store';
 
 interface FieldOption {
   name: string;
@@ -79,7 +80,8 @@ const TeacherProfile = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { userId }: any = router.query;
-
+  const store = useStore();
+  const userRole = store.userRole;
   const userStore = manageUserStore();
   const selfUserId = userStore.userId;
   const theme = useTheme<any>();
@@ -714,41 +716,42 @@ const TeacherProfile = () => {
                 // },
               }}
             >
-              <Button
-                className="min-width-md-20"
-                sx={{
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  minWidth: '100%',
-                  padding: '10px 24px 10px 16px',
-                  gap: '8px',
-                  borderRadius: '100px',
-                  marginTop: '10px',
-                  flex: '1',
-                  textAlign: 'center',
-                  color: theme.palette.warning.A200,
-                  border: `1px solid #4D4639`,
-                }}
-                onClick={handleOpen}
-              >
-                <Typography
-                  variant="h3"
-                  style={{
-                    letterSpacing: '0.1px',
-                    textAlign: 'left',
-                    marginBottom: '2px',
+              {userRole == Role.TEAM_LEADER && userId !== selfUserId ? (
+                <Button
+                  className="min-width-md-20"
+                  sx={{
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    minWidth: '100%',
+                    padding: '10px 24px 10px 16px',
+                    gap: '8px',
+                    borderRadius: '100px',
+                    marginTop: '10px',
+                    flex: '1',
+                    textAlign: 'center',
+                    color: theme.palette.warning.A200,
+                    border: `1px solid #4D4639`,
                   }}
-                  fontSize={'14px'}
-                  fontWeight={'500'}
-                  lineHeight={'20px'}
+                  onClick={handleOpen}
                 >
-                  {t('PROFILE.EDIT_PROFILE')}
-                </Typography>
-                <Box>
-                  <CreateOutlinedIcon sx={{ fontSize: '18px' }} />
-                </Box>
-              </Button>
-
+                  <Typography
+                    variant="h3"
+                    style={{
+                      letterSpacing: '0.1px',
+                      textAlign: 'left',
+                      marginBottom: '2px',
+                    }}
+                    fontSize={'14px'}
+                    fontWeight={'500'}
+                    lineHeight={'20px'}
+                  >
+                    {t('PROFILE.EDIT_PROFILE')}
+                  </Typography>
+                  <Box>
+                    <CreateOutlinedIcon sx={{ fontSize: '18px' }} />
+                  </Box>
+                </Button>
+              ) : null}
               <Box
                 mt={2}
                 sx={{
