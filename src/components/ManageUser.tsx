@@ -88,7 +88,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedUserName, setSelectedUserName] = useState(null);
-  const [centers, setCenters] = useState<string[]>([]);
+  const [centers, setCenters] = useState<any>([]);
   const [centerList, setCenterList] = useState<string[]>([]);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -248,7 +248,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const handleModalToggle = (user: any) => {
     setSelectedUser(user);
     setSelectedUserName(user.name);
-    setCenters(cohortsData?.[user.userId]?.map((cohort) => cohort.name) || []);
+    setCenters(cohortsData?.[user.userId]?.map((cohort) => cohort?.name) || []);
     setOpen(true);
     // logEvent({
     //   action: 'mark/modify-attendance-button-clicked-dashboard',
