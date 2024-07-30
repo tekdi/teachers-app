@@ -45,7 +45,12 @@ import {
   getCohortAttendance,
 } from '@/services/AttendanceService';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
-import { formatSelectedDate, getTodayDate, mapFieldIdToValue, toPascalCase } from '@/utils/Helper';
+import {
+  formatSelectedDate,
+  getTodayDate,
+  mapFieldIdToValue,
+  toPascalCase,
+} from '@/utils/Helper';
 
 import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
@@ -263,76 +268,88 @@ const LearnerProfile: React.FC = () => {
           if (response?.responseCode === 200) {
             const data = response;
             if (data) {
-             
-    if (data) {
-      const coreFieldData = data?.result?.userData;
-      setUserName(coreFieldData?.name)
-      const fields: CustomField[] = data?.result?.userData?.customFields;
-      const fieldIdToValueMap: { [key: string]: string } =
-        mapFieldIdToValue(fields);
-      console.log(`!!!!!!!!!!!!!!!!!!!!!`, coreFieldData);
-  
-      const fetchFormData = async () => {
-        
-        try {
-          const response: FormData = await getFormRead(
-            FormContext.USERS,
-            FormContextType.STUDENT
-          );
-          console.log('@@@@@@@@@@@@@@', response);
-          if (response) {
-            const mergeData = (
-              fieldIdToValueMap: { [key: string]: string },
-              response: any
-            ): any => {
-              response.fields.forEach(
-                (field: {
-                  name: any;
-                  fieldId: string | number;
-                  value: string;
-                  coreField: number;
-                }) => {
-                  if (field.fieldId && fieldIdToValueMap[field.fieldId]) {
-                    // Update field value from fieldIdToValueMap if fieldId is available
-                    field.value = fieldIdToValueMap[field.fieldId] || '-';
-                  } else if (field.coreField === 1) {
-                    // Set field value from fieldIdToValueMap if coreField is 1 and fieldId is not in the map
-                    field.value = coreFieldData[field.name] || '-';
+              if (data) {
+                const coreFieldData = data?.result?.userData;
+                setUserName(coreFieldData?.name);
+                const fields: CustomField[] =
+                  data?.result?.userData?.customFields;
+                const fieldIdToValueMap: { [key: string]: string } =
+                  mapFieldIdToValue(fields);
+                console.log(`coreFieldData`, coreFieldData);
+
+                const fetchFormData = async () => {
+                  try {
+                    const response: FormData = await getFormRead(
+                      FormContext.USERS,
+                      FormContextType.STUDENT
+                    );
+                    console.log('response', response);
+                    if (response) {
+                      const mergeData = (
+                        fieldIdToValueMap: { [key: string]: string },
+                        response: any
+                      ): any => {
+                        response.fields.forEach(
+                          (field: {
+                            name: any;
+                            fieldId: string | number;
+                            value: string;
+                            coreField: number;
+                          }) => {
+                            if (
+                              field.fieldId &&
+                              fieldIdToValueMap[field.fieldId]
+                            ) {
+                              // Update field value from fieldIdToValueMap if fieldId is available
+                              field.value =
+                                fieldIdToValueMap[field.fieldId] || '-';
+                            } else if (field.coreField === 1) {
+                              // Set field value from fieldIdToValueMap if coreField is 1 and fieldId is not in the map
+                              field.value = coreFieldData[field.name] || '-';
+                            }
+                          }
+                        );
+                        return response;
+                      };
+
+                      const mergedProfileData = mergeData(
+                        fieldIdToValueMap,
+                        response
+                      );
+                      console.log(`mergedProfileData`, mergedProfileData);
+                      if (mergedProfileData) {
+                        setUserData(mergedProfileData?.fields);
+                        const nameField = mergedProfileData.fields.find(
+                          (field: { name: string }) => field.name === 'name'
+                        );
+                        const customDataFields = mergedProfileData?.fields;
+                        // setIsData(true);
+
+                        if (customDataFields?.length > 0) {
+                          setCustomFieldsData(customDataFields);
+
+                          const unitName = getFieldValue(
+                            customDataFields,
+                            'Unit Name'
+                          );
+                          setUnitName(unitName);
+                          const blockName = getFieldValue(
+                            customDataFields,
+                            'Block Name'
+                          );
+                          setBlockName(blockName);
+                        }
+                      }
+                    } else {
+                      // setIsData(false);
+                      console.log('No data Found');
+                    }
+                  } catch (error) {
+                    console.error('Error fetching form data:', error);
                   }
-                }
-              );
-              return response;
-            };
-
-            const mergedProfileData = mergeData(fieldIdToValueMap, response);
-            console.log(`#####################`, mergedProfileData);
-            if (mergedProfileData) {
-              setUserData(mergedProfileData?.fields);
-              const nameField = mergedProfileData.fields.find(
-                (field: { name: string }) => field.name === 'name'
-              );
-              const customDataFields = mergedProfileData?.fields;
-              // setIsData(true);
-
-              if (customDataFields?.length > 0) {
-                setCustomFieldsData(customDataFields);
-
-                const unitName = getFieldValue(customDataFields, 'Unit Name');
-                setUnitName(unitName);
-                const blockName = getFieldValue(customDataFields, 'Block Name');
-                setBlockName(blockName);
+                };
+                fetchFormData();
               }
-            }
-          } else {
-            // setIsData(false);
-            console.log('No data Found');
-          }
-        } catch (error) {
-          console.error('Error fetching form data:', error);
-        }
-      };
-      fetchFormData();
-    }
             } else {
               setLoading(false);
               console.log('No data Found');
@@ -358,39 +375,39 @@ const LearnerProfile: React.FC = () => {
   //   .filter((field) => field.order <= 12);
 
   const learnerDetailsByOrder = [...customFieldsData]
-  ?.sort((a, b) => a.order - b.order)
-  ?.filter((field) => field.order <= 12)
-  ?.map((field) => {
-    const getSelectedOption = (field: any) => {
-      return field?.options?.find(
-        (option: any) => option?.value === field?.value?.[0]
-      ) || '-';
-    };
+    ?.sort((a, b) => a.order - b.order)
+    ?.filter((field) => field.order <= 12)
+    ?.map((field) => {
+      const getSelectedOption = (field: any) => {
+        return (
+          field?.options?.find(
+            (option: any) => option?.value === field?.value?.[0]
+          ) || '-'
+        );
+      };
 
-    if (
-      field.type === 'drop_down' ||
-      field.type === 'radio' ||
-      field.type === 'dropdown' ||
-      (field.type === 'Radio' && field.options && field.value.length)
-    ) {
-      const selectedOption = getSelectedOption(field);
+      if (
+        field.type === 'drop_down' ||
+        field.type === 'radio' ||
+        field.type === 'dropdown' ||
+        (field.type === 'Radio' && field.options && field.value.length)
+      ) {
+        const selectedOption = getSelectedOption(field);
+        return {
+          ...field,
+          displayValue:
+            selectedOption !== '-'
+              ? selectedOption.label
+              : field.value
+                ? toPascalCase(field.value)
+                : '-',
+        };
+      }
       return {
         ...field,
-        displayValue: selectedOption !== '-' 
-          ? selectedOption.label 
-          : field.value 
-            ? toPascalCase(field.value) 
-            : "-",
+        displayValue: field.value ? toPascalCase(field.value) : '-',
       };
-    }
-    return {
-      ...field,
-      displayValue: field.value
-        ? toPascalCase(field.value)
-        : "-",
-    };
-  });
-
+    });
 
   // address find
   const address = [unitName, blockName, userData?.district]
