@@ -20,12 +20,13 @@ import { useTranslation } from 'next-i18next';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { useRouter } from 'next/router';
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState(1);
   const theme = useTheme<any>();
   const { t } = useTranslation();
-
+  const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const handleScrollDown = () => {
@@ -160,6 +161,9 @@ const CoursePlanner = () => {
                   borderRadius: '8px',
                   padding: '12px',
                   cursor: 'pointer',
+                }}
+                onClick={() => {
+                  router.push(`/course-planner-detail`); // Check route
                 }}
               >
                 <Box
