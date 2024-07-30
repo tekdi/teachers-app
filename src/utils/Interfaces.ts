@@ -403,3 +403,8 @@ export interface CreateUserParam {
   tenantCohortRoleMapping: TenantCohortRoleMapping[];
   customFields: CustomField[];
 }
+export interface BulkCreateCohortMembersRequest {
+  userId: string[];
+  cohortId: string[];
+  removeCohortId?: string[];
+}

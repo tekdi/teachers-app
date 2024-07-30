@@ -6,7 +6,7 @@ import {
 } from '@/utils/Interfaces';
 import React, { useEffect } from 'react';
 import { Status, names, Role } from '@/utils/app.constant';
-
+import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import BottomDrawer from './BottomDrawer';
 import ConfirmationModal from './ConfirmationModal';
@@ -33,6 +33,8 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import manageUserStore from '../store/manageUserStore';
 import useStore from '@/store/store';
+import reassignLearnerStore from '@/store/reassignLearnerStore';
+import { bulkCreateCohortMembers } from '@/services/CohortServices';
 
 type Anchor = 'bottom';
 
@@ -79,8 +81,10 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
   const [centers, setCenters] = React.useState();
+  const [centersName, setCentersName] = React.useState();
   const store = manageUserStore();
-
+  const reassignStore = reassignLearnerStore()
+  const setReassignId = reassignLearnerStore((state) => state.setReassignId);
   const CustomLink = styled(Link)(({ theme }) => ({
     textDecoration: 'underline',
     textDecorationColor: theme?.palette?.secondary.main,
@@ -96,15 +100,22 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       // window.location.reload();
     }
     const cohorts = userStore.cohorts;
-    const centerList = cohorts.map((cohort: { name: string }) => cohort.name);
-    setCenters(centerList);
+    const centers = cohorts.map((cohort: { name: string, cohortId: string }) => ({
+      name: cohort.name,
+      cohortId: cohort.cohortId,
+    }));
+    const centersName = centers?.map((center: { name: any; }) => center?.name);
+    
+    setCenters(centers);
+    setCentersName(centersName);
+
   }, [reloadState, setReloadState]);
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
       setCohortLearnerDeleteId(cohortMembershipId);
-      console.log(cohortMembershipId);
+      setReassignId(userId)
 
       if (
         event.type === 'keydown' &&
@@ -312,12 +323,32 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     setConfirmationModalReassignCentersOpen(true);
   };
 
-  const handleReassignCenterRequest = () => {
-    showToastMessage(
-      t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'),
-      'success'
-    );
+  const handleReassignCenterRequest = async () => {
+
+    const payload: BulkCreateCohortMembersRequest = {
+      userId: [reassignStore.reassignId], 
+      cohortId: [reassignStore.cohortId],   
+      removeCohortId: [reassignStore.removeCohortId]
+    };
+  
+    try {
+   
+      const response = await bulkCreateCohortMembers(payload);
+      console.log('Cohort members created successfully', response);
+
+      showToastMessage(
+        t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'),
+        'success'
+      );
+    } catch (error) {
+      console.error('Error creating cohort members', error);
+      showToastMessage(
+        t('MANAGE_USERS.CENTERS_REQUEST_FAILED'),
+        'error'
+      );
+    }
   };
+  
 
   const renderCustomContent = () => {
     if (isDropout) {
@@ -646,14 +677,15 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         modalOpen={confirmationModalOpen}
       />
 
-      <ManageCentersModal
-        open={openCentersModal}
-        onClose={handleCloseCentersModal}
-        centersName={centers}
-        centers={centers}
-        onAssign={handleAssignCenters}
-        isForLearner={true}
-      />
+<ManageCentersModal
+  open={openCentersModal}
+  onClose={handleCloseCentersModal}
+  centersName={centersName}
+  centers={centers}
+  onAssign={handleAssignCenters}
+  isForLearner={true}
+/>
+
 
       <DeleteUserModal
         type={Role.STUDENT}

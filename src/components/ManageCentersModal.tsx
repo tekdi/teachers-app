@@ -14,19 +14,20 @@ import SearchIcon from '@mui/icons-material/Search';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import reassignLearnerStore from '@/store/reassignLearnerStore';
 
 interface ManageUsersModalProps {
   open: boolean;
   onClose: () => void;
   centersName?: string[];
-  centers?: string[];
+  centers?: { name: string, cohortId: string }[];
   onAssign?: (selectedCenters: string[]) => void;
   isForLearner?: boolean;
 }
 
 const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
-  centersName,
-  centers,
+  centersName = [],
+  centers = [],
   open,
   onAssign,
   onClose,
@@ -37,6 +38,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   const [checkedCenters, setCheckedCenters] = React.useState<string[]>([]);
   const [selectedValue, setSelectedValue] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
+  const setCohortId = reassignLearnerStore((state) => state.setCohortId);
 
   const style = {
     position: 'absolute',
@@ -55,7 +57,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
 
   React.useEffect(() => {
     if (centers) {
-      setCheckedCenters(centers as never[]);
+      setCheckedCenters(centers?.map(center => center?.name));
     }
   }, [centers]);
 
@@ -75,8 +77,9 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
     });
   };
 
-  const handleRadioChange = (name: string) => {
+  const handleRadioChange = (name: string, cohortId: string) => {
     setSelectedValue(name);
+    setCohortId(cohortId);
   };
 
   const handleAssign = () => {
@@ -89,8 +92,8 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
     setSearchQuery(event.target.value);
   };
 
-  const filteredCenters = centersName?.filter((name) =>
-    name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCenters = centers.filter(center =>
+    center?.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -152,7 +155,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
           </Box>
           <Box mx={'20px'}>
             <Box sx={{ height: '37vh', mt: '10px', overflowY: 'auto' }}>
-              {filteredCenters?.map((name, index) => (
+              {filteredCenters?.map((center, index) => (
                 <React.Fragment key={index}>
                   <Box
                     borderBottom={theme.palette.warning['A100']}
@@ -169,22 +172,22 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                         pb: '20px',
                       }}
                     >
-                      {name}
+                      {center?.name}
                     </Box>
                     <Box>
                       {isForLearner ? (
                         <Radio
                           sx={{ pb: '20px' }}
-                          checked={selectedValue.includes(name)}
-                          onChange={() => handleRadioChange(name)}
+                          checked={selectedValue === center?.name}
+                          onChange={() => handleRadioChange(center?.name, center?.cohortId)}
                           value={selectedValue}
                         />
                       ) : (
                         <Checkbox
                           sx={{ pb: '20px' }}
                           className="checkBox_svg"
-                          checked={checkedCenters.includes(name)}
-                          onChange={() => handleToggle(name)}
+                          checked={checkedCenters.includes(center?.name)}
+                          onChange={() => handleToggle(center?.name)}
                         />
                       )}
                     </Box>
