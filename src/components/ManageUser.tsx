@@ -1,51 +1,36 @@
-import React, { useState } from 'react';
 import {
   Button,
-  FormControl,
   Grid,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
+  Typography
 } from '@mui/material';
+import React, { useState } from 'react';
 
-import Box from '@mui/material/Box';
-import Header from '@/components/Header';
-import InputAdornment from '@mui/material/InputAdornment';
+import BottomDrawer from '@/components/BottomDrawer';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import ManageCentersModal from '@/components/ManageCentersModal';
 import ManageUsersModal from '@/components/ManageUsersModal';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import SearchIcon from '@mui/icons-material/Search';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter } from 'next/router';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import { useEffect } from 'react';
-import { assignCentersToFacilitator } from '@/services/ManageUser';
-import { cohortList, getCohortList } from '@/services/CohortServices';
 import { showToastMessage } from '@/components/Toastify';
-import BottomDrawer from '@/components/BottomDrawer';
-import ApartmentIcon from '@mui/icons-material/Apartment';
+import { cohortList, getCohortList } from '@/services/CohortServices';
+import { Role } from '@/utils/app.constant';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import { editEditUser } from '@/services/ProfileService';
-import ConfirmationModal from '@/components/ConfirmationModal';
-import { Role, Status } from '@/utils/app.constant';
-import AddIcon from '@mui/icons-material/Add';
-import LearnersList from '@/components/LearnersListItem';
-import Link from 'next/link';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import manageUserStore from '../store/manageUserStore';
 
 import { getMyUserList } from '@/services/MyClassDetailsService';
-import DeleteUserModal from './DeleteUserModal';
 import Image from 'next/image';
 import profileALT from '../assets/images/Profile.png';
-import RemoveFacilitatorAlert from './SimpleModal';
-import SimpleModal from './SimpleModal';
 import AddFacilitatorModal from './AddFacilitator';
+import DeleteUserModal from './DeleteUserModal';
+import SimpleModal from './SimpleModal';
 
 interface Cohort {
   cohortId: string;

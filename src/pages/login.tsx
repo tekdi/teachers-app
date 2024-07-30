@@ -1,3 +1,4 @@
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -6,32 +7,30 @@ import {
   InputAdornment,
   TextField,
 } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactGA from 'react-ga4';
 
+import { showToastMessage } from '@/components/Toastify';
+import useStore from '@/store/store';
+import { logEvent } from '@/utils/googleAnalytics';
+import { telemetryFactory } from '@/utils/telemetry';
 import Checkbox from '@mui/material/Checkbox';
-import Image from 'next/image';
-import Loader from '../components/Loader';
+import Link from '@mui/material/Link';
 import MenuItem from '@mui/material/MenuItem';
-import appLogo from '../../public/images/appLogo.png';
-import config from '../../config.json';
-import { getUserId } from '../services/ProfileService';
-import { login } from '../services/LoginService';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { telemetryFactory } from '@/utils/telemetry';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
-import Link from '@mui/material/Link';
-import useStore from '@/store/store';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import config from '../../config.json';
+import appLogo from '../../public/images/appLogo.png';
+import Loader from '../components/Loader';
+import { login } from '../services/LoginService';
+import { getUserId } from '../services/ProfileService';
 
 const LoginPage = () => {
   const { t } = useTranslation();
-  const store = useStore();
   const setUserRole = useStore(
     (state: { setUserRole: any }) => state.setUserRole
   );
@@ -140,7 +139,7 @@ const LoginPage = () => {
             type: 'CLICK',
             subtype: '',
             pageid: 'sign-in',
-            uid: localStorage.getItem('userId') || 'Anonymous',
+            uid: localStorage.getItem('userId') ?? 'Anonymous',
           },
         };
         telemetryFactory.interact(telemetryInteract);

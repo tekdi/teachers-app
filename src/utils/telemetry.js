@@ -1,5 +1,4 @@
 import { generateUUID, getDeviceId } from './Helper';
-import FingerprintJS from 'fingerprintjs2';
 
 const hostURL = process.env.NEXT_PUBLIC_TELEMETRY_URL;
 let CsTelemetryModule;
@@ -130,7 +129,7 @@ export const telemetryFactory = {
           type: 'Teacher',
         },
         context: {
-          type: appName ? appName : 'Standalone',
+          type: appName ?? 'Standalone',
         },
         edata,
       };
@@ -148,7 +147,7 @@ export const telemetryFactory = {
           type: 'Teacher',
         },
         context: {
-          type: appName ? appName : 'Standalone',
+          type: appName ?? 'Standalone',
         },
         edata,
       };

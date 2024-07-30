@@ -1,5 +1,5 @@
 import {
-  assesmentListServiceParam,
+  AssessmentListServiceParam,
   gerDoIdServiceParam,
 } from '@/utils/Interfaces';
 import { post } from './RestClient';
@@ -8,7 +8,7 @@ export const AssesmentListService = async ({
   sort,
   pagination,
   filters,
-}: assesmentListServiceParam): Promise<any> => {
+}: AssessmentListServiceParam): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/tracking-assessment/v1/list`;
   try {
     const response = await post(apiUrl, { pagination, filters, sort });

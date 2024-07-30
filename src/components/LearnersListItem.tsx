@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import {
   LearnerListProps,
   UserData,
-  updateCustomField,
+  UpdateCustomField,
 } from '@/utils/Interfaces';
 import React, { useEffect } from 'react';
 import { Status, names, Role } from '@/utils/app.constant';
@@ -32,10 +32,9 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import manageUserStore from '../store/manageUserStore';
+import useStore from '@/store/store';
 
 type Anchor = 'bottom';
-const centerList = ['Nashik', 'Shirdi', 'kamptee'];
-const centers = ['shirdi'];
 
 const LearnersListItem: React.FC<LearnerListProps> = ({
   type,
@@ -70,15 +69,16 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     userData: null as UserData | null,
     userName: '',
     contactNumber: '',
-    customFieldsData: [] as updateCustomField[],
+    customFieldsData: [] as UpdateCustomField[],
   });
-
+  const userStore = useStore();
   const theme = useTheme<any>();
   const router = useRouter();
   const { learnerId }: any = router.query;
   const { t } = useTranslation();
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
+  const [centers, setCenters] = React.useState();
   const store = manageUserStore();
 
   const CustomLink = styled(Link)(({ theme }) => ({
@@ -95,6 +95,9 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       setReloadState(false);
       // window.location.reload();
     }
+    const cohorts = userStore.cohorts;
+    const centerList = cohorts.map((cohort: { name: string }) => cohort.name);
+    setCenters(centerList);
   }, [reloadState, setReloadState]);
 
   const toggleDrawer =
@@ -137,7 +140,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     setLearnerState((prevState) => ({ ...prevState, contactNumber: number }));
   };
 
-  const setCustomFieldsData = (fields: updateCustomField[]) => {
+  const setCustomFieldsData = (fields: UpdateCustomField[]) => {
     setLearnerState((prevState) => ({
       ...prevState,
       customFieldsData: fields,
@@ -296,7 +299,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       acc.push(field);
     }
     return acc;
-  }, [] as updateCustomField[]);
+  }, [] as UpdateCustomField[]);
 
   const getTeamLeadersCenters = async () => {};
 
@@ -646,7 +649,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       <ManageCentersModal
         open={openCentersModal}
         onClose={handleCloseCentersModal}
-        centersName={centerList}
+        centersName={centers}
         centers={centers}
         onAssign={handleAssignCenters}
         isForLearner={true}

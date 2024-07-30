@@ -1,3 +1,4 @@
+import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
 import {
   Box,
   Button,
@@ -8,23 +9,20 @@ import {
   MenuList,
   Modal,
   Select,
-  Typography,
-  useStepContext,
+  Typography
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
 
-import CloseIcon from '@mui/icons-material/Close';
-import { Height } from '@mui/icons-material';
-import Image from 'next/image';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import MonthCalender from './MonthCalender';
-import ReactGA from 'react-ga4';
-import WestIcon from '@mui/icons-material/West';
-import checkMark from '../assets/images/checkMark.svg';
 import useStore from '@/store/store';
+import CloseIcon from '@mui/icons-material/Close';
+import WestIcon from '@mui/icons-material/West';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
+import ReactGA from 'react-ga4';
+import checkMark from '../assets/images/checkMark.svg';
+import MonthCalender from './MonthCalender';
 
 const modalStyle = {
   position: 'absolute',

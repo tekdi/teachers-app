@@ -54,7 +54,7 @@ export enum FormContextType {
 
 export enum CenterType {
   REGULAR = 'REGULAR',
-  REMOTE = 'REMOTE'
+  REMOTE = 'REMOTE',
 }
 
 export enum RoleId {

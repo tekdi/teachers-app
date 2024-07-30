@@ -11,10 +11,9 @@ import {
 } from '@mui/material';
 
 import Divider from '@mui/material/Divider';
-import ModalComponent from './Modal';
-import { Padding } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import ModalComponent from './Modal';
 
 interface sortCardProps {
   handleSorting: (

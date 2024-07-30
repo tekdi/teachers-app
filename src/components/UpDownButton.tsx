@@ -15,7 +15,6 @@ const UpDownButton = () => {
 
   const trackScroll = () => {
     const scrolled = window.pageYOffset;
-    const viewportHeight = document.documentElement.clientHeight;
 
     const atBottom =
       pathname === '/attendance-overview' ? scrolled >= 320 : scrolled >= 720;

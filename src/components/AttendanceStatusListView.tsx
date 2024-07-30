@@ -1,25 +1,23 @@
-import {
-  AttendanceStatusListViewProps,
-  UserData,
-  updateCustomField,
-} from '../utils/Interfaces';
 import { Box, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import {
+  AttendanceStatusListViewProps,
+  UpdateCustomField,
+} from '../utils/Interfaces';
 
-import { ATTENDANCE_ENUM } from '../utils/Helper';
-import { BorderBottom } from '@mui/icons-material';
+import { getUserDetails } from '@/services/ProfileService';
+import { Status, names } from '@/utils/app.constant';
 import CancelIcon from '@mui/icons-material/Cancel'; //absent
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; //present
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import LearnerModal from './LearnerModal';
-import Link from 'next/link';
-import Loader from './Loader';
-import { getUserDetails } from '@/services/ProfileService';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
+import { ATTENDANCE_ENUM } from '../utils/Helper';
 import DropoutLabel from './DropoutLabel';
-import { Status, names } from '@/utils/app.constant';
+import LearnerModal from './LearnerModal';
+import Loader from './Loader';
 
 const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   isDisabled = false,
@@ -40,7 +38,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
     height: isBulkAction ? '56px' : '',
     // width: '100%',
     // borderBottom: `0.5px solid ${theme.palette.warning[400]}`,
-    padding: isBulkAction ? '0 8px' : '0 8px',
+    padding: '0 8px',
     alignItems: 'center',
     borderRadius: isBulkAction ? '8px' : 0,
     // marginBottom: '12px',
@@ -61,15 +59,13 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   };
 
   // -----learner profile  details----
-  const [usersData, setUsersData] = React.useState<UserData | null>(null);
   const [customFieldsData, setCustomFieldsData] = React.useState<
-    updateCustomField[]
+    UpdateCustomField[]
   >([]);
   const [contactNumber, setContactNumber] = useState<any>('');
   const [userName, setUserName] = React.useState('');
   const [isModalOpenLearner, setIsModalOpenLearner] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const userId = '12345'; // Replace with the actual user ID you want to pass
 
   const handleOpenModalLearner = (userId: string) => {
     if (!showLink) {
@@ -93,7 +89,6 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           const data = response?.result;
           if (data) {
             const userData = data?.userData;
-            // setUsersData(userData);
             setUserName(userData?.name);
             setContactNumber(userData?.mobile);
             const customDataFields = userData?.customFields;
@@ -181,9 +176,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
                       <CheckCircleIcon
                         sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
                         style={{
-                          fill: isDisabled
-                            ? theme.palette.success.main
-                            : theme.palette.success.main,
+                          fill: theme.palette.success.main,
                         }}
                       />
                     ) : (
@@ -263,9 +256,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
                 <CheckCircleIcon
                   sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
                   style={{
-                    fill: isDisabled
-                      ? theme.palette.success.main
-                      : theme.palette.success.main,
+                    fill: theme.palette.success.main,
                   }}
                 />
               ) : (

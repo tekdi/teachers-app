@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import {
   Checkbox,
   Divider,
@@ -7,11 +6,9 @@ import {
   Radio,
   TextField,
 } from '@mui/material';
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
-import { Height } from '@mui/icons-material';
 import Modal from '@mui/material/Modal';
 import SearchIcon from '@mui/icons-material/Search';
 import Typography from '@mui/material/Typography';
@@ -39,6 +36,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   const { t } = useTranslation();
   const [checkedCenters, setCheckedCenters] = React.useState<string[]>([]);
   const [selectedValue, setSelectedValue] = React.useState('');
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   const style = {
     position: 'absolute',
@@ -78,7 +76,6 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   };
 
   const handleRadioChange = (name: string) => {
-    console.log(name);
     setSelectedValue(name);
   };
 
@@ -87,6 +84,14 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
       onAssign(checkedCenters);
     }
   };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredCenters = centersName?.filter((name) =>
+    name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div>
@@ -126,13 +131,15 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
           <Box sx={{ display: 'flex', justifyContent: 'center', p: '20px' }}>
             <TextField
               className="input_search"
-              placeholder="Search Facilitators.."
+              placeholder={t('CENTERS.SEARCH_CENTERS')}
               color="secondary"
               focused
+              value={searchQuery}
+              onChange={handleSearchChange}
               sx={{
                 borderRadius: '100px',
                 height: '40px',
-                // width: '225px',
+                width: '100%',
               }}
               InputProps={{
                 endAdornment: (
@@ -145,47 +152,45 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
           </Box>
           <Box mx={'20px'}>
             <Box sx={{ height: '37vh', mt: '10px', overflowY: 'auto' }}>
-              {centersName?.map((name, index) => {
-                return (
-                  <React.Fragment key={index}>
+              {filteredCenters?.map((name, index) => (
+                <React.Fragment key={index}>
+                  <Box
+                    borderBottom={theme.palette.warning['A100']}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
                     <Box
-                      borderBottom={theme.palette.warning['A100']}
                       sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
+                        fontSize: '16px',
+                        color: theme.palette.warning['300'],
+                        pb: '20px',
                       }}
                     >
-                      <Box
-                        sx={{
-                          fontSize: '16px',
-                          color: theme.palette.warning['300'],
-                          pb: '20px',
-                        }}
-                      >
-                        {name}
-                      </Box>
-                      <Box>
-                        {isForLearner ? (
-                          <Radio
-                            sx={{ pb: '20px' }}
-                            checked={selectedValue.includes(name)}
-                            onChange={() => handleRadioChange(name)}
-                            value={selectedValue}
-                          />
-                        ) : (
-                          <Checkbox
-                            sx={{ pb: '20px' }}
-                            className="checkBox_svg"
-                            checked={checkedCenters.includes(name)}
-                            onChange={() => handleToggle(name)}
-                          />
-                        )}
-                      </Box>
+                      {name}
                     </Box>
-                  </React.Fragment>
-                );
-              })}
+                    <Box>
+                      {isForLearner ? (
+                        <Radio
+                          sx={{ pb: '20px' }}
+                          checked={selectedValue.includes(name)}
+                          onChange={() => handleRadioChange(name)}
+                          value={selectedValue}
+                        />
+                      ) : (
+                        <Checkbox
+                          sx={{ pb: '20px' }}
+                          className="checkBox_svg"
+                          checked={checkedCenters.includes(name)}
+                          onChange={() => handleToggle(name)}
+                        />
+                      )}
+                    </Box>
+                  </Box>
+                </React.Fragment>
+              ))}
             </Box>
           </Box>
           <Divider />

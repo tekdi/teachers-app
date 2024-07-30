@@ -2,24 +2,13 @@ import {
   Box,
   Button,
   Divider,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
   Modal,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography,
+  Typography
 } from '@mui/material';
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 
-import CloseIcon from '@mui/icons-material/Close';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
-import { getCohortList } from '@/services/CohortServices';
-import manageUserStore from '@/store/manageUserStore';
-import { showToastMessage } from './Toastify';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
 
 interface SimpleModalProps {
   secondaryActionHandler?: () => void;
@@ -43,8 +32,6 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   children,
   modalTitle,
 }) => {
-  const { t } = useTranslation();
-  const store = manageUserStore();
   const theme = useTheme<any>();
 
   const modalStyle = {

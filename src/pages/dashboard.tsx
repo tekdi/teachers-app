@@ -17,8 +17,8 @@ import {
 } from '../utils/Helper';
 import {
   AttendancePercentageProps,
+  CohortAttendancePercentParam,
   cohort,
-  cohortAttendancePercentParam,
   cohortMemberList,
 } from '../utils/Interfaces';
 import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
@@ -49,16 +49,7 @@ import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 
-// import { Role } from '@/utils/app.constant';
-// import { accessControl } from '../../app.config';
-
-// import useStore from '@/store/store';
-// const store = useStore();
-// const userRole: string = store.userRole;
-
-interface DashboardProps {
-  //   buttonText: string;
-}
+interface DashboardProps {}
 
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
@@ -129,7 +120,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
       const storedUserId = localStorage.getItem('userId');
-      setClassId(localStorage.getItem('classId') || '');
+      setClassId(localStorage.getItem('classId') ?? '');
       if (token) {
         setIsAuthenticated(true);
       } else {
@@ -181,7 +172,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   absent: resp[userId].absent,
                   present_percent: resp[userId].present_percentage,
                 }));
-                if (nameUserIdArray && filteredData) {
+                if (filteredData) {
                   let mergedArray = filteredData.map((attendance) => {
                     const user = nameUserIdArray.find(
                       (user: { userId: string }) =>
@@ -217,7 +208,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           }
           if (classId) {
             const cohortAttendancePercent = async () => {
-              const cohortAttendanceData: cohortAttendancePercentParam = {
+              const cohortAttendanceData: CohortAttendancePercentParam = {
                 limit: 0,
                 page: 0,
                 filters: {

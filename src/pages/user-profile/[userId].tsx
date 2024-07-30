@@ -18,7 +18,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { CustomField, UserDatas, updateCustomField } from '@/utils/Interfaces';
+import { CustomField, UserDatas, UpdateCustomField } from '@/utils/Interfaces';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { useTheme, withStyles } from '@mui/material/styles';
@@ -660,8 +660,7 @@ const TeacherProfile = () => {
                             sx={{ wordBreak: 'break-word' }}
                             color={theme.palette.warning['500']}
                           >
-                            {item?.label &&
-                              t(`FORM.${item.label}`, item.label)}
+                            {item?.label && t(`FORM.${item.label}`, item.label)}
                           </Typography>
                           <Box
                             mt={2}
@@ -714,16 +713,16 @@ const TeacherProfile = () => {
                             letterSpacing={'0.5px'}
                             color={theme.palette.warning['500']}
                           >
-                            {item?.label &&
-                              t(`FORM.${item.label}`, item.label)}
-                          </Typography>  {/* No of cluster */}
+                            {item?.label && t(`FORM.${item.label}`, item.label)}
+                          </Typography>{' '}
+                          {/* No of cluster */}
                           <Typography
                             variant="h4"
                             margin={0}
                             color={theme.palette.warning.A200}
                             sx={{ wordBreak: 'break-word' }}
                           >
-                            {item.value ? toPascalCase(item.value): "-"}
+                            {item.value ? toPascalCase(item.value) : '-'}
                           </Typography>
                         </Grid>
                       );
@@ -747,7 +746,9 @@ const TeacherProfile = () => {
                             color={theme.palette.warning.A200}
                             sx={{ wordBreak: 'break-word' }}
                           >
-                            {item.value? toPascalCase(getLabelForValue(item, item.value)): "-"}{' '}
+                            {item.value
+                              ? toPascalCase(getLabelForValue(item, item.value))
+                              : '-'}{' '}
                             {/* apply elipses/ truncating here */}
                           </Typography>
                         </Grid>

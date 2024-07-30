@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
-  Typography,
-  TextField,
   Button,
-  Modal,
-  Fade,
   Divider,
+  Fade,
   IconButton,
+  Modal,
+  TextField,
+  Typography,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
+import React, { useState } from 'react';
 
 interface CreateBlockModalProps {
   open: boolean;

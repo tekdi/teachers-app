@@ -1,26 +1,21 @@
-import React, { useState } from 'react';
+import { renameFacilitator } from '@/services/ManageUser';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
-  Typography,
-  TextField,
   Button,
-  Modal,
-  Fade,
   Divider,
+  Fade,
   IconButton,
+  Modal,
   Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
+  TextField,
+  Typography
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { styled, useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTheme, styled } from '@mui/material/styles';
-import { showToastMessage } from '../Toastify';
-import { renameFacilitator } from '@/services/ManageUser';
 import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { showToastMessage } from '../Toastify';
 
 interface CreateBlockModalProps {
   open: boolean;

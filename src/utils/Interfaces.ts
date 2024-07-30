@@ -68,7 +68,7 @@ export interface ParentIdFilter {
 
 // Define a union type for the filters
 export type Filters = UserIdFilter | ParentIdFilter;
-export interface cohortListParam {
+export interface CohortListParam {
   limit: number;
   page: number;
   filters: Filters;
@@ -84,7 +84,7 @@ export interface cohortMemberList {
   };
 }
 
-export interface userList {
+export interface UserList {
   limit: number;
   page: number;
   filters: {
@@ -143,7 +143,7 @@ export interface SessionsModalProps {
 
 export interface PlannedModalProps {
   removeModal?: () => void;
-  clickedBox?: String | null;
+  clickedBox?: string | null;
 }
 
 export interface ScheduleModalProps {
@@ -204,7 +204,7 @@ export interface LearnerAttendanceProps {
   };
 }
 
-export interface updateCustomField {
+export interface UpdateCustomField {
   options: any;
   fieldId: string;
   value: string;
@@ -233,7 +233,7 @@ export interface MarksObtainedCardProps {
   data: { question: string; mark_obtained: number; totalMarks: number }[];
 }
 
-export interface assesmentListServiceParam {
+export interface AssessmentListServiceParam {
   filters: {
     userId: string;
   };
@@ -243,11 +243,11 @@ export interface assesmentListServiceParam {
   };
   sort: {
     field: string;
-    order: String;
+    order: string;
   };
 }
 
-export interface cohortAttendancePercentParam {
+export interface CohortAttendancePercentParam {
   limit: number;
   page: number;
   filters: {
@@ -284,7 +284,7 @@ export interface CohortAttendanceListViewProps {
   attendancePercent: number;
 }
 
-export interface allCenterAttendancePercentParam {
+export interface AllCenterAttendancePercentParam {
   limit: number;
   page: number;
   filters: {
@@ -296,7 +296,7 @@ export interface allCenterAttendancePercentParam {
   facets: Array<string>;
 }
 
-export interface updateCohortMemberStatusParams {
+export interface UpdateCohortMemberStatusParams {
   memberStatus: string;
   statusReason?: string;
   membershipId: string | number;
@@ -395,12 +395,7 @@ export interface TenantCohortRoleMapping {
   roleId: string;
 }
 
-export interface CustomField {
-  fieldId: string;
-  value: string;
-}
-
-export interface createUserParam {
+export interface CreateUserParam {
   username: string;
   name: string;
   email: string;
