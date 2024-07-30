@@ -1,6 +1,7 @@
 import Header from '@/components/Header';
 import {
   Box,
+  CircularProgress,
   FormControl,
   Grid,
   IconButton,
@@ -176,18 +177,47 @@ const CoursePlanner = () => {
                         alignItems: 'center',
                       }}
                     >
-                      <Box sx={{ width: '40px', height: '40px' }}>
-                        {/* <CircularProgressbar
-                          value={50}
-                          strokeWidth={12}
-                          styles={buildStyles({
-                            pathColor: '#06A816',
-                            trailColor: '#E2D9CC',
-                            strokeLinecap: 'round',
-                            textColor: theme.palette.warning['300'],
-                          })}
-                        /> */}
+                      <Box
+                        sx={{ position: 'relative', display: 'inline-flex' }}
+                      >
+                        <Box sx={{ width: '40px', height: '40px' }}>
+                          <CircularProgressbar
+                            value={10}
+                            strokeWidth={10}
+                            styles={buildStyles({
+                              pathColor: '#06A816',
+                              trailColor: '#E6E6E6',
+                              strokeLinecap: 'round',
+                            })}
+                          />
+                        </Box>
+
+                        <Box
+                          sx={{
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            position: 'absolute',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Typography
+                            variant="caption"
+                            component="div"
+                            sx={{
+                              fontSize: '11px',
+                              color: theme.palette.warning['300'],
+                              fontWeight: '500',
+                            }}
+                          >
+                            10%
+                          </Typography>
+                        </Box>
                       </Box>
+
                       <Box
                         sx={{
                           fontSize: '16px',
