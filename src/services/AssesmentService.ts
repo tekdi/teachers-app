@@ -1,6 +1,6 @@
 import {
   AssessmentListServiceParam,
-  gerDoIdServiceParam,
+  GetDoIdServiceParam,
 } from '@/utils/Interfaces';
 import { post } from './RestClient';
 
@@ -22,7 +22,7 @@ export const AssesmentListService = async ({
 
 export const getDoIdForAssesmentDetails = async ({
   filters,
-}: gerDoIdServiceParam): Promise<any> => {
+}: GetDoIdServiceParam): Promise<any> => {
   const apiUrl: string =
     'https://sunbirdsaas.com/api/content/v1/search?orgdetails=orgName%2Cemail&licenseDetails=name%2Cdescription%2Curl';
 

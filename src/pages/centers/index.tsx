@@ -1,6 +1,6 @@
 import { getCohortList } from '@/services/CohortServices';
 import { accessGranted, toPascalCase } from '@/utils/Helper';
-import { cohort } from '@/utils/Interfaces';
+import { ICohort } from '@/utils/Interfaces';
 import {
   Box,
   Button,
@@ -40,7 +40,7 @@ const TeachingCenters = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
-  const [cohortsData, setCohortsData] = useState<Array<cohort>>([]);
+  const [cohortsData, setCohortsData] = useState<Array<ICohort>>([]);
   const [value, setValue] = useState(1);
   const [blockData, setBlockData] = useState<
     { bockName: string; district?: string; blockId: string; state?: string }[]

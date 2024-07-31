@@ -2,11 +2,11 @@ import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { attendanceInPercentageStatusList } from '../services/AttendanceService';
 import {
   AttendancePercentageProps,
-  cohortMemberList,
+  CohortMemberList,
 } from '../utils/Interfaces';
 
 const getTotalStudentCount = async (
-  cohortMemberRequest: cohortMemberList
+  cohortMemberRequest: CohortMemberList
 ): Promise<number> => {
   const response = await getMyCohortMemberList(cohortMemberRequest);
   const totalStudentsCount = response?.result?.totalCount;
@@ -50,7 +50,7 @@ type Result = {
 };
 
 export const calculatePercentage = async (
-  cohortMemberRequest: cohortMemberList,
+  cohortMemberRequest: CohortMemberList,
   attendanceRequest: AttendancePercentageProps
 ): Promise<Result> => {
   const totalStudentsCount = await getTotalStudentCount(cohortMemberRequest);

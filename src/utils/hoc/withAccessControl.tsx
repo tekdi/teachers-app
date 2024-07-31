@@ -6,7 +6,7 @@ import { Role } from '../app.constant';
 const withAccessControl =
   (action: string, accessControl: { [key: string]: Role[] }) =>
   (Component: React.ComponentType<any>) => {
-    return (props: any) => {
+    const WrappedComponent = (props: any) => {
       const store = useStore();
       const userRole = store.userRole;
       const router = useRouter();
@@ -28,6 +28,11 @@ const withAccessControl =
 
       return <Component {...props} />;
     };
+
+    // Setting the display name for better debugging and developer tools
+    WrappedComponent.displayName = `withAccessControl(${Component.displayName ?? Component.name ?? 'Component'})`;
+
+    return WrappedComponent;
   };
 
 export default withAccessControl;

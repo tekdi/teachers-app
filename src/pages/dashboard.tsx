@@ -19,7 +19,7 @@ import {
   AttendancePercentageProps,
   CohortAttendancePercentParam,
   cohort,
-  cohortMemberList,
+  CohortMemberList,
 } from '../utils/Interfaces';
 import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
 
@@ -349,7 +349,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     const getAttendanceStats = async () => {
       if (classId !== '' && classId !== 'all') {
-        const cohortMemberRequest: cohortMemberList = {
+        const cohortMemberRequest: CohortMemberList = {
           limit: 300,
           page: 0,
           filters: {

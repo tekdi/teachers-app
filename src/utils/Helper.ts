@@ -1,7 +1,6 @@
 import { Role, Status } from './app.constant';
 
 import FingerprintJS from 'fingerprintjs2';
-import { i18n } from 'next-i18next';
 import { CustomField } from './Interfaces';
 
 export const ATTENDANCE_ENUM = {
@@ -110,7 +109,7 @@ export const debounce = <T extends (...args: any[]) => any>(
   let timeout: ReturnType<typeof setTimeout> | undefined;
   return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
     const context = this;
-    clearTimeout(timeout!);
+    clearTimeout(timeout);
     if (immediate && !timeout) func.apply(context, args);
     timeout = setTimeout(() => {
       timeout = undefined;

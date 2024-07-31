@@ -1,6 +1,6 @@
 import { Role, Status } from '@/utils/app.constant';
 import {
-  cohortMemberList,
+  CohortMemberList,
   UpdateCohortMemberStatusParams,
   UserList,
 } from '../utils/Interfaces';
@@ -10,7 +10,7 @@ const fetchCohortMemberList = async ({
   limit,
   page,
   filters,
-}: cohortMemberList): Promise<any> => {
+}: CohortMemberList): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/list`;
   try {
     const response = await post(apiUrl, {
@@ -52,7 +52,7 @@ export const getMyCohortMemberList = async ({
   limit,
   page,
   filters,
-}: cohortMemberList): Promise<any> => {
+}: CohortMemberList): Promise<any> => {
   const studentFilters = {
     ...filters,
     role: Role.STUDENT,
@@ -65,7 +65,7 @@ export const getMyCohortFacilitatorList = async ({
   limit,
   page,
   filters,
-}: cohortMemberList): Promise<any> => {
+}: CohortMemberList): Promise<any> => {
   const studentFilters = {
     ...filters,
     role: Role.TEACHER,
@@ -78,7 +78,7 @@ export const getFacilitatorList = async ({
   limit,
   page,
   filters,
-}: cohortMemberList): Promise<any> => {
+}: CohortMemberList): Promise<any> => {
   return fetchCohortMemberList({ limit, page, filters });
 };
 
