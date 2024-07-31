@@ -33,7 +33,7 @@ const telemetryConfig = {
   sid: generateUUID(),
   batchsize: 1,
   mode: '',
-  host: hostURL, //TODO: Change this host and endpoint properly
+  host: hostURL,
   endpoint: '/telemetry/v1/telemetry',
   tags: [],
 };
@@ -207,6 +207,7 @@ function getEventContext(eventInput) {
   return eventContextData;
 }
 
+// eslint-disable-next-line no-unused-vars
 function getRollUpData(data = []) {
   const rollUp = {};
   data.forEach((element, index) => (rollUp['l' + (index + 1)] = element));

@@ -161,7 +161,7 @@ const AttendanceComparison: React.FC = () => {
         </RadioGroup>
       </FormControl>
       <Box sx={{ mt: 2 }}>
-        <Typography align="left">
+        <Typography align="left" sx={{marginBottom: '16px'}}>
           {t('DASHBOARD.BLOCK_AVERAGE_ATTENDANCE')}:{' '}
           {averageAttendance.toFixed(2)}%
         </Typography>

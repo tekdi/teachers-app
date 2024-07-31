@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export interface AttendanceParams {
   userId: string;
   attendanceDate: string;
@@ -74,7 +75,7 @@ export interface CohortListParam {
   filters: Filters;
 }
 
-export interface cohortMemberList {
+export interface CohortMemberList {
   limit: number;
   page: number;
   filters: {
@@ -103,7 +104,7 @@ export interface UserData {
   mobile?: string;
 }
 
-export interface UserDatas {
+export interface IUserData {
   name?: any;
 }
 
@@ -148,7 +149,7 @@ export interface PlannedModalProps {
 
 export interface ScheduleModalProps {
   handleClick?: (selection: string) => void;
-  clickedBox?: String | null;
+  clickedBox?: string | null;
 }
 
 export interface AttendanceStatusListProps {
@@ -215,7 +216,7 @@ export interface UpdateCustomField {
   isEditable?: boolean;
   order: number;
 }
-export interface cohort {
+export interface ICohort {
   presentPercentage: number;
   cohortId: string;
   name: string;
@@ -259,7 +260,7 @@ export interface CohortAttendancePercentParam {
   facets: Array<string>;
   sort?: Array<string>;
 }
-export interface gerDoIdServiceParam {
+export interface GetDoIdServiceParam {
   filters: {
     program?: string | string[];
     se_boards?: (string | null)[];

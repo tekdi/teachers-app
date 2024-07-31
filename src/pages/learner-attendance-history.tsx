@@ -38,7 +38,6 @@ const LearnerAttendanceHistory = () => {
   const [loading, setLoading] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [open, setOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   const [attendanceUpdated, setAttendanceUpdated] = useState(false);
   const [learnerAttendance, setLearnerAttendance] = useState<
     LearnerAttendanceData | undefined
@@ -75,10 +74,6 @@ const LearnerAttendanceHistory = () => {
       category: 'Learner Attendance History Page',
       label: 'Mark Individual Learner Modal Open',
     });
-  };
-
-  const handleModalOpen = () => {
-    setModalOpen(true);
   };
 
   const handleModalClose = () => {

@@ -21,7 +21,7 @@ import {
   AttendancePercentageProps,
   AttendanceStatusListProps,
   cohort,
-  cohortMemberList
+  CohortMemberList
 } from '../utils/Interfaces';
 
 import AttendanceStatus from '@/components/AttendanceStatus';
@@ -122,7 +122,7 @@ const UserAttendanceHistory = () => {
     const getAttendanceStats = async () => {
       if (classId !== '' && classId !== undefined) {
         console.log('classId', classId);
-        const cohortMemberRequest: cohortMemberList = {
+        const cohortMemberRequest: CohortMemberList = {
           limit: 300,
           page: 0,
           filters: {

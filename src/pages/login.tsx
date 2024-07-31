@@ -12,6 +12,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactGA from 'react-ga4';
 
 import { showToastMessage } from '@/components/Toastify';
+import manageUserStore from '@/store/manageUserStore';
 import useStore from '@/store/store';
 import { logEvent } from '@/utils/googleAnalytics';
 import { telemetryFactory } from '@/utils/telemetry';
@@ -28,12 +29,9 @@ import appLogo from '../../public/images/appLogo.png';
 import Loader from '../components/Loader';
 import { login } from '../services/LoginService';
 import { getUserId } from '../services/ProfileService';
-import manageUserStore from '@/store/manageUserStore';
 
 const LoginPage = () => {
   const { t } = useTranslation();
-  const store = useStore();
-  const userStore = manageUserStore();
   const setUserId = manageUserStore((state) => state.setUserId);
   const setUserRole = useStore(
     (state: { setUserRole: any }) => state.setUserRole
@@ -60,7 +58,7 @@ const LoginPage = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       let lang;
       if (localStorage.getItem('preferredLanguage')) {
-        lang = localStorage.getItem('preferredLanguage') || 'en';
+        lang = localStorage.getItem('preferredLanguage') ?? 'en';
       } else {
         lang = 'en';
       }
@@ -354,7 +352,7 @@ const LoginPage = () => {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 checked={rememberMe}
               />
-              <span
+              <span role='checkbox'
                 style={{
                   cursor: 'pointer',
                   color: theme.palette.warning['300'],

@@ -1,5 +1,4 @@
 import { get, post } from './RestClient';
-import { CreateUserParam } from '../utils/Interfaces';
 
 export const getFormRead = async (
   context: string,
