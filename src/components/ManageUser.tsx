@@ -604,7 +604,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                           <Box display="flex" alignItems="center" gap="5px">
                             <Image src={profileALT} alt="img" />
                             <Box>
-                              <CustomLink className="word-break" href="#">
+                              <CustomLink className="word-break" href="#" onClick={(e) => e.preventDefault()}>
                                 <Typography
                                   onClick={() => {
                                     handleTeacherFullProfile(user.userId!);
