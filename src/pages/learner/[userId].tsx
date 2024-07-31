@@ -11,28 +11,17 @@ import {
   Button,
   Card,
   CardContent,
-  Checkbox,
   Divider,
   FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormHelperText,
   Grid,
-  IconButton,
   InputLabel,
   MenuItem,
-  Modal,
-  Radio,
-  RadioGroup,
   Select,
   SelectChangeEvent,
-  TextField,
   Typography,
-  useMediaQuery,
 } from '@mui/material';
 import {
   CustomField,
-  LearnerData,
   UserData,
   CohortAttendancePercentParam,
   UpdateCustomField,
@@ -52,19 +41,14 @@ import {
   toPascalCase,
 } from '@/utils/Helper';
 
-import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import DateRangePopup from '@/components/DateRangePopup';
 import { GetStaticPaths } from 'next';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
 import MarksObtainedCard from '@/components/MarksObtainedCard';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ReactGA from 'react-ga4';
-// import Header from '../components/Header';
-// import { formatDate, getTodayDate } from '../utils/Helper';
 import StudentStatsCard from '@/components/StudentStatsCard';
-import ToastMessage from '@/components/ToastMessage';
 import { format } from 'date-fns';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -75,20 +59,15 @@ import withAccessControl from '@/utils/hoc/withAccessControl';
 import { accessControl } from '../../../app.config';
 import { getFormRead } from '@/services/CreateUserService';
 import { FormContext, FormContextType } from '@/utils/app.constant';
+import AddLearnerModal from '@/components/AddLeanerModal';
 
-// import { UserData, UpdateCustomField } from '../utils/Interfaces';
+interface OverallAttendance {
+  absent?: any;
+  present?: any;
+  absent_percentage: any;
+  present_percentage: any;
+}
 
-interface QuestionValue {
-  question: string;
-  mark_obtained: number;
-  totalMarks: number;
-}
-interface QuestionValues {
-  totalMaxScore: number;
-  totalScore: number;
-  length: number;
-  questions: QuestionValue[];
-}
 const LearnerProfile: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -101,30 +80,14 @@ const LearnerProfile: React.FC = () => {
   }
 
   const [userData, setUserData] = useState<UserData | null>(null);
-  // const [attendanceReport, setAttendanceReport] = useState<any>(null);
-  const [limit, setLimit] = useState<number>(10);
-  const [page, setPage] = useState<number>(1);
-  const [filter, setFilter] = useState<object>({});
-  const [maritalStatus, setMaritalStatus] = useState<string>('');
-  const [currentDate, setCurrentDate] = React.useState(getTodayDate);
-  const [selectedIndex, setSelectedIndex] = useState(null);
-  // const [selectedValue, setSelectedValue] = useState('');
   const [assesmentData, setAssesmentData] = useState<any>(null);
-  const [questionData, setQuestionData] = useState([]);
-  const [age, setAge] = React.useState('');
   const [test, setTest] = React.useState('Pre Test');
   const [subject, setSubject] = React.useState('English');
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [customFieldsData, setCustomFieldsData] = useState<UpdateCustomField[]>(
     []
   );
-  interface OverallAttendance {
-    absent?: any; // Adjust the type according to your actual data
-    present?: any;
-    absent_percentage: any;
-    present_percentage: any;
-    // Add other properties as needed
-  }
+  const [loading, setLoading] = useState(false);
+  const [userName, setUserName] = useState<any | null>(null);
   const [isFromDate, setIsFromDate] = useState(
     formatSelectedDate(new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000))
   );
@@ -138,14 +101,8 @@ const LearnerProfile: React.FC = () => {
     useState(0);
   const [dateRange, setDateRange] = React.useState<Date | string>('');
   const [classId, setClassId] = React.useState('');
-  const open = Boolean(anchorEl);
   const [totalMaxScore, setTotalMaxScore] = useState('');
   const [totalScore, setTotalScore] = useState('');
-  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
-  const [hasErrors, setHasErrors] = useState(false);
-  const [hasInputChanged, setHasInputChanged] = React.useState<boolean>(false);
-  const [isValidationTriggered, setIsValidationTriggered] =
-    React.useState<boolean>(false);
   const [unitName, setUnitName] = useState('');
   const [blockName, setBlockName] = useState('');
   const [uniqueDoId, setUniqueDoId] = useState('');
@@ -153,6 +110,13 @@ const LearnerProfile: React.FC = () => {
     React.useState<null | HTMLElement>(null);
   const openOption = Boolean(anchorElOption);
   const [isError, setIsError] = React.useState<boolean>(false);
+  const [formData, setFormData] = useState<{ [key: string]: any }>({});
+  const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
+  const [reload, setReload] = React.useState(false);
+
+  const handleReload = () => {
+    setReload(prev => !prev);
+  };
 
   const StyledMenu = styled((props: MenuProps) => (
     <Menu
@@ -197,10 +161,6 @@ const LearnerProfile: React.FC = () => {
     },
   }));
 
-  const handleClickOption = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElOption(event.currentTarget);
-  };
-
   const handleCloseOption = () => {
     setAnchorElOption(null); // Set anchorElOption to null to close the menu
   };
@@ -209,7 +169,6 @@ const LearnerProfile: React.FC = () => {
     setIsFromDate(fromDate);
     setIsToDate(toDate);
     getAttendanceData(fromDate, toDate);
-    // Handle the date range values as needed
   };
   const menuItems = [
     t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
@@ -227,15 +186,86 @@ const LearnerProfile: React.FC = () => {
     setSelectedValue(currentDayMonth);
   }, []);
 
+  const handleOpenAddLearnerModal = () => {
+    setOpenAddLearnerModal(true);
+  };
+
+  const handleCloseAddLearnerModal = () => {
+    setOpenAddLearnerModal(false);
+  };
+
+  const mapFields = (formFields: any, response: any) => {
+    let initialFormData: any = {};
+    formFields.fields.forEach((item: any) => {
+      const userData = response?.userData;
+      const customField = userData?.customFields?.find(
+        (field: any) => field.fieldId === item.fieldId
+      );
+      const getValue = (data: any, field: any) => {
+        if (item?.isMultiSelect) {
+          if (data[item.name] && item?.maxSelections > 1) {
+            return [field.value];
+          } else if (item?.type === 'checkbox') {
+            return String(field.value).split(',');
+          } else {
+            return field.value;
+          }
+        } else {
+          if (item?.type === 'numeric') {
+            return Number(field.value);
+          } else if (item?.type === 'text') {
+            return String(field.value);
+          } else {
+            return field.value;
+          }
+        }
+      };
+      if (item.coreField) {
+        if (item?.isMultiSelect) {
+          if (userData[item.name] && item?.maxSelections > 1) {
+            initialFormData[item.name] = [userData[item.name]];
+          } else {
+            initialFormData[item.name] = userData[item.name] || '';
+          }
+        } else if (item?.type === 'numeric') {
+          initialFormData[item.name] = Number(userData[item.name]);
+        } else if (item?.type === 'text') {
+          initialFormData[item.name] = String(userData[item.name]);
+        } else {
+          initialFormData[item.name] = userData[item.name];
+        }
+      } else {
+        initialFormData[item.name] = getValue(userData, customField);
+      }
+    });
+    console.log('initialFormData', initialFormData);
+    return initialFormData;
+  };
+
+  const fetchDataAndInitializeForm = async () => {
+    try {
+      let formFields;
+      const response = await getUserDetails(userId, true);
+      formFields = await getFormRead('USERS', 'STUDENT');
+      console.log('response', response);
+      console.log('formFields', formFields);
+      setFormData(mapFields(formFields, response?.result));
+    } catch (error) {
+      console.error('Error fetching data or initializing form:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataAndInitializeForm();
+  }, [userId, reload]);
+
   const getAttendanceData = async (fromDates: any, toDates: any) => {
     const fromDate = fromDates;
     const toDate = toDates;
     const filters = {
-      // contextId: classId,
       fromDate,
       toDate,
       userId: userId,
-      // scope: 'student',
     };
     const response = await classesMissedAttendancePercentList({
       filters,
@@ -244,8 +274,6 @@ const LearnerProfile: React.FC = () => {
     if (response?.statusCode === 200) {
       const userData = response?.data.result.userId[userId];
       setOverallAttendance(userData);
-
-      // if (setOverallAttendance)
     }
   };
 
@@ -324,7 +352,6 @@ const LearnerProfile: React.FC = () => {
                         );
                         const customDataFields = mergedProfileData?.fields;
                         // setIsData(true);
-
                         if (customDataFields?.length > 0) {
                           setCustomFieldsData(customDataFields);
 
@@ -433,16 +460,16 @@ const LearnerProfile: React.FC = () => {
   };
 
   const getDoIdForAssesmentReport = async (tests: string, subjects: string) => {
-    const steteName = localStorage.getItem('stateName');
+    const stateName = localStorage.getItem('stateName');
     const filters = {
       program: ['Second chance'],
-      se_boards: [steteName ? steteName : ''],
+      se_boards: [stateName ? stateName : ''],
       subject: [subjects ? subjects : subject],
       assessment1: tests ? tests : test,
     };
 
     try {
-      if (steteName) {
+      if (stateName) {
         if (filters) {
           setLoading(true);
           const searchResults = await getDoIdForAssesmentDetails({ filters });
@@ -579,232 +606,7 @@ const LearnerProfile: React.FC = () => {
     router.push('/learner-attendance-history');
   };
 
-  //-------Edit Learner Profile------------------
-
-  //fields  for edit popup by order
-
-  const filteredSortedForEdit = [...customFieldsData]
-    ?.filter((field) => field.isEditable)
-    ?.sort((a, b) => a.order - b.order);
-
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-  const [userName, setUserName] = useState<any | null>(null);
-  const [contactNumber, setContactNumber] = useState<any | null>(null);
-  const [openEdit, setOpenEdit] = React.useState(false);
-  const [loading, setLoading] = useState(false);
-  const handleOpen = () => {
-    setOpenEdit(true);
-    logEvent({
-      action: 'edit-learner-profile-modal-open',
-      category: 'Learner Detail Page',
-      label: 'Edit Learner Profile Modal Open',
-    });
-  };
-  const handleClose = () => {
-    logEvent({
-      action: 'edit-learner-profile-modal-close',
-      category: 'Learner Detail Page',
-      label: 'Edit Learner Profile Modal Close',
-    });
-    setOpenEdit(false);
-    initialFormData();
-    setHasInputChanged(false);
-    setHasErrors(false);
-    setErrors({});
-  };
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-    left: '50%',
-    width: '85%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: theme.palette.warning.A400,
-    height: '526px',
-    textAlign: 'center',
-  };
-
-  const [formData, setFormData] = useState<{
-    userData: LearnerData;
-    customFields: { fieldId: string; type: string; value: string[] | string }[];
-  }>({
-    userData: {
-      name: userName || '',
-    },
-    customFields: customFieldsData?.map((field) => ({
-      fieldId: field.fieldId,
-      type: field.type,
-      value: field.value,
-    })),
-  });
-
-  const initialFormData = () => {
-    setFormData({
-      userData: {
-        name: userName || '',
-      },
-      customFields: customFieldsData?.map((field) => ({
-        fieldId: field.fieldId,
-        type: field.type,
-        value: field.value,
-      })),
-    });
-  };
-
-  useEffect(() => {
-    initialFormData();
-  }, [userData, customFieldsData]);
-
-  const handleFieldChange = (fieldId: string, value: string) => {
-    const sanitizedValue = value.replace(/^\s+/, '').replace(/\s+/g, ' ');
-
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId
-          ? { ...field, value: [sanitizedValue] }
-          : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleCheckboxChange = (
-    fieldId: string,
-    optionName: string,
-    isChecked: boolean
-  ) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId
-          ? {
-              ...field,
-              value: isChecked
-                ? [...(field.value as string[]), optionName]
-                : (field.value as string[]).filter(
-                    (item) => item !== optionName
-                  ),
-            }
-          : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleDropdownChange = (fieldId: string, value: string) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId ? { ...field, value: [value] } : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleRadioChange = (fieldId: string, value: string) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId ? { ...field, value: [value] } : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleSubmit = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
-    logEvent({
-      action: 'save-button-clicked-edit-learner-profile',
-      category: 'Learner Detail Page',
-      label: 'Learner Profile Save Button Clicked',
-    });
-    setLoading(true);
-    const user_id = userId;
-    const data = {
-      userData: formData?.userData,
-      customFields: formData?.customFields?.map((field) => ({
-        fieldId: field.fieldId,
-        // type: field.type,
-        value: Array.isArray(field?.value)
-          ? field?.value?.length > 0
-            ? field?.value
-            : ''
-          : field?.value,
-      })),
-    };
-    const userDetails = data;
-    try {
-      if (userId) {
-        console.log('HELLO');
-
-        const response = await editEditUser(user_id, userDetails);
-        ReactGA.event('edit-learner-profile-successful', { userId: userId });
-
-        if (response.responseCode !== 200 || response.params.err) {
-          ReactGA.event('edit-learner-profile-failed', { userId: userId });
-          throw new Error(
-            response.params.errmsg ||
-              'An error occurred while updating the user.'
-          );
-        }
-
-        handleClose();
-
-        console.log(response.params.successmessage);
-        fetchUserDetails();
-        setIsError(false);
-        setLoading(false);
-      }
-    } catch (error) {
-      setIsError(true);
-      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-      console.error('Error:', error);
-    }
-  };
-
-  const FieldComponent = ({
-    data,
-    label,
-    size,
-  }: {
-    data: any;
-    label: string;
-    size: number;
-  }) => (
-    <Grid item xs={size}>
-      {/* question */}
-      <Typography variant="h4" sx={{ fontSize: '12px' }} margin={0}>
-        {label}
-      </Typography>
-
-      {/* value */}
-      <Typography
-        variant="h4"
-        margin={0}
-        sx={{
-          wordBreak: 'break-word',
-          fontSize: '16px',
-        }}
-        className="text-dark-grey two-line-text"
-        color={theme.palette.warning['A200']}
-      >
-        {data}
-      </Typography>
-    </Grid>
-  );
+  // //-------Edit Learner Profile------------------
 
   //----- code for Attendance Marked out of 7 days  ------------
   useEffect(() => {
@@ -861,62 +663,6 @@ const LearnerProfile: React.FC = () => {
         date_range: dateRange,
       }),
   ]);
-
-  //-------------validation for edit fields ---------------------------
-
-  const validateFields = () => {
-    const newErrors: { [key: string]: boolean } = {};
-
-    const fieldsToValidate = [...customFieldsData];
-    filteredSortedForEdit?.forEach((field) => {
-      const value =
-        formData?.customFields?.find((f) => f.fieldId === field.fieldId)
-          ?.value?.[0] || '';
-
-      if (field.type === 'text') {
-        newErrors[field.fieldId] = !value.trim() || /^\s/.test(value);
-      } else if (field.type === 'numeric') {
-        newErrors[field.fieldId] = !/^\d{1,4}$/.test(value);
-      } else if (field.type === 'drop_down') {
-        newErrors[field.fieldId] = !value.trim() || value === '';
-      }
-    });
-
-    // Validate name field
-    newErrors['name'] = !formData.userData.name.trim();
-
-    setErrors(newErrors);
-    setHasErrors(Object.values(newErrors).some((error) => error));
-  };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    const sanitizedValue = value
-      .replace(/[^a-zA-Z_ ]/g, '')
-      .replace(/^\s+/, '')
-      .replace(/\s+/g, ' ');
-
-    setFormData((prevData) => ({
-      ...prevData,
-      userData: {
-        ...prevData.userData,
-        name: sanitizedValue,
-      },
-    }));
-
-    // setHasErrors(!sanitizedValue.trim());
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  useEffect(() => {
-    if (hasInputChanged) {
-      validateFields();
-    }
-  }, [formData, customFieldsData]);
-
-  // flag for contactNumberAdded in dynamic list fo fields in lerner basic details
-  let contactNumberAdded = false;
   return (
     <>
       <Header />
@@ -981,25 +727,7 @@ const LearnerProfile: React.FC = () => {
             aria-expanded={openOption ? 'true' : undefined}
             aria-haspopup="true"
           >
-            {/* ---- comment for temp------------
-             <Box onClick={handleClickOption}>
-              <MoreVertIcon />
-            </Box> */}
-
             <Box>
-              {/* <Button
-                id="demo-customized-button"
-                aria-controls={openOption ? 'demo-customized-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={openOption ? 'true' : undefined}
-                variant="contained"
-                disableElevation
-                onClick={handleClickOption}
-                endIcon={<KeyboardArrowDownIcon />}
-              >
-                Options
-              </Button> */}
-
               <StyledMenu
                 id="demo-customized-menu"
                 MenuListProps={{
@@ -1079,16 +807,6 @@ const LearnerProfile: React.FC = () => {
           }}
         >
           <Box sx={{ mt: 2 }}>
-            {/* <Typography
-              sx={{
-                color: '#7C766F',
-              }}
-              fontSize={'12px'}
-              fontWeight={'500'}
-              lineHeight={'16px'}
-            >
-              Attendance Marked : 3 out of last 7 days
-            </Typography>  */}
             {selectedValue ===
               t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
                 date_range: dateRange,
@@ -1178,7 +896,7 @@ const LearnerProfile: React.FC = () => {
               color: theme.palette.warning.A200,
               border: `1px solid #4D4639`,
             }}
-            onClick={handleOpen}
+            onClick={handleOpenAddLearnerModal}
           >
             <Typography
               variant="h3"
@@ -1197,6 +915,20 @@ const LearnerProfile: React.FC = () => {
               <CreateOutlinedIcon sx={{ fontSize: '14px' }} />
             </Box>
           </Button>
+
+          {openAddLearnerModal && (
+            <div>
+              <AddLearnerModal
+                open={openAddLearnerModal}
+                onClose={handleCloseAddLearnerModal}
+                formData={formData}
+                isEditModal={true}
+                userId={userId}
+                onReload={handleReload}
+              />
+            </div>
+          )}
+
           <Box
             mt={2}
             sx={{
@@ -1249,7 +981,7 @@ const LearnerProfile: React.FC = () => {
                         {item?.displayValue}
                       </Typography>
                     </Grid>
-
+                    {/* 
                     {item?.order === 3 && !contactNumberAdded && (
                       <React.Fragment>
                         <FieldComponent
@@ -1259,14 +991,13 @@ const LearnerProfile: React.FC = () => {
                         />
                         {(contactNumberAdded = true)}
                       </React.Fragment>
-                    )}
+                    )} */}
                   </React.Fragment>
                 ))}
             </Grid>
           </Box>
         </Box>
       </Box>
-
       <Box padding={2}>
         <Card
           sx={{
@@ -1369,333 +1100,6 @@ const LearnerProfile: React.FC = () => {
           </CardContent>
         </Card>
       </Box>
-
-      <Modal
-        open={openEdit}
-        onClose={handleClose}
-        aria-labelledby="edit-profile-modal"
-        aria-describedby="edit-profile-description"
-      >
-        <Box
-          sx={style}
-          gap="10px"
-          display="flex"
-          flexDirection="column"
-          borderRadius={'1rem'}
-        >
-          {loading && (
-            <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-          )}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '15px 20px 5px',
-            }}
-          >
-            <Typography
-              variant="h2"
-              style={{
-                textAlign: 'left',
-                color: theme.palette.warning.A200,
-              }}
-            >
-              {t('PROFILE.EDIT_PROFILE')}
-            </Typography>
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
-              style={{
-                justifyContent: 'flex-end',
-              }}
-            >
-              <CloseIcon cursor="pointer" />
-            </IconButton>
-          </Box>
-          <Divider />
-          <Box
-            style={{
-              overflowY: 'auto',
-              padding: '10px 20px 10px',
-            }}
-            id="modal-modal-description"
-          >
-            {/* <Box
-              sx={{
-                flex: '1',
-                textAlign: 'center',
-                marginLeft: '5%',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              borderRadius={'12px'}
-              border={'1px'}
-              bgcolor={theme.palette.warning.A400}
-              display="flex"
-              flexDirection="column"
-            >
-              <Image
-                src={user_placeholder_img}
-                alt="user"
-                height={100}
-                width={100}
-                style={{ alignItems: 'center' }}
-              />
-
-              <Box>
-                <input
-                  id=""
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  ref={fileInputRef}
-                  onChange={handleImageUpload}
-                  style={{ display: 'none' }}
-                />
-                <Button
-                  sx={{
-                    minWidth: '100%',
-                    padding: '10px 24px 10px 16px',
-                    borderRadius: '12px',
-                    marginTop: '10px',
-                    flex: '1',
-                    textAlign: 'center',
-                    border: '1px solid ',
-                  }}
-                  disabled // commment for temp
-                  onClick={handleClickImage}
-                >
-                  {t('PROFILE.UPDATE_PICTURE')}
-                </Button>
-              </Box>
-            </Box> */}
-            <TextField
-              sx={{ marginTop: '8px' }}
-              type="text"
-              fullWidth
-              name="name"
-              label={t('PROFILE.FULL_NAME')}
-              variant="outlined"
-              value={formData.userData.name}
-              inputProps={{
-                pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
-                title: t('PROFILE.AT_REQUIRED_LETTER'),
-                required: true,
-              }}
-              error={!formData.userData.name.trim()} // Show error if the input is empty
-              helperText={
-                !formData.userData.name.trim() && t('PROFILE.ENTER_NAME')
-              }
-              onChange={handleInputChange}
-            />
-            {filteredSortedForEdit?.map((field) => {
-              const fieldValue =
-                formData?.customFields?.find((f) => f.fieldId === field.fieldId)
-                  ?.value?.[0] || '';
-              const isError: any = errors[field.fieldId];
-
-              return (
-                <Grid item xs={12} key={field.fieldId}>
-                  {field.type === 'text' ? (
-                    <TextField
-                      type="text"
-                      sx={{ marginTop: '20px' }}
-                      fullWidth
-                      name={field.label}
-                      label={
-                        field?.label &&
-                        t(`FORM.${field.label.toUpperCase()}`, field.label)
-                      }
-                      variant="outlined"
-                      inputProps={{
-                        pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
-                        title: 'At least one letter or underscore is required',
-                        required: true,
-                      }}
-                      value={fieldValue}
-                      onChange={(e) => {
-                        handleFieldChange(field.fieldId, e.target.value);
-                        validateFields();
-                      }}
-                      error={isError}
-                      helperText={isError && t('PROFILE.ENTER_CHARACTER')}
-                    />
-                  ) : field.type === 'numeric' ? (
-                    <TextField
-                      type="number"
-                      sx={{ marginTop: '20px' }}
-                      fullWidth
-                      name={field.label}
-                      label={
-                        field?.label &&
-                        t(`FORM.${field.label.toUpperCase()}`, field.label)
-                      }
-                      variant="outlined"
-                      value={fieldValue}
-                      onKeyDown={(e) => {
-                        // Allow only numeric keys, Backspace, and Delete
-                        if (
-                          !(
-                            (
-                              /[0-9]/.test(e.key) ||
-                              e.key === 'Backspace' ||
-                              e.key === 'Delete'
-                            ) // Allow decimal point if needed
-                          )
-                        ) {
-                          e.preventDefault();
-                        }
-                      }}
-                      onChange={(e) => {
-                        const inputValue = e.target.value;
-                        if (/^\d{0,4}$/.test(inputValue)) {
-                          handleFieldChange(field.fieldId, inputValue);
-                          validateFields();
-                        }
-                      }}
-                      error={isError}
-                      helperText={isError && t('PROFILE.ENTER_NUMBER')}
-                    />
-                  ) : field.type === 'checkbox' ? (
-                    <Box marginTop={3}>
-                      <Typography
-                        textAlign={'start'}
-                        variant="h4"
-                        margin={0}
-                        color={theme.palette.warning.A200}
-                      >
-                        {field?.label &&
-                          t(`FORM.${field.label.toUpperCase()}`, field.label)}
-                      </Typography>
-                      {field.options?.map((option: any) => (
-                        <FormGroup key={option.value}>
-                          <FormControlLabel
-                            sx={{ color: theme.palette.warning[300] }}
-                            control={
-                              <Checkbox
-                                color="default"
-                                checked={(
-                                  formData?.customFields.find(
-                                    (f) => f.fieldId === field.fieldId
-                                  )?.value || []
-                                )?.includes(option.value)}
-                                onChange={(e) =>
-                                  handleCheckboxChange(
-                                    field.fieldId,
-                                    option.value,
-                                    e.target.checked
-                                  )
-                                }
-                              />
-                            }
-                            label={option.label}
-                          />
-                        </FormGroup>
-                      ))}
-                    </Box>
-                  ) : field.type === 'drop_down' ||
-                    field.type === 'dropdown' ? (
-                    <Box marginTop={3} textAlign={'start'}>
-                      <FormControl fullWidth>
-                        <InputLabel id={`select-label-${field.fieldId}`}>
-                          {field?.label &&
-                            t(`FORM.${field.label.toUpperCase()}`, field.label)}
-                        </InputLabel>
-                        <Select
-                          error={isError}
-                          labelId={`select-label-${field.fieldId}`}
-                          id={`select-${field.fieldId}`}
-                          value={fieldValue}
-                          label={
-                            field?.label &&
-                            t(`FORM.${field.label.toUpperCase()}`, field.label)
-                          }
-                          onChange={(e) =>
-                            handleDropdownChange(field.fieldId, e.target.value)
-                          }
-                        >
-                          {field?.options?.map((option: any) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        {isError && (
-                          <FormHelperText
-                            sx={{ color: theme.palette.error.main }}
-                          >
-                            {t('PROFILE.SELECT_OPTION')}
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Box>
-                  ) : field.type === 'radio' || field.type === 'Radio' ? (
-                    <Box marginTop={3}>
-                      <Typography
-                        textAlign={'start'}
-                        variant="h4"
-                        margin={0}
-                        color={theme.palette.warning.A200}
-                      >
-                        {field?.label &&
-                          t(`FORM.${field.label.toUpperCase()}`, field.label)}
-                      </Typography>
-                      <RadioGroup
-                        name={field.fieldId}
-                        value={fieldValue}
-                        onChange={(e) =>
-                          handleRadioChange(field.fieldId, e.target.value)
-                        }
-                      >
-                        <Box
-                          display="flex"
-                          flexWrap="wrap"
-                          color={theme.palette.warning.A200}
-                        >
-                          {field?.options?.map((option: any) => (
-                            <FormControlLabel
-                              key={option.value}
-                              value={option.value}
-                              control={<Radio color="default" />}
-                              label={option.label}
-                            />
-                          ))}
-                        </Box>
-                      </RadioGroup>
-                    </Box>
-                  ) : null}
-                </Grid>
-              );
-            })}
-            <Box></Box>
-          </Box>
-          <Divider />
-          <Box
-            sx={{
-              display: 'flex',
-              padding: '5px 20px 20px 20px',
-              justifyContent: 'center',
-              mt: 0.5,
-            }}
-          >
-            <Button
-              sx={{
-                minWidth: '100%',
-                color: theme.palette.warning.A200,
-                boxShadow: 'none',
-              }}
-              onClick={handleSubmit}
-              variant="contained"
-              disabled={!hasInputChanged || !isValidationTriggered || hasErrors}
-            >
-              {t('COMMON.SAVE')}
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
     </>
   );
 };

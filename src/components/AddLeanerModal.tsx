@@ -14,24 +14,34 @@ import { RJSFSchema } from '@rjsf/utils';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { showToastMessage } from './Toastify';
+import { editEditUser } from '@/services/ProfileService';
 
 interface AddLearnerModalProps {
   open: boolean;
   onClose: () => void;
-  onLearnerAdded: () => void;
+  onLearnerAdded?: () => void;
+  formData?: object;
+  isEditModal?: boolean;
+  userId?: string;
+  onReload?: (() => void)| undefined;
 }
 const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   open,
   onClose,
   onLearnerAdded,
+  formData,
+  isEditModal = false,
+  userId,
+  onReload
 }) => {
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
+  const [reloadProfile, setReloadProfile] = React.useState(false);
   const [credentials, setCredentials] = React.useState({
     username: '',
     password: '',
   });
-  // const [learnerFormData, setLearnerFormData] = React.useState<any>();
+
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
@@ -83,9 +93,8 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     const schemaProperties = schema.properties;
     let cohortId, teacherData;
     if (typeof window !== 'undefined' && window.localStorage) {
-      teacherData = JSON.parse(localStorage.getItem('teacherApp') ?? '');
-      cohortId =
-        localStorage.getItem('cohortId') ?? localStorage.getItem('classId');
+      teacherData = JSON.parse(localStorage.getItem('teacherApp') || '');
+      localStorage.getItem('cohortId') ?? localStorage.getItem('classId');
     }
     const { username, password } = generateUsernameAndPassword(
       teacherData?.state?.stateCode,
@@ -116,43 +125,70 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         if (typeof fieldValue !== 'object') {
           apiBody[fieldKey] = fieldValue;
         }
-      } else if (
-        Object.hasOwn(fieldSchema, 'isDropdown') ||
-        Object.hasOwn(fieldSchema, 'isCheckbox')
-      ) {
-        apiBody.customFields.push({
-          fieldId: fieldId,
-          value: [String(fieldValue)],
-        });
       } else {
-        apiBody.customFields.push({
-          fieldId: fieldId,
-          value: String(fieldValue),
-        });
+        if (
+          fieldSchema?.hasOwnProperty('isDropdown') ||
+          fieldSchema.hasOwnProperty('isCheckbox')
+        ) {
+          apiBody.customFields.push({
+            fieldId: fieldId,
+            value: [String(fieldValue)],
+          });
+        } else {
+          apiBody.customFields.push({
+            fieldId: fieldId,
+            value: String(fieldValue),
+          });
+        }
       }
     });
 
-    apiBody.customFields.push({
-      fieldId: teacherData?.state?.blockId,
-      value: [teacherData?.state?.blockCode],
-    });
-    apiBody.customFields.push({
-      fieldId: teacherData?.state?.stateId,
-      value: [teacherData?.state?.stateCode],
-    });
-    apiBody.customFields.push({
-      fieldId: teacherData?.state?.districtId,
-      value: [teacherData?.state?.districtCode],
-    });
-    console.log(apiBody);
+    if (!isEditModal) {
+      apiBody.customFields.push({
+        fieldId: teacherData?.state?.blockId,
+        value: [teacherData?.state?.blockCode],
+      });
+      apiBody.customFields.push({
+        fieldId: teacherData?.state?.stateId,
+        value: [teacherData?.state?.stateCode],
+      });
+      apiBody.customFields.push({
+        fieldId: teacherData?.state?.districtId,
+        value: [teacherData?.state?.districtCode],
+      });
+      console.log(apiBody);
+    }
 
-    const response = await createUser(apiBody);
-    if (response) {
+    try {
+      if (isEditModal && userId) {
+        console.log('apiBody', apiBody);
+        const userData = {
+          name: apiBody.name,
+          mobile: apiBody.mobile,
+          father_name: apiBody.father_name,
+        };
+        const customFields = apiBody.customFields;
+        console.log(customFields);
+        const object = {
+          userData: userData,
+          customFields: customFields,
+        };
+        const response = await editEditUser(userId, object);        
+        if (response) {
+          showToastMessage(t('COMMON.LEARNER_UPDATED_SUCCESSFULLY'), 'success');
+        setReloadProfile(true);
+        onReload?.();
+        }
+      } else {
+        const response = await createUser(apiBody);
+        showToastMessage(t('LEARNERS.LEARNER_CREATED_SUCCESSFULLY'), 'success');
+      }
       onClose();
-      onLearnerAdded();
-      showToastMessage(t('COMMON.LEARNER_CREATED_SUCCESSFULLY'), 'success');
-    } else {
-      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'success');
+      //   onLearnerAdded();
+    } catch (error) {
+      onClose();
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      setReloadProfile(true);
     }
   };
 
@@ -178,6 +214,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         justifyContent: 'space-between',
       }}
     >
+       <>
       <Button
         variant="outlined"
         color="primary"
@@ -212,6 +249,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       >
         {t('COMMON.SUBMIT')}
       </Button>
+      </>
     </div>
   );
 
@@ -232,27 +270,47 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   };
 
   return (
+    <>
     <SimpleModal
       open={open}
       onClose={onClose}
       showFooter={false}
       modalTitle={t('COMMON.NEW_LEARNER')}
     >
-      {schema && uiSchema && (
-        <DynamicForm
-          schema={schema}
-          uiSchema={uiSchema}
-          onSubmit={handleSubmit}
-          onChange={handleChange}
-          onError={handleError}
-          widgets={{}}
-          showErrorList={true}
-          customFields={customFields}
-        >
-          {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
-        </DynamicForm>
-      )}
+      {formData
+        ? schema &&
+          uiSchema && (
+            <DynamicForm
+              schema={schema}
+              uiSchema={uiSchema}
+              onSubmit={handleSubmit}
+              onChange={handleChange}
+              onError={handleError}
+              widgets={{}}
+              showErrorList={true}
+              customFields={customFields}
+              formData={formData}
+            >
+              {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+            </DynamicForm>
+          )
+        : schema &&
+          uiSchema && (
+            <DynamicForm
+              schema={schema}
+              uiSchema={uiSchema}
+              onSubmit={handleSubmit}
+              onChange={handleChange}
+              onError={handleError}
+              widgets={{}}
+              showErrorList={true}
+              customFields={customFields}
+            >
+              {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+            </DynamicForm>
+          )}
     </SimpleModal>
+    </>
   );
 };
 
