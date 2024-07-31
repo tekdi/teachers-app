@@ -11,7 +11,7 @@ import React, { useEffect } from 'react';
 
 import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
-import { cohort } from '@/utils/Interfaces';
+import { ICohort } from '@/utils/Interfaces';
 import { cohortHierarchy } from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -28,11 +28,11 @@ interface CohortSelectionSectionProps {
   setIsAuthenticated?: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  cohortsData: Array<cohort>;
-  setCohortsData: React.Dispatch<React.SetStateAction<Array<cohort>>>;
-  manipulatedCohortData?: Array<cohort>;
+  cohortsData: Array<ICohort>;
+  setCohortsData: React.Dispatch<React.SetStateAction<Array<ICohort>>>;
+  manipulatedCohortData?: Array<ICohort>;
   setManipulatedCohortData?: React.Dispatch<
-    React.SetStateAction<Array<cohort>>
+    React.SetStateAction<Array<ICohort>>
   >;
   blockName: string;
   isManipulationRequired?: boolean;

@@ -20,7 +20,7 @@ import {
   AttendanceParams,
   AttendancePercentageProps,
   AttendanceStatusListProps,
-  cohort,
+  ICohort,
   CohortMemberList
 } from '../utils/Interfaces';
 
@@ -66,7 +66,7 @@ const UserAttendanceHistory = () => {
   const { push } = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [classId, setClassId] = React.useState('');
-  const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
+  const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
   const [percentageAttendance, setPercentageAttendance] =
     React.useState<any>(null);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<user>>(
@@ -89,7 +89,7 @@ const UserAttendanceHistory = () => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [userId, setUserId] = React.useState<string | null>(null);
   const [manipulatedCohortData, setManipulatedCohortData] =
-    React.useState<Array<cohort>>(cohortsData);
+    React.useState<Array<ICohort>>(cohortsData);
   const searchRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();

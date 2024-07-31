@@ -14,7 +14,7 @@ import {
   sortClassesMissed,
   toPascalCase,
 } from '@/utils/Helper';
-import { CohortAttendancePercentParam, cohort } from '@/utils/Interfaces';
+import { CohortAttendancePercentParam, ICohort } from '@/utils/Interfaces';
 import {
   Box,
   Button,
@@ -62,9 +62,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const { push } = useRouter();
   const today = new Date();
   const [classId, setClassId] = React.useState('');
-  const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
+  const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
-    React.useState<Array<cohort>>(cohortsData);
+    React.useState<Array<ICohort>>(cohortsData);
   const [allCenterAttendanceData, setAllCenterAttendanceData] =
     React.useState<any>(cohortsData);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);

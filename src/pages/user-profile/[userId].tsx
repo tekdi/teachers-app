@@ -22,7 +22,7 @@ import {
   ArrowBack as ArrowBackIcon,
   East as EastIcon,
 } from '@mui/icons-material';
-import { CustomField, UserDatas } from '@/utils/Interfaces';
+import { CustomField, IUserData } from '@/utils/Interfaces';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
 import { useTheme, withStyles } from '@mui/material/styles';
@@ -323,11 +323,11 @@ const TeacherProfile = () => {
   //------------edit teacher profile------------
 
   const [formData, setFormData] = useState<{
-    userData: UserDatas;
+    userData: IUserData;
     customFields: { fieldId: string; type: string; value: string[] | string }[];
   }>({
     userData: {
-      name: 'userName' || '',
+      name: 'userName',
     },
     customFields: customFieldsData?.map((field) => ({
       fieldId: field.fieldId,
