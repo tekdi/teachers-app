@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import Header from '@/components/Header';
 import { logEvent } from '@/utils/googleAnalytics';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -21,6 +22,10 @@ const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
 
+  // State to manage the expanded state of the accordions
+  const [expanded, setExpanded] = useState<string | false>(false);
+  const [allExpanded, setAllExpanded] = useState(false); // New state to track all accordions
+
   const handleBackEvent = () => {
     window.history.back();
     logEvent({
@@ -29,6 +34,23 @@ const CoursePlannerDetail = () => {
       label: 'Back Button Clicked',
     });
   };
+
+  const handleAccordionChange =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      if (!allExpanded) {
+        setExpanded(isExpanded ? panel : false);
+      }
+    };
+
+  const toggleAllAccordions = () => {
+    if (allExpanded) {
+      setExpanded(false);
+    } else {
+      setExpanded('panel1');
+    }
+    setAllExpanded(!allExpanded);
+  };
+
   return (
     <>
       <Header />
@@ -37,7 +59,7 @@ const CoursePlannerDetail = () => {
           display: 'flex',
           justifyContent: 'left',
           alignItems: 'center',
-          color: '#4D4639',
+          color: theme.palette.warning['A200'],
           padding: '15px 16px 5px',
           gap: '15px',
         }}
@@ -101,7 +123,7 @@ const CoursePlannerDetail = () => {
                 color: theme.palette.warning['300'],
               }}
             >
-              Mathematics {/*  will come form API */}
+              Mathematics {/*  will come from API */}
             </Box>
           </Box>
         </Box>
@@ -123,13 +145,15 @@ const CoursePlannerDetail = () => {
             fontSize: '12px',
             fontWeight: '500',
             color: theme.palette.warning['300'],
+            cursor: 'pointer',
           }}
+          onClick={toggleAllAccordions}
         >
-          {t('COURSE_PLANNER.COLLAPSE_ALL')}
-          Collapse All
+          {allExpanded ? 'Collapse All' : 'Expand All'}
         </Box>
         <ArrowDropUpIcon
           sx={{
+            transform: allExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
             color: theme.palette.warning['300'],
           }}
         />
@@ -141,7 +165,8 @@ const CoursePlannerDetail = () => {
           }}
         >
           <Accordion
-            //defaultExpanded
+            expanded={expanded === 'panel1' || allExpanded}
+            onChange={handleAccordionChange('panel1')}
             sx={{
               boxShadow: 'none',
               background: '#F1E7D9',
@@ -209,6 +234,7 @@ const CoursePlannerDetail = () => {
                     py: '10px',
                     px: '16px',
                     background: theme.palette.warning['A400'],
+                    pt: 2,
                   }}
                 >
                   <Box
@@ -249,7 +275,7 @@ const CoursePlannerDetail = () => {
                       >
                         JAN
                       </Box>
-                      <CheckCircleOutlineIcon sx={{ fontSize: '18px' }} />
+                      <CheckCircleOutlineIcon sx={{ fontSize: '20px' }} />
                     </Box>
                   </Box>
                   <Box
@@ -263,6 +289,76 @@ const CoursePlannerDetail = () => {
                   >
                     <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
                       5 {t('COURSE_PLANNER.RESOURCES')}
+                    </Box>
+                    <ArrowForwardIcon sx={{ fontSize: '16px' }} />
+                  </Box>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  borderBottom: `1px solid ${theme.palette.warning['A100']}`,
+                }}
+              >
+                <Box
+                  sx={{
+                    py: '10px',
+                    px: '16px',
+                    background: theme.palette.warning['A400'],
+                    pt: 2,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      gap: '20px',
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        fontSize: '16px',
+                        fontWeight: '400',
+                        color: theme.palette.warning['300'],
+                      }}
+                    >
+                      Irrational Numbers
+                      {/* will came from API */}
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          padding: '5px',
+                          background: '  #C1D6FF',
+                          fontSize: '12px',
+                          fontWeight: '500',
+                          color: '#4D4639',
+                          borderRadius: '8px',
+                        }}
+                      >
+                        JAN
+                      </Box>
+                      <CheckCircleOutlineIcon sx={{ fontSize: '20px' }} />
+                    </Box>
+                  </Box>
+                  <Box
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      mt: 0.8,
+                    }}
+                  >
+                    <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
+                      2 {t('COURSE_PLANNER.RESOURCES')}
                     </Box>
                     <ArrowForwardIcon sx={{ fontSize: '16px' }} />
                   </Box>
