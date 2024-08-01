@@ -377,7 +377,7 @@ export interface Field {
   maxLength?: number | null;
   minLength?: number | null;
   fieldId: string;
-  required?: boolean;
+  isRequired?: boolean;
 }
 
 export interface FormData {
@@ -413,6 +413,8 @@ export interface BulkCreateCohortMembersRequest {
 export interface FacilitatorDrawerProps {
   secondary?: string;
   primary?: string;
-  toggleDrawer: (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => void;
+  toggleDrawer: (
+    open: boolean
+  ) => (event: React.KeyboardEvent | React.MouseEvent) => void;
   drawerState: { bottom: boolean };
 }
