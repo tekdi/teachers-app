@@ -98,7 +98,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
-    if(!isEditModal){
+    if (!isEditModal) {
       setOpenModal(true);
     }
     const target = event.target as HTMLFormElement;

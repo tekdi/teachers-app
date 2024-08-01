@@ -115,7 +115,7 @@ const LearnerProfile: React.FC = () => {
   const [reload, setReload] = React.useState(false);
 
   const handleReload = () => {
-    setReload(prev => !prev);
+    setReload((prev) => !prev);
   };
 
   const StyledMenu = styled((props: MenuProps) => (
@@ -227,20 +227,17 @@ const LearnerProfile: React.FC = () => {
         if (item?.isMultiSelect) {
           if (userData[item.name] && item?.maxSelections > 1) {
             initialFormData[item.name] = [userData[item.name]];
-          } 
-          else if (item?.type === "checkbox") {
-            initialFormData[item.name]= String(userData[item.name]).split(",");
-          }
-          else {
+          } else if (item?.type === 'checkbox') {
+            initialFormData[item.name] = String(userData[item.name]).split(',');
+          } else {
             initialFormData[item.name] = userData[item.name];
           }
-        } else if (item?.type === "numeric") {
+        } else if (item?.type === 'numeric') {
           console.log(item?.name);
           initialFormData[item.name] = Number(userData[item.name]);
-        } else if (item?.type === "text" && userData[item.name]) {
+        } else if (item?.type === 'text' && userData[item.name]) {
           initialFormData[item.name] = String(userData[item.name]);
-        }
-        else {
+        } else {
           // console.log(item.name);
           if (userData[item.name]) {
             initialFormData[item.name] = userData[item.name];
