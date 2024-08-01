@@ -271,47 +271,45 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   };
 
   return (
-    <>
-      <SimpleModal
-        open={open}
-        onClose={onClose}
-        showFooter={false}
-        modalTitle={t('COMMON.NEW_LEARNER')}
-      >
-        {formData
-          ? schema &&
-            uiSchema && (
-              <DynamicForm
-                schema={schema}
-                uiSchema={uiSchema}
-                onSubmit={handleSubmit}
-                onChange={handleChange}
-                onError={handleError}
-                widgets={{}}
-                showErrorList={true}
-                customFields={customFields}
-                formData={formData}
-              >
-                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
-              </DynamicForm>
-            )
-          : schema &&
-            uiSchema && (
-              <DynamicForm
-                schema={schema}
-                uiSchema={uiSchema}
-                onSubmit={handleSubmit}
-                onChange={handleChange}
-                onError={handleError}
-                widgets={{}}
-                showErrorList={true}
-                customFields={customFields}
-              >
-                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
-              </DynamicForm>
-            )}
-      </SimpleModal>
-    </>
+    <SimpleModal
+      open={open}
+      onClose={onClose}
+      showFooter={false}
+      modalTitle={t('COMMON.NEW_LEARNER')}
+    >
+      {formData
+        ? schema &&
+          uiSchema && (
+            <DynamicForm
+              schema={schema}
+              uiSchema={uiSchema}
+              onSubmit={handleSubmit}
+              onChange={handleChange}
+              onError={handleError}
+              widgets={{}}
+              showErrorList={true}
+              customFields={customFields}
+              formData={formData}
+            >
+              {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+            </DynamicForm>
+          )
+        : schema &&
+          uiSchema && (
+            <DynamicForm
+              schema={schema}
+              uiSchema={uiSchema}
+              onSubmit={handleSubmit}
+              onChange={handleChange}
+              onError={handleError}
+              widgets={{}}
+              showErrorList={true}
+              customFields={customFields}
+            >
+              {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+            </DynamicForm>
+          )}
+    </SimpleModal>
   );
 };
 
