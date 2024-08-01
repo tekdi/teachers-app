@@ -46,7 +46,7 @@ const TopicDetailView = () => {
             justifyContent: 'left',
             alignItems: 'center',
             color: theme.palette.warning['A200'],
-            padding: '15px 16px 5px',
+            padding: '15px 0px 5px',
             gap: '15px',
           }}
           width={'100%'}
@@ -70,7 +70,7 @@ const TopicDetailView = () => {
                   color: theme.palette.warning['300'],
                 }}
               >
-                Mathematics {/* will come from API */}
+                The Fundamental Theorem of Arithmetic {/* will come from API */}
               </Box>
             </Box>
           </Box>
