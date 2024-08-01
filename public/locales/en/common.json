@@ -415,6 +415,8 @@
     "PHONE_TYPE_AVAILABLE": "Type of Phone Available",
     "DISTRICT_NAME": "District Name",
     "AGE": "Age",
+    "REGULAR": "Regular",
+    "REMOTE": "Remote",
     "PRIMARY_WORK": "Learner's Primary Work",
     "MOBILISATION_METHOD": "How Was the Learner Mobilized?",
     "MONTH_MOBILISATION": "Month of Mobilisation",
