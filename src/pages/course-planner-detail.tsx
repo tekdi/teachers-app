@@ -74,9 +74,9 @@ const CoursePlannerDetail = () => {
   const handleCloseModel = () => {
     setModalOpen(false);
   };
-  const handleOpenModel = () => {
-    setModalOpen(true);
-  };
+  // const handleOpenModel = () => {
+  //   setModalOpen(true);
+  // };
 
   return (
     <>
@@ -286,7 +286,7 @@ const CoursePlannerDetail = () => {
                         color: theme.palette.warning['300'],
                       }}
                     >
-                      The Fundamental Theorem of Arithmetic{' '}
+                      The Fundamental Theorem of Arithmetic
                       {/* will come from API */}
                     </Box>
                     <Box
@@ -339,24 +339,25 @@ const CoursePlannerDetail = () => {
           </Accordion>
         </Box>
       </Box>
-      {isDrawerOpen ? (
-        <FacilitatorDrawer
-          secondary={'Cancel'}
-          primary={'Mark as Complete (2)'}
-          toggleDrawer={toggleDrawer}
-          drawerState={drawerState}
-        />
-      ) : (
-        <ConfirmationModal
-          message={'shreyas shinde'}
-          buttonNames={{
-            primary: t('COMMON.LOGOUT'),
-            secondary: t('COMMON.CANCEL'),
-          }}
-          handleCloseModal={handleCloseModel}
-          modalOpen={modalOpen}
-        />
-      )}
+
+      <FacilitatorDrawer
+        secondary={'Cancel'}
+        primary={'Mark as Complete (2)'}
+        toggleDrawer={toggleDrawer}
+        drawerState={drawerState}
+      />
+
+      {/* <ConfirmationModal
+        message={
+          'You are unchecking this topic as complete. Are you sure you want to save this change?'
+        }
+        buttonNames={{
+          primary: ' Yes',
+          secondary: 'No, go back',
+        }}
+        handleCloseModal={handleCloseModel}
+        modalOpen={modalOpen}
+      /> */}
     </>
   );
 };

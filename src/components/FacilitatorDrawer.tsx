@@ -11,7 +11,7 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
   toggleDrawer,
   drawerState,
 }) => {
-  const theme = useTheme();
+  const theme = useTheme<any>();
 
   return (
     <div>
@@ -23,16 +23,23 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
         sx={{ position: 'unset' }}
         BackdropProps={{ invisible: true }}
       >
-        <Box sx={{ py: '20px', px: '16px', background: 'black' }}>
+        <Box
+          sx={{
+            py: '20px',
+            px: '16px',
+            background: '#4A4640',
+            boxShadow: '0px 1px 2px 0px #0000004D',
+          }}
+        >
           <Box
             sx={{
               fontSize: '14px',
               fontWeight: '400',
-              color: '#FFFFFF',
+              color: theme?.palette?.warning['A400'],
               textAlign: 'center',
             }}
           >
-            Khapari Dharmu (Chimur, Chandrapur)
+            Khapari Dharmu (Chimur, Chandrapur) {/*  will come from API */}
           </Box>
           <Box
             sx={{
@@ -59,8 +66,8 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
                       fontWeight: '500',
                       width: '128px',
                       height: '40px',
-                      color: '#FFFFFF',
-                      border: '1px solid #FFFFFF',
+                      color: theme?.palette?.warning['A400'],
+                      border: `1px solid ${theme?.palette?.warning['A400']}`,
                       '@media (max-width: 430px)': {
                         width: '100%',
                       },
