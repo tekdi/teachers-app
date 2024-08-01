@@ -4,7 +4,7 @@ import { post } from './RestClient';
 export const AssesmentListService = async ({
   filters,
 }: scheduleEventParam): Promise<any> => {
-  const apiUrl: string = 'http://3.109.46.84:4000/event/v1/list';
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_EVENT_BASE_URL}/list`;
   try {
     const response = await post(apiUrl, { filters });
     return response?.data;
