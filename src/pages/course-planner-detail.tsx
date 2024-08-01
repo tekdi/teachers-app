@@ -8,6 +8,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { useRouter } from 'next/router';
 import {
   Accordion,
   AccordionDetails,
@@ -23,6 +24,7 @@ import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
+  const router = useRouter();
   const { t } = useTranslation();
 
   // Initialize the panels' state, assuming you have a known set of panel IDs
@@ -284,6 +286,10 @@ const CoursePlannerDetail = () => {
                         fontSize: '16px',
                         fontWeight: '400',
                         color: theme.palette.warning['300'],
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => {
+                        router.push(`/topic-detail-view`);
                       }}
                     >
                       The Fundamental Theorem of Arithmetic
@@ -326,6 +332,10 @@ const CoursePlannerDetail = () => {
                       alignItems: 'center',
                       gap: '4px',
                       mt: 0.8,
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      router.push(`/topic-detail-view`);
                     }}
                   >
                     <Box sx={{ fontSize: '12px', fontWeight: '500' }}>

@@ -416,3 +416,7 @@ export interface FacilitatorDrawerProps {
   toggleDrawer: (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => void;
   drawerState: { bottom: boolean };
 }
+export interface CoursePlannerCardsProps {
+  title: string;
+  subtitle: string;
+}
