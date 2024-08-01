@@ -148,7 +148,7 @@ const LearnerModal = ({
                           >
                             {item?.label
                               ? t(
-                                  `FIELDS.${item.label.toUpperCase()}`,
+                                  `FORM.${item.label.toUpperCase()}`,
                                   item.label
                                 )
                               : item.label}
