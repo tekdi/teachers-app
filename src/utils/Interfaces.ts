@@ -409,3 +409,10 @@ export interface BulkCreateCohortMembersRequest {
   cohortId: string[];
   removeCohortId?: string[];
 }
+
+export interface FacilitatorDrawerProps {
+  secondary?: string;
+  primary?: string;
+  toggleDrawer: (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => void;
+  drawerState: { bottom: boolean };
+}
