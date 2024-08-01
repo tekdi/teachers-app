@@ -185,7 +185,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         showToastMessage(t('LEARNERS.LEARNER_CREATED_SUCCESSFULLY'), 'success');
       }
       onClose();
-      //   onLearnerAdded();
+      onLearnerAdded?.();
     } catch (error) {
       onClose();
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
