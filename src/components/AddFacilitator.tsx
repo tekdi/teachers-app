@@ -21,14 +21,14 @@ import { tenantId } from '../../app.config';
 interface AddFacilitatorModalprops {
   open: boolean;
   onClose: () => void;
-  formData?: object;
+  userFormData?: object;
   isEditModal?: boolean;
   userId?: string;
 }
 const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   open,
   onClose,
-  formData,
+  userFormData,
   isEditModal = false,
   userId,
 }) => {
@@ -98,24 +98,24 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
-    if(!isEditModal){
+    if (!isEditModal) {
       setOpenModal(true);
     }
     const target = event.target as HTMLFormElement;
     const elementsArray = Array.from(target.elements);
 
-    for (const element of elementsArray) {
-      if (
-        (element instanceof HTMLInputElement ||
-          element instanceof HTMLSelectElement ||
-          element instanceof HTMLTextAreaElement) &&
-        (element.value === '' ||
-          (Array.isArray(element.value) && element.value.length === 0))
-      ) {
-        element.focus();
-        return;
-      }
-    }
+    // for (const element of elementsArray) {
+    //   if (
+    //     (element instanceof HTMLInputElement ||
+    //       element instanceof HTMLSelectElement ||
+    //       element instanceof HTMLTextAreaElement) &&
+    //     (element.value === '' ||
+    //       (Array.isArray(element.value) && element.value.length === 0))
+    //   ) {
+    //     element.focus();
+    //     return;
+    //   }
+    // }
 
     const formData = data.formData;
     console.log('Form data submitted:', formData);
@@ -235,7 +235,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         showFooter={false}
         modalTitle={t('COMMON.NEW_FACILITATOR')}
       >
-        {formData
+        {userFormData
           ? schema &&
             uiSchema && (
               <DynamicForm
@@ -247,7 +247,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 widgets={{}}
                 showErrorList={true}
                 customFields={customFields}
-                formData={formData}
+                formData={userFormData}
               >
                 {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
               </DynamicForm>

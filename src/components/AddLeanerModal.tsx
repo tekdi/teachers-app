@@ -24,7 +24,7 @@ interface AddLearnerModalProps {
   formData?: object;
   isEditModal?: boolean;
   userId?: string;
-  onReload?: (() => void)| undefined;
+  onReload?: (() => void) | undefined;
 }
 const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   open,
@@ -33,7 +33,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   formData,
   isEditModal = false,
   userId,
-  onReload
+  onReload,
 }) => {
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
@@ -75,18 +75,18 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     const target = event.target as HTMLFormElement;
     const elementsArray = Array.from(target.elements);
 
-    for (const element of elementsArray) {
-      if (
-        (element instanceof HTMLInputElement ||
-          element instanceof HTMLSelectElement ||
-          element instanceof HTMLTextAreaElement) &&
-        (element.value === '' ||
-          (Array.isArray(element.value) && element.value.length === 0))
-      ) {
-        element.focus();
-        return;
-      }
-    }
+    // for (const element of elementsArray) {
+    //   if (
+    //     (element instanceof HTMLInputElement ||
+    //       element instanceof HTMLSelectElement ||
+    //       element instanceof HTMLTextAreaElement) &&
+    //     (element.value === '' ||
+    //       (Array.isArray(element.value) && element.value.length === 0))
+    //   ) {
+    //     element.focus();
+    //     return;
+    //   }
+    // }
     console.log('Form data submitted:', data.formData);
 
     const formData = data.formData;
@@ -174,11 +174,11 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           userData: userData,
           customFields: customFields,
         };
-        const response = await editEditUser(userId, object);        
+        const response = await editEditUser(userId, object);
         if (response) {
           showToastMessage(t('COMMON.LEARNER_UPDATED_SUCCESSFULLY'), 'success');
-        setReloadProfile(true);
-        onReload?.();
+          setReloadProfile(true);
+          onReload?.();
         }
       } else {
         const response = await createUser(apiBody);
@@ -215,41 +215,41 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         justifyContent: 'space-between',
       }}
     >
-       <>
-      <Button
-        variant="outlined"
-        color="primary"
-        sx={{
-          '&.Mui-disabled': {
-            backgroundColor: theme?.palette?.primary?.main,
-          },
-          minWidth: '84px',
-          height: '2.5rem',
-          padding: theme.spacing(1),
-          fontWeight: '500',
-          width: '48%',
-        }}
-        onClick={onClose}
-      >
-        {t('COMMON.BACK')}
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{
-          '&.Mui-disabled': {
-            backgroundColor: theme?.palette?.primary?.main,
-          },
-          minWidth: '84px',
-          height: '2.5rem',
-          padding: theme.spacing(1),
-          fontWeight: '500',
-          width: '48%',
-        }}
-        onClick={secondaryActionHandler}
-      >
-        {t('COMMON.SUBMIT')}
-      </Button>
+      <>
+        <Button
+          variant="outlined"
+          color="primary"
+          sx={{
+            '&.Mui-disabled': {
+              backgroundColor: theme?.palette?.primary?.main,
+            },
+            minWidth: '84px',
+            height: '2.5rem',
+            padding: theme.spacing(1),
+            fontWeight: '500',
+            width: '48%',
+          }}
+          onClick={onClose}
+        >
+          {t('COMMON.BACK')}
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{
+            '&.Mui-disabled': {
+              backgroundColor: theme?.palette?.primary?.main,
+            },
+            minWidth: '84px',
+            height: '2.5rem',
+            padding: theme.spacing(1),
+            fontWeight: '500',
+            width: '48%',
+          }}
+          onClick={secondaryActionHandler}
+        >
+          {t('COMMON.SUBMIT')}
+        </Button>
       </>
     </div>
   );
@@ -272,45 +272,45 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
   return (
     <>
-    <SimpleModal
-      open={open}
-      onClose={onClose}
-      showFooter={false}
-      modalTitle={t('COMMON.NEW_LEARNER')}
-    >
-      {formData
-        ? schema &&
-          uiSchema && (
-            <DynamicForm
-              schema={schema}
-              uiSchema={uiSchema}
-              onSubmit={handleSubmit}
-              onChange={handleChange}
-              onError={handleError}
-              widgets={{}}
-              showErrorList={true}
-              customFields={customFields}
-              formData={formData}
-            >
-              {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
-            </DynamicForm>
-          )
-        : schema &&
-          uiSchema && (
-            <DynamicForm
-              schema={schema}
-              uiSchema={uiSchema}
-              onSubmit={handleSubmit}
-              onChange={handleChange}
-              onError={handleError}
-              widgets={{}}
-              showErrorList={true}
-              customFields={customFields}
-            >
-              {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
-            </DynamicForm>
-          )}
-    </SimpleModal>
+      <SimpleModal
+        open={open}
+        onClose={onClose}
+        showFooter={false}
+        modalTitle={t('COMMON.NEW_LEARNER')}
+      >
+        {formData
+          ? schema &&
+            uiSchema && (
+              <DynamicForm
+                schema={schema}
+                uiSchema={uiSchema}
+                onSubmit={handleSubmit}
+                onChange={handleChange}
+                onError={handleError}
+                widgets={{}}
+                showErrorList={true}
+                customFields={customFields}
+                formData={formData}
+              >
+                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+              </DynamicForm>
+            )
+          : schema &&
+            uiSchema && (
+              <DynamicForm
+                schema={schema}
+                uiSchema={uiSchema}
+                onSubmit={handleSubmit}
+                onChange={handleChange}
+                onError={handleError}
+                widgets={{}}
+                showErrorList={true}
+                customFields={customFields}
+              >
+                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+              </DynamicForm>
+            )}
+      </SimpleModal>
     </>
   );
 };
