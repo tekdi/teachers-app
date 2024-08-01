@@ -16,6 +16,7 @@ import { RJSFSchema } from '@rjsf/utils';
 import { useTranslation } from 'next-i18next';
 import { showToastMessage } from './Toastify';
 import { editEditUser } from '@/services/ProfileService';
+import { tenantId } from '../../app.config';
 
 interface AddFacilitatorModalprops {
   open: boolean;
@@ -127,7 +128,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       password: password,
       tenantCohortRoleMapping: [
         {
-          tenantId: 'ef99949b-7f3a-4a5f-806a-e67e683e38f3',
+          tenantId: tenantId,
           roleId: RoleId.TEACHER,
           cohortId: formData?.assignCenters,
         },
