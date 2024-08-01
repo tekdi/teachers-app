@@ -18,7 +18,7 @@ import {
 import {
   AttendancePercentageProps,
   CohortAttendancePercentParam,
-  cohort,
+  ICohort,
   CohortMemberList,
 } from '../utils/Interfaces';
 import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
@@ -54,9 +54,9 @@ interface DashboardProps {}
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
-  const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
+  const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
-    React.useState<Array<cohort>>(cohortsData);
+    React.useState<Array<ICohort>>(cohortsData);
   const [classId, setClassId] = React.useState('');
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);

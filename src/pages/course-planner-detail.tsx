@@ -1,10 +1,11 @@
+import ConfirmationModal from '@/components/ConfirmationModal';
 import FacilitatorDrawer from '@/components/FacilitatorDrawer';
 import Header from '@/components/Header';
 import { logEvent } from '@/utils/googleAnalytics';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import {
@@ -29,10 +30,12 @@ const CoursePlannerDetail = () => {
     [key: string]: boolean;
   }>({
     'panel1-header': false,
-    'panel2-header': false,
+    // 'panel2-header': false,  || example for multiple accordions do this dynamically
     // Add more panels if needed
   });
   const [drawerState, setDrawerState] = React.useState({ bottom: false });
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
 
   const handleBackEvent = () => {
     window.history.back();
@@ -65,7 +68,15 @@ const CoursePlannerDetail = () => {
         return;
       }
       setDrawerState({ ...drawerState, bottom: open });
+      setIsDrawerOpen((prevIsDrawerOpen) => !prevIsDrawerOpen);
     };
+
+  const handleCloseModel = () => {
+    setModalOpen(false);
+  };
+  const handleOpenModel = () => {
+    setModalOpen(true);
+  };
 
   return (
     <>
@@ -298,153 +309,13 @@ const CoursePlannerDetail = () => {
                       >
                         JAN
                       </Box>
-                      <CheckCircleOutlineIcon
+                      <CheckCircleIcon
                         onClick={toggleDrawer(true)}
-                        sx={{ fontSize: '20px' }}
-                      />
-                    </Box>
-                  </Box>
-                  <Box
-                    sx={{
-                      color: theme.palette.secondary.main,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      mt: 0.8,
-                    }}
-                  >
-                    <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
-                      5 {t('COURSE_PLANNER.RESOURCES')}
-                    </Box>
-                    <ArrowForwardIcon sx={{ fontSize: '16px' }} />
-                  </Box>
-                </Box>
-              </Box>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion
-            expanded={expandedPanels['panel2-header'] || false}
-            onChange={() =>
-              setExpandedPanels((prev) => ({
-                ...prev,
-                'panel2-header': !prev['panel2-header'],
-              }))
-            }
-            sx={{
-              boxShadow: 'none',
-              background: '#F1E7D9',
-              border: 'none',
-              marginTop: '25px',
-              '&.Mui-expanded': {
-                margin: '25px 0',
-              },
-              transition: '0.3s',
-            }}
-          >
-            <AccordionSummary
-              expandIcon={
-                <ArrowDropDownIcon
-                  sx={{ color: theme.palette.warning['300'] }}
-                />
-              }
-              aria-controls="panel2-content"
-              id="panel2-header"
-              className="accordion-summary"
-              sx={{
-                px: '16px',
-                m: 0,
-                '&.Mui-expanded': {
-                  minHeight: '48px',
-                },
-              }}
-            >
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  pr: '5px',
-                  alignItems: 'center',
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: '5px',
-                  }}
-                >
-                  <RadioButtonUncheckedIcon sx={{ fontSize: '15px' }} />
-                  <Typography
-                    fontWeight="500"
-                    fontSize="14px"
-                    color={theme.palette.warning['300']}
-                  >
-                    Topic 2 - Complex Numbers {/* will come from API */}
-                  </Typography>
-                </Box>
-                <Typography fontWeight="600" fontSize="12px" color="#7C766F">
-                  Mar, Apr {/* will come from API */}
-                </Typography>
-              </Box>
-            </AccordionSummary>
-            <AccordionDetails
-              sx={{ padding: '0', transition: 'max-height 0.3s ease-out' }}
-            >
-              <Box
-                sx={{
-                  borderBottom: `1px solid ${theme.palette.warning['A100']}`,
-                }}
-              >
-                <Box
-                  sx={{
-                    py: '10px',
-                    px: '16px',
-                    background: theme.palette.warning['A400'],
-                    pt: 2,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      gap: '20px',
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: '400',
-                        color: theme.palette.warning['300'],
-                      }}
-                    >
-                      Quadratic Equations {/* will come from API */}
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: '6px',
-                      }}
-                    >
-                      <Box
                         sx={{
-                          padding: '5px',
-                          background: '#C1D6FF',
-                          fontSize: '12px',
-                          fontWeight: '500',
-                          color: '#4D4639',
-                          borderRadius: '8px',
+                          fontSize: '20px',
+                          color: isDrawerOpen ? '#1A8825' : '#7C766F',
+                          cursor: 'pointer',
                         }}
-                      >
-                        MAR
-                      </Box>
-                      <CheckCircleOutlineIcon
-                        onClick={toggleDrawer(true)}
-                        sx={{ fontSize: '20px' }}
                       />
                     </Box>
                   </Box>
@@ -468,12 +339,24 @@ const CoursePlannerDetail = () => {
           </Accordion>
         </Box>
       </Box>
-      <FacilitatorDrawer
-        secondary={'Cancel'}
-        primary={'Mark as Complete (2)'}
-        toggleDrawer={toggleDrawer}
-        drawerState={drawerState}
-      />
+      {isDrawerOpen ? (
+        <FacilitatorDrawer
+          secondary={'Cancel'}
+          primary={'Mark as Complete (2)'}
+          toggleDrawer={toggleDrawer}
+          drawerState={drawerState}
+        />
+      ) : (
+        <ConfirmationModal
+          message={'shreyas shinde'}
+          buttonNames={{
+            primary: t('COMMON.LOGOUT'),
+            secondary: t('COMMON.CANCEL'),
+          }}
+          handleCloseModal={handleCloseModel}
+          modalOpen={modalOpen}
+        />
+      )}
     </>
   );
 };

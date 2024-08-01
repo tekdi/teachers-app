@@ -1,7 +1,8 @@
 import Header from '@/components/Header';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
-  CircularProgress,
   FormControl,
   Grid,
   IconButton,
@@ -13,14 +14,12 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import React from 'react';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import SearchIcon from '@mui/icons-material/Search';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
+import React from 'react';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState(1);

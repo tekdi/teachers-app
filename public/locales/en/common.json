@@ -114,7 +114,8 @@
     "NEW_LEARNER": "New Learner",
     "NEW_FACILITATOR": "New Facilitator",
     "SUBMIT": "Submit",
-    "LEARNER_CREATED_SUCCESSFULLY": "Leaner has been Successfully Created!"
+    "LEARNER_CREATED_SUCCESSFULLY": "Leaner has been Successfully Created!",
+    "LEARNER_UPDATED_SUCCESSFULLY": "Learner has been Updated Created!"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -393,7 +394,7 @@
     "DESIGNATION": "Designation",
     "NUMBER_OF_CLUSTERS_I_TEACH": "Number of Clusters I Teach",
     "YEAR_OF_JOINING_SCP": "Year of joining SCP",
-    "MAIN_SUBJECT": "My Main Subjects",
+    "MY_MAIN_SUBJECTS": "My Main Subjects",
     "SUBJECTS_I_TEACH": "Subjects I Teach",
     "GENDER": "Gender",
     "UNIT_NAME": "Unit Name",

@@ -431,7 +431,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                   {learnerName}
                 </Box>
               ) : (
-                <CustomLink className="word-break" href="#">
+                <CustomLink className="word-break" href="#" onClick={(e) => e.preventDefault()}>
                   <Typography
                     onClick={() => {
                       showMiniProfile

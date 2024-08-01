@@ -1,77 +1,38 @@
-import {
-  Box,
-  Checkbox,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormHelperText,
-  Grid,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  TextField,
-  Typography,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, Grid, Typography, useMediaQuery } from '@mui/material';
 import {
   ArrowBack as ArrowBackIcon,
   East as EastIcon,
 } from '@mui/icons-material';
-import { CustomField, UserDatas } from '@/utils/Interfaces';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { CustomField } from '@/utils/Interfaces';
+import React, { useEffect, useRef, useState } from 'react';
 import { editEditUser, getUserDetails } from '@/services/ProfileService';
-import { useTheme, withStyles } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { GetStaticPaths } from 'next';
 import Button from '@mui/material/Button';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import CloseIcon from '@mui/icons-material/Close';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import Header from '@/components/Header';
 import Image from 'next/image';
 import Loader from '@/components/Loader';
-import Modal from '@mui/material/Modal';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import ReactGA from 'react-ga4';
 import { accessControl } from '../../../app.config';
-import {
-  getLabelForValue,
-  toPascalCase,
-  mapFieldIdToValue,
-} from '@/utils/Helper';
+import { toPascalCase, mapFieldIdToValue } from '@/utils/Helper';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
 import { useProfileInfo } from '@/services/queries';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import userPicture from '@/assets/images/imageOne.jpg';
 import user_placeholder from '../../assets/images/user_placeholder.png';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { getFormRead } from '@/services/CreateUserService';
 import { FormContext, FormContextType, Role } from '@/utils/app.constant';
 import manageUserStore from '@/store/manageUserStore';
 import useStore from '@/store/store';
-
-interface FieldOption {
-  name: string;
-  label: string;
-  value: string;
-  order: string;
-}
+import AddFacilitatorModal from '@/components/AddFacilitator';
 
 interface UserData {
   name: string;
-}
-
-interface EditFormProps {
-  userData: UserData;
-  customFieldsData: CustomField[];
-  updateUser: (payload: any) => void;
 }
 
 const TeacherProfile = () => {
@@ -83,82 +44,119 @@ const TeacherProfile = () => {
   const store = useStore();
   const userRole = store.userRole;
   const userStore = manageUserStore();
-  const selfUserId = userStore.userId;
+  const selfUserId = localStorage.getItem('userId');
   const theme = useTheme<any>();
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    setOpen(true);
+
+  const [userData, setUserData] = useState<any | null>(null);
+  const [userName, setUserName] = useState<any | null>(null);
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [customFieldsData, setCustomFieldsData] = useState<CustomField[]>([]);
+
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(user_placeholder_img);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [unitName, setUnitName] = useState('');
+  const [blockName, setBlockName] = useState('');
+  const [isError, setIsError] = React.useState<boolean>(false);
+  const [isData, setIsData] = React.useState<boolean>(false);
+  const [formData, setFormData] = useState<{ [key: string]: any }>({});
+  const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
+
+  const handleOpenAddLearnerModal = () => {
+    setOpenAddLearnerModal(true);
     logEvent({
       action: 'edit-teacher-profile-modal-open',
       category: 'Profile Page',
       label: 'Edit Teacher Profile Modal Open',
     });
   };
-  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
-  const handleClose = () => {
-    setOpen(false);
-    initialFormData();
-    setHasInputChanged(false);
-    setHasErrors(false);
-    setErrors({});
+  const handleCloseAddLearnerModal = () => {
+    setOpenAddLearnerModal(false);
     logEvent({
       action: 'edit-teacher-profile-modal-close',
       category: 'Profile Page',
       label: 'Edit Teacher Profile Modal Close',
     });
   };
-  const [userData, setUserData] = useState<any | null>(null);
-  const [userName, setUserName] = useState<any | null>(null);
-  const [updatedCustomFields, setUpdatedCustomFields] = useState<any>([]);
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [dropdownValues, setDropdownValues] = useState<any>({});
-  const [customFieldsData, setCustomFieldsData] = useState<CustomField[]>([]);
 
-  const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(user_placeholder_img);
-  const [gender, setGender] = React.useState('');
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [unitName, setUnitName] = useState('');
-  const [blockName, setBlockName] = useState('');
-  const [radioValues, setRadioValues] = useState<any>([]);
-  const [isError, setIsError] = React.useState<boolean>(false);
-  const [isData, setIsData] = React.useState<boolean>(false);
-  const [hasInputChanged, setHasInputChanged] = React.useState<boolean>(false);
-  const [isValidationTriggered, setIsValidationTriggered] =
-    React.useState<boolean>(false);
-  // const [userId, setUserId] = useState<string | null>(null);
-
-  const handleNameFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setUserName(value);
+  const mapFields = (formFields: any, response: any) => {
+    let initialFormData: any = {};
+    formFields.fields.forEach((item: any) => {
+      const userData = response?.userData;
+      const customField = userData?.customFields?.find(
+        (field: any) => field.fieldId === item.fieldId
+      );
+      const getValue = (data: any, field: any) => {
+        if (item.default) {
+          return item.default;
+        }
+        if (item?.isMultiSelect) {
+          if (data[item.name] && item?.maxSelections > 1) {
+            return [field.value];
+          } else if (item?.type === 'checkbox') {
+            return String(field.value).split(',');
+          } else {
+            return field.value;
+          }
+        } else {
+          if (item?.type === 'numeric') {
+            return Number(field.value);
+          } else if (item?.type === 'text') {
+            return String(field.value);
+          } else {
+            return field.value;
+          }
+        }
+      };
+      if (item.coreField) {
+        if (item?.isMultiSelect) {
+          if (userData[item.name] && item?.maxSelections > 1) {
+            initialFormData[item.name] = [userData[item.name]];
+          } else {
+            initialFormData[item.name] = userData[item.name] || '';
+          }
+        } else if (item?.type === 'numeric') {
+          initialFormData[item.name] = Number(userData[item.name]);
+        } else if (item?.type === 'text') {
+          initialFormData[item.name] = String(userData[item.name]);
+        } else {
+          initialFormData[item.name] = userData[item.name];
+        }
+      } else {
+        initialFormData[item.name] = getValue(userData, customField);
+      }
+    });
+    console.log('initialFormData', initialFormData);
+    return initialFormData;
   };
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    width: '85%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: theme.palette.warning.A400,
-    height: '526px',
-    textAlign: 'center',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
+  const fetchDataAndInitializeForm = async () => {
+    try {
+      let formFields;
+      const response = await getUserDetails(userId, true);
+      formFields = await getFormRead('USERS', 'TEACHER'); //TODO: Change for TL
+      console.log('response', response);
+      console.log('formFields', formFields);
+      setFormData(mapFields(formFields, response?.result));
+    } catch (error) {
+      console.error('Error fetching data or initializing form:', error);
+    }
   };
+
+  useEffect(() => {
+    fetchDataAndInitializeForm();
+  }, [userId]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
-      // const storedUserId = localStorage.getItem('userId');
       if (token) {
         setIsAuthenticated(true);
       } else {
         router.push('/login');
       }
-      // setUserId(storedUserId);
     }
   }, []);
 
@@ -251,19 +249,6 @@ const TeacherProfile = () => {
     }
   }, [data, error, isLoading]);
 
-  const handleClickImage = () => {
-    fileInputRef.current && fileInputRef.current.click();
-  };
-
-  const handleImageUpload = (e: any) => {
-    const image: any[] = [e.target.files[0]];
-    const newImageUrl: any = [];
-    image.forEach((dataImage: any) =>
-      newImageUrl.push(URL.createObjectURL(dataImage))
-    );
-    setImage(newImageUrl);
-  };
-
   // Find fields for "Subjects I Teach" and "My Main Subjects"
   const teachSubjectsField = customFieldsData?.find(
     (field) => field.name === 'subject_taught'
@@ -320,208 +305,7 @@ const TeacherProfile = () => {
     ?.filter(Boolean)
     ?.join(', ');
 
-  //------------edit teacher profile------------
-
-  const [formData, setFormData] = useState<{
-    userData: UserDatas;
-    customFields: { fieldId: string; type: string; value: string[] | string }[];
-  }>({
-    userData: {
-      name: 'userName' || '',
-    },
-    customFields: customFieldsData?.map((field) => ({
-      fieldId: field.fieldId,
-      type: field.type,
-      value: field.value ? field.value : '',
-    })),
-  });
-
-  const initialFormData = () => {
-    setFormData({
-      userData: {
-        name: userName || '',
-      },
-      customFields: customFieldsData?.map((field) => ({
-        fieldId: field.fieldId,
-        type: field.type,
-        value: field.value ? field.value : '',
-      })),
-    });
-  };
-
-  useEffect(() => {
-    initialFormData();
-  }, [userData, customFieldsData]);
-
-  const [hasErrors, setHasErrors] = useState(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    const sanitizedValue = value
-      .replace(/[^a-zA-Z_ ]/g, '')
-      .replace(/^\s+/, '')
-      .replace(/\s+/g, ' ');
-
-    setFormData((prevData) => ({
-      ...prevData,
-      userData: {
-        ...prevData.userData,
-        name: sanitizedValue,
-      },
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-    // setHasErrors(!sanitizedValue.trim());
-  };
-
-  //fields  for edit popup by order
-  const filteredSortedForEdit = [...customFieldsData]
-    ?.filter((field) => field.isEditable)
-    ?.sort((a, b) => a.order - b.order);
-
-  const validateFields = () => {
-    const newErrors: { [key: string]: boolean } = {};
-
-    filteredSortedForEdit?.forEach((field) => {
-      const value =
-        formData?.customFields?.find((f) => f.fieldId === field.fieldId)
-          ?.value[0] || '';
-
-      if (field.type === 'text') {
-        newErrors[field.fieldId] = !value.trim();
-      } else if (field.type === 'numeric') {
-        newErrors[field.fieldId] = !/^\d{1,4}$/.test(value);
-      } else if (field.type === 'dropdown' || field.type === 'drop_down') {
-        newErrors[field.fieldId] = !value.trim();
-      }
-    });
-
-    newErrors['name'] = !formData.userData.name.trim();
-
-    setErrors(newErrors);
-    setHasErrors(Object.values(newErrors).some((error) => error));
-  };
-
-  useEffect(() => {
-    if (hasInputChanged) {
-      validateFields();
-    }
-  }, [formData, customFieldsData]);
-
-  const handleFieldChange = (fieldId: string, value: string) => {
-    const sanitizedValue = value.replace(/^\s+/, '').replace(/\s+/g, ' ');
-
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId
-          ? { ...field, value: [sanitizedValue] }
-          : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleCheckboxChange = (
-    fieldId: string,
-    optionName: string,
-    isChecked: boolean
-  ) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId
-          ? {
-              ...field,
-              value: isChecked
-                ? [...(field.value as string[]), optionName]
-                : (field.value as string[]).filter(
-                    (item) => item !== optionName
-                  ),
-            }
-          : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleDropdownChange = (fieldId: string, value: string) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId ? { ...field, value: [value] } : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleRadioChange = (fieldId: string, value: string) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId ? { ...field, value: [value] } : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleSubmit = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
-    logEvent({
-      action: 'save-button-clicked-edit-teacher-profile',
-      category: 'Profile Page',
-      label: 'Teacher Profile Save Button Clicked',
-    });
-    setLoading(true);
-    const data = {
-      userData: formData?.userData,
-      customFields: formData?.customFields?.map((field) => ({
-        fieldId: field.fieldId,
-        // type: field.type,
-        value: Array.isArray(field?.value)
-          ? field?.value?.length > 0
-            ? field?.value
-            : ''
-          : field?.value,
-      })),
-    };
-    const userDetails = data;
-    try {
-      if (userId) {
-        const response = await editEditUser(userId, userDetails);
-        ReactGA.event('edit-teacher-profile-successful', { userId: userId });
-        if (response.responseCode !== 200 || response.params.err) {
-          ReactGA.event('edit-teacher-profile-error', { userId: userId });
-          throw new Error(
-            response.params.errmsg ||
-              'An error occurred while updating the user.'
-          );
-        }
-        handleClose();
-        console.log(response.params.successmessage);
-        setIsError(false);
-        setLoading(false);
-      }
-    } catch (error) {
-      setIsError(true);
-      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-      console.error('Error:', error);
-    }
-
-    console.log('payload', data);
-  };
-
+  // //------------edit teacher profile------------
   return (
     <>
       <Box
@@ -577,11 +361,11 @@ const TeacherProfile = () => {
                   <Box
                     onClick={() => {
                       window.history.back();
-                      // logEvent({
-                      //   action: 'back-button-clicked-teacher-profile-page',
-                      //   category: 'Teacher Profile Page',
-                      //   label: 'Back Button Clicked',
-                      // });
+                      logEvent({
+                        action: 'back-button-clicked-teacher-profile-page',
+                        category: 'Teacher Profile Page',
+                        label: 'Back Button Clicked',
+                      });
                     }}
                   >
                     <ArrowBackIcon
@@ -606,9 +390,7 @@ const TeacherProfile = () => {
                       lineHeight={'1.75rem'}
                       color={theme.palette.warning['A200']}
                     >
-                      {userName?.length > 18
-                        ? `${userName?.substring(0, 18)}...`
-                        : userName}
+                      {userName}
                     </Typography>
                     <Typography
                       variant="h5"
@@ -732,7 +514,7 @@ const TeacherProfile = () => {
                     color: theme.palette.warning.A200,
                     border: `1px solid #4D4639`,
                   }}
-                  onClick={handleOpen}
+                  onClick={handleOpenAddLearnerModal}
                 >
                   <Typography
                     variant="h3"
@@ -752,6 +534,17 @@ const TeacherProfile = () => {
                   </Box>
                 </Button>
               ) : null}
+              {openAddLearnerModal && (
+                <div>
+                  <AddFacilitatorModal
+                    open={openAddLearnerModal}
+                    onClose={handleCloseAddLearnerModal}
+                    formData={formData}
+                    isEditModal={true}
+                    userId={userId}
+                  />
+                </div>
+              )}
               <Box
                 mt={2}
                 sx={{
@@ -855,6 +648,7 @@ const TeacherProfile = () => {
                     } else {
                       return (
                         <Grid item xs={6} key={index}>
+                          {/* Profile Field Labels */}
                           <Typography
                             variant="h4"
                             margin={0}
@@ -866,6 +660,7 @@ const TeacherProfile = () => {
                           >
                             {item?.label && t(`FORM.${item.label}`, item.label)}
                           </Typography>
+                          {/* Profile Field Values */}
                           <Typography
                             variant="h4"
                             margin={0}
@@ -886,381 +681,6 @@ const TeacherProfile = () => {
                 </Grid>
               </Box>
             </Box>
-            {/* modal for edit profile */}
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="edit-profile-modal"
-              aria-describedby="edit-profile-description"
-            >
-              <Box
-                sx={style}
-                gap="10px"
-                display="flex"
-                flexDirection="column"
-                borderRadius={'1rem'}
-              >
-                {loading && (
-                  <Loader
-                    showBackdrop={true}
-                    loadingText={t('COMMON.LOADING')}
-                  />
-                )}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '15px 20px 6px',
-                  }}
-                >
-                  <Typography
-                    variant="h2"
-                    style={{
-                      textAlign: 'left',
-                      color: theme.palette.warning.A200,
-                    }}
-                  >
-                    {t('PROFILE.EDIT_PROFILE')}
-                  </Typography>
-
-                  <IconButton
-                    edge="end"
-                    color="inherit"
-                    onClick={handleClose}
-                    aria-label="close"
-                    style={{
-                      justifyContent: 'flex-end',
-                    }}
-                  >
-                    <CloseIcon cursor="pointer" />
-                  </IconButton>
-                </Box>
-                <Divider />
-                <Box
-                  style={{
-                    overflowY: 'auto',
-                    padding: '0px 20px 10px',
-                  }}
-                  id="modal-modal-description"
-                >
-                  <Box
-                    sx={{
-                      flex: '1',
-                      textAlign: 'center',
-                      marginLeft: '5%',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    borderRadius={'12px'}
-                    border={'1px'}
-                    bgcolor={theme.palette.warning.A400}
-                    display="flex"
-                    flexDirection="column"
-                  >
-                    {/* <Image
-                      src={user_placeholder_img}
-                      alt="user"
-                      height={80}
-                      width={70}
-                      style={{ alignItems: 'center' }}
-                    /> */}
-
-                    <Box>
-                      <input
-                        id=""
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        ref={fileInputRef}
-                        onChange={handleImageUpload}
-                        style={{ display: 'none' }}
-                      />
-                      {/* ------- comment for temp 
-                      <Button
-                        sx={{
-                          minWidth: '100%',
-                          padding: '10px 24px 10px 16px',
-                          borderRadius: '12px',
-                          marginTop: '10px',
-                          flex: '1',
-                          textAlign: 'center',
-                          border: '1px solid ',
-                        }}
-                        disabled // commment for temp
-                        onClick={handleClickImage}
-                      >
-                        {t('PROFILE.UPDATE_PICTURE')}
-                      </Button> */}
-                    </Box>
-                  </Box>
-                  <TextField
-                    sx={{ marginTop: '20px' }}
-                    type="text"
-                    fullWidth
-                    name="name"
-                    label={t('PROFILE.FULL_NAME')}
-                    variant="outlined"
-                    value={formData.userData.name}
-                    inputProps={{
-                      pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
-                      title: t('PROFILE.AT_REQUIRED_LETTER'),
-                      required: true,
-                    }}
-                    error={!formData.userData.name.trim()} // Show error if the input is empty
-                    helperText={
-                      !formData.userData.name.trim() && t('PROFILE.ENTER_NAME')
-                    }
-                    onChange={handleInputChange}
-                  />
-
-                  {customFieldsData
-                    ?.filter((field) => field.isEditable)
-                    ?.sort((a, b) => a.order - b.order)
-                    ?.map((field) => {
-                      const fieldValue =
-                        formData?.customFields?.find(
-                          (f) => f.fieldId === field.fieldId
-                        )?.value[0] || '';
-                      const isError = errors[field.fieldId];
-
-                      return (
-                        <Grid item xs={12} key={field.fieldId}>
-                          {field.type === 'text' ? (
-                            <TextField
-                              type="text"
-                              inputProps={{ maxLength: 3 }}
-                              sx={{ marginTop: '20px' }}
-                              fullWidth
-                              name={field.name}
-                              label={
-                                field?.label && field.name
-                                  ? t(
-                                      `FORM.${field.name.toUpperCase()}`,
-                                      field.label
-                                    )
-                                  : field.label
-                              }
-                              variant="outlined"
-                              value={fieldValue}
-                              onChange={(e) => {
-                                handleFieldChange(
-                                  field.fieldId,
-                                  e.target.value
-                                );
-                                validateFields();
-                              }}
-                              error={isError}
-                              helperText={
-                                isError && t('PROFILE.ENTER_CHARACTER')
-                              }
-                            />
-                          ) : field.type === 'numeric' ? (
-                            <TextField
-                              type="number"
-                              inputProps={{ maxLength: 3 }}
-                              sx={{ marginTop: '20px' }}
-                              fullWidth
-                              name={field.name}
-                              label={
-                                field?.label && field.name
-                                  ? t(
-                                      `FORM.${field.name.toUpperCase()}`,
-                                      field.label
-                                    )
-                                  : field.label
-                              }
-                              variant="outlined"
-                              value={fieldValue}
-                              onKeyDown={(e) => {
-                                // Allow only numeric keys, Backspace, and Delete
-                                if (
-                                  !(
-                                    (
-                                      /[0-9]/.test(e.key) ||
-                                      e.key === 'Backspace' ||
-                                      e.key === 'Delete'
-                                    ) // Allow decimal point if needed
-                                  )
-                                ) {
-                                  e.preventDefault();
-                                }
-                              }}
-                              onChange={(e) => {
-                                const inputValue = e.target.value;
-                                if (/^\d{0,4}$/.test(inputValue)) {
-                                  handleFieldChange(field.fieldId, inputValue);
-                                  validateFields();
-                                }
-                              }}
-                              error={isError}
-                              helperText={isError && t('PROFILE.ENTER_NUMBER')}
-                            />
-                          ) : field.type === 'checkbox' ? (
-                            <Box marginTop={3}>
-                              <Typography
-                                textAlign={'start'}
-                                variant="h4"
-                                margin={0}
-                                color={theme.palette.warning.A200}
-                              >
-                                {field?.label && field.name
-                                  ? t(
-                                      `FORM.${field.name.toUpperCase()}`,
-                                      field.label
-                                    )
-                                  : field.label}
-                              </Typography>
-                              {field.options?.map((option: any) => (
-                                <FormGroup key={option.value}>
-                                  <FormControlLabel
-                                    sx={{ color: theme.palette.warning[300] }}
-                                    control={
-                                      <Checkbox
-                                        color="default"
-                                        checked={(
-                                          formData?.customFields.find(
-                                            (f) => f.fieldId === field.fieldId
-                                          )?.value || []
-                                        )?.includes(option.value)}
-                                        onChange={(e) =>
-                                          handleCheckboxChange(
-                                            field.fieldId,
-                                            option.value,
-                                            e.target.checked
-                                          )
-                                        }
-                                      />
-                                    }
-                                    label={option.label}
-                                  />
-                                </FormGroup>
-                              ))}
-                            </Box>
-                          ) : field.type === 'drop_down' ||
-                            field.type === 'dropdown' ? (
-                            <Box marginTop={3} textAlign={'start'}>
-                              <FormControl fullWidth>
-                                <InputLabel
-                                  id={`select-label-${field.fieldId}`}
-                                >
-                                  {field?.label && field.name
-                                    ? t(
-                                        `FORM.${field.name.toUpperCase()}`,
-                                        field.label
-                                      )
-                                    : field.label}
-                                </InputLabel>
-                                <Select
-                                  labelId={`select-label-${field.fieldId}`}
-                                  id={`select-${field.fieldId}`}
-                                  value={fieldValue}
-                                  label={
-                                    field?.label && field.name
-                                      ? t(
-                                          `FORM.${field.name.toUpperCase()}`,
-                                          field.label
-                                        )
-                                      : field.label
-                                  }
-                                  onChange={(e) =>
-                                    handleDropdownChange(
-                                      field.fieldId,
-                                      e.target.value
-                                    )
-                                  }
-                                >
-                                  {field?.options?.map((option: any) => (
-                                    <MenuItem
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.label}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                                {errors[field.fieldId] && (
-                                  <FormHelperText
-                                    sx={{ color: theme.palette.error.main }}
-                                  >
-                                    {t('PROFILE.SELECT_OPTION')}
-                                  </FormHelperText>
-                                )}
-                              </FormControl>
-                            </Box>
-                          ) : field.type === 'radio' ||
-                            field.type === 'Radio' ? (
-                            <Box marginTop={3}>
-                              <Typography
-                                textAlign={'start'}
-                                variant="h4"
-                                margin={0}
-                                color={theme.palette.warning.A200}
-                              >
-                                {field?.label && field.name
-                                  ? t(
-                                      `FORM.${field.name.toUpperCase()}`,
-                                      field.label
-                                    )
-                                  : field.label}
-                              </Typography>
-                              <RadioGroup
-                                name={field.fieldId}
-                                value={fieldValue}
-                                onChange={(e) =>
-                                  handleRadioChange(
-                                    field.fieldId,
-                                    e.target.value
-                                  )
-                                }
-                              >
-                                <Box
-                                  display="flex"
-                                  flexWrap="wrap"
-                                  color={theme.palette.warning.A200}
-                                >
-                                  {field?.options?.map((option: any) => (
-                                    <FormControlLabel
-                                      key={option.value}
-                                      value={option.value}
-                                      control={<Radio color="default" />}
-                                      label={option.label}
-                                    />
-                                  ))}
-                                </Box>
-                              </RadioGroup>
-                            </Box>
-                          ) : null}
-                        </Grid>
-                      );
-                    })}
-                  <Box></Box>
-                </Box>
-                <Divider />
-                <Box
-                  sx={{
-                    display: 'flex',
-                    padding: '6px 20px 20px 20px',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Button
-                    sx={{
-                      minWidth: '100%',
-                      color: theme.palette.warning.A200,
-                      boxShadow: 'none',
-                    }}
-                    onClick={handleSubmit}
-                    variant="contained"
-                    disabled={
-                      !hasInputChanged || !isValidationTriggered || hasErrors
-                    }
-                  >
-                    {t('COMMON.SAVE')}
-                  </Button>
-                </Box>
-              </Box>
-            </Modal>
           </Box>
         ) : (
           <Box mt={5}>

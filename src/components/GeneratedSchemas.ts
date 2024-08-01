@@ -1,7 +1,7 @@
-import { Field, FieldOption, FormData } from '@/utils/Interfaces';
 import { UiSchema } from '@rjsf/utils';
 import { JSONSchema7 } from 'json-schema';
 import NumberInputField from './form/NumberInputField';
+import { FormData, Field, FieldOption } from '@/utils/Interfaces';
 
 export const customFields = {
   NumberInputField: NumberInputField,
@@ -22,6 +22,7 @@ export const GenerateSchemaAndUiSchema = (
   };
 
   const uiSchema: UiSchema = {}; //form ui schema
+  let formValues: any = {};
 
   // console.log('FormData', formData)
   formData?.fields?.forEach((field: Field) => {
@@ -49,10 +50,14 @@ export const GenerateSchemaAndUiSchema = (
     switch (type) {
       case 'text':
         fieldSchema.type = 'string';
-        fieldUiSchema['ui:help'] = field?.hint ? t(`FORM.${field?.hint}`) : '';
+        if (field?.hint){
+          fieldUiSchema['ui:help'] = t(`FORM.${field?.hint}`);
+        }
+       
         break;
       case 'email':
         fieldSchema.type = 'string';
+        fieldSchema.format = 'email';
         break;
       case 'numeric':
         fieldSchema.type = 'number';
@@ -228,5 +233,5 @@ export const GenerateSchemaAndUiSchema = (
     }
   });
 
-  return { schema, uiSchema, customFields };
+  return { schema, uiSchema, customFields, formValues };
 };
