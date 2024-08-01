@@ -84,7 +84,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
           const property = error.property.substring(1);
 
           switch (pattern) {
-            case '^[^ ][a-zA-Z ]*[^ ]$': {
+            case '^[a-zA-Z][a-zA-Z ]*[a-zA-Z]$': {
               error.message = t(
                 'FORM_ERROR_MESSAGES.NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
               );

@@ -95,7 +95,8 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     let cohortId, teacherData;
     if (typeof window !== 'undefined' && window.localStorage) {
       teacherData = JSON.parse(localStorage.getItem('teacherApp') || '');
-      localStorage.getItem('cohortId') ?? localStorage.getItem('classId');
+      cohortId =
+        localStorage.getItem('cohortId') ?? localStorage.getItem('classId');
     }
     const { username, password } = generateUsernameAndPassword(
       teacherData?.state?.stateCode,
@@ -161,7 +162,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     }
 
     try {
-      if (isEditModal && userId) {
+      if (isEditModal && userId && cohortId) {
         console.log('apiBody', apiBody);
         const userData = {
           name: apiBody.name,

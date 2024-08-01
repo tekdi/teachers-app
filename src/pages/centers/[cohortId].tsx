@@ -116,8 +116,9 @@ const TeachingCenterDetails = () => {
     setOpenSchedule(false);
     setDeleteModal(false);
   };
-  const setRemoveCohortId = reassignLearnerStore((state) => state.setRemoveCohortId);
-  
+  const setRemoveCohortId = reassignLearnerStore(
+    (state) => state.setRemoveCohortId
+  );
 
   useEffect(() => {
     const getCohortData = async () => {
@@ -128,8 +129,8 @@ const TeachingCenterDetails = () => {
 
       if (response?.cohortData?.length) {
         cohortData = response?.cohortData[0];
-        setRemoveCohortId(cohortData?.cohortId)
-        
+        setRemoveCohortId(cohortData?.cohortId);
+
         if (cohortData?.customField?.length) {
           const district = cohortData.customField.find(
             (item: CustomField) => item.label === 'District'
@@ -535,7 +536,7 @@ const TeachingCenterDetails = () => {
         {value === 3 && (
           <>
             <Box mt={3} px={'18px'}>
-              <Button
+              {/* <Button
                 sx={{
                   border: '1px solid #1E1B16',
                   borderRadius: '100px',
@@ -547,14 +548,14 @@ const TeachingCenterDetails = () => {
                 endIcon={<AddIcon />}
               >
                 {t('COMMON.ADD_NEW')}
-              </Button>
+              </Button> */}
             </Box>
             <Box
               px={'18px'}
               mt={2}
               sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}
             >
-              <Box
+              {/* <Box
                 sx={{ color: theme.palette.secondary.main }}
                 className="fs-14 fw-500"
                 onClick={() => {
@@ -562,10 +563,10 @@ const TeachingCenterDetails = () => {
                 }}
               >
                 {t('COMMON.REVIEW_ATTENDANCE')}
-              </Box>
-              <ArrowForwardIcon
+              </Box> */}
+              {/* <ArrowForwardIcon
                 sx={{ fontSize: '18px', color: theme.palette.secondary.main }}
-              />
+              /> */}
             </Box>
             <Box>
               <CohortFacilitatorList
