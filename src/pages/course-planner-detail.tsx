@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import FacilitatorDrawer from '@/components/FacilitatorDrawer';
 import Header from '@/components/Header';
 import { logEvent } from '@/utils/googleAnalytics';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -16,15 +17,22 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import React, { useState } from 'react';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
 
-  // State to manage the expanded state of the accordions
-  const [expanded, setExpanded] = useState<string | false>(false);
-  const [allExpanded, setAllExpanded] = useState(false); // New state to track all accordions
+  // Initialize the panels' state, assuming you have a known set of panel IDs
+  const [expandedPanels, setExpandedPanels] = useState<{
+    [key: string]: boolean;
+  }>({
+    'panel1-header': false,
+    'panel2-header': false,
+    // Add more panels if needed
+  });
+  const [drawerState, setDrawerState] = React.useState({ bottom: false });
 
   const handleBackEvent = () => {
     window.history.back();
@@ -35,21 +43,29 @@ const CoursePlannerDetail = () => {
     });
   };
 
-  const handleAccordionChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      if (!allExpanded) {
-        setExpanded(isExpanded ? panel : false);
-      }
-    };
-
-  const toggleAllAccordions = () => {
-    if (allExpanded) {
-      setExpanded(false);
-    } else {
-      setExpanded('panel1');
-    }
-    setAllExpanded(!allExpanded);
+  const handleToggleAll = () => {
+    const allOpen = Object.values(expandedPanels).every(Boolean);
+    const newState = Object.keys(expandedPanels).reduce(
+      (acc, key) => {
+        acc[key] = !allOpen;
+        return acc;
+      },
+      {} as { [key: string]: boolean }
+    );
+    setExpandedPanels(newState);
   };
+  const toggleDrawer =
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
+      setDrawerState({ ...drawerState, bottom: open });
+    };
 
   return (
     <>
@@ -123,14 +139,11 @@ const CoursePlannerDetail = () => {
                 color: theme.palette.warning['300'],
               }}
             >
-              Mathematics {/*  will come from API */}
+              Mathematics {/* will come from API */}
             </Box>
           </Box>
         </Box>
       </Box>
-      {/* <Box mt={3} px={'16px'}>
-        <Box>calender UI will came here  </Box>
-      </Box> */}
       <Box
         sx={{
           display: 'flex',
@@ -146,17 +159,21 @@ const CoursePlannerDetail = () => {
             fontWeight: '500',
             color: theme.palette.warning['300'],
             cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
           }}
-          onClick={toggleAllAccordions}
+          onClick={handleToggleAll}
         >
-          {allExpanded ? 'Collapse All' : 'Expand All'}
+          {Object.values(expandedPanels).every(Boolean)
+            ? t('COURSE_PLANNER.COLLAPSE_ALL')
+            : t('COURSE_PLANNER.EXPAND_ALL')}
+          {Object.values(expandedPanels).every(Boolean) ? (
+            <ArrowDropUpIcon sx={{ color: theme.palette.warning['300'] }} />
+          ) : (
+            <ArrowDropDownIcon sx={{ color: theme.palette.warning['300'] }} />
+          )}
         </Box>
-        <ArrowDropUpIcon
-          sx={{
-            transform: allExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-            color: theme.palette.warning['300'],
-          }}
-        />
       </Box>
       <Box mt={2}>
         <Box
@@ -165,20 +182,24 @@ const CoursePlannerDetail = () => {
           }}
         >
           <Accordion
-            expanded={expanded === 'panel1' || allExpanded}
-            onChange={handleAccordionChange('panel1')}
+            expanded={expandedPanels['panel1-header'] || false}
+            onChange={() =>
+              setExpandedPanels((prev) => ({
+                ...prev,
+                'panel1-header': !prev['panel1-header'],
+              }))
+            }
             sx={{
               boxShadow: 'none',
               background: '#F1E7D9',
               border: 'none',
+              transition: '0.3s',
             }}
           >
             <AccordionSummary
               expandIcon={
-                <ArrowDropUpIcon
-                  sx={{
-                    color: theme.palette.warning['300'],
-                  }}
+                <ArrowDropDownIcon
+                  sx={{ color: theme.palette.warning['300'] }}
                 />
               }
               aria-controls="panel1-content"
@@ -215,15 +236,17 @@ const CoursePlannerDetail = () => {
                     fontSize="14px"
                     color={theme.palette.warning['300']}
                   >
-                    Topic 1 - Real Numbers {/* will came from API */}
+                    Topic 1 - Real Numbers {/* will come from API */}
                   </Typography>
                 </Box>
                 <Typography fontWeight="600" fontSize="12px" color="#7C766F">
-                  Jan, Feb {/* will came from API */}
+                  Jan, Feb {/* will come from API */}
                 </Typography>
               </Box>
             </AccordionSummary>
-            <AccordionDetails sx={{ padding: '0' }}>
+            <AccordionDetails
+              sx={{ padding: '0', transition: 'max-height 0.3s ease-out' }}
+            >
               <Box
                 sx={{
                   borderBottom: `1px solid ${theme.palette.warning['A100']}`,
@@ -253,14 +276,14 @@ const CoursePlannerDetail = () => {
                       }}
                     >
                       The Fundamental Theorem of Arithmetic{' '}
-                      {/* will came from API */}
+                      {/* will come from API */}
                     </Box>
                     <Box
                       sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        gap: '4px',
+                        gap: '6px',
                       }}
                     >
                       <Box
@@ -275,7 +298,10 @@ const CoursePlannerDetail = () => {
                       >
                         JAN
                       </Box>
-                      <CheckCircleOutlineIcon sx={{ fontSize: '20px' }} />
+                      <CheckCircleOutlineIcon
+                        onClick={toggleDrawer(true)}
+                        sx={{ fontSize: '20px' }}
+                      />
                     </Box>
                   </Box>
                   <Box
@@ -294,6 +320,78 @@ const CoursePlannerDetail = () => {
                   </Box>
                 </Box>
               </Box>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion
+            expanded={expandedPanels['panel2-header'] || false}
+            onChange={() =>
+              setExpandedPanels((prev) => ({
+                ...prev,
+                'panel2-header': !prev['panel2-header'],
+              }))
+            }
+            sx={{
+              boxShadow: 'none',
+              background: '#F1E7D9',
+              border: 'none',
+              marginTop: '25px',
+              '&.Mui-expanded': {
+                margin: '25px 0',
+              },
+              transition: '0.3s',
+            }}
+          >
+            <AccordionSummary
+              expandIcon={
+                <ArrowDropDownIcon
+                  sx={{ color: theme.palette.warning['300'] }}
+                />
+              }
+              aria-controls="panel2-content"
+              id="panel2-header"
+              className="accordion-summary"
+              sx={{
+                px: '16px',
+                m: 0,
+                '&.Mui-expanded': {
+                  minHeight: '48px',
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  pr: '5px',
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '5px',
+                  }}
+                >
+                  <RadioButtonUncheckedIcon sx={{ fontSize: '15px' }} />
+                  <Typography
+                    fontWeight="500"
+                    fontSize="14px"
+                    color={theme.palette.warning['300']}
+                  >
+                    Topic 2 - Complex Numbers {/* will come from API */}
+                  </Typography>
+                </Box>
+                <Typography fontWeight="600" fontSize="12px" color="#7C766F">
+                  Mar, Apr {/* will come from API */}
+                </Typography>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails
+              sx={{ padding: '0', transition: 'max-height 0.3s ease-out' }}
+            >
               <Box
                 sx={{
                   borderBottom: `1px solid ${theme.palette.warning['A100']}`,
@@ -322,30 +420,32 @@ const CoursePlannerDetail = () => {
                         color: theme.palette.warning['300'],
                       }}
                     >
-                      Irrational Numbers
-                      {/* will came from API */}
+                      Quadratic Equations {/* will come from API */}
                     </Box>
                     <Box
                       sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        gap: '4px',
+                        gap: '6px',
                       }}
                     >
                       <Box
                         sx={{
                           padding: '5px',
-                          background: '  #C1D6FF',
+                          background: '#C1D6FF',
                           fontSize: '12px',
                           fontWeight: '500',
                           color: '#4D4639',
                           borderRadius: '8px',
                         }}
                       >
-                        JAN
+                        MAR
                       </Box>
-                      <CheckCircleOutlineIcon sx={{ fontSize: '20px' }} />
+                      <CheckCircleOutlineIcon
+                        onClick={toggleDrawer(true)}
+                        sx={{ fontSize: '20px' }}
+                      />
                     </Box>
                   </Box>
                   <Box
@@ -358,7 +458,7 @@ const CoursePlannerDetail = () => {
                     }}
                   >
                     <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
-                      2 {t('COURSE_PLANNER.RESOURCES')}
+                      5 {t('COURSE_PLANNER.RESOURCES')}
                     </Box>
                     <ArrowForwardIcon sx={{ fontSize: '16px' }} />
                   </Box>
@@ -368,6 +468,12 @@ const CoursePlannerDetail = () => {
           </Accordion>
         </Box>
       </Box>
+      <FacilitatorDrawer
+        secondary={'Cancel'}
+        primary={'Mark as Complete (2)'}
+        toggleDrawer={toggleDrawer}
+        drawerState={drawerState}
+      />
     </>
   );
 };

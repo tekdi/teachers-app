@@ -409,3 +409,8 @@ export interface BulkCreateCohortMembersRequest {
   cohortId: string[];
   removeCohortId?: string[];
 }
+
+export interface FacilitatorDrawerProps {
+  primary?: string;
+  secondary?: string;
+}

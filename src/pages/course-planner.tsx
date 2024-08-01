@@ -100,7 +100,7 @@ const CoursePlanner = () => {
               <InputBase
                 ref={inputRef}
                 sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
-                placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
+                placeholder="Search.."
                 inputProps={{ 'aria-label': 'search student' }}
                 onClick={handleScrollDown}
               />
