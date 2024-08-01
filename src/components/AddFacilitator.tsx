@@ -77,7 +77,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           placeholder: '',
           isMultiSelect: true,
           sourceDetails: {},
-          required: true,
+          isRequired: true,
           coreField: 0,
           maxSelections: null,
         };
@@ -204,16 +204,17 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         };
         const response = await editEditUser(userId, object);
         if (response) {
-        showToastMessage(
-          t('COMMON.FACILITATOR_UPDATED_SUCCESSFULLY'),
-          'success');
+          showToastMessage(
+            t('COMMON.FACILITATOR_UPDATED_SUCCESSFULLY'),
+            'success'
+          );
           setReloadProfile(true);
           onReload?.();
         }
       } else {
         const response = await createUser(apiBody);
         console.log(response);
-        showToastMessage(t('LEARNERS.LEARNER_CREATED_SUCCESSFULLY'), 'success');
+        showToastMessage(t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'), 'success');
       }
       onClose();
     } catch (error) {
@@ -241,7 +242,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         open={open}
         onClose={onClose}
         showFooter={false}
-        modalTitle= {isEditModal ? t('COMMON.EDIT_FACILITATOR') : t('COMMON.NEW_FACILITATOR')}
+        modalTitle={
+          isEditModal
+            ? t('COMMON.EDIT_FACILITATOR')
+            : t('COMMON.NEW_FACILITATOR')
+        }
       >
         {userFormData
           ? schema &&
