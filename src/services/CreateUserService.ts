@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { get, post } from './RestClient';
+import { tenantId } from '../../app.config';
 
 export const getFormRead = async (
   context: string,
@@ -18,7 +19,7 @@ export const getFormRead = async (
             .map(([key, value]) => `${key}=${value}`)
             .join('&');
         },
-        headers: { tenantId: 'ef99949b-7f3a-4a5f-806a-e67e683e38f3' },
+        headers: { tenantId: tenantId },
       }
     );
 
