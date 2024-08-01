@@ -185,7 +185,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         showToastMessage(t('LEARNERS.LEARNER_CREATED_SUCCESSFULLY'), 'success');
       }
       onClose();
-      //   onLearnerAdded();
+      onLearnerAdded?.();
     } catch (error) {
       onClose();
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -275,7 +275,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       open={open}
       onClose={onClose}
       showFooter={false}
-      modalTitle={t('COMMON.NEW_LEARNER')}
+      modalTitle={isEditModal ? t('COMMON.EDIT_LEARNER') : t('COMMON.NEW_LEARNER')}
     >
       {formData
         ? schema &&

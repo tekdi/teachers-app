@@ -24,6 +24,7 @@ interface AddFacilitatorModalprops {
   userFormData?: object;
   isEditModal?: boolean;
   userId?: string;
+  onReload?: (() => void) | undefined;
 }
 const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   open,
@@ -31,10 +32,13 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   userFormData,
   isEditModal = false,
   userId,
+  onReload,
 }) => {
   const [schema, setSchema] = React.useState<any>();
   const [openModal, setOpenModal] = React.useState(false);
   const [uiSchema, setUiSchema] = React.useState<any>();
+  const [reloadProfile, setReloadProfile] = React.useState(false);
+
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -199,10 +203,13 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           customFields: customFields,
         };
         const response = await editEditUser(userId, object);
+        if (response) {
         showToastMessage(
           t('COMMON.FACILITATOR_UPDATED_SUCCESSFULLY'),
-          'success'
-        );
+          'success');
+          setReloadProfile(true);
+          onReload?.();
+        }
       } else {
         const response = await createUser(apiBody);
         console.log(response);
@@ -212,6 +219,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     } catch (error) {
       onClose();
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      setReloadProfile(true);
     }
   };
   const handleChange = (event: IChangeEvent<any>) => {
@@ -233,7 +241,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         open={open}
         onClose={onClose}
         showFooter={false}
-        modalTitle={t('COMMON.NEW_FACILITATOR')}
+        modalTitle= {isEditModal ? t('COMMON.EDIT_FACILITATOR') : t('COMMON.NEW_FACILITATOR')}
       >
         {userFormData
           ? schema &&
