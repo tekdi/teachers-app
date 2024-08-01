@@ -47,7 +47,7 @@ export const getCohortList = async (
 };
 
 export const bulkCreateCohortMembers = async (
-  payload: BulkCreateCohortMembersRequest
+  payload: any
 ): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/bulkCreate`;
   try {

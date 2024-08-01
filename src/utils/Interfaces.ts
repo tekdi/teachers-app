@@ -406,7 +406,7 @@ export interface CreateUserParam {
 }
 export interface BulkCreateCohortMembersRequest {
   userId: string[];
-  cohortId: string[];
+  cohortId?: string[];
   removeCohortId?: string[];
 }
 
