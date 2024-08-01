@@ -37,7 +37,7 @@ export const GenerateSchemaAndUiSchema = (
       maxSelections,
       dependsOn,
       pattern,
-      required,
+      isRequired,
     } = field;
 
     const fieldSchema: any = {
@@ -50,10 +50,10 @@ export const GenerateSchemaAndUiSchema = (
     switch (type) {
       case 'text':
         fieldSchema.type = 'string';
-        if (field?.hint){
+        if (field?.hint) {
           fieldUiSchema['ui:help'] = t(`FORM.${field?.hint}`);
         }
-       
+
         break;
       case 'email':
         fieldSchema.type = 'string';
@@ -208,7 +208,7 @@ export const GenerateSchemaAndUiSchema = (
       // fieldUiSchema["ui:help"]= "Only alphabetic characters are allowed.";
     }
 
-    if (required) {
+    if (isRequired) {
       schema.required?.push(name);
     }
 

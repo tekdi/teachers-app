@@ -1,11 +1,11 @@
-import { IChangeEvent, withTheme } from "@rjsf/core";
-import { Theme as MaterialUITheme } from "@rjsf/mui";
-import { RJSFSchema, RegistryFieldsType, WidgetProps } from "@rjsf/utils";
-import validator from "@rjsf/validator-ajv8";
-import { useTranslation } from "next-i18next";
-import React, { ReactNode } from "react";
-import CustomRadioWidget from "./CustomRadioWidget";
-import MultiSelectCheckboxes from "./MultiSelectCheckboxes";
+import { IChangeEvent, withTheme } from '@rjsf/core';
+import { Theme as MaterialUITheme } from '@rjsf/mui';
+import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
+import validator from '@rjsf/validator-ajv8';
+import { useTranslation } from 'next-i18next';
+import React, { ReactNode } from 'react';
+import CustomRadioWidget from './CustomRadioWidget';
+import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import { Button, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import MultiSelectDropdown from './MultiSelectDropdown';
@@ -43,7 +43,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   customFields,
   children,
 }) => {
-  console.log(formData)
+  console.log(formData);
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
@@ -53,7 +53,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
   const handleError = (errors: any) => {
     if (errors.length > 0) {
-      const property = errors[0].property?.replace(/^root\./, "");
+      const property = errors[0].property?.replace(/^root\./, '');
       const errorField = document.querySelector(
         `[name$="${property}"]`
       ) as HTMLElement;
@@ -71,70 +71,71 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
 
   function transformErrors(errors: any) {
-    console.log("errors", errors);
-    console.log("schema", schema);
+    console.log('errors', errors);
+    console.log('schema', schema);
     return errors.map((error: any) => {
       switch (error.name) {
-        case "required": {
-          error.message = t("FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD");
+        case 'required': {
+          error.message = t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD');
           break;
         }
-        case "pattern": {
-              const pattern = error?.params?.pattern;
-              const property = error.property.substring(1);
+        case 'pattern': {
+          const pattern = error?.params?.pattern;
+          const property = error.property.substring(1);
 
           switch (pattern) {
-            case "^[a-z A-Z]+$": {
+            case '^[^ ][a-zA-Z ]*[^ ]$': {
               error.message = t(
-                "FORM_ERROR_MESSAGES.NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED"
+                'FORM_ERROR_MESSAGES.NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
               );
               break;
             }
-            case "^[0-9]{10}$": {
-              if (schema.properties?.[property]?.validation?.includes("mobile")) {
+            case '^[0-9]{10}$': {
+              if (
+                schema.properties?.[property]?.validation?.includes('mobile')
+              ) {
                 error.message = t(
-                  "FORM_ERROR_MESSAGES.ENTER_VALID_MOBILE_NUMBER"
-                );  
+                  'FORM_ERROR_MESSAGES.ENTER_VALID_MOBILE_NUMBER'
+                );
               } else {
                 error.message = t(
-                  "FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED"
+                  'FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
                 );
               }
               break;
             }
-            case "^\d{10}$": {
+            case '^d{10}$': {
               error.message = t(
-                "FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED"
+                'FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
               );
               break;
             }
-            
           }
           break;
         }
-        case "minLength": {
+        case 'minLength': {
           const property = error.property.substring(1);
-          if (schema.properties?.[property]?.validation?.includes("numeric")) {
-            error.message = t("FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR", {
+          if (schema.properties?.[property]?.validation?.includes('numeric')) {
+            error.message = t('FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR', {
               minLength: schema.properties?.[property]?.minLength,
             });
           }
           break;
         }
-        case "maxLength": {
+        case 'maxLength': {
           const property = error.property.substring(1);
-          if (schema.properties?.[property]?.validation?.includes("numeric")) {
-            error.message = t("FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR", {
+          if (schema.properties?.[property]?.validation?.includes('numeric')) {
+            error.message = t('FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR', {
               maxLength: schema.properties?.[property]?.maxLength,
             });
           }
           break;
         }
-        case "format": {
+        case 'format': {
           const format = error?.params?.format;
           switch (format) {
-            case "email": {
-              error.message = t("FORM_ERROR_MESSAGES.ENTER_VALID_EMAIL");
+            case 'email': {
+              error.message = t('FORM_ERROR_MESSAGES.ENTER_VALID_EMAIL');
             }
           }
         }
@@ -145,7 +146,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   }
 
   function handleChange(event: any) {
-    console.log("Form data changed:", event.formData);
+    console.log('Form data changed:', event.formData);
     onChange(event);
   }
 
