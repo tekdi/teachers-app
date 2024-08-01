@@ -275,7 +275,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       open={open}
       onClose={onClose}
       showFooter={false}
-      modalTitle={t('COMMON.NEW_LEARNER')}
+      modalTitle={isEditModal ? t('COMMON.EDIT_LEARNER') : t('COMMON.NEW_LEARNER')}
     >
       {formData
         ? schema &&

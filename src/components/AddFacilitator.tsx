@@ -204,7 +204,9 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         };
         const response = await editEditUser(userId, object);
         if (response) {
-          showToastMessage(t('COMMON.LEARNER_UPDATED_SUCCESSFULLY'), 'success');
+        showToastMessage(
+          t('COMMON.FACILITATOR_UPDATED_SUCCESSFULLY'),
+          'success');
           setReloadProfile(true);
           onReload?.();
         }
@@ -239,7 +241,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         open={open}
         onClose={onClose}
         showFooter={false}
-        modalTitle={t('COMMON.NEW_FACILITATOR')}
+        modalTitle= {isEditModal ? t('COMMON.EDIT_FACILITATOR') : t('COMMON.NEW_FACILITATOR')}
       >
         {userFormData
           ? schema &&
