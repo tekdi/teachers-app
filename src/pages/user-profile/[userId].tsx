@@ -189,9 +189,13 @@ const TeacherProfile = () => {
 
       const fetchFormData = async () => {
         try {
+          const formContextType =
+            userRole === Role.TEAM_LEADER
+              ? FormContextType.TEAM_LEADER
+              : FormContextType.TEACHER;
           const response: FormData = await getFormRead(
             FormContext.USERS,
-            FormContextType.TEACHER
+            formContextType
           );
           console.log('response', response);
           if (response) {
