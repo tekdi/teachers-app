@@ -36,7 +36,7 @@ export const getMyUserList = async ({
   try {
     const response = await post(apiUrl, {
       limit,
-      page,
+      offset: page,
       filters,
       fields,
     });

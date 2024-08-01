@@ -1,8 +1,4 @@
-import {
-  Button,
-  Grid,
-  Typography
-} from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import React, { useState } from 'react';
 
 import BottomDrawer from '@/components/BottomDrawer';
@@ -32,6 +28,7 @@ import AddFacilitatorModal from './AddFacilitator';
 import ReassignModal from './ReassignModal';
 import DeleteUserModal from './DeleteUserModal';
 import SimpleModal from './SimpleModal';
+import reassignLearnerStore from '@/store/reassignLearnerStore';
 
 interface Cohort {
   cohortId: string;
@@ -98,7 +95,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   });
   const [confirmationModalOpen, setConfirmationModalOpen] =
     React.useState<boolean>(false);
-    const [reassignModalOpen, setReassignModalOpen] =
+  const [reassignModalOpen, setReassignModalOpen] =
     React.useState<boolean>(false);
   const [learnerData, setLearnerData] = React.useState<LearnerDataProps[]>();
   const [reassignBlockRequestModalOpen, setReassignBlockRequestModalOpen] =
@@ -106,6 +103,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
   const [openRemoveUserModal, setOpenRemoveUserModal] = React.useState(false);
   const [removeCohortNames, setRemoveCohortNames] = React.useState('');
+  const [reassignCohortNames, setReassignCohortNames] = React.useState('');
   const [userId, setUserId] = React.useState('');
   const CustomLink = styled(Link)(({ theme }) => ({
     textDecoration: 'underline',
@@ -115,6 +113,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const setCohortDeleteId = manageUserStore((state) => state.setCohortDeleteId);
   const [openAddFacilitatorModal, setOpenFacilitatorModal] =
     React.useState(false);
+  const setReassignFacilitatorUserId = reassignLearnerStore((state) => state.setReassignFacilitatorUserId);
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -134,7 +133,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
             districts: 'PN',
             blocks: 'BA',
             role: 'Teacher',
-            status: 'active',
+            status: ['active'],
           };
           const fields = ['age'];
 
@@ -334,16 +333,44 @@ const manageUsers: React.FC<ManageUsersProps> = ({
       //   console.log(error);
       //   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       // }
-    }if (name === 'reassign-block') {
+    }
+    if (name === 'reassign-block') {
+
+      const reassignuserId = selectedUser?.userId ;
+      
+
+      setReassignFacilitatorUserId(selectedUser?.userId)
+
+      const fetchCohortList = async () => {
+        if (!selectedUser?.userId) {
+          console.warn('User ID is undefined');
+          return;
+        }
+
+        try {
+          const cohortList = await getCohortList(selectedUser.userId);
+          console.log('Cohort List:', cohortList);
+          if (cohortList && cohortList?.length > 0) {
+            const cohortDetails = cohortList?.map((cohort: { cohortName: any, cohortId: any }) => ({
+                name: cohort?.cohortName,
+                id: cohort?.cohortId
+            }));
+              setReassignCohortNames(cohortDetails);
+          }
+        } catch (error) {
+          console.error('Error fetching cohort list:', error);
+        }
+      };
+
+      fetchCohortList();
       setReassignModalOpen(true);
-      getTeamLeadersCenters();
     }
     if (name === 'reassign-centers') {
       setOpenCentersModal(true);
       getTeamLeadersCenters();
     }
     if (name === 'reassign-block-request') {
-      setReassignModalOpen(true);
+      // setReassignModalOpen(true);
       getTeamLeadersCenters();
     }
   };
@@ -604,7 +631,11 @@ const manageUsers: React.FC<ManageUsersProps> = ({
                           <Box display="flex" alignItems="center" gap="5px">
                             <Image src={profileALT} alt="img" />
                             <Box>
-                              <CustomLink className="word-break" href="#" onClick={(e) => e.preventDefault()}>
+                              <CustomLink
+                                className="word-break"
+                                href="#"
+                                onClick={(e) => e.preventDefault()}
+                              >
                                 <Typography
                                   onClick={() => {
                                     handleTeacherFullProfile(user.userId!);
@@ -775,7 +806,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               handleCloseModal={handleCloseModal}
               modalOpen={confirmationModalOpen}
             />
-              <ReassignModal
+            <ReassignModal
+              cohortNames={reassignCohortNames}
               message={t('COMMON.REASSIGN_BLOCKS')}
               handleAction={handleRequestBlockAction}
               handleCloseReassignModal={handleCloseReassignModal}

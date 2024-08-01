@@ -5,9 +5,11 @@ import { persist } from 'zustand/middleware';
 const reassignLearnerStore = create(
   persist(
     (set) => ({
+      reassignFacilitatorUserId: '',
       reassignId: '',
       cohortId: '',
       removeCohortId: '',
+      setReassignFacilitatorUserId: (newReassignFacilitatorUserId) => set((state) => ({ reassignFacilitatorUserId: newReassignFacilitatorUserId })),
       setReassignId: (newReassignId) => set((state) => ({ reassignId: newReassignId })),
       setCohortId: (newCohortId) => set((state) => ({ cohortId: newCohortId })),
       setRemoveCohortId: (newRemoveCohortId) => set((state) => ({ removeCohortId: newRemoveCohortId })),
