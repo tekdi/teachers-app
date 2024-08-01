@@ -422,3 +422,18 @@ export interface CoursePlannerCardsProps {
   title: string;
   subtitle: string;
 }
+
+export interface scheduleEventParam {
+  limit: number;
+  page: number;
+  filters: eventFilters;
+}
+
+export interface eventFilters {
+  date?: string;
+  startDate?: string;
+  endDate?: string;
+  eventType?: [];
+  title?: string;
+  status?: [];
+}

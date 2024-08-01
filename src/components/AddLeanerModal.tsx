@@ -181,13 +181,12 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           onReload?.();
         }
       } else {
-        const response = await createUser(apiBody);
-        showToastMessage(t('LEARNERS.LEARNER_CREATED_SUCCESSFULLY'), 'success');
+        await createUser(apiBody);
       }
       onClose();
+      showToastMessage(t('COMMON.LEARNER_CREATED_SUCCESSFULLY'), 'success');
       onLearnerAdded?.();
     } catch (error) {
-      onClose();
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       setReloadProfile(true);
     }
@@ -275,7 +274,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       open={open}
       onClose={onClose}
       showFooter={false}
-      modalTitle={isEditModal ? t('COMMON.EDIT_LEARNER') : t('COMMON.NEW_LEARNER')}
+      modalTitle={
+        isEditModal ? t('COMMON.EDIT_LEARNER') : t('COMMON.NEW_LEARNER')
+      }
     >
       {formData
         ? schema &&

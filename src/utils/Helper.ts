@@ -289,10 +289,38 @@ export const generateUsernameAndPassword = (
   return { username, password };
 };
 
-export const mapFieldIdToValue = (fields: CustomField[]): { [key: string]: string } => {
+export const mapFieldIdToValue = (
+  fields: CustomField[]
+): { [key: string]: string } => {
   return fields.reduce((acc: { [key: string]: string }, field: CustomField) => {
     acc[field.fieldId] = field.value;
     return acc;
   }, {});
 };
 
+export const convertUTCToIST = (utcDateTime: any) => {
+  const utcDate = new Date(utcDateTime);
+
+  const utcYear = utcDate.getUTCFullYear();
+  const utcMonth = (utcDate.getUTCMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+  const utcDateDay = utcDate.getUTCDate().toString().padStart(2, '0');
+
+  let utcHours = utcDate.getUTCHours();
+  const utcMinutes = utcDate.getUTCMinutes().toString().padStart(2, '0');
+  const utcSeconds = utcDate.getUTCSeconds().toString().padStart(2, '0');
+
+  const ampm = utcHours >= 12 ? 'PM' : 'AM';
+  utcHours = utcHours % 12;
+  utcHours = utcHours ? utcHours : 12;
+
+  const dateString = `${utcYear}-${utcMonth}-${utcDateDay}`;
+  const timeString = `${utcHours.toString().padStart(2, '0')}:${utcMinutes}:${utcSeconds} ${ampm}`;
+
+  return { dateString, timeString };
+};
+
+export const convertLocalToUTC = (localDateTime: any) => {
+  const localDate = new Date(localDateTime);
+  const utcDateTime = localDate.toISOString();
+  return utcDateTime;
+};
