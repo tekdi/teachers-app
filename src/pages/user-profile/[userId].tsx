@@ -62,6 +62,11 @@ const TeacherProfile = () => {
   const [isData, setIsData] = React.useState<boolean>(false);
   const [userFormData, setUserFormData] = useState<{ [key: string]: any }>({});
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
+  const [reload, setReload] = React.useState(false);
+
+  const handleReload = () => {
+    setReload((prev) => !prev);
+  };
 
   const handleOpenAddLearnerModal = () => {
     setOpenAddLearnerModal(true);
@@ -162,7 +167,7 @@ const TeacherProfile = () => {
 
   useEffect(() => {
     fetchDataAndInitializeForm();
-  }, [userId]);
+  }, [userId, reload]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -181,7 +186,7 @@ const TeacherProfile = () => {
     return field ? field.value[0] : null;
   };
 
-  const { data, error, isLoading } = useProfileInfo(userId ?? '', true);
+  const { data, error, isLoading } = useProfileInfo(userId ?? '', true, reload);
 
   useEffect(() => {
     setLoading(isLoading);
@@ -561,6 +566,7 @@ const TeacherProfile = () => {
                     userFormData={userFormData}
                     isEditModal={true}
                     userId={userId}
+                    onReload={handleReload}
                   />
                 </div>
               )}

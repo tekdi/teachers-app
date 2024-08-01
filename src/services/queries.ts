@@ -3,9 +3,13 @@ import { getUserDetails } from './ProfileService';
 import { cohortList } from './CohortServices';
 import { refetchInterval, gcTime } from '@/utils/app.constant';
 
-export function useProfileInfo(userId: string | string[], fieldValue: boolean) {
+export function useProfileInfo(
+  userId: string | string[],
+  fieldValue: boolean,
+  reload: boolean
+) {
   return useQuery({
-    queryKey: ['profile', userId],
+    queryKey: ['profile', userId, reload],
     queryFn: () => getUserDetails(userId, fieldValue),
     refetchInterval: refetchInterval,
     gcTime: gcTime,

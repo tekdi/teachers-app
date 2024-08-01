@@ -404,9 +404,15 @@ const LearnerProfile: React.FC = () => {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setLoading(false);
         console.error('Error fetching  user details:', error);
+      } finally {
+        setLoading(false);
       }
     }
   };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, [reload]);
 
   // data by order to show on basic details
 
