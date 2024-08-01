@@ -436,13 +436,7 @@
     "COURSE_PLANNER": "Course Plan",
     "FOUNDATION_COURSE": "Foundation Course",
     "MAIN_COURSE": "Main Course",
-<<<<<<< HEAD
-    "COLLAPSE_ALL":"Collapse All",
-    "RESOURCES":"Resources",
-    "EXPAND_ALL":"Expand All"
-=======
     "COLLAPSE_ALL": "Collapse All",
     "RESOURCES": "Resources"
->>>>>>> 31ac63accca17f620af4b395fc29939e2caf9fcb
   }
 }
