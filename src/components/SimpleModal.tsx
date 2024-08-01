@@ -1,10 +1,4 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Modal,
-  Typography
-} from '@mui/material';
+import { Box, Button, Divider, Modal, Typography } from '@mui/material';
 import React, { ReactNode } from 'react';
 
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
@@ -36,8 +30,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
 
   const modalStyle = {
     paddingTop: '0',
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
+
     paddingBottom: theme.spacing(2),
     position: 'absolute',
     top: '50%',
@@ -45,9 +38,9 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
     transform: 'translate(-50%, -50%)',
     width: '85%',
     maxHeight: '80vh',
-    overflowY: 'auto',
+    // overflowY: 'auto',
     backgroundColor: '#fff',
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: '18px',
     boxShadow: theme.shadows[5],
     '@media (min-width: 600px)': {
       width: '450px',
@@ -60,7 +53,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
     backgroundColor: '#fff',
     padding: theme.spacing(2),
     zIndex: 9999,
-    borderBottom: `1px solid ${theme.palette.divider}`,
+    borderRadius: '12px',
   };
 
   return (
@@ -98,7 +91,9 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
           </Box>
         </Box>
         <Divider />
-        {children}
+        <Box sx={{ height: '60vh', overflowY: 'auto', px: '16px' }}>
+          {children}
+        </Box>
         <Divider />
 
         {showFooter ? (
