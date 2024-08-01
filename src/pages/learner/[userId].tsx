@@ -198,25 +198,28 @@ const LearnerProfile: React.FC = () => {
     let initialFormData: any = {};
     formFields.fields.forEach((item: any) => {
       const userData = response?.userData;
-      const customField = userData?.customFields?.find(
+      const customFieldValue = userData?.customFields?.find(
         (field: any) => field.fieldId === item.fieldId
       );
       const getValue = (data: any, field: any) => {
+        if (item.default) {
+          return item.default;
+        }
         if (item?.isMultiSelect) {
           if (data[item.name] && item?.maxSelections > 1) {
-            return [field.value];
+            return [field?.value];
           } else if (item?.type === 'checkbox') {
-            return String(field.value).split(',');
+            return String(field?.value).split(',');
           } else {
-            return field.value;
+            return field?.value;
           }
         } else {
           if (item?.type === 'numeric') {
-            return Number(field.value);
+            return parseInt(String(field?.value));
           } else if (item?.type === 'text') {
-            return String(field.value);
+            return String(field?.value);
           } else {
-            return field.value;
+            return field?.value;
           }
         }
       };
@@ -224,18 +227,31 @@ const LearnerProfile: React.FC = () => {
         if (item?.isMultiSelect) {
           if (userData[item.name] && item?.maxSelections > 1) {
             initialFormData[item.name] = [userData[item.name]];
-          } else {
-            initialFormData[item.name] = userData[item.name] || '';
+          } 
+          else if (item?.type === "checkbox") {
+            initialFormData[item.name]= String(userData[item.name]).split(",");
           }
-        } else if (item?.type === 'numeric') {
+          else {
+            initialFormData[item.name] = userData[item.name];
+          }
+        } else if (item?.type === "numeric") {
+          console.log(item?.name);
           initialFormData[item.name] = Number(userData[item.name]);
-        } else if (item?.type === 'text') {
+        } else if (item?.type === "text" && userData[item.name]) {
           initialFormData[item.name] = String(userData[item.name]);
-        } else {
-          initialFormData[item.name] = userData[item.name];
+        }
+        else {
+          // console.log(item.name);
+          if (userData[item.name]) {
+            initialFormData[item.name] = userData[item.name];
+          }
         }
       } else {
-        initialFormData[item.name] = getValue(userData, customField);
+        const fieldValue = getValue(userData, customFieldValue);
+
+        if (fieldValue) {
+          initialFormData[item.name] = fieldValue;
+        }
       }
     });
     console.log('initialFormData', initialFormData);

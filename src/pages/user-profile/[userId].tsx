@@ -60,7 +60,7 @@ const TeacherProfile = () => {
   const [blockName, setBlockName] = useState('');
   const [isError, setIsError] = React.useState<boolean>(false);
   const [isData, setIsData] = React.useState<boolean>(false);
-  const [formData, setFormData] = useState<{ [key: string]: any }>({});
+  const [userFormData, setUserFormData] = useState<{ [key: string]: any }>({});
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
 
   const handleOpenAddLearnerModal = () => {
@@ -85,7 +85,7 @@ const TeacherProfile = () => {
     let initialFormData: any = {};
     formFields.fields.forEach((item: any) => {
       const userData = response?.userData;
-      const customField = userData?.customFields?.find(
+      const customFieldValue = userData?.customFields?.find(
         (field: any) => field.fieldId === item.fieldId
       );
       const getValue = (data: any, field: any) => {
@@ -94,15 +94,21 @@ const TeacherProfile = () => {
         }
         if (item?.isMultiSelect) {
           if (data[item.name] && item?.maxSelections > 1) {
-            return [field.value];
+            if (field.value) {
+              return [field.value];
+            }
+            return null;
           } else if (item?.type === 'checkbox') {
-            return String(field.value).split(',');
+            if (field.value) {
+              return String(field.value).split(',');
+            }
+            return null;
           } else {
             return field.value;
           }
         } else {
           if (item?.type === 'numeric') {
-            return Number(field.value);
+            return parseInt(String(field.value));
           } else if (item?.type === 'text') {
             return String(field.value);
           } else {
@@ -114,18 +120,27 @@ const TeacherProfile = () => {
         if (item?.isMultiSelect) {
           if (userData[item.name] && item?.maxSelections > 1) {
             initialFormData[item.name] = [userData[item.name]];
+          } else if (item?.type === 'checkbox') {
+            initialFormData[item.name] = String(userData[item.name]).split(',');
           } else {
-            initialFormData[item.name] = userData[item.name] || '';
+            initialFormData[item.name] = userData[item.name];
           }
         } else if (item?.type === 'numeric') {
           initialFormData[item.name] = Number(userData[item.name]);
-        } else if (item?.type === 'text') {
+        } else if (item?.type === 'text' && userData[item.name]) {
           initialFormData[item.name] = String(userData[item.name]);
         } else {
-          initialFormData[item.name] = userData[item.name];
+          if (userData[item.name]) {
+            initialFormData[item.name] = userData[item.name];
+          }
         }
       } else {
-        initialFormData[item.name] = getValue(userData, customField);
+        // For Custom Fields
+        const fieldValue = getValue(userData, customFieldValue);
+
+        if (fieldValue) {
+          initialFormData[item.name] = fieldValue;
+        }
       }
     });
     console.log('initialFormData', initialFormData);
@@ -136,10 +151,10 @@ const TeacherProfile = () => {
     try {
       let formFields;
       const response = await getUserDetails(userId, true);
-      formFields = await getFormRead('USERS', 'TEACHER'); //TODO: Change for TL
+      formFields = await getFormRead('USERS', 'TEACHER');
       console.log('response', response);
       console.log('formFields', formFields);
-      setFormData(mapFields(formFields, response?.result));
+      setUserFormData(mapFields(formFields, response?.result));
     } catch (error) {
       console.error('Error fetching data or initializing form:', error);
     }
@@ -190,7 +205,7 @@ const TeacherProfile = () => {
       const fetchFormData = async () => {
         try {
           const formContextType =
-            (userRole === Role.TEAM_LEADER && selfUserId === userId)
+            userRole === Role.TEAM_LEADER && selfUserId === userId
               ? FormContextType.TEAM_LEADER
               : FormContextType.TEACHER;
           const response: FormData = await getFormRead(
@@ -543,7 +558,7 @@ const TeacherProfile = () => {
                   <AddFacilitatorModal
                     open={openAddLearnerModal}
                     onClose={handleCloseAddLearnerModal}
-                    formData={formData}
+                    userFormData={userFormData}
                     isEditModal={true}
                     userId={userId}
                   />
