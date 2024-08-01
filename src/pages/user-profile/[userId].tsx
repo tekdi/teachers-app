@@ -5,7 +5,7 @@ import {
 } from '@mui/icons-material';
 import { CustomField } from '@/utils/Interfaces';
 import React, { useEffect, useRef, useState } from 'react';
-import { editEditUser, getUserDetails } from '@/services/ProfileService';
+import { getUserDetails } from '@/services/ProfileService';
 import { useTheme } from '@mui/material/styles';
 import { GetStaticPaths } from 'next';
 import Button from '@mui/material/Button';
@@ -189,9 +189,13 @@ const TeacherProfile = () => {
 
       const fetchFormData = async () => {
         try {
+          const formContextType =
+            (userRole === Role.TEAM_LEADER && selfUserId === userId)
+              ? FormContextType.TEAM_LEADER
+              : FormContextType.TEACHER;
           const response: FormData = await getFormRead(
             FormContext.USERS,
-            FormContextType.TEACHER
+            formContextType
           );
           console.log('response', response);
           if (response) {

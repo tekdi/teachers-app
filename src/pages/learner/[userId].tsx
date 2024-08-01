@@ -33,7 +33,7 @@ import {
   classesMissedAttendancePercentList,
   getCohortAttendance,
 } from '@/services/AttendanceService';
-import { editEditUser, getUserDetails } from '@/services/ProfileService';
+import { getUserDetails } from '@/services/ProfileService';
 import {
   formatSelectedDate,
   getTodayDate,

@@ -115,7 +115,9 @@
     "NEW_FACILITATOR": "New Facilitator",
     "SUBMIT": "Submit",
     "LEARNER_CREATED_SUCCESSFULLY": "Leaner has been Successfully Created!",
-    "LEARNER_UPDATED_SUCCESSFULLY": "Learner has been Updated Created!"
+    "FACILITATOR_ADDED_SUCCESSFULLY": "Facilitator added successfully!",
+    "LEARNER_UPDATED_SUCCESSFULLY": "Learner profile updated successfully!",
+    "FACILITATOR_UPDATED_SUCCESSFULLY": "Facilitator profile updated successfully!"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -434,8 +436,13 @@
     "COURSE_PLANNER": "Course Plan",
     "FOUNDATION_COURSE": "Foundation Course",
     "MAIN_COURSE": "Main Course",
+<<<<<<< HEAD
     "COLLAPSE_ALL":"Collapse All",
     "RESOURCES":"Resources",
     "EXPAND_ALL":"Expand All"
+=======
+    "COLLAPSE_ALL": "Collapse All",
+    "RESOURCES": "Resources"
+>>>>>>> 31ac63accca17f620af4b395fc29939e2caf9fcb
   }
 }

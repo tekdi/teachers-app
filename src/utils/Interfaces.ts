@@ -411,6 +411,8 @@ export interface BulkCreateCohortMembersRequest {
 }
 
 export interface FacilitatorDrawerProps {
-  primary?: string;
   secondary?: string;
+  primary?: string;
+  toggleDrawer: (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => void;
+  drawerState: { bottom: boolean };
 }

@@ -15,6 +15,7 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { showToastMessage } from './Toastify';
 import { editEditUser } from '@/services/ProfileService';
+import { tenantId } from '../../app.config';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -106,7 +107,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       password: password,
       tenantCohortRoleMapping: [
         {
-          tenantId: 'ef99949b-7f3a-4a5f-806a-e67e683e38f3',
+          tenantId: tenantId,
           roleId: RoleId.STUDENT,
           cohortId: [cohortId],
         },

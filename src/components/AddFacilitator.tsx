@@ -16,6 +16,7 @@ import { RJSFSchema } from '@rjsf/utils';
 import { useTranslation } from 'next-i18next';
 import { showToastMessage } from './Toastify';
 import { editEditUser } from '@/services/ProfileService';
+import { tenantId } from '../../app.config';
 
 interface AddFacilitatorModalprops {
   open: boolean;
@@ -37,7 +38,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   const { t } = useTranslation();
 
   useEffect(() => {
-    const getAddLearnerFormData = async () => {
+    const getAddFacilitatorFormData = async () => {
       try {
         const response: FormData = await getFormRead(
           FormContext.USERS,
@@ -76,7 +77,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           coreField: 0,
           maxSelections: null,
         };
-        if (!isEditModal){
+        if (!isEditModal) {
           response?.fields.push(assignCentersField);
           console.log(response);
         }
@@ -90,14 +91,16 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         console.error('Error fetching form data:', error);
       }
     };
-    getAddLearnerFormData();
+    getAddFacilitatorFormData();
   }, []);
 
   const handleSubmit = async (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
-    setOpenModal(true);
+    if(!isEditModal){
+      setOpenModal(true);
+    }
     const target = event.target as HTMLFormElement;
     const elementsArray = Array.from(target.elements);
 
@@ -125,7 +128,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       password: password,
       tenantCohortRoleMapping: [
         {
-          tenantId: 'ef99949b-7f3a-4a5f-806a-e67e683e38f3',
+          tenantId: tenantId,
           roleId: RoleId.TEACHER,
           cohortId: formData?.assignCenters,
         },
@@ -196,18 +199,21 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           customFields: customFields,
         };
         const response = await editEditUser(userId, object);
-        showToastMessage(t('COMMON.LEARNER_UPDATED_SUCCESSFULLY'), 'success');
+        showToastMessage(
+          t('COMMON.FACILITATOR_UPDATED_SUCCESSFULLY'),
+          'success'
+        );
       } else {
-    const response = await createUser(apiBody);
-    console.log(response);
-    showToastMessage(t('LEARNERS.LEARNER_CREATED_SUCCESSFULLY'), 'success');
+        const response = await createUser(apiBody);
+        console.log(response);
+        showToastMessage(t('LEARNERS.LEARNER_CREATED_SUCCESSFULLY'), 'success');
       }
       onClose();
-  }catch (error) {
-    onClose();
-    showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-  }
-};
+    } catch (error) {
+      onClose();
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    }
+  };
   const handleChange = (event: IChangeEvent<any>) => {
     console.log('Form data changed:', event.formData);
   };
@@ -229,38 +235,38 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         showFooter={false}
         modalTitle={t('COMMON.NEW_FACILITATOR')}
       >
-         {formData
-        ? schema &&
-          uiSchema && (
-            <DynamicForm
-              schema={schema}
-              uiSchema={uiSchema}
-              onSubmit={handleSubmit}
-              onChange={handleChange}
-              onError={handleError}
-              widgets={{}}
-              showErrorList={true}
-              customFields={customFields}
-              formData={formData}
-            >
-              {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
-            </DynamicForm>
-          )
-        : schema &&
-          uiSchema && (
-            <DynamicForm
-              schema={schema}
-              uiSchema={uiSchema}
-              onSubmit={handleSubmit}
-              onChange={handleChange}
-              onError={handleError}
-              widgets={{}}
-              showErrorList={true}
-              customFields={customFields}
-            >
-              {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
-            </DynamicForm>
-          )}
+        {formData
+          ? schema &&
+            uiSchema && (
+              <DynamicForm
+                schema={schema}
+                uiSchema={uiSchema}
+                onSubmit={handleSubmit}
+                onChange={handleChange}
+                onError={handleError}
+                widgets={{}}
+                showErrorList={true}
+                customFields={customFields}
+                formData={formData}
+              >
+                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+              </DynamicForm>
+            )
+          : schema &&
+            uiSchema && (
+              <DynamicForm
+                schema={schema}
+                uiSchema={uiSchema}
+                onSubmit={handleSubmit}
+                onChange={handleChange}
+                onError={handleError}
+                widgets={{}}
+                showErrorList={true}
+                customFields={customFields}
+              >
+                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+              </DynamicForm>
+            )}
       </SimpleModal>
 
       <SendCredentialModal open={openModal} onClose={onCloseModal} />
