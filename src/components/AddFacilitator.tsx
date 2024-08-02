@@ -161,10 +161,17 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             value: [String(fieldValue)],
           });
         } else {
-          apiBody.customFields.push({
-            fieldId: fieldId,
-            value: String(fieldValue),
-          });
+          if (fieldSchema.checkbox && fieldSchema.type === 'array') {
+            apiBody.customFields.push({
+              fieldId: fieldId,
+              value: String(fieldValue).split(','),
+            });
+          } else {
+            apiBody.customFields.push({
+              fieldId: fieldId,
+              value: String(fieldValue),
+            });
+          }
         }
       }
     });
@@ -214,7 +221,14 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       } else {
         const response = await createUser(apiBody);
         console.log(response);
-        showToastMessage(t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'), 'success');
+        if (response) {
+          showToastMessage(
+            t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
+            'success'
+          );
+        } else {
+          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        }
       }
       onClose();
     } catch (error) {
