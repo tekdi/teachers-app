@@ -15,6 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { sub } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
@@ -23,6 +24,10 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState(1);
+  const [subjects, setSubjects] = React.useState([
+    { id: 1, subject: 'Mathematics', circular: 10 },
+    { id: 2, subject: 'Science', circular: 50 },
+  ]);
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const router = useRouter();
@@ -112,7 +117,16 @@ const CoursePlanner = () => {
       </Grid>
 
       <Box sx={{ mt: 2 }}>
-        <Box sx={{ width: '100%' }}>
+        <Box
+          sx={{
+            width: '100%',
+            '@media (max-width: 600px)': {
+              display: 'flex',
+              justifyContent: 'center',
+            },
+            borderBottom: `1px solid ${theme.palette.primary.contrastText}`,
+          }}
+        >
           <Tabs
             value={value}
             onChange={handleChange}
@@ -120,7 +134,6 @@ const CoursePlanner = () => {
             aria-label="secondary tabs example"
             sx={{
               fontSize: '14px',
-              borderBottom: `1px solid ${theme.palette.primary.contrastText}`,
 
               '& .MuiTab-root': {
                 color: '#4D4639',
@@ -150,94 +163,103 @@ const CoursePlanner = () => {
             <Box
               sx={{
                 background: theme.palette.action.selected,
-                padding: '14px',
+                py: '2px',
                 borderRadius: '8px',
               }}
             >
-              <Box
-                sx={{
-                  border: `1px solid ${theme.palette.warning.A100}`,
-                  borderRadius: '8px',
-                  padding: '12px',
-                  cursor: 'pointer',
-                }}
-                onClick={() => {
-                  router.push(`/course-planner-detail`); // Check route
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Box>
+              {subjects.map((item, index) => {
+                return (
+                  <Box
+                    key={item.id}
+                    sx={{
+                      border: `1px solid ${theme.palette.warning.A100}`,
+                      borderRadius: '8px',
+                      padding: '12px',
+                      cursor: 'pointer',
+                      margin: '14px',
+                    }}
+                    onClick={() => {
+                      router.push(`/course-planner-detail`); // Check route
+                    }}
+                  >
                     <Box
                       sx={{
                         display: 'flex',
-                        gap: '15px',
+                        justifyContent: 'space-between',
                         alignItems: 'center',
                       }}
                     >
-                      <Box
-                        sx={{ position: 'relative', display: 'inline-flex' }}
-                      >
-                        <Box sx={{ width: '40px', height: '40px' }}>
-                          <CircularProgressbar
-                            value={10}
-                            strokeWidth={10}
-                            styles={buildStyles({
-                              pathColor: '#06A816',
-                              trailColor: '#E6E6E6',
-                              strokeLinecap: 'round',
-                            })}
-                          />
-                        </Box>
-
+                      <Box>
                         <Box
                           sx={{
-                            top: 0,
-                            left: 0,
-                            bottom: 0,
-                            right: 0,
-                            position: 'absolute',
                             display: 'flex',
+                            gap: '15px',
                             alignItems: 'center',
-                            justifyContent: 'center',
                           }}
                         >
-                          <Typography
-                            variant="caption"
-                            component="div"
+                          <Box
                             sx={{
-                              fontSize: '11px',
-                              color: theme.palette.warning['300'],
-                              fontWeight: '500',
+                              position: 'relative',
+                              display: 'inline-flex',
                             }}
                           >
-                            10%
-                          </Typography>
+                            <Box sx={{ width: '40px', height: '40px' }}>
+                              <CircularProgressbar
+                                value={item.circular}
+                                strokeWidth={10}
+                                styles={buildStyles({
+                                  pathColor: '#06A816',
+                                  trailColor: '#E6E6E6',
+                                  strokeLinecap: 'round',
+                                })}
+                              />
+                            </Box>
+
+                            <Box
+                              sx={{
+                                top: 0,
+                                left: 0,
+                                bottom: 0,
+                                right: 0,
+                                position: 'absolute',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Typography
+                                variant="caption"
+                                component="div"
+                                sx={{
+                                  fontSize: '11px',
+                                  color: theme.palette.warning['300'],
+                                  fontWeight: '500',
+                                }}
+                              >
+                                {item.circular}%
+                              </Typography>
+                            </Box>
+                          </Box>
+
+                          <Box
+                            sx={{
+                              fontSize: '16px',
+                              color: theme.palette.warning['300'],
+                            }}
+                          >
+                            {item.subject}
+                          </Box>
                         </Box>
                       </Box>
-
-                      <Box
-                        sx={{
-                          fontSize: '16px',
-                          color: theme.palette.warning['300'],
-                        }}
-                      >
-                        Mathematics {/*  will come form API */}
+                      <Box>
+                        <KeyboardArrowRightIcon
+                          sx={{ color: theme.palette.warning['300'] }}
+                        />
                       </Box>
                     </Box>
                   </Box>
-                  <Box>
-                    <KeyboardArrowRightIcon
-                      sx={{ color: theme.palette.warning['300'] }}
-                    />
-                  </Box>
-                </Box>
-              </Box>
+                );
+              })}
             </Box>
           </Box>
         )}

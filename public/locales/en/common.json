@@ -442,6 +442,7 @@
     "FOUNDATION_COURSE": "Foundation Course",
     "MAIN_COURSE": "Main Course",
     "COLLAPSE_ALL": "Collapse All",
+    "EXPAND_ALL":"Expand All",
     "RESOURCES": "Resources"
   }
 }
