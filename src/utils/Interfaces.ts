@@ -378,6 +378,7 @@ export interface Field {
   minLength?: number | null;
   fieldId: string;
   isRequired?: boolean;
+  default?: any;
 }
 
 export interface FormData {

@@ -435,7 +435,9 @@
     "MIN_LENGTH_CHARACTERS_ERROR": "Minimum {{minLength}} characters required",
     "MAX_LENGTH_CHARACTERS_ERROR": "Maximum {{maxLength}} characters allowed",
     "NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "Numbers and special characters are not allowed",
-    "ENTER_VALID_MOBILE_NUMBER": "Enter Valid mobile number"
+    "ENTER_VALID_MOBILE_NUMBER": "Enter Valid mobile number",
+    "ENTER_VALID_EMAIL": "Enter valid Email",
+    "ENTER_VALID_YEAR": "Enter valid Year"
   },
   "COURSE_PLANNER": {
     "COURSE_PLANNER": "Course Plan",

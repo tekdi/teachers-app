@@ -9,6 +9,7 @@ import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import { Button, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import MultiSelectDropdown from './MultiSelectDropdown';
+import { getCurrentYearPattern } from '@/utils/Helper';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -73,6 +74,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   function transformErrors(errors: any) {
     console.log('errors', errors);
     console.log('schema', schema);
+    const currentYearPattern = new RegExp(getCurrentYearPattern());
+
     return errors.map((error: any) => {
       switch (error.name) {
         case 'required': {
@@ -108,6 +111,13 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               error.message = t(
                 'FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
               );
+              break;
+            }
+            default: {
+              const validRange = currentYearPattern.test(pattern);
+              if (!validRange) {
+                error.message = t('FORM_ERROR_MESSAGES.ENTER_VALID_YEAR');
+              }
               break;
             }
           }

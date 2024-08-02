@@ -109,25 +109,25 @@ const TeacherProfile = () => {
         }
         if (item?.isMultiSelect) {
           if (data[item.name] && item?.maxSelections > 1) {
-            if (field.value) {
+            if (field?.value) {
               return [field.value];
             }
             return null;
           } else if (item?.type === 'checkbox') {
-            if (field.value) {
+            if (field?.value) {
               return String(field.value).split(',');
             }
             return null;
           } else {
-            return field.value;
+            return field?.value;
           }
         } else {
           if (item?.type === 'numeric') {
-            return parseInt(String(field.value));
+            return parseInt(String(field?.value));
           } else if (item?.type === 'text') {
-            return String(field.value);
+            return String(field?.value);
           } else {
-            return field.value;
+            return field?.value;
           }
         }
       };
@@ -193,7 +193,7 @@ const TeacherProfile = () => {
   // find Address
   const getFieldValue = (data: any, label: string) => {
     const field = data.find((item: any) => item.label === label);
-    return field ? field.value[0] : null;
+    return field ? field?.value[0] : null;
   };
 
   const { data, error, isLoading } = useProfileInfo(userId ?? '', true, reload);
@@ -310,7 +310,7 @@ const TeacherProfile = () => {
   // Function to get label for a subject from the options array
   const getLabelForSubject = (subject: string) => {
     const option = teachSubjectsField?.options?.find(
-      (opt: any) => opt.value === subject
+      (opt: any) => opt?.value === subject
     );
     return option ? option.label : subject;
   };
@@ -676,7 +676,7 @@ const TeacherProfile = () => {
                             color={theme.palette.warning.A200}
                             sx={{ wordBreak: 'break-word' }}
                           >
-                            {item.value ? toPascalCase(item?.value) : '-'}
+                            {item?.value ? toPascalCase(item?.value) : '-'}
                           </Typography>
                         </Grid>
                       );
@@ -702,7 +702,7 @@ const TeacherProfile = () => {
                             color={theme.palette.warning.A200}
                             sx={{ wordBreak: 'break-word' }}
                           >
-                            {item.value
+                            {item?.value
                               ? toPascalCase(
                                   getLabelForValue(item, item?.value)
                                 )

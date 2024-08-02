@@ -139,11 +139,18 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
           });
           const resp = response?.result?.userDetails;
           if (resp) {
-            const nameUserIdArray = resp?.map((entry: any) => ({
-              userId: entry.userId,
-              name: toPascalCase(entry.name),
-              memberStatus: entry.status,
-            }));
+            let nameUserIdArray = resp
+              .map((entry: any) => ({
+                userId: entry.userId,
+                name: toPascalCase(entry.name),
+                memberStatus: entry.status,
+                createdAt: entry.createdAt,
+              }))
+              .filter((member: { createdAt: string | number | Date }) => {
+                const createdAt = new Date(member.createdAt);
+                return createdAt <= selectedDate;
+              });
+
             if (nameUserIdArray && selectedDate) {
               const formatSelectedDate = shortDateFormat(selectedDate);
               const userAttendanceStatusList = async () => {
@@ -227,7 +234,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                           });
                         }
                       });
-                      if (newArray.length != 0) {
+                      if (newArray.length !== 0) {
                         setNumberOfCohortMembers(newArray?.length);
                         setCohortMemberList(newArray);
                         const hasDropout = newArray.some(
