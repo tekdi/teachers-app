@@ -22,13 +22,13 @@ import { useEffect } from 'react';
 import manageUserStore from '../store/manageUserStore';
 
 import { getMyUserList } from '@/services/MyClassDetailsService';
+import reassignLearnerStore from '@/store/reassignLearnerStore';
 import Image from 'next/image';
 import profileALT from '../assets/images/Profile.png';
 import AddFacilitatorModal from './AddFacilitator';
-import ReassignModal from './ReassignModal';
 import DeleteUserModal from './DeleteUserModal';
+import ReassignModal from './ReassignModal';
 import SimpleModal from './SimpleModal';
-import reassignLearnerStore from '@/store/reassignLearnerStore';
 
 interface Cohort {
   cohortId: string;
@@ -61,7 +61,7 @@ interface ManageUsersProps {
   cohortData?: any;
 }
 
-const manageUsers: React.FC<ManageUsersProps> = ({
+const ManageUser: React.FC<ManageUsersProps> = ({
   reloadState,
   setReloadState,
   cohortData,
@@ -467,7 +467,6 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const handleTeacherFullProfile = (userId: string) => {
     router.push(`/user-profile/${userId}`);
   };
-  const noop = () => {};
 
   const handleRequestBlockAction = () => {
     showToastMessage(t('BLOCKS.REASSIGN_BLOCK_REQUESTED'), 'success');
@@ -931,12 +930,5 @@ const manageUsers: React.FC<ManageUsersProps> = ({
     </>
   );
 };
-// export async function getStaticProps({ locale }: any) {
-//   return {
-//     props: {
-//       ...(await serverSideTranslations(locale, ['common'])),
-//       // Will be passed to the page component as props
-//     },
-//   };
-// }
-export default manageUsers;
+
+export default ManageUser;
