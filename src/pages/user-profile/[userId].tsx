@@ -612,7 +612,7 @@ const TeacherProfile = () => {
                   {filteredSortedForView?.map((item, index) => {
                     if (String(item.order) === '7') {
                       return (
-                        <Grid item xs={12}>
+                        <Grid item xs={12} key={index}>
                           <Typography
                             fontSize={'12px'}
                             fontWeight={'600'}
@@ -633,7 +633,7 @@ const TeacherProfile = () => {
                             }}
                           >
                             {orderedSubjects &&
-                              orderedSubjects?.map((subject, index) => (
+                              orderedSubjects?.map((subject: any, index: number) => (
                                 <Button
                                   key={index}
                                   size="small"
