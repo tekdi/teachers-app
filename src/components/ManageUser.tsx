@@ -113,7 +113,9 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const setCohortDeleteId = manageUserStore((state) => state.setCohortDeleteId);
   const [openAddFacilitatorModal, setOpenFacilitatorModal] =
     React.useState(false);
-  const setReassignFacilitatorUserId = reassignLearnerStore((state) => state.setReassignFacilitatorUserId);
+  const setReassignFacilitatorUserId = reassignLearnerStore(
+    (state) => state.setReassignFacilitatorUserId
+  );
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -173,8 +175,10 @@ const manageUsers: React.FC<ManageUsersProps> = ({
           const extractedData = facilitatorList?.map(
             (user: any, index: number) => {
               const cohorts = cohortDetails[index] || [];
+
               const cohortNames = cohorts
-                .map((cohort: any) => cohort?.cohortName)
+                .filter((cohort: any) => cohort.status === 'active')
+                .map((cohort: any) => cohort.cohortName)
                 .join(', ');
 
               return {
@@ -335,11 +339,9 @@ const manageUsers: React.FC<ManageUsersProps> = ({
       // }
     }
     if (name === 'reassign-block') {
+      const reassignuserId = selectedUser?.userId;
 
-      const reassignuserId = selectedUser?.userId ;
-      
-
-      setReassignFacilitatorUserId(selectedUser?.userId)
+      setReassignFacilitatorUserId(selectedUser?.userId);
 
       const fetchCohortList = async () => {
         if (!selectedUser?.userId) {
@@ -351,11 +353,15 @@ const manageUsers: React.FC<ManageUsersProps> = ({
           const cohortList = await getCohortList(selectedUser.userId);
           console.log('Cohort List:', cohortList);
           if (cohortList && cohortList?.length > 0) {
-            const cohortDetails = cohortList?.map((cohort: { cohortName: any, cohortId: any }) => ({
+            
+            const cohortDetails = cohortList?.map(
+              (cohort: { cohortName: any; cohortId: any; status: any }) => ({
                 name: cohort?.cohortName,
-                id: cohort?.cohortId
-            }));
-              setReassignCohortNames(cohortDetails);
+                id: cohort?.cohortId,
+                status: cohort?.status
+              })
+            );
+            setReassignCohortNames(cohortDetails);
           }
         } catch (error) {
           console.error('Error fetching cohort list:', error);

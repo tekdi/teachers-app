@@ -16,7 +16,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'next-i18next';
 import { useEffect } from 'react';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
-import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 import { bulkCreateCohortMembers } from '@/services/CohortServices';
 import { showToastMessage } from './Toastify';
 
@@ -52,15 +51,15 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   }));
   const reStore = reassignLearnerStore();
   const [searchInput, setSearchInput] = React.useState('');
-  const [selectedData, setSelectedData] = React.useState('');
-  const [unSelectedData, setUnSelectedData] = React.useState('');
+  const [selectedData, setSelectedData] = React.useState<string[]>([]);
+  const [unSelectedData, setUnSelectedData] = React.useState<string[]>([]);
   const [checkedCenters, setCheckedCenters] = React.useState<string[]>([]);
 
   useEffect(() => {
     if (cohortNames) {
-      const initialCheckedCenters = cohortNames?.map(
-        (cohort: { name: any }) => cohort?.name
-      );
+      const initialCheckedCenters = cohortNames
+        .filter((cohort: { status: string }) => cohort.status === 'active')
+        .map((cohort: { name: any }) => cohort.name);
       setCheckedCenters(initialCheckedCenters);
     }
   }, [cohortNames]);
@@ -84,15 +83,15 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
       }
 
       const checkedCenterIds = centerList
-        .filter((center: { name: string }) => newChecked.includes(center?.name))
+        .filter((center: { name: string }) => newChecked.includes(center.name))
         .map((center: { id: any }) => center.id);
       const uncheckedCenterIds = centerList
-        .filter((center: { name: string }) => !newChecked.includes(center?.name))
+        .filter((center: { name: string }) => !newChecked.includes(center.name))
         .map((center: { id: any }) => center.id);
 
       setSelectedData(checkedCenterIds);
-
       setUnSelectedData(uncheckedCenterIds);
+
       return newChecked;
     });
   };
@@ -124,14 +123,16 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     try {
       const response = await bulkCreateCohortMembers(payload);
       console.log('Cohort members created successfully', response);
-
+      handleCloseReassignModal();
       showToastMessage(
         t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'),
         'success'
       );
     } catch (error) {
       console.error('Error creating cohort members', error);
+      handleCloseReassignModal();
       showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');
+
     }
   };
 
@@ -243,9 +244,7 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
             }}
             variant="contained"
             color="primary"
-            onClick={() => {
-              handleReassign();
-            }}
+            onClick={handleReassign}
           >
             {buttonNames?.primary || 'Re-assign'}
           </Button>
