@@ -194,7 +194,7 @@ const TeacherProfile = () => {
   // find Address
   const getFieldValue = (data: any, label: string) => {
     const field = data.find((item: any) => item.label === label);
-    return field ? field?.value[0] : null;
+    return field ? field?.value : null;
   };
 
   const { data, error, isLoading } = useProfileInfo(userId ?? '', true, reload);
