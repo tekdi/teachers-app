@@ -128,6 +128,11 @@ const TeacherProfile = () => {
           } else if (item?.type === 'text') {
             return String(field?.value);
           } else {
+            if(field.value ==='FEMALE' || field.value ==='MALE')
+            {
+              console.log(true)
+              return field?.value?.toLowerCase();
+            }
             return field?.value;
           }
         }
@@ -612,7 +617,7 @@ const TeacherProfile = () => {
                   {filteredSortedForView?.map((item, index) => {
                     if (String(item.order) === '7') {
                       return (
-                        <Grid item xs={12}>
+                        <Grid item xs={12} key={index}>
                           <Typography
                             fontSize={'12px'}
                             fontWeight={'600'}
@@ -633,7 +638,7 @@ const TeacherProfile = () => {
                             }}
                           >
                             {orderedSubjects &&
-                              orderedSubjects?.map((subject: string, index: React.Key | null | undefined) => (
+                              orderedSubjects?.map((subject: any, index: number) => (
                                 <Button
                                   key={index}
                                   size="small"
