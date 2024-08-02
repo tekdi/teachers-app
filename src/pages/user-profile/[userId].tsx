@@ -633,7 +633,7 @@ const TeacherProfile = () => {
                             }}
                           >
                             {orderedSubjects &&
-                              orderedSubjects?.map((subject, index) => (
+                              orderedSubjects?.map((subject: string, index: React.Key | null | undefined) => (
                                 <Button
                                   key={index}
                                   size="small"
