@@ -18,20 +18,16 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { getCoursePlanner } from '@/services/CoursePlannerService';
+import { CoursePlannerData } from '@/utils/Interfaces';
+
+// Define a type for the course planner data
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState(1);
-  const [subjects, setSubjects] = React.useState([
-    { id: 1, subject: 'Mathematics', circular: 10 },
-    { id: 2, subject: 'Science', circular: 50 },
-    { id: 2, subject: 'History', circular: 30 },
-    { id: 2, subject: 'Geography', circular: 60 },
-    { id: 2, subject: 'Marathi', circular: 90 },
-    { id: 2, subject: 'Hindi', circular: 70 },
-    { id: 2, subject: 'Social Science', circular: 80 },
-  ]);
+  const [subjects, setSubjects] = React.useState<CoursePlannerData[]>([]);
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const router = useRouter();
@@ -46,11 +42,31 @@ const CoursePlanner = () => {
       window.scrollTo({ top: targetY - 70, behavior: 'smooth' });
     }
   };
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    const fetchCoursePlanner = async () => {
+      try {
+        const response = await getCoursePlanner();
+        // Transform data to match CoursePlannerData type
+        const transformedData = response.map((item: any) => ({
+          ...item,
+          id: String(item.id),
+        }));
+        setSubjects(transformedData);
+      } catch (error) {
+        console.error('Error fetching course planner:', error);
+      }
+    };
+
+    fetchCoursePlanner();
+  }, []);
+
   return (
-    <Box minHeight={'100vh'}>
+    <Box minHeight="100vh">
       <Box>
         <Header />
       </Box>
@@ -62,9 +78,9 @@ const CoursePlanner = () => {
           color: '#4D4639',
           padding: '20px 20px 5px',
         }}
-        width={'100%'}
+        width="100%"
       >
-        <Typography textAlign={'left'} fontSize={'22px'}>
+        <Typography textAlign="left" fontSize="22px">
           {t('COURSE_PLANNER.COURSE_PLANNER')}
         </Typography>
       </Box>
@@ -138,7 +154,6 @@ const CoursePlanner = () => {
             aria-label="secondary tabs example"
             sx={{
               fontSize: '14px',
-
               '& .MuiTab-root': {
                 color: '#4D4639',
                 padding: '0 20px',
@@ -173,108 +188,112 @@ const CoursePlanner = () => {
               }}
             >
               <Grid container>
-                {subjects.map((item, index) => {
-                  return (
-                    <Grid key={item.id} item xs={12} sm={6} md={4}>
+                {subjects.map((item) => (
+                  <Grid key={item.id} item xs={12} sm={6} md={4}>
+                    <Box
+                      sx={{
+                        border: `1px solid ${theme.palette.warning.A100}`,
+                        borderRadius: '8px',
+                        padding: '12px',
+                        cursor: 'pointer',
+                        margin: '14px',
+                      }}
+                      onClick={() => {
+                        router.push(`/course-planner-detail`); // Check route
+                      }}
+                    >
                       <Box
                         sx={{
-                          border: `1px solid ${theme.palette.warning.A100}`,
-                          borderRadius: '8px',
-                          padding: '12px',
-                          cursor: 'pointer',
-                          margin: '14px',
-                        }}
-                        onClick={() => {
-                          router.push(`/course-planner-detail`); // Check route
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
                         }}
                       >
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <Box>
+                        <Box>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              gap: '15px',
+                              alignItems: 'center',
+                            }}
+                          >
                             <Box
                               sx={{
-                                display: 'flex',
-                                gap: '15px',
-                                alignItems: 'center',
+                                position: 'relative',
+                                display: 'inline-flex',
                               }}
                             >
+                              <Box sx={{ width: '40px', height: '40px' }}>
+                                <CircularProgressbar
+                                  value={item.circular}
+                                  strokeWidth={10}
+                                  styles={buildStyles({
+                                    pathColor: '#06A816',
+                                    trailColor: '#E6E6E6',
+                                    strokeLinecap: 'round',
+                                  })}
+                                />
+                              </Box>
+
                               <Box
                                 sx={{
-                                  position: 'relative',
-                                  display: 'inline-flex',
+                                  top: 0,
+                                  left: 0,
+                                  bottom: 0,
+                                  right: 0,
+                                  position: 'absolute',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
                                 }}
                               >
-                                <Box sx={{ width: '40px', height: '40px' }}>
-                                  <CircularProgressbar
-                                    value={item.circular}
-                                    strokeWidth={10}
-                                    styles={buildStyles({
-                                      pathColor: '#06A816',
-                                      trailColor: '#E6E6E6',
-                                      strokeLinecap: 'round',
-                                    })}
-                                  />
-                                </Box>
-
-                                <Box
+                                <Typography
+                                  variant="caption"
+                                  component="div"
                                   sx={{
-                                    top: 0,
-                                    left: 0,
-                                    bottom: 0,
-                                    right: 0,
-                                    position: 'absolute',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
+                                    fontSize: '11px',
+                                    color: theme.palette.warning['300'],
+                                    fontWeight: '500',
                                   }}
                                 >
-                                  <Typography
-                                    variant="caption"
-                                    component="div"
-                                    sx={{
-                                      fontSize: '11px',
-                                      color: theme.palette.warning['300'],
-                                      fontWeight: '500',
-                                    }}
-                                  >
-                                    {item.circular}%
-                                  </Typography>
-                                </Box>
-                              </Box>
-
-                              <Box
-                                sx={{
-                                  fontSize: '16px',
-                                  color: theme.palette.warning['300'],
-                                }}
-                              >
-                                {item.subject}
+                                  {item.circular}%
+                                </Typography>
                               </Box>
                             </Box>
-                          </Box>
-                          <Box>
-                            <KeyboardArrowRightIcon
-                              sx={{ color: theme.palette.warning['300'] }}
-                            />
+
+                            <Box
+                              sx={{
+                                fontSize: '16px',
+                                color: theme.palette.warning['300'],
+                              }}
+                            >
+                              {item.subject}
+                            </Box>
                           </Box>
                         </Box>
+                        <Box>
+                          <KeyboardArrowRightIcon
+                            sx={{ color: theme.palette.warning['300'] }}
+                          />
+                        </Box>
                       </Box>
-                    </Grid>
-                  );
-                })}
+                    </Box>
+                  </Grid>
+                ))}
               </Grid>
             </Box>
+          </Box>
+        )}
+        {value === 2 && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
+            <Typography variant="h2">No Data Found</Typography>
           </Box>
         )}
       </Box>
     </Box>
   );
 };
+
 export async function getStaticProps({ locale }: any) {
   return {
     props: {
@@ -283,4 +302,5 @@ export async function getStaticProps({ locale }: any) {
     },
   };
 }
+
 export default CoursePlanner;
