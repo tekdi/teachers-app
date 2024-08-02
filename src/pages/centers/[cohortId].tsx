@@ -133,14 +133,14 @@ const TeachingCenterDetails = () => {
 
         if (cohortData?.customField?.length) {
           const district = cohortData.customField.find(
-            (item: CustomField) => item.label === 'District'
+            (item: CustomField) => item.label === 'DISTRICTS'
           );
           const districtCode = district?.code || '';
           setDistrictCode(districtCode);
           const districtId = district?.fieldId || '';
           // setDistrictId(districtId);
           const state = cohortData.customField.find(
-            (item: CustomField) => item.label === 'State'
+            (item: CustomField) => item.label === 'STATES'
           );
           const stateCode = state?.code || '';
           setStateCode(stateCode);
@@ -148,7 +148,7 @@ const TeachingCenterDetails = () => {
           // setStateId(stateId);
 
           const blockField = cohortData?.customField.find(
-            (field: any) => field.label === 'Block'
+            (field: any) => field.label === 'BLOCKS'
           );
           setBlockCode(blockField?.code);
           // setBlockId(blockField.fieldId);
@@ -249,7 +249,7 @@ const TeachingCenterDetails = () => {
             />
             <Box m={'1rem 1rem 0.5rem'} display={'column'} gap={'5px'}>
               <Typography textAlign={'left'} fontSize={'22px'}>
-                {cohortDetails?.name}
+                {toPascalCase(cohortDetails?.name)}
               </Typography>
               {cohortDetails?.centerType && (
                 <Typography textAlign={'left'} fontSize={'22px'}>

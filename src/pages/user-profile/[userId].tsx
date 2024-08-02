@@ -28,7 +28,7 @@ import withAccessControl from '@/utils/hoc/withAccessControl';
 import { getFormRead } from '@/services/CreateUserService';
 import { FormContext, FormContextType, Role } from '@/utils/app.constant';
 import manageUserStore from '@/store/manageUserStore';
-import useStore from '@/store/store';
+// import useStore from '@/store/store';
 import AddFacilitatorModal from '@/components/AddFacilitator';
 
 interface UserData {
@@ -41,10 +41,10 @@ const TeacherProfile = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { userId }: any = router.query;
-  const store = useStore();
-  const userRole = store.userRole;
+  // const store = useStore();
+  // const userRole = store?.userRole;
   const userStore = manageUserStore();
-  const selfUserId = localStorage.getItem('userId');
+
   const theme = useTheme<any>();
 
   const [userData, setUserData] = useState<any | null>(null);
@@ -63,7 +63,17 @@ const TeacherProfile = () => {
   const [userFormData, setUserFormData] = useState<{ [key: string]: any }>({});
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [reload, setReload] = React.useState(false);
+  const [selfUserId, setSelfUserId] = React.useState<string | null>(null);
+  const [userRole, setUserRole] = React.useState<string | null>(null);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userId = localStorage.getItem('userId');
+      setSelfUserId(userId);
+      const role = localStorage.getItem('role');
+      setUserRole(role);
+    }
+  }, []);
   const handleReload = () => {
     setReload((prev) => !prev);
   };
@@ -275,7 +285,7 @@ const TeacherProfile = () => {
 
   // Find fields for "Subjects I Teach" and "My Main Subjects"
   const teachSubjectsField = customFieldsData?.find(
-    (field) => field.name === 'subject_taught'
+    (field) => field.name === 'subject_teach'
   );
   const mainSubjectsField: any = customFieldsData?.find(
     (field) => field.name === 'main_subject'
@@ -292,8 +302,8 @@ const TeacherProfile = () => {
   const mutualSubjects = teachSubjects?.filter((subject) =>
     mainSubjects?.includes(subject)
   );
-  const remainingSubjects = teachSubjects?.filter(
-    (subject) => !mainSubjects?.includes(subject)
+  const remainingSubjects = mainSubjects?.filter(
+    (subject) => !teachSubjects?.includes(subject)
   );
   const orderedSubjects = [...mutualSubjects, ...remainingSubjects];
 
@@ -522,7 +532,7 @@ const TeacherProfile = () => {
                 // },
               }}
             >
-              {userRole == Role.TEAM_LEADER && userId !== selfUserId ? (
+              {userRole === Role.TEAM_LEADER && userId !== selfUserId ? (
                 <Button
                   className="min-width-md-20"
                   sx={{
@@ -592,7 +602,7 @@ const TeacherProfile = () => {
               >
                 <Grid container spacing={4}>
                   {filteredSortedForView?.map((item, index) => {
-                    if (item.order === 5) {
+                    if (String(item.order) === '7') {
                       return (
                         <Grid item xs={12}>
                           <Typography
@@ -620,12 +630,12 @@ const TeacherProfile = () => {
                                   key={index}
                                   size="small"
                                   variant={
-                                    mainSubjects?.includes(subject)
+                                    mutualSubjects?.includes(subject)
                                       ? 'contained'
                                       : 'outlined'
                                   }
                                   sx={{
-                                    backgroundColor: mainSubjects?.includes(
+                                    backgroundColor: mutualSubjects?.includes(
                                       subject
                                     )
                                       ? theme.palette.info.contrastText
