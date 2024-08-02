@@ -123,20 +123,21 @@ const TeachingCenters = () => {
               const blockName = block.cohortName;
               const blockId = block.cohortId;
               localStorage.setItem('blockParentId', blockId);
+              
               const stateField = block?.customField.find(
-                (field: any) => field.label === 'State'
+                (field: any) => field.label === 'STATES'
               );
               setStateCode(stateField.code);
               // setStateFieldId(stateField.fieldId);
 
               const districtField = block?.customField.find(
-                (field: any) => field.label === 'District'
+                (field: any) => field.label === 'DISTRICTS'
               );
               setDistrictCode(districtField.code);
               // setDistrictFieldId(districtField.fieldId);
 
               const blockField = block?.customField.find(
-                (field: any) => field.label === 'Block'
+                (field: any) => field.label === 'BLOCKS'
               );
               setBlockCode(blockField.code);
               // setBlockFieldId(blockField.fieldId);

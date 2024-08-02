@@ -111,6 +111,18 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
           fieldId: fieldId,
           value: formData.cohort_type,
         });
+        cohortDetails.customFields.push({
+          fieldId: '6469c3ac-8c46-49d7-852a-00f9589737c5',
+          value: ['MH']
+        });
+        cohortDetails.customFields.push({
+          fieldId: 'b61edfc6-3787-4079-86d3-37262bf23a9e',
+          value: ['MUM']
+        });
+        cohortDetails.customFields.push({
+          fieldId: '4aab68ae-8382-43aa-a45a-e9b239319857',
+          value: ['BOR']
+        });
       }
     });
     const cohortData = await createCohort(cohortDetails);

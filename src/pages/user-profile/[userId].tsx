@@ -56,7 +56,8 @@ const TeacherProfile = () => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(user_placeholder_img);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [unitName, setUnitName] = useState('');
+  const [stateName, setStateName] = useState('');
+  const [districtName, setDistrictName] = useState('');
   const [blockName, setBlockName] = useState('');
   const [isError, setIsError] = React.useState<boolean>(false);
   const [isData, setIsData] = React.useState<boolean>(false);
@@ -127,6 +128,11 @@ const TeacherProfile = () => {
           } else if (item?.type === 'text') {
             return String(field?.value);
           } else {
+            if(field.value ==='FEMALE' || field.value ==='MALE')
+            {
+              console.log(true)
+              return field?.value?.toLowerCase();
+            }
             return field?.value;
           }
         }
@@ -193,7 +199,7 @@ const TeacherProfile = () => {
   // find Address
   const getFieldValue = (data: any, label: string) => {
     const field = data.find((item: any) => item.label === label);
-    return field ? field?.value[0] : null;
+    return field ? field?.value : null;
   };
 
   const { data, error, isLoading } = useProfileInfo(userId ?? '', true, reload);
@@ -213,6 +219,14 @@ const TeacherProfile = () => {
       const coreFieldData = data?.result?.userData;
       setUserName(toPascalCase(coreFieldData?.name));
       const fields: CustomField[] = data?.result?.userData?.customFields;
+      if (fields?.length > 0) {
+        const stateName = getFieldValue(fields, 'State');
+        setStateName(toPascalCase(stateName));
+        const districtName = getFieldValue(fields, 'District');
+        setDistrictName(toPascalCase(districtName));
+        const blockName = getFieldValue(fields, 'Block');
+        setBlockName(toPascalCase(blockName));
+      }
       const fieldIdToValueMap: { [key: string]: string } =
         mapFieldIdToValue(fields);
       console.log(`coreFieldData`, coreFieldData);
@@ -264,11 +278,6 @@ const TeacherProfile = () => {
 
               if (customDataFields?.length > 0) {
                 setCustomFieldsData(customDataFields);
-
-                const unitName = getFieldValue(customDataFields, 'Unit Name');
-                setUnitName(unitName);
-                const blockName = getFieldValue(customDataFields, 'Block Name');
-                setBlockName(blockName);
               }
             }
           } else {
@@ -305,7 +314,11 @@ const TeacherProfile = () => {
   const remainingSubjects = mainSubjects?.filter(
     (subject) => !teachSubjects?.includes(subject)
   );
-  const orderedSubjects = [...mutualSubjects, ...remainingSubjects];
+
+  let orderedSubjects: any;
+  if (remainingSubjects?.length) {
+   orderedSubjects = [...mutualSubjects, ...remainingSubjects];
+  }
 
   // Function to get label for a subject from the options array
   const getLabelForSubject = (subject: string) => {
@@ -335,7 +348,7 @@ const TeacherProfile = () => {
   };
 
   // address find
-  const address = [unitName, blockName, userData?.district, userData?.state]
+  const address = [stateName, districtName, blockName]
     ?.filter(Boolean)
     ?.join(', ');
 
@@ -604,7 +617,7 @@ const TeacherProfile = () => {
                   {filteredSortedForView?.map((item, index) => {
                     if (String(item.order) === '7') {
                       return (
-                        <Grid item xs={12}>
+                        <Grid item xs={12} key={index}>
                           <Typography
                             fontSize={'12px'}
                             fontWeight={'600'}
@@ -625,7 +638,7 @@ const TeacherProfile = () => {
                             }}
                           >
                             {orderedSubjects &&
-                              orderedSubjects?.map((subject, index) => (
+                              orderedSubjects?.map((subject: any, index: number) => (
                                 <Button
                                   key={index}
                                   size="small"
