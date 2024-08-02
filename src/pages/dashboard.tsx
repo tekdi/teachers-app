@@ -48,6 +48,7 @@ import calendar from '../assets/images/calendar.svg';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
+import { Role } from '@/utils/app.constant';
 
 interface DashboardProps {}
 
@@ -873,7 +874,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </Box>
                   </Box>
                 </Box>
-                {role === 'Team Leader' && (
+                {role === Role.TEAM_LEADER && (
         <Box p={2}>
           <AttendanceComparison />
         </Box>
