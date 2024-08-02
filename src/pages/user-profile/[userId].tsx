@@ -56,7 +56,8 @@ const TeacherProfile = () => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(user_placeholder_img);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [unitName, setUnitName] = useState('');
+  const [stateName, setStateName] = useState('');
+  const [districtName, setDistrictName] = useState('');
   const [blockName, setBlockName] = useState('');
   const [isError, setIsError] = React.useState<boolean>(false);
   const [isData, setIsData] = React.useState<boolean>(false);
@@ -193,7 +194,7 @@ const TeacherProfile = () => {
   // find Address
   const getFieldValue = (data: any, label: string) => {
     const field = data.find((item: any) => item.label === label);
-    return field ? field?.value[0] : null;
+    return field ? field?.value : null;
   };
 
   const { data, error, isLoading } = useProfileInfo(userId ?? '', true, reload);
@@ -213,6 +214,14 @@ const TeacherProfile = () => {
       const coreFieldData = data?.result?.userData;
       setUserName(toPascalCase(coreFieldData?.name));
       const fields: CustomField[] = data?.result?.userData?.customFields;
+      if (fields?.length > 0) {
+        const stateName = getFieldValue(fields, 'State');
+        setStateName(toPascalCase(stateName));
+        const districtName = getFieldValue(fields, 'District');
+        setDistrictName(toPascalCase(districtName));
+        const blockName = getFieldValue(fields, 'Block');
+        setBlockName(toPascalCase(blockName));
+      }
       const fieldIdToValueMap: { [key: string]: string } =
         mapFieldIdToValue(fields);
       console.log(`coreFieldData`, coreFieldData);
@@ -264,11 +273,6 @@ const TeacherProfile = () => {
 
               if (customDataFields?.length > 0) {
                 setCustomFieldsData(customDataFields);
-
-                const unitName = getFieldValue(customDataFields, 'Unit Name');
-                setUnitName(unitName);
-                const blockName = getFieldValue(customDataFields, 'Block Name');
-                setBlockName(blockName);
               }
             }
           } else {
@@ -339,7 +343,7 @@ const TeacherProfile = () => {
   };
 
   // address find
-  const address = [unitName, blockName, userData?.district, userData?.state]
+  const address = [stateName, districtName, blockName]
     ?.filter(Boolean)
     ?.join(', ');
 
