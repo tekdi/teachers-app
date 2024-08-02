@@ -51,7 +51,6 @@ const CoursePlanner = () => {
     const fetchCoursePlanner = async () => {
       try {
         const response = await getCoursePlanner();
-        // Transform data to match CoursePlannerData type
         const transformedData = response.map((item: any) => ({
           ...item,
           id: String(item.id),
