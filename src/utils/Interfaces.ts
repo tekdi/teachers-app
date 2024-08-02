@@ -347,7 +347,16 @@ export interface Session {
   subtopic?: string;
   url?: string;
 }
-
+export interface CoursePlanner {
+  id: number;
+  subject?: string;
+  circular?:number;
+}
+export interface CoursePlanner {
+  id: number;
+  subject?: string;
+  circular?:number
+}
 export interface SessionCardFooterProps {
   item: Session;
 }
@@ -438,3 +447,10 @@ export interface eventFilters {
   title?: string;
   status?: [];
 }
+
+
+export interface CoursePlannerData  {
+  id: string; 
+  subject: string;
+  circular: number;
+};
