@@ -305,7 +305,11 @@ const TeacherProfile = () => {
   const remainingSubjects = mainSubjects?.filter(
     (subject) => !teachSubjects?.includes(subject)
   );
-  const orderedSubjects = [...mutualSubjects, ...remainingSubjects];
+
+  let orderedSubjects: any;
+  if (remainingSubjects?.length) {
+   orderedSubjects = [...mutualSubjects, ...remainingSubjects];
+  }
 
   // Function to get label for a subject from the options array
   const getLabelForSubject = (subject: string) => {
