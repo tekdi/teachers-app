@@ -181,6 +181,22 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         localStorage.getItem('teamLeadApp') ?? ''
       );
       console.log(teamLeaderData);
+
+
+      if (!isEditModal && teamLeaderData) {
+        apiBody.customFields.push({
+          fieldId: '4aab68ae-8382-43aa-a45a-e9b239319857',  //teacherData?.state?.blockId,
+          value: [teamLeaderData?.state?.blockCode],
+        });
+        apiBody.customFields.push({
+          fieldId: '6469c3ac-8c46-49d7-852a-00f9589737c5', //teacherData?.state?.stateId,
+          value: [teamLeaderData?.state?.stateCode],
+        });
+        apiBody.customFields.push({
+          fieldId: 'b61edfc6-3787-4079-86d3-37262bf23a9e', //teacherData?.state?.districtId,
+          value: [teamLeaderData?.state?.districtCode],
+        });
+      }
     }
     // apiBody.customFields.push({
     //   fieldId: teamLeaderData?.state?.blockId,
@@ -194,6 +210,10 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     //   fieldId: teamLeaderData?.state?.districtId,
     //   value: [teamLeaderData?.state?.districtCode],
     // });
+
+
+
+
     console.log(apiBody);
 
     try {

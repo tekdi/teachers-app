@@ -130,8 +130,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           const page = 0;
           const filters = {
             states: 'MH',
-            districts: 'PN',
-            blocks: 'BA',
+            districts: 'MUM',
+            blocks: 'BOR',
             role: 'Teacher',
             status: ['active'],
           };
