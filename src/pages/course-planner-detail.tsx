@@ -32,7 +32,7 @@ const CoursePlannerDetail = () => {
     [key: string]: boolean;
   }>({
     'panel1-header': false,
-    // 'panel2-header': false,  || example for multiple accordions do this dynamically
+    'panel2-header': false, // || example for multiple accordions do this dynamically
     // Add more panels if needed
   });
   const [drawerState, setDrawerState] = React.useState({ bottom: false });
@@ -270,7 +270,6 @@ const CoursePlannerDetail = () => {
                     py: '10px',
                     px: '16px',
                     background: theme.palette.warning['A400'],
-                    pt: 2,
                   }}
                 >
                   <Box
@@ -319,7 +318,7 @@ const CoursePlannerDetail = () => {
                         onClick={toggleDrawer(true)}
                         sx={{
                           fontSize: '20px',
-                          color: isDrawerOpen ? '#1A8825' : '#7C766F',
+                          color: '#7C766F',
                           cursor: 'pointer',
                         }}
                       />
@@ -340,6 +339,250 @@ const CoursePlannerDetail = () => {
                   >
                     <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
                       5 {t('COURSE_PLANNER.RESOURCES')}
+                    </Box>
+                    <ArrowForwardIcon sx={{ fontSize: '16px' }} />
+                  </Box>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  borderBottom: `1px solid ${theme.palette.warning['A100']}`,
+                }}
+              >
+                <Box
+                  sx={{
+                    py: '10px',
+                    px: '16px',
+                    background: theme.palette.warning['A400'],
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      gap: '20px',
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        fontSize: '16px',
+                        fontWeight: '400',
+                        color: theme.palette.warning['300'],
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => {
+                        router.push(`/topic-detail-view`);
+                      }}
+                    >
+                      Irrational Numbers
+                      {/* will come from API */}
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          padding: '5px',
+                          background: '  #C1D6FF',
+                          fontSize: '12px',
+                          fontWeight: '500',
+                          color: '#4D4639',
+                          borderRadius: '8px',
+                        }}
+                      >
+                        JAN
+                      </Box>
+                      <CheckCircleIcon
+                        onClick={toggleDrawer(true)}
+                        sx={{
+                          fontSize: '20px',
+                          color: '#7C766F',
+                          cursor: 'pointer',
+                        }}
+                      />
+                    </Box>
+                  </Box>
+                  <Box
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      mt: 0.8,
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      router.push(`/topic-detail-view`);
+                    }}
+                  >
+                    <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
+                      4 {t('COURSE_PLANNER.RESOURCES')}
+                    </Box>
+                    <ArrowForwardIcon sx={{ fontSize: '16px' }} />
+                  </Box>
+                </Box>
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      </Box>
+      <Box mt={2}>
+        <Box
+          sx={{
+            borderRadius: '8px',
+          }}
+        >
+          <Accordion
+            expanded={expandedPanels['panel2-header'] || false}
+            onChange={() =>
+              setExpandedPanels((prev) => ({
+                ...prev,
+                'panel2-header': !prev['panel2-header'],
+              }))
+            }
+            sx={{
+              boxShadow: 'none',
+              background: '#F1E7D9',
+              border: 'none',
+              transition: '0.3s',
+            }}
+          >
+            <AccordionSummary
+              expandIcon={
+                <ArrowDropDownIcon
+                  sx={{ color: theme.palette.warning['300'] }}
+                />
+              }
+              aria-controls="panel1-content"
+              id="panel2-header"
+              className="accordion-summary"
+              sx={{
+                px: '16px',
+                m: 0,
+                '&.Mui-expanded': {
+                  minHeight: '48px',
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  pr: '5px',
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '5px',
+                  }}
+                >
+                  <RadioButtonUncheckedIcon sx={{ fontSize: '15px' }} />
+                  <Typography
+                    fontWeight="500"
+                    fontSize="14px"
+                    color={theme.palette.warning['300']}
+                  >
+                    Topic 2 - Polynomials {/* will come from API */}
+                  </Typography>
+                </Box>
+                <Typography fontWeight="600" fontSize="12px" color="#7C766F">
+                  Jan, Feb {/* will come from API */}
+                </Typography>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails
+              sx={{ padding: '0', transition: 'max-height 0.3s ease-out' }}
+            >
+              <Box
+                sx={{
+                  borderBottom: `1px solid ${theme.palette.warning['A100']}`,
+                }}
+              >
+                <Box
+                  sx={{
+                    py: '10px',
+                    px: '16px',
+                    background: theme.palette.warning['A400'],
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      gap: '20px',
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        fontSize: '16px',
+                        fontWeight: '400',
+                        color: theme.palette.warning['300'],
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => {
+                        router.push(`/topic-detail-view`);
+                      }}
+                    >
+                      Zeroes of a Polynomial - Geometrical Meaning
+                      {/* will come from API */}
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          padding: '5px',
+                          background: '  #C1D6FF',
+                          fontSize: '12px',
+                          fontWeight: '500',
+                          color: '#4D4639',
+                          borderRadius: '8px',
+                        }}
+                      >
+                        JAN
+                      </Box>
+                      <CheckCircleIcon
+                        onClick={toggleDrawer(true)}
+                        sx={{
+                          fontSize: '20px',
+                          color: '#7C766F',
+                          cursor: 'pointer',
+                        }}
+                      />
+                    </Box>
+                  </Box>
+                  <Box
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      mt: 0.8,
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      router.push(`/topic-detail-view`);
+                    }}
+                  >
+                    <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
+                      2 {t('COURSE_PLANNER.RESOURCES')}
                     </Box>
                     <ArrowForwardIcon sx={{ fontSize: '16px' }} />
                   </Box>
