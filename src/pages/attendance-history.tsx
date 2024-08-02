@@ -184,8 +184,12 @@ const UserAttendanceHistory = () => {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
             name: toPascalCase(entry.name),
-            memberStatus: entry.status,
-          }));
+            memberStatus: entry.status,createdAt: entry.createdAt,
+          }))
+          .filter((member: { createdAt: string | number | Date }) => {
+            const createdAt = new Date(member.createdAt);
+            return createdAt <= selectedDate;
+          });
           if (nameUserIdArray && (selectedDate || currentDate)) {
             const userAttendanceStatusList = async () => {
               const attendanceStatusData: AttendanceStatusListProps = {

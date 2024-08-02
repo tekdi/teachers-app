@@ -2,6 +2,7 @@ import { UiSchema } from '@rjsf/utils';
 import { JSONSchema7 } from 'json-schema';
 import NumberInputField from './form/NumberInputField';
 import { FormData, Field, FieldOption } from '@/utils/Interfaces';
+import { getCurrentYearPattern } from '@/utils/Helper';
 
 export const customFields = {
   NumberInputField: NumberInputField,
@@ -216,6 +217,10 @@ export const GenerateSchemaAndUiSchema = (
       fieldSchema.minLength = Number(field.minLength);
     }
 
+    if (field?.default) {
+      fieldSchema.default = field.default;
+    }
+
     if (field?.maxLength) {
       fieldSchema.maxLength = Number(field.maxLength);
     }
@@ -223,6 +228,9 @@ export const GenerateSchemaAndUiSchema = (
     if (field?.validation) {
       if (field?.validation?.includes('numeric')) {
         // fieldUiSchema['ui:field'] = 'NumberInputField';
+      }
+      if (field?.validation?.includes('currentYear')) {
+        fieldSchema.pattern = getCurrentYearPattern();
       }
       fieldSchema.validation = field.validation;
     }

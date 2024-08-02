@@ -324,3 +324,8 @@ export const convertLocalToUTC = (localDateTime: any) => {
   const utcDateTime = localDate.toISOString();
   return utcDateTime;
 };
+
+export const getCurrentYearPattern = () => {
+  const currentYear = new Date().getFullYear();
+  return `^(19[0-9][0-9]|20[0-${Math.floor(currentYear / 10) % 10}][0-${currentYear % 10}])$`;
+};
