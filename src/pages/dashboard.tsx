@@ -86,7 +86,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const formattedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
   const [userId, setUserId] = React.useState<string | null>(null);
   const [blockName, setBlockName] = React.useState<string>('');
-
+  const role = localStorage.getItem('role');
   useEffect(() => {
     setIsClient(true);
     const calculateDateRange = () => {
@@ -873,9 +873,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     </Box>
                   </Box>
                 </Box>
-                <Box p={2}>
-                  <AttendanceComparison />
-                </Box>
+                {role === 'Team Leader' && (
+        <Box p={2}>
+          <AttendanceComparison />
+        </Box>
+      )}
                 {/* <Box sx={{ background: '#fff' }}>
             <Typography
               textAlign={'left'}
