@@ -128,6 +128,11 @@ const TeacherProfile = () => {
           } else if (item?.type === 'text') {
             return String(field?.value);
           } else {
+            if(field.value ==='FEMALE' || field.value ==='MALE')
+            {
+              console.log(true)
+              return field?.value?.toLowerCase();
+            }
             return field?.value;
           }
         }
