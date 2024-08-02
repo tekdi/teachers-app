@@ -211,7 +211,7 @@ const LearnerProfile: React.FC = () => {
           } else if (item?.type === 'checkbox') {
             return String(field?.value).split(',');
           } else {
-            return field?.value;
+            return field?.value.toLowerCase();
           }
         } else {
           if (item?.type === 'numeric') {
@@ -224,7 +224,7 @@ const LearnerProfile: React.FC = () => {
               console.log(true)
               return field?.value?.toLowerCase();
             }
-            return field?.value;
+            return field?.value.toLowerCase();;
           }
         }
       };
