@@ -293,7 +293,7 @@ const LearnerProfile: React.FC = () => {
   // find Address
   const getFieldValue = (data: any, label: string) => {
     const field = data.find((item: any) => item.label === label);
-    return field ? field.value[0] : null;
+    return field ? field?.value[0] : null;
   };
 
   // ger user information
@@ -444,14 +444,14 @@ const LearnerProfile: React.FC = () => {
           displayValue:
             selectedOption !== '-'
               ? selectedOption.label
-              : field.value
-                ? toPascalCase(field.value)
+              : field?.value
+                ? toPascalCase(field?.value)
                 : '-',
         };
       }
       return {
         ...field,
-        displayValue: field.value ? toPascalCase(field.value) : '-',
+        displayValue: field?.value ? toPascalCase(field?.value) : '-',
       };
     });
 
@@ -463,15 +463,15 @@ const LearnerProfile: React.FC = () => {
   //------ Test Report API Integration------
 
   const handleChangeTest = (event: SelectChangeEvent) => {
-    const test = event.target.value;
+    const test = event?.target?.value;
     setTest(test);
     ReactGA.event('pre-post-test-selected', { testTypeSelected: test });
     getDoIdForAssesmentReport(test, subject);
   };
 
   const handleChangeSubject = (event: SelectChangeEvent) => {
-    const subject = event.target.value;
-    setSubject(event.target.value);
+    const subject = event?.target?.value;
+    setSubject(event?.target?.value);
     ReactGA.event('select-subject-learner-details-page', {
       subjectSelected: subject,
     });
