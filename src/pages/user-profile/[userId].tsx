@@ -127,11 +127,9 @@ const TeacherProfile = () => {
             return parseInt(String(field?.value));
           } else if (item?.type === 'text') {
             return String(field?.value);
-          } else {
-            if(field.value ==='FEMALE' || field.value ==='MALE')
-            {
-              console.log(true)
-              return field?.value?.toLowerCase();
+          } else if (item?.type === 'radio') {
+            if (typeof field?.value === 'string') {
+              return field?.value?.replace(/_/g, ' ').toLowerCase();
             }
             return field?.value;
           }
@@ -680,7 +678,7 @@ const TeacherProfile = () => {
                             letterSpacing={'0.5px'}
                             color={theme.palette.warning['500']}
                           >
-                            {item?.label && t(`FORM.${item.label}`, item.label)}
+                            {item?.label && t(`FORM.${item?.label}`, item?.label)}
                           </Typography>{' '}
                           {/* No of cluster */}
                           <Typography
@@ -706,7 +704,7 @@ const TeacherProfile = () => {
                             letterSpacing={'0.5px'}
                             color={theme.palette.warning['500']}
                           >
-                            {item?.label && t(`FORM.${item.label}`, item.label)}
+                            {item?.label && t(`FORM.${item?.label}`, item?.label)}
                           </Typography>
                           {/* Profile Field Values */}
                           <Typography
