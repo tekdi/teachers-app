@@ -29,6 +29,8 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
             px: '16px',
             background: '#4A4640',
             boxShadow: '0px 1px 2px 0px #0000004D',
+            borderTopLeftRadius: '16px',
+            borderTopRightRadius: '16px',
           }}
         >
           <Box
@@ -99,6 +101,7 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
                       },
                     }}
                     // onClick={handlePrimaryModel} // Uncomment and implement this function if needed
+                    onClick={toggleDrawer(false)}
                   >
                     {primary}
                   </Button>
