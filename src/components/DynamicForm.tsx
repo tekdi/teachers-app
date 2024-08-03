@@ -6,8 +6,6 @@ import { useTranslation } from 'next-i18next';
 import React, { ReactNode } from 'react';
 import CustomRadioWidget from './CustomRadioWidget';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
-import { Button, Divider } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import { getCurrentYearPattern } from '@/utils/Helper';
 
@@ -82,6 +80,23 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
           error.message = t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD');
           break;
         }
+        case 'maximum': {
+          const property = error.property.substring(1);
+          if (schema.properties?.[property]?.validation?.includes('numeric')) {
+            error.message = t('FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR', {
+              maxLength: schema.properties?.[property]?.maxLength,
+            });
+          }
+        }
+        case 'minimum': {
+          const property = error.property.substring(1);
+          if (schema.properties?.[property]?.validation?.includes('numeric')) {
+            error.message = t('FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR', {
+              minLength: schema.properties?.[property]?.minLength,
+            });
+          }
+        }
+
         case 'pattern': {
           const pattern = error?.params?.pattern;
           const property = error.property.substring(1);

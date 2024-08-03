@@ -218,11 +218,9 @@ const LearnerProfile: React.FC = () => {
             return parseInt(String(field?.value));
           } else if (item?.type === 'text') {
             return String(field?.value);
-          } else {
-            if(field.value ==='FEMALE' || field.value ==='MALE')
-            {
-              console.log(true)
-              return field?.value?.toLowerCase();
+          } else if (item?.type === 'radio') {
+            if (typeof field?.value === 'string') {
+              return field?.value?.replace(/_/g, ' ').toLowerCase();
             }
             return field?.value.toLowerCase();;
           }
