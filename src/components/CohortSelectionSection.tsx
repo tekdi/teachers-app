@@ -12,12 +12,14 @@ import React, { useEffect } from 'react';
 import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
 import { ICohort } from '@/utils/Interfaces';
+import { CustomField } from '@/utils/Interfaces';
 import { cohortHierarchy } from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import ReactGA from 'react-ga4';
 import Loader from './Loader';
 import { showToastMessage } from './Toastify';
+import manageUserStore from '@/store/manageUserStore';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -81,6 +83,25 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   const pathname = usePathname(); // Get the current pathname
   const { t } = useTranslation();
   const setCohorts = useStore((state) => state.setCohorts);
+  const store = manageUserStore();
+  const setDistrictCode = manageUserStore(
+    (state: { setDistrictCode: any }) => state.setDistrictCode
+  );
+  const setDistrictId = manageUserStore(
+    (state: { setDistrictId: any }) => state.setDistrictId
+  );
+  const setStateCode = manageUserStore(
+    (state: { setStateCode: any }) => state.setStateCode
+  );
+  const setStateId = manageUserStore(
+    (state: { setStateId: any }) => state.setStateId
+  );
+  const setBlockCode = manageUserStore(
+    (state: { setBlockCode: any }) => state.setBlockCode
+  );
+  const setBlockId = manageUserStore(
+    (state: { setBlockId: any }) => state.setBlockId
+  );
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -105,6 +126,29 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             customField: 'true',
           });
           console.log('Response:', response);
+          const cohortData = response[0];
+          if (cohortData?.customField?.length) {
+            const district = cohortData.customField.find(
+              (item: CustomField) => item.label === 'DISTRICTS'
+            );
+            const districtCode = district?.code || '';
+            setDistrictCode(districtCode);
+            const districtId = district?.fieldId || '';
+            setDistrictId(districtId);
+            const state = cohortData.customField.find(
+              (item: CustomField) => item.label === 'STATES'
+            );
+            const stateCode = state?.code || '';
+            setStateCode(stateCode);
+            const stateId = state?.fieldId || '';
+            setStateId(stateId);
+
+            const blockField = cohortData?.customField.find(
+              (field: any) => field.label === 'BLOCKS'
+            );
+            setBlockCode(blockField?.code);
+            setBlockId(blockField.fieldId);
+          }
           if (response && response?.length > 0) {
             const extractNamesAndCohortTypes = (
               data: ChildData[]

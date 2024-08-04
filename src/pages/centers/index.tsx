@@ -19,7 +19,6 @@ import Loader from '@/components/Loader';
 import ManageUser from '@/components/ManageUser';
 import { showToastMessage } from '@/components/Toastify';
 import CreateCenterModal from '@/components/center/CreateCenterModal';
-import teamLeadStore from '@/store/mangageTLStore';
 import useStore from '@/store/store';
 import { Role } from '@/utils/app.constant';
 import { ArrowDropDown, Search } from '@mui/icons-material';
@@ -69,26 +68,6 @@ const TeachingCenters = () => {
     setValue(newValue);
   };
 
-  const TLstore = teamLeadStore();
-  const setDistrictCode = teamLeadStore(
-    (state: { setDistrictCode: any }) => state.setDistrictCode
-  );
-  const setDistrictFieldId = teamLeadStore(
-    (state: { setDistrictFieldId: any }) => state.setDistrictFieldId
-  );
-  const setStateCode = teamLeadStore(
-    (state: { setStateCode: any }) => state.setStateCode
-  );
-  const setStateFieldId = teamLeadStore(
-    (state: { setStateFieldId: any }) => state.setStateFieldId
-  );
-  const setBlockCode = teamLeadStore(
-    (state: { setBlockCode: any }) => state.setBlockCode
-  );
-  const setBlockFieldId = teamLeadStore(
-    (state: { blockFieldId: any }) => state.blockFieldId
-  );
-
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
@@ -124,29 +103,16 @@ const TeachingCenters = () => {
               const blockName = block.cohortName;
               const blockId = block.cohortId;
               localStorage.setItem('blockParentId', blockId);
-              
+
               const stateField = block?.customField.find(
                 (field: any) => field.label === 'STATES'
               );
-              setStateCode(stateField.code);
-              // setStateFieldId(stateField.fieldId);
+              const state = stateField ? stateField.value : '';
 
               const districtField = block?.customField.find(
                 (field: any) => field.label === 'DISTRICTS'
               );
-              setDistrictCode(districtField.code);
-              // setDistrictFieldId(districtField.fieldId);
-
-              const blockField = block?.customField.find(
-                (field: any) => field.label === 'BLOCKS'
-              );
-              setBlockCode(blockField.code);
-              // setBlockFieldId(blockField.fieldId);
-
-              const state = stateField ? stateField.value : '';
-
               const district = districtField ? districtField.value : '';
-
               return { blockName, blockId, state, district };
             });
             console.log(blockData);

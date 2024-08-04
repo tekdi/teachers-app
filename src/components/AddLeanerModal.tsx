@@ -92,13 +92,13 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     const formData = data.formData;
     console.log('Form data submitted:', formData);
     const schemaProperties = schema.properties;
-    let cohortId, teacherData;
+    let cohortId, fieldData;
     if (typeof window !== 'undefined' && window.localStorage) {
-      teacherData = JSON.parse(localStorage.getItem('teacherApp') || '');
+      fieldData = JSON.parse(localStorage.getItem('fieldData') || '');
       cohortId = localStorage.getItem('classId');
     }
     const { username, password } = generateUsernameAndPassword(
-      teacherData?.state?.stateCode,
+      fieldData?.state?.stateCode,
       ''
     );
 
@@ -146,16 +146,17 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
     if (!isEditModal) {
       apiBody.customFields.push({
-        fieldId: '4aab68ae-8382-43aa-a45a-e9b239319857',  //teacherData?.state?.blockId,
-        value: [teacherData?.state?.blockCode],
+        fieldId: fieldData?.state?.blockId,
+        value: [fieldData?.state?.blockCode],
       });
       apiBody.customFields.push({
-        fieldId: '6469c3ac-8c46-49d7-852a-00f9589737c5', //teacherData?.state?.stateId,
-        value: [teacherData?.state?.stateCode],
+        fieldId: fieldData?.state?.stateId,
+        value: [fieldData?.state?.stateCode],
       });
+      fieldData;
       apiBody.customFields.push({
-        fieldId: 'b61edfc6-3787-4079-86d3-37262bf23a9e', //teacherData?.state?.districtId,
-        value: [teacherData?.state?.districtCode],
+        fieldId: fieldData?.state?.districtId,
+        value: [fieldData?.state?.districtCode],
       });
       console.log(apiBody);
     }
