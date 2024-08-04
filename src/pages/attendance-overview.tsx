@@ -52,6 +52,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
+import { getMenuItems } from '@/utils/app.constant';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -96,17 +97,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const theme = useTheme<any>();
   const pathname = usePathname();
 
-  const menuItems = [
-    t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-      date_range: dateRange,
-    }),
-    t('DASHBOARD.AS_OF_TODAY_DATE', {
-      day_date: currentDayMonth,
-    }),
-    t('COMMON.LAST_MONTH'),
-    t('COMMON.LAST_SIX_MONTHS'),
-    t('COMMON.CUSTOM_RANGE'),
-  ];
+  const menuItems = getMenuItems(t, dateRange, currentDayMonth);
 
   useEffect(() => {
     setSelectedValue(currentDayMonth);

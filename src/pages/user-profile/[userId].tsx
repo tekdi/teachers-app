@@ -292,7 +292,7 @@ const TeacherProfile = () => {
 
   // Find fields for "Subjects I Teach" and "My Main Subjects"
   const teachSubjectsField = customFieldsData?.find(
-    (field) => field.name === 'subject_teach'
+    (field) => field.name === 'subject_taught'
   );
   const mainSubjectsField: any = customFieldsData?.find(
     (field) => field.name === 'main_subject'
@@ -301,6 +301,7 @@ const TeacherProfile = () => {
   const teachSubjects: string[] = teachSubjectsField
     ? teachSubjectsField?.value?.split(',')
     : [];
+
   const mainSubjects: string[] = mainSubjectsField
     ? mainSubjectsField?.value?.split(',')
     : [];
@@ -309,13 +310,16 @@ const TeacherProfile = () => {
   const mutualSubjects = teachSubjects?.filter((subject) =>
     mainSubjects?.includes(subject)
   );
-  const remainingSubjects = mainSubjects?.filter(
-    (subject) => !teachSubjects?.includes(subject)
+
+  const remainingSubjects = teachSubjects?.filter(
+    (subject) => !mainSubjects?.includes(subject)
   );
 
   let orderedSubjects: any;
   if (remainingSubjects?.length) {
-   orderedSubjects = [...mutualSubjects, ...remainingSubjects];
+    orderedSubjects = [...mutualSubjects, ...remainingSubjects];
+  } else {
+    orderedSubjects = [...mutualSubjects];
   }
 
   // Function to get label for a subject from the options array
@@ -636,33 +640,35 @@ const TeacherProfile = () => {
                             }}
                           >
                             {orderedSubjects &&
-                              orderedSubjects?.map((subject: any, index: number) => (
-                                <Button
-                                  key={index}
-                                  size="small"
-                                  variant={
-                                    mutualSubjects?.includes(subject)
-                                      ? 'contained'
-                                      : 'outlined'
-                                  }
-                                  sx={{
-                                    backgroundColor: mutualSubjects?.includes(
-                                      subject
-                                    )
-                                      ? theme.palette.info.contrastText
-                                      : 'none',
-                                    borderRadius: '8px',
-                                    color: theme.palette.warning.A200,
-                                    whiteSpace: 'nowrap',
-                                    boxShadow: 'none',
-                                    border: `1px solid ${theme.palette.warning[900]}`,
-                                    pointerEvents: 'none',
-                                  }}
-                                >
-                                  {getLabelForSubject(subject)}
-                                  {/* {subject} */}
-                                </Button>
-                              ))}
+                              orderedSubjects?.map(
+                                (subject: any, index: number) => (
+                                  <Button
+                                    key={index}
+                                    size="small"
+                                    variant={
+                                      mutualSubjects?.includes(subject)
+                                        ? 'contained'
+                                        : 'outlined'
+                                    }
+                                    sx={{
+                                      backgroundColor: mutualSubjects?.includes(
+                                        subject
+                                      )
+                                        ? theme.palette.info.contrastText
+                                        : 'none',
+                                      borderRadius: '8px',
+                                      color: theme.palette.warning.A200,
+                                      whiteSpace: 'nowrap',
+                                      boxShadow: 'none',
+                                      border: `1px solid ${theme.palette.warning[900]}`,
+                                      pointerEvents: 'none',
+                                    }}
+                                  >
+                                    {getLabelForSubject(subject)}
+                                    {/* {subject} */}
+                                  </Button>
+                                )
+                              )}
                           </Box>
                         </Grid>
                       );
@@ -678,7 +684,8 @@ const TeacherProfile = () => {
                             letterSpacing={'0.5px'}
                             color={theme.palette.warning['500']}
                           >
-                            {item?.label && t(`FORM.${item?.label}`, item?.label)}
+                            {item?.label &&
+                              t(`FORM.${item?.label}`, item?.label)}
                           </Typography>{' '}
                           {/* No of cluster */}
                           <Typography
@@ -704,7 +711,8 @@ const TeacherProfile = () => {
                             letterSpacing={'0.5px'}
                             color={theme.palette.warning['500']}
                           >
-                            {item?.label && t(`FORM.${item?.label}`, item?.label)}
+                            {item?.label &&
+                              t(`FORM.${item?.label}`, item?.label)}
                           </Typography>
                           {/* Profile Field Values */}
                           <Typography

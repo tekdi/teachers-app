@@ -454,3 +454,10 @@ export interface CoursePlannerData  {
   subject: string;
   circular: number;
 };
+
+export interface OverallAttendance {
+  absent?: any;
+  present?: any;
+  absent_percentage: any;
+  present_percentage: any;
+}

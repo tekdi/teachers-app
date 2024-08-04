@@ -1,11 +1,15 @@
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { GetStaticPaths } from 'next';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import ReactGA from 'react-ga4';
+import { format } from 'date-fns';
 import {
   ArrowBack as ArrowBackIcon,
   East as EastIcon,
+  CreateOutlined as CreateOutlinedIcon,
 } from '@mui/icons-material';
-import {
-  AssesmentListService,
-  getDoIdForAssesmentDetails,
-} from '@/services/AssesmentService';
 import {
   Box,
   Button,
@@ -19,54 +23,44 @@ import {
   Select,
   SelectChangeEvent,
   Typography,
+  Menu,
+  MenuProps,
 } from '@mui/material';
-import {
-  CustomField,
-  UserData,
-  CohortAttendancePercentParam,
-  UpdateCustomField,
-} from '@/utils/Interfaces';
-import Menu, { MenuProps } from '@mui/material/Menu';
-import React, { useEffect, useState } from 'react';
 import { alpha, styled, useTheme } from '@mui/material/styles';
+import {
+  AssesmentListService,
+  getDoIdForAssesmentDetails,
+} from '@/services/AssesmentService';
 import {
   classesMissedAttendancePercentList,
   getCohortAttendance,
 } from '@/services/AttendanceService';
 import { getUserDetails } from '@/services/ProfileService';
+import { getFormRead } from '@/services/CreateUserService';
 import {
   formatSelectedDate,
-  getTodayDate,
   mapFieldIdToValue,
   toPascalCase,
 } from '@/utils/Helper';
-
-import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
-import DateRangePopup from '@/components/DateRangePopup';
-import { GetStaticPaths } from 'next';
+import { logEvent } from '@/utils/googleAnalytics';
+import {
+  CustomField,
+  UserData,
+  CohortAttendancePercentParam,
+  UpdateCustomField,
+  OverallAttendance,
+} from '@/utils/Interfaces';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
 import MarksObtainedCard from '@/components/MarksObtainedCard';
-import ReactGA from 'react-ga4';
 import StudentStatsCard from '@/components/StudentStatsCard';
-import { format } from 'date-fns';
-import { logEvent } from '@/utils/googleAnalytics';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import DateRangePopup from '@/components/DateRangePopup';
 import { showToastMessage } from '@/components/Toastify';
-import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
-import withAccessControl from '@/utils/hoc/withAccessControl';
-import { accessControl } from '../../../app.config';
-import { getFormRead } from '@/services/CreateUserService';
-import { FormContext, FormContextType } from '@/utils/app.constant';
 import AddLearnerModal from '@/components/AddLeanerModal';
-
-interface OverallAttendance {
-  absent?: any;
-  present?: any;
-  absent_percentage: any;
-  present_percentage: any;
-}
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import { FormContext, FormContextType, getMenuItems } from '@/utils/app.constant';
+import { accessControl } from '../../../app.config';
+import StyledMenu from '@/components/StyledMenu';
 
 const LearnerProfile: React.FC = () => {
   const { t } = useTranslation();
@@ -91,7 +85,6 @@ const LearnerProfile: React.FC = () => {
   const [isFromDate, setIsFromDate] = useState(
     formatSelectedDate(new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000))
   );
-  const [isToDate, setIsToDate] = useState(getTodayDate());
   const [submittedOn, setSubmitedOn] = useState();
   const [overallAttendance, setOverallAttendance] =
     useState<OverallAttendance>();
@@ -118,69 +111,16 @@ const LearnerProfile: React.FC = () => {
     setReload((prev) => !prev);
   };
 
-  const StyledMenu = styled((props: MenuProps) => (
-    <Menu
-      elevation={0}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      {...props}
-    />
-  ))(({ theme }) => ({
-    '& .MuiPaper-root': {
-      borderRadius: 6,
-      marginTop: theme.spacing(1),
-      minWidth: 180,
-      color:
-        theme.palette.mode === 'light'
-          ? 'rgb(55, 65, 81)'
-          : theme.palette.grey[300],
-      boxShadow:
-        'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-      '& .MuiMenu-list': {
-        padding: '4px 0',
-      },
-      '& .MuiMenuItem-root': {
-        '& .MuiSvgIcon-root': {
-          fontSize: 18,
-          color: theme.palette.text.secondary,
-          marginRight: theme.spacing(1.5),
-        },
-        '&:active': {
-          backgroundColor: alpha(
-            theme.palette.primary.main,
-            theme.palette.action.selectedOpacity
-          ),
-        },
-      },
-    },
-  }));
-
   const handleCloseOption = () => {
     setAnchorElOption(null); // Set anchorElOption to null to close the menu
   };
 
   const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
     setIsFromDate(fromDate);
-    setIsToDate(toDate);
     getAttendanceData(fromDate, toDate);
   };
-  const menuItems = [
-    t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-      date_range: dateRange,
-    }),
-    t('DASHBOARD.AS_OF_TODAY_DATE', {
-      day_date: currentDayMonth,
-    }),
-    t('COMMON.LAST_MONTH'),
-    t('COMMON.LAST_SIX_MONTHS'),
-    t('COMMON.CUSTOM_RANGE'),
-  ];
+
+  const menuItems = getMenuItems(t, dateRange, currentDayMonth);
 
   useEffect(() => {
     setSelectedValue(currentDayMonth);
@@ -363,9 +303,9 @@ const LearnerProfile: React.FC = () => {
                       console.log(`mergedProfileData`, mergedProfileData);
                       if (mergedProfileData) {
                         setUserData(mergedProfileData?.fields);
-                        const nameField = mergedProfileData.fields.find(
-                          (field: { name: string }) => field.name === 'name'
-                        );
+                        // const nameField = mergedProfileData.fields.find(
+                        //   (field: { name: string }) => field.name === 'name'
+                        // );
                         const customDataFields = mergedProfileData?.fields;
                         // setIsData(true);
                         if (customDataFields?.length > 0) {
@@ -416,12 +356,6 @@ const LearnerProfile: React.FC = () => {
   useEffect(() => {
     fetchUserDetails();
   }, [reload]);
-
-  // data by order to show on basic details
-
-  // const learnerDetailsByOrder = [...customFieldsData]
-  //   .sort((a, b) => a.order - b.order)
-  //   .filter((field) => field.order <= 12);
 
   const learnerDetailsByOrder = [...customFieldsData]
     ?.sort((a, b) => a.order - b.order)
@@ -726,9 +660,7 @@ const LearnerProfile: React.FC = () => {
               lineHeight={'28px'}
               color={theme.palette.warning['A200']}
             >
-              {userName?.length > 18
-                ? `${userName?.substring(0, 18)}...`
-                : userName}
+              {userName}
             </Typography>
             <Typography
               variant="h5"
