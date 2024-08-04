@@ -63,7 +63,13 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
               statusReason: user.statusReason,
               cohortMembershipId: user.cohortMembershipId,
               enrollmentNumber: capitalizeEachWord(
-                getFieldValue(user.customField, 'Enrollment Number')
+                getFieldValue(
+                  user?.customField,
+                  'fieldname',
+                  'Enrollment Number',
+                  'fieldvalues',
+                  '-'
+                )
               ),
             }));
             console.log(`userDetails`, userDetails);

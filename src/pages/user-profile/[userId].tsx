@@ -16,7 +16,11 @@ import Loader from '@/components/Loader';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import ReactGA from 'react-ga4';
 import { accessControl } from '../../../app.config';
-import { toPascalCase, mapFieldIdToValue } from '@/utils/Helper';
+import {
+  toPascalCase,
+  mapFieldIdToValue,
+  extractAddress,
+} from '@/utils/Helper';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { showToastMessage } from '@/components/Toastify';
@@ -56,9 +60,7 @@ const TeacherProfile = () => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(user_placeholder_img);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [stateName, setStateName] = useState('');
-  const [districtName, setDistrictName] = useState('');
-  const [blockName, setBlockName] = useState('');
+  const [address, setAddress] = useState('');
   const [isError, setIsError] = React.useState<boolean>(false);
   const [isData, setIsData] = React.useState<boolean>(false);
   const [userFormData, setUserFormData] = useState<{ [key: string]: any }>({});
@@ -194,12 +196,6 @@ const TeacherProfile = () => {
     }
   }, []);
 
-  // find Address
-  const getFieldValue = (data: any, label: string) => {
-    const field = data.find((item: any) => item.label === label);
-    return field ? field?.value : null;
-  };
-
   const { data, error, isLoading } = useProfileInfo(userId ?? '', true, reload);
 
   useEffect(() => {
@@ -218,12 +214,17 @@ const TeacherProfile = () => {
       setUserName(toPascalCase(coreFieldData?.name));
       const fields: CustomField[] = data?.result?.userData?.customFields;
       if (fields?.length > 0) {
-        const stateName = getFieldValue(fields, 'State');
-        setStateName(toPascalCase(stateName));
-        const districtName = getFieldValue(fields, 'District');
-        setDistrictName(toPascalCase(districtName));
-        const blockName = getFieldValue(fields, 'Block');
-        setBlockName(toPascalCase(blockName));
+        setAddress(
+          extractAddress(
+            fields,
+            'STATES',
+            'DISTRICTS',
+            'BLOCKS',
+            'label',
+            'value',
+            toPascalCase
+          )
+        );
       }
       const fieldIdToValueMap: { [key: string]: string } =
         mapFieldIdToValue(fields);
@@ -349,400 +350,389 @@ const TeacherProfile = () => {
     return value;
   };
 
-  // address find
-  const address = [stateName, districtName, blockName]
-    ?.filter(Boolean)
-    ?.join(', ');
-
   // //------------edit teacher profile------------
   return (
-    <>
-      <Box
-        display="flex"
-        flexDirection="column"
-        minHeight="100vh"
-        minWidth={'100%'}
-      >
-        <Header />
-        {loading && (
-          <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-        )}
-        {isData && isData ? (
-          <Box
-            display="flex"
-            flexDirection="column"
-            // padding={2}
-            justifyContent={'center'}
-            alignItems={'center'}
-          >
-            {selfUserId === userId ? (
-              <Box
-                sx={{ flex: '1', minWidth: '100%' }}
-                display="flex"
-                flexDirection="row"
-                gap="5px"
-                padding="25px 19px  20px"
-              >
-                <Typography
-                  // variant="h3"
-                  style={{
-                    letterSpacing: '0.1px',
-                    textAlign: 'left',
-                    marginBottom: '2px',
-                  }}
-                  fontSize={'22px'}
-                  fontWeight={'400'}
-                  lineHeight={'28px'}
-                  color={theme.palette.warning['A200']}
-                >
-                  {t('PROFILE.MY_PROFILE')}
-                </Typography>
-              </Box>
-            ) : (
-              <Box
-                sx={{ flex: '1', minWidth: '100%' }}
-                display="flex"
-                flexDirection="row"
-                gap="10px"
-                padding="25px 19px  20px"
-              >
-                <Box display={'flex'}>
-                  <Box
-                    onClick={() => {
-                      window.history.back();
-                      logEvent({
-                        action: 'back-button-clicked-teacher-profile-page',
-                        category: 'Teacher Profile Page',
-                        label: 'Back Button Clicked',
-                      });
-                    }}
-                  >
-                    <ArrowBackIcon
-                      sx={{
-                        color: (theme.palette.warning as any)['A200'],
-                        height: '1.5rem',
-                        width: '1.5rem',
-                        cursor: 'pointer',
-                        pr: '5px',
-                      }}
-                    />
-                  </Box>
-                  <Box>
-                    <Typography
-                      style={{
-                        letterSpacing: '0.1px',
-                        textAlign: 'left',
-                        marginBottom: '2px',
-                      }}
-                      fontSize={'1.375rem'}
-                      fontWeight={'400'}
-                      lineHeight={'1.75rem'}
-                      color={theme.palette.warning['A200']}
-                    >
-                      {userName}
-                    </Typography>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontFamily: theme.typography.fontFamily,
-                        fontSize: '12px',
-                      }}
-                    >
-                      {address}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            )}
-
-            <Box padding="5px 19px" className="w-100">
-              <Box
-                sx={{
-                  flex: '1',
-                  border: '1px solid #D0C5B4',
-                  boxShadow: '0px 1px 2px 0px #0000004D',
-
-                  borderColor: theme.palette.warning['A100'],
-                }}
-                minWidth={'100%'}
-                borderRadius={'12px'}
-                border={'1px'}
-                bgcolor={theme.palette.warning.A400}
-                display="flex"
-                gap={'25px'}
-                alignItems={'center'}
-              >
-                <Image
-                  src={user_placeholder_img}
-                  alt="user"
-                  width={116}
-                  height={120}
-                  style={{
-                    borderTopLeftRadius: '12px',
-                    borderBottomLeftRadius: '12px',
-                  }}
-                />
-                <Box width={'100%'}>
-                  <Box>
-                    <Box
-                      fontSize={'16px'}
-                      lineHeight={'16px'}
-                      className="text-dark-grey"
-                      width={'100%'}
-                      fontWeight={'500'}
-                    >
-                      <Typography
-                        sx={{ wordBreak: 'break-word' }}
-                        className="text-dark-grey two-line-text"
-                        mr={'40px'}
-                      >
-                        {toPascalCase(
-                          userData?.find(
-                            (field: { name: string }) => field.name === 'name'
-                          )?.value
-                        )}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box display={'flex'} gap={'4px'} mt={'5px'}>
-                    {address ? (
-                      <PlaceOutlinedIcon
-                        sx={{
-                          fontSize: '1rem',
-                          marginTop: '1px',
-                          fontWeight: '11.7px',
-                          height: '14.4px',
-                        }}
-                      />
-                    ) : (
-                      ''
-                    )}
-
-                    <Typography
-                      margin={0}
-                      color={theme.palette.warning.A200}
-                      fontSize={'12px'}
-                      fontWeight={'500'}
-                      lineHeight={'16px'}
-                      className="text-dark-grey"
-                    >
-                      {address}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
+    <Box
+      display="flex"
+      flexDirection="column"
+      minHeight="100vh"
+      minWidth={'100%'}
+    >
+      <Header />
+      {loading && (
+        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+      )}
+      {isData && isData ? (
+        <Box
+          display="flex"
+          flexDirection="column"
+          // padding={2}
+          justifyContent={'center'}
+          alignItems={'center'}
+        >
+          {selfUserId === userId ? (
             <Box
-              className="linerGradient"
-              sx={{
-                padding: '10px 16px 21px',
-                width: '100%',
-                mt: 3,
-                // '@media (min-width: 900px)': {
-                //   borderRadius: '8px',
-                //   display: 'flex',
-                //   gap: '15px',
-                //   alignItems: 'center',
-                //   flexDirection: 'row-reverse',
-                // },
-              }}
+              sx={{ flex: '1', minWidth: '100%' }}
+              display="flex"
+              flexDirection="row"
+              gap="5px"
+              padding="25px 19px  20px"
             >
-              {userRole === Role.TEAM_LEADER && userId !== selfUserId ? (
-                <Button
-                  className="min-width-md-20"
-                  sx={{
-                    fontSize: '14px',
-                    lineHeight: '20px',
-                    minWidth: '100%',
-                    padding: '10px 24px 10px 16px',
-                    gap: '8px',
-                    borderRadius: '100px',
-                    marginTop: '10px',
-                    flex: '1',
-                    textAlign: 'center',
-                    color: theme.palette.warning.A200,
-                    border: `1px solid #4D4639`,
+              <Typography
+                // variant="h3"
+                style={{
+                  letterSpacing: '0.1px',
+                  textAlign: 'left',
+                  marginBottom: '2px',
+                }}
+                fontSize={'22px'}
+                fontWeight={'400'}
+                lineHeight={'28px'}
+                color={theme.palette.warning['A200']}
+              >
+                {t('PROFILE.MY_PROFILE')}
+              </Typography>
+            </Box>
+          ) : (
+            <Box
+              sx={{ flex: '1', minWidth: '100%' }}
+              display="flex"
+              flexDirection="row"
+              gap="10px"
+              padding="25px 19px  20px"
+            >
+              <Box display={'flex'}>
+                <Box
+                  onClick={() => {
+                    window.history.back();
+                    logEvent({
+                      action: 'back-button-clicked-teacher-profile-page',
+                      category: 'Teacher Profile Page',
+                      label: 'Back Button Clicked',
+                    });
                   }}
-                  onClick={handleOpenAddLearnerModal}
                 >
+                  <ArrowBackIcon
+                    sx={{
+                      color: (theme.palette.warning as any)['A200'],
+                      height: '1.5rem',
+                      width: '1.5rem',
+                      cursor: 'pointer',
+                      pr: '5px',
+                    }}
+                  />
+                </Box>
+                <Box>
                   <Typography
-                    variant="h3"
                     style={{
                       letterSpacing: '0.1px',
                       textAlign: 'left',
                       marginBottom: '2px',
                     }}
-                    fontSize={'14px'}
-                    fontWeight={'500'}
-                    lineHeight={'20px'}
+                    fontSize={'1.375rem'}
+                    fontWeight={'400'}
+                    lineHeight={'1.75rem'}
+                    color={theme.palette.warning['A200']}
                   >
-                    {t('PROFILE.EDIT_PROFILE')}
+                    {userName}
                   </Typography>
-                  <Box>
-                    <CreateOutlinedIcon sx={{ fontSize: '18px' }} />
-                  </Box>
-                </Button>
-              ) : null}
-              {openAddLearnerModal && (
-                <div>
-                  <AddFacilitatorModal
-                    open={openAddLearnerModal}
-                    onClose={handleCloseAddLearnerModal}
-                    userFormData={userFormData}
-                    isEditModal={true}
-                    userId={userId}
-                    onReload={handleReload}
-                  />
-                </div>
-              )}
-              <Box
-                mt={2}
-                sx={{
-                  flex: '1',
-                  // textAlign: 'center',
-                  border: '1px solid',
-                  borderColor: theme.palette.warning['A100'],
-                  padding: '16px',
-                  // '@media (min-width: 900px)': {
-                  //   minWidth: '60%',
-                  //   width: '60%',
-                  // },
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontFamily: theme.typography.fontFamily,
+                      fontSize: '12px',
+                    }}
+                  >
+                    {address}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          )}
+
+          <Box padding="5px 19px" className="w-100">
+            <Box
+              sx={{
+                flex: '1',
+                border: '1px solid #D0C5B4',
+                boxShadow: '0px 1px 2px 0px #0000004D',
+
+                borderColor: theme.palette.warning['A100'],
+              }}
+              minWidth={'100%'}
+              borderRadius={'12px'}
+              border={'1px'}
+              bgcolor={theme.palette.warning.A400}
+              display="flex"
+              gap={'25px'}
+              alignItems={'center'}
+            >
+              <Image
+                src={user_placeholder_img}
+                alt="user"
+                width={116}
+                height={120}
+                style={{
+                  borderTopLeftRadius: '12px',
+                  borderBottomLeftRadius: '12px',
                 }}
-                className="bg-white"
-                minWidth={'100%'}
-                borderRadius={'16px'}
-                border={'1px'}
-                display="flex"
-                flexDirection="row"
-              >
-                <Grid container spacing={4}>
-                  {filteredSortedForView?.map((item, index) => {
-                    if (String(item.order) === '7') {
-                      return (
-                        <Grid item xs={12} key={index}>
-                          <Typography
-                            fontSize={'12px'}
-                            fontWeight={'600'}
-                            margin={0}
-                            lineHeight={'16px'}
-                            letterSpacing={'0.5px'}
-                            sx={{ wordBreak: 'break-word' }}
-                            color={theme.palette.warning['500']}
-                          >
-                            {item?.label && t(`FORM.${item.label}`, item.label)}
-                          </Typography>
-                          <Box
-                            mt={2}
-                            sx={{
-                              display: 'flex',
-                              gap: '10px',
-                              flexWrap: 'wrap',
-                            }}
-                          >
-                            {orderedSubjects &&
-                              orderedSubjects?.map(
-                                (subject: any, index: number) => (
-                                  <Button
-                                    key={index}
-                                    size="small"
-                                    variant={
-                                      mutualSubjects?.includes(subject)
-                                        ? 'contained'
-                                        : 'outlined'
-                                    }
-                                    sx={{
-                                      backgroundColor: mutualSubjects?.includes(
-                                        subject
-                                      )
-                                        ? theme.palette.info.contrastText
-                                        : 'none',
-                                      borderRadius: '8px',
-                                      color: theme.palette.warning.A200,
-                                      whiteSpace: 'nowrap',
-                                      boxShadow: 'none',
-                                      border: `1px solid ${theme.palette.warning[900]}`,
-                                      pointerEvents: 'none',
-                                    }}
-                                  >
-                                    {getLabelForSubject(subject)}
-                                    {/* {subject} */}
-                                  </Button>
-                                )
-                              )}
-                          </Box>
-                        </Grid>
-                      );
-                    } else if (item.order === 7) {
-                      return (
-                        <Grid item xs={12} key={index}>
-                          <Typography
-                            variant="h4"
-                            margin={0}
-                            lineHeight={'16px'}
-                            fontSize={'12px'}
-                            fontWeight={'600'}
-                            letterSpacing={'0.5px'}
-                            color={theme.palette.warning['500']}
-                          >
-                            {item?.label &&
-                              t(`FORM.${item?.label}`, item?.label)}
-                          </Typography>{' '}
-                          {/* No of cluster */}
-                          <Typography
-                            variant="h4"
-                            margin={0}
-                            color={theme.palette.warning.A200}
-                            sx={{ wordBreak: 'break-word' }}
-                          >
-                            {item?.value ? toPascalCase(item?.value) : '-'}
-                          </Typography>
-                        </Grid>
-                      );
-                    } else {
-                      return (
-                        <Grid item xs={6} key={index}>
-                          {/* Profile Field Labels */}
-                          <Typography
-                            variant="h4"
-                            margin={0}
-                            lineHeight={'16px'}
-                            fontSize={'12px'}
-                            fontWeight={'600'}
-                            letterSpacing={'0.5px'}
-                            color={theme.palette.warning['500']}
-                          >
-                            {item?.label &&
-                              t(`FORM.${item?.label}`, item?.label)}
-                          </Typography>
-                          {/* Profile Field Values */}
-                          <Typography
-                            variant="h4"
-                            margin={0}
-                            color={theme.palette.warning.A200}
-                            sx={{ wordBreak: 'break-word' }}
-                          >
-                            {item?.value
-                              ? toPascalCase(
-                                  getLabelForValue(item, item?.value)
-                                )
-                              : '-'}{' '}
-                            {/* apply elipses/ truncating here */}
-                          </Typography>
-                        </Grid>
-                      );
-                    }
-                  })}
-                </Grid>
+              />
+              <Box width={'100%'}>
+                <Box>
+                  <Box
+                    fontSize={'16px'}
+                    lineHeight={'16px'}
+                    className="text-dark-grey"
+                    width={'100%'}
+                    fontWeight={'500'}
+                  >
+                    <Typography
+                      sx={{ wordBreak: 'break-word' }}
+                      className="text-dark-grey two-line-text"
+                      mr={'40px'}
+                    >
+                      {toPascalCase(
+                        userData?.find(
+                          (field: { name: string }) => field.name === 'name'
+                        )?.value
+                      )}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box display={'flex'} gap={'4px'} mt={'5px'}>
+                  {address ? (
+                    <PlaceOutlinedIcon
+                      sx={{
+                        fontSize: '1rem',
+                        marginTop: '1px',
+                        fontWeight: '11.7px',
+                        height: '14.4px',
+                      }}
+                    />
+                  ) : (
+                    ''
+                  )}
+
+                  <Typography
+                    margin={0}
+                    color={theme.palette.warning.A200}
+                    fontSize={'12px'}
+                    fontWeight={'500'}
+                    lineHeight={'16px'}
+                    className="text-dark-grey"
+                  >
+                    {address}
+                  </Typography>
+                </Box>
               </Box>
             </Box>
           </Box>
-        ) : (
-          <Box mt={5}>
-            <Typography textAlign={'center'}>{t('COMMON.LOADING')}</Typography>
+          <Box
+            className="linerGradient"
+            sx={{
+              padding: '10px 16px 21px',
+              width: '100%',
+              mt: 3,
+              // '@media (min-width: 900px)': {
+              //   borderRadius: '8px',
+              //   display: 'flex',
+              //   gap: '15px',
+              //   alignItems: 'center',
+              //   flexDirection: 'row-reverse',
+              // },
+            }}
+          >
+            {userRole === Role.TEAM_LEADER && userId !== selfUserId ? (
+              <Button
+                className="min-width-md-20"
+                sx={{
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  minWidth: '100%',
+                  padding: '10px 24px 10px 16px',
+                  gap: '8px',
+                  borderRadius: '100px',
+                  marginTop: '10px',
+                  flex: '1',
+                  textAlign: 'center',
+                  color: theme.palette.warning.A200,
+                  border: `1px solid #4D4639`,
+                }}
+                onClick={handleOpenAddLearnerModal}
+              >
+                <Typography
+                  variant="h3"
+                  style={{
+                    letterSpacing: '0.1px',
+                    textAlign: 'left',
+                    marginBottom: '2px',
+                  }}
+                  fontSize={'14px'}
+                  fontWeight={'500'}
+                  lineHeight={'20px'}
+                >
+                  {t('PROFILE.EDIT_PROFILE')}
+                </Typography>
+                <Box>
+                  <CreateOutlinedIcon sx={{ fontSize: '18px' }} />
+                </Box>
+              </Button>
+            ) : null}
+            {openAddLearnerModal && (
+              <div>
+                <AddFacilitatorModal
+                  open={openAddLearnerModal}
+                  onClose={handleCloseAddLearnerModal}
+                  userFormData={userFormData}
+                  isEditModal={true}
+                  userId={userId}
+                  onReload={handleReload}
+                />
+              </div>
+            )}
+            <Box
+              mt={2}
+              sx={{
+                flex: '1',
+                // textAlign: 'center',
+                border: '1px solid',
+                borderColor: theme.palette.warning['A100'],
+                padding: '16px',
+                // '@media (min-width: 900px)': {
+                //   minWidth: '60%',
+                //   width: '60%',
+                // },
+              }}
+              className="bg-white"
+              minWidth={'100%'}
+              borderRadius={'16px'}
+              border={'1px'}
+              display="flex"
+              flexDirection="row"
+            >
+              <Grid container spacing={4}>
+                {filteredSortedForView?.map((item, index) => {
+                  if (String(item.order) === '7') {
+                    return (
+                      <Grid item xs={12} key={index}>
+                        <Typography
+                          fontSize={'12px'}
+                          fontWeight={'600'}
+                          margin={0}
+                          lineHeight={'16px'}
+                          letterSpacing={'0.5px'}
+                          sx={{ wordBreak: 'break-word' }}
+                          color={theme.palette.warning['500']}
+                        >
+                          {item?.label && t(`FORM.${item.label}`, item.label)}
+                        </Typography>
+                        <Box
+                          mt={2}
+                          sx={{
+                            display: 'flex',
+                            gap: '10px',
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          {orderedSubjects &&
+                            orderedSubjects?.map(
+                              (subject: any, index: number) => (
+                                <Button
+                                  key={index}
+                                  size="small"
+                                  variant={
+                                    mutualSubjects?.includes(subject)
+                                      ? 'contained'
+                                      : 'outlined'
+                                  }
+                                  sx={{
+                                    backgroundColor: mutualSubjects?.includes(
+                                      subject
+                                    )
+                                      ? theme.palette.info.contrastText
+                                      : 'none',
+                                    borderRadius: '8px',
+                                    color: theme.palette.warning.A200,
+                                    whiteSpace: 'nowrap',
+                                    boxShadow: 'none',
+                                    border: `1px solid ${theme.palette.warning[900]}`,
+                                    pointerEvents: 'none',
+                                  }}
+                                >
+                                  {getLabelForSubject(subject)}
+                                  {/* {subject} */}
+                                </Button>
+                              )
+                            )}
+                        </Box>
+                      </Grid>
+                    );
+                  } else if (item.order === 7) {
+                    return (
+                      <Grid item xs={12} key={index}>
+                        <Typography
+                          variant="h4"
+                          margin={0}
+                          lineHeight={'16px'}
+                          fontSize={'12px'}
+                          fontWeight={'600'}
+                          letterSpacing={'0.5px'}
+                          color={theme.palette.warning['500']}
+                        >
+                          {item?.label && t(`FORM.${item?.label}`, item?.label)}
+                        </Typography>{' '}
+                        {/* No of cluster */}
+                        <Typography
+                          variant="h4"
+                          margin={0}
+                          color={theme.palette.warning.A200}
+                          sx={{ wordBreak: 'break-word' }}
+                        >
+                          {item?.value ? toPascalCase(item?.value) : '-'}
+                        </Typography>
+                      </Grid>
+                    );
+                  } else {
+                    return (
+                      <Grid item xs={6} key={index}>
+                        {/* Profile Field Labels */}
+                        <Typography
+                          variant="h4"
+                          margin={0}
+                          lineHeight={'16px'}
+                          fontSize={'12px'}
+                          fontWeight={'600'}
+                          letterSpacing={'0.5px'}
+                          color={theme.palette.warning['500']}
+                        >
+                          {item?.label && t(`FORM.${item?.label}`, item?.label)}
+                        </Typography>
+                        {/* Profile Field Values */}
+                        <Typography
+                          variant="h4"
+                          margin={0}
+                          color={theme.palette.warning.A200}
+                          sx={{ wordBreak: 'break-word' }}
+                        >
+                          {item?.value
+                            ? toPascalCase(getLabelForValue(item, item?.value))
+                            : '-'}{' '}
+                          {/* apply elipses/ truncating here */}
+                        </Typography>
+                      </Grid>
+                    );
+                  }
+                })}
+              </Grid>
+            </Box>
           </Box>
-        )}{' '}
-      </Box>
-    </>
+        </Box>
+      ) : (
+        <Box mt={5}>
+          <Typography textAlign={'center'}>{t('COMMON.LOADING')}</Typography>
+        </Box>
+      )}{' '}
+    </Box>
   );
 };
 

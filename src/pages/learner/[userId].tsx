@@ -38,6 +38,7 @@ import {
 import { getUserDetails } from '@/services/ProfileService';
 import { getFormRead } from '@/services/CreateUserService';
 import {
+  extractAddress,
   formatSelectedDate,
   mapFieldIdToValue,
   toPascalCase,
@@ -58,7 +59,11 @@ import DateRangePopup from '@/components/DateRangePopup';
 import { showToastMessage } from '@/components/Toastify';
 import AddLearnerModal from '@/components/AddLeanerModal';
 import withAccessControl from '@/utils/hoc/withAccessControl';
-import { FormContext, FormContextType, getMenuItems } from '@/utils/app.constant';
+import {
+  FormContext,
+  FormContextType,
+  getMenuItems,
+} from '@/utils/app.constant';
 import { accessControl } from '../../../app.config';
 import StyledMenu from '@/components/StyledMenu';
 
@@ -96,8 +101,7 @@ const LearnerProfile: React.FC = () => {
   const [classId, setClassId] = React.useState('');
   const [totalMaxScore, setTotalMaxScore] = useState('');
   const [totalScore, setTotalScore] = useState('');
-  const [unitName, setUnitName] = useState('');
-  const [blockName, setBlockName] = useState('');
+  const [address, setAddress] = useState('');
   const [uniqueDoId, setUniqueDoId] = useState('');
   const [anchorElOption, setAnchorElOption] =
     React.useState<null | HTMLElement>(null);
@@ -162,7 +166,7 @@ const LearnerProfile: React.FC = () => {
             if (typeof field?.value === 'string') {
               return field?.value?.replace(/_/g, ' ').toLowerCase();
             }
-            return field?.value.toLowerCase();;
+            return field?.value.toLowerCase();
           }
         }
       };
@@ -233,12 +237,6 @@ const LearnerProfile: React.FC = () => {
     }
   };
 
-  // find Address
-  const getFieldValue = (data: any, label: string) => {
-    const field = data.find((item: any) => item.label === label);
-    return field ? field?.value[0] : null;
-  };
-
   // ger user information
   const fetchUserDetails = async () => {
     setLoading(true);
@@ -257,6 +255,19 @@ const LearnerProfile: React.FC = () => {
                 setUserName(coreFieldData?.name);
                 const fields: CustomField[] =
                   data?.result?.userData?.customFields;
+                if (fields?.length > 0) {
+                  setAddress(
+                    extractAddress(
+                      fields,
+                      'STATES',
+                      'DISTRICTS',
+                      'BLOCKS',
+                      'label',
+                      'value',
+                      toPascalCase
+                    )
+                  );
+                }
                 const fieldIdToValueMap: { [key: string]: string } =
                   mapFieldIdToValue(fields);
                 console.log(`coreFieldData`, coreFieldData);
@@ -310,17 +321,6 @@ const LearnerProfile: React.FC = () => {
                         // setIsData(true);
                         if (customDataFields?.length > 0) {
                           setCustomFieldsData(customDataFields);
-
-                          const unitName = getFieldValue(
-                            customDataFields,
-                            'Unit Name'
-                          );
-                          setUnitName(unitName);
-                          const blockName = getFieldValue(
-                            customDataFields,
-                            'Block Name'
-                          );
-                          setBlockName(blockName);
                         }
                       }
                     } else {
@@ -391,11 +391,6 @@ const LearnerProfile: React.FC = () => {
         displayValue: field?.value ? toPascalCase(field?.value) : '-',
       };
     });
-
-  // address find
-  const address = [unitName, blockName, userData?.district]
-    ?.filter(Boolean)
-    ?.join(', ');
 
   //------ Test Report API Integration------
 
