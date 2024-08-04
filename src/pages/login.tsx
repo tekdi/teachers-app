@@ -128,6 +128,7 @@ const LoginPage = () => {
             localStorage.setItem('state', userResponse?.state);
             localStorage.setItem('district', userResponse?.district);
             localStorage.setItem('role', userResponse?.tenantData[0]?.roleName);
+            localStorage.setItem('userEmail', userResponse?.email);
             setUserRole(userResponse?.tenantData[0]?.roleName);
           }
         }
@@ -352,7 +353,8 @@ const LoginPage = () => {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 checked={rememberMe}
               />
-              <span role='checkbox'
+              <span
+                role="checkbox"
                 style={{
                   cursor: 'pointer',
                   color: theme.palette.warning['300'],

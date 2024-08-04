@@ -231,10 +231,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
             'success'
           );
-
-          if (!isEditModal) {
-            setOpenModal(true);
-          }
+          setOpenModal(true);
         } else {
           showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         }
@@ -259,13 +256,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
   return (
     <>
-      {openModal && (
-        <SendCredentialModal
-          open={openModal}
-          onClose={onCloseModal}
-          email={email}
-        />
-      )}
       <SimpleModal
         open={open}
         onClose={onClose}
@@ -309,6 +299,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
               </DynamicForm>
             )}
       </SimpleModal>
+      <SendCredentialModal
+        open={openModal}
+        onClose={onCloseModal}
+        email={email}
+      />
     </>
   );
 };
