@@ -1,5 +1,5 @@
 import { Button, Grid, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import BottomDrawer from '@/components/BottomDrawer';
 import ConfirmationModal from '@/components/ConfirmationModal';
@@ -18,7 +18,6 @@ import { styled } from '@mui/system';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import manageUserStore from '../store/manageUserStore';
 
 import { getMyUserList } from '@/services/MyClassDetailsService';
