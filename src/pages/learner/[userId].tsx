@@ -23,10 +23,8 @@ import {
   Select,
   SelectChangeEvent,
   Typography,
-  Menu,
-  MenuProps,
 } from '@mui/material';
-import { alpha, styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import {
   AssesmentListService,
   getDoIdForAssesmentDetails,
@@ -46,7 +44,6 @@ import {
 import { logEvent } from '@/utils/googleAnalytics';
 import {
   CustomField,
-  UserData,
   CohortAttendancePercentParam,
   UpdateCustomField,
   OverallAttendance,
@@ -78,7 +75,6 @@ const LearnerProfile: React.FC = () => {
     localStorage.setItem('learnerId', userId);
   }
 
-  const [userData, setUserData] = useState<UserData | null>(null);
   const [assesmentData, setAssesmentData] = useState<any>(null);
   const [test, setTest] = React.useState('Pre Test');
   const [subject, setSubject] = React.useState('English');
@@ -90,7 +86,7 @@ const LearnerProfile: React.FC = () => {
   const [isFromDate, setIsFromDate] = useState(
     formatSelectedDate(new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000))
   );
-  const [submittedOn, setSubmitedOn] = useState();
+  const [submittedOn, setSubmittedOn] = useState();
   const [overallAttendance, setOverallAttendance] =
     useState<OverallAttendance>();
   const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
@@ -111,6 +107,10 @@ const LearnerProfile: React.FC = () => {
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [reload, setReload] = React.useState(false);
 
+  useEffect(() => {
+    setSelectedValue(currentDayMonth);
+  }, []);
+
   const handleReload = () => {
     setReload((prev) => !prev);
   };
@@ -125,10 +125,6 @@ const LearnerProfile: React.FC = () => {
   };
 
   const menuItems = getMenuItems(t, dateRange, currentDayMonth);
-
-  useEffect(() => {
-    setSelectedValue(currentDayMonth);
-  }, []);
 
   const handleOpenAddLearnerModal = () => {
     setOpenAddLearnerModal(true);
@@ -232,7 +228,7 @@ const LearnerProfile: React.FC = () => {
       facets: ['userId'],
     });
     if (response?.statusCode === 200) {
-      const userData = response?.data.result.userId[userId];
+      const userData = response?.data?.result?.userId[userId];
       setOverallAttendance(userData);
     }
   };
@@ -250,89 +246,84 @@ const LearnerProfile: React.FC = () => {
           if (response?.responseCode === 200) {
             const data = response;
             if (data) {
-              if (data) {
-                const coreFieldData = data?.result?.userData;
-                setUserName(coreFieldData?.name);
-                const fields: CustomField[] =
-                  data?.result?.userData?.customFields;
-                if (fields?.length > 0) {
-                  setAddress(
-                    extractAddress(
-                      fields,
-                      'STATES',
-                      'DISTRICTS',
-                      'BLOCKS',
-                      'label',
-                      'value',
-                      toPascalCase
-                    )
-                  );
-                }
-                const fieldIdToValueMap: { [key: string]: string } =
-                  mapFieldIdToValue(fields);
-                console.log(`coreFieldData`, coreFieldData);
-
-                const fetchFormData = async () => {
-                  try {
-                    const response: FormData = await getFormRead(
-                      FormContext.USERS,
-                      FormContextType.STUDENT
-                    );
-                    console.log('response', response);
-                    if (response) {
-                      const mergeData = (
-                        fieldIdToValueMap: { [key: string]: string },
-                        response: any
-                      ): any => {
-                        response.fields.forEach(
-                          (field: {
-                            name: any;
-                            fieldId: string | number;
-                            value: string;
-                            coreField: number;
-                          }) => {
-                            if (
-                              field.fieldId &&
-                              fieldIdToValueMap[field.fieldId]
-                            ) {
-                              // Update field value from fieldIdToValueMap if fieldId is available
-                              field.value =
-                                fieldIdToValueMap[field.fieldId] || '-';
-                            } else if (field.coreField === 1) {
-                              // Set field value from fieldIdToValueMap if coreField is 1 and fieldId is not in the map
-                              field.value = coreFieldData[field.name] || '-';
-                            }
-                          }
-                        );
-                        return response;
-                      };
-
-                      const mergedProfileData = mergeData(
-                        fieldIdToValueMap,
-                        response
-                      );
-                      console.log(`mergedProfileData`, mergedProfileData);
-                      if (mergedProfileData) {
-                        setUserData(mergedProfileData?.fields);
-                        // const nameField = mergedProfileData.fields.find(
-                        //   (field: { name: string }) => field.name === 'name'
-                        // );
-                        const customDataFields = mergedProfileData?.fields;
-                        // setIsData(true);
-                        if (customDataFields?.length > 0) {
-                          setCustomFieldsData(customDataFields);
-                        }
-                      }
-                    } else {
-                      // setIsData(false);
-                      console.log('No data Found');
-                    }
-                  } catch (error) {
-                    console.error('Error fetching form data:', error);
-                  }
-                };
-                fetchFormData();
+              const coreFieldData = data?.result?.userData;
+              setUserName(coreFieldData?.name);
+              const fields: CustomField[] =
+                data?.result?.userData?.customFields;
+              if (fields?.length > 0) {
+                setAddress(
+                  extractAddress(
+                    fields,
+                    'STATES',
+                    'DISTRICTS',
+                    'BLOCKS',
+                    'label',
+                    'value',
+                    toPascalCase
+                  )
+                );
               }
+              const fieldIdToValueMap: { [key: string]: string } =
+                mapFieldIdToValue(fields);
+              console.log(`coreFieldData`, coreFieldData);
+
+              const fetchFormData = async () => {
+                try {
+                  const response: FormData = await getFormRead(
+                    FormContext.USERS,
+                    FormContextType.STUDENT
+                  );
+                  console.log('response', response);
+                  if (response) {
+                    const mergeData = (
+                      fieldIdToValueMap: { [key: string]: string },
+                      response: any
+                    ): any => {
+                      response.fields.forEach(
+                        (field: {
+                          name: any;
+                          fieldId: string | number;
+                          value: string;
+                          coreField: number;
+                        }) => {
+                          if (
+                            field.fieldId &&
+                            fieldIdToValueMap[field.fieldId]
+                          ) {
+                            // Update field value from fieldIdToValueMap if fieldId is available
+                            field.value =
+                              fieldIdToValueMap[field.fieldId] || '-';
+                          } else if (field.coreField === 1) {
+                            // Set field value from fieldIdToValueMap if coreField is 1 and fieldId is not in the map
+                            field.value = coreFieldData[field.name] || '-';
+                          }
+                        }
+                      );
+                      return response;
+                    };
+
+                    const mergedProfileData = mergeData(
+                      fieldIdToValueMap,
+                      response
+                    );
+                    console.log(`mergedProfileData`, mergedProfileData);
+                    if (mergedProfileData) {
+                      // const nameField = mergedProfileData.fields.find(
+                      //   (field: { name: string }) => field.name === 'name'
+                      // );
+                      const customDataFields = mergedProfileData?.fields;
+                      if (customDataFields?.length > 0) {
+                        setCustomFieldsData(customDataFields);
+                      }
+                    }
+                  } else {
+                    console.log('No data Found');
+                  }
+                } catch (error) {
+                  console.error('Error fetching form data:', error);
+                }
+              };
+              fetchFormData();
             } else {
               setLoading(false);
               console.log('No data Found');
@@ -411,14 +402,15 @@ const LearnerProfile: React.FC = () => {
   };
 
   const getDoIdForAssesmentReport = async (tests: string, subjects: string) => {
-    const stateName = localStorage.getItem('stateName');
+    // const stateName = localStorage.getItem('stateName');
+
+    const stateName: any = address?.split(',')[0];
     const filters = {
       program: ['Second chance'],
-      se_boards: [stateName ? stateName : ''],
-      subject: [subjects ? subjects : subject],
-      assessment1: tests ? tests : test,
+      se_boards: [stateName ?? ''],
+      subject: [subjects || subject],
+      assessment1: tests || test,
     };
-
     try {
       if (stateName) {
         if (filters) {
@@ -483,7 +475,7 @@ const LearnerProfile: React.FC = () => {
         setLoading(true);
         const result = response.result;
         if (result) {
-          setSubmitedOn(result[0]?.createdOn);
+          setSubmittedOn(result[0]?.createdOn);
           setTotalMaxScore(result[0]?.totalMaxScore);
           setTotalScore(result[0]?.totalScore);
           const questionValues = getQuestionValues(result);
@@ -551,7 +543,7 @@ const LearnerProfile: React.FC = () => {
     fetchUserDetails();
     // testReportDetails();
     getDoIdForAssesmentReport(test, subject);
-  }, []);
+  }, [address]);
 
   const getLearnerAttendance = () => {
     router.push('/learner-attendance-history');
@@ -635,7 +627,7 @@ const LearnerProfile: React.FC = () => {
           >
             <ArrowBackIcon
               sx={{
-                color: (theme.palette.warning as any)['A200'],
+                color: theme.palette.warning['A200'],
                 fontSize: '1.5rem',
                 cursor: 'pointer',
               }}
@@ -704,7 +696,7 @@ const LearnerProfile: React.FC = () => {
         >
           <Typography
             sx={{
-              color: (theme.palette.warning as any)['300'],
+              color: theme.palette.warning['300'],
               fontWeight: 500,
               fontSize: '14px',
             }}
@@ -899,10 +891,21 @@ const LearnerProfile: React.FC = () => {
             padding="15px"
           >
             <Grid container spacing={4}>
-              {learnerDetailsByOrder &&
-                learnerDetailsByOrder.map((item: any, i: number) => (
-                  <React.Fragment key={i}>
-                    <Grid item xs={6}>
+              {learnerDetailsByOrder?.map(
+                (
+                  item: {
+                    label?: string;
+                    displayValue?: string;
+                    order?: number;
+                  },
+                  i: number
+                ) => {
+                  const labelText = item.label
+                    ? t(`FORM.${item?.label?.toUpperCase()}`, item?.label)
+                    : item?.label;
+
+                  return (
+                    <Grid item xs={6} key={i}>
                       {/* question */}
                       <Typography
                         variant="h4"
@@ -912,9 +915,7 @@ const LearnerProfile: React.FC = () => {
                         }}
                         margin={0}
                       >
-                        {item?.label
-                          ? t(`FORM.${item.label.toUpperCase()}`, item.label)
-                          : item.label}
+                        {labelText}
                       </Typography>
 
                       {/* value */}
@@ -930,19 +931,9 @@ const LearnerProfile: React.FC = () => {
                         {item?.displayValue}
                       </Typography>
                     </Grid>
-                    {/* 
-                    {item?.order === 3 && !contactNumberAdded && (
-                      <React.Fragment>
-                        <FieldComponent
-                          size={6}
-                          label={'Contact Number'}
-                          data={contactNumber}
-                        />
-                        {(contactNumberAdded = true)}
-                      </React.Fragment>
-                    )} */}
-                  </React.Fragment>
-                ))}
+                  );
+                }
+              )}
             </Grid>
           </Box>
         </Box>
@@ -958,7 +949,7 @@ const LearnerProfile: React.FC = () => {
           <CardContent>
             <Typography
               sx={{
-                color: (theme.palette.warning as any)['A200'],
+                color: theme.palette.warning['A200'],
                 fontWeight: 600,
                 fontSize: '13px',
               }}
