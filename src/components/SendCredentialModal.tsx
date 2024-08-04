@@ -9,11 +9,13 @@ interface SendCredentialModalProps {
   open: boolean;
   onClose: () => void;
   email: string;
+  isLearnerAdded?: boolean;
 }
 const SendCredentialModal: React.FC<SendCredentialModalProps> = ({
   open,
   onClose,
   email,
+  isLearnerAdded,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -70,19 +72,45 @@ const SendCredentialModal: React.FC<SendCredentialModalProps> = ({
         </Box>
         <Divider />
         {/* {isButtonAbsent ? ( */}
-        <Box sx={{ padding: '18px 16px', width: '100%' }}>
-          <Typography
-            variant="h2"
-            sx={{
-              color: theme.palette.warning['400'],
-              fontSize: '14px',
-            }}
-            component="h2"
-          >
-            {t('COMMON.CREDENTIALS_EMAILED')}
-          </Typography>
-          <Box padding={'0 1rem'}>{email}</Box>
+        <Box
+          sx={{
+            padding: '18px 16px',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+          }}
+        >
+          <Box>
+            <Typography
+              variant="h2"
+              sx={{
+                color: theme.palette.warning['400'],
+                fontSize: '14px',
+              }}
+              component="h2"
+            >
+              {isLearnerAdded
+                ? t('COMMON.CREDENTIALS_EMAILED_OF_LEARNER')
+                : t('COMMON.CREDENTIALS_EMAILED')}
+            </Typography>
+          </Box>
+          <Box sx={{ padding: '0 1rem' }}>
+            <Typography
+              variant="h2"
+              sx={{
+                color: theme.palette.warning['400'],
+                fontSize: '14px',
+              }}
+              component="h2"
+            >
+              {email}
+            </Typography>
+          </Box>
         </Box>
+
         <>
           <Box mt={1.5}>
             <Divider />

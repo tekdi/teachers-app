@@ -498,9 +498,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const handleDeleteUser = () => {};
 
   const handleFacilitatorAdded = () => {
-    setTimeout(() => {
-      setIsFacilitatorAdded(true);
-    });
+    setIsFacilitatorAdded((prev) => prev);
   };
   return (
     <>

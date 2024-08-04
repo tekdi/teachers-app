@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { showToastMessage } from './Toastify';
 import { editEditUser } from '@/services/ProfileService';
 import { tenantId } from '../../app.config';
+import SendCredentialModal from './SendCredentialModal';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -38,6 +39,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [reloadProfile, setReloadProfile] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState({
     username: '',
     password: '',
@@ -45,7 +47,10 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
   const { t } = useTranslation();
   const theme = useTheme<any>();
-
+  let userEmail: string = '';
+  if (typeof window !== 'undefined' && window.localStorage) {
+    userEmail = localStorage.getItem('userEmail') || '';
+  }
   useEffect(() => {
     const getAddLearnerFormData = async () => {
       try {
@@ -71,7 +76,6 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
-    // setOpenModal(true);
     const target = event.target as HTMLFormElement;
     const elementsArray = Array.from(target.elements);
 
@@ -182,11 +186,16 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           onReload?.();
         }
       } else {
-        await createUser(apiBody);
+        const response = await createUser(apiBody);
+        if (response) {
+          showToastMessage(t('COMMON.LEARNER_CREATED_SUCCESSFULLY'), 'success');
+          onLearnerAdded?.();
+          setOpenModal(true);
+        } else {
+          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        }
       }
       onClose();
-      showToastMessage(t('COMMON.LEARNER_CREATED_SUCCESSFULLY'), 'success');
-      onLearnerAdded?.();
     } catch (error) {
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       setReloadProfile(true);
@@ -270,48 +279,60 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     // }
   };
 
+  const onCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
-    <SimpleModal
-      open={open}
-      onClose={onClose}
-      showFooter={false}
-      modalTitle={
-        isEditModal ? t('COMMON.EDIT_LEARNER') : t('COMMON.NEW_LEARNER')
-      }
-    >
-      {formData
-        ? schema &&
-          uiSchema && (
-            <DynamicForm
-              schema={schema}
-              uiSchema={uiSchema}
-              onSubmit={handleSubmit}
-              onChange={handleChange}
-              onError={handleError}
-              widgets={{}}
-              showErrorList={true}
-              customFields={customFields}
-              formData={formData}
-            >
-              {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
-            </DynamicForm>
-          )
-        : schema &&
-          uiSchema && (
-            <DynamicForm
-              schema={schema}
-              uiSchema={uiSchema}
-              onSubmit={handleSubmit}
-              onChange={handleChange}
-              onError={handleError}
-              widgets={{}}
-              showErrorList={true}
-              customFields={customFields}
-            >
-              {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
-            </DynamicForm>
-          )}
-    </SimpleModal>
+    <>
+      <SimpleModal
+        open={open}
+        onClose={onClose}
+        showFooter={false}
+        modalTitle={
+          isEditModal ? t('COMMON.EDIT_LEARNER') : t('COMMON.NEW_LEARNER')
+        }
+      >
+        {formData
+          ? schema &&
+            uiSchema && (
+              <DynamicForm
+                schema={schema}
+                uiSchema={uiSchema}
+                onSubmit={handleSubmit}
+                onChange={handleChange}
+                onError={handleError}
+                widgets={{}}
+                showErrorList={true}
+                customFields={customFields}
+                formData={formData}
+              >
+                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+              </DynamicForm>
+            )
+          : schema &&
+            uiSchema && (
+              <DynamicForm
+                schema={schema}
+                uiSchema={uiSchema}
+                onSubmit={handleSubmit}
+                onChange={handleChange}
+                onError={handleError}
+                widgets={{}}
+                showErrorList={true}
+                customFields={customFields}
+              >
+                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+              </DynamicForm>
+            )}
+      </SimpleModal>
+      <SendCredentialModal
+        open={openModal}
+        onClose={onCloseModal}
+        email={userEmail}
+        isLearnerAdded={openModal}
+      />
+    </>
   );
 };
 

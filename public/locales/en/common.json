@@ -99,7 +99,8 @@
     "OTHER_REASON_PLACEHOLDER": "Enter Other Reason",
     "BACK": "Back",
     "SEND_CREDENTIALS": "Send Credentials",
-    "CREDENTIALS_EMAILED": "The login credentials will be emailed to the user at",
+    "CREDENTIALS_EMAILED": "The login credentials will be emailed to the Facilitator at ",
+    "CREDENTIALS_EMAILED_OF_LEARNER": "The login credentials have been send to your email ",
     "NEW": "New {{role}}",
     "USER_CREDENTIAL_SEND_SUCCESSFULLY": "User Credentials Sent Successfully!",
     "CENTER_SESSIONS": "Center Sessions",
@@ -444,7 +445,7 @@
     "FOUNDATION_COURSE": "Foundation Course",
     "MAIN_COURSE": "Main Course",
     "COLLAPSE_ALL": "Collapse All",
-    "EXPAND_ALL":"Expand All",
+    "EXPAND_ALL": "Expand All",
     "RESOURCES": "Resources"
   }
 }

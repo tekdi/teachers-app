@@ -159,7 +159,7 @@ const TeachingCenters = () => {
   }, [isTeamLeader, isCenterAdded]);
 
   const handleCenterAdded = () => {
-    setIsCenterAdded(true);
+    setIsCenterAdded((prev) => !prev);
   };
 
   useEffect(() => {
