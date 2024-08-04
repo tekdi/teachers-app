@@ -40,6 +40,7 @@ const TeachingCenters = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const [cohortsData, setCohortsData] = useState<Array<ICohort>>([]);
+  const [reloadState, setReloadState] = React.useState<boolean>(false);
   const [value, setValue] = useState(1);
   const [blockData, setBlockData] = useState<
     { bockName: string; district?: string; blockId: string; state?: string }[]
@@ -633,7 +634,15 @@ const TeachingCenters = () => {
             </>
           )}
         </Box>
-        <Box>{value === 2 && <ManageUser cohortData={blockData} />}</Box>
+        <Box>
+          {value === 2 && (
+            <ManageUser
+              reloadState={reloadState}
+              setReloadState={setReloadState}
+              cohortData={blockData}
+            />
+          )}
+        </Box>
       </Box>
       <FilterModalCenter
         open={filterModalOpen}

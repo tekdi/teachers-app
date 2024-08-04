@@ -57,8 +57,8 @@ interface LearnerDataProps {
 }
 
 interface ManageUsersProps {
-  reloadState?: boolean;
-  setReloadState?: React.Dispatch<React.SetStateAction<boolean>>;
+  reloadState: boolean;
+  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
   cohortData?: any;
 }
 
@@ -120,6 +120,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   );
 
   useEffect(() => {
+    if (reloadState) {
+      setReloadState(false);
+    }
+  }, [reloadState, setReloadState]);
+
+  useEffect(() => {
     const getFacilitator = async () => {
       setLoading(true);
       try {
@@ -177,8 +183,10 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           const extractedData = facilitatorList?.map(
             (user: any, index: number) => {
               const cohorts = cohortDetails[index] || [];
+
               const cohortNames = cohorts
-                .map((cohort: any) => cohort?.cohortName)
+                .filter((cohort: any) => cohort.status === 'active')
+                .map((cohort: any) => cohort.cohortName)
                 .join(', ');
 
               return {
@@ -354,9 +362,10 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           console.log('Cohort List:', cohortList);
           if (cohortList && cohortList?.length > 0) {
             const cohortDetails = cohortList?.map(
-              (cohort: { cohortName: any; cohortId: any }) => ({
+              (cohort: { cohortName: any; cohortId: any; status: any }) => ({
                 name: cohort?.cohortName,
                 id: cohort?.cohortId,
+                status: cohort?.status,
               })
             );
             setReassignCohortNames(cohortDetails);
@@ -368,6 +377,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
       fetchCohortList();
       setReassignModalOpen(true);
+      setReloadState(true);
     }
     if (name === 'reassign-centers') {
       setOpenCentersModal(true);
@@ -821,6 +831,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               handleAction={handleRequestBlockAction}
               handleCloseReassignModal={handleCloseReassignModal}
               modalOpen={reassignModalOpen}
+              reloadState={reloadState}
+              setReloadState={setReloadState}
             />
 
             <DeleteUserModal

@@ -1,24 +1,24 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import {
+  Box,
+  Button,
   Divider,
   TextField,
   Checkbox,
   InputAdornment,
   IconButton,
+  Modal,
 } from '@mui/material';
-import Modal from '@mui/material/Modal';
 import { useTheme } from '@mui/material/styles';
 import useStore from '@/store/store';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'next-i18next';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
-import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 import { bulkCreateCohortMembers } from '@/services/CohortServices';
 import { showToastMessage } from './Toastify';
+import { Status } from '@/utils/app.constant';
 
 interface ReassignModalProps {
   cohortNames?: any;
@@ -27,11 +27,19 @@ interface ReassignModalProps {
   buttonNames?: ButtonNames;
   handleCloseReassignModal: () => void;
   modalOpen: boolean;
+  reloadState: boolean;
+  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface ButtonNames {
   primary: string;
   secondary: string;
+}
+
+interface Cohort {
+  id: any;
+  cohortId: string;
+  name: string;
 }
 
 const ReassignModal: React.FC<ReassignModalProps> = ({
@@ -41,67 +49,54 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   handleAction,
   buttonNames,
   handleCloseReassignModal,
+  reloadState,
+  setReloadState,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const store = useStore();
-  const cohorts = store.cohorts;
-  const centerList = cohorts?.map((cohort: { cohortId: any; name: string }) => ({
+  const reStore = reassignLearnerStore();
+  const cohorts: Cohort[] = store.cohorts.map((cohort: { cohortId: any; name: string }) => ({
     name: cohort.name,
     id: cohort.cohortId,
   }));
-  const reStore = reassignLearnerStore();
-  const [searchInput, setSearchInput] = React.useState('');
-  const [selectedData, setSelectedData] = React.useState('');
-  const [unSelectedData, setUnSelectedData] = React.useState('');
-  const [checkedCenters, setCheckedCenters] = React.useState<string[]>([]);
 
+  const [searchInput, setSearchInput] = useState('');
+  const [checkedCenters, setCheckedCenters] = useState<string[]>([]);
+
+  React.useEffect(() => {
+    if (reloadState) {
+      setReloadState(false);
+    }
+  }, [reloadState, setReloadState]);
+
+  
   useEffect(() => {
     if (cohortNames) {
-      const initialCheckedCenters = cohortNames?.map(
-        (cohort: { name: any }) => cohort?.name
-      );
-      setCheckedCenters(initialCheckedCenters);
+      const activeCenters = cohortNames
+        .filter((cohort: { status: string }) => cohort.status === Status.ACTIVE)
+        .map((cohort: { name: any }) => cohort.name);
+      setCheckedCenters(activeCenters);
     }
   }, [cohortNames]);
 
-  const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(event.target.value);
   };
 
   const handleToggle = (name: string) => {
-    setCheckedCenters((prevCheckedCenters) => {
-      const currentIndex = prevCheckedCenters.indexOf(name);
-      const isCurrentlyChecked = currentIndex !== -1;
-      const newChecked = [...prevCheckedCenters];
+    setCheckedCenters((prev) => {
+      const updatedCheckedCenters = prev.includes(name)
+        ? prev.filter((center) => center !== name)
+        : [...prev, name];
 
-      if (isCurrentlyChecked) {
-        newChecked.splice(currentIndex, 1);
-      } else {
-        newChecked.push(name);
-      }
-
-      const checkedCenterIds = centerList
-        .filter((center: { name: string }) => newChecked.includes(center?.name))
-        .map((center: { id: any }) => center.id);
-      const uncheckedCenterIds = centerList
-        .filter((center: { name: string }) => !newChecked.includes(center?.name))
-        .map((center: { id: any }) => center.id);
-
-      setSelectedData(checkedCenterIds);
-
-      setUnSelectedData(uncheckedCenterIds);
-      return newChecked;
+      return updatedCheckedCenters;
     });
   };
 
-  const filteredCenters = centerList
-    .filter((center: { name: string }) =>
-      center.name.toLowerCase().includes(searchInput.toLowerCase())
-    )
-    .sort((a: { name: string }, b: { name: string }) => {
+  const filteredCenters = cohorts
+    .filter((center) => center.name.toLowerCase().includes(searchInput.toLowerCase()))
+    .sort((a, b) => {
       const aChecked = checkedCenters.includes(a.name);
       const bChecked = checkedCenters.includes(b.name);
       if (aChecked === bChecked) {
@@ -111,31 +106,32 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     });
 
   const handleReassign = async () => {
-    console.log('USER ID', reStore.reassignFacilitatorUserId);
-    console.log('Checked Center IDs:', selectedData);
-    console.log('Unchecked Center IDs:', unSelectedData);
+    const selectedData = cohorts
+      .filter((center) => checkedCenters.includes(center.name))
+      .map((center) => center.id);
+    const unSelectedData = cohorts
+      .filter((center) => !checkedCenters.includes(center.name))
+      .map((center) => center.id);
 
     const payload = {
-      userId: [reStore?.reassignFacilitatorUserId],
+      userId: [reStore.reassignFacilitatorUserId],
       cohortId: selectedData,
       removeCohortId: unSelectedData,
     };
 
     try {
-      const response = await bulkCreateCohortMembers(payload);
-      console.log('Cohort members created successfully', response);
-
-      showToastMessage(
-        t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'),
-        'success'
-      );
+      await bulkCreateCohortMembers(payload);
+      showToastMessage(t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'), 'success');
+      setReloadState(true);
     } catch (error) {
-      console.error('Error creating cohort members', error);
       showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');
+    } finally {
+      handleCloseReassignModal();
+      return
     }
   };
 
-  const style = {
+  const modalStyle = {
     position: 'absolute',
     top: '50%',
     left: '50%',
@@ -150,29 +146,11 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   };
 
   return (
-    <Modal
-      open={modalOpen}
-      onClose={handleCloseReassignModal}
-      aria-labelledby="confirmation-modal-title"
-      aria-describedby="confirmation-modal-description"
-    >
-      <Box sx={style}>
-        <Box
-          sx={{
-            p: 3,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-          id="confirmation-modal-title"
-        >
+    <Modal open={modalOpen} onClose={handleCloseReassignModal}>
+      <Box sx={modalStyle}>
+        <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>{message}</span>
-          <IconButton
-            edge="end"
-            color="inherit"
-            onClick={handleCloseReassignModal}
-            aria-label="close"
-          >
+          <IconButton color="inherit" onClick={handleCloseReassignModal}>
             <CloseIcon />
           </IconButton>
         </Box>
@@ -182,70 +160,34 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
             sx={{
               backgroundColor: theme.palette.warning['A700'],
               borderRadius: 8,
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  border: 'none',
-                },
-              },
-              '& .MuiOutlinedInput-input': {
-                borderRadius: 8,
-              },
+              '& .MuiOutlinedInput-root fieldset': { border: 'none' },
+              '& .MuiOutlinedInput-input': { borderRadius: 8 },
             }}
             placeholder={t('CENTERS.SEARCH_CENTERS')}
             value={searchInput}
             onChange={handleSearchInputChange}
             fullWidth
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
+            InputProps={{ endAdornment: <InputAdornment position="end"><SearchIcon /></InputAdornment> }}
           />
         </Box>
         <Box sx={{ p: 3, maxHeight: '300px', overflowY: 'auto' }}>
-          {filteredCenters.map(
-            (center: { name: string; id: string }, index: number) => (
-              <Box
-                key={index}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  mb: 2,
-                }}
-              >
-                <span>{center.name}</span>
-                <Checkbox
-                  checked={checkedCenters.includes(center.name)}
-                  onChange={() => handleToggle(center.name)}
-                />
-              </Box>
-            )
-          )}
+          {filteredCenters.map((center) => (
+            <Box key={center.id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+              <span>{center.name}</span>
+              <Checkbox
+                checked={checkedCenters.includes(center.name)}
+                onChange={() => handleToggle(center.name)}
+              />
+            </Box>
+          ))}
         </Box>
         <Divider />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '18px',
-            p: 2,
-          }}
-        >
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: '18px', p: 2 }}>
           <Button
-            sx={{
-              width: '100%',
-              height: '40px',
-              fontSize: '14px',
-              fontWeight: '500',
-            }}
+            sx={{ width: '100%', height: '40px', fontSize: '14px', fontWeight: '500' }}
             variant="contained"
             color="primary"
-            onClick={() => {
-              handleReassign();
-            }}
+            onClick={handleReassign}
           >
             {buttonNames?.primary || 'Re-assign'}
           </Button>
