@@ -8,10 +8,12 @@ import { showToastMessage } from './Toastify';
 interface SendCredentialModalProps {
   open: boolean;
   onClose: () => void;
+  email: string;
 }
 const SendCredentialModal: React.FC<SendCredentialModalProps> = ({
   open,
   onClose,
+  email,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -79,7 +81,7 @@ const SendCredentialModal: React.FC<SendCredentialModalProps> = ({
           >
             {t('COMMON.CREDENTIALS_EMAILED')}
           </Typography>
-          <Box padding={'0 1rem'}>user's email</Box>
+          <Box padding={'0 1rem'}>{email}</Box>
         </Box>
         <>
           <Box mt={1.5}>

@@ -29,6 +29,7 @@ import AddFacilitatorModal from './AddFacilitator';
 import DeleteUserModal from './DeleteUserModal';
 import ReassignModal from './ReassignModal';
 import SimpleModal from './SimpleModal';
+import { setTimeout } from 'timers';
 
 interface Cohort {
   cohortId: string;
@@ -101,6 +102,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const [reassignBlockRequestModalOpen, setReassignBlockRequestModalOpen] =
     React.useState<boolean>(false);
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
+  const [isFacilitatorAdded, setIsFacilitatorAdded] = React.useState(false);
   const [openRemoveUserModal, setOpenRemoveUserModal] = React.useState(false);
   const [removeCohortNames, setRemoveCohortNames] = React.useState('');
   const [reassignCohortNames, setReassignCohortNames] = React.useState('');
@@ -113,7 +115,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const setCohortDeleteId = manageUserStore((state) => state.setCohortDeleteId);
   const [openAddFacilitatorModal, setOpenFacilitatorModal] =
     React.useState(false);
-  const setReassignFacilitatorUserId = reassignLearnerStore((state) => state.setReassignFacilitatorUserId);
+  const setReassignFacilitatorUserId = reassignLearnerStore(
+    (state) => state.setReassignFacilitatorUserId
+  );
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -198,7 +202,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       }
     };
     getFacilitator();
-  }, []);
+  }, [isFacilitatorAdded]);
 
   useEffect(() => {
     const fetchCohortListForUsers = async () => {
@@ -335,11 +339,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       // }
     }
     if (name === 'reassign-block') {
+      const reassignuserId = selectedUser?.userId;
 
-      const reassignuserId = selectedUser?.userId ;
-      
-
-      setReassignFacilitatorUserId(selectedUser?.userId)
+      setReassignFacilitatorUserId(selectedUser?.userId);
 
       const fetchCohortList = async () => {
         if (!selectedUser?.userId) {
@@ -351,11 +353,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           const cohortList = await getCohortList(selectedUser.userId);
           console.log('Cohort List:', cohortList);
           if (cohortList && cohortList?.length > 0) {
-            const cohortDetails = cohortList?.map((cohort: { cohortName: any, cohortId: any }) => ({
+            const cohortDetails = cohortList?.map(
+              (cohort: { cohortName: any; cohortId: any }) => ({
                 name: cohort?.cohortName,
-                id: cohort?.cohortId
-            }));
-              setReassignCohortNames(cohortDetails);
+                id: cohort?.cohortId,
+              })
+            );
+            setReassignCohortNames(cohortDetails);
           }
         } catch (error) {
           console.error('Error fetching cohort list:', error);
@@ -482,6 +486,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   };
 
   const handleDeleteUser = () => {};
+
+  const handleFacilitatorAdded = () => {
+    setTimeout(() => {
+      setIsFacilitatorAdded(true);
+    });
+  };
   return (
     <>
       {/* <Header /> */}
@@ -841,6 +851,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               <AddFacilitatorModal
                 open={openAddFacilitatorModal}
                 onClose={handleCloseAddFaciModal}
+                onFacilitatorAdded={handleFacilitatorAdded}
               />
             )}
           </>
