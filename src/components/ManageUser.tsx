@@ -56,8 +56,8 @@ interface LearnerDataProps {
 }
 
 interface ManageUsersProps {
-  reloadState?: boolean;
-  setReloadState?: React.Dispatch<React.SetStateAction<boolean>>;
+  reloadState: boolean;
+  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
   cohortData?: any;
 }
 
@@ -116,6 +116,13 @@ const manageUsers: React.FC<ManageUsersProps> = ({
   const setReassignFacilitatorUserId = reassignLearnerStore(
     (state) => state.setReassignFacilitatorUserId
   );
+
+  useEffect(() => {
+    if (reloadState) {
+      setReloadState(false);
+    }
+  }, [reloadState, setReloadState]);
+
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -370,6 +377,7 @@ const manageUsers: React.FC<ManageUsersProps> = ({
 
       fetchCohortList();
       setReassignModalOpen(true);
+      setReloadState(true);
     }
     if (name === 'reassign-centers') {
       setOpenCentersModal(true);
@@ -818,6 +826,8 @@ const manageUsers: React.FC<ManageUsersProps> = ({
               handleAction={handleRequestBlockAction}
               handleCloseReassignModal={handleCloseReassignModal}
               modalOpen={reassignModalOpen}
+              reloadState={reloadState}
+               setReloadState={setReloadState}
             />
 
             <DeleteUserModal
