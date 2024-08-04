@@ -321,40 +321,40 @@ const UserAttendanceHistory = () => {
   };
 
 
-  const getAllDatesInRange = (startDate: string, endDate: string): string[] => {
-    const datesArray: string[] = [];
-    const currentDate = new Date(startDate);
-    const lastDate = new Date(endDate);
+  // const getAllDatesInRange = (startDate: string, endDate: string): string[] => {
+  //   const datesArray: string[] = [];
+  //   const currentDate = new Date(startDate);
+  //   const lastDate = new Date(endDate);
 
-    while (currentDate <= lastDate) {
-      datesArray.push(shortDateFormat(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
+  //   while (currentDate <= lastDate) {
+  //     datesArray.push(shortDateFormat(currentDate));
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
 
-    return datesArray;
-  };
+  //   return datesArray;
+  // };
 
   const handleSelectedDateChange = (date: Date | Date[] | null) => {
     setSelectedDate(date as Date);
   };
 
-  const handleUpdate = async (date: string, status: string) => {
-    const trimmedContextId = classId.trim();
-    if (userId && trimmedContextId) {
-      const attendanceData: AttendanceParams = {
-        attendanceDate: date,
-        attendance: status,
-        userId,
-        contextId: trimmedContextId,
-      };
-      setLoading(true);
-    }
-  };
+  // const handleUpdate = async (date: string, status: string) => {
+  //   const trimmedContextId = classId.trim();
+  //   if (userId && trimmedContextId) {
+  //     const attendanceData: AttendanceParams = {
+  //       attendanceDate: date,
+  //       attendance: status,
+  //       userId,
+  //       contextId: trimmedContextId,
+  //     };
+  //     setLoading(true);
+  //   }
+  // };
 
-  function getStateByCohortId(cohortId: any) {
-    const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
-    return cohort ? cohort?.state : null;
-  }
+  // function getStateByCohortId(cohortId: any) {
+  //   const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
+  //   return cohort ? cohort?.state : null;
+  // }
 
   const handleSearchClear = () => {
     setSearchWord('');
