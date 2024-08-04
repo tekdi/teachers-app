@@ -178,18 +178,23 @@ const UserAttendanceHistory = () => {
           page,
           filters,
         });
-        const resp = response?.result?.userDetails;
+        const resp = response?.result?.userDetails || [];
 
         if (resp) {
-          const nameUserIdArray = resp?.map((entry: any) => ({
-            userId: entry.userId,
-            name: toPascalCase(entry.name),
-            memberStatus: entry.status,createdAt: entry.createdAt,
-          }))
-          .filter((member: { createdAt: string | number | Date }) => {
-            const createdAt = new Date(member.createdAt);
-            return createdAt <= selectedDate;
-          });
+          let selectedDateStart = new Date(selectedDate);
+          selectedDateStart.setHours(0, 0, 0, 0);
+          let nameUserIdArray = resp
+            .filter((entry: any) => {
+              const createdAtDate = new Date(entry.createdAt);
+              createdAtDate.setHours(0, 0, 0, 0);
+              return createdAtDate <= selectedDateStart;
+            })
+            .map((entry: any) => ({
+              userId: entry.userId,
+              name: toPascalCase(entry.name),
+              memberStatus: entry.status,
+              createdAt: entry.createdAt,
+            }));
           if (nameUserIdArray && (selectedDate || currentDate)) {
             const userAttendanceStatusList = async () => {
               const attendanceStatusData: AttendanceStatusListProps = {
