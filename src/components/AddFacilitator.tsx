@@ -25,6 +25,7 @@ interface AddFacilitatorModalprops {
   isEditModal?: boolean;
   userId?: string;
   onReload?: (() => void) | undefined;
+  onFacilitatorAdded?: (() => void) | undefined;
 }
 const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   open,
@@ -33,13 +34,18 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   isEditModal = false,
   userId,
   onReload,
+  onFacilitatorAdded,
 }) => {
   const [schema, setSchema] = React.useState<any>();
   const [openModal, setOpenModal] = React.useState(false);
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [reloadProfile, setReloadProfile] = React.useState(false);
+  const [email, setEmail] = React.useState('user@gmail.com');
 
   const { t } = useTranslation();
+  useEffect(() => {
+    console.log('openModal state changed:', openModal);
+  }, [openModal]);
 
   useEffect(() => {
     const getAddFacilitatorFormData = async () => {
@@ -102,9 +108,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
-    if (!isEditModal) {
-      setOpenModal(true);
-    }
     const target = event.target as HTMLFormElement;
     const elementsArray = Array.from(target.elements);
 
@@ -124,7 +127,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     const formData = data.formData;
     console.log('Form data submitted:', formData);
     const schemaProperties = schema.properties;
-
+    setEmail(formData?.email);
     const { username, password } = generateUsernameAndPassword('MH', 'F');
 
     const apiBody: any = {
@@ -177,45 +180,25 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     });
 
     if (typeof window !== 'undefined' && window.localStorage) {
-      const teamLeaderData = JSON.parse(
-        localStorage.getItem('teamLeadApp') ?? ''
-      );
-      console.log(teamLeaderData);
+      const fieldData = JSON.parse(localStorage.getItem('fieldData') ?? '');
 
-
-      if (!isEditModal && teamLeaderData) {
+      if (!isEditModal && fieldData) {
         apiBody.customFields.push({
-          fieldId: '4aab68ae-8382-43aa-a45a-e9b239319857',  //teacherData?.state?.blockId,
-          value: [teamLeaderData?.state?.blockCode],
+          fieldId: fieldData?.state?.blockId,
+          value: [fieldData?.state?.blockCode],
         });
         apiBody.customFields.push({
-          fieldId: '6469c3ac-8c46-49d7-852a-00f9589737c5', //teacherData?.state?.stateId,
-          value: [teamLeaderData?.state?.stateCode],
+          fieldId: fieldData?.state?.stateId,
+          value: [fieldData?.state?.stateCode],
         });
         apiBody.customFields.push({
-          fieldId: 'b61edfc6-3787-4079-86d3-37262bf23a9e', //teacherData?.state?.districtId,
-          value: [teamLeaderData?.state?.districtCode],
+          fieldId: fieldData?.state?.districtId,
+          value: [fieldData?.state?.districtCode],
         });
       }
     }
-    // apiBody.customFields.push({
-    //   fieldId: teamLeaderData?.state?.blockId,
-    //   value: [teamLeaderData?.state?.blockCode],
-    // });
-    // apiBody.customFields.push({
-    //   fieldId: teamLeaderData?.state?.stateId,
-    //   value: [teamLeaderData?.state?.stateCode],
-    // });
-    // apiBody.customFields.push({
-    //   fieldId: teamLeaderData?.state?.districtId,
-    //   value: [teamLeaderData?.state?.districtCode],
-    // });
-
-
-
 
     console.log(apiBody);
-
     try {
       if (isEditModal && userId) {
         const userData = {
@@ -242,15 +225,20 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         const response = await createUser(apiBody);
         console.log(response);
         if (response) {
+          onFacilitatorAdded?.();
+          onClose();
           showToastMessage(
             t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
             'success'
           );
+
+          if (!isEditModal) {
+            setOpenModal(true);
+          }
         } else {
           showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         }
       }
-      onClose();
     } catch (error) {
       onClose();
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -267,11 +255,17 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
   const onCloseModal = () => {
     setOpenModal(false);
-    onClose();
   };
 
   return (
     <>
+      {openModal && (
+        <SendCredentialModal
+          open={openModal}
+          onClose={onCloseModal}
+          email={email}
+        />
+      )}
       <SimpleModal
         open={open}
         onClose={onClose}
@@ -315,8 +309,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
               </DynamicForm>
             )}
       </SimpleModal>
-
-      <SendCredentialModal open={openModal} onClose={onCloseModal} />
     </>
   );
 };

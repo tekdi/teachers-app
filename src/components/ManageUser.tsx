@@ -29,6 +29,7 @@ import AddFacilitatorModal from './AddFacilitator';
 import DeleteUserModal from './DeleteUserModal';
 import ReassignModal from './ReassignModal';
 import SimpleModal from './SimpleModal';
+import { setTimeout } from 'timers';
 
 interface Cohort {
   cohortId: string;
@@ -101,6 +102,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const [reassignBlockRequestModalOpen, setReassignBlockRequestModalOpen] =
     React.useState<boolean>(false);
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
+  const [isFacilitatorAdded, setIsFacilitatorAdded] = React.useState(false);
   const [openRemoveUserModal, setOpenRemoveUserModal] = React.useState(false);
   const [removeCohortNames, setRemoveCohortNames] = React.useState('');
   const [reassignCohortNames, setReassignCohortNames] = React.useState('');
@@ -122,7 +124,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       setReloadState(false);
     }
   }, [reloadState, setReloadState]);
-
 
   useEffect(() => {
     const getFacilitator = async () => {
@@ -209,7 +210,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       }
     };
     getFacilitator();
-  }, []);
+  }, [isFacilitatorAdded]);
 
   useEffect(() => {
     const fetchCohortListForUsers = async () => {
@@ -360,12 +361,11 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           const cohortList = await getCohortList(selectedUser.userId);
           console.log('Cohort List:', cohortList);
           if (cohortList && cohortList?.length > 0) {
-            
             const cohortDetails = cohortList?.map(
               (cohort: { cohortName: any; cohortId: any; status: any }) => ({
                 name: cohort?.cohortName,
                 id: cohort?.cohortId,
-                status: cohort?.status
+                status: cohort?.status,
               })
             );
             setReassignCohortNames(cohortDetails);
@@ -496,6 +496,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   };
 
   const handleDeleteUser = () => {};
+
+  const handleFacilitatorAdded = () => {
+    setTimeout(() => {
+      setIsFacilitatorAdded(true);
+    });
+  };
   return (
     <>
       {/* <Header /> */}
@@ -826,7 +832,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               handleCloseReassignModal={handleCloseReassignModal}
               modalOpen={reassignModalOpen}
               reloadState={reloadState}
-               setReloadState={setReloadState}
+              setReloadState={setReloadState}
             />
 
             <DeleteUserModal
@@ -857,6 +863,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               <AddFacilitatorModal
                 open={openAddFacilitatorModal}
                 onClose={handleCloseAddFaciModal}
+                onFacilitatorAdded={handleFacilitatorAdded}
               />
             )}
           </>
