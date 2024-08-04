@@ -189,9 +189,15 @@ export const getDeviceId = () => {
   });
 };
 
-export const getFieldValue = (customField: any[], fieldName: any) => {
-  const field = customField.find((field) => field.fieldname === fieldName);
-  return field ? field.fieldvalues : 'N/A';
+export const getFieldValue = (
+  data: any[],
+  searchKey: string,
+  searchValue: string,
+  returnKey: string,
+  defaultValue: any = null
+) => {
+  const field = data.find((item: any) => item[searchKey] === searchValue);
+  return field ? field[returnKey] : defaultValue;
 };
 
 export const capitalizeEachWord = (str: string) => {
@@ -328,4 +334,30 @@ export const convertLocalToUTC = (localDateTime: any) => {
 export const getCurrentYearPattern = () => {
   const currentYear = new Date().getFullYear();
   return `^(19[0-9][0-9]|20[0-${Math.floor(currentYear / 10) % 10}][0-${currentYear % 10}])$`;
+};
+
+export const extractAddress = (
+  fields: any[],
+  stateLabel: string = 'STATES',
+  districtLabel: string = 'DISTRICTS',
+  blockLabel: string = 'BLOCKS',
+  searchKey: string = 'label',
+  returnKey: string = 'value',
+  toPascalCase: (str: string) => string = (str) => str // Default to identity function if not provided
+): string => {
+  const stateName = getFieldValue(fields, searchKey, stateLabel, returnKey);
+  const districtName = getFieldValue(
+    fields,
+    searchKey,
+    districtLabel,
+    returnKey
+  );
+  const blockName = getFieldValue(fields, searchKey, blockLabel, returnKey);
+
+  const address = [stateName, districtName, blockName]
+    .filter(Boolean)
+    .map(toPascalCase)
+    .join(', ');
+
+  return address;
 };

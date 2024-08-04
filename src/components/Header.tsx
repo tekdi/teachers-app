@@ -18,6 +18,7 @@ import logoLight from '../../public/images/logo-light.png';
 import menuIcon from '../assets/images/menuIcon.svg';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import StyledMenu from './StyledMenu';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -32,49 +33,6 @@ const Header: React.FC = () => {
       setUserId(storedUserId);
     }
   }, []);
-
-  const StyledMenu = styled((props: MenuProps) => (
-    <Menu
-      elevation={0}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      {...props}
-    />
-  ))(() => ({
-    '& .MuiPaper-root': {
-      borderRadius: 6,
-      marginTop: theme.spacing(1),
-      minWidth: 180,
-      color:
-        theme.palette.mode === 'light'
-          ? 'rgb(55, 65, 81)'
-          : theme.palette.grey[300],
-      boxShadow:
-        'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-      '& .MuiMenu-list': {
-        padding: '4px 0',
-      },
-      '& .MuiMenuItem-root': {
-        '& .MuiSvgIcon-root': {
-          fontSize: 18,
-          color: theme.palette.text.secondary,
-          marginRight: theme.spacing(1.5),
-        },
-        '&:active': {
-          backgroundColor: alpha(
-            theme.palette.primary.main,
-            theme.palette.action.selectedOpacity
-          ),
-        },
-      },
-    },
-  }));
 
   const handleProfileClick = () => {
     if (pathname !== `/user-profile/${userId}`) {
@@ -134,10 +92,6 @@ const Header: React.FC = () => {
   const getMessage = () => {
     if (modalOpen) return t('COMMON.SURE_LOGOUT');
     return '';
-  };
-
-  const handleAction = () => {
-    handleLogoutClick();
   };
 
   const handleCloseModel = () => {
@@ -260,7 +214,7 @@ const Header: React.FC = () => {
 
       <ConfirmationModal
         message={getMessage()}
-        handleAction={handleAction}
+        handleAction={handleLogoutClick}
         buttonNames={{
           primary: t('COMMON.LOGOUT'),
           secondary: t('COMMON.CANCEL'),

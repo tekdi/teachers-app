@@ -1,7 +1,28 @@
 /* eslint-disable no-unused-vars */
+import { TFunction } from 'i18next';
+
 export const limit: number = 300;
 export const refetchInterval: number = 5 * 60 * 1000; // 5 min
 export const gcTime: number = 10 * 60 * 1000; // 10 Min
+
+export const getMenuItems = (
+  t: TFunction,
+  dateRange: string | Date,
+  currentDayMonth: string | Date
+) => {
+  return [
+    t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+      date_range: dateRange,
+    }),
+    t('DASHBOARD.AS_OF_TODAY_DATE', {
+      day_date: currentDayMonth,
+    }),
+    t('COMMON.LAST_MONTH'),
+    t('COMMON.LAST_SIX_MONTHS'),
+    t('COMMON.CUSTOM_RANGE'),
+  ];
+};
+
 export const names = [
   'name',
   'age',
