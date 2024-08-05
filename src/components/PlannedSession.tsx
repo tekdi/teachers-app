@@ -145,16 +145,19 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             <Box sx={{ mt: 2 }}>
               <FormControl fullWidth>
                 <InputLabel
-                  style={{ color: theme?.palette?.warning['A200'] }}
+                  style={{
+                    color: theme?.palette?.warning['A200'],
+                    background: theme?.palette?.warning['A400'],
+                    px: '2px',
+                  }}
                   id="demo-simple-select-label"
-                  sx={{ background: '#fff', px: '2px' }}
                 >
-                  Subject (Optional)
+                  {t('CENTER_SESSION.SUBJECT_OPTIONAL')}
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  label="Subject (Optional)"
+                  label={t('CENTER_SESSION.SUBJECT_OPTIONAL')}
                   style={{ borderRadius: '4px' }}
                 >
                   {/* <MenuItem value={'Mathematics'}>Mathematics</MenuItem> */}
