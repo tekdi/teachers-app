@@ -7,7 +7,7 @@ import {
   IconButton,
   Modal,
   Radio,
-  Typography
+  Typography,
 } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import { IChangeEvent } from '@rjsf/core';
@@ -17,6 +17,7 @@ import React, { useEffect, useState } from 'react';
 import DynamicForm from '../DynamicForm';
 import { GenerateSchemaAndUiSchema } from '../GeneratedSchemas';
 import { showToastMessage } from '../Toastify';
+import FormButtons from '../FormButtons';
 
 interface CreateBlockModalProps {
   open: boolean;
@@ -49,28 +50,11 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-
   const [centerName, setCenterName] = useState<string>('');
   const [centerType, setCenterType] = useState<string>('Regular');
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
-
-  const handleTextFieldChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setCenterName(event.target.value);
-  };
-
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCenterType(event.target.value);
-  };
-
-  const handleCreateButtonClick = () => {
-    console.log('Entered Center Name:', centerName);
-    console.log('Selected Center Type:', centerType);
-    showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
-    handleClose();
-  };
+  const [formData, setFormData] = useState<any>();
 
   useEffect(() => {
     const getForm = async () => {
@@ -92,44 +76,58 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
-    const formData = data.formData;
-    console.log('Form data submitted:', formData);
-
-    const parentId = localStorage.getItem('blockParentId');
-    const cohortDetails: CohortDetails = {
-      name: formData.name,
-      type: 'COHORT',
-      parentId: parentId,
-      customFields: [],
-    };
-
-    Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
-      const fieldSchema = schema.properties[fieldKey];
-      const fieldId = fieldSchema?.fieldId;
-      if (fieldId !== null) {
-        cohortDetails.customFields.push({
-          fieldId: fieldId,
-          value: formData.cohort_type,
-        });
-        cohortDetails.customFields.push({
-          fieldId: '6469c3ac-8c46-49d7-852a-00f9589737c5',
-          value: ['MH']
-        });
-        cohortDetails.customFields.push({
-          fieldId: 'b61edfc6-3787-4079-86d3-37262bf23a9e',
-          value: ['MUM']
-        });
-        cohortDetails.customFields.push({
-          fieldId: '4aab68ae-8382-43aa-a45a-e9b239319857',
-          value: ['BOR']
-        });
-      }
+    setTimeout(() => {
+      setFormData(data.formData);
     });
-    const cohortData = await createCohort(cohortDetails);
-    if (cohortData) {
-      showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
-      onCenterAdded();
-      handleClose();
+  };
+
+  useEffect(() => {
+    if (formData) {
+      handleButtonClick();
+    }
+  }, [formData]);
+
+  const handleButtonClick = async () => {
+    console.log('Form data:', formData);
+    if (formData) {
+      console.log('Form data submitted:', formData);
+
+      const parentId = localStorage.getItem('blockParentId');
+      const cohortDetails: CohortDetails = {
+        name: formData.name,
+        type: 'COHORT',
+        parentId: parentId,
+        customFields: [],
+      };
+
+      Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
+        const fieldSchema = schema.properties[fieldKey];
+        const fieldId = fieldSchema?.fieldId;
+        if (fieldId !== null) {
+          cohortDetails.customFields.push({
+            fieldId: fieldId,
+            value: formData.cohort_type,
+          });
+          cohortDetails.customFields.push({
+            fieldId: '6469c3ac-8c46-49d7-852a-00f9589737c5',
+            value: ['MH'],
+          });
+          cohortDetails.customFields.push({
+            fieldId: 'b61edfc6-3787-4079-86d3-37262bf23a9e',
+            value: ['MUM'],
+          });
+          cohortDetails.customFields.push({
+            fieldId: '4aab68ae-8382-43aa-a45a-e9b239319857',
+            value: ['BOR'],
+          });
+        }
+      });
+      const cohortData = await createCohort(cohortDetails);
+      if (cohortData) {
+        showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
+        onCenterAdded();
+        handleClose();
+      }
     }
   };
 
@@ -183,31 +181,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
             </IconButton>
           </Box>
           <Divider sx={{ mb: -2, mx: -2 }} />
-          {/* <FormControl component="fieldset" sx={{ mb: 2 }}>
-            <FormLabel sx={{ fontSize: '12px' }} component="legend">
-              {t('CENTERS.CENTER_TYPE')}
-            </FormLabel>
-            <RadioGroup row value={centerType} onChange={handleRadioChange}>
-              <FormControlLabel
-                value="Regular"
-                control={<CustomRadio />}
-                label={t('CENTERS.REGULAR')}
-              />
-              <FormControlLabel
-                value="Remote"
-                control={<CustomRadio />}
-                label={t('CENTERS.REMOTE')}
-              />
-            </RadioGroup>
-          </FormControl> */}
-          {/* <TextField
-            fullWidth
-            label={t('CENTERS.UNIT_NAME')}
-            id="outlined-size-normal"
-            sx={{ mb: 1, mt: 2 }}
-            value={centerName}
-            onChange={handleTextFieldChange}
-          /> */}
+
           {schema && uiSchema && (
             <DynamicForm
               schema={schema}
@@ -217,24 +191,15 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
               onError={handleError}
               widgets={{}}
               showErrorList={true}
-            />
+            >
+              <FormButtons
+                formData={formData}
+                onClick={handleButtonClick}
+                isCreateCentered={true}
+                isCreatedFacilitator={false}
+              />
+            </DynamicForm>
           )}
-          {/* <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-            {t('CENTERS.NOTE')}
-          </Typography>
-          <Divider sx={{ mb: 2, mx: -2 }} />
-          <Button
-            variant="outlined"
-            onClick={handleCreateButtonClick}
-            sx={{
-              width: '100%',
-              border: 'none',
-              backgroundColor: theme?.palette?.primary?.main,
-              mb: 2,
-            }}
-          >
-            {t('BLOCKS.CREATE')}
-          </Button> */}
         </Box>
       </Fade>
     </Modal>

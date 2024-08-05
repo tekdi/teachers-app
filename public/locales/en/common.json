@@ -120,7 +120,9 @@
     "LEARNER_CREATED_SUCCESSFULLY": "Leaner has been Successfully Created!",
     "FACILITATOR_ADDED_SUCCESSFULLY": "Facilitator added successfully!",
     "LEARNER_UPDATED_SUCCESSFULLY": "Learner profile updated successfully!",
-    "FACILITATOR_UPDATED_SUCCESSFULLY": "Facilitator profile updated successfully!"
+    "FACILITATOR_UPDATED_SUCCESSFULLY": "Facilitator profile updated successfully!",
+    "PLEASE_SELECT_THE_CENTER": "Please select the center.",
+    "CREATE": "Create"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
