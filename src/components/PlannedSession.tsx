@@ -148,7 +148,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   style={{
                     color: theme?.palette?.warning['A200'],
                     background: theme?.palette?.warning['A400'],
-                    px: '2px',
+                    paddingLeft: '2px',
+                    paddingRight: '2px',
                   }}
                   id="demo-simple-select-label"
                 >
