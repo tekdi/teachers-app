@@ -178,18 +178,23 @@ const UserAttendanceHistory = () => {
           page,
           filters,
         });
-        const resp = response?.result?.userDetails;
+        const resp = response?.result?.userDetails || [];
 
         if (resp) {
-          const nameUserIdArray = resp?.map((entry: any) => ({
-            userId: entry.userId,
-            name: toPascalCase(entry.name),
-            memberStatus: entry.status,createdAt: entry.createdAt,
-          }))
-          .filter((member: { createdAt: string | number | Date }) => {
-            const createdAt = new Date(member.createdAt);
-            return createdAt <= selectedDate;
-          });
+          let selectedDateStart = new Date(selectedDate);
+          selectedDateStart.setHours(0, 0, 0, 0);
+          let nameUserIdArray = resp
+            .filter((entry: any) => {
+              const createdAtDate = new Date(entry.createdAt);
+              createdAtDate.setHours(0, 0, 0, 0);
+              return createdAtDate <= selectedDateStart;
+            })
+            .map((entry: any) => ({
+              userId: entry.userId,
+              name: toPascalCase(entry.name),
+              memberStatus: entry.status,
+              createdAt: entry.createdAt,
+            }));
           if (nameUserIdArray && (selectedDate || currentDate)) {
             const userAttendanceStatusList = async () => {
               const attendanceStatusData: AttendanceStatusListProps = {
@@ -316,40 +321,40 @@ const UserAttendanceHistory = () => {
   };
 
 
-  const getAllDatesInRange = (startDate: string, endDate: string): string[] => {
-    const datesArray: string[] = [];
-    const currentDate = new Date(startDate);
-    const lastDate = new Date(endDate);
+  // const getAllDatesInRange = (startDate: string, endDate: string): string[] => {
+  //   const datesArray: string[] = [];
+  //   const currentDate = new Date(startDate);
+  //   const lastDate = new Date(endDate);
 
-    while (currentDate <= lastDate) {
-      datesArray.push(shortDateFormat(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
+  //   while (currentDate <= lastDate) {
+  //     datesArray.push(shortDateFormat(currentDate));
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
 
-    return datesArray;
-  };
+  //   return datesArray;
+  // };
 
   const handleSelectedDateChange = (date: Date | Date[] | null) => {
     setSelectedDate(date as Date);
   };
 
-  const handleUpdate = async (date: string, status: string) => {
-    const trimmedContextId = classId.trim();
-    if (userId && trimmedContextId) {
-      const attendanceData: AttendanceParams = {
-        attendanceDate: date,
-        attendance: status,
-        userId,
-        contextId: trimmedContextId,
-      };
-      setLoading(true);
-    }
-  };
+  // const handleUpdate = async (date: string, status: string) => {
+  //   const trimmedContextId = classId.trim();
+  //   if (userId && trimmedContextId) {
+  //     const attendanceData: AttendanceParams = {
+  //       attendanceDate: date,
+  //       attendance: status,
+  //       userId,
+  //       contextId: trimmedContextId,
+  //     };
+  //     setLoading(true);
+  //   }
+  // };
 
-  function getStateByCohortId(cohortId: any) {
-    const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
-    return cohort ? cohort?.state : null;
-  }
+  // function getStateByCohortId(cohortId: any) {
+  //   const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
+  //   return cohort ? cohort?.state : null;
+  // }
 
   const handleSearchClear = () => {
     setSearchWord('');

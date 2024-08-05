@@ -269,9 +269,9 @@ const TeacherProfile = () => {
             console.log(`mergedProfileData`, mergedProfileData);
             if (mergedProfileData) {
               setUserData(mergedProfileData?.fields);
-              const nameField = mergedProfileData.fields.find(
-                (field: { name: string }) => field.name === 'name'
-              );
+              // const nameField = mergedProfileData.fields.find(
+              //   (field: { name: string }) => field.name === 'name'
+              // );
               const customDataFields = mergedProfileData?.fields;
               setIsData(true);
 
