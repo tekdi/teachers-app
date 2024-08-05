@@ -55,7 +55,7 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
               <Box>
                 <Box
                   onClick={toggleDrawer(false)}
-                  sx={{ padding: '20px 16px' }}
+                  sx={{ padding: '20px 16px 0' }}
                 >
                   <Button
                     variant="outlined"
@@ -83,7 +83,7 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
             )}
             {primary && (
               <Box sx={{ width: secondary ? 'unset' : '100%' }}>
-                <Box sx={{ padding: '20px 16px' }}>
+                <Box sx={{ padding: '20px 16px 0' }}>
                   <Button
                     variant="contained"
                     color="primary"
