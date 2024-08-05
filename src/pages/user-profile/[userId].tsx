@@ -293,10 +293,10 @@ const TeacherProfile = () => {
 
   // Find fields for "Subjects I Teach" and "My Main Subjects"
   const teachSubjectsField = customFieldsData?.find(
-    (field) => field.name === 'subject_taught'
+    (field) => field?.name === 'subject_taught'
   );
   const mainSubjectsField: any = customFieldsData?.find(
-    (field) => field.name === 'main_subject'
+    (field) => field?.name === 'main_subject'
   );
 
   const teachSubjects: string[] = teachSubjectsField
@@ -308,13 +308,23 @@ const TeacherProfile = () => {
     : [];
 
   // Find mutual and remaining subjects
-  const mutualSubjects = teachSubjects?.filter((subject) =>
-    mainSubjects?.includes(subject)
-  );
+  // const mutualSubjects = teachSubjects?.filter((subject) =>
+  //   mainSubjects?.includes(subject)
+  // );
 
-  const remainingSubjects = teachSubjects?.filter(
-    (subject) => !mainSubjects?.includes(subject)
-  );
+  // const remainingSubjects = teachSubjects?.filter(
+  //   (subject) => !mainSubjects?.includes(subject)
+  // );
+
+  const mutualSubjects =
+    teachSubjects && mainSubjects
+      ? teachSubjects.filter((subject) => mainSubjects.includes(subject))
+      : [];
+
+  const remainingSubjects =
+    teachSubjects && mainSubjects
+      ? teachSubjects.filter((subject) => !mainSubjects.includes(subject))
+      : [];
 
   let orderedSubjects: any;
   if (remainingSubjects?.length) {
@@ -635,34 +645,34 @@ const TeacherProfile = () => {
                           }}
                         >
                           {orderedSubjects &&
-                            orderedSubjects?.map(
-                              (subject: any, index: number) => (
-                                <Button
-                                  key={index}
-                                  size="small"
-                                  variant={
-                                    mutualSubjects?.includes(subject)
-                                      ? 'contained'
-                                      : 'outlined'
-                                  }
-                                  sx={{
-                                    backgroundColor: mutualSubjects?.includes(
-                                      subject
-                                    )
-                                      ? theme.palette.info.contrastText
-                                      : 'none',
-                                    borderRadius: '8px',
-                                    color: theme.palette.warning.A200,
-                                    whiteSpace: 'nowrap',
-                                    boxShadow: 'none',
-                                    border: `1px solid ${theme.palette.warning[900]}`,
-                                    pointerEvents: 'none',
-                                  }}
-                                >
-                                  {getLabelForSubject(subject)}
-                                  {/* {subject} */}
-                                </Button>
-                              )
+                            orderedSubjects.length > 0 &&
+                            orderedSubjects.map(
+                              (subject: any, index: number) => {
+                                const isMutualSubject =
+                                  mutualSubjects?.includes(subject);
+                                return (
+                                  <Button
+                                    key={index}
+                                    size="small"
+                                    variant={
+                                      isMutualSubject ? 'contained' : 'outlined'
+                                    }
+                                    sx={{
+                                      backgroundColor: isMutualSubject
+                                        ? theme.palette.info.contrastText
+                                        : 'none',
+                                      borderRadius: '8px',
+                                      color: theme.palette.warning.A200,
+                                      whiteSpace: 'nowrap',
+                                      boxShadow: 'none',
+                                      border: `1px solid ${theme.palette.warning[900]}`,
+                                      pointerEvents: 'none',
+                                    }}
+                                  >
+                                    {getLabelForSubject(subject)}
+                                  </Button>
+                                );
+                              }
                             )}
                         </Box>
                       </Grid>
