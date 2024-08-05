@@ -66,6 +66,8 @@ const AttendanceComparison: React.FC = () => {
     setCenterType(event.target.value);
   };
 
+  
+
   useEffect(() => {
     const cohortIds =
       store?.cohorts?.map((pair: Cohort) => pair?.cohortId) || [];
@@ -115,14 +117,17 @@ const AttendanceComparison: React.FC = () => {
       })) || [];
 
   const renderCustomLabel = (props: any) => {
-    const { x, y, width, value } = props;
+    const { x, y, width, height, value } = props;
+    const offsetX = width < 40 ? width + 5 : width / 2; // Adjust position based on bar width
     return (
       <text
-        x={x + width + 5}
-        y={y + 5}
-        fill="#000"
-        textAnchor="start"
+        x={x + offsetX}
+        y={y + height / 2}
+        fill="black"
+        textAnchor={width < 40 ? 'start' : 'middle'} // Adjust anchor based on bar width
         dominantBaseline="middle"
+        fontSize={15}
+        fontWeight="bold" // Make the font bold
       >
         {value}%
       </text>
@@ -132,7 +137,7 @@ const AttendanceComparison: React.FC = () => {
   return (
     <Box
       sx={{
-        padding: 2,
+        padding: 1,
         borderRadius: 5,
         border: '1px solid #D0C5B4',
         marginTop: '20px',
@@ -153,37 +158,67 @@ const AttendanceComparison: React.FC = () => {
           onChange={handleCenterTypeChange}
         >
           <FormControlLabel
+          color='black'
             value="REGULAR"
-            control={<Radio />}
+            control={<Radio  sx={{
+              '&.Mui-checked': {
+                color: 'black',
+              },
+            }} />}
             label="Regular"
           />
-          <FormControlLabel value="REMOTE" control={<Radio />} label="Remote" />
+          <FormControlLabel value="REMOTE" control={<Radio  sx={{
+          '&.Mui-checked': {
+            color: 'black',
+          },
+        }} />} label="Remote" />
         </RadioGroup>
       </FormControl>
       <Box sx={{ mt: 2 }}>
-        <Typography align="left" sx={{marginBottom: '16px'}}>
+        <Typography align="left" sx={{ marginBottom: '16px' }}>  
           {t('DASHBOARD.BLOCK_AVERAGE_ATTENDANCE')}:{' '}
           {averageAttendance.toFixed(2)}%
         </Typography>
-        <ResponsiveContainer width="100%" height={400}>
+
+        <Box sx={{ height: '400px', overflowY: 'scroll' }}>
+          <ResponsiveContainer width="100%" height={data.length * 80}>
+            <BarChart
+              layout="vertical"
+              data={data}
+              margin={{ top: 5, right: 5, left: 10, bottom: 5 }}
+            >
+              <CartesianGrid
+                stroke={theme.palette.warning.A700}
+                horizontal={false}
+              />
+              <XAxis
+                type="number"
+                tickFormatter={(value: any) => `${value}%`}
+                display="none"
+              />
+              <YAxis type="category" dataKey="name" /> 
+              <Tooltip formatter={(value: number) => `${value}%`} />
+              <Legend />
+              <Bar dataKey="Attendance" fill="#DAA200" barSize={40} radius={2}>
+                <LabelList dataKey="Attendance" content={renderCustomLabel} />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </Box>
+        <ResponsiveContainer width="100%" height={40}>
           <BarChart
             layout="vertical"
-            data={data}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            data={[{ name: '', Attendance: 0 }]}
+            margin={{ top: 5, right: 5, left: 69, bottom: 5 }}
           >
-            <CartesianGrid stroke={theme.palette.warning.A700} />
-            <XAxis type="number" tickFormatter={(value: any) => `${value}%`} />
-            <YAxis type="category" dataKey="name" />
+            <XAxis
+              type="number"
+              tickFormatter={(value: any) => `${value}%`}
+              domain={[0, 100]} 
+            />
             <Tooltip formatter={(value: number) => `${value}%`} />
+            <LabelList dataKey="Attendance" content={renderCustomLabel} />
             <Legend />
-            <Bar
-              dataKey="Attendance"
-              fill={theme.palette.primary.main}
-              barSize={35}
-              radius={2}
-            >
-              <LabelList dataKey="Attendance" content={renderCustomLabel} />
-            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </Box>
