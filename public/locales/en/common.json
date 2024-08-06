@@ -448,5 +448,10 @@
     "COLLAPSE_ALL": "Collapse All",
     "EXPAND_ALL": "Expand All",
     "RESOURCES": "Resources"
+  },
+  "ASSESSMENTS":{
+    "ASSESSMENTS":"Assessments",
+    "CENTER":"Center",
+    "ASSESSMENT_TYPE":"Assessment Type"
   }
 }

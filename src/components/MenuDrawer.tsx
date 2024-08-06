@@ -78,6 +78,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isDashboard = router.pathname === '/dashboard';
   const isTeacherCenter = router.pathname === '/centers';
   const isCoursePlanner = router.pathname === '/course-planner';
+  const isAssessments = router.pathname === '/assessments';
+
   // const isManageUser = router.pathname === '/manageUser';
 
   return (
@@ -249,6 +251,37 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             // onClick={navigateToManageUser}
           >
             {t('COMMON.OBSERVATIONS_FORMS')}
+          </Button>
+        </Box>
+        <Box sx={{ marginTop: '12px' }}>
+          <Button
+            className="fs-14"
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: isAssessments
+                ? theme.palette.primary.main
+                : 'transparent',
+
+              padding: isAssessments
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isAssessments ? '600' : 500,
+              '&:hover': {
+                background: isAssessments
+                  ? theme.palette.primary.main
+                  : 'transparent',
+              },
+              marginTop: '15px',
+            }}
+            startIcon={<EventAvailableOutlinedIcon />}
+            onClick={() => {
+              router.push(`/assessments`);
+            }}
+          >
+            {t('ASSESSMENTS.ASSESSMENTS')}
           </Button>
         </Box>
 
