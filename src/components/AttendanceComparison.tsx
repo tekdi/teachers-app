@@ -28,7 +28,6 @@ interface AttendanceComparisonProps {
   blockName: string;
 }
 
-
 interface Cohort {
   cohortId: string;
   cohortType: string;
@@ -54,7 +53,9 @@ interface AttendanceResponse {
   };
 }
 
-const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({ blockName }) => {
+const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
+  blockName,
+}) => {
   const { t } = useTranslation();
   const [centerType, setCenterType] = useState('REGULAR');
   const [attendanceData, setAttendanceData] = useState<Record<string, string>>(
@@ -70,8 +71,6 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({ blockName }
   ) => {
     setCenterType(event.target.value);
   };
-
-  
 
   useEffect(() => {
     const cohortIds =
@@ -151,9 +150,9 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({ blockName }
       <Typography variant="h2" fontSize={'16px'} sx={{ color: 'black' }}>
         {t('DASHBOARD.ATTENDANCE_COMPARISON')}
       </Typography>
-      <Typography fontSize={'12px'} >
-          {blockName} {t('DASHBOARD.BLOCK')}
-        </Typography>
+      <Typography fontSize={'12px'}>
+        {blockName} {t('DASHBOARD.BLOCK')}
+      </Typography>
       <FormControl component="fieldset">
         <Typography fontSize={'12px'} mt={2}>
           {t('DASHBOARD.CENTER_TYPE')}
@@ -166,35 +165,48 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({ blockName }
           onChange={handleCenterTypeChange}
         >
           <FormControlLabel
-          color='black'
+            color="black"
             value="REGULAR"
-            control={<Radio  sx={{
-              '&.Mui-checked': {
-                color: 'black',
-              },
-            }} />}
+            control={
+              <Radio
+                sx={{
+                  '&.Mui-checked': {
+                    color: 'black',
+                  },
+                }}
+              />
+            }
             label="Regular"
             sx={{
               '& .MuiFormControlLabel-label': {
                 color: 'black',
-                 fontSize: '18px'
+                fontSize: '18px',
               },
             }}
           />
-          <FormControlLabel value="REMOTE" control={<Radio  sx={{
-          '&.Mui-checked': {
-            color: 'black',
-          },
-        }} />} label="Remote" sx={{
-          '& .MuiFormControlLabel-label': {
-            color: 'black',
-            fontSize: '18px'
-          },
-        }}/>
+          <FormControlLabel
+            value="REMOTE"
+            control={
+              <Radio
+                sx={{
+                  '&.Mui-checked': {
+                    color: 'black',
+                  },
+                }}
+              />
+            }
+            label="Remote"
+            sx={{
+              '& .MuiFormControlLabel-label': {
+                color: 'black',
+                fontSize: '18px',
+              },
+            }}
+          />
         </RadioGroup>
       </FormControl>
       <Box sx={{ mt: 2 }}>
-        <Typography align="left" sx={{ marginBottom: '16px' }}>  
+        <Typography align="left" sx={{ marginBottom: '16px' }}>
           {t('DASHBOARD.BLOCK_AVERAGE_ATTENDANCE')}:{' '}
           {averageAttendance.toFixed(2)}%
         </Typography>
@@ -204,7 +216,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({ blockName }
             <BarChart
               layout="vertical"
               data={data}
-              margin={{ top: 5, right: 5, left: 10}}
+              margin={{ top: 5, right: 5, left: 10 }}
             >
               <CartesianGrid
                 stroke={theme.palette.warning.A700}
@@ -215,7 +227,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({ blockName }
                 tickFormatter={(value: any) => `${value}%`}
                 display="none"
               />
-              <YAxis type="category" dataKey="name" /> 
+              <YAxis type="category" dataKey="name" />
               <Tooltip formatter={(value: number) => `${value}%`} />
               <Bar dataKey="Attendance" fill="#DAA200" barSize={40} radius={2}>
                 <LabelList dataKey="Attendance" content={renderCustomLabel} />
@@ -232,13 +244,18 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({ blockName }
             <XAxis
               type="number"
               tickFormatter={(value: any) => `${value}%`}
-              domain={[0, 100]} 
+              domain={[0, 100]}
             />
             <Tooltip formatter={(value: number) => `${value}%`} />
             <LabelList dataKey="Attendance" content={renderCustomLabel} />
             <Legend />
           </BarChart>
         </ResponsiveContainer>
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <Typography color="black" mt={1}>
+            Attendance (%)
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );
