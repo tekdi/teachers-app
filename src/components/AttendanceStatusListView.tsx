@@ -14,7 +14,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { ATTENDANCE_ENUM } from '../utils/Helper';
+import { ATTENDANCE_ENUM, capitalizeEachWord } from '../utils/Helper';
 import DropoutLabel from './DropoutLabel';
 import LearnerModal from './LearnerModal';
 import Loader from './Loader';
@@ -64,6 +64,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   >([]);
   const [contactNumber, setContactNumber] = useState<any>('');
   const [userName, setUserName] = React.useState('');
+  const [enrollmentNumber, setEnrollmentNumber] = React.useState('');
   const [isModalOpenLearner, setIsModalOpenLearner] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -91,6 +92,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             const userData = data?.userData;
             setUserName(userData?.name);
             setContactNumber(userData?.mobile);
+            setEnrollmentNumber(capitalizeEachWord(userData?.username));
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
@@ -108,9 +110,16 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
     }
   };
 
-  const filteredFields = names
-    .map((label) => customFieldsData.find((field) => field.name === label))
-    .filter(Boolean);
+  const labelsToExtract = [
+    'AGE',
+    'GENDER',
+    'LEARNERS_PRIMARY_WORK',
+    'TYPE_OF_LEARNER',
+  ];
+
+  const filteredFields = customFieldsData
+    .filter((item) => labelsToExtract.includes(item.label ?? ''))
+    .map((item) => ({ label: item?.label, value: item?.value }));
 
   return (
     <Box sx={{ padding: '0 10px' }}>
@@ -125,6 +134,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             data={filteredFields}
             userName={userName}
             contactNumber={contactNumber}
+            enrollmentNumber={enrollmentNumber}
           />
         )
       )}

@@ -35,6 +35,7 @@ import manageUserStore from '../store/manageUserStore';
 import useStore from '@/store/store';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { bulkCreateCohortMembers } from '@/services/CohortServices';
+import { capitalizeEachWord } from '@/utils/Helper';
 
 type Anchor = 'bottom';
 
@@ -71,6 +72,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     userData: null as UserData | null,
     userName: '',
     contactNumber: '',
+    enrollmentNumber: '',
     customFieldsData: [] as UpdateCustomField[],
   });
   const userStore = useStore();
@@ -149,6 +151,10 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
 
   const setContactNumber = (number: string) => {
     setLearnerState((prevState) => ({ ...prevState, contactNumber: number }));
+  };
+
+  const setEnrollmentNumber = (number: string) => {
+    setLearnerState((prevState) => ({ ...prevState, enrollmentNumber: number }));
   };
 
   const setCustomFieldsData = (fields: UpdateCustomField[]) => {
@@ -290,6 +296,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
             setUserData(userData);
             setUserName(userData?.name);
             setContactNumber(userData?.mobile);
+            setEnrollmentNumber(capitalizeEachWord(userData?.username));
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
@@ -304,13 +311,16 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     }
   };
 
-  const nameSet = new Set<string>(names);
-  const filteredFields = learnerState.customFieldsData.reduce((acc, field) => {
-    if (field.name && nameSet.has(field.name)) {
-      acc.push(field);
-    }
-    return acc;
-  }, [] as UpdateCustomField[]);
+  const labelsToExtract = [
+    'AGE',
+    'GENDER',
+    'LEARNERS_PRIMARY_WORK',
+    'TYPE_OF_LEARNER',
+  ];
+
+  const filteredFields = learnerState.customFieldsData
+    .filter((item) => labelsToExtract.includes(item.label ?? ''))
+    .map((item) => ({ label: item?.label, value: item?.value }));
 
   const getTeamLeadersCenters = async () => {};
 
@@ -398,6 +408,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           data={filteredFields}
           userName={learnerState.userName}
           contactNumber={learnerState.contactNumber}
+          enrollmentNumber={learnerState.enrollmentNumber}
         />
       )}
       <Box

@@ -247,7 +247,7 @@ const LearnerProfile: React.FC = () => {
             const data = response;
             if (data) {
               const coreFieldData = data?.result?.userData;
-              setUserName(coreFieldData?.name);
+              setUserName(toPascalCase(coreFieldData?.name));
               const fields: CustomField[] =
                 data?.result?.userData?.customFields;
               if (fields?.length > 0) {
@@ -349,8 +349,8 @@ const LearnerProfile: React.FC = () => {
   }, [reload]);
 
   const learnerDetailsByOrder = [...customFieldsData]
-    ?.sort((a, b) => a.order - b.order)
-    ?.filter((field) => field.order <= 12)
+  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+  .filter((field) => (field.order ?? 0) <= 12)
     ?.map((field) => {
       const getSelectedOption = (field: any) => {
         return (

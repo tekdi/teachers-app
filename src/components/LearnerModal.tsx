@@ -24,6 +24,7 @@ const LearnerModal = ({
   data,
   userName,
   contactNumber,
+  enrollmentNumber,
 }: {
   userId?: string;
   open: boolean;
@@ -31,6 +32,7 @@ const LearnerModal = ({
   onClose: () => void;
   userName?: string;
   contactNumber?: any;
+  enrollmentNumber?: any;
 }) => {
   const { t } = useTranslation();
 
@@ -136,46 +138,6 @@ const LearnerModal = ({
                         </Typography>
                       </Box>
                     </Grid>
-                    {learnerDetailsByOrder?.map((item: any, index: number) => (
-                      <>
-                        <Grid item xs={6} key={index} textAlign="left">
-                          <Typography
-                            margin={0}
-                            lineHeight={'16px'}
-                            fontSize={'12px'}
-                            fontWeight={'600'}
-                            color={theme.palette.warning['500']}
-                          >
-                            {item?.label
-                              ? t(
-                                  `FORM.${item.label.toUpperCase()}`,
-                                  item.label
-                                )
-                              : item.label}
-                          </Typography>
-                          {/* <Box display="flex"> */}
-                          <Typography
-                            fontSize={'16px'}
-                            fontWeight={'400'}
-                            lineHeight={'24px'}
-                            margin={0}
-                            color={theme.palette.warning['A200']}
-                            style={{
-                              wordBreak: 'break-word',
-                              whiteSpace: 'normal',
-                            }}
-                            // noWrap
-                          >
-                            {Array.isArray(item.displayValue)
-                              ? toPascalCase(item.displayValue.join(', '))
-                              : item?.displayValue
-                                ? toPascalCase(item.displayValue)
-                                : '-'}
-                          </Typography>
-                          {/* </Box> */}
-                        </Grid>
-                      </>
-                    ))}
                     <Grid item xs={6} textAlign="left">
                       <Typography
                         margin={0}
@@ -198,10 +160,71 @@ const LearnerModal = ({
                             whiteSpace: 'normal',
                           }}
                         >
-                          {contactNumber ? contactNumber : '-'}
+                          {contactNumber || '-'}
                         </Typography>
                       </Box>
                     </Grid>
+                    <Grid item xs={6} textAlign="left">
+                      <Typography
+                        margin={0}
+                        lineHeight={'16px'}
+                        fontSize={'12px'}
+                        fontWeight={'600'}
+                        color={theme.palette.warning['500']}
+                      >
+                        {t('PROFILE.ENROLLMENT_NUMBER')}
+                      </Typography>
+                      <Box display="flex">
+                        <Typography
+                          fontSize={'16px'}
+                          fontWeight={'400'}
+                          lineHeight={'24px'}
+                          margin={0}
+                          color={theme.palette.warning['A200']}
+                          style={{
+                            wordBreak: 'break-word',
+                            whiteSpace: 'normal',
+                          }}
+                        >
+                          {enrollmentNumber || '-'}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    {learnerDetailsByOrder?.map((item: any, index: number) => (
+                      <Grid item xs={6} key={index} textAlign="left">
+                        <Typography
+                          margin={0}
+                          lineHeight={'16px'}
+                          fontSize={'12px'}
+                          fontWeight={'600'}
+                          color={theme.palette.warning['500']}
+                        >
+                          {item?.label
+                            ? t(`FORM.${item.label.toUpperCase()}`, item.label)
+                            : item.label}
+                        </Typography>
+                        {/* <Box display="flex"> */}
+                        <Typography
+                          fontSize={'16px'}
+                          fontWeight={'400'}
+                          lineHeight={'24px'}
+                          margin={0}
+                          color={theme.palette.warning['A200']}
+                          style={{
+                            wordBreak: 'break-word',
+                            whiteSpace: 'normal',
+                          }}
+                          // noWrap
+                        >
+                          {Array.isArray(item.displayValue)
+                            ? toPascalCase(item.displayValue.join(', '))
+                            : item?.displayValue
+                              ? toPascalCase(item.displayValue)
+                              : '-'}
+                        </Typography>
+                        {/* </Box> */}
+                      </Grid>
+                    ))}
                   </Grid>
                 </Box>
               </Box>
