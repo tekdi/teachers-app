@@ -6,7 +6,7 @@ import {
 } from '../utils/Interfaces';
 
 import { getUserDetails } from '@/services/ProfileService';
-import { Status, labelsToExtract, names } from '@/utils/app.constant';
+import { Status, labelsToExtractForMiniProfile, names } from '@/utils/app.constant';
 import CancelIcon from '@mui/icons-material/Cancel'; //absent
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; //present
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -111,7 +111,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   };
 
   const filteredFields = customFieldsData
-    .filter((item) => labelsToExtract.includes(item.label ?? ''))
+    .filter((item) => labelsToExtractForMiniProfile.includes(item.label ?? ''))
     .map((item) => ({ label: item?.label, value: item?.value }));
 
   return (

@@ -1,6 +1,6 @@
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { Status, labelsToExtract, names } from '@/utils/app.constant';
+import { Status, labelsToExtractForMiniProfile, names } from '@/utils/app.constant';
 import { UserData, UpdateCustomField } from '@/utils/Interfaces';
 
 import DropoutLabel from './DropoutLabel';
@@ -93,7 +93,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   };
 
   const filteredFields = customFieldsData
-    .filter((item) => labelsToExtract.includes(item.label ?? ''))
+    .filter((item) => labelsToExtractForMiniProfile.includes(item.label ?? ''))
     .map((item) => ({ label: item?.label, value: item?.value }));
 
   return (

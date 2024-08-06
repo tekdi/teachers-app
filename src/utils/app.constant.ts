@@ -5,7 +5,7 @@ export const limit: number = 300;
 export const refetchInterval: number = 5 * 60 * 1000; // 5 min
 export const gcTime: number = 10 * 60 * 1000; // 10 Min
 
-export const labelsToExtract = [
+export const labelsToExtractForMiniProfile = [
   'AGE',
   'GENDER',
   'LEARNERS_PRIMARY_WORK',

@@ -5,7 +5,7 @@ import {
   UpdateCustomField,
 } from '@/utils/Interfaces';
 import React, { useEffect } from 'react';
-import { Status, names, Role, labelsToExtract } from '@/utils/app.constant';
+import { Status, names, Role, labelsToExtractForMiniProfile } from '@/utils/app.constant';
 import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import BottomDrawer from './BottomDrawer';
@@ -312,7 +312,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   };
 
   const filteredFields = learnerState.customFieldsData
-    .filter((item) => labelsToExtract.includes(item.label ?? ''))
+    .filter((item) => labelsToExtractForMiniProfile.includes(item.label ?? ''))
     .map((item) => ({ label: item?.label, value: item?.value }));
 
   const getTeamLeadersCenters = async () => {};
