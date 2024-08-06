@@ -5,7 +5,7 @@ import {
   UpdateCustomField,
 } from '@/utils/Interfaces';
 import React, { useEffect } from 'react';
-import { Status, names, Role } from '@/utils/app.constant';
+import { Status, names, Role, labelsToExtract } from '@/utils/app.constant';
 import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import BottomDrawer from './BottomDrawer';
@@ -310,13 +310,6 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       setLoading(false);
     }
   };
-
-  const labelsToExtract = [
-    'AGE',
-    'GENDER',
-    'LEARNERS_PRIMARY_WORK',
-    'TYPE_OF_LEARNER',
-  ];
 
   const filteredFields = learnerState.customFieldsData
     .filter((item) => labelsToExtract.includes(item.label ?? ''))

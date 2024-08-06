@@ -6,7 +6,7 @@ import {
 } from '../utils/Interfaces';
 
 import { getUserDetails } from '@/services/ProfileService';
-import { Status, names } from '@/utils/app.constant';
+import { Status, labelsToExtract, names } from '@/utils/app.constant';
 import CancelIcon from '@mui/icons-material/Cancel'; //absent
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; //present
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -109,13 +109,6 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
       console.error('Error fetching user details:', error);
     }
   };
-
-  const labelsToExtract = [
-    'AGE',
-    'GENDER',
-    'LEARNERS_PRIMARY_WORK',
-    'TYPE_OF_LEARNER',
-  ];
 
   const filteredFields = customFieldsData
     .filter((item) => labelsToExtract.includes(item.label ?? ''))

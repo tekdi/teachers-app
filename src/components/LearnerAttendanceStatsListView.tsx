@@ -1,6 +1,6 @@
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { Status, names } from '@/utils/app.constant';
+import { Status, labelsToExtract, names } from '@/utils/app.constant';
 import { UserData, UpdateCustomField } from '@/utils/Interfaces';
 
 import DropoutLabel from './DropoutLabel';
@@ -91,13 +91,6 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
       console.error('Error fetching user details:', error);
     }
   };
-
-  const labelsToExtract = [
-    'AGE',
-    'GENDER',
-    'LEARNERS_PRIMARY_WORK',
-    'TYPE_OF_LEARNER',
-  ];
 
   const filteredFields = customFieldsData
     .filter((item) => labelsToExtract.includes(item.label ?? ''))
