@@ -18,6 +18,7 @@ import { showToastMessage } from './Toastify';
 import { editEditUser } from '@/services/ProfileService';
 import { tenantId } from '../../app.config';
 import FormButtons from './FormButtons';
+import { sendCredentialService } from '@/services/NotificationService';
 
 interface AddFacilitatorModalprops {
   open: boolean;
@@ -41,13 +42,13 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   const [openModal, setOpenModal] = React.useState(false);
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [reloadProfile, setReloadProfile] = React.useState(false);
-  const [email, setEmail] = React.useState('user@gmail.com');
+  const [email, setEmail] = React.useState('');
   const [formData, setFormData] = React.useState<any>();
+  const [username, setUsername] = React.useState<any>();
+  const [password, setPassword] = React.useState<any>();
+  const [fullname, setFullname] = React.useState<any>();
 
   const { t } = useTranslation();
-  useEffect(() => {
-    console.log('openModal state changed:', openModal);
-  }, [openModal]);
 
   useEffect(() => {
     const getAddFacilitatorFormData = async () => {
@@ -144,8 +145,16 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     if (formData) {
       const schemaProperties = schema.properties;
       setEmail(formData?.email);
-      const { username, password } = generateUsernameAndPassword('MH', 'F');
-
+      let fieldData;
+      if (typeof window !== 'undefined' && window.localStorage) {
+        fieldData = JSON.parse(localStorage.getItem('fieldData') || '');
+      }
+      const { username, password } = generateUsernameAndPassword(
+        fieldData?.state?.stateCode,
+        'F'
+      );
+      setUsername(username);
+      setPassword(password);
       const apiBody: any = {
         username: username,
         password: password,
@@ -169,6 +178,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         if (fieldId === null || fieldId === 'null') {
           if (typeof fieldValue !== 'object') {
             apiBody[fieldKey] = fieldValue;
+            if (fieldKey === 'name') {
+              setTimeout(() => {
+                setFullname(fieldValue);
+              });
+            }
           }
         } else {
           if (
@@ -250,6 +264,42 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
                 'success'
               );
+
+              const isQueue = false;
+              const context = 'USER';
+              let createrName;
+              if (typeof window !== 'undefined' && window.localStorage) {
+                createrName = localStorage.getItem('userName');
+              }
+              const key = 'onFacilitatorCreated';
+              const replacements = [apiBody['name'], username, password];
+
+              const sendTo = {
+                receipients: [formData?.email],
+              };
+              if (replacements && sendTo) {
+                const response = await sendCredentialService({
+                  isQueue,
+                  context,
+                  key,
+                  replacements,
+                  email: sendTo,
+                });
+                if (response.result[0].data[0].status === 'success') {
+                  showToastMessage(
+                    t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
+                    'success'
+                  );
+                } else {
+                  showToastMessage(
+                    t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
+                    'success'
+                  );
+                }
+              } else {
+                showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+              }
+
               setOpenModal(true);
             } else {
               showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
