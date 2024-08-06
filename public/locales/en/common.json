@@ -160,7 +160,8 @@
     "LEARNER": "Learners",
     "ATTENDANCE_COMPARISON": "Attendance Comparison",
     "CENTER_TYPE": "Center Type",
-    "BLOCK_AVERAGE_ATTENDANCE": "Block Average Attendance"
+    "BLOCK_AVERAGE_ATTENDANCE": "Block Average Attendance",
+    "BLOCK": "Block"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total Number of Learners: {{count}}",

@@ -24,6 +24,11 @@ import { useTheme } from '@mui/material/styles';
 import { overallAttendanceInPercentageStatusList } from '@/services/AttendanceService';
 import { cohortPrivileges } from '@/utils/app.constant';
 
+interface AttendanceComparisonProps {
+  blockName: string;
+}
+
+
 interface Cohort {
   cohortId: string;
   cohortType: string;
@@ -49,7 +54,7 @@ interface AttendanceResponse {
   };
 }
 
-const AttendanceComparison: React.FC = () => {
+const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({ blockName }) => {
   const { t } = useTranslation();
   const [centerType, setCenterType] = useState('REGULAR');
   const [attendanceData, setAttendanceData] = useState<Record<string, string>>(
@@ -137,7 +142,7 @@ const AttendanceComparison: React.FC = () => {
   return (
     <Box
       sx={{
-        padding: 1,
+        padding: 2,
         borderRadius: 5,
         border: '1px solid #D0C5B4',
         marginTop: '20px',
@@ -146,6 +151,9 @@ const AttendanceComparison: React.FC = () => {
       <Typography variant="h2" fontSize={'16px'} sx={{ color: 'black' }}>
         {t('DASHBOARD.ATTENDANCE_COMPARISON')}
       </Typography>
+      <Typography fontSize={'12px'} >
+          {blockName} {t('DASHBOARD.BLOCK')}
+        </Typography>
       <FormControl component="fieldset">
         <Typography fontSize={'12px'} mt={2}>
           {t('DASHBOARD.CENTER_TYPE')}
@@ -166,12 +174,23 @@ const AttendanceComparison: React.FC = () => {
               },
             }} />}
             label="Regular"
+            sx={{
+              '& .MuiFormControlLabel-label': {
+                color: 'black',
+                 fontSize: '18px'
+              },
+            }}
           />
           <FormControlLabel value="REMOTE" control={<Radio  sx={{
           '&.Mui-checked': {
             color: 'black',
           },
-        }} />} label="Remote" />
+        }} />} label="Remote" sx={{
+          '& .MuiFormControlLabel-label': {
+            color: 'black',
+            fontSize: '18px'
+          },
+        }}/>
         </RadioGroup>
       </FormControl>
       <Box sx={{ mt: 2 }}>
@@ -185,7 +204,7 @@ const AttendanceComparison: React.FC = () => {
             <BarChart
               layout="vertical"
               data={data}
-              margin={{ top: 5, right: 5, left: 10, bottom: 5 }}
+              margin={{ top: 5, right: 5, left: 10}}
             >
               <CartesianGrid
                 stroke={theme.palette.warning.A700}
@@ -198,18 +217,17 @@ const AttendanceComparison: React.FC = () => {
               />
               <YAxis type="category" dataKey="name" /> 
               <Tooltip formatter={(value: number) => `${value}%`} />
-              <Legend />
               <Bar dataKey="Attendance" fill="#DAA200" barSize={40} radius={2}>
                 <LabelList dataKey="Attendance" content={renderCustomLabel} />
               </Bar>
             </BarChart>
           </ResponsiveContainer>
         </Box>
-        <ResponsiveContainer width="100%" height={40}>
+        <ResponsiveContainer width="100%" height={32}>
           <BarChart
             layout="vertical"
             data={[{ name: '', Attendance: 0 }]}
-            margin={{ top: 5, right: 5, left: 69, bottom: 5 }}
+            margin={{ top: 5, right: 5, left: 69 }}
           >
             <XAxis
               type="number"
