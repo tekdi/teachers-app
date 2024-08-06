@@ -253,7 +253,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
         </ResponsiveContainer>
         <Box display="flex" justifyContent="center" alignItems="center">
           <Typography color="black" mt={1}>
-            Attendance (%)
+          {t('DASHBOARD.ATTENDANCE')}
           </Typography>
         </Box>
       </Box>
