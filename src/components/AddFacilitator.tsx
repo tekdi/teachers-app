@@ -258,6 +258,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             showToastMessage(t('COMMON.PLEASE_SELECT_THE_CENTER'), 'error');
           }
         }
+        onClose();
       } catch (error) {
         onClose();
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -305,6 +306,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 formData={userFormData}
               >
                 {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+                <FormButtons
+                  formData={formData}
+                  onClick={handleButtonClick}
+                  isSingleButton={true}
+                />
               </DynamicForm>
             )
           : schema &&

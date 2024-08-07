@@ -263,7 +263,13 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
                 showErrorList={true}
                 customFields={customFields}
                 formData={formData}
-              ></DynamicForm>
+              >
+                <FormButtons
+                  formData={formData}
+                  onClick={handleButtonClick}
+                  isSingleButton={true}
+                />
+              </DynamicForm>
             )
           : schema &&
             uiSchema && (

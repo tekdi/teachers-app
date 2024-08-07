@@ -9,6 +9,7 @@ interface FormButtons {
   isCreatedFacilitator?: boolean;
   isCreatedLearner?: boolean;
   actions?: any;
+  isSingleButton?: boolean;
 }
 const FormButtons: React.FC<FormButtons> = ({
   formData,
@@ -17,12 +18,14 @@ const FormButtons: React.FC<FormButtons> = ({
   isCreatedFacilitator,
   isCreatedLearner,
   actions,
+  isSingleButton,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
 
-  const buttonText =
-    isCreateCentered && !isCreatedFacilitator && !isCreatedLearner
+  const buttonText = isSingleButton
+    ? t('COMMON.SAVE')
+    : isCreateCentered && !isCreatedFacilitator && !isCreatedLearner
       ? t('COMMON.CREATE')
       : isCreatedFacilitator && !isCreateCentered && !isCreatedLearner
         ? t('GUIDE_TOUR.NEXT')
@@ -37,32 +40,12 @@ const FormButtons: React.FC<FormButtons> = ({
       style={{
         marginTop: '16px',
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: isSingleButton ? 'center' : 'space-between',
       }}
     >
-      <>
-        {!isCreateCentered && !isCreatedFacilitator && (
-          <Button
-            variant="outlined"
-            color="primary"
-            sx={{
-              '&.Mui-disabled': {
-                backgroundColor: theme?.palette?.primary?.main,
-              },
-              minWidth: '84px',
-              height: '2.5rem',
-              padding: theme.spacing(1),
-              fontWeight: '500',
-              width: '48%',
-            }}
-            type="submit"
-            onClick={() => actions.back()}
-          >
-            {t('COMMON.BACK')}
-          </Button>
-        )}
+      {!isSingleButton && !isCreateCentered && !isCreatedFacilitator && (
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           sx={{
             '&.Mui-disabled': {
@@ -75,11 +58,29 @@ const FormButtons: React.FC<FormButtons> = ({
             width: '48%',
           }}
           type="submit"
-          onClick={() => onClick(formData)}
+          onClick={() => actions.back()}
         >
-          {buttonText}
+          {t('COMMON.BACK')}
         </Button>
-      </>
+      )}
+      <Button
+        variant="contained"
+        color="primary"
+        sx={{
+          '&.Mui-disabled': {
+            backgroundColor: theme?.palette?.primary?.main,
+          },
+          minWidth: '84px',
+          height: '2.5rem',
+          padding: theme.spacing(1),
+          fontWeight: '500',
+          width: isSingleButton ? '100%' : '48%',
+        }}
+        type="submit"
+        onClick={() => onClick(formData)}
+      >
+        {buttonText}
+      </Button>
     </div>
   );
 };
