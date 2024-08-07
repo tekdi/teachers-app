@@ -236,7 +236,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
                 replacements,
                 email: sendTo,
               });
-              if (response.result[0].data[0].status === 'success') {
+              if (response?.result[0]?.data[0]?.status === 'success') {
                 showToastMessage(
                   t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
                   'success'
