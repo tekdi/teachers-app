@@ -1,6 +1,7 @@
 import Header from '@/components/Header';
 import {
   Box,
+  Button,
   FormControl,
   Grid,
   IconButton,
@@ -10,15 +11,26 @@ import {
   Select,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import SearchIcon from '@mui/icons-material/Search';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
+import SortingModal from '@/components/SortingModal';
+import { updateAssessment } from '../services/UpdateAssesmentService';
+import { useRouter } from 'next/router';
+
 const Assessments = () => {
   const theme = useTheme<any>();
+  const router = useRouter();
   const { t } = useTranslation();
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const [modalOpen, setModalOpen] = React.useState(false);
+
+  const [assessmentList, setAssessmentList] = React.useState([]);
 
   const handleScrollDown = () => {
     if (inputRef.current) {
@@ -29,6 +41,24 @@ const Assessments = () => {
       window.scrollTo({ top: targetY - 70, behavior: 'smooth' });
     }
   };
+
+  // open modal of sort
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  useEffect(() => {
+    const res: any = updateAssessment();
+    setAssessmentList(res);
+  }, []);
+
+  const handleAssesmentDetails = (userId: string) => {
+    router.push(`./assessments/${userId}`);
+  };
+
   return (
     <>
       <Box>
@@ -129,54 +159,138 @@ const Assessments = () => {
           </Box>
         </Grid>
       </Grid>
-      <Box
+      <Grid
         sx={{
-          mt: 3,
+          mt: 2,
           px: '20px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          mb: 2,
         }}
+        container
       >
-        <Box>20/24 completed the assessment</Box>
-        <Box>sort by</Box>
-      </Box>
+        <Grid
+          xs={8}
+          item
+          sx={{ fontSize: '14px', fontWeight: '500', color: '#7C766F' }}
+        >
+          20/24 completed the assessment
+        </Grid>
+        <Grid sx={{ display: 'flex', justifyContent: 'flex-end' }} xs={4} item>
+          <Button
+            onClick={handleOpenModal}
+            sx={{
+              color: theme.palette.warning.A200,
+
+              borderRadius: '10px',
+              fontSize: '14px',
+            }}
+            endIcon={<ArrowDropDownSharpIcon />}
+            size="small"
+            variant="outlined"
+          >
+            {t('COMMON.SORT_BY').length > 7
+              ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
+              : t('COMMON.SORT_BY')}
+          </Button>
+        </Grid>
+      </Grid>
 
       <Box sx={{ background: '#FBF4E4', padding: '20px' }}>
-        <Box>
-          <Box
-            sx={{
-              border: ' 1px solid',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Box
-              sx={{
-                flexBasis: '20%',
-                background: '#FFDEA1',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Box>icon </Box>
-            </Box>
-            <Box sx={{ flexBasis: '80%' }}>
+        <Grid container spacing={2}>
+          {assessmentList.map((assessment: any) => (
+            <Grid item xs={12} sm={6} md={4} key={assessment.userId}>
               <Box
                 sx={{
-                  px: '10px',
+                  border: '1px solid #D0C5B4',
                   display: 'flex',
                   justifyContent: 'space-between',
+                  borderRadius: '8px',
+                  gap: '5px',
                 }}
+                onClick={() => handleAssesmentDetails(assessment.userId)}
               >
-                <Box>shreyas shinde</Box>
-                <Box>arrow</Box>
+                <Box
+                  sx={{
+                    flexBasis: '20%',
+                    background: '#FFDEA1',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '7px',
+                  }}
+                >
+                  <CheckCircleIcon sx={{ color: theme.palette.warning[300] }} />
+                </Box>
+                <Box sx={{ flexBasis: '80%' }}>
+                  <Box
+                    sx={{
+                      px: '10px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '7px',
+                    }}
+                  >
+                    <Box>
+                      <Box
+                        sx={{
+                          color: theme.palette.warning[300],
+                          fontSize: '16px',
+                          fontWeight: '400',
+                        }}
+                      >
+                        {assessment.studentName}
+                      </Box>
+                      <Box
+                        sx={{
+                          gap: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            color: theme.palette.warning[300],
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            py: '2px',
+                          }}
+                        >
+                          {assessment.progress === 'Overall score'
+                            ? 'Overall score:'
+                            : assessment.progress}
+                        </Box>
+                        {assessment.score !== undefined && (
+                          <Box
+                            sx={{
+                              color: '#1A8825',
+                              fontSize: '14px',
+                              fontWeight: '500',
+                            }}
+                          >
+                            {assessment.score}%
+                          </Box>
+                        )}
+                      </Box>
+                    </Box>
+                    <KeyboardArrowRightIcon
+                      sx={{ color: theme.palette.warning[300] }}
+                    />
+                  </Box>
+                </Box>
               </Box>
-            </Box>
-          </Box>
-        </Box>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
+      <SortingModal
+        isModalOpen={modalOpen}
+        handleCloseModal={handleCloseModal}
+        // handleSorting={handleSorting}
+        // routeName={pathname}
+      />
     </>
   );
 };

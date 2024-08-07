@@ -461,3 +461,18 @@ export interface OverallAttendance {
   absent_percentage: any;
   present_percentage: any;
 }
+
+
+export interface Assessment {
+  userId: number;
+  studentName: string;
+  progress: string;
+  score?: number;
+}
+
+export interface AssessmentSubject {
+  userId: number;
+  subject: string;
+  score: string;
+  date :string;
+}
