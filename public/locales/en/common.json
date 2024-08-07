@@ -105,7 +105,7 @@
     "USER_CREDENTIAL_SEND_SUCCESSFULLY": "User Credentials Sent Successfully!",
     "CENTER_SESSIONS": "Center Sessions",
     "SCHEDULE_NEW": "Schedule New",
-    "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
+    "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions (Next 7 days)",
     "NO_SESSIONS_SCHEDULED": "No sessions scheduled",
     "TO_BE_TAUGHT": "What is going to be taught:",
     "SELECT_TOPIC": "Select Topic, Sub-topic",

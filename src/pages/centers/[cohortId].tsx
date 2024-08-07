@@ -1,4 +1,10 @@
-import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
+import {
+  formatSelectedDate,
+  getMonthName,
+  getTodayDate,
+  shortDateFormat,
+  toPascalCase,
+} from '@/utils/Helper';
 import {
   Button,
   IconButton,
@@ -43,6 +49,9 @@ import ReactGA from 'react-ga4';
 import { Session } from '../../utils/Interfaces';
 import Schedule from './../../components/Schedule';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
+import { showToastMessage } from '@/components/Toastify';
+import { getEventList } from '@/services/EventService';
+import { modifyAttendanceLimit } from '../../../app.config';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -60,6 +69,7 @@ const TeachingCenterDetails = () => {
   const [cohortDetails, setCohortDetails] = React.useState<any>({});
   const [reloadState, setReloadState] = React.useState<boolean>(false);
   const [sessions, setSessions] = React.useState<Session[]>();
+  const [extraSessions, setExtraSessions] = React.useState<Session[]>();
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState<any>(null);
   const [openRenameCenterModal, setOpenRenameCenterModal] =
@@ -139,11 +149,70 @@ const TeachingCenterDetails = () => {
 
   useEffect(() => {
     const getSessionsData = async () => {
-      const response: Session[] = getSessions('cohortId'); // Todo add dynamic cohortId
-      setSessions(response);
+      try {
+        const limit = 0;
+        const offset = 0;
+        const filters = {
+          date: selectedDate,
+          cohortId: cohortId,
+          status: ['live'],
+        };
+        const response = await getEventList({ limit, offset, filters });
+        let sessionArray: any[] = [];
+        if (response?.events.length > 0) {
+          response?.events.forEach((event: any) => {
+            if (event.isRecurring) {
+              sessionArray.push(event);
+            }
+          });
+        }
+        setSessions(sessionArray);
+      } catch (error) {
+        setSessions([]);
+        showToastMessage(t('COMMON.NO_SESSIONS_SCHEDULED'), 'error');
+      }
     };
 
     getSessionsData();
+  }, [selectedDate]);
+
+  useEffect(() => {
+    const getExtraSessionsData = async () => {
+      try {
+        const date = new Date();
+        const startDate = shortDateFormat(new Date());
+        const lastDate = new Date(
+          date.setDate(date.getDate() + modifyAttendanceLimit)
+        );
+        const endDate = shortDateFormat(lastDate);
+        const limit = 0;
+        const offset = 0;
+        const filters = {
+          startDate: startDate,
+          endDate: endDate,
+          cohortId: cohortId,
+          status: ['live'],
+        };
+        const response = await getEventList({ limit, offset, filters });
+        console.log(response);
+        let extraSessionArray: any[] = [];
+        if (response?.events.length > 0) {
+          response?.events.forEach((event: any) => {
+            if (!event.isRecurring) {
+              console.log(event);
+              extraSessionArray.push(event);
+            }
+          });
+        }
+        setExtraSessions(extraSessionArray);
+      } catch (error) {
+        setExtraSessions([]);
+        showToastMessage(t('COMMON.NO_SESSIONS_SCHEDULED'), 'error');
+      }
+      console.log(sessions);
+    };
+
+    getExtraSessionsData();
   }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -391,12 +460,21 @@ const TeachingCenterDetails = () => {
             >
               {t('COMMON.UPCOMING_EXTRA_SESSION')}
             </Box>
-            <Box
-              className="fs-12 fw-400 italic"
-              sx={{ color: theme.palette.warning['300'] }}
-            >
-              {t('COMMON.NO_SESSIONS_SCHEDULED')}
+            <Box mt={3} px="18px">
+              {extraSessions?.map((item) => (
+                <SessionCard data={item} key={item.id}>
+                  <SessionCardFooter item={item} />
+                </SessionCard>
+              ))}
             </Box>
+            {extraSessions && extraSessions?.length === 0 && (
+              <Box
+                className="fs-12 fw-400 italic"
+                sx={{ color: theme.palette.warning['300'] }}
+              >
+                {t('COMMON.NO_SESSIONS_SCHEDULED')}
+              </Box>
+            )}
           </Box>
 
           <Box sx={{ padding: '10px 16px', mt: 1 }}>
@@ -426,10 +504,10 @@ const TeachingCenterDetails = () => {
                     opacity: classId === 'all' ? 0.5 : 1,
                     alignItems: 'center',
                   }}
-                  onClick={viewAttendanceHistory}
+                  // onClick={viewAttendanceHistory}
                 >
                   <Typography marginBottom={'0'} style={{ fontWeight: '500' }}>
-                    July
+                    {getMonthName()}
                   </Typography>
                   <CalendarMonthIcon sx={{ fontSize: '18px' }} />
                 </Box>
@@ -440,6 +518,7 @@ const TeachingCenterDetails = () => {
               data={percentageAttendanceData}
               disableDays={classId === 'all'}
               classId={classId}
+              showFromToday={true}
             />
           </Box>
 
@@ -449,6 +528,14 @@ const TeachingCenterDetails = () => {
                 <SessionCardFooter item={item} />
               </SessionCard>
             ))}
+            {sessions && sessions?.length === 0 && (
+              <Box
+                className="fs-12 fw-400 italic"
+                sx={{ color: theme.palette.warning['300'] }}
+              >
+                {t('COMMON.NO_SESSIONS_SCHEDULED')}
+              </Box>
+            )}
           </Box>
         </>
       )}
