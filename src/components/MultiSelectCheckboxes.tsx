@@ -58,11 +58,11 @@ const MultiSelectCheckboxes: React.FC<WidgetProps> = ({
             style={{ color: 'inherit' }}
           >
             <Grid item xs={10}>
-              <FormLabel style={{ color: 'inherit' }}>{option.label}</FormLabel>
+              <FormLabel style={{ color: 'black' }}>{option.label}</FormLabel>
             </Grid>
             <Grid item xs={2}>
               <Checkbox
-                style={{ color: 'inherit' }}
+                style={{ color: 'black' }}
                 checked={value.includes(option.value)}
                 onChange={handleChange}
                 value={option.value}
