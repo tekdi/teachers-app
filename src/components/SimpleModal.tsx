@@ -91,9 +91,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
           </Box>
         </Box>
         <Divider />
-        <Box sx={{ height: '60vh', overflowY: 'auto', px: '16px' }}>
-          {children}
-        </Box>
+        <Box>{children}</Box>
         <Divider />
 
         {showFooter ? (

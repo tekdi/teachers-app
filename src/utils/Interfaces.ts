@@ -475,3 +475,9 @@ export interface AssessmentSubject {
   score: string;
   date :string;
 }
+export interface Assessments {
+  userId: string;
+  subject: string;
+  score: string;
+  date: string;
+}

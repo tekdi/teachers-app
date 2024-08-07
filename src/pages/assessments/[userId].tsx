@@ -16,26 +16,15 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { getAssessmentSubjects } from '@/services/UpdateAssesmentService';
-
-interface Assessment {
-  id: string;
-  subject: string;
-  score: string;
-  date: string;
-}
-
-interface AssessmentSubject {
-  userId: number;
-  subject: string;
-  score: string;
-  date: string;
-}
+import { Assessments } from '@/utils/Interfaces';
+import { useRouter } from 'next/router';
 
 function AssessmentsDetails() {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const router = useRouter();
   const [assessmentListSubject, setAssessmentListSubject] = useState<
-    Assessment[]
+    Assessments[]
   >([]);
 
   const handleBackEvent = () => {
@@ -56,16 +45,14 @@ function AssessmentsDetails() {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res: AssessmentSubject[] = await getAssessmentSubjects(); // Await the promise
-        setAssessmentListSubject(res);
-      } catch (error) {
-        console.error('Error fetching assessment subjects:', error);
-      }
-    };
-    fetchData();
+    const res: any = getAssessmentSubjects();
+    setAssessmentListSubject(res);
   }, []);
+  const handleAssessmentSubjectDetails = (userId: string) => {
+    router.push(`./subjectDetail/${userId}`);
+
+    console.log();
+  };
 
   return (
     <>
@@ -148,7 +135,7 @@ function AssessmentsDetails() {
       <Box sx={{ mt: 2, background: '#FBF4E4', padding: '16px' }}>
         <Grid container spacing={2}>
           {assessmentListSubject.map((assessment) => (
-            <Grid item xs={12} sm={6} md={4} key={assessment.id}>
+            <Grid item xs={12} sm={6} md={4} key={assessment.userId}>
               <Box
                 sx={{
                   border: '1px solid #D0C5B4',
@@ -156,6 +143,9 @@ function AssessmentsDetails() {
                   padding: '14px',
                   borderRadius: '8px',
                 }}
+                onClick={() =>
+                  handleAssessmentSubjectDetails(assessment?.userId)
+                }
               >
                 <Box
                   sx={{ fontSize: '16px', fontWeight: '400', color: '#1F1B13' }}

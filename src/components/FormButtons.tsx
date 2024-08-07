@@ -1,4 +1,4 @@
-import { Button, useTheme } from '@mui/material';
+import { Box, Button, Divider, useTheme } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
@@ -33,14 +33,17 @@ const FormButtons: React.FC<FormButtons> = ({
   console.log(isCreateCentered);
 
   return (
-    <div
-      style={{
-        marginTop: '16px',
-        display: 'flex',
-        justifyContent: 'space-between',
-      }}
-    >
-      <>
+    <>
+      <Divider />
+      <Box
+        sx={{
+          padding: '16px',
+          background: '#fff',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '15px',
+        }}
+      >
         {!isCreateCentered && !isCreatedFacilitator && (
           <Button
             variant="outlined"
@@ -79,8 +82,8 @@ const FormButtons: React.FC<FormButtons> = ({
         >
           {buttonText}
         </Button>
-      </>
-    </div>
+      </Box>
+    </>
   );
 };
 
