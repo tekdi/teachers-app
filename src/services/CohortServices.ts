@@ -4,12 +4,12 @@ import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 
 export const cohortList = async ({
   limit,
-  page,
+  offset,
   filters,
 }: CohortListParam): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohort/search`;
   try {
-    const response = await post(apiUrl, { limit, page, filters });
+    const response = await post(apiUrl, { limit, offset, filters });
     return response?.data?.result;
   } catch (error) {
     console.error('error in getting cohort list', error);
@@ -46,9 +46,7 @@ export const getCohortList = async (
   }
 };
 
-export const bulkCreateCohortMembers = async (
-  payload: any
-): Promise<any> => {
+export const bulkCreateCohortMembers = async (payload: any): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/bulkCreate`;
   try {
     const response = await post(apiUrl, payload);

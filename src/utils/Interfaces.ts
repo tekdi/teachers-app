@@ -71,7 +71,7 @@ export interface ParentIdFilter {
 export type Filters = UserIdFilter | ParentIdFilter;
 export interface CohortListParam {
   limit: number;
-  page: number;
+  offset: number;
   filters: Filters;
 }
 
@@ -350,12 +350,12 @@ export interface Session {
 export interface CoursePlanner {
   id: number;
   subject?: string;
-  circular?:number;
+  circular?: number;
 }
 export interface CoursePlanner {
   id: number;
   subject?: string;
-  circular?:number
+  circular?: number;
 }
 export interface SessionCardFooterProps {
   item: Session;
@@ -448,12 +448,11 @@ export interface eventFilters {
   status?: [];
 }
 
-
-export interface CoursePlannerData  {
-  id: string; 
+export interface CoursePlannerData {
+  id: string;
   subject: string;
   circular: number;
-};
+}
 
 export interface OverallAttendance {
   absent?: any;
