@@ -3,13 +3,13 @@ import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { useTranslation } from 'next-i18next';
-import React, { Children, ReactNode, useState } from 'react';
+import React, { Children, ReactNode } from 'react';
 import CustomRadioWidget from './CustomRadioWidget';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import { getCurrentYearPattern } from '@/utils/Helper';
-// import FormButtons from './FormButtons';
-import { Button, useTheme } from '@mui/material';
+import FormButtons from './FormButtons';
+
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
 interface DynamicFormProps {
@@ -76,13 +76,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     const currentYearPattern = new RegExp(getCurrentYearPattern());
 
     return errors.map((error: any) => {
-      const property = error.property.substring(1);
-
       switch (error.name) {
         case 'required': {
-          error.message = children
-            ? t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD')
-            : '';
+          error.message = t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD');
           break;
         }
         case 'maximum': {
@@ -91,12 +87,10 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             if (
               schema.properties?.[property]?.validation?.includes('numeric')
             ) {
-              error.message = t(
-                'FORM_ERROR_MESSAGES.AGE_MUST_BE_LESS_THAN_100',
-                {
-                  maxLength: schema.properties?.[property]?.maxLength,
-                }
-              );
+              error.message = t('FORM_ERROR_MESSAGES.MUST_BE_LESS_THAN', {
+                fieldname: property,
+                maxLength: schema.properties?.[property]?.maxLength,
+              });
             }
           } else {
             if (
@@ -110,18 +104,17 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
           break;
         }
+
         case 'minimum': {
           const property = error.property.substring(1);
           if (property === 'age') {
             if (
               schema.properties?.[property]?.validation?.includes('numeric')
             ) {
-              error.message = t(
-                'FORM_ERROR_MESSAGES.AGE_MUST_BE_GREATER_THAN_1',
-                {
-                  maxLength: schema.properties?.[property]?.maxLength,
-                }
-              );
+              error.message = t('FORM_ERROR_MESSAGES.MUST_BE_GREATER_THAN', {
+                fieldname: property,
+                minLength: schema.properties?.[property]?.minLength,
+              });
             }
           } else {
             if (
@@ -153,10 +146,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 error.message = t(
                   'FORM_ERROR_MESSAGES.ENTER_VALID_MOBILE_NUMBER'
                 );
-              } else if (
-                schema.properties?.[property]?.validation?.includes('.age')
-              ) {
-                error.message = t('age must be valid');
               } else {
                 error.message = t(
                   'FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'

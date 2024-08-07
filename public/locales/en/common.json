@@ -443,8 +443,8 @@
     "ENTER_VALID_MOBILE_NUMBER": "Enter Valid mobile number",
     "ENTER_VALID_EMAIL": "Enter valid Email",
     "ENTER_VALID_YEAR": "Enter valid Year",
-    "AGE_MUST_BE_LESS_THAN_100": "Age must be less than 100",
-    "AGE_MUST_BE_GREATER_THAN_1": "Age must be greater than 1"
+    "MUST_BE_LESS_THAN": "{{fieldname}} must be less than {{maxLength}}",
+    "MUST_BE_GREATER_THAN": "{{fieldname}} must be greater than {{minLength}}"
   },
   "COURSE_PLANNER": {
     "COURSE_PLANNER": "Course Plan",
