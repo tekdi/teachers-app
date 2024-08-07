@@ -23,7 +23,6 @@ import DeleteCenterModal from '@/components/center/DeleteCenterModal';
 import RenameCenterModal from '@/components/center/RenameCenterModal';
 import { getCohortDetails } from '@/services/CohortServices';
 import { getSessions } from '@/services/Sessionservice';
-import manageUserStore from '@/store/manageUserStore';
 import { CustomField } from '@/utils/Interfaces';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -52,25 +51,6 @@ const TeachingCenterDetails = () => {
   const router = useRouter();
   const { cohortId }: any = router.query;
   const { t } = useTranslation();
-  const store = manageUserStore();
-  const setDistrictCode = manageUserStore(
-    (state: { setDistrictCode: any }) => state.setDistrictCode
-  );
-  const setDistrictId = manageUserStore(
-    (state: { setDistrictId: any }) => state.setDistrictId
-  );
-  const setStateCode = manageUserStore(
-    (state: { setStateCode: any }) => state.setStateCode
-  );
-  const setStateId = manageUserStore(
-    (state: { setStateId: any }) => state.setStateId
-  );
-  const setBlockCode = manageUserStore(
-    (state: { setBlockCode: any }) => state.setBlockCode
-  );
-  const setBlockId = manageUserStore(
-    (state: { setBlockId: any }) => state.setBlockId
-  );
 
   const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
@@ -136,22 +116,16 @@ const TeachingCenterDetails = () => {
             (item: CustomField) => item.label === 'DISTRICTS'
           );
           const districtCode = district?.code || '';
-          setDistrictCode(districtCode);
           const districtId = district?.fieldId || '';
-          // setDistrictId(districtId);
           const state = cohortData.customField.find(
             (item: CustomField) => item.label === 'STATES'
           );
           const stateCode = state?.code || '';
-          setStateCode(stateCode);
           const stateId = state?.fieldId || '';
-          // setStateId(stateId);
 
           const blockField = cohortData?.customField.find(
             (field: any) => field.label === 'BLOCKS'
           );
-          setBlockCode(blockField?.code);
-          // setBlockId(blockField.fieldId);
 
           cohortData.address =
             `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
