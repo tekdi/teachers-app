@@ -1,7 +1,7 @@
-import { Role, Status } from './app.constant';
+import { Role, Status, labelsToExtractForMiniProfile } from './app.constant';
 
 import FingerprintJS from 'fingerprintjs2';
-import { CustomField } from './Interfaces';
+import { CustomField, UpdateCustomField } from './Interfaces';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -361,3 +361,13 @@ export const extractAddress = (
 
   return address;
 };
+
+export function filterMiniProfileFields(customFieldsData: UpdateCustomField[]) {
+  const filteredFields = [];
+  for (const item of customFieldsData) {
+    if (labelsToExtractForMiniProfile.includes(item.label ?? '')) {
+      filteredFields.push({ label: item?.label, value: item?.value });
+    }
+  }
+  return filteredFields;
+}

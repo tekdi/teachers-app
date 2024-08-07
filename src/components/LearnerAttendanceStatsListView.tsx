@@ -1,6 +1,8 @@
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { Status, labelsToExtractForMiniProfile, names } from '@/utils/app.constant';
+import {
+  Status
+} from '@/utils/app.constant';
 import { UserData, UpdateCustomField } from '@/utils/Interfaces';
 
 import DropoutLabel from './DropoutLabel';
@@ -12,7 +14,7 @@ import { getUserDetails } from '@/services/ProfileService';
 import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import { capitalizeEachWord } from '@/utils/Helper';
+import { capitalizeEachWord, filterMiniProfileFields } from '@/utils/Helper';
 
 interface StudentsStatsListProps {
   name: string;
@@ -92,9 +94,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
     }
   };
 
-  const filteredFields = customFieldsData
-    .filter((item) => labelsToExtractForMiniProfile.includes(item.label ?? ''))
-    .map((item) => ({ label: item?.label, value: item?.value }));
+  const filteredFields = filterMiniProfileFields(customFieldsData);
 
   return (
     <Box>

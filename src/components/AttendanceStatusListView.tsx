@@ -6,7 +6,7 @@ import {
 } from '../utils/Interfaces';
 
 import { getUserDetails } from '@/services/ProfileService';
-import { Status, labelsToExtractForMiniProfile, names } from '@/utils/app.constant';
+import { Status } from '@/utils/app.constant';
 import CancelIcon from '@mui/icons-material/Cancel'; //absent
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; //present
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -14,7 +14,11 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { ATTENDANCE_ENUM, capitalizeEachWord } from '../utils/Helper';
+import {
+  ATTENDANCE_ENUM,
+  capitalizeEachWord,
+  filterMiniProfileFields,
+} from '../utils/Helper';
 import DropoutLabel from './DropoutLabel';
 import LearnerModal from './LearnerModal';
 import Loader from './Loader';
@@ -110,9 +114,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
     }
   };
 
-  const filteredFields = customFieldsData
-    .filter((item) => labelsToExtractForMiniProfile.includes(item.label ?? ''))
-    .map((item) => ({ label: item?.label, value: item?.value }));
+  const filteredFields = filterMiniProfileFields(customFieldsData);
 
   return (
     <Box sx={{ padding: '0 10px' }}>
