@@ -16,7 +16,7 @@ import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { toPascalCase } from '@/utils/Helper';
-import { modalStyles } from '@/utils/app.constant';
+import { modalStyles } from '@/styles/modalStyles';
 
 // CSS variables
 const headerStyles = {
