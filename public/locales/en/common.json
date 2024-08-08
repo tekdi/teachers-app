@@ -461,6 +461,10 @@
     "ASSESSMENTS":"Assessments",
     "CENTER":"Center",
     "ASSESSMENT_TYPE":"Assessment Type",
-    "COMPLETED_ASSESSMENT":"completed the assessment"
+    "COMPLETED_THE_ASSESSMENT":"completed the assessment",
+    "SUBMITTED_ON":"Submitted On",
+    "CORRECT_ANSWER":"correct answers",
+    "NO_DATA_FOUND":"No data found",
+    "SEARCH_STUDENT":"search student"
   }
 }

@@ -70,7 +70,7 @@ function SubjectDetail() {
             fontWeight={'500'}
             fontSize={'11px'}
           >
-            Subject
+            {t('PROFILE.SUBJECT')}
           </Typography>
         </Box>
       </Box>
@@ -87,7 +87,8 @@ function SubjectDetail() {
           sx={{ display: 'flex', justifyContent: 'space-between', pb: '10px' }}
         >
           <Box sx={{ color: '#7C766F', fontSize: '12px', fontWeight: '500' }}>
-            Submitted On : 2 Feb, 2024
+            {t('ASSESSMENTS.SUBMITTED_ON')} : 2 Feb, 2024
+            {/*will came from API */}
           </Box>
           <Box
             sx={{
@@ -96,40 +97,54 @@ function SubjectDetail() {
               color: theme.palette.warning['300'],
             }}
           >
-            210/250
+            210/250 {/*will came from API */}
           </Box>
         </Box>
         <Divider />
         <Box
           sx={{ mt: 1, fontSize: '12px', color: theme.palette.warning['400'] }}
         >
-          42 out of 50 correct answers
+          42 out of 50 {t('ASSESSMENTS.CORRECT_ANSWER')}{' '}
+          {/*will came from API */}
         </Box>
 
-        {assessmentQuestions.map((questionItem, index) => (
-          <Box key={index}>
-            <Box
-              sx={{
-                mt: 1.5,
-                fontSize: '14px',
-                fontWeight: '400',
-                color: theme.palette.warning['300'],
-              }}
-            >
-              {questionItem.question}
-            </Box>
-            <Box
-              sx={{
-                mt: 0.8,
-                fontSize: '16px',
-                fontWeight: '500',
-                color: theme.palette.success.main,
-              }}
-            >
-              {questionItem.score}
-            </Box>
+        {assessmentQuestions.length === 0 ? (
+          <Box
+            sx={{
+              mt: 1.5,
+              fontSize: '14px',
+              fontWeight: '400',
+              color: theme.palette.warning['300'],
+            }}
+          >
+            {t('ASSESSMENTS.NO_DATA_FOUND')}
           </Box>
-        ))}
+        ) : (
+          assessmentQuestions.map((questionItem, index) => (
+            <Box key={index}>
+              <Box
+                sx={{
+                  mt: 1.5,
+                  fontSize: '14px',
+                  fontWeight: '400',
+                  color: theme.palette.warning['300'],
+                }}
+              >
+                {questionItem.question}
+              </Box>
+              <Box
+                sx={{
+                  mt: 0.8,
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  color: theme.palette.success.main,
+                }}
+              >
+                {questionItem.score}
+              </Box>
+            </Box>
+          ))
+        )}
       </Box>
     </>
   );

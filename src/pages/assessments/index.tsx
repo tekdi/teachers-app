@@ -99,7 +99,7 @@ const Assessments = () => {
                 ref={inputRef}
                 sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
                 placeholder="Search.."
-                inputProps={{ 'aria-label': 'search student' }}
+                inputProps={{ 'aria-label': t('ASSESSMENTS.SEARCH_STUDENT') }}
                 onClick={handleScrollDown}
               />
               <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
@@ -181,7 +181,7 @@ const Assessments = () => {
             color: theme?.palette?.warning['400'],
           }}
         >
-          20/24 {t('ASSESSMENTS.COMPLETED_ASSESSMENT')}
+          20/24 {t('ASSESSMENTS.COMPLETED_THE_ASSESSMENT')}
         </Grid>
         <Grid sx={{ display: 'flex', justifyContent: 'flex-end' }} xs={4} item>
           <Button
