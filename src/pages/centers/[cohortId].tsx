@@ -51,7 +51,7 @@ import Schedule from './../../components/Schedule';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { showToastMessage } from '@/components/Toastify';
 import { getEventList } from '@/services/EventService';
-import { modifyAttendanceLimit } from '../../../app.config';
+import { eventDaysLimit, modifyAttendanceLimit } from '../../../app.config';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -458,7 +458,7 @@ const TeachingCenterDetails = () => {
               className="fs-14 fw-500"
               sx={{ color: theme.palette.warning['300'] }}
             >
-              {t('COMMON.UPCOMING_EXTRA_SESSION')}
+              {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
             <Box mt={3} px="18px">
               {extraSessions?.map((item) => (

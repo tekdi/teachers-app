@@ -38,15 +38,15 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
   };
 
   useEffect(() => {
-    const result1 = convertUTCToIST(data?.startDateTime);
-    const startDate = result1.date;
-    const startTime = result1.time;
+    const startDateTime = convertUTCToIST(data?.startDateTime);
+    const startDate = startDateTime.date;
+    const startTime = startDateTime.time;
     setStartTime(startTime);
     setStartDate(startDate);
 
-    const result2 = convertUTCToIST(data?.endDateTime);
-    const endDate = result2.date;
-    const endTime = result2.time;
+    const endDateTime = convertUTCToIST(data?.endDateTime);
+    const endDate = endDateTime.date;
+    const endTime = endDateTime.time;
     setEndTime(endTime);
 
     console.log(startDate, startTime, endDate, endTime);
