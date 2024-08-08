@@ -139,7 +139,14 @@ function SubjectDetail() {
               sx={{ fontSize: '20px', color: theme.palette.warning['300'] }}
             />
           </IconButton>
-          <Typography sx={{ mx: 2, fontSize: '14px', fontWeight: '500' }}>
+          <Typography
+            sx={{
+              mx: 2,
+              fontSize: '14px',
+              fontWeight: '400',
+              color: theme.palette.warning['300'],
+            }}
+          >
             {`${(currentPage - 1) * Pagination.ITEMS_PER_PAGE + 1}-${Math.min(
               currentPage * Pagination.ITEMS_PER_PAGE,
               assessmentQuestions.length
