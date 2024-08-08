@@ -1,5 +1,5 @@
 export const modalStyles = (theme: any, width?: string) => ({
-  width: width ? '65%' : '85%',
+  width: width ?? '85%',
   position: 'absolute',
   top: '50%',
   left: '50%',

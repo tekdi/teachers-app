@@ -412,7 +412,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         aria-labelledby="send credential modal"
         aria-describedby="to send credentials"
       >
-        <Box sx={modalStyles(theme, 'width')}>
+        <Box sx={modalStyles(theme, '65%')}>
           <Box
             display={'flex'}
             justifyContent={'space-between'}
