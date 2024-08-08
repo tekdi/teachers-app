@@ -127,7 +127,7 @@ export interface ExtraSessionsCardProps {
 }
 
 export interface SessionsCardProps {
-  data: Session;
+  data: any;
   children?: React.ReactNode;
 }
 export interface SessionsModalProps {
@@ -435,7 +435,7 @@ export interface CoursePlannerCardsProps {
 
 export interface scheduleEventParam {
   limit: number;
-  page: number;
+  offset: number;
   filters: eventFilters;
 }
 
@@ -445,7 +445,8 @@ export interface eventFilters {
   endDate?: string;
   eventType?: [];
   title?: string;
-  status?: [];
+  status?: string[];
+  cohortId?: string;
 }
 
 export interface CoursePlannerData {
