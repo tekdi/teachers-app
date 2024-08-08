@@ -44,6 +44,7 @@ import ReactGA from 'react-ga4';
 import { Session } from '../../utils/Interfaces';
 import Schedule from './../../components/Schedule';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
+import { Role } from '@/utils/app.constant';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -71,7 +72,7 @@ const TeachingCenterDetails = () => {
   const setBlockId = manageUserStore(
     (state: { setBlockId: any }) => state.setBlockId
   );
-
+  const role = localStorage.getItem('role');
   const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
   const [selectedDate, setSelectedDate] =
@@ -253,7 +254,7 @@ const TeachingCenterDetails = () => {
               </Typography>
               {cohortDetails?.centerType && (
                 <Typography textAlign={'left'} fontSize={'22px'}>
-                  {cohortDetails?.centerType}
+                  {cohortDetails?.centerType} 
                 </Typography>
               )}
               <Box>
@@ -262,11 +263,12 @@ const TeachingCenterDetails = () => {
                   fontSize={'11px'}
                   fontWeight={500}
                 >
-                  {cohortDetails?.address}
+                  {cohortDetails?.address} 
                 </Typography>
               </Box>
             </Box>
           </Box>
+          {role === Role.TEAM_LEADER && (
           <IconButton
             aria-label="more"
             aria-controls="long-menu"
@@ -276,6 +278,7 @@ const TeachingCenterDetails = () => {
           >
             <MoreVertIcon />
           </IconButton>
+          )}
           <Menu
             id="long-menu"
             anchorEl={anchorEl}

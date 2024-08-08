@@ -156,7 +156,7 @@ const TeachingCenters = () => {
       }
     };
     getCohortListForTL();
-  }, [isTeamLeader, isCenterAdded]);
+  }, [isTeamLeader, isCenterAdded, reloadState]);
 
   const handleCenterAdded = () => {
     setIsCenterAdded((prev) => !prev);
