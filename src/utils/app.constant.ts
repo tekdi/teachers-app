@@ -91,3 +91,8 @@ export enum RoleId {
   TEAM_LEADER = '9dd9328f-1bc7-444f-96e3-c5e1daa3514a',
   ADMIN = 'ee482faf-8a41-45fe-9656-5533dd6a787c',
 }
+
+export enum Pagination {
+   ITEMS_PER_PAGE = 10,
+  MAX_ITEMS = 50,
+}
