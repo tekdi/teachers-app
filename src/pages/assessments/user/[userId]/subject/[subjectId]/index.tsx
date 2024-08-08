@@ -135,7 +135,9 @@ function SubjectDetail() {
             disabled={currentPage === 1}
             onClick={() => handlePageChange(null, currentPage - 1)}
           >
-            <ArrowBackIosNewIcon sx={{ fontSize: '20px', color: '#1F1B13' }} />
+            <ArrowBackIosNewIcon
+              sx={{ fontSize: '20px', color: theme.palette.warning['300'] }}
+            />
           </IconButton>
           <Typography sx={{ mx: 2, fontSize: '14px', fontWeight: '500' }}>
             {`${(currentPage - 1) * Pagination.ITEMS_PER_PAGE + 1}-${Math.min(
@@ -147,7 +149,9 @@ function SubjectDetail() {
             disabled={currentPage === totalPages}
             onClick={() => handlePageChange(null, currentPage + 1)}
           >
-            <ArrowForwardIosIcon sx={{ fontSize: '20px', color: '#1F1B13' }} />
+            <ArrowForwardIosIcon
+              sx={{ fontSize: '20px', color: theme.palette.warning['300'] }}
+            />
           </IconButton>
         </Box>
       )}
