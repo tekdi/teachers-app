@@ -49,9 +49,11 @@ import ReactGA from 'react-ga4';
 import { Session } from '../../utils/Interfaces';
 import Schedule from './../../components/Schedule';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
+import { Role } from '@/utils/app.constant';
 import { showToastMessage } from '@/components/Toastify';
 import { getEventList } from '@/services/EventService';
 import { eventDaysLimit, modifyAttendanceLimit } from '../../../app.config';
+import manageUserStore from '@/store/manageUserStore';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -61,6 +63,26 @@ const TeachingCenterDetails = () => {
   const { cohortId }: any = router.query;
   const { t } = useTranslation();
 
+  const store = manageUserStore();
+  const setDistrictCode = manageUserStore(
+    (state: { setDistrictCode: any }) => state.setDistrictCode
+  );
+  const setDistrictId = manageUserStore(
+    (state: { setDistrictId: any }) => state.setDistrictId
+  );
+  const setStateCode = manageUserStore(
+    (state: { setStateCode: any }) => state.setStateCode
+  );
+  const setStateId = manageUserStore(
+    (state: { setStateId: any }) => state.setStateId
+  );
+  const setBlockCode = manageUserStore(
+    (state: { setBlockCode: any }) => state.setBlockCode
+  );
+  const setBlockId = manageUserStore(
+    (state: { setBlockId: any }) => state.setBlockId
+  );
+  const role = localStorage.getItem('role');
   const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
   const [selectedDate, setSelectedDate] =
@@ -296,7 +318,7 @@ const TeachingCenterDetails = () => {
               </Typography>
               {cohortDetails?.centerType && (
                 <Typography textAlign={'left'} fontSize={'22px'}>
-                  {cohortDetails?.centerType}
+                  {cohortDetails?.centerType} 
                 </Typography>
               )}
               <Box>
@@ -305,11 +327,12 @@ const TeachingCenterDetails = () => {
                   fontSize={'11px'}
                   fontWeight={500}
                 >
-                  {cohortDetails?.address}
+                  {cohortDetails?.address} 
                 </Typography>
               </Box>
             </Box>
           </Box>
+          {role === Role.TEAM_LEADER && (
           <IconButton
             aria-label="more"
             aria-controls="long-menu"
@@ -319,6 +342,7 @@ const TeachingCenterDetails = () => {
           >
             <MoreVertIcon />
           </IconButton>
+          )}
           <Menu
             id="long-menu"
             anchorEl={anchorEl}

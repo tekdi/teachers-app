@@ -7,7 +7,7 @@ import ManageCentersModal from '@/components/ManageCentersModal';
 import ManageUsersModal from '@/components/ManageUsersModal';
 import { showToastMessage } from '@/components/Toastify';
 import { cohortList, getCohortList } from '@/services/CohortServices';
-import { Role } from '@/utils/app.constant';
+import { Role, Status } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
@@ -138,25 +138,23 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           const limit = 0;
           const page = 0;
           const filters = {
-            states: 'MH',
-            districts: 'MUM',
-            blocks: 'BOR',
-            role: 'Teacher',
-            status: ['active'],
+            states: store.stateCode,
+            districts: store.districtCode,
+            blocks: store.blockCode,
+            role: Role.TEACHER,
+            status: [Status.ACTIVE],
           };
           const fields = ['age'];
 
           const resp = await getMyUserList({ limit, page, filters, fields });
           const facilitatorList = resp.result?.getUserDetails;
 
-          console.log(facilitatorList);
-
           if (!facilitatorList || facilitatorList?.length === 0) {
             console.log('No users found.');
             return;
           }
           const userIds = facilitatorList?.map((user: any) => user.userId);
-          console.log(userIds);
+          
 
           const cohortDetailsPromises = userIds?.map((userId: string) =>
             getCohortList(userId, { filter: 'true' })
@@ -177,7 +175,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             }
           });
 
-          console.log('Cohort Details:', cohortDetails);
 
           const extractedData = facilitatorList?.map(
             (user: any, index: number) => {
@@ -209,7 +206,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       }
     };
     getFacilitator();
-  }, [isFacilitatorAdded]);
+  }, [isFacilitatorAdded, reloadState]);
 
   useEffect(() => {
     const fetchCohortListForUsers = async () => {
@@ -227,7 +224,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           });
 
           const cohortResponses = await Promise.all(fetchCohortPromises);
-          console.log('cohortResponses', cohortResponses);
           const allCohortsData: CohortsData = cohortResponses?.reduce(
             (acc: CohortsData, curr) => {
               acc[curr.userId] = curr?.cohorts?.map((item: Cohort) => ({
@@ -838,6 +834,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               open={openDeleteUserModal}
               onClose={handleCloseModal}
               onUserDelete={handleDeleteUser}
+              reloadState={reloadState}
+              setReloadState={setReloadState}
             />
             <SimpleModal
               primaryText={t('COMMON.OK')}

@@ -3,12 +3,12 @@ import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { useTranslation } from 'next-i18next';
-import React, { Children, ReactNode } from 'react';
+import React, { Children, ReactNode, useEffect } from 'react';
 import CustomRadioWidget from './CustomRadioWidget';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import { getCurrentYearPattern } from '@/utils/Helper';
-import FormButtons from './FormButtons';
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -43,13 +43,23 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   customFields,
   children,
 }) => {
-  console.log(formData);
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
     MultiSelectDropdown: MultiSelectDropdown,
   };
   const { t } = useTranslation();
+
+  const submittedButtonStatus = useSubmittedButtonStore(
+    (state: any) => state.submittedButtonStatus
+  );
+  const setSubmittedButtonStatus = useSubmittedButtonStore(
+    (state: any) => state.setSubmittedButtonStatus
+  );
+
+  useEffect(() => {
+    setSubmittedButtonStatus(false);
+  }, []);
 
   const handleError = (errors: any) => {
     if (errors.length > 0) {
@@ -78,7 +88,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     return errors.map((error: any) => {
       switch (error.name) {
         case 'required': {
-          error.message = t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD');
+          error.message = submittedButtonStatus
+            ? t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD')
+            : '';
           break;
         }
         case 'maximum': {
@@ -146,10 +158,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 error.message = t(
                   'FORM_ERROR_MESSAGES.ENTER_VALID_MOBILE_NUMBER'
                 );
-              } else if (
-                schema.properties?.[property]?.validation?.includes(".age")
-              ) {
-                error.message = t("age must be valid");
               } else {
                 error.message = t(
                   'FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'

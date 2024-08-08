@@ -28,7 +28,7 @@ const FormButtons: React.FC<FormButtons> = ({
     : (isCreateCentered && !isCreatedFacilitator && !isCreatedLearner) ||
         (isCreatedLearner && !isCreatedFacilitator && !isCreateCentered)
       ? t('COMMON.CREATE')
-      : t('COMMON.SUBMIT');
+      : t('GUIDE_TOUR.NEXT');
 
   console.log(isCreateCentered);
 

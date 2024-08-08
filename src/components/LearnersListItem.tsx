@@ -107,8 +107,8 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     const cohorts = userStore.cohorts;
     const centers = cohorts.map(
       (cohort: { name: string; cohortId: string }) => ({
-        name: cohort.name,
-        cohortId: cohort.cohortId,
+        name: cohort?.name,
+        cohortId: cohort?.cohortId,
       })
     );
     const centersName = centers?.map((center: { name: any }) => center?.name);
@@ -333,9 +333,9 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
 
   const handleReassignCenterRequest = async () => {
     const payload: BulkCreateCohortMembersRequest = {
-      userId: [reassignStore.reassignId],
-      cohortId: [reassignStore.cohortId],
-      removeCohortId: [reassignStore.removeCohortId],
+      userId: [reassignStore?.reassignId],
+      cohortId: [reassignStore?.cohortId],
+      removeCohortId: [reassignStore?.removeCohortId],
     };
 
     try {
@@ -346,6 +346,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'),
         'success'
       );
+      setReloadState(true);
     } catch (error) {
       console.error('Error creating cohort members', error);
       showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');
@@ -699,6 +700,8 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         open={openDeleteUserModal}
         onClose={handleCloseModal}
         onUserDelete={handleUserDelete}
+        reloadState={reloadState}
+        setReloadState={setReloadState}
       />
     </>
   );
