@@ -1,6 +1,8 @@
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { Status, names } from '@/utils/app.constant';
+import {
+  Status
+} from '@/utils/app.constant';
 import { UserData, UpdateCustomField } from '@/utils/Interfaces';
 
 import DropoutLabel from './DropoutLabel';
@@ -12,6 +14,7 @@ import { getUserDetails } from '@/services/ProfileService';
 import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import { capitalizeEachWord, filterMiniProfileFields } from '@/utils/Helper';
 
 interface StudentsStatsListProps {
   name: string;
@@ -45,6 +48,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   >([]);
   const [contactNumber, setContactNumber] = useState<any>('');
   const [userName, setUserName] = React.useState('');
+  const [enrollmentNumber, setEnrollmentNumber] = React.useState('');
   const [isModalOpenLearner, setIsModalOpenLearner] = useState(false);
   const [loading, setLoading] = useState(false);
   // const userId = '12345'; // Replace with the actual user ID you want to pass
@@ -71,6 +75,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
             setUserData(userData);
             setUserName(userData?.name);
             setContactNumber(userData?.mobile);
+            setEnrollmentNumber(capitalizeEachWord(userData?.username));
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
@@ -89,9 +94,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
     }
   };
 
-  const filteredFields = names
-    .map((name) => customFieldsData.find((field) => field.name === name))
-    .filter(Boolean);
+  const filteredFields = filterMiniProfileFields(customFieldsData);
 
   return (
     <Box>
@@ -106,6 +109,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           data={filteredFields}
           userName={userName}
           contactNumber={contactNumber}
+          enrollmentNumber={enrollmentNumber}
         />
       )}
       <Stack>

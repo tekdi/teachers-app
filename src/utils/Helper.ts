@@ -1,7 +1,7 @@
-import { Role, Status } from './app.constant';
+import { Role, Status, labelsToExtractForMiniProfile } from './app.constant';
 
 import FingerprintJS from 'fingerprintjs2';
-import { CustomField } from './Interfaces';
+import { CustomField, UpdateCustomField } from './Interfaces';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -305,24 +305,36 @@ export const mapFieldIdToValue = (
 };
 
 export const convertUTCToIST = (utcDateTime: any) => {
-  const utcDate = new Date(utcDateTime);
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  };
 
-  const utcYear = utcDate.getUTCFullYear();
-  const utcMonth = (utcDate.getUTCMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-  const utcDateDay = utcDate.getUTCDate().toString().padStart(2, '0');
+  const date = new Date(utcDateTime);
+  const dateTimeFormat = new Intl.DateTimeFormat('en-GB', options);
+  const [
+    { value: day },
+    ,
+    { value: month },
+    ,
+    { value: year },
+    ,
+    { value: hour },
+    ,
+    { value: minute },
+    ,
+    { value: period },
+  ] = dateTimeFormat.formatToParts(date);
 
-  let utcHours = utcDate.getUTCHours();
-  const utcMinutes = utcDate.getUTCMinutes().toString().padStart(2, '0');
-  const utcSeconds = utcDate.getUTCSeconds().toString().padStart(2, '0');
+  const formattedDate = `${day} ${month}`;
+  const formattedTime = `${hour}:${minute} ${period.toLowerCase()}`;
 
-  const ampm = utcHours >= 12 ? 'PM' : 'AM';
-  utcHours = utcHours % 12;
-  utcHours = utcHours ? utcHours : 12;
-
-  const dateString = `${utcYear}-${utcMonth}-${utcDateDay}`;
-  const timeString = `${utcHours.toString().padStart(2, '0')}:${utcMinutes}:${utcSeconds} ${ampm}`;
-
-  return { dateString, timeString };
+  return { date: formattedDate, time: formattedTime };
 };
 
 export const convertLocalToUTC = (localDateTime: any) => {
@@ -361,3 +373,13 @@ export const extractAddress = (
 
   return address;
 };
+
+export function filterMiniProfileFields(customFieldsData: UpdateCustomField[]) {
+  const filteredFields = [];
+  for (const item of customFieldsData) {
+    if (labelsToExtractForMiniProfile.includes(item.label ?? '')) {
+      filteredFields.push({ label: item?.label, value: item?.value });
+    }
+  }
+  return filteredFields;
+}

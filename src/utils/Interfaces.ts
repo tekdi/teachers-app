@@ -71,7 +71,7 @@ export interface ParentIdFilter {
 export type Filters = UserIdFilter | ParentIdFilter;
 export interface CohortListParam {
   limit: number;
-  page: number;
+  offset: number;
   filters: Filters;
 }
 
@@ -127,7 +127,7 @@ export interface ExtraSessionsCardProps {
 }
 
 export interface SessionsCardProps {
-  data: Session;
+  data: any;
   children?: React.ReactNode;
 }
 export interface SessionsModalProps {
@@ -350,12 +350,12 @@ export interface Session {
 export interface CoursePlanner {
   id: number;
   subject?: string;
-  circular?:number;
+  circular?: number;
 }
 export interface CoursePlanner {
   id: number;
   subject?: string;
-  circular?:number
+  circular?: number;
 }
 export interface SessionCardFooterProps {
   item: Session;
@@ -435,7 +435,7 @@ export interface CoursePlannerCardsProps {
 
 export interface scheduleEventParam {
   limit: number;
-  page: number;
+  offset: number;
   filters: eventFilters;
 }
 
@@ -445,19 +445,29 @@ export interface eventFilters {
   endDate?: string;
   eventType?: [];
   title?: string;
-  status?: [];
+  status?: string[];
+  cohortId?: string;
 }
 
-
-export interface CoursePlannerData  {
-  id: string; 
+export interface CoursePlannerData {
+  id: string;
   subject: string;
   circular: number;
-};
+}
 
 export interface OverallAttendance {
   absent?: any;
   present?: any;
   absent_percentage: any;
   present_percentage: any;
+}
+
+export interface SendCredentialsRequest {
+  isQueue: boolean;
+  context: string;
+  key: string;
+  replacements: any[];
+  email: {
+    receipients: any[];
+  };
 }

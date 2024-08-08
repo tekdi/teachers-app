@@ -3,11 +3,12 @@ import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { useTranslation } from 'next-i18next';
-import React, { ReactNode } from 'react';
+import React, { Children, ReactNode } from 'react';
 import CustomRadioWidget from './CustomRadioWidget';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import { getCurrentYearPattern } from '@/utils/Helper';
+import FormButtons from './FormButtons';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -82,19 +83,49 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         }
         case 'maximum': {
           const property = error.property.substring(1);
-          if (schema.properties?.[property]?.validation?.includes('numeric')) {
-            error.message = t('FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR', {
-              maxLength: schema.properties?.[property]?.maxLength,
-            });
+          if (property === 'age') {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MUST_BE_LESS_THAN', {
+                fieldname: property,
+                maxLength: schema.properties?.[property]?.maxLength,
+              });
+            }
+          } else {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR', {
+                maxLength: schema.properties?.[property]?.maxLength,
+              });
+            }
           }
+
+          break;
         }
+
         case 'minimum': {
           const property = error.property.substring(1);
-          if (schema.properties?.[property]?.validation?.includes('numeric')) {
-            error.message = t('FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR', {
-              minLength: schema.properties?.[property]?.minLength,
-            });
+          if (property === 'age') {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MUST_BE_GREATER_THAN', {
+                fieldname: property,
+                minLength: schema.properties?.[property]?.minLength,
+              });
+            }
+          } else {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR', {
+                minLength: schema.properties?.[property]?.minLength,
+              });
+            }
           }
+          break;
         }
 
         case 'pattern': {
@@ -115,6 +146,10 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 error.message = t(
                   'FORM_ERROR_MESSAGES.ENTER_VALID_MOBILE_NUMBER'
                 );
+              } else if (
+                schema.properties?.[property]?.validation?.includes(".age")
+              ) {
+                error.message = t("age must be valid");
               } else {
                 error.message = t(
                   'FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'

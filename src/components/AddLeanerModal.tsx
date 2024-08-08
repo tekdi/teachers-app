@@ -17,6 +17,8 @@ import { showToastMessage } from './Toastify';
 import { editEditUser } from '@/services/ProfileService';
 import { tenantId } from '../../app.config';
 import SendCredentialModal from './SendCredentialModal';
+import FormButtons from './FormButtons';
+import { sendCredentialService } from '@/services/NotificationService';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -40,10 +42,8 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [reloadProfile, setReloadProfile] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
-  const [credentials, setCredentials] = React.useState({
-    username: '',
-    password: '',
-  });
+  const [learnerFormData, setLearnerFormData] = React.useState<any>();
+  const [fullname, setFullname] = React.useState<any>();
 
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -76,6 +76,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
+    setTimeout(() => {
+      setLearnerFormData(data.formData);
+    });
     const target = event.target as HTMLFormElement;
     const elementsArray = Array.from(target.elements);
 
@@ -95,192 +98,184 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
     const formData = data.formData;
     console.log('Form data submitted:', formData);
-    const schemaProperties = schema.properties;
-    let cohortId, fieldData;
-    if (typeof window !== 'undefined' && window.localStorage) {
-      fieldData = JSON.parse(localStorage.getItem('fieldData') || '');
-      cohortId = localStorage.getItem('classId');
+  };
+
+  useEffect(() => {
+    if (learnerFormData) {
+      handleButtonClick();
     }
-    const { username, password } = generateUsernameAndPassword(
-      fieldData?.state?.stateCode,
-      ''
-    );
+  }, [learnerFormData]);
 
-    const apiBody: any = {
-      username: username,
-      password: password,
-      tenantCohortRoleMapping: [
-        {
-          tenantId: tenantId,
-          roleId: RoleId.STUDENT,
-          cohortId: [cohortId],
-        },
-      ],
-      customFields: [],
-    };
-
-    Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
-      const fieldSchema = schemaProperties[fieldKey];
-      const fieldId = fieldSchema?.fieldId;
-      console.log(
-        `FieldID: ${fieldId}, FieldValue: ${fieldValue}, type: ${typeof fieldValue}`
+  const handleButtonClick = async () => {
+    console.log('Form data:', formData);
+    if (learnerFormData) {
+      const schemaProperties = schema.properties;
+      let cohortId, fieldData;
+      if (typeof window !== 'undefined' && window.localStorage) {
+        fieldData = JSON.parse(localStorage.getItem('fieldData') || '');
+        cohortId = localStorage.getItem('classId');
+      }
+      const { username, password } = generateUsernameAndPassword(
+        fieldData?.state?.stateCode,
+        ''
       );
+      const apiBody: any = {
+        username: username,
+        password: password,
+        tenantCohortRoleMapping: [
+          {
+            tenantId: tenantId,
+            roleId: RoleId.STUDENT,
+            cohortId: [cohortId],
+          },
+        ],
+        customFields: [],
+      };
 
-      if (fieldId === null || fieldId === 'null') {
-        if (typeof fieldValue !== 'object') {
-          apiBody[fieldKey] = fieldValue;
-        }
-      } else {
-        if (
-          fieldSchema?.hasOwnProperty('isDropdown') ||
-          fieldSchema.hasOwnProperty('isCheckbox')
-        ) {
-          apiBody.customFields.push({
-            fieldId: fieldId,
-            value: [String(fieldValue)],
-          });
+      Object.entries(learnerFormData).forEach(([fieldKey, fieldValue]) => {
+        const fieldSchema = schemaProperties[fieldKey];
+        const fieldId = fieldSchema?.fieldId;
+        console.log(
+          `FieldID: ${fieldId}, FieldValue: ${fieldValue}, type: ${typeof fieldValue}`
+        );
+
+        if (fieldId === null || fieldId === 'null') {
+          if (typeof fieldValue !== 'object') {
+            apiBody[fieldKey] = fieldValue;
+            if (fieldKey === 'name') {
+              setFullname(fieldValue);
+            }
+          }
         } else {
-          apiBody.customFields.push({
-            fieldId: fieldId,
-            value: String(fieldValue),
-          });
+          if (
+            fieldSchema?.hasOwnProperty('isDropdown') ||
+            fieldSchema.hasOwnProperty('isCheckbox')
+          ) {
+            apiBody.customFields.push({
+              fieldId: fieldId,
+              value: [String(fieldValue)],
+            });
+          } else {
+            apiBody.customFields.push({
+              fieldId: fieldId,
+              value: String(fieldValue),
+            });
+          }
         }
+      });
+
+      if (!isEditModal) {
+        apiBody.customFields.push({
+          fieldId: fieldData?.state?.blockId,
+          value: [fieldData?.state?.blockCode],
+        });
+        apiBody.customFields.push({
+          fieldId: fieldData?.state?.stateId,
+          value: [fieldData?.state?.stateCode],
+        });
+        fieldData;
+        apiBody.customFields.push({
+          fieldId: fieldData?.state?.districtId,
+          value: [fieldData?.state?.districtCode],
+        });
+        console.log(apiBody);
       }
-    });
 
-    if (!isEditModal) {
-      apiBody.customFields.push({
-        fieldId: fieldData?.state?.blockId,
-        value: [fieldData?.state?.blockCode],
-      });
-      apiBody.customFields.push({
-        fieldId: fieldData?.state?.stateId,
-        value: [fieldData?.state?.stateCode],
-      });
-      fieldData;
-      apiBody.customFields.push({
-        fieldId: fieldData?.state?.districtId,
-        value: [fieldData?.state?.districtCode],
-      });
-      console.log(apiBody);
-    }
-
-    try {
-      if (isEditModal && userId && cohortId) {
-        console.log('apiBody', apiBody);
-        const userData = {
-          name: apiBody.name,
-          mobile: apiBody.mobile,
-          father_name: apiBody.father_name,
-        };
-        const customFields = apiBody.customFields;
-        console.log(customFields);
-        const object = {
-          userData: userData,
-          customFields: customFields,
-        };
-        const response = await editEditUser(userId, object);
-        if (response) {
-          showToastMessage(t('COMMON.LEARNER_UPDATED_SUCCESSFULLY'), 'success');
-          setReloadProfile(true);
-          onReload?.();
-        }
-      } else {
-        const response = await createUser(apiBody);
-        if (response) {
-          showToastMessage(t('COMMON.LEARNER_CREATED_SUCCESSFULLY'), 'success');
-          onLearnerAdded?.();
-          setOpenModal(true);
+      try {
+        if (isEditModal && userId && cohortId) {
+          console.log('apiBody', apiBody);
+          const userData = {
+            name: apiBody.name,
+            mobile: apiBody.mobile,
+            father_name: apiBody.father_name,
+          };
+          const customFields = apiBody.customFields;
+          console.log(customFields);
+          const object = {
+            userData: userData,
+            customFields: customFields,
+          };
+          const response = await editEditUser(userId, object);
+          if (response) {
+            showToastMessage(
+              t('COMMON.LEARNER_UPDATED_SUCCESSFULLY'),
+              'success'
+            );
+            setReloadProfile(true);
+            onReload?.();
+            onClose();
+          }
         } else {
-          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+          const response = await createUser(apiBody);
+          if (response) {
+            showToastMessage(
+              t('COMMON.LEARNER_CREATED_SUCCESSFULLY'),
+              'success'
+            );
+            onLearnerAdded?.();
+            onClose();
+
+            const isQueue = false;
+            const context = 'USER';
+            let createrName;
+            const key = 'onLearnerCreated';
+            if (typeof window !== 'undefined' && window.localStorage) {
+              createrName = localStorage.getItem('userName');
+            }
+            let replacements;
+            if (createrName) {
+              replacements = [createrName, apiBody['name'], username, password];
+            }
+            const sendTo = {
+              receipients: [userEmail],
+            };
+            if (replacements && sendTo) {
+              const response = await sendCredentialService({
+                isQueue,
+                context,
+                key,
+                replacements,
+                email: sendTo,
+              });
+              if (response?.result[0]?.data[0]?.status === 'success') {
+                showToastMessage(
+                  t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
+                  'success'
+                );
+              } else {
+                showToastMessage(
+                  t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
+                  'success'
+                );
+              }
+              setOpenModal(true);
+            } else {
+              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            }
+          }
         }
+        // onClose();
+      } catch (error) {
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        setReloadProfile(true);
       }
-      onClose();
-    } catch (error) {
-      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-      setReloadProfile(true);
     }
   };
 
   const handleChange = (event: IChangeEvent<any>) => {
     console.log('Form data changed:', event.formData);
-    // setFormData({
-    //   ...formData,
-    //   [event.target.name]: event.target.value
-    // });
   };
 
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
   };
 
-  const CustomSubmitButton: React.FC<{ onClose: () => void }> = ({
-    onClose,
-  }) => (
-    <div
-      style={{
-        marginTop: '16px',
-        display: 'flex',
-        justifyContent: 'space-between',
-      }}
-    >
-      <>
-        <Button
-          variant="outlined"
-          color="primary"
-          sx={{
-            '&.Mui-disabled': {
-              backgroundColor: theme?.palette?.primary?.main,
-            },
-            minWidth: '84px',
-            height: '2.5rem',
-            padding: theme.spacing(1),
-            fontWeight: '500',
-            width: '48%',
-          }}
-          onClick={onClose}
-        >
-          {t('COMMON.BACK')}
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            '&.Mui-disabled': {
-              backgroundColor: theme?.palette?.primary?.main,
-            },
-            minWidth: '84px',
-            height: '2.5rem',
-            padding: theme.spacing(1),
-            fontWeight: '500',
-            width: '48%',
-          }}
-          onClick={secondaryActionHandler}
-        >
-          {t('COMMON.SUBMIT')}
-        </Button>
-      </>
-    </div>
-  );
-
-  const primaryActionHandler = () => {
-    onClose();
-  };
-
-  const secondaryActionHandler = async (e: React.FormEvent) => {
-    // console.log('Secondary action handler clicked');
-    e.preventDefault();
-    // handleGenerateCredentials();
-    // try {
-    //   const response = await createUser(learnerFormData);
-    //   console.log('User created successfully', response);
-    // } catch (error) {
-    //   console.error('Error creating user', error);
-    // }
-  };
-
   const onCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const handleBack = () => {
+    onClose();
   };
 
   return (
@@ -307,7 +302,11 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
                 customFields={customFields}
                 formData={formData}
               >
-                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+                <FormButtons
+                  formData={formData}
+                  onClick={handleButtonClick}
+                  isSingleButton={true}
+                />
               </DynamicForm>
             )
           : schema &&
@@ -322,7 +321,12 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
                 showErrorList={true}
                 customFields={customFields}
               >
-                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+                <FormButtons
+                  formData={learnerFormData}
+                  onClick={handleButtonClick}
+                  actions={{ back: handleBack }}
+                  isCreatedLearner={true}
+                />
               </DynamicForm>
             )}
       </SimpleModal>

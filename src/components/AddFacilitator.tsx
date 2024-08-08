@@ -17,6 +17,8 @@ import { useTranslation } from 'next-i18next';
 import { showToastMessage } from './Toastify';
 import { editEditUser } from '@/services/ProfileService';
 import { tenantId } from '../../app.config';
+import FormButtons from './FormButtons';
+import { sendCredentialService } from '@/services/NotificationService';
 
 interface AddFacilitatorModalprops {
   open: boolean;
@@ -40,12 +42,14 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   const [openModal, setOpenModal] = React.useState(false);
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [reloadProfile, setReloadProfile] = React.useState(false);
-  const [email, setEmail] = React.useState('user@gmail.com');
+  const [email, setEmail] = React.useState('');
+  const [formData, setFormData] = React.useState<any>();
+  const [username, setUsername] = React.useState<any>();
+  const [password, setPassword] = React.useState<any>();
+  const [fullname, setFullname] = React.useState<any>();
+  const [coreFields, setCoreFields] = React.useState<string[]>([]);
 
   const { t } = useTranslation();
-  useEffect(() => {
-    console.log('openModal state changed:', openModal);
-  }, [openModal]);
 
   useEffect(() => {
     const getAddFacilitatorFormData = async () => {
@@ -55,6 +59,13 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           FormContextType.TEACHER
         );
         console.log('sortedFields', response);
+        if (response) {
+          const filteredFieldNames = response?.fields
+            .filter((field) => field?.coreField === 1)
+            .map((field) => field?.name);
+          setCoreFields(filteredFieldNames);
+        }
+
         let centerOptionsList;
         if (typeof window !== 'undefined' && window.localStorage) {
           const CenterList = localStorage.getItem('CenterList');
@@ -108,6 +119,9 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
+    setTimeout(() => {
+      setFormData(data.formData);
+    });
     const target = event.target as HTMLFormElement;
     const elementsArray = Array.from(target.elements);
 
@@ -126,122 +140,190 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
     const formData = data.formData;
     console.log('Form data submitted:', formData);
-    const schemaProperties = schema.properties;
-    setEmail(formData?.email);
-    const { username, password } = generateUsernameAndPassword('MH', 'F');
+  };
 
-    const apiBody: any = {
-      username: username,
-      password: password,
-      tenantCohortRoleMapping: [
-        {
-          tenantId: tenantId,
-          roleId: RoleId.TEACHER,
-          cohortId: formData?.assignCenters,
-        },
-      ],
-      customFields: [],
-    };
+  useEffect(() => {
+    if (formData) {
+      handleButtonClick();
+    }
+  }, [formData]);
 
-    Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
-      const fieldSchema = schemaProperties[fieldKey];
-      const fieldId = fieldSchema?.fieldId;
-      console.log(
-        `FieldID: ${fieldId}, FieldValue: ${fieldValue}, type: ${typeof fieldValue}`
+  const handleButtonClick = async () => {
+    console.log('Form data:', formData);
+    if (formData) {
+      const schemaProperties = schema.properties;
+      setEmail(formData?.email);
+      let fieldData;
+      if (typeof window !== 'undefined' && window.localStorage) {
+        fieldData = JSON.parse(localStorage.getItem('fieldData') || '');
+      }
+      const { username, password } = generateUsernameAndPassword(
+        fieldData?.state?.stateCode,
+        'F'
       );
+      setUsername(username);
+      setPassword(password);
+      const apiBody: any = {
+        username: username,
+        password: password,
+        tenantCohortRoleMapping: [
+          {
+            tenantId: tenantId,
+            roleId: RoleId.TEACHER,
+            cohortId: formData?.assignCenters,
+          },
+        ],
+        customFields: [],
+      };
 
-      if (fieldId === null || fieldId === 'null') {
-        if (typeof fieldValue !== 'object') {
-          apiBody[fieldKey] = fieldValue;
-        }
-      } else {
-        if (
-          fieldSchema?.hasOwnProperty('isDropdown') ||
-          fieldSchema.hasOwnProperty('isCheckbox')
-        ) {
-          apiBody.customFields.push({
-            fieldId: fieldId,
-            value: [String(fieldValue)],
-          });
+      Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
+        const fieldSchema = schemaProperties[fieldKey];
+        const fieldId = fieldSchema?.fieldId;
+        console.log(
+          `FieldID: ${fieldId}, FieldValue: ${fieldValue}, type: ${typeof fieldValue}`
+        );
+
+        if (fieldId === null || fieldId === 'null') {
+          if (typeof fieldValue !== 'object') {
+            apiBody[fieldKey] = fieldValue;
+            if (fieldKey === 'name') {
+              setTimeout(() => {
+                setFullname(fieldValue);
+              });
+            }
+          }
         } else {
-          if (fieldSchema.checkbox && fieldSchema.type === 'array') {
+          if (
+            fieldSchema?.hasOwnProperty('isDropdown') ||
+            fieldSchema.hasOwnProperty('isCheckbox')
+          ) {
             apiBody.customFields.push({
               fieldId: fieldId,
-              value: String(fieldValue).split(','),
+              value: [String(fieldValue)],
             });
           } else {
-            apiBody.customFields.push({
-              fieldId: fieldId,
-              value: String(fieldValue),
-            });
+            if (fieldSchema.checkbox && fieldSchema.type === 'array') {
+              if (Array.isArray(fieldValue) && fieldValue.length > 0) {
+                apiBody.customFields.push({
+                  fieldId: fieldId,
+                  value: String(fieldValue).split(','),
+                });
+              }
+            } else {
+              apiBody.customFields.push({
+                fieldId: fieldId,
+                value: String(fieldValue),
+              });
+            }
           }
         }
-      }
-    });
+      });
 
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const fieldData = JSON.parse(localStorage.getItem('fieldData') ?? '');
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const fieldData = JSON.parse(localStorage.getItem('fieldData') ?? '');
 
-      if (!isEditModal && fieldData) {
-        apiBody.customFields.push({
-          fieldId: fieldData?.state?.blockId,
-          value: [fieldData?.state?.blockCode],
-        });
-        apiBody.customFields.push({
-          fieldId: fieldData?.state?.stateId,
-          value: [fieldData?.state?.stateCode],
-        });
-        apiBody.customFields.push({
-          fieldId: fieldData?.state?.districtId,
-          value: [fieldData?.state?.districtCode],
-        });
-      }
-    }
-
-    console.log(apiBody);
-    try {
-      if (isEditModal && userId) {
-        const userData = {
-          name: apiBody.name,
-          mobile: apiBody.mobile,
-          father_name: apiBody.father_name,
-        };
-        const customFields = apiBody.customFields;
-        console.log(customFields);
-        const object = {
-          userData: userData,
-          customFields: customFields,
-        };
-        const response = await editEditUser(userId, object);
-        if (response) {
-          showToastMessage(
-            t('COMMON.FACILITATOR_UPDATED_SUCCESSFULLY'),
-            'success'
-          );
-          setReloadProfile(true);
-          onReload?.();
+        if (!isEditModal && fieldData) {
+          apiBody.customFields.push({
+            fieldId: fieldData?.state?.blockId,
+            value: [fieldData?.state?.blockCode],
+          });
+          apiBody.customFields.push({
+            fieldId: fieldData?.state?.stateId,
+            value: [fieldData?.state?.stateCode],
+          });
+          apiBody.customFields.push({
+            fieldId: fieldData?.state?.districtId,
+            value: [fieldData?.state?.districtCode],
+          });
         }
-      } else {
-        const response = await createUser(apiBody);
-        console.log(response);
-        if (response) {
-          onFacilitatorAdded?.();
-          onClose();
-          showToastMessage(
-            t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
-            'success'
-          );
-          setOpenModal(true);
+      }
+
+      console.log(apiBody);
+      try {
+        if (isEditModal && userId) {
+          const userData: Record<string, any> = {};
+          coreFields?.forEach((fieldName) => {
+            userData[fieldName] = apiBody[fieldName];
+          });
+          const customFields = apiBody?.customFields;
+          console.log(customFields);
+          const object = {
+            userData: userData,
+            customFields: customFields,
+          };
+          const response = await editEditUser(userId, object);
+          if (response) {
+            showToastMessage(
+              t('COMMON.FACILITATOR_UPDATED_SUCCESSFULLY'),
+              'success'
+            );
+            setReloadProfile(true);
+            onReload?.();
+          }
         } else {
-          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+          if (formData?.assignCenters?.length > 0) {
+            const response = await createUser(apiBody);
+            console.log(response);
+            if (response) {
+              onFacilitatorAdded?.();
+              onClose();
+              showToastMessage(
+                t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
+                'success'
+              );
+
+              const isQueue = false;
+              const context = 'USER';
+              let createrName;
+              if (typeof window !== 'undefined' && window.localStorage) {
+                createrName = localStorage.getItem('userName');
+              }
+              const key = 'onFacilitatorCreated';
+              const replacements = [apiBody['name'], username, password];
+
+              const sendTo = {
+                receipients: [formData?.email],
+              };
+              if (replacements && sendTo) {
+                const response = await sendCredentialService({
+                  isQueue,
+                  context,
+                  key,
+                  replacements,
+                  email: sendTo,
+                });
+                if (response.result[0].data[0].status === 'success') {
+                  showToastMessage(
+                    t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
+                    'success'
+                  );
+                } else {
+                  showToastMessage(
+                    t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
+                    'success'
+                  );
+                }
+              } else {
+                showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+              }
+
+              setOpenModal(true);
+            } else {
+              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            }
+          } else {
+            showToastMessage(t('COMMON.PLEASE_SELECT_THE_CENTER'), 'error');
+          }
         }
+        onClose();
+      } catch (error) {
+        onClose();
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        setReloadProfile(true);
       }
-    } catch (error) {
-      onClose();
-      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-      setReloadProfile(true);
     }
   };
+
   const handleChange = (event: IChangeEvent<any>) => {
     console.log('Form data changed:', event.formData);
   };
@@ -281,6 +363,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 formData={userFormData}
               >
                 {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+                <FormButtons
+                  formData={formData}
+                  onClick={handleButtonClick}
+                  isSingleButton={true}
+                />
               </DynamicForm>
             )
           : schema &&
@@ -295,7 +382,12 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 showErrorList={true}
                 customFields={customFields}
               >
-                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+                <FormButtons
+                  formData={formData}
+                  onClick={handleButtonClick}
+                  isCreatedFacilitator={true}
+                  isCreateCentered={false}
+                />{' '}
               </DynamicForm>
             )}
       </SimpleModal>

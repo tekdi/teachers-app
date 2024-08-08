@@ -218,9 +218,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
         if (users && users?.length > 0) {
           const fetchCohortPromises = users?.map((user) => {
             const limit = 0;
-            const page = 0;
+            const offset = 0;
             const filters = { userId: user.userId };
-            return cohortList({ limit, page, filters }).then((resp) => ({
+            return cohortList({ limit, offset, filters }).then((resp) => ({
               userId: user.userId,
               cohorts: resp?.results?.cohortDetails || [],
             }));
@@ -398,9 +398,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     try {
       if (parentId) {
         const limit = 0;
-        const page = 0;
+        const offset = 0;
         const filters = { parentId: [parentId] };
-        const resp = await cohortList({ limit, page, filters });
+        const resp = await cohortList({ limit, offset, filters });
 
         const extractedNames = resp?.results?.cohortDetails;
         // localStorage.setItem('parentCohortId', extractedNames?.[0].parentId);
