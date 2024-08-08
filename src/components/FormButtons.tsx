@@ -9,6 +9,7 @@ interface FormButtons {
   isCreatedFacilitator?: boolean;
   isCreatedLearner?: boolean;
   actions?: any;
+  isSingleButton?: boolean;
 }
 const FormButtons: React.FC<FormButtons> = ({
   formData,
@@ -17,16 +18,17 @@ const FormButtons: React.FC<FormButtons> = ({
   isCreatedFacilitator,
   isCreatedLearner,
   actions,
+  isSingleButton,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
 
-  const buttonText =
-    (isCreateCentered || isCreatedFacilitator) && !isCreatedLearner
+  const buttonText = isSingleButton
+    ? t('COMMON.SAVE')
+    : (isCreateCentered && !isCreatedFacilitator && !isCreatedLearner) ||
+        (isCreatedLearner && !isCreatedFacilitator && !isCreateCentered)
       ? t('COMMON.CREATE')
-      : isCreatedLearner && !isCreatedFacilitator && !isCreateCentered
-        ? t('COMMON.CREATE')
-        : t('COMMON.SUBMIT');
+      : t('COMMON.SUBMIT');
 
   console.log(isCreateCentered);
 

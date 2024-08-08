@@ -5,6 +5,13 @@ export const limit: number = 300;
 export const refetchInterval: number = 5 * 60 * 1000; // 5 min
 export const gcTime: number = 10 * 60 * 1000; // 10 Min
 
+export const labelsToExtractForMiniProfile = [
+  'AGE',
+  'GENDER',
+  'LEARNERS_PRIMARY_WORK',
+  'TYPE_OF_LEARNER',
+];
+
 export const getMenuItems = (
   t: TFunction,
   dateRange: string | Date,

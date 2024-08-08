@@ -209,7 +209,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       }
     };
     getFacilitator();
-  }, [isFacilitatorAdded]);
+  }, [isFacilitatorAdded, reloadState]);
 
   useEffect(() => {
     const fetchCohortListForUsers = async () => {
@@ -838,6 +838,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               open={openDeleteUserModal}
               onClose={handleCloseModal}
               onUserDelete={handleDeleteUser}
+              reloadState={reloadState}
+              setReloadState={setReloadState}
             />
             <SimpleModal
               primaryText={t('COMMON.OK')}

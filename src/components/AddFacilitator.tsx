@@ -47,6 +47,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   const [username, setUsername] = React.useState<any>();
   const [password, setPassword] = React.useState<any>();
   const [fullname, setFullname] = React.useState<any>();
+  const [coreFields, setCoreFields] = React.useState<string[]>([]);
 
   const { t } = useTranslation();
 
@@ -58,6 +59,13 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           FormContextType.TEACHER
         );
         console.log('sortedFields', response);
+        if (response) {
+          const filteredFieldNames = response?.fields
+            .filter((field) => field?.coreField === 1)
+            .map((field) => field?.name);
+          setCoreFields(filteredFieldNames);
+        }
+
         let centerOptionsList;
         if (typeof window !== 'undefined' && window.localStorage) {
           const CenterList = localStorage.getItem('CenterList');
@@ -233,12 +241,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       console.log(apiBody);
       try {
         if (isEditModal && userId) {
-          const userData = {
-            name: apiBody.name,
-            mobile: apiBody.mobile,
-            father_name: apiBody.father_name,
-          };
-          const customFields = apiBody.customFields;
+          const userData: Record<string, any> = {};
+          coreFields?.forEach((fieldName) => {
+            userData[fieldName] = apiBody[fieldName];
+          });
+          const customFields = apiBody?.customFields;
           console.log(customFields);
           const object = {
             userData: userData,
@@ -308,6 +315,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             showToastMessage(t('COMMON.PLEASE_SELECT_THE_CENTER'), 'error');
           }
         }
+        onClose();
       } catch (error) {
         onClose();
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -355,6 +363,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 formData={userFormData}
               >
                 {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+                <FormButtons
+                  formData={formData}
+                  onClick={handleButtonClick}
+                  isSingleButton={true}
+                />
               </DynamicForm>
             )
           : schema &&
