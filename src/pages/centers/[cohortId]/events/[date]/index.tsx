@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import { Session } from '../utils/Interfaces';
+import { Session } from '../../../../../utils/Interfaces';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import SessionsCard from '@/components/SessionCard';
 import { getSessions } from '@/services/Sessionservice';
@@ -14,10 +14,14 @@ import { shortDateFormat } from '@/utils/Helper';
 import { getEventList } from '@/services/EventService';
 import { showToastMessage } from '@/components/Toastify';
 import MonthCalender from '@/components/MonthCalender';
+import { useRouter } from 'next/router';
+import { GetStaticPaths } from 'next';
 
 const eventMonthView = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const router = useRouter();
+  const { date }: any = router.query;
 
   const [sessions, setSessions] = useState<Session[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -28,7 +32,7 @@ const eventMonthView = () => {
   useEffect(() => {
     const getSessionsData = async () => {
       try {
-        const today = shortDateFormat(selectedDate);
+        const date = shortDateFormat(selectedDate);
         let cohortId;
         if (typeof window !== 'undefined' && window.localStorage) {
           cohortId = localStorage.getItem('classId') || '';
@@ -37,7 +41,7 @@ const eventMonthView = () => {
           const limit = 0;
           const offset = 0;
           const filters = {
-            date: today,
+            date: date,
             cohortId: cohortId,
             status: ['live'],
           };
@@ -45,7 +49,7 @@ const eventMonthView = () => {
           let sessionArray: any[] = [];
           let extraSessionArray: any[] = [];
           if (response?.events.length > 0) {
-            response?.events.forEach((event: any) => {
+            response?.events?.forEach((event: any) => {
               if (event.isRecurring) {
                 sessionArray.push(event);
               }
@@ -112,8 +116,8 @@ const eventMonthView = () => {
                       onClick={() => {
                         window.history.back();
                         logEvent({
-                          action: 'back-button-clicked-attendance-history-page',
-                          category: 'Attendance History Page',
+                          action: 'back-button-clicked-events-month-page',
+                          category: 'events month Page',
                           label: 'Back Button Clicked',
                         });
                       }}
@@ -222,3 +226,10 @@ export async function getStaticProps({ locale }: { locale: string }) {
     },
   };
 }
+
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+  return {
+    paths: [], //indicates that no page needs be created at build time
+    fallback: 'blocking', //indicates the type of fallback
+  };
+};
