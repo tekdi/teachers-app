@@ -28,6 +28,7 @@ import {
   useTheme,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { SendCredstyle } from '@/styles/modalStyles';
 interface AddFacilitatorModalprops {
   open: boolean;
   onClose: () => void;
@@ -60,19 +61,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '65%',
-    boxShadow: 24,
-    bgcolor: '#fff',
-    borderRadius: '16px',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
+
   useEffect(() => {
     const getAddFacilitatorFormData = async () => {
       try {
@@ -302,7 +291,8 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                     });
 
                     if (
-                      credentialResponse.result[0].data[0].status === 'success'
+                      credentialResponse?.result[0]?.data[0]?.status ===
+                      'success'
                     ) {
                       showToastMessage(
                         t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
@@ -329,7 +319,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             showToastMessage(t('COMMON.PLEASE_SELECT_THE_CENTER'), 'error');
           }
         }
-        onClose();
       } catch (error) {
         onClose();
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -416,10 +405,10 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       </SimpleModal>
       <Modal
         open={openSendCredModal}
-        aria-labelledby="child-modal-title"
-        aria-describedby="child-modal-description"
+        aria-labelledby="send credential modal"
+        aria-describedby="to send credentials"
       >
-        <Box sx={{ ...style }}>
+        <Box sx={SendCredstyle(theme)}>
           <Box
             display={'flex'}
             justifyContent={'space-between'}
