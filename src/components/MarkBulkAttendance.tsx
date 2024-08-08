@@ -461,20 +461,40 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
               )}
 
-              {dropoutCount > 0 ? (
-                <Box display={'flex'} justifyContent={'space-between'}>
-                  <Typography
-                    sx={{
-                      marginTop: '10px',
-                      fontSize: '12px',
-                      color: theme.palette.warning['A200'],
-                      padding: '0 10px',
-                    }}
-                  >
-                    {t('ATTENDANCE.ACTIVE_STUDENTS', {
-                      count: numberOfCohortMembers - dropoutCount,
-                    })}
-                  </Typography>
+              <Box
+                display={'flex'}
+                flexDirection="row"
+                justifyContent={'space-between'}
+              >
+                {dropoutCount > 0 ? (
+                  <>
+                    <Typography
+                      sx={{
+                        marginTop: '10px',
+                        fontSize: '12px',
+                        color: theme.palette.warning['A200'],
+                        padding: '0 10px',
+                      }}
+                    >
+                      {t('ATTENDANCE.ACTIVE_STUDENTS', {
+                        count: numberOfCohortMembers - dropoutCount,
+                      })}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        marginTop: '10px',
+                        marginLeft: '0.5rem',
+                        fontSize: '12px',
+                        color: theme.palette.warning['A200'],
+                        padding: '0 10px',
+                      }}
+                    >
+                      {t('ATTENDANCE.DROPOUT_STUDENTS', {
+                        count: dropoutCount,
+                      })}
+                    </Typography>
+                  </>
+                ) : (
                   <Typography
                     sx={{
                       marginTop: '10px',
@@ -484,31 +504,15 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       padding: '0 10px',
                     }}
                   >
-                    {t('ATTENDANCE.DROPOUT_STUDENTS', {
-                      count: dropoutCount,
+                    {t('ATTENDANCE.TOTAL_STUDENTS', {
+                      count: numberOfCohortMembers,
                     })}
                   </Typography>
-                </Box>
-              ) : (
+                )}
+
                 <Typography
                   sx={{
                     marginTop: '10px',
-                    marginLeft: '0.5rem',
-                    fontSize: '12px',
-                    color: theme.palette.warning['A200'],
-                    padding: '0 10px',
-                  }}
-                >
-                  {t('ATTENDANCE.TOTAL_STUDENTS', {
-                    count: numberOfCohortMembers,
-                  })}
-                </Typography>
-              )}
-
-              <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography
-                  sx={{
-                    marginTop: '0px',
                     marginLeft: '0.5rem',
                     fontSize: '12px',
                     color: theme.palette.warning['A200'],
@@ -520,7 +524,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 </Typography>
                 <Typography
                   sx={{
-                    marginTop: '0px',
+                    marginTop: '10px',
                     marginLeft: '0.5rem',
                     fontSize: '12px',
                     color: theme.palette.warning['A200'],
@@ -532,6 +536,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   })}
                 </Typography>
               </Box>
+
               {cohortMemberList && cohortMemberList?.length != 0 ? (
                 <Box
                   height={'64%'}

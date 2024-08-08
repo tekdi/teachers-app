@@ -72,7 +72,7 @@
     "SURE_UPDATE": "Are you sure you want to update this attendance?",
     "SURE_REMOVE": "Are you sure you want to remove this learner?",
     "SURE_REASSIGN_CENTER": "Are you sure you want to re-assign Center to this user?",
-    "SURE_CLOSE": "Are you sure you want to close?",
+    "SURE_CLOSE": "Are you sure you want to close without saving?",
     "LEARNER_LIST": "Learners List",
     "FACILITATOR_LIST": "Facilitators List",
     "FILTERS": "Filters",
@@ -168,11 +168,11 @@
     "ATTENDANCE": "Attendance (%)"
   },
   "ATTENDANCE": {
-    "TOTAL_STUDENTS": "Total Number of Learners: {{count}}",
+    "TOTAL_STUDENTS": "Total Learners: {{count}}",
     "ACTIVE_STUDENTS": "Active Learners: {{count}}",
     "DROPOUT_STUDENTS": "Dropout Learners: {{count}}",
-    "PRESENT_STUDENTS": "Present Learners: {{count}}",
-    "ABSENT_STUDENTS": "Absent Learners: {{count}}",
+    "PRESENT_STUDENTS": "Present: {{count}}",
+    "ABSENT_STUDENTS": "Absent: {{count}}",
     "PRESENT": "Present",
     "ABSENT": "Absent",
     "HALF_DAY": "Half Day",
