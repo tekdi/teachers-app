@@ -346,6 +346,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       return 'Invalid Date';
     }
   };
+  
 
   useEffect(() => {
     const getAttendanceStats = async () => {
@@ -876,7 +877,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 </Box>
                 {role === Role.TEAM_LEADER && (
         <Box p={2}>
-          <AttendanceComparison />
+          <AttendanceComparison blockName={blockName}/>
         </Box>
       )}
                 {/* <Box sx={{ background: '#fff' }}>
