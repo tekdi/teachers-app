@@ -40,7 +40,7 @@ const FormButtons: React.FC<FormButtons> = ({
           padding: '16px',
           background: '#fff',
           display: 'flex',
-          justifyContent: isSingleButton ? 'center' : 'space-between',
+          justifyContent: 'center',
           gap: '15px',
         }}
       >
