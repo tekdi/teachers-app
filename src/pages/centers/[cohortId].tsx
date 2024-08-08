@@ -53,6 +53,7 @@ import { Role } from '@/utils/app.constant';
 import { showToastMessage } from '@/components/Toastify';
 import { getEventList } from '@/services/EventService';
 import { eventDaysLimit, modifyAttendanceLimit } from '../../../app.config';
+import manageUserStore from '@/store/manageUserStore';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
