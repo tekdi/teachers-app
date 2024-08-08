@@ -28,7 +28,8 @@ import {
   useTheme,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { SendCredstyle } from '@/styles/modalStyles';
+import { modalStyles } from '@/styles/modalStyles';
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 interface AddFacilitatorModalprops {
   open: boolean;
   onClose: () => void;
@@ -61,7 +62,9 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
   const { t } = useTranslation();
   const theme = useTheme<any>();
-
+  const setSubmittedButtonStatus = useSubmittedButtonStore(
+    (state: any) => state.setSubmittedButtonStatus
+  );
   useEffect(() => {
     const getAddFacilitatorFormData = async () => {
       try {
@@ -143,6 +146,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
   const handleButtonClick = async () => {
     console.log('Form data:', formData);
+    setSubmittedButtonStatus(true);
     if (formData) {
       const schemaProperties = schema.properties;
       setEmail(formData?.email);
@@ -408,7 +412,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         aria-labelledby="send credential modal"
         aria-describedby="to send credentials"
       >
-        <Box sx={SendCredstyle(theme)}>
+        <Box sx={modalStyles(theme, 'width')}>
           <Box
             display={'flex'}
             justifyContent={'space-between'}
