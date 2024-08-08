@@ -28,34 +28,35 @@ const eventMonthView = () => {
   useEffect(() => {
     const getSessionsData = async () => {
       try {
-        const date = new Date();
         const today = shortDateFormat(selectedDate);
         let cohortId;
         if (typeof window !== 'undefined' && window.localStorage) {
           cohortId = localStorage.getItem('classId') || '';
         }
-        const limit = 0;
-        const offset = 0;
-        const filters = {
-          date: today,
-          cohortId: cohortId,
-          status: ['live'],
-        };
-        const response = await getEventList({ limit, offset, filters });
-        let sessionArray: any[] = [];
-        let extraSessionArray: any[] = [];
-        if (response?.events.length > 0) {
-          response?.events.forEach((event: any) => {
-            if (event.isRecurring) {
-              sessionArray.push(event);
-            }
-            if (!event.isRecurring) {
-              extraSessionArray.push(event);
-            }
-          });
+        if (cohortId !== '') {
+          const limit = 0;
+          const offset = 0;
+          const filters = {
+            date: today,
+            cohortId: cohortId,
+            status: ['live'],
+          };
+          const response = await getEventList({ limit, offset, filters });
+          let sessionArray: any[] = [];
+          let extraSessionArray: any[] = [];
+          if (response?.events.length > 0) {
+            response?.events.forEach((event: any) => {
+              if (event.isRecurring) {
+                sessionArray.push(event);
+              }
+              if (!event.isRecurring) {
+                extraSessionArray.push(event);
+              }
+            });
+          }
+          setSessions(sessionArray);
+          setExtraSessions(extraSessionArray);
         }
-        setSessions(sessionArray);
-        setExtraSessions(extraSessionArray);
       } catch (error) {
         setSessions([]);
         setExtraSessions([]);
