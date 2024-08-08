@@ -194,6 +194,7 @@ export const GenerateSchemaAndUiSchema = (
 
     if (isMultiSelect && type === 'checkbox') {
       fieldSchema.type = 'array';
+      fieldSchema.isCheckbox = true;
       fieldSchema.items = {
         type: 'string',
         oneOf: options.map((opt: FieldOption) => ({
