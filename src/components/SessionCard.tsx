@@ -5,13 +5,20 @@ import CenterSessionModal from './CenterSessionModal';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import PlannedSession from './PlannedSession';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
+import { convertUTCToIST } from '@/utils/Helper';
+import { useTranslation } from 'next-i18next';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
   const theme = useTheme<any>();
+  const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [startTime, setStartTime] = React.useState('');
+  const [endTime, setEndTime] = React.useState('');
+  const [startDate, setStartDate] = React.useState('');
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -29,6 +36,21 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         });
     }
   };
+
+  useEffect(() => {
+    const startDateTime = convertUTCToIST(data?.startDateTime);
+    const startDate = startDateTime.date;
+    const startTime = startDateTime.time;
+    setStartTime(startTime);
+    setStartDate(startDate);
+
+    const endDateTime = convertUTCToIST(data?.endDateTime);
+    const endDate = endDateTime.date;
+    const endTime = endDateTime.time;
+    setEndTime(endTime);
+
+    console.log(startDate, startTime, endDate, endTime);
+  }, [data]);
 
   return (
     <Box
@@ -52,14 +74,26 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
             textAlign={'left'}
             fontSize={'16px'}
           >
-            {data?.subject}
+            {data?.metadata?.framework?.subject}
           </Typography>
 
-          <Typography fontWeight={'400'} textAlign={'left'} fontSize={'14px'}>
-            {data?.time}
+          <Typography
+            fontWeight={'400'}
+            textAlign={'left'}
+            fontSize={'14px'}
+            display={'flex'}
+            alignItems={'center'}
+            gap={'4px'}
+          >
+            {data?.isRecurring === false && (
+              <>
+                <CalendarMonthIcon sx={{ fontSize: '18px' }} /> {startDate},{' '}
+              </>
+            )}
+            {startTime} - {endTime}
           </Typography>
           <Typography fontWeight={'400'} textAlign={'left'} fontSize={'14px'}>
-            {data?.teacherName}
+            {data?.metadata?.framework?.createdBy}
           </Typography>
         </Box>
         <EditOutlined onClick={handleOpen} sx={{ cursor: 'pointer' }} />
@@ -85,7 +119,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
             cursor: 'pointer',
           }}
         >
-          {data?.url}
+          {data?.meetingDetails?.url}
         </Box>
         <ContentCopyIcon
           sx={{
