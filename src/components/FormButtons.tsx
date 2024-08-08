@@ -40,11 +40,11 @@ const FormButtons: React.FC<FormButtons> = ({
           padding: '16px',
           background: '#fff',
           display: 'flex',
-          justifyContent: 'center',
+          justifyContent: isSingleButton ? 'center' : 'space-between',
           gap: '15px',
         }}
       >
-        {!isCreateCentered && !isCreatedFacilitator && (
+        {!isSingleButton && !isCreateCentered && !isCreatedFacilitator && (
           <Button
             variant="outlined"
             color="primary"
@@ -75,7 +75,7 @@ const FormButtons: React.FC<FormButtons> = ({
             height: '2.5rem',
             padding: theme.spacing(1),
             fontWeight: '500',
-            width: '48%',
+            width: isSingleButton ? '100%' : '48%',
           }}
           type="submit"
           onClick={() => onClick(formData)}
