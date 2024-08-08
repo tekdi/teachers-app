@@ -16,10 +16,10 @@ export function useProfileInfo(
   });
 }
 
-export function useCohortList(limit: any, page: any, filters: any) {
+export function useCohortList(limit: any, offset: any, filters: any) {
   return useQuery({
     queryKey: ['cohort'],
-    queryFn: () => cohortList({ limit, page, filters }),
+    queryFn: () => cohortList({ limit, offset, filters }),
     refetchInterval: refetchInterval,
     gcTime: gcTime,
   });

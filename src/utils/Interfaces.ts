@@ -461,6 +461,16 @@ export interface OverallAttendance {
   present_percentage: any;
 }
 
+export interface SendCredentialsRequest {
+  isQueue: boolean;
+  context: string;
+  key: string;
+  replacements: any[];
+  email: {
+    receipients: any[];
+  };
+}
+
 
 export interface Assessment {
   userId: number;

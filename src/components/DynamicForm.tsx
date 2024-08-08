@@ -83,19 +83,49 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         }
         case 'maximum': {
           const property = error.property.substring(1);
-          if (schema.properties?.[property]?.validation?.includes('numeric')) {
-            error.message = t('FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR', {
-              maxLength: schema.properties?.[property]?.maxLength,
-            });
+          if (property === 'age') {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MUST_BE_LESS_THAN', {
+                fieldname: property,
+                maxLength: schema.properties?.[property]?.maxLength,
+              });
+            }
+          } else {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR', {
+                maxLength: schema.properties?.[property]?.maxLength,
+              });
+            }
           }
+
+          break;
         }
+
         case 'minimum': {
           const property = error.property.substring(1);
-          if (schema.properties?.[property]?.validation?.includes('numeric')) {
-            error.message = t('FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR', {
-              minLength: schema.properties?.[property]?.minLength,
-            });
+          if (property === 'age') {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MUST_BE_GREATER_THAN', {
+                fieldname: property,
+                minLength: schema.properties?.[property]?.minLength,
+              });
+            }
+          } else {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR', {
+                minLength: schema.properties?.[property]?.minLength,
+              });
+            }
           }
+          break;
         }
 
         case 'pattern': {
