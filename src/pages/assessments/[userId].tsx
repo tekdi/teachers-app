@@ -1,6 +1,10 @@
-import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
-import { useTheme, Theme } from '@mui/material/styles';
+import { getAssessmentSubjects } from '@/services/UpdateAssesmentService';
+import { logEvent } from '@/utils/googleAnalytics';
+import { Assessments } from '@/utils/Interfaces';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import {
   Box,
   FormControl,
@@ -9,15 +13,11 @@ import {
   Select,
   Typography,
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { logEvent } from '@/utils/googleAnalytics';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import { useTheme } from '@mui/material/styles';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { getAssessmentSubjects } from '@/services/UpdateAssesmentService';
-import { Assessments } from '@/utils/Interfaces';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 function AssessmentsDetails() {
   const theme = useTheme<any>();

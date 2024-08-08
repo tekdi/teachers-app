@@ -481,3 +481,9 @@ export interface Assessments {
   score: string;
   date: string;
 }
+
+export interface AssessmentQuestion {
+  userId: number;
+  question: string;
+  score: number;
+}
