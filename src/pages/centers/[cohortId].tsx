@@ -62,6 +62,7 @@ const TeachingCenterDetails = () => {
   const router = useRouter();
   const { cohortId }: any = router.query;
   const { t } = useTranslation();
+  const [role, setRole] = React.useState<any>('');
 
   const store = manageUserStore();
   const setDistrictCode = manageUserStore(
@@ -82,7 +83,7 @@ const TeachingCenterDetails = () => {
   const setBlockId = manageUserStore(
     (state: { setBlockId: any }) => state.setBlockId
   );
-  const role = localStorage.getItem('role');
+
   const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
   const [selectedDate, setSelectedDate] =
@@ -129,6 +130,13 @@ const TeachingCenterDetails = () => {
   const setRemoveCohortId = reassignLearnerStore(
     (state) => state.setRemoveCohortId
   );
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role');
+      setRole(role);
+    }
+  }, []);
 
   useEffect(() => {
     const getCohortData = async () => {
