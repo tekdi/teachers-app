@@ -19,7 +19,15 @@ import { editEditUser } from '@/services/ProfileService';
 import { tenantId } from '../../app.config';
 import FormButtons from './FormButtons';
 import { sendCredentialService } from '@/services/NotificationService';
-
+import {
+  Box,
+  Button,
+  Divider,
+  Modal,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 interface AddFacilitatorModalprops {
   open: boolean;
   onClose: () => void;
@@ -39,7 +47,8 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   onFacilitatorAdded,
 }) => {
   const [schema, setSchema] = React.useState<any>();
-  const [openModal, setOpenModal] = React.useState(false);
+  const [openSendCredModal, setOpenSendCredModal] = React.useState(false);
+  const [createFacilitator, setCreateFacilitator] = React.useState(false);
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [reloadProfile, setReloadProfile] = React.useState(false);
   const [email, setEmail] = React.useState('');
@@ -50,7 +59,20 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   const [coreFields, setCoreFields] = React.useState<string[]>([]);
 
   const { t } = useTranslation();
-
+  const theme = useTheme<any>();
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '65%',
+    boxShadow: 24,
+    bgcolor: '#fff',
+    borderRadius: '16px',
+    '@media (min-width: 600px)': {
+      width: '450px',
+    },
+  };
   useEffect(() => {
     const getAddFacilitatorFormData = async () => {
       try {
@@ -122,31 +144,13 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     setTimeout(() => {
       setFormData(data.formData);
     });
-    const target = event.target as HTMLFormElement;
-    const elementsArray = Array.from(target.elements);
-
-    // for (const element of elementsArray) {
-    //   if (
-    //     (element instanceof HTMLInputElement ||
-    //       element instanceof HTMLSelectElement ||
-    //       element instanceof HTMLTextAreaElement) &&
-    //     (element.value === '' ||
-    //       (Array.isArray(element.value) && element.value.length === 0))
-    //   ) {
-    //     element.focus();
-    //     return;
-    //   }
-    // }
-
-    const formData = data.formData;
-    console.log('Form data submitted:', formData);
   };
 
   useEffect(() => {
     if (formData) {
       handleButtonClick();
     }
-  }, [formData]);
+  }, [formData, createFacilitator]);
 
   const handleButtonClick = async () => {
     console.log('Form data:', formData);
@@ -262,54 +266,64 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           }
         } else {
           if (formData?.assignCenters?.length > 0) {
-            const response = await createUser(apiBody);
-            console.log(response);
-            if (response) {
-              onFacilitatorAdded?.();
-              onClose();
-              showToastMessage(
-                t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
-                'success'
-              );
+            setOpenSendCredModal(true);
+            if (createFacilitator) {
+              try {
+                const response = await createUser(apiBody);
 
-              const isQueue = false;
-              const context = 'USER';
-              let createrName;
-              if (typeof window !== 'undefined' && window.localStorage) {
-                createrName = localStorage.getItem('userName');
-              }
-              const key = 'onFacilitatorCreated';
-              const replacements = [apiBody['name'], username, password];
-
-              const sendTo = {
-                receipients: [formData?.email],
-              };
-              if (replacements && sendTo) {
-                const response = await sendCredentialService({
-                  isQueue,
-                  context,
-                  key,
-                  replacements,
-                  email: sendTo,
-                });
-                if (response.result[0].data[0].status === 'success') {
+                if (response) {
+                  onFacilitatorAdded?.();
+                  onClose();
                   showToastMessage(
-                    t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
+                    t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
                     'success'
                   );
+
+                  const isQueue = false;
+                  const context = 'USER';
+                  const key = 'onFacilitatorCreated';
+                  const replacements = [apiBody['name'], username, password];
+                  const sendTo = {
+                    receipients: [formData?.email],
+                  };
+
+                  let createrName;
+                  if (typeof window !== 'undefined' && window.localStorage) {
+                    createrName = localStorage.getItem('userName');
+                  }
+
+                  if (replacements && sendTo) {
+                    const credentialResponse = await sendCredentialService({
+                      isQueue,
+                      context,
+                      key,
+                      replacements,
+                      email: sendTo,
+                    });
+
+                    if (
+                      credentialResponse.result[0].data[0].status === 'success'
+                    ) {
+                      showToastMessage(
+                        t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
+                        'success'
+                      );
+                    } else {
+                      showToastMessage(
+                        t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
+                        'success'
+                      );
+                    }
+                  } else {
+                    showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+                  }
                 } else {
-                  showToastMessage(
-                    t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
-                    'success'
-                  );
+                  showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
                 }
-              } else {
+              } catch (error) {
+                console.error(error);
                 showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
               }
-
-              setOpenModal(true);
-            } else {
-              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
             }
           } else {
             showToastMessage(t('COMMON.PLEASE_SELECT_THE_CENTER'), 'error');
@@ -332,8 +346,16 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     console.log('Form errors:', errors);
   };
 
-  const onCloseModal = () => {
-    setOpenModal(false);
+  const handleBackAction = () => {
+    setCreateFacilitator(false);
+    setOpenSendCredModal(false);
+  };
+
+  const handleAction = () => {
+    setTimeout(() => {
+      setCreateFacilitator(true);
+    });
+    setOpenSendCredModal(false);
   };
 
   return (
@@ -381,6 +403,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 widgets={{}}
                 showErrorList={true}
                 customFields={customFields}
+                formData={createFacilitator ? '' : formData}
               >
                 <FormButtons
                   formData={formData}
@@ -391,11 +414,101 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
               </DynamicForm>
             )}
       </SimpleModal>
-      <SendCredentialModal
-        open={openModal}
-        onClose={onCloseModal}
-        email={email}
-      />
+      <Modal
+        open={openSendCredModal}
+        aria-labelledby="child-modal-title"
+        aria-describedby="child-modal-description"
+      >
+        <Box sx={{ ...style }}>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            sx={{ padding: '18px 16px' }}
+          >
+            <Box marginBottom={'0px'}>
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme.palette.warning['A200'],
+                  fontSize: '14px',
+                }}
+                component="h2"
+              >
+                {t('COMMON.NEW', { role: 'Learner' })}
+              </Typography>
+            </Box>
+            <CloseIcon
+              sx={{
+                cursor: 'pointer',
+                color: theme.palette.warning['A200'],
+              }}
+              onClick={onClose}
+            />
+          </Box>
+          <Divider />
+          {/* {isButtonAbsent ? ( */}
+          <Box
+            sx={{
+              padding: '18px 16px',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}
+          >
+            <Box>
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme.palette.warning['400'],
+                  fontSize: '14px',
+                }}
+                component="h2"
+              >
+                {t('COMMON.CREDENTIALS_EMAILED')}
+              </Typography>
+            </Box>
+            <Box sx={{ padding: '0 1rem' }}>
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme.palette.warning['400'],
+                  fontSize: '14px',
+                }}
+                component="h2"
+              >
+                {email}
+              </Typography>
+            </Box>
+          </Box>
+
+          <>
+            <Box mt={1.5}>
+              <Divider />
+            </Box>
+            <Box p={'18px'} display={'flex'} gap={'1rem'}>
+              <Button
+                className="w-100"
+                sx={{ boxShadow: 'none' }}
+                variant="outlined"
+                onClick={() => handleBackAction()}
+              >
+                {t('COMMON.BACK')}
+              </Button>
+              <Button
+                className="w-100"
+                sx={{ boxShadow: 'none' }}
+                variant="contained"
+                onClick={() => handleAction()}
+              >
+                {t('COMMON.SEND_CREDENTIALS')}
+              </Button>
+            </Box>
+          </>
+        </Box>
+      </Modal>
     </>
   );
 };
