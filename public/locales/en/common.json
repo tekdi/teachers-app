@@ -456,5 +456,15 @@
     "COLLAPSE_ALL": "Collapse All",
     "EXPAND_ALL": "Expand All",
     "RESOURCES": "Resources"
+  },
+  "ASSESSMENTS":{
+    "ASSESSMENTS":"Assessments",
+    "CENTER":"Center",
+    "ASSESSMENT_TYPE":"Assessment Type",
+    "COMPLETED_THE_ASSESSMENT":"completed the assessment",
+    "SUBMITTED_ON":"Submitted On",
+    "CORRECT_ANSWER":"correct answers",
+    "NO_DATA_FOUND":"No data found",
+    "SEARCH_STUDENT":"search student"
   }
 }

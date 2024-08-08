@@ -471,3 +471,30 @@ export interface SendCredentialsRequest {
     receipients: any[];
   };
 }
+
+
+export interface Assessment {
+  userId: number;
+  studentName: string;
+  progress: string;
+  score?: number;
+}
+
+export interface AssessmentSubject {
+  userId: number;
+  subject: string;
+  score: string;
+  date :string;
+}
+export interface Assessments {
+  userId: string;
+  subject: string;
+  score: string;
+  date: string;
+}
+
+export interface AssessmentQuestion {
+  userId: number;
+  question: string;
+  score: number;
+}

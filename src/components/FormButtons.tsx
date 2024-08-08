@@ -1,4 +1,4 @@
-import { Button, useTheme } from '@mui/material';
+import { Box, Button, Divider, useTheme } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
@@ -33,16 +33,39 @@ const FormButtons: React.FC<FormButtons> = ({
   console.log(isCreateCentered);
 
   return (
-    <div
-      style={{
-        marginTop: '16px',
-        display: 'flex',
-        justifyContent: isSingleButton ? 'center' : 'space-between',
-      }}
-    >
-      {!isSingleButton && !isCreateCentered && !isCreatedFacilitator && (
+    <>
+      <Divider />
+      <Box
+        sx={{
+          padding: '16px',
+          background: '#fff',
+          display: 'flex',
+          justifyContent: isSingleButton ? 'center' : 'space-between',
+          gap: '15px',
+        }}
+      >
+        {!isSingleButton && !isCreateCentered && !isCreatedFacilitator && (
+          <Button
+            variant="outlined"
+            color="primary"
+            sx={{
+              '&.Mui-disabled': {
+                backgroundColor: theme?.palette?.primary?.main,
+              },
+              minWidth: '84px',
+              height: '2.5rem',
+              padding: theme.spacing(1),
+              fontWeight: '500',
+              width: '48%',
+            }}
+            type="submit"
+            onClick={() => actions.back()}
+          >
+            {t('COMMON.BACK')}
+          </Button>
+        )}
         <Button
-          variant="outlined"
+          variant="contained"
           color="primary"
           sx={{
             '&.Mui-disabled': {
@@ -52,33 +75,15 @@ const FormButtons: React.FC<FormButtons> = ({
             height: '2.5rem',
             padding: theme.spacing(1),
             fontWeight: '500',
-            width: '48%',
+            width: isSingleButton ? '100%' : '48%',
           }}
           type="submit"
-          onClick={() => actions.back()}
+          onClick={() => onClick(formData)}
         >
-          {t('COMMON.BACK')}
+          {buttonText}
         </Button>
-      )}
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{
-          '&.Mui-disabled': {
-            backgroundColor: theme?.palette?.primary?.main,
-          },
-          minWidth: '84px',
-          height: '2.5rem',
-          padding: theme.spacing(1),
-          fontWeight: '500',
-          width: isSingleButton ? '100%' : '48%',
-        }}
-        type="submit"
-        onClick={() => onClick(formData)}
-      >
-        {buttonText}
-      </Button>
-    </div>
+      </Box>
+    </>
   );
 };
 
