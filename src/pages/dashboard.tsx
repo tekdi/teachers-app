@@ -386,7 +386,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
         };
         const attendanceStats = await calculatePercentage(
           cohortMemberRequest,
-          attendanceRequest
+          attendanceRequest,
+          selectedDate
         );
         setPercentageAttendanceData(attendanceStats);
         setAttendanceStats(attendanceStats);
