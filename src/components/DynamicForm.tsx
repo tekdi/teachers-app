@@ -146,6 +146,10 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 error.message = t(
                   'FORM_ERROR_MESSAGES.ENTER_VALID_MOBILE_NUMBER'
                 );
+              } else if (
+                schema.properties?.[property]?.validation?.includes(".age")
+              ) {
+                error.message = t("age must be valid");
               } else {
                 error.message = t(
                   'FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'

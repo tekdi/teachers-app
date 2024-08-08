@@ -5,7 +5,10 @@ import {
   UpdateCustomField,
 } from '@/utils/Interfaces';
 import React, { useEffect } from 'react';
-import { Status, names, Role } from '@/utils/app.constant';
+import {
+  Status,
+  Role,
+} from '@/utils/app.constant';
 import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import BottomDrawer from './BottomDrawer';
@@ -35,6 +38,7 @@ import manageUserStore from '../store/manageUserStore';
 import useStore from '@/store/store';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { bulkCreateCohortMembers } from '@/services/CohortServices';
+import { capitalizeEachWord, filterMiniProfileFields } from '@/utils/Helper';
 
 type Anchor = 'bottom';
 
@@ -71,6 +75,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     userData: null as UserData | null,
     userName: '',
     contactNumber: '',
+    enrollmentNumber: '',
     customFieldsData: [] as UpdateCustomField[],
   });
   const userStore = useStore();
@@ -83,7 +88,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const [centers, setCenters] = React.useState();
   const [centersName, setCentersName] = React.useState();
   const store = manageUserStore();
-  const reassignStore = reassignLearnerStore()
+  const reassignStore = reassignLearnerStore();
   const setReassignId = reassignLearnerStore((state) => state.setReassignId);
   const CustomLink = styled(Link)(({ theme }) => ({
     textDecoration: 'underline',
@@ -100,22 +105,23 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       // window.location.reload();
     }
     const cohorts = userStore.cohorts;
-    const centers = cohorts.map((cohort: { name: string, cohortId: string }) => ({
-      name: cohort.name,
-      cohortId: cohort.cohortId,
-    }));
-    const centersName = centers?.map((center: { name: any; }) => center?.name);
-    
+    const centers = cohorts.map(
+      (cohort: { name: string; cohortId: string }) => ({
+        name: cohort.name,
+        cohortId: cohort.cohortId,
+      })
+    );
+    const centersName = centers?.map((center: { name: any }) => center?.name);
+
     setCenters(centers);
     setCentersName(centersName);
-
   }, [reloadState, setReloadState]);
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
       setCohortLearnerDeleteId(cohortMembershipId);
-      setReassignId(userId)
+      setReassignId(userId);
 
       if (
         event.type === 'keydown' &&
@@ -149,6 +155,13 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
 
   const setContactNumber = (number: string) => {
     setLearnerState((prevState) => ({ ...prevState, contactNumber: number }));
+  };
+
+  const setEnrollmentNumber = (number: string) => {
+    setLearnerState((prevState) => ({
+      ...prevState,
+      enrollmentNumber: number,
+    }));
   };
 
   const setCustomFieldsData = (fields: UpdateCustomField[]) => {
@@ -290,6 +303,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
             setUserData(userData);
             setUserName(userData?.name);
             setContactNumber(userData?.mobile);
+            setEnrollmentNumber(capitalizeEachWord(userData?.username));
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
@@ -304,13 +318,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     }
   };
 
-  const nameSet = new Set<string>(names);
-  const filteredFields = learnerState.customFieldsData.reduce((acc, field) => {
-    if (field.name && nameSet.has(field.name)) {
-      acc.push(field);
-    }
-    return acc;
-  }, [] as UpdateCustomField[]);
+  const filteredFields = filterMiniProfileFields(learnerState.customFieldsData);
 
   const getTeamLeadersCenters = async () => {};
 
@@ -324,15 +332,13 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   };
 
   const handleReassignCenterRequest = async () => {
-
     const payload: BulkCreateCohortMembersRequest = {
-      userId: [reassignStore.reassignId], 
-      cohortId: [reassignStore.cohortId],   
-      removeCohortId: [reassignStore.removeCohortId]
+      userId: [reassignStore.reassignId],
+      cohortId: [reassignStore.cohortId],
+      removeCohortId: [reassignStore.removeCohortId],
     };
-  
+
     try {
-   
       const response = await bulkCreateCohortMembers(payload);
       console.log('Cohort members created successfully', response);
 
@@ -342,13 +348,9 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       );
     } catch (error) {
       console.error('Error creating cohort members', error);
-      showToastMessage(
-        t('MANAGE_USERS.CENTERS_REQUEST_FAILED'),
-        'error'
-      );
+      showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');
     }
   };
-  
 
   const renderCustomContent = () => {
     if (isDropout) {
@@ -398,6 +400,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           data={filteredFields}
           userName={learnerState.userName}
           contactNumber={learnerState.contactNumber}
+          enrollmentNumber={learnerState.enrollmentNumber}
         />
       )}
       <Box
@@ -431,7 +434,11 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                   {learnerName}
                 </Box>
               ) : (
-                <CustomLink className="word-break" href="#" onClick={(e) => e.preventDefault()}>
+                <CustomLink
+                  className="word-break"
+                  href="#"
+                  onClick={(e) => e.preventDefault()}
+                >
                   <Typography
                     onClick={() => {
                       showMiniProfile
@@ -677,15 +684,14 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         modalOpen={confirmationModalOpen}
       />
 
-<ManageCentersModal
-  open={openCentersModal}
-  onClose={handleCloseCentersModal}
-  centersName={centersName}
-  centers={centers}
-  onAssign={handleAssignCenters}
-  isForLearner={true}
-/>
-
+      <ManageCentersModal
+        open={openCentersModal}
+        onClose={handleCloseCentersModal}
+        centersName={centersName}
+        centers={centers}
+        onAssign={handleAssignCenters}
+        isForLearner={true}
+      />
 
       <DeleteUserModal
         type={Role.STUDENT}
