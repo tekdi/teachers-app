@@ -20,6 +20,7 @@ import ReactGA from 'react-ga4';
 import Loader from './Loader';
 import { showToastMessage } from './Toastify';
 import manageUserStore from '@/store/manageUserStore';
+import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -324,6 +325,16 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                               width: '100%',
                               marginBottom: '0rem',
                             }}
+                            MenuProps={{
+                              PaperProps: {
+                                style: {
+                                  maxHeight: 250,
+                                },
+                              },
+                            }}
+                            IconComponent={(props) => (
+                              <ArrowDropDownIcon {...props} style={{ color: 'black' }} />
+                            )}
                           >
                             {cohortsData?.length !== 0 ? (
                               manipulatedCohortData?.map((cohort) => (
@@ -335,6 +346,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     fontSize: '14px',
                                     color: '#4D4639',
                                     textTransform: 'capitalize',
+                                   
                                   }}
                                 >
                                   {cohort.name}
