@@ -1,15 +1,16 @@
-import Header from '@/components/Header';
 import React, { useEffect, useState } from 'react';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { Box, Divider, Typography } from '@mui/material';
-import { logEvent } from '@/utils/googleAnalytics';
+import { Box, Typography, IconButton } from '@mui/material';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { getAssessmentQuestion } from '@/services/UpdateAssesmentService';
-import { GetStaticPaths } from 'next';
+import Header from '@/components/Header';
+import { logEvent } from '@/utils/googleAnalytics';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { Pagination } from '@/utils/app.constant';
 
-// Define types for the assessment question data
 interface AssessmentQuestion {
   question: string;
   score: number;
@@ -21,24 +22,31 @@ function SubjectDetail() {
   const [assessmentQuestions, setAssessmentQuestions] = useState<
     AssessmentQuestion[]
   >([]);
-
-  const handleBackEvent = () => {
-    window.history.back();
-    logEvent({
-      action: 'back-button-clicked-attendance-overview',
-      category: 'Attendance Overview Page',
-      label: 'Back Button Clicked',
-    });
-  };
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchAssessmentQuestions = async () => {
-      const res = await getAssessmentQuestion(); // Assume this returns a promise
-      setAssessmentQuestions(res);
+      const res = await getAssessmentQuestion();
+      setAssessmentQuestions(res.slice(0, Pagination.MAX_ITEMS));
     };
-
     fetchAssessmentQuestions();
   }, []);
+
+  const handlePageChange = (
+    _event: React.MouseEvent<HTMLElement> | null,
+    newPage: number
+  ) => {
+    setCurrentPage(newPage);
+  };
+
+  const paginatedQuestions = assessmentQuestions.slice(
+    (currentPage - 1) * Pagination.ITEMS_PER_PAGE,
+    currentPage * Pagination.ITEMS_PER_PAGE
+  );
+
+  const totalPages = Math.ceil(
+    assessmentQuestions.length / Pagination.ITEMS_PER_PAGE
+  );
 
   return (
     <>
@@ -52,7 +60,6 @@ function SubjectDetail() {
           padding: '15px 20px 0px',
         }}
         width={'100%'}
-        onClick={handleBackEvent}
       >
         <KeyboardBackspaceOutlinedIcon
           cursor={'pointer'}
@@ -77,98 +84,86 @@ function SubjectDetail() {
       <Box
         sx={{
           m: 2,
-          padding: '16px',
+          padding: '4px 16px 16px',
           background: theme.palette.warning['800'],
           border: `1px solid ${theme.palette.warning['A100']}`,
           borderRadius: '16px',
         }}
       >
-        <Box
-          sx={{ display: 'flex', justifyContent: 'space-between', pb: '10px' }}
-        >
-          <Box sx={{ color: '#7C766F', fontSize: '12px', fontWeight: '500' }}>
-            {t('ASSESSMENTS.SUBMITTED_ON')} : 2 Feb, 2024
-            {/*will came from API */}
+        {/* Assessment questions */}
+        {paginatedQuestions.map((questionItem, index) => (
+          <Box key={index}>
+            <Box
+              sx={{
+                mt: 1.5,
+                fontSize: '14px',
+                fontWeight: '400',
+                color: theme.palette.warning['300'],
+              }}
+            >
+              {questionItem.question}
+            </Box>
+            <Box
+              sx={{
+                mt: 0.8,
+                fontSize: '16px',
+                fontWeight: '500',
+                color: theme.palette.success.main,
+              }}
+            >
+              {questionItem.score}
+            </Box>
           </Box>
-          <Box
-            sx={{
-              fontSize: '14px',
-              fontWeight: '500',
-              color: theme.palette.warning['300'],
-            }}
-          >
-            210/250 {/*will came from API */}
-          </Box>
-        </Box>
-        <Divider />
-        <Box
-          sx={{ mt: 1, fontSize: '12px', color: theme.palette.warning['400'] }}
-        >
-          42 out of 50 {t('ASSESSMENTS.CORRECT_ANSWER')}{' '}
-          {/*will came from API */}
-        </Box>
+        ))}
 
-        {assessmentQuestions.length === 0 ? (
-          <Box
+        {/* Pagination UI */}
+      </Box>
+      {totalPages > 1 && (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            my: 2,
+            px: '20px',
+            '@media (max-width: 500px)': {
+              justifyContent: 'space-between',
+            },
+          }}
+        >
+          <IconButton
+            disabled={currentPage === 1}
+            onClick={() => handlePageChange(null, currentPage - 1)}
+          >
+            <ArrowBackIosNewIcon
+              sx={{ fontSize: '20px', color: theme.palette.warning['300'] }}
+            />
+          </IconButton>
+          <Typography
             sx={{
-              mt: 1.5,
+              mx: 2,
               fontSize: '14px',
               fontWeight: '400',
               color: theme.palette.warning['300'],
             }}
           >
-            {t('ASSESSMENTS.NO_DATA_FOUND')}
-          </Box>
-        ) : (
-          assessmentQuestions.map((questionItem, index) => (
-            <Box key={index}>
-              <Box
-                sx={{
-                  mt: 1.5,
-                  fontSize: '14px',
-                  fontWeight: '400',
-                  color: theme.palette.warning['300'],
-                }}
-              >
-                {questionItem.question}
-              </Box>
-              <Box
-                sx={{
-                  mt: 0.8,
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  color: theme.palette.success.main,
-                }}
-              >
-                {questionItem.score}
-              </Box>
-            </Box>
-          ))
-        )}
-      </Box>
+            {`${(currentPage - 1) * Pagination.ITEMS_PER_PAGE + 1}-${Math.min(
+              currentPage * Pagination.ITEMS_PER_PAGE,
+              assessmentQuestions.length
+            )} of ${assessmentQuestions.length}`}
+          </Typography>
+          <IconButton
+            disabled={currentPage === totalPages}
+            onClick={() => handlePageChange(null, currentPage + 1)}
+          >
+            <ArrowForwardIosIcon
+              sx={{ fontSize: '20px', color: theme.palette.warning['300'] }}
+            />
+          </IconButton>
+        </Box>
+      )}
     </>
   );
-}
-
-export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
-  return {
-    paths: [], //indicates that no page needs be created at build time
-    fallback: 'blocking', //indicates the type of fallback
-  };
-};
-
-export async function getStaticProps({
-  params,
-  locale,
-}: {
-  params: any;
-  locale: string;
-}) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  };
 }
 
 export default SubjectDetail;

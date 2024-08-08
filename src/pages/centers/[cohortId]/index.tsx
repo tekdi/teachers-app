@@ -46,14 +46,15 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
-import { Session } from '../../utils/Interfaces';
-import Schedule from '../../components/Schedule';
+import { Session } from '../../../utils/Interfaces';
+import Schedule from '../../../components/Schedule';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { Role } from '@/utils/app.constant';
 import { showToastMessage } from '@/components/Toastify';
 import { getEventList } from '@/services/EventService';
-import { eventDaysLimit, modifyAttendanceLimit } from '../../../app.config';
+
 import manageUserStore from '@/store/manageUserStore';
+import { modifyAttendanceLimit, eventDaysLimit } from '../../../../app.config';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -278,7 +279,7 @@ const TeachingCenterDetails = () => {
 
   const viewAttendanceHistory = () => {
     if (classId !== 'all') {
-      router.push(`${router.asPath}/events/${selectedDate}`);
+      router.push(`${router.asPath}/events/${getMonthName()?.toLowerCase()}`);
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
   };
