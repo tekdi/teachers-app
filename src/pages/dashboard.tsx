@@ -87,7 +87,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const formattedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
   const [userId, setUserId] = React.useState<string | null>(null);
   const [blockName, setBlockName] = React.useState<string>('');
-  const role = localStorage.getItem('role');
+  const [role, setRole] = React.useState<any>('');
+
   useEffect(() => {
     setIsClient(true);
     const calculateDateRange = () => {
@@ -120,6 +121,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
+      const role = localStorage.getItem('role');
+      setRole(role);
       const storedUserId = localStorage.getItem('userId');
       setClassId(localStorage.getItem('classId') ?? '');
       if (token) {

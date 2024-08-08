@@ -144,17 +144,17 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
         padding: 2,
         borderRadius: 5,
         border: '1px solid #D0C5B4',
-        marginTop: '20px',
+        marginTop: '10px',
       }}
     >
       <Typography variant="h2" fontSize={'16px'} sx={{ color: 'black' }}>
         {t('DASHBOARD.ATTENDANCE_COMPARISON')}
       </Typography>
-      <Typography fontSize={'12px'}>
+      <Typography fontSize={'14px'} >
         {blockName} {t('DASHBOARD.BLOCK')}
       </Typography>
       <FormControl component="fieldset">
-        <Typography fontSize={'12px'} mt={2}>
+        <Typography fontSize={'14px'} mt={2}>
           {t('DASHBOARD.CENTER_TYPE')}
         </Typography>
         <RadioGroup
@@ -212,11 +212,11 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
         </Typography>
 
         <Box sx={{ height: '400px', overflowY: 'scroll' }}>
-          <ResponsiveContainer width="100%" height={data.length * 80}>
+          <ResponsiveContainer width="100%" height={data.length * 70}>
             <BarChart
               layout="vertical"
               data={data}
-              margin={{ top: 5, right: 5, left: 10 }}
+              margin={{ top: 5, right: 5, left: 10}}
             >
               <CartesianGrid
                 stroke={theme.palette.warning.A700}
@@ -225,7 +225,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
               <XAxis
                 type="number"
                 tickFormatter={(value: any) => `${value}%`}
-                display="none"
+                height={0}
               />
               <YAxis type="category" dataKey="name" />
               <Tooltip formatter={(value: number) => `${value}%`} />
@@ -239,7 +239,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
           <BarChart
             layout="vertical"
             data={[{ name: '', Attendance: 0 }]}
-            margin={{ top: 5, right: 5, left: 69 }}
+            margin={{  right: 5, left: 70 }}
           >
             <XAxis
               type="number"
