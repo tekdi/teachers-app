@@ -8,7 +8,6 @@ import { createUser, getFormRead } from '@/services/CreateUserService';
 import { generateUsernameAndPassword } from '@/utils/Helper';
 import { FormData } from '@/utils/Interfaces';
 import { FormContext, FormContextType, RoleId } from '@/utils/app.constant';
-import { Button, useTheme } from '@mui/material';
 import { IChangeEvent } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import React, { useEffect } from 'react';
@@ -19,6 +18,7 @@ import { tenantId } from '../../app.config';
 import SendCredentialModal from './SendCredentialModal';
 import FormButtons from './FormButtons';
 import { sendCredentialService } from '@/services/NotificationService';
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -46,7 +46,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   const [fullname, setFullname] = React.useState<any>();
 
   const { t } = useTranslation();
-  const theme = useTheme<any>();
+  const setSubmittedButtonStatus = useSubmittedButtonStore(
+    (state: any) => state.setSubmittedButtonStatus
+  );
   let userEmail: string = '';
   if (typeof window !== 'undefined' && window.localStorage) {
     userEmail = localStorage.getItem('userEmail') || '';
@@ -108,6 +110,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
   const handleButtonClick = async () => {
     console.log('Form data:', formData);
+    setSubmittedButtonStatus(true);
     if (learnerFormData) {
       const schemaProperties = schema.properties;
       let cohortId, fieldData;

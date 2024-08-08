@@ -18,6 +18,7 @@ import DynamicForm from '../DynamicForm';
 import { GenerateSchemaAndUiSchema } from '../GeneratedSchemas';
 import { showToastMessage } from '../Toastify';
 import FormButtons from '../FormButtons';
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 
 interface CreateBlockModalProps {
   open: boolean;
@@ -56,6 +57,9 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [formData, setFormData] = useState<any>();
 
+  const setSubmittedButtonStatus = useSubmittedButtonStore(
+    (state: any) => state.setSubmittedButtonStatus
+  );
   useEffect(() => {
     const getForm = async () => {
       try {
@@ -89,6 +93,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
 
   const handleButtonClick = async () => {
     console.log('Form data:', formData);
+    setSubmittedButtonStatus(true);
     if (formData) {
       console.log('Form data submitted:', formData);
 
@@ -99,29 +104,31 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
         parentId: parentId,
         customFields: [],
       };
-
-      Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
-        const fieldSchema = schema.properties[fieldKey];
-        const fieldId = fieldSchema?.fieldId;
-        if (fieldId !== null) {
-          cohortDetails.customFields.push({
-            fieldId: fieldId,
-            value: formData.cohort_type,
-          });
-          cohortDetails.customFields.push({
-            fieldId: '6469c3ac-8c46-49d7-852a-00f9589737c5',
-            value: ['MH'],
-          });
-          cohortDetails.customFields.push({
-            fieldId: 'b61edfc6-3787-4079-86d3-37262bf23a9e',
-            value: ['MUM'],
-          });
-          cohortDetails.customFields.push({
-            fieldId: '4aab68ae-8382-43aa-a45a-e9b239319857',
-            value: ['BOR'],
-          });
-        }
-      });
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const fieldData = JSON.parse(localStorage.getItem('fieldData') ?? '');
+        Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
+          const fieldSchema = schema.properties[fieldKey];
+          const fieldId = fieldSchema?.fieldId;
+          if (fieldId !== null) {
+            cohortDetails.customFields.push({
+              fieldId: fieldId,
+              value: formData.cohort_type,
+            });
+            cohortDetails.customFields.push({
+              fieldId: fieldData?.state?.stateId,
+              value: [fieldData?.state?.stateCode],
+            });
+            cohortDetails.customFields.push({
+              fieldId: fieldData?.state?.districtId,
+              value: [fieldData?.state?.districtCode],
+            });
+            cohortDetails.customFields.push({
+              fieldId: fieldData?.state?.blockId,
+              value: [fieldData?.state?.blockCode],
+            });
+          }
+        });
+      }
       const cohortData = await createCohort(cohortDetails);
       if (cohortData) {
         showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
