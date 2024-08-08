@@ -304,7 +304,7 @@ export const mapFieldIdToValue = (
   }, {});
 };
 
-export const convertUTCToIST = (utcDateTime: any) => {
+export const convertUTCToIST = (utcDateTime: string) => {
   const options: Intl.DateTimeFormatOptions = {
     timeZone: 'Asia/Kolkata',
     year: 'numeric',
@@ -317,22 +317,22 @@ export const convertUTCToIST = (utcDateTime: any) => {
 
   const date = new Date(utcDateTime);
   const dateTimeFormat = new Intl.DateTimeFormat('en-GB', options);
-  const [
-    { value: day },
-    ,
-    { value: month },
-    ,
-    { value: year },
-    ,
-    { value: hour },
-    ,
-    { value: minute },
-    ,
-    { value: period },
-  ] = dateTimeFormat.formatToParts(date);
+  const parts = dateTimeFormat.formatToParts(date);
+
+  let hour = parts.find((p) => p.type === 'hour')?.value ?? '00';
+  const minute = parts.find((p) => p.type === 'minute')?.value;
+  const dayPeriod = parts
+    .find((p) => p.type === 'dayPeriod')
+    ?.value?.toLowerCase();
+  const day = parts.find((p) => p.type === 'day')?.value;
+  const month = parts.find((p) => p.type === 'month')?.value;
+
+  if (hour === '00') {
+    hour = '12';
+  }
 
   const formattedDate = `${day} ${month}`;
-  const formattedTime = `${hour}:${minute} ${period.toLowerCase()}`;
+  const formattedTime = `${hour}:${minute} ${dayPeriod}`;
 
   return { date: formattedDate, time: formattedTime };
 };

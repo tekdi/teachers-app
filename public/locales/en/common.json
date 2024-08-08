@@ -231,7 +231,7 @@
     "ENTER_NUMBER": "Please enter a number",
     "ENTER_CHARACTER": "Please enter at least one character",
     "CONTACT_NUMBER": "Contact Number",
-    "ENROLLMENT_NUMBER":"Enrollment Number",
+    "ENROLLMENT_NUMBER": "Enrollment Number",
     "SELECT_OPTION": "Select Option"
   },
 
@@ -336,7 +336,7 @@
     "REMOVE_THIS_SESSION": "Remove this session",
     "PLANNED_SESSION": "Planned Session",
     "FIXES_SUBJECTS": "For fixed subjects in the timetable",
-    "EXTRA_SESSION": "Extra Session",
+    "EXTRA_SESSION": "Extra Sessions",
     "DOUBT_CLEARING": "For doubt clearing, webinars, etc",
     "TOPIC": "Topic",
     "SUBTOPIC": "Sub Topic",
