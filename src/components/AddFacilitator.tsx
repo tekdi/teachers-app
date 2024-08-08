@@ -234,11 +234,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       try {
         if (isEditModal && userId) {
           const userData = {
-            name: apiBody.name,
-            mobile: apiBody.mobile,
-            father_name: apiBody.father_name,
+            name: apiBody?.name,
+            mobile: apiBody?.mobile,
+            father_name: apiBody?.father_name,
           };
-          const customFields = apiBody.customFields;
+          const customFields = apiBody?.customFields;
           console.log(customFields);
           const object = {
             userData: userData,

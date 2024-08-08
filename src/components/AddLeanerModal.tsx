@@ -203,6 +203,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             );
             setReloadProfile(true);
             onReload?.();
+            onClose();
           }
         } else {
           const response = await createUser(apiBody);
