@@ -28,6 +28,8 @@ interface DeleteUserModalProps {
   open: boolean;
   onClose: () => void;
   onUserDelete: () => void;
+  reloadState: boolean;
+  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
   type,
@@ -35,10 +37,19 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
   open,
   onClose,
   onUserDelete,
+  reloadState,
+  setReloadState,
 }) => {
   const store = manageUserStore();
   const { t } = useTranslation();
   const theme = useTheme<any>();
+
+  React.useEffect(() => {
+    if (reloadState) {
+      setReloadState(false);
+    }
+  }, [reloadState, setReloadState]);
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -91,6 +102,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
     onClose();
     onUserDelete();
     showToastMessage(t('COMMON.USER_DELETED_PERMANENTLY'), 'success');
+    setReloadState(true);
   };
 
   // const handleOtherReasonChange = (event: any) => {
