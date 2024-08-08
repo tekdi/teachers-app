@@ -123,6 +123,20 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     hasEmptyAttendance();
   };
 
+  const getPresentCount = (newArray: { userId: string; name: string; memberStatus: string; attendance: string; }[]) =>{
+    setPresentCount(
+      newArray.filter(
+        (user: { attendance: string; }) => user.attendance === 'present'
+      ).length
+    );
+  } 
+  const getAbsentCount = (newArray: { userId: string; name: string; memberStatus: string; attendance: string; }[]) =>{
+    setAbsentCount(
+      newArray.filter(
+        (user: { attendance: string; }) => user.attendance === 'absent'
+      ).length
+    );
+  } 
   useEffect(() => {
     submitBulkAttendanceAction(true, '', '');
     const getCohortMemberList = async () => {
@@ -237,6 +251,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       if (newArray.length !== 0) {
                         setNumberOfCohortMembers(newArray?.length);
                         setCohortMemberList(newArray);
+                        getPresentCount(newArray);
+                        getAbsentCount(newArray);
                         const hasDropout = newArray.some(
                           (user) => user.memberStatus === Status.DROPOUT
                         );
@@ -251,16 +267,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                               (user) => user.memberStatus === Status.DROPOUT
                             )
                           );
-                          setPresentCount(
-                            newArray.filter(
-                              (user) => user.attendance === 'present'
-                            ).length
-                          );
-                          setAbsentCount(
-                            newArray.filter(
-                              (user) => user.attendance === 'absent'
-                            ).length
-                          );
+                          getPresentCount(newArray);
+                          getAbsentCount(newArray);
                           setDropoutCount(
                             newArray.filter(
                               (user) => user.memberStatus === Status.DROPOUT
