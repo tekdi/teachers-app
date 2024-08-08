@@ -459,6 +459,7 @@
   "ASSESSMENTS":{
     "ASSESSMENTS":"Assessments",
     "CENTER":"Center",
-    "ASSESSMENT_TYPE":"Assessment Type"
+    "ASSESSMENT_TYPE":"Assessment Type",
+    "COMPLETED_ASSESSMENT":"completed the assessment"
   }
 }

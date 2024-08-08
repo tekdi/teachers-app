@@ -63,7 +63,7 @@ function AssessmentsDetails() {
           display: 'flex',
           justifyContent: 'left',
           alignItems: 'center',
-          color: '#4D4639',
+          color: theme.palette.warning['A200'],
           padding: '15px 20px 5px',
         }}
         width={'100%'}
@@ -115,8 +115,16 @@ function AssessmentsDetails() {
           alignItems: 'center',
         }}
       >
-        <CheckCircleIcon sx={{ color: '#1F1B13', fontSize: '22px' }} />
-        <Box sx={{ fontSize: '14px', fontWeight: '400', color: '#4D4639' }}>
+        <CheckCircleIcon
+          sx={{ color: theme.palette.warning['300'], fontSize: '22px' }}
+        />
+        <Box
+          sx={{
+            fontSize: '14px',
+            fontWeight: '400',
+            color: theme.palette.warning['A200'],
+          }}
+        >
           Completed
         </Box>
       </Box>
@@ -124,13 +132,13 @@ function AssessmentsDetails() {
       <Box
         sx={{
           mt: 2,
-          color: '#1F1B13',
+          color: theme.palette.warning['300'],
           fontWeight: 500,
           fontSize: '14px',
           px: '16px',
         }}
       >
-        Overall Score : 420/475 (88%)
+        Overall Score : 420/475 (88%) {/* will came from API */}
       </Box>
       <Box sx={{ mt: 2, background: '#FBF4E4', padding: '16px' }}>
         <Grid container spacing={2}>
@@ -138,8 +146,8 @@ function AssessmentsDetails() {
             <Grid item xs={12} sm={6} md={4} key={assessment.userId}>
               <Box
                 sx={{
-                  border: '1px solid #D0C5B4',
-                  background: '#fff',
+                  border: `1px solid ${theme.palette.warning['A100']}`,
+                  background: theme.palette.warning['A400'],
                   padding: '14px',
                   borderRadius: '8px',
                 }}
@@ -148,7 +156,11 @@ function AssessmentsDetails() {
                 }
               >
                 <Box
-                  sx={{ fontSize: '16px', fontWeight: '400', color: '#1F1B13' }}
+                  sx={{
+                    fontSize: '16px',
+                    fontWeight: '400',
+                    color: theme.palette.warning['300'],
+                  }}
                 >
                   {assessment.subject}
                 </Box>
@@ -164,19 +176,22 @@ function AssessmentsDetails() {
                     sx={{
                       fontSize: '12px',
                       fontWeight: '500',
-                      color: '#1F1B13',
+                      color: theme.palette.warning['300'],
                     }}
                   >
                     {assessment.score}
                   </Box>
                   <FiberManualRecordIcon
-                    sx={{ fontSize: '12px', color: '#7C766F' }}
+                    sx={{
+                      fontSize: '12px',
+                      color: theme.palette.warning['400'],
+                    }}
                   />
                   <Box
                     sx={{
                       fontSize: '12px',
                       fontWeight: '500',
-                      color: '#7C766F',
+                      color: theme.palette.warning['400'],
                     }}
                   >
                     {assessment.date}

@@ -5,7 +5,7 @@ export const updateAssessment = (): Assessment[] => {
         {
             userId: 1,
             studentName: 'Aanya Gupta',
-            progress: 'Overall score',
+            progress: 'Overall score :',
             score: 89
         },
         {

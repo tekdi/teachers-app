@@ -47,7 +47,7 @@ function SubjectDetail() {
           display: 'flex',
           justifyContent: 'left',
           alignItems: 'flex-start',
-          color: '#4D4639',
+          color: theme.palette.warning['A200'],
           padding: '15px 20px 0px',
         }}
         width={'100%'}
@@ -55,7 +55,7 @@ function SubjectDetail() {
       >
         <KeyboardBackspaceOutlinedIcon
           cursor={'pointer'}
-          sx={{ color: theme.palette.warning.A200, marginTop: '14px' }}
+          sx={{ color: theme.palette.warning['A200'], marginTop: '14px' }}
         />
         <Box
           sx={{ display: 'flex', flexDirection: 'column', margin: '0.8rem' }}
@@ -64,7 +64,7 @@ function SubjectDetail() {
             userName {/* Replace with dynamic username */}
           </Typography>
           <Typography
-            color={'#4D4639'}
+            color={theme.palette.warning['A200']}
             textAlign={'left'}
             fontWeight={'500'}
             fontSize={'11px'}
@@ -77,8 +77,8 @@ function SubjectDetail() {
         sx={{
           m: 2,
           padding: '16px',
-          background: '#F8EFE7',
-          border: '1px solid #D0C5B4',
+          background: theme.palette.warning['800'],
+          border: `1px solid ${theme.palette.warning['A100']}`,
           borderRadius: '16px',
         }}
       >
@@ -88,12 +88,20 @@ function SubjectDetail() {
           <Box sx={{ color: '#7C766F', fontSize: '12px', fontWeight: '500' }}>
             Submitted On : 2 Feb, 2024
           </Box>
-          <Box sx={{ fontSize: '14px', fontWeight: '500', color: '#1F1B13' }}>
+          <Box
+            sx={{
+              fontSize: '14px',
+              fontWeight: '500',
+              color: theme.palette.warning['300'],
+            }}
+          >
             210/250
           </Box>
         </Box>
         <Divider />
-        <Box sx={{ mt: 1, fontSize: '12px', color: '#7C766F' }}>
+        <Box
+          sx={{ mt: 1, fontSize: '12px', color: theme.palette.warning['400'] }}
+        >
           42 out of 50 correct answers
         </Box>
 
@@ -104,7 +112,7 @@ function SubjectDetail() {
                 mt: 1.5,
                 fontSize: '14px',
                 fontWeight: '400',
-                color: '#1F1B13',
+                color: theme.palette.warning['300'],
               }}
             >
               {questionItem.question}
@@ -114,7 +122,7 @@ function SubjectDetail() {
                 mt: 0.8,
                 fontSize: '16px',
                 fontWeight: '500',
-                color: '#1A8825',
+                color: theme.palette.success.main,
               }}
             >
               {questionItem.score}

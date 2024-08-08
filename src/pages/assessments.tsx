@@ -22,6 +22,8 @@ import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import SortingModal from '@/components/SortingModal';
 import { updateAssessment } from '../services/UpdateAssesmentService';
 import { useRouter } from 'next/router';
+import RemoveIcon from '@mui/icons-material/Remove';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
 const Assessments = () => {
   const theme = useTheme<any>();
@@ -70,7 +72,7 @@ const Assessments = () => {
           display: 'flex',
           justifyContent: 'left',
           alignItems: 'center',
-          color: '#4D4639',
+          color: theme?.palette?.warning['A200'],
           padding: '20px 20px 5px',
         }}
         width="100%"
@@ -173,9 +175,13 @@ const Assessments = () => {
         <Grid
           xs={8}
           item
-          sx={{ fontSize: '14px', fontWeight: '500', color: '#7C766F' }}
+          sx={{
+            fontSize: '14px',
+            fontWeight: '500',
+            color: theme?.palette?.warning['400'],
+          }}
         >
-          20/24 completed the assessment
+          20/24 {t('ASSESSMENTS.COMPLETED_ASSESSMENT')}
         </Grid>
         <Grid sx={{ display: 'flex', justifyContent: 'flex-end' }} xs={4} item>
           <Button
@@ -203,7 +209,7 @@ const Assessments = () => {
             <Grid item xs={12} sm={6} md={4} key={assessment.userId}>
               <Box
                 sx={{
-                  border: '1px solid #D0C5B4',
+                  border: `1px solid ${theme?.palette?.warning['A100']}`,
                   display: 'flex',
                   justifyContent: 'space-between',
                   borderRadius: '8px',
@@ -214,14 +220,24 @@ const Assessments = () => {
                 <Box
                   sx={{
                     flexBasis: '20%',
-                    background: '#FFDEA1',
+                    background: theme?.palette?.primary?.light,
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                     padding: '7px',
                   }}
                 >
-                  <CheckCircleIcon sx={{ color: theme.palette.warning[300] }} />
+                  {assessment.progress === 'Overall score :' ? (
+                    <CheckCircleIcon
+                      sx={{ color: theme.palette.warning[300] }}
+                    />
+                  ) : assessment.progress === 'Not Started' ? (
+                    <RemoveIcon sx={{ color: theme.palette.warning[300] }} />
+                  ) : assessment.progress === 'In Progress' ? (
+                    <RadioButtonUncheckedIcon
+                      sx={{ color: theme.palette.warning[300] }}
+                    />
+                  ) : null}
                 </Box>
                 <Box sx={{ flexBasis: '80%' }}>
                   <Box
@@ -258,14 +274,12 @@ const Assessments = () => {
                             py: '2px',
                           }}
                         >
-                          {assessment.progress === 'Overall score'
-                            ? 'Overall score:'
-                            : assessment.progress}
+                          {assessment.progress}
                         </Box>
-                        {assessment.score !== undefined && (
+                        {assessment.progress === 'Overall score :' && (
                           <Box
                             sx={{
-                              color: '#1A8825',
+                              color: theme.palette.success.main,
                               fontSize: '14px',
                               fontWeight: '500',
                             }}
@@ -275,6 +289,7 @@ const Assessments = () => {
                         )}
                       </Box>
                     </Box>
+
                     <KeyboardArrowRightIcon
                       sx={{ color: theme.palette.warning[300] }}
                     />
