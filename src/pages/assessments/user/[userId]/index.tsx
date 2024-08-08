@@ -14,6 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { GetStaticPaths } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -48,10 +49,8 @@ function AssessmentsDetails() {
     const res: any = getAssessmentSubjects();
     setAssessmentListSubject(res);
   }, []);
-  const handleAssessmentSubjectDetails = (userId: string) => {
-    router.push(`./subjectDetail/${userId}`);
-
-    console.log();
+  const handleAssessmentSubjectDetails = (subjectId: string) => {
+    router.push(`${router.asPath}/subject/${subjectId}`);
   };
 
   return (
@@ -206,18 +205,12 @@ function AssessmentsDetails() {
   );
 }
 
-export async function getStaticPaths() {
-  const paths = [
-    { params: { userId: '1' } },
-    { params: { userId: '2' } },
-    { params: { userId: '3' } },
-  ];
-
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   return {
-    paths,
-    fallback: false,
+    paths: [], //indicates that no page needs be created at build time
+    fallback: 'blocking', //indicates the type of fallback
   };
-}
+};
 
 export async function getStaticProps({
   params,

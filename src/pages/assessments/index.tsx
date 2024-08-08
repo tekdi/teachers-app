@@ -20,10 +20,10 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import SortingModal from '@/components/SortingModal';
-import { updateAssessment } from '../services/UpdateAssesmentService';
 import { useRouter } from 'next/router';
 import RemoveIcon from '@mui/icons-material/Remove';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { updateAssessment } from '@/services/UpdateAssesmentService';
 
 const Assessments = () => {
   const theme = useTheme<any>();
@@ -57,8 +57,8 @@ const Assessments = () => {
     setAssessmentList(res);
   }, []);
 
-  const handleAssesmentDetails = (userId: string) => {
-    router.push(`./assessments/${userId}`);
+  const handleAssessmentDetails = (userId: string) => {
+    router.push(`${router.pathname}/user/${userId}`);
   };
 
   return (
@@ -215,7 +215,7 @@ const Assessments = () => {
                   borderRadius: '8px',
                   gap: '5px',
                 }}
-                onClick={() => handleAssesmentDetails(assessment.userId)}
+                onClick={() => handleAssessmentDetails(assessment.userId)}
               >
                 <Box
                   sx={{
@@ -227,6 +227,7 @@ const Assessments = () => {
                     padding: '7px',
                   }}
                 >
+                  {/* Todo : replaced with proper flag coming from backend  */}
                   {assessment.progress === 'Overall score :' ? (
                     <CheckCircleIcon
                       sx={{ color: theme.palette.warning[300] }}

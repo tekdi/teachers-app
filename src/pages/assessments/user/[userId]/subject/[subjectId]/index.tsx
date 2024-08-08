@@ -7,6 +7,7 @@ import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspace
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { getAssessmentQuestion } from '@/services/UpdateAssesmentService';
+import { GetStaticPaths } from 'next';
 
 // Define types for the assessment question data
 interface AssessmentQuestion {
@@ -134,18 +135,12 @@ function SubjectDetail() {
   );
 }
 
-export async function getStaticPaths() {
-  const paths = [
-    { params: { userId: '1' } },
-    { params: { userId: '2' } },
-    { params: { userId: '3' } },
-  ];
-
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   return {
-    paths,
-    fallback: false,
+    paths: [], //indicates that no page needs be created at build time
+    fallback: 'blocking', //indicates the type of fallback
   };
-}
+};
 
 export async function getStaticProps({
   params,
