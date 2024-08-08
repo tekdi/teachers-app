@@ -119,9 +119,7 @@ const TeachingCenterDetails = () => {
     setOpenSchedule(true);
   };
 
-  const handleSchedule = () => {
-    console.log('API Call');
-  };
+  const handleSchedule = () => {};
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -143,7 +141,6 @@ const TeachingCenterDetails = () => {
   useEffect(() => {
     const getCohortData = async () => {
       const response = await getCohortDetails(cohortId);
-      console.log(response);
 
       let cohortData = null;
 
@@ -199,7 +196,6 @@ const TeachingCenterDetails = () => {
         setSessions(sessionArray);
       } catch (error) {
         setSessions([]);
-        showToastMessage(t('COMMON.NO_SESSIONS_SCHEDULED'), 'error');
       }
     };
 
@@ -224,12 +220,10 @@ const TeachingCenterDetails = () => {
           status: ['live'],
         };
         const response = await getEventList({ limit, offset, filters });
-        console.log(response);
         let extraSessionArray: any[] = [];
         if (response?.events.length > 0) {
           response?.events.forEach((event: any) => {
             if (!event.isRecurring) {
-              console.log(event);
               extraSessionArray.push(event);
             }
           });
@@ -237,9 +231,7 @@ const TeachingCenterDetails = () => {
         setExtraSessions(extraSessionArray);
       } catch (error) {
         setExtraSessions([]);
-        showToastMessage(t('COMMON.NO_SESSIONS_SCHEDULED'), 'error');
       }
-      console.log(sessions);
     };
 
     getExtraSessionsData();
@@ -286,7 +278,7 @@ const TeachingCenterDetails = () => {
 
   const viewAttendanceHistory = () => {
     if (classId !== 'all') {
-      router.push('/center-session');
+      router.push('/eventMonthView');
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
   };
@@ -536,7 +528,7 @@ const TeachingCenterDetails = () => {
                     opacity: classId === 'all' ? 0.5 : 1,
                     alignItems: 'center',
                   }}
-                  // onClick={viewAttendanceHistory}
+                  onClick={viewAttendanceHistory}
                 >
                   <Typography marginBottom={'0'} style={{ fontWeight: '500' }}>
                     {getMonthName()}
