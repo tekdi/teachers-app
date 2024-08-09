@@ -722,7 +722,7 @@ const TeacherProfile = () => {
                           variant="h4"
                           margin={0}
                           color={theme.palette.warning.A200}
-                          sx={{ wordBreak: 'break-word' }}
+                          sx={{ wordBreak: 'break-word', fontSize: '16px', paddingTop: '6px' }}
                         >
                           {item?.value
                             ? toPascalCase(getLabelForValue(item, item?.value))

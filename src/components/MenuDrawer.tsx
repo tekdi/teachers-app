@@ -115,7 +115,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           {!isDesktop && (
             <Box>
               <IconButton onClick={toggleDrawer(false)}>
-                <ClearIcon />
+                <ClearIcon sx={{ color: theme.palette.warning['300'] }} />
               </IconButton>
             </Box>
           )}
@@ -183,7 +183,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               padding: isDashboard
                 ? '16px 18px !important'
                 : '0px 18px !important',
-              marginTop: '15px',
+              marginTop: '25px',
               color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
               fontWeight: isDashboard ? '600' : 500,
               '&:hover': {
@@ -192,13 +192,13 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   : 'transparent',
               },
             }}
-            startIcon={<DashboardOutlinedIcon />}
+            startIcon={<DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />}
             onClick={navigateToDashboard}
           >
             {t('DASHBOARD.DASHBOARD')}
           </Button>
         </Box>
-        <Box sx={{ marginTop: '12px' }}>
+        <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14"
             sx={{
@@ -221,7 +221,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               },
               marginTop: '15px',
             }}
-            startIcon={<LocalLibraryOutlinedIcon />}
+            startIcon={<LocalLibraryOutlinedIcon sx={{ fontSize: '24px !important' }} />}
             onClick={() => {
               router.push(`/centers`); // Check route
             }}
@@ -231,7 +231,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               : t('DASHBOARD.MY_TEACHING_CENTERS')}
           </Button>
         </Box>
-        <Box sx={{ marginTop: '12px' }}>
+        <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14"
             sx={{
@@ -247,13 +247,13 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               },
               marginTop: '15px',
             }}
-            startIcon={<EditNoteIcon />}
-            // onClick={navigateToManageUser}
+            startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
+          // onClick={navigateToManageUser}
           >
             {t('COMMON.OBSERVATIONS_FORMS')}
           </Button>
         </Box>
-        <Box sx={{ marginTop: '12px' }}>
+        <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14"
             sx={{
@@ -276,7 +276,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               },
               marginTop: '15px',
             }}
-            startIcon={<EventAvailableOutlinedIcon />}
+            startIcon={<EventAvailableOutlinedIcon sx={{ fontSize: '24px !important' }} />}
             onClick={() => {
               router.push(`/assessments`);
             }}
@@ -285,7 +285,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           </Button>
         </Box>
 
-        <Box sx={{ marginTop: '12px' }}>
+        <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14"
             sx={{
@@ -308,7 +308,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               },
               marginTop: '15px',
             }}
-            startIcon={<EventAvailableOutlinedIcon />}
+            startIcon={<EventAvailableOutlinedIcon sx={{ fontSize: '24px !important' }} />}
             onClick={() => {
               router.push(`/course-planner`); // Check route
             }}
