@@ -91,15 +91,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     id: string | number | undefined,
     newSelectedDays: string[]
   ) => {
-    if (id) {
-      setSessionBlocks(
-        sessionBlocks.map((block) =>
-          block?.id === id
-            ? { ...block, selectedWeekDays: newSelectedDays }
-            : block
-        )
-      );
-    }
+    setSessionBlocks(
+      sessionBlocks.map((block) =>
+        block?.id === id
+          ? { ...block, selectedWeekDays: newSelectedDays }
+          : block
+      )
+    );
   };
 
   const handleAddSession = () => {
