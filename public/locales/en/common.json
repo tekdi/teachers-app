@@ -123,7 +123,8 @@
     "FACILITATOR_UPDATED_SUCCESSFULLY": "Facilitator profile updated successfully!",
     "PLEASE_SELECT_THE_CENTER": "Please select the center.",
     "CREATE": "Create",
-    "OKAY": "Okay"
+    "OKAY": "Okay",
+    "HELD_EVERY_WEEK_ON": "Held every week on {{days}}"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -457,14 +458,14 @@
     "EXPAND_ALL": "Expand All",
     "RESOURCES": "Resources"
   },
-  "ASSESSMENTS":{
-    "ASSESSMENTS":"Assessments",
-    "CENTER":"Center",
-    "ASSESSMENT_TYPE":"Assessment Type",
-    "COMPLETED_THE_ASSESSMENT":"completed the assessment",
-    "SUBMITTED_ON":"Submitted On",
-    "CORRECT_ANSWER":"correct answers",
-    "NO_DATA_FOUND":"No data found",
-    "SEARCH_STUDENT":"search student"
+  "ASSESSMENTS": {
+    "ASSESSMENTS": "Assessments",
+    "CENTER": "Center",
+    "ASSESSMENT_TYPE": "Assessment Type",
+    "COMPLETED_THE_ASSESSMENT": "completed the assessment",
+    "SUBMITTED_ON": "Submitted On",
+    "CORRECT_ANSWER": "correct answers",
+    "NO_DATA_FOUND": "No data found",
+    "SEARCH_STUDENT": "search student"
   }
 }
