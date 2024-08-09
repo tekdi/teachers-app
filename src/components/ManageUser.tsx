@@ -154,7 +154,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             return;
           }
           const userIds = facilitatorList?.map((user: any) => user.userId);
-          
 
           const cohortDetailsPromises = userIds?.map((userId: string) =>
             getCohortList(userId, { filter: 'true' })
@@ -174,7 +173,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               return null; // or handle the error as needed
             }
           });
-
 
           const extractedData = facilitatorList?.map(
             (user: any, index: number) => {
@@ -631,70 +629,72 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                   >
                     {users &&
                       users.length !== 0 &&
-                      users.map((user) => (
-                        <Box
-                          key={user.userId}
-                          display={'flex'}
-                          borderBottom={`1px solid ${theme.palette.warning['A100']}`}
-                          width={'100%'}
-                          justifyContent={'space-between'}
-                          sx={{ cursor: 'pointer' }}
-                        >
-                          <Box display="flex" alignItems="center" gap="5px">
-                            <Image src={profileALT} alt="img" />
-                            <Box>
-                              <CustomLink
-                                className="word-break"
-                                href="#"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <Typography
-                                  onClick={() => {
-                                    handleTeacherFullProfile(user.userId!);
-                                    // ReactGA.event('teacher-details-link-clicked', {
-                                    //   userId: userId,
-                                    // });
-                                  }}
+                      [...users]
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((user) => (
+                          <Box
+                            key={user.userId}
+                            display={'flex'}
+                            borderBottom={`1px solid ${theme.palette.warning['A100']}`}
+                            width={'100%'}
+                            justifyContent={'space-between'}
+                            sx={{ cursor: 'pointer' }}
+                          >
+                            <Box display="flex" alignItems="center" gap="5px">
+                              <Box>
+                                <CustomLink
+                                  className="word-break"
+                                  href="#"
+                                  onClick={(e) => e.preventDefault()}
+                                >
+                                  <Typography
+                                    onClick={() => {
+                                      handleTeacherFullProfile(user.userId!);
+                                      // ReactGA.event('teacher-details-link-clicked', {
+                                      //   userId: userId,
+                                      // });
+                                    }}
+                                    sx={{
+                                      textAlign: 'left',
+                                      fontSize: '16px',
+                                      fontWeight: '400',
+                                      marginTop: '5px',
+                                      color: theme.palette.secondary.main,
+                                    }}
+                                  >
+                                    {user.name}
+                                  </Typography>
+                                </CustomLink>
+                                <Box
                                   sx={{
-                                    textAlign: 'left',
-                                    fontSize: '16px',
-                                    fontWeight: '400',
-                                    marginTop: '5px',
-                                    color: theme.palette.secondary.main,
+                                    backgroundColor: '#FFF8F2',
+                                    padding: '5px',
+                                    borderRadius: '5px',
+                                    fontSize: '12px',
+                                    fontWeight: '600',
+                                    color: 'black',
+                                    marginBottom: '10px',
                                   }}
                                 >
-                                  {user.name}
-                                </Typography>
-                              </CustomLink>
-                              <Box
-                                sx={{
-                                  backgroundColor: '#FFF8F2',
-                                  padding: '5px',
-                                  borderRadius: '5px',
-                                  fontSize: '12px',
-                                  fontWeight: '600',
-                                  color: 'black',
-                                  marginBottom: '10px',
-                                }}
-                              >
-                                {user?.cohortNames
-                                  ? `${user.cohortNames}`
-                                  : t('ATTENDANCE.N/A')}
+                                  {user?.cohortNames
+                                    ? `${user.cohortNames}`
+                                    : t('ATTENDANCE.N/A')}
+                                </Box>
                               </Box>
                             </Box>
+                            <Box>
+                              <MoreVertIcon
+                                onClick={toggleDrawer('bottom', true, user)}
+                                sx={{
+                                  fontSize: '24px',
+                                  marginTop: '1rem',
+                                  color: theme.palette.warning['300'],
+                                }}
+                              />
+                            </Box>
                           </Box>
-                          <Box>
-                            <MoreVertIcon
-                              onClick={toggleDrawer('bottom', true, user)}
-                              sx={{
-                                fontSize: '24px',
-                                marginTop: '1rem',
-                                color: theme.palette.warning['300'],
-                              }}
-                            />
-                          </Box>
-                        </Box>
-                      ))}
+                        ))}
+
                     {!users?.length && (
                       <Box
                         sx={{
