@@ -119,7 +119,7 @@ const TeachingCenterDetails = () => {
     setOpenSchedule(true);
   };
 
-  const handleSchedule = () => {};
+  const handleSchedule = () => { };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -501,12 +501,13 @@ const TeachingCenterDetails = () => {
             )}
           </Box>
 
-          <Box sx={{ padding: '10px 16px', mt: 1 }}>
+          <Box sx={{ padding: '10px 16px', mt: 1, background: 'linear-gradient(180deg, #FFFDF7 0%, #F8EFDA 100%)' }}>
             <Box
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+
               }}
             >
               <Box

@@ -202,9 +202,9 @@ const Header: React.FC = () => {
               <MenuItem
                 onClick={logoutOpen}
                 disableRipple
-                sx={{ 'letter-spacing': 'normal' }}
+                sx={{ 'letter-spacing': 'normal', color: theme.palette.warning['300'] }}
               >
-                <LogoutOutlinedIcon />
+                <LogoutOutlinedIcon sx={{ color: theme.palette.warning['300'] }} />
                 {t('COMMON.LOGOUT')}
               </MenuItem>
             </StyledMenu>

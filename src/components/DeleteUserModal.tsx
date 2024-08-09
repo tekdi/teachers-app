@@ -55,7 +55,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '65%',
+    width: '85%',
     boxShadow: 24,
     bgcolor: '#fff',
     borderRadius: '16px',

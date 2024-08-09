@@ -196,6 +196,7 @@ const CoursePlanner = () => {
                         padding: '12px',
                         cursor: 'pointer',
                         margin: '14px',
+                        background: theme.palette.warning['A400']
                       }}
                       onClick={() => {
                         router.push(`/course-planner-detail`); // Check route
