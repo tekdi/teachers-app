@@ -15,8 +15,8 @@
     "SEARCH_STUDENT": "Search Learner",
     "SORT_BY": "Sort by",
     "APPLY": "Apply",
-    "A_TO_Z": "A TO Z",
-    "Z_TO_A": "Z TO A",
+    "A_TO_Z": "A to Z",
+    "Z_TO_A": "Z to A",
     "HIGH_TO_LOW": "High to Low",
     "LOW_TO_HIGH": "Low to High",
     "NAMES": "Names",
@@ -123,7 +123,8 @@
     "FACILITATOR_UPDATED_SUCCESSFULLY": "Facilitator profile updated successfully!",
     "PLEASE_SELECT_THE_CENTER": "Please select the center.",
     "CREATE": "Create",
-    "OKAY": "Okay"
+    "OKAY": "Okay",
+    "HELD_EVERY_WEEK_ON": "Held every week on {{days}}"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -191,7 +192,7 @@
     "ATTENDANCE_OVERVIEW": "Attendance Overview",
     "CENTER_ATTENDANCE": "Center Attendance",
     "LOW_ATTENDANCE_STUDENTS": "Low Attendance Learners",
-    "N/A": "N/A",
+    "N/A": "No Centers Assigned",
     "CENTER_NAME": "Center Name",
     "ALL_CENTERS": "All Centers",
     "NO_LEARNER_WITH_LOW_ATTENDANCE": "No Learner with low attendance",
@@ -457,14 +458,14 @@
     "EXPAND_ALL": "Expand All",
     "RESOURCES": "Resources"
   },
-  "ASSESSMENTS":{
-    "ASSESSMENTS":"Assessments",
-    "CENTER":"Center",
-    "ASSESSMENT_TYPE":"Assessment Type",
-    "COMPLETED_THE_ASSESSMENT":"completed the assessment",
-    "SUBMITTED_ON":"Submitted On",
-    "CORRECT_ANSWER":"correct answers",
-    "NO_DATA_FOUND":"No data found",
-    "SEARCH_STUDENT":"search student"
+  "ASSESSMENTS": {
+    "ASSESSMENTS": "Assessments",
+    "CENTER": "Center",
+    "ASSESSMENT_TYPE": "Assessment Type",
+    "COMPLETED_THE_ASSESSMENT": "completed the assessment",
+    "SUBMITTED_ON": "Submitted On",
+    "CORRECT_ANSWER": "correct answers",
+    "NO_DATA_FOUND": "No data found",
+    "SEARCH_STUDENT": "search student"
   }
 }
