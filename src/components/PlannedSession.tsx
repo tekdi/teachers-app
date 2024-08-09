@@ -258,35 +258,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             </>
           )}
 
-          <Box sx={{ mt: 2 }}>
-            <Grid container spacing={2}>
-              <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-                <Box sx={{ mt: 3 }}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <CustomTimePicker
-                      label={t('CENTER_SESSION.START_TIME')}
-                      value={date}
-                      onChange={handleChange}
-                      sx={{ borderRadius: '4px', fontSize: '2px' }}
-                    />
-                  </LocalizationProvider>
-                </Box>
-              </Grid>
-              <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-                <Box sx={{ mt: 3 }}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <CustomTimePicker
-                      label={t('CENTER_SESSION.END_TIME')}
-                      value={date}
-                      onChange={handleChange}
-                      sx={{ borderRadius: '4px' }}
-                    />
-                  </LocalizationProvider>
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-
           {type !== sessionType.JUST && (
             <Box sx={{ mt: 2 }}>
               <Box sx={{ overflow: 'none' }}>
@@ -303,6 +274,34 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   }}
                 />
               </Box>
+
+              <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                  <Box sx={{ mt: 3 }}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <CustomTimePicker
+                        label={t('CENTER_SESSION.START_TIME')}
+                        value={date}
+                        onChange={handleChange}
+                        sx={{ borderRadius: '4px', fontSize: '2px' }}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                </Grid>
+                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                  <Box sx={{ mt: 3 }}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <CustomTimePicker
+                        label={t('CENTER_SESSION.END_TIME')}
+                        value={date}
+                        onChange={handleChange}
+                        sx={{ borderRadius: '4px' }}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                </Grid>
+              </Grid>
+
               <Grid container spacing={2}>
                 <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
                   <Box sx={{ mt: 3 }}>
