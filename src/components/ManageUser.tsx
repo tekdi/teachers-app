@@ -662,7 +662,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                       color: theme.palette.secondary.main,
                                     }}
                                   >
-                                    {user.name}
+                                    {user.name.charAt(0).toUpperCase() +
+                                      user.name.slice(1)}
                                   </Typography>
                                 </CustomLink>
                                 <Box
