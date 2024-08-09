@@ -68,6 +68,7 @@ import {
 import { accessControl } from '../../../app.config';
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import AssessmentReport from '@/components/AssessmentReport';
 
 interface LearnerProfileProp {
   reloadState?: boolean;
@@ -980,96 +981,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           }}
         >
           <CardContent>
-            <Typography
-              sx={{
-                color: theme.palette.warning['A200'],
-                fontWeight: 600,
-                fontSize: '13px',
-              }}
-              variant="h5"
-              gutterBottom
-            >
-              {t('COMMON.TEST_REPORT')}
-            </Typography>
-            <Box padding={0}>
-              <FormControl fullWidth sx={{ margin: 1, marginLeft: 0 }}>
-                <InputLabel id="demo-simple-select-helper-label">
-                  {t('PROFILE.TEST')}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
-                  value={test}
-                  label="test"
-                  onChange={handleChangeTest}
-                >
-                  <MenuItem value={'Post Test'}>
-                    {t('PROFILE.POST_TEST')}
-                  </MenuItem>
-                  <MenuItem value={'Pre Test'}>
-                    {t('PROFILE.PRE_TEST')}
-                  </MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl fullWidth sx={{ margin: 1, marginLeft: 0 }}>
-                <InputLabel id="demo-simple-select-helper-label">
-                  {t('PROFILE.SUBJECT')}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
-                  value={subject}
-                  label="Subject"
-                  onChange={handleChangeSubject}
-                >
-                  <MenuItem value={'English'}>{t('PROFILE.ENGLISH')}</MenuItem>
-                  <MenuItem value={'Hindi'}>{t('PROFILE.HINDI')}</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            {loading ? (
-              <Typography textAlign="center">{t('COMMON.LOADING')}</Typography>
-            ) : !uniqueDoId || uniqueDoId === '' ? (
-              <Box mt={2}>
-                <Typography textAlign={'center'}>
-                  {t('COMMON.NO_DATA_FOUND')}
-                </Typography>
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  background: '#F8EFE7',
-                  p: 2,
-                }}
-              >
-                <Box>
-                  <Typography variant="h5">
-                    {t('PROFILE.SUBMITTED_ON')} :{' '}
-                    {submittedOn
-                      ? format(new Date(submittedOn), 'dd MMMM, yyyy')
-                      : ''}
-                  </Typography>
-                </Box>
-                <Box display={'flex'} justifyContent={'space-between'} mt={1}>
-                  <Typography variant="h3" fontWeight={'bold'}>
-                    {t('PROFILE.MARK_OBTAINED')}
-                  </Typography>
-                  <Typography variant="h4" fontWeight={'bold'}>
-                    {totalScore ? totalScore : '0'}/
-                    {totalMaxScore ? totalMaxScore : '0'}
-                  </Typography>
-                </Box>
-                <Divider />
-                <Box mt={1}>
-                  <Typography variant="h5">
-                    {t('PROFILE.TOTAL_QUESTIONS')} :{assesmentData?.length}
-                  </Typography>
-                </Box>
-                <Box mt={2}>
-                  <MarksObtainedCard data={assesmentData} />
-                </Box>
-              </Box>
-            )}
+            
+              <AssessmentReport isTitleRequired={true}/>
           </CardContent>
         </Card>
       </Box>

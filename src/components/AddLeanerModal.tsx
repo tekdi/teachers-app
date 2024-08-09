@@ -156,7 +156,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           ) {
             apiBody.customFields.push({
               fieldId: fieldId,
-              value: [String(fieldValue)],
+              value: Array.isArray(fieldValue) ? fieldValue : [fieldValue],
             });
           } else {
             apiBody.customFields.push({

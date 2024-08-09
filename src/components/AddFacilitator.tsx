@@ -196,7 +196,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           ) {
             apiBody.customFields.push({
               fieldId: fieldId,
-              value: [String(fieldValue)],
+              value: Array.isArray(fieldValue) ? fieldValue : [fieldValue], 
             });
           } else {
             if (fieldSchema.checkbox && fieldSchema.type === 'array') {
