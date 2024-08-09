@@ -428,7 +428,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 }}
                 component="h2"
               >
-                {t('COMMON.NEW', { role: 'Learner' })}
+                {t('COMMON.NEW_FACILITATOR')}
               </Typography>
             </Box>
             <CloseIcon
