@@ -75,7 +75,7 @@ const FormButtons: React.FC<FormButtons> = ({
             height: '2.5rem',
             padding: theme.spacing(1),
             fontWeight: '500',
-            width: isSingleButton ? '100%' : '48%',
+            width: '100%',
           }}
           type="submit"
           onClick={() => onClick(formData)}
