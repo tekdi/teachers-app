@@ -317,6 +317,7 @@ export interface LearnerListProps {
   center?: string;
   showMiniProfile?: boolean;
   onLearnerDelete: () => void;
+  isFromProfile?: boolean;
 }
 export interface FacilitatorListParam {
   limit: number;

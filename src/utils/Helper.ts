@@ -383,3 +383,17 @@ export function filterMiniProfileFields(customFieldsData: UpdateCustomField[]) {
   }
   return filteredFields;
 }
+
+export const getUserDetailsById = (data: any[], userId: any) => {
+  const user = data?.find((user: { userId: any }) => user?.userId === userId);
+
+  if (user) {
+    return {
+      status: user?.status,
+      statusReason: user?.statusReason,
+      cohortMembershipId: user?.cohortMembershipId,
+    };
+  }
+
+  return null;
+};

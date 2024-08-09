@@ -5,10 +5,7 @@ import {
   UpdateCustomField,
 } from '@/utils/Interfaces';
 import React, { useEffect } from 'react';
-import {
-  Status,
-  Role,
-} from '@/utils/app.constant';
+import { Status, Role } from '@/utils/app.constant';
 import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import BottomDrawer from './BottomDrawer';
@@ -56,6 +53,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   center,
   showMiniProfile,
   onLearnerDelete,
+  isFromProfile = false
 }) => {
   const [state, setState] = React.useState({
     bottom: false,
@@ -391,166 +389,177 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
 
   return (
     <>
-      {learnerState.loading ? (
-        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-      ) : (
-        <LearnerModal
-          userId={userId}
-          open={learnerState.isModalOpenLearner}
-          onClose={handleCloseModalLearner}
-          data={filteredFields}
-          userName={learnerState.userName}
-          contactNumber={learnerState.contactNumber}
-          enrollmentNumber={learnerState.enrollmentNumber}
-        />
-      )}
-      <Box
-        px={2}
-        sx={{ borderBottom: `1px solid ${theme.palette.warning['A100']}` }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            gap: '20px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '15px 0',
-          }}
-        >
-          <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-            {/* <Box className="box_shadow_center">
-              <Woman2Icon
-                sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
-              />
-            </Box> */}
-            <Box>
-              {isDropout ? (
-                <Box
-                  sx={{
-                    fontSize: '16px',
-                    color: theme.palette.warning['400'],
-                    fontWeight: '400',
-                  }}
-                >
-                  {learnerName}
-                </Box>
-              ) : (
-                <CustomLink
-                  className="word-break"
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <Typography
-                    onClick={() => {
-                      showMiniProfile
-                        ? handleOpenModalLearner(userId!)
-                        : handleTeacherFullProfile(userId!);
-                      // ReactGA.event('teacher-details-link-clicked', {
-                      //   userId: userId,
-                      // });
-                    }}
-                    sx={{
-                      textAlign: 'left',
-                      fontSize: '16px',
-                      fontWeight: '400',
-                      color: theme.palette.secondary.main,
-                    }}
-                  >
-                    {learnerName}
-                  </Typography>
-                </CustomLink>
-              )}
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: '10px',
-                  alignItems: 'center',
-                  justifyContent: 'left',
-                }}
-              >
-                {/* <Box
-                  sx={{ fontSize: '12px', color: theme.palette.warning['400'] }}
-                >
-                  19 y/o
-                </Box> */}
-                {isDropout ? (
-                  <Box
-                    sx={{
-                      fontSize: '12px',
-                      color: theme.palette.warning['300'],
-                      background: theme.palette.error.light,
-                      fontWeight: '500',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '4px',
-                      padding: '4px 8px',
-                    }}
-                    onClick={handleDroppedOutLabelClick}
-                  >
-                    <Box sx={{ marginTop: '1px' }}>
-                      {t('COMMON.DROPPED_OUT')}
-                    </Box>
-                    <ErrorOutlineIcon style={{ fontSize: '13px' }} />
-                  </Box>
-                ) : (
-                  <>
-                    {/* <FiberManualRecordIcon
-                   sx={{
-                    fontSize: '9px',
-                    color: theme.palette.secondary.contrastText,
-                  }}
-                /> */}
-                    <Box
-                      sx={{
-                        fontSize: '14px',
-                        fontWeight: '400',
-                        color: theme.palette.warning['400'],
-                      }}
-                    >
-                      {enrollmentId}
-                    </Box>
-                  </>
-                )}
-              </Box>
-              {!isDropout && (
-                <Box
-                  display={'flex'}
-                  gap={'10px'}
-                  alignItems={'center'}
-                  justifyContent={'left'}
-                >
-                  <Box
-                    sx={{
-                      fontSize: '14px',
-                      fontWeight: '400',
-                      color: theme.palette.warning['400'],
-                    }}
-                  >
-                    {block}
-                  </Box>
-
-                  <Box
-                    sx={{
-                      fontSize: '14px',
-                      fontWeight: '400',
-                      color: theme.palette.warning['400'],
-                    }}
-                  >
-                    {center}
-                  </Box>
-                </Box>
-              )}
-            </Box>
-          </Box>
+      {isFromProfile ? (
+        <Box>
           <MoreVertIcon
             onClick={toggleDrawer('bottom', true)}
             sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
           />
         </Box>
-      </Box>
+      ) : (
+        <Box>
+          {learnerState.loading ? (
+            <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+          ) : (
+            <LearnerModal
+              userId={userId}
+              open={learnerState.isModalOpenLearner}
+              onClose={handleCloseModalLearner}
+              data={filteredFields}
+              userName={learnerState.userName}
+              contactNumber={learnerState.contactNumber}
+              enrollmentNumber={learnerState.enrollmentNumber}
+            />
+          )}
+          <Box
+            px={2}
+            sx={{ borderBottom: `1px solid ${theme.palette.warning['A100']}` }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '20px',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '15px 0',
+              }}
+            >
+              <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                {/* <Box className="box_shadow_center">
+              <Woman2Icon
+                sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
+              />
+            </Box> */}
+                <Box>
+                  {isDropout ? (
+                    <Box
+                      sx={{
+                        fontSize: '16px',
+                        color: theme.palette.warning['400'],
+                        fontWeight: '400',
+                      }}
+                    >
+                      {learnerName}
+                    </Box>
+                  ) : (
+                    <CustomLink
+                      className="word-break"
+                      href="#"
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      <Typography
+                        onClick={() => {
+                          showMiniProfile
+                            ? handleOpenModalLearner(userId!)
+                            : handleTeacherFullProfile(userId!);
+                          // ReactGA.event('teacher-details-link-clicked', {
+                          //   userId: userId,
+                          // });
+                        }}
+                        sx={{
+                          textAlign: 'left',
+                          fontSize: '16px',
+                          fontWeight: '400',
+                          color: theme.palette.secondary.main,
+                        }}
+                      >
+                        {learnerName}
+                      </Typography>
+                    </CustomLink>
+                  )}
+
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '10px',
+                      alignItems: 'center',
+                      justifyContent: 'left',
+                    }}
+                  >
+                    {/* <Box
+                  sx={{ fontSize: '12px', color: theme.palette.warning['400'] }}
+                >
+                  19 y/o
+                </Box> */}
+                    {isDropout ? (
+                      <Box
+                        sx={{
+                          fontSize: '12px',
+                          color: theme.palette.warning['300'],
+                          background: theme.palette.error.light,
+                          fontWeight: '500',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '4px',
+                          padding: '4px 8px',
+                        }}
+                        onClick={handleDroppedOutLabelClick}
+                      >
+                        <Box sx={{ marginTop: '1px' }}>
+                          {t('COMMON.DROPPED_OUT')}
+                        </Box>
+                        <ErrorOutlineIcon style={{ fontSize: '13px' }} />
+                      </Box>
+                    ) : (
+                      <>
+                        {/* <FiberManualRecordIcon
+                   sx={{
+                    fontSize: '9px',
+                    color: theme.palette.secondary.contrastText,
+                  }}
+                /> */}
+                        <Box
+                          sx={{
+                            fontSize: '14px',
+                            fontWeight: '400',
+                            color: theme.palette.warning['400'],
+                          }}
+                        >
+                          {enrollmentId}
+                        </Box>
+                      </>
+                    )}
+                  </Box>
+                  {!isDropout && (
+                    <Box
+                      display={'flex'}
+                      gap={'10px'}
+                      alignItems={'center'}
+                      justifyContent={'left'}
+                    >
+                      <Box
+                        sx={{
+                          fontSize: '14px',
+                          fontWeight: '400',
+                          color: theme.palette.warning['400'],
+                        }}
+                      >
+                        {block}
+                      </Box>
+
+                      <Box
+                        sx={{
+                          fontSize: '14px',
+                          fontWeight: '400',
+                          color: theme.palette.warning['400'],
+                        }}
+                      >
+                        {center}
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+              </Box>
+              <MoreVertIcon
+                onClick={toggleDrawer('bottom', true)}
+                sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
+              />
+            </Box>
+          </Box>
+        </Box>
+      )}
 
       <BottomDrawer
         toggleDrawer={toggleDrawer}

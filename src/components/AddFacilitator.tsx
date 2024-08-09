@@ -257,6 +257,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             setReloadProfile(true);
             onReload?.();
           }
+          onClose();
         } else {
           if (formData?.assignCenters?.length > 0) {
             setOpenSendCredModal(true);
