@@ -9,6 +9,7 @@ import {
   FormLabel,
   Grid,
   InputLabel,
+  MenuItem,
   Radio,
   RadioGroup,
   Select,
@@ -16,10 +17,15 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
-import { sessionMode, sessionType } from '@/utils/app.constant';
-
+import {
+  FormContext,
+  FormContextType,
+  sessionMode,
+  sessionType,
+} from '@/utils/app.constant';
+import utc from 'dayjs/plugin/utc';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -32,13 +38,18 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import WeekDays from './WeekDays';
+import { getFormRead } from '@/services/CreateUserService';
 
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
 type type = (typeof sessionType)[keyof typeof sessionType];
 
 interface Session {
   id?: number | string;
+  sessionMode?: string;
   selectedWeekDays?: string[];
+  startDatetime?: string;
+  endDatetime?: string;
+  subject?: string;
 }
 
 const PlannedSession: React.FC<PlannedModalProps> = ({
@@ -48,26 +59,185 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
   const [type, setType] = useState<type>(sessionType.REPEATING);
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>();
+  const [selectedSubject, setSelectedSubject] = useState<string>();
+  const [subjects, setSubjects] = useState<string[]>();
+  dayjs.extend(utc);
+  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
+  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
+  const [startTime, setStartTime] = useState<Dayjs | null>(dayjs());
+  const [endTime, setEndTime] = useState<Dayjs | null>(dayjs());
   const [sessionBlocks, setSessionBlocks] = useState<Session[]>([
-    { id: 0, selectedWeekDays: [] },
+    {
+      id: 0,
+      selectedWeekDays: [],
+      sessionMode: mode,
+      startDatetime: '',
+      endDatetime: '',
+      subject: '',
+    },
   ]);
-  const handleSessionModeChange = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
+
+  useEffect(() => {
+    const initialStartDateTime = combineDateAndTime(startDate, startTime);
+    const initialEndDateTime = combineDateAndTime(endDate, endTime);
+
+    const startDatetime = convertToUTC(initialStartDateTime);
+    const endDatetime = convertToUTC(initialEndDateTime);
+
+    setSessionBlocks((blocks) =>
+      blocks.map((block) =>
+        block.id === 0
+          ? {
+              ...block,
+              startDatetime: startDatetime || '',
+              endDatetime: endDatetime || '',
+            }
+          : block
+      )
+    );
+  }, [startDate, startTime, endDate, endTime]);
+
+  const handleSessionModeChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    id: string | number | undefined
+  ) => {
     setMode(event.target.value as mode);
+    setSessionBlocks(
+      sessionBlocks.map((block) =>
+        block?.id === id ? { ...block, sessionMode: event.target.value } : block
+      )
+    );
   };
+
   const handleSessionTypeChange = (event: ChangeEvent<HTMLInputElement>) => {
     setType(event.target.value as type);
     console.log(event.target.value);
   };
 
-  const [date, setDate] = React.useState<Dayjs | null>(
-    dayjs('2014-08-18T21:11:54')
-  );
+  useEffect(() => {
+    const getAddFacilitatorFormData = async () => {
+      try {
+        const response = await getFormRead(
+          FormContext.USERS,
+          FormContextType.TEACHER
+        );
 
-  const handleChange = (newValue: Dayjs | null) => {
-    console.log(newValue);
-    setDate(newValue);
+        console.log('sortedFields', response);
+        if (response) {
+          const subjectTeach = response?.fields
+            .filter((field: any) => field?.label === 'SUBJECTS_I_TEACH')
+            .flatMap((field: any) =>
+              field?.options?.map((option: any) => option?.label)
+            );
+
+          const mainSubjects = response?.fields
+            .filter((field: any) => field?.label === 'MY_MAIN_SUBJECTS')
+            .flatMap((field: any) =>
+              field?.options?.map((option: any) => option?.label)
+            );
+
+          const combinedSubjects = Array.from(
+            new Set([...subjectTeach, ...mainSubjects])
+          );
+
+          setSubjects(combinedSubjects);
+
+          console.log(combinedSubjects);
+        }
+
+        let centerOptionsList;
+        if (typeof window !== 'undefined' && window.localStorage) {
+          const CenterList = localStorage.getItem('CenterList');
+          const centerOptions = CenterList ? JSON.parse(CenterList) : [];
+          centerOptionsList = centerOptions.map(
+            (center: { cohortId: string; cohortName: string }) => ({
+              value: center.cohortId,
+              label: center.cohortName,
+            })
+          );
+          console.log(centerOptionsList);
+        }
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+      }
+    };
+    getAddFacilitatorFormData();
+  }, []);
+
+  const handleSubjectChange = (
+    id: number | string | undefined,
+    event: React.ChangeEvent<{ value: unknown }>
+  ) => {
+    const newSubject = event.target.value as string;
+    setSelectedSubject(newSubject);
+    setSessionBlocks(
+      sessionBlocks.map((block) =>
+        block.id === id
+          ? {
+              ...block,
+              subject: newSubject,
+            }
+          : block
+      )
+    );
+    console.log(sessionBlocks);
   };
+
+  const combineDateAndTime = (
+    date: Dayjs | null,
+    time: Dayjs | null
+  ): Dayjs | null => {
+    if (date && time) {
+      return date.hour(time.hour()).minute(time.minute()).second(time.second());
+    }
+    return null;
+  };
+
+  const convertToUTC = (dateTime: Dayjs | null): string | null => {
+    return dateTime ? dateTime.utc().format('YYYY-MM-DDTHH:mm:ss[Z]') : null;
+  };
+
+  const handleChange = (
+    id: string | number | undefined,
+    newValue: Dayjs | null,
+    type: 'start' | 'end',
+    field: 'date' | 'time'
+  ) => {
+    if (newValue) {
+      console.log(newValue);
+      if (type === 'start' && field === 'date') {
+        setStartDate(newValue);
+      } else if (type === 'start' && field === 'time') {
+        setStartTime(newValue);
+      } else if (type === 'end' && field === 'date') {
+        setEndDate(newValue);
+      } else if (type === 'end' && field === 'time') {
+        setEndTime(newValue);
+      }
+    }
+
+    const combinedStartDateTime = combineDateAndTime(startDate, startTime);
+    const combinedEndDateTime = combineDateAndTime(endDate, endTime);
+
+    const startDatetime = convertToUTC(combinedStartDateTime);
+    const endDatetime = convertToUTC(combinedEndDateTime);
+
+    if (startDatetime && endDatetime) {
+      setSessionBlocks(
+        sessionBlocks.map((block) =>
+          block?.id === id
+            ? {
+                ...block,
+                startDatetime: startDatetime,
+                endDatetime: endDatetime,
+              }
+            : block
+        )
+      );
+    }
+    console.log(sessionBlocks);
+  };
+
   const CustomTimePicker = styled(TimePicker)(({ theme }) => ({
     '& .MuiInputAdornment-root': {
       display: 'none',
@@ -77,9 +247,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const handleLinkChange = (event: any) => {
     console.log(event.target.value);
   };
-  // const handleTimeChange = (event: any) => {
-  //   console.log(event.target.value);
-  // };
+
   const handlePasscodeChange = (event: any) => {
     console.log(event.target.value);
   };
@@ -103,13 +271,22 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const handleAddSession = () => {
     setSessionBlocks([
       ...sessionBlocks,
-      { id: sessionBlocks.length, selectedWeekDays: [] },
+      {
+        id: sessionBlocks.length,
+        selectedWeekDays: [],
+        sessionMode: mode,
+        startDatetime: '',
+        endDatetime: '',
+        subject: '',
+      },
     ]);
+    console.log(sessionBlocks);
   };
-
   const handleRemoveSession = (id: any) => {
     setSessionBlocks(sessionBlocks.filter((block) => block?.id !== id));
   };
+
+  console.log(sessionBlocks);
 
   return (
     <Box overflow={'auto'}>
@@ -118,7 +295,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           <Box>
             <SessionMode
               mode={mode}
-              handleSessionModeChange={handleSessionModeChange}
+              handleSessionModeChange={(e) =>
+                handleSessionModeChange(e, block?.id)
+              }
               sessions={{
                 tile: t('CENTER_SESSION.MODE_OF_SESSION'),
                 mode1: t('CENTER_SESSION.ONLINE'),
@@ -140,8 +319,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   id="demo-simple-select"
                   label={t('CENTER_SESSION.SUBJECT')}
                   style={{ borderRadius: '4px' }}
+                  onChange={(event: any) =>
+                    handleSubjectChange(block?.id, event)
+                  }
+                  value={selectedSubject}
                 >
-                  {/* <MenuItem value={'Mathematics'}>Mathematics</MenuItem> */}
+                  {subjects?.map((subject: string) => (
+                    <MenuItem key={subject} value={subject}>
+                      {subject}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>
@@ -243,8 +430,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       <Stack spacing={3}>
                         <MobileDatePicker
                           label="Date"
-                          value={date}
-                          onChange={handleChange}
+                          value={startDate}
+                          onChange={(newValue) =>
+                            handleChange(block?.id, newValue, 'start', 'date')
+                          }
                           format="DD MMM, YYYY"
                           sx={{ borderRadius: '4px' }}
                         />
@@ -279,8 +468,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <CustomTimePicker
                         label={t('CENTER_SESSION.START_TIME')}
-                        value={date}
-                        onChange={handleChange}
+                        value={startTime}
+                        onChange={(newValue) =>
+                          handleChange(block?.id, newValue, 'start', 'time')
+                        }
                         sx={{ borderRadius: '4px', fontSize: '2px' }}
                       />
                     </LocalizationProvider>
@@ -291,8 +482,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <CustomTimePicker
                         label={t('CENTER_SESSION.END_TIME')}
-                        value={date}
-                        onChange={handleChange}
+                        value={endTime}
+                        onChange={(newValue) =>
+                          handleChange(block?.id, newValue, 'end', 'time')
+                        }
                         sx={{ borderRadius: '4px' }}
                       />
                     </LocalizationProvider>
@@ -307,8 +500,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       <Stack spacing={3}>
                         <MobileDatePicker
                           label={t('CENTER_SESSION.START_DATE')}
-                          value={date}
-                          onChange={handleChange}
+                          value={startDate}
+                          onChange={(newValue) =>
+                            handleChange(block?.id, newValue, 'start', 'date')
+                          }
                           format="DD MMM, YYYY"
                           sx={{ borderRadius: '4px' }}
                         />
@@ -322,8 +517,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       <Stack spacing={3}>
                         <MobileDatePicker
                           label={t('CENTER_SESSION.END_DATE')}
-                          value={date}
-                          onChange={handleChange}
+                          value={endDate}
+                          onChange={(newValue) =>
+                            handleChange(block?.id, newValue, 'end', 'date')
+                          }
                           format="DD MMM, YYYY"
                           sx={{ borderRadius: '4px' }}
                         />
