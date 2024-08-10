@@ -9,7 +9,7 @@ import LearnersListItem from '@/components/LearnersListItem';
 import { Role, Status, limit } from '@/utils/app.constant';
 import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
-import { Box, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import Loader from './Loader';
 
 interface UserDataProps {
@@ -96,38 +96,51 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       ) : (
         <>
-          {userData?.map((data: any) => {
-            return (
-              <LearnersListItem
-                type={Role.STUDENT}
-                key={data.userId}
-                userId={data.userId}
-                learnerName={data.name}
-                enrollmentId={data.enrollmentNumber}
-                cohortMembershipId={data.cohortMembershipId}
-                isDropout={data.memberStatus === Status.DROPOUT}
-                statusReason={data.statusReason}
-                reloadState={reloadState}
-                setReloadState={setReloadState}
-                showMiniProfile={true}
-                onLearnerDelete={handleLearnerDelete}
-              />
-            );
-          })}
-          {!userData?.length && (
-            <Box
-              sx={{
-                m: '1.125rem',
-                display: 'flex',
-                justifyContent: 'left',
-                alignItems: 'center',
-              }}
-            >
-              <Typography style={{ fontWeight: 'bold' }}>
-                {t('COMMON.NO_DATA_FOUND')}
-              </Typography>
-            </Box>
-          )}
+          <Box sx={{
+            '@media (min-width: 900px)': {
+              background: '#FBF4E4',
+              marginTop: '12px',
+              paddingBottom: '20px'
+            },
+          }}>
+            <Grid container>
+
+              {userData?.map((data: any) => {
+                return (
+                  <Grid xs={12} sm={6} md={4} >
+                    <LearnersListItem
+                      type={Role.STUDENT}
+                      key={data.userId}
+                      userId={data.userId}
+                      learnerName={data.name}
+                      enrollmentId={data.enrollmentNumber}
+                      cohortMembershipId={data.cohortMembershipId}
+                      isDropout={data.memberStatus === Status.DROPOUT}
+                      statusReason={data.statusReason}
+                      reloadState={reloadState}
+                      setReloadState={setReloadState}
+                      showMiniProfile={true}
+                      onLearnerDelete={handleLearnerDelete}
+                    />
+                  </Grid>
+                );
+              })}
+              {!userData?.length && (
+                <Box
+                  sx={{
+                    m: '1.125rem',
+                    display: 'flex',
+                    justifyContent: 'left',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography style={{ fontWeight: 'bold' }}>
+                    {t('COMMON.NO_DATA_FOUND')}
+                  </Typography>
+                </Box>
+              )}
+            </Grid>
+          </Box>
         </>
       )}
     </div>

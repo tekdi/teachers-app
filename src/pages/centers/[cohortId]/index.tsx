@@ -120,7 +120,7 @@ const TeachingCenterDetails = () => {
     setOpenSchedule(true);
   };
 
-  const handleSchedule = () => {};
+  const handleSchedule = () => { };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {

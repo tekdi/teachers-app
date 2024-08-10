@@ -7,6 +7,7 @@ import {
 } from '@/utils/Helper';
 import {
   Button,
+  Grid,
   IconButton,
   ListItemIcon,
   Menu,
@@ -548,20 +549,25 @@ const TeachingCenterDetails = () => {
           </Box>
 
           <Box mt={3} px="18px">
-            {sessions?.map((item) => (
-              <SessionCard data={item} key={item.id}>
-                <SessionCardFooter item={item} />
-              </SessionCard>
-            ))}
-            {sessions && sessions?.length === 0 && (
-              <Box
-                className="fs-12 fw-400 italic"
-                sx={{ color: theme.palette.warning['300'] }}
-              >
-                {t('COMMON.NO_SESSIONS_SCHEDULED')}
-              </Box>
-            )}
+            <Grid container spacing={2}>
+              {sessions?.map((item) => (
+                <Grid item xs={6} key={item.id}>
+                  <SessionCard data={item}>
+                    <SessionCardFooter item={item} />
+                  </SessionCard>
+                </Grid>
+              ))}
+              {sessions && sessions.length === 0 && (
+                <Box
+                  className="fs-12 fw-400 italic"
+                  sx={{ color: theme.palette.warning['300'] }}
+                >
+                  {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                </Box>
+              )}
+            </Grid>
           </Box>
+
         </>
       )}
 
