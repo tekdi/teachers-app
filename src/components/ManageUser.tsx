@@ -627,7 +627,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                     sx={{
                       gap: '15px', alignItems: 'center',
                       '@media (min-width: 900px)': {
-                        background: '#FBF4E4',
+                        background: theme.palette.action.selected,
                         padding: '20px',
                         borderRadius: '12px'
                       }
@@ -651,10 +651,10 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                 sx={{
                                   cursor: 'pointer',
                                   '@media (min-width: 900px)': {
-                                    border: `1px solid #FBF4E4}`,
+                                    border: `1px solid  ${theme.palette.action.selected}`,
                                     padding: '4px 10px',
                                     borderRadius: '8px',
-                                    background: '#fff'
+                                    background: theme.palette.warning['A400']
                                   },
                                 }}
                               >

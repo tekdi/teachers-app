@@ -38,7 +38,7 @@ const FormButtons: React.FC<FormButtons> = ({
       <Box
         sx={{
           padding: '16px 16px 0',
-          background: '#fff',
+          background: theme.palette.warning['A400'],
           display: 'flex',
           justifyContent: 'center',
           gap: '15px',

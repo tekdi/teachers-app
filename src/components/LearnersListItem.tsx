@@ -430,10 +430,10 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 justifyContent: 'space-between',
                 padding: '15px 0',
                 '@media (min-width: 900px)': {
-                  border: '1px solid #D0C5B4',
+                  border: `1px solid ${theme.palette.warning['A100']}`,
                   padding: '10px',
                   borderRadius: '8px',
-                  background: '#fff'
+                  background: theme.palette.warning['A400']
                 },
               }}
             >

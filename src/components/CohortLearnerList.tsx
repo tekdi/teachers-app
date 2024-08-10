@@ -11,6 +11,8 @@ import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
 import { Box, Grid, Typography } from '@mui/material';
 import Loader from './Loader';
+import { useTheme } from '@mui/material/styles';
+
 
 interface UserDataProps {
   name: string;
@@ -90,6 +92,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   };
 
   console.log('userData', userData);
+  const theme = useTheme<any>();
+
   return (
     <div>
       {loading ? (
@@ -98,7 +102,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
         <>
           <Box sx={{
             '@media (min-width: 900px)': {
-              background: '#FBF4E4',
+              background: theme.palette.action.selected,
               marginTop: '12px',
               paddingBottom: '20px'
             },
