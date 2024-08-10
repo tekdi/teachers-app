@@ -50,7 +50,7 @@ import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { Role } from '@/utils/app.constant';
 
-interface DashboardProps {}
+interface DashboardProps { }
 
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
@@ -349,7 +349,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       return 'Invalid Date';
     }
   };
-  
+
 
   useEffect(() => {
     const getAttendanceStats = async () => {
@@ -493,8 +493,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       flexDirection={'column'}
                       padding={'1.5rem 1.2rem 1rem'}
                     >
-                      <Box display={'flex'} justifyContent={'space-between'}>
-                        <Box className="d-md-flex flex-basis-md-90 space-md-between w-100">
+                      <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                        <Box className="d-md-flex flex-basis-md-90 min-align-md-center space-md-between w-100">
                           <Typography
                             variant="h2"
                             sx={{ fontSize: '14px' }}
@@ -647,8 +647,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                       color: theme.palette.warning['A400'],
                                     }}
                                     fontSize={'0.8rem'}
-                                    // variant="h6"
-                                    // className="word-break"
+                                  // variant="h6"
+                                  // className="word-break"
                                   >
                                     {t('DASHBOARD.NOT_MARKED')}
                                   </Typography>
@@ -692,7 +692,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               }
                             >
                               {currentAttendance === 'notMarked' ||
-                              currentAttendance === 'futureDate'
+                                currentAttendance === 'futureDate'
                                 ? t('COMMON.MARK')
                                 : t('COMMON.MODIFY')}
                             </Button>
@@ -809,9 +809,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       mx={'1.2rem'}
                     >
                       {classId &&
-                      classId !== 'all' &&
-                      cohortsData &&
-                      lowAttendanceLearnerList ? (
+                        classId !== 'all' &&
+                        cohortsData &&
+                        lowAttendanceLearnerList ? (
                         <Grid container spacing={2}>
                           <Grid item xs={4} className={'joyride-step-5'}>
                             <OverviewCard
@@ -834,24 +834,24 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               ))}
                               valuePartOne={
                                 Array.isArray(lowAttendanceLearnerList) &&
-                                lowAttendanceLearnerList.length > 2
+                                  lowAttendanceLearnerList.length > 2
                                   ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                                   : lowAttendanceLearnerList.length === 2
                                     ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                                     : lowAttendanceLearnerList.length === 1
                                       ? `${lowAttendanceLearnerList[0]}`
                                       : Array.isArray(
-                                            lowAttendanceLearnerList
-                                          ) &&
-                                          lowAttendanceLearnerList.length === 0
+                                        lowAttendanceLearnerList
+                                      ) &&
+                                        lowAttendanceLearnerList.length === 0
                                         ? t(
-                                            'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
-                                          )
+                                          'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
+                                        )
                                         : t('ATTENDANCE.N/A')
                               }
                               valuePartTwo={
                                 Array.isArray(lowAttendanceLearnerList) &&
-                                lowAttendanceLearnerList.length > 2
+                                  lowAttendanceLearnerList.length > 2
                                   ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                                   : null
                               }
@@ -880,10 +880,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Box>
                 </Box>
                 {role === Role.TEAM_LEADER && (
-        <Box p={2}>
-          <AttendanceComparison blockName={blockName}/>
-        </Box>
-      )}
+                  <Box p={2}>
+                    <AttendanceComparison blockName={blockName} />
+                  </Box>
+                )}
                 {/* <Box sx={{ background: '#fff' }}>
             <Typography
               textAlign={'left'}

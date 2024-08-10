@@ -282,23 +282,23 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean, user: any) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
-      setCohortDeleteId(user.userId);
-      setCenters(
-        cohortsData?.[user?.userId]?.map((cohort) => cohort?.name) || []
-      );
-      setSelectedUser(user);
+      (event: React.KeyboardEvent | React.MouseEvent) => {
+        setCohortDeleteId(user.userId);
+        setCenters(
+          cohortsData?.[user?.userId]?.map((cohort) => cohort?.name) || []
+        );
+        setSelectedUser(user);
 
-      if (
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
+        if (
+          event.type === 'keydown' &&
+          ((event as React.KeyboardEvent).key === 'Tab' ||
+            (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+          return;
+        }
 
-      setState({ ...state, bottom: open });
-    };
+        setState({ ...state, bottom: open });
+      };
 
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
@@ -488,7 +488,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     setOpenFacilitatorModal(false);
   };
 
-  const handleDeleteUser = () => {};
+  const handleDeleteUser = () => { };
 
   const handleFacilitatorAdded = () => {
     setIsFacilitatorAdded((prev) => prev);
@@ -624,92 +624,111 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                   }}
                 >
                   <Box
-                    sx={{ gap: '15px', alignItems: 'center' }}
+                    sx={{
+                      gap: '15px', alignItems: 'center',
+                      '@media (min-width: 900px)': {
+                        background: '#FBF4E4',
+                        padding: '20px',
+                        borderRadius: '12px'
+                      }
+                    }}
                     width={'100%'}
+
                   >
-                    {users &&
-                      users.length !== 0 &&
-                      [...users]
-                        .sort((a, b) => a.name.localeCompare(b.name))
-                        .map((user) => (
-                          <Box
-                            key={user.userId}
-                            display={'flex'}
-                            borderBottom={`1px solid ${theme.palette.warning['A100']}`}
-                            width={'100%'}
-                            justifyContent={'space-between'}
-                            sx={{ cursor: 'pointer' }}
-                          >
-                            <Box display="flex" alignItems="center" gap="5px">
-                              <Box>
-                                <CustomLink
-                                  className="word-break"
-                                  href="#"
-                                  onClick={(e) => e.preventDefault()}
-                                >
-                                  <Typography
-                                    onClick={() => {
-                                      handleTeacherFullProfile(user.userId!);
-                                      // ReactGA.event('teacher-details-link-clicked', {
-                                      //   userId: userId,
-                                      // });
-                                    }}
+                    <Grid container spacing={2} >
+                      {users &&
+                        users.length !== 0 &&
+                        [...users]
+                          .sort((a, b) => a.name.localeCompare(b.name))
+                          .map((user) => (
+                            <Grid item xs={12} sm={4} md={4}>
+                              <Box
+                                key={user.userId}
+                                display={'flex'}
+                                borderBottom={`1px solid ${theme.palette.warning['A100']}`}
+                                width={'100%'}
+                                justifyContent={'space-between'}
+                                sx={{
+                                  cursor: 'pointer',
+                                  '@media (min-width: 900px)': {
+                                    border: `1px solid #FBF4E4}`,
+                                    padding: '4px 10px',
+                                    borderRadius: '8px',
+                                    background: '#fff'
+                                  },
+                                }}
+                              >
+                                <Box display="flex" alignItems="center" gap="5px">
+                                  <Box>
+                                    <CustomLink
+                                      className="word-break"
+                                      href="#"
+                                      onClick={(e) => e.preventDefault()}
+                                    >
+                                      <Typography
+                                        onClick={() => {
+                                          handleTeacherFullProfile(user.userId!);
+                                          // ReactGA.event('teacher-details-link-clicked', {
+                                          //   userId: userId,
+                                          // });
+                                        }}
+                                        sx={{
+                                          textAlign: 'left',
+                                          fontSize: '16px',
+                                          fontWeight: '400',
+                                          marginTop: '5px',
+                                          color: theme.palette.secondary.main,
+                                        }}
+                                      >
+                                        {user.name.charAt(0).toUpperCase() +
+                                          user.name.slice(1)}
+                                      </Typography>
+                                    </CustomLink>
+                                    <Box
+                                      sx={{
+                                        backgroundColor: '#FFF8F2',
+                                        padding: '5px',
+                                        borderRadius: '5px',
+                                        fontSize: '12px',
+                                        fontWeight: '600',
+                                        color: 'black',
+                                        marginBottom: '10px',
+                                      }}
+                                    >
+                                      {user?.cohortNames
+                                        ? `${user.cohortNames}`
+                                        : t('ATTENDANCE.N/A')}
+                                    </Box>
+                                  </Box>
+                                </Box>
+                                <Box>
+                                  <MoreVertIcon
+                                    onClick={toggleDrawer('bottom', true, user)}
                                     sx={{
-                                      textAlign: 'left',
-                                      fontSize: '16px',
-                                      fontWeight: '400',
-                                      marginTop: '5px',
-                                      color: theme.palette.secondary.main,
+                                      fontSize: '24px',
+                                      marginTop: '1rem',
+                                      color: theme.palette.warning['300'],
                                     }}
-                                  >
-                                    {user.name.charAt(0).toUpperCase() +
-                                      user.name.slice(1)}
-                                  </Typography>
-                                </CustomLink>
-                                <Box
-                                  sx={{
-                                    backgroundColor: '#FFF8F2',
-                                    padding: '5px',
-                                    borderRadius: '5px',
-                                    fontSize: '12px',
-                                    fontWeight: '600',
-                                    color: 'black',
-                                    marginBottom: '10px',
-                                  }}
-                                >
-                                  {user?.cohortNames
-                                    ? `${user.cohortNames}`
-                                    : t('ATTENDANCE.N/A')}
+                                  />
                                 </Box>
                               </Box>
-                            </Box>
-                            <Box>
-                              <MoreVertIcon
-                                onClick={toggleDrawer('bottom', true, user)}
-                                sx={{
-                                  fontSize: '24px',
-                                  marginTop: '1rem',
-                                  color: theme.palette.warning['300'],
-                                }}
-                              />
-                            </Box>
-                          </Box>
-                        ))}
-
-                    {!users?.length && (
-                      <Box
-                        sx={{
-                          m: '1.125rem',
-                          display: 'flex',
-                          justifyContent: 'left',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Typography style={{ fontWeight: 'bold' }}>
-                          {t('COMMON.NO_DATA_FOUND')}
-                        </Typography>
-                      </Box>
-                    )}
+                            </Grid>
+                          ))}
+                      {!users?.length && (
+                        <Box
+                          sx={{
+                            m: '1.125rem',
+                            display: 'flex',
+                            justifyContent: 'left',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Typography style={{ fontWeight: 'bold' }}>
+                            {t('COMMON.NO_DATA_FOUND')}
+                          </Typography>
+                        </Box>
+                      )}
+                    </Grid>
                   </Box>
                 </Box>
               </Box>

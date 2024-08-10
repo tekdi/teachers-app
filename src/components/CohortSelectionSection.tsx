@@ -346,7 +346,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     fontSize: '14px',
                                     color: '#4D4639',
                                     textTransform: 'capitalize',
-                                   
+
                                   }}
                                 >
                                   {cohort.name}

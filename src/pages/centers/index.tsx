@@ -279,8 +279,8 @@ const TeachingCenters = () => {
                 sx={{ display: 'flex', alignItems: 'center' }}
                 container
               >
-                <Grid sx={{ paddingLeft: '0px !important' }} item xs={8}>
-                  <Box >
+                <Grid sx={{ paddingLeft: '18px !important' }} item xs={8}>
+                  <Box>
                     <TextField
                       value={searchInput}
                       onChange={handleSearchChange}
