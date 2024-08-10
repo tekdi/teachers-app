@@ -745,9 +745,9 @@ main {
   background: var(--mui-palette-warning-900) !important;
 }
 
-.modal-bottom div:nth-child(1) {
+/* .modal-bottom div:nth-child(1) {
   position: unset !important;
-}
+} */
 
 .selected-start-end {
   background-color: var(--mui-palette-primary-main) !important;

@@ -78,7 +78,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
 
   return (
     <div>
-      <Drawer anchor="bottom" open={state.bottom} className="modal-bottom">
+      <Drawer anchor="bottom" onClose={toggleDrawer('bottom', false, '')} open={state.bottom} className="modal-bottom">
         {list('bottom')}
       </Drawer>
     </div>
