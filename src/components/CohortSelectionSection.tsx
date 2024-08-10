@@ -344,9 +344,8 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                   style={{
                                     fontWeight: '500',
                                     fontSize: '14px',
-                                    color: '#4D4639',
+                                    color: theme.palette.warning['A200'],
                                     textTransform: 'capitalize',
-                                   
                                   }}
                                 >
                                   {cohort.name}
@@ -357,7 +356,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                 style={{
                                   fontWeight: '500',
                                   fontSize: '14px',
-                                  color: '#4D4639',
+                                  color: theme.palette.warning['A200'],
                                   padding: '0 15px',
                                 }}
                               >
@@ -404,7 +403,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                   style={{
                                     fontWeight: '500',
                                     fontSize: '14px',
-                                    color: '#4D4639',
+                                    color: theme.palette.warning['A200'],
                                     textTransform: 'capitalize',
                                   }}
                                 >
@@ -416,7 +415,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                 style={{
                                   fontWeight: '500',
                                   fontSize: '14px',
-                                  color: '#4D4639',
+                                  color: theme.palette.warning['A200'],
                                   padding: '0 15px',
                                 }}
                               >

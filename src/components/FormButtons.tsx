@@ -26,7 +26,7 @@ const FormButtons: React.FC<FormButtons> = ({
   const buttonText = isSingleButton
     ? t('COMMON.SAVE')
     : (isCreateCentered && !isCreatedFacilitator && !isCreatedLearner) ||
-        (isCreatedLearner && !isCreatedFacilitator && !isCreateCentered)
+      (isCreatedLearner && !isCreatedFacilitator && !isCreateCentered)
       ? t('COMMON.CREATE')
       : t('GUIDE_TOUR.NEXT');
 
@@ -37,8 +37,8 @@ const FormButtons: React.FC<FormButtons> = ({
       <Divider />
       <Box
         sx={{
-          padding: '16px',
-          background: '#fff',
+          padding: '16px 16px 0',
+          background: theme.palette.warning['A400'],
           display: 'flex',
           justifyContent: 'center',
           gap: '15px',
