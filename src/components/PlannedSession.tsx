@@ -132,13 +132,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     event: ChangeEvent<HTMLInputElement>,
     id: string | number | undefined
   ) => {
-    // const mode =  event.target.value === 'Offline' ? 'Offline' : '
     setMode(event.target.value.toLowerCase() as mode);
-    setSessionBlocks(
-      sessionBlocks.map((block) =>
-        block?.id === id ? { ...block, sessionMode: event.target.value } : block
-      )
+    const updatedSessionBlocks = sessionBlocks.map((block) =>
+      block.id === id
+        ? { ...block, sessionMode: event.target.value.toLowerCase() }
+        : block
     );
+    setSessionBlocks(updatedSessionBlocks);
   };
 
   const handleSessionTypeChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -212,7 +212,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           : block
       )
     );
-    console.log(sessionBlocks);
   };
 
   const combineDateAndTime = (
@@ -373,7 +372,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         id: sessionBlocks.length,
         selectedWeekDays: [],
         DaysOfWeek: [],
-        sessionMode: mode,
+        sessionMode: '',
         startDatetime: '',
         endDatetime: '',
         subject: '',
@@ -384,6 +383,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     ]);
     console.log(sessionBlocks);
   };
+
   const handleRemoveSession = (id: any) => {
     setSessionBlocks(sessionBlocks.filter((block) => block?.id !== id));
   };
@@ -541,7 +541,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         <Box sx={{ padding: '10px 16px' }}>
           <Box>
             <SessionMode
-              mode={mode}
+              mode={block?.sessionMode || mode}
               handleSessionModeChange={(e) =>
                 handleSessionModeChange(e, block?.id)
               }
@@ -581,7 +581,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             </Box>
           )}
 
-          {mode === sessionMode.ONLINE && (
+          {block?.sessionMode === sessionMode.ONLINE && (
             <>
               {clickedBox === 'EXTRA_SESSION' && (
                 <>
@@ -786,6 +786,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </Grid>
             </Box>
           )}
+
           {sessionBlocks.length > 1 && (
             <Box
               sx={{
