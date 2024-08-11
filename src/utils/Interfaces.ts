@@ -148,6 +148,7 @@ export interface PlannedModalProps {
   scheduleEvent?: boolean;
   cohortName?: string;
   cohortId?: string;
+  onCloseModal?: () => void | undefined;
 }
 
 export interface ScheduleModalProps {

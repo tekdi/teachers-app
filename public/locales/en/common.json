@@ -124,7 +124,8 @@
     "PLEASE_SELECT_THE_CENTER": "Please select the center.",
     "CREATE": "Create",
     "OKAY": "Okay",
-    "HELD_EVERY_WEEK_ON": "Held every week on {{days}}"
+    "HELD_EVERY_WEEK_ON": "Held every week on {{days}}",
+    "SESSION_SCHEDULED_SUCCESSFULLY": "Session has been scheduled successfully!"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",

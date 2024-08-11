@@ -109,7 +109,7 @@ const TeachingCenterDetails = () => {
   const [clickedBox, setClickedBox] = useState<string | null>(null);
   const [isLearnerAdded, setIsLearnerAdded] = useState(false);
   const [createEvent, setCreateEvent] = useState(false);
-
+  const [eventCreated, setEventCreated] = useState(false);
   const handleClick = (selection: string) => {
     console.log('planned', selection);
     setClickedBox(selection);
@@ -127,12 +127,23 @@ const TeachingCenterDetails = () => {
     setCreateEvent(true);
   };
 
+  const handleCloseSchedule = () => {
+    setEventCreated(true);
+  };
+
+  useEffect(() => {
+    if (eventCreated) {
+      setOpen(false);
+    }
+  }, [eventCreated]);
   const handleOpen = () => setOpen(true);
+
   const handleClose = () => {
     setOpen(false);
     setOpenSchedule(false);
     setDeleteModal(false);
   };
+
   const setRemoveCohortId = reassignLearnerStore(
     (state) => state.setRemoveCohortId
   );
@@ -207,7 +218,7 @@ const TeachingCenterDetails = () => {
     };
 
     getSessionsData();
-  }, [selectedDate]);
+  }, [selectedDate, eventCreated]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -481,6 +492,7 @@ const TeachingCenterDetails = () => {
                 scheduleEvent={createEvent}
                 cohortName={cohortName}
                 cohortId={cohortId}
+                onCloseModal={handleCloseSchedule}
               />
             ) : (
               <Schedule clickedBox={clickedBox} handleClick={handleClick} />
@@ -581,7 +593,6 @@ const TeachingCenterDetails = () => {
               )}
             </Grid>
           </Box>
-
         </>
       )}
 

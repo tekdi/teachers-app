@@ -44,6 +44,7 @@ import { getFormRead } from '@/services/CreateUserService';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { DaysOfWeek } from '../../app.config';
 import { createEvent } from '@/services/EventService';
+import { showToastMessage } from './Toastify';
 
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
 type type = (typeof sessionType)[keyof typeof sessionType];
@@ -55,6 +56,7 @@ interface Session {
   DaysOfWeek?: number[];
   startDatetime?: string;
   endDatetime?: string;
+  endDateValue?: string;
   subject?: string;
   isRecurring?: boolean;
 }
@@ -65,6 +67,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   scheduleEvent,
   cohortName,
   cohortId,
+  onCloseModal,
 }) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
   const [type, setType] = useState<type>(sessionType.REPEATING);
@@ -84,6 +87,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionMode: mode,
       startDatetime: '',
       endDatetime: '',
+      endDateValue: '',
       subject: '',
       isRecurring: false,
     },
@@ -91,10 +95,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
   useEffect(() => {
     const initialStartDateTime = combineDateAndTime(startDate, startTime);
-    const initialEndDateTime = combineDateAndTime(endDate, endTime);
+    const initialEndDateTime = combineDateAndTime(startDate, endTime);
+    const sessionEndDate = combineDateAndTime(endDate, endTime);
 
     const startDatetime = convertToUTC(initialStartDateTime);
     const endDatetime = convertToUTC(initialEndDateTime);
+    const endDateValue = convertToUTC(sessionEndDate);
 
     setSessionBlocks((blocks) =>
       blocks.map((block) =>
@@ -103,6 +109,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               ...block,
               startDatetime: startDatetime || '',
               endDatetime: endDatetime || '',
+              endDateValue: endDateValue || '',
             }
           : block
       )
@@ -230,12 +237,20 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     }
 
     const combinedStartDateTime = combineDateAndTime(startDate, startTime);
-    const combinedEndDateTime = combineDateAndTime(endDate, endTime);
+    const combinedEndDateTime = combineDateAndTime(startDate, endTime);
+    const combinedEndDateValue = combineDateAndTime(endDate, endTime);
 
     const startDatetime = convertToUTC(combinedStartDateTime);
     const endDatetime = convertToUTC(combinedEndDateTime);
+    const endDateValue = convertToUTC(combinedEndDateValue);
 
-    if (startDatetime && endDatetime && startDate !== endDate) {
+    if (startDatetime && endDatetime && endDateValue) {
+      let isRecurringEvent: boolean;
+      if (startDate !== endDate) {
+        isRecurringEvent = true;
+      } else {
+        isRecurringEvent = false;
+      }
       setSessionBlocks(
         sessionBlocks.map((block) =>
           block?.id === id
@@ -243,7 +258,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 ...block,
                 startDatetime: startDatetime,
                 endDatetime: endDatetime,
-                isRecurring: true,
+                endDateValue: endDateValue,
+                isRecurring: isRecurringEvent,
               }
             : block
         )
@@ -384,11 +400,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         registrationEndDate: '',
         recurrencePattern: {
           frequency: block?.selectedWeekDays?.length === 7 ? 'daily' : 'weekly',
-          interval: block?.selectedWeekDays?.length || 1,
+          interval: 1,
           daysOfWeek: block?.DaysOfWeek || [],
           endCondition: {
             type: 'endDate',
-            value: block?.endDatetime || '',
+            value: block?.endDateValue || '',
           },
         },
         metaData: {
@@ -413,8 +429,21 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           try {
             const response = await createEvent(apiBody);
             console.log(response);
+            if (response) {
+              showToastMessage(
+                t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
+                'sucess'
+              );
+              if (onCloseModal) {
+                onCloseModal();
+              }
+            }
           } catch (error) {
             console.error('Error creating event:', error);
+            showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            if (onCloseModal) {
+              onCloseModal();
+            }
           }
         })
       );
