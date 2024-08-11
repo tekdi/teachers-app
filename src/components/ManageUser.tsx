@@ -288,11 +288,11 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     (anchor: Anchor, open: boolean, user?: any, teacherUserId?: string) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
       setCohortDeleteId(isFromFLProfile? teacherUserId : user.userId);
-      {isFromFLProfile? null: 
-      setCenters(
-        cohortsData?.[user?.userId]?.map((cohort) => cohort?.name) || []
-      ); 
-      setSelectedUser(user);} // TODO: check condition for profile
+      if (!isFromFLProfile) {
+        const centerNames = cohortsData?.[user?.userId]?.map((cohort) => cohort?.name) || [];
+        setCenters(centerNames);
+        setSelectedUser(user);
+      } // TODO: check condition for profile
 
       if (
         event.type === 'keydown' &&
