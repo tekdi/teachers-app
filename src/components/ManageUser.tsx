@@ -547,7 +547,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       <Box>
         {value === 1 && (
           <>
-            {isFromFLProfile ? null : (
+           {!isFromFLProfile && (
               <Grid
                 px={'18px'}
                 spacing={2}
