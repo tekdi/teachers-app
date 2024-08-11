@@ -33,7 +33,11 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { PlannedModalProps, CohortMemberList } from '@/utils/Interfaces';
+import {
+  PlannedModalProps,
+  CohortMemberList,
+  CreateEvent,
+} from '@/utils/Interfaces';
 import SessionMode from './SessionMode';
 import Stack from '@mui/material/Stack';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -59,6 +63,9 @@ interface Session {
   endDateValue?: string;
   subject?: string;
   isRecurring?: boolean;
+  meetingLink?: string;
+  meetingPasscode?: string;
+  onlineProvider?: string;
 }
 
 const PlannedSession: React.FC<PlannedModalProps> = ({
@@ -71,6 +78,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 }) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
   const [type, setType] = useState<type>(sessionType.REPEATING);
+  const [link, setLink] = useState('');
+  const [linkError, setLinkError] = useState('');
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>();
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [subjects, setSubjects] = useState<string[]>();
@@ -90,6 +99,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       endDateValue: '',
       subject: '',
       isRecurring: false,
+      meetingLink: '',
+      meetingPasscode: '',
+      onlineProvider: '',
     },
   ]);
 
@@ -274,12 +286,60 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     },
   }));
 
-  const handleLinkChange = (event: any) => {
-    console.log(event.target.value);
+  const handleLinkChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    id: string | number | undefined
+  ) => {
+    const value = event?.target?.value;
+    setLink(value);
+
+    const zoomLinkPattern = /^(https?:\/\/)?(www\.)?zoom\.us\/j\/\d+$/;
+    const googleMeetLinkPattern =
+      /^(https?:\/\/)?(meet\.google\.com\/[a-zA-Z0-9-]+)$/;
+
+    let onlineProvider: string;
+    if (zoomLinkPattern.test(value)) {
+      setLinkError('');
+      onlineProvider = 'Zoom';
+      console.log('Valid Zoom link:', value);
+    } else if (googleMeetLinkPattern.test(value)) {
+      setLinkError('');
+      onlineProvider = 'GoogleMeet';
+      console.log('Valid Google Meet link:', value);
+    } else {
+      setLinkError('Please enter a valid Zoom or Google Meet link.');
+      console.log('Invalid link');
+    }
+
+    setSessionBlocks(
+      sessionBlocks.map((block) =>
+        block.id === id
+          ? {
+              ...block,
+              meetingLink: value,
+              onlineProvider: onlineProvider,
+            }
+          : block
+      )
+    );
   };
 
-  const handlePasscodeChange = (event: any) => {
-    console.log(event.target.value);
+  const handlePasscodeChange = (
+    event: any,
+    id: string | number | undefined
+  ) => {
+    const value = event?.target?.value;
+
+    setSessionBlocks(
+      sessionBlocks.map((block) =>
+        block.id === id
+          ? {
+              ...block,
+              meetingPasscode: value,
+            }
+          : block
+      )
+    );
   };
 
   const { t } = useTranslation();
@@ -317,6 +377,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         startDatetime: '',
         endDatetime: '',
         subject: '',
+        meetingLink: '',
+        meetingPasscode: '',
+        onlineProvider: '',
       },
     ]);
     console.log(sessionBlocks);
@@ -376,53 +439,69 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       }
 
       // Create API bodies
-      const apiBodies = sessionBlocks.map((block) => ({
-        title,
-        shortDescription: '',
-        description: '',
-        eventType: block?.sessionMode || '',
-        isRestricted: true,
-        autoEnroll: true,
-        location: cohortName || '',
-        // longitude: '',
-        // latitude: '',
-        maxAttendees: attendeeCount,
-        attendees: attendeeArray,
-        recordings: { url: '' },
-        status: 'live',
-        createdBy: userId,
-        updatedBy: userId,
-        idealTime: '120',
-        isRecurring: block?.isRecurring || false,
-        startDatetime: block?.startDatetime || '',
-        endDatetime: block?.endDatetime || '',
-        registrationStartDate: '',
-        registrationEndDate: '',
-        recurrencePattern: {
-          frequency: block?.selectedWeekDays?.length === 7 ? 'daily' : 'weekly',
-          interval: 1,
-          daysOfWeek: block?.DaysOfWeek || [],
-          endCondition: {
-            type: 'endDate',
-            value: block?.endDateValue || '',
+      const apiBodies: CreateEvent[] = sessionBlocks.map((block) => {
+        const baseBody: CreateEvent = {
+          title,
+          shortDescription: '',
+          description: '',
+          eventType: block?.sessionMode || '',
+          isRestricted: true,
+          autoEnroll: true,
+          location: cohortName || '',
+          // longitude: '',
+          // latitude: '',
+          maxAttendees: attendeeCount,
+          attendees: attendeeArray,
+          status: 'live',
+          createdBy: userId,
+          updatedBy: userId,
+          idealTime: '120',
+          isRecurring: block?.isRecurring || false,
+          startDatetime: block?.startDatetime || '',
+          endDatetime: block?.endDatetime || '',
+          registrationStartDate: '',
+          registrationEndDate: '',
+          recurrencePattern: {
+            frequency:
+              block?.selectedWeekDays?.length === 7 ? 'daily' : 'weekly',
+            interval: 1,
+            daysOfWeek: block?.DaysOfWeek || [],
+            endCondition: {
+              type: 'endDate',
+              value: block?.endDateValue || '',
+            },
           },
-        },
-        metaData: {
-          framework: {
-            board: '',
-            medium: '',
-            grade: '',
-            subject: block?.subject || '',
-            topic: '',
-            subTopic: '',
+          metaData: {
+            framework: {
+              board: '',
+              medium: '',
+              grade: '',
+              subject: block?.subject || '',
+              topic: '',
+              subTopic: '',
+              teacherName: userName,
+            },
+            eventType: clickedBox || '',
+            doId: '',
+            cohortId: cohortId || '',
+            cycleId: '',
+            tenant: '',
           },
-          eventType: clickedBox || '',
-          doId: '',
-          cohortId: cohortId || '',
-          cycleId: '',
-          tenant: '',
-        },
-      }));
+        };
+
+        // Add meetingDetails only if sessionMode is 'online'
+        if (block?.sessionMode === 'online') {
+          (baseBody.onlineProvider = block?.onlineProvider || ''),
+            (baseBody.isMeetingNew = false),
+            (baseBody.meetingDetails = {
+              url: block?.meetingLink || '',
+              password: block?.meetingPasscode || '7674534',
+              id: '123-456-789',
+            });
+        }
+
+        return baseBody;
+      });
 
       await Promise.all(
         apiBodies.map(async (apiBody) => {
@@ -521,9 +600,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               <Box sx={{ mt: 2 }}>
                 <TextField
                   id="outlined-basic"
+                  value={link}
                   label={t('CENTER_SESSION.MEETING_LINK')}
                   variant="outlined"
-                  onChange={handleLinkChange}
+                  error={!!linkError}
+                  helperText={linkError}
+                  onChange={(e) =>
+                    handleLinkChange(
+                      e as React.ChangeEvent<HTMLInputElement>,
+                      block?.id
+                    )
+                  }
                 />
               </Box>
               <Box sx={{ mt: 2 }}>
@@ -531,7 +618,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   id="outlined-basic"
                   label={t('CENTER_SESSION.MEETING_PASSCODE')}
                   variant="outlined"
-                  onChange={handlePasscodeChange}
+                  onChange={(e: any) => handlePasscodeChange(block?.id, e)}
                 />
               </Box>
             </>

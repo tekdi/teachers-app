@@ -522,6 +522,9 @@ export interface CreateEvent {
   endDatetime: string;
   registrationStartDate?: string;
   registrationEndDate?: string;
+  onlineProvider?: string;
+  isMeetingNew?: boolean;
+  meetingDetails?: MeetingDetails;
   recurrencePattern?: RecurrencePattern;
   metaData?: MetaData;
 }
@@ -529,11 +532,17 @@ export interface RecurrencePattern {
   frequency: string;
   interval: number;
   endCondition: EndCondtion;
+  daysOfWeek: number[];
 }
 
 export interface EndCondtion {
   type: string;
   value: string;
+}
+export interface MeetingDetails {
+  url: string;
+  id?: string;
+  password?: string;
 }
 
 export interface MetaData {
@@ -544,6 +553,7 @@ export interface MetaData {
     subject?: string;
     topic?: string;
     subTopic?: string;
+    teacherName?: string;
   };
   eventType?: string;
   doId?: string;
