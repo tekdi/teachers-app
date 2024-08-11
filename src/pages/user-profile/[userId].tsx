@@ -475,7 +475,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
             </Box>
           )}
 
-          <Box padding="5px 19px" className="w-100">
+{/* <Box padding="5px 19px" className="w-100">
             <Box
               sx={{
                 flex: '1',
@@ -551,13 +551,13 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                 </Box>
               </Box>
             </Box>
-          </Box>
+          </Box> */}
           <Box
             className="linerGradient"
             sx={{
               padding: '10px 16px 21px',
               width: '100%',
-              mt: 3,
+              // mt: 3,
               // '@media (min-width: 900px)': {
               //   borderRadius: '8px',
               //   display: 'flex',
