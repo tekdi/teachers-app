@@ -145,6 +145,9 @@ export interface SessionsModalProps {
 export interface PlannedModalProps {
   removeModal?: () => void;
   clickedBox?: string | null;
+  scheduleEvent?: boolean;
+  cohortName?: string;
+  cohortId?: string;
 }
 
 export interface ScheduleModalProps {
@@ -473,7 +476,6 @@ export interface SendCredentialsRequest {
   };
 }
 
-
 export interface Assessment {
   userId: number;
   studentName: string;
@@ -485,7 +487,7 @@ export interface AssessmentSubject {
   userId: number;
   subject: string;
   score: string;
-  date :string;
+  date: string;
 }
 export interface Assessments {
   userId: string;
@@ -498,4 +500,53 @@ export interface AssessmentQuestion {
   userId: number;
   question: string;
   score: number;
+}
+
+export interface CreateEvent {
+  title?: string;
+  shortDescription?: string;
+  description?: string;
+  eventType: string;
+  isRestricted?: boolean;
+  autoEnroll?: boolean;
+  location?: string;
+  maxAttendees: number;
+  attendees: string[];
+  status?: string;
+  createdBy: string;
+  updatedBy: string;
+  idealTime?: string;
+  isRecurring: boolean;
+  startDatetime: string;
+  endDatetime: string;
+  registrationStartDate?: string;
+  registrationEndDate?: string;
+  recurrencePattern?: RecurrencePattern;
+  metaData?: MetaData;
+}
+export interface RecurrencePattern {
+  frequency: string;
+  interval: number;
+  endCondition: EndCondtion;
+}
+
+export interface EndCondtion {
+  type: string;
+  value: string;
+}
+
+export interface MetaData {
+  framework?: {
+    board?: string;
+    medium?: string;
+    grade?: string;
+    subject?: string;
+    topic?: string;
+    subTopic?: string;
+  };
+  eventType?: string;
+  doId?: string;
+  cohortId?: string;
+  cycleId?: string;
+  tenant?: string;
 }

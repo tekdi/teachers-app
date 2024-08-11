@@ -58,8 +58,8 @@ export enum cohortHierarchy {
 }
 
 export enum sessionMode {
-  ONLINE = 'Online',
-  OFFLINE = 'Offline',
+  ONLINE = 'online',
+  OFFLINE = 'offline',
 }
 export enum sessionType {
   JUST = 'Just Once',
@@ -93,6 +93,6 @@ export enum RoleId {
 }
 
 export enum Pagination {
-   ITEMS_PER_PAGE = 10,
+  ITEMS_PER_PAGE = 10,
   MAX_ITEMS = 50,
 }

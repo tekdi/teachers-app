@@ -22,6 +22,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import {
   FormContext,
   FormContextType,
+  Role,
+  Status,
   sessionMode,
   sessionType,
 } from '@/utils/app.constant';
@@ -31,7 +33,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { PlannedModalProps } from '@/utils/Interfaces';
+import { PlannedModalProps, CohortMemberList } from '@/utils/Interfaces';
 import SessionMode from './SessionMode';
 import Stack from '@mui/material/Stack';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -39,6 +41,9 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import WeekDays from './WeekDays';
 import { getFormRead } from '@/services/CreateUserService';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { DaysOfWeek } from '../../app.config';
+import { createEvent } from '@/services/EventService';
 
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
 type type = (typeof sessionType)[keyof typeof sessionType];
@@ -47,14 +52,19 @@ interface Session {
   id?: number | string;
   sessionMode?: string;
   selectedWeekDays?: string[];
+  DaysOfWeek?: number[];
   startDatetime?: string;
   endDatetime?: string;
   subject?: string;
+  isRecurring?: boolean;
 }
 
 const PlannedSession: React.FC<PlannedModalProps> = ({
   removeModal,
   clickedBox,
+  scheduleEvent,
+  cohortName,
+  cohortId,
 }) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
   const [type, setType] = useState<type>(sessionType.REPEATING);
@@ -70,10 +80,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     {
       id: 0,
       selectedWeekDays: [],
+      DaysOfWeek: [],
       sessionMode: mode,
       startDatetime: '',
       endDatetime: '',
       subject: '',
+      isRecurring: false,
     },
   ]);
 
@@ -101,7 +113,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     event: ChangeEvent<HTMLInputElement>,
     id: string | number | undefined
   ) => {
-    setMode(event.target.value as mode);
+    // const mode =  event.target.value === 'Offline' ? 'Offline' : '
+    setMode(event.target.value.toLowerCase() as mode);
     setSessionBlocks(
       sessionBlocks.map((block) =>
         block?.id === id ? { ...block, sessionMode: event.target.value } : block
@@ -222,7 +235,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const startDatetime = convertToUTC(combinedStartDateTime);
     const endDatetime = convertToUTC(combinedEndDateTime);
 
-    if (startDatetime && endDatetime) {
+    if (startDatetime && endDatetime && startDate !== endDate) {
       setSessionBlocks(
         sessionBlocks.map((block) =>
           block?.id === id
@@ -230,6 +243,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 ...block,
                 startDatetime: startDatetime,
                 endDatetime: endDatetime,
+                isRecurring: true,
               }
             : block
         )
@@ -259,10 +273,18 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     id: string | number | undefined,
     newSelectedDays: string[]
   ) => {
+    const mappedSelectedDays = newSelectedDays?.map(
+      (day) => DaysOfWeek[day as keyof typeof DaysOfWeek]
+    );
+
     setSessionBlocks(
       sessionBlocks.map((block) =>
         block?.id === id
-          ? { ...block, selectedWeekDays: newSelectedDays }
+          ? {
+              ...block,
+              selectedWeekDays: newSelectedDays,
+              DaysOfWeek: mappedSelectedDays,
+            }
           : block
       )
     );
@@ -274,6 +296,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       {
         id: sessionBlocks.length,
         selectedWeekDays: [],
+        DaysOfWeek: [],
         sessionMode: mode,
         startDatetime: '',
         endDatetime: '',
@@ -287,6 +310,122 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   };
 
   console.log(sessionBlocks);
+
+  const scheduleNewEvent = async () => {
+    if (!scheduleEvent) return;
+
+    try {
+      const userId =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('userId') || ''
+          : '';
+      const userName =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('userName') || ''
+          : '';
+
+      // Initialize variables
+      let attendeeCount = 0;
+      let attendeeArray: string[] = [];
+
+      // Fetch cohort members if cohortId is available
+      if (cohortId) {
+        const filters = {
+          cohortId,
+          role: Role.STUDENT,
+          status: [Status.ACTIVE],
+        };
+
+        const response = await getMyCohortMemberList({
+          limit: 300,
+          page: 0,
+          filters,
+        });
+
+        const resp = response?.result;
+
+        if (resp) {
+          attendeeCount = resp.totalCount || 0;
+          attendeeArray =
+            resp.userDetails?.map((attendee: any) => attendee.userId) || [];
+        }
+      }
+
+      // Determine title based on clickedBox and mode
+      let title = '';
+      if (clickedBox === 'PLANNED_SESSION') {
+        title = mode === 'online' ? 'Recurring Online' : 'Recurring Offline';
+      } else if (clickedBox === 'EXTRA_SESSION') {
+        title = 'Extra Session';
+      }
+
+      // Create API bodies
+      const apiBodies = sessionBlocks.map((block) => ({
+        title,
+        shortDescription: '',
+        description: '',
+        eventType: block?.sessionMode || '',
+        isRestricted: true,
+        autoEnroll: true,
+        location: cohortName || '',
+        // longitude: '',
+        // latitude: '',
+        maxAttendees: attendeeCount,
+        attendees: attendeeArray,
+        recordings: { url: '' },
+        status: 'live',
+        createdBy: userId,
+        updatedBy: userId,
+        idealTime: '120',
+        isRecurring: block?.isRecurring || false,
+        startDatetime: block?.startDatetime || '',
+        endDatetime: block?.endDatetime || '',
+        registrationStartDate: '',
+        registrationEndDate: '',
+        recurrencePattern: {
+          frequency: block?.selectedWeekDays?.length === 7 ? 'daily' : 'weekly',
+          interval: block?.selectedWeekDays?.length || 1,
+          daysOfWeek: block?.DaysOfWeek || [],
+          endCondition: {
+            type: 'endDate',
+            value: block?.endDatetime || '',
+          },
+        },
+        metaData: {
+          framework: {
+            board: '',
+            medium: '',
+            grade: '',
+            subject: block?.subject || '',
+            topic: '',
+            subTopic: '',
+          },
+          eventType: clickedBox || '',
+          doId: '',
+          cohortId: cohortId || '',
+          cycleId: '',
+          tenant: '',
+        },
+      }));
+
+      await Promise.all(
+        apiBodies.map(async (apiBody) => {
+          try {
+            const response = await createEvent(apiBody);
+            console.log(response);
+          } catch (error) {
+            console.error('Error creating event:', error);
+          }
+        })
+      );
+    } catch (error) {
+      console.error('Error scheduling new event:', error);
+    }
+  };
+
+  useEffect(() => {
+    scheduleNewEvent();
+  }, [scheduleEvent, cohortId]);
 
   return (
     <Box overflow={'auto'}>
