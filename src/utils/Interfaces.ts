@@ -57,6 +57,8 @@ export interface MarkAttendanceParams {
   attendanceDate: string;
   contextId: string;
   attendance: string;
+  scope: string;
+  attendanceLocation: any;
 }
 
 export interface UserIdFilter {

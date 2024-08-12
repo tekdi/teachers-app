@@ -1,15 +1,28 @@
 'use client';
 
-import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  Radio,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
 import React, { useEffect } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import {
+  bulkAttendance,
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
+  getAttendanceStatus,
   getCohortAttendance,
+  markAttendance,
 } from '../services/AttendanceService';
 import {
+  capitalizeEachWord,
+  firstLetterInUpperCase,
   formatSelectedDate,
   getTodayDate,
   shortDateFormat,
@@ -49,11 +62,86 @@ import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { Role } from '@/utils/app.constant';
+import SelfAttendanceModal from '@/components/SelfAttendanceModal';
+import CustomModal from '@/components/CustomModal';
+import LocationModal from '@/components/LocationModal';
 
 interface DashboardProps {}
 
+const attendance = {
+  self: {
+    allowed: 1,
+    back_dated_attendance: 0,
+    restrict_attendance_timings: 1,
+    attendance_starts_at: '15:24',
+    attendance_ends_at: '17:45',
+    allow_late_marking: 1,
+    capture_geoLocation: 1,
+    update_once_marked: 1, // if  0   only one time mark or if 1 then able to
+  },
+  student: {
+    allowed: 1,
+    back_dated_attendance: 0,
+    restrict_attendance_timings: 1,
+    attendance_starts_at: '15:24',
+    attendance_ends_at: '18:45',
+    allow_late_marking: 1,
+    capture_geoLocation: 1,
+    update_once_marked: 1, // in studnet update anytime
+  },
+};
+
+const formatTime = (time: string) => {
+  const [hours, minutes] = time.split(':').map(Number);
+  return new Date().setHours(hours, minutes, 0, 0);
+};
+
+const isWithinAttendanceTime = (attendanceTimes: {
+  allow_late_marking?: number;
+  restrict_attendance_timings?: number;
+  attendance_starts_at?: string | null;
+  attendance_ends_at?: string | null;
+  update_once_marked?: number;
+}) => {
+  if (attendanceTimes.restrict_attendance_timings === 1) {
+    if (
+      !attendanceTimes.attendance_starts_at ||
+      !attendanceTimes.attendance_ends_at
+    ) {
+      return true;
+    }
+
+    const now = new Date().getTime();
+    const startsAt = formatTime(attendanceTimes.attendance_starts_at);
+    const endsAt = formatTime(attendanceTimes.attendance_ends_at);
+
+    // Check if late marking is allowed
+
+    if (attendanceTimes.allow_late_marking === 1) {
+      return true;
+    } else {
+      return now >= startsAt && now <= endsAt;
+    }
+  } else {
+    false;
+  }
+};
+
+const checkIsAllowedToShow = (attendanceData: { allowed: number }) => {
+  // check role of user is teacher or not
+
+  if (attendanceData) {
+    return attendanceData?.allowed === 1;
+  }
+};
+
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
+  const attendacne = [
+    { value: 'present', label: t('ATTENDANCE.PRESENT') },
+    { value: 'absent', label: t('ATTENDANCE.ABSENT') },
+  ];
+
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
@@ -87,7 +175,129 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const formattedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
   const [userId, setUserId] = React.useState<string | null>(null);
   const [blockName, setBlockName] = React.useState<string>('');
+  const [attendanceData, setAttendanceData] = React.useState<any>([]);
+  const [attendanceModelOpen, setIsAttendanceModalOpen] =
+    React.useState<boolean>(false);
+  const [confirmButtonDisable, setConfirmButtonDisable] =
+    React.useState<boolean>(true);
+  const [selectedAttendance, setSelectedAttendance] =
+    React.useState<string>('');
   const role = localStorage.getItem('role');
+  const [isLocationModalOpen, setLocationModalOpen] = React.useState(false);
+  const [attendanceLocation, setAttendanceLocation] =
+    React.useState<GeolocationPosition | null>(null);
+
+  // condition for mark attendance for student and self
+  const attendanceTimesLearners = attendance?.student;
+  const canMarkAttendanceLerners = isWithinAttendanceTime(
+    attendanceTimesLearners
+  );
+  const isAllowedToMarkLearners = checkIsAllowedToShow(attendanceTimesLearners);
+
+  const attendanceTimesSelf = attendance?.self;
+  const canMarkAttendanceSelf =
+    isWithinAttendanceTime(attendanceTimesSelf) &&
+    attendanceTimesSelf?.update_once_marked === 1;
+  const isTeacherRole = role === 'Teacher';
+  const isAllowedToMarkSelf =
+    checkIsAllowedToShow(attendanceTimesSelf) && isTeacherRole;
+
+  const onCloseEditMOdel = () => {
+    setIsAttendanceModalOpen(false);
+  };
+  const handleRadioChange = (value: string) => {
+    setSelectedAttendance(value);
+    if (value) {
+      setConfirmButtonDisable(false);
+    }
+  };
+
+  const handleMarkAttendance = (location: GeolocationPosition) => {
+    console.log('Marking attendance with:', location);
+
+    if (location) {
+      setAttendanceLocation(location);
+      setIsAttendanceModalOpen(true);
+    }
+  };
+
+  // handle self attendance
+  const handleUpdateAction = async () => {
+    setLoading(true);
+    // setLocationModalOpen(true);
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      showToastMessage(t('COMMON.USER_ID_NOT_FOUND'), 'error');
+      return;
+    }
+
+    // Prepare data object
+    const currentDate = new Date();
+    const dateForAttendance = formatSelectedDate(currentDate);
+    console.log('attendanceLocation?', attendanceLocation);
+    const data = {
+      userId: userId,
+      attendance: selectedAttendance,
+      attendanceDate: dateForAttendance,
+      contextId: classId,
+      scope: 'self',
+      attendanceLocation,
+    };
+
+    try {
+      // Call the API to mark attendance
+      const response = await markAttendance(data);
+      if (response?.statusCode === 200) {
+        const { message } = response;
+        showToastMessage(message, 'success');
+      } else {
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      }
+    } catch (error) {
+      console.error('Error updating attendance:', error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    } finally {
+      setLoading(false);
+      onCloseEditMOdel();
+      setSelectedAttendance('');
+      fetchData();
+    }
+  };
+  const fetchData = async () => {
+    const currentDate = new Date();
+    const currentDateForAttendance = formatSelectedDate(currentDate);
+    const userId = localStorage.getItem('userId');
+    const contextId = localStorage.getItem('classId');
+    const limit = 300;
+    const page = 0;
+    const filters = {
+      contextId: contextId,
+      userId: userId,
+      scope: 'self',
+      toDate: currentDateForAttendance,
+      fromDate: currentDateForAttendance,
+    };
+
+    try {
+      // Await the response from getAttendanceStatus
+      const response = await getAttendanceStatus({ limit, page, filters });
+      if (response.statusCode === 200) {
+        // Update state with attendance data
+        setAttendanceData(response?.data?.attendanceList);
+      } else {
+        // Handle unexpected response status code
+        console.error('Unexpected response status:', response.statusCode);
+      }
+    } catch (error) {
+      // Handle any errors that might occur during the fetch
+      console.error('Error fetching attendance status:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // Call the async function
+  }, [classId]);
+
   useEffect(() => {
     setIsClient(true);
     const calculateDateRange = () => {
@@ -557,86 +767,172 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             classId={classId}
                           />
                         </Box>
-                        <Box
-                          height={'auto'}
-                          width={'auto'}
-                          padding={'1rem'}
-                          borderRadius={'1rem'}
-                          bgcolor={'#4A4640'}
-                          textAlign={'left'}
-                          margin={'15px 0 15px 0 '}
-                          sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
-                        >
-                          <Stack
-                            direction="row"
-                            spacing={1}
-                            // marginTop={1}
-                            justifyContent={'space-between'}
-                            alignItems={'center'}
+                        {isAllowedToMarkLearners && (
+                          <Box
+                            height={'auto'}
+                            width={'auto'}
+                            padding={'1rem'}
+                            borderRadius={'1rem'}
+                            bgcolor={'#4A4640'}
+                            textAlign={'left'}
+                            margin={'15px 0 15px 0 '}
+                            sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
                           >
-                            <Box
-                              display={'flex'}
-                              gap={'5px'}
+                            <Stack
+                              direction="row"
+                              spacing={1}
+                              // marginTop={1}
+                              justifyContent={'space-between'}
                               alignItems={'center'}
-                              className="joyride-step-3"
                             >
-                              {currentAttendance !== 'notMarked' &&
-                                currentAttendance !== 'futureDate' && (
-                                  <>
-                                    <CircularProgressbar
-                                      value={
-                                        currentAttendance?.present_percentage
-                                      }
-                                      background
-                                      backgroundPadding={8}
-                                      styles={buildStyles({
-                                        textColor: pathColor,
-                                        pathColor: pathColor,
-                                        trailColor: '#E6E6E6',
-                                        strokeLinecap: 'round',
-                                        backgroundColor: '#ffffff',
-                                      })}
-                                      className="fs-24 htw-24"
-                                      strokeWidth={20}
-                                    />
-                                    <Box>
-                                      <Typography
-                                        // sx={{ color: theme.palette.warning['A400'] }}
-                                        sx={{
-                                          fontSize: '12px',
-                                          fontWeight: '600',
-                                          color: '#F4F4F4',
-                                        }}
-                                        variant="h6"
-                                        className="word-break"
-                                      >
-                                        {t('DASHBOARD.PERCENT_ATTENDANCE', {
-                                          percent_students:
-                                            currentAttendance?.present_percentage,
+                              <Box
+                                display={'flex'}
+                                gap={'5px'}
+                                alignItems={'center'}
+                                className="joyride-step-3"
+                              >
+                                {currentAttendance !== 'notMarked' &&
+                                  currentAttendance !== 'futureDate' && (
+                                    <>
+                                      <CircularProgressbar
+                                        value={
+                                          currentAttendance?.present_percentage
+                                        }
+                                        background
+                                        backgroundPadding={8}
+                                        styles={buildStyles({
+                                          textColor: pathColor,
+                                          pathColor: pathColor,
+                                          trailColor: '#E6E6E6',
+                                          strokeLinecap: 'round',
+                                          backgroundColor: '#ffffff',
                                         })}
-                                      </Typography>
-                                      <Typography
-                                        // sx={{ color: theme.palette.warning['A400'] }}
-                                        sx={{
-                                          fontSize: '12px',
-                                          fontWeight: '600',
-                                          color: '#F4F4F4',
-                                        }}
-                                        variant="h6"
-                                        className="word-break"
-                                      >
-                                        {t('DASHBOARD.PRESENT_STUDENTS', {
-                                          present_students:
-                                            currentAttendance?.present_students,
-                                          total_students:
-                                            currentAttendance?.totalcount,
-                                        })}
-                                      </Typography>
-                                    </Box>
-                                  </>
+                                        className="fs-24 htw-24"
+                                        strokeWidth={20}
+                                      />
+                                      <Box>
+                                        <Typography
+                                          // sx={{ color: theme.palette.warning['A400'] }}
+                                          sx={{
+                                            fontSize: '12px',
+                                            fontWeight: '600',
+                                            color: '#F4F4F4',
+                                          }}
+                                          variant="h6"
+                                          className="word-break"
+                                        >
+                                          {t('DASHBOARD.PERCENT_ATTENDANCE', {
+                                            percent_students:
+                                              currentAttendance?.present_percentage,
+                                          })}
+                                        </Typography>
+                                        <Typography
+                                          // sx={{ color: theme.palette.warning['A400'] }}
+                                          sx={{
+                                            fontSize: '12px',
+                                            fontWeight: '600',
+                                            color: '#F4F4F4',
+                                          }}
+                                          variant="h6"
+                                          className="word-break"
+                                        >
+                                          {t('DASHBOARD.PRESENT_STUDENTS', {
+                                            present_students:
+                                              currentAttendance?.present_students,
+                                            total_students:
+                                              currentAttendance?.totalcount,
+                                          })}
+                                        </Typography>
+                                      </Box>
+                                    </>
+                                  )}
+                                {currentAttendance === 'notMarked' &&
+                                  currentAttendance !== 'futureDate' && (
+                                    <Typography
+                                      sx={{
+                                        color: theme.palette.warning['A400'],
+                                      }}
+                                      fontSize={'0.8rem'}
+                                      // variant="h6"
+                                      // className="word-break"
+                                    >
+                                      {t('DASHBOARD.NOT_MARKED_STUDENT')}
+                                    </Typography>
+                                  )}
+                                {currentAttendance === 'futureDate' && (
+                                  <Typography
+                                    sx={{
+                                      color: theme.palette.warning['A400'],
+                                    }}
+                                    fontSize={'0.8rem'}
+                                    fontStyle={'italic'}
+                                    fontWeight={'500'}
+                                  >
+                                    {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
+                                  </Typography>
                                 )}
-                              {currentAttendance === 'notMarked' &&
-                                currentAttendance !== 'futureDate' && (
+                              </Box>
+                              <Button
+                                className="joyride-step-4 btn-mark-width"
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                  '&.Mui-disabled': {
+                                    backgroundColor:
+                                      theme?.palette?.primary?.main, // Custom disabled text color
+                                  },
+                                  minWidth: '84px',
+                                  height: '2.5rem',
+                                  padding: theme.spacing(1),
+                                  fontWeight: '500',
+                                  '@media (min-width: 500px)': {
+                                    width: '20%',
+                                  },
+                                  '@media (min-width: 700px)': {
+                                    width: '15%',
+                                  },
+                                }}
+                                onClick={handleModalToggle}
+                                disabled={
+                                  !canMarkAttendanceLerners ||
+                                  currentAttendance === 'futureDate' ||
+                                  classId === 'all' ||
+                                  formattedSevenDaysAgo > selectedDate
+                                }
+                              >
+                                {currentAttendance === 'notMarked' ||
+                                currentAttendance === 'futureDate'
+                                  ? t('COMMON.MARK_TO_LEARNER')
+                                  : t('COMMON.MODIFY_FOR_LEARNER')}
+                              </Button>
+                            </Stack>
+                          </Box>
+                        )}
+                        {isAllowedToMarkSelf && (
+                          <Box
+                            height={'auto'}
+                            width={'auto'}
+                            padding={'1rem'}
+                            borderRadius={'1rem'}
+                            bgcolor={'#4A4640'}
+                            textAlign={'left'}
+                            margin={'15px 0 15px 0 '}
+                            sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
+                          >
+                            <Stack
+                              direction="row"
+                              spacing={1}
+                              // marginTop={1}
+                              justifyContent={'space-between'}
+                              alignItems={'center'}
+                            >
+                              <Box
+                                display={'flex'}
+                                gap={'5px'}
+                                alignItems={'center'}
+                                className="joyride-step-3"
+                              >
+                                {attendanceData?.length > 0 ? (
                                   <Typography
                                     sx={{
                                       color: theme.palette.warning['A400'],
@@ -645,54 +941,140 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                     // variant="h6"
                                     // className="word-break"
                                   >
-                                    {t('DASHBOARD.NOT_MARKED')}
+                                    {firstLetterInUpperCase(
+                                      attendanceData?.[0]?.attendance
+                                    )}
+                                  </Typography>
+                                ) : (
+                                  <Typography
+                                    sx={{
+                                      color: theme.palette.warning['A400'],
+                                    }}
+                                    fontSize={'0.8rem'}
+                                    // variant="h6"
+                                    // className="word-break"
+                                  >
+                                    {t('DASHBOARD.NOT_MARKED_SELF')}
                                   </Typography>
                                 )}
-                              {currentAttendance === 'futureDate' && (
-                                <Typography
-                                  sx={{ color: theme.palette.warning['A400'] }}
-                                  fontSize={'0.8rem'}
-                                  fontStyle={'italic'}
-                                  fontWeight={'500'}
-                                >
-                                  {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
-                                </Typography>
-                              )}
-                            </Box>
-                            <Button
-                              className="joyride-step-4 btn-mark-width"
-                              variant="contained"
-                              color="primary"
-                              sx={{
-                                '&.Mui-disabled': {
-                                  backgroundColor:
-                                    theme?.palette?.primary?.main, // Custom disabled text color
-                                },
-                                minWidth: '84px',
-                                height: '2.5rem',
-                                padding: theme.spacing(1),
-                                fontWeight: '500',
-                                '@media (min-width: 500px)': {
-                                  width: '20%',
-                                },
-                                '@media (min-width: 700px)': {
-                                  width: '15%',
-                                },
-                              }}
-                              onClick={handleModalToggle}
-                              disabled={
-                                currentAttendance === 'futureDate' ||
-                                classId === 'all' ||
-                                formattedSevenDaysAgo > selectedDate
-                              }
-                            >
-                              {currentAttendance === 'notMarked' ||
-                              currentAttendance === 'futureDate'
-                                ? t('COMMON.MARK')
-                                : t('COMMON.MODIFY')}
-                            </Button>
-                          </Stack>
-                        </Box>
+                                {/* {currentAttendance !== 'notMarked' &&
+                                  currentAttendance !== 'futureDate' && (
+                                    <>
+                                      <CircularProgressbar
+                                        value={
+                                          currentAttendance?.present_percentage
+                                        }
+                                        background
+                                        backgroundPadding={8}
+                                        styles={buildStyles({
+                                          textColor: pathColor,
+                                          pathColor: pathColor,
+                                          trailColor: '#E6E6E6',
+                                          strokeLinecap: 'round',
+                                          backgroundColor: '#ffffff',
+                                        })}
+                                        className="fs-24 htw-24"
+                                        strokeWidth={20}
+                                      />
+                                      <Box>
+                                        <Typography
+                                          // sx={{ color: theme.palette.warning['A400'] }}
+                                          sx={{
+                                            fontSize: '12px',
+                                            fontWeight: '600',
+                                            color: '#F4F4F4',
+                                          }}
+                                          variant="h6"
+                                          className="word-break"
+                                        >
+                                          {t('DASHBOARD.PERCENT_ATTENDANCE', {
+                                            percent_students:
+                                              currentAttendance?.present_percentage,
+                                          })}
+                                        </Typography>
+                                        <Typography
+                                          // sx={{ color: theme.palette.warning['A400'] }}
+                                          sx={{
+                                            fontSize: '12px',
+                                            fontWeight: '600',
+                                            color: '#F4F4F4',
+                                          }}
+                                          variant="h6"
+                                          className="word-break"
+                                        >
+                                          {t('DASHBOARD.PRESENT_STUDENTS', {
+                                            present_students:
+                                              currentAttendance?.present_students,
+                                            total_students:
+                                              currentAttendance?.totalcount,
+                                          })}
+                                        </Typography>
+                                      </Box>
+                                    </>
+                                  )} */}
+                                {/* {currentAttendance === 'notMarked' &&
+                                  currentAttendance !== 'futureDate' && (
+                                    <Typography
+                                      sx={{
+                                        color: theme.palette.warning['A400'],
+                                      }}
+                                      fontSize={'0.8rem'}
+                                      // variant="h6"
+                                      // className="word-break"
+                                    >
+                                      {t('DASHBOARD.NOT_MARKED_SELF')}
+                                    </Typography>
+                                  )}
+                                {currentAttendance === 'futureDate' && (
+                                  <Typography
+                                    sx={{
+                                      color: theme.palette.warning['A400'],
+                                    }}
+                                    fontSize={'0.8rem'}
+                                    fontStyle={'italic'}
+                                    fontWeight={'500'}
+                                  >
+                                    {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
+                                  </Typography>
+                                )} */}
+                              </Box>
+                              <Button
+                                className="joyride-step-4 btn-mark-width"
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                  '&.Mui-disabled': {
+                                    backgroundColor:
+                                      theme?.palette?.primary?.main, // Custom disabled text color
+                                  },
+                                  minWidth: '84px',
+                                  height: '2.5rem',
+                                  padding: theme.spacing(1),
+                                  fontWeight: '500',
+                                  '@media (min-width: 500px)': {
+                                    width: '20%',
+                                  },
+                                  '@media (min-width: 700px)': {
+                                    width: '15%',
+                                  },
+                                }}
+                                onClick={() => setLocationModalOpen(true)}
+                                disabled={
+                                  !canMarkAttendanceSelf ||
+                                  currentAttendance === 'futureDate' ||
+                                  classId === 'all' ||
+                                  formattedSevenDaysAgo > selectedDate
+                                }
+                              >
+                                {t('COMMON.MARK_TO_SELF')}
+                                {/* {currentAttendance === 'notMarked' ||
+                                currentAttendance === 'futureDate'
+                                  ? t('COMMON.MARK_TO_SELF')
+                                  : t('COMMON.MODIFY_FOR_SELF')} */}
+                              </Button>
+                            </Stack>
+                          </Box>
+                        )}
                         {open && (
                           <MarkBulkAttendance
                             open={open}
@@ -719,6 +1101,62 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             }}
                           />
                         )}
+
+                        <CustomModal
+                          open={attendanceModelOpen}
+                          handleClose={onCloseEditMOdel}
+                          title={t('COMMON.ATTENDANCE')}
+                          // subtitle={t("COMMON.ATTENDANCE")}
+                          primaryBtnText={t('COMMON.SELF_ATTENDANCE')}
+                          secondaryBtnText="Cancel"
+                          primaryBtnClick={handleUpdateAction}
+                          primaryBtnDisabled={confirmButtonDisable}
+                          secondaryBtnClick={onCloseEditMOdel}
+                        >
+                          <Box padding={'0 1rem'}>
+                            {attendacne?.map((option) => (
+                              <React.Fragment key={option.value}>
+                                <Box
+                                  display={'flex'}
+                                  justifyContent={'space-between'}
+                                  alignItems={'center'}
+                                >
+                                  <Typography
+                                    variant="h2"
+                                    sx={{
+                                      color: theme.palette.warning['A200'],
+                                      fontSize: '14px',
+                                    }}
+                                    component="h2"
+                                  >
+                                    {option.label}
+                                  </Typography>
+
+                                  <Radio
+                                    sx={{ pb: '20px' }}
+                                    onChange={() =>
+                                      handleRadioChange(option.value)
+                                    }
+                                    value={option.value}
+                                    checked={
+                                      selectedAttendance === option.value
+                                    }
+                                  />
+                                </Box>
+                                <Divider />
+                              </React.Fragment>
+                            ))}
+                          </Box>
+                        </CustomModal>
+
+                        <LocationModal
+                          isOpen={isLocationModalOpen}
+                          onClose={() => setLocationModalOpen(false)}
+                          onConfirm={(location: any) => {
+                            handleMarkAttendance(location);
+                            setLocationModalOpen(false);
+                          }}
+                        />
                       </Box>
                     </Box>
                     <Box sx={{ padding: '0 20px' }}>
@@ -875,10 +1313,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Box>
                 </Box>
                 {role === Role.TEAM_LEADER && (
-        <Box p={2}>
-          <AttendanceComparison />
-        </Box>
-      )}
+                  <Box p={2}>
+                    <AttendanceComparison />
+                  </Box>
+                )}
                 {/* <Box sx={{ background: '#fff' }}>
             <Typography
               textAlign={'left'}

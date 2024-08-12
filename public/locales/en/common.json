@@ -3,6 +3,8 @@
     "LANGUAGE": "Language",
     "LOADING": "Loading",
     "MARK": "Mark",
+    "MARK_TO_LEARNER":"Mark To Learners",
+    "MARK_TO_SELF":"Mark To Self",
     "MARK_MY_ATTENDANCE": "Mark My Attendance",
     "MARK_CENTER_ATTENDANCE": "Mark Center Attendance",
     "MARK_ATTENDANCE": "Mark Attendance",
@@ -11,6 +13,8 @@
     "SEARCH": "Search..",
     "UPDATE": "Update",
     "MODIFY": "Modify",
+    "MODIFY_FOR_SELF": "Modify Self",
+    "MODIFY_FOR_LEARNER": "Modify Learners",
     "CLEAR_ALL": "Clear All",
     "SEARCH_STUDENT": "Search Learner",
     "SORT_BY": "Sort by",
@@ -122,7 +126,9 @@
     "LEARNER_UPDATED_SUCCESSFULLY": "Learner profile updated successfully!",
     "FACILITATOR_UPDATED_SUCCESSFULLY": "Facilitator profile updated successfully!",
     "PLEASE_SELECT_THE_CENTER": "Please select the center.",
-    "CREATE": "Create"
+    "CREATE": "Create",
+    "SELF_ATTENDANCE":"Mark Attendance"
+  
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -144,6 +150,8 @@
     "NEW_PHYSICAL_CLASS": "New Physical Class",
     "CLASS": "Class",
     "NOT_MARKED": "Not Marked",
+    "NOT_MARKED_STUDENT":"Not Marked For Learners",
+    "NOT_MARKED_SELF":"Not Marked For Self",
     "FUTURE_DATE_CANT_MARK": "Future date can't be marked",
     "PERCENT_ATTENDANCE": "{{percent_students}}% Attendance",
     "PRESENT_STUDENTS": "({{present_students}}/{{total_students}} present)",
