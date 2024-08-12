@@ -91,6 +91,7 @@ const TeachingCenterDetails = () => {
     React.useState<string>(getTodayDate());
 
   const [cohortDetails, setCohortDetails] = React.useState<any>({});
+  const [cohortName, setCohortName] = React.useState<string>();
   const [reloadState, setReloadState] = React.useState<boolean>(false);
   const [sessions, setSessions] = React.useState<Session[]>();
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
@@ -107,8 +108,10 @@ const TeachingCenterDetails = () => {
 
   const [clickedBox, setClickedBox] = useState<string | null>(null);
   const [isLearnerAdded, setIsLearnerAdded] = useState(false);
-
+  const [createEvent, setCreateEvent] = useState(false);
+  const [eventCreated, setEventCreated] = useState(false);
   const handleClick = (selection: string) => {
+    console.log('planned', selection);
     setClickedBox(selection);
   };
 
@@ -120,14 +123,27 @@ const TeachingCenterDetails = () => {
     setOpenSchedule(true);
   };
 
-  const handleSchedule = () => { };
+  const handleSchedule = () => {
+    setCreateEvent(true);
+  };
 
+  const handleCloseSchedule = () => {
+    setEventCreated(true);
+  };
+
+  useEffect(() => {
+    if (eventCreated) {
+      setOpen(false);
+    }
+  }, [eventCreated]);
   const handleOpen = () => setOpen(true);
+
   const handleClose = () => {
     setOpen(false);
     setOpenSchedule(false);
     setDeleteModal(false);
   };
+
   const setRemoveCohortId = reassignLearnerStore(
     (state) => state.setRemoveCohortId
   );
@@ -170,6 +186,7 @@ const TeachingCenterDetails = () => {
             '';
         }
         setCohortDetails(cohortData);
+        setCohortName(cohortData?.name);
       }
     };
     getCohortData();
@@ -201,7 +218,7 @@ const TeachingCenterDetails = () => {
     };
 
     getSessionsData();
-  }, [selectedDate]);
+  }, [selectedDate, eventCreated]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -472,6 +489,10 @@ const TeachingCenterDetails = () => {
               <PlannedSession
                 clickedBox={clickedBox}
                 removeModal={removeModal}
+                scheduleEvent={createEvent}
+                cohortName={cohortName}
+                cohortId={cohortId}
+                onCloseModal={handleCloseSchedule}
               />
             ) : (
               <Schedule clickedBox={clickedBox} handleClick={handleClick} />
@@ -502,13 +523,18 @@ const TeachingCenterDetails = () => {
             )}
           </Box>
 
-          <Box sx={{ padding: '10px 16px', mt: 1, background: 'linear-gradient(180deg, #FFFDF7 0%, #F8EFDA 100%)' }}>
+          <Box
+            sx={{
+              padding: '10px 16px',
+              mt: 1,
+              background: 'linear-gradient(180deg, #FFFDF7 0%, #F8EFDA 100%)',
+            }}
+          >
             <Box
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-
               }}
             >
               <Box
@@ -567,7 +593,6 @@ const TeachingCenterDetails = () => {
               )}
             </Grid>
           </Box>
-
         </>
       )}
 

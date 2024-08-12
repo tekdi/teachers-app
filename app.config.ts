@@ -7,7 +7,7 @@ export const modifyAttendanceLimit: number = 6;
 export const eventDaysLimit: number = 7;
 export const toastAutoHideDuration: number = 5000; // 5 seconds
 export const tenantId: string = 'ef99949b-7f3a-4a5f-806a-e67e683e38f3';
-
+export const idealTimeForSession: string = '120';
 export const dropoutReasons = [
   {
     label: 'UNABLE_TO_COPE_WITH_STUDIES',
@@ -52,3 +52,13 @@ export const fullWidthPages = [
   '/offline',
   '/unauthorized',
 ];
+
+export const DaysOfWeek = {
+  Sun: 0,
+  Mon: 1,
+  Tue: 2,
+  Wed: 3,
+  Thu: 4,
+  Fri: 5,
+  Sat: 6,
+};
