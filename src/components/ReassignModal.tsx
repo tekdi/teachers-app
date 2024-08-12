@@ -136,7 +136,7 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '75%',
+    width: '80%',
     bgcolor: '#fff',
     boxShadow: 24,
     borderRadius: '16px',
@@ -148,8 +148,8 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   return (
     <Modal open={modalOpen} onClose={handleCloseReassignModal}>
       <Box sx={modalStyle}>
-        <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>{message}</span>
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{color: "black", fontWeight: 400}} >{message}</span>
           <IconButton color="inherit" onClick={handleCloseReassignModal}>
             <CloseIcon />
           </IconButton>
@@ -171,16 +171,29 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
           />
         </Box>
         <Box sx={{ p: 3, maxHeight: '300px', overflowY: 'auto' }}>
-          {filteredCenters.map((center) => (
-            <Box key={center.id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <span>{center.name}</span>
-              <Checkbox
-                checked={checkedCenters.includes(center.name)}
-                onChange={() => handleToggle(center.name)}
-              />
-            </Box>
-          ))}
+      {filteredCenters.map((center, index) => (
+        <Box key={center.id}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+            <span style={{ color: "black" }}>{center.name}</span>
+            <Checkbox
+              checked={checkedCenters.includes(center.name)}
+              onChange={() => handleToggle(center.name)}
+              sx={{
+                color: theme.palette.text.primary, 
+                '&.Mui-checked': {
+                  color: 'black', 
+                },
+                verticalAlign: 'middle', 
+                marginTop: '-10px', 
+              }}
+            />
+          </Box>
+          {index < filteredCenters.length - 1 && (
+            <Divider sx={{ mb: 2, }} />
+          )}
         </Box>
+      ))}
+    </Box>
         <Divider />
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: '18px', p: 2 }}>
           <Button
@@ -189,7 +202,7 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
             color="primary"
             onClick={handleReassign}
           >
-            {buttonNames?.primary || 'Re-assign'}
+            {buttonNames?.primary || 'Save'}
           </Button>
         </Box>
       </Box>
