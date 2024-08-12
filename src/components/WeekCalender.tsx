@@ -4,6 +4,8 @@ import { Box } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { dashboardDaysLimit, eventDaysLimit } from '../../app.config';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
+import { useRouter } from 'next/router';
+
 
 const Calendar: React.FC<any> = ({
   showDetailsHandle,
@@ -21,7 +23,8 @@ const Calendar: React.FC<any> = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const selectedItemRef = useRef<HTMLDivElement>(null);
   const determinePathColor = useDeterminePathColor();
-
+  const router = useRouter();
+  const isDashboard = router.pathname === '/dashboard';
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     const selectedItem = selectedItemRef.current;
@@ -69,7 +72,7 @@ const Calendar: React.FC<any> = ({
     return (
       <div
         className="days row"
-        style={{ width: showFromToday ? '90vw' : '100%' }}
+        style={{ width: showFromToday ? '100%' : '100%' }}
       >
         {days}
       </div>
@@ -103,13 +106,12 @@ const Calendar: React.FC<any> = ({
         width={'14%'}
         height={'20%'}
         overflow={'auto'}
-        className={`col cell ${
-          isSameDay(day, new Date()) && color
-            ? 'WeekToday'
-            : isSameDay(day, selectedDate)
-              ? 'selected'
-              : ''
-        }`}
+        className={`col cell ${isSameDay(day, new Date()) && color
+          ? 'WeekToday'
+          : isSameDay(day, selectedDate)
+            ? 'selected'
+            : ''
+          }`}
         onClick={() => {
           if (!disableDays) {
             const dayStr = format(day, 'ccc dd MMM yy');
@@ -193,7 +195,7 @@ const Calendar: React.FC<any> = ({
     }
 
     return (
-      <div className="body" style={{ width: showFromToday ? '90vw' : '100%' }}>
+      <div className="body" style={{ width: showFromToday ? '100%' : '100%' }}>
         {rows}
       </div>
     );
@@ -209,7 +211,7 @@ const Calendar: React.FC<any> = ({
           classId === 'all' ? 'hidden' : showFromToday ? 'clip' : 'auto',
       }}
     >
-      <Box className="calender_body_width">
+      <Box sx={{ width: isDashboard ? '1840px' : '100%' }} className="calender_body_width">
         {renderDays()}
         {renderCells()}
       </Box>

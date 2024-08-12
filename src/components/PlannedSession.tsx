@@ -122,11 +122,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       blocks.map((block) =>
         block.id === 0
           ? {
-              ...block,
-              startDatetime: startDatetime || '',
-              endDatetime: endDatetime || '',
-              endDateValue: endDateValue || '',
-            }
+            ...block,
+            startDatetime: startDatetime || '',
+            endDatetime: endDatetime || '',
+            endDateValue: endDateValue || '',
+          }
           : block
       )
     );
@@ -210,9 +210,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block.id === id
           ? {
-              ...block,
-              subject: newSubject,
-            }
+            ...block,
+            subject: newSubject,
+          }
           : block
       )
     );
@@ -265,12 +265,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         sessionBlocks.map((block) =>
           block?.id === id
             ? {
-                ...block,
-                startDatetime: startDatetime,
-                endDatetime: endDatetime,
-                endDateValue: endDateValue,
-                isRecurring: isRecurringEvent,
-              }
+              ...block,
+              startDatetime: startDatetime,
+              endDatetime: endDatetime,
+              endDateValue: endDateValue,
+              isRecurring: isRecurringEvent,
+            }
             : block
         )
       );
@@ -310,10 +310,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block.id === id
           ? {
-              ...block,
-              meetingLink: value,
-              onlineProvider: onlineProvider,
-            }
+            ...block,
+            meetingLink: value,
+            onlineProvider: onlineProvider,
+          }
           : block
       )
     );
@@ -329,9 +329,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block.id === id
           ? {
-              ...block,
-              meetingPasscode: value,
-            }
+            ...block,
+            meetingPasscode: value,
+          }
           : block
       )
     );
@@ -352,10 +352,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block?.id === id
           ? {
-              ...block,
-              selectedWeekDays: newSelectedDays,
-              DaysOfWeek: mappedSelectedDays,
-            }
+            ...block,
+            selectedWeekDays: newSelectedDays,
+            DaysOfWeek: mappedSelectedDays,
+          }
           : block
       )
     );
@@ -702,13 +702,14 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           )}
 
           {type !== sessionType.JUST && (
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 2, }}>
               <Box sx={{ overflow: 'none' }}>
                 <Typography variant="h2" component="h2">
                   {t('COMMON.HELD_EVERY_WEEK_ON', {
                     days: block?.selectedWeekDays?.join(', '),
                   })}
                 </Typography>
+
                 <WeekDays
                   useAbbreviation={true}
                   selectedDays={block?.selectedWeekDays}
@@ -718,8 +719,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 />
               </Box>
 
-              <Grid container spacing={2} sx={{ mb: 2 }}>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+              <Grid container spacing={2} sx={{ mb: 2, }}>
+                <Grid sx={{ paddingTop: '0px !important', marginTop: '15px' }} item xs={6}>
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <CustomTimePicker
@@ -733,7 +734,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     </LocalizationProvider>
                   </Box>
                 </Grid>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Grid sx={{ paddingTop: '0px !important', marginTop: '15px' }} item xs={6}>
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <CustomTimePicker
@@ -750,7 +751,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </Grid>
 
               <Grid container spacing={2}>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Grid sx={{ paddingTop: '0px !important', marginTop: '10px' }} item xs={6}>
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <Stack spacing={3}>
@@ -767,7 +768,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     </LocalizationProvider>
                   </Box>
                 </Grid>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Grid sx={{ paddingTop: '0px !important', marginTop: '10px' }} item xs={6}>
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <Stack spacing={3}>
