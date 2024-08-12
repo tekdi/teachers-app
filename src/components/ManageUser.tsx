@@ -318,17 +318,18 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       const cohortList = await getCohortList(userId);
       console.log('Cohort List:', cohortList);
 
-      if (cohortList && cohortList?.length > 0) {
+      const hasActiveCohorts = cohortList && cohortList.length > 0 && cohortList.some((cohort: { status: string; }) => cohort.status === 'active');
+      
+      if (hasActiveCohorts) {
         const cohortNames = cohortList
-          .map((cohort: { cohortName: any }) => cohort?.cohortName)
+          .filter((cohort: { status: string }) => cohort.status === 'active')
+          .map((cohort: { cohortName: string }) => cohort.cohortName)
           .join(', ');
-
+      
         setOpenRemoveUserModal(true);
         setRemoveCohortNames(cohortNames);
       } else {
-        console.log(
-          'User does not belong to any cohorts, proceed with deletion'
-        );
+        console.log('User does not belong to any cohorts, proceed with deletion');
         setOpenDeleteUserModal(true);
       }
 

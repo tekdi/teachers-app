@@ -218,12 +218,22 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             } else if (response[0].type === cohortHierarchy.BLOCK) {
               setBlockName(response[0].name || response[0].cohortName);
               const filteredData = response[0].childData
-                ?.map((item: any) => ({
-                  cohortId: item?.cohortId,
-                  parentId: item?.parentId,
-                  name: item?.cohortName || item?.name,
-                }))
+                ?.map((item: any) => {
+                  const typeOfCohort = item?.customField?.find(
+                    (field: any) => field?.label === 'TYPE_OF_COHORT'
+                  )?.value;
+
+                  return {
+                    cohortId: item?.cohortId,
+                    parentId: item?.parentId,
+                    name: item?.cohortName || item?.name,
+                    typeOfCohort: typeOfCohort || (t('ATTENDANCE.N/A')),
+                  };
+                })
                 ?.filter(Boolean);
+
+              console.log(filteredData);
+
               setCohortsData(filteredData);
 
               if (filteredData.length > 0) {
@@ -333,7 +343,10 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                               },
                             }}
                             IconComponent={(props) => (
-                              <ArrowDropDownIcon {...props} style={{ color: 'black' }} />
+                              <ArrowDropDownIcon
+                                {...props}
+                                style={{ color: 'black' }}
+                              />
                             )}
                           >
                             {cohortsData?.length !== 0 ? (
@@ -348,7 +361,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     textTransform: 'capitalize',
                                   }}
                                 >
-                                  {cohort.name}
+                                  {cohort.name} ({cohort?.typeOfCohort})
                                 </MenuItem>
                               ))
                             ) : (
