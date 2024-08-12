@@ -83,6 +83,8 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
           attendanceDate: date,
           contextId: classId,
           attendance: updatedStatus,
+          scope: '',
+          attendanceLocation: undefined
         };
         const response = await markAttendance(markAttendanceRequest);
         setUpdatedStatus(response?.data?.attendance);
