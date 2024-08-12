@@ -5,7 +5,8 @@ export const avgLearnerAttendanceLimit: number = 66;
 export const dashboardDaysLimit: number = 30;
 export const modifyAttendanceLimit: number = 6;
 export const toastAutoHideDuration: number = 5000; // 5 seconds
-export const tenantId: string = 'ef99949b-7f3a-4a5f-806a-e67e683e38f3';
+// export const tenantId: string = 'ef99949b-7f3a-4a5f-806a-e67e683e38f3';
+export const tenantId: string = 'b73ddc86-7044-4ae1-9e0c-0eaabbc6f62a';
 
 export const dropoutReasons = [
   {

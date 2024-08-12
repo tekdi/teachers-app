@@ -9,11 +9,12 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import useGeolocation from './useGeolocation';
+import { useTranslation } from 'next-i18next';
 
 interface LocationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (location: GeoLocation) => void;
+  onConfirm: (location: GeolocationPosition) => void;
 }
 
 const LocationModal: React.FC<LocationModalProps> = ({
@@ -22,11 +23,15 @@ const LocationModal: React.FC<LocationModalProps> = ({
   onConfirm,
 }) => {
   const { getLocation, error } = useGeolocation();
-
+  const { t } = useTranslation();
   const handleConfirm = async () => {
     const location = await getLocation(true);
-    if (location) {
-      onConfirm(location);
+
+    if (location !== null) {
+      onConfirm(location as unknown as GeolocationPosition); // TypeScript now knows location is not null
+    } else {
+      console.error('Location could not be retrieved');
+      // Handle the null case here, e.g., show an error message to the user
     }
   };
 
@@ -46,13 +51,15 @@ const LocationModal: React.FC<LocationModalProps> = ({
         }}
       >
         <Grid container justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">Turn on device location</Typography>
+          <Typography variant="h6">
+            {t('COMMON.TURN_ON_DEVICE_LOCATION')}
+          </Typography>
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
         </Grid>
         <Typography variant="body1" sx={{ mt: 2 }}>
-          Device location is needed to mark your attendance.
+          {'COMMON.DEVICE_LOCATION_NEED_TO_ATTENDANCE'}
         </Typography>
         {error && (
           <Typography color="error" sx={{ mt: 2 }}>
@@ -62,7 +69,7 @@ const LocationModal: React.FC<LocationModalProps> = ({
         <Grid container spacing={2} sx={{ mt: 2 }}>
           <Grid item xs={6}>
             <Button fullWidth variant="outlined" onClick={onClose}>
-              Cancel
+              {(t("COMMON.CANCEL"))}
             </Button>
           </Grid>
           <Grid item xs={6}>
@@ -72,7 +79,7 @@ const LocationModal: React.FC<LocationModalProps> = ({
               color="primary"
               onClick={handleConfirm}
             >
-              Turn On
+              {t('COMMON.TURN_ON')}
             </Button>
           </Grid>
         </Grid>

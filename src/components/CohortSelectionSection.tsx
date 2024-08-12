@@ -11,7 +11,7 @@ import React, { useEffect } from 'react';
 
 import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
-import { ICohort } from '@/utils/Interfaces';
+import { CohortDetails, ICohort } from '@/utils/Interfaces';
 import { CustomField } from '@/utils/Interfaces';
 import { cohortHierarchy } from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
@@ -42,6 +42,8 @@ interface CohortSelectionSectionProps {
   handleSaveHasRun?: boolean;
   setHandleSaveHasRun?: React.Dispatch<React.SetStateAction<boolean>>;
   isCustomFieldRequired?: boolean;
+  // selectedCohortsData: React.Dispatch<React.SetStateAction<Array<ICohort>>>;
+  setSelectedCohortsData: React.Dispatch<React.SetStateAction<Array<ICohort>>>;
 }
 
 interface ChildData {
@@ -69,6 +71,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   setLoading,
   cohortsData,
   setCohortsData,
+  setSelectedCohortsData,
   manipulatedCohortData,
   setManipulatedCohortData,
   isManipulationRequired = true,
@@ -145,7 +148,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
               (field: any) => field.label === 'BLOCKS'
             );
             setBlockCode(blockField?.code);
-            setBlockId(blockField.fieldId);
+            setBlockId(blockField?.fieldId);
           }
 
           if (response && response?.length > 0) {
@@ -187,8 +190,10 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                   cohortId: item?.cohortId,
                   parentId: item?.parentId,
                   name: item?.cohortName || item?.name,
+                  params: item?.params,
                 }))
                 ?.filter(Boolean);
+              setSelectedCohortsData(filteredData);
               setCohortsData(filteredData);
               if (filteredData.length > 0) {
                 if (typeof window !== 'undefined' && window.localStorage) {
@@ -255,6 +260,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   }, [
     userId,
     setCohortsData,
+
     setLoading,
     setClassId,
     setManipulatedCohortData,
@@ -281,8 +287,23 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
       localStorage.setItem('stateName', '');
       console.log('NO State For Selected Cohort');
     }
+
+    // set selected cohort details data
+    const getSelectedCohortDetails: ICohort | undefined = cohortsData?.find(
+      (item: any) => item?.cohortId === cohort_id
+    );
+    if (getSelectedCohortDetails) {
+      setSelectedCohortsData([getSelectedCohortDetails]); // Set with the found cohort details
+    } else {
+      setSelectedCohortsData([]); // Set to an empty array if not found
+    }
+
+    console.log('getSelectedCohortDetailsOne', getSelectedCohortDetails);
+
     function getStateByCohortId(cohortId: any) {
-      const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
+      const cohort = cohortsData?.find(
+        (item: any) => item.cohortId === cohortId
+      );
       return cohort ? cohort?.state : null;
     }
   };

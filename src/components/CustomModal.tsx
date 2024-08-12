@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Box,
   Modal,
@@ -8,8 +8,8 @@ import {
   Divider,
   useMediaQuery,
   Theme,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface CustomModalProps {
   open: boolean;
@@ -41,7 +41,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
   children,
 }) => {
   const isSmallScreen = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down("sm"),
+    theme.breakpoints.down('sm')
   );
 
   return (
@@ -53,13 +53,13 @@ const CustomModal: React.FC<CustomModalProps> = ({
     >
       <Box
         sx={{
-          position: "absolute" as "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: isSmallScreen ? "90%" : 400,
-          maxWidth: "90%",
-          bgcolor: "background.paper",
+          position: 'absolute' as 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: isSmallScreen ? '90%' : 400,
+          maxWidth: '90%',
+          bgcolor: 'background.paper',
           boxShadow: 24,
           p: 2,
           borderRadius: 2,
@@ -70,20 +70,20 @@ const CustomModal: React.FC<CustomModalProps> = ({
             <Typography id="modal-title" variant="h1">
               {title}
             </Typography>
-            {subtitle && (
-              <Typography id="modal-subtitle" variant="h2">
-                {subtitle}
-              </Typography>
-            )}
           </Box>
           <Box display="flex" justifyContent="flex-end">
             {showClose && (
-              <IconButton onClick={handleClose} sx={{ ml: "auto" }}>
+              <IconButton onClick={handleClose} sx={{ ml: 'auto' }}>
                 <CloseIcon />
               </IconButton>
             )}
           </Box>
         </Box>
+        {subtitle && (
+          <Typography id="modal-subtitle" variant="h5">
+            {subtitle}
+          </Typography>
+        )}
         <Divider sx={{ my: 2 }} />
         <Box id="modal-description">{children}</Box>
         <Box mt={2} display="flex" justifyContent="right" gap={2}>

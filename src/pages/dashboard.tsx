@@ -24,6 +24,7 @@ import {
   capitalizeEachWord,
   firstLetterInUpperCase,
   formatSelectedDate,
+  getDayMonthYearFormat,
   getTodayDate,
   shortDateFormat,
   toPascalCase,
@@ -65,13 +66,30 @@ import { Role } from '@/utils/app.constant';
 import SelfAttendanceModal from '@/components/SelfAttendanceModal';
 import CustomModal from '@/components/CustomModal';
 import LocationModal from '@/components/LocationModal';
+import { getCohortList } from '@/services/CohortServices';
 
+interface AttendanceParams {
+  allowed: number;
+  allow_late_marking: number;
+  attendance_ends_at: string;
+  update_once_marked: number;
+  capture_geoLocation: number;
+  attendance_starts_at: string;
+  back_dated_attendance: number;
+  restrict_attendance_timings: number;
+  back_dated_attendance_allowed_days: number;
+}
+interface AttendanceData {
+  self: AttendanceParams;
+  student: AttendanceParams;
+}
 interface DashboardProps {}
 
 const attendance = {
   self: {
     allowed: 1,
-    back_dated_attendance: 0,
+    back_dated_attendance: 1,
+    back_dated_attendance_allowed_days: 2,
     restrict_attendance_timings: 1,
     attendance_starts_at: '15:24',
     attendance_ends_at: '17:45',
@@ -81,7 +99,8 @@ const attendance = {
   },
   student: {
     allowed: 1,
-    back_dated_attendance: 0,
+    back_dated_attendance: 1,
+    back_dated_attendance_allowed_days: 5,
     restrict_attendance_timings: 1,
     attendance_starts_at: '15:24',
     attendance_ends_at: '18:45',
@@ -96,13 +115,39 @@ const formatTime = (time: string) => {
   return new Date().setHours(hours, minutes, 0, 0);
 };
 
-const isWithinAttendanceTime = (attendanceTimes: {
-  allow_late_marking?: number;
-  restrict_attendance_timings?: number;
-  attendance_starts_at?: string | null;
-  attendance_ends_at?: string | null;
-  update_once_marked?: number;
-}) => {
+const isWithinAttendanceTime = (
+  attendanceTimes: {
+    allow_late_marking?: number;
+    restrict_attendance_timings?: number;
+    attendance_starts_at?: string | null;
+    attendance_ends_at?: string | null;
+    update_once_marked?: number;
+    back_dated_attendance_allowed_days?: number;
+    back_dated_attendance?: number;
+  },
+  selectedDate?: any
+) => {
+  const now = new Date();
+
+  // Check if backdated attendance is allowed and if the selected date is within the allowed range
+  if (
+    attendanceTimes?.back_dated_attendance === 1 &&
+    attendanceTimes?.back_dated_attendance_allowed_days !== undefined &&
+    attendanceTimes?.back_dated_attendance_allowed_days > 0
+  ) {
+    const allowedBackDate = new Date();
+    allowedBackDate.setDate(
+      now.getDate() - attendanceTimes?.back_dated_attendance_allowed_days
+    );
+    const formatedAllowedBackDate = formatSelectedDate(allowedBackDate);
+    console.log('allowedBackDate', formatSelectedDate(allowedBackDate));
+    console.log('selectedDate', selectedDate);
+    if (selectedDate < formatedAllowedBackDate || selectedDate > now) {
+      return false; // Selected date is outside the allowed backdated range
+    }
+  }
+
+  // check if restrict_attendance_timings is 1 then allow all conditons
   if (attendanceTimes.restrict_attendance_timings === 1) {
     if (
       !attendanceTimes.attendance_starts_at ||
@@ -144,6 +189,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
+  const [selectedCohortData, setSelectedCohortData] = React.useState<
+    Array<ICohort>
+  >([]);
+
   const [manipulatedCohortData, setManipulatedCohortData] =
     React.useState<Array<ICohort>>(cohortsData);
   const [classId, setClassId] = React.useState('');
@@ -186,21 +235,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [isLocationModalOpen, setLocationModalOpen] = React.useState(false);
   const [attendanceLocation, setAttendanceLocation] =
     React.useState<GeolocationPosition | null>(null);
-
-  // condition for mark attendance for student and self
-  const attendanceTimesLearners = attendance?.student;
-  const canMarkAttendanceLerners = isWithinAttendanceTime(
-    attendanceTimesLearners
+  const [attendance, setAttendance] = React.useState<AttendanceData | null>(
+    null
   );
-  const isAllowedToMarkLearners = checkIsAllowedToShow(attendanceTimesLearners);
-
-  const attendanceTimesSelf = attendance?.self;
-  const canMarkAttendanceSelf =
-    isWithinAttendanceTime(attendanceTimesSelf) &&
-    attendanceTimesSelf?.update_once_marked === 1;
-  const isTeacherRole = role === 'Teacher';
-  const isAllowedToMarkSelf =
-    checkIsAllowedToShow(attendanceTimesSelf) && isTeacherRole;
+  // condition for mark attendance for student and self
 
   const onCloseEditMOdel = () => {
     setIsAttendanceModalOpen(false);
@@ -221,6 +259,34 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   };
 
+  useEffect(() => {
+    const getData = selectedCohortData[0]?.params;
+    console.log('getData', getData);
+    if (getData) {
+      setAttendance(getData);
+    } else {
+      setAttendance(null);
+    }
+  }, [selectedCohortData]);
+
+  const attendanceTimesLearners = attendance?.student;
+  const canMarkAttendanceLerners = attendanceTimesLearners
+    ? isWithinAttendanceTime(attendanceTimesLearners, selectedDate)
+    : false;
+  const isAllowedToMarkLearners = attendanceTimesLearners
+    ? checkIsAllowedToShow(attendanceTimesLearners)
+    : false;
+
+  const attendanceTimesSelf = attendance?.self;
+  const canMarkAttendanceSelf = attendanceTimesSelf
+    ? isWithinAttendanceTime(attendanceTimesSelf, selectedDate) &&
+      attendanceTimesSelf?.update_once_marked === 1
+    : false;
+  const isTeacherRole = role === 'Teacher';
+  const isAllowedToMarkSelf = attendanceTimesSelf
+    ? checkIsAllowedToShow(attendanceTimesSelf) && isTeacherRole
+    : false;
+
   // handle self attendance
   const handleUpdateAction = async () => {
     setLoading(true);
@@ -238,7 +304,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     const data = {
       userId: userId,
       attendance: selectedAttendance,
-      attendanceDate: dateForAttendance,
+      attendanceDate: selectedDate,
       contextId: classId,
       scope: 'self',
       attendanceLocation,
@@ -260,10 +326,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setLoading(false);
       onCloseEditMOdel();
       setSelectedAttendance('');
-      fetchData();
+      fetchData(selectedDate);
     }
   };
-  const fetchData = async () => {
+  const fetchData = async (selectedDate: string) => {
     const currentDate = new Date();
     const currentDateForAttendance = formatSelectedDate(currentDate);
     const userId = localStorage.getItem('userId');
@@ -274,8 +340,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
       contextId: contextId,
       userId: userId,
       scope: 'self',
-      toDate: currentDateForAttendance,
-      fromDate: currentDateForAttendance,
+      toDate: selectedDate,
+      fromDate: selectedDate,
     };
 
     try {
@@ -295,8 +361,30 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   useEffect(() => {
-    fetchData(); // Call the async function
+    fetchData(selectedDate); // Call the async function
   }, [classId]);
+
+  useEffect(() => {
+    if (userId) {
+      setLoading(true);
+      const fetchCohorts = async () => {
+        try {
+          const response = await getCohortList(userId, {
+            customField: 'true',
+          });
+
+          const getSelectedCohortDetails = response?.find(
+            (item: any) => item?.cohortId === classId
+          );
+          console.log('ResponseCohortDetails:', getSelectedCohortDetails);
+          console.log('classId', classId);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchCohorts();
+    }
+  }, []);
 
   useEffect(() => {
     setIsClient(true);
@@ -531,6 +619,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, [classId, selectedDate, handleSaveHasRun]);
 
   const showDetailsHandle = (dayStr: string) => {
+    fetchData(formatSelectedDate(dayStr));
     setSelectedDate(formatSelectedDate(dayStr));
     setShowDetails(true);
   };
@@ -719,6 +808,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             setLoading={setLoading}
                             cohortsData={cohortsData}
                             setCohortsData={setCohortsData}
+                            // selectedCohortsData={selectedCohortData}
+                            setSelectedCohortsData={setSelectedCohortData}
                             manipulatedCohortData={manipulatedCohortData}
                             setManipulatedCohortData={setManipulatedCohortData}
                             blockName={blockName}
@@ -894,10 +985,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 }}
                                 onClick={handleModalToggle}
                                 disabled={
-                                  !canMarkAttendanceLerners ||
-                                  currentAttendance === 'futureDate' ||
-                                  classId === 'all' ||
-                                  formattedSevenDaysAgo > selectedDate
+                                  !canMarkAttendanceLerners
+                                  // ||
+                                  // currentAttendance === 'futureDate' ||
+                                  // classId === 'all' ||
+                                  // formattedSevenDaysAgo > selectedDate
                                 }
                               >
                                 {currentAttendance === 'notMarked' ||
@@ -1060,10 +1152,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 }}
                                 onClick={() => setLocationModalOpen(true)}
                                 disabled={
-                                  !canMarkAttendanceSelf ||
-                                  currentAttendance === 'futureDate' ||
-                                  classId === 'all' ||
-                                  formattedSevenDaysAgo > selectedDate
+                                  !canMarkAttendanceSelf
+                                  // ||
+                                  // currentAttendance === 'futureDate' ||
+                                  // classId === 'all' ||
+                                  // formattedSevenDaysAgo > selectedDate
                                 }
                               >
                                 {t('COMMON.MARK_TO_SELF')}
@@ -1106,7 +1199,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           open={attendanceModelOpen}
                           handleClose={onCloseEditMOdel}
                           title={t('COMMON.ATTENDANCE')}
-                          // subtitle={t("COMMON.ATTENDANCE")}
+                          subtitle={getDayMonthYearFormat(
+                            shortDateFormat(new Date(selectedDate))
+                          )}
                           primaryBtnText={t('COMMON.SELF_ATTENDANCE')}
                           secondaryBtnText="Cancel"
                           primaryBtnClick={handleUpdateAction}
