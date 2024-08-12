@@ -361,7 +361,9 @@
     "GOOGLEMEET": "GoogleMeet"
   },
   "MANAGE_USERS": {
-    "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"
+    "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully",
+    "CENTERS_REQUEST_FAILED": "Center Requested Failed"
+
   },
   "FORM": {
     "FULL_NAME": "Full Name",
