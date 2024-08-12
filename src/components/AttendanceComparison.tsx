@@ -74,7 +74,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
 
   useEffect(() => {
     const cohortIds =
-      store?.cohorts?.map((pair: Cohort) => pair?.cohortId) || [];
+      store?.cohorts?.filter((item: Cohort) => item?.cohortType === centerType).map((pair: Cohort) => pair?.cohortId) || [];
 
     const fetchData = async () => {
       const promises = cohortIds?.map((cohortId: string) =>
@@ -93,7 +93,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
         if (result?.statusCode === 200 && result?.data?.result?.contextId) {
           Object.keys(result?.data?.result?.contextId).forEach((id) => {
             dataMap[id] =
-              result?.data?.result?.contextId[id]?.present_percentage || '0';
+              result?.data?.result?.contextId[id]?.present_percentage ?? '0';
           });
         }
       });
@@ -110,7 +110,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
     };
 
     fetchData();
-  }, [store?.cohorts, scope]);
+  }, [store?.cohorts, scope, centerType]);
 
   const data =
     store?.cohorts
