@@ -29,6 +29,7 @@ import DeleteUserModal from './DeleteUserModal';
 import ReassignModal from './ReassignModal';
 import SimpleModal from './SimpleModal';
 import { setTimeout } from 'timers';
+import Loader from './Loader';
 
 interface Cohort {
   cohortId: string;
@@ -499,10 +500,14 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     setIsFacilitatorAdded((prev) => prev);
   };
   return (
-    <>
-      {/* <Header /> */}
-      <Box>
-        {/* <Box
+    <div>
+      {loading ? (
+        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+      ) : (
+        <>
+          {/* <Header /> */}
+          <Box>
+            {/* <Box
           textAlign={'left'}
           fontSize={'22px'}
           p={'18px 0'}
@@ -510,8 +515,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
         >
           {t('COMMON.MANAGE_USERS')}
         </Box> */}
-      </Box>
-      {/* <Box sx={{ width: '100%' }}>
+          </Box>
+          {/* <Box sx={{ width: '100%' }}>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -845,75 +850,75 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                       ))}
                   </Box>
                 </Box> */}
-              </BottomDrawer>
+                  </BottomDrawer>
 
-              <ManageCentersModal
-                open={openCentersModal}
-                onClose={handleCloseCentersModal}
-                centersName={centerList}
-                centers={centers}
-                onAssign={handleAssignCenters}
-              />
-            </Box>
+                  <ManageCentersModal
+                    open={openCentersModal}
+                    onClose={handleCloseCentersModal}
+                    centersName={centerList}
+                    centers={centers}
+                    onAssign={handleAssignCenters}
+                  />
+                </Box>
 
-            <ConfirmationModal
-              message={t('CENTERS.BLOCK_REQUEST')}
-              handleAction={handleRequestBlockAction}
-              buttonNames={{
-                primary: t('COMMON.SEND_REQUEST'),
-                secondary: t('COMMON.CANCEL'),
-              }}
-              handleCloseModal={handleCloseModal}
-              modalOpen={confirmationModalOpen}
-            />
-            <ReassignModal
-              cohortNames={reassignCohortNames}
-              message={t('COMMON.REASSIGN_BLOCKS')}
-              handleAction={handleRequestBlockAction}
-              handleCloseReassignModal={handleCloseReassignModal}
-              modalOpen={reassignModalOpen}
-              reloadState={reloadState}
-              setReloadState={setReloadState}
-            />
+                <ConfirmationModal
+                  message={t('CENTERS.BLOCK_REQUEST')}
+                  handleAction={handleRequestBlockAction}
+                  buttonNames={{
+                    primary: t('COMMON.SEND_REQUEST'),
+                    secondary: t('COMMON.CANCEL'),
+                  }}
+                  handleCloseModal={handleCloseModal}
+                  modalOpen={confirmationModalOpen}
+                />
+                <ReassignModal
+                  cohortNames={reassignCohortNames}
+                  message={t('COMMON.REASSIGN_BLOCKS')}
+                  handleAction={handleRequestBlockAction}
+                  handleCloseReassignModal={handleCloseReassignModal}
+                  modalOpen={reassignModalOpen}
+                  reloadState={reloadState}
+                  setReloadState={setReloadState}
+                />
 
-            <DeleteUserModal
-              type={Role.TEACHER}
-              userId={userId}
-              open={openDeleteUserModal}
-              onClose={handleCloseModal}
-              onUserDelete={handleDeleteUser}
-              reloadState={reloadState}
-              setReloadState={setReloadState}
-            />
-            <SimpleModal
-              primaryText={t('COMMON.OK')}
-              primaryActionHandler={handleCloseRemoveModal}
-              open={openRemoveUserModal}
-              onClose={handleCloseRemoveModal}
-              modalTitle={t('COMMON.DELETE_USER')}
-            >
-              {' '}
-              <Box mt={1.5} mb={1.5}>
-                <Typography>
-                  {t('CENTERS.THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT')}{' '}
-                  <strong>{removeCohortNames}</strong>
-                  <br />
-                  {t('CENTERS.PLEASE_REMOVE_THE_USER_FROM_COHORT')}
-                </Typography>
-              </Box>
-            </SimpleModal>
-            {openAddFacilitatorModal && (
-              <AddFacilitatorModal
-                open={openAddFacilitatorModal}
-                onClose={handleCloseAddFaciModal}
-                onFacilitatorAdded={handleFacilitatorAdded}
-              />
+                <DeleteUserModal
+                  type={Role.TEACHER}
+                  userId={userId}
+                  open={openDeleteUserModal}
+                  onClose={handleCloseModal}
+                  onUserDelete={handleDeleteUser}
+                  reloadState={reloadState}
+                  setReloadState={setReloadState}
+                />
+                <SimpleModal
+                  primaryText={t('COMMON.OK')}
+                  primaryActionHandler={handleCloseRemoveModal}
+                  open={openRemoveUserModal}
+                  onClose={handleCloseRemoveModal}
+                  modalTitle={t('COMMON.DELETE_USER')}
+                >
+                  {' '}
+                  <Box mt={1.5} mb={1.5}>
+                    <Typography>
+                      {t('CENTERS.THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT')}{' '}
+                      <strong>{removeCohortNames}</strong>
+                      <br />
+                      {t('CENTERS.PLEASE_REMOVE_THE_USER_FROM_COHORT')}
+                    </Typography>
+                  </Box>
+                </SimpleModal>
+                {openAddFacilitatorModal && (
+                  <AddFacilitatorModal
+                    open={openAddFacilitatorModal}
+                    onClose={handleCloseAddFaciModal}
+                    onFacilitatorAdded={handleFacilitatorAdded}
+                  />
+                )}
+              </>
             )}
-          </>
-        )}
 
-        {/* Learners list */}
-        {/* {value === 2 && (
+            {/* Learners list */}
+            {/* {value === 2 && (
           <>
             <Grid
               px={'18px'}
@@ -992,8 +997,10 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             />
           </>
         )} */}
-      </Box>
-    </>
+          </Box>
+        </>
+      )}
+    </div>
   );
 };
 

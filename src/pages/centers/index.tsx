@@ -236,12 +236,9 @@ const TeachingCenters = () => {
               onChange={handleChange}
               textColor="inherit" // Use "inherit" to apply custom color
               aria-label="secondary tabs example"
-
               sx={{
-
                 fontSize: '14px',
-                borderBottom: (theme) =>
-                  `1px solid #EBE1D4`,
+                borderBottom: (theme) => `1px solid #EBE1D4`,
 
                 '& .MuiTab-root': {
                   color: theme.palette.warning['A200'],
@@ -305,7 +302,9 @@ const TeachingCenters = () => {
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="start">
-                            <Search sx={{ color: theme?.palette?.warning['300'] }} />
+                            <Search
+                              sx={{ color: theme?.palette?.warning['300'] }}
+                            />
                           </InputAdornment>
                         ),
                       }}
@@ -341,27 +340,27 @@ const TeachingCenters = () => {
                   accessControl,
                   userRole
                 ) && (
-                    <Box mt={'18px'} px={'18px'}>
-                      <Button
-                        sx={{
-                          border: '1px solid #1E1B16',
-                          borderRadius: '100px',
-                          height: '40px',
-                          width: '9rem',
-                          color: theme.palette.error.contrastText,
-                        }}
-                        className="text-1E"
-                        endIcon={<AddIcon />}
-                        onClick={() => setOpenCreateCenterModal(true)}
-                      >
-                        {t('BLOCKS.CREATE_NEW')}
-                      </Button>
-                      {/* <Box sx={{ display: 'flex', gap: '5px' }}>
+                  <Box mt={'18px'} px={'18px'}>
+                    <Button
+                      sx={{
+                        border: '1px solid #1E1B16',
+                        borderRadius: '100px',
+                        height: '40px',
+                        width: '9rem',
+                        color: theme.palette.error.contrastText,
+                      }}
+                      className="text-1E"
+                      endIcon={<AddIcon />}
+                      onClick={() => setOpenCreateCenterModal(true)}
+                    >
+                      {t('BLOCKS.CREATE_NEW')}
+                    </Button>
+                    {/* <Box sx={{ display: 'flex', gap: '5px' }}>
                   <ErrorOutlineIcon style={{ fontSize: '15px' }} />
                   <Box className="fs-12 fw-500 ">{t('COMMON.ADD_CENTER')}</Box>
                 </Box> */}
-                    </Box>
-                  )}
+                  </Box>
+                )}
               </Grid>
 
               <CreateCenterModal
@@ -370,208 +369,221 @@ const TeachingCenters = () => {
                 onCenterAdded={handleCenterAdded}
               />
 
-              {accessGranted('showBlockLevelCenterData', accessControl, userRole) &&
-                filteredCenters && (
-                  <>
-                    {/* Regular Centers */}
+              {accessGranted(
+                'showBlockLevelCenterData',
+                accessControl,
+                userRole
+              ) &&
+              filteredCenters && (
+                <>
+                  {/* Regular Centers */}
+                  {filteredCenters.some(
+                    (center) => center.centerType?.toUpperCase() === 'REGULAR' || center.centerType === ''
+                  ) && (
                     <Box
                       sx={{
                         fontSize: '14px',
                         fontWeight: '500',
                         color: theme.palette.warning['300'],
                         marginBottom: '8px',
-                        m: 2
+                        m: 2,
                       }}
                     >
                       {t('CENTERS.REGULAR_CENTERS')}
                     </Box>
-                    {filteredCenters.some(
-                      (center) =>
-                        center.centerType?.toUpperCase() === 'REGULAR' ||
-                        center.centerType === ''
-                    ) && (
-                        <Box
-                          sx={{
-                            borderRadius: '16px',
-                            p: 2,
-                            background: theme.palette.action.selected,
-                            m: 2
-                          }}
-                        >
-
-                          <Grid container spacing={2}>
-                            {filteredCenters
-                              .filter(
-                                (center) =>
-                                  center.centerType?.toUpperCase() === 'REGULAR' ||
-                                  center.centerType === ''
-                              )
-                              .map((center) => (
-                                <React.Fragment key={center.cohortId}>
-                                  <Grid item xs={12} sm={6} md={4}>
+                  )}
+              
+                  {filteredCenters.some(
+                    (center) => center.centerType?.toUpperCase() === 'REGULAR' || center.centerType === ''
+                  ) && (
+                    <Box
+                      sx={{
+                        borderRadius: '16px',
+                        p: 2,
+                        background: theme.palette.action.selected,
+                        m: 2,
+                      }}
+                    >
+                      <Grid container spacing={2}>
+                        {filteredCenters
+                          .filter(
+                            (center) => center.centerType?.toUpperCase() === 'REGULAR' || center.centerType === ''
+                          )
+                          .map((center) => (
+                            <React.Fragment key={center.cohortId}>
+                              <Grid item xs={12} sm={6} md={4}>
+                                <Box
+                                  onClick={() => {
+                                    router.push(`/centers/${center.cohortId}`);
+                                    localStorage.setItem('classId', center.cohortId);
+                                  }}
+                                  sx={{
+                                    cursor: 'pointer',
+                                  }}
+                                >
+                                  <Box
+                                    sx={{
+                                      display: 'flex',
+                                      gap: '10px',
+                                      background: '#fff',
+                                      height: '56px',
+                                      borderRadius: '8px',
+                                    }}
+                                    mt={1}
+                                  >
                                     <Box
-                                      onClick={() => {
-                                        router.push(`/centers/${center.cohortId}`);
-                                        localStorage.setItem('classId', center.cohortId);
-                                      }}
                                       sx={{
-                                        cursor: 'pointer',
-                                        // marginBottom: '20px',
+                                        width: '56px',
+                                        display: 'flex',
+                                        background: theme.palette.primary.light,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        borderTopLeftRadius: '8px',
+                                        borderBottomLeftRadius: '8px',
+                                      }}
+                                    >
+                                      <Image src={building} alt="center" />
+                                    </Box>
+              
+                                    <Box
+                                      sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        padding: '0 10px',
                                       }}
                                     >
                                       <Box
                                         sx={{
-                                          display: 'flex',
-                                          gap: '10px',
-                                          background: '#fff',
-                                          height: '56px',
-                                          borderRadius: '8px',
+                                          fontSize: '16px',
+                                          fontWeight: '400',
+                                          color: theme.palette.warning['300'],
                                         }}
-                                        mt={1}
                                       >
-                                        <Box
-                                          sx={{
-                                            width: '56px',
-                                            display: 'flex',
-                                            background: theme.palette.primary.light,
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            borderTopLeftRadius: '8px',
-                                            borderBottomLeftRadius: '8px',
-                                          }}
-                                        >
-                                          <Image src={building} alt="center" />
-                                        </Box>
-
-                                        <Box
-                                          sx={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                            width: '100%',
-                                            padding: '0 10px',
-                                          }}
-                                        >
-                                          <Box
-                                            sx={{
-                                              fontSize: '16px',
-                                              fontWeight: '400',
-                                              color: theme.palette.warning['300'],
-                                            }}
-                                          >
-                                            {center.cohortName}
-                                          </Box>
-                                          <ChevronRightIcon />
-                                        </Box>
+                                        {center.cohortName
+                                          .charAt(0)
+                                          .toUpperCase() +
+                                          center.cohortName.slice(1)}
                                       </Box>
+                                      <ChevronRightIcon />
                                     </Box>
-                                  </Grid>
-                                </React.Fragment>
-                              ))}
-                          </Grid>
-                        </Box>
-                      )}
-
-                    {/* Remote Centers */}
+                                  </Box>
+                                </Box>
+                              </Grid>
+                            </React.Fragment>
+                          ))}
+                      </Grid>
+                    </Box>
+                  )}
+              
+                  {/* Remote Centers */}
+                  {filteredCenters.some(
+                    (center) => center.centerType?.toUpperCase() === 'REMOTE'
+                  ) && (
                     <Box
                       sx={{
                         fontSize: '14px',
                         fontWeight: '500',
                         color: theme.palette.warning['300'],
                         marginBottom: '8px',
-                        m: 2
+                        m: 2,
                       }}
                     >
                       {t('CENTERS.REMOTE_CENTERS')}
                     </Box>
-                    {filteredCenters.some(
-                      (center) =>
-                        center.centerType?.toUpperCase() === 'REMOTE'
-                    ) && (
-                        <Box
-                          sx={{
-                            borderRadius: '16px',
-                            p: 2,
-                            background: theme.palette.action.selected,
-                            m: 2
-                          }}
-                        >
-                          <Grid container spacing={2}>
-                            {filteredCenters
-                              .filter(
-                                (center) =>
-                                  center.centerType?.toUpperCase() === 'REMOTE'
-                              )
-                              .map((center) => (
-                                <React.Fragment key={center.cohortId}>
-                                  <Grid item xs={12} sm={6} md={4}>
+                  )}
+              
+                  {filteredCenters.some(
+                    (center) => center.centerType?.toUpperCase() === 'REMOTE'
+                  ) && (
+                    <Box
+                      sx={{
+                        borderRadius: '16px',
+                        p: 2,
+                        background: theme.palette.action.selected,
+                        m: 2,
+                      }}
+                    >
+                      <Grid container spacing={2}>
+                        {filteredCenters
+                          .filter(
+                            (center) => center.centerType?.toUpperCase() === 'REMOTE'
+                          )
+                          .map((center) => (
+                            <React.Fragment key={center.cohortId}>
+                              <Grid item xs={12} sm={6} md={4}>
+                                <Box
+                                  onClick={() => {
+                                    router.push(`/centers/${center.cohortId}`);
+                                    localStorage.setItem('classId', center.cohortId);
+                                  }}
+                                  sx={{
+                                    cursor: 'pointer',
+                                  }}
+                                >
+                                  <Box
+                                    sx={{
+                                      display: 'flex',
+                                      gap: '10px',
+                                      background: '#fff',
+                                      height: '56px',
+                                      borderRadius: '8px',
+                                    }}
+                                    mt={1}
+                                  >
                                     <Box
-                                      onClick={() => {
-                                        router.push(`/centers/${center.cohortId}`);
-                                        localStorage.setItem('classId', center.cohortId);
-                                      }}
                                       sx={{
-                                        cursor: 'pointer',
-                                        // marginBottom: '20px',
+                                        width: '56px',
+                                        display: 'flex',
+                                        background: theme.palette.primary.light,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        borderTopLeftRadius: '8px',
+                                        borderBottomLeftRadius: '8px',
+                                      }}
+                                    >
+                                      <SmartDisplayOutlinedIcon sx={{ color: '#4D4639' }} />
+                                    </Box>
+              
+                                    <Box
+                                      sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        padding: '0 10px',
                                       }}
                                     >
                                       <Box
                                         sx={{
-                                          display: 'flex',
-                                          gap: '10px',
-                                          background: '#fff',
-                                          height: '56px',
-                                          borderRadius: '8px',
+                                          fontSize: '16px',
+                                          fontWeight: '400',
+                                          color: theme.palette.warning['300'],
                                         }}
-                                        mt={1}
                                       >
-                                        <Box
-                                          sx={{
-                                            width: '56px',
-                                            display: 'flex',
-                                            background: theme.palette.primary.light,
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            borderTopLeftRadius: '8px',
-                                            borderBottomLeftRadius: '8px',
-                                          }}
-                                        >
-                                          <SmartDisplayOutlinedIcon sx={{ color: '#4D4639' }} />
-                                        </Box>
-
-                                        <Box
-                                          sx={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                            width: '100%',
-                                            padding: '0 10px',
-                                          }}
-                                        >
-                                          <Box
-                                            sx={{
-                                              fontSize: '16px',
-                                              fontWeight: '400',
-                                              color: theme.palette.warning['300'],
-                                            }}
-                                          >
-                                            {center.cohortName}
-                                          </Box>
-                                          <ChevronRightIcon />
-                                        </Box>
+                                        {center.cohortName}
                                       </Box>
+                                      <ChevronRightIcon />
                                     </Box>
-                                  </Grid>
-                                </React.Fragment>
-                              ))}
-                          </Grid>
-                        </Box>
-                      )}
-                  </>
-                )}
+                                  </Box>
+                                </Box>
+                              </Grid>
+                            </React.Fragment>
+                          ))}
+                      </Grid>
+                    </Box>
+                  )}
+                </>
+              )}
+              
 
               {/* Teacher-Level Centers */}
-              {accessGranted('showTeacherLevelCenterData', accessControl, userRole) &&
+              {accessGranted(
+                'showTeacherLevelCenterData',
+                accessControl,
+                userRole
+              ) &&
                 cohortsData?.map((cohort: any) => {
                   return (
                     <React.Fragment key={cohort?.cohortId}>
@@ -580,18 +592,23 @@ const TeachingCenters = () => {
                           router.push(`/centers/${cohort.cohortId}`);
                           localStorage.setItem('classId', cohort.cohortId);
                         }}
-                        sx={{ cursor: 'pointer', marginBottom: '20px', background: theme.palette.action.selected, p: 2, m: 2, borderRadius: 5 }}
+                        sx={{
+                          cursor: 'pointer',
+                          marginBottom: '20px',
+                          background: theme.palette.action.selected,
+                          p: 2,
+                          m: 2,
+                          borderRadius: 5,
+                        }}
                       >
                         <Box
                           sx={{
-
                             display: 'flex',
                             gap: '10px',
                             background: '#fff',
                             height: '56px',
                             borderRadius: '8px',
                           }}
-
                         >
                           <Box
                             sx={{
@@ -632,7 +649,6 @@ const TeachingCenters = () => {
                     </React.Fragment>
                   );
                 })}
-
             </>
           )}
         </Box>
@@ -645,7 +661,7 @@ const TeachingCenters = () => {
             />
           )}
         </Box>
-      </Box >
+      </Box>
       <FilterModalCenter
         open={filterModalOpen}
         handleClose={handleFilterModalClose}
