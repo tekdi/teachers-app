@@ -358,10 +358,13 @@
     "RECURRING_OFFLINE": "Recurring offline",
     "ENTER_VALID_MEETING_LINK": "Please enter a valid Zoom or Google Meet link.",
     "ZOOM": "Zoom",
-    "GOOGLEMEET": "GoogleMeet"
+    "GOOGLEMEET": "GoogleMeet",
+    "SET_UP": "Set-Up"
   },
   "MANAGE_USERS": {
-    "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"
+    "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully",
+    "CENTERS_REQUEST_FAILED": "Center Requested Failed"
+
   },
   "FORM": {
     "FULL_NAME": "Full Name",
