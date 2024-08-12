@@ -4,7 +4,7 @@ import React from 'react';
 
 interface IFormButtons {
   formData: any;
-  onClick: () => void; 
+  onClick: (formData: any) => void; 
   isCreateCentered?: boolean;
   isCreatedFacilitator?: boolean;
   isCreatedLearner?: boolean;
