@@ -537,7 +537,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   }, [scheduleEvent, cohortId]);
 
   return (
-    <Box overflow={'auto'}>
+    <Box overflow={'hidden'}>
       {sessionBlocks.map((block, index) => (
         <Box sx={{ padding: '10px 16px' }}>
           <Box>
