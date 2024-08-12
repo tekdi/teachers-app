@@ -18,8 +18,8 @@ import {
 import {
   AttendancePercentageProps,
   CohortAttendancePercentParam,
-  ICohort,
   CohortMemberList,
+  ICohort,
 } from '../utils/Interfaces';
 import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
 
@@ -31,6 +31,7 @@ import OverviewCard from '@/components/OverviewCard';
 import { showToastMessage } from '@/components/Toastify';
 import WeekCalender from '@/components/WeekCalender';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { Role } from '@/utils/app.constant';
 import { calculatePercentage } from '@/utils/attendanceStats';
 import { logEvent } from '@/utils/googleAnalytics';
 import withAccessControl from '@/utils/hoc/withAccessControl';
@@ -48,7 +49,6 @@ import calendar from '../assets/images/calendar.svg';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { Role } from '@/utils/app.constant';
 
 interface DashboardProps { }
 

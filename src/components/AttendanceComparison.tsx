@@ -90,7 +90,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
       const dataMap: Record<string, string> = {};
 
       results.forEach((result) => {
-        if (result.statusCode === 200 && result?.data?.result?.contextId) {
+        if (result?.statusCode === 200 && result?.data?.result?.contextId) {
           Object.keys(result?.data?.result?.contextId).forEach((id) => {
             dataMap[id] =
               result?.data?.result?.contextId[id]?.present_percentage || '0';
