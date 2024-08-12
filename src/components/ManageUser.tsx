@@ -30,6 +30,7 @@ import ReassignModal from './ReassignModal';
 import SimpleModal from './SimpleModal';
 import { setTimeout } from 'timers';
 import Loader from './Loader';
+import { useMediaQuery } from '@mui/material';
 
 interface Cohort {
   cohortId: string;
@@ -69,7 +70,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   setReloadState,
   cohortData,
   isFromFLProfile = false,
-  teacherUserId
+  teacherUserId,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -111,6 +112,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const [removeCohortNames, setRemoveCohortNames] = React.useState('');
   const [reassignCohortNames, setReassignCohortNames] = React.useState('');
   const [userId, setUserId] = React.useState('');
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const CustomLink = styled(Link)(({ theme }) => ({
     textDecoration: 'underline',
     textDecorationColor: theme?.palette?.secondary.main,
@@ -122,6 +124,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const setReassignFacilitatorUserId = reassignLearnerStore(
     (state) => state.setReassignFacilitatorUserId
   );
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
     if (reloadState) {
@@ -288,9 +291,10 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const toggleDrawer =
     (anchor: Anchor, open: boolean, user?: any, teacherUserId?: string) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
-      setCohortDeleteId(isFromFLProfile? teacherUserId : user.userId);
+      setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
       if (!isFromFLProfile) {
-        const centerNames = cohortsData?.[user?.userId]?.map((cohort) => cohort?.name) || [];
+        const centerNames =
+          cohortsData?.[user?.userId]?.map((cohort) => cohort?.name) || [];
         setCenters(centerNames);
         setSelectedUser(user);
       } // TODO: check condition for profile
@@ -308,7 +312,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
-      const userId = isFromFLProfile? teacherUserId : store?.deleteId;
+      const userId = isFromFLProfile ? teacherUserId : store?.deleteId;
       setUserId(userId);
 
       const cohortList = await getCohortList(userId);
@@ -346,9 +350,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       // }
     }
     if (name === 'reassign-block') {
-      const reassignuserId = isFromFLProfile? teacherUserId : selectedUser?.userId;
+      const reassignuserId = isFromFLProfile
+        ? teacherUserId
+        : selectedUser?.userId;
 
-      setReassignFacilitatorUserId(isFromFLProfile? teacherUserId : selectedUser?.userId);
+      setReassignFacilitatorUserId(
+        isFromFLProfile ? teacherUserId : selectedUser?.userId
+      );
 
       const fetchCohortList = async () => {
         if (!selectedUser?.userId) {
@@ -357,7 +365,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
         }
 
         try {
-          const cohortList = await getCohortList(isFromFLProfile ? teacherUserId ?? '' : selectedUser.userId);
+          const cohortList = await getCohortList(
+            isFromFLProfile ? teacherUserId ?? '' : selectedUser.userId
+          );
           console.log('Cohort List:', cohortList);
           if (cohortList && cohortList?.length > 0) {
             const cohortDetails = cohortList?.map(
@@ -549,19 +559,19 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           <Tab value={2} label={t('COMMON.LEARNERS')} />
         </Tabs>
       </Box> */}
-      <Box>
-        {value === 1 && (
-          <>
-           {!isFromFLProfile && (
-              <Grid
-                px={'18px'}
-                spacing={2}
-                mt={1}
-                sx={{ display: 'flex', alignItems: 'center' }}
-                container
-              >
-                <Grid item xs={8}>
-                  {/* <Box>
+          <Box>
+            {value === 1 && (
+              <>
+                {!isFromFLProfile && (
+                  <Grid
+                    px={'18px'}
+                    spacing={2}
+                    mt={1}
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                    container
+                  >
+                    <Grid item xs={8}>
+                      {/* <Box>
                 <TextField
                   className="input_search"
                   placeholder={t('COMMON.SEARCH_FACILITATORS')}
@@ -581,9 +591,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                   }}
                 />
               </Box> */}
-                </Grid>
-                <Grid item xs={4} marginTop={'8px'}>
-                  {/* <Box>
+                    </Grid>
+                    <Grid item xs={4} marginTop={'8px'}>
+                      {/* <Box>
                 <FormControl className="drawer-select" sx={{ width: '100%' }}>
                   <Select
                     displayEmpty
@@ -600,223 +610,236 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                   </Select>
                 </FormControl>
               </Box> */}
-                </Grid>
-                <Box mt={'18px'} px={'18px'}>
-                  <Button
-                    sx={{
-                      border: '1px solid #1E1B16',
-                      borderRadius: '100px',
-                      height: '40px',
-                      width: '8rem',
-                      color: theme.palette.error.contrastText,
-                    }}
-                    className="text-1E"
-                    onClick={handleOpenAddFaciModal}
-                    endIcon={<AddIcon />}
-                  >
-                    {t('COMMON.ADD_NEW')}
-                  </Button>
-                  {/* <Box sx={{ display: 'flex', gap: '5px' }}>
+                    </Grid>
+                    <Box mt={'18px'} px={'18px'}>
+                      <Button
+                        sx={{
+                          border: '1px solid #1E1B16',
+                          borderRadius: '100px',
+                          height: '40px',
+                          width: '8rem',
+                          color: theme.palette.error.contrastText,
+                        }}
+                        className="text-1E"
+                        onClick={handleOpenAddFaciModal}
+                        endIcon={<AddIcon />}
+                      >
+                        {t('COMMON.ADD_NEW')}
+                      </Button>
+                      {/* <Box sx={{ display: 'flex', gap: '5px' }}>
                 <ErrorOutlineIcon style={{ fontSize: '15px' }} />
                 <Box className="fs-12 fw-500 ">{t('COMMON.ADD_CENTER')}</Box>
               </Box> */}
-                </Box>
-              </Grid>
-            )}
+                    </Box>
+                  </Grid>
+                )}
 
-            <Box>
-              {isFromFLProfile ? (
-                <MoreVertIcon
-                  onClick={toggleDrawer('bottom', true, teacherUserId)}
-                  sx={{
-                    fontSize: '24px',
-                    marginTop: '1rem',
-                    color: theme.palette.warning['300'],
-                  }}
-                />
-              ) : (
-                <Box px={'18px'} mt={3}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '20px',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      paddingBottom: '15px',
-                    }}
-                  >
-                    <Box
+                <Box>
+                  {isFromFLProfile ? (
+                    <MoreVertIcon
+                      onClick={toggleDrawer('bottom', true, teacherUserId)}
                       sx={{
-                        gap: '15px',
-                        alignItems: 'center',
-                        '@media (min-width: 900px)': {
-                          background: theme.palette.action.selected,
-                          padding: '20px',
-                          borderRadius: '12px',
-                        },
+                        fontSize: '24px',
+                        marginTop: '1rem',
+                        color: theme.palette.warning['300'],
                       }}
-                      width={'100%'}
-                    >
-                      <Grid container spacing={2}>
-                        {users &&
-                          users.length !== 0 &&
-                          [...users]
-                            .sort((a, b) => a.name.localeCompare(b.name))
-                            .map((user) => (
-                              <Grid item xs={12} sm={4} md={4}>
-                                <Box
-                                  key={user.userId}
-                                  display={'flex'}
-                                  borderBottom={`1px solid ${theme.palette.warning['A100']}`}
-                                  width={'100%'}
-                                  justifyContent={'space-between'}
-                                  sx={{
-                                    cursor: 'pointer',
-                                    '@media (min-width: 900px)': {
-                                      border: `1px solid  ${theme.palette.action.selected}`,
-                                      padding: '4px 10px',
-                                      borderRadius: '8px',
-                                      background: theme.palette.warning['A400'],
-                                    },
-                                  }}
-                                >
-                                  <Box
-                                    display="flex"
-                                    alignItems="center"
-                                    gap="5px"
+                    />
+                  ) : (
+                    <Box px={'18px'} mt={3}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          gap: '20px',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          paddingBottom: '15px',
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            gap: '15px',
+                            alignItems: 'center',
+                            '@media (min-width: 900px)': {
+                              background: theme.palette.action.selected,
+                              padding: '20px',
+                              borderRadius: '12px',
+                            },
+                          }}
+                          width={'100%'}
+                        >
+                          <Grid container spacing={2}>
+                            {users &&
+                              users.length !== 0 &&
+                              [...users]
+                                .sort((a, b) => a.name.localeCompare(b.name))
+                                .map((user) => (
+                                  <Grid
+                                    item
+                                    xs={12}
+                                    sm={4}
+                                    md={4}
+                                    key={user.userId}
                                   >
-                                    <Box>
-                                      <CustomLink
-                                        className="word-break"
-                                        href="#"
-                                        onClick={(e) => e.preventDefault()}
-                                      >
-                                        <Typography
-                                          onClick={() => {
-                                            handleTeacherFullProfile(
-                                              user.userId!
-                                            );
-                                            // ReactGA.event('teacher-details-link-clicked', {
-                                            //   userId: userId,
-                                            // });
-                                          }}
-                                          sx={{
-                                            textAlign: 'left',
-                                            fontSize: '16px',
-                                            fontWeight: '400',
-                                            marginTop: '5px',
-                                            color: theme.palette.secondary.main,
-                                          }}
-                                        >
-                                          {user.name.charAt(0).toUpperCase() +
-                                            user.name.slice(1)}
-                                        </Typography>
-                                      </CustomLink>
+                                    <Box
+                                      key={user.userId}
+                                      display={'flex'}
+                                      borderBottom={`1px solid ${theme.palette.warning['A100']}`}
+                                      width={'100%'}
+                                      justifyContent={'space-between'}
+                                      sx={{
+                                        cursor: 'pointer',
+                                        '@media (min-width: 900px)': {
+                                          border: `1px solid  ${theme.palette.action.selected}`,
+                                          padding: '4px 10px',
+                                          borderRadius: '8px',
+                                          background:
+                                            theme.palette.warning['A400'],
+                                        },
+                                      }}
+                                    >
                                       <Box
-                                        sx={{
-                                          backgroundColor: '#FFF8F2',
-                                          padding: '5px',
-                                          borderRadius: '5px',
-                                          fontSize: '12px',
-                                          fontWeight: '600',
-                                          color: 'black',
-                                          marginBottom: '10px',
-                                        }}
+                                        display="flex"
+                                        alignItems="center"
+                                        gap="5px"
                                       >
-                                        {user?.cohortNames
-                                          ? `${user.cohortNames}`
-                                          : t('ATTENDANCE.N/A')}
+                                        <Box>
+                                          <CustomLink
+                                            className="word-break"
+                                            href="#"
+                                            onClick={(e) => e.preventDefault()}
+                                          >
+                                            <Typography
+                                              onClick={() => {
+                                                handleTeacherFullProfile(
+                                                  user.userId!
+                                                );
+                                                // ReactGA.event('teacher-details-link-clicked', {
+                                                //   userId: userId,
+                                                // });
+                                              }}
+                                              sx={{
+                                                textAlign: 'left',
+                                                fontSize: '16px',
+                                                fontWeight: '400',
+                                                marginTop: '5px',
+                                                color:
+                                                  theme.palette.secondary.main,
+                                              }}
+                                            >
+                                              {user.name
+                                                .charAt(0)
+                                                .toUpperCase() +
+                                                user.name.slice(1)}
+                                            </Typography>
+                                          </CustomLink>
+                                          <Box
+                                            sx={{
+                                              backgroundColor: '#FFF8F2',
+                                              padding: '5px',
+                                              borderRadius: '5px',
+                                              fontSize: '12px',
+                                              fontWeight: '600',
+                                              color: 'black',
+                                              marginBottom: '10px',
+                                            }}
+                                          >
+                                            {user?.cohortNames
+                                              ? `${user.cohortNames}`
+                                              : t('ATTENDANCE.N/A')}
+                                          </Box>
+                                        </Box>
+                                      </Box>
+                                      <Box>
+                                        <MoreVertIcon
+                                          onClick={toggleDrawer(
+                                            'bottom',
+                                            true,
+                                            user
+                                          )}
+                                          sx={{
+                                            fontSize: '24px',
+                                            marginTop: '1rem',
+                                            color: theme.palette.warning['300'],
+                                          }}
+                                        />
                                       </Box>
                                     </Box>
-                                  </Box>
-                                  <Box>
-                                    <MoreVertIcon
-                                      onClick={toggleDrawer(
-                                        'bottom',
-                                        true,
-                                        user
-                                      )}
-                                      sx={{
-                                        fontSize: '24px',
-                                        marginTop: '1rem',
-                                        color: theme.palette.warning['300'],
-                                      }}
-                                    />
-                                  </Box>
-                                </Box>
-                              </Grid>
-                            ))}
-                        {!users?.length && (
-                          <Box
-                            sx={{
-                              m: '1.125rem',
-                              display: 'flex',
-                              justifyContent: 'left',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <Typography style={{ fontWeight: 'bold' }}>
-                              {t('COMMON.NO_DATA_FOUND')}
-                            </Typography>
-                          </Box>
-                        )}
-                      </Grid>
+                                  </Grid>
+                                ))}
+                            {!users?.length && (
+                              <Box
+                                sx={{
+                                  m: '1.125rem',
+                                  display: 'flex',
+                                  justifyContent: 'left',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <Typography style={{ fontWeight: 'bold' }}>
+                                  {t('COMMON.NO_DATA_FOUND')}
+                                </Typography>
+                              </Box>
+                            )}
+                          </Grid>
+                        </Box>
+                      </Box>
                     </Box>
-                  </Box>
-                </Box>
-              )}
+                  )}
 
-              <ManageUsersModal
-                open={open}
-                onClose={handleClose}
-                leanerName={selectedUserName ?? ''}
-                blockName={selectedUser?.block ?? ''}
-                centerName={centers}
-              />
-              <BottomDrawer
-                toggleDrawer={toggleDrawer}
-                state={state}
-                listItemClick={listItemClick}
-                optionList={[
-                  {
-                    label: t('COMMON.REASSIGN_BLOCKS'),
-                    icon: (
-                      <LocationOnOutlinedIcon
-                        sx={{ color: theme.palette.warning['300'] }}
-                      />
-                    ),
-                    name: 'reassign-block',
-                  },
-                  {
-                    label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
-                    icon: (
-                      <LocationOnOutlinedIcon
-                        sx={{ color: theme.palette.warning['300'] }}
-                      />
-                    ),
-                    name: 'reassign-block-request',
-                  },
-                  // {
-                  //   label: t('COMMON.REASSIGN_CENTERS'),
-                  //   icon: (
-                  //     <ApartmentIcon
-                  //       sx={{ color: theme.palette.warning['300'] }}
-                  //     />
-                  //   ),
-                  //   name: 'reassign-centers',
-                  // },
-                  {
-                    label: t('COMMON.DELETE_USER'),
-                    icon: (
-                      <DeleteOutlineIcon
-                        sx={{ color: theme.palette.warning['300'] }}
-                      />
-                    ),
-                    name: 'delete-User',
-                  },
-                ]}
-              >
-                {/* <Box
+                  <ManageUsersModal
+                    open={open}
+                    onClose={handleClose}
+                    leanerName={selectedUserName ?? ''}
+                    blockName={selectedUser?.block ?? ''}
+                    centerName={centers}
+                  />
+                  <BottomDrawer
+                    toggleDrawer={toggleDrawer}
+                    state={state}
+                    listItemClick={listItemClick}
+                    setAnchorEl={setAnchorEl}
+                    anchorEl={anchorEl}
+                    isMobile={isMobile}
+                    optionList={[
+                      {
+                        label: t('COMMON.REASSIGN_BLOCKS'),
+                        icon: (
+                          <LocationOnOutlinedIcon
+                            sx={{ color: theme.palette.warning['300'] }}
+                          />
+                        ),
+                        name: 'reassign-block',
+                      },
+                      {
+                        label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
+                        icon: (
+                          <LocationOnOutlinedIcon
+                            sx={{ color: theme.palette.warning['300'] }}
+                          />
+                        ),
+                        name: 'reassign-block-request',
+                      },
+                      // {
+                      //   label: t('COMMON.REASSIGN_CENTERS'),
+                      //   icon: (
+                      //     <ApartmentIcon
+                      //       sx={{ color: theme.palette.warning['300'] }}
+                      //     />
+                      //   ),
+                      //   name: 'reassign-centers',
+                      // },
+                      {
+                        label: t('COMMON.DELETE_USER'),
+                        icon: (
+                          <DeleteOutlineIcon
+                            sx={{ color: theme.palette.warning['300'] }}
+                          />
+                        ),
+                        name: 'delete-User',
+                      },
+                    ]}
+                  >
+                    {/* <Box
                   bgcolor={theme.palette.success.contrastText}
                   display="flex"
                   flexDirection="column"
