@@ -561,3 +561,23 @@ export interface MetaData {
   cycleId?: string;
   tenant?: string;
 }
+type Anchor = 'bottom';
+export interface BottomDrawerProps {
+  toggleDrawer: (
+    anchor: Anchor,
+    anchorEl: any,
+    open: boolean
+  ) => (event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent) => void;
+  state: { [key in Anchor]?: boolean };
+  optionList: {
+    label: string;
+    icon: React.ReactNode;
+    name: string;
+  }[];
+  listItemClick: (event: React.MouseEvent, name: string) => void;
+  renderCustomContent?: () => React.ReactNode;
+  children?: React.ReactNode;
+  setAnchorEl: React.Dispatch<React.SetStateAction<null | HTMLElement>>;
+  anchorEl: null | HTMLElement;
+  isMobile: boolean;
+}
