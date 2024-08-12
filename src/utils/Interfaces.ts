@@ -221,6 +221,7 @@ export interface UpdateCustomField {
   order: number;
 }
 export interface ICohort {
+  typeOfCohort: string;
   presentPercentage: number;
   cohortId: string;
   name: string;
