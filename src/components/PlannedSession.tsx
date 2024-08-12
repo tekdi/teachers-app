@@ -140,7 +140,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     event: ChangeEvent<HTMLInputElement>,
     id: string | number | undefined
   ) => {
-    setMode(event.target.value.toLowerCase() as mode);
     const updatedSessionBlocks = sessionBlocks.map((block) =>
       block.id === id
         ? { ...block, sessionMode: event.target.value.toLowerCase() }
@@ -153,8 +152,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     event: ChangeEvent<HTMLInputElement>,
     id: string | number | undefined
   ) => {
-    setEventType(event.target.value as type);
-    console.log(event.target.value);
     const updatedSessionBlocks = sessionBlocks.map((block) =>
       block.id === id ? { ...block, sessionType: event.target.value } : block
     );
@@ -251,14 +248,22 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   ) => {
     if (newValue) {
       console.log(newValue);
+      let startDate;
+      let endDate;
+      let startTime;
+      let endTime;
       if (type === 'start' && field === 'date') {
-        setStartDate(newValue);
+        // setStartDate(newValue);
+        startDate = newValue;
       } else if (type === 'start' && field === 'time') {
-        setStartTime(newValue);
+        // setStartTime(newValue);
+        startTime = newValue;
       } else if (type === 'end' && field === 'date') {
-        setEndDate(newValue);
+        // setEndDate(newValue);
+        endDate = newValue;
       } else if (type === 'end' && field === 'time') {
-        setEndTime(newValue);
+        // setEndTime(newValue);
+        endTime = newValue;
       }
     }
 
@@ -585,7 +590,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   return (
     <Box overflow={'auto'}>
       {sessionBlocks.map((block, index) => (
-        <Box sx={{ padding: '10px 16px' }}>
+        <Box key={block.id} sx={{ padding: '10px 16px' }}>
           <Box>
             <SessionMode
               mode={block?.sessionMode || mode}
