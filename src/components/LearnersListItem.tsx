@@ -4,7 +4,7 @@ import {
   UserData,
   UpdateCustomField,
 } from '@/utils/Interfaces';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Status, Role } from '@/utils/app.constant';
 import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 import ApartmentIcon from '@mui/icons-material/Apartment';
@@ -36,6 +36,7 @@ import useStore from '@/store/store';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { bulkCreateCohortMembers } from '@/services/CohortServices';
 import { capitalizeEachWord, filterMiniProfileFields } from '@/utils/Helper';
+import { useMediaQuery } from '@mui/material';
 
 type Anchor = 'bottom';
 
@@ -78,6 +79,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   });
   const userStore = useStore();
   const theme = useTheme<any>();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const router = useRouter();
   const { learnerId }: any = router.query;
   const { t } = useTranslation();
@@ -350,6 +352,11 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');
     }
   };
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenuOpen = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const renderCustomContent = () => {
     if (isDropout) {
@@ -381,6 +388,8 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     }
     return null;
   };
+
+
 
   const handleUserDelete = () => {
     setIsUserDeleted(true);
@@ -565,9 +574,18 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                   )}
                 </Box>
               </Box>
+
+
+
               <MoreVertIcon
-                onClick={toggleDrawer('bottom', true)}
-                sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
+                onClick={(event) => {
+                  isMobile ? toggleDrawer('bottom', true)(event) : handleMenuOpen(event)
+                }}
+                sx={{
+                  fontSize: isMobile ? '24px' : 'inherit',
+                  color: isMobile ? theme.palette.warning['300'] : 'inherit',
+                  cursor: !isMobile ? 'pointer' : 'inherit',
+                }}
               />
             </Box>
           </Box>
@@ -578,6 +596,9 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         toggleDrawer={toggleDrawer}
         state={state}
         listItemClick={listItemClick}
+        setAnchorEl={setAnchorEl}
+        anchorEl={anchorEl}
+        isMobile={isMobile}
         optionList={
           block
             ? [
