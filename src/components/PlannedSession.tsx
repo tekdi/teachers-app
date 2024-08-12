@@ -46,7 +46,11 @@ import { useTranslation } from 'next-i18next';
 import WeekDays from './WeekDays';
 import { getFormRead } from '@/services/CreateUserService';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { DaysOfWeek } from '../../app.config';
+import {
+  DaysOfWeek,
+  eventDaysLimit,
+  idealTimeForSession,
+} from '../../app.config';
 import { createEvent } from '@/services/EventService';
 import { showToastMessage } from './Toastify';
 
@@ -256,12 +260,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const endDateValue = convertToUTC(combinedEndDateValue);
 
     if (startDatetime && endDatetime && endDateValue) {
-      let isRecurringEvent: boolean;
-      if (startDate !== endDate) {
-        isRecurringEvent = true;
-      } else {
-        isRecurringEvent = false;
-      }
+      let isRecurringEvent = startDate !== endDate ? true : false;
       setSessionBlocks(
         sessionBlocks.map((block) =>
           block?.id === id
@@ -299,15 +298,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     let onlineProvider: string;
     if (zoomLinkPattern.test(value)) {
       setLinkError('');
-      onlineProvider = 'Zoom';
-      console.log('Valid Zoom link:', value);
+      onlineProvider = t('CENTER_SESSION.ZOOM');
     } else if (googleMeetLinkPattern.test(value)) {
       setLinkError('');
-      onlineProvider = 'GoogleMeet';
-      console.log('Valid Google Meet link:', value);
+      onlineProvider = t('CENTER_SESSION.GOOGLEMEET');
     } else {
-      setLinkError('Please enter a valid Zoom or Google Meet link.');
-      console.log('Invalid link');
+      setLinkError(t('CENTER_SESSION.ENTER_VALID_MEETING_LINK'));
     }
 
     setSessionBlocks(
@@ -416,7 +412,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         };
 
         const response = await getMyCohortMemberList({
-          limit: 300,
+          limit: 20,
           page: 0,
           filters,
         });
@@ -433,7 +429,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       // Determine title based on clickedBox and mode
       let title = '';
       if (clickedBox === 'PLANNED_SESSION') {
-        title = mode === 'online' ? 'Recurring Online' : 'Recurring Offline';
+        title =
+          mode === t('CENTER_SESSION.ONLINE')
+            ? t('CENTER_SESSION.RECURRING_ONLINE')
+            : t('CENTER_SESSION.RECURRING_OFFLINE');
       } else if (clickedBox === 'EXTRA_SESSION') {
         title = 'Extra Session';
       }
@@ -455,7 +454,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           status: 'live',
           createdBy: userId,
           updatedBy: userId,
-          idealTime: '120',
+          idealTime: idealTimeForSession,
           isRecurring: block?.isRecurring || false,
           startDatetime: block?.startDatetime || '',
           endDatetime: block?.endDatetime || '',
@@ -463,7 +462,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           registrationEndDate: '',
           recurrencePattern: {
             frequency:
-              block?.selectedWeekDays?.length === 7 ? 'daily' : 'weekly',
+              block?.selectedWeekDays?.length === eventDaysLimit
+                ? 'daily'
+                : 'weekly',
             interval: 1,
             daysOfWeek: block?.DaysOfWeek || [],
             endCondition: {
