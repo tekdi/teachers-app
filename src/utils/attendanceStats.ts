@@ -6,10 +6,18 @@ import {
 } from '../utils/Interfaces';
 
 const getTotalStudentCount = async (
-  cohortMemberRequest: CohortMemberList
+  cohortMemberRequest: CohortMemberList,
+  fromDate: Date
 ): Promise<number> => {
   const response = await getMyCohortMemberList(cohortMemberRequest);
-  const totalStudentsCount = response?.result?.totalCount;
+  const filteredFields = response?.result?.userDetails;
+  console.log('totalStudentsCount', filteredFields);
+
+  const totalStudentsCount = filteredFields?.filter((entry: any) => {
+    const createdAtDate = new Date(entry.createdAt);
+    createdAtDate.setHours(0, 0, 0, 0);
+    return createdAtDate <= fromDate;
+  }).length;
   console.log('totalStudentsCount', totalStudentsCount);
   return totalStudentsCount;
 };
@@ -51,9 +59,14 @@ type Result = {
 
 export const calculatePercentage = async (
   cohortMemberRequest: CohortMemberList,
-  attendanceRequest: AttendancePercentageProps
+  attendanceRequest: AttendancePercentageProps,
+  selectedDate?: any
 ): Promise<Result> => {
-  const totalStudentsCount = await getTotalStudentCount(cohortMemberRequest);
+  const fromDate = new Date(selectedDate);
+  const totalStudentsCount = await getTotalStudentCount(
+    cohortMemberRequest,
+    fromDate
+  );
   const presentStudents = await getPresentStudentCount(attendanceRequest);
   const result: Result = {};
   for (const date of Object.keys(presentStudents)) {

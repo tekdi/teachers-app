@@ -56,10 +56,12 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   const { t } = useTranslation();
   const store = useStore();
   const reStore = reassignLearnerStore();
-  const cohorts: Cohort[] = store.cohorts.map((cohort: { cohortId: any; name: string }) => ({
-    name: cohort.name,
-    id: cohort.cohortId,
-  }));
+  const cohorts: Cohort[] = store.cohorts.map(
+    (cohort: { cohortId: any; name: string }) => ({
+      name: cohort.name,
+      id: cohort.cohortId,
+    })
+  );
 
   const [searchInput, setSearchInput] = useState('');
   const [checkedCenters, setCheckedCenters] = useState<string[]>([]);
@@ -70,7 +72,6 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     }
   }, [reloadState, setReloadState]);
 
-  
   useEffect(() => {
     if (cohortNames) {
       const activeCenters = cohortNames
@@ -80,7 +81,9 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     }
   }, [cohortNames]);
 
-  const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setSearchInput(event.target.value);
   };
 
@@ -95,7 +98,9 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   };
 
   const filteredCenters = cohorts
-    .filter((center) => center.name.toLowerCase().includes(searchInput.toLowerCase()))
+    .filter((center) =>
+      center.name.toLowerCase().includes(searchInput.toLowerCase())
+    )
     .sort((a, b) => {
       const aChecked = checkedCenters.includes(a.name);
       const bChecked = checkedCenters.includes(b.name);
@@ -121,13 +126,16 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
 
     try {
       await bulkCreateCohortMembers(payload);
-      showToastMessage(t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'), 'success');
+      showToastMessage(
+        t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'),
+        'success'
+      );
       setReloadState(true);
     } catch (error) {
       showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');
     } finally {
       handleCloseReassignModal();
-      return
+      return;
     }
   };
 
@@ -136,7 +144,7 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '75%',
+    width: '80%',
     bgcolor: '#fff',
     boxShadow: 24,
     borderRadius: '16px',
@@ -148,9 +156,22 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   return (
     <Modal open={modalOpen} onClose={handleCloseReassignModal}>
       <Box sx={modalStyle}>
-        <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>{message}</span>
-          <IconButton color="inherit" onClick={handleCloseReassignModal}>
+        <Box
+          sx={{
+            p: 2,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <span style={{ color: 'black', fontWeight: 400 }}>{message}</span>
+          <IconButton
+            color="inherit"
+            onClick={() => {
+              setSearchInput(''); 
+              handleCloseReassignModal(); 
+            }}
+          >
             <CloseIcon />
           </IconButton>
         </Box>
@@ -167,29 +188,55 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
             value={searchInput}
             onChange={handleSearchInputChange}
             fullWidth
-            InputProps={{ endAdornment: <InputAdornment position="end"><SearchIcon /></InputAdornment> }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
           />
         </Box>
         <Box sx={{ p: 3, maxHeight: '300px', overflowY: 'auto' }}>
-          {filteredCenters.map((center) => (
-            <Box key={center.id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <span>{center.name}</span>
-              <Checkbox
-                checked={checkedCenters.includes(center.name)}
-                onChange={() => handleToggle(center.name)}
-              />
+          {filteredCenters.map((center, index) => (
+            <Box key={center.id}>
+              <Box
+                sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}
+              >
+                <span style={{ color: 'black' }}>{center.name}</span>
+                <Checkbox
+                  checked={checkedCenters.includes(center.name)}
+                  onChange={() => handleToggle(center.name)}
+                  sx={{
+                    color: theme.palette.text.primary,
+                    '&.Mui-checked': {
+                      color: 'black',
+                    },
+                    verticalAlign: 'middle',
+                    marginTop: '-10px',
+                  }}
+                />
+              </Box>
+              {index < filteredCenters.length - 1 && <Divider sx={{ mb: 2 }} />}
             </Box>
           ))}
         </Box>
         <Divider />
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: '18px', p: 2 }}>
+        <Box
+          sx={{ display: 'flex', justifyContent: 'center', gap: '18px', p: 2 }}
+        >
           <Button
-            sx={{ width: '100%', height: '40px', fontSize: '14px', fontWeight: '500' }}
+            sx={{
+              width: '100%',
+              height: '40px',
+              fontSize: '14px',
+              fontWeight: '500',
+            }}
             variant="contained"
             color="primary"
             onClick={handleReassign}
           >
-            {buttonNames?.primary || 'Re-assign'}
+            {buttonNames?.primary || 'Save'}
           </Button>
         </Box>
       </Box>

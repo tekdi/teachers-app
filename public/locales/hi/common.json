@@ -15,8 +15,8 @@
     "SEARCH_STUDENT": "छात्र खोजें",
     "SORT_BY": "इसके अनुसार क्रमबद्ध करें",
     "APPLY": "आवेदन करना",
-    "A_TO_Z": "A TO Z",
-    "Z_TO_A": "Z TO A",
+    "A_TO_Z": "A to Z",
+    "Z_TO_A": "Z tO A",
     "HIGH_TO_LOW": "उच्चे से नीचा",
     "LOW_TO_HIGH": "नीचा से उच्चे",
     "NAMES": "नाम",
@@ -70,7 +70,7 @@
     "SURE_LOGOUT": "क्या आप वाकई लोगआउट करना चाहते हैं?",
     "SURE_UPDATE": "क्या आप इस उपस्थिति को अपडेट करना चाहते हैं?",
     "SURE_REMOVE": "क्या आप वाकई इस शिक्षार्थी को हटाना चाहते हैं?",
-    "SURE_CLOSE": "क्या आप वाकई बंद करना चाहते हैं?",
+    "SURE_CLOSE": "क्या आप वाकई बिना सहेजे बंद करना चाहते हैं?",
     "LEARNER_LIST": "अभियांत्रिकी सूची",
     "FACILITATOR_LIST": "प्रशिक्षकों की सूची",
     "FILTERS": "फिल्टर्स",
@@ -137,7 +137,7 @@
     "BLOCK_AVERAGE_ATTENDANCE": "ब्लॉक औसत उपस्थिति"
   },
   "ATTENDANCE": {
-    "TOTAL_STUDENTS": "कुल छात्रों की संख्या: {{count}}",
+    "TOTAL_STUDENTS": "कुल संख्या: {{count}}",
     "ACTIVE_STUDENTS": "सक्रिय शिक्षार्थी: {{count}}",
     "DROPOUT_STUDENTS": "छोड़े हुए छात्र: {{count}}",
     "PRESENT_STUDENTS": "उपस्थित छात्र: {{count}}",

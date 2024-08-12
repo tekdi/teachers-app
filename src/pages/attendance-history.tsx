@@ -161,7 +161,8 @@ const UserAttendanceHistory = () => {
         };
         const attendanceStats = await calculatePercentage(
           cohortMemberRequest,
-          attendanceRequest
+          attendanceRequest,
+          selectedDate
         );
         setPercentageAttendance(attendanceStats);
       }

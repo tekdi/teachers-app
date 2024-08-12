@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import ModalComponent from './Modal';
 
 interface sortCardProps {
-  handleSorting: (
+  handleSorting?: (
     sortByName: string,
     sortByAttendance: string,
     sortByClassesMissed: string,
@@ -24,7 +24,7 @@ interface sortCardProps {
   ) => void;
   handleCloseModal: () => void;
   isModalOpen: boolean;
-  routeName: string;
+  routeName?: string;
 }
 
 const SortingModal: React.FC<sortCardProps> = ({
@@ -46,12 +46,7 @@ const SortingModal: React.FC<sortCardProps> = ({
     setSortByAttendance('');
     setSortByClassesMissed('');
     setSortByAttendanceNumber('');
-    // if (event.target.value === 'asc' || event.target.value === 'desc') {
     setSortByName(event.target.value);
-    // }
-    //  else {
-    //   setSortByAttendance(event.target.value);
-    // }
   };
 
   const handleSortByAttendance = (
@@ -82,20 +77,22 @@ const SortingModal: React.FC<sortCardProps> = ({
   };
 
   const handleApplySort = () => {
-    handleSorting(
-      sortByName,
-      sortByAttendance,
-      sortByClassesMissed,
-      sortByAttendanceNumber
-    );
-    ReactGA.event('sort-by-applied', {
-      sortingBasis: [
+    if (handleSorting) {
+      handleSorting(
         sortByName,
         sortByAttendance,
         sortByClassesMissed,
-        sortByAttendanceNumber,
-      ],
-    });
+        sortByAttendanceNumber
+      );
+      ReactGA.event('sort-by-applied', {
+        sortingBasis: [
+          sortByName,
+          sortByAttendance,
+          sortByClassesMissed,
+          sortByAttendanceNumber,
+        ],
+      });
+    }
     handleCloseModal();
   };
 
@@ -197,6 +194,7 @@ const SortingModal: React.FC<sortCardProps> = ({
                 {t('COMMON.ATTENDANCE')}
               </FormLabel>
               <RadioGroup
+                aria-labelledby="demo-controlled-radio-buttons-group"
                 aria-label="sortByAttendance"
                 name="sortByAttendance"
                 value={sortByAttendance}

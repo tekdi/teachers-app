@@ -1,6 +1,13 @@
-import { formatSelectedDate, getTodayDate, toPascalCase } from '@/utils/Helper';
+import {
+  formatSelectedDate,
+  getMonthName,
+  getTodayDate,
+  shortDateFormat,
+  toPascalCase,
+} from '@/utils/Helper';
 import {
   Button,
+  Grid,
   IconButton,
   ListItemIcon,
   Menu,
@@ -23,7 +30,6 @@ import DeleteCenterModal from '@/components/center/DeleteCenterModal';
 import RenameCenterModal from '@/components/center/RenameCenterModal';
 import { getCohortDetails } from '@/services/CohortServices';
 import { getSessions } from '@/services/Sessionservice';
-import manageUserStore from '@/store/manageUserStore';
 import { CustomField } from '@/utils/Interfaces';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -42,8 +48,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
 import { Session } from '../../utils/Interfaces';
-import Schedule from './../../components/Schedule';
+import Schedule from '../../components/Schedule';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
+import { Role } from '@/utils/app.constant';
+import { showToastMessage } from '@/components/Toastify';
+import { getEventList } from '@/services/EventService';
+import { eventDaysLimit, modifyAttendanceLimit } from '../../../app.config';
+import manageUserStore from '@/store/manageUserStore';
 
 const TeachingCenterDetails = () => {
   const [value, setValue] = React.useState(1);
@@ -52,6 +63,8 @@ const TeachingCenterDetails = () => {
   const router = useRouter();
   const { cohortId }: any = router.query;
   const { t } = useTranslation();
+  const [role, setRole] = React.useState<any>('');
+
   const store = manageUserStore();
   const setDistrictCode = manageUserStore(
     (state: { setDistrictCode: any }) => state.setDistrictCode
@@ -78,8 +91,10 @@ const TeachingCenterDetails = () => {
     React.useState<string>(getTodayDate());
 
   const [cohortDetails, setCohortDetails] = React.useState<any>({});
+  const [cohortName, setCohortName] = React.useState<string>();
   const [reloadState, setReloadState] = React.useState<boolean>(false);
   const [sessions, setSessions] = React.useState<Session[]>();
+  const [extraSessions, setExtraSessions] = React.useState<Session[]>();
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState<any>(null);
   const [openRenameCenterModal, setOpenRenameCenterModal] =
@@ -93,8 +108,10 @@ const TeachingCenterDetails = () => {
 
   const [clickedBox, setClickedBox] = useState<string | null>(null);
   const [isLearnerAdded, setIsLearnerAdded] = useState(false);
-
+  const [createEvent, setCreateEvent] = useState(false);
+  const [eventCreated, setEventCreated] = useState(false);
   const handleClick = (selection: string) => {
+    console.log('planned', selection);
     setClickedBox(selection);
   };
 
@@ -107,23 +124,40 @@ const TeachingCenterDetails = () => {
   };
 
   const handleSchedule = () => {
-    console.log('API Call');
+    setCreateEvent(true);
   };
 
+  const handleCloseSchedule = () => {
+    setEventCreated(true);
+  };
+
+  useEffect(() => {
+    if (eventCreated) {
+      setOpen(false);
+    }
+  }, [eventCreated]);
   const handleOpen = () => setOpen(true);
+
   const handleClose = () => {
     setOpen(false);
     setOpenSchedule(false);
     setDeleteModal(false);
   };
+
   const setRemoveCohortId = reassignLearnerStore(
     (state) => state.setRemoveCohortId
   );
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role');
+      setRole(role);
+    }
+  }, []);
+
+  useEffect(() => {
     const getCohortData = async () => {
       const response = await getCohortDetails(cohortId);
-      console.log(response);
 
       let cohortData = null;
 
@@ -136,28 +170,23 @@ const TeachingCenterDetails = () => {
             (item: CustomField) => item.label === 'DISTRICTS'
           );
           const districtCode = district?.code || '';
-          setDistrictCode(districtCode);
           const districtId = district?.fieldId || '';
-          // setDistrictId(districtId);
           const state = cohortData.customField.find(
             (item: CustomField) => item.label === 'STATES'
           );
           const stateCode = state?.code || '';
-          setStateCode(stateCode);
           const stateId = state?.fieldId || '';
-          // setStateId(stateId);
 
           const blockField = cohortData?.customField.find(
             (field: any) => field.label === 'BLOCKS'
           );
-          setBlockCode(blockField?.code);
-          // setBlockId(blockField.fieldId);
 
           cohortData.address =
             `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
             '';
         }
         setCohortDetails(cohortData);
+        setCohortName(cohortData?.name);
       }
     };
     getCohortData();
@@ -165,11 +194,65 @@ const TeachingCenterDetails = () => {
 
   useEffect(() => {
     const getSessionsData = async () => {
-      const response: Session[] = getSessions('cohortId'); // Todo add dynamic cohortId
-      setSessions(response);
+      try {
+        const limit = 0;
+        const offset = 0;
+        const filters = {
+          date: selectedDate,
+          cohortId: cohortId,
+          status: ['live'],
+        };
+        const response = await getEventList({ limit, offset, filters });
+        let sessionArray: any[] = [];
+        if (response?.events.length > 0) {
+          response?.events.forEach((event: any) => {
+            if (event.isRecurring) {
+              sessionArray.push(event);
+            }
+          });
+        }
+        setSessions(sessionArray);
+      } catch (error) {
+        setSessions([]);
+      }
     };
 
     getSessionsData();
+  }, [selectedDate, eventCreated]);
+
+  useEffect(() => {
+    const getExtraSessionsData = async () => {
+      try {
+        const date = new Date();
+        const startDate = shortDateFormat(new Date());
+        const lastDate = new Date(
+          date.setDate(date.getDate() + modifyAttendanceLimit)
+        );
+        const endDate = shortDateFormat(lastDate);
+        const limit = 0;
+        const offset = 0;
+        const filters = {
+          startDate: startDate,
+          endDate: endDate,
+          cohortId: cohortId,
+          status: ['live'],
+        };
+        const response = await getEventList({ limit, offset, filters });
+        let extraSessionArray: any[] = [];
+        if (response?.events.length > 0) {
+          response?.events.forEach((event: any) => {
+            if (!event.isRecurring) {
+              extraSessionArray.push(event);
+            }
+          });
+        }
+        setExtraSessions(extraSessionArray);
+      } catch (error) {
+        setExtraSessions([]);
+      }
+    };
+
+    getExtraSessionsData();
   }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -213,7 +296,7 @@ const TeachingCenterDetails = () => {
 
   const viewAttendanceHistory = () => {
     if (classId !== 'all') {
-      router.push('/center-session');
+      router.push(`${router.asPath}/events/${selectedDate}`);
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
   };
@@ -267,15 +350,17 @@ const TeachingCenterDetails = () => {
               </Box>
             </Box>
           </Box>
-          <IconButton
-            aria-label="more"
-            aria-controls="long-menu"
-            aria-haspopup="true"
-            onClick={handleMenuOpen}
-            sx={{ color: theme.palette.warning['A200'] }}
-          >
-            <MoreVertIcon />
-          </IconButton>
+          {role === Role.TEAM_LEADER && (
+            <IconButton
+              aria-label="more"
+              aria-controls="long-menu"
+              aria-haspopup="true"
+              onClick={handleMenuOpen}
+              sx={{ color: theme.palette.warning['A200'] }}
+            >
+              <MoreVertIcon />
+            </IconButton>
+          )}
           <Menu
             id="long-menu"
             anchorEl={anchorEl}
@@ -404,6 +489,10 @@ const TeachingCenterDetails = () => {
               <PlannedSession
                 clickedBox={clickedBox}
                 removeModal={removeModal}
+                scheduleEvent={createEvent}
+                cohortName={cohortName}
+                cohortId={cohortId}
+                onCloseModal={handleCloseSchedule}
               />
             ) : (
               <Schedule clickedBox={clickedBox} handleClick={handleClick} />
@@ -415,17 +504,32 @@ const TeachingCenterDetails = () => {
               className="fs-14 fw-500"
               sx={{ color: theme.palette.warning['300'] }}
             >
-              {t('COMMON.UPCOMING_EXTRA_SESSION')}
+              {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
-            <Box
-              className="fs-12 fw-400 italic"
-              sx={{ color: theme.palette.warning['300'] }}
-            >
-              {t('COMMON.NO_SESSIONS_SCHEDULED')}
+            <Box mt={3} px="18px">
+              {extraSessions?.map((item) => (
+                <SessionCard data={item} key={item.id}>
+                  <SessionCardFooter item={item} />
+                </SessionCard>
+              ))}
             </Box>
+            {extraSessions && extraSessions?.length === 0 && (
+              <Box
+                className="fs-12 fw-400 italic"
+                sx={{ color: theme.palette.warning['300'] }}
+              >
+                {t('COMMON.NO_SESSIONS_SCHEDULED')}
+              </Box>
+            )}
           </Box>
 
-          <Box sx={{ padding: '10px 16px', mt: 1 }}>
+          <Box
+            sx={{
+              padding: '10px 16px',
+              mt: 1,
+              background: 'linear-gradient(180deg, #FFFDF7 0%, #F8EFDA 100%)',
+            }}
+          >
             <Box
               sx={{
                 display: 'flex',
@@ -455,7 +559,7 @@ const TeachingCenterDetails = () => {
                   onClick={viewAttendanceHistory}
                 >
                   <Typography marginBottom={'0'} style={{ fontWeight: '500' }}>
-                    July
+                    {getMonthName()}
                   </Typography>
                   <CalendarMonthIcon sx={{ fontSize: '18px' }} />
                 </Box>
@@ -466,15 +570,28 @@ const TeachingCenterDetails = () => {
               data={percentageAttendanceData}
               disableDays={classId === 'all'}
               classId={classId}
+              showFromToday={true}
             />
           </Box>
 
           <Box mt={3} px="18px">
-            {sessions?.map((item) => (
-              <SessionCard data={item} key={item.id}>
-                <SessionCardFooter item={item} />
-              </SessionCard>
-            ))}
+            <Grid container spacing={2}>
+              {sessions?.map((item) => (
+                <Grid item xs={6} key={item.id}>
+                  <SessionCard data={item}>
+                    <SessionCardFooter item={item} />
+                  </SessionCard>
+                </Grid>
+              ))}
+              {sessions && sessions.length === 0 && (
+                <Box
+                  className="fs-12 fw-400 italic"
+                  sx={{ color: theme.palette.warning['300'] }}
+                >
+                  {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                </Box>
+              )}
+            </Grid>
           </Box>
         </>
       )}

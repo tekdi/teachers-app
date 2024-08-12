@@ -48,6 +48,10 @@ export const GenerateSchemaAndUiSchema = (
 
     const fieldUiSchema: any = {};
 
+    if (field.default) {
+      formValues[field.name] = field.default;
+    }
+
     switch (type) {
       case 'text':
         fieldSchema.type = 'string';
@@ -190,6 +194,7 @@ export const GenerateSchemaAndUiSchema = (
 
     if (isMultiSelect && type === 'checkbox') {
       fieldSchema.type = 'array';
+      fieldSchema.isCheckbox = true;
       fieldSchema.items = {
         type: 'string',
         oneOf: options.map((opt: FieldOption) => ({

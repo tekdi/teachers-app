@@ -12,8 +12,9 @@ import LearnersList from '@/components/LearnersListItem';
 import { Status, limit } from '@/utils/app.constant';
 import { showToastMessage } from './Toastify';
 import { useTranslation } from 'next-i18next';
-import { Box, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import Loader from './Loader';
+import { useTheme } from '@mui/material/styles';
 
 interface UserDataProps {
   name: string;
@@ -87,46 +88,58 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
     getCohortMemberList();
   }, [cohortId, reloadState]);
 
-  const onDelete = () => {};
+  const onDelete = () => { };
 
   console.log('userData', userData);
+  const theme = useTheme<any>();
   return (
     <div>
       {loading ? (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       ) : (
         <>
-          {userData?.map((data: any) => {
-            return (
-              <LearnersList
-                key={data.userId}
-                userId={data.userId}
-                learnerName={data.name}
-                enrollmentId={data.enrollmentNumber}
-                cohortMembershipId={data.cohortMembershipId}
-                isDropout={data.memberStatus === Status.DROPOUT}
-                statusReason={data.statusReason}
-                reloadState={reloadState}
-                setReloadState={setReloadState}
-                showMiniProfile={false}
-                onLearnerDelete={onDelete}
-              />
-            );
-          })}
-          {!userData?.length && (
-            <Box
-              sx={{
-                m: '1.125rem',
-                display: 'flex',
-                justifyContent: 'left',
-                alignItems: 'center',
-              }}
-            >
-              <Typography style={{ fontWeight: 'bold' }}>
-                {t('COMMON.NO_DATA_FOUND')}
-              </Typography>
-            </Box>
-          )}
+          <Box sx={{
+            '@media (min-width: 900px)': {
+              background: theme.palette.action.selected,
+              paddingBottom: '20px'
+            },
+          }}>
+            <Grid container>
+              {userData?.map((data: any) => {
+                return (
+                  <Grid xs={12} sm={6} md={4} >
+                    <LearnersList
+                      key={data.userId}
+                      userId={data.userId}
+                      learnerName={data.name}
+                      enrollmentId={data.enrollmentNumber}
+                      cohortMembershipId={data.cohortMembershipId}
+                      isDropout={data.memberStatus === Status.DROPOUT}
+                      statusReason={data.statusReason}
+                      reloadState={reloadState}
+                      setReloadState={setReloadState}
+                      showMiniProfile={false}
+                      onLearnerDelete={onDelete}
+                    />
+                  </Grid>
+                );
+              })}
+              {!userData?.length && (
+                <Box
+                  sx={{
+                    m: '1.125rem',
+                    display: 'flex',
+                    justifyContent: 'left',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography style={{ fontWeight: 'bold' }}>
+                    {t('COMMON.NO_DATA_FOUND')}
+                  </Typography>
+                </Box>
+              )}
+            </Grid>
+          </Box>
         </>
       )}
     </div>

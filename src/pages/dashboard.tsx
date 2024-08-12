@@ -231,13 +231,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
     React.useState<boolean>(true);
   const [selectedAttendance, setSelectedAttendance] =
     React.useState<string>('');
-  const role = localStorage.getItem('role');
   const [isLocationModalOpen, setLocationModalOpen] = React.useState(false);
   const [attendanceLocation, setAttendanceLocation] =
     React.useState<GeolocationPosition | null>(null);
   const [attendance, setAttendance] = React.useState<AttendanceData | null>(
     null
   );
+  const [role, setRole] = React.useState<any>('');
+
   // condition for mark attendance for student and self
 
   const onCloseEditMOdel = () => {
@@ -418,6 +419,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
+      const role = localStorage.getItem('role');
+      setRole(role);
       const storedUserId = localStorage.getItem('userId');
       setClassId(localStorage.getItem('classId') ?? '');
       if (token) {
@@ -684,7 +687,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
         };
         const attendanceStats = await calculatePercentage(
           cohortMemberRequest,
-          attendanceRequest
+          attendanceRequest,
+          selectedDate
         );
         setPercentageAttendanceData(attendanceStats);
         setAttendanceStats(attendanceStats);
@@ -787,8 +791,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       flexDirection={'column'}
                       padding={'1.5rem 1.2rem 1rem'}
                     >
-                      <Box display={'flex'} justifyContent={'space-between'}>
-                        <Box className="d-md-flex flex-basis-md-90 space-md-between w-100">
+                      <Box
+                        display={'flex'}
+                        justifyContent={'space-between'}
+                        alignItems={'center'}
+                      >
+                        <Box className="d-md-flex flex-basis-md-90 min-align-md-center space-md-between w-100">
                           <Typography
                             variant="h2"
                             sx={{ fontSize: '14px' }}
@@ -1409,7 +1417,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 </Box>
                 {role === Role.TEAM_LEADER && (
                   <Box p={2}>
-                    <AttendanceComparison />
+                    <AttendanceComparison blockName={blockName} />
                   </Box>
                 )}
                 {/* <Box sx={{ background: '#fff' }}>

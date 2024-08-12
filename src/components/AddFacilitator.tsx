@@ -18,7 +18,18 @@ import { showToastMessage } from './Toastify';
 import { editEditUser } from '@/services/ProfileService';
 import { tenantId } from '../../app.config';
 import FormButtons from './FormButtons';
-
+import { sendCredentialService } from '@/services/NotificationService';
+import {
+  Box,
+  Button,
+  Divider,
+  Modal,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { modalStyles } from '@/styles/modalStyles';
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 interface AddFacilitatorModalprops {
   open: boolean;
   onClose: () => void;
@@ -38,17 +49,22 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   onFacilitatorAdded,
 }) => {
   const [schema, setSchema] = React.useState<any>();
-  const [openModal, setOpenModal] = React.useState(false);
+  const [openSendCredModal, setOpenSendCredModal] = React.useState(false);
+  const [createFacilitator, setCreateFacilitator] = React.useState(false);
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [reloadProfile, setReloadProfile] = React.useState(false);
-  const [email, setEmail] = React.useState('user@gmail.com');
+  const [email, setEmail] = React.useState('');
   const [formData, setFormData] = React.useState<any>();
+  const [username, setUsername] = React.useState<any>();
+  const [password, setPassword] = React.useState<any>();
+  const [fullname, setFullname] = React.useState<any>();
+  const [coreFields, setCoreFields] = React.useState<string[]>([]);
 
   const { t } = useTranslation();
-  useEffect(() => {
-    console.log('openModal state changed:', openModal);
-  }, [openModal]);
-
+  const theme = useTheme<any>();
+  const setSubmittedButtonStatus = useSubmittedButtonStore(
+    (state: any) => state.setSubmittedButtonStatus
+  );
   useEffect(() => {
     const getAddFacilitatorFormData = async () => {
       try {
@@ -57,6 +73,13 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           FormContextType.TEACHER
         );
         console.log('sortedFields', response);
+        if (response) {
+          const filteredFieldNames = response?.fields
+            .filter((field) => field?.coreField === 1)
+            .map((field) => field?.name);
+          setCoreFields(filteredFieldNames);
+        }
+
         let centerOptionsList;
         if (typeof window !== 'undefined' && window.localStorage) {
           const CenterList = localStorage.getItem('CenterList');
@@ -113,39 +136,30 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     setTimeout(() => {
       setFormData(data.formData);
     });
-    const target = event.target as HTMLFormElement;
-    const elementsArray = Array.from(target.elements);
-
-    // for (const element of elementsArray) {
-    //   if (
-    //     (element instanceof HTMLInputElement ||
-    //       element instanceof HTMLSelectElement ||
-    //       element instanceof HTMLTextAreaElement) &&
-    //     (element.value === '' ||
-    //       (Array.isArray(element.value) && element.value.length === 0))
-    //   ) {
-    //     element.focus();
-    //     return;
-    //   }
-    // }
-
-    const formData = data.formData;
-    console.log('Form data submitted:', formData);
   };
 
   useEffect(() => {
     if (formData) {
       handleButtonClick();
     }
-  }, [formData]);
+  }, [formData, createFacilitator]);
 
   const handleButtonClick = async () => {
     console.log('Form data:', formData);
+    setSubmittedButtonStatus(true);
     if (formData) {
       const schemaProperties = schema.properties;
       setEmail(formData?.email);
-      const { username, password } = generateUsernameAndPassword('MH', 'F');
-
+      let fieldData;
+      if (typeof window !== 'undefined' && window.localStorage) {
+        fieldData = JSON.parse(localStorage.getItem('fieldData') || '');
+      }
+      const { username, password } = generateUsernameAndPassword(
+        fieldData?.state?.stateCode,
+        'F'
+      );
+      setUsername(username);
+      setPassword(password);
       const apiBody: any = {
         username: username,
         password: password,
@@ -169,6 +183,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         if (fieldId === null || fieldId === 'null') {
           if (typeof fieldValue !== 'object') {
             apiBody[fieldKey] = fieldValue;
+            if (fieldKey === 'name') {
+              setTimeout(() => {
+                setFullname(fieldValue);
+              });
+            }
           }
         } else {
           if (
@@ -177,7 +196,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           ) {
             apiBody.customFields.push({
               fieldId: fieldId,
-              value: [String(fieldValue)],
+              value: Array.isArray(fieldValue) ? fieldValue : [fieldValue], 
             });
           } else {
             if (fieldSchema.checkbox && fieldSchema.type === 'array') {
@@ -219,12 +238,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       console.log(apiBody);
       try {
         if (isEditModal && userId) {
-          const userData = {
-            name: apiBody.name,
-            mobile: apiBody.mobile,
-            father_name: apiBody.father_name,
-          };
-          const customFields = apiBody.customFields;
+          const userData: Record<string, any> = {};
+          coreFields?.forEach((fieldName) => {
+            userData[fieldName] = apiBody[fieldName];
+          });
+          const customFields = apiBody?.customFields;
           console.log(customFields);
           const object = {
             userData: userData,
@@ -239,20 +257,68 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             setReloadProfile(true);
             onReload?.();
           }
+          onClose();
         } else {
           if (formData?.assignCenters?.length > 0) {
-            const response = await createUser(apiBody);
-            console.log(response);
-            if (response) {
-              onFacilitatorAdded?.();
-              onClose();
-              showToastMessage(
-                t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
-                'success'
-              );
-              setOpenModal(true);
-            } else {
-              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            setOpenSendCredModal(true);
+            if (createFacilitator) {
+              try {
+                const response = await createUser(apiBody);
+
+                if (response) {
+                  onFacilitatorAdded?.();
+                  onClose();
+                  showToastMessage(
+                    t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
+                    'success'
+                  );
+
+                  const isQueue = false;
+                  const context = 'USER';
+                  const key = 'onFacilitatorCreated';
+                  const replacements = [apiBody['name'], username, password];
+                  const sendTo = {
+                    receipients: [formData?.email],
+                  };
+
+                  let createrName;
+                  if (typeof window !== 'undefined' && window.localStorage) {
+                    createrName = localStorage.getItem('userName');
+                  }
+
+                  if (replacements && sendTo) {
+                    const credentialResponse = await sendCredentialService({
+                      isQueue,
+                      context,
+                      key,
+                      replacements,
+                      email: sendTo,
+                    });
+
+                    if (
+                      credentialResponse?.result[0]?.data[0]?.status ===
+                      'success'
+                    ) {
+                      showToastMessage(
+                        t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
+                        'success'
+                      );
+                    } else {
+                      showToastMessage(
+                        t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
+                        'success'
+                      );
+                    }
+                  } else {
+                    showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+                  }
+                } else {
+                  showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+                }
+              } catch (error) {
+                console.error(error);
+                showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+              }
             }
           } else {
             showToastMessage(t('COMMON.PLEASE_SELECT_THE_CENTER'), 'error');
@@ -274,8 +340,16 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     console.log('Form errors:', errors);
   };
 
-  const onCloseModal = () => {
-    setOpenModal(false);
+  const handleBackAction = () => {
+    setCreateFacilitator(false);
+    setOpenSendCredModal(false);
+  };
+
+  const handleAction = () => {
+    setTimeout(() => {
+      setCreateFacilitator(true);
+    });
+    setOpenSendCredModal(false);
   };
 
   return (
@@ -305,6 +379,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 formData={userFormData}
               >
                 {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+                <FormButtons
+                  formData={formData}
+                  onClick={handleButtonClick}
+                  isSingleButton={true}
+                />
               </DynamicForm>
             )
           : schema &&
@@ -318,6 +397,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 widgets={{}}
                 showErrorList={true}
                 customFields={customFields}
+                formData={createFacilitator ? '' : formData}
               >
                 <FormButtons
                   formData={formData}
@@ -328,11 +408,101 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
               </DynamicForm>
             )}
       </SimpleModal>
-      <SendCredentialModal
-        open={openModal}
-        onClose={onCloseModal}
-        email={email}
-      />
+      <Modal
+        open={openSendCredModal}
+        aria-labelledby="send credential modal"
+        aria-describedby="to send credentials"
+      >
+        <Box sx={modalStyles(theme, '65%')}>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            sx={{ padding: '18px 16px' }}
+          >
+            <Box marginBottom={'0px'}>
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme.palette.warning['A200'],
+                  fontSize: '14px',
+                }}
+                component="h2"
+              >
+                {t('COMMON.NEW_FACILITATOR')}
+              </Typography>
+            </Box>
+            <CloseIcon
+              sx={{
+                cursor: 'pointer',
+                color: theme.palette.warning['A200'],
+              }}
+              onClick={onClose}
+            />
+          </Box>
+          <Divider />
+          {/* {isButtonAbsent ? ( */}
+          <Box
+            sx={{
+              padding: '18px 16px',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}
+          >
+            <Box>
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme.palette.warning['400'],
+                  fontSize: '14px',
+                }}
+                component="h2"
+              >
+                {t('COMMON.CREDENTIALS_EMAILED')}
+              </Typography>
+            </Box>
+            <Box sx={{ padding: '0 1rem' }}>
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme.palette.warning['400'],
+                  fontSize: '14px',
+                }}
+                component="h2"
+              >
+                {email}
+              </Typography>
+            </Box>
+          </Box>
+
+          <>
+            <Box mt={1.5}>
+              <Divider />
+            </Box>
+            <Box p={'18px'} display={'flex'} gap={'1rem'}>
+              <Button
+                className="w-100"
+                sx={{ boxShadow: 'none' }}
+                variant="outlined"
+                onClick={() => handleBackAction()}
+              >
+                {t('COMMON.BACK')}
+              </Button>
+              <Button
+                className="w-100"
+                sx={{ boxShadow: 'none' }}
+                variant="contained"
+                onClick={() => handleAction()}
+              >
+                {t('COMMON.SEND_CREDENTIALS')}
+              </Button>
+            </Box>
+          </>
+        </Box>
+      </Modal>
     </>
   );
 };

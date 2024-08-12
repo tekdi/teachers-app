@@ -16,6 +16,81 @@ import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { toPascalCase } from '@/utils/Helper';
+import { modalStyles } from '@/styles/modalStyles';
+
+// CSS variables
+const headerStyles = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '20px',
+};
+
+const titleStyles = (theme: any) => ({
+  lineHeight: '0.15px',
+  fontSize: '16px',
+  fontWeight: '500',
+  color: theme.palette.warning.A200,
+  m: 0,
+});
+
+const dividerStyles = (theme: any) => ({
+  backgroundColor: theme.palette.warning.A100,
+});
+
+const contentBoxStyles = {
+  padding: '25px 20px',
+};
+
+const fieldContainerStyles = {
+  border: '1px solid #D0C5B4',
+  borderRadius: '16px',
+  padding: 2,
+};
+
+const fieldTitleStyles = (theme: any) => ({
+  margin: 0,
+  lineHeight: '16px',
+  fontSize: '12px',
+  fontWeight: '600',
+  color: theme.palette.warning['500'],
+});
+
+const fieldValueStyles = (theme: any) => ({
+  fontSize: '16px',
+  fontWeight: '400',
+  lineHeight: '24px',
+  margin: 0,
+  color: theme.palette.warning.A200,
+  wordBreak: 'break-word',
+  whiteSpace: 'normal',
+});
+
+const buttonContainerStyles = {
+  padding: '20px',
+  display: 'flex',
+  justifyContent: 'space-between',
+};
+
+const closeButtonStyles = (theme: any) => ({
+  border: `1px solid ${theme.components.MuiButton.styleOverrides.root.border}`,
+  width: '100px',
+  borderRadius: '100px',
+  boxShadow: 'none',
+  fontSize: '14px',
+  fontWeight: 500,
+  color: theme.components.MuiButton.styleOverrides.root.color,
+});
+
+const profileButtonStyles = (theme: any) => ({
+  borderColor: theme.palette.warning.A400,
+  width: '164px',
+  borderRadius: '100px',
+  boxShadow: 'none',
+  fontSize: '14px',
+  fontWeight: 500,
+  color: theme.components.MuiButton.styleOverrides.root.color,
+});
 
 const LearnerModal = ({
   userId,
@@ -24,6 +99,7 @@ const LearnerModal = ({
   data,
   userName,
   contactNumber,
+  enrollmentNumber,
 }: {
   userId?: string;
   open: boolean;
@@ -31,6 +107,7 @@ const LearnerModal = ({
   onClose: () => void;
   userName?: string;
   contactNumber?: any;
+  enrollmentNumber?: any;
 }) => {
   const { t } = useTranslation();
 
@@ -64,35 +141,9 @@ const LearnerModal = ({
     <>
       {data && (
         <Modal open={open} onClose={onClose}>
-          <Box
-            sx={{
-              width: '85%',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              backgroundColor: theme.palette.warning.A400,
-              borderRadius: '8px',
-              zIndex: '9999',
-              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-              '@media (min-width: 600px)': {
-                width: '450px',
-              },
-            }}
-          >
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              padding="20px"
-            >
-              <Typography
-                lineHeight={'0.15px'}
-                fontSize="16px"
-                fontWeight="500"
-                color={theme.palette.warning['A200']}
-                m={0}
-              >
+          <Box sx={modalStyles(theme)}>
+            <Box sx={headerStyles}>
+              <Typography sx={titleStyles(theme)}>
                 {t('PROFILE.LEARNER_DETAILS')}
               </Typography>
               <CloseSharpIcon
@@ -102,141 +153,71 @@ const LearnerModal = ({
               />
             </Box>
             <Box>
-              <Divider
-                style={{
-                  backgroundColor: theme.palette.warning['A100'],
-                }}
-              />
-              <Box sx={{ padding: ' 25px 20px' }}>
-                <Box
-                  style={{ border: '1px solid #D0C5B4', borderRadius: '16px' }}
-                  p={2}
-                >
+              <Divider sx={dividerStyles(theme)} />
+              <Box sx={contentBoxStyles}>
+                <Box sx={fieldContainerStyles}>
                   <Grid container spacing={2}>
                     <Grid item xs={12} textAlign="left">
-                      <Typography
-                        margin={0}
-                        // variant="h6"
-                        lineHeight={'16px'}
-                        fontSize={'12px'}
-                        fontWeight={'600'}
-                        color={theme.palette.warning['500']}
-                      >
+                      <Typography sx={fieldTitleStyles(theme)}>
                         {t('PROFILE.FULL_NAME')}
                       </Typography>
                       <Box display="flex">
-                        <Typography
-                          fontSize={'16px'}
-                          fontWeight={'400'}
-                          lineHeight={'24px'}
-                          margin={0}
-                          color={theme.palette.warning['A200']}
-                        >
+                        <Typography sx={fieldValueStyles(theme)}>
                           {userName ? toPascalCase(userName) : ''}
                         </Typography>
                       </Box>
                     </Grid>
-                    {learnerDetailsByOrder?.map((item: any, index: number) => (
-                      <>
-                        <Grid item xs={6} key={index} textAlign="left">
-                          <Typography
-                            margin={0}
-                            lineHeight={'16px'}
-                            fontSize={'12px'}
-                            fontWeight={'600'}
-                            color={theme.palette.warning['500']}
-                          >
-                            {item?.label
-                              ? t(
-                                  `FORM.${item.label.toUpperCase()}`,
-                                  item.label
-                                )
-                              : item.label}
-                          </Typography>
-                          {/* <Box display="flex"> */}
-                          <Typography
-                            fontSize={'16px'}
-                            fontWeight={'400'}
-                            lineHeight={'24px'}
-                            margin={0}
-                            color={theme.palette.warning['A200']}
-                            style={{
-                              wordBreak: 'break-word',
-                              whiteSpace: 'normal',
-                            }}
-                            // noWrap
-                          >
-                            {Array.isArray(item.displayValue)
-                              ? toPascalCase(item.displayValue.join(', '))
-                              : item?.displayValue
-                                ? toPascalCase(item.displayValue)
-                                : '-'}
-                          </Typography>
-                          {/* </Box> */}
-                        </Grid>
-                      </>
-                    ))}
                     <Grid item xs={6} textAlign="left">
-                      <Typography
-                        margin={0}
-                        lineHeight={'16px'}
-                        fontSize={'12px'}
-                        fontWeight={'600'}
-                        color={theme.palette.warning['500']}
-                      >
+                      <Typography sx={fieldTitleStyles(theme)}>
                         {t('PROFILE.CONTACT_NUMBER')}
                       </Typography>
                       <Box display="flex">
-                        <Typography
-                          fontSize={'16px'}
-                          fontWeight={'400'}
-                          lineHeight={'24px'}
-                          margin={0}
-                          color={theme.palette.warning['A200']}
-                          style={{
-                            wordBreak: 'break-word',
-                            whiteSpace: 'normal',
-                          }}
-                        >
-                          {contactNumber ? contactNumber : '-'}
+                        <Typography sx={fieldValueStyles(theme)}>
+                          {contactNumber || '-'}
                         </Typography>
                       </Box>
                     </Grid>
+                    <Grid item xs={6} textAlign="left">
+                      <Typography sx={fieldTitleStyles(theme)}>
+                        {t('PROFILE.ENROLLMENT_NUMBER')}
+                      </Typography>
+                      <Box display="flex">
+                        <Typography sx={fieldValueStyles(theme)}>
+                          {enrollmentNumber || '-'}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    {learnerDetailsByOrder?.map((item: any, index: number) => (
+                      <Grid item xs={6} key={index} textAlign="left">
+                        <Typography sx={fieldTitleStyles(theme)}>
+                          {item?.label
+                            ? t(`FORM.${item.label.toUpperCase()}`, item.label)
+                            : item.label}
+                        </Typography>
+                        <Typography sx={fieldValueStyles(theme)}>
+                          {Array.isArray(item.displayValue)
+                            ? toPascalCase(item.displayValue.join(', '))
+                            : item?.displayValue
+                              ? toPascalCase(item.displayValue)
+                              : '-'}
+                        </Typography>
+                      </Grid>
+                    ))}
                   </Grid>
                 </Box>
               </Box>
-              <Divider
-                style={{
-                  backgroundColor: theme.palette.warning['A100'],
-                }}
-              />
+              <Divider sx={dividerStyles(theme)} />
             </Box>
-            <Box padding={'20px'} display="flex" justifyContent="space-between">
+            <Box sx={buttonContainerStyles}>
               <Button
-                sx={{
-                  border: `1px solid ${theme.components.MuiButton.styleOverrides.root.border}`,
-                  width: '100px',
-                  borderRadius: '100px',
-                  boxShadow: 'none',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  color: theme.components.MuiButton.styleOverrides.root.color,
-                }}
+                sx={closeButtonStyles(theme)}
                 onClick={onClose}
                 variant="outlined"
               >
                 {t('COMMON.CLOSE')}
               </Button>
               <Button
-                sx={{
-                  borderColor: theme.palette.warning['A400'],
-                  width: '164px',
-                  borderRadius: '100px',
-                  boxShadow: 'none',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  color: theme.components.MuiButton.styleOverrides.root.color,
-                }}
+                sx={profileButtonStyles(theme)}
                 variant="contained"
                 onClick={handleLearnerFullProfile}
               >

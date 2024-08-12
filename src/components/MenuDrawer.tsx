@@ -78,6 +78,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isDashboard = router.pathname === '/dashboard';
   const isTeacherCenter = router.pathname === '/centers';
   const isCoursePlanner = router.pathname === '/course-planner';
+  const isAssessments = router.pathname === '/assessments';
+
   // const isManageUser = router.pathname === '/manageUser';
 
   return (
@@ -113,7 +115,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           {!isDesktop && (
             <Box>
               <IconButton onClick={toggleDrawer(false)}>
-                <ClearIcon />
+                <ClearIcon sx={{ color: theme.palette.warning['300'] }} />
               </IconButton>
             </Box>
           )}
@@ -181,7 +183,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               padding: isDashboard
                 ? '16px 18px !important'
                 : '0px 18px !important',
-              marginTop: '15px',
+              marginTop: '25px',
               color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
               fontWeight: isDashboard ? '600' : 500,
               '&:hover': {
@@ -190,13 +192,13 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   : 'transparent',
               },
             }}
-            startIcon={<DashboardOutlinedIcon />}
+            startIcon={<DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />}
             onClick={navigateToDashboard}
           >
             {t('DASHBOARD.DASHBOARD')}
           </Button>
         </Box>
-        <Box sx={{ marginTop: '12px' }}>
+        <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14"
             sx={{
@@ -219,7 +221,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               },
               marginTop: '15px',
             }}
-            startIcon={<LocalLibraryOutlinedIcon />}
+            startIcon={<LocalLibraryOutlinedIcon sx={{ fontSize: '24px !important' }} />}
             onClick={() => {
               router.push(`/centers`); // Check route
             }}
@@ -229,7 +231,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               : t('DASHBOARD.MY_TEACHING_CENTERS')}
           </Button>
         </Box>
-        <Box sx={{ marginTop: '12px' }}>
+        <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14"
             sx={{
@@ -245,14 +247,45 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               },
               marginTop: '15px',
             }}
-            startIcon={<EditNoteIcon />}
-            // onClick={navigateToManageUser}
+            startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
+          // onClick={navigateToManageUser}
           >
             {t('COMMON.OBSERVATIONS_FORMS')}
           </Button>
         </Box>
+        <Box sx={{ marginTop: '18px' }}>
+          <Button
+            className="fs-14"
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: isAssessments
+                ? theme.palette.primary.main
+                : 'transparent',
 
-        <Box sx={{ marginTop: '12px' }}>
+              padding: isAssessments
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isAssessments ? '600' : 500,
+              '&:hover': {
+                background: isAssessments
+                  ? theme.palette.primary.main
+                  : 'transparent',
+              },
+              marginTop: '15px',
+            }}
+            startIcon={<EventAvailableOutlinedIcon sx={{ fontSize: '24px !important' }} />}
+            onClick={() => {
+              router.push(`/assessments`);
+            }}
+          >
+            {t('ASSESSMENTS.ASSESSMENTS')}
+          </Button>
+        </Box>
+
+        <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14"
             sx={{
@@ -275,7 +308,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               },
               marginTop: '15px',
             }}
-            startIcon={<EventAvailableOutlinedIcon />}
+            startIcon={<EventAvailableOutlinedIcon sx={{ fontSize: '24px !important' }} />}
             onClick={() => {
               router.push(`/course-planner`); // Check route
             }}

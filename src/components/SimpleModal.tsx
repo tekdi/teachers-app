@@ -29,7 +29,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   const theme = useTheme<any>();
 
   const modalStyle = {
-    paddingTop: '0',
+    padding: '0',
 
     paddingBottom: theme.spacing(2),
     position: 'absolute',
@@ -91,9 +91,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
           </Box>
         </Box>
         <Divider />
-        <Box sx={{ height: '60vh', overflowY: 'auto', px: '16px' }}>
-          {children}
-        </Box>
+        <Box sx={{padding: '0px 16px'}}>{children}</Box>
         <Divider />
 
         {showFooter ? (

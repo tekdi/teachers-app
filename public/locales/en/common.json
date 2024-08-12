@@ -19,15 +19,15 @@
     "SEARCH_STUDENT": "Search Learner",
     "SORT_BY": "Sort by",
     "APPLY": "Apply",
-    "A_TO_Z": "A TO Z",
-    "Z_TO_A": "Z TO A",
+    "A_TO_Z": "A to Z",
+    "Z_TO_A": "Z to A",
     "HIGH_TO_LOW": "High to Low",
     "LOW_TO_HIGH": "Low to High",
     "NAMES": "Names",
     "CLASS_MISSED": "Classes Missed",
     "ATTENDANCE": "Attendance",
     "ATTENDANCE_REPORT": "Attendance Report",
-    "TEST_REPORT": "Test Report",
+    "ASSESSMENT_REPORT": "Assessment Report",
     "BASIC_DETAILS": "Basic Details",
     "DOB": "Date of Birth",
     "LOGOUT": "Log out",
@@ -76,7 +76,7 @@
     "SURE_UPDATE": "Are you sure you want to update this attendance?",
     "SURE_REMOVE": "Are you sure you want to remove this learner?",
     "SURE_REASSIGN_CENTER": "Are you sure you want to re-assign Center to this user?",
-    "SURE_CLOSE": "Are you sure you want to close?",
+    "SURE_CLOSE": "Are you sure you want to close without saving?",
     "LEARNER_LIST": "Learners List",
     "FACILITATOR_LIST": "Facilitators List",
     "FILTERS": "Filters",
@@ -109,7 +109,7 @@
     "USER_CREDENTIAL_SEND_SUCCESSFULLY": "User Credentials Sent Successfully!",
     "CENTER_SESSIONS": "Center Sessions",
     "SCHEDULE_NEW": "Schedule New",
-    "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions",
+    "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions (Next {{days}} days)",
     "NO_SESSIONS_SCHEDULED": "No sessions scheduled",
     "TO_BE_TAUGHT": "What is going to be taught:",
     "SELECT_TOPIC": "Select Topic, Sub-topic",
@@ -130,8 +130,10 @@
     "SELF_ATTENDANCE": "Mark Attendance",
     "TURN_ON_DEVICE_LOCATION": "Turn on device location",
     "DEVICE_LOCATION_NEED_TO_ATTENDANCE": "Device location is needed to mark your attendance",
-    "TURN_ON": "Turn On"
-
+    "TURN_ON": "Turn On",
+    "OKAY": "Okay",
+    "HELD_EVERY_WEEK_ON": "Held every week on {{days}}",
+    "SESSION_SCHEDULED_SUCCESSFULLY": "Session has been scheduled successfully!"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -173,14 +175,16 @@
     "LEARNER": "Learners",
     "ATTENDANCE_COMPARISON": "Attendance Comparison",
     "CENTER_TYPE": "Center Type",
-    "BLOCK_AVERAGE_ATTENDANCE": "Block Average Attendance"
+    "BLOCK_AVERAGE_ATTENDANCE": "Block Average Attendance",
+    "BLOCK": "Block",
+    "ATTENDANCE": "Attendance (%)"
   },
   "ATTENDANCE": {
-    "TOTAL_STUDENTS": "Total Number of Learners: {{count}}",
+    "TOTAL_STUDENTS": "Total Learners: {{count}}",
     "ACTIVE_STUDENTS": "Active Learners: {{count}}",
     "DROPOUT_STUDENTS": "Dropout Learners: {{count}}",
-    "PRESENT_STUDENTS": "Present Learners: {{count}}",
-    "ABSENT_STUDENTS": "Absent Learners: {{count}}",
+    "PRESENT_STUDENTS": "Present: {{count}}",
+    "ABSENT_STUDENTS": "Absent: {{count}}",
     "PRESENT": "Present",
     "ABSENT": "Absent",
     "HALF_DAY": "Half Day",
@@ -199,7 +203,7 @@
     "ATTENDANCE_OVERVIEW": "Attendance Overview",
     "CENTER_ATTENDANCE": "Center Attendance",
     "LOW_ATTENDANCE_STUDENTS": "Low Attendance Learners",
-    "N/A": "N/A",
+    "N/A": "No Centers Assigned",
     "CENTER_NAME": "Center Name",
     "ALL_CENTERS": "All Centers",
     "NO_LEARNER_WITH_LOW_ATTENDANCE": "No Learner with low attendance",
@@ -239,6 +243,7 @@
     "ENTER_NUMBER": "Please enter a number",
     "ENTER_CHARACTER": "Please enter at least one character",
     "CONTACT_NUMBER": "Contact Number",
+    "ENROLLMENT_NUMBER": "Enrollment Number",
     "SELECT_OPTION": "Select Option"
   },
 
@@ -331,8 +336,8 @@
     "THIS_SESSION": "This session",
     "FOLLOWING_SESSIONS": "This and following sessions",
     "MODE_OF_SESSION": "Mode of Session",
-    "OFFLINE": "Offline",
-    "ONLINE": "Online",
+    "OFFLINE": "offline",
+    "ONLINE": "online",
     "SUBJECT": "Subject",
     "MEETING_LINK": "Meeting Link",
     "MEETING_PASSCODE": "Meeting Passcode (if applicable)",
@@ -343,7 +348,7 @@
     "REMOVE_THIS_SESSION": "Remove this session",
     "PLANNED_SESSION": "Planned Session",
     "FIXES_SUBJECTS": "For fixed subjects in the timetable",
-    "EXTRA_SESSION": "Extra Session",
+    "EXTRA_SESSION": "Extra Sessions",
     "DOUBT_CLEARING": "For doubt clearing, webinars, etc",
     "TOPIC": "Topic",
     "SUBTOPIC": "Sub Topic",
@@ -358,10 +363,18 @@
     "TYPE_OF_SESSION": "Type of Session",
     "REPEATING": "Repeating",
     "JUST_ONCE": "Just Once",
-    "SUBJECT_OPTIONAL": "Subject (Optional)"
+    "SUBJECT_OPTIONAL": "Subject (Optional)",
+    "RECURRING_ONLINE": "Recurring online",
+    "RECURRING_OFFLINE": "Recurring offline",
+    "ENTER_VALID_MEETING_LINK": "Please enter a valid Zoom or Google Meet link.",
+    "ZOOM": "Zoom",
+    "GOOGLEMEET": "GoogleMeet",
+    "SET_UP": "Set-Up"
   },
   "MANAGE_USERS": {
-    "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"
+    "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully",
+    "CENTERS_REQUEST_FAILED": "Center Requested Failed"
+
   },
   "FORM": {
     "FULL_NAME": "Full Name",
@@ -452,7 +465,9 @@
     "NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "Numbers and special characters are not allowed",
     "ENTER_VALID_MOBILE_NUMBER": "Enter Valid mobile number",
     "ENTER_VALID_EMAIL": "Enter valid Email",
-    "ENTER_VALID_YEAR": "Enter valid Year"
+    "ENTER_VALID_YEAR": "Enter valid Year",
+    "MUST_BE_LESS_THAN": "{{fieldname}} must be less than {{maxLength}}",
+    "MUST_BE_GREATER_THAN": "{{fieldname}} must be greater than {{minLength}}"
   },
   "COURSE_PLANNER": {
     "COURSE_PLANNER": "Course Plan",
@@ -461,5 +476,15 @@
     "COLLAPSE_ALL": "Collapse All",
     "EXPAND_ALL": "Expand All",
     "RESOURCES": "Resources"
+  },
+  "ASSESSMENTS": {
+    "ASSESSMENTS": "Assessments",
+    "CENTER": "Center",
+    "ASSESSMENT_TYPE": "Assessment Type",
+    "COMPLETED_THE_ASSESSMENT": "completed the assessment",
+    "SUBMITTED_ON": "Submitted On",
+    "CORRECT_ANSWER": "correct answers",
+    "NO_DATA_FOUND": "No data found",
+    "SEARCH_STUDENT": "search student"
   }
 }

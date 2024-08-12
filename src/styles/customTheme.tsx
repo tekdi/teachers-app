@@ -30,7 +30,7 @@ const commonPalette = {
     '800': '#F8EFE7',
     '900': '#DADADA',
     A100: '#D0C5B4',
-    A200: '#4d4639',
+    A200: '#4D4639',
     A400: '#FFFFFF',
     A700: '#EDEDED',
   },
