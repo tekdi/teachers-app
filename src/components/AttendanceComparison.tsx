@@ -216,7 +216,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
             <BarChart
               layout="vertical"
               data={data}
-              margin={{ top: 5, right: 5, left: 10 }}
+              margin={{ top: 5, left: 15 }}
             >
               <CartesianGrid
                 stroke={theme.palette.warning.A700}
@@ -233,8 +233,9 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                 tick={(props) => {
                   const { x, y, payload } = props;
                   const name = payload.value;
-                  const firstLine = name.slice(0, 6);
-                  const secondLine = name.slice(6);
+                  const firstLine = name.slice(0, 7);
+                  const secondLine = name.slice(7, 13);
+                  const thirdLine = name.slice(13, 19);
                   const capitalizedFirstLine =
                     firstLine.charAt(0).toUpperCase() + firstLine.slice(1);
 
@@ -255,6 +256,11 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                           {secondLine}
                         </tspan>
                       )}
+                      {thirdLine && (
+                        <tspan x={x} dy="1.3em">
+                          {thirdLine}
+                        </tspan>
+                      )}
                     </text>
                   );
                 }}
@@ -271,7 +277,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
           <BarChart
             layout="vertical"
             data={[{ name: '', Attendance: 0 }]}
-            margin={{ right: 5, left: 70 }}
+            margin={{ left: 75 }}
           >
             <XAxis
               type="number"
