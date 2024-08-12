@@ -124,7 +124,8 @@
     "PLEASE_SELECT_THE_CENTER": "Please select the center.",
     "CREATE": "Create",
     "OKAY": "Okay",
-    "HELD_EVERY_WEEK_ON": "Held every week on {{days}}"
+    "HELD_EVERY_WEEK_ON": "Held every week on {{days}}",
+    "SESSION_SCHEDULED_SUCCESSFULLY": "Session has been scheduled successfully!"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -325,8 +326,8 @@
     "THIS_SESSION": "This session",
     "FOLLOWING_SESSIONS": "This and following sessions",
     "MODE_OF_SESSION": "Mode of Session",
-    "OFFLINE": "Offline",
-    "ONLINE": "Online",
+    "OFFLINE": "offline",
+    "ONLINE": "online",
     "SUBJECT": "Subject",
     "MEETING_LINK": "Meeting Link",
     "MEETING_PASSCODE": "Meeting Passcode (if applicable)",
@@ -352,7 +353,12 @@
     "TYPE_OF_SESSION": "Type of Session",
     "REPEATING": "Repeating",
     "JUST_ONCE": "Just Once",
-    "SUBJECT_OPTIONAL": "Subject (Optional)"
+    "SUBJECT_OPTIONAL": "Subject (Optional)",
+    "RECURRING_ONLINE": "Recurring online",
+    "RECURRING_OFFLINE": "Recurring offline",
+    "ENTER_VALID_MEETING_LINK": "Please enter a valid Zoom or Google Meet link.",
+    "ZOOM": "Zoom",
+    "GOOGLEMEET": "GoogleMeet"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully"

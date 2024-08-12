@@ -150,7 +150,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
       <Typography variant="h2" fontSize={'16px'} sx={{ color: 'black' }}>
         {t('DASHBOARD.ATTENDANCE_COMPARISON')}
       </Typography>
-      <Typography fontSize={'14px'} >
+      <Typography fontSize={'14px'}>
         {blockName} {t('DASHBOARD.BLOCK')}
       </Typography>
       <FormControl component="fieldset">
@@ -216,7 +216,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
             <BarChart
               layout="vertical"
               data={data}
-              margin={{ top: 5, right: 5, left: 10}}
+              margin={{ top: 5, right: 5, left: 10 }}
             >
               <CartesianGrid
                 stroke={theme.palette.warning.A700}
@@ -227,7 +227,39 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                 tickFormatter={(value: any) => `${value}%`}
                 height={0}
               />
-              <YAxis type="category" dataKey="name" />
+              <YAxis
+                type="category"
+                dataKey="name"
+                tick={(props) => {
+                  const { x, y, payload } = props;
+                  const name = payload.value;
+                  const firstLine = name.slice(0, 6);
+                  const secondLine = name.slice(6);
+                  const capitalizedFirstLine =
+                    firstLine.charAt(0).toUpperCase() + firstLine.slice(1);
+
+                  return (
+                    <text
+                      x={x}
+                      y={y}
+                      dy={4} 
+                      textAnchor="end"
+                      fontSize={16} 
+                      fill="gray" 
+                    >
+                      <tspan x={x} dy="0em">
+                        {capitalizedFirstLine}
+                      </tspan>
+                      {secondLine && (
+                        <tspan x={x} dy="1.3em">
+                          {secondLine}
+                        </tspan>
+                      )}
+                    </text>
+                  );
+                }}
+              />
+
               <Tooltip formatter={(value: number) => `${value}%`} />
               <Bar dataKey="Attendance" fill="#DAA200" barSize={40} radius={2}>
                 <LabelList dataKey="Attendance" content={renderCustomLabel} />
@@ -239,7 +271,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
           <BarChart
             layout="vertical"
             data={[{ name: '', Attendance: 0 }]}
-            margin={{  right: 5, left: 70 }}
+            margin={{ right: 5, left: 70 }}
           >
             <XAxis
               type="number"
@@ -253,7 +285,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
         </ResponsiveContainer>
         <Box display="flex" justifyContent="center" alignItems="center">
           <Typography color="black" mt={1}>
-          {t('DASHBOARD.ATTENDANCE')}
+            {t('DASHBOARD.ATTENDANCE')}
           </Typography>
         </Box>
       </Box>

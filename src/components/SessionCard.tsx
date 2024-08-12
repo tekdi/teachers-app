@@ -93,7 +93,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
             {startTime} - {endTime}
           </Typography>
           <Typography fontWeight={'400'} textAlign={'left'} fontSize={'14px'}>
-            {data?.metadata?.framework?.createdBy}
+            {data?.metadata?.framework?.teacherName}
           </Typography>
         </Box>
         <EditOutlined onClick={handleOpen} sx={{ cursor: 'pointer' }} />

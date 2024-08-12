@@ -22,6 +22,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import {
   FormContext,
   FormContextType,
+  Role,
+  Status,
   sessionMode,
   sessionType,
 } from '@/utils/app.constant';
@@ -31,7 +33,11 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { PlannedModalProps } from '@/utils/Interfaces';
+import {
+  PlannedModalProps,
+  CohortMemberList,
+  CreateEvent,
+} from '@/utils/Interfaces';
 import SessionMode from './SessionMode';
 import Stack from '@mui/material/Stack';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -39,6 +45,14 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import WeekDays from './WeekDays';
 import { getFormRead } from '@/services/CreateUserService';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import {
+  DaysOfWeek,
+  eventDaysLimit,
+  idealTimeForSession,
+} from '../../app.config';
+import { createEvent } from '@/services/EventService';
+import { showToastMessage } from './Toastify';
 
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
 type type = (typeof sessionType)[keyof typeof sessionType];
@@ -47,17 +61,29 @@ interface Session {
   id?: number | string;
   sessionMode?: string;
   selectedWeekDays?: string[];
+  DaysOfWeek?: number[];
   startDatetime?: string;
   endDatetime?: string;
+  endDateValue?: string;
   subject?: string;
+  isRecurring?: boolean;
+  meetingLink?: string;
+  meetingPasscode?: string;
+  onlineProvider?: string;
 }
 
 const PlannedSession: React.FC<PlannedModalProps> = ({
   removeModal,
   clickedBox,
+  scheduleEvent,
+  cohortName,
+  cohortId,
+  onCloseModal,
 }) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
   const [type, setType] = useState<type>(sessionType.REPEATING);
+  const [link, setLink] = useState('');
+  const [linkError, setLinkError] = useState('');
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>();
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [subjects, setSubjects] = useState<string[]>();
@@ -70,19 +96,27 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     {
       id: 0,
       selectedWeekDays: [],
+      DaysOfWeek: [],
       sessionMode: mode,
       startDatetime: '',
       endDatetime: '',
+      endDateValue: '',
       subject: '',
+      isRecurring: false,
+      meetingLink: '',
+      meetingPasscode: '',
+      onlineProvider: '',
     },
   ]);
 
   useEffect(() => {
     const initialStartDateTime = combineDateAndTime(startDate, startTime);
-    const initialEndDateTime = combineDateAndTime(endDate, endTime);
+    const initialEndDateTime = combineDateAndTime(startDate, endTime);
+    const sessionEndDate = combineDateAndTime(endDate, endTime);
 
     const startDatetime = convertToUTC(initialStartDateTime);
     const endDatetime = convertToUTC(initialEndDateTime);
+    const endDateValue = convertToUTC(sessionEndDate);
 
     setSessionBlocks((blocks) =>
       blocks.map((block) =>
@@ -91,6 +125,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               ...block,
               startDatetime: startDatetime || '',
               endDatetime: endDatetime || '',
+              endDateValue: endDateValue || '',
             }
           : block
       )
@@ -101,12 +136,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     event: ChangeEvent<HTMLInputElement>,
     id: string | number | undefined
   ) => {
-    setMode(event.target.value as mode);
-    setSessionBlocks(
-      sessionBlocks.map((block) =>
-        block?.id === id ? { ...block, sessionMode: event.target.value } : block
-      )
+    setMode(event.target.value.toLowerCase() as mode);
+    const updatedSessionBlocks = sessionBlocks.map((block) =>
+      block.id === id
+        ? { ...block, sessionMode: event.target.value.toLowerCase() }
+        : block
     );
+    setSessionBlocks(updatedSessionBlocks);
   };
 
   const handleSessionTypeChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -180,7 +216,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           : block
       )
     );
-    console.log(sessionBlocks);
   };
 
   const combineDateAndTime = (
@@ -217,12 +252,15 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     }
 
     const combinedStartDateTime = combineDateAndTime(startDate, startTime);
-    const combinedEndDateTime = combineDateAndTime(endDate, endTime);
+    const combinedEndDateTime = combineDateAndTime(startDate, endTime);
+    const combinedEndDateValue = combineDateAndTime(endDate, endTime);
 
     const startDatetime = convertToUTC(combinedStartDateTime);
     const endDatetime = convertToUTC(combinedEndDateTime);
+    const endDateValue = convertToUTC(combinedEndDateValue);
 
-    if (startDatetime && endDatetime) {
+    if (startDatetime && endDatetime && endDateValue) {
+      let isRecurringEvent = startDate !== endDate ? true : false;
       setSessionBlocks(
         sessionBlocks.map((block) =>
           block?.id === id
@@ -230,6 +268,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 ...block,
                 startDatetime: startDatetime,
                 endDatetime: endDatetime,
+                endDateValue: endDateValue,
+                isRecurring: isRecurringEvent,
               }
             : block
         )
@@ -244,12 +284,57 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     },
   }));
 
-  const handleLinkChange = (event: any) => {
-    console.log(event.target.value);
+  const handleLinkChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    id: string | number | undefined
+  ) => {
+    const value = event?.target?.value;
+    setLink(value);
+
+    const zoomLinkPattern = /^(https?:\/\/)?(www\.)?zoom\.us\/j\/\d+$/;
+    const googleMeetLinkPattern =
+      /^(https?:\/\/)?(meet\.google\.com\/[a-zA-Z0-9-]+)$/;
+
+    let onlineProvider: string;
+    if (zoomLinkPattern.test(value)) {
+      setLinkError('');
+      onlineProvider = t('CENTER_SESSION.ZOOM');
+    } else if (googleMeetLinkPattern.test(value)) {
+      setLinkError('');
+      onlineProvider = t('CENTER_SESSION.GOOGLEMEET');
+    } else {
+      setLinkError(t('CENTER_SESSION.ENTER_VALID_MEETING_LINK'));
+    }
+
+    setSessionBlocks(
+      sessionBlocks.map((block) =>
+        block.id === id
+          ? {
+              ...block,
+              meetingLink: value,
+              onlineProvider: onlineProvider,
+            }
+          : block
+      )
+    );
   };
 
-  const handlePasscodeChange = (event: any) => {
-    console.log(event.target.value);
+  const handlePasscodeChange = (
+    event: any,
+    id: string | number | undefined
+  ) => {
+    const value = event?.target?.value;
+
+    setSessionBlocks(
+      sessionBlocks.map((block) =>
+        block.id === id
+          ? {
+              ...block,
+              meetingPasscode: value,
+            }
+          : block
+      )
+    );
   };
 
   const { t } = useTranslation();
@@ -259,10 +344,18 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     id: string | number | undefined,
     newSelectedDays: string[]
   ) => {
+    const mappedSelectedDays = newSelectedDays?.map(
+      (day) => DaysOfWeek[day as keyof typeof DaysOfWeek]
+    );
+
     setSessionBlocks(
       sessionBlocks.map((block) =>
         block?.id === id
-          ? { ...block, selectedWeekDays: newSelectedDays }
+          ? {
+              ...block,
+              selectedWeekDays: newSelectedDays,
+              DaysOfWeek: mappedSelectedDays,
+            }
           : block
       )
     );
@@ -274,19 +367,174 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       {
         id: sessionBlocks.length,
         selectedWeekDays: [],
-        sessionMode: mode,
+        DaysOfWeek: [],
+        sessionMode: '',
         startDatetime: '',
         endDatetime: '',
         subject: '',
+        meetingLink: '',
+        meetingPasscode: '',
+        onlineProvider: '',
       },
     ]);
     console.log(sessionBlocks);
   };
+
   const handleRemoveSession = (id: any) => {
     setSessionBlocks(sessionBlocks.filter((block) => block?.id !== id));
   };
 
   console.log(sessionBlocks);
+
+  const scheduleNewEvent = async () => {
+    if (!scheduleEvent) return;
+
+    try {
+      const userId =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('userId') || ''
+          : '';
+      const userName =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('userName') || ''
+          : '';
+
+      // Initialize variables
+      let attendeeCount = 0;
+      let attendeeArray: string[] = [];
+
+      // Fetch cohort members if cohortId is available
+      if (cohortId) {
+        const filters = {
+          cohortId,
+          role: Role.STUDENT,
+          status: [Status.ACTIVE],
+        };
+
+        const response = await getMyCohortMemberList({
+          limit: 20,
+          page: 0,
+          filters,
+        });
+
+        const resp = response?.result;
+
+        if (resp) {
+          attendeeCount = resp.totalCount || 0;
+          attendeeArray =
+            resp.userDetails?.map((attendee: any) => attendee.userId) || [];
+        }
+      }
+
+      // Determine title based on clickedBox and mode
+      let title = '';
+      if (clickedBox === 'PLANNED_SESSION') {
+        title =
+          mode === t('CENTER_SESSION.ONLINE')
+            ? t('CENTER_SESSION.RECURRING_ONLINE')
+            : t('CENTER_SESSION.RECURRING_OFFLINE');
+      } else if (clickedBox === 'EXTRA_SESSION') {
+        title = 'Extra Session';
+      }
+
+      // Create API bodies
+      const apiBodies: CreateEvent[] = sessionBlocks.map((block) => {
+        const baseBody: CreateEvent = {
+          title,
+          shortDescription: '',
+          description: '',
+          eventType: block?.sessionMode || '',
+          isRestricted: true,
+          autoEnroll: true,
+          location: cohortName || '',
+          // longitude: '',
+          // latitude: '',
+          maxAttendees: attendeeCount,
+          attendees: attendeeArray,
+          status: 'live',
+          createdBy: userId,
+          updatedBy: userId,
+          idealTime: idealTimeForSession,
+          isRecurring: block?.isRecurring || false,
+          startDatetime: block?.startDatetime || '',
+          endDatetime: block?.endDatetime || '',
+          registrationStartDate: '',
+          registrationEndDate: '',
+          recurrencePattern: {
+            frequency:
+              block?.selectedWeekDays?.length === eventDaysLimit
+                ? 'daily'
+                : 'weekly',
+            interval: 1,
+            daysOfWeek: block?.DaysOfWeek || [],
+            endCondition: {
+              type: 'endDate',
+              value: block?.endDateValue || '',
+            },
+          },
+          metaData: {
+            framework: {
+              board: '',
+              medium: '',
+              grade: '',
+              subject: block?.subject || '',
+              topic: '',
+              subTopic: '',
+              teacherName: userName,
+            },
+            eventType: clickedBox || '',
+            doId: '',
+            cohortId: cohortId || '',
+            cycleId: '',
+            tenant: '',
+          },
+        };
+
+        // Add meetingDetails only if sessionMode is 'online'
+        if (block?.sessionMode === 'online') {
+          (baseBody.onlineProvider = block?.onlineProvider || ''),
+            (baseBody.isMeetingNew = false),
+            (baseBody.meetingDetails = {
+              url: block?.meetingLink || '',
+              password: block?.meetingPasscode || '7674534',
+              id: '123-456-789',
+            });
+        }
+
+        return baseBody;
+      });
+
+      await Promise.all(
+        apiBodies.map(async (apiBody) => {
+          try {
+            const response = await createEvent(apiBody);
+            console.log(response);
+            if (response) {
+              showToastMessage(
+                t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
+                'sucess'
+              );
+              if (onCloseModal) {
+                onCloseModal();
+              }
+            }
+          } catch (error) {
+            console.error('Error creating event:', error);
+            showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            if (onCloseModal) {
+              onCloseModal();
+            }
+          }
+        })
+      );
+    } catch (error) {
+      console.error('Error scheduling new event:', error);
+    }
+  };
+
+  useEffect(() => {
+    scheduleNewEvent();
+  }, [scheduleEvent, cohortId]);
 
   return (
     <Box overflow={'auto'}>
@@ -294,7 +542,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         <Box sx={{ padding: '10px 16px' }}>
           <Box>
             <SessionMode
-              mode={mode}
+              mode={block?.sessionMode || mode}
               handleSessionModeChange={(e) =>
                 handleSessionModeChange(e, block?.id)
               }
@@ -334,7 +582,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             </Box>
           )}
 
-          {mode === sessionMode.ONLINE && (
+          {block?.sessionMode === sessionMode.ONLINE && (
             <>
               {clickedBox === 'EXTRA_SESSION' && (
                 <>
@@ -353,9 +601,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               <Box sx={{ mt: 2 }}>
                 <TextField
                   id="outlined-basic"
+                  value={link}
                   label={t('CENTER_SESSION.MEETING_LINK')}
                   variant="outlined"
-                  onChange={handleLinkChange}
+                  error={!!linkError}
+                  helperText={linkError}
+                  onChange={(e) =>
+                    handleLinkChange(
+                      e as React.ChangeEvent<HTMLInputElement>,
+                      block?.id
+                    )
+                  }
                 />
               </Box>
               <Box sx={{ mt: 2 }}>
@@ -363,7 +619,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   id="outlined-basic"
                   label={t('CENTER_SESSION.MEETING_PASSCODE')}
                   variant="outlined"
-                  onChange={handlePasscodeChange}
+                  onChange={(e: any) => handlePasscodeChange(block?.id, e)}
                 />
               </Box>
             </>
@@ -531,6 +787,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </Grid>
             </Box>
           )}
+
           {sessionBlocks.length > 1 && (
             <Box
               sx={{
