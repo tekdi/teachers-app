@@ -380,8 +380,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     );
   };
 
-
-
   const handleSubjectTitleChange = (
     event: any,
     id: string | number | undefined
