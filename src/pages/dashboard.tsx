@@ -884,59 +884,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <AttendanceComparison blockName={blockName} />
                   </Box>
                 )}
-                {/* <Box sx={{ background: '#fff' }}>
-            <Typography
-              textAlign={'left'}
-              fontSize={'0.8rem'}
-              pl={'1rem'}
-              pt={'1rem'}
-              color={'black'}
-              fontWeight={'600'}
-            >
-              {t('DASHBOARD.MY_TIMETABLE')}
-            </Typography>
-            <WeekDays useAbbreviation={false} />
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <Box width={'100%'}>
-              <TimeTableCard
-                subject={'Science'}
-                instructor={'Khapari Dharmu'}
-                time={'10 am - 1 pm'}
-              />
-              <TimeTableCard
-                subject={'Home Science'}
-                instructor={'Khapari Dharmu'}
-                time={'2 pm - 5 pm'}
-              />
-              <Typography
-                textAlign={'left'}
-                fontSize={'0.8rem'}
-                ml={'1rem'}
-                color={'black'}
-                fontWeight={'600'}
-              >
-                {t('DASHBOARD.UPCOMING_EXTRA_SESSION')}
-              </Typography>
-              <ExtraSessionsCard
-                subject={'Science'}
-                instructor={'Upendra Kulkarni'}
-                dateAndTime={'27 May, 11am - 12pm'}
-                meetingURL={
-                  'https://meet.google.com/fqz-ftoh-dynfqz-ftoh-dynfqz-ftoh-dyn'
-                }
-                onEditClick={() => {
-                  console.log('edit');
-                }}
-              />
-            </Box>
-          </Box> */}
               </Box>
             )}
           </>
