@@ -996,3 +996,8 @@ legend.Mui-focused {
   padding-left: 16px;
   padding-right: 16px;
 }
+
+.loginImg{
+  height: 750px !important;
+  width: 92% !important;
+}
