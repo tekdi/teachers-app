@@ -59,7 +59,7 @@ const LocationModal: React.FC<LocationModalProps> = ({
           </IconButton>
         </Grid>
         <Typography variant="body1" sx={{ mt: 2 }}>
-          {'COMMON.DEVICE_LOCATION_NEED_TO_ATTENDANCE'}
+          {t('COMMON.DEVICE_LOCATION_NEED_TO_ATTENDANCE')}
         </Typography>
         {error && (
           <Typography color="error" sx={{ mt: 2 }}>
@@ -69,7 +69,7 @@ const LocationModal: React.FC<LocationModalProps> = ({
         <Grid container spacing={2} sx={{ mt: 2 }}>
           <Grid item xs={6}>
             <Button fullWidth variant="outlined" onClick={onClose}>
-              {(t("COMMON.CANCEL"))}
+              {t('COMMON.CANCEL')}
             </Button>
           </Grid>
           <Grid item xs={6}>
