@@ -124,6 +124,7 @@ const TeachingCenterDetails = () => {
   };
 
   const handleSchedule = () => {
+    console.log("create event===>", createEvent);
     setCreateEvent(true);
   };
 
