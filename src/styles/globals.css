@@ -1008,4 +1008,10 @@ legend.Mui-focused {
 
 .MuiRadio-root.Mui-checked {
   color: var(--mui-palette-warning-300) !important;
+.__floater __floater__open {
+  z-index: 9999 !important;
+}}
+
+.react-joyride__spotlight {
+  z-index: 9999 !important;
 }
