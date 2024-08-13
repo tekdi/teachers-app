@@ -21,6 +21,8 @@ import useStore from '@/store/store';
 import { accessGranted } from '@/utils/Helper';
 import { accessControl } from '../../app.config';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import checkBook from "../assets/images/checkbook.svg"
+import Image from 'next/image';
 interface DrawerProps {
   toggleDrawer: (open: boolean) => () => void;
   open: boolean;
@@ -136,7 +138,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 value={language}
                 onChange={handleChange}
                 displayEmpty
-                className="SelectLanguages fs-14 fw-500"
+                className="select-languages fs-14 fw-500"
                 style={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
@@ -155,7 +157,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           <Box sx={{ flexBasis: '70%' }}>
             <FormControl className="drawer-select" sx={{ width: '100%' }}>
               <Select
-                className="SelectLanguages"
+                className="select-languages"
                 displayEmpty
                 style={{
                   borderRadius: '0.5rem',
@@ -276,7 +278,14 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               },
               marginTop: '15px',
             }}
-            startIcon={<EventAvailableOutlinedIcon sx={{ fontSize: '24px !important' }} />}
+            startIcon={
+              <Image
+                src={checkBook}
+                alt="CheckBook Icon"
+                width={24}
+                height={24}
+              />
+            }
             onClick={() => {
               router.push(`/assessments`);
             }}

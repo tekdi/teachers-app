@@ -648,7 +648,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       }}
                     >
                       {' '}
-                      {t('ATTENDANCE.CLEAR')}
+                      {t('COMMON.CLEAR_ALL')}
                     </Button>
                     <Button
                       variant="contained"
@@ -664,7 +664,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       onClick={attendanceUpdate}
                     >
                       {presentCount == 0 && absentCount == 0
-                        ? t('COMMON.MARK')
+                        ? t('COMMON.MARK_ALL_AS')
                         : t('COMMON.MODIFY')}
                     </Button>
                   </Box>

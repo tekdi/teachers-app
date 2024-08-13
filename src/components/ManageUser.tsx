@@ -248,26 +248,26 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean, user?: any, teacherUserId?: string) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
-      setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
-      if (!isFromFLProfile) {
-        console.log(user);
-        const cohortNamesArray = user?.cohortNames?.split(', ');
-        const centerNames = cohortNamesArray?.map((cohortName: string) => cohortName.trim()) || [t('ATTENDANCE.N/A')];
-        setCenters(centerNames);
-        setSelectedUser(user);
-      }
+      (event: React.KeyboardEvent | React.MouseEvent) => {
+        setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
+        if (!isFromFLProfile) {
+          console.log(user);
+          const cohortNamesArray = user?.cohortNames?.split(', ');
+          const centerNames = cohortNamesArray?.map((cohortName: string) => cohortName.trim()) || [t('ATTENDANCE.N/A')];
+          setCenters(centerNames);
+          setSelectedUser(user);
+        }
 
-      if (
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
+        if (
+          event.type === 'keydown' &&
+          ((event as React.KeyboardEvent).key === 'Tab' ||
+            (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+          return;
+        }
 
-      setState({ ...state, bottom: open });
-    };
+        setState({ ...state, bottom: open });
+      };
 
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
@@ -471,10 +471,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     setOpenFacilitatorModal(false);
   };
 
-  const handleDeleteUser = () => {};
+  const handleDeleteUser = () => { };
 
   const handleFacilitatorAdded = () => {
     setIsFacilitatorAdded((prev) => prev);
+  };
+  const handleMenuOpen = (event: any) => {
+    setAnchorEl(event.currentTarget);
   };
   return (
     <div>
@@ -604,7 +607,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                 <Box>
                   {isFromFLProfile ? (
                     <MoreVertIcon
-                      onClick={toggleDrawer('bottom', true, teacherUserId)}
+                      onClick={(event) => {
+                        isMobile ? toggleDrawer('bottom', true, teacherUserId)(event) : handleMenuOpen(event)
+                      }}
                       sx={{
                         fontSize: '24px',
                         marginTop: '1rem',
@@ -718,11 +723,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                       </Box>
                                       <Box>
                                         <MoreVertIcon
-                                          onClick={toggleDrawer(
-                                            'bottom',
-                                            true,
-                                            user
-                                          )}
+                                          onClick={(event) => {
+                                            isMobile ? toggleDrawer('bottom', true, user)(event) : handleMenuOpen(event)
+                                          }}
                                           sx={{
                                             fontSize: '24px',
                                             marginTop: '1rem',
@@ -738,11 +741,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                 sx={{
                                   m: '1.125rem',
                                   display: 'flex',
-                                  justifyContent: 'left',
+                                  justifyContent: 'center',
                                   alignItems: 'center',
+                                  width: '100%',
                                 }}
                               >
-                                <Typography style={{ fontWeight: 'bold' }}>
+                                <Typography style={{ fontWeight: 'bold', width: '100%', textAlign: 'center' }}>
                                   {t('COMMON.NO_DATA_FOUND')}
                                 </Typography>
                               </Box>
@@ -807,7 +811,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                       padding={'1rem'}
                       borderRadius={'1rem'}
                     >
-                      <Box sx={{fontSize: "12px", fontWeight: 500, color: theme.palette.warning['400']}}>
+                      <Box sx={{ fontSize: "12px", fontWeight: 500, color: theme.palette.warning['400'] }}>
                         {t('COMMON.CENTERS_ASSIGNED', {
                           block: newStore.block,
                         })}
@@ -822,9 +826,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                 | bigint
                                 | boolean
                                 | React.ReactElement<
-                                    any,
-                                    string | React.JSXElementConstructor<any>
-                                  >
+                                  any,
+                                  string | React.JSXElementConstructor<any>
+                                >
                                 | Iterable<React.ReactNode>
                                 | React.ReactPortal
                                 | Promise<React.AwaitedReactNode>
@@ -978,7 +982,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                 reloadState={reloadState || false}
                 setReloadState={setReloadState || noop}
                 block={data.block}
-                center={data.center}
+                center={data.center} 
                 userId={data.userId}
               />
             ))}

@@ -464,9 +464,9 @@ const TeachingCenterDetails = () => {
               deleteModal
                 ? t('CENTER_SESSION.DELETE_SESSION')
                 : openSchedule
-                  ? clickedBox === t('CENTER_SESSION.EXTRA_SESSION')
-                    ? t('CENTER_SESSION.EXTRA_SESSION')
-                    : t('CENTER_SESSION.PLANNED_SESSION')
+                  ? clickedBox === 'PLANNED_SESSION'
+                    ? t('CENTER_SESSION.PLANNED_SESSION')
+                    : t('CENTER_SESSION.EXTRA_SESSION')
                   : t('CENTER_SESSION.SCHEDULE')
             }
             primary={

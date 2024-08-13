@@ -246,8 +246,8 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
             {selectedValue
               ? selectedValue
               : t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-                  date_range: dateRange,
-                })}
+                date_range: dateRange,
+              })}
           </MenuItem>
         </Select>
       </FormControl>
