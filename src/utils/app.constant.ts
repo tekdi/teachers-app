@@ -96,3 +96,8 @@ export enum Pagination {
   ITEMS_PER_PAGE = 10,
   MAX_ITEMS = 50,
 }
+
+export enum attendanceType {
+  PRESENT = 'present',
+  ABSENT = 'absent',
+}

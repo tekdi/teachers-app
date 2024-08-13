@@ -62,11 +62,14 @@ import calendar from '../assets/images/calendar.svg';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { Role } from '@/utils/app.constant';
+import { Role, attendanceType } from '@/utils/app.constant';
 import SelfAttendanceModal from '@/components/SelfAttendanceModal';
 import CustomModal from '@/components/CustomModal';
 import LocationModal from '@/components/LocationModal';
 import { getCohortList } from '@/services/CohortServices';
+import CancelIcon from '@mui/icons-material/Cancel'; //absent
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import SimpleModal from '@/components/SimpleModal';
 
 interface AttendanceParams {
   allowed: number;
@@ -84,31 +87,6 @@ interface AttendanceData {
   student: AttendanceParams;
 }
 interface DashboardProps {}
-
-const attendance = {
-  self: {
-    allowed: 1,
-    back_dated_attendance: 1,
-    back_dated_attendance_allowed_days: 2,
-    restrict_attendance_timings: 1,
-    attendance_starts_at: '15:24',
-    attendance_ends_at: '17:45',
-    allow_late_marking: 1,
-    capture_geoLocation: 1,
-    update_once_marked: 1, // if  0   only one time mark or if 1 then able to
-  },
-  student: {
-    allowed: 1,
-    back_dated_attendance: 1,
-    back_dated_attendance_allowed_days: 5,
-    restrict_attendance_timings: 1,
-    attendance_starts_at: '15:24',
-    attendance_ends_at: '18:45',
-    allow_late_marking: 1,
-    capture_geoLocation: 1,
-    update_once_marked: 1, // in studnet update anytime
-  },
-};
 
 const formatTime = (time: string) => {
   const [hours, minutes] = time.split(':').map(Number);
@@ -183,8 +161,8 @@ const checkIsAllowedToShow = (attendanceData: { allowed: number }) => {
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
   const attendacne = [
-    { value: 'present', label: t('ATTENDANCE.PRESENT') },
-    { value: 'absent', label: t('ATTENDANCE.ABSENT') },
+    { value: attendanceType.PRESENT, label: t('ATTENDANCE.PRESENT') },
+    { value: attendanceType.ABSENT, label: t('ATTENDANCE.ABSENT') },
   ];
 
   const [open, setOpen] = React.useState(false);
@@ -243,6 +221,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const onCloseEditMOdel = () => {
     setIsAttendanceModalOpen(false);
+    setSelectedAttendance('');
+    setConfirmButtonDisable(true);
   };
   const handleRadioChange = (value: string) => {
     setSelectedAttendance(value);
@@ -283,7 +263,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     ? isWithinAttendanceTime(attendanceTimesSelf, selectedDate) &&
       attendanceTimesSelf?.update_once_marked === 1
     : false;
-  const isTeacherRole = role === 'Teacher';
+  const isTeacherRole = role === Role.TEACHER;
   const isAllowedToMarkSelf = attendanceTimesSelf
     ? checkIsAllowedToShow(attendanceTimesSelf) && isTeacherRole
     : false;
@@ -328,6 +308,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
       onCloseEditMOdel();
       setSelectedAttendance('');
       fetchData(selectedDate);
+      setConfirmButtonDisable(true);
+      setSelectedAttendance('');
     }
   };
   const fetchData = async (selectedDate: string) => {
@@ -691,6 +673,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           selectedDate
         );
         setPercentageAttendanceData(attendanceStats);
+
         setAttendanceStats(attendanceStats);
         console.log('attendanceStats', attendanceStats);
       }
@@ -829,6 +812,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         </Box>
 
                         <Box
+                          // mb={4}
                           className="calenderTitle flex-center joyride-step-2 ps-md-ab right-md-20"
                           display={'flex'}
                           sx={{
@@ -866,198 +850,246 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             classId={classId}
                           />
                         </Box>
-                        {isAllowedToMarkLearners && (
-                          <Box
-                            height={'auto'}
-                            width={'auto'}
-                            padding={'1rem'}
-                            borderRadius={'1rem'}
-                            bgcolor={'#4A4640'}
-                            textAlign={'left'}
-                            margin={'15px 0 15px 0 '}
-                            sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
-                          >
-                            <Stack
-                              direction="row"
-                              spacing={1}
-                              // marginTop={1}
-                              justifyContent={'space-between'}
-                              alignItems={'center'}
+                        <Grid container spacing={1}>
+                          {isAllowedToMarkLearners && (
+                            <Grid
+                              item
+                              xs={12}
+                              sm={6}
+                              md={6}
+                              // sx={{
+                              //   opacity: classId === 'all' ? 0.5 : 1,
+                              // }}
                             >
                               <Box
-                                display={'flex'}
-                                gap={'5px'}
-                                alignItems={'center'}
-                                className="joyride-step-3"
+                                height={'auto'}
+                                width={'auto'}
+                                padding={'1rem'}
+                                borderRadius={'1rem'}
+                                bgcolor={'#4A4640'}
+                                textAlign={'left'}
+                                margin={'15px 0 15px 0 '}
+                                sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
                               >
-                                {currentAttendance !== 'notMarked' &&
-                                  currentAttendance !== 'futureDate' && (
-                                    <>
-                                      <CircularProgressbar
-                                        value={
-                                          currentAttendance?.present_percentage
-                                        }
-                                        background
-                                        backgroundPadding={8}
-                                        styles={buildStyles({
-                                          textColor: pathColor,
-                                          pathColor: pathColor,
-                                          trailColor: '#E6E6E6',
-                                          strokeLinecap: 'round',
-                                          backgroundColor: '#ffffff',
-                                        })}
-                                        className="fs-24 htw-24"
-                                        strokeWidth={20}
-                                      />
-                                      <Box>
-                                        <Typography
-                                          // sx={{ color: theme.palette.warning['A400'] }}
-                                          sx={{
-                                            fontSize: '12px',
-                                            fontWeight: '600',
-                                            color: '#F4F4F4',
-                                          }}
-                                          variant="h6"
-                                          className="word-break"
-                                        >
-                                          {t('DASHBOARD.PERCENT_ATTENDANCE', {
-                                            percent_students:
-                                              currentAttendance?.present_percentage,
-                                          })}
-                                        </Typography>
-                                        <Typography
-                                          // sx={{ color: theme.palette.warning['A400'] }}
-                                          sx={{
-                                            fontSize: '12px',
-                                            fontWeight: '600',
-                                            color: '#F4F4F4',
-                                          }}
-                                          variant="h6"
-                                          className="word-break"
-                                        >
-                                          {t('DASHBOARD.PRESENT_STUDENTS', {
-                                            present_students:
-                                              currentAttendance?.present_students,
-                                            total_students:
-                                              currentAttendance?.totalcount,
-                                          })}
-                                        </Typography>
-                                      </Box>
-                                    </>
-                                  )}
-                                {currentAttendance === 'notMarked' &&
-                                  currentAttendance !== 'futureDate' && (
-                                    <Typography
-                                      sx={{
-                                        color: theme.palette.warning['A400'],
-                                      }}
-                                      fontSize={'0.8rem'}
-                                      // variant="h6"
-                                      // className="word-break"
-                                    >
-                                      {t('DASHBOARD.NOT_MARKED_STUDENT')}
-                                    </Typography>
-                                  )}
-                                {currentAttendance === 'futureDate' && (
-                                  <Typography
-                                    sx={{
-                                      color: theme.palette.warning['A400'],
-                                    }}
-                                    fontSize={'0.8rem'}
-                                    fontStyle={'italic'}
-                                    fontWeight={'500'}
+                                <Stack
+                                  direction="row"
+                                  spacing={1}
+                                  // marginTop={1}
+                                  justifyContent={'space-between'}
+                                  alignItems={'center'}
+                                >
+                                  <Box
+                                    display={'flex'}
+                                    gap={'5px'}
+                                    alignItems={'center'}
+                                    className="joyride-step-3"
                                   >
-                                    {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
-                                  </Typography>
-                                )}
-                              </Box>
-                              <Button
-                                className="joyride-step-4 btn-mark-width"
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                  '&.Mui-disabled': {
-                                    backgroundColor:
-                                      theme?.palette?.primary?.main, // Custom disabled text color
-                                  },
-                                  minWidth: '84px',
-                                  height: '2.5rem',
-                                  padding: theme.spacing(1),
-                                  fontWeight: '500',
-                                  '@media (min-width: 500px)': {
-                                    width: '20%',
-                                  },
-                                  '@media (min-width: 700px)': {
-                                    width: '15%',
-                                  },
-                                }}
-                                onClick={handleModalToggle}
-                                disabled={
-                                  !canMarkAttendanceLerners
-                                  // ||
-                                  // currentAttendance === 'futureDate' ||
-                                  // classId === 'all' ||
-                                  // formattedSevenDaysAgo > selectedDate
-                                }
-                              >
-                                {currentAttendance === 'notMarked' ||
-                                currentAttendance === 'futureDate'
-                                  ? t('COMMON.MARK_TO_LEARNER')
-                                  : t('COMMON.MODIFY_FOR_LEARNER')}
-                              </Button>
-                            </Stack>
-                          </Box>
-                        )}
-                        {isAllowedToMarkSelf && (
-                          <Box
-                            height={'auto'}
-                            width={'auto'}
-                            padding={'1rem'}
-                            borderRadius={'1rem'}
-                            bgcolor={'#4A4640'}
-                            textAlign={'left'}
-                            margin={'15px 0 15px 0 '}
-                            sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
-                          >
-                            <Stack
-                              direction="row"
-                              spacing={1}
-                              // marginTop={1}
-                              justifyContent={'space-between'}
-                              alignItems={'center'}
-                            >
-                              <Box
-                                display={'flex'}
-                                gap={'5px'}
-                                alignItems={'center'}
-                                className="joyride-step-3"
-                              >
-                                {attendanceData?.length > 0 ? (
-                                  <Typography
-                                    sx={{
-                                      color: theme.palette.warning['A400'],
-                                    }}
-                                    fontSize={'0.8rem'}
-                                    // variant="h6"
-                                    // className="word-break"
-                                  >
-                                    {firstLetterInUpperCase(
-                                      attendanceData?.[0]?.attendance
+                                    {currentAttendance !== 'notMarked' &&
+                                      currentAttendance !== 'futureDate' && (
+                                        <>
+                                          <CircularProgressbar
+                                            value={
+                                              currentAttendance?.present_percentage
+                                            }
+                                            background
+                                            backgroundPadding={8}
+                                            styles={buildStyles({
+                                              textColor: pathColor,
+                                              pathColor: pathColor,
+                                              trailColor: '#E6E6E6',
+                                              strokeLinecap: 'round',
+                                              backgroundColor: '#ffffff',
+                                            })}
+                                            className="fs-24 htw-24"
+                                            strokeWidth={20}
+                                          />
+                                          <Box>
+                                            <Typography
+                                              // sx={{ color: theme.palette.warning['A400'] }}
+                                              sx={{
+                                                fontSize: '12px',
+                                                fontWeight: '600',
+                                                color: '#F4F4F4',
+                                              }}
+                                              variant="h6"
+                                              className="word-break"
+                                            >
+                                              {t(
+                                                'DASHBOARD.PERCENT_ATTENDANCE',
+                                                {
+                                                  percent_students:
+                                                    currentAttendance?.present_percentage,
+                                                }
+                                              )}
+                                            </Typography>
+                                            <Typography
+                                              // sx={{ color: theme.palette.warning['A400'] }}
+                                              sx={{
+                                                fontSize: '12px',
+                                                fontWeight: '600',
+                                                color: '#F4F4F4',
+                                              }}
+                                              variant="h6"
+                                              className="word-break"
+                                            >
+                                              {t('DASHBOARD.PRESENT_STUDENTS', {
+                                                present_students:
+                                                  currentAttendance?.present_students,
+                                                total_students:
+                                                  currentAttendance?.totalcount,
+                                              })}
+                                            </Typography>
+                                          </Box>
+                                        </>
+                                      )}
+                                    {currentAttendance === 'notMarked' &&
+                                      currentAttendance !== 'futureDate' && (
+                                        <Typography
+                                          sx={{
+                                            color:
+                                              theme.palette.warning['A400'],
+                                          }}
+                                          fontSize={'0.8rem'}
+                                          // variant="h6"
+                                          // className="word-break"
+                                        >
+                                          {t('DASHBOARD.NOT_MARKED_STUDENT')}
+                                        </Typography>
+                                      )}
+                                    {currentAttendance === 'futureDate' && (
+                                      <Typography
+                                        sx={{
+                                          color: theme.palette.warning['A400'],
+                                        }}
+                                        fontSize={'0.8rem'}
+                                        fontStyle={'italic'}
+                                        fontWeight={'500'}
+                                      >
+                                        {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
+                                      </Typography>
                                     )}
-                                  </Typography>
-                                ) : (
-                                  <Typography
+                                  </Box>
+                                  <Button
+                                    className="joyride-step-4 btn-mark-width"
+                                    variant="contained"
+                                    color="primary"
                                     sx={{
-                                      color: theme.palette.warning['A400'],
+                                      '&.Mui-disabled': {
+                                        backgroundColor:
+                                          theme?.palette?.primary?.main, // Custom disabled text color
+                                      },
+                                      minWidth: '84px',
+                                      height: '2.5rem',
+                                      padding: theme.spacing(1),
+                                      fontWeight: '500',
+                                      '@media (min-width: 500px)': {
+                                        width: '20%',
+                                      },
+                                      '@media (min-width: 700px)': {
+                                        width: '15%',
+                                      },
                                     }}
-                                    fontSize={'0.8rem'}
-                                    // variant="h6"
-                                    // className="word-break"
+                                    onClick={handleModalToggle}
+                                    disabled={
+                                      !canMarkAttendanceLerners
+                                      // ||
+                                      // currentAttendance === 'futureDate' ||
+                                      // classId === 'all' ||
+                                      // formattedSevenDaysAgo > selectedDate
+                                    }
                                   >
-                                    {t('DASHBOARD.NOT_MARKED_SELF')}
-                                  </Typography>
-                                )}
-                                {/* {currentAttendance !== 'notMarked' &&
+                                    {currentAttendance === 'notMarked' ||
+                                    currentAttendance === 'futureDate'
+                                      ? t('COMMON.MARK_TO_LEARNER')
+                                      : t('COMMON.MODIFY_FOR_LEARNER')}
+                                  </Button>
+                                </Stack>
+                              </Box>
+                            </Grid>
+                          )}
+                          {isAllowedToMarkSelf && (
+                            <Grid
+                              item
+                              xs={12}
+                              sm={6}
+                              md={6}
+                              // sx={{
+                              //   opacity: classId === 'all' ? 0.5 : 1,
+                              // }}
+                            >
+                              <Box
+                                height={'auto'}
+                                width={'auto'}
+                                padding={'1rem'}
+                                borderRadius={'1rem'}
+                                bgcolor={'#4A4640'}
+                                textAlign={'left'}
+                                margin={'15px 0 15px 0 '}
+                                sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
+                              >
+                                <Stack
+                                  direction="row"
+                                  spacing={1}
+                                  // marginTop={1}
+                                  justifyContent={'space-between'}
+                                  alignItems={'center'}
+                                >
+                                  <Box
+                                    display={'flex'}
+                                    gap={'5px'}
+                                    alignItems={'center'}
+                                    className="joyride-step-3"
+                                  >
+                                    {attendanceData?.length > 0 ? (
+                                      <Box
+                                        display={'flex'}
+                                        alignItems={'center'}
+                                      >
+                                        <Typography
+                                          sx={{
+                                            color:
+                                              theme.palette.warning['A400'],
+                                          }}
+                                          fontSize={'0.9rem'}
+                                          // variant="h6"
+                                          // className="word-break"
+                                        >
+                                          {firstLetterInUpperCase(
+                                            attendanceData?.[0]?.attendance
+                                          )}
+                                        </Typography>
+                                        {attendanceData?.[0]?.attendance ===
+                                        attendanceType.PRESENT ? (
+                                          <CheckCircleIcon
+                                            fontSize="small"
+                                            color="success"
+                                            style={{
+                                              fill: theme.palette.success.main,
+                                            }}
+                                          />
+                                        ) : (
+                                          <CancelIcon
+                                            fontSize="small"
+                                            // color="error"
+                                            style={{
+                                              fill: theme.palette.error.main,
+                                            }}
+                                          />
+                                        )}
+                                      </Box>
+                                    ) : (
+                                      <Typography
+                                        sx={{
+                                          color: theme.palette.warning['A400'],
+                                        }}
+                                        fontSize={'0.8rem'}
+                                        // variant="h6"
+                                        // className="word-break"
+                                      >
+                                        {t('DASHBOARD.NOT_MARKED_SELF')}
+                                      </Typography>
+                                    )}
+                                    {/* {currentAttendance !== 'notMarked' &&
                                   currentAttendance !== 'futureDate' && (
                                     <>
                                       <CircularProgressbar
@@ -1112,7 +1144,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                       </Box>
                                     </>
                                   )} */}
-                                {/* {currentAttendance === 'notMarked' &&
+                                    {/* {currentAttendance === 'notMarked' &&
                                   currentAttendance !== 'futureDate' && (
                                     <Typography
                                       sx={{
@@ -1137,129 +1169,202 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                     {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
                                   </Typography>
                                 )} */}
-                              </Box>
-                              <Button
-                                className="joyride-step-4 btn-mark-width"
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                  '&.Mui-disabled': {
-                                    backgroundColor:
-                                      theme?.palette?.primary?.main, // Custom disabled text color
-                                  },
-                                  minWidth: '84px',
-                                  height: '2.5rem',
-                                  padding: theme.spacing(1),
-                                  fontWeight: '500',
-                                  '@media (min-width: 500px)': {
-                                    width: '20%',
-                                  },
-                                  '@media (min-width: 700px)': {
-                                    width: '15%',
-                                  },
-                                }}
-                                onClick={() => setLocationModalOpen(true)}
-                                disabled={
-                                  !canMarkAttendanceSelf
-                                  // ||
-                                  // currentAttendance === 'futureDate' ||
-                                  // classId === 'all' ||
-                                  // formattedSevenDaysAgo > selectedDate
-                                }
-                              >
-                                {t('COMMON.MARK_TO_SELF')}
-                                {/* {currentAttendance === 'notMarked' ||
+                                  </Box>
+                                  <Button
+                                    className="joyride-step-4 btn-mark-width"
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{
+                                      '&.Mui-disabled': {
+                                        backgroundColor:
+                                          theme?.palette?.primary?.main, // Custom disabled text color
+                                      },
+                                      minWidth: '84px',
+                                      height: '2.5rem',
+                                      padding: theme.spacing(1),
+                                      fontWeight: '500',
+                                      '@media (min-width: 500px)': {
+                                        width: '20%',
+                                      },
+                                      '@media (min-width: 700px)': {
+                                        width: '15%',
+                                      },
+                                    }}
+                                    onClick={() => {
+                                      if (attendanceLocation) {
+                                        handleMarkAttendance(
+                                          attendanceLocation
+                                        );
+                                      } else {
+                                        setLocationModalOpen(true);
+                                      }
+                                    }}
+                                    disabled={
+                                      !canMarkAttendanceSelf
+                                      // ||
+                                      // currentAttendance === 'futureDate' ||
+                                      // classId === 'all' ||
+                                      // formattedSevenDaysAgo > selectedDate
+                                    }
+                                  >
+                                    {attendanceData?.[0]?.attendance ===
+                                      attendanceType.PRESENT ||
+                                    attendanceData?.[0]?.attendance ===
+                                      attendanceType.ABSENT
+                                      ? t('COMMON.MODIFY_FOR_SELF')
+                                      : t('COMMON.MARK_TO_SELF')}
+                                    {/* {currentAttendance === 'notMarked' ||
                                 currentAttendance === 'futureDate'
                                   ? t('COMMON.MARK_TO_SELF')
                                   : t('COMMON.MODIFY_FOR_SELF')} */}
-                              </Button>
-                            </Stack>
-                          </Box>
-                        )}
-                        {open && (
-                          <MarkBulkAttendance
-                            open={open}
-                            onClose={handleClose}
-                            classId={classId}
-                            selectedDate={new Date(selectedDate)}
-                            onSaveSuccess={(isModified) => {
-                              if (isModified) {
-                                showToastMessage(
-                                  t(
-                                    'ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY'
-                                  ),
-                                  'success'
-                                );
-                              } else {
-                                showToastMessage(
-                                  t(
-                                    'ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'
-                                  ),
-                                  'success'
-                                );
-                              }
-                              setHandleSaveHasRun(!handleSaveHasRun);
+                                  </Button>
+                                </Stack>
+                              </Box>
+                            </Grid>
+                          )}
+                          {open && (
+                            <MarkBulkAttendance
+                              open={open}
+                              onClose={handleClose}
+                              classId={classId}
+                              selectedDate={new Date(selectedDate)}
+                              onSaveSuccess={(isModified) => {
+                                if (isModified) {
+                                  showToastMessage(
+                                    t(
+                                      'ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY'
+                                    ),
+                                    'success'
+                                  );
+                                } else {
+                                  showToastMessage(
+                                    t(
+                                      'ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'
+                                    ),
+                                    'success'
+                                  );
+                                }
+                                setHandleSaveHasRun(!handleSaveHasRun);
+                              }}
+                            />
+                          )}
+                          <SimpleModal
+                            open={attendanceModelOpen}
+                            onClose={onCloseEditMOdel}
+                            showFooter={true}
+                            modalTitle={t('COMMON.ATTENDANCE')}
+                            // primaryText={'Cancel'}
+                            primaryText={'Mark'}
+                            // primaryActionHandler={onCloseEditMOdel}
+                            primaryBtnDisabled={confirmButtonDisable}
+                            primaryActionHandler={handleUpdateAction}
+                            subtitle={getDayMonthYearFormat(
+                              shortDateFormat(new Date(selectedDate))
+                            )}
+                          >
+                            <Box padding={'0 1rem'}>
+                              {attendacne?.map((option) => (
+                                <React.Fragment key={option.value}>
+                                  <Box
+                                    display={'flex'}
+                                    justifyContent={'space-between'}
+                                    alignItems={'center'}
+                                  >
+                                    <Typography
+                                      variant="h2"
+                                      sx={{
+                                        color: theme.palette.warning['A200'],
+                                        fontSize: '14px',
+                                      }}
+                                      component="h2"
+                                    >
+                                      {option.label}
+                                    </Typography>
+
+                                    <Radio
+                                      sx={{ pb: '20px' }}
+                                      onChange={() =>
+                                        handleRadioChange(option.value)
+                                      }
+                                      value={option.value}
+                                      checked={
+                                        selectedAttendance === option.value
+                                      }
+                                    />
+                                  </Box>
+                                </React.Fragment>
+                              ))}
+                            </Box>
+                          </SimpleModal>
+
+                          {/* <CustomModal
+                            open={attendanceModelOpen}
+                            handleClose={onCloseEditMOdel}
+                            title={t('COMMON.ATTENDANCE')}
+                            subtitle={getDayMonthYearFormat(
+                              shortDateFormat(new Date(selectedDate))
+                            )}
+                            primaryBtnText={t('COMMON.SELF_ATTENDANCE')}
+                            secondaryBtnText="Cancel"
+                            primaryBtnClick={handleUpdateAction}
+                            primaryBtnDisabled={confirmButtonDisable}
+                            secondaryBtnClick={onCloseEditMOdel}
+                          >
+                            <Box padding={'0 1rem'}>
+                              {attendacne?.map((option) => (
+                                <React.Fragment key={option.value}>
+                                  <Box
+                                    display={'flex'}
+                                    justifyContent={'space-between'}
+                                    alignItems={'center'}
+                                  >
+                                    <Typography
+                                      variant="h2"
+                                      sx={{
+                                        color: theme.palette.warning['A200'],
+                                        fontSize: '14px',
+                                      }}
+                                      component="h2"
+                                    >
+                                      {option.label}
+                                    </Typography>
+
+                                    <Radio
+                                      sx={{ pb: '20px' }}
+                                      onChange={() =>
+                                        handleRadioChange(option.value)
+                                      }
+                                      value={option.value}
+                                      checked={
+                                        selectedAttendance === option.value
+                                      }
+                                    />
+                                  </Box>
+                                  <Divider />
+                                </React.Fragment>
+                              ))}
+                            </Box>
+                          </CustomModal> */}
+
+                          <LocationModal
+                            isOpen={isLocationModalOpen}
+                            onClose={() => setLocationModalOpen(false)}
+                            onConfirm={(location: any) => {
+                              handleMarkAttendance(location);
+                              setLocationModalOpen(false);
                             }}
                           />
-                        )}
-
-                        <CustomModal
-                          open={attendanceModelOpen}
-                          handleClose={onCloseEditMOdel}
-                          title={t('COMMON.ATTENDANCE')}
-                          subtitle={getDayMonthYearFormat(
-                            shortDateFormat(new Date(selectedDate))
-                          )}
-                          primaryBtnText={t('COMMON.SELF_ATTENDANCE')}
-                          secondaryBtnText="Cancel"
-                          primaryBtnClick={handleUpdateAction}
-                          primaryBtnDisabled={confirmButtonDisable}
-                          secondaryBtnClick={onCloseEditMOdel}
-                        >
-                          <Box padding={'0 1rem'}>
-                            {attendacne?.map((option) => (
-                              <React.Fragment key={option.value}>
-                                <Box
-                                  display={'flex'}
-                                  justifyContent={'space-between'}
-                                  alignItems={'center'}
-                                >
-                                  <Typography
-                                    variant="h2"
-                                    sx={{
-                                      color: theme.palette.warning['A200'],
-                                      fontSize: '14px',
-                                    }}
-                                    component="h2"
-                                  >
-                                    {option.label}
-                                  </Typography>
-
-                                  <Radio
-                                    sx={{ pb: '20px' }}
-                                    onChange={() =>
-                                      handleRadioChange(option.value)
-                                    }
-                                    value={option.value}
-                                    checked={
-                                      selectedAttendance === option.value
-                                    }
-                                  />
-                                </Box>
-                                <Divider />
-                              </React.Fragment>
-                            ))}
-                          </Box>
-                        </CustomModal>
-
-                        <LocationModal
-                          isOpen={isLocationModalOpen}
-                          onClose={() => setLocationModalOpen(false)}
-                          onConfirm={(location: any) => {
-                            handleMarkAttendance(location);
-                            setLocationModalOpen(false);
-                          }}
-                        />
+                          {/* <ConfirmationModal
+                            message={t('COMMON.SURE_REMOVE')}
+                            handleAction={handleAction}
+                            buttonNames={{
+                              primary: t('COMMON.YES'),
+                              secondary: t('COMMON.NO_GO_BACK'),
+                            }}
+                            handleCloseModal={handleCloseModal}
+                            modalOpen={confirmationModalOpen}
+                          /> */}
+                        </Grid>
                       </Box>
                     </Box>
                     <Box sx={{ padding: '0 20px' }}>

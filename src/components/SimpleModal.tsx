@@ -14,6 +14,8 @@ interface SimpleModalProps {
   open: boolean;
   onClose: () => void;
   modalTitle: string;
+  primaryBtnDisabled?: boolean;
+  subtitle?: string;
 }
 const SimpleModal: React.FC<SimpleModalProps> = ({
   open,
@@ -25,6 +27,8 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   secondaryActionHandler,
   children,
   modalTitle,
+  primaryBtnDisabled = false,
+  subtitle,
 }) => {
   const theme = useTheme<any>();
 
@@ -79,6 +83,11 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
             >
               {modalTitle}
             </Typography>
+            {subtitle && (
+              <Typography id="modal-subtitle" variant="h5">
+                {subtitle}
+              </Typography>
+            )}
           </Box>
           <Box>
             <CloseSharpIcon
@@ -90,8 +99,9 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
             />
           </Box>
         </Box>
+
         <Divider />
-        <Box sx={{padding: '0px 16px'}}>{children}</Box>
+        <Box sx={{ padding: '0px 16px' }}>{children}</Box>
         <Divider />
 
         {showFooter ? (
@@ -111,6 +121,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
                   width: '100%',
                 }}
                 onClick={primaryActionHandler}
+                disabled={primaryBtnDisabled}
               >
                 {primaryText}
               </Button>
