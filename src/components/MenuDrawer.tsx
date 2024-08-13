@@ -16,6 +16,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { Role } from '@/utils/app.constant';
 import useStore from '@/store/store';
 import { accessGranted } from '@/utils/Helper';
@@ -47,7 +48,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const store = useStore();
   const userRole = store.userRole;
 
-  useEffect(() => setIsOpen(open), [open, toggleDrawer, handleToggleDrawer]);
+  useEffect(() => setIsOpen(open), [open]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -358,32 +359,27 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               width: '100%',
               display: 'flex',
               justifyContent: 'flex-start',
-              background: isAssessments
-                ? theme.palette.primary.main
-                : 'transparent',
-
-              padding: isAssessments
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isAssessments ? '600' : 500,
+              background: 'transparent',
+              padding: '0px 18px !important',
+              color: theme.palette.secondary.main,
+              fontWeight: 500,
               '&:hover': {
-                background: isAssessments
-                  ? theme.palette.primary.main
-                  : 'transparent',
+                background: 'transparent',
               },
               marginTop: '15px',
             }}
-            startIcon={
-              <EventAvailableOutlinedIcon
+            endIcon={
+              <ErrorOutlineIcon
                 sx={{ fontSize: '24px !important' }}
               />
             }
             onClick={() => {
-              router.push(`/assessments`);
+              // localStorage.removeItem('hasSeenTutorial')
+              // closeDrawer();
+              // router.push(`/dashboard`);
             }}
           >
-            {t('ASSESSMENTS.ASSESSMENTS')}
+            {t('GUIDE_TOUR.LEARN_HOW_TO_USE')}
           </Button>
         </Box>
 
