@@ -56,7 +56,6 @@
     "REMOVE": "Remove",
     "SEND_REQUEST": "Send Request",
     "MARK_DROP_OUT": "Mark as Drop Out",
-    "MARK_ALL_AS":"Mark All As",
     "UNMARK_DROP_OUT": "Unmark as Drop Out",
     "SOMETHING_WENT_WRONG": "Something went wrong",
     "NO_GO_BACK": "No, go back",
@@ -171,9 +170,9 @@
     "ATTENDANCE": "Attendance (%)"
   },
   "ATTENDANCE": {
-    "TOTAL_STUDENTS": "Total: {{count}}",
-    "ACTIVE_STUDENTS": "Active: {{count}}",
-    "DROPOUT_STUDENTS": "Dropout: {{count}}",
+    "TOTAL_STUDENTS": "Total Learners: {{count}}",
+    "ACTIVE_STUDENTS": "Active Learners: {{count}}",
+    "DROPOUT_STUDENTS": "Dropout Learners: {{count}}",
     "PRESENT_STUDENTS": "Present: {{count}}",
     "ABSENT_STUDENTS": "Absent: {{count}}",
     "PRESENT": "Present",
@@ -289,7 +288,8 @@
     "PREVIOUS": "Previous",
     "NEXT": "Next",
     "SKIP": "Skip",
-    "FINISH": "Finish"
+    "FINISH": "Finish",
+    "LEARN_HOW_TO_USE": "Learn how to use"
   },
   "BLOCKS": {
     "TEACHING_BLOCKS": "Teaching Blocks",
@@ -324,9 +324,7 @@
     "REQUEST_TO_DELETE_HAS_BEEN_SENT": "Request to Delete has been sent",
     "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "You are sending a request to the State Admin to delete this Center",
     "THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT": "The user belongs to the following cohort: ",
-    "PLEASE_REMOVE_THE_USER_FROM_COHORT": "Please remove the user from these cohorts before proceeding with deletion.",
-    "ERROR_EMPTY": "Center name cannot be empty",
-    "ERROR_NUMBER": "Center name cannot be number"
+    "PLEASE_REMOVE_THE_USER_FROM_COHORT": "Please remove the user from these cohorts before proceeding with deletion."
   },
   "CENTER_SESSION": {
     "THIS_SESSION": "This session",
@@ -446,7 +444,7 @@
     "MONTH_MOBILISATION": "Month of Mobilisation",
     "DROP_OUT_REASON": "Reason for Drop Out From School",
     "ASSIGN_CENTERS": "Assign Centers",
-    "TYPE_OF_COHORT": "Center type",
+    "TYPE_OF_COHORT": "Type of cohort",
     "NOTE_THIS_WILL_BE_CENTER_NAME": "Note this will be Center name"
   },
   "FORM_ERROR_MESSAGES": {
