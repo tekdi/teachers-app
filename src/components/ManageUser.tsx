@@ -290,25 +290,25 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean, user?: any, teacherUserId?: string) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
-      setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
-      if (!isFromFLProfile) {
-        const centerNames =
-          cohortsData?.[user?.userId]?.map((cohort) => cohort?.name) || [];
-        setCenters(centerNames);
-        setSelectedUser(user);
-      } // TODO: check condition for profile
+      (event: React.KeyboardEvent | React.MouseEvent) => {
+        setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
+        if (!isFromFLProfile) {
+          const centerNames =
+            cohortsData?.[user?.userId]?.map((cohort) => cohort?.name) || [];
+          setCenters(centerNames);
+          setSelectedUser(user);
+        } // TODO: check condition for profile
 
-      if (
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
+        if (
+          event.type === 'keydown' &&
+          ((event as React.KeyboardEvent).key === 'Tab' ||
+            (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+          return;
+        }
 
-      setState({ ...state, bottom: open });
-    };
+        setState({ ...state, bottom: open });
+      };
 
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
@@ -319,13 +319,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       console.log('Cohort List:', cohortList);
 
       const hasActiveCohorts = cohortList && cohortList.length > 0 && cohortList.some((cohort: { status: string; }) => cohort.status === 'active');
-      
+
       if (hasActiveCohorts) {
         const cohortNames = cohortList
           .filter((cohort: { status: string }) => cohort.status === 'active')
           .map((cohort: { cohortName: string }) => cohort.cohortName)
           .join(', ');
-      
+
         setOpenRemoveUserModal(true);
         setRemoveCohortNames(cohortNames);
       } else {
@@ -505,10 +505,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     setOpenFacilitatorModal(false);
   };
 
-  const handleDeleteUser = () => {};
+  const handleDeleteUser = () => { };
 
   const handleFacilitatorAdded = () => {
     setIsFacilitatorAdded((prev) => prev);
+  };
+  const handleMenuOpen = (event: any) => {
+    setAnchorEl(event.currentTarget);
   };
   return (
     <div>
@@ -638,7 +641,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                 <Box>
                   {isFromFLProfile ? (
                     <MoreVertIcon
-                      onClick={toggleDrawer('bottom', true, teacherUserId)}
+                      onClick={(event) => {
+                        isMobile ? toggleDrawer('bottom', true, teacherUserId)(event) : handleMenuOpen(event)
+                      }}
                       sx={{
                         fontSize: '24px',
                         marginTop: '1rem',
@@ -752,11 +757,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                       </Box>
                                       <Box>
                                         <MoreVertIcon
-                                          onClick={toggleDrawer(
-                                            'bottom',
-                                            true,
-                                            user
-                                          )}
+                                          onClick={(event) => {
+                                            isMobile ? toggleDrawer('bottom', true, user)(event) : handleMenuOpen(event)
+                                          }}
                                           sx={{
                                             fontSize: '24px',
                                             marginTop: '1rem',
@@ -772,11 +775,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                 sx={{
                                   m: '1.125rem',
                                   display: 'flex',
-                                  justifyContent: 'left',
+                                  justifyContent: 'center',
                                   alignItems: 'center',
+                                  width: '100%',
                                 }}
                               >
-                                <Typography style={{ fontWeight: 'bold' }}>
+                                <Typography style={{ fontWeight: 'bold', width: '100%', textAlign: 'center' }}>
                                   {t('COMMON.NO_DATA_FOUND')}
                                 </Typography>
                               </Box>
@@ -1004,7 +1008,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                 reloadState={reloadState || false}
                 setReloadState={setReloadState || noop}
                 block={data.block}
-                center={data.center}
+                center={data.center} 
                 userId={data.userId}
               />
             ))}

@@ -1005,3 +1005,7 @@ legend.Mui-focused {
 .capitalize {
   text-transform: capitalize;
 }
+
+.MuiRadio-root.Mui-checked {
+  color: var(--mui-palette-warning-300) !important;
+}

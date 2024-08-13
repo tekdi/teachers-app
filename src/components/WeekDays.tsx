@@ -107,7 +107,7 @@ const WeekDays: React.FC<WeekDaysProps> = ({
                 ? theme.palette.primary.main
                 : 'inherit',
             cursor: useAbbreviation ? 'pointer' : 'default',
-            border: `1px solid ${theme?.palette?.waring['A100']}`,
+            border: `1px solid ${theme?.palette?.warning['A100']}`,
             borderRadius: '4px',
             justifyContent: 'center',
             alignItems: 'center'
@@ -120,7 +120,7 @@ const WeekDays: React.FC<WeekDaysProps> = ({
             sx={{ width: 'auto', height: '50px' }}
           >
             <CardContent align-item="center">
-              <Typography sx={{ color: theme?.palette?.waring['300'], fontSize: '14px', }} variant="body1">{day}</Typography>
+              <Typography sx={{ color: theme?.palette?.warning['300'], fontSize: '14px', }} variant="body1">{day}</Typography>
             </CardContent>
           </Box>
         </Box>

@@ -21,6 +21,8 @@ import useStore from '@/store/store';
 import { accessGranted } from '@/utils/Helper';
 import { accessControl } from '../../app.config';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import checkBook from "../assets/images/checkbook.svg"
+import Image from 'next/image';
 interface DrawerProps {
   toggleDrawer: (open: boolean) => () => void;
   open: boolean;
@@ -276,7 +278,14 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               },
               marginTop: '15px',
             }}
-            startIcon={<EventAvailableOutlinedIcon sx={{ fontSize: '24px !important' }} />}
+            startIcon={
+              <Image
+                src={checkBook}
+                alt="CheckBook Icon"
+                width={24}
+                height={24}
+              />
+            }
             onClick={() => {
               router.push(`/assessments`);
             }}
