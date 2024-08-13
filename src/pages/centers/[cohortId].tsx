@@ -508,12 +508,16 @@ const TeachingCenterDetails = () => {
             >
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
-            <Box mt={3} px="18px">
-              {extraSessions?.map((item) => (
-                <SessionCard data={item} key={item.id}>
-                  <SessionCardFooter item={item} />
-                </SessionCard>
-              ))}
+            <Box mt={3}>
+              <Grid container spacing={2}>
+                {extraSessions?.map((item) => (
+                  <Grid item xs={12} sm={6} md={6}>
+                    <SessionCard data={item} key={item.id}>
+                      <SessionCardFooter item={item} />
+                    </SessionCard>
+                  </Grid>
+                ))}
+              </Grid>
             </Box>
             {extraSessions && extraSessions?.length === 0 && (
               <Box
@@ -579,7 +583,7 @@ const TeachingCenterDetails = () => {
           <Box mt={3} px="18px">
             <Grid container spacing={2}>
               {sessions?.map((item) => (
-                <Grid item xs={6} key={item.id}>
+                <Grid item xs={12} sm={6} md={6} key={item.id}>
                   <SessionCard data={item}>
                     <SessionCardFooter item={item} />
                   </SessionCard>

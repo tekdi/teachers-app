@@ -105,7 +105,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
           />
         </Box>
         <Divider />
-        <Box sx={{ maxHeight: '49vh', minHeight: '100%', overflowY: 'auto' }}>
+        <Box sx={{ maxHeight: '49vh', minHeight: '100%', overflowY: 'auto', overflowX: 'hidden' }}>
           {children}
         </Box>
 

@@ -649,7 +649,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   }, [scheduleEvent, cohortId]);
 
   return (
-    <Box overflow={'auto'}>
+    <Box overflow={'hidden'}>
       {sessionBlocks.map((block, index) => (
         <Box key={block.id} sx={{ padding: '10px 16px' }}>
           <Box>
@@ -871,6 +871,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     days: block?.selectedWeekDays?.join(', '),
                   })}
                 </Typography>
+
                 <WeekDays
                   useAbbreviation={true}
                   selectedDays={block?.selectedWeekDays}
@@ -881,7 +882,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </Box>
 
               <Grid container spacing={2} sx={{ mb: 2 }}>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Grid
+                  sx={{ paddingTop: '0px !important', marginTop: '15px' }}
+                  item
+                  xs={6}
+                >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <CustomTimePicker
@@ -895,7 +900,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     </LocalizationProvider>
                   </Box>
                 </Grid>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Grid
+                  sx={{ paddingTop: '0px !important', marginTop: '15px' }}
+                  item
+                  xs={6}
+                >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <CustomTimePicker
@@ -912,7 +921,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </Grid>
 
               <Grid container spacing={2}>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Grid
+                  sx={{ paddingTop: '0px !important', marginTop: '10px' }}
+                  item
+                  xs={6}
+                >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <Stack spacing={3}>
@@ -929,7 +942,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     </LocalizationProvider>
                   </Box>
                 </Grid>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Grid
+                  sx={{ paddingTop: '0px !important', marginTop: '10px' }}
+                  item
+                  xs={6}
+                >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <Stack spacing={3}>

@@ -2,16 +2,16 @@ import { Box, Button, Divider, useTheme } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
-interface FormButtons {
+interface IFormButtons {
   formData: any;
-  onClick: (event: any) => void;
+  onClick: (formData: any) => void; 
   isCreateCentered?: boolean;
   isCreatedFacilitator?: boolean;
   isCreatedLearner?: boolean;
   actions?: any;
   isSingleButton?: boolean;
 }
-const FormButtons: React.FC<FormButtons> = ({
+const FormButtons: React.FC<IFormButtons> = ({
   formData,
   onClick,
   isCreateCentered,
