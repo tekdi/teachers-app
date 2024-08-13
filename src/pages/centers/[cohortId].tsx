@@ -134,8 +134,10 @@ const TeachingCenterDetails = () => {
   useEffect(() => {
     if (eventCreated) {
       setOpen(false);
+      setCreateEvent(false);
     }
-  }, [eventCreated]);
+  }, [eventCreated, createEvent]);
+
   const handleOpen = () => setOpen(true);
 
   const handleClose = () => {
@@ -463,7 +465,7 @@ const TeachingCenterDetails = () => {
                 ? t('CENTER_SESSION.DELETE_SESSION')
                 : openSchedule
                   ? clickedBox === t('CENTER_SESSION.EXTRA_SESSION')
-                    ? 'Extra Session'
+                    ? t('CENTER_SESSION.EXTRA_SESSION')
                     : t('CENTER_SESSION.PLANNED_SESSION')
                   : t('CENTER_SESSION.SCHEDULE')
             }
