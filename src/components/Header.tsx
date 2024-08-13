@@ -72,7 +72,6 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
 
   const handleToggleDrawer = (newOpen: boolean) => () => {
     setOpenMenu(newOpen);
-    toggleDrawer?.(newOpen)();
   };
   const MenuDrawer = dynamic(() => import('./MenuDrawer'), {
     ssr: false,
