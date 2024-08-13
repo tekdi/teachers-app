@@ -56,6 +56,7 @@
     "REMOVE": "Remove",
     "SEND_REQUEST": "Send Request",
     "MARK_DROP_OUT": "Mark as Drop Out",
+    "MARK_ALL_AS":"Mark All As",
     "UNMARK_DROP_OUT": "Unmark as Drop Out",
     "SOMETHING_WENT_WRONG": "Something went wrong",
     "NO_GO_BACK": "No, go back",
@@ -170,9 +171,9 @@
     "ATTENDANCE": "Attendance (%)"
   },
   "ATTENDANCE": {
-    "TOTAL_STUDENTS": "Total Learners: {{count}}",
-    "ACTIVE_STUDENTS": "Active Learners: {{count}}",
-    "DROPOUT_STUDENTS": "Dropout Learners: {{count}}",
+    "TOTAL_STUDENTS": "Total: {{count}}",
+    "ACTIVE_STUDENTS": "Active: {{count}}",
+    "DROPOUT_STUDENTS": "Dropout: {{count}}",
     "PRESENT_STUDENTS": "Present: {{count}}",
     "ABSENT_STUDENTS": "Absent: {{count}}",
     "PRESENT": "Present",
@@ -443,7 +444,7 @@
     "MONTH_MOBILISATION": "Month of Mobilisation",
     "DROP_OUT_REASON": "Reason for Drop Out From School",
     "ASSIGN_CENTERS": "Assign Centers",
-    "TYPE_OF_COHORT": "Type of cohort",
+    "TYPE_OF_COHORT": "Center type",
     "NOTE_THIS_WILL_BE_CENTER_NAME": "Note this will be Center name"
   },
   "FORM_ERROR_MESSAGES": {

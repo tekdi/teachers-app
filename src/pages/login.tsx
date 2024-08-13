@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   FormControl,
+  Grid,
   IconButton,
   InputAdornment,
   TextField,
@@ -29,6 +30,7 @@ import appLogo from '../../public/images/appLogo.png';
 import Loader from '../components/Loader';
 import { login } from '../services/LoginService';
 import { getUserId } from '../services/ProfileService';
+import loginImg from './../assets/images/login-image.jpg';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -125,6 +127,12 @@ const LoginPage = () => {
             const userResponse = await getUserId();
             localStorage.setItem('userId', userResponse?.userId);
             setUserId(userResponse?.userId);
+            logEvent({
+              action: 'login-success',
+              category: 'Login Page',
+              label: 'Login Success',
+              value: userResponse?.userId
+            });
             localStorage.setItem('state', userResponse?.state);
             localStorage.setItem('district', userResponse?.district);
             localStorage.setItem('role', userResponse?.tenantData[0]?.roleName);
@@ -156,6 +164,12 @@ const LoginPage = () => {
             t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
             'error'
           );
+          logEvent({
+            action: 'login-fail',
+            category: 'Login Page',
+            label: 'Login Fail',
+            value: error.response
+          });
         } else {
           console.error('Error:', error);
           showToastMessage(
@@ -211,189 +225,217 @@ const LoginPage = () => {
   };
 
   return (
-    <Box sx={{ height: '100vh', overflowY: 'auto', background: 'white' }}>
-      <form onSubmit={handleFormSubmit}>
+    <Box sx={{ overflowY: 'auto', background: 'white' }}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        bgcolor={theme.palette.warning.A200}
+      >
+        {loading && (
+          <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+        )}
         <Box
-          display="flex"
-          flexDirection="column"
-          bgcolor={theme.palette.warning.A200}
-        >
-          {loading && (
-            <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-          )}
-          <Box
-            display={'flex'}
-            overflow="auto"
-            alignItems={'center'}
-            justifyContent={'center'}
-            zIndex={99}
-            sx={{ margin: '32px 0 65px' }}
-          >
-            <Image src={appLogo} alt="App Logo" height={100} />{' '}
-          </Box>
-        </Box>
-        <Box
-          flexGrow={1}
           display={'flex'}
-          bgcolor="white"
-          height="auto"
-          borderRadius={'2rem 2rem 0 0'}
-          zIndex={99}
+          overflow="auto"
+          alignItems={'center'}
           justifyContent={'center'}
-          p={'2rem'}
-          marginTop={'-25px'}
+          zIndex={99}
+          sx={{ margin: '32px 0 65px' }}
         >
-          <Box
-            position={'relative'}
-            sx={{
-              '@media (max-width: 700px)': {
-                width: '100%',
-              },
-            }}
-          >
-            <Box mt={'0.5rem'}>
-              <FormControl sx={{ m: '1rem 0 1rem' }}>
-                <Select
-                  className="SelectLanguages"
-                  value={language}
-                  onChange={handleChange}
-                  displayEmpty
-                  style={{
-                    borderRadius: '0.5rem',
-                    color: theme.palette.warning['A200'],
-                    width: '117px',
-                    height: '32px',
-                    marginBottom: '0rem',
-                    fontSize: '14px',
+          <Image src={appLogo} alt="App Logo" height={100} />{' '}
+        </Box>
+      </Box>
+      <Grid container spacing={2} alignItems={'center'}>
+        <Grid sx={{
+          '@media (max-width: 1200px)': {
+            display: 'none'
+          },
+        }} item xs={12} sm={12} md={12} lg={6}>
+          <Image className='login-img' src={loginImg} alt="Login Image" layout="responsive" />
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={6}>
+          <form onSubmit={handleFormSubmit}>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Box
+                flexGrow={1}
+                display={'flex'}
+                bgcolor="white"
+                height="auto"
+                zIndex={99}
+                justifyContent={'center'}
+                p={'2rem'}
+                borderRadius={'2rem 2rem 0 0'}
+                marginTop={'-25px'}
+                sx={{
+                  '@media (min-width: 1200px)': {
+                    // border: '1px solid red',
+                    mr: '70px',
+                    width: 'fit-content',
+                    borderRadius: '16px',
+                    boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px'
+                  },
+                }}
+              >
+                <Box
+                  position={'relative'}
+                  sx={{
+                    '@media (max-width: 700px)': {
+                      width: '100%',
+                    },
                   }}
                 >
-                  {config?.languages.map((lang) => (
-                    <MenuItem value={lang.code} key={lang.code}>
-                      {lang.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-            <Box
-              marginY={'1rem'}
-              sx={{
-                width: '668px',
-                '@media (max-width: 700px)': {
-                  width: '100%',
-                },
-              }}
-            >
-              <TextField
-                id="username"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                label={t('LOGIN_PAGE.USERNAME')}
-                placeholder={t('LOGIN_PAGE.USERNAME_PLACEHOLDER')}
-                value={username}
-                onChange={handleUsernameChange}
-                error={usernameError}
-                className="userName"
-              />
-            </Box>
-            <Box
-              sx={{
-                width: '668px',
-                '@media (max-width: 768px)': {
-                  width: '100%',
-                },
-              }}
-              margin={'2rem 0 0'}
-            >
-              <TextField
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onClick={() => setScrolling(!scrolling)}
-                className="password"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
+                  <Box mt={'0.5rem'}>
+                    <FormControl sx={{ m: '1rem 0 1rem' }}>
+                      <Select
+                        className="select-languages"
+                        value={language}
+                        onChange={handleChange}
+                        displayEmpty
+                        style={{
+                          borderRadius: '0.5rem',
+                          color: theme.palette.warning['A200'],
+                          width: '117px',
+                          height: '32px',
+                          marginBottom: '0rem',
+                          fontSize: '14px',
+                        }}
                       >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                label={t('LOGIN_PAGE.PASSWORD')}
-                placeholder={t('LOGIN_PAGE.PASSWORD_PLACEHOLDER')}
-                value={password}
-                onChange={handlePasswordChange}
-                error={passwordError}
-                inputRef={passwordRef}
-              />
-            </Box>
+                        {config?.languages.map((lang) => (
+                          <MenuItem value={lang.code} key={lang.code}>
+                            {lang.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box
+                    marginY={'1rem'}
+                    sx={{
+                      width: '668px',
+                      '@media (max-width: 700px)': {
+                        width: '100%',
+                      },
+                    }}
+                  >
+                    <TextField
+                      id="username"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      label={t('LOGIN_PAGE.USERNAME')}
+                      placeholder={t('LOGIN_PAGE.USERNAME_PLACEHOLDER')}
+                      value={username}
+                      onChange={handleUsernameChange}
+                      error={usernameError}
+                      className="userName"
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      width: '668px',
+                      '@media (max-width: 768px)': {
+                        width: '100%',
+                      },
+                    }}
+                    margin={'2rem 0 0'}
+                  >
+                    <TextField
+                      type={showPassword ? 'text' : 'password'}
+                      id="password"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      onClick={() => setScrolling(!scrolling)}
+                      className="password"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                            >
+                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      label={t('LOGIN_PAGE.PASSWORD')}
+                      placeholder={t('LOGIN_PAGE.PASSWORD_PLACEHOLDER')}
+                      value={password}
+                      onChange={handlePasswordChange}
+                      error={passwordError}
+                      inputRef={passwordRef}
+                    />
+                  </Box>
 
-            {
-              <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
-                <Link
-                  sx={{ color: theme.palette.secondary.main }}
-                  href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=rPJFHSFv50M"
-                  underline="none"
-                  onClick={handleForgotPasswordClick}
-                >
-                  {t('LOGIN_PAGE.FORGOT_PASSWORD')}
-                </Link>
+                  {
+                    <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
+                      <Link
+                        sx={{ color: theme.palette.secondary.main }}
+                        href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=rPJFHSFv50M"
+                        underline="none"
+                        onClick={handleForgotPasswordClick}
+                      >
+                        {t('LOGIN_PAGE.FORGOT_PASSWORD')}
+                      </Link>
+                    </Box>
+                  }
+                  <Box marginTop={'1.2rem'} className="remember-me-checkbox">
+                    <Checkbox
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      checked={rememberMe}
+                    />
+                    <span
+                      role="checkbox"
+                      style={{
+                        cursor: 'pointer',
+                        color: theme.palette.warning['300'],
+                      }}
+                      className="fw-400"
+                      onClick={() => {
+                        setRememberMe(!rememberMe);
+                        logEvent({
+                          action: 'remember-me-button-clicked',
+                          category: 'Login Page',
+                          label: `Remember Me ${rememberMe ? 'Checked' : 'Unchecked'}`,
+                        });
+                      }}
+                    >
+                      {t('LOGIN_PAGE.REMEMBER_ME')}
+                    </span>
+                  </Box>
+                  <Box
+                    alignContent={'center'}
+                    textAlign={'center'}
+                    marginTop={'2rem'}
+                    // marginBottom={'2rem'}
+                    width={'100%'}
+                  >
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      fullWidth={true}
+                      disabled={isButtonDisabled}
+                      ref={loginButtonRef}
+                      sx={{
+                        '@media (min-width: 1200px)': {
+                          width: '50%'
+                        }
+                      }}
+                    >
+                      {t('LOGIN_PAGE.LOGIN')}
+                    </Button>
+                  </Box>
+                </Box>
               </Box>
-            }
-            <Box marginTop={'1.2rem'} className="remember-me-checkbox">
-              <Checkbox
-                onChange={(e) => setRememberMe(e.target.checked)}
-                checked={rememberMe}
-              />
-              <span
-                role="checkbox"
-                style={{
-                  cursor: 'pointer',
-                  color: theme.palette.warning['300'],
-                }}
-                className="fw-400"
-                onClick={() => {
-                  setRememberMe(!rememberMe);
-                  logEvent({
-                    action: 'remember-me-button-clicked',
-                    category: 'Login Page',
-                    label: `Remember Me ${rememberMe ? 'Checked' : 'Unchecked'}`,
-                  });
-                }}
-              >
-                {t('LOGIN_PAGE.REMEMBER_ME')}
-              </span>
             </Box>
-            <Box
-              alignContent={'center'}
-              textAlign={'center'}
-              marginTop={'2rem'}
-              // marginBottom={'2rem'}
-              width={'100%'}
-            >
-              <Button
-                variant="contained"
-                type="submit"
-                fullWidth={true}
-                disabled={isButtonDisabled}
-                ref={loginButtonRef}
-                // sx={{ marginBottom: '2rem' }}
-              >
-                {t('LOGIN_PAGE.LOGIN')}
-              </Button>
-            </Box>
-          </Box>
-        </Box>
-      </form>
+          </form>
+        </Grid>
+
+      </Grid>
+
     </Box>
   );
 };

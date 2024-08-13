@@ -996,3 +996,16 @@ legend.Mui-focused {
   padding-left: 16px;
   padding-right: 16px;
 }
+
+.login-img{
+  height: 750px !important;
+  width: 92% !important;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.MuiRadio-root.Mui-checked {
+  color: var(--mui-palette-warning-300) !important;
+}

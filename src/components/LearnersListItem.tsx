@@ -401,8 +401,10 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       {isFromProfile ? (
         <Box>
           <MoreVertIcon
-            onClick={toggleDrawer('bottom', true)}
-            sx={{ fontSize: '24px', color: theme.palette.warning['300'] }}
+            onClick={(event) => {
+              isMobile ? toggleDrawer('bottom', true)(event) : handleMenuOpen(event)
+            }}
+            sx={{ fontSize: '32px', color: theme.palette.warning['300'] }}
           />
         </Box>
       ) : (
@@ -574,17 +576,14 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                   )}
                 </Box>
               </Box>
-
-
-
               <MoreVertIcon
                 onClick={(event) => {
                   isMobile ? toggleDrawer('bottom', true)(event) : handleMenuOpen(event)
                 }}
                 sx={{
-                  fontSize: isMobile ? '24px' : 'inherit',
-                  color: isMobile ? theme.palette.warning['300'] : 'inherit',
-                  cursor: !isMobile ? 'pointer' : 'inherit',
+                  fontSize: '24px',
+                  color: theme.palette.warning['300'],
+                  cursor: 'pointer',
                 }}
               />
             </Box>
