@@ -97,6 +97,9 @@ const UserAttendanceHistory = () => {
 
   const handleOpen = () => {
     setOpen(true);
+    ReactGA.event('mark/modify-attendance-button-clicked-attendance-history', {
+      teacherId: userId,
+    });
   };
 
   const handleClose = () => {
