@@ -121,6 +121,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       }
       const { username, password } = generateUsernameAndPassword(
         fieldData?.state?.stateCode,
+        '',
         ''
       );
       const apiBody: any = {
