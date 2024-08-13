@@ -126,11 +126,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       blocks.map((block) =>
         block.id === 0
           ? {
-              ...block,
-              startDatetime: startDatetime || '',
-              endDatetime: endDatetime || '',
-              endDateValue: endDateValue || '',
-            }
+            ...block,
+            startDatetime: startDatetime || '',
+            endDatetime: endDatetime || '',
+            endDateValue: endDateValue || '',
+          }
           : block
       )
     );
@@ -218,9 +218,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block.id === id
           ? {
-              ...block,
-              subject: newSubject,
-            }
+            ...block,
+            subject: newSubject,
+          }
           : block
       )
     );
@@ -284,12 +284,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         sessionBlocks.map((block) =>
           block?.id === id
             ? {
-                ...block,
-                startDatetime: startDatetime,
-                endDatetime: endDatetime,
-                endDateValue: endDateValue,
-                isRecurring: isRecurringEvent,
-              }
+              ...block,
+              startDatetime: startDatetime,
+              endDatetime: endDatetime,
+              endDateValue: endDateValue,
+              isRecurring: isRecurringEvent,
+            }
             : block
         )
       );
@@ -329,10 +329,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block.id === id
           ? {
-              ...block,
-              meetingLink: value,
-              onlineProvider: onlineProvider,
-            }
+            ...block,
+            meetingLink: value,
+            onlineProvider: onlineProvider,
+          }
           : block
       )
     );
@@ -348,9 +348,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block.id === id
           ? {
-              ...block,
-              meetingPasscode: value,
-            }
+            ...block,
+            meetingPasscode: value,
+          }
           : block
       )
     );
@@ -371,10 +371,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block?.id === id
           ? {
-              ...block,
-              selectedWeekDays: newSelectedDays,
-              DaysOfWeek: mappedSelectedDays,
-            }
+            ...block,
+            selectedWeekDays: newSelectedDays,
+            DaysOfWeek: mappedSelectedDays,
+          }
           : block
       )
     );
@@ -389,9 +389,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block.id === id
           ? {
-              ...block,
-              subjectTitle: value,
-            }
+            ...block,
+            subjectTitle: value,
+          }
           : block
       )
     );
@@ -474,13 +474,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       } else if (clickedBox === 'EXTRA_SESSION') {
         title =
           eventType === t('CENTER_SESSION.JUST') &&
-          mode === t('CENTER_SESSION.ONLINE')
+            mode === t('CENTER_SESSION.ONLINE')
             ? t('CENTER_SESSION.NON_RECURRING_ONLINE')
             : eventType === t('CENTER_SESSION.REAPEATING') &&
-                mode === t('CENTER_SESSION.ONLINE')
+              mode === t('CENTER_SESSION.ONLINE')
               ? t('CENTER_SESSION.ONLINE')
               : eventType === t('CENTER_SESSION.JUST') &&
-                  mode === t('CENTER_SESSION.OFFLINE')
+                mode === t('CENTER_SESSION.OFFLINE')
                 ? t('CENTER_SESSION.NON_RECURRING_OFFLINE')
                 : t('CENTER_SESSION.RECURRING_ONLINE');
       }
@@ -588,7 +588,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   }, [scheduleEvent, cohortId]);
 
   return (
-    <Box overflow={'auto'}>
+    <Box overflow={'hidden'}>
       {sessionBlocks.map((block, index) => (
         <Box key={block.id} sx={{ padding: '10px 16px' }}>
           <Box>
@@ -810,6 +810,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     days: block?.selectedWeekDays?.join(', '),
                   })}
                 </Typography>
+
                 <WeekDays
                   useAbbreviation={true}
                   selectedDays={block?.selectedWeekDays}
@@ -819,8 +820,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 />
               </Box>
 
-              <Grid container spacing={2} sx={{ mb: 2 }}>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+              <Grid container spacing={2} sx={{ mb: 2, }}>
+                <Grid sx={{ paddingTop: '0px !important', marginTop: '15px' }} item xs={6}>
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <CustomTimePicker
@@ -834,7 +835,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     </LocalizationProvider>
                   </Box>
                 </Grid>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Grid sx={{ paddingTop: '0px !important', marginTop: '15px' }} item xs={6}>
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <CustomTimePicker
@@ -851,7 +852,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </Grid>
 
               <Grid container spacing={2}>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Grid sx={{ paddingTop: '0px !important', marginTop: '10px' }} item xs={6}>
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <Stack spacing={3}>
@@ -868,7 +869,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     </LocalizationProvider>
                   </Box>
                 </Grid>
-                <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                <Grid sx={{ paddingTop: '0px !important', marginTop: '10px' }} item xs={6}>
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <Stack spacing={3}>
