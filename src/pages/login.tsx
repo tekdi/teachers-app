@@ -30,7 +30,7 @@ import appLogo from '../../public/images/appLogo.png';
 import Loader from '../components/Loader';
 import { login } from '../services/LoginService';
 import { getUserId } from '../services/ProfileService';
-import loginImg from './../assets/images/loginImage.febfbcca.jpg';
+import loginImg from './../assets/images/login-image.jpg';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -220,7 +220,7 @@ const LoginPage = () => {
     logEvent({
       action: 'forgot-password-link-clicked',
       category: 'Login Page',
-      label: 'Forgot Password Link Clicked', 
+      label: 'Forgot Password Link Clicked',
     });
   };
 
@@ -251,7 +251,7 @@ const LoginPage = () => {
             display: 'none'
           },
         }} item xs={12} sm={12} md={12} lg={6}>
-          <Image className='loginImg' src={loginImg} alt="Login Image" layout="responsive" />
+          <Image className='login-img' src={loginImg} alt="Login Image" layout="responsive" />
         </Grid>
         <Grid item xs={12} sm={12} md={12} lg={6}>
           <form onSubmit={handleFormSubmit}>
@@ -287,7 +287,7 @@ const LoginPage = () => {
                   <Box mt={'0.5rem'}>
                     <FormControl sx={{ m: '1rem 0 1rem' }}>
                       <Select
-                        className="SelectLanguages"
+                        className="select-languages"
                         value={language}
                         onChange={handleChange}
                         displayEmpty

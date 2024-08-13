@@ -138,7 +138,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 value={language}
                 onChange={handleChange}
                 displayEmpty
-                className="SelectLanguages fs-14 fw-500"
+                className="select-languages fs-14 fw-500"
                 style={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
@@ -157,7 +157,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           <Box sx={{ flexBasis: '70%' }}>
             <FormControl className="drawer-select" sx={{ width: '100%' }}>
               <Select
-                className="SelectLanguages"
+                className="select-languages"
                 displayEmpty
                 style={{
                   borderRadius: '0.5rem',
