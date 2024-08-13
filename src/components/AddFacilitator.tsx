@@ -155,9 +155,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       if (typeof window !== 'undefined' && window.localStorage) {
         fieldData = JSON.parse(localStorage.getItem('fieldData') || '');
       }
+      const yearOfJoining = formData['year of joining scp'];
       const { username, password } = generateUsernameAndPassword(
         fieldData?.state?.stateCode,
-        'F'
+        'F',
+        yearOfJoining
       );
       setUsername(username);
       setPassword(password);
