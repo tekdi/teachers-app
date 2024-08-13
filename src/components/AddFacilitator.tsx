@@ -4,6 +4,7 @@ import {
 } from '@/components/GeneratedSchemas';
 import { FormContext, FormContextType, RoleId } from '@/utils/app.constant';
 import React, { useEffect } from 'react';
+import ReactGA from 'react-ga4';
 
 import DynamicForm from '@/components/DynamicForm';
 import SendCredentialModal from '@/components/SendCredentialModal';
@@ -196,7 +197,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           ) {
             apiBody.customFields.push({
               fieldId: fieldId,
-              value: Array.isArray(fieldValue) ? fieldValue : [fieldValue], 
+              value: Array.isArray(fieldValue) ? fieldValue : [fieldValue],
             });
           } else {
             if (fieldSchema.checkbox && fieldSchema.type === 'array') {
@@ -272,6 +273,9 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                     t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
                     'success'
                   );
+                  ReactGA.event('facilitator-created-successfully', {
+                    user_name: username,
+                  });
 
                   const isQueue = false;
                   const context = 'USER';
@@ -318,6 +322,9 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
               } catch (error) {
                 console.error(error);
                 showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+                ReactGA.event('facilitator-creation-fail', {
+                  error: error,
+                });      
               }
             }
           } else {

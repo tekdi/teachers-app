@@ -19,6 +19,7 @@ import SendCredentialModal from './SendCredentialModal';
 import FormButtons from './FormButtons';
 import { sendCredentialService } from '@/services/NotificationService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
+import ReactGA from 'react-ga4';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -217,6 +218,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             );
             onLearnerAdded?.();
             onClose();
+            ReactGA.event('learner-creation-success', {
+              username: username,
+            });
 
             const isQueue = false;
             const context = 'USER';
@@ -261,6 +265,10 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       } catch (error) {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setReloadProfile(true);
+        ReactGA.event('learner-creation-fail', {
+          error: error,
+        });
+        
       }
     }
   };

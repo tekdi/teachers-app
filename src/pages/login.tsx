@@ -125,6 +125,12 @@ const LoginPage = () => {
             const userResponse = await getUserId();
             localStorage.setItem('userId', userResponse?.userId);
             setUserId(userResponse?.userId);
+            logEvent({
+              action: 'login-success',
+              category: 'Login Page',
+              label: 'Login Success',
+              value: userResponse?.userId
+            });
             localStorage.setItem('state', userResponse?.state);
             localStorage.setItem('district', userResponse?.district);
             localStorage.setItem('role', userResponse?.tenantData[0]?.roleName);
@@ -156,6 +162,12 @@ const LoginPage = () => {
             t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
             'error'
           );
+          logEvent({
+            action: 'login-fail',
+            category: 'Login Page',
+            label: 'Login Fail',
+            value: error.response
+          });
         } else {
           console.error('Error:', error);
           showToastMessage(
@@ -206,7 +218,7 @@ const LoginPage = () => {
     logEvent({
       action: 'forgot-password-link-clicked',
       category: 'Login Page',
-      label: 'Forgot Password Link Clicked',
+      label: 'Forgot Password Link Clicked', 
     });
   };
 
