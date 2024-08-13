@@ -84,6 +84,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   const pathname = usePathname(); // Get the current pathname
   const { t } = useTranslation();
   const setCohorts = useStore((state) => state.setCohorts);
+  const setBlock = useStore((state) => state.setBlock);
 
   const store = manageUserStore();
   const setDistrictCode = manageUserStore(
@@ -217,6 +218,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
               }
             } else if (response[0].type === cohortHierarchy.BLOCK) {
               setBlockName(response[0].name || response[0].cohortName);
+              setBlock(response[0].name || response[0].cohortName)
               const filteredData = response[0].childData
                 ?.map((item: any) => {
                   const typeOfCohort = item?.customField?.find(
