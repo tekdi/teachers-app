@@ -21,6 +21,7 @@ import { showToastMessage } from './Toastify';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { Status } from '@/utils/app.constant';
+import ReactGA from 'react-ga4';
 
 interface MarkBulkAttendanceProps {
   open: boolean;
@@ -64,6 +65,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   const [isAllAttendanceMarked, setIsAllAttendanceMarked] =
     React.useState(false);
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
+  const [teacherUserId, setTeacherUserId]= React.useState<string>('');
 
   const modalContainer = {
     position: 'absolute',
@@ -137,10 +139,15 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
       ).length
     );
   }
+  
   useEffect(() => {
     submitBulkAttendanceAction(true, '', '');
     const getCohortMemberList = async () => {
       setLoading(true);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const storedUserID = localStorage.getItem('userId');
+        setTeacherUserId(storedUserID ?? '');
+      }
       try {
         if (classId) {
           const limit = 300;
@@ -343,6 +350,9 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
               } else {
                 onSaveSuccess(true);
               }
+              ReactGA.event('attendance-marked/update-success', {
+                teacherId: teacherUserId,
+              });
 
               onClose();
             }
@@ -353,6 +363,9 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
           console.error('Error fetching cohort list:', error);
           setLoading(false);
           showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+          ReactGA.event('attendance-marked/update-fail', {
+            error: error
+          });
         }
         // handleClick({ vertical: 'bottom', horizontal: 'center' })();
       };

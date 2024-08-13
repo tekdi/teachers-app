@@ -130,23 +130,23 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
           console.log('Response:', response);
           const cohortData = response[0];
           if (cohortData?.customField?.length) {
-            const district = cohortData.customField.find(
-              (item: CustomField) => item.label === 'DISTRICTS'
+            const district = cohortData?.customField?.find(
+              (item: CustomField) => item?.label === 'DISTRICTS'
             );
             setDistrictCode(district?.code);
             setDistrictId(district?.fieldId);
 
-            const state = cohortData.customField.find(
-              (item: CustomField) => item.label === 'STATES'
+            const state = cohortData?.customField?.find(
+              (item: CustomField) => item?.label === 'STATES'
             );
             setStateCode(state?.code);
             setStateId(state?.fieldId);
 
-            const blockField = cohortData?.customField.find(
-              (field: any) => field.label === 'BLOCKS'
+            const blockField = cohortData?.customField?.find(
+              (field: any) => field?.label === 'BLOCKS'
             );
             setBlockCode(blockField?.code);
-            setBlockId(blockField.fieldId);
+            setBlockId(blockField?.fieldId);
           }
 
           if (response && response?.length > 0) {
@@ -158,7 +158,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                 items.forEach((item) => {
                   const cohortType =
                     item?.customField?.find(
-                      (field) => field.label === 'TYPE_OF_COHORT'
+                      (field) => field?.label === 'TYPE_OF_COHORT'
                     )?.value || 'Unknown';
                   if (item?.cohortId && item?.name) {
                     nameTypePairs.push({
