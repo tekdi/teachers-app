@@ -399,3 +399,7 @@ export const getUserDetailsById = (data: any[], userId: any) => {
 
   return null;
 };
+
+export const getEmailPattern = (): string => {
+  return '^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$';
+};

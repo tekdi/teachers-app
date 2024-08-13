@@ -300,23 +300,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                       replacements,
                       email: sendTo,
                     });
-
-                    if (
-                      credentialResponse?.result[0]?.data[0]?.status ===
-                      'success'
-                    ) {
-                      showToastMessage(
-                        t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
-                        'success'
-                      );
-                    } else {
-                      showToastMessage(
-                        t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
-                        'success'
-                      );
-                    }
-                  } else {
-                    showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
                   }
                 } else {
                   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -326,7 +309,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
                 ReactGA.event('facilitator-creation-fail', {
                   error: error,
-                });      
+                });
               }
             }
           } else {

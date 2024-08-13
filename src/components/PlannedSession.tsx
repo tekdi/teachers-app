@@ -335,7 +335,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       let isRecurringEvent = endDatetime !== endDateValue ? true : false;
       setSessionBlocks(
         sessionBlocks.map((block) =>
-          block?.id === selectedBlockId // assuming selectedId represents the current block ID
+          block?.id === selectedBlockId
             ? {
                 ...block,
                 startDatetime: startDatetime,

@@ -7,7 +7,7 @@ import React, { Children, ReactNode, useEffect } from 'react';
 import CustomRadioWidget from './CustomRadioWidget';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
-import { getCurrentYearPattern } from '@/utils/Helper';
+import { getCurrentYearPattern, getEmailPattern } from '@/utils/Helper';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
@@ -84,6 +84,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     console.log('errors', errors);
     console.log('schema', schema);
     const currentYearPattern = new RegExp(getCurrentYearPattern());
+    const emailPattern = new RegExp(getEmailPattern());
 
     return errors.map((error: any) => {
       switch (error.name) {
@@ -172,9 +173,16 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               break;
             }
             default: {
-              const validRange = currentYearPattern.test(pattern);
-              if (!validRange) {
-                error.message = t('FORM_ERROR_MESSAGES.ENTER_VALID_YEAR');
+              if (error?.property === '.email') {
+                const validEmail = emailPattern.test(pattern);
+                if (!validEmail) {
+                  error.message = t('FORM_ERROR_MESSAGES.ENTER_VALID_EMAIL');
+                }
+              } else {
+                const validRange = currentYearPattern.test(pattern);
+                if (!validRange) {
+                  error.message = t('FORM_ERROR_MESSAGES.ENTER_VALID_YEAR');
+                }
               }
               break;
             }
