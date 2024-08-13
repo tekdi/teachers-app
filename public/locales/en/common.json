@@ -194,6 +194,7 @@
     "CENTER_ATTENDANCE": "Center Attendance",
     "LOW_ATTENDANCE_STUDENTS": "Low Attendance Learners",
     "N/A": "No Centers Assigned",
+    "UNKNOWN": "Unknown",
     "CENTER_NAME": "Center Name",
     "ALL_CENTERS": "All Centers",
     "NO_LEARNER_WITH_LOW_ATTENDANCE": "No Learner with low attendance",
