@@ -2,7 +2,7 @@ import { UiSchema } from '@rjsf/utils';
 import { JSONSchema7 } from 'json-schema';
 import NumberInputField from './form/NumberInputField';
 import { FormData, Field, FieldOption } from '@/utils/Interfaces';
-import { getCurrentYearPattern } from '@/utils/Helper';
+import { getCurrentYearPattern, getEmailPattern } from '@/utils/Helper';
 
 export const customFields = {
   NumberInputField: NumberInputField,
@@ -63,6 +63,7 @@ export const GenerateSchemaAndUiSchema = (
       case 'email':
         fieldSchema.type = 'string';
         fieldSchema.format = 'email';
+        fieldSchema.pattern = getEmailPattern();
         break;
       case 'numeric':
         fieldSchema.type = 'number';
