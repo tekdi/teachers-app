@@ -321,7 +321,9 @@
     "REQUEST_TO_DELETE_HAS_BEEN_SENT": "Request to Delete has been sent",
     "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "You are sending a request to the State Admin to delete this Center",
     "THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT": "The user belongs to the following cohort: ",
-    "PLEASE_REMOVE_THE_USER_FROM_COHORT": "Please remove the user from these cohorts before proceeding with deletion."
+    "PLEASE_REMOVE_THE_USER_FROM_COHORT": "Please remove the user from these cohorts before proceeding with deletion.",
+    "ERROR_EMPTY": "Center name cannot be empty",
+    "ERROR_NUMBER": "Center name cannot be number"
   },
   "CENTER_SESSION": {
     "THIS_SESSION": "This session",
