@@ -44,6 +44,8 @@ const GuideTour: React.FC<GuideTourProps> = ({ toggleDrawer }) => {
     if (status === 'finished' || status === 'skipped') {
       setRunTour(false);
       handleTourEnd();
+      toggleDrawer(false)();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       logEvent({
         action: 'skip-guide-tour/finished-guide-tour',
         category: 'Dashboard Page',

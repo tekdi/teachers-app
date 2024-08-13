@@ -374,9 +374,11 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               />
             }
             onClick={() => {
-              // localStorage.removeItem('hasSeenTutorial')
-              // closeDrawer();
-              // router.push(`/dashboard`);
+              localStorage.removeItem('hasSeenTutorial')
+              setTimeout(() => {
+                closeDrawer();
+                router.push(`/`);
+              }, 0);
             }}
           >
             {t('GUIDE_TOUR.LEARN_HOW_TO_USE')}
