@@ -618,7 +618,7 @@ const TeachingCenters = () => {
                     sx={{
                       fontSize: '16px',
                       fontWeight: '500',
-                      color: theme.palette.error.contrastText,
+                      color: theme.palette.warning['400'],
                       m: 2,
                     }}
                   >

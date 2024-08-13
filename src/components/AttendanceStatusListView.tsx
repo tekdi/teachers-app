@@ -40,8 +40,6 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   const boxStyling = {
     display: 'flex',
     height: isBulkAction ? '56px' : '',
-    // width: '100%',
-    // borderBottom: `0.5px solid ${theme.palette.warning[400]}`,
     padding: '0 8px',
     alignItems: 'center',
     borderRadius: isBulkAction ? '8px' : 0,
