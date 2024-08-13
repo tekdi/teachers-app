@@ -1001,3 +1001,7 @@ legend.Mui-focused {
   height: 750px !important;
   width: 92% !important;
 }
+
+.capitalize {
+  text-transform: capitalize;
+}

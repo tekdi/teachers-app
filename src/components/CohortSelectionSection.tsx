@@ -328,7 +328,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             onChange={handleCohortSelection}
                             displayEmpty
                             inputProps={{ 'aria-label': 'Without label' }}
-                            className="SelectLanguages fs-14 fw-500 bg-white"
+                            className="SelectLanguages capitalize fs-14 fw-500 bg-white"
                             style={{
                               borderRadius: '0.5rem',
                               color: theme.palette.warning['200'],

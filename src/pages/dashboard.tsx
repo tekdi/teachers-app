@@ -701,6 +701,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         {open && (
                           <MarkBulkAttendance
                             open={open}
+                            setOpen={setOpen}
                             onClose={handleClose}
                             classId={classId}
                             selectedDate={new Date(selectedDate)}
