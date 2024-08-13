@@ -274,7 +274,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                     'success'
                   );
                   ReactGA.event('facilitator-created-successfully', {
-                    user_name: username,
+                    userName: username,
                   });
 
                   const isQueue = false;

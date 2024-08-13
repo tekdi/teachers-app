@@ -19,7 +19,7 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import manageUserStore from '../store/manageUserStore';
-
+import useStore from '@/store/store';
 import { getMyUserList } from '@/services/MyClassDetailsService';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import Image from 'next/image';
@@ -76,6 +76,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const theme = useTheme<any>();
   const router = useRouter();
   const store = manageUserStore();
+  const newStore = useStore();
   const [value, setValue] = React.useState(1);
   const [users, setUsers] = useState<
     {
@@ -200,9 +201,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           );
 
           setTimeout(() => {
-            console.log('extractedData');
-
+            console.log('extractedData', extractedData);
             setUsers(extractedData);
+            setLoading(false);
           });
         }
       } catch (error) {
@@ -213,49 +214,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     };
     getFacilitator();
   }, [isFacilitatorAdded, reloadState]);
-
-  useEffect(() => {
-    const fetchCohortListForUsers = async () => {
-      setLoading(true);
-      try {
-        if (users && users?.length > 0) {
-          const fetchCohortPromises = users?.map((user) => {
-            const limit = 0;
-            const offset = 0;
-            const filters = { userId: user.userId };
-            return cohortList({ limit, offset, filters }).then((resp) => ({
-              userId: user.userId,
-              cohorts: resp?.results?.cohortDetails || [],
-            }));
-          });
-
-          const cohortResponses = await Promise.all(fetchCohortPromises);
-          const allCohortsData: CohortsData = cohortResponses?.reduce(
-            (acc: CohortsData, curr) => {
-              acc[curr.userId] = curr?.cohorts?.map((item: Cohort) => ({
-                cohortId: item?.cohortId,
-                parentId: item?.parentId,
-                name: item?.name,
-              }));
-              return acc;
-            },
-            {}
-          );
-          console.log('allCohortsData', allCohortsData);
-
-          // setCohortsData(allCohortsData);
-        }
-      } catch (error) {
-        console.log(error);
-        // showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-        setLoading(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCohortListForUsers();
-  }, [users]);
 
   const handleModalToggle = (user: any) => {
     setSelectedUser(user);
@@ -293,11 +251,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       (event: React.KeyboardEvent | React.MouseEvent) => {
         setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
         if (!isFromFLProfile) {
-          const centerNames =
-            cohortsData?.[user?.userId]?.map((cohort) => cohort?.name) || [];
+          console.log(user);
+          const cohortNamesArray = user?.cohortNames?.split(', ');
+          const centerNames = cohortNamesArray?.map((cohortName: string) => cohortName.trim()) || [t('ATTENDANCE.N/A')];
           setCenters(centerNames);
           setSelectedUser(user);
-        } // TODO: check condition for profile
+        }
 
         if (
           event.type === 'keydown' &&
@@ -318,7 +277,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       const cohortList = await getCohortList(userId);
       console.log('Cohort List:', cohortList);
 
-      const hasActiveCohorts = cohortList && cohortList.length > 0 && cohortList.some((cohort: { status: string; }) => cohort.status === 'active');
+      const hasActiveCohorts =
+        cohortList &&
+        cohortList.length > 0 &&
+        cohortList.some(
+          (cohort: { status: string }) => cohort.status === 'active'
+        );
 
       if (hasActiveCohorts) {
         const cohortNames = cohortList
@@ -329,7 +293,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
         setOpenRemoveUserModal(true);
         setRemoveCohortNames(cohortNames);
       } else {
-        console.log('User does not belong to any cohorts, proceed with deletion');
+        console.log(
+          'User does not belong to any cohorts, proceed with deletion'
+        );
         setOpenDeleteUserModal(true);
       }
 
@@ -824,15 +790,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                         ),
                         name: 'reassign-block-request',
                       },
-                      // {
-                      //   label: t('COMMON.REASSIGN_CENTERS'),
-                      //   icon: (
-                      //     <ApartmentIcon
-                      //       sx={{ color: theme.palette.warning['300'] }}
-                      //     />
-                      //   ),
-                      //   name: 'reassign-centers',
-                      // },
                       {
                         label: t('COMMON.DELETE_USER'),
                         icon: (
@@ -844,40 +801,57 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                       },
                     ]}
                   >
-                    {/* <Box
-                  bgcolor={theme.palette.success.contrastText}
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  margin={'0rem 0.5rem 0rem 0.5rem'}
-                  padding={'1rem'}
-                  borderRadius={'1rem'}
-                >
-                  <Box>
-                    {t('COMMON.CENTERS_ASSIGNED', {
-                      block: selectedUser?.block ?? '',
-                    })}
-                  </Box>
-                  <Box>
-                    {centers.length > 0 &&
-                      centers?.map((name) => (
-                        <Button
-                          sx={{
-                            padding: '6px 12px',
-                            borderRadius: '8px',
-                            fontSize: '14px',
-                            fontWeight: 500,
-                            border: `1px solid ${theme.palette.warning[900]}`,
-                            margin: '5px',
-                          }}
-                          className="text-dark-grey"
-                        >
-                          {name}
-                        </Button>
-                      ))}
-                  </Box>
-                </Box> */}
+                    <Box
+                      bgcolor={theme.palette.success.contrastText}
+                      display="flex"
+                      flexDirection="column"
+                      justifyContent="center"
+                      alignItems="left"
+                      margin={'0rem 0.7rem 0rem 0.7rem'}
+                      padding={'1rem'}
+                      borderRadius={'1rem'}
+                    >
+                      <Box sx={{ fontSize: "12px", fontWeight: 500, color: theme.palette.warning['400'] }}>
+                        {t('COMMON.CENTERS_ASSIGNED', {
+                          block: newStore.block,
+                        })}
+                      </Box>
+                      <Box>
+                        {centers.length > 0 &&
+                          centers.map(
+                            (
+                              name:
+                                | string
+                                | number
+                                | bigint
+                                | boolean
+                                | React.ReactElement<
+                                  any,
+                                  string | React.JSXElementConstructor<any>
+                                >
+                                | Iterable<React.ReactNode>
+                                | React.ReactPortal
+                                | Promise<React.AwaitedReactNode>
+                                | null
+                                | undefined
+                            ) => (
+                              <Button
+                                sx={{
+                                  padding: '6px 12px',
+                                  borderRadius: '8px',
+                                  fontSize: '14px',
+                                  fontWeight: 500,
+                                  border: `1px solid ${theme.palette.warning[900]}`,
+                                  margin: '5px',
+                                }}
+                                className="text-dark-grey"
+                              >
+                                {name}
+                              </Button>
+                            )
+                          )}
+                      </Box>
+                    </Box>
                   </BottomDrawer>
 
                   <ManageCentersModal
