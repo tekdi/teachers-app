@@ -45,6 +45,7 @@ import {
 import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
+import ReactGA from 'react-ga4';
 
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
 type type = (typeof sessionType)[keyof typeof sessionType];
@@ -627,6 +628,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
                 'sucess'
               );
+              ReactGA.event('event-created-successfully', {
+                creatorId: userId,
+              });
               if (onCloseModal) {
                 onCloseModal();
               }
@@ -641,6 +645,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       );
     } catch (error) {
       console.error('Error scheduling new event:', error);
+      ReactGA.event('event-creation-fail', {
+        error: error,
+      });
     }
   };
 
