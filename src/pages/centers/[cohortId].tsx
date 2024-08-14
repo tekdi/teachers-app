@@ -193,7 +193,7 @@ const TeachingCenterDetails = () => {
       }
     };
     getCohortData();
-  }, []);
+  }, [reloadState]);
 
   useEffect(() => {
     const getSessionsData = async () => {
@@ -383,7 +383,7 @@ const TeachingCenterDetails = () => {
               {t('CENTERS.RENAME_CENTER')}
             </MenuItem>
             <MenuItem
-              onClick={() => {
+              onClick={() => {  
                 setOpenDeleteCenterModal(true);
                 handleMenuClose();
               }}
@@ -397,6 +397,8 @@ const TeachingCenterDetails = () => {
           <RenameCenterModal
             open={openRenameCenterModal}
             handleClose={handleRenameCenterClose}
+            reloadState={reloadState}
+            setReloadState={setReloadState}
           />
           <DeleteCenterModal
             open={openDeleteCenterModal}

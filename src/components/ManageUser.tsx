@@ -10,6 +10,7 @@ import { cohortList, getCohortList } from '@/services/CohortServices';
 import { Role, Status } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ApartmentIcon from '@mui/icons-material/Apartment';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Box from '@mui/material/Box';
@@ -251,9 +252,10 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       (event: React.KeyboardEvent | React.MouseEvent) => {
         setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
         if (!isFromFLProfile) {
-          console.log(user);
           const cohortNamesArray = user?.cohortNames?.split(', ');
-          const centerNames = cohortNamesArray?.map((cohortName: string) => cohortName.trim()) || [t('ATTENDANCE.N/A')];
+          const centerNames = cohortNamesArray?.map((cohortName: string) =>
+            cohortName.trim()
+          ) || [t('ATTENDANCE.N/A')];
           setCenters(centerNames);
           setSelectedUser(user);
         }
@@ -635,7 +637,11 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                             }}
                                           >
                                             {user?.cohortNames
-                                              ? `${user.cohortNames}`
+                                              ? `${user.cohortNames
+                                                .charAt(0)
+                                                .toUpperCase() +
+                                              user.cohortNames.slice(1)
+                                              }`
                                               : t('ATTENDANCE.N/A')}
                                           </Box>
                                         </Box>
@@ -643,7 +649,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                       <Box>
                                         <MoreVertIcon
                                           onClick={(event) => {
-                                            isMobile ? toggleDrawer('bottom', true, user)(event) : handleMenuOpen(event)
+                                            isMobile
+                                              ? toggleDrawer(
+                                                'bottom',
+                                                true,
+                                                user
+                                              )(event)
+                                              : handleMenuOpen(event);
                                           }}
                                           sx={{
                                             fontSize: '24px',
@@ -665,7 +677,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                   width: '100%',
                                 }}
                               >
-                                <Typography style={{ fontWeight: 'bold', width: '100%', textAlign: 'center' }}>
+                                <Typography
+                                  style={{
+                                    fontWeight: 'bold',
+                                    width: '100%',
+                                    textAlign: 'center',
+                                  }}
+                                >
                                   {t('COMMON.NO_DATA_FOUND')}
                                 </Typography>
                               </Box>
@@ -695,7 +713,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                     {
                       label: t('COMMON.REASSIGN_BLOCKS'),
                       icon: (
-                        <LocationOnOutlinedIcon
+                        <ApartmentIcon
                           sx={{ color: theme.palette.warning['300'] }}
                         />
                       ),
@@ -722,6 +740,20 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                   ]}
                 >
                   <Box
+                    sx={{
+                      fontSize: '16px',
+                      fontWeight: 300,
+                      marginLeft: '20px',
+                      marginBottom: '10px',
+                      color: theme.palette.warning['400'],
+                    }}
+                  >
+                    {selectedUser?.name
+                      ? selectedUser.name.charAt(0).toUpperCase() +
+                      selectedUser.name.slice(1)
+                      : ''}
+                  </Box>
+                  <Box
                     bgcolor={theme.palette.success.contrastText}
                     display="flex"
                     flexDirection="column"
@@ -731,7 +763,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                     padding={'1rem'}
                     borderRadius={'1rem'}
                   >
-                    <Box sx={{ fontSize: "12px", fontWeight: 500, color: theme.palette.warning['400'] }}>
+                    <Box
+                      sx={{
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        color: theme.palette.warning['400'],
+                      }}
+                    >
                       {t('COMMON.CENTERS_ASSIGNED', {
                         block: newStore.block,
                       })}

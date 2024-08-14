@@ -19,11 +19,15 @@ import { showToastMessage } from '../Toastify';
 interface CreateBlockModalProps {
   open: boolean;
   handleClose: () => void;
+  reloadState: boolean;
+  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
   open,
   handleClose,
+  reloadState,
+  setReloadState,
 }) => {
   const router = useRouter();
   const { t } = useTranslation();
@@ -33,6 +37,12 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
 
   const [centerName, setCenterName] = useState<string>('');
   const [error, setError] = useState<string>('');
+
+  React.useEffect(() => {
+    if (reloadState) {
+      setReloadState(false);
+    }
+  }, [reloadState, setReloadState]);
 
   const handleTextFieldChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -57,8 +67,9 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
     const name = centerName;
 
     const response = await renameFacilitator(cohortId, name);
-
+    setReloadState(true);
     showToastMessage(t('CENTERS.CENTER_RENAMED'), 'success');
+    
     handleClose();
   };
 
