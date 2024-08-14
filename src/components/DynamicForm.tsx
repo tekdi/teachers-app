@@ -3,12 +3,12 @@ import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { useTranslation } from 'next-i18next';
-import React, { Children, ReactNode } from 'react';
+import React, { Children, ReactNode, useEffect } from 'react';
 import CustomRadioWidget from './CustomRadioWidget';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import { getCurrentYearPattern } from '@/utils/Helper';
-import FormButtons from './FormButtons';
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -43,13 +43,23 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   customFields,
   children,
 }) => {
-  console.log(formData);
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
     MultiSelectDropdown: MultiSelectDropdown,
   };
   const { t } = useTranslation();
+
+  const submittedButtonStatus = useSubmittedButtonStore(
+    (state: any) => state.submittedButtonStatus
+  );
+  const setSubmittedButtonStatus = useSubmittedButtonStore(
+    (state: any) => state.setSubmittedButtonStatus
+  );
+
+  useEffect(() => {
+    setSubmittedButtonStatus(false);
+  }, []);
 
   const handleError = (errors: any) => {
     if (errors.length > 0) {
@@ -78,24 +88,56 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     return errors.map((error: any) => {
       switch (error.name) {
         case 'required': {
-          error.message = t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD');
+          error.message = submittedButtonStatus
+            ? t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD')
+            : '';
           break;
         }
         case 'maximum': {
           const property = error.property.substring(1);
-          if (schema.properties?.[property]?.validation?.includes('numeric')) {
-            error.message = t('FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR', {
-              maxLength: schema.properties?.[property]?.maxLength,
-            });
+          if (property === 'age') {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MUST_BE_LESS_THAN', {
+                fieldname: property,
+                maxLength: schema.properties?.[property]?.maxLength,
+              });
+            }
+          } else {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR', {
+                maxLength: schema.properties?.[property]?.maxLength,
+              });
+            }
           }
+
+          break;
         }
+
         case 'minimum': {
           const property = error.property.substring(1);
-          if (schema.properties?.[property]?.validation?.includes('numeric')) {
-            error.message = t('FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR', {
-              minLength: schema.properties?.[property]?.minLength,
-            });
+          if (property === 'age') {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MUST_BE_GREATER_THAN', {
+                fieldname: property,
+                minLength: schema.properties?.[property]?.minLength,
+              });
+            }
+          } else {
+            if (
+              schema.properties?.[property]?.validation?.includes('numeric')
+            ) {
+              error.message = t('FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR', {
+                minLength: schema.properties?.[property]?.minLength,
+              });
+            }
           }
+          break;
         }
 
         case 'pattern': {
@@ -177,7 +219,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   }
 
   return (
-    <div>
+    <div className="form-parent">
       <FormWithMaterialUI
         schema={schema}
         uiSchema={uiSchema}

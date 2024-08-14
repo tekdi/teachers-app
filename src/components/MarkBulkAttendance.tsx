@@ -123,6 +123,20 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     hasEmptyAttendance();
   };
 
+  const getPresentCount = (newArray: { userId: string; name: string; memberStatus: string; attendance: string; }[]) => {
+    setPresentCount(
+      newArray.filter(
+        (user: { attendance: string; }) => user.attendance === 'present'
+      ).length
+    );
+  }
+  const getAbsentCount = (newArray: { userId: string; name: string; memberStatus: string; attendance: string; }[]) => {
+    setAbsentCount(
+      newArray.filter(
+        (user: { attendance: string; }) => user.attendance === 'absent'
+      ).length
+    );
+  }
   useEffect(() => {
     submitBulkAttendanceAction(true, '', '');
     const getCohortMemberList = async () => {
@@ -237,6 +251,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       if (newArray.length !== 0) {
                         setNumberOfCohortMembers(newArray?.length);
                         setCohortMemberList(newArray);
+                        getPresentCount(newArray);
+                        getAbsentCount(newArray);
                         const hasDropout = newArray.some(
                           (user) => user.memberStatus === Status.DROPOUT
                         );
@@ -251,16 +267,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                               (user) => user.memberStatus === Status.DROPOUT
                             )
                           );
-                          setPresentCount(
-                            newArray.filter(
-                              (user) => user.attendance === 'present'
-                            ).length
-                          );
-                          setAbsentCount(
-                            newArray.filter(
-                              (user) => user.attendance === 'absent'
-                            ).length
-                          );
+                          getPresentCount(newArray);
+                          getAbsentCount(newArray);
                           setDropoutCount(
                             newArray.filter(
                               (user) => user.memberStatus === Status.DROPOUT
@@ -461,57 +469,65 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
               )}
 
-              {dropoutCount > 0 ? (
-                <Box display={'flex'} justifyContent={'space-between'}>
-                  <Typography
-                    sx={{
-                      marginTop: '10px',
-                      fontSize: '12px',
-                      color: theme.palette.warning['A200'],
-                      padding: '0 10px',
-                    }}
-                  >
-                    {t('ATTENDANCE.ACTIVE_STUDENTS', {
-                      count: numberOfCohortMembers - dropoutCount,
-                    })}
-                  </Typography>
+              <Box
+                display={'flex'}
+                flexDirection="row"
+                justifyContent={'space-between'}
+              >
+                {dropoutCount > 0 ? (
+                  <>
+                    <Typography
+                      sx={{
+                        marginTop: '10px',
+                        fontSize: '10px',
+                        color: theme.palette.warning['A200'],
+                        padding: '0 8px',
+                        lineHeight: '16px'
+                      }}
+                    >
+                      {t('ATTENDANCE.ACTIVE_STUDENTS', {
+                        count: numberOfCohortMembers - dropoutCount,
+                      })}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        marginTop: '10px',
+                        marginLeft: '0.5rem',
+                        fontSize: '10px',
+                        color: theme.palette.warning['A200'],
+                        padding: '0 8px',
+                        lineHeight: '16px'
+                      }}
+                    >
+                      {t('ATTENDANCE.DROPOUT_STUDENTS', {
+                        count: dropoutCount,
+                      })}
+                    </Typography>
+                  </>
+                ) : (
                   <Typography
                     sx={{
                       marginTop: '10px',
                       marginLeft: '0.5rem',
-                      fontSize: '12px',
+                      fontSize: '10px',
                       color: theme.palette.warning['A200'],
-                      padding: '0 10px',
+                      padding: '0 8px',
+                      lineHeight: '16px'
                     }}
                   >
-                    {t('ATTENDANCE.DROPOUT_STUDENTS', {
-                      count: dropoutCount,
+                    {t('ATTENDANCE.TOTAL_STUDENTS', {
+                      count: numberOfCohortMembers,
                     })}
                   </Typography>
-                </Box>
-              ) : (
+                )}
+
                 <Typography
                   sx={{
                     marginTop: '10px',
                     marginLeft: '0.5rem',
-                    fontSize: '12px',
+                    fontSize: '10px',
                     color: theme.palette.warning['A200'],
-                    padding: '0 10px',
-                  }}
-                >
-                  {t('ATTENDANCE.TOTAL_STUDENTS', {
-                    count: numberOfCohortMembers,
-                  })}
-                </Typography>
-              )}
-
-              <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography
-                  sx={{
-                    marginTop: '0px',
-                    marginLeft: '0.5rem',
-                    fontSize: '12px',
-                    color: theme.palette.warning['A200'],
+                    lineHeight: '16px'
                   }}
                 >
                   {t('ATTENDANCE.PRESENT_STUDENTS', {
@@ -520,11 +536,12 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 </Typography>
                 <Typography
                   sx={{
-                    marginTop: '0px',
+                    marginTop: '10px',
                     marginLeft: '0.5rem',
-                    fontSize: '12px',
+                    fontSize: '10px',
                     color: theme.palette.warning['A200'],
-                    padding: '0 10px',
+                    padding: '0 8px 0 10px',
+                    lineHeight: '16px'
                   }}
                 >
                   {t('ATTENDANCE.ABSENT_STUDENTS', {
@@ -532,6 +549,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   })}
                 </Typography>
               </Box>
+
               {cohortMemberList && cohortMemberList?.length != 0 ? (
                 <Box
                   height={'64%'}
@@ -547,6 +565,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       isBulkAction={true}
                       bulkAttendanceStatus={bulkAttendanceStatus}
                       handleBulkAction={submitBulkAttendanceAction}
+                      isDisabled={true}
                     />
                     {cohortMemberList?.map(
                       (
@@ -564,6 +583,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                           isEdit={true}
                           bulkAttendanceStatus={bulkAttendanceStatus}
                           handleBulkAction={submitBulkAttendanceAction}
+                         
                         />
                       )
                     )}
@@ -573,7 +593,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       ) => (
                         <AttendanceStatusListView
                           key={user.userId}
-                          isDisabled={true}
+                          
                           userData={{
                             userId: user.userId,
                             attendance: user.attendance,
@@ -583,9 +603,9 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                           }}
                           presentCount={presentCount}
                           absentCount={absentCount}
-                          // isEdit={true}
-                          // bulkAttendanceStatus={bulkAttendanceStatus}
-                          // handleBulkAction={submitBulkAttendanceAction}
+                        // isEdit={true}
+                        // bulkAttendanceStatus={bulkAttendanceStatus}
+                        // handleBulkAction={submitBulkAttendanceAction}
                         />
                       )
                     )}

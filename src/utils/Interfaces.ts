@@ -57,6 +57,8 @@ export interface MarkAttendanceParams {
   attendanceDate: string;
   contextId: string;
   attendance: string;
+  scope: string;
+  attendanceLocation: any;
 }
 
 export interface UserIdFilter {
@@ -127,7 +129,7 @@ export interface ExtraSessionsCardProps {
 }
 
 export interface SessionsCardProps {
-  data: Session;
+  data: any;
   children?: React.ReactNode;
 }
 export interface SessionsModalProps {
@@ -145,6 +147,10 @@ export interface SessionsModalProps {
 export interface PlannedModalProps {
   removeModal?: () => void;
   clickedBox?: string | null;
+  scheduleEvent?: boolean;
+  cohortName?: string;
+  cohortId?: string;
+  onCloseModal?: () => void | undefined;
 }
 
 export interface ScheduleModalProps {
@@ -217,13 +223,35 @@ export interface UpdateCustomField {
   order: number;
 }
 export interface ICohort {
+  typeOfCohort: string;
   presentPercentage: number;
   cohortId: string;
   name: string;
   value: string;
   state: string;
+  params?: Params;
+}
+export interface AttendanceParams {
+  allowed: number;
+  allow_late_marking: number;
+  attendance_ends_at: string;
+  update_once_marked: number;
+  capture_geoLocation: number;
+  attendance_starts_at: string;
+  back_dated_attendance: number;
+  restrict_attendance_timings: number;
+  back_dated_attendance_allowed_days: number;
 }
 
+export interface Params {
+  self: AttendanceParams;
+  student: AttendanceParams;
+}
+export interface CohortDetails {
+  cohortId: string;
+  name: string;
+  params: Params;
+}
 export interface LearListHeaderProps {
   numberOfColumns: number;
   firstColumnName: string;
@@ -317,6 +345,7 @@ export interface LearnerListProps {
   center?: string;
   showMiniProfile?: boolean;
   onLearnerDelete: () => void;
+  isFromProfile?: boolean;
 }
 export interface FacilitatorListParam {
   limit: number;
@@ -435,7 +464,7 @@ export interface CoursePlannerCardsProps {
 
 export interface scheduleEventParam {
   limit: number;
-  page: number;
+  offset: number;
   filters: eventFilters;
 }
 
@@ -445,7 +474,8 @@ export interface eventFilters {
   endDate?: string;
   eventType?: [];
   title?: string;
-  status?: [];
+  status?: string[];
+  cohortId?: string;
 }
 
 export interface CoursePlannerData {
@@ -459,4 +489,119 @@ export interface OverallAttendance {
   present?: any;
   absent_percentage: any;
   present_percentage: any;
+}
+
+export interface SendCredentialsRequest {
+  isQueue: boolean;
+  context: string;
+  key: string;
+  replacements: any[];
+  email: {
+    receipients: any[];
+  };
+}
+
+export interface Assessment {
+  userId: number;
+  studentName: string;
+  progress: string;
+  score?: number;
+}
+
+export interface AssessmentSubject {
+  userId: number;
+  subject: string;
+  score: string;
+  date: string;
+}
+export interface Assessments {
+  userId: string;
+  subject: string;
+  score: string;
+  date: string;
+}
+
+export interface AssessmentQuestion {
+  userId: number;
+  question: string;
+  score: number;
+}
+
+export interface CreateEvent {
+  title?: string;
+  shortDescription?: string;
+  description?: string;
+  eventType: string;
+  isRestricted?: boolean;
+  autoEnroll?: boolean;
+  location?: string;
+  maxAttendees: number;
+  attendees: string[];
+  status?: string;
+  createdBy: string;
+  updatedBy: string;
+  idealTime?: string;
+  isRecurring: boolean;
+  startDatetime: string;
+  endDatetime: string;
+  registrationStartDate?: string;
+  registrationEndDate?: string;
+  onlineProvider?: string;
+  isMeetingNew?: boolean;
+  meetingDetails?: MeetingDetails;
+  recurrencePattern?: RecurrencePattern;
+  metaData?: MetaData;
+}
+export interface RecurrencePattern {
+  frequency: string;
+  interval: number;
+  endCondition: EndCondtion;
+  daysOfWeek: number[];
+}
+
+export interface EndCondtion {
+  type: string;
+  value: string;
+}
+export interface MeetingDetails {
+  url: string;
+  id?: string;
+  password?: string;
+}
+
+export interface MetaData {
+  framework?: {
+    board?: string;
+    medium?: string;
+    grade?: string;
+    subject?: string;
+    topic?: string;
+    subTopic?: string;
+    teacherName?: string;
+  };
+  eventType?: string;
+  doId?: string;
+  cohortId?: string;
+  cycleId?: string;
+  tenant?: string;
+}
+type Anchor = 'bottom';
+export interface BottomDrawerProps {
+  toggleDrawer: (
+    anchor: Anchor,
+    anchorEl: any,
+    open: boolean
+  ) => (event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent) => void;
+  state: { [key in Anchor]?: boolean };
+  optionList: {
+    label: string;
+    icon: React.ReactNode;
+    name: string;
+  }[];
+  listItemClick: (event: React.MouseEvent, name: string) => void;
+  renderCustomContent?: () => React.ReactNode;
+  children?: React.ReactNode;
+  setAnchorEl: React.Dispatch<React.SetStateAction<null | HTMLElement>>;
+  anchorEl: null | HTMLElement;
+  isMobile: boolean;
 }

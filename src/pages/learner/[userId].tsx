@@ -38,6 +38,7 @@ import { getFormRead } from '@/services/CreateUserService';
 import {
   extractAddress,
   formatSelectedDate,
+  getUserDetailsById,
   mapFieldIdToValue,
   toPascalCase,
 } from '@/utils/Helper';
@@ -59,21 +60,30 @@ import withAccessControl from '@/utils/hoc/withAccessControl';
 import {
   FormContext,
   FormContextType,
+  Role,
+  Status,
   getMenuItems,
+  limit,
 } from '@/utils/app.constant';
 import { accessControl } from '../../../app.config';
-import StyledMenu from '@/components/StyledMenu';
+import LearnersListItem from '@/components/LearnersListItem';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import AssessmentReport from '@/components/AssessmentReport';
 
-const LearnerProfile: React.FC = () => {
+interface LearnerProfileProp {
+  reloadState?: boolean;
+  setReloadState?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const LearnerProfile: React.FC<LearnerProfileProp> = ({
+  reloadState,
+  setReloadState,
+}) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const today = new Date();
   const router = useRouter();
   const { userId }: any = router.query;
-
-  if (typeof window !== 'undefined' && window.localStorage) {
-    localStorage.setItem('learnerId', userId);
-  }
 
   const [assesmentData, setAssesmentData] = useState<any>(null);
   const [test, setTest] = React.useState('Pre Test');
@@ -99,24 +109,29 @@ const LearnerProfile: React.FC = () => {
   const [totalScore, setTotalScore] = useState('');
   const [address, setAddress] = useState('');
   const [uniqueDoId, setUniqueDoId] = useState('');
-  const [anchorElOption, setAnchorElOption] =
-    React.useState<null | HTMLElement>(null);
-  const openOption = Boolean(anchorElOption);
   const [isError, setIsError] = React.useState<boolean>(false);
   const [formData, setFormData] = useState<{ [key: string]: any }>({});
+  const [isLearnerDeleted, setIsLearnerDeleted] =
+    React.useState<boolean>(false);
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [reload, setReload] = React.useState(false);
+  const [cohortId, setCohortId] = React.useState('');
+  const [userDetails, setUserDetails] = React.useState<{
+    status: any;
+    statusReason: any;
+    cohortMembershipId: any;
+  } | null>(null);
 
   useEffect(() => {
     setSelectedValue(currentDayMonth);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('learnerId', userId);
+      setCohortId(localStorage.getItem('classId') || '');
+    }
   }, []);
 
   const handleReload = () => {
     setReload((prev) => !prev);
-  };
-
-  const handleCloseOption = () => {
-    setAnchorElOption(null); // Set anchorElOption to null to close the menu
   };
 
   const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
@@ -212,8 +227,31 @@ const LearnerProfile: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchDataAndInitializeForm();
-  }, [userId, reload]);
+    const fetchData = async () => {
+      fetchDataAndInitializeForm();
+
+      if (cohortId) {
+        const page = 0;
+        const filters = { cohortId: cohortId };
+        try {
+          const response = await getMyCohortMemberList({
+            limit,
+            page,
+            filters,
+          });
+          const resp = response?.result?.userDetails;
+          if (resp) {
+            const result = getUserDetailsById(resp, userId);
+            setUserDetails(result);
+          }
+        } catch (error) {
+          console.error('Error fetching cohort member list:', error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [userId, reload, cohortId]);
 
   const getAttendanceData = async (fromDates: any, toDates: any) => {
     const fromDate = fromDates;
@@ -247,7 +285,7 @@ const LearnerProfile: React.FC = () => {
             const data = response;
             if (data) {
               const coreFieldData = data?.result?.userData;
-              setUserName(coreFieldData?.name);
+              setUserName(toPascalCase(coreFieldData?.name));
               const fields: CustomField[] =
                 data?.result?.userData?.customFields;
               if (fields?.length > 0) {
@@ -349,8 +387,8 @@ const LearnerProfile: React.FC = () => {
   }, [reload]);
 
   const learnerDetailsByOrder = [...customFieldsData]
-    ?.sort((a, b) => a.order - b.order)
-    ?.filter((field) => field.order <= 12)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .filter((field) => (field.order ?? 0) <= 12)
     ?.map((field) => {
       const getSelectedOption = (field: any) => {
         return (
@@ -448,7 +486,7 @@ const LearnerProfile: React.FC = () => {
   };
 
   const testReportDetails = async (do_Id: string) => {
-    const cohortId = localStorage.getItem('cohortId');
+    const cohortId = localStorage.getItem('classId');
     const filters = {
       userId: userId,
       courseId: do_Id,
@@ -606,6 +644,11 @@ const LearnerProfile: React.FC = () => {
         date_range: dateRange,
       }),
   ]);
+
+  const handleLearnerDelete = () => {
+    setIsLearnerDeleted(true);
+  };
+
   return (
     <>
       <Header />
@@ -661,31 +704,22 @@ const LearnerProfile: React.FC = () => {
           </Box>
         </Grid>
         <Grid item>
-          <Box
-            aria-label="more"
-            id="demo-customized-button"
-            aria-controls={openOption ? 'demo-customized-menu' : undefined}
-            aria-expanded={openOption ? 'true' : undefined}
-            aria-haspopup="true"
-          >
-            <Box>
-              <StyledMenu
-                id="demo-customized-menu"
-                MenuListProps={{
-                  'aria-labelledby': 'demo-customized-button',
-                }}
-                anchorEl={anchorElOption}
-                open={openOption}
-                onClose={handleCloseOption}
-              >
-                <MenuItem onClick={handleCloseOption} disableRipple>
-                  {t('COMMON.MARK_DROP_OUT')}
-                </MenuItem>
-                <MenuItem onClick={handleCloseOption} disableRipple>
-                  {t('COMMON.REMOVE')}
-                </MenuItem>
-              </StyledMenu>
-            </Box>
+          <Box>
+            {userDetails && (
+              <LearnersListItem
+                type={Role.STUDENT}
+                key={userId}
+                userId={userId}
+                learnerName={userName}
+                cohortMembershipId={userDetails.cohortMembershipId}
+                isDropout={userDetails.status === Status.DROPOUT}
+                statusReason={userDetails.statusReason}
+                reloadState={reloadState ?? false}
+                setReloadState={setReloadState ?? (() => {})}
+                onLearnerDelete={handleLearnerDelete}
+                isFromProfile={true}
+              />
+            )}
           </Box>
         </Grid>
       </Grid>
@@ -947,96 +981,8 @@ const LearnerProfile: React.FC = () => {
           }}
         >
           <CardContent>
-            <Typography
-              sx={{
-                color: theme.palette.warning['A200'],
-                fontWeight: 600,
-                fontSize: '13px',
-              }}
-              variant="h5"
-              gutterBottom
-            >
-              {t('COMMON.TEST_REPORT')}
-            </Typography>
-            <Box padding={0}>
-              <FormControl fullWidth sx={{ margin: 1, marginLeft: 0 }}>
-                <InputLabel id="demo-simple-select-helper-label">
-                  {t('PROFILE.TEST')}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
-                  value={test}
-                  label="test"
-                  onChange={handleChangeTest}
-                >
-                  <MenuItem value={'Post Test'}>
-                    {t('PROFILE.POST_TEST')}
-                  </MenuItem>
-                  <MenuItem value={'Pre Test'}>
-                    {t('PROFILE.PRE_TEST')}
-                  </MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl fullWidth sx={{ margin: 1, marginLeft: 0 }}>
-                <InputLabel id="demo-simple-select-helper-label">
-                  {t('PROFILE.SUBJECT')}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
-                  value={subject}
-                  label="Subject"
-                  onChange={handleChangeSubject}
-                >
-                  <MenuItem value={'English'}>{t('PROFILE.ENGLISH')}</MenuItem>
-                  <MenuItem value={'Hindi'}>{t('PROFILE.HINDI')}</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            {loading ? (
-              <Typography textAlign="center">{t('COMMON.LOADING')}</Typography>
-            ) : !uniqueDoId || uniqueDoId === '' ? (
-              <Box mt={2}>
-                <Typography textAlign={'center'}>
-                  {t('COMMON.NO_DATA_FOUND')}
-                </Typography>
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  background: '#F8EFE7',
-                  p: 2,
-                }}
-              >
-                <Box>
-                  <Typography variant="h5">
-                    {t('PROFILE.SUBMITTED_ON')} :{' '}
-                    {submittedOn
-                      ? format(new Date(submittedOn), 'dd MMMM, yyyy')
-                      : ''}
-                  </Typography>
-                </Box>
-                <Box display={'flex'} justifyContent={'space-between'} mt={1}>
-                  <Typography variant="h3" fontWeight={'bold'}>
-                    {t('PROFILE.MARK_OBTAINED')}
-                  </Typography>
-                  <Typography variant="h4" fontWeight={'bold'}>
-                    {totalScore ? totalScore : '0'}/
-                    {totalMaxScore ? totalMaxScore : '0'}
-                  </Typography>
-                </Box>
-                <Divider />
-                <Box mt={1}>
-                  <Typography variant="h5">
-                    {t('PROFILE.TOTAL_QUESTIONS')} :{assesmentData?.length}
-                  </Typography>
-                </Box>
-                <Box mt={2}>
-                  <MarksObtainedCard data={assesmentData} />
-                </Box>
-              </Box>
-            )}
+            
+              <AssessmentReport isTitleRequired={true}/>
           </CardContent>
         </Card>
       </Box>

@@ -5,6 +5,13 @@ export const limit: number = 300;
 export const refetchInterval: number = 5 * 60 * 1000; // 5 min
 export const gcTime: number = 10 * 60 * 1000; // 10 Min
 
+export const labelsToExtractForMiniProfile = [
+  'AGE',
+  'GENDER',
+  'LEARNERS_PRIMARY_WORK',
+  'TYPE_OF_LEARNER',
+];
+
 export const getMenuItems = (
   t: TFunction,
   dateRange: string | Date,
@@ -51,8 +58,8 @@ export enum cohortHierarchy {
 }
 
 export enum sessionMode {
-  ONLINE = 'Online',
-  OFFLINE = 'Offline',
+  ONLINE = 'online',
+  OFFLINE = 'offline',
 }
 export enum sessionType {
   JUST = 'Just Once',
@@ -83,4 +90,14 @@ export enum RoleId {
   TEACHER = '3bde0028-6900-4900-9d05-eeb608843718',
   TEAM_LEADER = '9dd9328f-1bc7-444f-96e3-c5e1daa3514a',
   ADMIN = 'ee482faf-8a41-45fe-9656-5533dd6a787c',
+}
+
+export enum Pagination {
+  ITEMS_PER_PAGE = 10,
+  MAX_ITEMS = 50,
+}
+
+export enum attendanceType {
+  PRESENT = 'present',
+  ABSENT = 'absent',
 }

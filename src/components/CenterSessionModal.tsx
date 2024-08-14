@@ -28,10 +28,12 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '75%',
+    width: '85%',
     bgcolor: theme?.palette?.warning['A400'],
     boxShadow: 24,
     borderRadius: '16px',
+    maxHeight: '626px',
+    minheight: '100%',
     border: 'none',
     '@media (min-width: 600px)': {
       width: '450px',
@@ -103,7 +105,10 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
           />
         </Box>
         <Divider />
-        {children}
+        <Box sx={{ maxHeight: '49vh', minHeight: '100%', overflowY: 'auto' }}>
+          {children}
+        </Box>
+
         <Divider />
 
         <Box

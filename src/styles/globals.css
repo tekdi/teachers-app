@@ -745,9 +745,9 @@ main {
   background: var(--mui-palette-warning-900) !important;
 }
 
-.modal-bottom div:nth-child(1) {
+/* .modal-bottom div:nth-child(1) {
   position: unset !important;
-}
+} */
 
 .selected-start-end {
   background-color: var(--mui-palette-primary-main) !important;
@@ -928,6 +928,7 @@ main {
 
   .right-md-20 {
     right: 20px;
+    margin-bottom: 25px;
   }
 
   .mt-md-3 {
@@ -986,4 +987,12 @@ input[type='number']::-webkit-outer-spin-button {
 
 legend.Mui-focused {
   color: inherit !important;
+}
+
+.form-parent .rjsf .field-object {
+  min-height: 100%;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-left: 16px;
+  padding-right: 16px;
 }

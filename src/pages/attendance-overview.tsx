@@ -93,6 +93,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     useState(0);
   const [dateRange, setDateRange] = React.useState<Date | string>('');
   const [blockName, setBlockName] = React.useState<string>('');
+  const [selectedCohortData, setSelectedCohortData] = React.useState<
+    Array<ICohort>
+  >([]);
 
   const theme = useTheme<any>();
   const pathname = usePathname();
@@ -326,10 +329,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             console.log('Fetched data:', results);
 
             const nameIDAttendanceArray = results
-              .filter(
-                (result) =>
-                  !result.error && result?.data?.contextId
-              )
+              .filter((result) => !result.error && result?.data?.contextId)
               .map((result) => {
                 const cohortId = result.cohortId;
                 const contextData = result.data.contextId[cohortId] || {};
@@ -536,6 +536,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 blockName={blockName}
                 setBlockName={setBlockName}
                 isCustomFieldRequired={true}
+                setSelectedCohortsData={setSelectedCohortData}
               />
             </Box>
             <Box className="flex-basis-md-50">

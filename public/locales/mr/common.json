@@ -15,8 +15,8 @@
     "SEARCH_STUDENT": "विद्यार्थी शोधा",
     "SORT_BY": "क्रमवारी लावा",
     "APPLY": "लागू करा",
-    "A_TO_Z": "A TO Z",
-    "Z_TO_A": "Z TO A",
+    "A_TO_Z": "A to Z",
+    "Z_TO_A": "Z to A",
     "HIGH_TO_LOW": "उच्च ते कमी",
     "LOW_TO_HIGH": "कमी ते उच्च",
     "NAMES": "नावे",
@@ -70,7 +70,7 @@
     "SURE_LOGOUT": "तुम्हाला खाते बंद करायचं आहे का?",
     "SURE_UPDATE": "तुम्हाला ही उपस्थिती अपडेट करायची आहे का?",
     "SURE_REMOVE": "आपण खरोखरच या विद्यार्थ्याला काढून टाकू इच्छिता का?",
-    "SURE_CLOSE": "तुम्हाला हे बंद करायचं आहे का?",
+    "SURE_CLOSE": "तुमची खात्री आहे की तुम्ही सेव्ह न करता बंद करू इच्छिता?",
     "LEARNER_LIST": "शिक्षार्थ्यांची यादी",
     "FACILITATOR_LIST": "सुविधादारांची यादी",
     "FILTERS": "फिल्टर्स",
@@ -93,7 +93,10 @@
     "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्र",
     "NO_SESSIONS_SCHEDULED": "कोणतेही सत्र शेड्यूल केलेले नाही",
     "TO_BE_TAUGHT": "काय शिकवले जाईल:",
-    "SELECT_TOPIC": "विषय, उप-विषय निवडा"
+    "SELECT_TOPIC": "विषय, उप-विषय निवडा",
+    "TURN_ON_DEVICE_LOCATION": "डिव्हाइस स्थान चालू करा",
+    "DEVICE_LOCATION_NEED_TO_ATTENDANCE": "हजेरी नोंदवण्यासाठी डिव्हाइस स्थान आवश्यक आहे",
+    "TURN_ON": "चालू करा"
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्तानाव",

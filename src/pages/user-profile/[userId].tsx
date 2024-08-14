@@ -34,12 +34,20 @@ import { FormContext, FormContextType, Role } from '@/utils/app.constant';
 import manageUserStore from '@/store/manageUserStore';
 // import useStore from '@/store/store';
 import AddFacilitatorModal from '@/components/AddFacilitator';
+import ManageUser from '@/components/ManageUser';
 
 interface UserData {
   name: string;
 }
+interface TeacherProfileProp {
+  reloadState?: boolean;
+  setReloadState?: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const TeacherProfile = () => {
+const TeacherProfile: React.FC<TeacherProfileProp> = ({
+  reloadState,
+  setReloadState,
+}) => {
   const user_placeholder_img: string = user_placeholder.src;
 
   const { t } = useTranslation();
@@ -410,6 +418,7 @@ const TeacherProfile = () => {
               flexDirection="row"
               gap="10px"
               padding="25px 19px  20px"
+              justifyContent={'space-between'}
             >
               <Box display={'flex'}>
                 <Box
@@ -457,10 +466,16 @@ const TeacherProfile = () => {
                   </Typography>
                 </Box>
               </Box>
+              <ManageUser
+                reloadState={reloadState ?? false}
+                setReloadState={setReloadState ?? (() => {})}
+                isFromFLProfile={true}
+                teacherUserId={userId}
+              />
             </Box>
           )}
 
-          <Box padding="5px 19px" className="w-100">
+{/* <Box padding="5px 19px" className="w-100">
             <Box
               sx={{
                 flex: '1',
@@ -536,13 +551,13 @@ const TeacherProfile = () => {
                 </Box>
               </Box>
             </Box>
-          </Box>
+          </Box> */}
           <Box
             className="linerGradient"
             sx={{
               padding: '10px 16px 21px',
               width: '100%',
-              mt: 3,
+              // mt: 3,
               // '@media (min-width: 900px)': {
               //   borderRadius: '8px',
               //   display: 'flex',
@@ -722,7 +737,11 @@ const TeacherProfile = () => {
                           variant="h4"
                           margin={0}
                           color={theme.palette.warning.A200}
-                          sx={{ wordBreak: 'break-word' }}
+                          sx={{
+                            wordBreak: 'break-word',
+                            fontSize: '16px',
+                            paddingTop: '6px',
+                          }}
                         >
                           {item?.value
                             ? toPascalCase(getLabelForValue(item, item?.value))

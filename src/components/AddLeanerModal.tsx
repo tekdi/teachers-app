@@ -8,7 +8,6 @@ import { createUser, getFormRead } from '@/services/CreateUserService';
 import { generateUsernameAndPassword } from '@/utils/Helper';
 import { FormData } from '@/utils/Interfaces';
 import { FormContext, FormContextType, RoleId } from '@/utils/app.constant';
-import { Button, useTheme } from '@mui/material';
 import { IChangeEvent } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import React, { useEffect } from 'react';
@@ -18,6 +17,8 @@ import { editEditUser } from '@/services/ProfileService';
 import { tenantId } from '../../app.config';
 import SendCredentialModal from './SendCredentialModal';
 import FormButtons from './FormButtons';
+import { sendCredentialService } from '@/services/NotificationService';
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -42,13 +43,12 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   const [reloadProfile, setReloadProfile] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const [learnerFormData, setLearnerFormData] = React.useState<any>();
-  const [credentials, setCredentials] = React.useState({
-    username: '',
-    password: '',
-  });
+  const [fullname, setFullname] = React.useState<any>();
 
   const { t } = useTranslation();
-  const theme = useTheme<any>();
+  const setSubmittedButtonStatus = useSubmittedButtonStore(
+    (state: any) => state.setSubmittedButtonStatus
+  );
   let userEmail: string = '';
   if (typeof window !== 'undefined' && window.localStorage) {
     userEmail = localStorage.getItem('userEmail') || '';
@@ -106,10 +106,11 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     if (learnerFormData) {
       handleButtonClick();
     }
-  }, [formData]);
+  }, [learnerFormData]);
 
   const handleButtonClick = async () => {
     console.log('Form data:', formData);
+    setSubmittedButtonStatus(true);
     if (learnerFormData) {
       const schemaProperties = schema.properties;
       let cohortId, fieldData;
@@ -121,7 +122,6 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         fieldData?.state?.stateCode,
         ''
       );
-
       const apiBody: any = {
         username: username,
         password: password,
@@ -145,6 +145,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         if (fieldId === null || fieldId === 'null') {
           if (typeof fieldValue !== 'object') {
             apiBody[fieldKey] = fieldValue;
+            if (fieldKey === 'name') {
+              setFullname(fieldValue);
+            }
           }
         } else {
           if (
@@ -153,7 +156,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           ) {
             apiBody.customFields.push({
               fieldId: fieldId,
-              value: [String(fieldValue)],
+              value: Array.isArray(fieldValue) ? fieldValue : [fieldValue],
             });
           } else {
             apiBody.customFields.push({
@@ -203,6 +206,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             );
             setReloadProfile(true);
             onReload?.();
+            onClose();
           }
         } else {
           const response = await createUser(apiBody);
@@ -212,18 +216,55 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
               'success'
             );
             onLearnerAdded?.();
-            setOpenModal(true);
-          } else {
-            showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            onClose();
+
+            const isQueue = false;
+            const context = 'USER';
+            let createrName;
+            const key = 'onLearnerCreated';
+            if (typeof window !== 'undefined' && window.localStorage) {
+              createrName = localStorage.getItem('userName');
+            }
+            let replacements;
+            if (createrName) {
+              replacements = [createrName, apiBody['name'], username, password];
+            }
+            const sendTo = {
+              receipients: [userEmail],
+            };
+            if (replacements && sendTo) {
+              const response = await sendCredentialService({
+                isQueue,
+                context,
+                key,
+                replacements,
+                email: sendTo,
+              });
+              if (response?.result[0]?.data[0]?.status === 'success') {
+                showToastMessage(
+                  t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
+                  'success'
+                );
+              } else {
+                showToastMessage(
+                  t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
+                  'success'
+                );
+              }
+              setOpenModal(true);
+            } else {
+              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            }
           }
         }
-        onClose();
+        // onClose();
       } catch (error) {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setReloadProfile(true);
       }
     }
   };
+
   const handleChange = (event: IChangeEvent<any>) => {
     console.log('Form data changed:', event.formData);
   };
@@ -263,7 +304,13 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
                 showErrorList={true}
                 customFields={customFields}
                 formData={formData}
-              ></DynamicForm>
+              >
+                <FormButtons
+                  formData={formData}
+                  onClick={handleButtonClick}
+                  isSingleButton={true}
+                />
+              </DynamicForm>
             )
           : schema &&
             uiSchema && (
