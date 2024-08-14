@@ -124,6 +124,7 @@ const TeachingCenterDetails = () => {
   };
 
   const handleSchedule = () => {
+    console.log("create event===>", createEvent);
     setCreateEvent(true);
   };
 
@@ -477,13 +478,13 @@ const TeachingCenterDetails = () => {
                   : t('GUIDE_TOUR.NEXT')
             }
             secondary={deleteModal ? t('COMMON.CANCEL') : undefined}
-            handlePrimaryModel={
+            handlePrimaryModel={() => {
               deleteModal
                 ? undefined
                 : openSchedule
-                  ? handleSchedule
-                  : handleCentermodel
-            }
+                  ? handleSchedule()
+                  : handleCentermodel();
+            }}
           >
             {deleteModal ? (
               <DeleteSession />

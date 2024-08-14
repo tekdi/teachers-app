@@ -52,6 +52,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   const [schema, setSchema] = React.useState<any>();
   const [openSendCredModal, setOpenSendCredModal] = React.useState(false);
   const [createFacilitator, setCreateFacilitator] = React.useState(false);
+  const [isVisible, setIsVisible] = React.useState(true);
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [reloadProfile, setReloadProfile] = React.useState(false);
   const [email, setEmail] = React.useState('');
@@ -142,6 +143,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   useEffect(() => {
     if (formData) {
       handleButtonClick();
+      setIsVisible(false);
     }
   }, [formData, createFacilitator]);
 
@@ -155,9 +157,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       if (typeof window !== 'undefined' && window.localStorage) {
         fieldData = JSON.parse(localStorage.getItem('fieldData') || '');
       }
+      const yearOfJoining = formData['year of joining scp'];
       const { username, password } = generateUsernameAndPassword(
         fieldData?.state?.stateCode,
-        'F'
+        'F',
+        yearOfJoining
       );
       setUsername(username);
       setPassword(password);
@@ -298,23 +302,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                       replacements,
                       email: sendTo,
                     });
-
-                    if (
-                      credentialResponse?.result[0]?.data[0]?.status ===
-                      'success'
-                    ) {
-                      showToastMessage(
-                        t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
-                        'success'
-                      );
-                    } else {
-                      showToastMessage(
-                        t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
-                        'success'
-                      );
-                    }
-                  } else {
-                    showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
                   }
                 } else {
                   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -324,7 +311,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
                 ReactGA.event('facilitator-creation-fail', {
                   error: error,
-                });      
+                });
               }
             }
           } else {
@@ -348,6 +335,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   };
 
   const handleBackAction = () => {
+    setIsVisible(true);
     setCreateFacilitator(false);
     setOpenSendCredModal(false);
   };
@@ -361,60 +349,62 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
   return (
     <>
-      <SimpleModal
-        open={open}
-        onClose={onClose}
-        showFooter={false}
-        modalTitle={
-          isEditModal
-            ? t('COMMON.EDIT_FACILITATOR')
-            : t('COMMON.NEW_FACILITATOR')
-        }
-      >
-        {userFormData
-          ? schema &&
-            uiSchema && (
-              <DynamicForm
-                schema={schema}
-                uiSchema={uiSchema}
-                onSubmit={handleSubmit}
-                onChange={handleChange}
-                onError={handleError}
-                widgets={{}}
-                showErrorList={true}
-                customFields={customFields}
-                formData={userFormData}
-              >
-                {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
-                <FormButtons
-                  formData={formData}
-                  onClick={handleButtonClick}
-                  isSingleButton={true}
-                />
-              </DynamicForm>
-            )
-          : schema &&
-            uiSchema && (
-              <DynamicForm
-                schema={schema}
-                uiSchema={uiSchema}
-                onSubmit={handleSubmit}
-                onChange={handleChange}
-                onError={handleError}
-                widgets={{}}
-                showErrorList={true}
-                customFields={customFields}
-                formData={createFacilitator ? '' : formData}
-              >
-                <FormButtons
-                  formData={formData}
-                  onClick={handleButtonClick}
-                  isCreatedFacilitator={true}
-                  isCreateCentered={false}
-                />{' '}
-              </DynamicForm>
-            )}
-      </SimpleModal>
+      {isVisible && (
+        <SimpleModal
+          open={open}
+          onClose={onClose}
+          showFooter={false}
+          modalTitle={
+            isEditModal
+              ? t('COMMON.EDIT_FACILITATOR')
+              : t('COMMON.NEW_FACILITATOR')
+          }
+        >
+          {userFormData
+            ? schema &&
+              uiSchema && (
+                <DynamicForm
+                  schema={schema}
+                  uiSchema={uiSchema}
+                  onSubmit={handleSubmit}
+                  onChange={handleChange}
+                  onError={handleError}
+                  widgets={{}}
+                  showErrorList={true}
+                  customFields={customFields}
+                  formData={userFormData}
+                >
+                  {/* <CustomSubmitButton onClose={primaryActionHandler} /> */}
+                  <FormButtons
+                    formData={formData}
+                    onClick={handleButtonClick}
+                    isSingleButton={true}
+                  />
+                </DynamicForm>
+              )
+            : schema &&
+              uiSchema && (
+                <DynamicForm
+                  schema={schema}
+                  uiSchema={uiSchema}
+                  onSubmit={handleSubmit}
+                  onChange={handleChange}
+                  onError={handleError}
+                  widgets={{}}
+                  showErrorList={true}
+                  customFields={customFields}
+                  formData={createFacilitator ? '' : formData}
+                >
+                  <FormButtons
+                    formData={formData}
+                    onClick={handleButtonClick}
+                    isCreatedFacilitator={true}
+                    isCreateCentered={false}
+                  />{' '}
+                </DynamicForm>
+              )}
+        </SimpleModal>
+      )}
       <Modal
         open={openSendCredModal}
         aria-labelledby="send credential modal"

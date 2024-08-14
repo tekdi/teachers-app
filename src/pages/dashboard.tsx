@@ -88,6 +88,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [userId, setUserId] = React.useState<string | null>(null);
   const [blockName, setBlockName] = React.useState<string>('');
   const [role, setRole] = React.useState<any>('');
+  const [openDrawer, setOpenDrawer] = React.useState<boolean>(false);
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpenDrawer(newOpen);
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -330,10 +335,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const handleModalToggle = () => {
     setOpen(!open);
-    logEvent({
-      action: 'mark/modify-attendance-button-clicked-dashboard',
-      category: 'Dashboard Page',
-      label: 'Mark/ Modify Attendance',
+    ReactGA.event('mark/modify-attendance-button-clicked-dashboard', {
+      teacherId: userId,
     });
   };
 
@@ -448,7 +451,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     <>
       {isClient && (
         <>
-          <GuideTour />
+          <GuideTour toggleDrawer={toggleDrawer}/>
           <>
             {!isAuthenticated && (
               <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -457,7 +460,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             {isAuthenticated && (
               <Box minHeight="100vh">
                 <Box>
-                  <Header />
+                  <Header  toggleDrawer={toggleDrawer} openDrawer={openDrawer}/>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Box
@@ -470,7 +473,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       fontSize={'22px'}
                       m={'1.5rem 1.2rem 0.8rem'}
                       color={theme?.palette?.warning['300']}
-                      className="joyride-step-1"
+                      className='joyride-step-1'
                     >
                       {t('DASHBOARD.DASHBOARD')}
                     </Typography>
@@ -486,8 +489,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Box
                     paddingBottom={'25px'}
                     width={'100%'}
-                    className="linerGradient br-md-8"
+                    className="linerGradient br-md-8 "
                   >
+                    <Box className='joyride-step-2'>
                     <Box
                       display={'flex'}
                       flexDirection={'column'}
@@ -525,7 +529,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         </Box>
 
                         <Box
-                          className="calenderTitle flex-center joyride-step-2 ps-md-ab right-md-20"
+                          className="calenderTitle flex-center joyride-step-3 ps-md-ab right-md-20"
                           display={'flex'}
                           sx={{
                             cursor: 'pointer',
@@ -583,7 +587,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               display={'flex'}
                               gap={'5px'}
                               alignItems={'center'}
-                              className="joyride-step-3"
                             >
                               {currentAttendance !== 'notMarked' &&
                                 currentAttendance !== 'futureDate' && (
@@ -665,7 +668,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               )}
                             </Box>
                             <Button
-                              className="joyride-step-4 btn-mark-width"
+                              className="btn-mark-width"
                               variant="contained"
                               color="primary"
                               sx={{
@@ -729,6 +732,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Box sx={{ padding: '0 20px' }}>
                       <Divider sx={{ borderBottomWidth: '0.1rem' }} />
                     </Box>
+                    </Box>
 
                     {/* Overview Card Section */}
                     <Box
@@ -767,7 +771,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               sx={{ color: theme.palette.secondary.main }}
                             >
                               <Link
-                                className="flex-center fs-14 text-decoration"
+                                className="flex-center fs-14 text-decoration joyride-step-4"
                                 href={'/attendance-overview'}
                                 style={{
                                   color: theme.palette.secondary.main,
@@ -813,7 +817,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                         cohortsData &&
                         lowAttendanceLearnerList ? (
                         <Grid container spacing={2}>
-                          <Grid item xs={4} className={'joyride-step-5'}>
+                          <Grid item xs={4}>
                             <OverviewCard
                               label={t('ATTENDANCE.CENTER_ATTENDANCE')}
                               value={
@@ -823,7 +827,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               }
                             />
                           </Grid>
-                          <Grid item xs={8} className={'joyride-step-6'}>
+                          <Grid item xs={8}>
                             <OverviewCard
                               label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
                               {...(loading && (
@@ -884,59 +888,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <AttendanceComparison blockName={blockName} />
                   </Box>
                 )}
-                {/* <Box sx={{ background: '#fff' }}>
-            <Typography
-              textAlign={'left'}
-              fontSize={'0.8rem'}
-              pl={'1rem'}
-              pt={'1rem'}
-              color={'black'}
-              fontWeight={'600'}
-            >
-              {t('DASHBOARD.MY_TIMETABLE')}
-            </Typography>
-            <WeekDays useAbbreviation={false} />
-          </Box>
-          <Box
-            sx={{
-              background: '#fff',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <Box width={'100%'}>
-              <TimeTableCard
-                subject={'Science'}
-                instructor={'Khapari Dharmu'}
-                time={'10 am - 1 pm'}
-              />
-              <TimeTableCard
-                subject={'Home Science'}
-                instructor={'Khapari Dharmu'}
-                time={'2 pm - 5 pm'}
-              />
-              <Typography
-                textAlign={'left'}
-                fontSize={'0.8rem'}
-                ml={'1rem'}
-                color={'black'}
-                fontWeight={'600'}
-              >
-                {t('DASHBOARD.UPCOMING_EXTRA_SESSION')}
-              </Typography>
-              <ExtraSessionsCard
-                subject={'Science'}
-                instructor={'Upendra Kulkarni'}
-                dateAndTime={'27 May, 11am - 12pm'}
-                meetingURL={
-                  'https://meet.google.com/fqz-ftoh-dynfqz-ftoh-dynfqz-ftoh-dyn'
-                }
-                onEditClick={() => {
-                  console.log('edit');
-                }}
-              />
-            </Box>
-          </Box> */}
               </Box>
             )}
           </>

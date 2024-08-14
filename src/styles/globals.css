@@ -1010,15 +1010,20 @@ legend.Mui-focused {
   color: var(--mui-palette-warning-300) !important;
 }
 
+.__floater .__floater__open {
+  z-index: 9999 !important;
+}
+
+.react-joyride__spotlight {
+  z-index: 9999 !important;
+}
+
 /* Remove yellow border on focus */
 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #1F1B13 !important; /* Set this to the desired color or 'inherit' to remove the focus color */
+  border-color: #1F1B13 !important;
 }
 
 /* Remove yellow color from label on focus */
 .MuiInputLabel-root.Mui-focused {
-  color: #1F1B13 !important; /* Set this to the desired color or 'inherit' to remove the focus color */
+  color: #1F1B13 !important; 
 }
-/* *{
-  border: 1px solid red;
-} */

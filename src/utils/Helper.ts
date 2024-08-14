@@ -281,14 +281,16 @@ export const accessGranted = (
 
 export const generateUsernameAndPassword = (
   stateCode: string,
-  role: string
+  role: string,
+  yearOfJoining: string
 ) => {
   const currentYear = new Date().getFullYear().toString().slice(-2);
   const randomNum = Math.floor(10000 + Math.random() * 90000).toString();
-
+  const yearSuffix =
+    yearOfJoining !== '' ? yearOfJoining.slice(-2) : currentYear;
   const username =
     role === 'F'
-      ? `FSC${stateCode}${currentYear}${randomNum}`
+      ? `FSC${stateCode}${yearSuffix}${randomNum}`
       : `SC${stateCode}${currentYear}${randomNum}`;
   const password = randomNum;
 
@@ -396,4 +398,8 @@ export const getUserDetailsById = (data: any[], userId: any) => {
   }
 
   return null;
+};
+
+export const getEmailPattern = (): string => {
+  return '^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$';
 };
