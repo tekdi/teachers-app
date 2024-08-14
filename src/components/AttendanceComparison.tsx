@@ -22,7 +22,7 @@ import { useTranslation } from 'next-i18next';
 import useStore from '../store/store';
 import { useTheme } from '@mui/material/styles';
 import { overallAttendanceInPercentageStatusList } from '@/services/AttendanceService';
-import { cohortPrivileges } from '@/utils/app.constant';
+import { CenterType, cohortPrivileges } from '@/utils/app.constant';
 
 interface AttendanceComparisonProps {
   blockName: string;
@@ -158,59 +158,61 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
           {t('DASHBOARD.CENTER_TYPE')}
         </Typography>
         <RadioGroup
-          row
-          aria-label="center type"
-          name="centerType"
-          value={centerType}
-          onChange={handleCenterTypeChange}
-        >
-          <FormControlLabel
-            color="black"
-            value="REGULAR"
-            control={
-              <Radio
-                sx={{
-                  '&.Mui-checked': {
-                    color: 'black',
-                  },
-                }}
-              />
-            }
-            label="Regular"
-            sx={{
-              '& .MuiFormControlLabel-label': {
-                color: 'black',
-                fontSize: '18px',
-              },
-            }}
-          />
-          <FormControlLabel
-            value="REMOTE"
-            control={
-              <Radio
-                sx={{
-                  '&.Mui-checked': {
-                    color: 'black',
-                  },
-                }}
-              />
-            }
-            label="Remote"
-            sx={{
-              '& .MuiFormControlLabel-label': {
-                color: 'black',
-                fontSize: '18px',
-              },
-            }}
-          />
-        </RadioGroup>
-      </FormControl>
+        row
+        aria-label="center type"
+        name="centerType"
+        value={centerType}
+        onChange={handleCenterTypeChange}
+      >
+        <FormControlLabel
+          color="black"
+          value="REGULAR"
+          control={
+            <Radio
+              sx={{
+                '&.Mui-checked': {
+                  color: 'black',
+                },
+              }}
+            />
+          }
+          label="Regular"
+          sx={{
+            '& .MuiFormControlLabel-label': {
+              color: 'black',
+              fontSize: '18px',
+            },
+          }}
+        />
+        <FormControlLabel
+          value="REMOTE"
+          control={
+            <Radio
+              sx={{
+                '&.Mui-checked': {
+                  color: 'black',
+                },
+              }}
+            />
+          }
+          label="Remote"
+          sx={{
+            '& .MuiFormControlLabel-label': {
+              color: 'black',
+              fontSize: '18px',
+            },
+          }}
+        />
+      </RadioGroup>
       <Box sx={{ mt: 2 }}>
-        <Typography align="left" sx={{ marginBottom: '16px' }}>
-          {t('DASHBOARD.BLOCK_AVERAGE_ATTENDANCE')}:{' '}
-          {averageAttendance.toFixed(2)}%
+        <Typography align="left" sx={{ marginBottom: '16px', fontSize: '15px'}}>
+          {centerType === CenterType.REMOTE
+            ? t('DASHBOARD.REMOTE_AVERAGE_ATTENDANCE')
+            : t('DASHBOARD.REGULAR_AVERAGE_ATTENDANCE')}
+          : {averageAttendance.toFixed(2)}%
         </Typography>
-
+      </Box>
+    </FormControl>
         <Box sx={{ height: '400px', overflowY: 'scroll' }}>
           <ResponsiveContainer width="100%" height={data.length * 70}>
             <BarChart
@@ -295,7 +297,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
           </Typography>
         </Box>
       </Box>
-    </Box>
+    
   );
 };
 
