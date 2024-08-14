@@ -197,7 +197,7 @@ const TeachingCenters = () => {
   return (
     <>
       <Header />
-      {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />}
+      {loading && <Loader showBackdrop={false} loadingText={t('LOADING')} />}
       <Box sx={{ padding: '0' }}>
         {accessGranted('showBlockLevelData', accessControl, userRole) ? (
           <>
@@ -299,6 +299,9 @@ const TeachingCenters = () => {
                         '& .MuiOutlinedInput-root': {
                           boxShadow: 'none',
                         },
+                        '@media (min-width: 900px)': {
+                          width: '90%',
+                        },
                       }}
                       InputProps={{
                         endAdornment: (
@@ -323,11 +326,22 @@ const TeachingCenters = () => {
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={4} marginTop={'8px'}>
-                  <Box>
+                <Grid item xs={4}>
+                  <Box sx={{
+                    '@media (min-width: 900px)': {
+                      display: 'flex',
+                      justifyContent: 'end'
+
+                    },
+                  }}>
                     <FormControl
                       className="drawer-select"
-                      sx={{ width: '100%' }}
+                      sx={{
+                        width: '100%',
+                        '@media (min-width: 900px)': {
+                          width: '40%',
+                        },
+                      }}
                     >
                       <Button
                         variant="outlined"
