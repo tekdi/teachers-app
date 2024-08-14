@@ -886,7 +886,7 @@ main {
   }
 
   .__floater__open {
-    z-index: 9999 !important;
+    z-index: 99999 !important;
   }
 }
 
