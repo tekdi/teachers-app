@@ -370,7 +370,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             }}
             endIcon={
               <ErrorOutlineIcon
-                sx={{ fontSize: '24px !important' }}
+                sx={{ fontSize: '18px !important' }}
               />
             }
             onClick={() => {
