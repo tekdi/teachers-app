@@ -249,26 +249,27 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean, user?: any, teacherUserId?: string) =>
-      (event: React.KeyboardEvent | React.MouseEvent) => {
-        setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
-        if (!isFromFLProfile) {
-          console.log(user);
-          const cohortNamesArray = user?.cohortNames?.split(', ');
-          const centerNames = cohortNamesArray?.map((cohortName: string) => cohortName.trim()) || [t('ATTENDANCE.N/A')];
-          setCenters(centerNames);
-          setSelectedUser(user);
-        }
+    (event: React.KeyboardEvent | React.MouseEvent) => {
+      setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
+      if (!isFromFLProfile) {
+        const cohortNamesArray = user?.cohortNames?.split(', ');
+        const centerNames = cohortNamesArray?.map((cohortName: string) =>
+          cohortName.trim()
+        ) || [t('ATTENDANCE.N/A')];
+        setCenters(centerNames);
+        setSelectedUser(user);
+      }
 
-        if (
-          event.type === 'keydown' &&
-          ((event as React.KeyboardEvent).key === 'Tab' ||
-            (event as React.KeyboardEvent).key === 'Shift')
-        ) {
-          return;
-        }
+      if (
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
 
-        setState({ ...state, bottom: open });
-      };
+      setState({ ...state, bottom: open });
+    };
 
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
@@ -472,7 +473,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     setOpenFacilitatorModal(false);
   };
 
-  const handleDeleteUser = () => { };
+  const handleDeleteUser = () => {};
 
   const handleFacilitatorAdded = () => {
     setIsFacilitatorAdded((prev) => prev);
@@ -487,10 +488,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       ) : (
         <>
           {/* <Header /> */}
-          <Box>
-           
-          </Box>
-        
+          <Box></Box>
+
           <Box>
             {value === 1 && (
               <>
@@ -502,9 +501,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                     sx={{ display: 'flex', alignItems: 'center' }}
                     container
                   >
-                    <Grid item xs={8}>
-                   
-                    </Grid>
+                    <Grid item xs={8}></Grid>
                     <Box mt={'18px'} px={'18px'}>
                       <Button
                         sx={{
@@ -528,7 +525,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                   {isFromFLProfile ? (
                     <MoreVertIcon
                       onClick={(event) => {
-                        isMobile ? toggleDrawer('bottom', true, teacherUserId)(event) : handleMenuOpen(event)
+                        isMobile
+                          ? toggleDrawer('bottom', true, teacherUserId)(event)
+                          : handleMenuOpen(event);
                       }}
                       sx={{
                         fontSize: '24px',
@@ -636,9 +635,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                             }}
                                           >
                                             {user?.cohortNames
-                                              ? `${user.cohortNames.charAt(0)
-                                                .toUpperCase() +
-                                                user.cohortNames.slice(1)}`
+                                              ? `${
+                                                  user.cohortNames
+                                                    .charAt(0)
+                                                    .toUpperCase() +
+                                                  user.cohortNames.slice(1)
+                                                }`
                                               : t('ATTENDANCE.N/A')}
                                           </Box>
                                         </Box>
@@ -646,7 +648,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                       <Box>
                                         <MoreVertIcon
                                           onClick={(event) => {
-                                            isMobile ? toggleDrawer('bottom', true, user)(event) : handleMenuOpen(event)
+                                            isMobile
+                                              ? toggleDrawer(
+                                                  'bottom',
+                                                  true,
+                                                  user
+                                                )(event)
+                                              : handleMenuOpen(event);
                                           }}
                                           sx={{
                                             fontSize: '24px',
@@ -668,7 +676,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                   width: '100%',
                                 }}
                               >
-                                <Typography style={{ fontWeight: 'bold', width: '100%', textAlign: 'center' }}>
+                                <Typography
+                                  style={{
+                                    fontWeight: 'bold',
+                                    width: '100%',
+                                    textAlign: 'center',
+                                  }}
+                                >
                                   {t('COMMON.NO_DATA_FOUND')}
                                 </Typography>
                               </Box>
@@ -724,6 +738,20 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                     ]}
                   >
                     <Box
+                      sx={{
+                        fontSize: '16px',
+                        fontWeight: 300,
+                        marginLeft: '20px',
+                        marginBottom: '10px',
+                        color: theme.palette.warning['400'],
+                      }}
+                    >
+                      {selectedUser?.name
+                        ? selectedUser.name.charAt(0).toUpperCase() +
+                          selectedUser.name.slice(1)
+                        : ''}
+                    </Box>
+                    <Box
                       bgcolor={theme.palette.success.contrastText}
                       display="flex"
                       flexDirection="column"
@@ -733,7 +761,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                       padding={'1rem'}
                       borderRadius={'1rem'}
                     >
-                      <Box sx={{ fontSize: "12px", fontWeight: 500, color: theme.palette.warning['400'] }}>
+                      <Box
+                        sx={{
+                          fontSize: '12px',
+                          fontWeight: 500,
+                          color: theme.palette.warning['400'],
+                        }}
+                      >
                         {t('COMMON.CENTERS_ASSIGNED', {
                           block: newStore.block,
                         })}
@@ -748,9 +782,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                 | bigint
                                 | boolean
                                 | React.ReactElement<
-                                  any,
-                                  string | React.JSXElementConstructor<any>
-                                >
+                                    any,
+                                    string | React.JSXElementConstructor<any>
+                                  >
                                 | Iterable<React.ReactNode>
                                 | React.ReactPortal
                                 | Promise<React.AwaitedReactNode>
