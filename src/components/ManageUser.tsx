@@ -10,6 +10,7 @@ import { cohortList, getCohortList } from '@/services/CohortServices';
 import { Role, Status } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ApartmentIcon from '@mui/icons-material/Apartment';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Box from '@mui/material/Box';
@@ -635,7 +636,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                             }}
                                           >
                                             {user?.cohortNames
-                                              ? `${user.cohortNames}`
+                                              ? `${user.cohortNames.charAt(0)
+                                                .toUpperCase() +
+                                                user.cohortNames.slice(1)}`
                                               : t('ATTENDANCE.N/A')}
                                           </Box>
                                         </Box>
@@ -694,7 +697,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                       {
                         label: t('COMMON.REASSIGN_BLOCKS'),
                         icon: (
-                          <LocationOnOutlinedIcon
+                          <ApartmentIcon
                             sx={{ color: theme.palette.warning['300'] }}
                           />
                         ),

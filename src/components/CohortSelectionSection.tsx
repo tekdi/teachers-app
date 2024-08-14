@@ -13,7 +13,7 @@ import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
 import { ICohort } from '@/utils/Interfaces';
 import { CustomField } from '@/utils/Interfaces';
-import { cohortHierarchy } from '@/utils/app.constant';
+import { CenterType, cohortHierarchy } from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import ReactGA from 'react-ga4';
@@ -354,17 +354,17 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             {cohortsData?.length !== 0 ? (
                               manipulatedCohortData?.map((cohort) => (
                                 <MenuItem
-                                  key={cohort.cohortId}
-                                  value={cohort.cohortId}
-                                  style={{
-                                    fontWeight: '500',
-                                    fontSize: '14px',
-                                    color: theme.palette.warning['A200'],
-                                    textTransform: 'capitalize',
-                                  }}
-                                >
-                                  {cohort.name} ({cohort?.typeOfCohort})
-                                </MenuItem>
+                                key={cohort.cohortId}
+                                value={cohort.cohortId}
+                                style={{
+                                  fontWeight: '500',
+                                  fontSize: '14px',
+                                  color: theme.palette.warning['A200'],
+                                  textTransform: 'capitalize',
+                                }}
+                              >
+                                {cohort.name} {cohort?.typeOfCohort === CenterType.REGULAR || CenterType.UNKNOWN &&`(${cohort.typeOfCohort})`}
+                              </MenuItem>
                               ))
                             ) : (
                               <Typography
