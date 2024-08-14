@@ -41,6 +41,7 @@ import {
   getUserDetailsById,
   mapFieldIdToValue,
   toPascalCase,
+  translateString,
 } from '@/utils/Helper';
 import { logEvent } from '@/utils/googleAnalytics';
 import {
@@ -411,7 +412,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
             selectedOption !== '-'
               ? selectedOption.label
               : field?.value
-                ? toPascalCase(field?.value)
+                ? translateString(t, field?.value)
                 : '-',
         };
       }
