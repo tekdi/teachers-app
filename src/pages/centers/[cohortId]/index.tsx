@@ -378,6 +378,8 @@ const TeachingCenterDetails = () => {
           <RenameCenterModal
             open={openRenameCenterModal}
             handleClose={handleRenameCenterClose}
+            reloadState={reloadState}
+            setReloadState={setReloadState}
           />
           <DeleteCenterModal
             open={openDeleteCenterModal}
