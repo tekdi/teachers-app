@@ -1009,3 +1009,13 @@ legend.Mui-focused {
 .MuiRadio-root.Mui-checked {
   color: var(--mui-palette-warning-300) !important;
 }
+
+/* Remove yellow border on focus */
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #1F1B13 !important; /* Set this to the desired color or 'inherit' to remove the focus color */
+}
+
+/* Remove yellow color from label on focus */
+.MuiInputLabel-root.Mui-focused {
+  color: #1F1B13 !important; /* Set this to the desired color or 'inherit' to remove the focus color */
+}

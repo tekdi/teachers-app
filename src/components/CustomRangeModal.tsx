@@ -81,7 +81,7 @@ const CustomRangeModal: React.FC = () => {
             sx={{
               paddingTop: '20px',
               display: 'flex',
-              gap: '10px',
+              gap: '30px',
               justifyContent: 'end',
             }}
           >

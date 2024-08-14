@@ -400,7 +400,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
             sx={{
               padding: '20px 18px 10px',
               display: 'flex',
-              gap: '10px',
+              gap: '30px',
               justifyContent: 'end',
             }}
           >

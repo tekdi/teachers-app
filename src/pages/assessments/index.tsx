@@ -214,6 +214,7 @@ const Assessments = () => {
                   justifyContent: 'space-between',
                   borderRadius: '8px',
                   gap: '5px',
+                  background: '#fff'
                 }}
                 onClick={() => handleAssessmentDetails(assessment.userId)}
               >
@@ -304,8 +305,8 @@ const Assessments = () => {
       <SortingModal
         isModalOpen={modalOpen}
         handleCloseModal={handleCloseModal}
-        // handleSorting={handleSorting}
-        // routeName={pathname}
+      // handleSorting={handleSorting}
+      // routeName={pathname}
       />
     </>
   );
