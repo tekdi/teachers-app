@@ -315,6 +315,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                   <Typography
                     color={theme.palette.warning['300']}
                     textAlign={'left'}
+                    sx={{ fontSize: '12px', color: '#777' }}
                   >
                     {blockName} {t('DASHBOARD.BLOCK')}
                   </Typography>

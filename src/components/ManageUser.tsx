@@ -550,7 +550,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                           sx={{
                             gap: '15px',
                             alignItems: 'center',
-                            '@media (min-width: 900px)': {
+                            '@media (min-width: 600px)': {
                               background: theme.palette.action.selected,
                               padding: '20px',
                               borderRadius: '12px',
@@ -567,7 +567,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                   <Grid
                                     item
                                     xs={12}
-                                    sm={4}
+                                    sm={6}
                                     md={4}
                                     key={user.userId}
                                   >
@@ -579,7 +579,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                       justifyContent={'space-between'}
                                       sx={{
                                         cursor: 'pointer',
-                                        '@media (min-width: 900px)': {
+                                        '@media (min-width: 600px)': {
                                           border: `1px solid  ${theme.palette.action.selected}`,
                                           padding: '4px 10px',
                                           borderRadius: '8px',

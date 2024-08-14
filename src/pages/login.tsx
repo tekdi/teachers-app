@@ -245,15 +245,17 @@ const LoginPage = () => {
           <Image src={appLogo} alt="App Logo" height={100} />{' '}
         </Box>
       </Box>
-      <Grid container spacing={2} alignItems={'center'}>
+
+      <Grid container spacing={2}
+        justifyContent={'center'} px={'30px'} alignItems={'center'}>
         <Grid sx={{
-          '@media (max-width: 1200px)': {
+          '@media (max-width: 900px)': {
             display: 'none'
           },
-        }} item xs={12} sm={12} md={12} lg={6}>
+        }} item xs={12} sm={12} md={6}>
           <Image className='login-img' src={loginImg} alt="Login Image" layout="responsive" />
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <form onSubmit={handleFormSubmit}>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Box
@@ -267,18 +269,17 @@ const LoginPage = () => {
                 borderRadius={'2rem 2rem 0 0'}
                 marginTop={'-25px'}
                 sx={{
-                  '@media (min-width: 1200px)': {
-                    // border: '1px solid red',
-                    mr: '70px',
-                    width: 'fit-content',
+                  '@media (min-width: 900px)': {
+                    width: '100%',
                     borderRadius: '16px',
                     boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px'
                   },
                 }}
               >
                 <Box
-                  position={'relative'}
+
                   sx={{
+                    width: '100%',
                     '@media (max-width: 700px)': {
                       width: '100%',
                     },
@@ -315,6 +316,9 @@ const LoginPage = () => {
                       '@media (max-width: 700px)': {
                         width: '100%',
                       },
+                      '@media (min-width: 900px)': {
+                        width: '100%',
+                      },
                     }}
                   >
                     <TextField
@@ -334,6 +338,9 @@ const LoginPage = () => {
                     sx={{
                       width: '668px',
                       '@media (max-width: 768px)': {
+                        width: '100%',
+                      },
+                      '@media (min-width: 900px)': {
                         width: '100%',
                       },
                     }}
@@ -420,7 +427,7 @@ const LoginPage = () => {
                       disabled={isButtonDisabled}
                       ref={loginButtonRef}
                       sx={{
-                        '@media (min-width: 1200px)': {
+                        '@media (min-width: 900px)': {
                           width: '50%'
                         }
                       }}

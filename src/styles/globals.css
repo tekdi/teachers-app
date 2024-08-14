@@ -998,8 +998,8 @@ legend.Mui-focused {
 }
 
 .login-img{
-  height: 750px !important;
-  width: 92% !important;
+  /* height: 500px !important; */
+  width: 90% !important;
 }
 
 .capitalize {
@@ -1008,10 +1008,22 @@ legend.Mui-focused {
 
 .MuiRadio-root.Mui-checked {
   color: var(--mui-palette-warning-300) !important;
-.__floater __floater__open {
+}
+
+.__floater __floater__open  {
   z-index: 9999 !important;
-}}
+}
 
 .react-joyride__spotlight {
   z-index: 9999 !important;
+}
+
+/* Remove yellow border on focus */
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--mui-palette-warning-300) !important;
+}
+
+/* Remove yellow color from label on focus */
+.MuiInputLabel-root.Mui-focused {
+  color: var(--mui-palette-warning-300) !important; 
 }
