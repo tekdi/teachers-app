@@ -166,7 +166,8 @@
     "LEARNER": "Learners",
     "ATTENDANCE_COMPARISON": "Attendance Comparison",
     "CENTER_TYPE": "Center Type",
-    "BLOCK_AVERAGE_ATTENDANCE": "Block Average Attendance",
+    "REMOTE_AVERAGE_ATTENDANCE": "Remote Average Attendance",
+    "REGULAR_AVERAGE_ATTENDANCE": "Regular Average Attendance",
     "BLOCK": "Block",
     "ATTENDANCE": "Attendance (%)"
   },

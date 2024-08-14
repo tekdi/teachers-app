@@ -21,7 +21,7 @@ import ManageUser from '@/components/ManageUser';
 import { showToastMessage } from '@/components/Toastify';
 import CreateCenterModal from '@/components/center/CreateCenterModal';
 import useStore from '@/store/store';
-import { Role } from '@/utils/app.constant';
+import { CenterType, Role } from '@/utils/app.constant';
 import { ArrowDropDown, Clear, Search } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -394,7 +394,7 @@ const TeachingCenters = () => {
                     {/* Regular Centers */}
                     {filteredCenters.some(
                       (center) =>
-                        center.centerType?.toUpperCase() === 'REGULAR' ||
+                        center.centerType?.toUpperCase() === CenterType.REGULAR ||
                         center.centerType === ''
                     ) && (
                         <>
@@ -423,7 +423,7 @@ const TeachingCenters = () => {
                                 .filter(
                                   (center) =>
                                     center?.centerType?.toUpperCase() ===
-                                    'REGULAR' || center?.centerType === ''
+                                    CenterType.REGULAR || center?.centerType === ''
                                 )
                                 .map((center) => (
                                   <Grid
@@ -506,7 +506,7 @@ const TeachingCenters = () => {
 
                     {/* Remote Centers */}
                     {filteredCenters.some(
-                      (center) => center.centerType?.toUpperCase() === 'REMOTE'
+                      (center) => center.centerType?.toUpperCase() === CenterType.REMOTE
                     ) && (
                         <>
                           <Box
@@ -533,7 +533,7 @@ const TeachingCenters = () => {
                               {filteredCenters
                                 .filter(
                                   (center) =>
-                                    center.centerType?.toUpperCase() === 'REMOTE'
+                                    center.centerType?.toUpperCase() === CenterType.REMOTE
                                 )
                                 .map((center) => (
                                   <Grid
