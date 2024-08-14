@@ -214,7 +214,7 @@ const Assessments = () => {
                   justifyContent: 'space-between',
                   borderRadius: '8px',
                   gap: '5px',
-                  background: '#fff'
+                  background: theme.palette.warning['A400']
                 }}
                 onClick={() => handleAssessmentDetails(assessment.userId)}
               >

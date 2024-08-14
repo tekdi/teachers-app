@@ -1010,7 +1010,7 @@ legend.Mui-focused {
   color: var(--mui-palette-warning-300) !important;
 }
 
-.__floater .__floater__open {
+.__floater __floater__open  {
   z-index: 9999 !important;
 }
 
@@ -1020,10 +1020,10 @@ legend.Mui-focused {
 
 /* Remove yellow border on focus */
 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #1F1B13 !important;
+  border-color: var(--mui-palette-warning-300) !important;
 }
 
 /* Remove yellow color from label on focus */
 .MuiInputLabel-root.Mui-focused {
-  color: #1F1B13 !important; 
+  color: var(--mui-palette-warning-300) !important; 
 }
