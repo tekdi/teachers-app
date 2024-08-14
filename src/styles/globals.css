@@ -998,8 +998,8 @@ legend.Mui-focused {
 }
 
 .login-img{
-  height: 750px !important;
-  width: 92% !important;
+  /* height: 500px !important; */
+  width: 90% !important;
 }
 
 .capitalize {
@@ -1019,3 +1019,6 @@ legend.Mui-focused {
 .MuiInputLabel-root.Mui-focused {
   color: #1F1B13 !important; /* Set this to the desired color or 'inherit' to remove the focus color */
 }
+/* *{
+  border: 1px solid red;
+} */
