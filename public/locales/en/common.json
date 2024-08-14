@@ -196,10 +196,11 @@
     "CENTER_ATTENDANCE": "Center Attendance",
     "LOW_ATTENDANCE_STUDENTS": "Low Attendance Learners",
     "N/A": "No Centers Assigned",
+    "NO_ATTENDANCE": "0 %",
     "UNKNOWN": "Unknown",
     "CENTER_NAME": "Center Name",
     "ALL_CENTERS": "All Centers",
-    "NO_LEARNER_WITH_LOW_ATTENDANCE": "No Learner with low attendance",
+    "NO_LEARNER_WITH_LOW_ATTENDANCE": "None",
     "ATTENDANCE_MARKED_OUT_OF_DAYS": "Attendance marked: {{count}} out of last 7 days"
   },
   "PROFILE": {

@@ -69,9 +69,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [loading, setLoading] = React.useState(false);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [cohortPresentPercentage, setCohortPresentPercentage] =
-    React.useState<string>(t('ATTENDANCE.N/A'));
+    React.useState<string>(t('ATTENDANCE.NO_ATTENDANCE'));
   const [lowAttendanceLearnerList, setLowAttendanceLearnerList] =
-    React.useState<any>(t('ATTENDANCE.N/A'));
+    React.useState<any>(t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'));
   const [startDateRange, setStartDateRange] = React.useState<Date | string>('');
   const [endDateRange, setEndDateRange] = React.useState<Date | string>('');
   const [dateRange, setDateRange] = React.useState<Date | string>('');
@@ -238,7 +238,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
               } else if (contextData?.absent_percentage) {
                 setCohortPresentPercentage('0');
               } else {
-                setCohortPresentPercentage(t('ATTENDANCE.N/A'));
+                setCohortPresentPercentage(t('ATTENDANCE.NO_ATTENDANCE'));
               }
             };
             cohortAttendancePercent();
@@ -821,7 +821,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             <OverviewCard
                               label={t('ATTENDANCE.CENTER_ATTENDANCE')}
                               value={
-                                cohortPresentPercentage === t('ATTENDANCE.N/A')
+                                cohortPresentPercentage === t('ATTENDANCE.NO_ATTENDANCE')
                                   ? cohortPresentPercentage
                                   : `${cohortPresentPercentage} %`
                               }
@@ -851,7 +851,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                         ? t(
                                           'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
                                         )
-                                        : t('ATTENDANCE.N/A')
+                                        : t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
                               }
                               valuePartTwo={
                                 Array.isArray(lowAttendanceLearnerList) &&

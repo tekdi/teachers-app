@@ -282,7 +282,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             } else if (contextData?.absent_percentage) {
               setPresentPercentage(0);
             } else {
-              setPresentPercentage(t('ATTENDANCE.N/A'));
+              setPresentPercentage(t('ATTENDANCE.NO_ATTENDANCE'));
             }
           };
           cohortAttendancePercent();
@@ -326,10 +326,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             console.log('Fetched data:', results);
 
             const nameIDAttendanceArray = results
-              .filter(
-                (result) =>
-                  !result.error && result?.data?.contextId
-              )
+              .filter((result) => !result.error && result?.data?.contextId)
               .map((result) => {
                 const cohortId = result.cohortId;
                 const contextData = result.data.contextId[cohortId] || {};
@@ -573,7 +570,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     value={
                       learnerData.length
                         ? presentPercentage + ' %'
-                        : t('ATTENDANCE.N/A')
+                        : t('ATTENDANCE.NO_ATTENDANCE')
                     }
                   />
                 </Grid>
@@ -597,7 +594,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                             : Array.isArray(lowAttendanceLearnerList) &&
                                 lowAttendanceLearnerList.length === 0
                               ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
-                              : t('ATTENDANCE.N/A')
+                              : t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
                     }
                     valuePartTwo={
                       Array.isArray(lowAttendanceLearnerList) &&
