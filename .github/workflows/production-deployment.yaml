@@ -3,7 +3,7 @@ name: PROD DEPLOYMENT WITH TAG
 on:
   push:
     tags:
-      - 'v0.0.0' 
+      - 'v1.0.0' 
 
 env:
   DEPLOY_TAG: ${{ github.ref_name }}  
