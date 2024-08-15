@@ -3,9 +3,12 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ErrorIcon from '../../public/images/404.png'; // Make sure to replace this with the actual path to your image
 import Image from 'next/image';
-
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 
 const PageNotFound = () => {
+  const { t } = useTranslation();
+
   return (
     <Box
       py={4}
@@ -24,10 +27,19 @@ const PageNotFound = () => {
         fontWeight="600"
         color="black"
       >
-        Page not Found
+        {t('COMMON.PAGE_NOT_FOUND')}
       </Typography>
     </Box>
   );
 };
+
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  };
+}
 
 export default PageNotFound;

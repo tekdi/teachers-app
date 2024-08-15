@@ -1,102 +1,77 @@
 'use client';
 
 import { Box, Stack } from '@mui/material';
-import Menu, { MenuProps } from '@mui/material/Menu';
-import { alpha, styled } from '@mui/material/styles';
-import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import MenuItem from '@mui/material/MenuItem';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
+import { usePathname, useRouter } from 'next/navigation';
+import ConfirmationModal from './ConfirmationModal';
 import Image from 'next/image';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import MenuItem from '@mui/material/MenuItem';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import accountIcon from './../assets/images/account.svg';
+import dynamic from 'next/dynamic';
+import { logEvent } from '@/utils/googleAnalytics';
 import logoLight from '../../public/images/logo-light.png';
 import menuIcon from '../assets/images/menuIcon.svg';
-import accountIcon from './../assets/images/account.svg';
-import { logEvent } from '@/utils/googleAnalytics';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
+import StyledMenu from './StyledMenu';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  toggleDrawer?: (newOpen: boolean) => () => void;
+  openDrawer?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
   const router = useRouter();
   const { t } = useTranslation();
   const pathname = usePathname();
   const theme = useTheme<any>();
+  const [userId, setUserId] = React.useState<string>('');
+  const [openMenu, setOpenMenu] = useState<boolean>(false);
 
-  const StyledMenu = styled((props: MenuProps) => (
-    <Menu
-      elevation={0}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      {...props}
-    />
-  ))(() => ({
-    '& .MuiPaper-root': {
-      borderRadius: 6,
-      marginTop: theme.spacing(1),
-      minWidth: 180,
-      color:
-        theme.palette.mode === 'light'
-          ? 'rgb(55, 65, 81)'
-          : theme.palette.grey[300],
-      boxShadow:
-        'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-      '& .MuiMenu-list': {
-        padding: '4px 0',
-      },
-      '& .MuiMenuItem-root': {
-        '& .MuiSvgIcon-root': {
-          fontSize: 18,
-          color: theme.palette.text.secondary,
-          marginRight: theme.spacing(1.5),
-        },
-        '&:active': {
-          backgroundColor: alpha(
-            theme.palette.primary.main,
-            theme.palette.action.selectedOpacity
-          ),
-        },
-      },
-    },
-  }));
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedUserId = localStorage.getItem('userId') as string;
+      setUserId(storedUserId);
+    }
+  }, []);
 
   const handleProfileClick = () => {
-    if (pathname !== '/profile') {
-      router.push('/profile');
+    if (pathname !== `/user-profile/${userId}`) {
+      router.push(`/user-profile/${userId}`);
       logEvent({
         action: 'my-profile-clicked-header',
         category: 'Dashboard',
-        label: 'Profile Clicked',
+        label: 'Profile Clicked'
       });
     }
   };
+
   const handleLogoutClick = () => {
     router.replace('/logout');
     logEvent({
       action: 'logout-clicked-header',
       category: 'Dashboard',
       label: 'Logout Clicked',
+      
     });
   };
-  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpenDrawer(newOpen);
+
+  const handleToggleDrawer = (newOpen: boolean) => () => {
+    setOpenMenu(newOpen);
   };
   const MenuDrawer = dynamic(() => import('./MenuDrawer'), {
     ssr: false,
@@ -114,33 +89,68 @@ const Header: React.FC = () => {
 
   const [language, setLanguage] = React.useState(selectedLanguage);
 
+  let hasSeenTutorial = false;
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const storedValue = localStorage.getItem('hasSeenTutorial');
+    if (storedValue !== null) {
+      hasSeenTutorial = storedValue === 'true'; // Convert string 'true' or 'false' to boolean
+    }
+  }
+
+  const getMessage = () => {
+    if (modalOpen) return t('COMMON.SURE_LOGOUT');
+    return '';
+  };
+
+  const handleCloseModel = () => {
+    setModalOpen(false);
+  };
+
+  const logoutOpen = () => {
+    handleClose();
+    setModalOpen(true);
+  };
+
   return (
-    <Box sx={{ marginBottom: '4rem' }}>
+    <Box
+      sx={{
+        height: '64px',
+      }}
+    >
       <Box
+        className="w-md-100 ps-md-relative"
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          position: 'fixed',
+          position: hasSeenTutorial ? 'fixed' : 'relative',
           top: '0px',
           zIndex: '999',
           width: '100%',
           bgcolor: ' #FFFFFF',
-          maxWidth: '899px',
         }}
       >
         <Stack
           width={'100%'}
-          // padding={'8px 0'}
           direction="row"
           justifyContent={'space-between'}
           alignItems={'center'}
           height="64px"
           boxShadow="0px 1px 3px 0px #0000004D"
+          className="pl-md-20"
         >
           <Box
-            onClick={toggleDrawer(true)}
+            onClick={() => {
+              if (openDrawer) {
+                
+                if (toggleDrawer) {
+                  toggleDrawer(true)();
+                }
+              } else {
+                handleToggleDrawer(true)();
+              }
+            }}
             mt={'0.5rem'}
-            sx={{ cursor: 'pointer' }}
+            className="display-md-none"
             paddingLeft={'20px'}
           >
             <Image
@@ -158,8 +168,8 @@ const Header: React.FC = () => {
             src={logoLight}
             alt="logo"
             onClick={() => router.push('/dashboard')}
-            style={{ cursor: 'pointer' }}
           />
+
           <Box
             onClick={handleClick}
             sx={{ cursor: 'pointer', position: 'relative' }}
@@ -196,22 +206,27 @@ const Header: React.FC = () => {
               open={open}
               onClose={handleClose}
             >
-              {pathname !== '/profile' && (
+              {pathname !== `/user-profile/${userId}` && (
                 <MenuItem
                   onClick={handleProfileClick}
                   disableRipple
                   sx={{ 'letter-spacing': 'normal' }}
                 >
                   <PersonOutlineOutlinedIcon />
-                  {t('PROFILE.MY_PROFILE')}{' '}
+                  {t('PROFILE.MY_PROFILE')}
                 </MenuItem>
               )}
               <MenuItem
-                onClick={handleLogoutClick}
+                onClick={logoutOpen}
                 disableRipple
-                sx={{ 'letter-spacing': 'normal' }}
+                sx={{
+                  'letter-spacing': 'normal',
+                  color: theme.palette.warning['300'],
+                }}
               >
-                <LogoutOutlinedIcon />
+                <LogoutOutlinedIcon
+                  sx={{ color: theme.palette.warning['300'] }}
+                />
                 {t('COMMON.LOGOUT')}
               </MenuItem>
             </StyledMenu>
@@ -219,13 +234,25 @@ const Header: React.FC = () => {
         </Stack>
       </Box>
 
+      <ConfirmationModal
+        message={getMessage()}
+        handleAction={handleLogoutClick}
+        buttonNames={{
+          primary: t('COMMON.LOGOUT'),
+          secondary: t('COMMON.CANCEL'),
+        }}
+        handleCloseModal={handleCloseModel}
+        modalOpen={modalOpen}
+      />
+
       <MenuDrawer
-        toggleDrawer={toggleDrawer}
-        open={openDrawer}
+        toggleDrawer={ openDrawer ? toggleDrawer : handleToggleDrawer}
+        open={openDrawer? openDrawer: openMenu}
         language={language}
         setLanguage={setLanguage}
       />
     </Box>
   );
 };
+
 export default Header;

@@ -31,8 +31,11 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
       minHeight={'6.2rem'}
       p={2}
       overflow={'hidden'}
-      className="flex-center"
       sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'start',
+        // minHeight: 'fit-content',
         minHeight: '6.2rem',
         '@media (max-width: 600px)': {
           minHeight: '7.4rem',
@@ -44,14 +47,18 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
           color={`${theme.palette.warning[400]}`}
           variant="h6"
           fontWeight={600}
-          sx={{ fontSize: '11px', color: '#7C766F' }}
+          sx={{ fontSize: '11px', color: theme.palette.warning['400'] }}
         >
           {label}
         </Typography>
         {value ? (
           <Typography
             variant="h2"
-            sx={{ color: '#1F1B13', fontSize: '16px', fontWeight: '500' }}
+            sx={{
+              color: theme.palette.warning['300'],
+              fontSize: '16px',
+              fontWeight: '500',
+            }}
             fontWeight={500}
           >
             {value}

@@ -1,4 +1,4 @@
-name: Deploy to Pratham-DEV-Deployment on Prahtam-AWS
+name: Deploy to dev-scp on Tekdi
 on:
   workflow_dispatch:
 jobs:

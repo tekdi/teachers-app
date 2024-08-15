@@ -1,6 +1,5 @@
 import { Box, Button, Fade, Modal, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
-import ToastMessage from '@/components/ToastMessage';
 import {
   attendanceStatusList,
   bulkAttendance,
@@ -11,15 +10,18 @@ import {
   toPascalCase,
 } from '../utils/Helper';
 
-import { AttendanceStatusListProps } from '../utils/Interfaces';
+import { AttendanceStatusListProps, DropoutMember } from '../utils/Interfaces';
 import AttendanceStatusListView from './AttendanceStatusListView';
 import Backdrop from '@mui/material/Backdrop';
 import CloseIcon from '@mui/icons-material/Close';
+import ConfirmationModal from './ConfirmationModal';
 import Loader from './Loader';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { showToastMessage } from './Toastify';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { showToastMessage } from './Toastify';
+import { Status } from '@/utils/app.constant';
+import ReactGA from 'react-ga4';
 
 interface MarkBulkAttendanceProps {
   open: boolean;
@@ -38,15 +40,32 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+
+  const [updateAttendance, setUpdateAttendance] = React.useState(false);
+  const [confirmation, setConfirmation] = React.useState(false);
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const attendanceUpdate = () => {
+    setUpdateAttendance(true);
+    setModalOpen(true);
+  };
+  const confirmationOpen = () => {
+    setConfirmation(true);
+    setModalOpen(true);
+  };
   const [loading, setLoading] = React.useState(false);
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
+  const [dropoutMemberList, setDropoutMemberList] = React.useState<
+    Array<DropoutMember>
+  >([]);
   const [presentCount, setPresentCount] = React.useState(0);
   const [absentCount, setAbsentCount] = React.useState(0);
+  const [dropoutCount, setDropoutCount] = React.useState(0);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
   const [isAllAttendanceMarked, setIsAllAttendanceMarked] =
     React.useState(false);
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
+  const [teacherUserId, setTeacherUserId]= React.useState<string>('');
 
   const modalContainer = {
     position: 'absolute',
@@ -106,10 +125,29 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     hasEmptyAttendance();
   };
 
+  const getPresentCount = (newArray: { userId: string; name: string; memberStatus: string; attendance: string; }[]) => {
+    setPresentCount(
+      newArray.filter(
+        (user: { attendance: string; }) => user.attendance === 'present'
+      ).length
+    );
+  }
+  const getAbsentCount = (newArray: { userId: string; name: string; memberStatus: string; attendance: string; }[]) => {
+    setAbsentCount(
+      newArray.filter(
+        (user: { attendance: string; }) => user.attendance === 'absent'
+      ).length
+    );
+  }
+  
   useEffect(() => {
     submitBulkAttendanceAction(true, '', '');
     const getCohortMemberList = async () => {
       setLoading(true);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const storedUserID = localStorage.getItem('userId');
+        setTeacherUserId(storedUserID ?? '');
+      }
       try {
         if (classId) {
           const limit = 300;
@@ -120,13 +158,20 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
             page,
             filters,
           });
-          const resp = response?.result?.results?.userDetails;
-
+          const resp = response?.result?.userDetails;
           if (resp) {
-            const nameUserIdArray = resp?.map((entry: any) => ({
-              userId: entry.userId,
-              name: toPascalCase(entry.name),
-            }));
+            let nameUserIdArray = resp
+              .map((entry: any) => ({
+                userId: entry.userId,
+                name: toPascalCase(entry.name),
+                memberStatus: entry.status,
+                createdAt: entry.createdAt,
+              }))
+              .filter((member: { createdAt: string | number | Date }) => {
+                const createdAt = new Date(member.createdAt);
+                return createdAt <= selectedDate;
+              });
+
             if (nameUserIdArray && selectedDate) {
               const formatSelectedDate = shortDateFormat(selectedDate);
               const userAttendanceStatusList = async () => {
@@ -175,7 +220,11 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
 
                   if (nameUserIdArray && userAttendanceArray) {
                     const mergeArrays = (
-                      nameUserIdArray: { userId: string; name: string }[],
+                      nameUserIdArray: {
+                        userId: string;
+                        name: string;
+                        memberStatus: string;
+                      }[],
                       userAttendanceArray: {
                         userId: string;
                         attendance: string;
@@ -183,11 +232,13 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                     ): {
                       userId: string;
                       name: string;
+                      memberStatus: string;
                       attendance: string;
                     }[] => {
                       const newArray: {
                         userId: string;
                         name: string;
+                        memberStatus: string;
                         attendance: string;
                       }[] = [];
                       nameUserIdArray.forEach((user) => {
@@ -199,25 +250,49 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                           newArray.push({
                             userId,
                             name: user.name,
+                            memberStatus: user.memberStatus,
                             attendance: attendanceEntry.attendance,
                           });
                         }
                       });
-                      if (newArray.length != 0) {
-                        setCohortMemberList(newArray);
-                        setPresentCount(
-                          newArray.filter(
-                            (user) => user.attendance === 'present'
-                          ).length
-                        );
-                        setAbsentCount(
-                          newArray.filter(
-                            (user) => user.attendance === 'absent'
-                          ).length
-                        );
+                      if (newArray.length !== 0) {
                         setNumberOfCohortMembers(newArray?.length);
+                        setCohortMemberList(newArray);
+                        getPresentCount(newArray);
+                        getAbsentCount(newArray);
+                        const hasDropout = newArray.some(
+                          (user) => user.memberStatus === Status.DROPOUT
+                        );
+                        if (hasDropout) {
+                          setCohortMemberList(
+                            newArray.filter(
+                              (user) => user.memberStatus === Status.ACTIVE
+                            )
+                          );
+                          setDropoutMemberList(
+                            newArray.filter(
+                              (user) => user.memberStatus === Status.DROPOUT
+                            )
+                          );
+                          getPresentCount(newArray);
+                          getAbsentCount(newArray);
+                          setDropoutCount(
+                            newArray.filter(
+                              (user) => user.memberStatus === Status.DROPOUT
+                            ).length
+                          );
+                        }
                       } else {
-                        setCohortMemberList(nameUserIdArray);
+                        setCohortMemberList(
+                          nameUserIdArray.filter(
+                            (user) => user.memberStatus === Status.ACTIVE
+                          )
+                        );
+                        setDropoutMemberList(
+                          nameUserIdArray.filter(
+                            (user) => user.memberStatus === Status.DROPOUT
+                          )
+                        );
                         setNumberOfCohortMembers(nameUserIdArray?.length);
                       }
                       updateBulkAttendanceStatus(newArray);
@@ -275,7 +350,10 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
               } else {
                 onSaveSuccess(true);
               }
-              
+              ReactGA.event('attendance-marked/update-success', {
+                teacherId: teacherUserId,
+              });
+
               onClose();
             }
           } else {
@@ -285,6 +363,9 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
           console.error('Error fetching cohort list:', error);
           setLoading(false);
           showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+          ReactGA.event('attendance-marked/update-fail', {
+            error: error
+          });
         }
         // handleClick({ vertical: 'bottom', horizontal: 'center' })();
       };
@@ -300,13 +381,34 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   // setState({ ...state, openModal: false });
   // };
 
+  const getMessage = () => {
+    if (updateAttendance) return t('COMMON.SURE_UPDATE');
+    if (confirmation) return t('COMMON.SURE_CLOSE');
+    return '';
+  };
+
+  const handleAction = () => {
+    if (updateAttendance) {
+      handleSave();
+    } else if (confirmation) {
+      onClose();
+    }
+    onClose();
+  };
+
+  const handleCloseModel = () => {
+    setUpdateAttendance(false);
+    setConfirmation(false);
+    setModalOpen(false);
+  };
+
   return (
     <Box>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={open}
-        onClose={onClose}
+        // onClose={onClose}
         closeAfterTransition
         slots={{ backdrop: Backdrop }}
         slotProps={{
@@ -354,13 +456,24 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   >
                     {getDayMonthYearFormat(shortDateFormat(selectedDate))}
                   </Typography>
+                  <ConfirmationModal
+                    message={getMessage()}
+                    handleAction={handleAction}
+                    handleCloseModal={handleCloseModel}
+                    buttonNames={{
+                      primary: t('COMMON.YES'),
+                      secondary: t('COMMON.NO_GO_BACK'),
+                    }}
+                    modalOpen={modalOpen}
+                  />
                 </Box>
-                <Box onClick={() => onClose()}>
+                <Box>
                   <CloseIcon
                     sx={{
                       cursor: 'pointer',
                       color: theme.palette.warning['A200'],
                     }}
+                    onClick={confirmationOpen}
                   />
                 </Box>
               </Box>
@@ -369,25 +482,65 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
               )}
 
-              <Typography
-                sx={{
-                  marginTop: '10px',
-                  fontSize: '12px',
-                  color: theme.palette.warning['A200'],
-                  padding: '0 10px',
-                }}
+              <Box
+                display={'flex'}
+                flexDirection="row"
+                justifyContent={'space-between'}
               >
-                {t('ATTENDANCE.TOTAL_STUDENTS', {
-                  count: numberOfCohortMembers,
-                })}
-              </Typography>
-              <Box display={'flex'} justifyContent={'space-between'}>
+                {dropoutCount > 0 ? (
+                  <>
+                    <Typography
+                      sx={{
+                        marginTop: '10px',
+                        fontSize: '10px',
+                        color: theme.palette.warning['A200'],
+                        padding: '0 8px',
+                        lineHeight: '16px'
+                      }}
+                    >
+                      {t('ATTENDANCE.ACTIVE_STUDENTS', {
+                        count: numberOfCohortMembers - dropoutCount,
+                      })}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        marginTop: '10px',
+                        marginLeft: '0.5rem',
+                        fontSize: '10px',
+                        color: theme.palette.warning['A200'],
+                        padding: '0 8px',
+                        lineHeight: '16px'
+                      }}
+                    >
+                      {t('ATTENDANCE.DROPOUT_STUDENTS', {
+                        count: dropoutCount,
+                      })}
+                    </Typography>
+                  </>
+                ) : (
+                  <Typography
+                    sx={{
+                      marginTop: '10px',
+                      marginLeft: '0.5rem',
+                      fontSize: '10px',
+                      color: theme.palette.warning['A200'],
+                      padding: '0 8px',
+                      lineHeight: '16px'
+                    }}
+                  >
+                    {t('ATTENDANCE.TOTAL_STUDENTS', {
+                      count: numberOfCohortMembers,
+                    })}
+                  </Typography>
+                )}
+
                 <Typography
                   sx={{
-                    marginTop: '0px',
+                    marginTop: '10px',
                     marginLeft: '0.5rem',
-                    fontSize: '12px',
+                    fontSize: '10px',
                     color: theme.palette.warning['A200'],
+                    lineHeight: '16px'
                   }}
                 >
                   {t('ATTENDANCE.PRESENT_STUDENTS', {
@@ -396,10 +549,12 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 </Typography>
                 <Typography
                   sx={{
-                    marginTop: '0px',
+                    marginTop: '10px',
                     marginLeft: '0.5rem',
-                    fontSize: '12px',
+                    fontSize: '10px',
                     color: theme.palette.warning['A200'],
+                    padding: '0 8px 0 10px',
+                    lineHeight: '16px'
                   }}
                 >
                   {t('ATTENDANCE.ABSENT_STUDENTS', {
@@ -407,6 +562,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   })}
                 </Typography>
               </Box>
+
               {cohortMemberList && cohortMemberList?.length != 0 ? (
                 <Box
                   height={'64%'}
@@ -434,10 +590,33 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             attendance: user.attendance,
                             attendanceDate: selectedDate,
                             name: user.name,
+                            memberStatus: user.memberStatus,
                           }}
                           isEdit={true}
                           bulkAttendanceStatus={bulkAttendanceStatus}
                           handleBulkAction={submitBulkAttendanceAction}
+                        />
+                      )
+                    )}
+                    {dropoutMemberList?.map(
+                      (
+                        user: any //cohort member list should have userId, attendance, name
+                      ) => (
+                        <AttendanceStatusListView
+                          key={user.userId}
+                          isDisabled={true}
+                          userData={{
+                            userId: user.userId,
+                            attendance: user.attendance,
+                            attendanceDate: selectedDate,
+                            name: user.name,
+                            memberStatus: user.memberStatus,
+                          }}
+                          presentCount={presentCount}
+                          absentCount={absentCount}
+                        // isEdit={true}
+                        // bulkAttendanceStatus={bulkAttendanceStatus}
+                        // handleBulkAction={submitBulkAttendanceAction}
                         />
                       )
                     )}
@@ -469,7 +648,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       }}
                     >
                       {' '}
-                      {t('ATTENDANCE.CLEAR')}
+                      {t('COMMON.CLEAR_ALL')}
                     </Button>
                     <Button
                       variant="contained"
@@ -482,10 +661,10 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                         alignItems: 'center',
                       }}
                       disabled={isAllAttendanceMarked ? false : true}
-                      onClick={handleSave}
+                      onClick={attendanceUpdate}
                     >
                       {presentCount == 0 && absentCount == 0
-                        ? t('COMMON.MARK')
+                        ? t('COMMON.MARK_ALL_AS')
                         : t('COMMON.MODIFY')}
                     </Button>
                   </Box>

@@ -26,7 +26,7 @@ const SmallCard: React.FC<SmallCardProps> = ({ item }) => {
   return (
     <Card variant="outlined" sx={{ borderRadius: '8px' }}>
       <Typography
-      mt={1}
+        mt={1}
         fontSize={'12px'}
         fontWeight={500}
         lineHeight={'16px'}
