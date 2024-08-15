@@ -10,15 +10,26 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import Drawer from '@mui/material/Drawer';
 import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
 import config from '../../config.json';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-
+import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { Role } from '@/utils/app.constant';
+import useStore from '@/store/store';
+import { accessGranted } from '@/utils/Helper';
+import { accessControl } from '../../app.config';
+import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import checkBook from '../assets/images/checkbook.svg';
+import Image from 'next/image';
 interface DrawerProps {
-  toggleDrawer: (open: boolean) => () => void;
+  toggleDrawer?: (open: boolean) => () => void;
   open: boolean;
   language: string;
   setLanguage: (lang: string) => void;
+  handleToggleDrawer?: (open: boolean) => () => void;
 }
 
 const MenuDrawer: React.FC<DrawerProps> = ({
@@ -26,11 +37,16 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   open,
   language,
   setLanguage,
+  handleToggleDrawer,
 }) => {
   const theme = useTheme<any>();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [isOpen, setIsOpen] = useState(open);
+  const [isTeamLeader, setIsTeamLeader] = useState(false);
   const { t } = useTranslation();
   const router = useRouter();
+  const store = useStore();
+  const userRole = store.userRole;
 
   useEffect(() => setIsOpen(open), [open]);
 
@@ -38,6 +54,10 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     if (typeof window !== 'undefined' && window.localStorage) {
       const lang = localStorage.getItem('preferredLanguage') || 'en';
       setLanguage(lang);
+      const role = localStorage.getItem('role');
+      if (role === 'Team Leader') {
+        setIsTeamLeader(true);
+      }
     }
   }, [setLanguage]);
 
@@ -50,19 +70,47 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     }
   };
 
+  const closeDrawer = () => {
+    if (toggleDrawer) {
+      toggleDrawer(false)();
+    } else if (handleToggleDrawer) {
+      handleToggleDrawer(false)();
+    }
+  };
+  
+
   const navigateToDashboard = () => {
-    toggleDrawer(false)();
+    closeDrawer();
     router.push('/dashboard');
   };
 
+  const navigateToManageUser = () => {
+    closeDrawer();
+    router.push('/manageUser');
+  };
+
   const isDashboard = router.pathname === '/dashboard';
+  const isTeacherCenter = router.pathname === '/centers';
+  const isCoursePlanner = router.pathname === '/course-planner';
+  const isAssessments = router.pathname === '/assessments';
+
+  // const isManageUser = router.pathname === '/manageUser';
 
   return (
     <Drawer
-      open={isOpen}
-      onClose={toggleDrawer(false)}
+      open={isDesktop || isOpen}
+      onClose={
+        closeDrawer
+      }
       transitionDuration={{ enter: 500, exit: 500 }}
       className="backgroundFaded"
+      variant={isDesktop ? 'persistent' : 'temporary'}
+      sx={{
+        '& .MuiPaper-root': {
+          borderRight: `1px solid theme.palette.warning['A100']`,
+          zIndex: '998 !important',
+        },
+      }}
     >
       <Box
         sx={{ padding: '16px 16px 12px 16px', width: '350px' }}
@@ -81,11 +129,17 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           >
             {t('DASHBOARD.MENU')}
           </Box>
-          <Box>
-            <IconButton onClick={toggleDrawer(false)}>
-              <ClearIcon />
-            </IconButton>
-          </Box>
+          {!isDesktop && (
+            <Box>
+              <IconButton
+                onClick={
+                  closeDrawer
+                }
+              >
+                <ClearIcon sx={{ color: theme.palette.warning['300'] }} />
+              </IconButton>
+            </Box>
+          )}
         </Box>
 
         <Box
@@ -97,13 +151,13 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             gap: '30px',
           }}
         >
-          <Box sx={{ flexBasis: '30%' }}>
+          <Box sx={{ flexBasis: '30%' }} className="joyride-step-5">
             <FormControl className="drawer-select" sx={{ width: '100%' }}>
               <Select
                 value={language}
                 onChange={handleChange}
                 displayEmpty
-                className="SelectLanguages fs-14 fw-500"
+                className="select-languages fs-14 fw-500"
                 style={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
@@ -122,7 +176,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           <Box sx={{ flexBasis: '70%' }}>
             <FormControl className="drawer-select" sx={{ width: '100%' }}>
               <Select
-                className="SelectLanguages"
+                className="select-languages"
                 displayEmpty
                 style={{
                   borderRadius: '0.5rem',
@@ -147,8 +201,10 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               background: isDashboard
                 ? theme.palette.primary.main
                 : 'transparent',
-              padding: '16px 18px !important',
-              marginTop: '15px',
+              padding: isDashboard
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              marginTop: '25px',
               color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
               fontWeight: isDashboard ? '600' : 500,
               '&:hover': {
@@ -157,34 +213,207 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   : 'transparent',
               },
             }}
-            startIcon={<DashboardOutlinedIcon />}
+            startIcon={
+              <DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />
+            }
             onClick={navigateToDashboard}
           >
             {t('DASHBOARD.DASHBOARD')}
           </Button>
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            gap: '10px',
-            borderRadius: '100px',
-            alignItems: 'center',
-            marginTop: '12px',
-            marginLeft: '12px',
-          }}
-        >
-          <Box>
-            <LocalLibraryOutlinedIcon />
-          </Box>
-          <Box
+        <Box sx={{ marginTop: '18px' }}>
+          <Button
+            className="fs-14 joyride-step-6"
             sx={{
-              color: theme.palette.warning.A200,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: isTeacherCenter
+                ? theme.palette.primary.main
+                : 'transparent',
+
+              padding: isTeacherCenter
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              color: isTeacherCenter ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isTeacherCenter ? '600' : 500,
+              '&:hover': {
+                background: isTeacherCenter
+                  ? theme.palette.primary.main
+                  : 'transparent',
+              },
+              marginTop: '15px',
             }}
-            className="fs-14 fw-500"
+            startIcon={
+              <LocalLibraryOutlinedIcon sx={{ fontSize: '24px !important' }} />
+            }
+            onClick={() => {
+              router.push(`/centers`); // Check route
+            }}
           >
-            {t('DASHBOARD.MY_TEACHING_CENTERS')}
+            {accessGranted('showTeachingCenter', accessControl, userRole)
+              ? t('DASHBOARD.TEACHING_CENTERS')
+              : t('DASHBOARD.MY_TEACHING_CENTERS')}
+          </Button>
+        </Box>
+        <Box sx={{ marginTop: '18px' }}>
+          <Button
+            className="fs-14"
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: 'transparent',
+              padding: '0px 18px !important',
+              color: theme.palette.warning.A200,
+              fontWeight: 500,
+              '&:hover': {
+                background: 'transparent',
+              },
+              marginTop: '15px',
+            }}
+            startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
+            // onClick={navigateToManageUser}
+          >
+            {t('COMMON.OBSERVATIONS_FORMS')}
+          </Button>
+
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14 joyride-step-7"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                background: isCoursePlanner
+                  ? theme.palette.primary.main
+                  : 'transparent',
+
+                padding: isCoursePlanner
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isCoursePlanner ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isCoursePlanner ? '600' : 500,
+                '&:hover': {
+                  background: isCoursePlanner
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              startIcon={
+                <Image
+                  src={checkBook}
+                  alt="CheckBook Icon"
+                  width={24}
+                  height={24}
+                />
+              }
+              onClick={() => {
+                router.push(`/course-planner`); // Check route
+              }}
+            >
+              {t('COURSE_PLANNER.COURSE_PLANNER')}
+            </Button>
           </Box>
         </Box>
+        <Box sx={{ marginTop: '18px' }}>
+          <Button
+            className="fs-14 joyride-step-8"
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: isAssessments
+                ? theme.palette.primary.main
+                : 'transparent',
+
+              padding: isAssessments
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isAssessments ? '600' : 500,
+              '&:hover': {
+                background: isAssessments
+                  ? theme.palette.primary.main
+                  : 'transparent',
+              },
+              marginTop: '15px',
+            }}
+            startIcon={
+              <EventAvailableOutlinedIcon
+                sx={{ fontSize: '24px !important' }}
+              />
+            }
+            onClick={() => {
+              router.push(`/assessments`);
+            }}
+          >
+            {t('ASSESSMENTS.ASSESSMENTS')}
+          </Button>
+        </Box>
+        <Box sx={{ marginTop: '18px' }}>
+          <Button
+            className="fs-14"
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: 'transparent',
+              padding: '0px 18px !important',
+              color: theme.palette.secondary.main,
+              fontWeight: 500,
+              '&:hover': {
+                background: 'transparent',
+              },
+              marginTop: '15px',
+            }}
+            endIcon={
+              <ErrorOutlineIcon
+                sx={{ fontSize: '18px !important' }}
+              />
+            }
+            onClick={() => {
+              localStorage.removeItem('hasSeenTutorial')
+              setTimeout(() => {
+                closeDrawer();
+                router.push(`/`);
+              }, 0);
+            }}
+          >
+            {t('GUIDE_TOUR.LEARN_HOW_TO_USE')}
+          </Button>
+        </Box>
+
+        {/* <Box sx={{ marginTop: '12px' }}>
+          <Button
+            className="fs-14"
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: isManageUser
+                ? theme.palette.primary.main
+                : 'transparent',
+
+              padding: isManageUser
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              color: isManageUser ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isManageUser ? '600' : 500,
+              '&:hover': {
+                background: isManageUser
+                  ? theme.palette.primary.main
+                  : 'transparent',
+              },
+              marginTop: '15px',
+            }}
+            startIcon={<PeopleOutlineOutlinedIcon />}
+            onClick={navigateToManageUser}
+          >
+            {t('COMMON.MANAGE_USERS')}
+          </Button>
+        </Box> */}
       </Box>
     </Drawer>
   );

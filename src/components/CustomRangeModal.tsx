@@ -26,7 +26,8 @@ const style = {
 
 const CustomRangeModal: React.FC = () => {
   const [isCalendarModalOpen, setIsCalenderModalOpen] = React.useState(false);
-  const toggleCalendarModal = () => setIsCalenderModalOpen(!isCalendarModalOpen);
+  const toggleCalendarModal = () =>
+    setIsCalenderModalOpen(!isCalendarModalOpen);
 
   const { t } = useTranslation();
   return (
@@ -53,16 +54,22 @@ const CustomRangeModal: React.FC = () => {
               }}
             >
               <Box>
-                <WestIcon onClick={toggleCalendarModal} style={{ cursor: 'pointer' }} />
+                <WestIcon
+                  onClick={toggleCalendarModal}
+                  style={{ cursor: 'pointer' }}
+                />
               </Box>
-              <Box className="text-4D">{t('COMMON.CUSTOM_RANGE')}</Box>
+              <Box className="text-dark-grey">{t('COMMON.CUSTOM_RANGE')}</Box>
             </Box>
             <Box>
-              <CloseIcon onClick={toggleCalendarModal} style={{ cursor: 'pointer' }} />
+              <CloseIcon
+                onClick={toggleCalendarModal}
+                style={{ cursor: 'pointer' }}
+              />
             </Box>
           </Box>
           <Box sx={{ paddingTop: '20px' }}>
-            <Box className="fs-14 fw-500 text-4D">
+            <Box className="fs-14 fw-500 text-dark-grey">
               {t('COMMON.FROM_TO_DATE')}
             </Box>
             <Box className="fs-22 fw-500 pt-10 text-1F">17 May – 23 May</Box>
@@ -74,7 +81,7 @@ const CustomRangeModal: React.FC = () => {
             sx={{
               paddingTop: '20px',
               display: 'flex',
-              gap: '10px',
+              gap: '30px',
               justifyContent: 'end',
             }}
           >

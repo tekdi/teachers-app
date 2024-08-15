@@ -8,6 +8,7 @@
     "MARK_ATTENDANCE": "ଉପସ୍ଥିତି ଚିହ୍ନିତ କର",
     "UPDATE_ATTENDANCE": "ଉପସ୍ଥିତି ଅପଡେଟ କର",
     "SAVE": "ସେଭ କର",
+    "SEARCH": "ସନ୍ଧାନ କରନ୍ତୁ..",
     "UPDATE": "ଅପଡେଟ",
     "MODIFY": "ସଂଶୋଧିତ କର",
     "CLEAR_ALL": "ସବୁ ସଫା କର",
@@ -26,6 +27,7 @@
     "BASIC_DETAILS": "ସାଧାରଣ ତଥ୍ୟ",
     "DOB": "ଜନ୍ମ ତାରିଖ",
     "LOGOUT": "ଲଗ ଆଉଟ",
+    "FILTERS": "ଫିଲ୍ଟର୍",
     "OVERALL_ATTENDANCE": "ସର୍ବମୋଟ ଉପସ୍ଥିତି",
     "NO_DATA_FOUND": "କୌଣସି ତଥ୍ୟ ମିଳିଲା ନାହି",
     "LOCATION": "ସ୍ଥାନ",
@@ -43,6 +45,7 @@
     "CUSTOM_RANGE": "ଅନୁକୂଳିତ/କଷ୍ଟମ ସୀମା",
     "NONE": "କିଛି ନାହି",
     "LEARNERS": "ଶିକ୍ଷାର୍ଥୀ",
+    "FACILITATOR_LIST": "ସୁବିଧାଦାର ତାଲିକ",
     "LEARNER_NAME": "ଶିକ୍ଷାର୍ଥୀ ନାମ",
     "DATE_RANGE": "ସମୟ ସୀମା",
     "SELECT_AN_OPTION": "ଏକ ବିକଳ୍ପ ବାଛ",
@@ -54,7 +57,16 @@
     "FROM_TO_DATE": "ରୁ/ଠାରୁ - କୁ ତାରିଖଗୁଡ଼ିକ",
     "REMOVE": "ହଟାନ୍ତୁ",
     "MARK_DROP_OUT": "ଡ୍ରପ୍ ଆଉଟ୍ ରୁପରେ ଚିହ୍ନିତ କରନ୍ତୁ",
-    "SOMETHING_WENT_WRONG": "କିଛି ଭୁଲ ହେଇଗଲା।"
+    "UNMARK_DROP_OUT": " ଡ୍ରପ୍ ଆଉଟ୍ ଭାବରେ ଅପସାରଣ କରନ୍ତୁ",
+    "SOMETHING_WENT_WRONG": "କିଛି ଭୁଲ ହେଇଗଲା।",
+    "SURE_REMOVE": "ଆପଣ ନିଶ୍ଚିତ ଏହି ଶିକ୍ଷାର୍ଥୀକୁ ହଟାଇବାକୁ ଚାହୁଁଛନ୍ତି କି?",
+    "SURE_CLOSE": "ଆପଣ ସ saving ୍ଚୟ ନକରି ବନ୍ଦ କରିବାକୁ ଚାହୁଁଛନ୍ତି କି?",
+    "LEARNER_MARKED_DROPOUT": "ଶିକ୍ଷାର୍ଥୀକୁ ଡ୍ରପ୍ ଆଉଟ୍ ଭାବେ ଚିହ୍ନିତ କରାଯାଇଛି",
+    "LEARNER_UNMARKED_DROPOUT": "ଶିକ୍ଷାର୍ଥୀକୁ ଡ୍ରପ୍ ଆଉଟ୍ ଭାବେ ଅଚିହ୍ନିତ କରାଯାଇଛି",
+    "LEARNER_REMOVED": "ଶିକ୍ଷାର୍ଥୀ କୁ ହଟାଇ ଦିଆଯାଇଛି",
+    "PAGE_NOT_FOUND": "ପୃଷ୍ଠା ଖୋଜିପାରିବନାହି",
+    "ACCESS_DENIED": "ପ୍ରବେଶ ନିଷେଧ",
+    "YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE": "ଆପଣଙ୍କୁ ଏହି ପୃଷ୍ଠା ପ୍ରବେଶ କରିବା ଅଧିକାର ନାହି"
   },
   "LOGIN_PAGE": {
     "USERNAME": "ଉପଯୋଗକର୍ତା ନାମ",
@@ -90,10 +102,15 @@
     "BACK_TO_TOP": "ଉପରକୁ ଫେରିଯାଇ",
     "LAST_SEVEN_DAYS_RANGE": "ଗତ 7 ଦିନ {{date_range}}",
     "AS_OF_TODAY_DATE": "ଆଜି ଅନୁସାରେ {{day_date}}",
-    "LEARNER": "ଶିକ୍ଷାର୍ଥୀ"
+    "LEARNER": "ଶିକ୍ଷାର୍ଥୀ",
+    "ATTENDANCE_COMPARISON": "ଉପସ୍ଥିତି ତୁଳନ",
+    "CENTER_TYPE": "କେନ୍ଦ୍ର ପ୍ରକାର",
+    "BLOCK_AVERAGE_ATTENDANCE": "ବ୍ଲକ ହାରାହାର ଉପସ୍ଥିତି"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "ମୋଟ ଶିକ୍ଷାର୍ଥୀ ସଂଖ୍ୟା: {{count}}",
+    "ACTIVE_STUDENTS": "ସକ୍ରିୟ ଶିକ୍ଷାର୍ଥୀ: {{count}}",
+    "DROPOUT_STUDENTS": "ଛାଡ଼ିଦେଇଥିବା ଛାତ୍ରଛାତ୍ରୀ: {{count}}",
     "PRESENT_STUDENTS": "ଉପସ୍ଥିତ ଛାତ୍ର-ଛାତ୍ରୀ: {{count}}",
     "ABSENT_STUDENTS": "ଅନୁପସ୍ଥିତ ଛାତ୍ର-ଛାତ୍ରୀ: {{count}}",
     "PRESENT": "ଉପସ୍ଥିତ",
@@ -135,7 +152,7 @@
     "MY_PROFILE": "ମୋ ପ୍ରୋଫାଇଲ",
     "VIEW_MORE": "ଅଧିକ ଦେଖନ୍ତୁ",
     "VIEW_LESS": "କମ୍ ଦେଖନ୍ତୁ",
-    "DATA_RANAGE": "ଡାଟା ରେଞ୍ଜ",
+    "DATA_RANGE": "ଡାଟା ରେଞ୍ଜ",
     "LEARNER_DETAILS": "ଶିକ୍ଷାର୍ଥୀ ବିବରଣୀ",
     "VIEW_DAY_WISE": "ଦିନ-ଅନୁସାରେ ବିବରଣୀ ଦେଖନ୍ତୁ",
     "SUBMITTED_ON": "ସବ୍ମିଟ୍/ଦାଖଲ କରାଯାଇଛି",
@@ -180,5 +197,34 @@
     "MOBILISATION_METHOD": "ଶିକ୍ଷାର୍ଥୀ କେମିତି ମୋବିଲାଇଜ୍ଡ ହେଲେ?",
     "MONTH_MOBILISATION": "ମୋବିଲାଇଜ ମାସ",
     "DROP_OUT_REASON": "ବିଦ୍ୟାଳୟ ଛଡିବା କାରଣ"
+  },
+  "BLOCKS": {
+    "TEACHING_BLOCKS": "ଶିକ୍ଷା ବ୍ଲକ୍ସ",
+
+    "CREATE_NEW": "ନୂତନ ସୃଷ୍ଟି କରନ୍ତୁ",
+    "NEW_BLOCK": "ନୂଆ ବ୍ଲକ୍",
+    "BLOCK_NAME": "ବ୍ଲକ୍ ନାମ",
+    "CREATE": "ତିଆରି କରନ୍ତୁ",
+
+    "SEARCH_BLOCKS": "ବ୍ଲକ୍‌ ଖୋଜନ୍ତୁ"
+  },
+  "CENTERS": {
+    "REGULAR_CENTERS": "ସାଧାରଣ କେନ୍ଦ୍ର",
+    "REMOTE_CENTERS": "ଦୂରସ୍ଥ କେନ୍ଦ୍ର",
+    "CENTER_TYPE": "କେନ୍ଦ୍ର ପ୍ରକାର",
+    "REGULAR": "ସାଧାରଣ",
+    "REMOTE": "ଦୂରସ୍ଥ",
+    "NEW_CENTER": "ନୂଆ କେନ୍ଦ୍ର",
+    "UNIT_NAME": "ଏକକ ନାମ",
+    "NOTE": "ଟିପ୍ପଣୀ: ଏହା କେନ୍ଦ୍ରର ନାମ ହେବ",
+    "RENAME_CENTER": "କେନ୍ଦ୍ରର ନାମ ପରିବର୍ତ୍ତନ କରନ୍ତୁ",
+    "REQUEST_TO_DELETE": "ହଟାଇବାକୁ ଅନୁରୋଧ",
+    "RENAME": "ପୁନ ame ନାମ କରନ୍ତୁ",
+    "CENTER_RENAMED": "କେନ୍ଦ୍ରର ନାମ ସଫଳତାର ସହ ଚାଲିଛି!",
+    "SEND_REQUEST": "ଅନୁରୋଧ ପଠାନ୍ତୁ",
+    "REQUEST_TO_DELETE_HAS_BEEN_SENT": "ହଟାଇବାକୁ ଅନୁରୋଧ ପଠାଯାଇଛି",
+    "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "ଆପଣ ଏହି କେନ୍ଦ୍ରଟିକୁ ବିଲୋପ କରିବା ପାଇଁ ରାଜ୍ୟ ପ୍ରଶାସନକୁ ଅନୁରୋଧ ପଠାଉଛନ୍ତି",
+    "THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT": "ୟୁଜର ନିମ୍ନଲିଖିତ ସମୁହର ସଦସ୍ୟ: ",
+    "PLEASE_REMOVE_THE_USER_FROM_COHORT": "ଦୟାକରି ହଟାଇବା ପୂର୍ବରୁ ୟୁଜରକୁ ଏହି ସମୁହଗୁଡିକରୁ କାଢ଼ି ଦିଅନ୍ତୁ।"
   }
 }

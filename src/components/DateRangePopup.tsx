@@ -1,3 +1,4 @@
+import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
 import {
   Box,
   Button,
@@ -8,22 +9,20 @@ import {
   MenuList,
   Modal,
   Select,
-  Typography,
-  useStepContext,
+  Typography
 } from '@mui/material';
-import React, { useState } from 'react';
-import ReactGA from 'react-ga4';
-import { getDayAndMonthName, getTodayDate } from '@/utils/Helper';
+import React, { useEffect, useState } from 'react';
 
-import checkMark from '../assets/images/checkMark.svg';
+import useStore from '@/store/store';
 import CloseIcon from '@mui/icons-material/Close';
-import { Height } from '@mui/icons-material';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import MonthCalender from './MonthCalender';
 import WestIcon from '@mui/icons-material/West';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
+import ReactGA from 'react-ga4';
+import checkMark from '../assets/images/checkMark.svg';
+import MonthCalender from './MonthCalender';
 
 const modalStyle = {
   position: 'absolute',
@@ -66,7 +65,7 @@ interface CustomSelectModalProps {
   selectedValue: string;
   setSelectedValue: (value: string) => void;
   onDateRangeSelected: any;
-  dateRange?: string | Date| undefined ;
+  dateRange?: string | Date | undefined;
 }
 
 const DateRangePopup: React.FC<CustomSelectModalProps> = ({
@@ -78,6 +77,8 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCalendarModalOpen, setIsCalenderModalOpen] = useState(false);
+  const [selectedRangeArray, setSelectedRangeArray] = useState(null);
+  const store = useStore();
   const [dateRangeArray, setDateRangeArray] = useState<any[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [displayCalendarFromDate, setDisplayCalendarFromDate] = React.useState(
@@ -91,11 +92,11 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const [appliedIndex, setAppliedIndex] = React.useState<number | null>(0);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
-  const handleModalClose = () =>{
-    setIsModalOpen(false)
-    setSelectedValue(appliedOption)
-    setSelectedIndex(appliedIndex)
-  }
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedValue(appliedOption);
+    setSelectedIndex(appliedIndex);
+  };
   const toggleCalendarModal = () =>
     setIsCalenderModalOpen(!isCalendarModalOpen);
   const { t } = useTranslation();
@@ -113,6 +114,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     setCancelClicked(true);
     setDisplayCalendarFromDate(getDayAndMonthName(getTodayDate()));
     setDisplayCalendarToDate(getDayAndMonthName(getTodayDate()));
+    localStorage.removeItem('selectedRangeArray');
   };
 
   const onApply = () => {
@@ -122,9 +124,11 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       setCancelClicked(false);
     } else {
       // console.log('applied', selectedIndex, selectedValue);
-      setAppliedOption(selectedValue)
-      setAppliedIndex(selectedIndex)
-      ReactGA.event("date-range-pop-up-clicked", { dateRangeType: selectedValue});
+      setAppliedOption(selectedValue);
+      setAppliedIndex(selectedIndex);
+      ReactGA.event('date-range-pop-up-clicked', {
+        dateRangeType: selectedValue,
+      });
       const values = getDateRange(selectedIndex);
       const { toDate, fromDate } = values;
       // console.log(toDate, fromDate);
@@ -133,10 +137,23 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedDates = store.value;
+      if (storedDates) {
+        try {
+          const dateArray = JSON.parse(storedDates);
+          setSelectedRangeArray(dateArray);
+        } catch (error) {
+          console.error('Failed to parse stored dates:', error);
+        }
+      }
+    }
+  }, []);
+
   const getDateRange = (index: number | null) => {
     const today = new Date();
     const formatDate = (date: Date) => {
-      console.log('date', date);
       if (typeof date === 'object') {
         // return date?.toISOString()?.split('T')[0];}
         const localDate = new Date(
@@ -197,7 +214,6 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       setDateRangeArray(date);
       setDisplayCalendarFromDate(getDayAndMonthName(date[0]));
       setDisplayCalendarToDate(getDayAndMonthName(date[1]));
-      // toggleCalendarModal();
     }
   };
 
@@ -206,7 +222,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   };
 
   return (
-    <Box sx={{ mt: 1.5, px: '2px' }}>
+    <Box className="mt-md-16" sx={{ px: '2px' }}>
       <FormControl sx={{ width: '100%' }}>
         <Select
           className="bg-white"
@@ -223,13 +239,15 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         >
           <MenuItem value="" disabled>
             {t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-            date_range: dateRange})}
+              date_range: dateRange,
+            })}
           </MenuItem>
           <MenuItem value={selectedValue}>
             {selectedValue
               ? selectedValue
-              :  t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-                date_range: dateRange})}
+              : t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+                date_range: dateRange,
+              })}
           </MenuItem>
         </Select>
       </FormControl>
@@ -250,12 +268,15 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           <Box>
             <Grid sx={{ padding: '20px 20px 5px' }} container>
               <Grid item xs={6}>
-                <Typography className="text4D" textAlign={'left'}>
+                <Typography className="text-dark-grey" textAlign={'left'}>
                   {t('COMMON.DATE_RANGE')}
                 </Typography>
               </Grid>
               <Grid item xs={6} textAlign={'right'}>
-                <CloseIcon className="text4D" onClick={handleModalClose} />
+                <CloseIcon
+                  className="text-dark-grey"
+                  onClick={handleModalClose}
+                />
               </Grid>
             </Grid>
           </Box>
@@ -274,6 +295,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                   color: index === 4 ? theme.palette.secondary.main : '#4D4639',
                   '&:hover': {
                     backgroundColor: 'transparent',
+                    color: '#0D599E',
                   },
                 }}
               >
@@ -282,11 +304,11 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                     sx={{
                       position: 'absolute',
                       left: '8px',
-                      minWidth: 'auto'
+                      minWidth: 'auto',
                     }}
-                    className="text4D"
+                    className="text-dark-grey"
                   >
-                   <Image
+                    <Image
                       height={10}
                       width={12}
                       src={checkMark}
@@ -345,7 +367,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                     style={{ cursor: 'pointer' }}
                   />
                 </Box>
-                <Box className="text-4D">{t('COMMON.CUSTOM_RANGE')}</Box>
+                <Box className="text-dark-grey">{t('COMMON.CUSTOM_RANGE')}</Box>
               </Box>
               <Box>
                 <CloseIcon
@@ -355,7 +377,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
               </Box>
             </Box>
             <Box sx={{ paddingTop: '10px' }}>
-              <Box className="fs-14 fw-500 text-4D">
+              <Box className="fs-14 fw-500 text-dark-grey">
                 {t('COMMON.FROM_TO_DATE')}
               </Box>
               <Box className="fs-22 fw-500 pt-10 text-1F">
@@ -371,13 +393,14 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
               onChange={handleActiveStartDateChange}
               onDateChange={handleCalendarDateChange}
               selectionType="range"
+              selectedRangeRetention={selectedRangeArray}
             />
           </Box>
           <Box
             sx={{
               padding: '20px 18px 10px',
               display: 'flex',
-              gap: '10px',
+              gap: '30px',
               justifyContent: 'end',
             }}
           >

@@ -1,6 +1,6 @@
 import {
-  assesmentListServiceParam,
-  gerDoIdServiceParam,
+  AssessmentListServiceParam,
+  GetDoIdServiceParam,
 } from '@/utils/Interfaces';
 import { post } from './RestClient';
 
@@ -8,9 +8,8 @@ export const AssesmentListService = async ({
   sort,
   pagination,
   filters,
-}: assesmentListServiceParam): Promise<any> => {
-  const apiUrl: string =
-    `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/tracking-assessment/v1/list`;
+}: AssessmentListServiceParam): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/tracking-assessment/v1/list`;
   try {
     const response = await post(apiUrl, { pagination, filters, sort });
     return response?.data;
@@ -23,7 +22,7 @@ export const AssesmentListService = async ({
 
 export const getDoIdForAssesmentDetails = async ({
   filters,
-}: gerDoIdServiceParam): Promise<any> => {
+}: GetDoIdServiceParam): Promise<any> => {
   const apiUrl: string =
     'https://sunbirdsaas.com/api/content/v1/search?orgdetails=orgName%2Cemail&licenseDetails=name%2Cdescription%2Curl';
 

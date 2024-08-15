@@ -1,15 +1,20 @@
-import { Box, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
+import { Box, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import ReactGA from 'react-ga4';
-import { UserData, updateCustomField } from '@/utils/Interfaces';
+import {
+  Status
+} from '@/utils/app.constant';
+import { UserData, UpdateCustomField } from '@/utils/Interfaces';
 
+import DropoutLabel from './DropoutLabel';
 import LearnerModal from './LearnerModal';
 import Link from 'next/link';
 import Loader from './Loader';
+import ReactGA from 'react-ga4';
 import { getUserDetails } from '@/services/ProfileService';
+import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
+import { capitalizeEachWord, filterMiniProfileFields } from '@/utils/Helper';
 
 interface StudentsStatsListProps {
   name: string;
@@ -17,6 +22,7 @@ interface StudentsStatsListProps {
   classesMissed: number;
   userId?: string;
   cohortId?: string;
+  memberStatus?: string;
 }
 
 const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
@@ -25,6 +31,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   classesMissed,
   userId,
   cohortId,
+  memberStatus,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -37,10 +44,11 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
 
   const [userData, setUserData] = React.useState<UserData | null>(null);
   const [customFieldsData, setCustomFieldsData] = React.useState<
-    updateCustomField[]
+    UpdateCustomField[]
   >([]);
   const [contactNumber, setContactNumber] = useState<any>('');
   const [userName, setUserName] = React.useState('');
+  const [enrollmentNumber, setEnrollmentNumber] = React.useState('');
   const [isModalOpenLearner, setIsModalOpenLearner] = useState(false);
   const [loading, setLoading] = useState(false);
   // const userId = '12345'; // Replace with the actual user ID you want to pass
@@ -67,6 +75,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
             setUserData(userData);
             setUserName(userData?.name);
             setContactNumber(userData?.mobile);
+            setEnrollmentNumber(capitalizeEachWord(userData?.username));
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
@@ -85,18 +94,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
     }
   };
 
-  const names = [
-    'name',
-    'age',
-    'gender',
-    'student_type',
-    'enrollment_number',
-    'primary_work',
-  ];
-
-  const filteredFields = names
-    .map((name) => customFieldsData.find((field) => field.name === name))
-    .filter(Boolean);
+  const filteredFields = filterMiniProfileFields(customFieldsData);
 
   return (
     <Box>
@@ -111,6 +109,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           data={filteredFields}
           userName={userName}
           contactNumber={contactNumber}
+          enrollmentNumber={enrollmentNumber}
         />
       )}
       <Stack>
@@ -131,8 +130,11 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
             <Grid item xs={6} textAlign={'left'}>
               <Link className="word-break" href={''}>
                 <Typography
-                  onClick={() => {handleOpenModalLearner(userId!)
-                    ReactGA.event("learner-details-link-clicked", { userId: userId});
+                  onClick={() => {
+                    handleOpenModalLearner(userId!);
+                    ReactGA.event('learner-details-link-clicked', {
+                      userId: userId,
+                    });
                   }}
                   sx={{
                     textAlign: 'left',
@@ -145,29 +147,62 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
                 </Typography>
               </Link>
             </Grid>
-            <Grid item xs={3}>
-              <Typography
-                fontSize="1rem"
-                fontWeight="bold"
-                lineHeight="1.5rem"
-                // color={theme.palette.text.primary}
-                color={textColor}
-                textAlign="center"
-              >
-                {presentPercent}%
-              </Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Typography
-                fontSize="1rem"
-                fontWeight="bold"
-                lineHeight="1.5rem"
-                color={theme.palette.text.primary}
-                textAlign="center"
-              >
-                {classesMissed}
-              </Typography>
-            </Grid>
+            {memberStatus === Status.DROPOUT ? (
+              <Grid item xs={6}>
+                <Grid container>
+                  <Grid xs={6}>
+                    <Typography
+                      fontSize="1rem"
+                      fontWeight="bold"
+                      lineHeight="1.5rem"
+                      // color={theme.palette.text.primary}
+                      color={textColor}
+                      textAlign="center"
+                    >
+                      {presentPercent}%
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography
+                      fontSize="1rem"
+                      fontWeight="bold"
+                      lineHeight="1.5rem"
+                      color={theme.palette.text.primary}
+                      textAlign="center"
+                    >
+                      {classesMissed}
+                    </Typography>
+                  </Grid>
+                </Grid>
+                <DropoutLabel />
+              </Grid>
+            ) : (
+              <>
+                <Grid item xs={3}>
+                  <Typography
+                    fontSize="1rem"
+                    fontWeight="bold"
+                    lineHeight="1.5rem"
+                    // color={theme.palette.text.primary}
+                    color={textColor}
+                    textAlign="center"
+                  >
+                    {presentPercent}%
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography
+                    fontSize="1rem"
+                    fontWeight="bold"
+                    lineHeight="1.5rem"
+                    color={theme.palette.text.primary}
+                    textAlign="center"
+                  >
+                    {classesMissed}
+                  </Typography>
+                </Grid>
+              </>
+            )}
           </Grid>
         </Box>
       </Stack>

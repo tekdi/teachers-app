@@ -1,87 +1,88 @@
 'use client';
 
 import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  IconButton,
-  InputBase,
-  MenuItem,
-  Paper,
-  Select,
-  SelectChangeEvent,
-  Stack,
-  Typography,
-} from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
-import ReactGA from 'react-ga4';
-import {
   classesMissedAttendancePercentList,
   getAllCenterAttendance,
   getCohortAttendance,
 } from '@/services/AttendanceService';
-import { cohort, cohortAttendancePercentParam } from '@/utils/Interfaces';
 import {
   debounce,
   formatSelectedDate,
   getTodayDate,
+  handleKeyDown,
+  sortAttendanceNumber,
+  sortClassesMissed,
   toPascalCase,
 } from '@/utils/Helper';
+import { CohortAttendancePercentParam, ICohort } from '@/utils/Interfaces';
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  InputBase,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
 
-import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
-import ClearIcon from '@mui/icons-material/Clear';
 import CohortAttendanceListView from '@/components/CohortAttendanceListView';
+import CohortSelectionSection from '@/components/CohortSelectionSection';
 import DateRangePopup from '@/components/DateRangePopup';
 import Header from '@/components/Header';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
 import LearnerListHeader from '@/components/LearnerListHeader';
 import Loader from '@/components/Loader';
 import OverviewCard from '@/components/OverviewCard';
-import SearchIcon from '@mui/icons-material/Search';
 import SortingModal from '@/components/SortingModal';
-import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
+import { showToastMessage } from '@/components/Toastify';
 import UpDownButton from '@/components/UpDownButton';
-import { cohortList } from '@/services/CohortServices';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { lowLearnerAttendanceLimit } from './../../app.config';
+import { logEvent } from '@/utils/googleAnalytics';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
+import ClearIcon from '@mui/icons-material/Clear';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import SearchIcon from '@mui/icons-material/Search';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
+import ReactGA from 'react-ga4';
+import { getMenuItems } from '@/utils/app.constant';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
 }
 
 const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
-  const router = useRouter();
   const { t } = useTranslation();
   const { push } = useRouter();
   const today = new Date();
   const [classId, setClassId] = React.useState('');
-  const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
+  const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
-    React.useState<Array<cohort>>(cohortsData);
+    React.useState<Array<ICohort>>(cohortsData);
   const [allCenterAttendanceData, setAllCenterAttendanceData] =
     React.useState<any>(cohortsData);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   const [loading, setLoading] = React.useState(false);
   const [searchWord, setSearchWord] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
   const [learnerData, setLearnerData] = React.useState<Array<any>>([]);
-  const [isFromDate, setIsFromDate] = useState(formatSelectedDate(
-    new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000)
-  ));
+  const [isFromDate, setIsFromDate] = useState(
+    formatSelectedDate(new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000))
+  );
   const [isToDate, setIsToDate] = useState(getTodayDate());
   const [displayStudentList, setDisplayStudentList] = React.useState<
     Array<any>
   >([]);
   const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
-  const [userId, setUserId] = React.useState('');
+  const [userId, setUserId] = React.useState<string | null>(null);
   const [selectedValue, setSelectedValue] = React.useState<any>('');
   const [presentPercentage, setPresentPercentage] = React.useState<
     string | number
@@ -91,21 +92,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [numberOfDaysAttendanceMarked, setNumberOfDaysAttendanceMarked] =
     useState(0);
   const [dateRange, setDateRange] = React.useState<Date | string>('');
+  const [blockName, setBlockName] = React.useState<string>('');
 
   const theme = useTheme<any>();
   const pathname = usePathname();
 
-  const menuItems = [
-    t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-      date_range: dateRange,
-    }),
-    t('DASHBOARD.AS_OF_TODAY_DATE', {
-      day_date: currentDayMonth,
-    }),
-    t('COMMON.LAST_MONTH'),
-    t('COMMON.LAST_SIX_MONTHS'),
-    t('COMMON.CUSTOM_RANGE'),
-  ];
+  const menuItems = getMenuItems(t, dateRange, currentDayMonth);
 
   useEffect(() => {
     setSelectedValue(currentDayMonth);
@@ -114,8 +106,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
-      setClassId(localStorage.getItem('classId') || '');
-      const class_Id = localStorage.getItem('classId') || '';
+      setClassId(localStorage.getItem('classId') ?? '');
+      const class_Id = localStorage.getItem('classId') ?? '';
       localStorage.setItem('cohortId', class_Id);
 
       setLoading(false);
@@ -129,7 +121,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   useEffect(() => {
     const getAttendanceMarkedDays = async () => {
-      // const today = new Date();
       const todayFormattedDate = formatSelectedDate(new Date());
       const lastSeventhDayDate = new Date(
         today.getTime() - 6 * 24 * 60 * 60 * 1000
@@ -150,7 +141,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       } else {
         setDateRange(`(${startDay} ${startDayMonth}-${endDay} ${endDayMonth})`);
       }
-      const cohortAttendanceData: cohortAttendancePercentParam = {
+      const cohortAttendanceData: CohortAttendancePercentParam = {
         limit: 0,
         page: 0,
         filters: {
@@ -160,7 +151,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           contextId: classId,
         },
         facets: ['attendanceDate'],
-        sort: ['present_percentage', 'asc']
+        sort: ['present_percentage', 'asc'],
       };
       const res = await getCohortAttendance(cohortAttendanceData);
       const response = res?.data?.result?.attendanceDate;
@@ -173,78 +164,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     if (classId) {
       getAttendanceMarkedDays();
     }
-  }, [classId, selectedValue === t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-    date_range: dateRange,
-  })]);
-
-  // API call to get center list
-  useEffect(() => {
-    const fetchCohortList = async () => {
-      const userId = localStorage.getItem('userId');
-      if (userId) {
-        setUserId(userId);
-      }
-      setLoading(true);
-      try {
-        if (userId) {
-          let limit = 0;
-          let page = 0;
-          let filters = { userId: userId };
-          const resp = await cohortList({ limit, page, filters });
-          const response = resp?.results;
-          const cohortDetails = response?.cohortDetails || [];
-
-          const filteredData = cohortDetails?.map((item: any) => {
-            const stateNameField = item?.cohortData?.customFields.find(
-              (field: any) => field.label === 'State Name'
-            );
-            const stateName = stateNameField ? stateNameField.value : '';
-
-            return {
-              cohortId: item?.cohortData?.cohortId,
-              name: toPascalCase(item?.cohortData?.name),
-              state: stateName,
-            };
-          });
-
-          setCohortsData(filteredData);
-
-          if (filteredData.length > 0) {
-            // setClassId(filteredData[0].cohortId);
-
-            // add state name to localstorage
-            if (
-              cohortDetails?.length > 0 &&
-              cohortDetails?.[0].cohortData.customFields
-            ) {
-              const customFields = cohortDetails?.[0].cohortData.customFields;
-              const stateNameField = customFields?.find(
-                (field: any) => field.label === 'State Name'
-              );
-              if (stateNameField) {
-                const state_name = stateNameField.value;
-                if (state_name) {
-                  localStorage.setItem('stateName', state_name);
-                } else {
-                  localStorage.setItem('stateName', '');
-                  console.log('No State Name');
-                }
-              }
-            }
-            setManipulatedCohortData(
-              filteredData.concat({ cohortId: 'all', name: 'All Centers' })
-            );
-          }
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching  cohort list:', error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-        setLoading(false);
-      }
-    };
-    fetchCohortList();
-  }, []);
+  }, [
+    classId,
+    selectedValue ===
+      t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+        date_range: dateRange,
+      }),
+  ]);
 
   const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
     console.log('Date Range Selected:', { fromDate, toDate });
@@ -257,26 +183,27 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     setLoading(true);
     try {
       if (classId && classId != 'all') {
-        let limit = 300;
-        let page = 0;
-        let filters = { cohortId: classId };
+        const limit = 300;
+        const page = 0;
+        const filters = { cohortId: classId };
         const response = await getMyCohortMemberList({
           limit,
           page,
           filters,
         });
-        const resp = response?.result?.results?.userDetails;
+        const resp = response?.result?.userDetails;
         if (resp) {
           const nameUserIdArray = resp?.map((entry: any) => ({
             userId: entry.userId,
             name: toPascalCase(entry.name),
+            memberStatus: entry.status,
           }));
           // console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
             //Write logic to call class missed api
-            let fromDate = isFromDate;
-            let toDate = isToDate;
-            let filters = {
+            const fromDate = isFromDate;
+            const toDate = isToDate;
+            const filters = {
               contextId: classId,
               fromDate,
               toDate,
@@ -287,7 +214,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               facets: ['userId'],
               sort: ['present_percentage', 'asc'],
             });
-            let resp = response?.data?.result?.userId;
+            const resp = response?.data?.result?.userId;
             if (resp) {
               const filteredData = Object.keys(resp).map((userId) => ({
                 userId,
@@ -296,7 +223,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 present_percent: resp[userId]?.present_percentage || '0',
                 absent_percent: resp[userId]?.absent_percentage || '0',
               }));
-              if (nameUserIdArray && filteredData) {
+              if (filteredData) {
                 let mergedArray = filteredData.map((attendance) => {
                   const user = nameUserIdArray.find(
                     (user: { userId: string }) =>
@@ -304,12 +231,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                   );
                   return Object.assign({}, attendance, {
                     name: user ? user.name : 'Unknown',
+                    memberStatus: user ? user.memberStatus : 'Unknown',
                   });
                 });
                 mergedArray = mergedArray.filter(
                   (item) => item.name !== 'Unknown'
                 );
-                // console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!`, mergedArray);
                 setLearnerData(mergedArray);
                 setDisplayStudentList(mergedArray);
 
@@ -334,7 +261,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         }
         if (classId) {
           const cohortAttendancePercent = async () => {
-            const cohortAttendanceData: cohortAttendancePercentParam = {
+            const cohortAttendanceData: CohortAttendancePercentParam = {
               limit: 0,
               page: 0,
               filters: {
@@ -344,19 +271,18 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 contextId: classId,
               },
               facets: ['contextId'],
-              sort: ['present_percentage', 'asc']
+              sort: ['present_percentage', 'asc'],
             };
             const res = await getCohortAttendance(cohortAttendanceData);
             const response = res?.data?.result;
-            const contextData =
-              response?.contextId && response?.contextId[classId];
+            const contextData = response?.contextId?.[classId];
             if (contextData?.present_percentage) {
               const presentPercentage = contextData?.present_percentage;
               setPresentPercentage(presentPercentage);
             } else if (contextData?.absent_percentage) {
               setPresentPercentage(0);
             } else {
-              setPresentPercentage(t('ATTENDANCE.N/A'));
+              setPresentPercentage(t('ATTENDANCE.NO_ATTENDANCE'));
             }
           };
           cohortAttendancePercent();
@@ -400,10 +326,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             console.log('Fetched data:', results);
 
             const nameIDAttendanceArray = results
-              .filter(
-                (result) =>
-                  !result.error && result.data && result.data.contextId
-              )
+              .filter((result) => !result.error && result?.data?.contextId)
               .map((result) => {
                 const cohortId = result.cohortId;
                 const contextData = result.data.contextId[cohortId] || {};
@@ -452,28 +375,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   //   setDisplayStudentList(learnerData);
   // },[searchWord == ""])
 
-  const handleCohortSelection = (event: SelectChangeEvent) => {
-    setClassId(event.target.value as string);
-    ReactGA.event("cohort-selection-attendance-overview-page", { selectedCohortID: event.target.value });
-
-    // ---------- set cohortId and stateName-----------
-    const cohort_id = event.target.value;
-    localStorage.setItem('cohortId', cohort_id);
-
-    const get_state_name: string | null = getStateByCohortId(cohort_id);
-    if (get_state_name) {
-      localStorage.setItem('stateName', get_state_name);
-    } else {
-      localStorage.setItem('stateName', '');
-      console.log('NO State For Selected Cohort');
-    }
-  };
-
-  function getStateByCohortId(cohortId: any) {
-    const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
-    return cohort ? cohort?.state : null;
-  }
-
   const handleSearchClear = () => {
     setSearchWord('');
     setDisplayStudentList(learnerData);
@@ -481,7 +382,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   // debounce use for searching time period is 2 sec
   const debouncedSearch = debounce((value: string) => {
-    let filteredList = learnerData?.filter((user: any) =>
+    const filteredList = learnerData?.filter((user: any) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
     setDisplayStudentList(filteredList);
@@ -492,14 +393,16 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     setSearchWord(event.target.value);
     if (event.target.value.length >= 1) {
       debouncedSearch(event.target.value);
-      ReactGA.event("search-by-keyword-attendance-overview-page", { keyword: event.target.value});
+      ReactGA.event('search-by-keyword-attendance-overview-page', {
+        keyword: event.target.value,
+      });
     } else {
       setDisplayStudentList(learnerData);
     }
   };
 
   const handleSearchSubmit = () => {
-    let filteredList = learnerData?.filter((user: any) =>
+    const filteredList = learnerData?.filter((user: any) =>
       user.name.toLowerCase().includes(searchWord.toLowerCase())
     );
     setDisplayStudentList(filteredList);
@@ -538,48 +441,20 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     // Sorting by attendance
     switch (sortByAttendanceNumber) {
       case 'high':
-        sortedData.sort((a, b) => {
-          const aPercent = parseFloat(a.present_percent);
-          const bPercent = parseFloat(b.present_percent);
-          if (isNaN(aPercent) && isNaN(bPercent)) return 0;
-          if (isNaN(aPercent)) return 1;
-          if (isNaN(bPercent)) return -1;
-          return bPercent - aPercent;
-        });
+        sortedData = sortAttendanceNumber(sortedData, 'high');
         break;
       case 'low':
-        sortedData.sort((a, b) => {
-          const aPercent = parseFloat(a.present_percent);
-          const bPercent = parseFloat(b.present_percent);
-          if (isNaN(aPercent) && isNaN(bPercent)) return 0;
-          if (isNaN(aPercent)) return 1;
-          if (isNaN(bPercent)) return -1;
-          return aPercent - bPercent;
-        });
+        sortedData = sortAttendanceNumber(sortedData, 'low');
         break;
     }
 
     // Sorting by classesMissed
     switch (sortByClassesMissed) {
       case 'more':
-        sortedData.sort((a, b) => {
-          const aClassMissed = parseFloat(a.absent);
-          const bClassMissed = parseFloat(b.absent);
-          if (isNaN(aClassMissed) && isNaN(bClassMissed)) return 0;
-          if (isNaN(aClassMissed)) return 1;
-          if (isNaN(bClassMissed)) return -1;
-          return bClassMissed - aClassMissed;
-        });
+        sortedData = sortClassesMissed(sortedData, 'more');
         break;
       case 'less':
-        sortedData.sort((a, b) => {
-          const aClassMissed = parseFloat(a.absent);
-          const bClassMissed = parseFloat(b.absent);
-          if (isNaN(aClassMissed) && isNaN(bClassMissed)) return 0;
-          if (isNaN(aClassMissed)) return 1;
-          if (isNaN(bClassMissed)) return -1;
-          return aClassMissed - bClassMissed;
-        });
+        sortedData = sortClassesMissed(sortedData, 'less');
         break;
     }
 
@@ -592,10 +467,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       category: 'Attendance Overview Page',
       label: 'Back Button Clicked',
     });
-  };
-  const truncate = (str: string, length: number) => {
-    if (str.length <= length) return str;
-    return str.slice(0, length) + '...';
   };
 
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -638,60 +509,47 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           </Typography>
         </Box>
 
-        <Box sx={{ px: '16px', width: '100%', gap: '15px' }} display={'flex'}>
-          {cohortsData?.length > 1 ? (
-            <FormControl className="drawer-select" sx={{ m: 1, width: '100%' }}>
-              <Select
-                value={classId}
-                onChange={handleCohortSelection}
-                displayEmpty
-                // disabled={cohortsData?.length <= 1 ? true : false}
-                inputProps={{ 'aria-label': 'Without label' }}
-                className="SelectLanguages fs-14 fw-500 bg-white"
-                style={{
-                  borderRadius: '0.5rem',
-                  color: theme.palette.warning['200'],
-                  width: '100%',
-                  marginBottom: '0rem',
-                  fontSize: '16px',
-                }}
-              >
-                {cohortsData?.length !== 0 ? (
-                  manipulatedCohortData?.map((cohort) => (
-                    <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                      {cohort.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <Typography style={{ fontWeight: 'bold' }}>
-                    {t('COMMON.NO_DATA_FOUND')}
-                  </Typography>
-                )}
-              </Select>
-            </FormControl>
-          ) : (
-            <Typography
-              color={theme.palette.warning['300']}
-              pl={1}
-              variant="h1"
-            >
-              {cohortsData[0]?.name}
-            </Typography>
-          )}
-        </Box>
+        <Box
+          className="linerGradient br-md-8"
+          sx={{
+            padding: '20px 20px',
+          }}
+        >
+          <Box className="d-md-flex space-md-between gap-md-10 w-100">
+            <Box className="flex-basis-md-50">
+              <CohortSelectionSection
+                classId={classId}
+                setClassId={setClassId}
+                userId={userId}
+                setUserId={setUserId}
+                loading={loading}
+                setLoading={setLoading}
+                cohortsData={cohortsData}
+                setCohortsData={setCohortsData}
+                isAuthenticated={isAuthenticated}
+                setIsAuthenticated={setIsAuthenticated}
+                manipulatedCohortData={manipulatedCohortData}
+                setManipulatedCohortData={setManipulatedCohortData}
+                blockName={blockName}
+                setBlockName={setBlockName}
+                isCustomFieldRequired={true}
+              />
+            </Box>
+            <Box className="flex-basis-md-50">
+              <DateRangePopup
+                menuItems={menuItems}
+                selectedValue={selectedValue}
+                setSelectedValue={setSelectedValue}
+                onDateRangeSelected={handleDateRangeSelected}
+                dateRange={dateRange}
+              />
+            </Box>
+          </Box>
 
-        <Box className="linerGradient" sx={{ padding: '10px 20px' }}>
-          <DateRangePopup
-            menuItems={menuItems}
-            selectedValue={selectedValue}
-            setSelectedValue={setSelectedValue}
-            onDateRangeSelected={handleDateRangeSelected}
-            dateRange={dateRange}
-          />
-          {(selectedValue ===
-          t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-            date_range: dateRange,
-          }) || selectedValue === "") ? (
+          {selectedValue ===
+            t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+              date_range: dateRange,
+            }) || selectedValue === '' ? (
             <Typography
               color={theme.palette.warning['400']}
               fontSize={'0.75rem'}
@@ -712,7 +570,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     value={
                       learnerData.length
                         ? presentPercentage + ' %'
-                        : presentPercentage
+                        : t('ATTENDANCE.NO_ATTENDANCE')
                     }
                   />
                 </Grid>
@@ -726,7 +584,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       />
                     ))}
                     valuePartOne={
-                      Array.isArray(lowAttendanceLearnerList) && lowAttendanceLearnerList.length > 2
+                      Array.isArray(lowAttendanceLearnerList) &&
+                      lowAttendanceLearnerList.length > 2
                         ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                         : lowAttendanceLearnerList.length === 2
                           ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
@@ -735,10 +594,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                             : Array.isArray(lowAttendanceLearnerList) &&
                                 lowAttendanceLearnerList.length === 0
                               ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
-                              : t('ATTENDANCE.N/A')
+                              : t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
                     }
                     valuePartTwo={
-                      Array.isArray(lowAttendanceLearnerList) && 
+                      Array.isArray(lowAttendanceLearnerList) &&
                       lowAttendanceLearnerList.length > 2
                         ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                         : null
@@ -769,6 +628,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                         event.preventDefault();
                         handleSearchSubmit();
                       }}
+                      className="w-md-60"
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -785,6 +645,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
                         onClick={handleScrollDown}
+                        onKeyDown={handleKeyDown}
                       />
                       <IconButton
                         type="button"
@@ -861,6 +722,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       classesMissed={user.absent || 0}
                       userId={user.userId}
                       cohortId={classId}
+                      memberStatus={user.memberStatus}
                     />
                   ))
                 ) : (
@@ -929,4 +791,8 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default AttendanceOverview;
+// export default AttendanceOverview;
+export default withAccessControl(
+  'accessAttendanceOverview',
+  accessControl
+)(AttendanceOverview);

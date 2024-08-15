@@ -22,6 +22,7 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
           alignItems={'center'}
           bgcolor={'#E6E6E6'}
           maxHeight={'auto'}
+          className="br-md-tlr-8"
         >
           <Grid
             container

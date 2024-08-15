@@ -2,14 +2,22 @@ import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { attendanceInPercentageStatusList } from '../services/AttendanceService';
 import {
   AttendancePercentageProps,
-  cohortMemberList,
+  CohortMemberList,
 } from '../utils/Interfaces';
 
 const getTotalStudentCount = async (
-  cohortMemberRequest: cohortMemberList
+  cohortMemberRequest: CohortMemberList,
+  fromDate: Date
 ): Promise<number> => {
   const response = await getMyCohortMemberList(cohortMemberRequest);
-  const totalStudentsCount = response?.result?.totalCount;
+  const filteredFields = response?.result?.userDetails;
+  console.log('totalStudentsCount', filteredFields);
+
+  const totalStudentsCount = filteredFields?.filter((entry: any) => {
+    const createdAtDate = new Date(entry.createdAt);
+    createdAtDate.setHours(0, 0, 0, 0);
+    return createdAtDate <= fromDate;
+  }).length;
   console.log('totalStudentsCount', totalStudentsCount);
   return totalStudentsCount;
 };
@@ -50,26 +58,27 @@ type Result = {
 };
 
 export const calculatePercentage = async (
-  cohortMemberRequest: cohortMemberList,
-  attendanceRequest: AttendancePercentageProps
+  cohortMemberRequest: CohortMemberList,
+  attendanceRequest: AttendancePercentageProps,
+  selectedDate?: any
 ): Promise<Result> => {
-  const totalStudentsCount = await getTotalStudentCount(cohortMemberRequest);
+  const fromDate = new Date(selectedDate);
+  const totalStudentsCount = await getTotalStudentCount(
+    cohortMemberRequest,
+    fromDate
+  );
   const presentStudents = await getPresentStudentCount(attendanceRequest);
-
   const result: Result = {};
-
   for (const date of Object.keys(presentStudents)) {
     const presentCount = presentStudents[date].present_students;
     const presentPercentage = parseFloat(
       ((presentCount / totalStudentsCount) * 100).toFixed(2)
     );
-
     result[date] = {
       present_students: presentCount,
       totalcount: totalStudentsCount,
       present_percentage: presentPercentage,
     };
   }
-
   return result;
 };

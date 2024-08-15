@@ -4,25 +4,25 @@ const options = {
   position: 'bottom-center',
   hideProgressBar: true,
   closeButton: false,
-  autoClose: 3000
+  autoClose: 3000,
 };
 
-export const showToastMessage = (message, type='success') => {
+export const showToastMessage = (message, type = 'success') => {
   const commonOptions = {
     ...options,
     style: {
-      color: '#fff'
-    }
+      color: '#fff',
+    },
   };
 
-  switch(type) {
+  switch (type) {
     case 'error':
       toast.error(message, {
         ...commonOptions,
         style: {
           ...commonOptions.style,
-          background: '#FF0000'
-        }
+          background: '#FF0000',
+        },
       });
       break;
     case 'success':
@@ -30,8 +30,8 @@ export const showToastMessage = (message, type='success') => {
         ...commonOptions,
         style: {
           ...commonOptions.style,
-          background: '#019722'
-        }
+          background: '#019722',
+        },
       });
       break;
     case 'info':
@@ -39,8 +39,8 @@ export const showToastMessage = (message, type='success') => {
         ...commonOptions,
         style: {
           ...commonOptions.style,
-          background: '#017AFF'
-        }
+          background: '#017AFF',
+        },
       });
       break;
     case 'warning':
@@ -48,8 +48,8 @@ export const showToastMessage = (message, type='success') => {
         ...commonOptions,
         style: {
           ...commonOptions.style,
-          background: '#FFA500'
-        }
+          background: '#FFA500',
+        },
       });
       break;
     default:

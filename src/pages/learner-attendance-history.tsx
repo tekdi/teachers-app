@@ -3,19 +3,21 @@ import React, { useEffect, useState } from 'react';
 
 import AttendanceStatus from '@/components/AttendanceStatus';
 import Header from '@/components/Header';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import { LearnerAttendanceProps } from '@/utils/Interfaces';
 import Loader from '@/components/Loader';
 import MarkAttendance from '@/components/MarkAttendance';
 import MonthCalender from '@/components/MonthCalender';
+import { showToastMessage } from '@/components/Toastify';
 import { getLearnerAttendanceStatus } from '@/services/AttendanceService';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { shortDateFormat } from '@/utils/Helper';
+import { LearnerAttendanceProps } from '@/utils/Interfaces';
+import { logEvent } from '@/utils/googleAnalytics';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
+import { accessControl } from '../../app.config';
 
 type LearnerAttendanceData = {
   [date: string]: {
@@ -35,9 +37,7 @@ const LearnerAttendanceHistory = () => {
 
   const [loading, setLoading] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [open, setOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   const [attendanceUpdated, setAttendanceUpdated] = useState(false);
   const [learnerAttendance, setLearnerAttendance] = useState<
     LearnerAttendanceData | undefined
@@ -76,10 +76,6 @@ const LearnerAttendanceHistory = () => {
     });
   };
 
-  const handleModalOpen = () => {
-    setModalOpen(true);
-  };
-
   const handleModalClose = () => {
     setOpen(false);
     logEvent({
@@ -93,8 +89,8 @@ const LearnerAttendanceHistory = () => {
     const getAttendanceStatus = async () => {
       setLoading(true);
       try {
-        const classId = localStorage.getItem('classId') || '';
-        const userId = localStorage.getItem('learnerId') || '';
+        const classId = localStorage.getItem('classId') ?? '';
+        const userId = localStorage.getItem('learnerId') ?? '';
         if (
           classId !== '' &&
           classId !== undefined &&
@@ -204,7 +200,7 @@ const LearnerAttendanceHistory = () => {
         borderTop={1}
         sx={{
           position: 'sticky',
-          top: '62px',
+          top: '65px',
           zIndex: 1000,
           backgroundColor: 'white',
           boxShadow: '0px 4px 8px 3px #00000026',
@@ -233,7 +229,7 @@ const LearnerAttendanceHistory = () => {
         isSelfAttendance={false}
         currentStatus={
           learnerAttendance?.[shortDateFormat(selectedDate)]
-            ?.attendanceStatus || ''
+            ?.attendanceStatus ?? ''
         }
         handleClose={handleModalClose}
         onAttendanceUpdate={() => setAttendanceUpdated(!attendanceUpdated)}
@@ -250,4 +246,8 @@ export async function getStaticProps({ locale }: any) {
     },
   };
 }
-export default LearnerAttendanceHistory;
+
+export default withAccessControl(
+  'accessLearnerAttendanceHistory',
+  accessControl
+)(LearnerAttendanceHistory);

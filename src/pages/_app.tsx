@@ -1,35 +1,50 @@
 'use client';
 
 import '@/styles/globals.css';
+import 'react-toastify/dist/ReactToastify.css';
+
+import * as React from 'react';
+
+import { Button } from '@mui/material';
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   useColorScheme,
   useTheme,
 } from '@mui/material/styles';
-import * as React from 'react';
-import { useEffect } from 'react';
-import { Poppins } from 'next/font/google';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { initGA, logPageView } from '../utils/googleAnalytics';
 
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { Button, Container } from '@mui/material';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import { appWithTranslation } from 'next-i18next';
+import { UserConfig, appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
-import customTheme from '../styles/customStyles';
-import { telemetryFactory } from '../utils/telemetry';
+import { Poppins } from 'next/font/google';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { initGA, logPageView } from '../utils/googleAnalytics';
+import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { fullWidthPages } from '../../app.config';
+import nextI18NextConfig from '../../next-i18next.config.js';
+import customTheme from '../styles/customTheme';
+import { telemetryFactory } from '../utils/telemetry';
 
+const queryClient = new QueryClient();
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
   fallback: ['sans-serif'],
   subsets: ['latin'],
 });
+
+const emptyInitialI18NextConfig: UserConfig = {
+  i18n: {
+    defaultLocale: nextI18NextConfig.i18n.defaultLocale,
+    locales: nextI18NextConfig.i18n.locales,
+  },
+};
+
 export function DarkTheme() {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
@@ -55,6 +70,7 @@ export function DarkTheme() {
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const isFullWidthPage = fullWidthPages.includes(router.pathname);
   useEffect(() => {
     telemetryFactory.init();
   }, []);
@@ -87,7 +103,6 @@ function App({ Component, pageProps }: AppProps) {
       telemetryFactory.impression(telemetryImpression);
 
       logPageView(url);
-      
     };
 
     // Log initial page load
@@ -121,15 +136,36 @@ function App({ Component, pageProps }: AppProps) {
           font-family: ${poppins.style.fontFamily} !important;
         }
       `}</style>
+      <Head>
+        <title>Pratham SCP Teachers app</title>
+      </Head>
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}
-        <Container maxWidth="md" style={{ padding: 0 }}>
-          <Component {...pageProps} />
-          <ToastContainer position="bottom-left" autoClose={3000} stacked={false} />
-        </Container>
+        <Box
+          sx={{
+            padding: '0',
+            '@media (min-width: 900px)': {
+              width: !isFullWidthPage ? 'calc(100% - 22rem)' : '100%',
+              marginLeft: !isFullWidthPage ? '351px' : '0',
+            },
+            '@media (min-width: 2000px)': {
+              width: '100%',
+              marginLeft: !isFullWidthPage ? '351px' : '0',
+            },
+          }}
+        >
+          <QueryClientProvider client={queryClient}>
+            <Component {...pageProps} />
+          </QueryClientProvider>
+          <ToastContainer
+            position="bottom-left"
+            autoClose={3000}
+            stacked={false}
+          />
+        </Box>
       </CssVarsProvider>
     </>
   );
 }
 
-export default appWithTranslation(App);
+export default appWithTranslation(App, emptyInitialI18NextConfig);

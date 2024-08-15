@@ -1,58 +1,59 @@
 import {
-  AttendanceParams,
-  AttendancePercentageProps,
-  AttendanceStatusListProps,
-  cohort,
-} from '../utils/Interfaces';
+  debounce,
+  getTodayDate,
+  handleKeyDown,
+  shortDateFormat,
+  toPascalCase,
+} from '@/utils/Helper';
 import {
   Box,
   Button,
-  FormControl,
   Grid,
   IconButton,
   InputBase,
-  MenuItem,
   Paper,
-  Select,
-  SelectChangeEvent,
   Stack,
   Typography,
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import ReactGA from 'react-ga4';
 import {
-  debounce,
-  getTodayDate,
-  shortDateFormat,
-  toPascalCase,
-} from '@/utils/Helper';
+  AttendanceParams,
+  AttendancePercentageProps,
+  AttendanceStatusListProps,
+  ICohort,
+  CohortMemberList
+} from '../utils/Interfaces';
 
-import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import AttendanceStatus from '@/components/AttendanceStatus';
 import AttendanceStatusListView from '@/components/AttendanceStatusListView';
-import ClearIcon from '@mui/icons-material/Clear';
-import Header from '../components/Header';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import Loader from '../components/Loader';
+import CohortSelectionSection from '@/components/CohortSelectionSection';
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import MonthCalender from '@/components/MonthCalender';
-import SearchIcon from '@mui/icons-material/Search';
-import SortingModal from '../components/SortingModal';
+import { showToastMessage } from '@/components/Toastify';
 import UpDownButton from '@/components/UpDownButton';
-import { attendanceStatusList } from '../services/AttendanceService';
-import { calculatePercentage } from '@/utils/attendanceStats';
-import { cohortList } from '@/services/CohortServices';
-import { cohortMemberList } from '../utils/Interfaces';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { Status } from '@/utils/app.constant';
+import { calculatePercentage } from '@/utils/attendanceStats';
+import { logEvent } from '@/utils/googleAnalytics';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
+import ClearIcon from '@mui/icons-material/Clear';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import SearchIcon from '@mui/icons-material/Search';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import { logEvent } from '@/utils/googleAnalytics';
-import { showToastMessage } from '@/components/Toastify';
+import ReactGA from 'react-ga4';
+import { accessControl } from '../../app.config';
+import Header from '../components/Header';
+import Loader from '../components/Loader';
+import SortingModal from '../components/SortingModal';
+import { attendanceStatusList } from '../services/AttendanceService';
 
 interface user {
+  memberStatus: string;
   userId: string;
   name: string;
   attendance?: string;
@@ -65,7 +66,7 @@ const UserAttendanceHistory = () => {
   const { push } = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [classId, setClassId] = React.useState('');
-  const [cohortsData, setCohortsData] = React.useState<Array<cohort>>([]);
+  const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
   const [percentageAttendance, setPercentageAttendance] =
     React.useState<any>(null);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<user>>(
@@ -78,21 +79,27 @@ const UserAttendanceHistory = () => {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
   const [status, setStatus] = useState('');
-  const [center, setCenter] = useState('');
   const [openMarkAttendance, setOpenMarkAttendance] = useState(false);
   const handleMarkAttendanceModal = () =>
     setOpenMarkAttendance(!openMarkAttendance);
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
+  const [blockName, setBlockName] = React.useState<string>('');
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [userId, setUserId] = React.useState<string | null>(null);
+  const [manipulatedCohortData, setManipulatedCohortData] =
+    React.useState<Array<ICohort>>(cohortsData);
   const searchRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
-  let userId: string;
   const currentDate = getTodayDate();
 
   const handleOpen = () => {
     setOpen(true);
+    ReactGA.event('mark/modify-attendance-button-clicked-attendance-history', {
+      teacherId: userId,
+    });
   };
 
   const handleClose = () => {
@@ -102,8 +109,8 @@ const UserAttendanceHistory = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
-      setClassId(localStorage.getItem('classId') || '');
-      const classId = localStorage.getItem('classId') || '';
+      setClassId(localStorage.getItem('classId') ?? '');
+      const classId = localStorage.getItem('classId') ?? '';
       localStorage.setItem('cohortId', classId);
       setLoading(false);
       if (token) {
@@ -114,71 +121,11 @@ const UserAttendanceHistory = () => {
     }
   }, []);
 
-  // API call to get center list
-  useEffect(() => {
-    const fetchCohortList = async () => {
-      const userId = localStorage.getItem('userId');
-      setLoading(true);
-      try {
-        if (userId) {
-          const limit = 0;
-          const page = 0;
-          const filters = { userId: userId };
-          const resp = await cohortList({ limit, page, filters });
-          const extractedNames = resp?.results?.cohortDetails;
-          const filteredData = extractedNames
-            ?.map((item: any) => {
-              const stateNameField = item?.cohortData?.customFields.find(
-                (field: any) => field.label === 'State Name'
-              );
-              const stateName = stateNameField ? stateNameField.value : '';
-
-              return {
-                cohortId: item?.cohortData?.cohortId,
-                name: item?.cohortData?.name,
-                state: stateName,
-              };
-            })
-            ?.filter(Boolean);
-
-          setCohortsData(filteredData);
-          // setClassId(filteredData?.[0]?.cohortId);
-          // localStorage.setItem('classId', filteredData?.[0]?.cohortId);
-
-          // ----- add state name to localstorage----------
-          if (
-            extractedNames?.length > 0 &&
-            extractedNames?.[0].cohortData.customFields
-          ) {
-            const customFields = extractedNames?.[0].cohortData.customFields;
-            const stateNameField = customFields?.find(
-              (field: any) => field.label === 'State Name'
-            );
-            if (stateNameField) {
-              const state_name = stateNameField.value;
-              if (state_name) {
-                localStorage.setItem('stateName', state_name);
-              } else {
-                localStorage.setItem('stateName', '');
-              }
-            }
-          }
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Error fetching  cohort list:', error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-        setLoading(false);
-      }
-    };
-    fetchCohortList();
-  }, []);
-
   useEffect(() => {
     const getAttendanceStats = async () => {
       if (classId !== '' && classId !== undefined) {
         console.log('classId', classId);
-        const cohortMemberRequest: cohortMemberList = {
+        const cohortMemberRequest: CohortMemberList = {
           limit: 300,
           page: 0,
           filters: {
@@ -214,7 +161,8 @@ const UserAttendanceHistory = () => {
         };
         const attendanceStats = await calculatePercentage(
           cohortMemberRequest,
-          attendanceRequest
+          attendanceRequest,
+          selectedDate
         );
         setPercentageAttendance(attendanceStats);
       }
@@ -234,13 +182,23 @@ const UserAttendanceHistory = () => {
           page,
           filters,
         });
-        const resp = response?.result?.results?.userDetails;
+        const resp = response?.result?.userDetails || [];
 
         if (resp) {
-          const nameUserIdArray = resp?.map((entry: any) => ({
-            userId: entry.userId,
-            name: toPascalCase(entry.name),
-          }));
+          let selectedDateStart = new Date(selectedDate);
+          selectedDateStart.setHours(0, 0, 0, 0);
+          let nameUserIdArray = resp
+            .filter((entry: any) => {
+              const createdAtDate = new Date(entry.createdAt);
+              createdAtDate.setHours(0, 0, 0, 0);
+              return createdAtDate <= selectedDateStart;
+            })
+            .map((entry: any) => ({
+              userId: entry.userId,
+              name: toPascalCase(entry.name),
+              memberStatus: entry.status,
+              createdAt: entry.createdAt,
+            }));
           if (nameUserIdArray && (selectedDate || currentDate)) {
             const userAttendanceStatusList = async () => {
               const attendanceStatusData: AttendanceStatusListProps = {
@@ -255,7 +213,7 @@ const UserAttendanceHistory = () => {
               };
               const res = await attendanceStatusList(attendanceStatusData);
               const response = res?.data?.attendanceList;
-              if (nameUserIdArray && response) {
+              if (response) {
                 const getUserAttendanceStatus = (
                   nameUserIdArray: any[],
                   response: any[]
@@ -284,9 +242,13 @@ const UserAttendanceHistory = () => {
                   response
                 );
 
-                if (nameUserIdArray && userAttendanceArray) {
+                if (userAttendanceArray) {
                   const mergeArrays = (
-                    nameUserIdArray: { userId: string; name: string }[],
+                    nameUserIdArray: {
+                      userId: string;
+                      name: string;
+                      memberStatus: string;
+                    }[],
                     userAttendanceArray: {
                       userId: string;
                       attendance: string;
@@ -294,11 +256,13 @@ const UserAttendanceHistory = () => {
                   ): {
                     userId: string;
                     name: string;
+                    memberStatus: string;
                     attendance: string;
                   }[] => {
                     const newArray: {
                       userId: string;
                       name: string;
+                      memberStatus: string;
                       attendance: string;
                     }[] = [];
                     nameUserIdArray.forEach((user) => {
@@ -310,6 +274,7 @@ const UserAttendanceHistory = () => {
                         newArray.push({
                           userId,
                           name: user.name,
+                          memberStatus: user.memberStatus,
                           attendance: attendanceEntry.attendance,
                         });
                       }
@@ -351,10 +316,6 @@ const UserAttendanceHistory = () => {
     console.log(status);
   }, [status]);
 
-  // useEffect(() => {
-  //   localStorage.setItem('activeStartDate', activeStartDate.toISOString());
-  // }, [activeStartDate]);
-
   useEffect(() => {
     handleSelectedDateChange(selectedDate);
   }, []);
@@ -363,68 +324,41 @@ const UserAttendanceHistory = () => {
     setSelectedDate(date);
   };
 
-  const formatDate = (date: Date | null | undefined) => {
-    if (!date) {
-      return '';
-    }
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
 
-  const getAllDatesInRange = (startDate: string, endDate: string): string[] => {
-    const datesArray: string[] = [];
-    const currentDate = new Date(startDate);
-    const lastDate = new Date(endDate);
+  // const getAllDatesInRange = (startDate: string, endDate: string): string[] => {
+  //   const datesArray: string[] = [];
+  //   const currentDate = new Date(startDate);
+  //   const lastDate = new Date(endDate);
 
-    while (currentDate <= lastDate) {
-      datesArray.push(shortDateFormat(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
+  //   while (currentDate <= lastDate) {
+  //     datesArray.push(shortDateFormat(currentDate));
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
 
-    return datesArray;
-  };
+  //   return datesArray;
+  // };
 
   const handleSelectedDateChange = (date: Date | Date[] | null) => {
     setSelectedDate(date as Date);
   };
 
-  const handleUpdate = async (date: string, status: string) => {
-    const trimmedContextId = classId.trim();
-    if (userId && trimmedContextId) {
-      const attendanceData: AttendanceParams = {
-        attendanceDate: date,
-        attendance: status,
-        userId,
-        contextId: trimmedContextId,
-      };
-      setLoading(true);
-    }
-  };
+  // const handleUpdate = async (date: string, status: string) => {
+  //   const trimmedContextId = classId.trim();
+  //   if (userId && trimmedContextId) {
+  //     const attendanceData: AttendanceParams = {
+  //       attendanceDate: date,
+  //       attendance: status,
+  //       userId,
+  //       contextId: trimmedContextId,
+  //     };
+  //     setLoading(true);
+  //   }
+  // };
 
-  const handleCohortSelection = (event: SelectChangeEvent) => {
-    setClassId(event.target.value as string);
-    ReactGA.event("cohort-selection-attendance-history-page", { selectedCohortID: event.target.value });
-    setHandleSaveHasRun(!handleSaveHasRun);
-
-    // ---------- set cohortId and stateName-----------
-    const cohort_id = event.target.value;
-    localStorage.setItem('cohortId', cohort_id);
-
-    const get_state_name: string | null = getStateByCohortId(cohort_id);
-    if (get_state_name) {
-      localStorage.setItem('stateName', get_state_name);
-    } else {
-      localStorage.setItem('stateName', '');
-      console.log('NO State For Selected Cohortksdbj');
-    }
-  };
-
-  function getStateByCohortId(cohortId: any) {
-    const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
-    return cohort ? cohort?.state : null;
-  }
+  // function getStateByCohortId(cohortId: any) {
+  //   const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
+  //   return cohort ? cohort?.state : null;
+  // }
 
   const handleSearchClear = () => {
     setSearchWord('');
@@ -433,7 +367,7 @@ const UserAttendanceHistory = () => {
 
   // debounce use for searching time period is 2 sec
   const debouncedSearch = debounce((value: string) => {
-    let filteredList = cohortMemberList?.filter((user: any) =>
+    const filteredList = cohortMemberList?.filter((user: any) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
     setDisplayStudentList(filteredList);
@@ -442,7 +376,9 @@ const UserAttendanceHistory = () => {
   // handle search student data
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchWord(event.target.value);
-    ReactGA.event("search-by-keyword-attendance-history-age", { keyword: event.target.value});
+    ReactGA.event('search-by-keyword-attendance-history-age', {
+      keyword: event.target.value,
+    });
     if (event.target.value.length >= 3) {
       debouncedSearch(event.target.value);
     } else {
@@ -450,15 +386,8 @@ const UserAttendanceHistory = () => {
     }
   };
 
-  const handleSearchFocus = () => {
-    const scrollSearchBox = searchRef.current;
-    if (scrollSearchBox) {
-      scrollSearchBox.scrollIntoView({ block: 'start', behavior: 'smooth' });
-    }
-  };
-
   const handleSearchSubmit = () => {
-    let filteredList = cohortMemberList?.filter((user: any) =>
+    const filteredList = cohortMemberList?.filter((user: any) =>
       user.name.toLowerCase().includes(searchWord.toLowerCase())
     );
     setDisplayStudentList(filteredList);
@@ -477,7 +406,7 @@ const UserAttendanceHistory = () => {
   // handle sorting data
   const handleSorting = (sortByName: string, sortByAttendance: string) => {
     handleCloseModal();
-    let sortedData = [...cohortMemberList];
+    const sortedData = [...cohortMemberList];
 
     // Sorting by name
     switch (sortByName) {
@@ -493,6 +422,16 @@ const UserAttendanceHistory = () => {
     switch (sortByAttendance) {
       case 'pre':
         sortedData.sort((a, b) => {
+          if (
+            a.memberStatus === Status.DROPOUT &&
+            b.memberStatus !== Status.DROPOUT
+          )
+            return 1;
+          if (
+            a.memberStatus !== Status.DROPOUT &&
+            b.memberStatus === Status.DROPOUT
+          )
+            return -1;
           if (a.attendance === 'present' && b.attendance === 'absent')
             return -1;
           if (a.attendance === 'absent' && b.attendance === 'present') return 1;
@@ -501,6 +440,16 @@ const UserAttendanceHistory = () => {
         break;
       case 'abs':
         sortedData.sort((a, b) => {
+          if (
+            a.memberStatus === Status.DROPOUT &&
+            b.memberStatus !== Status.DROPOUT
+          )
+            return 1;
+          if (
+            a.memberStatus !== Status.DROPOUT &&
+            b.memberStatus === Status.DROPOUT
+          )
+            return -1;
           if (a.attendance === 'absent' && b.attendance === 'present')
             return -1;
           if (a.attendance === 'present' && b.attendance === 'absent') return 1;
@@ -531,8 +480,6 @@ const UserAttendanceHistory = () => {
     setCohortMemberList(updatedAttendanceList);
     setDisplayStudentList(updatedAttendanceList);
   };
-
-  const hadleScroolDown = () => {};
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -573,87 +520,70 @@ const UserAttendanceHistory = () => {
               width={'100%'}
               paddingTop={'10px'}
             >
-                <Box onClick={() => {window.history.back()
-                logEvent({
-                  action: 'back-button-clicked-attendance-history-page',
-                  category: 'Attendance History Page',
-                  label: 'Back Button Clicked',
-                });}}>
-                <Box>
-                  <KeyboardBackspaceOutlinedIcon
-                    cursor={'pointer'}
-                    sx={{ color: theme.palette.warning['A200'] }}
+              <Box className="d-md-flex w-100 space-md-between min-align-md-center">
+                <Box display={'flex'} gap={'10px'}>
+                  <Box
+                    onClick={() => {
+                      window.history.back();
+                      logEvent({
+                        action: 'back-button-clicked-attendance-history-page',
+                        category: 'Attendance History Page',
+                        label: 'Back Button Clicked',
+                      });
+                    }}
+                  >
+                    <Box>
+                      <KeyboardBackspaceOutlinedIcon
+                        cursor={'pointer'}
+                        sx={{ color: theme.palette.warning['A200'] }}
+                      />
+                    </Box>
+                  </Box>
+                  <Typography
+                    marginBottom={'0px'}
+                    fontSize={'22px'}
+                    color={theme.palette.warning['A200']}
+                    className="flex-basis-md-30"
+                    sx={{ whiteSpace: 'nowrap' }}
+                  >
+                    {t('ATTENDANCE.DAY_WISE_ATTENDANCE')}
+                  </Typography>
+                </Box>
+
+                <Box className="w-100 d-md-flex flex-md-end">
+                  <CohortSelectionSection
+                    classId={classId}
+                    setClassId={setClassId}
+                    userId={userId}
+                    setUserId={setUserId}
+                    isAuthenticated={isAuthenticated}
+                    setIsAuthenticated={setIsAuthenticated}
+                    loading={loading}
+                    setLoading={setLoading}
+                    cohortsData={cohortsData}
+                    setCohortsData={setCohortsData}
+                    manipulatedCohortData={manipulatedCohortData}
+                    setManipulatedCohortData={setManipulatedCohortData}
+                    isManipulationRequired={false}
+                    blockName={blockName}
+                    setBlockName={setBlockName}
+                    handleSaveHasRun={handleSaveHasRun}
+                    setHandleSaveHasRun={setHandleSaveHasRun}
+                    isCustomFieldRequired={true}
                   />
                 </Box>
               </Box>
-
-              <Typography
-                marginBottom={'0px'}
-                fontSize={'22px'}
-                color={theme.palette.warning['A200']}
-              >
-                {t('ATTENDANCE.DAY_WISE_ATTENDANCE')}
-              </Typography>
             </Box>
           </Box>
-          <Box
-            sx={{
-              minWidth: 120,
-              gap: '15px',
-              paddingBottom: '10px',
-              padding: '0 10px 10px',
-            }}
-            display={'flex'}
-          >
-            {cohortsData?.length > 1 ? (
-              <FormControl
-                className="drawer-select"
-                sx={{ m: 1, width: '100%' }}
-              >
-                <Select
-                  value={classId}
-                  onChange={handleCohortSelection}
-                  displayEmpty
-                  inputProps={{ 'aria-label': 'Without label' }}
-                  // disabled={cohortsData?.length === 1 ? true : false}
-                  className="SelectLanguages fs-14 fw-500"
-                  style={{
-                    borderRadius: '0.5rem',
-                    color: theme.palette.warning['200'],
-                    width: '100%',
-                    marginBottom: '0rem',
-                  }}
-                >
-                  {cohortsData?.length !== 0 ? (
-                    cohortsData?.map((cohort) => (
-                      <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                        {cohort.name}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <Typography style={{ fontWeight: 'bold' }}>
-                      {t('COMMON.NO_DATA_FOUND')}
-                    </Typography>
-                  )}
-                </Select>
-              </FormControl>
-            ) : (
-              <Typography
-                color={theme.palette.warning['300']}
-                pl={'1rem'}
-                variant="h1"
-              >
-                {cohortsData[0]?.name}
-              </Typography>
-            )}
-          </Box>
+
           <Box
             pl={1}
             borderBottom={1}
+            className="top-md-0"
             borderTop={1}
             sx={{
               position: 'sticky',
-              top: '62px',
+              top: '65px',
               zIndex: 1000,
               backgroundColor: 'white',
               // boxShadow: '0px 1px 3px 0px #0000004D',
@@ -673,11 +603,13 @@ const UserAttendanceHistory = () => {
             </Box>
           </Box>
 
-          <MonthCalender
-            formattedAttendanceData={percentageAttendance}
-            onChange={handleActiveStartDateChange}
-            onDateChange={handleSelectedDateChange}
-          />
+          <Box className="calender-container">
+            <MonthCalender
+              formattedAttendanceData={percentageAttendance}
+              onChange={handleActiveStartDateChange}
+              onDateChange={handleSelectedDateChange}
+            />
+          </Box>
           <Box mt={2}>
             {/*----------------------------search and Sort---------------------------------------*/}
             <Stack mr={1} ml={1}>
@@ -708,7 +640,6 @@ const UserAttendanceHistory = () => {
                         background: theme.palette.warning.A700,
                         boxShadow: 'none',
                       }}
-                      onFocus={hadleScroolDown}
                     >
                       <InputBase
                         ref={inputRef}
@@ -718,6 +649,7 @@ const UserAttendanceHistory = () => {
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
                         onClick={handleScrollDown}
+                        onKeyDown={handleKeyDown}
                       />
                       <IconButton
                         type="button"
@@ -896,4 +828,8 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default UserAttendanceHistory;
+// export default UserAttendanceHistory;
+export default withAccessControl(
+  'accessAttendanceHistory',
+  accessControl
+)(UserAttendanceHistory);

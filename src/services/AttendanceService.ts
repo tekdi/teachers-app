@@ -3,10 +3,11 @@ import {
   BulkAttendanceParams,
   AttendanceStatusListProps,
   AttendancePercentageProps,
-  cohortAttendancePercentParam,
+  CohortAttendancePercentParam,
   LearnerAttendanceProps,
   MarkAttendanceParams,
-  allCenterAttendancePercentParam,
+  AllCenterAttendancePercentParam,
+  OverallAttendancePercentageProps,
 } from '../utils/Interfaces';
 
 export const bulkAttendance = async ({
@@ -89,6 +90,20 @@ export const attendanceInPercentageStatusList = async ({
   });
 };
 
+export const overallAttendanceInPercentageStatusList = async ({
+  limit,
+  page,
+  filters: { contextId, scope },
+  facets,
+}: OverallAttendancePercentageProps): Promise<any> => {
+  return postAttendanceList({
+    limit,
+    page,
+    filters: { contextId, scope },
+    facets,
+  });
+};
+
 export const getLearnerAttendanceStatus = async ({
   limit,
   page,
@@ -97,7 +112,7 @@ export const getLearnerAttendanceStatus = async ({
   return postAttendanceList({
     limit,
     page,
-    filters: { contextId, scope, toDate, fromDate, userId }
+    filters: { contextId, scope, toDate, fromDate, userId },
   });
 };
 
@@ -106,35 +121,35 @@ export const getCohortAttendance = async ({
   page,
   filters: { scope, fromDate, toDate, contextId },
   facets,
-  sort
-}: cohortAttendancePercentParam): Promise<any> => {
+  sort,
+}: CohortAttendancePercentParam): Promise<any> => {
   return postAttendanceList({
     limit,
     page,
     filters: { scope, fromDate, toDate, contextId },
     facets,
-    sort
+    sort,
   });
 };
 
 export const getAllCenterAttendance = async ({
   limit,
   page,
-  filters: {scope, fromDate, toDate, contextId},
+  filters: { scope, fromDate, toDate, contextId },
   facets,
-}: allCenterAttendancePercentParam): Promise<any> => {
+}: AllCenterAttendancePercentParam): Promise<any> => {
   return postAttendanceList({
     limit,
     page,
-    filters: {scope, fromDate, toDate, contextId},
+    filters: { scope, fromDate, toDate, contextId },
     facets,
-  })
+  });
 };
 
 export const classesMissedAttendancePercentList = async ({
   filters,
   facets,
-  sort
+  sort,
 }: any): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance/list`;
   try {

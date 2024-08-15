@@ -18,7 +18,7 @@ const DEFAULT_POSITION: Pick<State, 'vertical' | 'horizontal'> = {
 function ToastMessage({
   message,
   type = 'error',
-  onClose
+  onClose,
 }: {
   message: string;
   type?: ToastTypes;

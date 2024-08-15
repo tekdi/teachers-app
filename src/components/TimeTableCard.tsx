@@ -2,12 +2,14 @@ import React from 'react';
 import { Card, CardContent, Typography, Grid, Box } from '@mui/material';
 import { TimeTableCardProps } from '@/utils/Interfaces';
 import ApartmentIcon from '@mui/icons-material/Apartment';
+import { useTheme } from '@mui/material/styles';
 
 const TimeTableCard: React.FC<TimeTableCardProps> = ({
   subject,
   instructor,
   time,
 }) => {
+  const theme = useTheme<any>();
   return (
     <Box>
       <Card
@@ -28,7 +30,7 @@ const TimeTableCard: React.FC<TimeTableCardProps> = ({
               </Typography>
               <Typography
                 margin={0}
-                color={'#7C766F'}
+                color={theme.palette.warning['400']}
                 fontSize={'14px'}
                 fontWeight={'400'}
                 variant="body2"
@@ -39,7 +41,7 @@ const TimeTableCard: React.FC<TimeTableCardProps> = ({
             <Grid item xs={4.5}>
               <Typography
                 margin={0}
-                color={'#7C766F'}
+                color={theme.palette.warning['400']}
                 fontSize={'14px'}
                 fontWeight={'400'}
                 // variant="h5"

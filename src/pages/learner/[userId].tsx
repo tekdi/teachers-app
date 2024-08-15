@@ -1,125 +1,103 @@
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { GetStaticPaths } from 'next';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import ReactGA from 'react-ga4';
+import { format } from 'date-fns';
 import {
   ArrowBack as ArrowBackIcon,
   East as EastIcon,
+  CreateOutlined as CreateOutlinedIcon,
 } from '@mui/icons-material';
-import {
-  AssesmentListService,
-  getDoIdForAssesmentDetails,
-} from '@/services/AssesmentService';
 import {
   Box,
   Button,
   Card,
   CardContent,
-  Checkbox,
   Divider,
   FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormHelperText,
   Grid,
-  IconButton,
   InputLabel,
   MenuItem,
-  Modal,
-  Radio,
-  RadioGroup,
   Select,
   SelectChangeEvent,
-  TextField,
   Typography,
-  useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import {
-  LearnerData,
-  UserData,
-  cohortAttendancePercentParam,
-  updateCustomField,
-} from '@/utils/Interfaces';
-import Menu, { MenuProps } from '@mui/material/Menu';
-import React, { useEffect, useState } from 'react';
-import ReactGA from 'react-ga4';
-import { alpha, styled, useTheme } from '@mui/material/styles';
+  AssesmentListService,
+  getDoIdForAssesmentDetails,
+} from '@/services/AssesmentService';
 import {
   classesMissedAttendancePercentList,
   getCohortAttendance,
 } from '@/services/AttendanceService';
-import { editEditUser, getUserDetails } from '@/services/ProfileService';
-import { formatSelectedDate, getTodayDate } from '@/utils/Helper';
-
-import CloseIcon from '@mui/icons-material/Close';
-import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
-import DateRangePopup from '@/components/DateRangePopup';
-import { GetStaticPaths } from 'next';
+import { getUserDetails } from '@/services/ProfileService';
+import { getFormRead } from '@/services/CreateUserService';
+import {
+  extractAddress,
+  formatSelectedDate,
+  getUserDetailsById,
+  mapFieldIdToValue,
+  toPascalCase,
+  translateString,
+} from '@/utils/Helper';
+import { logEvent } from '@/utils/googleAnalytics';
+import {
+  CustomField,
+  CohortAttendancePercentParam,
+  UpdateCustomField,
+  OverallAttendance,
+} from '@/utils/Interfaces';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
 import MarksObtainedCard from '@/components/MarksObtainedCard';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-// import Header from '../components/Header';
-// import { formatDate, getTodayDate } from '../utils/Helper';
 import StudentStatsCard from '@/components/StudentStatsCard';
-import ToastMessage from '@/components/ToastMessage';
-import { format } from 'date-fns';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
-import { logEvent } from '@/utils/googleAnalytics';
+import DateRangePopup from '@/components/DateRangePopup';
 import { showToastMessage } from '@/components/Toastify';
+import AddLearnerModal from '@/components/AddLeanerModal';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import {
+  FormContext,
+  FormContextType,
+  Role,
+  Status,
+  getMenuItems,
+  limit,
+} from '@/utils/app.constant';
+import { accessControl } from '../../../app.config';
+import LearnersListItem from '@/components/LearnersListItem';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import AssessmentReport from '@/components/AssessmentReport';
 
-// import { UserData, updateCustomField } from '../utils/Interfaces';
+interface LearnerProfileProp {
+  reloadState?: boolean;
+  setReloadState?: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-interface QuestionValue {
-  question: string;
-  mark_obtained: number;
-  totalMarks: number;
-}
-interface QuestionValues {
-  totalMaxScore: number;
-  totalScore: number;
-  length: number;
-  questions: QuestionValue[];
-}
-const LearnerProfile: React.FC = () => {
+const LearnerProfile: React.FC<LearnerProfileProp> = ({
+  reloadState,
+  setReloadState,
+}) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const today = new Date();
   const router = useRouter();
   const { userId }: any = router.query;
 
-  if (typeof window !== 'undefined' && window.localStorage) {
-    localStorage.setItem('learnerId', userId);
-  }
-
-  const [userData, setUserData] = useState<UserData | null>(null);
-  // const [attendanceReport, setAttendanceReport] = useState<any>(null);
-  const [limit, setLimit] = useState<number>(10);
-  const [page, setPage] = useState<number>(1);
-  const [filter, setFilter] = useState<object>({});
-  const [maritalStatus, setMaritalStatus] = useState<string>('');
-  const [currentDate, setCurrentDate] = React.useState(getTodayDate);
-  const [selectedIndex, setSelectedIndex] = useState(null);
-  // const [selectedValue, setSelectedValue] = useState('');
   const [assesmentData, setAssesmentData] = useState<any>(null);
-  const [questionData, setQuestionData] = useState([]);
-  const [age, setAge] = React.useState('');
   const [test, setTest] = React.useState('Pre Test');
   const [subject, setSubject] = React.useState('English');
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [customFieldsData, setCustomFieldsData] = useState<updateCustomField[]>(
+  const [customFieldsData, setCustomFieldsData] = useState<UpdateCustomField[]>(
     []
   );
-  interface OverallAttendance {
-    absent?: any; // Adjust the type according to your actual data
-    present?: any;
-    absent_percentage: any;
-    present_percentage: any;
-    // Add other properties as needed
-  }
+  const [loading, setLoading] = useState(false);
+  const [userName, setUserName] = useState<any | null>(null);
   const [isFromDate, setIsFromDate] = useState(
     formatSelectedDate(new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000))
   );
-  const [isToDate, setIsToDate] = useState(getTodayDate());
-  const [submittedOn, setSubmitedOn] = useState();
+  const [submittedOn, setSubmittedOn] = useState();
   const [overallAttendance, setOverallAttendance] =
     useState<OverallAttendance>();
   const [currentDayMonth, setCurrentDayMonth] = React.useState<string>('');
@@ -128,121 +106,170 @@ const LearnerProfile: React.FC = () => {
     useState(0);
   const [dateRange, setDateRange] = React.useState<Date | string>('');
   const [classId, setClassId] = React.useState('');
-  const open = Boolean(anchorEl);
   const [totalMaxScore, setTotalMaxScore] = useState('');
   const [totalScore, setTotalScore] = useState('');
-  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
-  const [hasErrors, setHasErrors] = useState(false);
-  const [hasInputChanged, setHasInputChanged] = React.useState<boolean>(false);
-  const [isValidationTriggered, setIsValidationTriggered] =
-    React.useState<boolean>(false);
-  const [unitName, setUnitName] = useState('');
-  const [blockName, setBlockName] = useState('');
+  const [address, setAddress] = useState('');
   const [uniqueDoId, setUniqueDoId] = useState('');
-  const [anchorElOption, setAnchorElOption] =
-    React.useState<null | HTMLElement>(null);
-  const openOption = Boolean(anchorElOption);
   const [isError, setIsError] = React.useState<boolean>(false);
+  const [formData, setFormData] = useState<{ [key: string]: any }>({});
+  const [isLearnerDeleted, setIsLearnerDeleted] =
+    React.useState<boolean>(false);
+  const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
+  const [reload, setReload] = React.useState(false);
+  const [cohortId, setCohortId] = React.useState('');
+  const [userDetails, setUserDetails] = React.useState<{
+    status: any;
+    statusReason: any;
+    cohortMembershipId: any;
+  } | null>(null);
 
-  const StyledMenu = styled((props: MenuProps) => (
-    <Menu
-      elevation={0}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      {...props}
-    />
-  ))(({ theme }) => ({
-    '& .MuiPaper-root': {
-      borderRadius: 6,
-      marginTop: theme.spacing(1),
-      minWidth: 180,
-      color:
-        theme.palette.mode === 'light'
-          ? 'rgb(55, 65, 81)'
-          : theme.palette.grey[300],
-      boxShadow:
-        'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-      '& .MuiMenu-list': {
-        padding: '4px 0',
-      },
-      '& .MuiMenuItem-root': {
-        '& .MuiSvgIcon-root': {
-          fontSize: 18,
-          color: theme.palette.text.secondary,
-          marginRight: theme.spacing(1.5),
-        },
-        '&:active': {
-          backgroundColor: alpha(
-            theme.palette.primary.main,
-            theme.palette.action.selectedOpacity
-          ),
-        },
-      },
-    },
-  }));
+  useEffect(() => {
+    setSelectedValue(currentDayMonth);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('learnerId', userId);
+      setCohortId(localStorage.getItem('classId') || '');
+    }
+  }, []);
 
-  const handleClickOption = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElOption(event.currentTarget);
-  };
-
-  const handleCloseOption = () => {
-    setAnchorElOption(null); // Set anchorElOption to null to close the menu
+  const handleReload = () => {
+    setReload((prev) => !prev);
   };
 
   const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
     setIsFromDate(fromDate);
-    setIsToDate(toDate);
     getAttendanceData(fromDate, toDate);
-    // Handle the date range values as needed
   };
-  const menuItems = [
-    t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-      date_range: dateRange,
-    }),
-    t('DASHBOARD.AS_OF_TODAY_DATE', {
-      day_date: currentDayMonth,
-    }),
-    t('COMMON.LAST_MONTH'),
-    t('COMMON.LAST_SIX_MONTHS'),
-    t('COMMON.CUSTOM_RANGE'),
-  ];
+
+  const menuItems = getMenuItems(t, dateRange, currentDayMonth);
+
+  const handleOpenAddLearnerModal = () => {
+    setOpenAddLearnerModal(true);
+  };
+
+  const handleCloseAddLearnerModal = () => {
+    setOpenAddLearnerModal(false);
+  };
+
+  const mapFields = (formFields: any, response: any) => {
+    let initialFormData: any = {};
+    formFields.fields.forEach((item: any) => {
+      const userData = response?.userData;
+      const customFieldValue = userData?.customFields?.find(
+        (field: any) => field.fieldId === item.fieldId
+      );
+      const getValue = (data: any, field: any) => {
+        if (item.default) {
+          return item.default;
+        }
+        if (item?.isMultiSelect) {
+          if (data[item.name] && item?.maxSelections > 1) {
+            return [field?.value];
+          } else if (item?.type === 'checkbox') {
+            return String(field?.value).split(',');
+          } else {
+            return field?.value.toLowerCase();
+          }
+        } else {
+          if (item?.type === 'numeric') {
+            return parseInt(String(field?.value));
+          } else if (item?.type === 'text') {
+            return String(field?.value);
+          } else if (item?.type === 'radio') {
+            if (typeof field?.value === 'string') {
+              return field?.value?.replace(/_/g, ' ').toLowerCase();
+            }
+            return field?.value.toLowerCase();
+          }
+        }
+      };
+      if (item.coreField) {
+        if (item?.isMultiSelect) {
+          if (userData[item.name] && item?.maxSelections > 1) {
+            initialFormData[item.name] = [userData[item.name]];
+          } else if (item?.type === 'checkbox') {
+            initialFormData[item.name] = String(userData[item.name]).split(',');
+          } else {
+            initialFormData[item.name] = userData[item.name];
+          }
+        } else if (item?.type === 'numeric') {
+          console.log(item?.name);
+          initialFormData[item.name] = Number(userData[item.name]);
+        } else if (item?.type === 'text' && userData[item.name]) {
+          initialFormData[item.name] = String(userData[item.name]);
+        } else {
+          // console.log(item.name);
+          if (userData[item.name]) {
+            initialFormData[item.name] = userData[item.name];
+          }
+        }
+      } else {
+        const fieldValue = getValue(userData, customFieldValue);
+
+        if (fieldValue) {
+          initialFormData[item.name] = fieldValue;
+        }
+      }
+    });
+    console.log('initialFormData', initialFormData);
+    return initialFormData;
+  };
+
+  const fetchDataAndInitializeForm = async () => {
+    try {
+      let formFields;
+      const response = await getUserDetails(userId, true);
+      formFields = await getFormRead('USERS', 'STUDENT');
+      console.log('response', response);
+      console.log('formFields', formFields);
+      setFormData(mapFields(formFields, response?.result));
+    } catch (error) {
+      console.error('Error fetching data or initializing form:', error);
+    }
+  };
 
   useEffect(() => {
-    setSelectedValue(currentDayMonth);
-  }, []);
+    const fetchData = async () => {
+      fetchDataAndInitializeForm();
+
+      if (cohortId) {
+        const page = 0;
+        const filters = { cohortId: cohortId };
+        try {
+          const response = await getMyCohortMemberList({
+            limit,
+            page,
+            filters,
+          });
+          const resp = response?.result?.userDetails;
+          if (resp) {
+            const result = getUserDetailsById(resp, userId);
+            setUserDetails(result);
+          }
+        } catch (error) {
+          console.error('Error fetching cohort member list:', error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [userId, reload, cohortId]);
 
   const getAttendanceData = async (fromDates: any, toDates: any) => {
-    let fromDate = fromDates;
-    let toDate = toDates;
-    let filters = {
-      // contextId: classId,
+    const fromDate = fromDates;
+    const toDate = toDates;
+    const filters = {
       fromDate,
       toDate,
       userId: userId,
-      // scope: 'student',
     };
     const response = await classesMissedAttendancePercentList({
       filters,
       facets: ['userId'],
     });
     if (response?.statusCode === 200) {
-      const userData = response?.data.result.userId[userId];
+      const userData = response?.data?.result?.userId[userId];
       setOverallAttendance(userData);
-
-      // if (setOverallAttendance)
     }
-  };
-
-  // find Address
-  const getFieldValue = (data: any, label: string) => {
-    const field = data.find((item: any) => item.label === label);
-    return field ? field.value[0] : null;
   };
 
   // ger user information
@@ -256,25 +283,86 @@ const LearnerProfile: React.FC = () => {
           const response = await getUserDetails(user, true);
 
           if (response?.responseCode === 200) {
-            const data = response?.result;
+            const data = response;
             if (data) {
-              const userData = data?.userData;
-
-              setUserData(userData);
-
-              const customDataFields = userData?.customFields;
-              if (customDataFields?.length > 0) {
-                setCustomFieldsData(customDataFields);
-                const unitName = getFieldValue(customDataFields, 'Unit Name');
-                setUnitName(unitName);
-
-                const blockName = getFieldValue(customDataFields, 'Block Name');
-                setBlockName(blockName);
-
-                setUserName(userData?.name);
-                setContactNumber(userData?.mobile);
-                setLoading(false);
+              const coreFieldData = data?.result?.userData;
+              setUserName(toPascalCase(coreFieldData?.name));
+              const fields: CustomField[] =
+                data?.result?.userData?.customFields;
+              if (fields?.length > 0) {
+                setAddress(
+                  extractAddress(
+                    fields,
+                    'STATES',
+                    'DISTRICTS',
+                    'BLOCKS',
+                    'label',
+                    'value',
+                    toPascalCase
+                  )
+                );
               }
+              const fieldIdToValueMap: { [key: string]: string } =
+                mapFieldIdToValue(fields);
+              console.log(`coreFieldData`, coreFieldData);
+
+              const fetchFormData = async () => {
+                try {
+                  const response: FormData = await getFormRead(
+                    FormContext.USERS,
+                    FormContextType.STUDENT
+                  );
+                  console.log('response', response);
+                  if (response) {
+                    const mergeData = (
+                      fieldIdToValueMap: { [key: string]: string },
+                      response: any
+                    ): any => {
+                      response.fields.forEach(
+                        (field: {
+                          name: any;
+                          fieldId: string | number;
+                          value: string;
+                          coreField: number;
+                        }) => {
+                          if (
+                            field.fieldId &&
+                            fieldIdToValueMap[field.fieldId]
+                          ) {
+                            // Update field value from fieldIdToValueMap if fieldId is available
+                            field.value =
+                              fieldIdToValueMap[field.fieldId] || '-';
+                          } else if (field.coreField === 1) {
+                            // Set field value from fieldIdToValueMap if coreField is 1 and fieldId is not in the map
+                            field.value = coreFieldData[field.name] || '-';
+                          }
+                        }
+                      );
+                      return response;
+                    };
+
+                    const mergedProfileData = mergeData(
+                      fieldIdToValueMap,
+                      response
+                    );
+                    console.log(`mergedProfileData`, mergedProfileData);
+                    if (mergedProfileData) {
+                      // const nameField = mergedProfileData.fields.find(
+                      //   (field: { name: string }) => field.name === 'name'
+                      // );
+                      const customDataFields = mergedProfileData?.fields;
+                      if (customDataFields?.length > 0) {
+                        setCustomFieldsData(customDataFields);
+                      }
+                    }
+                  } else {
+                    console.log('No data Found');
+                  }
+                } catch (error) {
+                  console.error('Error fetching form data:', error);
+                }
+              };
+              fetchFormData();
             } else {
               setLoading(false);
               console.log('No data Found');
@@ -289,72 +377,81 @@ const LearnerProfile: React.FC = () => {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setLoading(false);
         console.error('Error fetching  user details:', error);
+      } finally {
+        setLoading(false);
       }
     }
   };
 
-  // data by order to show on basic details
-
-  // const learnerDetailsByOrder = [...customFieldsData]
-  //   .sort((a, b) => a.order - b.order)
-  //   .filter((field) => field.order <= 12);
+  useEffect(() => {
+    fetchUserDetails();
+  }, [reload]);
 
   const learnerDetailsByOrder = [...customFieldsData]
-    ?.sort((a, b) => a.order - b.order)
-    ?.filter((field) => field.order <= 12)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .filter((field) => (field.order ?? 0) <= 12)
     ?.map((field) => {
+      const getSelectedOption = (field: any) => {
+        return (
+          field?.options?.find(
+            (option: any) => option?.value === field?.value?.[0]
+          ) || '-'
+        );
+      };
+
       if (
         field.type === 'drop_down' ||
         field.type === 'radio' ||
         field.type === 'dropdown' ||
         (field.type === 'Radio' && field.options && field.value.length)
       ) {
-        const selectedOption = field?.options?.find(
-          (option: any) => option.value === field.value[0]
-        );
+        const selectedOption = getSelectedOption(field);
         return {
           ...field,
-          displayValue: selectedOption ? selectedOption?.label : field.value[0],
+          displayValue:
+            selectedOption !== '-'
+              ? selectedOption.label
+              : field?.value
+                ? translateString(t, field?.value)
+                : '-',
         };
       }
       return {
         ...field,
-        displayValue: field.value[0],
+        displayValue: field?.value ? toPascalCase(field?.value) : '-',
       };
     });
-
-  // address find
-  const address = [unitName, blockName, userData?.district]
-    ?.filter(Boolean)
-    ?.join(', ');
 
   //------ Test Report API Integration------
 
   const handleChangeTest = (event: SelectChangeEvent) => {
-    const test = event.target.value;
+    const test = event?.target?.value;
     setTest(test);
-    ReactGA.event("pre-post-test-selected", { testTypeSelected: test});
+    ReactGA.event('pre-post-test-selected', { testTypeSelected: test });
     getDoIdForAssesmentReport(test, subject);
   };
 
   const handleChangeSubject = (event: SelectChangeEvent) => {
-    const subject = event.target.value;
-    setSubject(event.target.value);
-    ReactGA.event("select-subject-learner-details-page", { subjectSelected: subject});
+    const subject = event?.target?.value;
+    setSubject(event?.target?.value);
+    ReactGA.event('select-subject-learner-details-page', {
+      subjectSelected: subject,
+    });
     getDoIdForAssesmentReport(test, subject);
   };
 
   const getDoIdForAssesmentReport = async (tests: string, subjects: string) => {
-    const steteName = localStorage.getItem('stateName');
+    // const stateName = localStorage.getItem('stateName');
+
+    const stateName: any = address?.split(',')[0];
     const filters = {
       program: ['Second chance'],
-      se_boards: [steteName ? steteName : ''],
-      subject: [subjects ? subjects : subject],
-      assessment1: tests ? tests : test,
+      se_boards: [stateName ?? ''],
+      subject: [subjects || subject],
+      assessment1: tests || test,
     };
-
     try {
-      if (steteName) {
+      if (stateName) {
         if (filters) {
           setLoading(true);
           const searchResults = await getDoIdForAssesmentDetails({ filters });
@@ -390,18 +487,18 @@ const LearnerProfile: React.FC = () => {
   };
 
   const testReportDetails = async (do_Id: string) => {
-    const cohortId = localStorage.getItem('cohortId');
-    let filters = {
+    const cohortId = localStorage.getItem('classId');
+    const filters = {
       userId: userId,
       courseId: do_Id,
       batchId: cohortId, // user cohort id
       contentId: do_Id, // do_Id
     };
-    let pagination = {
+    const pagination = {
       pageSize: 1,
       page: 1,
     };
-    let sort = {
+    const sort = {
       field: 'userId',
       order: 'asc',
     };
@@ -417,7 +514,7 @@ const LearnerProfile: React.FC = () => {
         setLoading(true);
         const result = response.result;
         if (result) {
-          setSubmitedOn(result[0]?.createdOn);
+          setSubmittedOn(result[0]?.createdOn);
           setTotalMaxScore(result[0]?.totalMaxScore);
           setTotalScore(result[0]?.totalScore);
           const questionValues = getQuestionValues(result);
@@ -479,241 +576,19 @@ const LearnerProfile: React.FC = () => {
 
     // const today = new Date();
     const formatDate = (date: Date) => date.toISOString().split('T')[0];
-    let toDay = formatDate(today);
+    const toDay = formatDate(today);
 
     getAttendanceData(isFromDate, toDay);
     fetchUserDetails();
     // testReportDetails();
     getDoIdForAssesmentReport(test, subject);
-  }, []);
+  }, [address]);
 
   const getLearnerAttendance = () => {
     router.push('/learner-attendance-history');
   };
 
-  //-------Edit Learner Profile------------------
-
-  //fields  for edit popup by order
-
-  const filteredSortedForEdit = [...customFieldsData]
-    ?.filter((field) => field.isEditable)
-    ?.sort((a, b) => a.order - b.order);
-
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-  const [userName, setUserName] = useState<any | null>(null);
-  const [contactNumber, setContactNumber] = useState<any | null>(null);
-  const [openEdit, setOpenEdit] = React.useState(false);
-  const [loading, setLoading] = useState(false);
-  const handleOpen = () => {setOpenEdit(true)
-    logEvent({
-      action: 'edit-learner-profile-modal-open',
-      category: 'Learner Detail Page',
-      label: 'Edit Learner Profile Modal Open',
-    });
-  };
-  const handleClose = () => {
-    logEvent({
-      action: 'edit-learner-profile-modal-close',
-      category: 'Learner Detail Page',
-      label: 'Edit Learner Profile Modal Close',
-    });
-    setOpenEdit(false);
-    initialFormData();
-    setHasInputChanged(false);
-    setHasErrors(false);
-    setErrors({});
-  };
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-    left: '50%',
-    width: '85%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: theme.palette.warning.A400,
-    height: '526px',
-    textAlign: 'center',
-  };
-
-  const [formData, setFormData] = useState<{
-    userData: LearnerData;
-    customFields: { fieldId: string; type: string; value: string[] | string }[];
-  }>({
-    userData: {
-      name: userName || '',
-    },
-    customFields: customFieldsData?.map((field) => ({
-      fieldId: field.fieldId,
-      type: field.type,
-      value: field.value,
-    })),
-  });
-
-  const initialFormData = () => {
-    setFormData({
-      userData: {
-        name: userName || '',
-      },
-      customFields: customFieldsData?.map((field) => ({
-        fieldId: field.fieldId,
-        type: field.type,
-        value: field.value,
-      })),
-    });
-  };
-
-  useEffect(() => {
-    initialFormData();
-  }, [userData, customFieldsData]);
-
-  const handleFieldChange = (fieldId: string, value: string) => {
-    const sanitizedValue = value.replace(/^\s+/, '').replace(/\s+/g, ' ');
-
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId
-          ? { ...field, value: [sanitizedValue] }
-          : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleCheckboxChange = (
-    fieldId: string,
-    optionName: string,
-    isChecked: boolean
-  ) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId
-          ? {
-              ...field,
-              value: isChecked
-                ? [...(field.value as string[]), optionName]
-                : (field.value as string[]).filter(
-                    (item) => item !== optionName
-                  ),
-            }
-          : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleDropdownChange = (fieldId: string, value: string) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId ? { ...field, value: [value] } : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleRadioChange = (fieldId: string, value: string) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      customFields: prevState.customFields.map((field) =>
-        field.fieldId === fieldId ? { ...field, value: [value] } : field
-      ),
-    }));
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
-  };
-
-  const handleSubmit = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
-    logEvent({
-      action: 'save-button-clicked-edit-learner-profile',
-      category: 'Learner Detail Page',
-      label: 'Learner Profile Save Button Clicked',
-    });
-    setLoading(true);
-    const user_id = userId;
-    const data = {
-      userData: formData?.userData,
-      customFields: formData?.customFields?.map((field) => ({
-        fieldId: field.fieldId,
-        // type: field.type,
-        value: Array.isArray(field?.value)
-          ? field?.value?.length > 0
-            ? field?.value
-            : ''
-          : field?.value,
-      })),
-    };
-    let userDetails = data;
-    try {
-      if (userId) {
-        const response = await editEditUser(user_id, userDetails);
-        ReactGA.event("edit-learner-profile-successful", { userId: userId});
-
-        if (response.responseCode !== 200 || response.params.err) {
-          ReactGA.event("edit-learner-profile-failed", { userId: userId});
-          throw new Error(
-            response.params.errmsg ||
-              'An error occurred while updating the user.'
-          );
-        }
-
-        handleClose();
-
-        console.log(response.params.successmessage);
-        fetchUserDetails();
-        setIsError(false);
-        setLoading(false);
-      }
-    } catch (error) {
-      setIsError(true);
-      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-      console.error('Error:', error);
-    }
-  };
-
-  const FieldComponent = ({
-    data,
-    label,
-    size,
-  }: {
-    data: any;
-    label: string;
-    size: number;
-  }) => (
-    <Grid item xs={size}>
-      {/* question */}
-      <Typography variant="h4" sx={{ fontSize: '12px' }} margin={0}>
-        {label}
-      </Typography>
-
-      {/* value */}
-      <Typography
-        variant="h4"
-        margin={0}
-        sx={{
-          wordBreak: 'break-word',
-          fontSize: '16px',
-        }}
-        className="text-4d two-line-text"
-        color={theme.palette.warning['A200']}
-      >
-        {data}
-      </Typography>
-    </Grid>
-  );
+  // //-------Edit Learner Profile------------------
 
   //----- code for Attendance Marked out of 7 days  ------------
   useEffect(() => {
@@ -740,7 +615,7 @@ const LearnerProfile: React.FC = () => {
         setDateRange(`(${startDay} ${startDayMonth}-${endDay} ${endDayMonth})`);
       }
 
-      const cohortAttendanceData: cohortAttendancePercentParam = {
+      const cohortAttendanceData: CohortAttendancePercentParam = {
         limit: 0,
         page: 0,
         filters: {
@@ -771,61 +646,10 @@ const LearnerProfile: React.FC = () => {
       }),
   ]);
 
-  //-------------validation for edit fields ---------------------------
-
-  const validateFields = () => {
-    const newErrors: { [key: string]: boolean } = {};
-
-    const fieldsToValidate = [...customFieldsData];
-    filteredSortedForEdit?.forEach((field) => {
-      const value =
-        formData?.customFields?.find((f) => f.fieldId === field.fieldId)
-          ?.value[0] || '';
-
-      if (field.type === 'text') {
-        newErrors[field.fieldId] = !value.trim() || /^\s/.test(value);
-      } else if (field.type === 'numeric') {
-        newErrors[field.fieldId] = !/^\d{1,4}$/.test(value);
-      } else if (field.type === 'drop_down') {
-        newErrors[field.fieldId] = !value.trim() || value === '';
-      }
-    });
-
-    // Validate name field
-    newErrors['name'] = !formData.userData.name.trim();
-
-    setErrors(newErrors);
-    setHasErrors(Object.values(newErrors).some((error) => error));
-  };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    const sanitizedValue = value
-      .replace(/[^a-zA-Z_ ]/g, '')
-      .replace(/^\s+/, '')
-      .replace(/\s+/g, ' ');
-
-    setFormData((prevData) => ({
-      ...prevData,
-      userData: {
-        ...prevData.userData,
-        name: sanitizedValue,
-      },
-    }));
-
-    // setHasErrors(!sanitizedValue.trim());
-    setHasInputChanged(true);
-    setIsValidationTriggered(true);
-    validateFields();
+  const handleLearnerDelete = () => {
+    setIsLearnerDeleted(true);
   };
 
-  useEffect(() => {
-    if (hasInputChanged) {
-      validateFields();
-    }
-  }, [formData, customFieldsData]);
-
-  // flag for contactNumberAdded in dynamic list fo fields in lerner basic details
-  let contactNumberAdded = false;
   return (
     <>
       <Header />
@@ -835,16 +659,19 @@ const LearnerProfile: React.FC = () => {
 
       <Grid container spacing={2} alignItems="flex-start" padding={'20px 18px'}>
         <Grid item>
-          <Box onClick={() => {
-            window.history.back()
-            logEvent({
-              action: 'back-button-clicked-learner-detail-page',
-              category: 'Learner Detail Page',
-              label: 'Back Button Clicked',
-            });}}>
+          <Box
+            onClick={() => {
+              window.history.back();
+              logEvent({
+                action: 'back-button-clicked-learner-detail-page',
+                category: 'Learner Detail Page',
+                label: 'Back Button Clicked',
+              });
+            }}
+          >
             <ArrowBackIcon
               sx={{
-                color: (theme.palette.warning as any)['A200'],
+                color: theme.palette.warning['A200'],
                 fontSize: '1.5rem',
                 cursor: 'pointer',
               }}
@@ -864,9 +691,7 @@ const LearnerProfile: React.FC = () => {
               lineHeight={'28px'}
               color={theme.palette.warning['A200']}
             >
-              {userData?.name?.length > 18
-                ? `${userData?.name?.substring(0, 18)}...`
-                : userData?.name}
+              {userName}
             </Typography>
             <Typography
               variant="h5"
@@ -880,60 +705,33 @@ const LearnerProfile: React.FC = () => {
           </Box>
         </Grid>
         <Grid item>
-          <Box
-            aria-label="more"
-            id="demo-customized-button"
-            aria-controls={openOption ? 'demo-customized-menu' : undefined}
-            aria-expanded={openOption ? 'true' : undefined}
-            aria-haspopup="true"
-          >
-            {/* ---- comment for temp------------
-             <Box onClick={handleClickOption}>
-              <MoreVertIcon />
-            </Box> */}
-
-            <Box>
-              {/* <Button
-                id="demo-customized-button"
-                aria-controls={openOption ? 'demo-customized-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={openOption ? 'true' : undefined}
-                variant="contained"
-                disableElevation
-                onClick={handleClickOption}
-                endIcon={<KeyboardArrowDownIcon />}
-              >
-                Options
-              </Button> */}
-
-              <StyledMenu
-                id="demo-customized-menu"
-                MenuListProps={{
-                  'aria-labelledby': 'demo-customized-button',
-                }}
-                anchorEl={anchorElOption}
-                open={openOption}
-                onClose={handleCloseOption}
-              >
-                <MenuItem onClick={handleCloseOption} disableRipple>
-                  {t('COMMON.MARK_DROP_OUT')}
-                </MenuItem>
-                <MenuItem onClick={handleCloseOption} disableRipple>
-                  {t('COMMON.REMOVE')}
-                </MenuItem>
-              </StyledMenu>
-            </Box>
+          <Box>
+            {userDetails && (
+              <LearnersListItem
+                type={Role.STUDENT}
+                key={userId}
+                userId={userId}
+                learnerName={userName}
+                cohortMembershipId={userDetails.cohortMembershipId}
+                isDropout={userDetails.status === Status.DROPOUT}
+                statusReason={userDetails.statusReason}
+                reloadState={reloadState ?? false}
+                setReloadState={setReloadState ?? (() => {})}
+                onLearnerDelete={handleLearnerDelete}
+                isFromProfile={true}
+              />
+            )}
           </Box>
         </Grid>
       </Grid>
 
-      <Box padding={'22px 18px'} className="linerGradient">
+      <Box padding={'22px 18px'} className="linerGradient br-md-8">
         <Box
           sx={{ display: 'flex', justifyContent: 'space-between', gap: '5px' }}
         >
           <Typography
             sx={{
-              color: (theme.palette.warning as any)['300'],
+              color: theme.palette.warning['300'],
               fontWeight: 500,
               fontSize: '14px',
             }}
@@ -966,7 +764,7 @@ const LearnerProfile: React.FC = () => {
           </Box>
         </Box>
 
-        <Box>
+        <Box sx={{ mt: '10px' }}>
           <Box>
             <DateRangePopup
               menuItems={menuItems}
@@ -985,16 +783,6 @@ const LearnerProfile: React.FC = () => {
           }}
         >
           <Box sx={{ mt: 2 }}>
-            {/* <Typography
-              sx={{
-                color: '#7C766F',
-              }}
-              fontSize={'12px'}
-              fontWeight={'500'}
-              lineHeight={'16px'}
-            >
-              Attendance Marked : 3 out of last 7 days
-            </Typography>  */}
             {selectedValue ===
               t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
                 date_range: dateRange,
@@ -1058,110 +846,133 @@ const LearnerProfile: React.FC = () => {
         >
           {t('PROFILE.LEARNER_DETAILS')}
         </Typography>
-        <Button
-          sx={{
-            fontSize: '14px',
-            lineHeight: '20px',
-            minWidth: '100%',
-            padding: '10px 24px 10px 16px',
-            gap: '8px',
-            borderRadius: '100px',
-            marginTop: '10px',
-            flex: '1',
-            textAlign: 'center',
-            color: theme.palette.warning.A200,
-            border: `1px solid #4D4639`,
-          }}
-          onClick={handleOpen}
-        >
-          <Typography
-            variant="h3"
-            style={{
-              letterSpacing: '0.1px',
-              textAlign: 'left',
-              marginBottom: '2px',
-            }}
-            fontSize={'14px'}
-            fontWeight={'500'}
-            lineHeight={'20px'}
-          >
-            {t('PROFILE.EDIT_PROFILE')}
-          </Typography>
-          <Box>
-            <CreateOutlinedIcon sx={{ fontSize: '14px' }} />
-          </Box>
-        </Button>
+
         <Box
-          mt={2}
-          sx={{
-            flex: '1',
-            border: '2px solid',
-            borderColor: '#FFECB3',
-            padding: '15px',
-          }}
-          minWidth={'100%'}
-          borderRadius={'12px'}
-          border={'1px'}
-          bgcolor="warning.A400"
-          display="flex"
-          flexDirection="row"
-          padding="15px"
+        // sx={{
+        //   '@media (min-width: 900px)': {
+        //     display: 'flex',
+        //     gap: '15px',
+        //     flexDirection: 'row-reverse',
+        //     alignItems: 'center',
+        //   },
+        // }}
         >
-          <Grid container spacing={4}>
-            <FieldComponent
-              size={12}
-              label={t('PROFILE.FULL_NAME')}
-              data={userName}
-            />
+          <Button
+            className="min-width-md-20"
+            sx={{
+              fontSize: '14px',
+              lineHeight: '20px',
+              minWidth: '100%',
+              padding: '10px 24px 10px 16px',
+              gap: '8px',
+              borderRadius: '100px',
+              marginTop: '10px',
+              flex: '1',
+              textAlign: 'center',
+              color: theme.palette.warning.A200,
+              border: `1px solid #4D4639`,
+            }}
+            onClick={handleOpenAddLearnerModal}
+          >
+            <Typography
+              variant="h3"
+              style={{
+                letterSpacing: '0.1px',
+                textAlign: 'left',
+                marginBottom: '2px',
+              }}
+              fontSize={'14px'}
+              fontWeight={'500'}
+              lineHeight={'20px'}
+            >
+              {t('PROFILE.EDIT_PROFILE')}
+            </Typography>
+            <Box>
+              <CreateOutlinedIcon sx={{ fontSize: '14px' }} />
+            </Box>
+          </Button>
 
-            {learnerDetailsByOrder &&
-              learnerDetailsByOrder.map((item: any, i: number) => (
-                <React.Fragment key={i}>
-                  <Grid item xs={6}>
-                    {/* question */}
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        fontSize: '12px',
-                        color: theme.palette.warning.main,
-                      }}
-                      margin={0}
-                    >
-                      {item?.label && item.name
-                        ? t(`FIELDS.${item.name.toUpperCase()}`, item.label)
-                        : item.label}
-                    </Typography>
+          {openAddLearnerModal && (
+            <div>
+              <AddLearnerModal
+                open={openAddLearnerModal}
+                onClose={handleCloseAddLearnerModal}
+                formData={formData}
+                isEditModal={true}
+                userId={userId}
+                onReload={handleReload}
+              />
+            </div>
+          )}
 
-                    {/* value */}
-                    <Typography
-                      variant="h4"
-                      margin={0}
-                      sx={{
-                        wordBreak: 'break-word',
-                        fontSize: '16px',
-                        color: theme.palette.warning['A200'],
-                      }}
-                    >
-                      {item?.displayValue}
-                    </Typography>
-                  </Grid>
+          <Box
+            mt={2}
+            sx={{
+              flex: '1',
+              border: '2px solid',
+              borderColor: '#FFECB3',
+              padding: '15px',
+              // '@media (min-width: 900px)': {
+              //   minWidth: '30%',
+              //   width: '30%',
+              // },
+            }}
+            minWidth={'100%'}
+            borderRadius={'12px'}
+            border={'1px'}
+            bgcolor="warning.A400"
+            display="flex"
+            flexDirection="row"
+            padding="15px"
+          >
+            <Grid container spacing={4}>
+              {learnerDetailsByOrder?.map(
+                (
+                  item: {
+                    label?: string;
+                    displayValue?: string;
+                    order?: number;
+                  },
+                  i: number
+                ) => {
+                  const labelText = item.label
+                    ? t(`FORM.${item?.label?.toUpperCase()}`, item?.label)
+                    : item?.label;
 
-                  {item?.order === 3 && !contactNumberAdded && (
-                    <React.Fragment>
-                      <FieldComponent
-                        size={6}
-                        label={'Contact Number'}
-                        data={contactNumber}
-                      />
-                      {(contactNumberAdded = true)}
-                    </React.Fragment>
-                  )}
-                </React.Fragment>
-              ))}
-          </Grid>
+                  return (
+                    <Grid item xs={6} key={i}>
+                      {/* question */}
+                      <Typography
+                        variant="h4"
+                        sx={{
+                          fontSize: '12px',
+                          color: theme.palette.warning.main,
+                        }}
+                        margin={0}
+                      >
+                        {labelText}
+                      </Typography>
+
+                      {/* value */}
+                      <Typography
+                        variant="h4"
+                        margin={0}
+                        sx={{
+                          wordBreak: 'break-word',
+                          fontSize: '16px',
+                          color: theme.palette.warning['A200'],
+                        }}
+                      >
+                        {item?.displayValue}
+                      </Typography>
+                    </Grid>
+                  );
+                }
+              )}
+            </Grid>
+          </Box>
         </Box>
       </Box>
-
       <Box padding={2}>
         <Card
           sx={{
@@ -1171,438 +982,11 @@ const LearnerProfile: React.FC = () => {
           }}
         >
           <CardContent>
-            <Typography
-              sx={{
-                color: (theme.palette.warning as any)['A200'],
-                fontWeight: 600,
-                fontSize: '13px',
-              }}
-              variant="h5"
-              gutterBottom
-            >
-              {t('COMMON.TEST_REPORT')}
-            </Typography>
-            <Box padding={0}>
-              <FormControl fullWidth sx={{ margin: 1, marginLeft: 0 }}>
-                <InputLabel id="demo-simple-select-helper-label">
-                  {t('PROFILE.TEST')}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
-                  value={test}
-                  label="test"
-                  onChange={handleChangeTest}
-                >
-                  <MenuItem value={'Post Test'}>
-                    {t('PROFILE.POST_TEST')}
-                  </MenuItem>
-                  <MenuItem value={'Pre Test'}>
-                    {t('PROFILE.PRE_TEST')}
-                  </MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl fullWidth sx={{ margin: 1, marginLeft: 0 }}>
-                <InputLabel id="demo-simple-select-helper-label">
-                  {t('PROFILE.SUBJECT')}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
-                  value={subject}
-                  label="Subject"
-                  onChange={handleChangeSubject}
-                >
-                  <MenuItem value={'English'}>{t('PROFILE.ENGLISH')}</MenuItem>
-                  <MenuItem value={'Hindi'}>{t('PROFILE.HINDI')}</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            {loading ? (
-              <Typography textAlign="center">{t('COMMON.LOADING')}</Typography>
-            ) : !uniqueDoId || uniqueDoId === '' ? (
-              <Box mt={2}>
-                <Typography textAlign={'center'}>
-                  {t('COMMON.NO_DATA_FOUND')}
-                </Typography>
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  background: '#F8EFE7',
-                  p: 2,
-                }}
-              >
-                <Box>
-                  <Typography variant="h5">
-                    {t('PROFILE.SUBMITTED_ON')} :{' '}
-                    {submittedOn
-                      ? format(new Date(submittedOn), 'dd MMMM, yyyy')
-                      : ''}
-                  </Typography>
-                </Box>
-                <Box display={'flex'} justifyContent={'space-between'} mt={1}>
-                  <Typography variant="h3" fontWeight={'bold'}>
-                    {t('PROFILE.MARK_OBTAINED')}
-                  </Typography>
-                  <Typography variant="h4" fontWeight={'bold'}>
-                    {totalScore ? totalScore : '0'}/
-                    {totalMaxScore ? totalMaxScore : '0'}
-                  </Typography>
-                </Box>
-                <Divider />
-                <Box mt={1}>
-                  <Typography variant="h5">
-                    {t('PROFILE.TOTAL_QUESTIONS')} :{assesmentData?.length}
-                  </Typography>
-                </Box>
-                <Box mt={2}>
-                  <MarksObtainedCard data={assesmentData} />
-                </Box>
-              </Box>
-            )}
+            
+              <AssessmentReport isTitleRequired={true}/>
           </CardContent>
         </Card>
       </Box>
-
-      <Modal
-        open={openEdit}
-        onClose={handleClose}
-        aria-labelledby="edit-profile-modal"
-        aria-describedby="edit-profile-description"
-      >
-        <Box
-          sx={style}
-          gap="10px"
-          display="flex"
-          flexDirection="column"
-          borderRadius={'1rem'}
-        >
-          {loading && (
-            <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-          )}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '15px 20px 5px',
-            }}
-          >
-            <Typography
-              variant="h2"
-              style={{
-                textAlign: 'left',
-                color: theme.palette.warning.A200,
-              }}
-            >
-              {t('PROFILE.EDIT_PROFILE')}
-            </Typography>
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
-              style={{
-                justifyContent: 'flex-end',
-              }}
-            >
-              <CloseIcon cursor="pointer" />
-            </IconButton>
-          </Box>
-          <Divider />
-          <Box
-            style={{
-              overflowY: 'auto',
-              padding: '10px 20px 10px',
-            }}
-            id="modal-modal-description"
-          >
-            {/* <Box
-              sx={{
-                flex: '1',
-                textAlign: 'center',
-                marginLeft: '5%',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              borderRadius={'12px'}
-              border={'1px'}
-              bgcolor={theme.palette.warning.A400}
-              display="flex"
-              flexDirection="column"
-            >
-              <Image
-                src={user_placeholder_img}
-                alt="user"
-                height={100}
-                width={100}
-                style={{ alignItems: 'center' }}
-              />
-
-              <Box>
-                <input
-                  id=""
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  ref={fileInputRef}
-                  onChange={handleImageUpload}
-                  style={{ display: 'none' }}
-                />
-                <Button
-                  sx={{
-                    minWidth: '100%',
-                    padding: '10px 24px 10px 16px',
-                    borderRadius: '12px',
-                    marginTop: '10px',
-                    flex: '1',
-                    textAlign: 'center',
-                    border: '1px solid ',
-                  }}
-                  disabled // commment for temp
-                  onClick={handleClickImage}
-                >
-                  {t('PROFILE.UPDATE_PICTURE')}
-                </Button>
-              </Box>
-            </Box> */}
-            <TextField
-              sx={{ marginTop: '8px' }}
-              type="text"
-              fullWidth
-              name="name"
-              label={t('PROFILE.FULL_NAME')}
-              variant="outlined"
-              value={formData.userData.name}
-              inputProps={{
-                pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
-                title: t('PROFILE.AT_REQUIRED_LETTER'),
-                required: true,
-              }}
-              error={!formData.userData.name.trim()} // Show error if the input is empty
-              helperText={
-                !formData.userData.name.trim() && t('PROFILE.ENTER_NAME')
-              }
-              onChange={handleInputChange}
-            />
-            {filteredSortedForEdit?.map((field) => {
-              const fieldValue =
-                formData?.customFields?.find((f) => f.fieldId === field.fieldId)
-                  ?.value[0] || '';
-              const isError: any = errors[field.fieldId];
-
-              return (
-                <Grid item xs={12} key={field.fieldId}>
-                  {field.type === 'text' ? (
-                    <TextField
-                      type="text"
-                      sx={{ marginTop: '20px' }}
-                      fullWidth
-                      name={field.name}
-                      label={
-                        field?.label && field.name
-                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
-                          : field.label
-                      }
-                      variant="outlined"
-                      inputProps={{
-                        pattern: '^[A-Za-z_ ]+$', // Only allow letters, underscores, and spaces
-                        title: 'At least one letter or underscore is required',
-                        required: true,
-                      }}
-                      value={fieldValue}
-                      onChange={(e) => {
-                        handleFieldChange(field.fieldId, e.target.value);
-                        validateFields();
-                      }}
-                      error={isError}
-                      helperText={isError && t('PROFILE.ENTER_CHARACTER')}
-                    />
-                  ) : field.type === 'numeric' ? (
-                    <TextField
-                      type="number"
-                      sx={{ marginTop: '20px' }}
-                      fullWidth
-                      name={field.name}
-                      label={
-                        field?.label && field.name
-                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
-                          : field.label
-                      }
-                      variant="outlined"
-                      value={fieldValue}
-                      onKeyDown={(e) => {
-                        // Allow only numeric keys, Backspace, and Delete
-                        if (
-                          !(
-                            (
-                              /[0-9]/.test(e.key) ||
-                              e.key === 'Backspace' ||
-                              e.key === 'Delete'
-                            ) // Allow decimal point if needed
-                          )
-                        ) {
-                          e.preventDefault();
-                        }
-                      }}
-                      onChange={(e) => {
-                        const inputValue = e.target.value;
-                        if (/^\d{0,4}$/.test(inputValue)) {
-                          handleFieldChange(field.fieldId, inputValue);
-                          validateFields();
-                        }
-                      }}
-                      error={isError}
-                      helperText={isError && t('PROFILE.ENTER_NUMBER')}
-                    />
-                  ) : field.type === 'checkbox' ? (
-                    <Box marginTop={3}>
-                      <Typography
-                        textAlign={'start'}
-                        variant="h4"
-                        margin={0}
-                        color={theme.palette.warning.A200}
-                      >
-                        {field?.label && field.name
-                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
-                          : field.label}
-                      </Typography>
-                      {field.options?.map((option: any) => (
-                        <FormGroup key={option.value}>
-                          <FormControlLabel
-                            sx={{ color: theme.palette.warning[300] }}
-                            control={
-                              <Checkbox
-                                color="default"
-                                checked={(
-                                  formData?.customFields.find(
-                                    (f) => f.fieldId === field.fieldId
-                                  )?.value || []
-                                )?.includes(option.value)}
-                                onChange={(e) =>
-                                  handleCheckboxChange(
-                                    field.fieldId,
-                                    option.value,
-                                    e.target.checked
-                                  )
-                                }
-                              />
-                            }
-                            label={option.label}
-                          />
-                        </FormGroup>
-                      ))}
-                    </Box>
-                  ) : field.type === 'drop_down' ||
-                    field.type === 'dropdown' ? (
-                    <Box marginTop={3} textAlign={'start'}>
-                      <FormControl fullWidth>
-                        <InputLabel id={`select-label-${field.fieldId}`}>
-                          {field?.label && field.name
-                            ? t(
-                                `FIELDS.${field.name.toUpperCase()}`,
-                                field.label
-                              )
-                            : field.label}
-                        </InputLabel>
-                        <Select
-                          error={isError}
-                          labelId={`select-label-${field.fieldId}`}
-                          id={`select-${field.fieldId}`}
-                          value={fieldValue}
-                          label={
-                            field?.label && field.name
-                              ? t(
-                                  `FIELDS.${field.name.toUpperCase()}`,
-                                  field.label
-                                )
-                              : field.label
-                          }
-                          onChange={(e) =>
-                            handleDropdownChange(field.fieldId, e.target.value)
-                          }
-                        >
-                          {field?.options?.map((option: any) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        {isError && (
-                          <FormHelperText
-                            sx={{ color: theme.palette.error.main }}
-                          >
-                            {t('PROFILE.SELECT_OPTION')}
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Box>
-                  ) : field.type === 'radio' || field.type === 'Radio' ? (
-                    <Box marginTop={3}>
-                      <Typography
-                        textAlign={'start'}
-                        variant="h4"
-                        margin={0}
-                        color={theme.palette.warning.A200}
-                      >
-                        {field?.label && field.name
-                          ? t(`FIELDS.${field.name.toUpperCase()}`, field.label)
-                          : field.label}
-                      </Typography>
-                      <RadioGroup
-                        name={field.fieldId}
-                        value={fieldValue}
-                        onChange={(e) =>
-                          handleRadioChange(field.fieldId, e.target.value)
-                        }
-                      >
-                        <Box
-                          display="flex"
-                          flexWrap="wrap"
-                          color={theme.palette.warning.A200}
-                        >
-                          {field?.options?.map((option: any) => (
-                            <FormControlLabel
-                              key={option.value}
-                              value={option.value}
-                              control={<Radio color="default" />}
-                              label={option.label}
-                            />
-                          ))}
-                        </Box>
-                      </RadioGroup>
-                    </Box>
-                  ) : null}
-                </Grid>
-              );
-            })}
-            <Box></Box>
-          </Box>
-          <Divider />
-          <Box
-            sx={{
-              display: 'flex',
-              padding: '5px 20px 20px 20px',
-              justifyContent: 'center',
-              mt: 0.5,
-            }}
-          >
-            <Button
-              sx={{
-                minWidth: '100%',
-                color: theme.palette.warning.A200,
-                boxShadow: 'none',
-              }}
-              onClick={handleSubmit}
-              variant="contained"
-              disabled={!hasInputChanged || !isValidationTriggered || hasErrors}
-            >
-              {t('COMMON.SAVE')}
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
     </>
   );
 };
@@ -1622,4 +1006,7 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default LearnerProfile;
+export default withAccessControl(
+  'accessLearnerProfile',
+  accessControl
+)(LearnerProfile);
