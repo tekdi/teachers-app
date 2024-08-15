@@ -41,7 +41,7 @@ jobs:
           port: ${{ secrets.PORT_PROD }}
           script: |
             TARGET_DIR="${{ secrets.TARGET_DIR_PROD }}"
-            ENVIRONMENT="$TARGET_DIR/.env
+            ENVIRONMENT="$TARGET_DIR/.env"
             if [ -f "$ENVIRONMENT" ]; then
             rm "$ENVIRONMENT"
             fi
