@@ -644,7 +644,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 type == Role.STUDENT ||
                 (option.name !== 'mark-drop-out' &&
                   option.name !== 'unmark-drop-out')
-            )
+            ) .filter((option) => !isFromProfile || option.name !== 'reassign-centers')
             : [
               {
                 label: t('COMMON.REASSIGN_CENTERS'),
@@ -680,7 +680,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 type == Role.STUDENT ||
                 (option.name !== 'mark-drop-out' &&
                   option.name !== 'unmark-drop-out')
-            )
+            ) .filter((option) => !isFromProfile || option.name !== 'reassign-centers')
         }
         renderCustomContent={renderCustomContent}
       />

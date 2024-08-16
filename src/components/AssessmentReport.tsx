@@ -7,7 +7,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { useRouter } from 'next/router';
 import RemoveIcon from '@mui/icons-material/Remove';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import { updateAssessment } from '@/services/UpdateAssesmentService';
+import { learnerAssessmentReport } from '@/services/UpdateAssesmentService';
 
 interface AssessmentReportProp{
     isTitleRequired?: boolean
@@ -21,7 +21,7 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({ isTitleRequired }) =
   const [assessmentList, setAssessmentList] = React.useState([]);
 
   useEffect(() => {
-    const res: any = updateAssessment();
+    const res: any = learnerAssessmentReport();
     setAssessmentList(res);
   }, []);
 
@@ -56,7 +56,7 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({ isTitleRequired }) =
                   borderRadius: '8px',
                   gap: '5px',
                 }}
-                onClick={() => handleAssessmentDetails(assessment.userId)}
+                // onClick={() => handleAssessmentDetails(assessment.userId)}
               >
                 <Box
                   sx={{
