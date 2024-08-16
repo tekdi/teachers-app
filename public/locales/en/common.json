@@ -56,7 +56,7 @@
     "REMOVE": "Remove",
     "SEND_REQUEST": "Send Request",
     "MARK_DROP_OUT": "Mark as Drop Out",
-    "MARK_ALL_AS":"Mark All As",
+    "MARK_ALL_AS": "Mark All As",
     "UNMARK_DROP_OUT": "Unmark as Drop Out",
     "SOMETHING_WENT_WRONG": "Something went wrong",
     "NO_GO_BACK": "No, go back",
@@ -287,7 +287,7 @@
     "STEP_4": "Use this button to view a detailed overview of center attendance and see a list of learners categorized by low, average, and good attendance for any custom date range.",
     "STEP_5": "Update your preferred language anytime from here.",
     "STEP_6": "Access your teaching centers and manage tasks like adding, editing, or removing learners, marking dropouts, and reassigning centers or blocks. You can also easily schedule online or offline sessions for your subjects.",
-    "STEP_7":"Access the full academic year’s course plan for each subject, along with resources like videos and documents for every topic. Track your teaching progress by updating topic completion status.",
+    "STEP_7": "Access the full academic year’s course plan for each subject, along with resources like videos and documents for every topic. Track your teaching progress by updating topic completion status.",
     "STEP_8": "View detailed scores and summaries of Pre and Post tests for each learner. Track which students have completed, are in progress or yet to start the test.",
     "PREVIOUS": "Previous",
     "NEXT": "Next",
@@ -374,7 +374,6 @@
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully",
     "CENTERS_REQUEST_FAILED": "Center Requested Failed"
-
   },
   "FORM": {
     "FULL_NAME": "Full Name",
@@ -451,7 +450,14 @@
     "DROP_OUT_REASON": "Reason for Drop Out From School",
     "ASSIGN_CENTERS": "Assign Centers",
     "TYPE_OF_COHORT": "Center type",
-    "NOTE_THIS_WILL_BE_CENTER_NAME": "Note this will be Center name"
+    "NOTE_THIS_WILL_BE_CENTER_NAME": "Note this will be Center name",
+    "ENGLISH": "English",
+    "HOME_SCIENCE": "Home Science",
+    "MATH": "Math",
+    "LANGUAGE": "Language",
+    "SCIENCE": "Science",
+    "SOCIAL_SCIENCE": "Social Science",
+    "LIFE_SKILLS": "Life Skills"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
