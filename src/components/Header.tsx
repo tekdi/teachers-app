@@ -16,6 +16,7 @@ import menuIcon from '../assets/images/menuIcon.svg';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import StyledMenu from './StyledMenu';
+import MenuDrawer from './MenuDrawer';
 
 interface HeaderProps {
   toggleDrawer?: (newOpen: boolean) => () => void;
@@ -43,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
       logEvent({
         action: 'my-profile-clicked-header',
         category: 'Dashboard',
-        label: 'Profile Clicked'
+        label: 'Profile Clicked',
       });
     }
   };
@@ -54,7 +55,6 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
       action: 'logout-clicked-header',
       category: 'Dashboard',
       label: 'Logout Clicked',
-      
     });
   };
 
@@ -73,9 +73,9 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
   const handleToggleDrawer = (newOpen: boolean) => () => {
     setOpenMenu(newOpen);
   };
-  const MenuDrawer = dynamic(() => import('./MenuDrawer'), {
-    ssr: false,
-  });
+  // const MenuDrawer = dynamic(() => import('./MenuDrawer'), {
+  //   ssr: false,
+  // });
 
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   useEffect(() => {
@@ -141,7 +141,6 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
           <Box
             onClick={() => {
               if (openDrawer) {
-                
                 if (toggleDrawer) {
                   toggleDrawer(true)();
                 }
@@ -246,8 +245,8 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
       />
 
       <MenuDrawer
-        toggleDrawer={ openDrawer ? toggleDrawer : handleToggleDrawer}
-        open={openDrawer? openDrawer: openMenu}
+        toggleDrawer={openDrawer ? toggleDrawer : handleToggleDrawer}
+        open={openDrawer ? openDrawer : openMenu}
         language={language}
         setLanguage={setLanguage}
       />
