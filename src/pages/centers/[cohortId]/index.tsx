@@ -105,9 +105,11 @@ const TeachingCenterDetails = () => {
   const [openSchedule, setOpenSchedule] = React.useState(false);
 
   const [deleteModal, setDeleteModal] = React.useState(false);
-
+  const [cohortName, setCohortName] = React.useState<string>();
   const [clickedBox, setClickedBox] = useState<string | null>(null);
   const [isLearnerAdded, setIsLearnerAdded] = useState(false);
+  const [createEvent, setCreateEvent] = useState(false);
+  const [eventCreated, setEventCreated] = useState(false);
 
   const handleClick = (selection: string) => {
     setClickedBox(selection);
@@ -121,9 +123,24 @@ const TeachingCenterDetails = () => {
     setOpenSchedule(true);
   };
 
-  const handleSchedule = () => { };
+  const handleSchedule = () => {
+    console.log('handleSchedule called');
+    setCreateEvent(true);
+  };
+
+  const handleCloseSchedule = () => {
+    setEventCreated(true);
+  };
+
+  useEffect(() => {
+    if (eventCreated) {
+      setOpen(false);
+      setCreateEvent(false);
+    }
+  }, [eventCreated, createEvent]);
 
   const handleOpen = () => setOpen(true);
+
   const handleClose = () => {
     setOpen(false);
     setOpenSchedule(false);
@@ -171,6 +188,7 @@ const TeachingCenterDetails = () => {
             '';
         }
         setCohortDetails(cohortData);
+        setCohortName(cohortData?.name);
       }
     };
     getCohortData();
@@ -475,6 +493,10 @@ const TeachingCenterDetails = () => {
               <PlannedSession
                 clickedBox={clickedBox}
                 removeModal={removeModal}
+                scheduleEvent={createEvent}
+                cohortName={cohortName}
+                cohortId={cohortId}
+                onCloseModal={handleCloseSchedule}
               />
             ) : (
               <Schedule clickedBox={clickedBox} handleClick={handleClick} />
@@ -572,7 +594,6 @@ const TeachingCenterDetails = () => {
                 </Box>
               )}
             </Grid>
-
           </Box>
         </>
       )}
