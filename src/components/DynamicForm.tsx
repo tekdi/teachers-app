@@ -101,7 +101,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               schema.properties?.[property]?.validation?.includes('numeric')
             ) {
               error.message = t('FORM_ERROR_MESSAGES.MUST_BE_LESS_THAN', {
-                fieldname: property,
+                fieldname: t('FIELDS.AGE'),
                 maxLength: schema.properties?.[property]?.maxLength,
               });
             }

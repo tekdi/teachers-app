@@ -126,7 +126,8 @@
     "CREATE": "Create",
     "OKAY": "Okay",
     "HELD_EVERY_WEEK_ON": "Held every week on {{days}}",
-    "SESSION_SCHEDULED_SUCCESSFULLY": "Session has been scheduled successfully!"
+    "SESSION_SCHEDULED_SUCCESSFULLY": "Session has been scheduled successfully!",
+    "CENTER": "Center"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -484,6 +485,7 @@
     "SUBMITTED_ON": "Submitted On",
     "CORRECT_ANSWER": "correct answers",
     "NO_DATA_FOUND": "No data found",
-    "SEARCH_STUDENT": "search student"
+    "SEARCH_STUDENT": "search student",
+    "NO_ASSESSMENTS_FOUND": "No assessments found"
   }
 }

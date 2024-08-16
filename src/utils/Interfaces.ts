@@ -239,7 +239,7 @@ export interface MarksObtainedCardProps {
   data: { question: string; mark_obtained: number; totalMarks: number }[];
 }
 
-export interface AssessmentListServiceParam {
+export interface AssessmentListParam {
   filters: {
     userId: string;
   };
@@ -581,4 +581,10 @@ export interface BottomDrawerProps {
   setAnchorEl: React.Dispatch<React.SetStateAction<null | HTMLElement>>;
   anchorEl: null | HTMLElement;
   isMobile: boolean;
+}
+
+export interface IAssessmentStatusOptions {
+  userId: string[],
+  contentId: string[],
+  batchId: string
 }
