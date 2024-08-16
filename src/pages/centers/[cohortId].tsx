@@ -57,7 +57,7 @@ import { eventDaysLimit, modifyAttendanceLimit } from '../../../app.config';
 import manageUserStore from '@/store/manageUserStore';
 
 const TeachingCenterDetails = () => {
-  const [value, setValue] = React.useState(1);
+  const [value, setValue] = React.useState(2);
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
   const router = useRouter();
@@ -430,13 +430,13 @@ const TeachingCenterDetails = () => {
             },
           }}
         >
-          <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
+          {/* <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} /> */} 
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
           <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
         </Tabs>
       </Box>
 
-      {value === 1 && (
+      {/* {value === 1 && (
         <>
           <Box mt={3} px="18px">
             <Button
@@ -594,7 +594,7 @@ const TeachingCenterDetails = () => {
             </Grid>
           </Box>
         </>
-      )}
+      )} */}
 
       <Box>
         {value === 2 && (

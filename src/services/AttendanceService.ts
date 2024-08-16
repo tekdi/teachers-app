@@ -50,7 +50,8 @@ export const markAttendance = async ({
     });
     return response?.data;
   } catch (error) {
-    console.error('error in marking bulk attendance', error);
+    console.error('error in marking  markAttendance', error);
+    return error;
   }
 };
 
