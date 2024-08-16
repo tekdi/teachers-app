@@ -346,7 +346,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
     const option = teachSubjectsField?.options?.find(
       (opt: any) => opt?.value === subject
     );
-    return option ? option.label : subject;
+    return option ? t(`FORM.${option?.label}`, option?.label) : subject;
   };
 
   //fields  for view profile by order
