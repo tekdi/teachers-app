@@ -1,6 +1,7 @@
 import {
   Box,
   FormControl,
+  InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -37,12 +38,13 @@ interface CohortSelectionSectionProps {
   setManipulatedCohortData?: React.Dispatch<
     React.SetStateAction<Array<ICohort>>
   >;
-  blockName: string;
+  blockName?: string;
   isManipulationRequired?: boolean;
-  setBlockName: React.Dispatch<React.SetStateAction<string>>;
+  setBlockName?: React.Dispatch<React.SetStateAction<string>>;
   handleSaveHasRun?: boolean;
   setHandleSaveHasRun?: React.Dispatch<React.SetStateAction<boolean>>;
   isCustomFieldRequired?: boolean;
+  showFloatingLabel?: boolean;
 }
 
 interface ChildData {
@@ -78,6 +80,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   handleSaveHasRun,
   setHandleSaveHasRun,
   isCustomFieldRequired = true,
+  showFloatingLabel = false,
 }) => {
   const router = useRouter();
   const theme = useTheme<any>();
@@ -217,8 +220,12 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                 }
               }
             } else if (response[0].type === cohortHierarchy.BLOCK) {
-              setBlockName(response[0].name || response[0].cohortName);
-              setBlock(response[0].name || response[0].cohortName)
+              if (setBlockName) {
+                setBlockName(
+                  response?.[0]?.name || response?.[0]?.cohortName || ''
+                );
+              }
+              setBlock(response[0].name || response[0].cohortName);
               const filteredData = response[0].childData
                 ?.map((item: any) => {
                   const typeOfCohort = item?.customField?.find(
@@ -229,7 +236,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                     cohortId: item?.cohortId,
                     parentId: item?.parentId,
                     name: item?.cohortName || item?.name,
-                    typeOfCohort: typeOfCohort || (t('ATTENDANCE.UNKNOWN')),
+                    typeOfCohort: typeOfCohort || t('ATTENDANCE.UNKNOWN'),
                   };
                 })
                 ?.filter(Boolean);
@@ -276,7 +283,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   ]);
 
   const handleCohortSelection = (event: SelectChangeEvent<string>) => {
-    setClassId(event.target.value as string);
+    setClassId(event.target.value);
     ReactGA.event('cohort-selection-dashboard', {
       selectedCohortID: event.target.value,
     });
@@ -355,17 +362,21 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             {cohortsData?.length !== 0 ? (
                               manipulatedCohortData?.map((cohort) => (
                                 <MenuItem
-                                key={cohort.cohortId}
-                                value={cohort.cohortId}
-                                style={{
-                                  fontWeight: '500',
-                                  fontSize: '14px',
-                                  color: theme.palette.warning['A200'],
-                                  textTransform: 'capitalize',
-                                }}
-                              >
-                                {cohort.name} {cohort?.typeOfCohort === CenterType.REGULAR || CenterType.UNKNOWN &&`(${cohort.typeOfCohort})`}
-                              </MenuItem>
+                                  key={cohort.cohortId}
+                                  value={cohort.cohortId}
+                                  style={{
+                                    fontWeight: '500',
+                                    fontSize: '14px',
+                                    color: theme.palette.warning['A200'],
+                                    textTransform: 'capitalize',
+                                  }}
+                                >
+                                  {cohort.name}{' '}
+                                  {cohort?.typeOfCohort ===
+                                    CenterType.REGULAR ||
+                                    (CenterType.UNKNOWN &&
+                                      `(${cohort?.typeOfCohort?.toLowerCase()})`)}
+                                </MenuItem>
                               ))
                             ) : (
                               <Typography
@@ -395,16 +406,25 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                     <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
                       {cohortsData?.length > 1 ? (
                         <FormControl
-                          className="drawer-select "
+                          className={showFloatingLabel ? '' : "drawer-select"}
                           sx={{ m: 0, width: '100%' }}
                         >
+                          {showFloatingLabel && (
+                            <InputLabel id="center-select-label">
+                              {t('COMMON.CENTER')}
+                            </InputLabel>
+                          )}
                           <Select
+                            labelId="center-select-label"
+                            label={showFloatingLabel ? t('COMMON.CENTER') : ''}
                             value={classId}
                             onChange={handleCohortSelection}
-                            displayEmpty
+                            // displayEmpty
+                            // style={{ borderRadius: '4px' }}
+
                             inputProps={{ 'aria-label': 'Without label' }}
-                            className="select-languages fs-14 fw-500 bg-white"
-                            style={{
+                            className={showFloatingLabel ? '' : "select-languages fs-14 fw-500 bg-white"}
+                            style={showFloatingLabel ? {borderRadius: '4px'} : {
                               borderRadius: '0.5rem',
                               color: theme.palette.warning['200'],
                               width: '100%',
