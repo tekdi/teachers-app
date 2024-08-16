@@ -36,8 +36,10 @@ const telemetryConfig = {
   host: hostURL,
   endpoint: '/telemetry/v1/telemetry',
   tags: [],
-  enableValidation: true
+  enableValidation: false
 };
+
+
 
 if (typeof window !== 'undefined') {
   getDeviceId().then((deviceId) => {

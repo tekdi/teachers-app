@@ -20,6 +20,7 @@ import FormButtons from './FormButtons';
 import { sendCredentialService } from '@/services/NotificationService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 import ReactGA from 'react-ga4';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -222,6 +223,22 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             ReactGA.event('learner-creation-success', {
               username: username,
             });
+
+            const telemetryInteract = {
+              context: {
+                env: 'learner-creation-success',
+                cdata: [],
+              },
+              edata: {
+                id: 'learner-creation-success',
+                type: 'CLICK',
+                subtype: '',
+                pageid: 'centers',
+                uid: localStorage.getItem('userId') ?? 'Anonymous',
+                userName: localStorage.getItem('userName') ?? 'Anonymous',
+              },
+            };
+            telemetryFactory.interact(telemetryInteract);
 
             const isQueue = false;
             const context = 'USER';

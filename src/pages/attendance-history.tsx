@@ -51,6 +51,7 @@ import Header from '../components/Header';
 import Loader from '../components/Loader';
 import SortingModal from '../components/SortingModal';
 import { attendanceStatusList } from '../services/AttendanceService';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface user {
   memberStatus: string;
@@ -100,6 +101,23 @@ const UserAttendanceHistory = () => {
     ReactGA.event('mark/modify-attendance-button-clicked-attendance-history', {
       teacherId: userId,
     });
+
+    const telemetryInteract = {
+      context: {
+        env: 'mark/modify-attendance-button-clicked-attendance-history',
+        cdata: [],
+      },
+      edata: {
+        id: 'mark/modify-attendance-button-clicked-attendance-history',
+        type: 'CLICK',
+        subtype: '',
+        pageid: 'attendance-history',
+        uid: localStorage.getItem('userId') ?? 'Anonymous',
+        userName: localStorage.getItem('userName') ?? 'Anonymous',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+    
   };
 
   const handleClose = () => {

@@ -49,6 +49,7 @@ import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { Role } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface DashboardProps { }
 
@@ -338,6 +339,23 @@ const Dashboard: React.FC<DashboardProps> = () => {
     ReactGA.event('mark/modify-attendance-button-clicked-dashboard', {
       teacherId: userId,
     });
+
+    const telemetryInteract = {
+      context: {
+        env: 'mark/modify-attendance-button-clicked-dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'mark/modify-attendance-button-clicked-dashboard',
+        type: 'CLICK',
+        subtype: '',
+        pageid: 'dashboard',
+        uid: localStorage.getItem('userId') ?? 'Anonymous',
+        userName: localStorage.getItem('userName') ?? 'Anonymous',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+    
   };
 
   const getMonthName = (dateString: string) => {
@@ -408,6 +426,21 @@ const Dashboard: React.FC<DashboardProps> = () => {
       router.push('/attendance-history');
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
+    const telemetryInteract = {
+      context: {
+        env: 'month-name-clicked',
+        cdata: [],
+      },
+      edata: {
+        id: 'month-name-clicked',
+        type: 'CLICK',
+        subtype: '',
+        pageid: 'dashboard',
+        uid: localStorage.getItem('userId') ?? 'Anonymous',
+        userName: localStorage.getItem('userName') ?? 'Anonymous',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   const handleClose = () => {
@@ -709,6 +742,21 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             selectedDate={new Date(selectedDate)}
                             onSaveSuccess={(isModified) => {
                               if (isModified) {
+                                const telemetryInteract = {
+                                  context: {
+                                    env: 'attendance-modified',
+                                    cdata: [],
+                                  },
+                                  edata: {
+                                    id: 'attendance-modified',
+                                    type: 'CLICK',
+                                    subtype: '',
+                                    pageid: 'dashboard',
+                                    uid: localStorage.getItem('userId') ?? 'Anonymous',
+                                    userName: localStorage.getItem('userName') ?? 'Anonymous',
+                                  },
+                                };
+                                telemetryFactory.interact(telemetryInteract);
                                 showToastMessage(
                                   t(
                                     'ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY'
@@ -716,6 +764,21 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   'success'
                                 );
                               } else {
+                                const telemetryInteract = {
+                                  context: {
+                                    env: 'attendance-marked',
+                                    cdata: [],
+                                  },
+                                  edata: {
+                                    id: 'attendance-marked',
+                                    type: 'CLICK',
+                                    subtype: '',
+                                    pageid: 'dashboard',
+                                    uid: localStorage.getItem('userId') ?? 'Anonymous',
+                                    userName: localStorage.getItem('userName') ?? 'Anonymous',
+                                  },
+                                };
+                                telemetryFactory.interact(telemetryInteract);
                                 showToastMessage(
                                   t(
                                     'ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'

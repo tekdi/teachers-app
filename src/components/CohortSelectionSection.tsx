@@ -21,6 +21,7 @@ import Loader from './Loader';
 import { showToastMessage } from './Toastify';
 import manageUserStore from '@/store/manageUserStore';
 import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -280,6 +281,21 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     ReactGA.event('cohort-selection-dashboard', {
       selectedCohortID: event.target.value,
     });
+    const telemetryInteract = {
+      context: {
+        env: 'cohort-selection-dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'cohort-selection-dashboard',
+        type: 'SEARCH',
+        subtype: '',
+        pageid: 'centers',
+        uid: localStorage.getItem('userId') ?? 'Anonymous',
+        userName: localStorage.getItem('userName') ?? 'Anonymous',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
     localStorage.setItem('classId', event.target.value);
     setHandleSaveHasRun?.(!handleSaveHasRun);
 

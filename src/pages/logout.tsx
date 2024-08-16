@@ -18,34 +18,25 @@ function Logout() {
           type: 'CLICK',
           subtype: '',
           pageid: 'sign-out',
-          uid: 'id',
-
-          studentid: localStorage.getItem('userId'),
-
-          userName: 'userName',
-
-          grade: 'grade',
-
-          medium: 'medium',
-
-          board: 'board',
+          uid: localStorage.getItem('userId') ?? 'Anonymous',
+          userName: localStorage.getItem('userName') ?? 'Anonymous',
         },
       };
       telemetryFactory.interact(telemetryInteract);
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');
-        const userId = localStorage.getItem('userId')
+        const userId = localStorage.getItem('userId');
         if (refreshToken) {
           await logout(refreshToken);
           ReactGA.event('logout-success', {
-            userId: userId
+            userId: userId,
           });
         }
       } catch (error) {
         console.log(error);
         ReactGA.event('logout-fail', {
-          error: error
+          error: error,
         });
       }
     };

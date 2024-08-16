@@ -31,6 +31,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { modalStyles } from '@/styles/modalStyles';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
+import { telemetryFactory } from '@/utils/telemetry';
 interface AddFacilitatorModalprops {
   open: boolean;
   onClose: () => void;
@@ -280,6 +281,22 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                   ReactGA.event('facilitator-created-successfully', {
                     userName: username,
                   });
+
+                  const telemetryInteract = {
+                    context: {
+                      env: 'facilitator-created-successfully',
+                      cdata: [],
+                    },
+                    edata: {
+                      id: 'facilitator-created-successfully',
+                      type: 'CLICK',
+                      subtype: '',
+                      pageid: 'centers',
+                      uid: localStorage.getItem('userId') ?? 'Anonymous',
+                      userName: localStorage.getItem('userName') ?? 'Anonymous',
+                    },
+                  };
+                  telemetryFactory.interact(telemetryInteract);
 
                   const isQueue = false;
                   const context = 'USER';
