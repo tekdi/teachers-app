@@ -132,17 +132,13 @@ const isWithinAttendanceTimeUpdated = (
   let currentTimeFormatted = formatTimeToHHMM(now);
   if (currentDate !== selectedDate) {
     if (attendanceTimes?.back_dated_attendance !== 1) {
-      console.log('zero');
       return false;
     } else if (
       attendanceTimes?.back_dated_attendance_allowed_days &&
       differenceInDays > attendanceTimes?.back_dated_attendance_allowed_days
     ) {
-      console.log('one');
-
       return false;
     } else {
-      console.log('two');
       return true;
     }
   } else if (currentDate === selectedDate) {
@@ -155,14 +151,12 @@ const isWithinAttendanceTimeUpdated = (
         attendanceTimes.attendance_starts_at &&
         currentTimeFormatted < attendanceTimes.attendance_starts_at
       ) {
-        console.log('three');
         return false;
       } else if (
         attendanceTimes.attendance_ends_at &&
         currentTimeFormatted > attendanceTimes.attendance_ends_at &&
         attendanceTimes.allow_late_marking !== 1
       ) {
-        console.log('four');
         return false;
       } else {
         return true;
@@ -362,7 +356,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     try {
       // Call the API to mark attendance
       const response = await markAttendance(data);
-      
+
       if (response?.statusCode === 201 || response?.statusCode === 200) {
         const { message } = response;
         showToastMessage(message, 'success');
