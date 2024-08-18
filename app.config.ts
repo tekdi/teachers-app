@@ -63,3 +63,18 @@ export const DaysOfWeek = {
   Fri: 5,
   Sat: 6,
 };
+
+// handle component by this condition
+export const ShowCenterSessionsTab = false;
+
+// menu drawer items
+export const ShowAssesment = false;
+export const ShowCoursePlan = false;
+export const ShowObservationsAndForms = false;
+
+export const ShowMyTeachingCenter = true;
+export const ShowDashboard = true;
+export const ShowManageUsers = false;
+
+//mark attendance model
+export const ShowSelfAttendance = true;

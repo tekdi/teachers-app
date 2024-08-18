@@ -53,7 +53,11 @@ import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { Role } from '@/utils/app.constant';
 import { showToastMessage } from '@/components/Toastify';
 import { getEventList } from '@/services/EventService';
-import { eventDaysLimit, modifyAttendanceLimit } from '../../../app.config';
+import {
+  ShowCenterSessionsTab,
+  eventDaysLimit,
+  modifyAttendanceLimit,
+} from '../../../app.config';
 import manageUserStore from '@/store/manageUserStore';
 
 const TeachingCenterDetails = () => {
@@ -430,13 +434,15 @@ const TeachingCenterDetails = () => {
             },
           }}
         >
-          {/* <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} /> */}
+          {ShowCenterSessionsTab && (
+            <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
+          )}
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
           <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
         </Tabs>
       </Box>
 
-      {/* {tabValue === 1 && (
+      {tabValue === 1 && ShowCenterSessionsTab && (
         <>
           <Box mt={3} px="18px">
             <Button
@@ -594,7 +600,7 @@ const TeachingCenterDetails = () => {
             </Grid>
           </Box>
         </>
-      )} */}
+      )}
 
       <Box>
         {tabValue === 2 && (

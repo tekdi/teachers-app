@@ -3,8 +3,14 @@
 import {
   Box,
   Button,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
   Radio,
+  Select,
+  SelectChangeEvent,
   Stack,
   TextField,
   Typography,
@@ -35,7 +41,12 @@ import {
   ICohort,
   CohortMemberList,
 } from '../utils/Interfaces';
-import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
+import {
+  ShowSelfAttendance,
+  accessControl,
+  dropoutReasons,
+  lowLearnerAttendanceLimit,
+} from './../../app.config';
 
 import AttendanceComparison from '@/components/AttendanceComparison';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
@@ -248,12 +259,21 @@ const Dashboard: React.FC<DashboardProps> = () => {
     React.useState<any>(false);
   // condition for mark attendance for student and self
 
+  const [reasonOfAbsent, setReasonOfAbsent] = React.useState('');
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setReasonOfAbsent(event.target.value);
+  };
+
   const onCloseEditMOdel = () => {
     setIsAttendanceModalOpen(false);
     setSelectedAttendance('');
     setConfirmButtonDisable(true);
   };
   const handleRadioChange = (value: string) => {
+    if (value !== attendanceType.ABSENT) {
+      setReasonOfAbsent('');
+    }
     setSelectedAttendance(value);
     if (value) {
       setConfirmButtonDisable(false);
@@ -282,6 +302,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       const getData = selectedCohort.params;
       if (getData) {
         console.log('getData', getData);
+
         setData(getData);
       } else {
         setData(null);
@@ -343,6 +364,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     // Prepare data object
     const currentDate = new Date();
     const dateForAttendance = formatSelectedDate(currentDate);
+
     console.log('attendanceLocation?', attendanceLocation);
     const data = {
       userId: userId,
@@ -351,6 +373,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       contextId: classId,
       scope: 'self',
       attendanceLocation,
+      // reason:  selectedAttendance === attendanceType.ABSENT ? reasonOfAbsent : '',
     };
 
     try {
@@ -377,6 +400,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       fetchData(selectedDate);
       setConfirmButtonDisable(true);
       setSelectedAttendance('');
+      setReasonOfAbsent('');
     }
   };
   const fetchData = async (selectedDate: string) => {
@@ -1075,7 +1099,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               </Box>
                             </Grid>
                           )}
-                          {isAllowedToMarkSelf && (
+                          {ShowSelfAttendance && isAllowedToMarkSelf && (
                             <Grid
                               item
                               xs={12}
@@ -1362,6 +1386,47 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   </Box>
                                 </React.Fragment>
                               ))}
+                              {selectedAttendance === attendanceType.ABSENT && (
+                                <Box sx={{ padding: '10px 18px' }}>
+                                  <FormControl sx={{ mt: 1, width: '100%' }}>
+                                    <InputLabel
+                                      sx={{
+                                        fontSize: '16px',
+                                        color: theme.palette.warning['300'],
+                                      }}
+                                      id="demo-multiple-name-label"
+                                    >
+                                      {t('COMMON.REASON_FOR_DROPOUT')}
+                                    </InputLabel>
+                                    <Select
+                                      labelId="demo-multiple-name-label"
+                                      id="demo-multiple-name"
+                                      input={
+                                        <OutlinedInput label="Reason for Dropout" />
+                                      }
+                                      onChange={handleChange}
+                                    >
+                                      {dropoutReasons?.map((reason) => (
+                                        <MenuItem
+                                          key={reason.value}
+                                          value={reason.value}
+                                          sx={{
+                                            fontSize: '16px',
+                                            color: theme.palette.warning['300'],
+                                          }}
+                                        >
+                                          {reason.label
+                                            .replace(/_/g, ' ')
+                                            .toLowerCase()
+                                            .replace(/^\w/, (c) =>
+                                              c.toUpperCase()
+                                            )}
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                  </FormControl>
+                                </Box>
+                              )}
                             </Box>
                           </SimpleModal>
 

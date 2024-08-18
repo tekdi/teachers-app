@@ -19,7 +19,14 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import { Role } from '@/utils/app.constant';
 import useStore from '@/store/store';
 import { accessGranted } from '@/utils/Helper';
-import { accessControl } from '../../app.config';
+import {
+  ShowAssesment,
+  ShowCoursePlan,
+  ShowDashboard,
+  ShowMyTeachingCenter,
+  ShowObservationsAndForms,
+  accessControl,
+} from '../../app.config';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 interface DrawerProps {
   toggleDrawer: (open: boolean) => () => void;
@@ -170,182 +177,209 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           </Box>
         </Box>
 
-        <Box>
-          <Button
-            className="fs-14"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isDashboard
-                ? theme.palette.primary.main
-                : 'transparent',
-              padding: isDashboard
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              marginTop: '25px',
-              color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isDashboard ? '600' : 500,
-              '&:hover': {
+        {ShowDashboard && (
+          <Box>
+            <Button
+              className="fs-14"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isDashboard
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-            }}
-            startIcon={<DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />}
-            onClick={navigateToDashboard}
-          >
-            {t('DASHBOARD.DASHBOARD')}
-          </Button>
-        </Box>
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isTeacherCenter
-                ? theme.palette.primary.main
-                : 'transparent',
+                padding: isDashboard
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                marginTop: '25px',
+                color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isDashboard ? '600' : 500,
+                '&:hover': {
+                  background: isDashboard
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+              }}
+              startIcon={
+                <DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />
+              }
+              onClick={navigateToDashboard}
+            >
+              {t('DASHBOARD.DASHBOARD')}
+            </Button>
+          </Box>
+        )}
 
-              padding: isTeacherCenter
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isTeacherCenter ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isTeacherCenter ? '600' : 500,
-              '&:hover': {
+        {ShowMyTeachingCenter && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isTeacherCenter
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-              marginTop: '15px',
-            }}
-            startIcon={<LocalLibraryOutlinedIcon sx={{ fontSize: '24px !important' }} />}
-            onClick={() => {
-              router.push(`/centers`); // Check route
-            }}
-          >
-            {accessGranted('showTeachingCenter', accessControl, userRole)
-              ? t('DASHBOARD.TEACHING_CENTERS')
-              : t('DASHBOARD.MY_TEACHING_CENTERS')}
-          </Button>
-        </Box>
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: 'transparent',
-              padding: '0px 18px !important',
-              color: theme.palette.warning.A200,
-              fontWeight: 500,
-              '&:hover': {
-                background: 'transparent',
-              },
-              marginTop: '15px',
-            }}
-            startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
-          // onClick={navigateToManageUser}
-          >
-            {t('COMMON.OBSERVATIONS_FORMS')}
-          </Button>
-        </Box>
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isAssessments
-                ? theme.palette.primary.main
-                : 'transparent',
 
-              padding: isAssessments
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isAssessments ? '600' : 500,
-              '&:hover': {
+                padding: isTeacherCenter
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isTeacherCenter ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isTeacherCenter ? '600' : 500,
+                '&:hover': {
+                  background: isTeacherCenter
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              startIcon={
+                <LocalLibraryOutlinedIcon
+                  sx={{ fontSize: '24px !important' }}
+                />
+              }
+              onClick={() => {
+                router.push(`/centers`); // Check route
+              }}
+            >
+              {accessGranted('showTeachingCenter', accessControl, userRole)
+                ? t('DASHBOARD.TEACHING_CENTERS')
+                : t('DASHBOARD.MY_TEACHING_CENTERS')}
+            </Button>
+          </Box>
+        )}
+        {ShowObservationsAndForms && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                background: 'transparent',
+                padding: '0px 18px !important',
+                color: theme.palette.warning.A200,
+                fontWeight: 500,
+                '&:hover': {
+                  background: 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
+              // onClick={navigateToManageUser}
+            >
+              {t('COMMON.OBSERVATIONS_FORMS')}
+            </Button>
+          </Box>
+        )}
+        {ShowAssesment && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isAssessments
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-              marginTop: '15px',
-            }}
-            startIcon={<EventAvailableOutlinedIcon sx={{ fontSize: '24px !important' }} />}
-            onClick={() => {
-              router.push(`/assessments`);
-            }}
-          >
-            {t('ASSESSMENTS.ASSESSMENTS')}
-          </Button>
-        </Box>
 
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isCoursePlanner
-                ? theme.palette.primary.main
-                : 'transparent',
+                padding: isAssessments
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isAssessments ? '600' : 500,
+                '&:hover': {
+                  background: isAssessments
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              startIcon={
+                <EventAvailableOutlinedIcon
+                  sx={{ fontSize: '24px !important' }}
+                />
+              }
+              onClick={() => {
+                router.push(`/assessments`);
+              }}
+            >
+              {t('ASSESSMENTS.ASSESSMENTS')}
+            </Button>
+          </Box>
+        )}
 
-              padding: isCoursePlanner
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isCoursePlanner ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isCoursePlanner ? '600' : 500,
-              '&:hover': {
+        {ShowCoursePlan && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isCoursePlanner
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-              marginTop: '15px',
-            }}
-            startIcon={<EventAvailableOutlinedIcon sx={{ fontSize: '24px !important' }} />}
-            onClick={() => {
-              router.push(`/course-planner`); // Check route
-            }}
-          >
-            {t('COURSE_PLANNER.COURSE_PLANNER')}
-          </Button>
-        </Box>
 
-        {/* <Box sx={{ marginTop: '12px' }}>
-          <Button
-            className="fs-14"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isManageUser
-                ? theme.palette.primary.main
-                : 'transparent',
+                padding: isCoursePlanner
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isCoursePlanner ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isCoursePlanner ? '600' : 500,
+                '&:hover': {
+                  background: isCoursePlanner
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              startIcon={
+                <EventAvailableOutlinedIcon
+                  sx={{ fontSize: '24px !important' }}
+                />
+              }
+              onClick={() => {
+                router.push(`/course-planner`); // Check route
+              }}
+            >
+              {t('COURSE_PLANNER.COURSE_PLANNER')}
+            </Button>
+          </Box>
+        )}
 
-              padding: isManageUser
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isManageUser ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isManageUser ? '600' : 500,
-              '&:hover': {
+        {/* {ShowManageUsers && (
+          <Box sx={{ marginTop: '12px' }}>
+            <Button
+              className="fs-14"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isManageUser
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-              marginTop: '15px',
-            }}
-            startIcon={<PeopleOutlineOutlinedIcon />}
-            onClick={navigateToManageUser}
-          >
-            {t('COMMON.MANAGE_USERS')}
-          </Button>
-        </Box> */}
+
+                padding: isManageUser
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isManageUser ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isManageUser ? '600' : 500,
+                '&:hover': {
+                  background: isManageUser
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              startIcon={<PeopleOutlineOutlinedIcon />}
+              onClick={navigateToManageUser}
+            >
+              {t('COMMON.MANAGE_USERS')}
+            </Button>
+          </Box>
+        )} */}
       </Box>
     </Drawer>
   );
