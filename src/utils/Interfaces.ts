@@ -58,7 +58,7 @@ export interface MarkAttendanceParams {
   contextId: string;
   attendance: string;
   scope: string;
-  reason?: string;
+  absentReason?: string;
   attendanceLocation: any;
 }
 

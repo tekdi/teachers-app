@@ -14,7 +14,8 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import accountIcon from './../assets/images/account.svg';
 import dynamic from 'next/dynamic';
 import { logEvent } from '@/utils/googleAnalytics';
-import logoLight from '../../public/images/logo-light.png';
+// import logoLight from '../../public/images/logo-light.png';
+import logoLight from '../../public/images/logo.png';
 import menuIcon from '../assets/images/menuIcon.svg';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -202,9 +203,14 @@ const Header: React.FC = () => {
               <MenuItem
                 onClick={logoutOpen}
                 disableRipple
-                sx={{ 'letter-spacing': 'normal', color: theme.palette.warning['300'] }}
+                sx={{
+                  'letter-spacing': 'normal',
+                  color: theme.palette.warning['300'],
+                }}
               >
-                <LogoutOutlinedIcon sx={{ color: theme.palette.warning['300'] }} />
+                <LogoutOutlinedIcon
+                  sx={{ color: theme.palette.warning['300'] }}
+                />
                 {t('COMMON.LOGOUT')}
               </MenuItem>
             </StyledMenu>

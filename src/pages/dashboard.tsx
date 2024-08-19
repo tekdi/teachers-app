@@ -373,7 +373,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
       contextId: classId,
       scope: 'self',
       attendanceLocation,
-      // reason:  selectedAttendance === attendanceType.ABSENT ? reasonOfAbsent : '',
+      absentReason:
+        selectedAttendance === attendanceType.ABSENT ? reasonOfAbsent : '',
     };
 
     try {
@@ -1157,6 +1158,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                             color="success"
                                             style={{
                                               fill: theme.palette.success.main,
+                                              marginLeft: '4px',
                                             }}
                                           />
                                         ) : (
@@ -1165,6 +1167,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                             // color="error"
                                             style={{
                                               fill: theme.palette.error.main,
+                                              marginLeft: '4px',
                                             }}
                                           />
                                         )}

@@ -35,7 +35,7 @@ export const markAttendance = async ({
   attendance,
   scope,
   attendanceLocation,
-  reason,
+  absentReason,
 }: MarkAttendanceParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance`;
   const { latitude, longitude } = attendanceLocation;
@@ -48,7 +48,7 @@ export const markAttendance = async ({
       scope,
       latitude,
       longitude,
-      reason,
+      absentReason,
     });
     return response?.data;
   } catch (error) {

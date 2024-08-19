@@ -5,7 +5,8 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <link rel="manifest" href="/manifest.json" />
-        <link rel="shortcut icon" href="/images/favicon.ico" />
+        {/* <link rel="shortcut icon" href="/images/favicon.ico" /> */}
+        <link rel="shortcut icon" href="/images/logo.png" />
       </Head>
       <body>
         <Main />

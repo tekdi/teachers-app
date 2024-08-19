@@ -167,7 +167,12 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         }
       });
 
-      if (!isEditModal) {
+      if (
+        !isEditModal &&
+        fieldData?.state?.blockId &&
+        fieldData?.state?.stateId &&
+        fieldData?.state?.districtId
+      ) {
         apiBody.customFields.push({
           fieldId: fieldData?.state?.blockId,
           value: [fieldData?.state?.blockCode],
