@@ -53,11 +53,15 @@ import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { Role } from '@/utils/app.constant';
 import { showToastMessage } from '@/components/Toastify';
 import { getEventList } from '@/services/EventService';
-import { eventDaysLimit, modifyAttendanceLimit } from '../../../app.config';
+import {
+  ShowCenterSessionsTab,
+  eventDaysLimit,
+  modifyAttendanceLimit,
+} from '../../../app.config';
 import manageUserStore from '@/store/manageUserStore';
 
 const TeachingCenterDetails = () => {
-  const [value, setValue] = React.useState(1);
+  const [tabValue, setTabValue] = React.useState(2);
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
   const router = useRouter();
@@ -256,7 +260,7 @@ const TeachingCenterDetails = () => {
   }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    setTabValue(newValue);
   };
 
   const handleBackEvent = () => {
@@ -403,7 +407,7 @@ const TeachingCenterDetails = () => {
       </Box>
       <Box sx={{ width: '100%' }}>
         <Tabs
-          value={value}
+          value={tabValue}
           onChange={handleChange}
           textColor="inherit" // Use "inherit" to apply custom color
           aria-label="secondary tabs example"
@@ -430,13 +434,15 @@ const TeachingCenterDetails = () => {
             },
           }}
         >
-          <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
+          {ShowCenterSessionsTab && (
+            <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
+          )}
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
           <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
         </Tabs>
       </Box>
 
-      {value === 1 && (
+      {tabValue === 1 && ShowCenterSessionsTab && (
         <>
           <Box mt={3} px="18px">
             <Button
@@ -597,7 +603,7 @@ const TeachingCenterDetails = () => {
       )}
 
       <Box>
-        {value === 2 && (
+        {tabValue === 2 && (
           <>
             <Box mt={3} px={'18px'}>
               <Button
@@ -650,7 +656,7 @@ const TeachingCenterDetails = () => {
         )}
       </Box>
       <Box>
-        {value === 3 && (
+        {tabValue === 3 && (
           <>
             <Box mt={3} px={'18px'}>
               {/* <Button

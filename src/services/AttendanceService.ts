@@ -35,6 +35,7 @@ export const markAttendance = async ({
   attendance,
   scope,
   attendanceLocation,
+  absentReason,
 }: MarkAttendanceParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance`;
   const { latitude, longitude } = attendanceLocation;
@@ -47,10 +48,12 @@ export const markAttendance = async ({
       scope,
       latitude,
       longitude,
+      absentReason,
     });
     return response?.data;
   } catch (error) {
-    console.error('error in marking bulk attendance', error);
+    console.error('error in marking  markAttendance', error);
+    return error;
   }
 };
 

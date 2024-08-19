@@ -58,6 +58,7 @@ export interface MarkAttendanceParams {
   contextId: string;
   attendance: string;
   scope: string;
+  absentReason?: string;
   attendanceLocation: any;
 }
 
@@ -85,6 +86,7 @@ export interface CohortMemberList {
     role?: string;
     status?: string[];
   };
+  sort?: string[];
 }
 
 export interface UserList {

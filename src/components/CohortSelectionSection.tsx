@@ -232,13 +232,13 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                     cohortId: item?.cohortId,
                     parentId: item?.parentId,
                     name: item?.cohortName || item?.name,
-                    typeOfCohort: typeOfCohort || (t('ATTENDANCE.N/A')),
+                    typeOfCohort: typeOfCohort || t('ATTENDANCE.N/A'),
                   };
                 })
                 ?.filter(Boolean);
 
               console.log(filteredData);
-
+              setSelectedCohortsData(filteredData);
               setCohortsData(filteredData);
 
               if (filteredData.length > 0) {

@@ -17,6 +17,7 @@ const fetchCohortMemberList = async ({
       limit,
       page,
       filters,
+      sort: ['username', 'asc'],
     });
     console.log('data', response?.data);
     return response?.data;

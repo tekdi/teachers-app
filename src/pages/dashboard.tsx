@@ -3,8 +3,14 @@
 import {
   Box,
   Button,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
   Radio,
+  Select,
+  SelectChangeEvent,
   Stack,
   TextField,
   Typography,
@@ -35,7 +41,12 @@ import {
   ICohort,
   CohortMemberList,
 } from '../utils/Interfaces';
-import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
+import {
+  ShowSelfAttendance,
+  accessControl,
+  dropoutReasons,
+  lowLearnerAttendanceLimit,
+} from './../../app.config';
 
 import AttendanceComparison from '@/components/AttendanceComparison';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
@@ -75,7 +86,7 @@ interface AttendanceParams {
   allowed: number;
   allow_late_marking: number;
   attendance_ends_at: string;
-  update_once_marked: number;
+  can_be_updated?: number;
   capture_geoLocation: number;
   attendance_starts_at: string;
   back_dated_attendance: number;
@@ -93,61 +104,82 @@ const formatTime = (time: string) => {
   return new Date().setHours(hours, minutes, 0, 0);
 };
 
-const isWithinAttendanceTime = (
+const formatTimeToHHMM = (date: Date) => {
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+};
+
+const isWithinAttendanceTimeUpdated = (
   attendanceTimes: {
     allow_late_marking?: number;
     restrict_attendance_timings?: number;
     attendance_starts_at?: string | null;
     attendance_ends_at?: string | null;
-    update_once_marked?: number;
+    can_be_updated?: number;
     back_dated_attendance_allowed_days?: number;
     back_dated_attendance?: number;
   },
-  selectedDate?: any
+  selectedDate?: any,
+  attendanceData?: any
 ) => {
   const now = new Date();
 
-  // Check if backdated attendance is allowed and if the selected date is within the allowed range
+  console.log('attendanceDataUpdated', attendanceData);
+
   if (
-    attendanceTimes?.back_dated_attendance === 1 &&
-    attendanceTimes?.back_dated_attendance_allowed_days !== undefined &&
-    attendanceTimes?.back_dated_attendance_allowed_days > 0
+    attendanceData?.[0]?.attendanceId &&
+    attendanceTimes?.can_be_updated !== 1
   ) {
-    const allowedBackDate = new Date();
-    allowedBackDate.setDate(
-      now.getDate() - attendanceTimes?.back_dated_attendance_allowed_days
-    );
-    const formatedAllowedBackDate = formatSelectedDate(allowedBackDate);
-    console.log('allowedBackDate', formatSelectedDate(allowedBackDate));
-    console.log('selectedDate', selectedDate);
-    if (selectedDate < formatedAllowedBackDate || selectedDate > now) {
-      return false; // Selected date is outside the allowed backdated range
-    }
+    return false;
   }
 
-  // check if restrict_attendance_timings is 1 then allow all conditons
-  if (attendanceTimes.restrict_attendance_timings === 1) {
-    if (
-      !attendanceTimes.attendance_starts_at ||
-      !attendanceTimes.attendance_ends_at
+  const date1 = new Date(now);
+  const date2 = new Date(selectedDate);
+
+  const differenceInDays = calculateDateDifference(date1, date2);
+
+  let currentDate = formatSelectedDate(now);
+  let currentTimeFormatted = formatTimeToHHMM(now);
+  if (currentDate !== selectedDate) {
+    if (attendanceTimes?.back_dated_attendance !== 1) {
+      return false;
+    } else if (
+      attendanceTimes?.back_dated_attendance_allowed_days &&
+      differenceInDays > attendanceTimes?.back_dated_attendance_allowed_days
     ) {
-      return true;
-    }
-
-    const now = new Date().getTime();
-    const startsAt = formatTime(attendanceTimes.attendance_starts_at);
-    const endsAt = formatTime(attendanceTimes.attendance_ends_at);
-
-    // Check if late marking is allowed
-
-    if (attendanceTimes.allow_late_marking === 1) {
-      return true;
+      return false;
     } else {
-      return now >= startsAt && now <= endsAt;
+      return true;
     }
-  } else {
-    false;
+  } else if (currentDate === selectedDate) {
+    if (
+      attendanceTimes.restrict_attendance_timings === 1 &&
+      (attendanceTimes.attendance_starts_at ||
+        attendanceTimes.attendance_ends_at)
+    ) {
+      if (
+        attendanceTimes.attendance_starts_at &&
+        currentTimeFormatted < attendanceTimes.attendance_starts_at
+      ) {
+        return false;
+      } else if (
+        attendanceTimes.attendance_ends_at &&
+        currentTimeFormatted > attendanceTimes.attendance_ends_at &&
+        attendanceTimes.allow_late_marking !== 1
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    }
   }
+};
+
+const calculateDateDifference = (date1: Date, date2: Date) => {
+  const diffTime = Math.abs(date2.getTime() - date1.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays - 1;
 };
 
 const checkIsAllowedToShow = (attendanceData: { allowed: number }) => {
@@ -212,12 +244,26 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [isLocationModalOpen, setLocationModalOpen] = React.useState(false);
   const [attendanceLocation, setAttendanceLocation] =
     React.useState<GeolocationPosition | null>(null);
-  const [attendance, setAttendance] = React.useState<AttendanceData | null>(
-    null
-  );
+  const [data, setData] = React.useState<AttendanceData | null>(null);
   const [role, setRole] = React.useState<any>('');
 
+  const [canMarkAttendanceLerners, setCanMarkAttendanceLerners] =
+    React.useState<any>(false);
+  const [isAllowedToMarkLearners, setIsAllowedToMarkLearners] =
+    React.useState<any>(false);
+
+  const [canMarkAttendanceSelf, setCanMarkAttendanceSelf] =
+    React.useState<any>(false);
+
+  const [isAllowedToMarkSelf, setIsAllowedToMarkSelf] =
+    React.useState<any>(false);
   // condition for mark attendance for student and self
+
+  const [reasonOfAbsent, setReasonOfAbsent] = React.useState('');
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setReasonOfAbsent(event.target.value);
+  };
 
   const onCloseEditMOdel = () => {
     setIsAttendanceModalOpen(false);
@@ -225,6 +271,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setConfirmButtonDisable(true);
   };
   const handleRadioChange = (value: string) => {
+    if (value !== attendanceType.ABSENT) {
+      setReasonOfAbsent('');
+    }
     setSelectedAttendance(value);
     if (value) {
       setConfirmButtonDisable(false);
@@ -240,33 +289,67 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   };
 
-  useEffect(() => {
-    const getData = selectedCohortData[0]?.params;
-    console.log('getData', getData);
-    if (getData) {
-      setAttendance(getData);
-    } else {
-      setAttendance(null);
+  const attendanceConfiguration = (selectedDate: any) => {
+    const mycohortID = localStorage.getItem('classId');
+
+    console.log('selectedCohortData', selectedCohortData);
+
+    // Find the cohort data that matches the mycohortID
+    const selectedCohort = selectedCohortData?.find(
+      (cohort) => cohort.cohortId === mycohortID
+    );
+    if (selectedCohort) {
+      const getData = selectedCohort.params;
+      if (getData) {
+        console.log('getData', getData);
+
+        setData(getData);
+      } else {
+        setData(null);
+      }
+
+      //-----------------set learner data configuration -------------
+      const attendanceTimesLearners = getData?.student;
+      const canMarkAttendanceLerners1 = attendanceTimesLearners
+        ? isWithinAttendanceTimeUpdated(
+            attendanceTimesLearners,
+            selectedDate,
+            attendanceData
+          )
+        : false;
+
+      setCanMarkAttendanceLerners(canMarkAttendanceLerners1);
+      const isAllowedToMarkLearners1 = attendanceTimesLearners
+        ? checkIsAllowedToShow(attendanceTimesLearners)
+        : false;
+      setIsAllowedToMarkLearners(isAllowedToMarkLearners1);
+
+      //---------------set self attendance configuration-------------------------
+      const attendanceTimesSelf = getData?.self;
+      const canMarkAttendanceSelf1 = attendanceTimesSelf
+        ? isWithinAttendanceTimeUpdated(
+            attendanceTimesSelf,
+            selectedDate,
+            attendanceData
+          )
+        : // && attendanceTimesSelf?.can_be_updated === 1
+          false;
+      setCanMarkAttendanceSelf(canMarkAttendanceSelf1);
+
+      //check is user role is teacher or not
+      const isTeacherRole = role === Role.TEACHER;
+
+      const isAllowedToMarkSelf1 = attendanceTimesSelf
+        ? checkIsAllowedToShow(attendanceTimesSelf) && isTeacherRole
+        : false;
+      setIsAllowedToMarkSelf(isAllowedToMarkSelf1);
     }
+  };
+
+  useEffect(() => {
+    const getSelectedDate = selectedDate;
+    attendanceConfiguration(getSelectedDate);
   }, [selectedCohortData]);
-
-  const attendanceTimesLearners = attendance?.student;
-  const canMarkAttendanceLerners = attendanceTimesLearners
-    ? isWithinAttendanceTime(attendanceTimesLearners, selectedDate)
-    : false;
-  const isAllowedToMarkLearners = attendanceTimesLearners
-    ? checkIsAllowedToShow(attendanceTimesLearners)
-    : false;
-
-  const attendanceTimesSelf = attendance?.self;
-  const canMarkAttendanceSelf = attendanceTimesSelf
-    ? isWithinAttendanceTime(attendanceTimesSelf, selectedDate) &&
-      attendanceTimesSelf?.update_once_marked === 1
-    : false;
-  const isTeacherRole = role === Role.TEACHER;
-  const isAllowedToMarkSelf = attendanceTimesSelf
-    ? checkIsAllowedToShow(attendanceTimesSelf) && isTeacherRole
-    : false;
 
   // handle self attendance
   const handleUpdateAction = async () => {
@@ -281,6 +364,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     // Prepare data object
     const currentDate = new Date();
     const dateForAttendance = formatSelectedDate(currentDate);
+
     console.log('attendanceLocation?', attendanceLocation);
     const data = {
       userId: userId,
@@ -289,18 +373,25 @@ const Dashboard: React.FC<DashboardProps> = () => {
       contextId: classId,
       scope: 'self',
       attendanceLocation,
+      absentReason:
+        selectedAttendance === attendanceType.ABSENT ? reasonOfAbsent : '',
     };
 
     try {
       // Call the API to mark attendance
       const response = await markAttendance(data);
-      if (response?.statusCode === 200) {
+
+      if (response?.statusCode === 201 || response?.statusCode === 200) {
         const { message } = response;
         showToastMessage(message, 'success');
+      } else if (response?.response?.data?.statusCode === 400) {
+        showToastMessage(response?.response?.data?.errorMessage, 'error');
       } else {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        console.log('erro');
       }
     } catch (error) {
+      console.log('error', error);
       console.error('Error updating attendance:', error);
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
     } finally {
@@ -310,6 +401,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       fetchData(selectedDate);
       setConfirmButtonDisable(true);
       setSelectedAttendance('');
+      setReasonOfAbsent('');
     }
   };
   const fetchData = async (selectedDate: string) => {
@@ -606,6 +698,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const showDetailsHandle = (dayStr: string) => {
     fetchData(formatSelectedDate(dayStr));
     setSelectedDate(formatSelectedDate(dayStr));
+    attendanceConfiguration(formatSelectedDate(dayStr));
     setShowDetails(true);
   };
 
@@ -1007,7 +1100,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               </Box>
                             </Grid>
                           )}
-                          {isAllowedToMarkSelf && (
+                          {ShowSelfAttendance && isAllowedToMarkSelf && (
                             <Grid
                               item
                               xs={12}
@@ -1065,6 +1158,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                             color="success"
                                             style={{
                                               fill: theme.palette.success.main,
+                                              marginLeft: '4px',
                                             }}
                                           />
                                         ) : (
@@ -1073,6 +1167,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                             // color="error"
                                             style={{
                                               fill: theme.palette.error.main,
+                                              marginLeft: '4px',
                                             }}
                                           />
                                         )}
@@ -1294,6 +1389,47 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   </Box>
                                 </React.Fragment>
                               ))}
+                              {selectedAttendance === attendanceType.ABSENT && (
+                                <Box sx={{ padding: '10px 18px' }}>
+                                  <FormControl sx={{ mt: 1, width: '100%' }}>
+                                    <InputLabel
+                                      sx={{
+                                        fontSize: '16px',
+                                        color: theme.palette.warning['300'],
+                                      }}
+                                      id="demo-multiple-name-label"
+                                    >
+                                      {t('COMMON.REASON_FOR_DROPOUT')}
+                                    </InputLabel>
+                                    <Select
+                                      labelId="demo-multiple-name-label"
+                                      id="demo-multiple-name"
+                                      input={
+                                        <OutlinedInput label="Reason for Dropout" />
+                                      }
+                                      onChange={handleChange}
+                                    >
+                                      {dropoutReasons?.map((reason) => (
+                                        <MenuItem
+                                          key={reason.value}
+                                          value={reason.value}
+                                          sx={{
+                                            fontSize: '16px',
+                                            color: theme.palette.warning['300'],
+                                          }}
+                                        >
+                                          {reason.label
+                                            .replace(/_/g, ' ')
+                                            .toLowerCase()
+                                            .replace(/^\w/, (c) =>
+                                              c.toUpperCase()
+                                            )}
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                  </FormControl>
+                                </Box>
+                              )}
                             </Box>
                           </SimpleModal>
 
