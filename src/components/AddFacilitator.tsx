@@ -2,7 +2,7 @@ import {
   GenerateSchemaAndUiSchema,
   customFields,
 } from '@/components/GeneratedSchemas';
-import { FormContext, FormContextType, RoleId } from '@/utils/app.constant';
+import { FormContext, FormContextType, RoleId, Telemetry } from '@/utils/app.constant';
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 
@@ -288,8 +288,8 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                       cdata: [],
                     },
                     edata: {
-                      id: 'facilitator-created-successfully',
-                      type: 'CLICK',
+                      id: 'facilitator-created-success',
+                      type: Telemetry.CLICK,
                       subtype: '',
                       pageid: 'centers',
                       uid: localStorage.getItem('userId') ?? 'Anonymous',

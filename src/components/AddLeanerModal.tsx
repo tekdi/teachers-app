@@ -7,7 +7,7 @@ import SimpleModal from '@/components/SimpleModal';
 import { createUser, getFormRead } from '@/services/CreateUserService';
 import { generateUsernameAndPassword } from '@/utils/Helper';
 import { FormData } from '@/utils/Interfaces';
-import { FormContext, FormContextType, RoleId } from '@/utils/app.constant';
+import { FormContext, FormContextType, RoleId, Telemetry } from '@/utils/app.constant';
 import { IChangeEvent } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import React, { useEffect } from 'react';
@@ -231,7 +231,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
               },
               edata: {
                 id: 'learner-creation-success',
-                type: 'CLICK',
+                type: Telemetry.CLICK,
                 subtype: '',
                 pageid: 'centers',
                 uid: localStorage.getItem('userId') ?? 'Anonymous',

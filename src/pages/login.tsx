@@ -31,6 +31,7 @@ import Loader from '../components/Loader';
 import { login } from '../services/LoginService';
 import { getUserId } from '../services/ProfileService';
 import loginImg from './../assets/images/login-image.jpg';
+import { Telemetry } from '@/utils/app.constant';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -149,7 +150,7 @@ const LoginPage = () => {
           },
           edata: {
             id: 'login-success',
-            type: 'CLICK',
+            type: Telemetry.CLICK,
             subtype: '',
             pageid: 'sign-in',
             uid: localStorage.getItem('userId') ?? 'Anonymous',

@@ -52,7 +52,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
-import { getMenuItems } from '@/utils/app.constant';
+import { getMenuItems, Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 
 interface AttendanceOverviewProps {
@@ -405,7 +405,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         },
         edata: {
           id: 'search-by-keyword-attendance-overview-page',
-          type: 'SEARCH',
+          type: Telemetry.SEARCH,
           subtype: '',
           pageid: 'attendance-overview',
           uid: localStorage.getItem('userId') ?? 'Anonymous',

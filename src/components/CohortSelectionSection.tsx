@@ -13,7 +13,7 @@ import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
 import { ICohort } from '@/utils/Interfaces';
 import { CustomField } from '@/utils/Interfaces';
-import { CenterType, cohortHierarchy } from '@/utils/app.constant';
+import { CenterType, cohortHierarchy, Telemetry } from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import ReactGA from 'react-ga4';
@@ -288,7 +288,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
       },
       edata: {
         id: 'cohort-selection-dashboard',
-        type: 'SEARCH',
+        type: Telemetry.SEARCH,
         subtype: '',
         pageid: 'centers',
         uid: localStorage.getItem('userId') ?? 'Anonymous',

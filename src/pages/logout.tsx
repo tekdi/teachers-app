@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { logout } from '../services/LoginService';
 import { telemetryFactory } from '@/utils/telemetry';
 import ReactGA from 'react-ga4';
+import { Telemetry } from '@/utils/app.constant';
 
 function Logout() {
   const router = useRouter();
@@ -15,7 +16,7 @@ function Logout() {
         },
         edata: {
           id: 'logout-success',
-          type: 'CLICK',
+          type: Telemetry.CLICK,
           subtype: '',
           pageid: 'sign-out',
           uid: localStorage.getItem('userId') ?? 'Anonymous',

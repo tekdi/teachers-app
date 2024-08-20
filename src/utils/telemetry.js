@@ -21,7 +21,7 @@ const telemetryConfig = {
     ver: 'pratham-teacher-app',
   },
   env: 'pratham-teacher-app',
-  channel: '',
+  channel: 'pratham-teacher-app',
   did: 'did',
   authtoken: '',
   studentid:

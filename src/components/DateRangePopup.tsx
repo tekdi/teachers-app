@@ -24,6 +24,7 @@ import ReactGA from 'react-ga4';
 import checkMark from '../assets/images/checkMark.svg';
 import MonthCalender from './MonthCalender';
 import { telemetryFactory } from '@/utils/telemetry';
+import { Telemetry } from '@/utils/app.constant';
 
 const modalStyle = {
   position: 'absolute',
@@ -137,7 +138,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         },
         edata: {
           id: 'date-range-pop-up-clicked',
-          type: 'SEARCH',
+          type: Telemetry.SEARCH,
           subtype: '',
           pageid: 'dashboard',
           uid: localStorage.getItem('userId') ?? 'Anonymous',

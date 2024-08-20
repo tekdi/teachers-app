@@ -32,7 +32,7 @@ import MonthCalender from '@/components/MonthCalender';
 import { showToastMessage } from '@/components/Toastify';
 import UpDownButton from '@/components/UpDownButton';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { Status } from '@/utils/app.constant';
+import { Status, Telemetry } from '@/utils/app.constant';
 import { calculatePercentage } from '@/utils/attendanceStats';
 import { logEvent } from '@/utils/googleAnalytics';
 import withAccessControl from '@/utils/hoc/withAccessControl';
@@ -109,7 +109,7 @@ const UserAttendanceHistory = () => {
       },
       edata: {
         id: 'mark/modify-attendance-button-clicked-attendance-history',
-        type: 'CLICK',
+        type: Telemetry.CLICK,
         subtype: '',
         pageid: 'attendance-history',
         uid: localStorage.getItem('userId') ?? 'Anonymous',

@@ -48,7 +48,7 @@ import calendar from '../assets/images/calendar.svg';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { Role } from '@/utils/app.constant';
+import { Role, Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 
 interface DashboardProps { }
@@ -347,7 +347,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       },
       edata: {
         id: 'dashboard',
-        type: 'CLICK',
+        type: Telemetry.CLICK,
         subtype: '',
         pageid: 'dashboard',
         uid: localStorage.getItem('userId') ?? 'Anonymous',
@@ -433,7 +433,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       },
       edata: {
         id: 'dashboard',
-        type: 'CLICK',
+        type: Telemetry.CLICK,
         subtype: '',
         pageid: 'dashboard',
         uid: localStorage.getItem('userId') ?? 'Anonymous',
@@ -749,7 +749,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   },
                                   edata: {
                                     id: 'attendance-modified',
-                                    type: 'CLICK',
+                                    type: Telemetry.CLICK,
                                     subtype: '',
                                     pageid: 'dashboard',
                                     uid: localStorage.getItem('userId') ?? 'Anonymous',
@@ -771,7 +771,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   },
                                   edata: {
                                     id: 'attendance-marked',
-                                    type: 'CLICK',
+                                    type: Telemetry.CLICK,
                                     subtype: '',
                                     pageid: 'dashboard',
                                     uid: localStorage.getItem('userId') ?? 'Anonymous',
