@@ -54,7 +54,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   center,
   showMiniProfile,
   onLearnerDelete,
-  isFromProfile = false
+  isFromProfile = false,
 }) => {
   const [state, setState] = React.useState({
     bottom: false,
@@ -119,20 +119,20 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
-      (event: React.KeyboardEvent | React.MouseEvent) => {
-        setCohortLearnerDeleteId(cohortMembershipId);
-        setReassignId(userId);
+    (event: React.KeyboardEvent | React.MouseEvent) => {
+      setCohortLearnerDeleteId(cohortMembershipId);
+      setReassignId(userId);
 
-        if (
-          event.type === 'keydown' &&
-          ((event as React.KeyboardEvent).key === 'Tab' ||
-            (event as React.KeyboardEvent).key === 'Shift')
-        ) {
-          return;
-        }
+      if (
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
 
-        setState({ ...state, bottom: open });
-      };
+      setState({ ...state, bottom: open });
+    };
 
   const setLoading = (loading: boolean) => {
     setLearnerState((prevState) => ({ ...prevState, loading }));
@@ -190,7 +190,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           });
           throw new Error(
             response.params?.errmsg ||
-            'An error occurred while updating the user.'
+              'An error occurred while updating the user.'
           );
         } else {
           ReactGA.event('unmark-dropout-student-successful', {
@@ -242,7 +242,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           });
           throw new Error(
             response.params?.errmsg ||
-            'An error occurred while updating the user.'
+              'An error occurred while updating the user.'
           );
         } else {
           ReactGA.event('remove-student-successful', {
@@ -320,7 +320,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
 
   const filteredFields = filterMiniProfileFields(learnerState.customFieldsData);
 
-  const getTeamLeadersCenters = async () => { };
+  const getTeamLeadersCenters = async () => {};
 
   const handleCloseCentersModal = () => {
     setOpenCentersModal(false);
@@ -389,8 +389,6 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     return null;
   };
 
-
-
   const handleUserDelete = () => {
     setIsUserDeleted(true);
     onLearnerDelete();
@@ -427,8 +425,8 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 borderBottom: `1px solid ${theme.palette.warning['A100']}`,
               },
               '@media (min-width: 900px)': {
-                marginTop: '20px'
-              }
+                marginTop: '20px',
+              },
             }}
           >
             <Box
@@ -442,7 +440,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                   border: `1px solid ${theme.palette.warning['A100']}`,
                   padding: '10px',
                   borderRadius: '8px',
-                  background: theme.palette.warning['A400']
+                  background: theme.palette.warning['A400'],
                 },
               }}
             >
@@ -575,11 +573,11 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 </Box>
               </Box>
 
-
-
               <MoreVertIcon
                 onClick={(event) => {
-                  isMobile ? toggleDrawer('bottom', true)(event) : handleMenuOpen(event)
+                  isMobile
+                    ? toggleDrawer('bottom', true)(event)
+                    : handleMenuOpen(event);
                 }}
                 sx={{
                   fontSize: isMobile ? '24px' : 'inherit',
@@ -602,86 +600,90 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         optionList={
           block
             ? [
-              {
-                label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
-                icon: (
-                  <LocationOnOutlinedIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'reassign-block-request',
-              },
-              {
-                label: t('COMMON.REASSIGN_CENTERS'),
-                icon: (
-                  <ApartmentIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'reassign-centers',
-              },
-              {
-                label: isDropout
-                  ? t('COMMON.UNMARK_DROP_OUT')
-                  : t('COMMON.MARK_DROP_OUT'),
-                icon: (
-                  <NoAccountsIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
-              },
-              {
-                label: t('COMMON.DELETE_USER'),
-                icon: (
-                  <DeleteOutlineIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'delete-User',
-              },
-            ].filter(
-              (option) =>
-                type == Role.STUDENT ||
-                (option.name !== 'mark-drop-out' &&
-                  option.name !== 'unmark-drop-out')
-            )
+                // {
+                //   label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
+                //   icon: (
+                //     <LocationOnOutlinedIcon
+                //       sx={{ color: theme.palette.warning['300'] }}
+                //     />
+                //   ),
+                //   name: 'reassign-block-request',
+                // },
+
+                // {
+                //   label: t('COMMON.REASSIGN_CENTERS'),
+                //   icon: (
+                //     <ApartmentIcon
+                //       sx={{ color: theme.palette.warning['300'] }}
+                //     />
+                //   ),
+                //   name: 'reassign-centers',
+                // },
+
+                // {
+                //   label: isDropout
+                //     ? t('COMMON.UNMARK_DROP_OUT')
+                //     : t('COMMON.MARK_DROP_OUT'),
+                //   icon: (
+                //     <NoAccountsIcon
+                //       sx={{ color: theme.palette.warning['300'] }}
+                //     />
+                //   ),
+                //   name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
+                // },
+
+                {
+                  label: t('COMMON.REMOVE_USER_FROM_CLASS'),
+                  icon: (
+                    <DeleteOutlineIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'delete-User',
+                },
+              ].filter(
+                (option) =>
+                  type == Role.STUDENT ||
+                  (option.name !== 'mark-drop-out' &&
+                    option.name !== 'unmark-drop-out')
+              )
             : [
-              {
-                label: t('COMMON.REASSIGN_CENTERS'),
-                icon: (
-                  <ApartmentIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'reassign-centers',
-              },
-              {
-                label: isDropout
-                  ? t('COMMON.UNMARK_DROP_OUT')
-                  : t('COMMON.MARK_DROP_OUT'),
-                icon: (
-                  <NoAccountsIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
-              },
-              {
-                label: t('COMMON.DELETE_USER'),
-                icon: (
-                  <DeleteOutlineIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'delete-User',
-              },
-            ].filter(
-              (option) =>
-                type == Role.STUDENT ||
-                (option.name !== 'mark-drop-out' &&
-                  option.name !== 'unmark-drop-out')
-            )
+                // {
+                //   label: t('COMMON.REASSIGN_CENTERS'),
+                //   icon: (
+                //     <ApartmentIcon
+                //       sx={{ color: theme.palette.warning['300'] }}
+                //     />
+                //   ),
+                //   name: 'reassign-centers',
+                // },
+
+                // {
+                //   label: isDropout
+                //     ? t('COMMON.UNMARK_DROP_OUT')
+                //     : t('COMMON.MARK_DROP_OUT'),
+                //   icon: (
+                //     <NoAccountsIcon
+                //       sx={{ color: theme.palette.warning['300'] }}
+                //     />
+                //   ),
+                //   name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
+                // },
+                {
+                  label: t('COMMON.REMOVE_USER_FROM_CLASS'),
+                  icon: (
+                    <DeleteOutlineIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'delete-User',
+                },
+              ].filter(
+                (option) =>
+                  type == Role.STUDENT ||
+                  (option.name !== 'mark-drop-out' &&
+                    option.name !== 'unmark-drop-out')
+              )
         }
         renderCustomContent={renderCustomContent}
       />

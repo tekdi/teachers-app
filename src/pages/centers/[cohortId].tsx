@@ -170,12 +170,12 @@ const TeachingCenterDetails = () => {
         setRemoveCohortId(cohortData?.cohortId);
 
         if (cohortData?.customField?.length) {
-          const district = cohortData.customField.find(
+          const district = cohortData?.customField.find(
             (item: CustomField) => item.label === 'DISTRICTS'
           );
           const districtCode = district?.code || '';
           const districtId = district?.fieldId || '';
-          const state = cohortData.customField.find(
+          const state = cohortData?.customField.find(
             (item: CustomField) => item.label === 'STATES'
           );
           const stateCode = state?.code || '';
@@ -186,9 +186,11 @@ const TeachingCenterDetails = () => {
           );
 
           cohortData.address =
-            `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
-            '';
+            district?.value && state?.value
+              ? `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}`
+              : '';
         }
+
         setCohortDetails(cohortData);
         setCohortName(cohortData?.name);
       }

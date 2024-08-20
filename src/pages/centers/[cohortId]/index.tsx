@@ -54,10 +54,14 @@ import { showToastMessage } from '@/components/Toastify';
 import { getEventList } from '@/services/EventService';
 
 import manageUserStore from '@/store/manageUserStore';
-import { modifyAttendanceLimit, eventDaysLimit } from '../../../../app.config';
+import {
+  modifyAttendanceLimit,
+  eventDaysLimit,
+  ShowCenterSessionsTab,
+} from '../../../../app.config';
 
 const TeachingCenterDetails = () => {
-  const [value, setValue] = React.useState(1);
+  const [value, setValue] = React.useState(2);
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
   const router = useRouter();
@@ -120,7 +124,7 @@ const TeachingCenterDetails = () => {
     setOpenSchedule(true);
   };
 
-  const handleSchedule = () => { };
+  const handleSchedule = () => {};
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -413,13 +417,15 @@ const TeachingCenterDetails = () => {
             },
           }}
         >
-          <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
+          {ShowCenterSessionsTab && (
+            <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
+          )}
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
           <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
         </Tabs>
       </Box>
 
-      {value === 1 && (
+      {value === 1 && ShowCenterSessionsTab && (
         <>
           <Box mt={3} px="18px">
             <Button

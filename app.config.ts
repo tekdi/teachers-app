@@ -78,3 +78,6 @@ export const ShowManageUsers = false;
 
 //mark attendance model
 export const ShowSelfAttendance = true;
+
+export const reassignCenters = false;
+export const markdDropOut = false;
