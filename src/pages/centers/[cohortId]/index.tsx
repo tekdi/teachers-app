@@ -7,6 +7,7 @@ import {
 } from '@/utils/Helper';
 import {
   Button,
+  Grid,
   IconButton,
   ListItemIcon,
   Menu,
@@ -108,9 +109,11 @@ const TeachingCenterDetails = () => {
   const [openSchedule, setOpenSchedule] = React.useState(false);
 
   const [deleteModal, setDeleteModal] = React.useState(false);
-
+  const [cohortName, setCohortName] = React.useState<string>();
   const [clickedBox, setClickedBox] = useState<string | null>(null);
   const [isLearnerAdded, setIsLearnerAdded] = useState(false);
+  const [createEvent, setCreateEvent] = useState(false);
+  const [eventCreated, setEventCreated] = useState(false);
 
   const handleClick = (selection: string) => {
     setClickedBox(selection);
@@ -124,9 +127,24 @@ const TeachingCenterDetails = () => {
     setOpenSchedule(true);
   };
 
-  const handleSchedule = () => {};
+  const handleSchedule = () => {
+    console.log('handleSchedule called');
+    setCreateEvent(true);
+  };
+
+  const handleCloseSchedule = () => {
+    setEventCreated(true);
+  };
+
+  useEffect(() => {
+    if (eventCreated) {
+      setOpen(false);
+      setCreateEvent(false);
+    }
+  }, [eventCreated, createEvent]);
 
   const handleOpen = () => setOpen(true);
+
   const handleClose = () => {
     setOpen(false);
     setOpenSchedule(false);
@@ -174,6 +192,7 @@ const TeachingCenterDetails = () => {
             '';
         }
         setCohortDetails(cohortData);
+        setCohortName(cohortData?.name);
       }
     };
     getCohortData();
@@ -381,6 +400,8 @@ const TeachingCenterDetails = () => {
           <RenameCenterModal
             open={openRenameCenterModal}
             handleClose={handleRenameCenterClose}
+            reloadState={reloadState}
+            setReloadState={setReloadState}
           />
           <DeleteCenterModal
             open={openDeleteCenterModal}
@@ -478,6 +499,10 @@ const TeachingCenterDetails = () => {
               <PlannedSession
                 clickedBox={clickedBox}
                 removeModal={removeModal}
+                scheduleEvent={createEvent}
+                cohortName={cohortName}
+                cohortId={cohortId}
+                onCloseModal={handleCloseSchedule}
               />
             ) : (
               <Schedule clickedBox={clickedBox} handleClick={handleClick} />
@@ -492,11 +517,15 @@ const TeachingCenterDetails = () => {
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
             <Box mt={3} px="18px">
-              {extraSessions?.map((item) => (
-                <SessionCard data={item} key={item.id}>
-                  <SessionCardFooter item={item} />
-                </SessionCard>
-              ))}
+              <Grid container>
+                {extraSessions?.map((item) => (
+                  <Grid xs={12} sm={6} md={4}>
+                    <SessionCard data={item} key={item.id}>
+                      <SessionCardFooter item={item} />
+                    </SessionCard>
+                  </Grid>
+                ))}
+              </Grid>
             </Box>
             {extraSessions && extraSessions?.length === 0 && (
               <Box
@@ -554,19 +583,23 @@ const TeachingCenterDetails = () => {
           </Box>
 
           <Box mt={3} px="18px">
-            {sessions?.map((item) => (
-              <SessionCard data={item} key={item.id}>
-                <SessionCardFooter item={item} />
-              </SessionCard>
-            ))}
-            {sessions && sessions?.length === 0 && (
-              <Box
-                className="fs-12 fw-400 italic"
-                sx={{ color: theme.palette.warning['300'] }}
-              >
-                {t('COMMON.NO_SESSIONS_SCHEDULED')}
-              </Box>
-            )}
+            <Grid container>
+              {sessions?.map((item) => (
+                <Grid xs={12} sm={6} md={4}>
+                  <SessionCard data={item} key={item.id}>
+                    <SessionCardFooter item={item} />
+                  </SessionCard>
+                </Grid>
+              ))}
+              {sessions && sessions?.length === 0 && (
+                <Box
+                  className="fs-12 fw-400 italic"
+                  sx={{ color: theme.palette.warning['300'] }}
+                >
+                  {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                </Box>
+              )}
+            </Grid>
           </Box>
         </>
       )}

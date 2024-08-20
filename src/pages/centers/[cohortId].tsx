@@ -128,6 +128,7 @@ const TeachingCenterDetails = () => {
   };
 
   const handleSchedule = () => {
+    console.log("create event===>", createEvent);
     setCreateEvent(true);
   };
 
@@ -138,8 +139,10 @@ const TeachingCenterDetails = () => {
   useEffect(() => {
     if (eventCreated) {
       setOpen(false);
+      setCreateEvent(false);
     }
-  }, [eventCreated]);
+  }, [eventCreated, createEvent]);
+
   const handleOpen = () => setOpen(true);
 
   const handleClose = () => {
@@ -196,7 +199,7 @@ const TeachingCenterDetails = () => {
       }
     };
     getCohortData();
-  }, []);
+  }, [reloadState]);
 
   useEffect(() => {
     const getSessionsData = async () => {
@@ -386,7 +389,7 @@ const TeachingCenterDetails = () => {
               {t('CENTERS.RENAME_CENTER')}
             </MenuItem>
             <MenuItem
-              onClick={() => {
+              onClick={() => {  
                 setOpenDeleteCenterModal(true);
                 handleMenuClose();
               }}
@@ -400,6 +403,8 @@ const TeachingCenterDetails = () => {
           <RenameCenterModal
             open={openRenameCenterModal}
             handleClose={handleRenameCenterClose}
+            reloadState={reloadState}
+            setReloadState={setReloadState}
           />
           <DeleteCenterModal
             open={openDeleteCenterModal}
@@ -470,9 +475,9 @@ const TeachingCenterDetails = () => {
               deleteModal
                 ? t('CENTER_SESSION.DELETE_SESSION')
                 : openSchedule
-                  ? clickedBox === t('CENTER_SESSION.EXTRA_SESSION')
-                    ? 'Extra Session'
-                    : t('CENTER_SESSION.PLANNED_SESSION')
+                  ? clickedBox === 'PLANNED_SESSION'
+                    ? t('CENTER_SESSION.PLANNED_SESSION')
+                    : t('CENTER_SESSION.EXTRA_SESSION')
                   : t('CENTER_SESSION.SCHEDULE')
             }
             primary={
@@ -483,13 +488,13 @@ const TeachingCenterDetails = () => {
                   : t('GUIDE_TOUR.NEXT')
             }
             secondary={deleteModal ? t('COMMON.CANCEL') : undefined}
-            handlePrimaryModel={
+            handlePrimaryModel={() => {
               deleteModal
                 ? undefined
                 : openSchedule
-                  ? handleSchedule
-                  : handleCentermodel
-            }
+                  ? handleSchedule()
+                  : handleCentermodel();
+            }}
           >
             {deleteModal ? (
               <DeleteSession />
@@ -514,12 +519,16 @@ const TeachingCenterDetails = () => {
             >
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
-            <Box mt={3} px="18px">
-              {extraSessions?.map((item) => (
-                <SessionCard data={item} key={item.id}>
-                  <SessionCardFooter item={item} />
-                </SessionCard>
-              ))}
+            <Box mt={3}>
+              <Grid container spacing={2}>
+                {extraSessions?.map((item) => (
+                  <Grid item xs={12} sm={6} md={6}>
+                    <SessionCard data={item} key={item.id}>
+                      <SessionCardFooter item={item} />
+                    </SessionCard>
+                  </Grid>
+                ))}
+              </Grid>
             </Box>
             {extraSessions && extraSessions?.length === 0 && (
               <Box
@@ -585,7 +594,7 @@ const TeachingCenterDetails = () => {
           <Box mt={3} px="18px">
             <Grid container spacing={2}>
               {sessions?.map((item) => (
-                <Grid item xs={6} key={item.id}>
+                <Grid item xs={12} sm={6} md={6} key={item.id}>
                   <SessionCard data={item}>
                     <SessionCardFooter item={item} />
                   </SessionCard>

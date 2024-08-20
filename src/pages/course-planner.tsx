@@ -90,7 +90,7 @@ const CoursePlanner = () => {
             <Box sx={{ flexBasis: '70%' }}>
               <FormControl className="drawer-select" sx={{ width: '100%' }}>
                 <Select
-                  className="SelectLanguages"
+                  className="select-languages"
                   displayEmpty
                   style={{
                     borderRadius: '0.5rem',

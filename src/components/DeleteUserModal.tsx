@@ -185,20 +185,6 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
                 <Divider />
               </>
             ))}
-            {/* {selectedValue === 'Other' && (
-              <FormControl sx={{ mt: 2, width: '100%' }}>
-                <TextField
-                  id="otherReason"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  label={t('COMMON.OTHER_REASON')}
-                  placeholder={t('COMMON.OTHER_REASON_PLACEHOLDER')}
-                  value={otherReason}
-                  onChange={(e) => handleOtherReasonChange(e)}
-                />
-              </FormControl>
-            )} */}
           </Box>
           <Box mt={1.5}>
             <Divider />

@@ -10,17 +10,7 @@ interface WeekDaysProps {
   selectedDays?: string[];
 }
 
-const CardStyled = styled(Card)(({ theme }) => ({
-  margin: theme.spacing(1),
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  gap: '15px',
-  border: '1px solid #ccc',
-  boxShadow: 'none',
-  backgroundImage: 'none',
-  overflow: 'visible',
-}));
+
 
 const WeekDays: React.FC<WeekDaysProps> = ({
   useAbbreviation,
@@ -95,9 +85,17 @@ const WeekDays: React.FC<WeekDaysProps> = ({
       justifyContent="flex-start"
       overflow={useAbbreviation ? 'none' : 'auto'}
       ref={scrollContainerRef}
+      sx={{
+        display: 'flex',
+        gap: '14.5px',
+        overflowX: 'auto',
+        overflowY: "hidden",
+        paddingTop: '10px',
+        paddingBottom: '10px'
+      }}
     >
       {days.map((day, index) => (
-        <CardStyled
+        <Box
           key={`${day}-${index}`}
           ref={index === currentDayIndex ? selectedItemRef : null}
           style={{
@@ -109,6 +107,11 @@ const WeekDays: React.FC<WeekDaysProps> = ({
                 ? theme.palette.primary.main
                 : 'inherit',
             cursor: useAbbreviation ? 'pointer' : 'default',
+            border: `1px solid ${theme?.palette?.warning['A100']}`,
+            borderRadius: '4px',
+            justifyContent: 'center',
+            alignItems: 'center'
+
           }}
           onClick={() => handleDayClick(index)}
         >
@@ -117,10 +120,10 @@ const WeekDays: React.FC<WeekDaysProps> = ({
             sx={{ width: 'auto', height: '50px' }}
           >
             <CardContent align-item="center">
-              <Typography variant="body1">{day}</Typography>
+              <Typography sx={{ color: theme?.palette?.warning['300'], fontSize: '14px', }} variant="body1">{day}</Typography>
             </CardContent>
           </Box>
-        </CardStyled>
+        </Box>
       ))}
     </Box>
   );

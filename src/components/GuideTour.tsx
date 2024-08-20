@@ -12,7 +12,11 @@ interface JoyrideCallbackData {
   status: string;
 }
 
-const GuideTour = () => {
+interface GuideTourProps {
+  toggleDrawer: (newOpen: boolean) => () => void;
+}
+
+const GuideTour: React.FC<GuideTourProps> = ({ toggleDrawer }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const steps = getSteps(t);
@@ -40,6 +44,8 @@ const GuideTour = () => {
     if (status === 'finished' || status === 'skipped') {
       setRunTour(false);
       handleTourEnd();
+      toggleDrawer(false)();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       logEvent({
         action: 'skip-guide-tour/finished-guide-tour',
         category: 'Dashboard Page',
@@ -47,14 +53,28 @@ const GuideTour = () => {
       });
     } else if (type === 'step:after' || type === 'tour:start') {
       if (action === 'next') {
-        setStepIndex((prevIndex) => prevIndex + 1);
+        if (stepIndex === 4) {
+          toggleDrawer(true)();
+          setTimeout(() => {
+            setStepIndex((prevIndex) => prevIndex + 1);
+          }, 0);
+        } else {
+          setStepIndex((prevIndex) => prevIndex + 1);
+        }
         logEvent({
           action: 'next-button-clicked',
           category: 'Dashboard Page',
           label: 'Next Button Click',
         });
       } else if (action === 'prev') {
-        setStepIndex((prevIndex) => prevIndex - 1);
+        if (stepIndex === 5) {
+          toggleDrawer(false)();
+          setTimeout(() => {
+            setStepIndex((prevIndex) => prevIndex - 1);
+          }, 0);
+        } else {
+          setStepIndex((prevIndex) => prevIndex - 1);
+        }
         logEvent({
           action: 'previous-button-clicked',
           category: 'Dashboard Page',
@@ -81,7 +101,7 @@ const GuideTour = () => {
               primaryColor: theme?.palette?.primary?.main,
               textColor: theme?.palette?.warning['400'],
               width: 350,
-              zIndex: 1000,
+              zIndex: 9999,
             },
             tooltipContent: {
               fontWeight: 500,

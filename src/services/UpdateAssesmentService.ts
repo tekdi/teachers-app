@@ -23,33 +23,39 @@ export const updateAssessment = (): Assessment[] => {
     ];
 };
 
+export const learnerAssessmentReport = (): Assessment[] => {
+    return [
+        {
+            userId: 1,
+            studentName: 'Pre-test',
+            progress: 'Overall score :',
+            score: 89
+        },
+        {
+            userId: 2,
+            studentName: 'Post-test',
+            progress: 'Not Started',
+            score: 0
+        }
+    ];
+};
+
 export const getAssessmentSubjects = (): AssessmentSubject[] => {
     return [
         {
             userId: 1,
-            subject: 'Reading',
+            subject: 'Hindi',
             score: '210/250',
             date:'2 Feb, 2024'
         },
         {
             userId: 2,
-            subject: 'Writing',
+            subject: 'English',
             score: '60/75',
             date:'2 Feb, 2024' 
 
         },
-        {
-            userId: 3,
-            subject: 'Basic Mathematics',
-            score: '60/75',
-            date:'2 Feb, 2024' 
-        },
-        {
-            userId: 4,
-            subject: 'General Knowledge',
-            score: '60/75',
-            date:'2 Feb, 2024'
-        },
+        
     ];
 };
 export const getAssessmentQuestion = (): AssessmentQuestion[] => {

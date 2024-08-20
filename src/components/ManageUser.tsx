@@ -10,6 +10,7 @@ import { cohortList, getCohortList } from '@/services/CohortServices';
 import { Role, Status } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ApartmentIcon from '@mui/icons-material/Apartment';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Box from '@mui/material/Box';
@@ -19,7 +20,7 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import manageUserStore from '../store/manageUserStore';
-
+import useStore from '@/store/store';
 import { getMyUserList } from '@/services/MyClassDetailsService';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import Image from 'next/image';
@@ -76,6 +77,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const theme = useTheme<any>();
   const router = useRouter();
   const store = manageUserStore();
+  const newStore = useStore();
   const [value, setValue] = React.useState(1);
   const [users, setUsers] = useState<
     {
@@ -200,9 +202,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           );
 
           setTimeout(() => {
-            console.log('extractedData');
-
+            console.log('extractedData', extractedData);
             setUsers(extractedData);
+            setLoading(false);
           });
         }
       } catch (error) {
@@ -213,49 +215,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     };
     getFacilitator();
   }, [isFacilitatorAdded, reloadState]);
-
-  useEffect(() => {
-    const fetchCohortListForUsers = async () => {
-      setLoading(true);
-      try {
-        if (users && users?.length > 0) {
-          const fetchCohortPromises = users?.map((user) => {
-            const limit = 0;
-            const offset = 0;
-            const filters = { userId: user.userId };
-            return cohortList({ limit, offset, filters }).then((resp) => ({
-              userId: user.userId,
-              cohorts: resp?.results?.cohortDetails || [],
-            }));
-          });
-
-          const cohortResponses = await Promise.all(fetchCohortPromises);
-          const allCohortsData: CohortsData = cohortResponses?.reduce(
-            (acc: CohortsData, curr) => {
-              acc[curr.userId] = curr?.cohorts?.map((item: Cohort) => ({
-                cohortId: item?.cohortId,
-                parentId: item?.parentId,
-                name: item?.name,
-              }));
-              return acc;
-            },
-            {}
-          );
-          console.log('allCohortsData', allCohortsData);
-
-          // setCohortsData(allCohortsData);
-        }
-      } catch (error) {
-        console.log(error);
-        // showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-        setLoading(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCohortListForUsers();
-  }, [users]);
 
   const handleModalToggle = (user: any) => {
     setSelectedUser(user);
@@ -290,25 +249,27 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean, user?: any, teacherUserId?: string) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
-      setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
-      if (!isFromFLProfile) {
-        const centerNames =
-          cohortsData?.[user?.userId]?.map((cohort) => cohort?.name) || [];
-        setCenters(centerNames);
-        setSelectedUser(user);
-      } // TODO: check condition for profile
+      (event: React.KeyboardEvent | React.MouseEvent) => {
+        setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
+        if (!isFromFLProfile) {
+          const cohortNamesArray = user?.cohortNames?.split(', ');
+          const centerNames = cohortNamesArray?.map((cohortName: string) =>
+            cohortName.trim()
+          ) || [t('ATTENDANCE.N/A')];
+          setCenters(centerNames);
+          setSelectedUser(user);
+        }
 
-      if (
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
+        if (
+          event.type === 'keydown' &&
+          ((event as React.KeyboardEvent).key === 'Tab' ||
+            (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+          return;
+        }
 
-      setState({ ...state, bottom: open });
-    };
+        setState({ ...state, bottom: open });
+      };
 
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
@@ -318,18 +279,25 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       const cohortList = await getCohortList(userId);
       console.log('Cohort List:', cohortList);
 
-      const hasActiveCohorts = cohortList && cohortList.length > 0 && cohortList.some((cohort: { status: string; }) => cohort.status === 'active');
-      
+      const hasActiveCohorts =
+        cohortList &&
+        cohortList.length > 0 &&
+        cohortList.some(
+          (cohort: { status: string }) => cohort.status === 'active'
+        );
+
       if (hasActiveCohorts) {
         const cohortNames = cohortList
           .filter((cohort: { status: string }) => cohort.status === 'active')
           .map((cohort: { cohortName: string }) => cohort.cohortName)
           .join(', ');
-      
+
         setOpenRemoveUserModal(true);
         setRemoveCohortNames(cohortNames);
       } else {
-        console.log('User does not belong to any cohorts, proceed with deletion');
+        console.log(
+          'User does not belong to any cohorts, proceed with deletion'
+        );
         setOpenDeleteUserModal(true);
       }
 
@@ -505,169 +473,93 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     setOpenFacilitatorModal(false);
   };
 
-  const handleDeleteUser = () => {};
+  const handleDeleteUser = () => { };
 
   const handleFacilitatorAdded = () => {
     setIsFacilitatorAdded((prev) => prev);
   };
+  const handleMenuOpen = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
   return (
     <div>
-      {loading ? (
-        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-      ) : (
-        <>
-          {/* <Header /> */}
-          <Box>
-            {/* <Box
-          textAlign={'left'}
-          fontSize={'22px'}
-          p={'18px 0'}
-          color={theme?.palette?.warning['300']}
-        >
-          {t('COMMON.MANAGE_USERS')}
-        </Box> */}
-          </Box>
-          {/* <Box sx={{ width: '100%' }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          textColor="inherit" // Use "inherit" to apply custom color
-          aria-label="secondary tabs example"
-          sx={{
-            fontSize: '14px',
-            borderBottom: (theme) => `1px solid ${theme.palette.primary.main}`,
 
-            '& .MuiTab-root': {
-              color: theme.palette.warning['A200'],
-              padding: '0 20px',
-            },
-            '& .Mui-selected': {
-              color: theme.palette.warning['A200'],
-            },
-            '& .MuiTabs-indicator': {
-              display: 'flex',
-              justifyContent: 'center',
-              backgroundColor: theme.palette.primary.main,
-              borderRadius: '100px',
-              height: '3px',
-            },
-            '& .MuiTabs-scroller': {
-              overflowX: 'unset !important',
-            },
-          }}
-        >
-          <Tab value={1} label={t('COMMON.FACILITATORS')} />
-          <Tab value={2} label={t('COMMON.LEARNERS')} />
-        </Tabs>
-      </Box> */}
-          <Box>
-            {value === 1 && (
-              <>
-                {!isFromFLProfile && (
-                  <Grid
-                    px={'18px'}
-                    spacing={2}
-                    mt={1}
-                    sx={{ display: 'flex', alignItems: 'center' }}
-                    container
-                  >
-                    <Grid item xs={8}>
-                      {/* <Box>
-                <TextField
-                  className="input_search"
-                  placeholder={t('COMMON.SEARCH_FACILITATORS')}
-                  color="secondary"
-                  focused
-                  sx={{
-                    borderRadius: '100px',
-                    height: '40px',
-                    width: '225px',
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <SearchIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Box> */}
-                    </Grid>
-                    <Grid item xs={4} marginTop={'8px'}>
-                      {/* <Box>
-                <FormControl className="drawer-select" sx={{ width: '100%' }}>
-                  <Select
-                    displayEmpty
-                    style={{
-                      borderRadius: '0.5rem',
-                      color: theme.palette.warning['200'],
-                      width: '100%',
-                      marginBottom: '0rem',
-                    }}
-                  >
-                    <MenuItem className="text-dark-grey fs-14 fw-500">
-                      {t('COMMON.FILTERS')}
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </Box> */}
-                    </Grid>
-                    <Box mt={'18px'} px={'18px'}>
-                      <Button
-                        sx={{
-                          border: '1px solid #1E1B16',
-                          borderRadius: '100px',
-                          height: '40px',
-                          width: '8rem',
-                          color: theme.palette.error.contrastText,
-                        }}
-                        className="text-1E"
-                        onClick={handleOpenAddFaciModal}
-                        endIcon={<AddIcon />}
-                      >
-                        {t('COMMON.ADD_NEW')}
-                      </Button>
-                      {/* <Box sx={{ display: 'flex', gap: '5px' }}>
-                <ErrorOutlineIcon style={{ fontSize: '15px' }} />
-                <Box className="fs-12 fw-500 ">{t('COMMON.ADD_CENTER')}</Box>
-              </Box> */}
-                    </Box>
-                  </Grid>
-                )}
+      <>
+        {/* <Header /> */}
+        <Box>
 
-                <Box>
-                  {isFromFLProfile ? (
-                    <MoreVertIcon
-                      onClick={toggleDrawer('bottom', true, teacherUserId)}
+        </Box>
+
+        <Box>
+          {value === 1 && (
+            <>
+              {!isFromFLProfile && (
+                <Grid
+                  px={'18px'}
+                  spacing={2}
+                  mt={1}
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                  container
+                >
+                  <Box mt={'18px'} px={'18px'}>
+                    <Button
                       sx={{
-                        fontSize: '24px',
-                        marginTop: '1rem',
-                        color: theme.palette.warning['300'],
+                        border: '1px solid #1E1B16',
+                        borderRadius: '100px',
+                        height: '40px',
+                        width: '8rem',
+                        color: theme.palette.error.contrastText,
                       }}
-                    />
-                  ) : (
-                    <Box px={'18px'} mt={3}>
+                      className="text-1E"
+                      onClick={handleOpenAddFaciModal}
+                      endIcon={<AddIcon />}
+                    >
+                      {t('COMMON.ADD_NEW')}
+                    </Button>
+                  </Box>
+                </Grid>
+              )}
+
+              <Box>
+                {isFromFLProfile ? (
+                  <MoreVertIcon
+                    onClick={(event) => {
+                      isMobile ? toggleDrawer('bottom', true, teacherUserId)(event) : handleMenuOpen(event)
+                    }}
+                    sx={{
+                      fontSize: '24px',
+                      marginTop: '1rem',
+                      color: theme.palette.warning['300'],
+                    }}
+                  />
+                ) : (
+                  <Box px={'18px'} mt={3}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        gap: '20px',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingBottom: '15px',
+                      }}
+                    >
                       <Box
                         sx={{
-                          display: 'flex',
-                          gap: '20px',
+                          gap: '15px',
                           alignItems: 'center',
-                          justifyContent: 'space-between',
-                          paddingBottom: '15px',
+                          '@media (min-width: 600px)': {
+                            background: theme.palette.action.selected,
+                            padding: '20px',
+                            borderRadius: '12px',
+                          },
                         }}
+                        width={'100%'}
                       >
-                        <Box
-                          sx={{
-                            gap: '15px',
-                            alignItems: 'center',
-                            '@media (min-width: 900px)': {
-                              background: theme.palette.action.selected,
-                              padding: '20px',
-                              borderRadius: '12px',
-                            },
-                          }}
-                          width={'100%'}
-                        >
+                        {loading ? (
+                          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                            <Loader showBackdrop={false} loadingText={t('COMMON.LOADING')} />
+                          </Box>
+                        ) : (
                           <Grid container spacing={2}>
                             {users &&
                               users.length !== 0 &&
@@ -677,7 +569,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                   <Grid
                                     item
                                     xs={12}
-                                    sm={4}
+                                    sm={6}
                                     md={4}
                                     key={user.userId}
                                   >
@@ -689,7 +581,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                       justifyContent={'space-between'}
                                       sx={{
                                         cursor: 'pointer',
-                                        '@media (min-width: 900px)': {
+                                        '@media (min-width: 600px)': {
                                           border: `1px solid  ${theme.palette.action.selected}`,
                                           padding: '4px 10px',
                                           borderRadius: '8px',
@@ -745,18 +637,26 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                             }}
                                           >
                                             {user?.cohortNames
-                                              ? `${user.cohortNames}`
+                                              ? `${user.cohortNames
+                                                .charAt(0)
+                                                .toUpperCase() +
+                                              user.cohortNames.slice(1)
+                                              }`
                                               : t('ATTENDANCE.N/A')}
                                           </Box>
                                         </Box>
                                       </Box>
                                       <Box>
                                         <MoreVertIcon
-                                          onClick={toggleDrawer(
-                                            'bottom',
-                                            true,
-                                            user
-                                          )}
+                                          onClick={(event) => {
+                                            isMobile
+                                              ? toggleDrawer(
+                                                'bottom',
+                                                true,
+                                                user
+                                              )(event)
+                                              : handleMenuOpen(event);
+                                          }}
                                           sx={{
                                             fontSize: '24px',
                                             marginTop: '1rem',
@@ -772,258 +672,213 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                 sx={{
                                   m: '1.125rem',
                                   display: 'flex',
-                                  justifyContent: 'left',
+                                  justifyContent: 'center',
                                   alignItems: 'center',
+                                  width: '100%',
                                 }}
                               >
-                                <Typography style={{ fontWeight: 'bold' }}>
+                                <Typography
+                                  style={{
+                                    fontWeight: 'bold',
+                                    width: '100%',
+                                    textAlign: 'center',
+                                  }}
+                                >
                                   {t('COMMON.NO_DATA_FOUND')}
                                 </Typography>
                               </Box>
                             )}
                           </Grid>
-                        </Box>
+                        )}
                       </Box>
                     </Box>
-                  )}
-
-                  <ManageUsersModal
-                    open={open}
-                    onClose={handleClose}
-                    leanerName={selectedUserName ?? ''}
-                    blockName={selectedUser?.block ?? ''}
-                    centerName={centers}
-                  />
-                  <BottomDrawer
-                    toggleDrawer={toggleDrawer}
-                    state={state}
-                    listItemClick={listItemClick}
-                    setAnchorEl={setAnchorEl}
-                    anchorEl={anchorEl}
-                    isMobile={isMobile}
-                    optionList={[
-                      {
-                        label: t('COMMON.REASSIGN_BLOCKS'),
-                        icon: (
-                          <LocationOnOutlinedIcon
-                            sx={{ color: theme.palette.warning['300'] }}
-                          />
-                        ),
-                        name: 'reassign-block',
-                      },
-                      {
-                        label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
-                        icon: (
-                          <LocationOnOutlinedIcon
-                            sx={{ color: theme.palette.warning['300'] }}
-                          />
-                        ),
-                        name: 'reassign-block-request',
-                      },
-                      // {
-                      //   label: t('COMMON.REASSIGN_CENTERS'),
-                      //   icon: (
-                      //     <ApartmentIcon
-                      //       sx={{ color: theme.palette.warning['300'] }}
-                      //     />
-                      //   ),
-                      //   name: 'reassign-centers',
-                      // },
-                      {
-                        label: t('COMMON.DELETE_USER'),
-                        icon: (
-                          <DeleteOutlineIcon
-                            sx={{ color: theme.palette.warning['300'] }}
-                          />
-                        ),
-                        name: 'delete-User',
-                      },
-                    ]}
-                  >
-                    {/* <Box
-                  bgcolor={theme.palette.success.contrastText}
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  margin={'0rem 0.5rem 0rem 0.5rem'}
-                  padding={'1rem'}
-                  borderRadius={'1rem'}
-                >
-                  <Box>
-                    {t('COMMON.CENTERS_ASSIGNED', {
-                      block: selectedUser?.block ?? '',
-                    })}
                   </Box>
-                  <Box>
-                    {centers.length > 0 &&
-                      centers?.map((name) => (
-                        <Button
-                          sx={{
-                            padding: '6px 12px',
-                            borderRadius: '8px',
-                            fontSize: '14px',
-                            fontWeight: 500,
-                            border: `1px solid ${theme.palette.warning[900]}`,
-                            margin: '5px',
-                          }}
-                          className="text-dark-grey"
-                        >
-                          {name}
-                        </Button>
-                      ))}
-                  </Box>
-                </Box> */}
-                  </BottomDrawer>
-
-                  <ManageCentersModal
-                    open={openCentersModal}
-                    onClose={handleCloseCentersModal}
-                    centersName={centerList}
-                    centers={centers}
-                    onAssign={handleAssignCenters}
-                  />
-                </Box>
-
-                <ConfirmationModal
-                  message={t('CENTERS.BLOCK_REQUEST')}
-                  handleAction={handleRequestBlockAction}
-                  buttonNames={{
-                    primary: t('COMMON.SEND_REQUEST'),
-                    secondary: t('COMMON.CANCEL'),
-                  }}
-                  handleCloseModal={handleCloseModal}
-                  modalOpen={confirmationModalOpen}
-                />
-                <ReassignModal
-                  cohortNames={reassignCohortNames}
-                  message={t('COMMON.REASSIGN_BLOCKS')}
-                  handleAction={handleRequestBlockAction}
-                  handleCloseReassignModal={handleCloseReassignModal}
-                  modalOpen={reassignModalOpen}
-                  reloadState={reloadState}
-                  setReloadState={setReloadState}
-                />
-
-                <DeleteUserModal
-                  type={Role.TEACHER}
-                  userId={userId}
-                  open={openDeleteUserModal}
-                  onClose={handleCloseModal}
-                  onUserDelete={handleDeleteUser}
-                  reloadState={reloadState}
-                  setReloadState={setReloadState}
-                />
-                <SimpleModal
-                  primaryText={t('COMMON.OK')}
-                  primaryActionHandler={handleCloseRemoveModal}
-                  open={openRemoveUserModal}
-                  onClose={handleCloseRemoveModal}
-                  modalTitle={t('COMMON.DELETE_USER')}
-                >
-                  {' '}
-                  <Box mt={1.5} mb={1.5}>
-                    <Typography>
-                      {t('CENTERS.THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT')}{' '}
-                      <strong>{removeCohortNames}</strong>
-                      <br />
-                      {t('CENTERS.PLEASE_REMOVE_THE_USER_FROM_COHORT')}
-                    </Typography>
-                  </Box>
-                </SimpleModal>
-                {openAddFacilitatorModal && (
-                  <AddFacilitatorModal
-                    open={openAddFacilitatorModal}
-                    onClose={handleCloseAddFaciModal}
-                    onFacilitatorAdded={handleFacilitatorAdded}
-                  />
                 )}
-              </>
-            )}
 
-            {/* Learners list */}
-            {/* {value === 2 && (
-          <>
-            <Grid
-              px={'18px'}
-              spacing={2}
-              mt={1}
-              sx={{ display: 'flex', alignItems: 'center' }}
-              container
-            >
-              <Grid item xs={8}>
-                <Box>
-                  <TextField
-                    className="input_search"
-                    placeholder={t('COMMON.SEARCH_FACILITATORS')}
-                    color="secondary"
-                    focused
-                    sx={{
-                      borderRadius: '100px',
-                      height: '40px',
-                      // width: '225px',
-                    }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <SearchIcon />
-                        </InputAdornment>
+                <ManageUsersModal
+                  open={open}
+                  onClose={handleClose}
+                  leanerName={selectedUserName ?? ''}
+                  blockName={selectedUser?.block ?? ''}
+                  centerName={centers}
+                />
+                <BottomDrawer
+                  toggleDrawer={toggleDrawer}
+                  state={state}
+                  listItemClick={listItemClick}
+                  setAnchorEl={setAnchorEl}
+                  anchorEl={anchorEl}
+                  isMobile={isMobile}
+                  optionList={[
+                    {
+                      label: t('COMMON.REASSIGN_BLOCKS'),
+                      icon: (
+                        <ApartmentIcon
+                          sx={{ color: theme.palette.warning['300'] }}
+                        />
                       ),
+                      name: 'reassign-block',
+                    },
+                    {
+                      label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
+                      icon: (
+                        <LocationOnOutlinedIcon
+                          sx={{ color: theme.palette.warning['300'] }}
+                        />
+                      ),
+                      name: 'reassign-block-request',
+                    },
+                    {
+                      label: t('COMMON.DELETE_USER'),
+                      icon: (
+                        <DeleteOutlineIcon
+                          sx={{ color: theme.palette.warning['300'] }}
+                        />
+                      ),
+                      name: 'delete-User',
+                    },
+                  ].filter(option => !isFromFLProfile || (option.name !== 'reassign-block' && option.name !== 'reassign-block-request'))}
+                >
+                  <Box
+                    sx={{
+                      fontSize: '16px',
+                      fontWeight: 300,
+                      marginLeft: '20px',
+                      marginBottom: '10px',
+                      color: theme.palette.warning['400'],
                     }}
-                  />
-                </Box>
-              </Grid>
-              <Grid item xs={4} marginTop={'8px'}>
-                <Box>
-                  <FormControl className="drawer-select" sx={{ width: '100%' }}>
-                    <Select
-                      displayEmpty
-                      style={{
-                        borderRadius: '0.5rem',
-                        color: theme.palette.warning['200'],
-                        width: '100%',
-                        marginBottom: '0rem',
+                  >
+                    {selectedUser?.name
+                      ? selectedUser.name.charAt(0).toUpperCase() +
+                      selectedUser.name.slice(1)
+                      : ''}
+                  </Box>
+                  <Box
+                    bgcolor={theme.palette.success.contrastText}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="left"
+                    margin={'0rem 0.7rem 0rem 0.7rem'}
+                    padding={'1rem'}
+                    borderRadius={'1rem'}
+                  >
+                    <Box
+                      sx={{
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        color: theme.palette.warning['400'],
                       }}
                     >
-                      <MenuItem className="text-dark-grey fs-14 fw-500">
-                        {t('COMMON.FILTERS')}
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-              </Grid>
-            </Grid>
-            {learnerData?.map((data: any) => (
-              <LearnersList
-                key={data.userId}
-                learnerName={data.name}
-                isDropout={data.memberStatus === Status.DROPOUT}
-                enrollmentId={data.enrollmentNumber}
-                cohortMembershipId={data.cohortMembershipId}
-                statusReason={data.statusReason}
-                reloadState={reloadState || false}
-                setReloadState={setReloadState || noop}
-                block={data.block}
-                center={data.center}
-                userId={data.userId}
-              />
-            ))}
+                      {t('COMMON.CENTERS_ASSIGNED', {
+                        block: newStore.block,
+                      })}
+                    </Box>
+                    <Box>
+                      {centers.length > 0 &&
+                        centers.map(
+                          (
+                            name:
+                              | string
+                              | number
+                              | bigint
+                              | boolean
+                              | React.ReactElement<
+                                any,
+                                string | React.JSXElementConstructor<any>
+                              >
+                              | Iterable<React.ReactNode>
+                              | React.ReactPortal
+                              | Promise<React.AwaitedReactNode>
+                              | null
+                              | undefined
+                          ) => (
+                            <Button
+                              sx={{
+                                padding: '6px 12px',
+                                borderRadius: '8px',
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                border: `1px solid ${theme.palette.warning[900]}`,
+                                margin: '5px',
+                              }}
+                              className="text-dark-grey"
+                            >
+                              {name}
+                            </Button>
+                          )
+                        )}
+                    </Box>
+                  </Box>
+                </BottomDrawer>
 
-            <ConfirmationModal
-              message={t('CENTERS.BLOCK_REQUEST')}
-              handleAction={handleReassignBlockRequest}
-              buttonNames={{
-                primary: t('COMMON.SEND_REQUEST'),
-                secondary: t('COMMON.CANCEL'),
-              }}
-              handleCloseModal={handleReassignBlockRequestCloseModal}
-              modalOpen={reassignBlockRequestModalOpen}
-            />
-          </>
-        )} */}
-          </Box>
-        </>
-      )}
+                <ManageCentersModal
+                  open={openCentersModal}
+                  onClose={handleCloseCentersModal}
+                  centersName={centerList}
+                  centers={centers}
+                  onAssign={handleAssignCenters}
+                />
+              </Box>
+
+              <ConfirmationModal
+                message={t('CENTERS.BLOCK_REQUEST')}
+                handleAction={handleRequestBlockAction}
+                buttonNames={{
+                  primary: t('COMMON.SEND_REQUEST'),
+                  secondary: t('COMMON.CANCEL'),
+                }}
+                handleCloseModal={handleCloseModal}
+                modalOpen={confirmationModalOpen}
+              />
+              <ReassignModal
+                cohortNames={reassignCohortNames}
+                message={t('COMMON.REASSIGN_BLOCKS')}
+                handleAction={handleRequestBlockAction}
+                handleCloseReassignModal={handleCloseReassignModal}
+                modalOpen={reassignModalOpen}
+                reloadState={reloadState}
+                setReloadState={setReloadState}
+              />
+
+              <DeleteUserModal
+                type={Role.TEACHER}
+                userId={userId}
+                open={openDeleteUserModal}
+                onClose={handleCloseModal}
+                onUserDelete={handleDeleteUser}
+                reloadState={reloadState}
+                setReloadState={setReloadState}
+              />
+              <SimpleModal
+                primaryText={t('COMMON.OK')}
+                primaryActionHandler={handleCloseRemoveModal}
+                open={openRemoveUserModal}
+                onClose={handleCloseRemoveModal}
+                modalTitle={t('COMMON.DELETE_USER')}
+              >
+                {' '}
+                <Box mt={1.5} mb={1.5}>
+                  <Typography>
+                    {t('CENTERS.THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT')}{' '}
+                    <strong>{removeCohortNames}</strong>
+                    <br />
+                    {t('CENTERS.PLEASE_REMOVE_THE_USER_FROM_COHORT')}
+                  </Typography>
+                </Box>
+              </SimpleModal>
+              {openAddFacilitatorModal && (
+                <AddFacilitatorModal
+                  open={openAddFacilitatorModal}
+                  onClose={handleCloseAddFaciModal}
+                  onFacilitatorAdded={handleFacilitatorAdded}
+                />
+              )}
+            </>
+          )}
+        </Box>
+      </>
+
     </div>
   );
 };
