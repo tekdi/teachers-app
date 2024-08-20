@@ -135,7 +135,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             customField: 'true',
           });
           console.log('Response:', response);
-          const cohortData = response ? response[0] : [];
+          const cohortData = response ? response?.[0] : [];
           if (cohortData?.customField?.length) {
             const district = cohortData?.customField?.find(
               (item: CustomField) => item?.label === 'DISTRICTS'
@@ -428,7 +428,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                     <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
                       {cohortsData?.length > 1 ? (
                         <FormControl
-                          className={showFloatingLabel ? '' : "drawer-select"}
+                          className={showFloatingLabel ? '' : 'drawer-select'}
                           sx={{ m: 0, width: '100%' }}
                         >
                           {showFloatingLabel && (
@@ -445,13 +445,21 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             // style={{ borderRadius: '4px' }}
 
                             inputProps={{ 'aria-label': 'Without label' }}
-                            className={showFloatingLabel ? '' : "select-languages fs-14 fw-500 bg-white"}
-                            style={showFloatingLabel ? {borderRadius: '4px'} : {
-                              borderRadius: '0.5rem',
-                              color: theme.palette.warning['200'],
-                              width: '100%',
-                              marginBottom: '0rem',
-                            }}
+                            className={
+                              showFloatingLabel
+                                ? ''
+                                : 'select-languages fs-14 fw-500 bg-white'
+                            }
+                            style={
+                              showFloatingLabel
+                                ? { borderRadius: '4px' }
+                                : {
+                                    borderRadius: '0.5rem',
+                                    color: theme.palette.warning['200'],
+                                    width: '100%',
+                                    marginBottom: '0rem',
+                                  }
+                            }
                           >
                             {cohortsData?.length !== 0 ? (
                               manipulatedCohortData?.map((cohort) => (
