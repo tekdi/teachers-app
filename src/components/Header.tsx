@@ -1,11 +1,8 @@
 'use client';
 
 import { Box, Stack } from '@mui/material';
-import Menu, { MenuProps } from '@mui/material/Menu';
 import React, { useEffect, useState } from 'react';
-import { alpha, styled } from '@mui/material/styles';
 import { usePathname, useRouter } from 'next/navigation';
-
 import ConfirmationModal from './ConfirmationModal';
 import Image from 'next/image';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
@@ -20,13 +17,20 @@ import menuIcon from '../assets/images/menuIcon.svg';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import StyledMenu from './StyledMenu';
+import MenuDrawer from './MenuDrawer';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  toggleDrawer?: (newOpen: boolean) => () => void;
+  openDrawer?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
   const router = useRouter();
   const { t } = useTranslation();
   const pathname = usePathname();
   const theme = useTheme<any>();
   const [userId, setUserId] = React.useState<string>('');
+  const [openMenu, setOpenMenu] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -45,6 +49,7 @@ const Header: React.FC = () => {
       });
     }
   };
+
   const handleLogoutClick = () => {
     router.replace('/logout');
     logEvent({
@@ -53,23 +58,25 @@ const Header: React.FC = () => {
       label: 'Logout Clicked',
     });
   };
-  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpenDrawer(newOpen);
+
+  const handleToggleDrawer = (newOpen: boolean) => () => {
+    setOpenMenu(newOpen);
   };
-  const MenuDrawer = dynamic(() => import('./MenuDrawer'), {
-    ssr: false,
-  });
+  // const MenuDrawer = dynamic(() => import('./MenuDrawer'), {
+  //   ssr: false,
+  // });
 
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   useEffect(() => {
@@ -82,6 +89,7 @@ const Header: React.FC = () => {
   }, []);
 
   const [language, setLanguage] = React.useState(selectedLanguage);
+
   let hasSeenTutorial = false;
   if (typeof window !== 'undefined' && window.localStorage) {
     const storedValue = localStorage.getItem('hasSeenTutorial');
@@ -124,7 +132,6 @@ const Header: React.FC = () => {
       >
         <Stack
           width={'100%'}
-          // padding={'8px 0'}
           direction="row"
           justifyContent={'space-between'}
           alignItems={'center'}
@@ -133,7 +140,15 @@ const Header: React.FC = () => {
           className="pl-md-20"
         >
           <Box
-            onClick={toggleDrawer(true)}
+            onClick={() => {
+              if (openDrawer) {
+                if (toggleDrawer) {
+                  toggleDrawer(true)();
+                }
+              } else {
+                handleToggleDrawer(true)();
+              }
+            }}
             mt={'0.5rem'}
             className="display-md-none"
             paddingLeft={'20px'}
@@ -154,6 +169,7 @@ const Header: React.FC = () => {
             alt="logo"
             onClick={() => router.push('/dashboard')}
           />
+
           <Box
             onClick={handleClick}
             sx={{ cursor: 'pointer', position: 'relative' }}
@@ -197,7 +213,7 @@ const Header: React.FC = () => {
                   sx={{ 'letter-spacing': 'normal' }}
                 >
                   <PersonOutlineOutlinedIcon />
-                  {t('PROFILE.MY_PROFILE')}{' '}
+                  {t('PROFILE.MY_PROFILE')}
                 </MenuItem>
               )}
               <MenuItem
@@ -230,12 +246,13 @@ const Header: React.FC = () => {
       />
 
       <MenuDrawer
-        toggleDrawer={toggleDrawer}
-        open={openDrawer}
+        toggleDrawer={openDrawer ? toggleDrawer : handleToggleDrawer}
+        open={openDrawer ? openDrawer : openMenu}
         language={language}
         setLanguage={setLanguage}
       />
     </Box>
   );
 };
+
 export default Header;

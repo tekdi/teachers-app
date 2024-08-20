@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { logout } from '../services/LoginService';
 import { telemetryFactory } from '@/utils/telemetry';
+import ReactGA from 'react-ga4';
 
 function Logout() {
   const router = useRouter();
@@ -34,11 +35,18 @@ function Logout() {
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');
+        const userId = localStorage.getItem('userId')
         if (refreshToken) {
           await logout(refreshToken);
+          ReactGA.event('logout-success', {
+            userId: userId
+          });
         }
       } catch (error) {
         console.log(error);
+        ReactGA.event('logout-fail', {
+          error: error
+        });
       }
     };
     userLogout();

@@ -16,6 +16,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { Role } from '@/utils/app.constant';
 import useStore from '@/store/store';
 import { accessGranted } from '@/utils/Helper';
@@ -28,11 +29,14 @@ import {
   accessControl,
 } from '../../app.config';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import checkBook from '../assets/images/checkbook.svg';
+import Image from 'next/image';
 interface DrawerProps {
-  toggleDrawer: (open: boolean) => () => void;
+  toggleDrawer?: (open: boolean) => () => void;
   open: boolean;
   language: string;
   setLanguage: (lang: string) => void;
+  handleToggleDrawer?: (open: boolean) => () => void;
 }
 
 const MenuDrawer: React.FC<DrawerProps> = ({
@@ -40,6 +44,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   open,
   language,
   setLanguage,
+  handleToggleDrawer,
 }) => {
   const theme = useTheme<any>();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -72,13 +77,22 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     }
   };
 
+  const closeDrawer = () => {
+    if (toggleDrawer) {
+      toggleDrawer(false)();
+    } else if (handleToggleDrawer) {
+      handleToggleDrawer(false)();
+    }
+  };
+  
+
   const navigateToDashboard = () => {
-    toggleDrawer(false)();
+    closeDrawer();
     router.push('/dashboard');
   };
 
   const navigateToManageUser = () => {
-    toggleDrawer(false)();
+    closeDrawer();
     router.push('/manageUser');
   };
 
@@ -92,13 +106,16 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   return (
     <Drawer
       open={isDesktop || isOpen}
-      onClose={toggleDrawer(false)}
+      onClose={
+        closeDrawer
+      }
       transitionDuration={{ enter: 500, exit: 500 }}
       className="backgroundFaded"
       variant={isDesktop ? 'persistent' : 'temporary'}
       sx={{
         '& .MuiPaper-root': {
           borderRight: `1px solid theme.palette.warning['A100']`,
+          zIndex: '998 !important',
         },
       }}
     >
@@ -121,7 +138,11 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           </Box>
           {!isDesktop && (
             <Box>
-              <IconButton onClick={toggleDrawer(false)}>
+              <IconButton
+                onClick={
+                  closeDrawer
+                }
+              >
                 <ClearIcon sx={{ color: theme.palette.warning['300'] }} />
               </IconButton>
             </Box>
@@ -137,13 +158,13 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             gap: '30px',
           }}
         >
-          <Box sx={{ flexBasis: '30%' }}>
+          <Box sx={{ flexBasis: '30%' }} className="joyride-step-5">
             <FormControl className="drawer-select" sx={{ width: '100%' }}>
               <Select
                 value={language}
                 onChange={handleChange}
                 displayEmpty
-                className="SelectLanguages fs-14 fw-500"
+                className="select-languages fs-14 fw-500"
                 style={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
@@ -162,7 +183,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           <Box sx={{ flexBasis: '70%' }}>
             <FormControl className="drawer-select" sx={{ width: '100%' }}>
               <Select
-                className="SelectLanguages"
+                className="select-languages"
                 displayEmpty
                 style={{
                   borderRadius: '0.5rem',

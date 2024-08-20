@@ -7,7 +7,6 @@ import {
   Fade,
   IconButton,
   Modal,
-  Radio,
   TextField,
   Typography
 } from '@mui/material';
@@ -20,18 +19,15 @@ import { showToastMessage } from '../Toastify';
 interface CreateBlockModalProps {
   open: boolean;
   handleClose: () => void;
+  reloadState: boolean;
+  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-const CustomRadio = styled(Radio)(({ theme }) => ({
-  color: theme.palette.text.primary,
-  '&.Mui-checked': {
-    color: theme.palette.text.primary,
-  },
-}));
 
 const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
   open,
   handleClose,
+  reloadState,
+  setReloadState,
 }) => {
   const router = useRouter();
   const { t } = useTranslation();
@@ -40,21 +36,40 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
   const { cohortId }: any = router.query;
 
   const [centerName, setCenterName] = useState<string>('');
+  const [error, setError] = useState<string>('');
+
+  React.useEffect(() => {
+    if (reloadState) {
+      setReloadState(false);
+    }
+  }, [reloadState, setReloadState]);
 
   const handleTextFieldChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setCenterName(event.target.value);
+    const value = event.target.value;
+    setCenterName(value);
+
+    if (!value.trim()) {
+      setError(t('CENTERS.ERROR_EMPTY'));
+    } else if (!isNaN(Number(value))) {
+      setError(t('CENTERS.ERROR_NUMBER'));
+    } else {
+      setError('');
+    }
   };
 
   const handleCreateButtonClick = async () => {
+    if (error) return;
+
     console.log('Entered Rename Name:', centerName);
 
     const name = centerName;
 
     const response = await renameFacilitator(cohortId, name);
-
+    setReloadState(true);
     showToastMessage(t('CENTERS.CENTER_RENAMED'), 'success');
+    
     handleClose();
   };
 
@@ -108,6 +123,8 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
             sx={{ mb: 1, mt: 2 }}
             value={centerName}
             onChange={handleTextFieldChange}
+            error={!!error}
+            helperText={error}
           />
           <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
             {t('CENTERS.NOTE')}
@@ -122,6 +139,7 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
               backgroundColor: theme?.palette?.primary?.main,
               mb: 2,
             }}
+            disabled={!!error || !centerName.trim()}
           >
             {t('CENTERS.RENAME')}
           </Button>

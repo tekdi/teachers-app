@@ -346,7 +346,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
     const option = teachSubjectsField?.options?.find(
       (opt: any) => opt?.value === subject
     );
-    return option ? option.label : subject;
+    return option ? t(`FORM.${option?.label}`) : subject;
   };
 
   //fields  for view profile by order
@@ -468,14 +468,14 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
               </Box>
               <ManageUser
                 reloadState={reloadState ?? false}
-                setReloadState={setReloadState ?? (() => {})}
+                setReloadState={setReloadState ?? (() => { })}
                 isFromFLProfile={true}
                 teacherUserId={userId}
               />
             </Box>
           )}
 
-{/* <Box padding="5px 19px" className="w-100">
+          {/* <Box padding="5px 19px" className="w-100">
             <Box
               sx={{
                 flex: '1',
@@ -565,6 +565,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
               //   alignItems: 'center',
               //   flexDirection: 'row-reverse',
               // },
+
             }}
           >
             {userRole === Role.TEAM_LEADER && userId !== selfUserId ? (
@@ -627,13 +628,17 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                 //   minWidth: '60%',
                 //   width: '60%',
                 // },
+                '@media (min-width: 900px)': {
+                  width: '50%'
+                },
               }}
               className="bg-white"
-              minWidth={'100%'}
+              width={'100%'}
               borderRadius={'16px'}
               border={'1px'}
               display="flex"
               flexDirection="row"
+
             >
               <Grid container spacing={4}>
                 {filteredSortedForView?.map((item, index) => {

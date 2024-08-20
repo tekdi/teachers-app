@@ -60,6 +60,7 @@
     "REMOVE": "Remove",
     "SEND_REQUEST": "Send Request",
     "MARK_DROP_OUT": "Mark as Drop Out",
+    "MARK_ALL_AS": "Mark All As",
     "UNMARK_DROP_OUT": "Unmark as Drop Out",
     "SOMETHING_WENT_WRONG": "Something went wrong",
     "NO_GO_BACK": "No, go back",
@@ -134,7 +135,8 @@
     "TURN_ON": "Turn On",
     "OKAY": "Okay",
     "HELD_EVERY_WEEK_ON": "Held every week on {{days}}",
-    "SESSION_SCHEDULED_SUCCESSFULLY": "Session has been scheduled successfully!"
+    "SESSION_SCHEDULED_SUCCESSFULLY": "Session has been scheduled successfully!",
+    "CENTER": "Center"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -176,14 +178,15 @@
     "LEARNER": "Learners",
     "ATTENDANCE_COMPARISON": "Attendance Comparison",
     "CENTER_TYPE": "Center Type",
-    "BLOCK_AVERAGE_ATTENDANCE": "Block Average Attendance",
+    "REMOTE_AVERAGE_ATTENDANCE": "Remote Average Attendance",
+    "REGULAR_AVERAGE_ATTENDANCE": "Regular Average Attendance",
     "BLOCK": "Block",
     "ATTENDANCE": "Attendance (%)"
   },
   "ATTENDANCE": {
-    "TOTAL_STUDENTS": "Total Learners: {{count}}",
-    "ACTIVE_STUDENTS": "Active Learners: {{count}}",
-    "DROPOUT_STUDENTS": "Dropout Learners: {{count}}",
+    "TOTAL_STUDENTS": "Total: {{count}}",
+    "ACTIVE_STUDENTS": "Active: {{count}}",
+    "DROPOUT_STUDENTS": "Dropout: {{count}}",
     "PRESENT_STUDENTS": "Present: {{count}}",
     "ABSENT_STUDENTS": "Absent: {{count}}",
     "PRESENT": "Present",
@@ -205,9 +208,11 @@
     "CENTER_ATTENDANCE": "Center Attendance",
     "LOW_ATTENDANCE_STUDENTS": "Low Attendance Learners",
     "N/A": "No Centers Assigned",
+    "NO_ATTENDANCE": "0 %",
+    "UNKNOWN": "Unknown",
     "CENTER_NAME": "Center Name",
     "ALL_CENTERS": "All Centers",
-    "NO_LEARNER_WITH_LOW_ATTENDANCE": "No Learner with low attendance",
+    "NO_LEARNER_WITH_LOW_ATTENDANCE": "None",
     "ATTENDANCE_MARKED_OUT_OF_DAYS": "Attendance marked: {{count}} out of last 7 days"
   },
   "PROFILE": {
@@ -287,16 +292,19 @@
     "SCHOOL_ADMISSION": "School admission"
   },
   "GUIDE_TOUR": {
-    "STEP_1": "Welcome! let’s get you familiar with the dashboard",
-    "STEP_2": "Use the calendar to view day-wise attendance of learners",
-    "STEP_3": "Check daily attendance percentage for each Center",
-    "STEP_4": "Mark each day’s attendance of learners",
-    "STEP_5": "Check Center attendance over the last {{numberOfDays}} days",
-    "STEP_6": "View learners with low attendance in the past {{numberOfDays}} days",
+    "STEP_1": "Welcome! Let’s take a quick tour to understand the key features that will help you with your daily tasks.",
+    "STEP_2": "This section provides a quick overview of attendance trends to help you spot key insights for each center. You can mark attendance, check daily attendance percentages, and modify previous attendance for the last 7 days.",
+    "STEP_3": "Access the full calendar to track your attendance for any month and see which learners were present each day.",
+    "STEP_4": "Use this button to view a detailed overview of center attendance and see a list of learners categorized by low, average, and good attendance for any custom date range.",
+    "STEP_5": "Update your preferred language anytime from here.",
+    "STEP_6": "Access your teaching centers and manage tasks like adding, editing, or removing learners, marking dropouts, and reassigning centers or blocks. You can also easily schedule online or offline sessions for your subjects.",
+    "STEP_7": "Access the full academic year’s course plan for each subject, along with resources like videos and documents for every topic. Track your teaching progress by updating topic completion status.",
+    "STEP_8": "View detailed scores and summaries of Pre and Post tests for each learner. Track which students have completed, are in progress or yet to start the test.",
     "PREVIOUS": "Previous",
     "NEXT": "Next",
     "SKIP": "Skip",
-    "FINISH": "Finish"
+    "FINISH": "Finish",
+    "LEARN_HOW_TO_USE": "Learn how to use"
   },
   "BLOCKS": {
     "TEACHING_BLOCKS": "Teaching Blocks",
@@ -331,7 +339,9 @@
     "REQUEST_TO_DELETE_HAS_BEEN_SENT": "Request to Delete has been sent",
     "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "You are sending a request to the State Admin to delete this Center",
     "THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT": "The user belongs to the following cohort: ",
-    "PLEASE_REMOVE_THE_USER_FROM_COHORT": "Please remove the user from these cohorts before proceeding with deletion."
+    "PLEASE_REMOVE_THE_USER_FROM_COHORT": "Please remove the user from these cohorts before proceeding with deletion.",
+    "ERROR_EMPTY": "Center name cannot be empty",
+    "ERROR_NUMBER": "Center name cannot be number"
   },
   "CENTER_SESSION": {
     "THIS_SESSION": "This session",
@@ -450,10 +460,17 @@
     "MONTH_MOBILISATION": "Month of Mobilisation",
     "DROP_OUT_REASON": "Reason for Drop Out From School",
     "ASSIGN_CENTERS": "Assign Centers",
-    "TYPE_OF_COHORT": "Type of cohort",
-    "NOTE_THIS_WILL_BE_CENTER_NAME": "Note this will be Center name",
     "ACCESS_TO_WHATSAPP": "Access To WhatsApp",
-    "MOTHER_NAME": "Mother's Name"
+    "MOTHER_NAME": "Mother's Name",
+    "TYPE_OF_COHORT": "Center type",
+    "NOTE_THIS_WILL_BE_CENTER_NAME": "Note this will be Center name",
+    "ENGLISH": "English",
+    "HOME_SCIENCE": "Home Science",
+    "MATH": "Math",
+    "LANGUAGE": "Language",
+    "SCIENCE": "Science",
+    "SOCIAL_SCIENCE": "Social Science",
+    "LIFE_SKILLS": "Life Skills"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
@@ -487,6 +504,7 @@
     "SUBMITTED_ON": "Submitted On",
     "CORRECT_ANSWER": "correct answers",
     "NO_DATA_FOUND": "No data found",
-    "SEARCH_STUDENT": "search student"
+    "SEARCH_STUDENT": "search student",
+    "NO_ASSESSMENTS_FOUND": "No assessments found"
   }
 }

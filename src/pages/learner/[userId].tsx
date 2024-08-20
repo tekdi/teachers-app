@@ -26,8 +26,8 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import {
-  AssesmentListService,
-  getDoIdForAssesmentDetails,
+  getAssessmentList,
+  getDoIdForAssessmentDetails,
 } from '@/services/AssesmentService';
 import {
   classesMissedAttendancePercentList,
@@ -41,6 +41,7 @@ import {
   getUserDetailsById,
   mapFieldIdToValue,
   toPascalCase,
+  translateString,
 } from '@/utils/Helper';
 import { logEvent } from '@/utils/googleAnalytics';
 import {
@@ -411,7 +412,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
             selectedOption !== '-'
               ? selectedOption.label
               : field?.value
-                ? toPascalCase(field?.value)
+                ? translateString(t, field?.value)
                 : '-',
         };
       }
@@ -453,7 +454,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
       if (stateName) {
         if (filters) {
           setLoading(true);
-          const searchResults = await getDoIdForAssesmentDetails({ filters });
+          const searchResults = await getDoIdForAssessmentDetails({ filters });
 
           if (searchResults?.responseCode === 'OK') {
             const result = searchResults?.result;
@@ -463,11 +464,11 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
               setUniqueDoId(getUniqueDoId);
               testReportDetails(getUniqueDoId);
             } else {
-              console.log('NO Result found from getDoIdForAssesmentDetails ');
+              console.log('NO Result found from getDoIdForAssessmentDetails ');
             }
           }
         } else {
-          console.log('NO Data found from getDoIdForAssesmentDetails ');
+          console.log('NO Data found from getDoIdForAssessmentDetails ');
         }
       } else {
         console.log('NO State Found');
@@ -477,7 +478,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
       setIsError(true);
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       console.error(
-        'Error fetching getDoIdForAssesmentDetails results:',
+        'Error fetching getDoIdForAssessmentDetails results:',
         error
       );
     } finally {
@@ -503,7 +504,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     };
 
     if (do_Id) {
-      const response = await AssesmentListService({
+      const response = await getAssessmentList({
         sort,
         pagination,
         filters,
@@ -526,7 +527,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
       } else {
         setUniqueDoId('');
         console.log(
-          'AssesmentListService data',
+          'getAssessmentList data',
           response?.response?.statusText
         );
       }

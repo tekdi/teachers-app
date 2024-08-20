@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { toPascalCase } from '@/utils/Helper';
+import { toPascalCase, translateString } from '@/utils/Helper';
 import { modalStyles } from '@/styles/modalStyles';
 
 // CSS variables
@@ -198,7 +198,7 @@ const LearnerModal = ({
                           {Array.isArray(item.displayValue)
                             ? toPascalCase(item.displayValue.join(', '))
                             : item?.displayValue
-                              ? toPascalCase(item.displayValue)
+                              ?  translateString(t, item.displayValue)
                               : '-'}
                         </Typography>
                       </Grid>
