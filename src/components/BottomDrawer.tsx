@@ -96,6 +96,13 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
             vertical: 'top',
             horizontal: 'center',
           }}
+          sx={{
+            padding: '0',
+            '& .MuiList-root': {
+              paddingTop: '0px',
+              paddingBottom: '0px',
+            },
+          }}
         >
           {optionList.map(({ label, icon, name }) => (
             <MenuItem
@@ -106,6 +113,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
                 fontSize: '14px',
                 color: theme.palette.warning['300'],
               }}
+              className="shreyas"
               onClick={(e) => {
                 listItemClick(e, name);
                 handleMenuClose();
@@ -116,6 +124,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
             </MenuItem>
           ))}
         </Menu>
+
       )}
     </div>
   );

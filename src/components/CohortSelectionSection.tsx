@@ -309,8 +309,10 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
 
   const isAttendanceOverview = pathname === '/attendance-overview';
 
+  const isAssessment = pathname === '/assessments'
+
   return (
-    <Box className={isAttendanceOverview ? 'w-100' : 'w-md-40'}>
+    <Box className={isAttendanceOverview || isAssessment ? 'w-100' : 'w-md-40'}>
       {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />}
       {!loading && cohortsData && (
         <Box>
@@ -424,7 +426,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
 
                             inputProps={{ 'aria-label': 'Without label' }}
                             className={showFloatingLabel ? '' : "select-languages fs-14 fw-500 bg-white"}
-                            style={showFloatingLabel ? {borderRadius: '4px'} : {
+                            style={showFloatingLabel ? { borderRadius: '4px' } : {
                               borderRadius: '0.5rem',
                               color: theme.palette.warning['200'],
                               width: '100%',
