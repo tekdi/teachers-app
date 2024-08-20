@@ -104,7 +104,7 @@ const UserAttendanceHistory = () => {
 
     const telemetryInteract = {
       context: {
-        env: 'mark/modify-attendance-button-clicked-attendance-history',
+        env: 'dashboard',
         cdata: [],
       },
       edata: {

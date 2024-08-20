@@ -226,7 +226,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
             const telemetryInteract = {
               context: {
-                env: 'learner-creation-success',
+                env: 'teaching-center',
                 cdata: [],
               },
               edata: {

@@ -284,7 +284,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
                   const telemetryInteract = {
                     context: {
-                      env: 'facilitator-created-successfully',
+                      env: 'teaching-center',
                       cdata: [],
                     },
                     edata: {

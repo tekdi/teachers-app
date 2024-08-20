@@ -20,7 +20,12 @@ interface Center {
   }
 
   
-  const CenterList: React.FC<CenterListProps> = ({ title, centers, router, theme, t }) => (
+  const CenterList: React.FC<CenterListProps> = ({ title, centers, router, theme, t }) => {
+
+    
+    console.log(centers); 
+  
+    return (
     <>
       <Box
         sx={{
@@ -112,6 +117,7 @@ interface Center {
       </Box>
     </>
   );
+};
 
 export default CenterList;
   

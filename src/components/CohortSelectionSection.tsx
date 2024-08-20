@@ -283,7 +283,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     });
     const telemetryInteract = {
       context: {
-        env: 'cohort-selection-dashboard',
+        env: 'dashboard',
         cdata: [],
       },
       edata: {

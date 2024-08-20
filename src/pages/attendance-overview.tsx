@@ -400,7 +400,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
       const telemetryInteract = {
         context: {
-          env: 'search-by-keyword-attendance-overview-page',
+          env: 'dashboard',
           cdata: [],
         },
         edata: {

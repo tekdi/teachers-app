@@ -342,11 +342,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
     const telemetryInteract = {
       context: {
-        env: 'mark/modify-attendance-button-clicked-dashboard',
+        env: 'dashboard',
         cdata: [],
       },
       edata: {
-        id: 'mark/modify-attendance-button-clicked-dashboard',
+        id: 'dashboard',
         type: 'CLICK',
         subtype: '',
         pageid: 'dashboard',
@@ -428,11 +428,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
     const telemetryInteract = {
       context: {
-        env: 'month-name-clicked',
+        env: 'dashboard',
         cdata: [],
       },
       edata: {
-        id: 'month-name-clicked',
+        id: 'dashboard',
         type: 'CLICK',
         subtype: '',
         pageid: 'dashboard',
@@ -744,7 +744,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               if (isModified) {
                                 const telemetryInteract = {
                                   context: {
-                                    env: 'attendance-modified',
+                                    env: 'dashboard',
                                     cdata: [],
                                   },
                                   edata: {
@@ -766,7 +766,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               } else {
                                 const telemetryInteract = {
                                   context: {
-                                    env: 'attendance-marked',
+                                    env: 'dashboard',
                                     cdata: [],
                                   },
                                   edata: {

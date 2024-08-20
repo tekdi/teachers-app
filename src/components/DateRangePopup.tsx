@@ -132,7 +132,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       });
       const telemetryInteract = {
         context: {
-          env: 'date-range-pop-up-clicked',
+          env: 'dashboard',
           cdata: [],
         },
         edata: {
