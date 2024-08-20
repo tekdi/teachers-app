@@ -173,6 +173,8 @@ const isWithinAttendanceTimeUpdated = (
       } else {
         return true;
       }
+    } else if (attendanceTimes.restrict_attendance_timings === 0) {
+      return true;
     }
   }
 };
