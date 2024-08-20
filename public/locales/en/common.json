@@ -369,7 +369,9 @@
     "ENTER_VALID_MEETING_LINK": "Please enter a valid Zoom or Google Meet link.",
     "ZOOM": "Zoom",
     "GOOGLEMEET": "GoogleMeet",
-    "SET_UP": "Set-Up"
+    "SET_UP": "Set-Up",
+    "EDIT_THIS_SESSION":" Edit this session",
+    "EDIT_FOLLOWING_SESSIONS":" Edit this and following sessions"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully",

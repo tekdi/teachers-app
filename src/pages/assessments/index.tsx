@@ -355,7 +355,7 @@ const Assessments = () => {
       </Grid>
       <Grid container>
         <Grid item xs={12} md={6}>
-          <Box sx={{ mt: 2, px: '20px' }}>
+          <Box sx={{ mt: 2, px: '20px', width: '100%' }}>
             {/* <FormControl fullWidth>
               <InputLabel
                 style={{
