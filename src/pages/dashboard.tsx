@@ -125,11 +125,12 @@ const isWithinAttendanceTimeUpdated = (
 ) => {
   const now = new Date();
 
-  console.log('attendanceDataUpdated', attendanceData);
+  // console.log('attendanceDataUpdated', attendanceData);
 
   if (
-    attendanceData?.[0]?.attendanceId &&
-    attendanceTimes?.can_be_updated !== 1
+    attendanceTimes?.can_be_updated === 0 &&
+    attendanceData?.length > 0 &&
+    attendanceData?.[0]?.attendanceId
   ) {
     return false;
   }
@@ -291,7 +292,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const attendanceConfiguration = (selectedDate: any) => {
     const mycohortID = localStorage.getItem('classId');
-
     console.log('selectedCohortData', selectedCohortData);
 
     // Find the cohort data that matches the mycohortID
@@ -332,8 +332,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             selectedDate,
             attendanceData
           )
-        : // && attendanceTimesSelf?.can_be_updated === 1
-          false;
+        : false;
       setCanMarkAttendanceSelf(canMarkAttendanceSelf1);
 
       //check is user role is teacher or not
@@ -349,7 +348,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     const getSelectedDate = selectedDate;
     attendanceConfiguration(getSelectedDate);
-  }, [selectedCohortData]);
+  }, [attendanceData, selectedCohortData, selectedDate]);
 
   // handle self attendance
   const handleUpdateAction = async () => {
@@ -404,7 +403,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setReasonOfAbsent('');
     }
   };
-  const fetchData = async (selectedDate: string) => {
+  const fetchData = async (selectedDate: any) => {
+    setLoading(true);
     const currentDate = new Date();
     const currentDateForAttendance = formatSelectedDate(currentDate);
     const userId = localStorage.getItem('userId');
@@ -422,9 +422,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
     try {
       // Await the response from getAttendanceStatus
       const response = await getAttendanceStatus({ limit, page, filters });
-      if (response.statusCode === 200) {
+      if (response?.data?.attendanceList) {
         // Update state with attendance data
-        setAttendanceData(response?.data?.attendanceList);
+        if (response?.data?.attendanceList?.length > 0) {
+          setAttendanceData(response?.data?.attendanceList);
+        } else {
+          setAttendanceData([]);
+        }
       } else {
         // Handle unexpected response status code
         console.error('Unexpected response status:', response.statusCode);
@@ -433,31 +437,35 @@ const Dashboard: React.FC<DashboardProps> = () => {
       // Handle any errors that might occur during the fetch
       console.error('Error fetching attendance status:', error);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetchData(selectedDate); // Call the async function
+    fetchData(selectedDate);
   }, [classId]);
+
+  const fetchCohorts = async (userId: any) => {
+    try {
+      setLoading(true);
+      const response = await getCohortList(userId, {
+        customField: 'true',
+      });
+
+      const getSelectedCohortDetails = response?.find(
+        (item: any) => item?.cohortId === classId
+      );
+      console.log('ResponseCohortDetails:', getSelectedCohortDetails);
+      console.log('classId', classId);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (userId) {
-      setLoading(true);
-      const fetchCohorts = async () => {
-        try {
-          const response = await getCohortList(userId, {
-            customField: 'true',
-          });
-
-          const getSelectedCohortDetails = response?.find(
-            (item: any) => item?.cohortId === classId
-          );
-          console.log('ResponseCohortDetails:', getSelectedCohortDetails);
-          console.log('classId', classId);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchCohorts();
+      fetchCohorts(userId);
     }
   }, []);
 
@@ -696,10 +704,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, [classId, selectedDate, handleSaveHasRun]);
 
   const showDetailsHandle = (dayStr: string) => {
-    fetchData(formatSelectedDate(dayStr));
     setSelectedDate(formatSelectedDate(dayStr));
-    attendanceConfiguration(formatSelectedDate(dayStr));
+
     setShowDetails(true);
+    const getDate = formatSelectedDate(dayStr);
+    fetchData(getDate);
+    fetchCohorts(userId);
+    attendanceConfiguration(getDate);
   };
 
   const handleModalToggle = () => {

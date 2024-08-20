@@ -131,15 +131,15 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             customField: 'true',
           });
           console.log('Response:', response);
-          const cohortData = response[0];
+          const cohortData = response ? response[0] : [];
           if (cohortData?.customField?.length) {
-            const district = cohortData.customField.find(
+            const district = cohortData?.customField.find(
               (item: CustomField) => item.label === 'DISTRICTS'
             );
             setDistrictCode(district?.code);
             setDistrictId(district?.fieldId);
 
-            const state = cohortData.customField.find(
+            const state = cohortData?.customField.find(
               (item: CustomField) => item.label === 'STATES'
             );
             setStateCode(state?.code);
@@ -261,6 +261,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
           setLoading(false);
         } catch (error) {
           console.error('Error fetching cohort list', error);
+          console.log('error', error);
           setLoading(false);
           showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         }
