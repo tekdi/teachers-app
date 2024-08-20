@@ -126,13 +126,15 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         >
           {data?.meetingDetails?.url}
         </Box>
-        <ContentCopyIcon
-          sx={{
-            fontSize: '18px',
-            color: theme.palette.secondary.main,
-            cursor: 'pointer',
-          }}
-        />
+        {data?.meetingDetails?.url && (
+          <ContentCopyIcon
+            sx={{
+              fontSize: '18px',
+              color: theme.palette.secondary.main,
+              cursor: 'pointer',
+            }}
+          />
+        )}
       </Box>
       <CenterSessionModal
         open={open}

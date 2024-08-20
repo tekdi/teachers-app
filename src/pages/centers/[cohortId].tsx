@@ -124,7 +124,6 @@ const TeachingCenterDetails = () => {
   };
 
   const handleSchedule = () => {
-    console.log("create event===>", createEvent);
     setCreateEvent(true);
   };
 
@@ -256,7 +255,7 @@ const TeachingCenterDetails = () => {
     };
 
     getExtraSessionsData();
-  }, []);
+  }, [eventCreated]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -579,6 +578,7 @@ const TeachingCenterDetails = () => {
               disableDays={classId === 'all'}
               classId={classId}
               showFromToday={true}
+              newWidth={'100%'}
             />
           </Box>
 

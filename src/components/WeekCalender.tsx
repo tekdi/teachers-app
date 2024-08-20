@@ -6,13 +6,13 @@ import { dashboardDaysLimit, eventDaysLimit } from '../../app.config';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/router';
 
-
 const Calendar: React.FC<any> = ({
   showDetailsHandle,
   data,
   disableDays,
   classId,
   showFromToday,
+  newWidth,
 }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
@@ -24,7 +24,6 @@ const Calendar: React.FC<any> = ({
   const selectedItemRef = useRef<HTMLDivElement>(null);
   const determinePathColor = useDeterminePathColor();
   const router = useRouter();
-  const isDashboard = router.pathname === '/dashboard';
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     const selectedItem = selectedItemRef.current;
@@ -106,12 +105,13 @@ const Calendar: React.FC<any> = ({
         width={'14%'}
         height={'20%'}
         overflow={'auto'}
-        className={`col cell ${isSameDay(day, new Date()) && color
-          ? 'WeekToday'
-          : isSameDay(day, selectedDate)
-            ? 'selected'
-            : ''
-          }`}
+        className={`col cell ${
+          isSameDay(day, new Date()) && color
+            ? 'WeekToday'
+            : isSameDay(day, selectedDate)
+              ? 'selected'
+              : ''
+        }`}
         onClick={() => {
           if (!disableDays) {
             const dayStr = format(day, 'ccc dd MMM yy');
@@ -211,7 +211,7 @@ const Calendar: React.FC<any> = ({
           classId === 'all' ? 'hidden' : showFromToday ? 'clip' : 'auto',
       }}
     >
-      <Box sx={{ width: isDashboard ? '1840px' : '100%' }} className="calender_body_width">
+      <Box sx={{ width: newWidth }} className="calender_body_width">
         {renderDays()}
         {renderCells()}
       </Box>
