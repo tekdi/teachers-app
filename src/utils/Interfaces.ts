@@ -149,6 +149,8 @@ export interface PlannedModalProps {
   cohortName?: string;
   cohortId?: string;
   onCloseModal?: () => void | undefined;
+  editSession?: string;
+
 }
 
 export interface ScheduleModalProps {

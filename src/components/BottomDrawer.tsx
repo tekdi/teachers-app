@@ -113,7 +113,6 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
                 fontSize: '14px',
                 color: theme.palette.warning['300'],
               }}
-              className="shreyas"
               onClick={(e) => {
                 listItemClick(e, name);
                 handleMenuClose();
