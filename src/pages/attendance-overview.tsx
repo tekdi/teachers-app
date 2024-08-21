@@ -52,7 +52,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
-import { getMenuItems } from '@/utils/app.constant';
+import { getMenuItems, Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -396,6 +397,21 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       ReactGA.event('search-by-keyword-attendance-overview-page', {
         keyword: event.target.value,
       });
+
+      const telemetryInteract = {
+        context: {
+          env: 'dashboard',
+          cdata: [],
+        },
+        edata: {
+          id: 'search-by-keyword-attendance-overview-page',
+          type: Telemetry.SEARCH,
+          subtype: '',
+          pageid: 'attendance-overview',
+        },
+      };
+      telemetryFactory.interact(telemetryInteract);
+
     } else {
       setDisplayStudentList(learnerData);
     }

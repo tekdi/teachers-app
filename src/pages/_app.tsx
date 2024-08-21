@@ -29,6 +29,7 @@ import { fullWidthPages } from '../../app.config';
 import nextI18NextConfig from '../../next-i18next.config.js';
 import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
+import { Telemetry } from '@/utils/app.constant';
 
 const queryClient = new QueryClient();
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
@@ -93,11 +94,10 @@ function App({ Component, pageProps }: AppProps) {
           cdata: [],
         },
         edata: {
-          id: cleanedUrl,
-          type: 'VIEW',
+          type: Telemetry.VIEW,
           subtype: '',
           pageid: cleanedUrl,
-          uid: localStorage.getItem('userId') || 'Anonymous',
+          uri:''
         },
       };
       telemetryFactory.impression(telemetryImpression);

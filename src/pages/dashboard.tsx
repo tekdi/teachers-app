@@ -53,7 +53,8 @@ import calendar from '../assets/images/calendar.svg';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { Role } from '@/utils/app.constant';
+import { Role, Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 import { getEventList } from '@/services/EventService';
 import SessionCard from '@/components/SessionCard';
 import SessionCardFooter from '@/components/SessionCardFooter';
@@ -356,6 +357,21 @@ const Dashboard: React.FC<DashboardProps> = () => {
     ReactGA.event('mark/modify-attendance-button-clicked-dashboard', {
       teacherId: userId,
     });
+
+    const telemetryInteract = {
+      context: {
+        env: 'dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'dashboard',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'dashboard',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+    
   };
 
   const getMonthName = (dateString: string) => {
@@ -425,6 +441,19 @@ const Dashboard: React.FC<DashboardProps> = () => {
       router.push('/attendance-history');
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
+    const telemetryInteract = {
+      context: {
+        env: 'dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'dashboard',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'dashboard',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   const viewTimeTable = () => {

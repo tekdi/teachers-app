@@ -23,6 +23,8 @@ import Image from 'next/image';
 import ReactGA from 'react-ga4';
 import checkMark from '../assets/images/checkMark.svg';
 import MonthCalender from './MonthCalender';
+import { telemetryFactory } from '@/utils/telemetry';
+import { Telemetry } from '@/utils/app.constant';
 
 const modalStyle = {
   position: 'absolute',
@@ -129,6 +131,19 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       ReactGA.event('date-range-pop-up-clicked', {
         dateRangeType: selectedValue,
       });
+      const telemetryInteract = {
+        context: {
+          env: 'dashboard',
+          cdata: [],
+        },
+        edata: {
+          id: 'date-range-pop-up-clicked',
+          type: Telemetry.SEARCH,
+          subtype: '',
+          pageid: 'dashboard',
+        },
+      };
+      telemetryFactory.interact(telemetryInteract);
       const values = getDateRange(selectedIndex);
       const { toDate, fromDate } = values;
       // console.log(toDate, fromDate);

@@ -97,3 +97,9 @@ export enum Pagination {
   ITEMS_PER_PAGE = 10,
   MAX_ITEMS = 50,
 }
+
+export enum Telemetry {
+CLICK = 'CLICK',
+SEARCH = 'SEARCH',
+VIEW = 'VIEW'
+}

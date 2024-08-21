@@ -14,7 +14,7 @@ import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
 import { ICohort } from '@/utils/Interfaces';
 import { CustomField } from '@/utils/Interfaces';
-import { CenterType, cohortHierarchy } from '@/utils/app.constant';
+import { CenterType, cohortHierarchy, Telemetry } from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import ReactGA from 'react-ga4';
@@ -22,6 +22,7 @@ import Loader from './Loader';
 import { showToastMessage } from './Toastify';
 import manageUserStore from '@/store/manageUserStore';
 import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -287,6 +288,19 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     ReactGA.event('cohort-selection-dashboard', {
       selectedCohortID: event.target.value,
     });
+    const telemetryInteract = {
+      context: {
+        env: 'dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'cohort-selection-dashboard',
+        type: Telemetry.SEARCH,
+        subtype: '',
+        pageid: 'centers',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
     localStorage.setItem('classId', event.target.value);
     setHandleSaveHasRun?.(!handleSaveHasRun);
 
