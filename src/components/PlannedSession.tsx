@@ -82,7 +82,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   cohortName,
   cohortId,
   onCloseModal,
-  editSession
+  editSession,
+  handleEditSelection,
+  editSelection
 }) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
   const [eventType, setEventType] = useState<type>(sessionType.REPEATING);
@@ -92,7 +94,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [selectedBlockId, setSelectedBlockId] = useState(0);
-  const [editSelection, setEditSelection] = React.useState('EDIT_SESSION');
+ 
   const [subjects, setSubjects] = useState<string[]>();
   dayjs.extend(utc);
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
@@ -127,9 +129,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const handleCloseModal =() => {
     setModalOpen(false);
   }
-  const handleEditSelection = (selection: string) => {
-    setEditSelection(selection);
-  };
+
 
   useEffect(() => {
     const initialStartDateTime = combineDateAndTime(startDate, startTime);
