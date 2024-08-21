@@ -217,7 +217,13 @@
     "CENTER_NAME": "Center Name",
     "ALL_CENTERS": "All Centers",
     "NO_LEARNER_WITH_LOW_ATTENDANCE": "None",
-    "ATTENDANCE_MARKED_OUT_OF_DAYS": "Attendance marked: {{count}} out of last 7 days"
+    "ATTENDANCE_MARKED_OUT_OF_DAYS": "Attendance marked: {{count}} out of last 7 days",
+    "PAID_LEAVE_HALF_DAY": "Paid leave - Half day",
+    "PAID_LEAVE_FULL_DAY": "Paid leave - Full day",
+    "UNPAID_LEAVE_HALF_DAY": "Unpaid leave - Half day",
+    "UNPAID_LEAVE_FULL_DAY": "Unpaid leave - Full day",
+    "MENSTRUAL_LEAVE_HALF_DAY": "Menstrual leave - Half day",
+    "MENSTRUAL_LEAVE_FULL_DAY": "Menstrual leave - Full day"
   },
   "PROFILE": {
     "EDIT_PROFILE": "Edit Profile",
