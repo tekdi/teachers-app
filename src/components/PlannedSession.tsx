@@ -49,6 +49,7 @@ import {
 import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
+import ConfirmationModal from './ConfirmationModal';
 
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
 type type = (typeof sessionType)[keyof typeof sessionType];
@@ -88,6 +89,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [link, setLink] = useState('');
   const [linkError, setLinkError] = useState('');
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>();
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [selectedBlockId, setSelectedBlockId] = useState(0);
   const [editSelection, setEditSelection] = React.useState('EDIT_SESSION');
@@ -119,7 +121,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionEndTime: endTime,
     },
   ]);
-
+  const handleOpenModel = () => {
+    setModalOpen(true);
+  };
+  const handleCloseModal =() => {
+    setModalOpen(false);
+  }
   const handleEditSelection = (selection: string) => {
     setEditSelection(selection);
   };
@@ -1059,7 +1066,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   display: 'flex',
                   gap: '5px',
                   mt: 3,
-                  mb:2,
+                  mb: 2,
                   alignItems: 'center',
                 }}
               >
@@ -1070,10 +1077,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     fontWeight: '500',
                     cursor: 'pointer',
                   }}
+                  onClick={handleOpenModel}
                 >
                   {
-                  
-                    editSelection === 'EDIT_SESSION' ? 'Delete this session':'Delete this and following sessions'
+
+                    editSelection === 'EDIT_SESSION' ? t('CENTER_SESSION.DELETE_THIS_SESSION') :  t('CENTER_SESSION.DELETE_FOLLOWING_SESSION')
                   }
                 </Box>
                 <DeleteOutlineIcon
@@ -1082,6 +1090,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </Box>
             </Box>
           )}
+
+
 
           {sessionBlocks.length > 1 && (
             <Box
@@ -1108,14 +1118,14 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               />
             </Box>
           )}
-          
+
 
 
           {!editSession && (
             <>
-            <Box sx={{ mt: 2 }}>
-            <Divider />
-          </Box>
+              <Box sx={{ mt: 2 }}>
+                <Divider />
+              </Box>
               <Divider />
               <Box mt={2.5} mb={2}>
                 <Button
@@ -1138,6 +1148,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
         </Box>
       ))}
+
+      <ConfirmationModal
+        message={editSelection === 'EDIT_SESSION' ? t('CENTER_SESSION.DELETE_SESSION_MSG') : t('CENTER_SESSION.DELETE_ALL_SESSION_MSG')}
+        buttonNames={{
+          primary: t('COMMON.YES'),
+          secondary: t('COMMON.NO_GO_BACK'),
+        }}
+        handleCloseModal={handleCloseModal}
+        modalOpen={modalOpen}
+      />
     </Box>
   );
 };
