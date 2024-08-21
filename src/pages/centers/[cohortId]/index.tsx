@@ -57,7 +57,7 @@ import { getEventList } from '@/services/EventService';
 import manageUserStore from '@/store/manageUserStore';
 import { modifyAttendanceLimit, eventDaysLimit } from '../../../../app.config';
 
-const TeachingCenterDetails = () => {
+const CohortPage = () => {
   const [value, setValue] = React.useState(1);
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
@@ -220,7 +220,7 @@ const TeachingCenterDetails = () => {
     };
 
     getSessionsData();
-  }, [selectedDate]);
+  }, [selectedDate, eventCreated]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -255,7 +255,7 @@ const TeachingCenterDetails = () => {
     };
 
     getExtraSessionsData();
-  }, []);
+  }, [eventCreated]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -573,6 +573,7 @@ const TeachingCenterDetails = () => {
               disableDays={classId === 'all'}
               classId={classId}
               showFromToday={true}
+              newWidth={'100%'}
             />
           </Box>
 
@@ -716,4 +717,4 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default TeachingCenterDetails;
+export default CohortPage;
