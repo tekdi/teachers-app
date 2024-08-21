@@ -28,6 +28,15 @@ export const dropoutReasons = [
   { label: 'SCHOOL_ADMISSION', value: 'School admission' },
 ];
 
+export const absentReasonOptions = [
+  { label: 'PAID_LEAVE_HALF_DAY', value: 'Paid leave - Half day' },
+  { label: 'PAID_LEAVE_FULL_DAY', value: 'Paid leave - Full day' },
+  { label: 'UNPAID_LEAVE_HALF_DAY', value: 'Unpaid leave - Half day' },
+  { label: 'UNPAID_LEAVE_FULL_DAY', value: 'Unpaid leave - Full day' },
+  { label: 'MENSTRUAL_LEAVE_HALF_DAY', value: 'Menstrual leave - Half day' },
+  { label: 'MENSTRUAL_LEAVE_FULL_DAY', value: 'Menstrual leave - Full day' },
+];
+
 export const accessControl: { [key: string]: Role[] } = {
   accessDashboard: [Role.TEACHER, Role.TEAM_LEADER],
   accessAttendanceHistory: [Role.TEACHER, Role.TEAM_LEADER],

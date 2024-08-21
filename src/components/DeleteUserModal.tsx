@@ -130,7 +130,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
               }}
               component="h2"
             >
-              {t('COMMON.DELETE_USER')}
+              {t('COMMON.REMOVE_USER_FROM_CLASS')}
             </Typography>
           </Box>
           <CloseIcon
@@ -152,7 +152,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
             }}
             component="h2"
           >
-            {t('COMMON.REASON_FOR_DELETION')}
+            {t('COMMON.REASON_FOR_REMOVE')}
           </Typography>
         </Box>
         <>

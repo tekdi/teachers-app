@@ -227,7 +227,7 @@ const TeachingCenters = () => {
             p={'18px 0 0px 18px'}
             color={theme?.palette?.warning['300']}
           >
-            {t('DASHBOARD.MY_TEACHING_CENTERS')}
+            {t('DASHBOARD.MY_CLASSES')}
           </Box>
         )}
         {accessGranted('showBlockLevelData', accessControl, userRole) && (

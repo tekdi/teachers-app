@@ -266,7 +266,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             >
               {accessGranted('showTeachingCenter', accessControl, userRole)
                 ? t('DASHBOARD.TEACHING_CENTERS')
-                : t('DASHBOARD.MY_TEACHING_CENTERS')}
+                : t('DASHBOARD.MY_CLASSES')}
             </Button>
           </Box>
         )}
