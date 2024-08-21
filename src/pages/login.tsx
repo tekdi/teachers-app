@@ -139,6 +139,7 @@ const LoginPage = () => {
             localStorage.setItem('role', userResponse?.tenantData[0]?.roleName);
             localStorage.setItem('userEmail', userResponse?.email);
             localStorage.setItem('userName', userResponse?.name);
+            localStorage.setItem('userId', userResponse?.userId);
             setUserRole(userResponse?.tenantData[0]?.roleName);
           }
         }
@@ -153,8 +154,7 @@ const LoginPage = () => {
             type: Telemetry.CLICK,
             subtype: '',
             pageid: 'sign-in',
-            uid: localStorage.getItem('userId') ?? 'Anonymous',
-            userName: localStorage.getItem('userName') ?? 'Anonymous'
+           
           },
         };
         telemetryFactory.interact(telemetryInteract);

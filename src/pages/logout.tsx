@@ -19,8 +19,6 @@ function Logout() {
           type: Telemetry.CLICK,
           subtype: '',
           pageid: 'sign-out',
-          uid: localStorage.getItem('userId') ?? 'Anonymous',
-          userName: localStorage.getItem('userName') ?? 'Anonymous',
         },
       };
       telemetryFactory.interact(telemetryInteract);

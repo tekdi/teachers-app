@@ -28,7 +28,10 @@ const telemetryConfig = {
     (typeof window !== 'undefined' && localStorage.getItem('userId')) ||
     'Anonymous',
   uid:
-    (typeof window !== 'undefined' && localStorage.getItem('id')) ||
+    (typeof window !== 'undefined' && localStorage.getItem('userId')) ||
+    'Anonymous',
+    userName:
+    (typeof window !== 'undefined' && localStorage.getItem('userName')) ||
     'Anonymous',
   sid: generateUUID(),
   batchsize: 1,
@@ -36,7 +39,7 @@ const telemetryConfig = {
   host: hostURL,
   endpoint: '/telemetry/v1/telemetry',
   tags: [],
-  enableValidation: false
+  enableValidation: true
 };
 
 
@@ -193,8 +196,10 @@ function getEventContext(eventInput) {
     env: eventInput.context.env || telemetryConfig.env,
     sid: eventInput.sid || telemetryConfig.sid,
     uid:
-      (typeof window !== 'undefined' && localStorage.getItem('id')) ||
+      (typeof window !== 'undefined' && localStorage.getItem('userId')) ||
       telemetryConfig.uid, //user id
+      userName: (typeof window !== 'undefined' && localStorage.getItem('userName')) ||
+      telemetryConfig.userName, //user id
     cdata: eventInput.context.cdata || [],
   };
   if (telemetryConfig.sid) {

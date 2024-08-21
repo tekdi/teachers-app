@@ -141,8 +141,6 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           type: Telemetry.SEARCH,
           subtype: '',
           pageid: 'dashboard',
-          uid: localStorage.getItem('userId') ?? 'Anonymous',
-          userName: localStorage.getItem('userName') ?? 'Anonymous',
         },
       };
       telemetryFactory.interact(telemetryInteract);

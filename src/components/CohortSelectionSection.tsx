@@ -291,8 +291,6 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
         type: Telemetry.SEARCH,
         subtype: '',
         pageid: 'centers',
-        uid: localStorage.getItem('userId') ?? 'Anonymous',
-        userName: localStorage.getItem('userName') ?? 'Anonymous',
       },
     };
     telemetryFactory.interact(telemetryInteract);

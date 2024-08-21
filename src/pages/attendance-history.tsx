@@ -112,8 +112,6 @@ const UserAttendanceHistory = () => {
         type: Telemetry.CLICK,
         subtype: '',
         pageid: 'attendance-history',
-        uid: localStorage.getItem('userId') ?? 'Anonymous',
-        userName: localStorage.getItem('userName') ?? 'Anonymous',
       },
     };
     telemetryFactory.interact(telemetryInteract);

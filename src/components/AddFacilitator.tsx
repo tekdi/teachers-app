@@ -292,8 +292,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                       type: Telemetry.CLICK,
                       subtype: '',
                       pageid: 'centers',
-                      uid: localStorage.getItem('userId') ?? 'Anonymous',
-                      userName: localStorage.getItem('userName') ?? 'Anonymous',
                     },
                   };
                   telemetryFactory.interact(telemetryInteract);

@@ -350,8 +350,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
         type: Telemetry.CLICK,
         subtype: '',
         pageid: 'dashboard',
-        uid: localStorage.getItem('userId') ?? 'Anonymous',
-        userName: localStorage.getItem('userName') ?? 'Anonymous',
       },
     };
     telemetryFactory.interact(telemetryInteract);
@@ -436,8 +434,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
         type: Telemetry.CLICK,
         subtype: '',
         pageid: 'dashboard',
-        uid: localStorage.getItem('userId') ?? 'Anonymous',
-        userName: localStorage.getItem('userName') ?? 'Anonymous',
       },
     };
     telemetryFactory.interact(telemetryInteract);
@@ -752,8 +748,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                     type: Telemetry.CLICK,
                                     subtype: '',
                                     pageid: 'dashboard',
-                                    uid: localStorage.getItem('userId') ?? 'Anonymous',
-                                    userName: localStorage.getItem('userName') ?? 'Anonymous',
                                   },
                                 };
                                 telemetryFactory.interact(telemetryInteract);
@@ -774,8 +768,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                     type: Telemetry.CLICK,
                                     subtype: '',
                                     pageid: 'dashboard',
-                                    uid: localStorage.getItem('userId') ?? 'Anonymous',
-                                    userName: localStorage.getItem('userName') ?? 'Anonymous',
                                   },
                                 };
                                 telemetryFactory.interact(telemetryInteract);

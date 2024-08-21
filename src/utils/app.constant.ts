@@ -100,5 +100,6 @@ export enum Pagination {
 
 export enum Telemetry {
 CLICK = 'CLICK',
-SEARCH = 'SEARCH'
+SEARCH = 'SEARCH',
+VIEW = 'VIEW'
 }

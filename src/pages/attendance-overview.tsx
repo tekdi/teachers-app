@@ -408,8 +408,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           type: Telemetry.SEARCH,
           subtype: '',
           pageid: 'attendance-overview',
-          uid: localStorage.getItem('userId') ?? 'Anonymous',
-          userName: localStorage.getItem('userName') ?? 'Anonymous',
         },
       };
       telemetryFactory.interact(telemetryInteract);
