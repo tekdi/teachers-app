@@ -21,6 +21,7 @@ import { updateFacilitator } from '@/services/ManageUser';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import { Role, Status } from '@/utils/app.constant';
 import manageUserStore from '@/store/manageUserStore';
+import { showLablesForOther } from '../../app.config';
 
 interface DeleteUserModalProps {
   type: Role.STUDENT | Role.TEACHER;
@@ -130,7 +131,9 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
               }}
               component="h2"
             >
-              {t('COMMON.REMOVE_USER_FROM_CLASS')}
+              {showLablesForOther
+                ? t('COMMON.REMOVE_USER_FROM_CLASS')
+                : t('COMMON.DELETE_USER')}
             </Typography>
           </Box>
           <CloseIcon
@@ -152,7 +155,9 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
             }}
             component="h2"
           >
-            {t('COMMON.REASON_FOR_REMOVE')}
+            {showLablesForOther
+              ? t('COMMON.REASON_FOR_REMOVE')
+              : t('COMMON.REASON_FOR_DELETION')}
           </Typography>
         </Box>
         <>

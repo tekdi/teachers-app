@@ -90,3 +90,6 @@ export const ShowSelfAttendance = true;
 
 export const reassignCenters = false;
 export const markdDropOut = false;
+
+// show lables as per product
+export const showLablesForOther = true;
