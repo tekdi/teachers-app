@@ -23,6 +23,23 @@ export const updateAssessment = (): Assessment[] => {
     ];
 };
 
+export const learnerAssessmentReport = (): Assessment[] => {
+    return [
+        {
+            userId: 1,
+            studentName: 'Pre-test',
+            progress: 'Overall score :',
+            score: 89
+        },
+        {
+            userId: 2,
+            studentName: 'Post-test',
+            progress: 'Not Started',
+            score: 0
+        }
+    ];
+};
+
 export const getAssessmentSubjects = (): AssessmentSubject[] => {
     return [
         {

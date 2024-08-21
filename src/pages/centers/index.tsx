@@ -35,7 +35,7 @@ import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
 import building from '../../assets/images/apartment.png';
 
-const TeachingCenters = () => {
+const CentersPage = () => {
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -327,13 +327,14 @@ const TeachingCenters = () => {
                   </Box>
                 </Grid>
                 <Grid item xs={4}>
-                  <Box sx={{
-                    '@media (min-width: 900px)': {
-                      display: 'flex',
-                      justifyContent: 'end'
-
-                    },
-                  }}>
+                  <Box
+                    sx={{
+                      '@media (min-width: 900px)': {
+                        display: 'flex',
+                        justifyContent: 'end',
+                      },
+                    }}
+                  >
                     <FormControl
                       className="drawer-select"
                       sx={{
@@ -457,7 +458,8 @@ const TeachingCenters = () => {
                     <React.Fragment key={cohort?.cohortId}>
                       <Box
                         onClick={() => {
-                          router.push(`/centers/${cohort.cohortId}`);
+                          router.push(`/centers/${cohort?.cohortId}/`);
+
                           localStorage.setItem('classId', cohort.cohortId);
                         }}
                         sx={{
@@ -554,4 +556,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default TeachingCenters;
+export default CentersPage;

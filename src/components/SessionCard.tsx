@@ -5,7 +5,7 @@ import CenterSessionModal from './CenterSessionModal';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import PlannedSession from './PlannedSession';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { convertUTCToIST } from '@/utils/Helper';
 import { useTranslation } from 'next-i18next';
@@ -19,8 +19,13 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
   const [startTime, setStartTime] = React.useState('');
   const [endTime, setEndTime] = React.useState('');
   const [startDate, setStartDate] = React.useState('');
+  const [editSession, setEditSession] = React.useState('');
 
-  const handleOpen = () => setOpen(true);
+
+  const handleOpen = (selection: string) => {
+    setOpen(true)
+    setEditSession(selection);
+  };
   const handleClose = () => setOpen(false);
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
@@ -96,7 +101,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
             {data?.metadata?.framework?.teacherName}
           </Typography>
         </Box>
-        <EditOutlined onClick={handleOpen} sx={{ cursor: 'pointer' }} />
+        <EditOutlined onClick={() => handleOpen?.('EDIT_SESSION')} sx={{ cursor: 'pointer' }} />
       </Box>
       <Box
         sx={{
@@ -121,13 +126,15 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         >
           {data?.meetingDetails?.url}
         </Box>
-        <ContentCopyIcon
-          sx={{
-            fontSize: '18px',
-            color: theme.palette.secondary.main,
-            cursor: 'pointer',
-          }}
-        />
+        {data?.meetingDetails?.url && (
+          <ContentCopyIcon
+            sx={{
+              fontSize: '18px',
+              color: theme.palette.secondary.main,
+              cursor: 'pointer',
+            }}
+          />
+        )}
       </Box>
       <CenterSessionModal
         open={open}
@@ -135,7 +142,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         title={'Home Science'}
         primary={'Schedule'}
       >
-        <PlannedSession />
+        <PlannedSession editSession={editSession} />
       </CenterSessionModal>
 
       <Box>{children}</Box>

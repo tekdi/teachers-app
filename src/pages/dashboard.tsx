@@ -20,8 +20,13 @@ import {
   CohortAttendancePercentParam,
   ICohort,
   CohortMemberList,
+  Session,
 } from '../utils/Interfaces';
-import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
+import {
+  accessControl,
+  eventDaysLimit,
+  lowLearnerAttendanceLimit,
+} from './../../app.config';
 
 import AttendanceComparison from '@/components/AttendanceComparison';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
@@ -50,8 +55,12 @@ import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { Role, Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
+import { getEventList } from '@/services/EventService';
+import SessionCard from '@/components/SessionCard';
+import SessionCardFooter from '@/components/SessionCardFooter';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
-interface DashboardProps { }
+interface DashboardProps {}
 
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
@@ -63,6 +72,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
   const [selectedDate, setSelectedDate] =
+    React.useState<string>(getTodayDate());
+  const [timeTableDate, setTimeTableDate] =
     React.useState<string>(getTodayDate());
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState<any>(null);
@@ -90,10 +101,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [blockName, setBlockName] = React.useState<string>('');
   const [role, setRole] = React.useState<any>('');
   const [openDrawer, setOpenDrawer] = React.useState<boolean>(false);
+  const [sessions, setSessions] = React.useState<Session[]>();
+  const [extraSessions, setExtraSessions] = React.useState<Session[]>();
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
   };
+  const [selectedDays, setSelectedDays] = React.useState<any>([]);
 
   useEffect(() => {
     setIsClient(true);
@@ -333,6 +347,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setSelectedDate(formatSelectedDate(dayStr));
     setShowDetails(true);
   };
+  const showTimeTableDetailsHandle = (dayStr: string) => {
+    setTimeTableDate(formatSelectedDate(dayStr));
+    setShowDetails(true);
+  };
 
   const handleModalToggle = () => {
     setOpen(!open);
@@ -368,7 +386,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
       return 'Invalid Date';
     }
   };
-
 
   useEffect(() => {
     const getAttendanceStats = async () => {
@@ -439,6 +456,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
     telemetryFactory.interact(telemetryInteract);
   };
 
+  const viewTimeTable = () => {
+    if (classId !== 'all') {
+      router.push(
+        `centers/${classId}/events/${getMonthName(timeTableDate)?.toLowerCase()}`
+      );
+      ReactGA.event('month-name-clicked', { selectedCohortID: classId });
+    }
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -476,11 +502,75 @@ const Dashboard: React.FC<DashboardProps> = () => {
       hasSeenTutorial = storedValue === 'true'; // Convert string 'true' or 'false' to boolean
     }
   }
+
+  useEffect(() => {
+    const getSessionsData = async () => {
+      try {
+        const limit = 0;
+        const offset = 0;
+        const filters = {
+          date: timeTableDate,
+          cohortId: classId,
+          status: ['live'],
+        };
+        const response = await getEventList({ limit, offset, filters });
+        let sessionArray: any[] = [];
+        if (response?.events.length > 0) {
+          response?.events.forEach((event: any) => {
+            if (event.isRecurring) {
+              sessionArray.push(event);
+            }
+          });
+        }
+        setSessions(sessionArray);
+      } catch (error) {
+        setSessions([]);
+      }
+    };
+
+    getSessionsData();
+  }, [timeTableDate, classId]);
+
+  useEffect(() => {
+    const getExtraSessionsData = async () => {
+      try {
+        const date = new Date();
+        const startDate = shortDateFormat(new Date());
+        const lastDate = new Date(
+          date.setDate(date.getDate() + modifyAttendanceLimit)
+        );
+        const endDate = shortDateFormat(lastDate);
+        const limit = 0;
+        const offset = 0;
+        const filters = {
+          startDate: startDate,
+          endDate: endDate,
+          cohortId: classId,
+          status: ['live'],
+        };
+        const response = await getEventList({ limit, offset, filters });
+        let extraSessionArray: any[] = [];
+        if (response?.events.length > 0) {
+          response?.events.forEach((event: any) => {
+            if (!event.isRecurring) {
+              extraSessionArray.push(event);
+            }
+          });
+        }
+        setExtraSessions(extraSessionArray);
+      } catch (error) {
+        setExtraSessions([]);
+      }
+    };
+
+    getExtraSessionsData();
+  }, [classId]);
+
   return (
     <>
       {isClient && (
         <>
-          <GuideTour toggleDrawer={toggleDrawer}/>
+          <GuideTour toggleDrawer={toggleDrawer} />
           <>
             {!isAuthenticated && (
               <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -489,7 +579,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             {isAuthenticated && (
               <Box minHeight="100vh">
                 <Box>
-                  <Header  toggleDrawer={toggleDrawer} openDrawer={openDrawer}/>
+                  <Header toggleDrawer={toggleDrawer} openDrawer={openDrawer} />
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Box
@@ -502,7 +592,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       fontSize={'22px'}
                       m={'1.5rem 1.2rem 0.8rem'}
                       color={theme?.palette?.warning['300']}
-                      className='joyride-step-1'
+                      className="joyride-step-1"
                     >
                       {t('DASHBOARD.DASHBOARD')}
                     </Typography>
@@ -520,273 +610,256 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     width={'100%'}
                     className="linerGradient br-md-8 "
                   >
-                    <Box className='joyride-step-2'>
-                    <Box
-                      display={'flex'}
-                      flexDirection={'column'}
-                      padding={'1.5rem 1.2rem 1rem'}
-                    >
-                      <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                        <Box className="d-md-flex flex-basis-md-90 min-align-md-center space-md-between w-100">
-                          <Typography
-                            variant="h2"
-                            sx={{ fontSize: '14px' }}
-                            color={'black'}
-                            fontWeight={'500'}
-                          >
-                            {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
-                          </Typography>
-                          <CohortSelectionSection
-                            classId={classId}
-                            setClassId={setClassId}
-                            userId={userId}
-                            setUserId={setUserId}
-                            isAuthenticated={isAuthenticated}
-                            setIsAuthenticated={setIsAuthenticated}
-                            loading={loading}
-                            setLoading={setLoading}
-                            cohortsData={cohortsData}
-                            setCohortsData={setCohortsData}
-                            manipulatedCohortData={manipulatedCohortData}
-                            setManipulatedCohortData={setManipulatedCohortData}
-                            blockName={blockName}
-                            setBlockName={setBlockName}
-                            handleSaveHasRun={handleSaveHasRun}
-                            setHandleSaveHasRun={setHandleSaveHasRun}
-                            isCustomFieldRequired={false}
-                          />
-                        </Box>
-
+                    <Box className="joyride-step-2">
+                      <Box
+                        display={'flex'}
+                        flexDirection={'column'}
+                        padding={'1.5rem 1.2rem 1rem'}
+                      >
                         <Box
-                          className="calenderTitle flex-center joyride-step-3 ps-md-ab right-md-20"
                           display={'flex'}
-                          sx={{
-                            cursor: 'pointer',
-                            color: theme.palette.secondary.main,
-                            gap: '4px',
-                            opacity: classId === 'all' ? 0.5 : 1,
-                          }}
-                          onClick={viewAttendanceHistory}
+                          justifyContent={'space-between'}
+                          alignItems={'center'}
                         >
-                          <Typography
-                            marginBottom={'0'}
-                            style={{ fontWeight: '500' }}
-                          >
-                            {getMonthName(selectedDate)}
-                          </Typography>
-                          {/* <CalendarMonthIcon /> */}
-                          <Image
-                            height={18}
-                            width={18}
-                            src={calendar}
-                            alt="logo"
-                            style={{ cursor: 'pointer' }}
-                          />
-                        </Box>
-                      </Box>
+                          <Box className="d-md-flex flex-basis-md-90 min-align-md-center space-md-between w-100">
+                            <Typography
+                              variant="h2"
+                              sx={{ fontSize: '14px' }}
+                              color={'black'}
+                              fontWeight={'500'}
+                            >
+                              {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
+                            </Typography>
+                            <CohortSelectionSection
+                              classId={classId}
+                              setClassId={setClassId}
+                              userId={userId}
+                              setUserId={setUserId}
+                              isAuthenticated={isAuthenticated}
+                              setIsAuthenticated={setIsAuthenticated}
+                              loading={loading}
+                              setLoading={setLoading}
+                              cohortsData={cohortsData}
+                              setCohortsData={setCohortsData}
+                              manipulatedCohortData={manipulatedCohortData}
+                              setManipulatedCohortData={
+                                setManipulatedCohortData
+                              }
+                              blockName={blockName}
+                              setBlockName={setBlockName}
+                              handleSaveHasRun={handleSaveHasRun}
+                              setHandleSaveHasRun={setHandleSaveHasRun}
+                              isCustomFieldRequired={false}
+                            />
+                          </Box>
 
-                      {/* Logic to disable this block on all select */}
-                      <Box className="flex-basis-md-10">
-                        <Box sx={{ mt: 1.5, position: 'relative' }}>
-                          <WeekCalender
-                            showDetailsHandle={showDetailsHandle}
-                            data={percentageAttendanceData}
-                            disableDays={classId === 'all'}
-                            classId={classId}
-                          />
-                        </Box>
-                        <Box
-                          height={'auto'}
-                          width={'auto'}
-                          padding={'1rem'}
-                          borderRadius={'1rem'}
-                          bgcolor={'#4A4640'}
-                          textAlign={'left'}
-                          margin={'15px 0 15px 0 '}
-                          sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
-                        >
-                          <Stack
-                            direction="row"
-                            spacing={1}
-                            // marginTop={1}
-                            justifyContent={'space-between'}
-                            alignItems={'center'}
+                          <Box
+                            className="calenderTitle flex-center joyride-step-3 ps-md-ab right-md-20"
+                            display={'flex'}
+                            sx={{
+                              cursor: 'pointer',
+                              color: theme.palette.secondary.main,
+                              gap: '4px',
+                              opacity: classId === 'all' ? 0.5 : 1,
+                            }}
+                            onClick={viewAttendanceHistory}
                           >
-                            <Box
-                              display={'flex'}
-                              gap={'5px'}
+                            <Typography
+                              marginBottom={'0'}
+                              style={{ fontWeight: '500' }}
+                            >
+                              {getMonthName(selectedDate)}
+                            </Typography>
+                            {/* <CalendarMonthIcon /> */}
+                            <Image
+                              height={18}
+                              width={18}
+                              src={calendar}
+                              alt="logo"
+                              style={{ cursor: 'pointer' }}
+                            />
+                          </Box>
+                        </Box>
+
+                        {/* Logic to disable this block on all select */}
+                        <Box className="flex-basis-md-10">
+                          <Box sx={{ mt: 1.5, position: 'relative' }}>
+                            <WeekCalender
+                              showDetailsHandle={showDetailsHandle}
+                              data={percentageAttendanceData}
+                              disableDays={classId === 'all'}
+                              classId={classId}
+                              newWidth={'1840px'}
+                            />
+                          </Box>
+                          <Box
+                            height={'auto'}
+                            width={'auto'}
+                            padding={'1rem'}
+                            borderRadius={'1rem'}
+                            bgcolor={'#4A4640'}
+                            textAlign={'left'}
+                            margin={'15px 0 15px 0 '}
+                            sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
+                          >
+                            <Stack
+                              direction="row"
+                              spacing={1}
+                              // marginTop={1}
+                              justifyContent={'space-between'}
                               alignItems={'center'}
                             >
-                              {currentAttendance !== 'notMarked' &&
-                                currentAttendance !== 'futureDate' && (
-                                  <>
-                                    <CircularProgressbar
-                                      value={
-                                        currentAttendance?.present_percentage
-                                      }
-                                      background
-                                      backgroundPadding={8}
-                                      styles={buildStyles({
-                                        textColor: pathColor,
-                                        pathColor: pathColor,
-                                        trailColor: '#E6E6E6',
-                                        strokeLinecap: 'round',
-                                        backgroundColor: '#ffffff',
-                                      })}
-                                      className="fs-24 htw-24"
-                                      strokeWidth={20}
-                                    />
-                                    <Box>
-                                      <Typography
-                                        // sx={{ color: theme.palette.warning['A400'] }}
-                                        sx={{
-                                          fontSize: '12px',
-                                          fontWeight: '600',
-                                          color: '#F4F4F4',
-                                        }}
-                                        variant="h6"
-                                        className="word-break"
-                                      >
-                                        {t('DASHBOARD.PERCENT_ATTENDANCE', {
-                                          percent_students:
-                                            currentAttendance?.present_percentage,
+                              <Box
+                                display={'flex'}
+                                gap={'5px'}
+                                alignItems={'center'}
+                              >
+                                {currentAttendance !== 'notMarked' &&
+                                  currentAttendance !== 'futureDate' && (
+                                    <>
+                                      <CircularProgressbar
+                                        value={
+                                          currentAttendance?.present_percentage
+                                        }
+                                        background
+                                        backgroundPadding={8}
+                                        styles={buildStyles({
+                                          textColor: pathColor,
+                                          pathColor: pathColor,
+                                          trailColor: '#E6E6E6',
+                                          strokeLinecap: 'round',
+                                          backgroundColor: '#ffffff',
                                         })}
-                                      </Typography>
-                                      <Typography
-                                        // sx={{ color: theme.palette.warning['A400'] }}
-                                        sx={{
-                                          fontSize: '12px',
-                                          fontWeight: '600',
-                                          color: '#F4F4F4',
-                                        }}
-                                        variant="h6"
-                                        className="word-break"
-                                      >
-                                        {t('DASHBOARD.PRESENT_STUDENTS', {
-                                          present_students:
-                                            currentAttendance?.present_students,
-                                          total_students:
-                                            currentAttendance?.totalcount,
-                                        })}
-                                      </Typography>
-                                    </Box>
-                                  </>
-                                )}
-                              {currentAttendance === 'notMarked' &&
-                                currentAttendance !== 'futureDate' && (
+                                        className="fs-24 htw-24"
+                                        strokeWidth={20}
+                                      />
+                                      <Box>
+                                        <Typography
+                                          // sx={{ color: theme.palette.warning['A400'] }}
+                                          sx={{
+                                            fontSize: '12px',
+                                            fontWeight: '600',
+                                            color: '#F4F4F4',
+                                          }}
+                                          variant="h6"
+                                          className="word-break"
+                                        >
+                                          {t('DASHBOARD.PERCENT_ATTENDANCE', {
+                                            percent_students:
+                                              currentAttendance?.present_percentage,
+                                          })}
+                                        </Typography>
+                                        <Typography
+                                          // sx={{ color: theme.palette.warning['A400'] }}
+                                          sx={{
+                                            fontSize: '12px',
+                                            fontWeight: '600',
+                                            color: '#F4F4F4',
+                                          }}
+                                          variant="h6"
+                                          className="word-break"
+                                        >
+                                          {t('DASHBOARD.PRESENT_STUDENTS', {
+                                            present_students:
+                                              currentAttendance?.present_students,
+                                            total_students:
+                                              currentAttendance?.totalcount,
+                                          })}
+                                        </Typography>
+                                      </Box>
+                                    </>
+                                  )}
+                                {currentAttendance === 'notMarked' &&
+                                  currentAttendance !== 'futureDate' && (
+                                    <Typography
+                                      sx={{
+                                        color: theme.palette.warning['A400'],
+                                      }}
+                                      fontSize={'0.8rem'}
+                                      // variant="h6"
+                                      // className="word-break"
+                                    >
+                                      {t('DASHBOARD.NOT_MARKED')}
+                                    </Typography>
+                                  )}
+                                {currentAttendance === 'futureDate' && (
                                   <Typography
                                     sx={{
                                       color: theme.palette.warning['A400'],
                                     }}
                                     fontSize={'0.8rem'}
-                                  // variant="h6"
-                                  // className="word-break"
+                                    fontStyle={'italic'}
+                                    fontWeight={'500'}
                                   >
-                                    {t('DASHBOARD.NOT_MARKED')}
+                                    {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
                                   </Typography>
                                 )}
-                              {currentAttendance === 'futureDate' && (
-                                <Typography
-                                  sx={{ color: theme.palette.warning['A400'] }}
-                                  fontSize={'0.8rem'}
-                                  fontStyle={'italic'}
-                                  fontWeight={'500'}
-                                >
-                                  {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
-                                </Typography>
-                              )}
-                            </Box>
-                            <Button
-                              className="btn-mark-width"
-                              variant="contained"
-                              color="primary"
-                              sx={{
-                                '&.Mui-disabled': {
-                                  backgroundColor:
-                                    theme?.palette?.primary?.main, // Custom disabled text color
-                                },
-                                minWidth: '84px',
-                                height: '2.5rem',
-                                padding: theme.spacing(1),
-                                fontWeight: '500',
-                                '@media (min-width: 500px)': {
-                                  width: '20%',
-                                },
-                                '@media (min-width: 700px)': {
-                                  width: '15%',
-                                },
-                              }}
-                              onClick={handleModalToggle}
-                              disabled={
-                                currentAttendance === 'futureDate' ||
-                                classId === 'all' ||
-                                formattedSevenDaysAgo > selectedDate
-                              }
-                            >
-                              {currentAttendance === 'notMarked' ||
+                              </Box>
+                              <Button
+                                className="btn-mark-width"
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                  '&.Mui-disabled': {
+                                    backgroundColor:
+                                      theme?.palette?.primary?.main, // Custom disabled text color
+                                  },
+                                  minWidth: '84px',
+                                  height: '2.5rem',
+                                  padding: theme.spacing(1),
+                                  fontWeight: '500',
+                                  '@media (min-width: 500px)': {
+                                    width: '20%',
+                                  },
+                                  '@media (min-width: 700px)': {
+                                    width: '15%',
+                                  },
+                                }}
+                                onClick={handleModalToggle}
+                                disabled={
+                                  currentAttendance === 'futureDate' ||
+                                  classId === 'all' ||
+                                  formattedSevenDaysAgo > selectedDate
+                                }
+                              >
+                                {currentAttendance === 'notMarked' ||
                                 currentAttendance === 'futureDate'
-                                ? t('COMMON.MARK')
-                                : t('COMMON.MODIFY')}
-                            </Button>
-                          </Stack>
+                                  ? t('COMMON.MARK')
+                                  : t('COMMON.MODIFY')}
+                              </Button>
+                            </Stack>
+                          </Box>
+                          {open && (
+                            <MarkBulkAttendance
+                              open={open}
+                              onClose={handleClose}
+                              classId={classId}
+                              selectedDate={new Date(selectedDate)}
+                              onSaveSuccess={(isModified) => {
+                                if (isModified) {
+                                  showToastMessage(
+                                    t(
+                                      'ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY'
+                                    ),
+                                    'success'
+                                  );
+                                } else {
+                                  showToastMessage(
+                                    t(
+                                      'ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'
+                                    ),
+                                    'success'
+                                  );
+                                }
+                                setHandleSaveHasRun(!handleSaveHasRun);
+                              }}
+                            />
+                          )}
                         </Box>
-                        {open && (
-                          <MarkBulkAttendance
-                            open={open}
-                            onClose={handleClose}
-                            classId={classId}
-                            selectedDate={new Date(selectedDate)}
-                            onSaveSuccess={(isModified) => {
-                              if (isModified) {
-                                const telemetryInteract = {
-                                  context: {
-                                    env: 'dashboard',
-                                    cdata: [],
-                                  },
-                                  edata: {
-                                    id: 'attendance-modified',
-                                    type: Telemetry.CLICK,
-                                    subtype: '',
-                                    pageid: 'dashboard',
-                                  },
-                                };
-                                telemetryFactory.interact(telemetryInteract);
-                                showToastMessage(
-                                  t(
-                                    'ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY'
-                                  ),
-                                  'success'
-                                );
-                              } else {
-                                const telemetryInteract = {
-                                  context: {
-                                    env: 'dashboard',
-                                    cdata: [],
-                                  },
-                                  edata: {
-                                    id: 'attendance-marked',
-                                    type: Telemetry.CLICK,
-                                    subtype: '',
-                                    pageid: 'dashboard',
-                                  },
-                                };
-                                telemetryFactory.interact(telemetryInteract);
-                                showToastMessage(
-                                  t(
-                                    'ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'
-                                  ),
-                                  'success'
-                                );
-                              }
-                              setHandleSaveHasRun(!handleSaveHasRun);
-                            }}
-                          />
-                        )}
                       </Box>
-                    </Box>
-                    <Box sx={{ padding: '0 20px' }}>
-                      <Divider sx={{ borderBottomWidth: '0.1rem' }} />
-                    </Box>
+                      <Box sx={{ padding: '0 20px' }}>
+                        <Divider sx={{ borderBottomWidth: '0.1rem' }} />
+                      </Box>
                     </Box>
 
                     {/* Overview Card Section */}
@@ -868,15 +941,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       mx={'1.2rem'}
                     >
                       {classId &&
-                        classId !== 'all' &&
-                        cohortsData &&
-                        lowAttendanceLearnerList ? (
+                      classId !== 'all' &&
+                      cohortsData &&
+                      lowAttendanceLearnerList ? (
                         <Grid container spacing={2}>
                           <Grid item xs={4}>
                             <OverviewCard
                               label={t('ATTENDANCE.CENTER_ATTENDANCE')}
                               value={
-                                cohortPresentPercentage === t('ATTENDANCE.NO_ATTENDANCE')
+                                cohortPresentPercentage ===
+                                t('ATTENDANCE.NO_ATTENDANCE')
                                   ? cohortPresentPercentage
                                   : `${cohortPresentPercentage} %`
                               }
@@ -893,24 +967,26 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               ))}
                               valuePartOne={
                                 Array.isArray(lowAttendanceLearnerList) &&
-                                  lowAttendanceLearnerList.length > 2
+                                lowAttendanceLearnerList.length > 2
                                   ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                                   : lowAttendanceLearnerList.length === 2
                                     ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                                     : lowAttendanceLearnerList.length === 1
                                       ? `${lowAttendanceLearnerList[0]}`
                                       : Array.isArray(
-                                        lowAttendanceLearnerList
-                                      ) &&
-                                        lowAttendanceLearnerList.length === 0
+                                            lowAttendanceLearnerList
+                                          ) &&
+                                          lowAttendanceLearnerList.length === 0
                                         ? t(
-                                          'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
-                                        )
-                                        : t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
+                                            'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
+                                          )
+                                        : t(
+                                            'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
+                                          )
                               }
                               valuePartTwo={
                                 Array.isArray(lowAttendanceLearnerList) &&
-                                  lowAttendanceLearnerList.length > 2
+                                lowAttendanceLearnerList.length > 2
                                   ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                                   : null
                               }
@@ -943,6 +1019,100 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <AttendanceComparison blockName={blockName} />
                   </Box>
                 )}
+                <Box mt={3} px="18px">
+                  <Box
+                    sx={{ background: '#fff', padding: '5px' }}
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                  >
+                    <Typography
+                      textAlign={'left'}
+                      fontSize={'0.8rem'}
+                      pl={'1rem'}
+                      pt={'1rem'}
+                      color={'black'}
+                      fontWeight={'600'}
+                    >
+                      {t('DASHBOARD.MY_TIMETABLE')}
+                    </Typography>
+                    <Box
+                      display={'flex'}
+                      sx={{
+                        cursor: 'pointer',
+                        color: theme.palette.secondary.main,
+                        gap: '4px',
+                        opacity: classId === 'all' ? 0.5 : 1,
+                        alignItems: 'center',
+                      }}
+                      onClick={viewTimeTable}
+                    >
+                      <Typography
+                        marginBottom={'0'}
+                        style={{ fontWeight: '500' }}
+                      >
+                        {getMonthName(selectedDate)}
+                      </Typography>
+                      <CalendarMonthIcon sx={{ fontSize: '18px' }} />
+                    </Box>
+                  </Box>
+                  <WeekCalender
+                    showDetailsHandle={showTimeTableDetailsHandle}
+                    data={percentageAttendanceData}
+                    disableDays={classId === 'all'}
+                    classId={classId}
+                    showFromToday={true}
+                    newWidth={'100%'}
+                  />
+                </Box>
+                <Box mt={3} px="18px">
+                  <Grid container spacing={2}>
+                    {sessions?.map((item) => (
+                      <Grid xs={12} sm={6} md={6} item>
+                        <SessionCard data={item} key={item.id}>
+                          <SessionCardFooter item={item} />
+                        </SessionCard>
+                      </Grid>
+                    ))}
+                    {sessions && sessions?.length === 0 && (
+                      <Box
+                        className="fs-12 fw-400 italic"
+                        sx={{ color: theme.palette.warning['300'] }}
+                      >
+                        {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                      </Box>
+                    )}
+                  </Grid>
+                </Box>
+
+                <Box mt={3} px="18px" gap={'15px'}>
+                  <Box
+                    className="fs-14 fw-500"
+                    sx={{ color: theme.palette.warning['300'] }}
+                  >
+                    {t('COMMON.UPCOMING_EXTRA_SESSION', {
+                      days: eventDaysLimit,
+                    })}
+                  </Box>
+                  <Box mt={3} px="18px">
+                    <Grid container spacing={2}>
+                      {extraSessions?.map((item) => (
+                        <Grid xs={12} sm={6} md={6} item>
+                          <SessionCard data={item} key={item.id}>
+                            <SessionCardFooter item={item} />
+                          </SessionCard>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                  {extraSessions && extraSessions?.length === 0 && (
+                    <Box
+                      className="fs-12 fw-400 italic"
+                      sx={{ color: theme.palette.warning['300'] }}
+                    >
+                      {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                    </Box>
+                  )}
+                </Box>
               </Box>
             )}
           </>
