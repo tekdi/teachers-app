@@ -140,6 +140,7 @@ export interface SessionsModalProps {
   date?: string;
   handlePrimaryModel?: () => void;
   secondary?: string;
+  handleEditModal?: () => void; 
 }
 
 export interface PlannedModalProps {
@@ -149,8 +150,9 @@ export interface PlannedModalProps {
   cohortName?: string;
   cohortId?: string;
   onCloseModal?: () => void | undefined;
-  editSession?: string;
-
+  editSelection: string;
+  handleEditSelection: (selection: string) => void;
+  editSession: string;
 }
 
 export interface ScheduleModalProps {
