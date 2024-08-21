@@ -57,7 +57,7 @@ import { getEventList } from '@/services/EventService';
 import manageUserStore from '@/store/manageUserStore';
 import { modifyAttendanceLimit, eventDaysLimit } from '../../../../app.config';
 
-const TeachingCenterDetails = () => {
+const CohortPage = () => {
   const [value, setValue] = React.useState(1);
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
@@ -717,4 +717,4 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default TeachingCenterDetails;
+export default CohortPage;
