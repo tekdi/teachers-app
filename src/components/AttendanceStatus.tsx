@@ -43,7 +43,7 @@ function AttendanceStatus({
   learnerAttendanceData,
   onDateSelection,
   onUpdate,
-}: AttendanceStatusProps) {
+}: Readonly<AttendanceStatusProps>) {
   const { t } = useTranslation();
   const determinePathColor = useDeterminePathColor();
   const selectedDate = shortDateFormat(onDateSelection);
