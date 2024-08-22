@@ -356,6 +356,9 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
 
   const handleMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
+    setCohortLearnerDeleteId(cohortMembershipId);
+    setReassignId(userId);
+
   };
 
   const renderCustomContent = () => {

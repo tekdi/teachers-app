@@ -188,8 +188,9 @@ const TeachingCenterDetails = () => {
           );
 
           cohortData.address =
-            `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
-            '';
+            district?.value && state?.value
+              ? `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}`
+              : '';
         }
         setCohortDetails(cohortData);
         setCohortName(cohortData?.name);
