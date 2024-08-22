@@ -257,29 +257,29 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             const sendTo = {
               receipients: [userEmail],
             };
-            if (replacements && sendTo) {
-              const response = await sendCredentialService({
-                isQueue,
-                context,
-                key,
-                replacements,
-                email: sendTo,
-              });
-              if (response?.result[0]?.data[0]?.status === 'success') {
-                showToastMessage(
-                  t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
-                  'success'
-                );
-              } else {
-                showToastMessage(
-                  t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
-                  'success'
-                );
-              }
-              setOpenModal(true);
-            } else {
-              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-            }
+            // if (replacements && sendTo) {
+            //   const response = await sendCredentialService({
+            //     isQueue,
+            //     context,
+            //     key,
+            //     replacements,
+            //     email: sendTo,
+            //   });
+            //   if (response?.result[0]?.data[0]?.status === 'success') {
+            //     showToastMessage(
+            //       t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
+            //       'success'
+            //     );
+            //   } else {
+            //     showToastMessage(
+            //       t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
+            //       'success'
+            //     );
+            //   }
+            //   setOpenModal(true);
+            // } else {
+            //   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            // }
           }
         }
         // onClose();

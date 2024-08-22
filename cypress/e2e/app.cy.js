@@ -5,7 +5,7 @@ context('App', () => {
 
   it('verify the title', () => {
     cy.clearLocalStorage();
-    cy.title().should('eq', 'Pratham SCP Teachers app');
+    cy.title().should('eq', 'OBLF');
   });
 
   it('CSSLocator', () => {

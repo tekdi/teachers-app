@@ -50,6 +50,7 @@ import {
   eventDaysLimit,
   lowLearnerAttendanceLimit,
   showLablesForOther,
+  tourGuideNavigtion,
 } from './../../app.config';
 
 import AttendanceComparison from '@/components/AttendanceComparison';
@@ -960,7 +961,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     <>
       {isClient && (
         <>
-          <GuideTour toggleDrawer={toggleDrawer} />
+          {tourGuideNavigtion && <GuideTour toggleDrawer={toggleDrawer} />}
           <>
             {!isAuthenticated && (
               <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
