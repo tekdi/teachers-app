@@ -132,7 +132,7 @@ const LoginPage = () => {
               action: 'login-success',
               category: 'Login Page',
               label: 'Login Success',
-              value: userResponse?.userId
+              value: userResponse?.userId,
             });
             localStorage.setItem('state', userResponse?.state);
             localStorage.setItem('district', userResponse?.district);
@@ -169,7 +169,7 @@ const LoginPage = () => {
             action: 'login-fail',
             category: 'Login Page',
             label: 'Login Fail',
-            value: error.response
+            value: error.response,
           });
         } else {
           console.error('Error:', error);
@@ -247,14 +247,30 @@ const LoginPage = () => {
         </Box>
       </Box>
 
-      <Grid container spacing={2}
-        justifyContent={'center'} px={'30px'} alignItems={'center'}>
-        <Grid sx={{
-          '@media (max-width: 900px)': {
-            display: 'none'
-          },
-        }} item xs={12} sm={12} md={6}>
-          <Image className='login-img' src={loginImg} alt="Login Image" layout="responsive" />
+      <Grid
+        container
+        spacing={2}
+        justifyContent={'center'}
+        px={'30px'}
+        alignItems={'center'}
+      >
+        <Grid
+          sx={{
+            '@media (max-width: 900px)': {
+              display: 'none',
+            },
+          }}
+          item
+          xs={12}
+          sm={12}
+          md={6}
+        >
+          <Image
+            className="login-img"
+            src={loginImg}
+            alt="Login Image"
+            layout="responsive"
+          />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
           <form onSubmit={handleFormSubmit}>
@@ -273,12 +289,11 @@ const LoginPage = () => {
                   '@media (min-width: 900px)': {
                     width: '100%',
                     borderRadius: '16px',
-                    boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px'
+                    boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
                   },
                 }}
               >
                 <Box
-
                   sx={{
                     width: '100%',
                     '@media (max-width: 700px)': {
@@ -364,7 +379,11 @@ const LoginPage = () => {
                               onMouseDown={handleMouseDownPassword}
                               edge="end"
                             >
-                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                              {showPassword ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
                             </IconButton>
                           </InputAdornment>
                         ),
@@ -378,7 +397,7 @@ const LoginPage = () => {
                     />
                   </Box>
 
-                  {
+                  {/* {
                     <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
                       <Link
                         sx={{ color: theme.palette.secondary.main }}
@@ -389,7 +408,7 @@ const LoginPage = () => {
                         {t('LOGIN_PAGE.FORGOT_PASSWORD')}
                       </Link>
                     </Box>
-                  }
+                  } */}
                   <Box marginTop={'1.2rem'} className="remember-me-checkbox">
                     <Checkbox
                       onChange={(e) => setRememberMe(e.target.checked)}
@@ -429,8 +448,8 @@ const LoginPage = () => {
                       ref={loginButtonRef}
                       sx={{
                         '@media (min-width: 900px)': {
-                          width: '50%'
-                        }
+                          width: '50%',
+                        },
                       }}
                     >
                       {t('LOGIN_PAGE.LOGIN')}
@@ -441,9 +460,7 @@ const LoginPage = () => {
             </Box>
           </form>
         </Grid>
-
       </Grid>
-
     </Box>
   );
 };
