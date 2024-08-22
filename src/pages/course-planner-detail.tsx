@@ -42,7 +42,7 @@ const CoursePlannerDetail = () => {
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
 
   const [courseDetails, setCourseDetails] = useState(null);
-  const [userProjectDetails, setUserProjectDetails] = useState(null);
+  const [userProjectDetails, setUserProjectDetails] = useState([]);
 
   const fetchCourseDetails = useCallback(() => {
     getTargetedSolutions({
@@ -57,7 +57,7 @@ const CoursePlannerDetail = () => {
   
         return getUserProjectDetails({ id: courseId });
       }).then((userProjectDetailsResponse) => {
-        setUserProjectDetails(userProjectDetailsResponse);
+        setUserProjectDetails(userProjectDetailsResponse.result.tasks);
       }).catch((error) => {
         console.error('Error fetching course planner:', error);
       });
@@ -108,6 +108,9 @@ const CoursePlannerDetail = () => {
   // const handleOpenModel = () => {
   //   setModalOpen(true);
   // };
+
+  console.log(userProjectDetails);
+  
 
   return (
     <>
@@ -218,50 +221,87 @@ const CoursePlannerDetail = () => {
         </Box>
       </Box>
       <Box mt={2}>
-        <Box
+  {userProjectDetails.map((topic:any, index) => (
+    <Box key={topic._id} sx={{ borderRadius: '8px', mb: 2 }}>
+      <Accordion
+        expanded={expandedPanels[`panel${index}-header`] || false}
+        onChange={() =>
+          setExpandedPanels((prev) => ({
+            ...prev,
+            [`panel${index}-header`]: !prev[`panel${index}-header`],
+          }))
+        }
+        sx={{
+          boxShadow: 'none',
+          background: '#F1E7D9',
+          border: 'none',
+          transition: '0.3s',
+        }}
+      >
+        <AccordionSummary
+          expandIcon={
+            <ArrowDropDownIcon
+              sx={{ color: theme.palette.warning['300'] }}
+            />
+          }
+          aria-controls={`panel${index}-content`}
+          id={`panel${index}-header`}
+          className="accordion-summary"
           sx={{
-            borderRadius: '8px',
+            px: '16px',
+            m: 0,
+            '&.Mui-expanded': {
+              minHeight: '48px',
+            },
           }}
         >
-          <Accordion
-            expanded={expandedPanels['panel1-header'] || false}
-            onChange={() =>
-              setExpandedPanels((prev) => ({
-                ...prev,
-                'panel1-header': !prev['panel1-header'],
-              }))
-            }
+          <Box
             sx={{
-              boxShadow: 'none',
-              background: '#F1E7D9',
-              border: 'none',
-              transition: '0.3s',
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
+              pr: '5px',
+              alignItems: 'center',
             }}
           >
-            <AccordionSummary
-              expandIcon={
-                <ArrowDropDownIcon
-                  sx={{ color: theme.palette.warning['300'] }}
-                />
-              }
-              aria-controls="panel1-content"
-              id="panel1-header"
-              className="accordion-summary"
+            <Box
               sx={{
-                px: '16px',
-                m: 0,
-                '&.Mui-expanded': {
-                  minHeight: '48px',
-                },
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: '5px',
+              }}
+            >
+              <RadioButtonUncheckedIcon sx={{ fontSize: '15px' }} />
+              <Typography
+                fontWeight="500"
+                fontSize="14px"
+                color={theme.palette.warning['300']}
+              >
+                {`Topic ${index + 1} - ${topic.name}`}
+              </Typography>
+            </Box>
+            <Typography fontWeight="600" fontSize="12px" color="#7C766F">
+              {/* Here you can add dynamic date or other information if needed */}
+              Jan, Feb
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails
+          sx={{ padding: '0', transition: 'max-height 0.3s ease-out' }}
+        >
+          {topic.children.map((subTopic:any) => (
+            <Box
+              key={subTopic._id}
+              sx={{
+                borderBottom: `1px solid ${theme.palette.warning['A100']}`,
               }}
             >
               <Box
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  pr: '5px',
-                  alignItems: 'center',
+                  py: '10px',
+                  px: '16px',
+                  background: theme.palette.warning['A400'],
                 }}
               >
                 <Box
@@ -269,358 +309,78 @@ const CoursePlannerDetail = () => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    gap: '5px',
-                  }}
-                >
-                  <RadioButtonUncheckedIcon sx={{ fontSize: '15px' }} />
-                  <Typography
-                    fontWeight="500"
-                    fontSize="14px"
-                    color={theme.palette.warning['300']}
-                  >
-                    Topic 1 - Real Numbers {/* will come from API */}
-                  </Typography>
-                </Box>
-                <Typography fontWeight="600" fontSize="12px" color="#7C766F">
-                  Jan, Feb {/* will come from API */}
-                </Typography>
-              </Box>
-            </AccordionSummary>
-            <AccordionDetails
-              sx={{ padding: '0', transition: 'max-height 0.3s ease-out' }}
-            >
-              <Box
-                sx={{
-                  borderBottom: `1px solid ${theme.palette.warning['A100']}`,
-                }}
-              >
-                <Box
-                  sx={{
-                    py: '10px',
-                    px: '16px',
-                    background: theme.palette.warning['A400'],
+                    gap: '20px',
                   }}
                 >
                   <Box
                     sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      gap: '20px',
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: '400',
-                        color: theme.palette.warning['300'],
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => {
-                        router.push(`/topic-detail-view`);
-                      }}
-                    >
-                      The Fundamental Theorem of Arithmetic
-                      {/* will come from API */}
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: '6px',
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          padding: '5px',
-                          background: '  #C1D6FF',
-                          fontSize: '12px',
-                          fontWeight: '500',
-                          color: '#4D4639',
-                          borderRadius: '8px',
-                        }}
-                      >
-                        JAN
-                      </Box>
-                      <CheckCircleIcon
-                        onClick={toggleDrawer(true)}
-                        sx={{
-                          fontSize: '20px',
-                          color: '#7C766F',
-                          cursor: 'pointer',
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                  <Box
-                    sx={{
-                      color: theme.palette.secondary.main,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      mt: 0.8,
+                      fontSize: '16px',
+                      fontWeight: '400',
+                      color: theme.palette.warning['300'],
                       cursor: 'pointer',
                     }}
                     onClick={() => {
                       router.push(`/topic-detail-view`);
                     }}
                   >
-                    <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
-                      5 {t('COURSE_PLANNER.RESOURCES')}
-                    </Box>
-                    <ArrowForwardIcon sx={{ fontSize: '16px' }} />
+                    {subTopic.name}
                   </Box>
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  borderBottom: `1px solid ${theme.palette.warning['A100']}`,
-                }}
-              >
-                <Box
-                  sx={{
-                    py: '10px',
-                    px: '16px',
-                    background: theme.palette.warning['A400'],
-                  }}
-                >
                   <Box
                     sx={{
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
-                      gap: '20px',
+                      gap: '6px',
                     }}
                   >
                     <Box
                       sx={{
-                        fontSize: '16px',
-                        fontWeight: '400',
-                        color: theme.palette.warning['300'],
+                        padding: '5px',
+                        background: '  #C1D6FF',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        color: '#4D4639',
+                        borderRadius: '8px',
+                      }}
+                    >
+                      JAN
+                    </Box>
+                    <CheckCircleIcon
+                      onClick={toggleDrawer(true)}
+                      sx={{
+                        fontSize: '20px',
+                        color: '#7C766F',
                         cursor: 'pointer',
                       }}
-                      onClick={() => {
-                        router.push(`/topic-detail-view`);
-                      }}
-                    >
-                      Irrational Numbers
-                      {/* will come from API */}
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: '6px',
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          padding: '5px',
-                          background: '  #C1D6FF',
-                          fontSize: '12px',
-                          fontWeight: '500',
-                          color: '#4D4639',
-                          borderRadius: '8px',
-                        }}
-                      >
-                        JAN
-                      </Box>
-                      <CheckCircleIcon
-                        onClick={toggleDrawer(true)}
-                        sx={{
-                          fontSize: '20px',
-                          color: '#7C766F',
-                          cursor: 'pointer',
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                  <Box
-                    sx={{
-                      color: theme.palette.secondary.main,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      mt: 0.8,
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => {
-                      router.push(`/topic-detail-view`);
-                    }}
-                  >
-                    <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
-                      4 {t('COURSE_PLANNER.RESOURCES')}
-                    </Box>
-                    <ArrowForwardIcon sx={{ fontSize: '16px' }} />
+                    />
                   </Box>
                 </Box>
-              </Box>
-            </AccordionDetails>
-          </Accordion>
-        </Box>
-      </Box>
-      <Box mt={2}>
-        <Box
-          sx={{
-            borderRadius: '8px',
-          }}
-        >
-          <Accordion
-            expanded={expandedPanels['panel2-header'] || false}
-            onChange={() =>
-              setExpandedPanels((prev) => ({
-                ...prev,
-                'panel2-header': !prev['panel2-header'],
-              }))
-            }
-            sx={{
-              boxShadow: 'none',
-              background: '#F1E7D9',
-              border: 'none',
-              transition: '0.3s',
-            }}
-          >
-            <AccordionSummary
-              expandIcon={
-                <ArrowDropDownIcon
-                  sx={{ color: theme.palette.warning['300'] }}
-                />
-              }
-              aria-controls="panel1-content"
-              id="panel2-header"
-              className="accordion-summary"
-              sx={{
-                px: '16px',
-                m: 0,
-                '&.Mui-expanded': {
-                  minHeight: '48px',
-                },
-              }}
-            >
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  pr: '5px',
-                  alignItems: 'center',
-                }}
-              >
                 <Box
                   sx={{
+                    color: theme.palette.secondary.main,
                     display: 'flex',
-                    justifyContent: 'space-between',
                     alignItems: 'center',
-                    gap: '5px',
+                    gap: '4px',
+                    mt: 0.8,
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    router.push(`/topic-detail-view`);
                   }}
                 >
-                  <RadioButtonUncheckedIcon sx={{ fontSize: '15px' }} />
-                  <Typography
-                    fontWeight="500"
-                    fontSize="14px"
-                    color={theme.palette.warning['300']}
-                  >
-                    Topic 2 - Polynomials {/* will come from API */}
-                  </Typography>
-                </Box>
-                <Typography fontWeight="600" fontSize="12px" color="#7C766F">
-                  Jan, Feb {/* will come from API */}
-                </Typography>
-              </Box>
-            </AccordionSummary>
-            <AccordionDetails
-              sx={{ padding: '0', transition: 'max-height 0.3s ease-out' }}
-            >
-              <Box
-                sx={{
-                  borderBottom: `1px solid ${theme.palette.warning['A100']}`,
-                }}
-              >
-                <Box
-                  sx={{
-                    py: '10px',
-                    px: '16px',
-                    background: theme.palette.warning['A400'],
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      gap: '20px',
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: '400',
-                        color: theme.palette.warning['300'],
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => {
-                        router.push(`/topic-detail-view`);
-                      }}
-                    >
-                      Zeroes of a Polynomial - Geometrical Meaning
-                      {/* will come from API */}
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: '6px',
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          padding: '5px',
-                          background: '  #C1D6FF',
-                          fontSize: '12px',
-                          fontWeight: '500',
-                          color: '#4D4639',
-                          borderRadius: '8px',
-                        }}
-                      >
-                        JAN
-                      </Box>
-                      <CheckCircleIcon
-                        onClick={toggleDrawer(true)}
-                        sx={{
-                          fontSize: '20px',
-                          color: '#7C766F',
-                          cursor: 'pointer',
-                        }}
-                      />
-                    </Box>
+                  <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
+                    {`${subTopic.children.length} ${t('COURSE_PLANNER.RESOURCES')}`}
                   </Box>
-                  <Box
-                    sx={{
-                      color: theme.palette.secondary.main,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      mt: 0.8,
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => {
-                      router.push(`/topic-detail-view`);
-                    }}
-                  >
-                    <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
-                      2 {t('COURSE_PLANNER.RESOURCES')}
-                    </Box>
-                    <ArrowForwardIcon sx={{ fontSize: '16px' }} />
-                  </Box>
+                  <ArrowForwardIcon sx={{ fontSize: '16px' }} />
                 </Box>
               </Box>
-            </AccordionDetails>
-          </Accordion>
-        </Box>
-      </Box>
+            </Box>
+          ))}
+        </AccordionDetails>
+      </Accordion>
+    </Box>
+  ))}
+</Box>
 
       <FacilitatorDrawer
         secondary={'Cancel'}
