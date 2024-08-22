@@ -32,6 +32,7 @@ import Loader from '../components/Loader';
 import { login } from '../services/LoginService';
 import { getUserId } from '../services/ProfileService';
 import loginImg from './../assets/images/login-image.jpg';
+import { Telemetry } from '@/utils/app.constant';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -139,6 +140,7 @@ const LoginPage = () => {
             localStorage.setItem('role', userResponse?.tenantData[0]?.roleName);
             localStorage.setItem('userEmail', userResponse?.email);
             localStorage.setItem('userName', userResponse?.name);
+            localStorage.setItem('userId', userResponse?.userId);
             setUserRole(userResponse?.tenantData[0]?.roleName);
           }
         }
@@ -150,10 +152,10 @@ const LoginPage = () => {
           },
           edata: {
             id: 'login-success',
-            type: 'CLICK',
+            type: Telemetry.CLICK,
             subtype: '',
             pageid: 'sign-in',
-            uid: localStorage.getItem('userId') ?? 'Anonymous',
+           
           },
         };
         telemetryFactory.interact(telemetryInteract);

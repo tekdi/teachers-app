@@ -40,12 +40,14 @@ import {
   CohortAttendancePercentParam,
   ICohort,
   CohortMemberList,
+  Session,
 } from '../utils/Interfaces';
 import {
   ShowSelfAttendance,
   absentReasonOptions,
   accessControl,
   dropoutReasons,
+  eventDaysLimit,
   lowLearnerAttendanceLimit,
   showLablesForOther,
 } from './../../app.config';
@@ -83,6 +85,12 @@ import { getCohortList } from '@/services/CohortServices';
 import CancelIcon from '@mui/icons-material/Cancel'; //absent
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import SimpleModal from '@/components/SimpleModal';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
+import { getEventList } from '@/services/EventService';
+import SessionCard from '@/components/SessionCard';
+import SessionCardFooter from '@/components/SessionCardFooter';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 interface AttendanceParams {
   allowed: number;
@@ -195,6 +203,8 @@ const checkIsAllowedToShow = (attendanceData: { allowed: number }) => {
   }
 };
 
+interface DashboardProps {}
+
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
   const attendacne = [
@@ -214,6 +224,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [showDetails, setShowDetails] = React.useState(false);
   const [handleSaveHasRun, setHandleSaveHasRun] = React.useState(false);
   const [selectedDate, setSelectedDate] =
+    React.useState<string>(getTodayDate());
+  const [timeTableDate, setTimeTableDate] =
     React.useState<string>(getTodayDate());
   const [percentageAttendanceData, setPercentageAttendanceData] =
     React.useState<any>(null);
@@ -252,10 +264,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [data, setData] = React.useState<AttendanceData | null>(null);
   const [role, setRole] = React.useState<any>('');
   const [openDrawer, setOpenDrawer] = React.useState<boolean>(false);
+  const [sessions, setSessions] = React.useState<Session[]>();
+  const [extraSessions, setExtraSessions] = React.useState<Session[]>();
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
   };
+  const [selectedDays, setSelectedDays] = React.useState<any>([]);
 
   const [canMarkAttendanceLerners, setCanMarkAttendanceLerners] =
     React.useState<any>(false);
@@ -721,12 +736,31 @@ const Dashboard: React.FC<DashboardProps> = () => {
     fetchCohorts(userId);
     attendanceConfiguration(getDate);
   };
+  const showTimeTableDetailsHandle = (dayStr: string) => {
+    setTimeTableDate(formatSelectedDate(dayStr));
+    setShowDetails(true);
+  };
 
   const handleModalToggle = () => {
     setOpen(!open);
     ReactGA.event('mark/modify-attendance-button-clicked-dashboard', {
       teacherId: userId,
     });
+
+    const telemetryInteract = {
+      context: {
+        env: 'dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'dashboard',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'dashboard',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+    
   };
 
   const getMonthName = (dateString: string) => {
@@ -797,6 +831,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
       router.push('/attendance-history');
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
+    const telemetryInteract = {
+      context: {
+        env: 'dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'dashboard',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'dashboard',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+  };
+
+  const viewTimeTable = () => {
+    if (classId !== 'all') {
+      router.push(
+        `centers/${classId}/events/${getMonthName(timeTableDate)?.toLowerCase()}`
+      );
+      ReactGA.event('month-name-clicked', { selectedCohortID: classId });
+    }
   };
 
   const handleClose = () => {
@@ -836,6 +892,70 @@ const Dashboard: React.FC<DashboardProps> = () => {
       hasSeenTutorial = storedValue === 'true'; // Convert string 'true' or 'false' to boolean
     }
   }
+
+  useEffect(() => {
+    const getSessionsData = async () => {
+      try {
+        const limit = 0;
+        const offset = 0;
+        const filters = {
+          date: timeTableDate,
+          cohortId: classId,
+          status: ['live'],
+        };
+        const response = await getEventList({ limit, offset, filters });
+        let sessionArray: any[] = [];
+        if (response?.events.length > 0) {
+          response?.events.forEach((event: any) => {
+            if (event.isRecurring) {
+              sessionArray.push(event);
+            }
+          });
+        }
+        setSessions(sessionArray);
+      } catch (error) {
+        setSessions([]);
+      }
+    };
+
+    getSessionsData();
+  }, [timeTableDate, classId]);
+
+  useEffect(() => {
+    const getExtraSessionsData = async () => {
+      try {
+        const date = new Date();
+        const startDate = shortDateFormat(new Date());
+        const lastDate = new Date(
+          date.setDate(date.getDate() + modifyAttendanceLimit)
+        );
+        const endDate = shortDateFormat(lastDate);
+        const limit = 0;
+        const offset = 0;
+        const filters = {
+          startDate: startDate,
+          endDate: endDate,
+          cohortId: classId,
+          status: ['live'],
+        };
+        const response = await getEventList({ limit, offset, filters });
+        let extraSessionArray: any[] = [];
+        if (response?.events.length > 0) {
+          response?.events.forEach((event: any) => {
+            if (!event.isRecurring) {
+              extraSessionArray.push(event);
+            }
+          });
+        }
+        setExtraSessions(extraSessionArray);
+      } catch (error) {
+        setExtraSessions([]);
+      }
+    };
+
+    getExtraSessionsData();
+  }, [classId]);
+
   return (
     <>
       {isClient && (
@@ -1706,6 +1826,100 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <AttendanceComparison blockName={blockName} />
                   </Box>
                 )}
+                <Box mt={3} px="18px">
+                  <Box
+                    sx={{ background: '#fff', padding: '5px' }}
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                  >
+                    <Typography
+                      textAlign={'left'}
+                      fontSize={'0.8rem'}
+                      pl={'1rem'}
+                      pt={'1rem'}
+                      color={'black'}
+                      fontWeight={'600'}
+                    >
+                      {t('DASHBOARD.MY_TIMETABLE')}
+                    </Typography>
+                    <Box
+                      display={'flex'}
+                      sx={{
+                        cursor: 'pointer',
+                        color: theme.palette.secondary.main,
+                        gap: '4px',
+                        opacity: classId === 'all' ? 0.5 : 1,
+                        alignItems: 'center',
+                      }}
+                      onClick={viewTimeTable}
+                    >
+                      <Typography
+                        marginBottom={'0'}
+                        style={{ fontWeight: '500' }}
+                      >
+                        {getMonthName(selectedDate)}
+                      </Typography>
+                      <CalendarMonthIcon sx={{ fontSize: '18px' }} />
+                    </Box>
+                  </Box>
+                  <WeekCalender
+                    showDetailsHandle={showTimeTableDetailsHandle}
+                    data={percentageAttendanceData}
+                    disableDays={classId === 'all'}
+                    classId={classId}
+                    showFromToday={true}
+                    newWidth={'100%'}
+                  />
+                </Box>
+                <Box mt={3} px="18px">
+                  <Grid container spacing={2}>
+                    {sessions?.map((item) => (
+                      <Grid xs={12} sm={6} md={6} item>
+                        <SessionCard data={item} key={item.id}>
+                          <SessionCardFooter item={item} />
+                        </SessionCard>
+                      </Grid>
+                    ))}
+                    {sessions && sessions?.length === 0 && (
+                      <Box
+                        className="fs-12 fw-400 italic"
+                        sx={{ color: theme.palette.warning['300'] }}
+                      >
+                        {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                      </Box>
+                    )}
+                  </Grid>
+                </Box>
+
+                <Box mt={3} px="18px" gap={'15px'}>
+                  <Box
+                    className="fs-14 fw-500"
+                    sx={{ color: theme.palette.warning['300'] }}
+                  >
+                    {t('COMMON.UPCOMING_EXTRA_SESSION', {
+                      days: eventDaysLimit,
+                    })}
+                  </Box>
+                  <Box mt={3} px="18px">
+                    <Grid container spacing={2}>
+                      {extraSessions?.map((item) => (
+                        <Grid xs={12} sm={6} md={6} item>
+                          <SessionCard data={item} key={item.id}>
+                            <SessionCardFooter item={item} />
+                          </SessionCard>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                  {extraSessions && extraSessions?.length === 0 && (
+                    <Box
+                      className="fs-12 fw-400 italic"
+                      sx={{ color: theme.palette.warning['300'] }}
+                    >
+                      {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                    </Box>
+                  )}
+                </Box>
               </Box>
             )}
           </>

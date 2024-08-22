@@ -102,3 +102,9 @@ export enum attendanceType {
   PRESENT = 'present',
   ABSENT = 'absent',
 }
+
+export enum Telemetry {
+CLICK = 'CLICK',
+SEARCH = 'SEARCH',
+VIEW = 'VIEW'
+}

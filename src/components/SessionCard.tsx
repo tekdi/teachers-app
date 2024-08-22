@@ -5,11 +5,13 @@ import CenterSessionModal from './CenterSessionModal';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import PlannedSession from './PlannedSession';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { convertUTCToIST } from '@/utils/Helper';
 import { useTranslation } from 'next-i18next';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import ConfirmationModal from './ConfirmationModal';
+
 
 const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
   const theme = useTheme<any>();
@@ -19,8 +21,20 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
   const [startTime, setStartTime] = React.useState('');
   const [endTime, setEndTime] = React.useState('');
   const [startDate, setStartDate] = React.useState('');
+  const [editSession, setEditSession] = React.useState('');
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [editSelection, setEditSelection] = React.useState('EDIT_SESSION');
 
-  const handleOpen = () => setOpen(true);
+
+
+  const handleEditSelection = (selection: string) => {
+    setEditSelection(selection);
+  };
+
+  const handleOpen = (selection: string) => {
+    setOpen(true)
+    setEditSession(selection);
+  };
   const handleClose = () => setOpen(false);
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
@@ -51,6 +65,14 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
 
     console.log(startDate, startTime, endDate, endTime);
   }, [data]);
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  }
+
+  const handleEditModal = () => {
+    setModalOpen(true);
+  }
 
   return (
     <Box
@@ -96,7 +118,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
             {data?.metadata?.framework?.teacherName}
           </Typography>
         </Box>
-        <EditOutlined onClick={handleOpen} sx={{ cursor: 'pointer' }} />
+        <EditOutlined onClick={() => handleOpen?.('EDIT_SESSION')} sx={{ cursor: 'pointer' }} />
       </Box>
       <Box
         sx={{
@@ -121,21 +143,24 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         >
           {data?.meetingDetails?.url}
         </Box>
-        <ContentCopyIcon
-          sx={{
-            fontSize: '18px',
-            color: theme.palette.secondary.main,
-            cursor: 'pointer',
-          }}
-        />
+        {data?.meetingDetails?.url && (
+          <ContentCopyIcon
+            sx={{
+              fontSize: '18px',
+              color: theme.palette.secondary.main,
+              cursor: 'pointer',
+            }}
+          />
+        )}
       </Box>
       <CenterSessionModal
         open={open}
         handleClose={handleClose}
         title={'Home Science'}
-        primary={'Schedule'}
+        primary={editSession === 'EDIT_SESSION' ? "Update" : 'Schedule'}
+        handleEditModal={handleEditModal}
       >
-        <PlannedSession />
+        <PlannedSession editSelection={editSelection} handleEditSelection={handleEditSelection} editSession={editSession} />
       </CenterSessionModal>
 
       <Box>{children}</Box>
@@ -145,8 +170,18 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         onClose={handleSnackbarClose}
         message="URL copied to clipboard"
       />
+      <ConfirmationModal
+        message={t('CENTER_SESSION.UPDATE_CHANGES')}
+        buttonNames={{
+          primary: t('COMMON.YES'),
+          secondary: t('COMMON.NO_GO_BACK'),
+        }}
+        handleCloseModal={handleCloseModal}
+        modalOpen={modalOpen}
+      />
     </Box>
   );
+
 };
 
 export default SessionsCard;

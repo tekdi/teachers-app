@@ -61,7 +61,7 @@ import {
   ShowCenterSessionsTab,
 } from '../../../../app.config';
 
-const TeachingCenterDetails = () => {
+const CohortPage = () => {
   const [value, setValue] = React.useState(2);
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
@@ -224,7 +224,7 @@ const TeachingCenterDetails = () => {
     };
 
     getSessionsData();
-  }, [selectedDate]);
+  }, [selectedDate, eventCreated]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -259,7 +259,7 @@ const TeachingCenterDetails = () => {
     };
 
     getExtraSessionsData();
-  }, []);
+  }, [eventCreated]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -516,11 +516,11 @@ const TeachingCenterDetails = () => {
             >
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
-            <Box mt={3} px="18px">
-              <Grid container>
+            <Box mt={3}>
+              <Grid container spacing={2}>
                 {extraSessions?.map((item) => (
-                  <Grid xs={12} sm={6} md={4}>
-                    <SessionCard data={item} key={item.id}>
+                  <Grid item xs={12} sm={6} md={6} key={item.id}>
+                    <SessionCard data={item}>
                       <SessionCardFooter item={item} />
                     </SessionCard>
                   </Grid>
@@ -579,19 +579,20 @@ const TeachingCenterDetails = () => {
               disableDays={classId === 'all'}
               classId={classId}
               showFromToday={true}
+              newWidth={'100%'}
             />
           </Box>
 
           <Box mt={3} px="18px">
-            <Grid container>
+            <Grid container spacing={2}>
               {sessions?.map((item) => (
-                <Grid xs={12} sm={6} md={4}>
-                  <SessionCard data={item} key={item.id}>
+                <Grid item xs={12} sm={6} md={6} key={item.id}>
+                  <SessionCard data={item}>
                     <SessionCardFooter item={item} />
                   </SessionCard>
                 </Grid>
               ))}
-              {sessions && sessions?.length === 0 && (
+              {sessions && sessions.length === 0 && (
                 <Box
                   className="fs-12 fw-400 italic"
                   sx={{ color: theme.palette.warning['300'] }}
@@ -600,6 +601,7 @@ const TeachingCenterDetails = () => {
                 </Box>
               )}
             </Grid>
+
           </Box>
         </>
       )}
@@ -722,4 +724,4 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default TeachingCenterDetails;
+export default CohortPage;
