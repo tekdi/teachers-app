@@ -12,30 +12,40 @@ import { useTranslation } from 'next-i18next';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ConfirmationModal from './ConfirmationModal';
 
-
-const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
+const SessionsCard: React.FC<SessionsCardProps> = ({
+  data,
+  children,
+  isEventDeleted,
+}) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [eventDeleted, setEventDeleted] = React.useState(false);
   const [startTime, setStartTime] = React.useState('');
   const [endTime, setEndTime] = React.useState('');
   const [startDate, setStartDate] = React.useState('');
-  const [editSession, setEditSession] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [editSelection, setEditSelection] = React.useState('EDIT_SESSION');
-
-
-
+  const [editSession, setEditSession] = React.useState();
   const handleEditSelection = (selection: string) => {
     setEditSelection(selection);
   };
-
-  const handleOpen = (selection: string) => {
-    setOpen(true)
-    setEditSession(selection);
+  const handleOpen = (eventData: any) => {
+    setOpen(true);
+    setEditSession(eventData);
   };
+
   const handleClose = () => setOpen(false);
+
+  const onEventDeleted = () => {
+    setOpen(false);
+    setEventDeleted(true);
+    if (isEventDeleted) {
+      isEventDeleted();
+    }
+  };
+
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
   const handleCopyUrl = () => {
@@ -68,11 +78,11 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
 
   const handleCloseModal = () => {
     setModalOpen(false);
-  }
+  };
 
   const handleEditModal = () => {
     setModalOpen(true);
-  }
+  };
 
   return (
     <Box
@@ -118,7 +128,10 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
             {data?.metadata?.framework?.teacherName}
           </Typography>
         </Box>
-        <EditOutlined onClick={() => handleOpen?.('EDIT_SESSION')} sx={{ cursor: 'pointer' }} />
+        <EditOutlined
+          onClick={() => handleOpen?.(data)}
+          sx={{ cursor: 'pointer' }}
+        />
       </Box>
       <Box
         sx={{
@@ -157,10 +170,15 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         open={open}
         handleClose={handleClose}
         title={'Home Science'}
-        primary={editSession === 'EDIT_SESSION' ? "Update" : 'Schedule'}
+        primary={editSession === 'EDIT_SESSION' ? 'Update' : 'Schedule'}
         handleEditModal={handleEditModal}
       >
-        <PlannedSession editSelection={editSelection} handleEditSelection={handleEditSelection} editSession={editSession} />
+        <PlannedSession
+          editSession={editSession}
+          handleEditSelection={handleEditSelection}
+          onEventDeleted={onEventDeleted}
+          eventDeleted={eventDeleted}
+        />
       </CenterSessionModal>
 
       <Box>{children}</Box>
@@ -181,7 +199,6 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
       />
     </Box>
   );
-
 };
 
 export default SessionsCard;

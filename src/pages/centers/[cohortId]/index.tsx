@@ -103,6 +103,7 @@ const CohortPage = () => {
     React.useState(false);
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
+  const [eventDeleted, setEventDeleted] = React.useState(false);
 
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [cohortName, setCohortName] = React.useState<string>();
@@ -220,7 +221,7 @@ const CohortPage = () => {
     };
 
     getSessionsData();
-  }, [selectedDate, eventCreated]);
+  }, [selectedDate, eventCreated, eventDeleted]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -255,7 +256,11 @@ const CohortPage = () => {
     };
 
     getExtraSessionsData();
-  }, [eventCreated]);
+  }, [eventCreated, eventDeleted]);
+
+  const handleEventDeleted = () => {
+    setEventDeleted(true);
+  };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -514,7 +519,10 @@ const CohortPage = () => {
               <Grid container spacing={2}>
                 {extraSessions?.map((item) => (
                   <Grid item xs={12} sm={6} md={6} key={item.id}>
-                    <SessionCard data={item}>
+                    <SessionCard
+                      data={item}
+                      isEventDeleted={handleEventDeleted}
+                    >
                       <SessionCardFooter item={item} />
                     </SessionCard>
                   </Grid>
@@ -581,7 +589,7 @@ const CohortPage = () => {
             <Grid container spacing={2}>
               {sessions?.map((item) => (
                 <Grid item xs={12} sm={6} md={6} key={item.id}>
-                  <SessionCard data={item}>
+                  <SessionCard data={item} isEventDeleted={handleEventDeleted}>
                     <SessionCardFooter item={item} />
                   </SessionCard>
                 </Grid>
@@ -595,7 +603,6 @@ const CohortPage = () => {
                 </Box>
               )}
             </Grid>
-
           </Box>
         </>
       )}
