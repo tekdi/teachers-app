@@ -155,7 +155,7 @@ export interface PlannedModalProps {
   editSelection?: string;
   handleEditSelection?: (selection: string) => void;
   onEventDeleted?: () => void;
-  editSession?: string;
+  editSession?: any;
 }
 
 export interface ScheduleModalProps {

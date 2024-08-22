@@ -709,7 +709,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     <Box overflow={'hidden'}>
       {sessionBlocks.map((block, index) => (
         <Box key={block.id} sx={{ padding: '10px 16px' }}>
-          {editSession && (
+          {editSession && editSession?.isRecurring && (
             <FormControl component="fieldset">
               <RadioGroup
                 row
