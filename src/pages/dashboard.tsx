@@ -43,9 +43,11 @@ import {
 } from '../utils/Interfaces';
 import {
   ShowSelfAttendance,
+  absentReasonOptions,
   accessControl,
   dropoutReasons,
   lowLearnerAttendanceLimit,
+  showLablesForOther,
 } from './../../app.config';
 
 import AttendanceComparison from '@/components/AttendanceComparison';
@@ -1115,7 +1117,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                     >
                                       {currentAttendance === 'notMarked' ||
                                       currentAttendance === 'futureDate'
-                                        ? t('COMMON.MARK_TO_LEARNER')
+                                        ? showLablesForOther
+                                          ? t('COMMON.MARK_FOR_LEARNER')
+                                          : t('COMMON.MARK_TO_LEARNER')
                                         : t('COMMON.MODIFY_FOR_LEARNER')}
                                     </Button>
                                   </Stack>
@@ -1331,7 +1335,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                       attendanceData?.[0]?.attendance ===
                                         attendanceType.ABSENT
                                         ? t('COMMON.MODIFY_FOR_SELF')
-                                        : t('COMMON.MARK_TO_SELF')}
+                                        : showLablesForOther
+                                          ? t('COMMON.MARK_FOR_SELF')
+                                          : t('COMMON.MARK_TO_SELF')}
                                       {/* {currentAttendance === 'notMarked' ||
                                 currentAttendance === 'futureDate'
                                   ? t('COMMON.MARK_TO_SELF')
@@ -1424,17 +1430,26 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                         }}
                                         id="demo-multiple-name-label"
                                       >
-                                        {t('COMMON.REASON_FOR_DROPOUT')}
+                                        {showLablesForOther
+                                          ? t('COMMON.REASON_FOR_ABSENT')
+                                          : t('COMMON.REASON_FOR_DROPOUT')}
                                       </InputLabel>
                                       <Select
                                         labelId="demo-multiple-name-label"
                                         id="demo-multiple-name"
                                         input={
-                                          <OutlinedInput label="Reason for Dropout" />
+                                          <OutlinedInput
+                                            label={t(
+                                              'COMMON.REASON_FOR_ABSENT'
+                                            )}
+                                          />
                                         }
                                         onChange={handleChange}
                                       >
-                                        {dropoutReasons?.map((reason) => (
+                                        {(showLablesForOther
+                                          ? absentReasonOptions
+                                          : dropoutReasons
+                                        )?.map((reason) => (
                                           <MenuItem
                                             key={reason.value}
                                             value={reason.value}

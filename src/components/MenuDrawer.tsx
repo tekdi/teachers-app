@@ -27,6 +27,7 @@ import {
   ShowMyTeachingCenter,
   ShowObservationsAndForms,
   accessControl,
+  showLablesForOther,
 } from '../../app.config';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 import checkBook from '../assets/images/checkbook.svg';
@@ -84,7 +85,6 @@ const MenuDrawer: React.FC<DrawerProps> = ({
       handleToggleDrawer(false)();
     }
   };
-  
 
   const navigateToDashboard = () => {
     closeDrawer();
@@ -106,9 +106,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   return (
     <Drawer
       open={isDesktop || isOpen}
-      onClose={
-        closeDrawer
-      }
+      onClose={closeDrawer}
       transitionDuration={{ enter: 500, exit: 500 }}
       className="backgroundFaded"
       variant={isDesktop ? 'persistent' : 'temporary'}
@@ -138,11 +136,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           </Box>
           {!isDesktop && (
             <Box>
-              <IconButton
-                onClick={
-                  closeDrawer
-                }
-              >
+              <IconButton onClick={closeDrawer}>
                 <ClearIcon sx={{ color: theme.palette.warning['300'] }} />
               </IconButton>
             </Box>
@@ -266,7 +260,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             >
               {accessGranted('showTeachingCenter', accessControl, userRole)
                 ? t('DASHBOARD.TEACHING_CENTERS')
-                : t('DASHBOARD.MY_TEACHING_CENTERS')}
+                : showLablesForOther
+                  ? t('DASHBOARD.MY_CLASSES')
+                  : t('DASHBOARD.MY_TEACHING_CENTERS')}
             </Button>
           </Box>
         )}
