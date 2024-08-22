@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { getFormRead } from '@/services/CreateUserService';
-import { createEvent } from '@/services/EventService';
+import { createEvent, editEvent } from '@/services/EventService';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { CreateEvent, PlannedModalProps } from '@/utils/Interfaces';
 import {
@@ -40,6 +40,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'next-i18next';
 import { ChangeEvent, useEffect, useState } from 'react';
+import ReactGA from 'react-ga4';
 import {
   DaysOfWeek,
   eventDaysLimit,
@@ -48,7 +49,7 @@ import {
 import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
-import ReactGA from 'react-ga4';
+import ConfirmationModal from './ConfirmationModal';
 
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
 type type = (typeof sessionType)[keyof typeof sessionType];
@@ -81,15 +82,18 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   cohortName,
   cohortId,
   onCloseModal,
-  editSession
+  editSession,
+  onEventDeleted,
 }) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
   const [eventType, setEventType] = useState<type>(sessionType.REPEATING);
   const [link, setLink] = useState('');
   const [linkError, setLinkError] = useState('');
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>();
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [selectedBlockId, setSelectedBlockId] = useState(0);
+  const [editSelection, setEditSelection] = React.useState('EDIT_SESSION');
   const [subjects, setSubjects] = useState<string[]>();
   dayjs.extend(utc);
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
@@ -118,6 +122,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionEndTime: endTime,
     },
   ]);
+  const handleOpenModel = () => {
+    setModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleEditSelection = (selection: string, eventData: any) => {
+    setEditSelection(selection);
+    console.log(eventData);
+  };
 
   useEffect(() => {
     const initialStartDateTime = combineDateAndTime(startDate, startTime);
@@ -132,15 +147,15 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       blocks.map((block) =>
         block.id === selectedBlockId
           ? {
-            ...block,
-            startDatetime: startDatetime || '',
-            endDatetime: endDatetime || '',
-            endDateValue: endDateValue || '',
-            sessionStartDate: startDate,
-            sessionEndDate: endDate,
-            sessionStartTime: startTime,
-            sessionEndTime: endTime,
-          }
+              ...block,
+              startDatetime: startDatetime || '',
+              endDatetime: endDatetime || '',
+              endDateValue: endDateValue || '',
+              sessionStartDate: startDate,
+              sessionEndDate: endDate,
+              sessionStartTime: startTime,
+              sessionEndTime: endTime,
+            }
           : block
       )
     );
@@ -229,9 +244,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block.id === id
           ? {
-            ...block,
-            subject: newSubject,
-          }
+              ...block,
+              subject: newSubject,
+            }
           : block
       )
     );
@@ -307,16 +322,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         sessionBlocks.map((block) =>
           block?.id === id
             ? {
-              ...block,
-              startDatetime: startDatetime,
-              endDatetime: endDatetime,
-              endDateValue: endDateValue,
-              isRecurring: isRecurringEvent,
-              sessionStartDate: startDate,
-              sessionEndDate: endDate,
-              sessionStartTime: startTime,
-              sessionEndTime: endTime,
-            }
+                ...block,
+                startDatetime: startDatetime,
+                endDatetime: endDatetime,
+                endDateValue: endDateValue,
+                isRecurring: isRecurringEvent,
+                sessionStartDate: startDate,
+                sessionEndDate: endDate,
+                sessionStartTime: startTime,
+                sessionEndTime: endTime,
+              }
             : block
         )
       );
@@ -341,16 +356,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         sessionBlocks.map((block) =>
           block?.id === selectedBlockId
             ? {
-              ...block,
-              startDatetime: startDatetime,
-              endDatetime: endDatetime,
-              endDateValue: endDateValue,
-              isRecurring: isRecurringEvent,
-              sessionStartDate: startDate,
-              sessionEndDate: endDate,
-              sessionStartTime: startTime,
-              sessionEndTime: endTime,
-            }
+                ...block,
+                startDatetime: startDatetime,
+                endDatetime: endDatetime,
+                endDateValue: endDateValue,
+                isRecurring: isRecurringEvent,
+                sessionStartDate: startDate,
+                sessionEndDate: endDate,
+                sessionStartTime: startTime,
+                sessionEndTime: endTime,
+              }
             : block
         )
       );
@@ -389,10 +404,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block.id === id
           ? {
-            ...block,
-            meetingLink: value,
-            onlineProvider: onlineProvider,
-          }
+              ...block,
+              meetingLink: value,
+              onlineProvider: onlineProvider,
+            }
           : block
       )
     );
@@ -408,9 +423,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block.id === id
           ? {
-            ...block,
-            meetingPasscode: value,
-          }
+              ...block,
+              meetingPasscode: value,
+            }
           : block
       )
     );
@@ -431,10 +446,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block?.id === id
           ? {
-            ...block,
-            selectedWeekDays: newSelectedDays,
-            DaysOfWeek: mappedSelectedDays,
-          }
+              ...block,
+              selectedWeekDays: newSelectedDays,
+              DaysOfWeek: mappedSelectedDays,
+            }
           : block
       )
     );
@@ -449,9 +464,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionBlocks.map((block) =>
         block.id === id
           ? {
-            ...block,
-            subjectTitle: value,
-          }
+              ...block,
+              subjectTitle: value,
+            }
           : block
       )
     );
@@ -541,13 +556,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       } else if (clickedBox === 'EXTRA_SESSION') {
         title =
           eventType === t('CENTER_SESSION.JUST') &&
-            mode === t('CENTER_SESSION.ONLINE')
+          mode === t('CENTER_SESSION.ONLINE')
             ? t('CENTER_SESSION.NON_RECURRING_ONLINE')
             : eventType === t('CENTER_SESSION.REAPEATING') &&
-              mode === t('CENTER_SESSION.ONLINE')
+                mode === t('CENTER_SESSION.ONLINE')
               ? t('CENTER_SESSION.ONLINE')
               : eventType === t('CENTER_SESSION.JUST') &&
-                mode === t('CENTER_SESSION.OFFLINE')
+                  mode === t('CENTER_SESSION.OFFLINE')
                 ? t('CENTER_SESSION.NON_RECURRING_OFFLINE')
                 : t('CENTER_SESSION.RECURRING_ONLINE');
       }
@@ -627,10 +642,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           try {
             const response = await createEvent(apiBody);
             console.log(response);
-            if (response) {
+            if (response?.responseCode === 'Created') {
               showToastMessage(
                 t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
-                'sucess'
+                'success'
               );
               ReactGA.event('event-created-successfully', {
                 creatorId: userId,
@@ -638,6 +653,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               if (onCloseModal) {
                 onCloseModal();
               }
+            } else {
+              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
             }
           } catch (error) {
             console.error('Error creating event:', error);
@@ -663,12 +680,36 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     setMode(event.target.value);
   };
 
+  const handelDeleteEvent = async (eventData: any, deleteSelection: string) => {
+    try {
+      const isMainEvent =
+        !eventData?.isRecurring || deleteSelection !== 'EDIT_SESSION';
+
+      const eventRepetitionId = eventData?.eventRepetitionId;
+
+      const apiBody = {
+        isMainEvent: isMainEvent,
+        status: 'archived',
+      };
+      const response = await editEvent(eventRepetitionId, apiBody);
+      if (response?.responseCode === 'OK') {
+        showToastMessage(t('COMMON.SESSION_DELETED_SUCCESSFULLY'), 'success');
+      } else {
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      }
+      if (onEventDeleted) {
+        onEventDeleted();
+      }
+    } catch (error) {
+      console.error('Error in deleting event:', error);
+    }
+  };
+
   return (
     <Box overflow={'hidden'}>
       {sessionBlocks.map((block, index) => (
         <Box key={block.id} sx={{ padding: '10px 16px' }}>
-
-          {editSession && (
+          {editSession && editSession?.isRecurring && (
             <FormControl component="fieldset">
               <RadioGroup
                 row
@@ -679,6 +720,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               >
                 <FormControlLabel
                   value={t('CENTER_SESSION.EDIT_THIS_SESSION')}
+                  onClick={() =>
+                    handleEditSelection?.('EDIT_SESSION', editSession)
+                  }
                   label={
                     <span
                       style={{
@@ -690,7 +734,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       {t('CENTER_SESSION.EDIT_THIS_SESSION')}
                     </span>
                   }
-                  control={<Radio style={{ color: theme.palette.warning['300'] }} />}
+                  control={
+                    <Radio style={{ color: theme.palette.warning['300'] }} />
+                  }
                   labelPlacement="start"
                   sx={{
                     display: 'flex',
@@ -703,7 +749,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
                 <FormControlLabel
                   value={t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS')}
-                  control={<Radio style={{ color: theme.palette.warning['300'] }} />}
+                  onClick={() =>
+                    handleEditSelection?.('FOLLOWING_SESSION', editSession)
+                  }
+                  control={
+                    <Radio style={{ color: theme.palette.warning['300'] }} />
+                  }
                   label={
                     <span
                       style={{
@@ -727,7 +778,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </RadioGroup>
             </FormControl>
           )}
-
 
           <Box>
             <SessionMode
@@ -1044,6 +1094,37 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             </Box>
           )}
 
+          {editSession && (
+            <Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '5px',
+                  mt: 3,
+                  mb: 2,
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    fontSize: '14px',
+                    color: theme?.palette?.secondary.main,
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                  }}
+                  onClick={handleOpenModel}
+                >
+                  {editSelection === 'EDIT_SESSION'
+                    ? t('CENTER_SESSION.DELETE_THIS_SESSION')
+                    : t('CENTER_SESSION.DELETE_FOLLOWING_SESSION')}
+                </Box>
+                <DeleteOutlineIcon
+                  sx={{ fontSize: '18px', color: theme?.palette?.error.main }}
+                />
+              </Box>
+            </Box>
+          )}
+
           {sessionBlocks.length > 1 && (
             <Box
               sx={{
@@ -1069,30 +1150,50 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               />
             </Box>
           )}
-          <Box sx={{ mt: 2 }}>
-            <Divider />
-          </Box>
 
-          <Divider />
-
-          <Box mt={2.5} mb={2}>
-            <Button
-              sx={{
-                border: `1px solid ${theme.palette.error.contrastText}`,
-                borderRadius: '100px',
-                height: '40px',
-                width: '163px',
-                color: theme.palette.error.contrastText,
-              }}
-              className="text-1E"
-              endIcon={<AddIcon />}
-              onClick={handleAddSession}
-            >
-              {t('CENTER_SESSION.ADD_SESSION')}
-            </Button>
-          </Box>
+          {!editSession && (
+            <>
+              <Box sx={{ mt: 2 }}>
+                <Divider />
+              </Box>
+              <Divider />
+              <Box mt={2.5} mb={2}>
+                <Button
+                  sx={{
+                    border: `1px solid ${theme.palette.error.contrastText}`,
+                    borderRadius: '100px',
+                    height: '40px',
+                    width: '163px',
+                    color: theme.palette.error.contrastText,
+                  }}
+                  className="text-1E"
+                  endIcon={<AddIcon />}
+                  onClick={handleAddSession}
+                >
+                  {t('CENTER_SESSION.ADD_SESSION')}
+                </Button>
+              </Box>
+            </>
+          )}
         </Box>
       ))}
+
+      {editSession && (
+        <ConfirmationModal
+          message={
+            editSelection === 'EDIT_SESSION'
+              ? t('CENTER_SESSION.DELETE_SESSION_MSG')
+              : t('CENTER_SESSION.DELETE_ALL_SESSION_MSG')
+          }
+          buttonNames={{
+            primary: t('COMMON.YES'),
+            secondary: t('COMMON.NO_GO_BACK'),
+          }}
+          handleCloseModal={handleCloseModal}
+          handleAction={() => handelDeleteEvent(editSession, editSelection)}
+          modalOpen={modalOpen}
+        />
+      )}
     </Box>
   );
 };

@@ -129,6 +129,7 @@ export interface ExtraSessionsCardProps {
 export interface SessionsCardProps {
   data: any;
   children?: React.ReactNode;
+  isEventDeleted?: () => void;
 }
 export interface SessionsModalProps {
   children?: React.ReactNode;
@@ -140,17 +141,21 @@ export interface SessionsModalProps {
   date?: string;
   handlePrimaryModel?: () => void;
   secondary?: string;
+  handleEditModal?: () => void;
 }
 
 export interface PlannedModalProps {
   removeModal?: () => void;
   clickedBox?: string | null;
   scheduleEvent?: boolean;
+  eventDeleted?: boolean;
   cohortName?: string;
   cohortId?: string;
   onCloseModal?: () => void | undefined;
-  editSession?: string;
-
+  editSelection?: string;
+  handleEditSelection?: (selection: string) => void;
+  onEventDeleted?: () => void;
+  editSession?: any;
 }
 
 export interface ScheduleModalProps {
@@ -601,5 +606,15 @@ export interface GetTargetedSolutionsParams {
 
 export interface GetUserProjectDetailsParams {
   id: string;
+}
+
+  userId: string[];
+  contentId: string[];
+  batchId: string;
+}
+
+export interface EditEvent {
+  isMainEvent: boolean;
+  status: string;
 }
 

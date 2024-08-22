@@ -103,6 +103,7 @@ const CohortPage = () => {
     React.useState(false);
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
+  const [eventDeleted, setEventDeleted] = React.useState(false);
 
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [cohortName, setCohortName] = React.useState<string>();
@@ -220,7 +221,7 @@ const CohortPage = () => {
     };
 
     getSessionsData();
-  }, [selectedDate, eventCreated]);
+  }, [selectedDate, eventCreated, eventDeleted]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -255,7 +256,11 @@ const CohortPage = () => {
     };
 
     getExtraSessionsData();
-  }, [eventCreated]);
+  }, [eventCreated, eventDeleted]);
+
+  const handleEventDeleted = () => {
+    setEventDeleted(true);
+  };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -324,15 +329,14 @@ const CohortPage = () => {
           <Box
             sx={{
               display: 'flex',
-              alignItems: 'center',
               cursor: 'pointer',
             }}
             onClick={handleBackEvent}
           >
             <KeyboardBackspaceOutlinedIcon
-              sx={{ color: theme.palette.warning['A200'], marginTop: '8px' }}
+              sx={{ color: theme.palette.warning['A200'], marginTop: '18px' }}
             />
-            <Box m={'1rem 1rem 0.5rem'} display={'column'} gap={'5px'}>
+            <Box m={'1rem 1rem 0.5rem 0.5rem'} display={'column'} gap={'5px'}>
               <Typography textAlign={'left'} fontSize={'22px'}>
                 {toPascalCase(cohortDetails?.name)}
               </Typography>
@@ -510,11 +514,14 @@ const CohortPage = () => {
             >
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
-            <Box mt={3} px="18px">
-              <Grid container>
+            <Box mt={3}>
+              <Grid container spacing={2}>
                 {extraSessions?.map((item) => (
-                  <Grid xs={12} sm={6} md={4}>
-                    <SessionCard data={item} key={item.id}>
+                  <Grid item xs={12} sm={6} md={6} key={item.id}>
+                    <SessionCard
+                      data={item}
+                      isEventDeleted={handleEventDeleted}
+                    >
                       <SessionCardFooter item={item} />
                     </SessionCard>
                   </Grid>
@@ -578,15 +585,15 @@ const CohortPage = () => {
           </Box>
 
           <Box mt={3} px="18px">
-            <Grid container>
+            <Grid container spacing={2}>
               {sessions?.map((item) => (
-                <Grid xs={12} sm={6} md={4}>
-                  <SessionCard data={item} key={item.id}>
+                <Grid item xs={12} sm={6} md={6} key={item.id}>
+                  <SessionCard data={item} isEventDeleted={handleEventDeleted}>
                     <SessionCardFooter item={item} />
                   </SessionCard>
                 </Grid>
               ))}
-              {sessions && sessions?.length === 0 && (
+              {sessions && sessions.length === 0 && (
                 <Box
                   className="fs-12 fw-400 italic"
                   sx={{ color: theme.palette.warning['300'] }}
