@@ -38,7 +38,7 @@ const GuideTour: React.FC<GuideTourProps> = ({ toggleDrawer }) => {
     }
   };
 
-  const handleJoyrideCallback = (data: JoyrideCallbackData) => {
+  const handleJoyrideCallback = async (data: JoyrideCallbackData) => {
     const { action, index, type, status } = data;
 
     if (status === 'finished' || status === 'skipped') {
@@ -54,10 +54,11 @@ const GuideTour: React.FC<GuideTourProps> = ({ toggleDrawer }) => {
     } else if (type === 'step:after' || type === 'tour:start') {
       if (action === 'next') {
         if (stepIndex === 4) {
-          toggleDrawer(true)();
-          setTimeout(() => {
-            setStepIndex((prevIndex) => prevIndex + 1);
-          }, 0);
+          await new Promise<void>((resolve) => {
+            toggleDrawer(true)();
+            setTimeout(resolve, 645); // Adjust the delay time as needed
+          });
+          setStepIndex((prevIndex) => prevIndex + 1);
         } else {
           setStepIndex((prevIndex) => prevIndex + 1);
         }
