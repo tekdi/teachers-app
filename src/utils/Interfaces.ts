@@ -606,8 +606,6 @@ export interface GetTargetedSolutionsParams {
 
 export interface GetUserProjectDetailsParams {
   id: string;
-}
-
   userId: string[];
   contentId: string[];
   batchId: string;
