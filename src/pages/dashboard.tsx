@@ -47,6 +47,7 @@ import {
   absentReasonOptions,
   accessControl,
   dropoutReasons,
+  dashboardDaysLimit,
   eventDaysLimit,
   lowLearnerAttendanceLimit,
   showLablesForOther,
@@ -794,14 +795,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
           currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
         const weekStartDate = new Date(currentDate.setDate(diffToMonday));
         const startDate = new Date(
-          currentDate.setDate(currentDate.getDate() - 30)
+          currentDate.setDate(currentDate.getDate() - dashboardDaysLimit)
         );
         startDate.setHours(0, 0, 0, 0);
         const endDate = new Date(weekStartDate);
-        endDate.setDate(weekStartDate.getDate() + 6);
+        endDate.setDate(weekStartDate.getDate() + modifyAttendanceLimit);
         endDate.setHours(23, 59, 59, 999);
         const fromDateFormatted = shortDateFormat(startDate);
-        const toDateFormatted = shortDateFormat(endDate);
+        const toDateFormatted = shortDateFormat(new Date());
         const attendanceRequest: AttendancePercentageProps = {
           limit: 300,
           page: 0,
