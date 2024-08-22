@@ -590,3 +590,16 @@ export interface IAssessmentStatusOptions {
   contentId: string[],
   batchId: string
 }
+
+export interface GetTargetedSolutionsParams {
+  state: string;
+  role: string;
+  class: string;
+  board: string;
+  courseType: string;
+}
+
+export interface GetUserProjectDetailsParams {
+  id: string;
+}
+

@@ -1,4 +1,5 @@
-import { CoursePlanner } from '../utils/Interfaces';
+import { CoursePlanner, GetTargetedSolutionsParams } from '../utils/Interfaces';
+import axios from 'axios';
 
 export const getCoursePlanner = (): CoursePlanner[] => {
   // TODO: Add API call here
@@ -15,3 +16,60 @@ export const getCoursePlanner = (): CoursePlanner[] => {
 
   return CoursePlannerService;
 };
+
+
+export const getTargetedSolutions = async ({
+  state,
+  role,
+  class: className,
+  board,
+  courseType,
+}: GetTargetedSolutionsParams): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/solutions/targetedSolutions?type=improvementProject`;
+
+  const headers = {
+    'X-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
+    'Content-Type': 'application/json',
+  };
+
+  const data = {
+    state,
+    role,
+    class: className,
+    board,
+    courseType,
+  };
+
+  try {
+    const response = await axios.post(apiUrl, data, { headers });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in getting Targeted Solutions', error);
+    return error;
+  }
+};
+interface GetUserProjectDetailsParams {
+  id: string;
+}
+
+export const getUserProjectDetails = async ({ id }: GetUserProjectDetailsParams): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/userProjects/details/${id}`;
+
+  const headers = {
+    'Authorization': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
+    'Content-Type': 'application/json',
+    'x-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
+    
+  };
+
+  try {
+    const response = await axios.post(apiUrl, {}, { headers });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in getting User Project Details', error);
+    return error;
+  }
+};
+
+
+
