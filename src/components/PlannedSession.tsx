@@ -94,7 +94,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [selectedBlockId, setSelectedBlockId] = useState(0);
- 
+
   const [subjects, setSubjects] = useState<string[]>();
   dayjs.extend(utc);
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
@@ -126,7 +126,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const handleOpenModel = () => {
     setModalOpen(true);
   };
-  const handleCloseModal =() => {
+  const handleCloseModal = () => {
     setModalOpen(false);
   }
 
@@ -757,50 +757,67 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             />
           </Box>
           {clickedBox === 'PLANNED_SESSION' && (
-            <Box sx={{ mt: 2 }}>
-              <FormControl fullWidth>
-                <InputLabel
-                  style={{ color: theme?.palette?.warning['A200'] }}
-                  id="demo-simple-select-label"
-                >
-                  {t('CENTER_SESSION.SUBJECT')}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label={t('CENTER_SESSION.SUBJECT')}
-                  style={{ borderRadius: '4px' }}
-                  onChange={(event: any) =>
-                    handleSubjectChange(block?.id, event)
-                  }
-                  value={selectedSubject}
-                >
-                  {subjects?.map((subject: string) => (
-                    <MenuItem key={subject} value={subject}>
-                      {subject}
+            <>
+              <Box sx={{ mt: 2 }}>
+                <FormControl fullWidth>
+                  <InputLabel
+                    style={{ color: theme?.palette?.warning['A200'] }}
+                    id="demo-simple-select-label"
+                  >
+                    {t('CENTER_SESSION.SUBJECT')}
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label={t('CENTER_SESSION.SUBJECT')}
+                    style={{ borderRadius: '4px' }}
+                    onChange={(event: any) => handleSubjectChange(block?.id, event)}
+                    value={selectedSubject}
+                  >
+                    {subjects?.map((subject: string) => (
+                      <MenuItem key={subject} value={subject}>
+                        {subject}
+                      </MenuItem>
+                    ))}
+                    <MenuItem key="other" value="other">
+                      other
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
+                  </Select>
+
+                </FormControl>
+              </Box>
+
+              <Box sx={{ mt: 2 }}>
+                <TextField
+                  id="outlined-basic"
+                  label={t('CENTER_SESSION.SESSION_TITLE_OPTIONAL')}
+                  variant="outlined"
+                  value={block?.subjectTitle}
+                  onChange={(e) => {
+                    handleSubjectTitleChange(e, block?.id);
+                  }}
+                />
+              </Box>
+
+            </>
           )}
 
           {block?.sessionMode === sessionMode.ONLINE && (
             <>
-              {clickedBox === 'EXTRA_SESSION' && (
-                <>
-                  <Box
-                    sx={{
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      color: theme?.palette?.warning['300'],
-                      mt: 1.5,
-                    }}
-                  >
-                    {t('CENTER_SESSION.SET_UP')}
-                  </Box>
-                </>
-              )}
+
+
+              {/* <Box
+                sx={{
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: theme?.palette?.warning['300'],
+                  mt: 1.5,
+                }}
+              >
+                {t('CENTER_SESSION.SET_UP')}
+              </Box> */}
+
+
               <Box sx={{ mt: 2 }}>
                 <TextField
                   id="outlined-basic"
@@ -829,7 +846,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           )}
           {clickedBox === 'EXTRA_SESSION' && (
             <Box sx={{ mt: 2 }}>
-              <Box
+              {/* <Box
                 sx={{
                   fontSize: '14px',
                   fontWeight: '500',
@@ -837,8 +854,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 }}
               >
                 {t('CENTER_SESSION.SESSION_DETAILS')}
-              </Box>
-              <Box sx={{ mt: 2 }}>
+              </Box> */}
+              <Box>
                 <FormControl fullWidth>
                   <InputLabel
                     style={{
@@ -886,7 +903,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           {clickedBox === 'EXTRA_SESSION' && (
             <>
               <Box sx={{ mt: 2 }}>
-                <SessionMode
+                {/* <SessionMode
                   mode={block?.sessionType || eventType}
                   handleSessionModeChange={(e) =>
                     handleSessionTypeChange(e, block?.id)
@@ -896,65 +913,66 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     mode1: t('CENTER_SESSION.REPEATING'),
                     mode2: t('CENTER_SESSION.JUST_ONCE'),
                   }}
-                />
-                {block?.sessionType === sessionType.JUST && (
-                  <Box sx={{ mt: 3 }}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <Stack spacing={3}>
-                        <MobileDatePicker
-                          label="Date"
-                          value={block?.sessionStartDate || startDate}
-                          onChange={(newValue) =>
-                            handleChange(block?.id, newValue, 'start', 'date')
-                          }
-                          format="DD MMM, YYYY"
-                          sx={{ borderRadius: '4px' }}
-                        />
-                      </Stack>
-                    </LocalizationProvider>
+                /> */}
+                {/* {block?.sessionType === sessionType.JUST && (
+                   )} */}
+                <Box sx={{ mt: 3 }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Stack spacing={3}>
+                      <MobileDatePicker
+                        label="Date"
+                        value={block?.sessionStartDate || startDate}
+                        onChange={(newValue) =>
+                          handleChange(block?.id, newValue, 'start', 'date')
+                        }
+                        format="DD MMM, YYYY"
+                        sx={{ borderRadius: '4px' }}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
 
-                    <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
-                      <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-                        <Box sx={{ mt: 3 }}>
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <CustomTimePicker
-                              label={t('CENTER_SESSION.START_TIME')}
-                              value={block?.sessionStartTime || startTime}
-                              onChange={(newValue) =>
-                                handleChange(
-                                  block?.id,
-                                  newValue,
-                                  'start',
-                                  'time'
-                                )
-                              }
-                              sx={{ borderRadius: '4px', fontSize: '2px' }}
-                            />
-                          </LocalizationProvider>
-                        </Box>
-                      </Grid>
-                      <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-                        <Box sx={{ mt: 3 }}>
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <CustomTimePicker
-                              label={t('CENTER_SESSION.END_TIME')}
-                              value={block?.sessionEndTime || endTime}
-                              onChange={(newValue) =>
-                                handleChange(block?.id, newValue, 'end', 'time')
-                              }
-                              sx={{ borderRadius: '4px' }}
-                            />
-                          </LocalizationProvider>
-                        </Box>
-                      </Grid>
+                  <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
+                    <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                      <Box sx={{ mt: 3 }}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <CustomTimePicker
+                            label={t('CENTER_SESSION.START_TIME')}
+                            value={block?.sessionStartTime || startTime}
+                            onChange={(newValue) =>
+                              handleChange(
+                                block?.id,
+                                newValue,
+                                'start',
+                                'time'
+                              )
+                            }
+                            sx={{ borderRadius: '4px', fontSize: '2px' }}
+                          />
+                        </LocalizationProvider>
+                      </Box>
                     </Grid>
-                  </Box>
-                )}
+                    <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                      <Box sx={{ mt: 3 }}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <CustomTimePicker
+                            label={t('CENTER_SESSION.END_TIME')}
+                            value={block?.sessionEndTime || endTime}
+                            onChange={(newValue) =>
+                              handleChange(block?.id, newValue, 'end', 'time')
+                            }
+                            sx={{ borderRadius: '4px' }}
+                          />
+                        </LocalizationProvider>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Box>
+
               </Box>
             </>
           )}
+          {clickedBox !== 'EXTRA_SESSION' && (
 
-          {block?.sessionType !== sessionType.JUST && (
             <Box sx={{ mt: 2 }}>
               <Box sx={{ overflow: 'none' }}>
                 <Typography variant="h2" component="h2">
@@ -1056,7 +1074,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 </Grid>
               </Grid>
             </Box>
-          )}
+
+          )
+          }
 
 
           {editSession && (
@@ -1081,7 +1101,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 >
                   {
 
-                    editSelection === 'EDIT_SESSION' ? t('CENTER_SESSION.DELETE_THIS_SESSION') :  t('CENTER_SESSION.DELETE_FOLLOWING_SESSION')
+                    editSelection === 'EDIT_SESSION' ? t('CENTER_SESSION.DELETE_THIS_SESSION') : t('CENTER_SESSION.DELETE_FOLLOWING_SESSION')
                   }
                 </Box>
                 <DeleteOutlineIcon

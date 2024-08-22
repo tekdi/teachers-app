@@ -465,7 +465,7 @@ const CohortPage = () => {
               deleteModal
                 ? t('CENTER_SESSION.DELETE_SESSION')
                 : openSchedule
-                  ? clickedBox === t('CENTER_SESSION.EXTRA_SESSION')
+                  ? clickedBox === 'EXTRA_SESSION'
                     ? 'Extra Session'
                     : t('CENTER_SESSION.PLANNED_SESSION')
                   : t('CENTER_SESSION.SCHEDULE')
