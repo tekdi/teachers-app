@@ -816,7 +816,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       </MenuItem>
                     ))}
                     <MenuItem key="other" value="other">
-                      other
+                    {t('FORM.OTHER')}
                     </MenuItem>
                   </Select>
 
