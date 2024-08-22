@@ -1028,3 +1028,61 @@ legend.Mui-focused {
   color: var(--mui-palette-warning-300) !important; 
 }
 
+
+
+
+
+
+
+.swiper-button-next{
+  position: absolute;
+  top: 162px !important;
+  border: 1px solid #D0C5B4;
+  height: 32px !important;
+  width: 32px !important;
+  border-radius: 4px !important;
+
+}
+.swiper-button-prev{
+  position: absolute !important;
+  top: 162px !important;
+  padding: 8px;
+  right: 0px !important;
+}
+.swiper-button-prev, .swiper-rtl .swiper-button-next{
+  right: 50px !important;
+  left: unset !important;
+  border: 1px solid #D0C5B4;
+  height: 32px !important;
+  width: 32px !important;
+  border-radius: 4px !important;
+}
+
+
+.swiper-button-prev:after, .swiper-rtl .swiper-button-next:after {
+  content: 'prev';
+  font-size: 14px !important;
+  color: #1C1B1F !important;
+}
+
+.swiper-button-next:after, .swiper-rtl .swiper-button-prev:after{
+  content: 'next';
+  font-size: 14px !important;
+  color: #1C1B1F !important;
+}
+.swiper{
+  position: unset !important;
+}
+
+.swiper-pagination-fraction{
+  background-color: red !important;
+  position: absolute;
+  width: fit-content !important;
+  top: 142px !important;
+}
+
+.swiper-pagination-fraction{
+  color: #7C766F !important;
+  font-size: 12px;
+  font-weight: 500;
+}

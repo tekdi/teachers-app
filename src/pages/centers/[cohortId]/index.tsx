@@ -50,9 +50,14 @@ import ReactGA from 'react-ga4';
 import { Session } from '../../../utils/Interfaces';
 import Schedule from '../../../components/Schedule';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Navigation } from 'swiper/modules';
 import { Role } from '@/utils/app.constant';
 import { showToastMessage } from '@/components/Toastify';
 import { getEventList } from '@/services/EventService';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 import manageUserStore from '@/store/manageUserStore';
 import { modifyAttendanceLimit, eventDaysLimit } from '../../../../app.config';
@@ -514,19 +519,90 @@ const CohortPage = () => {
             >
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
-            <Box mt={3}>
-              <Grid container spacing={2}>
+            <Box mt={3} sx={{position:'relative'}}>
+              <Swiper
+                pagination={{
+                  type: 'fraction',
+                }}
+                breakpoints={{
+                  500: {
+                    slidesPerView: 1, 
+                    spaceBetween: 20, 
+                  },
+                  640: {
+                    slidesPerView: 2, 
+                    spaceBetween: 20, 
+                  },
+                  900: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                  },
+                  2000: {
+                    slidesPerView: 4,
+                    spaceBetween: 40,
+                  },
+                }}
+                navigation={true}
+                modules={[Pagination, Navigation]}
+                className="mySwiper"
+              >
+
                 {extraSessions?.map((item) => (
-                  <Grid item xs={12} sm={6} md={6} key={item.id}>
+                  <>
+
+                  <SwiperSlide>
                     <SessionCard
                       data={item}
                       isEventDeleted={handleEventDeleted}
                     >
                       <SessionCardFooter item={item} />
                     </SessionCard>
-                  </Grid>
+                  </SwiperSlide>
+                  <SwiperSlide>
+                    <SessionCard
+                      data={item}
+                      isEventDeleted={handleEventDeleted}
+                    >
+                      <SessionCardFooter item={item} />
+                    </SessionCard>
+                  </SwiperSlide>
+                  <SwiperSlide>
+                    <SessionCard
+                      data={item}
+                      isEventDeleted={handleEventDeleted}
+                    >
+                      <SessionCardFooter item={item} />
+                    </SessionCard>
+                  </SwiperSlide>
+                  <SwiperSlide>
+                    <SessionCard
+                      data={item}
+                      isEventDeleted={handleEventDeleted}
+                    >
+                      <SessionCardFooter item={item} />
+                    </SessionCard>
+                  </SwiperSlide>
+                  <SwiperSlide>
+                    <SessionCard
+                      data={item}
+                      isEventDeleted={handleEventDeleted}
+                    >
+                      <SessionCardFooter item={item} />
+                    </SessionCard>
+                  </SwiperSlide>
+                  <SwiperSlide>
+                    <SessionCard
+                      data={item}
+                      isEventDeleted={handleEventDeleted}
+                    >
+                      <SessionCardFooter item={item} />
+                    </SessionCard>
+                  </SwiperSlide>
+                  </>
                 ))}
-              </Grid>
+
+              </Swiper>
+
             </Box>
             {extraSessions && extraSessions?.length === 0 && (
               <Box
