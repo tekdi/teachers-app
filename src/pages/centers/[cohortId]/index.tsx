@@ -324,15 +324,14 @@ const CohortPage = () => {
           <Box
             sx={{
               display: 'flex',
-              alignItems: 'center',
               cursor: 'pointer',
             }}
             onClick={handleBackEvent}
           >
             <KeyboardBackspaceOutlinedIcon
-              sx={{ color: theme.palette.warning['A200'], marginTop: '8px' }}
+              sx={{ color: theme.palette.warning['A200'], marginTop: '18px' }}
             />
-            <Box m={'1rem 1rem 0.5rem'} display={'column'} gap={'5px'}>
+            <Box m={'1rem 1rem 0.5rem 0.5rem'} display={'column'} gap={'5px'}>
               <Typography textAlign={'left'} fontSize={'22px'}>
                 {toPascalCase(cohortDetails?.name)}
               </Typography>
