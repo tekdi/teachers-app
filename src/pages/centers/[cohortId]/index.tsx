@@ -1,5 +1,7 @@
 import {
   formatSelectedDate,
+  getAfterDate,
+  getBeforeDate,
   getMonthName,
   getTodayDate,
   shortDateFormat,
@@ -53,7 +55,6 @@ import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { Role } from '@/utils/app.constant';
 import { showToastMessage } from '@/components/Toastify';
 import { getEventList } from '@/services/EventService';
-
 import manageUserStore from '@/store/manageUserStore';
 import { modifyAttendanceLimit, eventDaysLimit } from '../../../../app.config';
 
@@ -198,10 +199,15 @@ const CohortPage = () => {
   useEffect(() => {
     const getSessionsData = async () => {
       try {
+        const afterDate = getAfterDate(selectedDate);
+        const beforeDate = getBeforeDate(selectedDate);
         const limit = 0;
         const offset = 0;
         const filters = {
-          date: selectedDate,
+          date: {
+            after: afterDate,
+            before: beforeDate,
+          },
           cohortId: cohortId,
           status: ['live'],
         };
@@ -232,11 +238,17 @@ const CohortPage = () => {
           date.setDate(date.getDate() + modifyAttendanceLimit)
         );
         const endDate = shortDateFormat(lastDate);
+        const afterDate = getAfterDate(startDate);
+        const beforeDate = getBeforeDate(endDate);
         const limit = 0;
         const offset = 0;
         const filters = {
-          startDate: startDate,
-          endDate: endDate,
+          startDate: {
+            after: afterDate,
+          },
+          endDate: {
+            before: beforeDate,
+          },
           cohortId: cohortId,
           status: ['live'],
         };

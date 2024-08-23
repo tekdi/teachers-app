@@ -1,7 +1,9 @@
 import { Role, Status, labelsToExtractForMiniProfile } from './app.constant';
-
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import FingerprintJS from 'fingerprintjs2';
 import { CustomField, UpdateCustomField } from './Interfaces';
+dayjs.extend(utc);
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -405,5 +407,19 @@ export const getEmailPattern = (): string => {
 };
 
 export const translateString = (t: any, label: string) => {
-  return t(`FORM.${label}`) === `FORM.${label}` ? toPascalCase(label) : t(`FORM.${label}`);
+  return t(`FORM.${label}`) === `FORM.${label}`
+    ? toPascalCase(label)
+    : t(`FORM.${label}`);
+};
+
+export const getAfterDate = (selectedDate: string) => {
+  const selected = dayjs.utc(selectedDate, 'YYYY-MM-DD');
+  const afterDate = selected.subtract(1, 'day').hour(18).minute(30).second(0);
+  return afterDate.format('YYYY-MM-DDTHH:mm:ss[Z]');
+};
+
+export const getBeforeDate = (selectedDate: string) => {
+  const selected = dayjs.utc(selectedDate, 'YYYY-MM-DD');
+  const beforeDate = selected.hour(18).minute(29).second(59);
+  return beforeDate.format('YYYY-MM-DDTHH:mm:ss[Z]');
 };
