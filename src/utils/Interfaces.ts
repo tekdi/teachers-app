@@ -591,6 +591,21 @@ export interface BottomDrawerProps {
 }
 
 export interface IAssessmentStatusOptions {
+  userId: string[],
+  contentId: string[],
+  batchId: string
+}
+
+export interface GetTargetedSolutionsParams {
+  state: string;
+  role: string;
+  class: string;
+  board: string;
+  courseType: string;
+}
+
+export interface GetUserProjectDetailsParams {
+  id: string;
   userId: string[];
   contentId: string[];
   batchId: string;
@@ -600,3 +615,4 @@ export interface EditEvent {
   isMainEvent: boolean;
   status: string;
 }
+

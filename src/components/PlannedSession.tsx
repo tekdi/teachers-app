@@ -86,7 +86,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   onEventDeleted,
 }) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
-  const [eventType, setEventType] = useState<type>(sessionType.REPEATING);
+  const [eventType, setEventType] = useState<type>(sessionType.JUST);
   const [link, setLink] = useState('');
   const [linkError, setLinkError] = useState('');
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>();
@@ -555,16 +555,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             : t('CENTER_SESSION.RECURRING_OFFLINE');
       } else if (clickedBox === 'EXTRA_SESSION') {
         title =
-          eventType === t('CENTER_SESSION.JUST') &&
           mode === t('CENTER_SESSION.ONLINE')
-            ? t('CENTER_SESSION.NON_RECURRING_ONLINE')
-            : eventType === t('CENTER_SESSION.REAPEATING') &&
-                mode === t('CENTER_SESSION.ONLINE')
-              ? t('CENTER_SESSION.ONLINE')
-              : eventType === t('CENTER_SESSION.JUST') &&
-                  mode === t('CENTER_SESSION.OFFLINE')
-                ? t('CENTER_SESSION.NON_RECURRING_OFFLINE')
-                : t('CENTER_SESSION.RECURRING_ONLINE');
+            ? t('CENTER_SESSION.EXTRA_ONLINE')
+            : t('CENTER_SESSION.EXTRA_OFFLINE');
       }
 
       // Create API bodies
@@ -807,7 +800,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     id="demo-simple-select"
                     label={t('CENTER_SESSION.SUBJECT')}
                     style={{ borderRadius: '4px' }}
-                    onChange={(event: any) => handleSubjectChange(block?.id, event)}
+                    onChange={(event: any) =>
+                      handleSubjectChange(block?.id, event)
+                    }
                     value={selectedSubject}
                   >
                     {subjects?.map((subject: string) => (
@@ -816,10 +811,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       </MenuItem>
                     ))}
                     <MenuItem key="other" value="other">
-                    {t('FORM.OTHER')}
+                      {t('FORM.OTHER')}
                     </MenuItem>
                   </Select>
-
                 </FormControl>
               </Box>
 
@@ -834,14 +828,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   }}
                 />
               </Box>
-
             </>
           )}
 
           {block?.sessionMode === sessionMode.ONLINE && (
             <>
-
-
               {/* <Box
                 sx={{
                   fontSize: '14px',
@@ -852,7 +843,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               >
                 {t('CENTER_SESSION.SET_UP')}
               </Box> */}
-
 
               <Box sx={{ mt: 2 }}>
                 <TextField
@@ -975,12 +965,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                             label={t('CENTER_SESSION.START_TIME')}
                             value={block?.sessionStartTime || startTime}
                             onChange={(newValue) =>
-                              handleChange(
-                                block?.id,
-                                newValue,
-                                'start',
-                                'time'
-                              )
+                              handleChange(block?.id, newValue, 'start', 'time')
                             }
                             sx={{ borderRadius: '4px', fontSize: '2px' }}
                           />
@@ -1003,12 +988,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     </Grid>
                   </Grid>
                 </Box>
-
               </Box>
             </>
           )}
           {clickedBox !== 'EXTRA_SESSION' && (
-
             <Box sx={{ mt: 2 }}>
               <Box sx={{ overflow: 'none' }}>
                 <Typography variant="h2" component="h2">
@@ -1110,10 +1093,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 </Grid>
               </Grid>
             </Box>
-
-          )
-          }
-
+          )}
 
           {editSession && (
             <Box>
@@ -1135,10 +1115,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   }}
                   onClick={handleOpenModel}
                 >
-                  {
-
-                    editSelection === 'EDIT_SESSION' ? t('CENTER_SESSION.DELETE_THIS_SESSION') : t('CENTER_SESSION.DELETE_FOLLOWING_SESSION')
-                  }
+                  {editSelection === 'EDIT_SESSION'
+                    ? t('CENTER_SESSION.DELETE_THIS_SESSION')
+                    : t('CENTER_SESSION.DELETE_FOLLOWING_SESSION')}
                 </Box>
                 <DeleteOutlineIcon
                   sx={{ fontSize: '18px', color: theme?.palette?.error.main }}

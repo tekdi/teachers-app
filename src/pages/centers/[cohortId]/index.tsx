@@ -1,5 +1,7 @@
 import {
   formatSelectedDate,
+  getAfterDate,
+  getBeforeDate,
   getMonthName,
   getTodayDate,
   shortDateFormat,
@@ -203,10 +205,15 @@ const CohortPage = () => {
   useEffect(() => {
     const getSessionsData = async () => {
       try {
+        const afterDate = getAfterDate(selectedDate);
+        const beforeDate = getBeforeDate(selectedDate);
         const limit = 0;
         const offset = 0;
         const filters = {
-          date: selectedDate,
+          date: {
+            after: afterDate,
+            before: beforeDate,
+          },
           cohortId: cohortId,
           status: ['live'],
         };
@@ -237,11 +244,17 @@ const CohortPage = () => {
           date.setDate(date.getDate() + modifyAttendanceLimit)
         );
         const endDate = shortDateFormat(lastDate);
+        const afterDate = getAfterDate(startDate);
+        const beforeDate = getBeforeDate(endDate);
         const limit = 0;
         const offset = 0;
         const filters = {
-          startDate: startDate,
-          endDate: endDate,
+          startDate: {
+            after: afterDate,
+          },
+          endDate: {
+            before: beforeDate,
+          },
           cohortId: cohortId,
           status: ['live'],
         };
@@ -529,7 +542,7 @@ const CohortPage = () => {
                     slidesPerView: 1, 
                     spaceBetween: 20, 
                   },
-                  640: {
+                  740: {
                     slidesPerView: 2, 
                     spaceBetween: 20, 
                   },

@@ -1028,21 +1028,18 @@ legend.Mui-focused {
   color: var(--mui-palette-warning-300) !important; 
 }
 
-.swiper-button-next{
-  position: absolute;
-  top: 162px !important;
-  border: 1px solid var(--mui-palette-warning-A100);
-  height: 32px !important;
-  width: 32px !important;
-  border-radius: 4px !important;
 
-}
-.swiper-button-prev{
-  position: absolute !important;
-  top: 162px !important;
-  padding: 8px;
-  right: 0px !important;
-}
+
+
+
+
+
+
+
+
+
+
+
 .swiper-button-prev, .swiper-rtl .swiper-button-next{
   right: 50px !important;
   left: unset !important;
@@ -1050,7 +1047,34 @@ legend.Mui-focused {
   height: 32px !important;
   width: 32px !important;
   border-radius: 4px !important;
+  
 }
+
+.swiper-button-next{
+  left: unset !important;
+  border: 1px solid var(--mui-palette-warning-A100);
+  height: 32px !important;
+  width: 32px !important;
+  border-radius: 4px !important;
+}
+
+
+
+
+
+.swiper-button-prev, .swiper-button-next{
+  top: unset !important;
+  bottom: 0px !important;
+}
+
+
+
+
+
+
+
+
+
 
 
 .swiper-button-prev:after, .swiper-rtl .swiper-button-next:after {
@@ -1071,7 +1095,7 @@ legend.Mui-focused {
 .swiper-pagination-fraction{
   position: absolute;
   width: fit-content !important;
-  top: 142px !important;
+  bottom: 0px !important;
 }
 
 .swiper-pagination-fraction{
@@ -1079,3 +1103,4 @@ legend.Mui-focused {
   font-size: 12px;
   font-weight: 500;
 }
+
