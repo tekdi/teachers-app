@@ -11,6 +11,8 @@ import {
 } from '../services/AttendanceService';
 import {
   formatSelectedDate,
+  getAfterDate,
+  getBeforeDate,
   getTodayDate,
   shortDateFormat,
   toPascalCase,
@@ -372,7 +374,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
       },
     };
     telemetryFactory.interact(telemetryInteract);
-    
   };
 
   const getMonthName = (dateString: string) => {
@@ -507,10 +508,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     const getSessionsData = async () => {
       try {
+        const afterDate = getAfterDate(timeTableDate);
+        const beforeDate = getBeforeDate(timeTableDate);
         const limit = 0;
         const offset = 0;
         const filters = {
-          date: timeTableDate,
+          date: {
+            after: afterDate,
+            before: beforeDate,
+          },
           cohortId: classId,
           status: ['live'],
         };
@@ -541,11 +547,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
           date.setDate(date.getDate() + modifyAttendanceLimit)
         );
         const endDate = shortDateFormat(lastDate);
+        const afterDate = getAfterDate(startDate);
+        const beforeDate = getBeforeDate(endDate);
         const limit = 0;
         const offset = 0;
         const filters = {
-          startDate: startDate,
-          endDate: endDate,
+          startDate: {
+            after: afterDate,
+          },
+          endDate: {
+            before: beforeDate,
+          },
           cohortId: classId,
           status: ['live'],
         };
