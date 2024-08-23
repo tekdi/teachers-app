@@ -89,7 +89,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       sx={{
         border: `1px solid ${theme.palette.warning['A100']}`,
         borderRadius: '8px',
-        marginBottom: '16px',
+        marginBottom: '25px',
       }}
     >
       <Box
