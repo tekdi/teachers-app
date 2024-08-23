@@ -453,15 +453,19 @@ export interface scheduleEventParam {
 }
 
 export interface eventFilters {
-  date?: string;
-  startDate?: string;
-  endDate?: string;
+  date?: dateRange;
+  startDate?: dateRange;
+  endDate?: dateRange;
   eventType?: [];
   title?: string;
   status?: string[];
   cohortId?: string;
 }
 
+export interface dateRange {
+  after?: string;
+  before?: string;
+}
 export interface CoursePlannerData {
   id: string;
   subject: string;
@@ -591,9 +595,9 @@ export interface BottomDrawerProps {
 }
 
 export interface IAssessmentStatusOptions {
-  userId: string[],
-  contentId: string[],
-  batchId: string
+  userId: string[];
+  contentId: string[];
+  batchId: string;
 }
 
 export interface GetTargetedSolutionsParams {
@@ -615,4 +619,3 @@ export interface EditEvent {
   isMainEvent: boolean;
   status: string;
 }
-
