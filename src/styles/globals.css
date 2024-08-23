@@ -1029,17 +1029,6 @@ legend.Mui-focused {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 .swiper-button-prev, .swiper-rtl .swiper-button-next{
   right: 50px !important;
   left: unset !important;
@@ -1057,25 +1046,10 @@ legend.Mui-focused {
   width: 32px !important;
   border-radius: 4px !important;
 }
-
-
-
-
-
 .swiper-button-prev, .swiper-button-next{
   top: unset !important;
   bottom: 0px !important;
 }
-
-
-
-
-
-
-
-
-
-
 
 .swiper-button-prev:after, .swiper-rtl .swiper-button-next:after {
   content: 'prev';
