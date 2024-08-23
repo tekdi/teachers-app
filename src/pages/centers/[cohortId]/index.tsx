@@ -549,47 +549,6 @@ const CohortPage = () => {
 
                 {extraSessions?.map((item) => (
                   <>
-
-                  <SwiperSlide>
-                    <SessionCard
-                      data={item}
-                      isEventDeleted={handleEventDeleted}
-                    >
-                      <SessionCardFooter item={item} />
-                    </SessionCard>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <SessionCard
-                      data={item}
-                      isEventDeleted={handleEventDeleted}
-                    >
-                      <SessionCardFooter item={item} />
-                    </SessionCard>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <SessionCard
-                      data={item}
-                      isEventDeleted={handleEventDeleted}
-                    >
-                      <SessionCardFooter item={item} />
-                    </SessionCard>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <SessionCard
-                      data={item}
-                      isEventDeleted={handleEventDeleted}
-                    >
-                      <SessionCardFooter item={item} />
-                    </SessionCard>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <SessionCard
-                      data={item}
-                      isEventDeleted={handleEventDeleted}
-                    >
-                      <SessionCardFooter item={item} />
-                    </SessionCard>
-                  </SwiperSlide>
                   <SwiperSlide>
                     <SessionCard
                       data={item}
