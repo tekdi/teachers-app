@@ -17,7 +17,7 @@ interface IAssessmentSortModal {
   modalTitle: string;
   onClose: () => void;
   btnText: string;
-  onFilterApply: (options) => void;
+  onFilterApply: (options: any) => void;
 }
 
 const assessmentStatusOptions = [
