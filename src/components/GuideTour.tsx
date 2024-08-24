@@ -82,6 +82,10 @@ const GuideTour: React.FC<GuideTourProps> = ({ toggleDrawer }) => {
           label: 'Previous Button Click',
         });
       }
+      else if (action === 'close') {
+        setRunTour(false);
+        toggleDrawer(false)();
+      }
     }
   };
 
