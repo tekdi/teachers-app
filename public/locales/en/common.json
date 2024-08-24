@@ -501,7 +501,15 @@
     "SUBMITTED_ON": "Submitted On",
     "CORRECT_ANSWER": "correct answers",
     "NO_DATA_FOUND": "No data found",
-    "SEARCH_STUDENT": "search student",
-    "NO_ASSESSMENTS_FOUND": "No assessments found"
+    "SEARCH_STUDENT": "Search student",
+    "NO_ASSESSMENTS_FOUND": "No assessments found",
+    "ASSESSMENT_STATUS": "Assessment Status",
+    "NOT_STARTED": "Not Started",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed",
+    "MARKS_OBTAINED": "Marks Obtained",
+    "OVERALL_SCORE": "Overall Score",
+    "ASSESSMENT_NOT_STARTED_YET": "Assessment not started yet",
+    "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} out of {{totalCount}} completed"
   }
 }

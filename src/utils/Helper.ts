@@ -4,6 +4,7 @@ import utc from 'dayjs/plugin/utc';
 import FingerprintJS from 'fingerprintjs2';
 import { CustomField, UpdateCustomField } from './Interfaces';
 dayjs.extend(utc);
+import { format, parseISO } from 'date-fns';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -423,3 +424,12 @@ export const getBeforeDate = (selectedDate: string) => {
   const beforeDate = selected.hour(18).minute(29).second(59);
   return beforeDate.format('YYYY-MM-DDTHH:mm:ss[Z]');
 };
+
+export const format2DigitDate = (dateStr: any) => {
+
+  if (dateStr === undefined || dateStr === null) return '';
+  const dateObj = parseISO(dateStr);
+
+  // Format the date into "2 Feb, 2024" format
+  return format(dateObj, "d MMM, yyyy");
+}

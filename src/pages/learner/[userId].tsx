@@ -428,7 +428,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     const test = event?.target?.value;
     setTest(test);
     ReactGA.event('pre-post-test-selected', { testTypeSelected: test });
-    getDoIdForAssesmentReport(test, subject);
+    getDoIdForAssessmentReport(test, subject);
   };
 
   const handleChangeSubject = (event: SelectChangeEvent) => {
@@ -437,10 +437,10 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     ReactGA.event('select-subject-learner-details-page', {
       subjectSelected: subject,
     });
-    getDoIdForAssesmentReport(test, subject);
+    getDoIdForAssessmentReport(test, subject);
   };
 
-  const getDoIdForAssesmentReport = async (tests: string, subjects: string) => {
+  const getDoIdForAssessmentReport = async (tests: string, subjects: string) => {
     // const stateName = localStorage.getItem('stateName');
 
     const stateName: any = address?.split(',')[0];
@@ -581,7 +581,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     getAttendanceData(isFromDate, toDay);
     fetchUserDetails();
     // testReportDetails();
-    getDoIdForAssesmentReport(test, subject);
+    getDoIdForAssessmentReport(test, subject);
   }, [address]);
 
   const getLearnerAttendance = () => {
