@@ -45,6 +45,7 @@ import {
   DaysOfWeek,
   eventDaysLimit,
   idealTimeForSession,
+  timeZone,
 } from '../../app.config';
 import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
@@ -152,8 +153,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       const startDateTime = eventData?.startDateTime;
       const endDateTime = eventData?.endDateTime;
 
-      const localStartDateTime = dayjs.utc(startDateTime).tz('Asia/Kolkata');
-      const localEndDateTime = dayjs.utc(endDateTime).tz('Asia/Kolkata');
+      const localStartDateTime = dayjs.utc(startDateTime).tz(timeZone);
+      const localEndDateTime = dayjs.utc(endDateTime).tz(timeZone);
       // const localEndDateValue = dayjs.utc(endDateValue).tz('Asia/Kolkata');
 
       setStartDate(localStartDateTime.startOf('day'));
