@@ -443,8 +443,8 @@ export interface FacilitatorDrawerProps {
   drawerState: { bottom: boolean };
 }
 export interface CoursePlannerCardsProps {
-  title: string;
-  subtitle: string;
+  resources: any;
+
 }
 
 export interface scheduleEventParam {

@@ -22,6 +22,7 @@ import React, { useEffect } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { getCoursePlanner } from '@/services/CoursePlannerService';
 import { CoursePlannerData } from '@/utils/Interfaces';
+import useCourseStore from '@/store/coursePlannerStore';
 
 // Define a type for the course planner data
 
@@ -32,6 +33,7 @@ const CoursePlanner = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const setSubject = useCourseStore((state) => state.setSubject);
 
   const handleScrollDown = () => {
     if (inputRef.current) {
@@ -189,6 +191,7 @@ const CoursePlanner = () => {
             >
               <Grid container>
                 {subjects.map((item) => (
+                 
                   <Grid key={item.id} item xs={12} sm={6} md={4}>
                     <Box
                       sx={{
@@ -200,6 +203,7 @@ const CoursePlanner = () => {
                         background: theme.palette.warning['A400']
                       }}
                       onClick={() => {
+                        setSubject(item.subject)
                         router.push(`/course-planner-detail`); // Check route
                       }}
                     >
