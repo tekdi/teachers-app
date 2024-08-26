@@ -22,11 +22,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import { getTargetedSolutions, getUserProjectDetails } from '@/services/CoursePlannerService';
+import useCourseStore from '@/store/coursePlannerStore';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const { t } = useTranslation();
+  const setResources = useCourseStore((state) => state.setResources);
 
 
   // Initialize the panels' state, assuming you have a known set of panel IDs
@@ -55,7 +57,7 @@ const CoursePlannerDetail = () => {
         const courseId = response.result.data[0]._id;
         setCourseDetails(response.result.data);
   
-        return getUserProjectDetails({ id: courseId });
+        return getUserProjectDetails({ id: '66c8313f6cf0bfa90315ff2e' });
       }).then((userProjectDetailsResponse) => {
         setUserProjectDetails(userProjectDetailsResponse.result.tasks);
       }).catch((error) => {
@@ -320,6 +322,7 @@ const CoursePlannerDetail = () => {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
+                      setResources(subTopic);
                       router.push(`/topic-detail-view`);
                     }}
                   >
@@ -368,8 +371,11 @@ const CoursePlannerDetail = () => {
                     router.push(`/topic-detail-view`);
                   }}
                 >
-                  <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
-                    {`${subTopic.children.length} ${t('COURSE_PLANNER.RESOURCES')}`}
+                  <Box sx={{ fontSize: '12px', fontWeight: '500' }} onClick={() => {
+                      setResources(subTopic);
+                      router.push(`/topic-detail-view`);
+                    }}>
+                    {`${subTopic.learningResources.length} ${t('COURSE_PLANNER.RESOURCES')}`}
                   </Box>
                   <ArrowForwardIcon sx={{ fontSize: '16px' }} />
                 </Box>
