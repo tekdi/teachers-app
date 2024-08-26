@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { getFormRead } from '@/services/CreateUserService';
-import { createEvent } from '@/services/EventService';
+import { createEvent, editEvent } from '@/services/EventService';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { CreateEvent, PlannedModalProps } from '@/utils/Interfaces';
 import {
@@ -19,9 +19,12 @@ import {
   Button,
   Divider,
   FormControl,
+  FormControlLabel,
   Grid,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
   Typography,
@@ -37,6 +40,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'next-i18next';
 import { ChangeEvent, useEffect, useState } from 'react';
+import ReactGA from 'react-ga4';
 import {
   DaysOfWeek,
   eventDaysLimit,
@@ -45,7 +49,7 @@ import {
 import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
-import ReactGA from 'react-ga4';
+import ConfirmationModal from './ConfirmationModal';
 
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
 type type = (typeof sessionType)[keyof typeof sessionType];
@@ -78,14 +82,18 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   cohortName,
   cohortId,
   onCloseModal,
+  editSession,
+  onEventDeleted,
 }) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
   const [eventType, setEventType] = useState<type>(sessionType.REPEATING);
   const [link, setLink] = useState('');
   const [linkError, setLinkError] = useState('');
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>();
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [selectedBlockId, setSelectedBlockId] = useState(0);
+  const [editSelection, setEditSelection] = React.useState('EDIT_SESSION');
   const [subjects, setSubjects] = useState<string[]>();
   dayjs.extend(utc);
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
@@ -114,6 +122,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionEndTime: endTime,
     },
   ]);
+  const handleOpenModel = () => {
+    setModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleEditSelection = (selection: string, eventData: any) => {
+    setEditSelection(selection);
+    console.log(eventData);
+  };
 
   useEffect(() => {
     const initialStartDateTime = combineDateAndTime(startDate, startTime);
@@ -623,10 +642,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           try {
             const response = await createEvent(apiBody);
             console.log(response);
-            if (response) {
+            if (response?.responseCode === 'Created') {
               showToastMessage(
                 t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
-                'sucess'
+                'success'
               );
               ReactGA.event('event-created-successfully', {
                 creatorId: userId,
@@ -634,6 +653,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               if (onCloseModal) {
                 onCloseModal();
               }
+            } else {
+              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
             }
           } catch (error) {
             console.error('Error creating event:', error);
@@ -655,10 +676,109 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     scheduleNewEvent();
   }, [scheduleEvent, cohortId]);
 
+  const handleEditSession = (event: any) => {
+    setMode(event.target.value);
+  };
+
+  const handelDeleteEvent = async (eventData: any, deleteSelection: string) => {
+    try {
+      const isMainEvent =
+        !eventData?.isRecurring || deleteSelection !== 'EDIT_SESSION';
+
+      const eventRepetitionId = eventData?.eventRepetitionId;
+
+      const apiBody = {
+        isMainEvent: isMainEvent,
+        status: 'archived',
+      };
+      const response = await editEvent(eventRepetitionId, apiBody);
+      if (response?.responseCode === 'OK') {
+        showToastMessage(t('COMMON.SESSION_DELETED_SUCCESSFULLY'), 'success');
+      } else {
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      }
+      if (onEventDeleted) {
+        onEventDeleted();
+      }
+    } catch (error) {
+      console.error('Error in deleting event:', error);
+    }
+  };
+
   return (
     <Box overflow={'hidden'}>
       {sessionBlocks.map((block, index) => (
         <Box key={block.id} sx={{ padding: '10px 16px' }}>
+          {editSession && editSession?.isRecurring && (
+            <FormControl component="fieldset">
+              <RadioGroup
+                row
+                aria-labelledby="session-mode-label"
+                name="session-mode-group"
+                value={mode}
+                onChange={handleEditSession}
+              >
+                <FormControlLabel
+                  value={t('CENTER_SESSION.EDIT_THIS_SESSION')}
+                  onClick={() =>
+                    handleEditSelection?.('EDIT_SESSION', editSession)
+                  }
+                  label={
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: '400',
+                        color: theme.palette.warning['A200'],
+                      }}
+                    >
+                      {t('CENTER_SESSION.EDIT_THIS_SESSION')}
+                    </span>
+                  }
+                  control={
+                    <Radio style={{ color: theme.palette.warning['300'] }} />
+                  }
+                  labelPlacement="start"
+                  sx={{
+                    display: 'flex',
+                    marginLeft: '0px',
+                    marginRight: '0px',
+                    width: '100%',
+                    justifyContent: 'space-between',
+                  }}
+                />
+
+                <FormControlLabel
+                  value={t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS')}
+                  onClick={() =>
+                    handleEditSelection?.('FOLLOWING_SESSION', editSession)
+                  }
+                  control={
+                    <Radio style={{ color: theme.palette.warning['300'] }} />
+                  }
+                  label={
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: '400',
+                        color: theme.palette.warning['A200'],
+                      }}
+                    >
+                      {t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS')}
+                    </span>
+                  }
+                  labelPlacement="start"
+                  sx={{
+                    display: 'flex',
+                    marginLeft: '0px',
+                    marginRight: '0px',
+                    width: '100%',
+                    justifyContent: 'space-between',
+                  }}
+                />
+              </RadioGroup>
+            </FormControl>
+          )}
+
           <Box>
             <SessionMode
               mode={block?.sessionMode || mode}
@@ -673,50 +793,67 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             />
           </Box>
           {clickedBox === 'PLANNED_SESSION' && (
-            <Box sx={{ mt: 2 }}>
-              <FormControl fullWidth>
-                <InputLabel
-                  style={{ color: theme?.palette?.warning['A200'] }}
-                  id="demo-simple-select-label"
-                >
-                  {t('CENTER_SESSION.SUBJECT')}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label={t('CENTER_SESSION.SUBJECT')}
-                  style={{ borderRadius: '4px' }}
-                  onChange={(event: any) =>
-                    handleSubjectChange(block?.id, event)
-                  }
-                  value={selectedSubject}
-                >
-                  {subjects?.map((subject: string) => (
-                    <MenuItem key={subject} value={subject}>
-                      {subject}
+            <>
+              <Box sx={{ mt: 2 }}>
+                <FormControl fullWidth>
+                  <InputLabel
+                    style={{ color: theme?.palette?.warning['A200'] }}
+                    id="demo-simple-select-label"
+                  >
+                    {t('CENTER_SESSION.SUBJECT')}
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label={t('CENTER_SESSION.SUBJECT')}
+                    style={{ borderRadius: '4px' }}
+                    onChange={(event: any) => handleSubjectChange(block?.id, event)}
+                    value={selectedSubject}
+                  >
+                    {subjects?.map((subject: string) => (
+                      <MenuItem key={subject} value={subject}>
+                        {subject}
+                      </MenuItem>
+                    ))}
+                    <MenuItem key="other" value="other">
+                    {t('FORM.OTHER')}
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
+                  </Select>
+
+                </FormControl>
+              </Box>
+
+              <Box sx={{ mt: 2 }}>
+                <TextField
+                  id="outlined-basic"
+                  label={t('CENTER_SESSION.SESSION_TITLE_OPTIONAL')}
+                  variant="outlined"
+                  value={block?.subjectTitle}
+                  onChange={(e) => {
+                    handleSubjectTitleChange(e, block?.id);
+                  }}
+                />
+              </Box>
+
+            </>
           )}
 
           {block?.sessionMode === sessionMode.ONLINE && (
             <>
-              {clickedBox === 'EXTRA_SESSION' && (
-                <>
-                  <Box
-                    sx={{
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      color: theme?.palette?.warning['300'],
-                      mt: 1.5,
-                    }}
-                  >
-                    {t('CENTER_SESSION.SET_UP')}
-                  </Box>
-                </>
-              )}
+
+
+              {/* <Box
+                sx={{
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: theme?.palette?.warning['300'],
+                  mt: 1.5,
+                }}
+              >
+                {t('CENTER_SESSION.SET_UP')}
+              </Box> */}
+
+
               <Box sx={{ mt: 2 }}>
                 <TextField
                   id="outlined-basic"
@@ -745,7 +882,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           )}
           {clickedBox === 'EXTRA_SESSION' && (
             <Box sx={{ mt: 2 }}>
-              <Box
+              {/* <Box
                 sx={{
                   fontSize: '14px',
                   fontWeight: '500',
@@ -753,8 +890,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 }}
               >
                 {t('CENTER_SESSION.SESSION_DETAILS')}
-              </Box>
-              <Box sx={{ mt: 2 }}>
+              </Box> */}
+              <Box>
                 <FormControl fullWidth>
                   <InputLabel
                     style={{
@@ -802,7 +939,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           {clickedBox === 'EXTRA_SESSION' && (
             <>
               <Box sx={{ mt: 2 }}>
-                <SessionMode
+                {/* <SessionMode
                   mode={block?.sessionType || eventType}
                   handleSessionModeChange={(e) =>
                     handleSessionTypeChange(e, block?.id)
@@ -812,65 +949,66 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     mode1: t('CENTER_SESSION.REPEATING'),
                     mode2: t('CENTER_SESSION.JUST_ONCE'),
                   }}
-                />
-                {block?.sessionType === sessionType.JUST && (
-                  <Box sx={{ mt: 3 }}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <Stack spacing={3}>
-                        <MobileDatePicker
-                          label="Date"
-                          value={block?.sessionStartDate || startDate}
-                          onChange={(newValue) =>
-                            handleChange(block?.id, newValue, 'start', 'date')
-                          }
-                          format="DD MMM, YYYY"
-                          sx={{ borderRadius: '4px' }}
-                        />
-                      </Stack>
-                    </LocalizationProvider>
+                /> */}
+                {/* {block?.sessionType === sessionType.JUST && (
+                   )} */}
+                <Box sx={{ mt: 3 }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Stack spacing={3}>
+                      <MobileDatePicker
+                        label="Date"
+                        value={block?.sessionStartDate || startDate}
+                        onChange={(newValue) =>
+                          handleChange(block?.id, newValue, 'start', 'date')
+                        }
+                        format="DD MMM, YYYY"
+                        sx={{ borderRadius: '4px' }}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
 
-                    <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
-                      <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-                        <Box sx={{ mt: 3 }}>
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <CustomTimePicker
-                              label={t('CENTER_SESSION.START_TIME')}
-                              value={block?.sessionStartTime || startTime}
-                              onChange={(newValue) =>
-                                handleChange(
-                                  block?.id,
-                                  newValue,
-                                  'start',
-                                  'time'
-                                )
-                              }
-                              sx={{ borderRadius: '4px', fontSize: '2px' }}
-                            />
-                          </LocalizationProvider>
-                        </Box>
-                      </Grid>
-                      <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
-                        <Box sx={{ mt: 3 }}>
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <CustomTimePicker
-                              label={t('CENTER_SESSION.END_TIME')}
-                              value={block?.sessionEndTime || endTime}
-                              onChange={(newValue) =>
-                                handleChange(block?.id, newValue, 'end', 'time')
-                              }
-                              sx={{ borderRadius: '4px' }}
-                            />
-                          </LocalizationProvider>
-                        </Box>
-                      </Grid>
+                  <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
+                    <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                      <Box sx={{ mt: 3 }}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <CustomTimePicker
+                            label={t('CENTER_SESSION.START_TIME')}
+                            value={block?.sessionStartTime || startTime}
+                            onChange={(newValue) =>
+                              handleChange(
+                                block?.id,
+                                newValue,
+                                'start',
+                                'time'
+                              )
+                            }
+                            sx={{ borderRadius: '4px', fontSize: '2px' }}
+                          />
+                        </LocalizationProvider>
+                      </Box>
                     </Grid>
-                  </Box>
-                )}
+                    <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
+                      <Box sx={{ mt: 3 }}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <CustomTimePicker
+                            label={t('CENTER_SESSION.END_TIME')}
+                            value={block?.sessionEndTime || endTime}
+                            onChange={(newValue) =>
+                              handleChange(block?.id, newValue, 'end', 'time')
+                            }
+                            sx={{ borderRadius: '4px' }}
+                          />
+                        </LocalizationProvider>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Box>
+
               </Box>
             </>
           )}
+          {clickedBox !== 'EXTRA_SESSION' && (
 
-          {block?.sessionType !== sessionType.JUST && (
             <Box sx={{ mt: 2 }}>
               <Box sx={{ overflow: 'none' }}>
                 <Typography variant="h2" component="h2">
@@ -972,6 +1110,41 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 </Grid>
               </Grid>
             </Box>
+
+          )
+          }
+
+
+          {editSession && (
+            <Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '5px',
+                  mt: 3,
+                  mb: 2,
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    fontSize: '14px',
+                    color: theme?.palette?.secondary.main,
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                  }}
+                  onClick={handleOpenModel}
+                >
+                  {
+
+                    editSelection === 'EDIT_SESSION' ? t('CENTER_SESSION.DELETE_THIS_SESSION') : t('CENTER_SESSION.DELETE_FOLLOWING_SESSION')
+                  }
+                </Box>
+                <DeleteOutlineIcon
+                  sx={{ fontSize: '18px', color: theme?.palette?.error.main }}
+                />
+              </Box>
+            </Box>
           )}
 
           {sessionBlocks.length > 1 && (
@@ -999,30 +1172,50 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               />
             </Box>
           )}
-          <Box sx={{ mt: 2 }}>
-            <Divider />
-          </Box>
 
-          <Divider />
-
-          <Box mt={2.5} mb={2}>
-            <Button
-              sx={{
-                border: `1px solid ${theme.palette.error.contrastText}`,
-                borderRadius: '100px',
-                height: '40px',
-                width: '163px',
-                color: theme.palette.error.contrastText,
-              }}
-              className="text-1E"
-              endIcon={<AddIcon />}
-              onClick={handleAddSession}
-            >
-              {t('CENTER_SESSION.ADD_SESSION')}
-            </Button>
-          </Box>
+          {!editSession && (
+            <>
+              <Box sx={{ mt: 2 }}>
+                <Divider />
+              </Box>
+              <Divider />
+              <Box mt={2.5} mb={2}>
+                <Button
+                  sx={{
+                    border: `1px solid ${theme.palette.error.contrastText}`,
+                    borderRadius: '100px',
+                    height: '40px',
+                    width: '163px',
+                    color: theme.palette.error.contrastText,
+                  }}
+                  className="text-1E"
+                  endIcon={<AddIcon />}
+                  onClick={handleAddSession}
+                >
+                  {t('CENTER_SESSION.ADD_SESSION')}
+                </Button>
+              </Box>
+            </>
+          )}
         </Box>
       ))}
+
+      {editSession && (
+        <ConfirmationModal
+          message={
+            editSelection === 'EDIT_SESSION'
+              ? t('CENTER_SESSION.DELETE_SESSION_MSG')
+              : t('CENTER_SESSION.DELETE_ALL_SESSION_MSG')
+          }
+          buttonNames={{
+            primary: t('COMMON.YES'),
+            secondary: t('COMMON.NO_GO_BACK'),
+          }}
+          handleCloseModal={handleCloseModal}
+          handleAction={() => handelDeleteEvent(editSession, editSelection)}
+          modalOpen={modalOpen}
+        />
+      )}
     </Box>
   );
 };

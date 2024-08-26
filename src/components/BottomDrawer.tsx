@@ -96,6 +96,13 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
             vertical: 'top',
             horizontal: 'center',
           }}
+          sx={{
+            padding: '0',
+            '& .MuiList-root': {
+              paddingTop: '0px',
+              paddingBottom: '0px',
+            },
+          }}
         >
           {optionList.map(({ label, icon, name }) => (
             <MenuItem
@@ -116,6 +123,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
             </MenuItem>
           ))}
         </Menu>
+
       )}
     </div>
   );

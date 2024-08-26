@@ -19,13 +19,15 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
+import { getTargetedSolutions, getUserProjectDetails } from '@/services/CoursePlannerService';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const { t } = useTranslation();
+
 
   // Initialize the panels' state, assuming you have a known set of panel IDs
   const [expandedPanels, setExpandedPanels] = useState<{
@@ -38,6 +40,33 @@ const CoursePlannerDetail = () => {
   const [drawerState, setDrawerState] = React.useState({ bottom: false });
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+
+  const [courseDetails, setCourseDetails] = useState(null);
+  const [userProjectDetails, setUserProjectDetails] = useState(null);
+
+  const fetchCourseDetails = useCallback(() => {
+    getTargetedSolutions({
+      state: 'Maharashtra',
+      role: 'Learner,Teacher',
+      class: '10',
+      board: 'cbse',
+      courseType: 'foundationCourse',
+    }).then((response) => {
+        const courseId = response.result.data[0]._id;
+        setCourseDetails(response.result.data);
+  
+        return getUserProjectDetails({ id: courseId });
+      }).then((userProjectDetailsResponse) => {
+        setUserProjectDetails(userProjectDetailsResponse);
+      }).catch((error) => {
+        console.error('Error fetching course planner:', error);
+      });
+  }, []);
+  
+  useEffect(() => {
+    fetchCourseDetails();
+  }, [fetchCourseDetails]);
+  
 
   const handleBackEvent = () => {
     window.history.back();

@@ -32,7 +32,7 @@ import MonthCalender from '@/components/MonthCalender';
 import { showToastMessage } from '@/components/Toastify';
 import UpDownButton from '@/components/UpDownButton';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { Status } from '@/utils/app.constant';
+import { Status, Telemetry } from '@/utils/app.constant';
 import { calculatePercentage } from '@/utils/attendanceStats';
 import { logEvent } from '@/utils/googleAnalytics';
 import withAccessControl from '@/utils/hoc/withAccessControl';
@@ -51,6 +51,7 @@ import Header from '../components/Header';
 import Loader from '../components/Loader';
 import SortingModal from '../components/SortingModal';
 import { attendanceStatusList } from '../services/AttendanceService';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface user {
   memberStatus: string;
@@ -103,6 +104,21 @@ const UserAttendanceHistory = () => {
     ReactGA.event('mark/modify-attendance-button-clicked-attendance-history', {
       teacherId: userId,
     });
+
+    const telemetryInteract = {
+      context: {
+        env: 'dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'mark/modify-attendance-button-clicked-attendance-history',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'attendance-history',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+    
   };
 
   const handleClose = () => {

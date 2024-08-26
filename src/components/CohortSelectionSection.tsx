@@ -14,7 +14,7 @@ import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
 import { CohortDetails, ICohort } from '@/utils/Interfaces';
 import { CustomField } from '@/utils/Interfaces';
-import { CenterType, cohortHierarchy } from '@/utils/app.constant';
+import { CenterType, cohortHierarchy, Telemetry } from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import ReactGA from 'react-ga4';
@@ -22,6 +22,7 @@ import Loader from './Loader';
 import { showToastMessage } from './Toastify';
 import manageUserStore from '@/store/manageUserStore';
 import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -294,6 +295,19 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     ReactGA.event('cohort-selection-dashboard', {
       selectedCohortID: event.target.value,
     });
+    const telemetryInteract = {
+      context: {
+        env: 'dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'cohort-selection-dashboard',
+        type: Telemetry.SEARCH,
+        subtype: '',
+        pageid: 'centers',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
     localStorage.setItem('classId', event.target.value);
     setHandleSaveHasRun?.(!handleSaveHasRun);
 
@@ -331,8 +345,10 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
 
   const isAttendanceOverview = pathname === '/attendance-overview';
 
+  const isAssessment = pathname === '/assessments'
+
   return (
-    <Box className={isAttendanceOverview ? 'w-100' : 'w-md-40'}>
+    <Box className={isAttendanceOverview || isAssessment ? 'w-100' : 'w-md-40'}>
       {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />}
       {!loading && cohortsData && (
         <Box>
@@ -445,21 +461,13 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             // style={{ borderRadius: '4px' }}
 
                             inputProps={{ 'aria-label': 'Without label' }}
-                            className={
-                              showFloatingLabel
-                                ? ''
-                                : 'select-languages fs-14 fw-500 bg-white'
-                            }
-                            style={
-                              showFloatingLabel
-                                ? { borderRadius: '4px' }
-                                : {
-                                    borderRadius: '0.5rem',
-                                    color: theme.palette.warning['200'],
-                                    width: '100%',
-                                    marginBottom: '0rem',
-                                  }
-                            }
+                            className={showFloatingLabel ? '' : "select-languages fs-14 fw-500 bg-white"}
+                            style={showFloatingLabel ? { borderRadius: '4px' } : {
+                              borderRadius: '0.5rem',
+                              color: theme.palette.warning['200'],
+                              width: '100%',
+                              marginBottom: '0rem',
+                            }}
                           >
                             {cohortsData?.length !== 0 ? (
                               manipulatedCohortData?.map((cohort) => (

@@ -69,10 +69,18 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
   // const [otherReason, setOtherReason] = useState('');
 
   const reasons = [
-    { value: 'Incorrect Data Entry', label: 'Incorrect Data Entry' },
-    { value: 'Duplicated User', label: 'Duplicated User' },
+    // { value: 'Incorrect Data Entry', label: 'Incorrect Data Entry' },
+    // { value: 'Duplicated User', label: 'Duplicated User' },
     // { value: 'Other', label: 'Other' },
+    {value:t("CENTERS.LONG_ABSENTEE"), label:t("CENTERS.LONG_ABSENTEE")},
+    { value:t("CENTERS.TAKEN_TC"),label:t("CENTERS.TAKEN_TC")},
+    { value:t("CENTERS.ALLOCATION_CHANGE"),label:t("CENTERS.ALLOCATION_CHANGE")},
+    { value:t("CENTERS.INCORRECT_ENTRY"),label:t("CENTERS.INCORRECT_ENTRY")},
+    {value:t("CENTERS.DUPLICATION_ENTRY"), label : t("CENTERS.DUPLICATION_ENTRY")},
   ];
+
+
+
 
   const handleRadioChange = (value: string) => {
     console.log(value);
@@ -156,7 +164,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
             component="h2"
           >
             {showLablesForOther
-              ? t('COMMON.REASON_FOR_REMOVE')
+              ? t('COMMON.REASON')
               : t('COMMON.REASON_FOR_DELETION')}
           </Typography>
         </Box>

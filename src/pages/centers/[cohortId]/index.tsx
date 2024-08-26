@@ -61,7 +61,7 @@ import {
   ShowCenterSessionsTab,
 } from '../../../../app.config';
 
-const TeachingCenterDetails = () => {
+const CohortPage = () => {
   const [value, setValue] = React.useState(2);
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
@@ -107,6 +107,7 @@ const TeachingCenterDetails = () => {
     React.useState(false);
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
+  const [eventDeleted, setEventDeleted] = React.useState(false);
 
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [cohortName, setCohortName] = React.useState<string>();
@@ -225,7 +226,7 @@ const TeachingCenterDetails = () => {
     };
 
     getSessionsData();
-  }, [selectedDate]);
+  }, [selectedDate, eventCreated, eventDeleted]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -260,7 +261,11 @@ const TeachingCenterDetails = () => {
     };
 
     getExtraSessionsData();
-  }, []);
+  }, [eventCreated, eventDeleted]);
+
+  const handleEventDeleted = () => {
+    setEventDeleted(true);
+  };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -329,15 +334,14 @@ const TeachingCenterDetails = () => {
           <Box
             sx={{
               display: 'flex',
-              alignItems: 'center',
               cursor: 'pointer',
             }}
             onClick={handleBackEvent}
           >
             <KeyboardBackspaceOutlinedIcon
-              sx={{ color: theme.palette.warning['A200'], marginTop: '8px' }}
+              sx={{ color: theme.palette.warning['A200'], marginTop: '18px' }}
             />
-            <Box m={'1rem 1rem 0.5rem'} display={'column'} gap={'5px'}>
+            <Box m={'1rem 1rem 0.5rem 0.5rem'} display={'column'} gap={'5px'}>
               <Typography textAlign={'left'} fontSize={'22px'}>
                 {toPascalCase(cohortDetails?.name)}
               </Typography>
@@ -473,7 +477,7 @@ const TeachingCenterDetails = () => {
               deleteModal
                 ? t('CENTER_SESSION.DELETE_SESSION')
                 : openSchedule
-                  ? clickedBox === t('CENTER_SESSION.EXTRA_SESSION')
+                  ? clickedBox === 'EXTRA_SESSION'
                     ? 'Extra Session'
                     : t('CENTER_SESSION.PLANNED_SESSION')
                   : t('CENTER_SESSION.SCHEDULE')
@@ -517,11 +521,14 @@ const TeachingCenterDetails = () => {
             >
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
-            <Box mt={3} px="18px">
-              <Grid container>
+            <Box mt={3}>
+              <Grid container spacing={2}>
                 {extraSessions?.map((item) => (
-                  <Grid xs={12} sm={6} md={4}>
-                    <SessionCard data={item} key={item.id}>
+                  <Grid item xs={12} sm={6} md={6} key={item.id}>
+                    <SessionCard
+                      data={item}
+                      isEventDeleted={handleEventDeleted}
+                    >
                       <SessionCardFooter item={item} />
                     </SessionCard>
                   </Grid>
@@ -580,19 +587,20 @@ const TeachingCenterDetails = () => {
               disableDays={classId === 'all'}
               classId={classId}
               showFromToday={true}
+              newWidth={'100%'}
             />
           </Box>
 
           <Box mt={3} px="18px">
-            <Grid container>
+            <Grid container spacing={2}>
               {sessions?.map((item) => (
-                <Grid xs={12} sm={6} md={4}>
-                  <SessionCard data={item} key={item.id}>
+                <Grid item xs={12} sm={6} md={6} key={item.id}>
+                  <SessionCard data={item} isEventDeleted={handleEventDeleted}>
                     <SessionCardFooter item={item} />
                   </SessionCard>
                 </Grid>
               ))}
-              {sessions && sessions?.length === 0 && (
+              {sessions && sessions.length === 0 && (
                 <Box
                   className="fs-12 fw-400 italic"
                   sx={{ color: theme.palette.warning['300'] }}
@@ -723,4 +731,4 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default TeachingCenterDetails;
+export default CohortPage;
