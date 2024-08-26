@@ -130,6 +130,7 @@ export interface SessionsCardProps {
   data: any;
   children?: React.ReactNode;
   isEventDeleted?: () => void;
+  isEventEdited?: () => void;
 }
 export interface SessionsModalProps {
   children?: React.ReactNode;
@@ -155,6 +156,7 @@ export interface PlannedModalProps {
   editSelection?: string;
   handleEditSelection?: (selection: string) => void;
   onEventDeleted?: () => void;
+  onEventEdited?: boolean;
   editSession?: any;
   eventData?: any;
 }
@@ -616,9 +618,9 @@ export interface EditEvent {
 }
 
 export interface ISearchAssessment {
-  userId: string,
-  contentId: string,
-  batchId: string
+  userId: string;
+  contentId: string;
+  batchId: string;
 }
 
 export interface IQuestion {

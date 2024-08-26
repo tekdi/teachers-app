@@ -89,7 +89,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   editSession,
   onEventDeleted,
   eventData,
+  onEventEdited,
 }) => {
+  const { t } = useTranslation();
+  const theme = useTheme<any>();
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
   // const [eventType, setEventType] = useState<type>(sessionType.JUST);
   const [link, setLink] = useState('');
@@ -99,14 +102,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [selectedBlockId, setSelectedBlockId] = useState(0);
-  const [editSelection, setEditSelection] = React.useState('EDIT_SESSION');
+  const [editSelection, setEditSelection] = React.useState(
+    t('CENTER_SESSION.EDIT_THIS_SESSION')
+  );
   const [subjects, setSubjects] = useState<string[]>();
   const [shortDescription, setShortDescription] = useState<string>();
   const [meetingPasscode, setMeetingPasscode] = useState<string>();
-  dayjs.extend(utc);
+  const [selectedDays, setSelectedDays] = useState<number[]>();
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
   const [startTime, setStartTime] = useState<Dayjs | null>(dayjs());
+  dayjs.extend(utc);
   const [endTime, setEndTime] = useState<Dayjs | null>(dayjs());
   const [sessionBlocks, setSessionBlocks] = useState<Session[]>([
     {
@@ -152,17 +158,26 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
       const startDateTime = eventData?.startDateTime;
       const endDateTime = eventData?.endDateTime;
+      const endDateValue = eventData?.recurrencePattern?.endCondition?.value;
 
       const localStartDateTime = dayjs.utc(startDateTime).tz(timeZone);
       const localEndDateTime = dayjs.utc(endDateTime).tz(timeZone);
-      // const localEndDateValue = dayjs.utc(endDateValue).tz('Asia/Kolkata');
+      const localEndDateValue = dayjs.utc(endDateValue).tz('Asia/Kolkata');
 
       setStartDate(localStartDateTime.startOf('day'));
       setStartTime(localStartDateTime);
-      setEndDate(localEndDateTime.startOf('day'));
+      if (editSelection === t('CENTER_SESSION.EDIT_THIS_SESSION')) {
+        setEndDate(localEndDateTime.startOf('day'));
+      } else {
+        setEndDate(localEndDateValue.startOf('day'));
+      }
+
       setEndTime(localEndDateTime);
+
+      const recurrencePattern = eventData?.recurrencePattern?.daysOfWeek;
+      setSelectedDays(recurrencePattern);
     }
-  }, [eventData]);
+  }, [eventData, editSelection]);
 
   const handleOpenModel = () => {
     setModalOpen(true);
@@ -207,6 +222,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     event: ChangeEvent<HTMLInputElement>,
     id: string | number | undefined
   ) => {
+    const mode = event.target.value;
+    setMode(mode as mode);
     const updatedSessionBlocks = sessionBlocks.map((block) =>
       block.id === id
         ? { ...block, sessionMode: event.target.value.toLowerCase() }
@@ -473,9 +490,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     );
   };
 
-  const { t } = useTranslation();
-  const theme = useTheme<any>();
-
   const handleSelectionChange = (
     id: string | number | undefined,
     newSelectedDays: string[]
@@ -483,6 +497,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const mappedSelectedDays = newSelectedDays?.map(
       (day) => DaysOfWeek[day as keyof typeof DaysOfWeek]
     );
+    setSelectedDays(mappedSelectedDays);
 
     setSessionBlocks(
       sessionBlocks.map((block) =>
@@ -713,13 +728,14 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   }, [scheduleEvent, cohortId]);
 
   const handleEditSession = (event: any) => {
-    setMode(event.target.value);
+    setEditSelection(event.target.value);
   };
 
   const handelDeleteEvent = async (eventData: any, deleteSelection: string) => {
     try {
       const isMainEvent =
-        !eventData?.isRecurring || deleteSelection !== 'EDIT_SESSION';
+        !eventData?.isRecurring ||
+        deleteSelection !== t('CENTER_SESSION.EDIT_THIS_SESSION');
 
       const eventRepetitionId = eventData?.eventRepetitionId;
 
@@ -741,6 +757,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     }
   };
 
+  const handelEditEvent = (eventData: any, deleteSelection: string) => {
+    console.log(eventData);
+  };
+
   return (
     <Box overflow={'hidden'}>
       {sessionBlocks.map((block, index) => (
@@ -751,13 +771,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 row
                 aria-labelledby="session-mode-label"
                 name="session-mode-group"
-                value={mode || editSelection}
+                value={editSelection}
                 onChange={handleEditSession}
               >
                 <FormControlLabel
                   value={t('CENTER_SESSION.EDIT_THIS_SESSION')}
                   onClick={() =>
-                    handleEditSelection?.('EDIT_SESSION', editSession)
+                    handleEditSelection?.(
+                      t('CENTER_SESSION.EDIT_THIS_SESSION'),
+                      editSession
+                    )
                   }
                   label={
                     <span
@@ -786,7 +809,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 <FormControlLabel
                   value={t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS')}
                   onClick={() =>
-                    handleEditSelection?.('FOLLOWING_SESSION', editSession)
+                    handleEditSelection?.(
+                      t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS'),
+                      editSession
+                    )
                   }
                   control={
                     <Radio style={{ color: theme.palette.warning['300'] }} />
@@ -817,7 +843,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
           <Box>
             <SessionMode
-              mode={eventData ? mode : block?.sessionMode || mode}
+              mode={mode || block?.sessionMode}
               handleSessionModeChange={(e) =>
                 handleSessionModeChange(e, block?.id)
               }
@@ -914,11 +940,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   label={t('CENTER_SESSION.MEETING_PASSCODE')}
                   variant="outlined"
                   onChange={(e: any) => handlePasscodeChange(block?.id, e)}
-                  value={
-                    meetingPasscode
-                      ? meetingPasscode
-                      : t('CENTER_SESSION.MEETING_PASSCODE')
-                  }
+                  value={meetingPasscode ? meetingPasscode : null}
                 />
               </Box>
             </>
@@ -980,7 +1002,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           )}
 
           {(clickedBox === 'EXTRA_SESSION' ||
-            (editSession && editSelection === 'EDIT_SESSION')) && (
+            (editSession &&
+              editSelection === t('CENTER_SESSION.EDIT_THIS_SESSION'))) && (
             <>
               <Box sx={{ mt: 2 }}>
                 <Box sx={{ mt: 3 }}>
@@ -1034,7 +1057,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           )}
 
           {(clickedBox === 'PLANNED_SESSION' ||
-            (editSession && editSelection === 'FOLLOWING_SESSION')) && (
+            (editSession &&
+              editSelection ===
+                t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS'))) && (
             <Box sx={{ mt: 2 }}>
               <Box sx={{ overflow: 'none' }}>
                 <Typography variant="h2" component="h2">
@@ -1045,7 +1070,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
                 <WeekDays
                   useAbbreviation={true}
-                  selectedDays={block?.selectedWeekDays}
+                  selectedDays={
+                    selectedDays?.length
+                      ? selectedDays
+                      : block?.selectedWeekDays
+                  }
                   onSelectionChange={(newSelectedDays) => {
                     handleSelectionChange(block?.id, newSelectedDays);
                   }}
@@ -1158,7 +1187,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   }}
                   onClick={handleOpenModel}
                 >
-                  {editSelection === 'EDIT_SESSION'
+                  {editSelection === t('CENTER_SESSION.EDIT_THIS_SESSION')
                     ? t('CENTER_SESSION.DELETE_THIS_SESSION')
                     : t('CENTER_SESSION.DELETE_FOLLOWING_SESSION')}
                 </Box>
@@ -1225,7 +1254,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       {editSession && (
         <ConfirmationModal
           message={
-            editSelection === 'EDIT_SESSION'
+            editSelection === t('CENTER_SESSION.EDIT_THIS_SESSION')
               ? t('CENTER_SESSION.DELETE_SESSION_MSG')
               : t('CENTER_SESSION.DELETE_ALL_SESSION_MSG')
           }
@@ -1235,6 +1264,19 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           }}
           handleCloseModal={handleCloseModal}
           handleAction={() => handelDeleteEvent(editSession, editSelection)}
+          modalOpen={modalOpen}
+        />
+      )}
+
+      {onEventEdited && (
+        <ConfirmationModal
+          message={t('CENTER_SESSION.UPDATE_CHANGES')}
+          buttonNames={{
+            primary: t('COMMON.YES'),
+            secondary: t('COMMON.NO_GO_BACK'),
+          }}
+          handleCloseModal={handleCloseModal}
+          handleAction={() => handelEditEvent(editSession, editSelection)}
           modalOpen={modalOpen}
         />
       )}
