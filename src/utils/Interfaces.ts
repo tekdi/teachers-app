@@ -632,7 +632,7 @@ export interface GetTargetedSolutionsParams {
 export interface GetUserProjectDetailsParams {
   id: string;
 }
-
+export interface IAssessmentStatusOptions {
   userId: string[];
   contentId: string[];
   batchId: string;

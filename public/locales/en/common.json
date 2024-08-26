@@ -76,6 +76,7 @@
     "REASON_FOR_DROPOUT": "Reason for Dropout",
     "REASON_FOR_DELETION": "Reason for Deletion",
     "REASON_FOR_REMOVE": "Reason for Remove",
+    "REASON": "Reason",
     "REASON_FOR_ABSENT": "Reason for Absent",
     "SURE_LOGOUT": "Are you sure you want to Logout?",
     "SURE_UPDATE": "Are you sure you want to update this attendance?",
@@ -351,7 +352,12 @@
     "THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT": "The user belongs to the following cohort: ",
     "PLEASE_REMOVE_THE_USER_FROM_COHORT": "Please remove the user from these cohorts before proceeding with deletion.",
     "ERROR_EMPTY": "Center name cannot be empty",
-    "ERROR_NUMBER": "Center name cannot be number"
+    "ERROR_NUMBER": "Center name cannot be number",
+    "LONG_ABSENTEE": "Long Absentee",
+    "TAKEN_TC": "Taken Tc",
+    "ALLOCATION_CHANGE": "Allocation  Change",
+    "INCORRECT_ENTRY": "Incorrect Entry",
+    "DUPLICATION_ENTRY": "Duplicate Entry"
   },
   "CENTER_SESSION": {
     "THIS_SESSION": "This session",
@@ -392,13 +398,13 @@
     "ZOOM": "Zoom",
     "GOOGLEMEET": "GoogleMeet",
     "SET_UP": "Set-Up",
-    "EDIT_THIS_SESSION":" Edit this session",
-    "EDIT_FOLLOWING_SESSIONS":" Edit this and following sessions",
-    "DELETE_SESSION_MSG":"Are you sure you want to delete this session?",
-    "DELETE_ALL_SESSION_MSG":"Are you sure you want to delete all sessions in this series?",
-    "DELETE_THIS_SESSION":"Delete this session",
-    "DELETE_FOLLOWING_SESSION":"Delete this and following sessions",
-    "UPDATE_CHANGES":"Are you sure you want to update the changes?"
+    "EDIT_THIS_SESSION": " Edit this session",
+    "EDIT_FOLLOWING_SESSIONS": " Edit this and following sessions",
+    "DELETE_SESSION_MSG": "Are you sure you want to delete this session?",
+    "DELETE_ALL_SESSION_MSG": "Are you sure you want to delete all sessions in this series?",
+    "DELETE_THIS_SESSION": "Delete this session",
+    "DELETE_FOLLOWING_SESSION": "Delete this and following sessions",
+    "UPDATE_CHANGES": "Are you sure you want to update the changes?"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully",
