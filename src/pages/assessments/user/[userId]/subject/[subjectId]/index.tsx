@@ -1,52 +1,113 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Typography, IconButton } from '@mui/material';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import Header from '@/components/Header';
+import { showToastMessage } from '@/components/Toastify';
+import { searchAssessment } from '@/services/AssesmentService';
+import { getUserDetails } from '@/services/ProfileService';
+import { Pagination } from '@/utils/app.constant';
+import { logEvent } from '@/utils/googleAnalytics';
+import { toPascalCase } from '@/utils/Helper';
+import { IQuestion } from '@/utils/Interfaces';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import { Box, IconButton, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useParams, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getAssessmentQuestion } from '@/services/UpdateAssesmentService';
-import Header from '@/components/Header';
-import { logEvent } from '@/utils/googleAnalytics';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { Pagination } from '@/utils/app.constant';
-
-interface AssessmentQuestion {
-  question: string;
-  score: number;
-}
 
 function SubjectDetail() {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const [assessmentQuestions, setAssessmentQuestions] = useState<
-    AssessmentQuestion[]
-  >([]);
+  const searchParams = useSearchParams();
+  const centerId = searchParams.get('center');
+  const assessmentName = searchParams.get('assessmentName');
   const [currentPage, setCurrentPage] = useState(1);
+  const params = useParams<{ userId: string; subjectId: string }>();
+  const [userDetails, setUserDetails] = useState<any>({});
+  const [assessmentDetails, setAssessmentDetails] = useState<any>({});
+  const [totalPages, setTotalPages] = useState(0);
+  const [paginatedQuestions, setPaginatedQuestions] = useState<any>([]);
 
   useEffect(() => {
-    const fetchAssessmentQuestions = async () => {
-      const res = await getAssessmentQuestion();
-      setAssessmentQuestions(res.slice(0, Pagination.MAX_ITEMS));
+    const getUserInfo = async () => {
+      try {
+        const response = await getUserDetails(params.userId);
+        console.log('response', response);
+        if (response?.result?.userData) {
+          setUserDetails(response?.result?.userData);
+        }
+      } catch (error) {
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        console.error('Error fetching getAssessmentStatus results:', error);
+      }
     };
-    fetchAssessmentQuestions();
-  }, []);
+
+    if (params?.userId) {
+      getUserInfo();
+    }
+  }, [params?.userId]);
+
+  useEffect(() => {
+    const getAssessmentDetails = async () => {
+      try {
+        const body = {
+          userId: params.userId,
+          contentId: params.subjectId,
+          batchId: centerId as string,
+        };
+        const assessmentRes = await searchAssessment(body);
+        console.log('response===>', assessmentRes);
+
+        if (assessmentRes.length) {
+          setAssessmentDetails(assessmentRes[0]);
+          if (assessmentRes[0]?.score_details?.length) {
+            const totalPages = Math.ceil(
+              assessmentRes[0]?.score_details?.length /
+                Pagination.ITEMS_PER_PAGE
+            );
+
+            setTotalPages(totalPages);
+            setPagination(assessmentRes[0]?.score_details);
+          }
+        }
+      } catch (error) {
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        console.error('Error fetching getAssessmentStatus results:', error);
+      }
+    };
+
+    if (params?.userId && params?.subjectId && centerId) {
+      getAssessmentDetails();
+    }
+  }, [params]);
+
+  const handleBackEvent = () => {
+    window.history.back();
+    logEvent({
+      action: 'back-button-clicked-attendance-overview',
+      category: 'Attendance Overview Page',
+      label: 'Back Button Clicked',
+    });
+  };
 
   const handlePageChange = (
     _event: React.MouseEvent<HTMLElement> | null,
     newPage: number
   ) => {
-    setCurrentPage(newPage);
+    setCurrentPage(() => newPage);
+    setPagination(assessmentDetails?.score_details, newPage);
   };
 
-  const paginatedQuestions = assessmentQuestions.slice(
-    (currentPage - 1) * Pagination.ITEMS_PER_PAGE,
-    currentPage * Pagination.ITEMS_PER_PAGE
-  );
+  const setPagination = (questions: IQuestion[], pageNumber?: number) => {
+    const activePage = pageNumber || currentPage;
+    const paginatedQuestions = questions.slice(
+      (activePage - 1) * Pagination.ITEMS_PER_PAGE,
+      activePage * Pagination.ITEMS_PER_PAGE
+    );
 
-  const totalPages = Math.ceil(
-    assessmentQuestions.length / Pagination.ITEMS_PER_PAGE
-  );
+    console.log('paginatedQuestions', paginatedQuestions);
+    setPaginatedQuestions(paginatedQuestions);
+  };
 
   return (
     <>
@@ -60,6 +121,7 @@ function SubjectDetail() {
           padding: '15px 20px 0px',
         }}
         width={'100%'}
+        onClick={handleBackEvent}
       >
         <KeyboardBackspaceOutlinedIcon
           cursor={'pointer'}
@@ -69,7 +131,7 @@ function SubjectDetail() {
           sx={{ display: 'flex', flexDirection: 'column', margin: '0.8rem' }}
         >
           <Typography textAlign={'left'} fontSize={'22px'}>
-            userName {/* Replace with dynamic username */}
+            {assessmentName}
           </Typography>
           <Typography
             color={theme.palette.warning['A200']}
@@ -77,7 +139,7 @@ function SubjectDetail() {
             fontWeight={'500'}
             fontSize={'11px'}
           >
-            {t('PROFILE.SUBJECT')}
+            {toPascalCase(userDetails?.name)}
           </Typography>
         </Box>
       </Box>
@@ -91,8 +153,8 @@ function SubjectDetail() {
         }}
       >
         {/* Assessment questions */}
-        {paginatedQuestions.map((questionItem, index) => (
-          <Box key={index}>
+        {paginatedQuestions.map((questionItem: IQuestion, index: number) => (
+          <Box key={questionItem?.questionId}>
             <Box
               sx={{
                 mt: 1.5,
@@ -101,17 +163,31 @@ function SubjectDetail() {
                 color: theme.palette.warning['300'],
               }}
             >
-              {questionItem.question}
+              <span>{`Q${(currentPage - 1) * Pagination.ITEMS_PER_PAGE + 1 + index}. `}</span>
+              <span
+                dangerouslySetInnerHTML={{ __html: questionItem?.queTitle }}
+              />
             </Box>
             <Box
               sx={{
                 mt: 0.8,
                 fontSize: '16px',
                 fontWeight: '500',
-                color: theme.palette.success.main,
+                color:
+                  questionItem?.pass === 'Yes'
+                    ? 'green !important'
+                    : 'red !important',
               }}
             >
-              {questionItem.score}
+              <span
+                color={questionItem?.pass === 'Yes' ? 'green' : 'red'}
+                dangerouslySetInnerHTML={{
+                  __html:
+                    JSON.parse(questionItem?.resValue)?.[0]
+                      ?.label.replace(/<\/?[^>]+(>|$)/g, '')
+                      .replace(/^\d+\.\s*/, '') || 'NA',
+                }}
+              />
             </Box>
           </Box>
         ))}
@@ -149,8 +225,8 @@ function SubjectDetail() {
           >
             {`${(currentPage - 1) * Pagination.ITEMS_PER_PAGE + 1}-${Math.min(
               currentPage * Pagination.ITEMS_PER_PAGE,
-              assessmentQuestions.length
-            )} of ${assessmentQuestions.length}`}
+              assessmentDetails?.score_details?.length
+            )} of ${assessmentDetails?.score_details?.length}`}
           </Typography>
           <IconButton
             disabled={currentPage === totalPages}

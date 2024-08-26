@@ -1,10 +1,9 @@
-// import { useState } from 'react';
 import { Box, Modal, Typography } from '@mui/material';
 
-import ButtonFunctional from './ButtonComponent';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import ButtonFunctional from './ButtonComponent';
 
 interface ModalProps {
   open: boolean;
@@ -25,40 +24,9 @@ const ModalComponent: React.FC<ModalProps> = ({
   btnText,
   handleApplySort,
 }) => {
-  // const style = {
-  //   position: 'absolute',
-  //   top: '50%',
-  //   left: '50%',
-  //   transform: 'translate(-50%, -50%)',
-  //   width: 400,
-  //   bgcolor: 'background.paper',
-  //   boxShadow: 24,
-  //   p: 4,
-  //   borderRadius: '1rem'
-  // };
-
   const { t } = useTranslation();
 
-  const handleClick = () => {};
-
   return (
-    // <Modal open={open} onClose={onClose}>
-    //   <Box sx={style}>
-    //     <Box display={'flex'} justifyContent={'space-between'}>
-    //       <Typography variant="h4" m={0} fontSize={'16px'} fontWeight={'500'}>
-    //         {heading}
-    //       </Typography>
-    //       <CloseSharpIcon onClick={onClose} aria-label="Close" />
-    //     </Box>
-
-    //     <Box>
-    //       <Typography variant="h6">{SubHeading}</Typography>
-
-    //       <Box>{children}</Box>
-    //     </Box>
-    //     <ButtonFunctional buttonName={t('COMMON.APPLY')} />
-    //   </Box>
-    // </Modal>
     <Modal open={open} onClose={onClose}>
       <Box
         sx={{
@@ -103,9 +71,8 @@ const ModalComponent: React.FC<ModalProps> = ({
         >
           <ButtonFunctional
             handleClickButton={handleApplySort}
-            buttonName={t('COMMON.APPLY')}
+            buttonName={btnText ?? t('COMMON.APPLY')}
           />{' '}
-          {/* You may use t('COMMON.APPLY') */}
         </Box>
       </Box>
     </Modal>

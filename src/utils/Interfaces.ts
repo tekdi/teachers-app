@@ -502,12 +502,6 @@ export interface AssessmentSubject {
   score: string;
   date: string;
 }
-export interface Assessments {
-  userId: string;
-  subject: string;
-  score: string;
-  date: string;
-}
 
 export interface AssessmentQuestion {
   userId: number;
@@ -618,4 +612,21 @@ export interface GetUserProjectDetailsParams {
 export interface EditEvent {
   isMainEvent: boolean;
   status: string;
+}
+
+export interface ISearchAssessment {
+  userId: string,
+  contentId: string,
+  batchId: string
+}
+
+export interface IQuestion {
+  duration: number;
+  maxScore: number;
+  pass: string;
+  queTitle: string;
+  questionId: string;
+  resValue: string;
+  score: number;
+  sectionId: string;
 }

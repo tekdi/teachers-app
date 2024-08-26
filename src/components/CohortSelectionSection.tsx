@@ -327,10 +327,9 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
 
   return (
     <Box className={isAttendanceOverview || isAssessment ? 'w-100' : 'w-md-40'}>
-      {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />}
+      {loading && <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />}
       {!loading && cohortsData && (
         <Box>
-          {/* {loading && <Loader showBackdrop={true} loadingText={t('LOADING')} />} */}
           {!loading && cohortsData && (
             <Box>
               {blockName ? (

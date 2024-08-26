@@ -29,7 +29,7 @@ import config from '../../config.json';
 import appLogo from '../../public/images/appLogo.png';
 import Loader from '../components/Loader';
 import { login } from '../services/LoginService';
-import { getUserId } from '../services/ProfileService';
+import { getUserDetails, getUserId } from '../services/ProfileService';
 import loginImg from './../assets/images/login-image.jpg';
 import { Telemetry } from '@/utils/app.constant';
 
@@ -132,15 +132,29 @@ const LoginPage = () => {
               action: 'login-success',
               category: 'Login Page',
               label: 'Login Success',
-              value: userResponse?.userId
+              value: userResponse?.userId,
             });
-            localStorage.setItem('state', userResponse?.state);
-            localStorage.setItem('district', userResponse?.district);
+
             localStorage.setItem('role', userResponse?.tenantData[0]?.roleName);
             localStorage.setItem('userEmail', userResponse?.email);
             localStorage.setItem('userName', userResponse?.name);
             localStorage.setItem('userId', userResponse?.userId);
             setUserRole(userResponse?.tenantData[0]?.roleName);
+
+            const userDetails = await getUserDetails(
+              userResponse?.userId,
+              true
+            );
+            if (userDetails?.result?.userData) {
+              if (userDetails.result.userData?.customFields?.length) {
+                const state = userDetails.result.userData?.customFields.find((field: any) => field?.label === "STATES");
+                if(state) {
+                  localStorage.setItem('stateName', state?.value);
+                }
+              }
+
+              console.log('userDetails', userDetails);
+            }
           }
         }
         setLoading(false);
@@ -154,7 +168,6 @@ const LoginPage = () => {
             type: Telemetry.CLICK,
             subtype: '',
             pageid: 'sign-in',
-           
           },
         };
         telemetryFactory.interact(telemetryInteract);
@@ -170,7 +183,7 @@ const LoginPage = () => {
             action: 'login-fail',
             category: 'Login Page',
             label: 'Login Fail',
-            value: error.response
+            value: error.response,
           });
         } else {
           console.error('Error:', error);
@@ -248,14 +261,30 @@ const LoginPage = () => {
         </Box>
       </Box>
 
-      <Grid container spacing={2}
-        justifyContent={'center'} px={'30px'} alignItems={'center'}>
-        <Grid sx={{
-          '@media (max-width: 900px)': {
-            display: 'none'
-          },
-        }} item xs={12} sm={12} md={6}>
-          <Image className='login-img' src={loginImg} alt="Login Image" layout="responsive" />
+      <Grid
+        container
+        spacing={2}
+        justifyContent={'center'}
+        px={'30px'}
+        alignItems={'center'}
+      >
+        <Grid
+          sx={{
+            '@media (max-width: 900px)': {
+              display: 'none',
+            },
+          }}
+          item
+          xs={12}
+          sm={12}
+          md={6}
+        >
+          <Image
+            className="login-img"
+            src={loginImg}
+            alt="Login Image"
+            layout="responsive"
+          />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
           <form onSubmit={handleFormSubmit}>
@@ -274,12 +303,11 @@ const LoginPage = () => {
                   '@media (min-width: 900px)': {
                     width: '100%',
                     borderRadius: '16px',
-                    boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px'
+                    boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
                   },
                 }}
               >
                 <Box
-
                   sx={{
                     width: '100%',
                     '@media (max-width: 700px)': {
@@ -365,7 +393,11 @@ const LoginPage = () => {
                               onMouseDown={handleMouseDownPassword}
                               edge="end"
                             >
-                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                              {showPassword ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
                             </IconButton>
                           </InputAdornment>
                         ),
@@ -430,8 +462,8 @@ const LoginPage = () => {
                       ref={loginButtonRef}
                       sx={{
                         '@media (min-width: 900px)': {
-                          width: '50%'
-                        }
+                          width: '50%',
+                        },
                       }}
                     >
                       {t('LOGIN_PAGE.LOGIN')}
@@ -442,9 +474,7 @@ const LoginPage = () => {
             </Box>
           </form>
         </Grid>
-
       </Grid>
-
     </Box>
   );
 };

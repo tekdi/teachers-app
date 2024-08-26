@@ -283,7 +283,7 @@
   "GUIDE_TOUR": {
     "STEP_1": "Welcome! Let’s take a quick tour to understand the key features that will help you with your daily tasks.",
     "STEP_2": "This section provides a quick overview of attendance trends to help you spot key insights for each center. You can mark attendance, check daily attendance percentages, and modify previous attendance for the last 7 days.",
-    "STEP_3": "Access the full calendar to track your attendance for any month and see which learners were present each day.",
+    "STEP_3": "Access the full calendar to track learners' attendance for any month and see who was present or absent each day.",
     "STEP_4": "Use this button to view a detailed overview of center attendance and see a list of learners categorized by low, average, and good attendance for any custom date range.",
     "STEP_5": "Update your preferred language anytime from here.",
     "STEP_6": "Access your teaching centers and manage tasks like adding, editing, or removing learners, marking dropouts, and reassigning centers or blocks. You can also easily schedule online or offline sessions for your subjects.",
@@ -501,7 +501,15 @@
     "SUBMITTED_ON": "Submitted On",
     "CORRECT_ANSWER": "correct answers",
     "NO_DATA_FOUND": "No data found",
-    "SEARCH_STUDENT": "search student",
-    "NO_ASSESSMENTS_FOUND": "No assessments found"
+    "SEARCH_STUDENT": "Search student",
+    "NO_ASSESSMENTS_FOUND": "No assessments found",
+    "ASSESSMENT_STATUS": "Assessment Status",
+    "NOT_STARTED": "Not Started",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed",
+    "MARKS_OBTAINED": "Marks Obtained",
+    "OVERALL_SCORE": "Overall Score",
+    "ASSESSMENT_NOT_STARTED_YET": "Assessment not started yet",
+    "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} out of {{totalCount}} completed"
   }
 }

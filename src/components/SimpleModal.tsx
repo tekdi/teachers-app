@@ -30,7 +30,6 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
 
   const modalStyle = {
     padding: '0',
-
     paddingBottom: theme.spacing(2),
     position: 'absolute',
     top: '50%',
@@ -63,12 +62,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
       aria-describedby="child-modal-description"
     >
       <Box sx={modalStyle}>
-        <Box
-          display={'flex'}
-          justifyContent={'space-between'}
-          // sx={{ padding: '18px 16px' }}
-          sx={titleStyle}
-        >
+        <Box display={'flex'} justifyContent={'space-between'} sx={titleStyle}>
           <Box marginBottom={'0px'}>
             <Typography
               variant="h2"
@@ -91,7 +85,9 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
           </Box>
         </Box>
         <Divider />
-        <Box sx={{padding: '0px 16px'}}>{children}</Box>
+        <Box sx={{ padding: '0px 16px', height: '55vh', overflowY: 'auto' }}>
+          {children}
+        </Box>
         <Divider />
 
         {showFooter ? (
