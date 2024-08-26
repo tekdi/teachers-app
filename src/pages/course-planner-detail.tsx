@@ -23,6 +23,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import { getTargetedSolutions, getUserProjectDetails } from '@/services/CoursePlannerService';
 import useCourseStore from '@/store/coursePlannerStore';
+import { SHORT_MONTHS } from '@/utils/Helper';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
@@ -111,7 +112,11 @@ const CoursePlannerDetail = () => {
   //   setModalOpen(true);
   // };
 
-  console.log(userProjectDetails);
+  const getAbbreviatedMonth = (dateString: string | number | Date) => {
+    const date = new Date(dateString);
+    const months = SHORT_MONTHS
+    return months[date.getMonth()];
+  };
   
 
   return (
@@ -284,8 +289,7 @@ const CoursePlannerDetail = () => {
               </Typography>
             </Box>
             <Typography fontWeight="600" fontSize="12px" color="#7C766F">
-              {/* Here you can add dynamic date or other information if needed */}
-              Jan, Feb
+              {getAbbreviatedMonth(topic?.metaInformation.startDate)}, {getAbbreviatedMonth(topic?.metaInformation.endDate)}
             </Typography>
           </Box>
         </AccordionSummary>
@@ -346,7 +350,7 @@ const CoursePlannerDetail = () => {
                         borderRadius: '8px',
                       }}
                     >
-                      JAN
+                      {getAbbreviatedMonth(subTopic.metaInformation.startDate)}
                     </Box>
                     <CheckCircleIcon
                       onClick={toggleDrawer(true)}

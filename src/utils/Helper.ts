@@ -29,6 +29,21 @@ export const MONTHS = [
   'December',
 ];
 
+export const SHORT_MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sept',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+
 export const formatDate = (dateString: string) => {
   const [year, monthIndex, day] = dateString.split('-');
   const month = MONTHS[parseInt(monthIndex, 10) - 1];
