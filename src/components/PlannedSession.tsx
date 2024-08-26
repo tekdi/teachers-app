@@ -45,19 +45,23 @@ import {
   DaysOfWeek,
   eventDaysLimit,
   idealTimeForSession,
+  timeZone,
 } from '../../app.config';
 import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
 import ConfirmationModal from './ConfirmationModal';
+import timezone from 'dayjs/plugin/timezone';
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 type mode = (typeof sessionMode)[keyof typeof sessionMode];
-type type = (typeof sessionType)[keyof typeof sessionType];
+// type type = (typeof sessionType)[keyof typeof sessionType];
 
 interface Session {
   id?: number | string;
   sessionMode?: string;
-  sessionType?: string;
+  // sessionType?: string;
   selectedWeekDays?: string[];
   DaysOfWeek?: number[];
   startDatetime?: string;
@@ -84,17 +88,21 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   onCloseModal,
   editSession,
   onEventDeleted,
+  eventData,
 }) => {
   const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
-  const [eventType, setEventType] = useState<type>(sessionType.JUST);
+  // const [eventType, setEventType] = useState<type>(sessionType.JUST);
   const [link, setLink] = useState('');
   const [linkError, setLinkError] = useState('');
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>();
+  const [editEventData, setEditEventData] = useState(eventData);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [selectedBlockId, setSelectedBlockId] = useState(0);
   const [editSelection, setEditSelection] = React.useState('EDIT_SESSION');
   const [subjects, setSubjects] = useState<string[]>();
+  const [shortDescription, setShortDescription] = useState<string>();
+  const [meetingPasscode, setMeetingPasscode] = useState<string>();
   dayjs.extend(utc);
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
@@ -106,7 +114,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       selectedWeekDays: [],
       DaysOfWeek: [],
       sessionMode: mode,
-      sessionType: eventType,
+      // sessionType: eventType,
       startDatetime: '',
       endDatetime: '',
       endDateValue: '',
@@ -122,6 +130,40 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       sessionEndTime: endTime,
     },
   ]);
+
+  useEffect(() => {
+    console.log(eventData);
+    console.log(eventData?.metadata?.framework?.subject);
+
+    if (eventData) {
+      const mode =
+        eventData?.meetingDetails?.url !== undefined
+          ? sessionMode.ONLINE
+          : sessionMode.OFFLINE;
+      setMode(mode);
+      let sub = eventData?.metadata?.framework?.subject;
+      setSelectedSubject(sub);
+      let sessionTitle = eventData?.shortDescription;
+      setShortDescription(sessionTitle);
+      const url = eventData?.meetingDetails?.url;
+      setLink(url);
+      const passcode = eventData?.meetingDetails?.password;
+      setMeetingPasscode(passcode);
+
+      const startDateTime = eventData?.startDateTime;
+      const endDateTime = eventData?.endDateTime;
+
+      const localStartDateTime = dayjs.utc(startDateTime).tz(timeZone);
+      const localEndDateTime = dayjs.utc(endDateTime).tz(timeZone);
+      // const localEndDateValue = dayjs.utc(endDateValue).tz('Asia/Kolkata');
+
+      setStartDate(localStartDateTime.startOf('day'));
+      setStartTime(localStartDateTime);
+      setEndDate(localEndDateTime.startOf('day'));
+      setEndTime(localEndDateTime);
+    }
+  }, [eventData]);
+
   const handleOpenModel = () => {
     setModalOpen(true);
   };
@@ -173,16 +215,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     setSessionBlocks(updatedSessionBlocks);
   };
 
-  const handleSessionTypeChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    id: string | number | undefined
-  ) => {
-    setEventType(event.target.value as type);
-    const updatedSessionBlocks = sessionBlocks.map((block) =>
-      block.id === id ? { ...block, sessionType: event.target.value } : block
-    );
-    setSessionBlocks(updatedSessionBlocks);
-  };
+  // const handleSessionTypeChange = (
+  //   event: ChangeEvent<HTMLInputElement>,
+  //   id: string | number | undefined
+  // ) => {
+  //   setEventType(event.target.value as type);
+  //   const updatedSessionBlocks = sessionBlocks.map((block) =>
+  //     block.id === id ? { ...block, sessionType: event.target.value } : block
+  //   );
+  //   setSessionBlocks(updatedSessionBlocks);
+  // };
 
   useEffect(() => {
     const getAddFacilitatorFormData = async () => {
@@ -312,7 +354,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const startDatetime = convertToUTC(combinedStartDateTime);
     const endDatetime = convertToUTC(combinedEndDateTime);
     const endDateValue =
-      eventType && eventType === t('CENTER_SESSION.JUST_ONCE')
+      clickedBox === 'EXTRA_SESSION'
         ? endDatetime
         : convertToUTC(combinedEndDateValue);
 
@@ -346,7 +388,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const startDatetime = convertToUTC(combinedStartDateTime);
     const endDatetime = convertToUTC(combinedEndDateTime);
     const endDateValue =
-      eventType && eventType === t('CENTER_SESSION.JUST_ONCE')
+      clickedBox === 'EXTRA_SESSION'
         ? endDatetime
         : convertToUTC(combinedEndDateValue);
 
@@ -418,7 +460,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     id: string | number | undefined
   ) => {
     const value = event?.target?.value;
-
+    setMeetingPasscode(value);
     setSessionBlocks(
       sessionBlocks.map((block) =>
         block.id === id
@@ -460,6 +502,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     id: string | number | undefined
   ) => {
     const value = event?.target?.value;
+    setShortDescription(value);
     setSessionBlocks(
       sessionBlocks.map((block) =>
         block.id === id
@@ -482,7 +525,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         selectedWeekDays: [],
         DaysOfWeek: [],
         sessionMode: '',
-        sessionType: '',
+        // sessionType: '',
         startDatetime: '',
         endDatetime: '',
         subject: '',
@@ -564,7 +607,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       const apiBodies: CreateEvent[] = sessionBlocks.map((block) => {
         const baseBody: CreateEvent = {
           title,
-          shortDescription: '',
+          shortDescription: block?.subjectTitle || shortDescription,
           description: '',
           eventType: block?.sessionMode || mode,
           isRestricted: true,
@@ -708,7 +751,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 row
                 aria-labelledby="session-mode-label"
                 name="session-mode-group"
-                value={mode}
+                value={mode || editSelection}
                 onChange={handleEditSession}
               >
                 <FormControlLabel
@@ -774,7 +817,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
           <Box>
             <SessionMode
-              mode={block?.sessionMode || mode}
+              mode={eventData ? mode : block?.sessionMode || mode}
               handleSessionModeChange={(e) =>
                 handleSessionModeChange(e, block?.id)
               }
@@ -785,7 +828,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               }}
             />
           </Box>
-          {clickedBox === 'PLANNED_SESSION' && (
+          {(clickedBox === 'PLANNED_SESSION' || editSession) && (
             <>
               <Box sx={{ mt: 2 }}>
                 <FormControl fullWidth>
@@ -803,7 +846,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     onChange={(event: any) =>
                       handleSubjectChange(block?.id, event)
                     }
-                    value={selectedSubject}
+                    value={
+                      selectedSubject
+                        ? selectedSubject
+                        : t('CENTER_SESSION.SUBJECT')
+                    }
                   >
                     {subjects?.map((subject: string) => (
                       <MenuItem key={subject} value={subject}>
@@ -822,7 +869,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   id="outlined-basic"
                   label={t('CENTER_SESSION.SESSION_TITLE_OPTIONAL')}
                   variant="outlined"
-                  value={block?.subjectTitle}
+                  value={block?.subjectTitle || shortDescription}
                   onChange={(e) => {
                     handleSubjectTitleChange(e, block?.id);
                   }}
@@ -831,7 +878,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             </>
           )}
 
-          {block?.sessionMode === sessionMode.ONLINE && (
+          {(block?.sessionMode === sessionMode.ONLINE ||
+            mode === sessionMode.ONLINE) && (
             <>
               {/* <Box
                 sx={{
@@ -866,6 +914,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   label={t('CENTER_SESSION.MEETING_PASSCODE')}
                   variant="outlined"
                   onChange={(e: any) => handlePasscodeChange(block?.id, e)}
+                  value={
+                    meetingPasscode
+                      ? meetingPasscode
+                      : t('CENTER_SESSION.MEETING_PASSCODE')
+                  }
                 />
               </Box>
             </>
@@ -926,22 +979,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             </Box>
           )}
 
-          {clickedBox === 'EXTRA_SESSION' && (
+          {(clickedBox === 'EXTRA_SESSION' ||
+            (editSession && editSelection === 'EDIT_SESSION')) && (
             <>
               <Box sx={{ mt: 2 }}>
-                {/* <SessionMode
-                  mode={block?.sessionType || eventType}
-                  handleSessionModeChange={(e) =>
-                    handleSessionTypeChange(e, block?.id)
-                  }
-                  sessions={{
-                    tile: t('CENTER_SESSION.TYPE_OF_SESSION'),
-                    mode1: t('CENTER_SESSION.REPEATING'),
-                    mode2: t('CENTER_SESSION.JUST_ONCE'),
-                  }}
-                /> */}
-                {/* {block?.sessionType === sessionType.JUST && (
-                   )} */}
                 <Box sx={{ mt: 3 }}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Stack spacing={3}>
@@ -991,7 +1032,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </Box>
             </>
           )}
-          {clickedBox !== 'EXTRA_SESSION' && (
+
+          {(clickedBox === 'PLANNED_SESSION' ||
+            (editSession && editSelection === 'FOLLOWING_SESSION')) && (
             <Box sx={{ mt: 2 }}>
               <Box sx={{ overflow: 'none' }}>
                 <Typography variant="h2" component="h2">
