@@ -413,6 +413,7 @@ const Assessments = () => {
                 isManipulationRequired={false}
                 isCustomFieldRequired={true}
                 showFloatingLabel={true}
+                showDisabledDropDown={true}
               />
             </Box>
           </Box>

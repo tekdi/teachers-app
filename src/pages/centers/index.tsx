@@ -101,14 +101,6 @@ const CentersPage = () => {
               customField: 'true',
             });
 
-            response = response.filter((block: any) => {
-              if (
-                block?.cohortMemberStatus === Status.ACTIVE &&
-                block?.cohortStatus === Status.ACTIVE
-              ) {
-                return block;
-              }
-            });
 
             const blockData = response.map((block: any) => {
               const blockName = block.cohortName;

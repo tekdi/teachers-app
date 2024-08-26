@@ -76,7 +76,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     bgcolor: theme.palette.warning['A400'],
     boxShadow: 24,
     p: 4,
-    Height: '526px',
+    height: '526px',
     '@media (min-width: 600px)': {
       width: '450px',
     },
@@ -671,7 +671,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   </Box>
                 </Box>
               ) : (
-                <Typography style={{ fontWeight: 'bold', marginLeft: '1rem' }}>
+                <Typography style={{ fontWeight: 'bold', marginLeft: '1rem', textAlign: 'center', marginTop: '1rem' }}>
                   {t('COMMON.NO_DATA_FOUND')}
                 </Typography>
               )}
