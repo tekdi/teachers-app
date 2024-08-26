@@ -156,6 +156,7 @@ export interface PlannedModalProps {
   handleEditSelection?: (selection: string) => void;
   onEventDeleted?: () => void;
   editSession?: any;
+  eventData?: any;
 }
 
 export interface ScheduleModalProps {
@@ -442,8 +443,8 @@ export interface FacilitatorDrawerProps {
   drawerState: { bottom: boolean };
 }
 export interface CoursePlannerCardsProps {
-  title: string;
-  subtitle: string;
+  resources: any;
+
 }
 
 export interface scheduleEventParam {

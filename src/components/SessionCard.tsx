@@ -178,6 +178,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           handleEditSelection={handleEditSelection}
           onEventDeleted={onEventDeleted}
           eventDeleted={eventDeleted}
+          eventData={data}
         />
       </CenterSessionModal>
 
