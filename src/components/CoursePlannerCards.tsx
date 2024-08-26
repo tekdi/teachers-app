@@ -14,7 +14,7 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
     <Box>
       <Grid container spacing={2} sx={{ px: '16px !important', cursor: 'pointer' }} >
         {resources?.map((resource: {
-          link: string; name: string  }, index: React.Key | null | undefined) => (
+          link: string; name: string  }, index: number) => (
           <Grid item xs={6} md={2} sx={{ mt: 2 }} key={index}>
             <Box className="facilitator-bg"  onClick={() => {
                       console.log(resources)

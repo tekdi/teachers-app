@@ -23,13 +23,14 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import { getTargetedSolutions, getUserProjectDetails } from '@/services/CoursePlannerService';
 import useCourseStore from '@/store/coursePlannerStore';
-import { SHORT_MONTHS } from '@/utils/Helper';
+import dayjs from 'dayjs';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const { t } = useTranslation();
   const setResources = useCourseStore((state) => state.setResources);
+  const store = useCourseStore();
 
 
   // Initialize the panels' state, assuming you have a known set of panel IDs
@@ -112,12 +113,15 @@ const CoursePlannerDetail = () => {
   //   setModalOpen(true);
   // };
 
+
+
   const getAbbreviatedMonth = (dateString: string | number | Date) => {
     const date = new Date(dateString);
-    const months = SHORT_MONTHS
+    const months = Array.from({ length: 12 }, (_, i) =>
+      dayjs().month(i).format('MMM')
+    );
     return months[date.getMonth()];
   };
-  
 
   return (
     <>
@@ -191,7 +195,7 @@ const CoursePlannerDetail = () => {
                 color: theme.palette.warning['300'],
               }}
             >
-              Mathematics {/* will come from API */}
+              {store.subject}
             </Box>
           </Box>
         </Box>
