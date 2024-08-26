@@ -52,7 +52,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
-import { getMenuItems } from '@/utils/app.constant';
+import { getMenuItems, Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -167,9 +168,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   }, [
     classId,
     selectedValue ===
-      t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-        date_range: dateRange,
-      }),
+    t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+      date_range: dateRange,
+    }),
   ]);
 
   const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
@@ -396,6 +397,21 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       ReactGA.event('search-by-keyword-attendance-overview-page', {
         keyword: event.target.value,
       });
+
+      const telemetryInteract = {
+        context: {
+          env: 'dashboard',
+          cdata: [],
+        },
+        edata: {
+          id: 'search-by-keyword-attendance-overview-page',
+          type: Telemetry.SEARCH,
+          subtype: '',
+          pageid: 'attendance-overview',
+        },
+      };
+      telemetryFactory.interact(telemetryInteract);
+
     } else {
       setDisplayStudentList(learnerData);
     }
@@ -535,7 +551,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 isCustomFieldRequired={true}
               />
             </Box>
-            <Box className="flex-basis-md-50">
+            <Box sx={{ marginTop: blockName ? '25px' : '0px' }} className="flex-basis-md-50">
               <DateRangePopup
                 menuItems={menuItems}
                 selectedValue={selectedValue}
@@ -585,20 +601,20 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     ))}
                     valuePartOne={
                       Array.isArray(lowAttendanceLearnerList) &&
-                      lowAttendanceLearnerList.length > 2
+                        lowAttendanceLearnerList.length > 2
                         ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                         : lowAttendanceLearnerList.length === 2
                           ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                           : lowAttendanceLearnerList.length === 1
                             ? `${lowAttendanceLearnerList[0]}`
                             : Array.isArray(lowAttendanceLearnerList) &&
-                                lowAttendanceLearnerList.length === 0
+                              lowAttendanceLearnerList.length === 0
                               ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
                               : t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
                     }
                     valuePartTwo={
                       Array.isArray(lowAttendanceLearnerList) &&
-                      lowAttendanceLearnerList.length > 2
+                        lowAttendanceLearnerList.length > 2
                         ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                         : null
                     }
@@ -773,7 +789,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           p={'1rem'}
           borderRadius={'1rem'}
           bgcolor={theme.palette.warning['A400']}
-          // bgcolor={'secondary.light'}
+        // bgcolor={'secondary.light'}
         >
           <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
         </Box>

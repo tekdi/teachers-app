@@ -1027,3 +1027,54 @@ legend.Mui-focused {
 .MuiInputLabel-root.Mui-focused {
   color: var(--mui-palette-warning-300) !important; 
 }
+
+
+.swiper-button-prev, .swiper-rtl .swiper-button-next{
+  right: 50px !important;
+  left: unset !important;
+  border: 1px solid var(--mui-palette-warning-A100);
+  height: 32px !important;
+  width: 32px !important;
+  border-radius: 4px !important;
+  
+}
+
+.swiper-button-next{
+  left: unset !important;
+  border: 1px solid var(--mui-palette-warning-A100);
+  height: 32px !important;
+  width: 32px !important;
+  border-radius: 4px !important;
+}
+.swiper-button-prev, .swiper-button-next{
+  top: unset !important;
+  bottom: 0px !important;
+}
+
+.swiper-button-prev:after, .swiper-rtl .swiper-button-next:after {
+  content: 'prev';
+  font-size: 14px !important;
+   color: #1C1B1F !important;   /* not in custom theme */
+}
+
+.swiper-button-next:after, .swiper-rtl .swiper-button-prev:after{
+  content: 'next';
+  font-size: 14px !important;
+  color: #1C1B1F !important; /* not in custom theme */
+}
+.swiper{
+  position: unset !important;
+}
+
+.swiper-pagination-fraction{
+  position: absolute;
+  width: fit-content !important;
+  bottom: 0px !important;
+}
+
+.swiper-pagination-fraction{
+  color: var(--mui-palette-warning-400) !important;
+  font-size: 12px;
+  font-weight: 500;
+}
+

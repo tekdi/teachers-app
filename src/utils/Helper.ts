@@ -1,7 +1,10 @@
 import { Role, Status, labelsToExtractForMiniProfile } from './app.constant';
-
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import FingerprintJS from 'fingerprintjs2';
 import { CustomField, UpdateCustomField } from './Interfaces';
+dayjs.extend(utc);
+import { format, parseISO } from 'date-fns';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -287,7 +290,7 @@ export const generateUsernameAndPassword = (
   const currentYear = new Date().getFullYear().toString().slice(-2);
   const randomNum = Math.floor(10000 + Math.random() * 90000).toString();
   const yearSuffix =
-    yearOfJoining !== '' ? yearOfJoining.slice(-2) : currentYear;
+    yearOfJoining !== '' ? yearOfJoining?.slice(-2) : currentYear;
   const username =
     role === 'F'
       ? `FSC${stateCode}${yearSuffix}${randomNum}`
@@ -405,5 +408,28 @@ export const getEmailPattern = (): string => {
 };
 
 export const translateString = (t: any, label: string) => {
-  return t(`FORM.${label}`) === `FORM.${label}` ? toPascalCase(label) : t(`FORM.${label}`);
+  return t(`FORM.${label}`) === `FORM.${label}`
+    ? toPascalCase(label)
+    : t(`FORM.${label}`);
 };
+
+export const getAfterDate = (selectedDate: string) => {
+  const selected = dayjs.utc(selectedDate, 'YYYY-MM-DD');
+  const afterDate = selected.subtract(1, 'day').hour(18).minute(30).second(0);
+  return afterDate.format('YYYY-MM-DDTHH:mm:ss[Z]');
+};
+
+export const getBeforeDate = (selectedDate: string) => {
+  const selected = dayjs.utc(selectedDate, 'YYYY-MM-DD');
+  const beforeDate = selected.hour(18).minute(29).second(59);
+  return beforeDate.format('YYYY-MM-DDTHH:mm:ss[Z]');
+};
+
+export const format2DigitDate = (dateStr: any) => {
+
+  if (dateStr === undefined || dateStr === null) return '';
+  const dateObj = parseISO(dateStr);
+
+  // Format the date into "2 Feb, 2024" format
+  return format(dateObj, "d MMM, yyyy");
+}

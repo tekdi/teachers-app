@@ -26,8 +26,8 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import {
-  AssesmentListService,
-  getDoIdForAssesmentDetails,
+  getAssessmentList,
+  getDoIdForAssessmentDetails,
 } from '@/services/AssesmentService';
 import {
   classesMissedAttendancePercentList,
@@ -428,7 +428,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     const test = event?.target?.value;
     setTest(test);
     ReactGA.event('pre-post-test-selected', { testTypeSelected: test });
-    getDoIdForAssesmentReport(test, subject);
+    getDoIdForAssessmentReport(test, subject);
   };
 
   const handleChangeSubject = (event: SelectChangeEvent) => {
@@ -437,10 +437,10 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     ReactGA.event('select-subject-learner-details-page', {
       subjectSelected: subject,
     });
-    getDoIdForAssesmentReport(test, subject);
+    getDoIdForAssessmentReport(test, subject);
   };
 
-  const getDoIdForAssesmentReport = async (tests: string, subjects: string) => {
+  const getDoIdForAssessmentReport = async (tests: string, subjects: string) => {
     // const stateName = localStorage.getItem('stateName');
 
     const stateName: any = address?.split(',')[0];
@@ -454,7 +454,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
       if (stateName) {
         if (filters) {
           setLoading(true);
-          const searchResults = await getDoIdForAssesmentDetails({ filters });
+          const searchResults = await getDoIdForAssessmentDetails({ filters });
 
           if (searchResults?.responseCode === 'OK') {
             const result = searchResults?.result;
@@ -464,11 +464,11 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
               setUniqueDoId(getUniqueDoId);
               testReportDetails(getUniqueDoId);
             } else {
-              console.log('NO Result found from getDoIdForAssesmentDetails ');
+              console.log('NO Result found from getDoIdForAssessmentDetails ');
             }
           }
         } else {
-          console.log('NO Data found from getDoIdForAssesmentDetails ');
+          console.log('NO Data found from getDoIdForAssessmentDetails ');
         }
       } else {
         console.log('NO State Found');
@@ -478,7 +478,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
       setIsError(true);
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       console.error(
-        'Error fetching getDoIdForAssesmentDetails results:',
+        'Error fetching getDoIdForAssessmentDetails results:',
         error
       );
     } finally {
@@ -504,7 +504,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     };
 
     if (do_Id) {
-      const response = await AssesmentListService({
+      const response = await getAssessmentList({
         sort,
         pagination,
         filters,
@@ -527,7 +527,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
       } else {
         setUniqueDoId('');
         console.log(
-          'AssesmentListService data',
+          'getAssessmentList data',
           response?.response?.statusText
         );
       }
@@ -581,7 +581,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     getAttendanceData(isFromDate, toDay);
     fetchUserDetails();
     // testReportDetails();
-    getDoIdForAssesmentReport(test, subject);
+    getDoIdForAssessmentReport(test, subject);
   }, [address]);
 
   const getLearnerAttendance = () => {
@@ -982,8 +982,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           }}
         >
           <CardContent>
-            
-              <AssessmentReport isTitleRequired={true}/>
+            <AssessmentReport isTitleRequired={true} />
           </CardContent>
         </Card>
       </Box>

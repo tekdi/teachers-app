@@ -21,14 +21,17 @@ const telemetryConfig = {
     ver: 'pratham-teacher-app',
   },
   env: 'pratham-teacher-app',
-  channel: '',
+  channel: 'pratham-teacher-app',
   did: 'did',
   authtoken: '',
   studentid:
     (typeof window !== 'undefined' && localStorage.getItem('userId')) ||
     'Anonymous',
   uid:
-    (typeof window !== 'undefined' && localStorage.getItem('id')) ||
+    (typeof window !== 'undefined' && localStorage.getItem('userId')) ||
+    'Anonymous',
+    userName:
+    (typeof window !== 'undefined' && localStorage.getItem('userName')) ||
     'Anonymous',
   sid: generateUUID(),
   batchsize: 1,
@@ -38,6 +41,8 @@ const telemetryConfig = {
   tags: [],
   enableValidation: true
 };
+
+
 
 if (typeof window !== 'undefined') {
   getDeviceId().then((deviceId) => {
@@ -191,8 +196,10 @@ function getEventContext(eventInput) {
     env: eventInput.context.env || telemetryConfig.env,
     sid: eventInput.sid || telemetryConfig.sid,
     uid:
-      (typeof window !== 'undefined' && localStorage.getItem('id')) ||
+      (typeof window !== 'undefined' && localStorage.getItem('userId')) ||
       telemetryConfig.uid, //user id
+      userName: (typeof window !== 'undefined' && localStorage.getItem('userName')) ||
+      telemetryConfig.userName, //user id
     cdata: eventInput.context.cdata || [],
   };
   if (telemetryConfig.sid) {
