@@ -17,6 +17,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React from 'react';
+import useCourseStore from '@/store/coursePlannerStore';
 
 const TopicDetailView = () => {
   const [value, setValue] = React.useState(1);
@@ -25,6 +26,8 @@ const TopicDetailView = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  const store = useCourseStore();
+
   const handleBackEvent = () => {
     window.history.back();
     logEvent({
@@ -70,7 +73,7 @@ const TopicDetailView = () => {
                   color: theme.palette.warning['300'],
                 }}
               >
-                The Fundamental Theorem of Arithmetic {/* will come from API */}
+               {store.resources.name}
               </Box>
             </Box>
           </Box>
@@ -158,8 +161,7 @@ const TopicDetailView = () => {
                   }}
                 >
                   <CoursePlannerCards
-                    title={t('CENTER_SESSION.TITLE')}
-                    subtitle={'Video'}
+                    resources={store.resources.learningResources}
                   />
                 </AccordionDetails>
               </Accordion>
@@ -169,8 +171,7 @@ const TopicDetailView = () => {
         {value === 2 && (
           <Box>
             <CoursePlannerCards
-              title={t('CENTER_SESSION.TITLE')}
-              subtitle={'Game'}
+              resources={store.resources.learningResources}
             />
           </Box>
         )}

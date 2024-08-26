@@ -29,6 +29,7 @@ export const MONTHS = [
   'December',
 ];
 
+
 export const formatDate = (dateString: string) => {
   const [year, monthIndex, day] = dateString.split('-');
   const month = MONTHS[parseInt(monthIndex, 10) - 1];
