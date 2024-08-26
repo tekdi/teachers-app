@@ -1,5 +1,7 @@
 import {
   formatSelectedDate,
+  getAfterDate,
+  getBeforeDate,
   getMonthName,
   getTodayDate,
   shortDateFormat,
@@ -50,14 +52,19 @@ import ReactGA from 'react-ga4';
 import { Session } from '../../../utils/Interfaces';
 import Schedule from '../../../components/Schedule';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Navigation } from 'swiper/modules';
 import { Role } from '@/utils/app.constant';
 import { showToastMessage } from '@/components/Toastify';
 import { getEventList } from '@/services/EventService';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 import manageUserStore from '@/store/manageUserStore';
 import { modifyAttendanceLimit, eventDaysLimit } from '../../../../app.config';
 
-const TeachingCenterDetails = () => {
+const CohortPage = () => {
   const [value, setValue] = React.useState(1);
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
@@ -103,11 +110,14 @@ const TeachingCenterDetails = () => {
     React.useState(false);
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
+  const [eventDeleted, setEventDeleted] = React.useState(false);
 
   const [deleteModal, setDeleteModal] = React.useState(false);
-
+  const [cohortName, setCohortName] = React.useState<string>();
   const [clickedBox, setClickedBox] = useState<string | null>(null);
   const [isLearnerAdded, setIsLearnerAdded] = useState(false);
+  const [createEvent, setCreateEvent] = useState(false);
+  const [eventCreated, setEventCreated] = useState(false);
 
   const handleClick = (selection: string) => {
     setClickedBox(selection);
@@ -121,9 +131,24 @@ const TeachingCenterDetails = () => {
     setOpenSchedule(true);
   };
 
-  const handleSchedule = () => { };
+  const handleSchedule = () => {
+    console.log('handleSchedule called');
+    setCreateEvent(true);
+  };
+
+  const handleCloseSchedule = () => {
+    setEventCreated(true);
+  };
+
+  useEffect(() => {
+    if (eventCreated) {
+      setOpen(false);
+      setCreateEvent(false);
+    }
+  }, [eventCreated, createEvent]);
 
   const handleOpen = () => setOpen(true);
+
   const handleClose = () => {
     setOpen(false);
     setOpenSchedule(false);
@@ -171,6 +196,7 @@ const TeachingCenterDetails = () => {
             '';
         }
         setCohortDetails(cohortData);
+        setCohortName(cohortData?.name);
       }
     };
     getCohortData();
@@ -179,10 +205,15 @@ const TeachingCenterDetails = () => {
   useEffect(() => {
     const getSessionsData = async () => {
       try {
+        const afterDate = getAfterDate(selectedDate);
+        const beforeDate = getBeforeDate(selectedDate);
         const limit = 0;
         const offset = 0;
         const filters = {
-          date: selectedDate,
+          date: {
+            after: afterDate,
+            before: beforeDate,
+          },
           cohortId: cohortId,
           status: ['live'],
         };
@@ -202,7 +233,7 @@ const TeachingCenterDetails = () => {
     };
 
     getSessionsData();
-  }, [selectedDate]);
+  }, [selectedDate, eventCreated, eventDeleted]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -213,11 +244,17 @@ const TeachingCenterDetails = () => {
           date.setDate(date.getDate() + modifyAttendanceLimit)
         );
         const endDate = shortDateFormat(lastDate);
+        const afterDate = getAfterDate(startDate);
+        const beforeDate = getBeforeDate(endDate);
         const limit = 0;
         const offset = 0;
         const filters = {
-          startDate: startDate,
-          endDate: endDate,
+          startDate: {
+            after: afterDate,
+          },
+          endDate: {
+            before: beforeDate,
+          },
           cohortId: cohortId,
           status: ['live'],
         };
@@ -237,7 +274,11 @@ const TeachingCenterDetails = () => {
     };
 
     getExtraSessionsData();
-  }, []);
+  }, [eventCreated, eventDeleted]);
+
+  const handleEventDeleted = () => {
+    setEventDeleted(true);
+  };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -306,15 +347,14 @@ const TeachingCenterDetails = () => {
           <Box
             sx={{
               display: 'flex',
-              alignItems: 'center',
               cursor: 'pointer',
             }}
             onClick={handleBackEvent}
           >
             <KeyboardBackspaceOutlinedIcon
-              sx={{ color: theme.palette.warning['A200'], marginTop: '8px' }}
+              sx={{ color: theme.palette.warning['A200'], marginTop: '18px' }}
             />
-            <Box m={'1rem 1rem 0.5rem'} display={'column'} gap={'5px'}>
+            <Box m={'1rem 1rem 0.5rem 0.5rem'} display={'column'} gap={'5px'}>
               <Typography textAlign={'left'} fontSize={'22px'}>
                 {toPascalCase(cohortDetails?.name)}
               </Typography>
@@ -448,7 +488,7 @@ const TeachingCenterDetails = () => {
               deleteModal
                 ? t('CENTER_SESSION.DELETE_SESSION')
                 : openSchedule
-                  ? clickedBox === t('CENTER_SESSION.EXTRA_SESSION')
+                  ? clickedBox === 'EXTRA_SESSION'
                     ? 'Extra Session'
                     : t('CENTER_SESSION.PLANNED_SESSION')
                   : t('CENTER_SESSION.SCHEDULE')
@@ -475,6 +515,10 @@ const TeachingCenterDetails = () => {
               <PlannedSession
                 clickedBox={clickedBox}
                 removeModal={removeModal}
+                scheduleEvent={createEvent}
+                cohortName={cohortName}
+                cohortId={cohortId}
+                onCloseModal={handleCloseSchedule}
               />
             ) : (
               <Schedule clickedBox={clickedBox} handleClick={handleClick} />
@@ -488,16 +532,49 @@ const TeachingCenterDetails = () => {
             >
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
-            <Box mt={3} px="18px">
-              <Grid container>
+            <Box mt={3} sx={{position:'relative'}}>
+              <Swiper
+                pagination={{
+                  type: 'fraction',
+                }}
+                breakpoints={{
+                  500: {
+                    slidesPerView: 1, 
+                    spaceBetween: 20, 
+                  },
+                  740: {
+                    slidesPerView: 2, 
+                    spaceBetween: 20, 
+                  },
+                  900: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                  },
+                  2000: {
+                    slidesPerView: 4,
+                    spaceBetween: 40,
+                  },
+                }}
+                navigation={true}
+                modules={[Pagination, Navigation]}
+                className="mySwiper"
+              >
+
                 {extraSessions?.map((item) => (
-                  <Grid xs={12} sm={6} md={4}>
-                    <SessionCard data={item} key={item.id}>
+                  <>
+                  <SwiperSlide>
+                    <SessionCard
+                      data={item}
+                      isEventDeleted={handleEventDeleted}
+                    >
                       <SessionCardFooter item={item} />
                     </SessionCard>
-                  </Grid>
+                  </SwiperSlide>
+                  </>
                 ))}
-              </Grid>
+
+              </Swiper>
+
             </Box>
             {extraSessions && extraSessions?.length === 0 && (
               <Box
@@ -551,19 +628,20 @@ const TeachingCenterDetails = () => {
               disableDays={classId === 'all'}
               classId={classId}
               showFromToday={true}
+              newWidth={'100%'}
             />
           </Box>
 
           <Box mt={3} px="18px">
-            <Grid container>
+            <Grid container spacing={2}>
               {sessions?.map((item) => (
-                <Grid xs={12} sm={6} md={4}>
-                  <SessionCard data={item} key={item.id}>
+                <Grid item xs={12} sm={6} md={6} key={item.id}>
+                  <SessionCard data={item} isEventDeleted={handleEventDeleted}>
                     <SessionCardFooter item={item} />
                   </SessionCard>
                 </Grid>
               ))}
-              {sessions && sessions?.length === 0 && (
+              {sessions && sessions.length === 0 && (
                 <Box
                   className="fs-12 fw-400 italic"
                   sx={{ color: theme.palette.warning['300'] }}
@@ -572,7 +650,6 @@ const TeachingCenterDetails = () => {
                 </Box>
               )}
             </Grid>
-
           </Box>
         </>
       )}
@@ -695,4 +772,4 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default TeachingCenterDetails;
+export default CohortPage;

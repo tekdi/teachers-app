@@ -20,6 +20,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
   date,
   secondary,
   handlePrimaryModel,
+  handleEditModal
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -164,7 +165,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
                       width: '100%',
                     },
                   }}
-                  onClick={handlePrimaryModel}
+                  onClick={handlePrimaryModel || handleEditModal}
                 >
                   {primary}
                 </Button>

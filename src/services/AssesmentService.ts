@@ -1,26 +1,28 @@
 import {
-  AssessmentListServiceParam,
+  AssessmentListParam,
   GetDoIdServiceParam,
+  IAssessmentStatusOptions,
+  ISearchAssessment,
 } from '@/utils/Interfaces';
 import { post } from './RestClient';
 
-export const AssesmentListService = async ({
+export const getAssessmentList = async ({
   sort,
   pagination,
   filters,
-}: AssessmentListServiceParam): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/tracking-assessment/v1/list`;
+}: AssessmentListParam): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/tracking/v1/list`;
   try {
     const response = await post(apiUrl, { pagination, filters, sort });
     return response?.data;
   } catch (error) {
-    console.error('error in getting Assesment List Service list', error);
+    console.error('error in getting Assessment List Service list', error);
 
     return error;
   }
 };
 
-export const getDoIdForAssesmentDetails = async ({
+export const getDoIdForAssessmentDetails = async ({
   filters,
 }: GetDoIdServiceParam): Promise<any> => {
   const apiUrl: string =
@@ -31,7 +33,7 @@ export const getDoIdForAssesmentDetails = async ({
       filters: {
         program: filters.program,
         se_boards: filters.se_boards,
-        subject: filters.subject,
+        // subject: filters.subject,
         assessment1: filters.assessment1,
       },
     },
@@ -42,7 +44,31 @@ export const getDoIdForAssesmentDetails = async ({
     const response = await post(apiUrl, data);
     return response?.data;
   } catch (error) {
-    console.error('Error in getDoIdForAssesmentDetails Service', error);
+    console.error('Error in getDoIdForAssessmentDetails Service', error);
     return error;
   }
 };
+
+export const getAssessmentStatus = async (body: IAssessmentStatusOptions) => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/v1/tracking/assessment/search/status`;
+  try {
+    const response = await post(apiUrl, body);
+    return response?.data?.data;
+  } catch (error) {
+    console.error('error in getting Assessment Status Service list', error);
+
+    return error;
+  }
+};
+
+export const searchAssessment = async (body: ISearchAssessment) => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/v1/tracking/assessment/search`;
+  try {
+    const response = await post(apiUrl, body);
+    return response?.data?.data;
+  } catch (error) {
+    console.error('error in getting Assessment Status Service list', error);
+
+    return error;
+  }
+}

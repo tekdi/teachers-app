@@ -5,23 +5,47 @@ import CenterSessionModal from './CenterSessionModal';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import PlannedSession from './PlannedSession';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { convertUTCToIST } from '@/utils/Helper';
 import { useTranslation } from 'next-i18next';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import ConfirmationModal from './ConfirmationModal';
 
-const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
+const SessionsCard: React.FC<SessionsCardProps> = ({
+  data,
+  children,
+  isEventDeleted,
+}) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [eventDeleted, setEventDeleted] = React.useState(false);
   const [startTime, setStartTime] = React.useState('');
   const [endTime, setEndTime] = React.useState('');
   const [startDate, setStartDate] = React.useState('');
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [editSelection, setEditSelection] = React.useState('EDIT_SESSION');
+  const [editSession, setEditSession] = React.useState();
+  const handleEditSelection = (selection: string) => {
+    setEditSelection(selection);
+  };
+  const handleOpen = (eventData: any) => {
+    setOpen(true);
+    setEditSession(eventData);
+  };
 
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const onEventDeleted = () => {
+    setOpen(false);
+    setEventDeleted(true);
+    if (isEventDeleted) {
+      isEventDeleted();
+    }
+  };
+
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
   const handleCopyUrl = () => {
@@ -52,12 +76,20 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
     console.log(startDate, startTime, endDate, endTime);
   }, [data]);
 
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleEditModal = () => {
+    setModalOpen(true);
+  };
+
   return (
     <Box
       sx={{
         border: `1px solid ${theme.palette.warning['A100']}`,
         borderRadius: '8px',
-        marginBottom: '16px',
+        marginBottom: '25px',
       }}
     >
       <Box
@@ -96,7 +128,10 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
             {data?.metadata?.framework?.teacherName}
           </Typography>
         </Box>
-        <EditOutlined onClick={handleOpen} sx={{ cursor: 'pointer' }} />
+        <EditOutlined
+          onClick={() => handleOpen?.(data)}
+          sx={{ cursor: 'pointer' }}
+        />
       </Box>
       <Box
         sx={{
@@ -121,21 +156,29 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         >
           {data?.meetingDetails?.url}
         </Box>
-        <ContentCopyIcon
-          sx={{
-            fontSize: '18px',
-            color: theme.palette.secondary.main,
-            cursor: 'pointer',
-          }}
-        />
+        {data?.meetingDetails?.url && (
+          <ContentCopyIcon
+            sx={{
+              fontSize: '18px',
+              color: theme.palette.secondary.main,
+              cursor: 'pointer',
+            }}
+          />
+        )}
       </Box>
       <CenterSessionModal
         open={open}
         handleClose={handleClose}
         title={'Home Science'}
-        primary={'Schedule'}
+        primary={editSession === 'EDIT_SESSION' ? 'Update' : 'Schedule'}
+        handleEditModal={handleEditModal}
       >
-        <PlannedSession />
+        <PlannedSession
+          editSession={editSession}
+          handleEditSelection={handleEditSelection}
+          onEventDeleted={onEventDeleted}
+          eventDeleted={eventDeleted}
+        />
       </CenterSessionModal>
 
       <Box>{children}</Box>
@@ -144,6 +187,15 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ data, children }) => {
         autoHideDuration={2000}
         onClose={handleSnackbarClose}
         message="URL copied to clipboard"
+      />
+      <ConfirmationModal
+        message={t('CENTER_SESSION.UPDATE_CHANGES')}
+        buttonNames={{
+          primary: t('COMMON.YES'),
+          secondary: t('COMMON.NO_GO_BACK'),
+        }}
+        handleCloseModal={handleCloseModal}
+        modalOpen={modalOpen}
       />
     </Box>
   );

@@ -54,9 +54,9 @@ export const getMyCohortMemberList = async ({
   filters,
 }: CohortMemberList): Promise<any> => {
   const studentFilters = {
-    ...filters,
     role: Role.STUDENT,
     status: [Status.DROPOUT, Status.ACTIVE],
+    ...filters,
   };
   return fetchCohortMemberList({ limit, page, filters: studentFilters });
 };

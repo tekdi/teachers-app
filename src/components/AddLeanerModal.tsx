@@ -7,7 +7,7 @@ import SimpleModal from '@/components/SimpleModal';
 import { createUser, getFormRead } from '@/services/CreateUserService';
 import { generateUsernameAndPassword } from '@/utils/Helper';
 import { FormData } from '@/utils/Interfaces';
-import { FormContext, FormContextType, RoleId } from '@/utils/app.constant';
+import { FormContext, FormContextType, RoleId, Telemetry } from '@/utils/app.constant';
 import { IChangeEvent } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import React, { useEffect } from 'react';
@@ -20,6 +20,7 @@ import FormButtons from './FormButtons';
 import { sendCredentialService } from '@/services/NotificationService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 import ReactGA from 'react-ga4';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -222,6 +223,20 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             ReactGA.event('learner-creation-success', {
               username: username,
             });
+
+            const telemetryInteract = {
+              context: {
+                env: 'teaching-center',
+                cdata: [],
+              },
+              edata: {
+                id: 'learner-creation-success',
+                type: Telemetry.CLICK,
+                subtype: '',
+                pageid: 'centers',
+              },
+            };
+            telemetryFactory.interact(telemetryInteract);
 
             const isQueue = false;
             const context = 'USER';

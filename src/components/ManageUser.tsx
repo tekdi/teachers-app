@@ -737,7 +737,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                       ),
                       name: 'delete-User',
                     },
-                  ]}
+                  ].filter(option => !isFromFLProfile || (option.name !== 'reassign-block' && option.name !== 'reassign-block-request'))}
                 >
                   <Box
                     sx={{

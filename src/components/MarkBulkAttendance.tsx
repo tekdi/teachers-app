@@ -169,6 +169,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
               }))
               .filter((member: { createdAt: string | number | Date }) => {
                 const createdAt = new Date(member.createdAt);
+                createdAt.setHours(0, 0, 0, 0);
                 return createdAt <= selectedDate;
               });
 

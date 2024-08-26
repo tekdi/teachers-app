@@ -10,7 +10,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { Box, Typography } from '@mui/material';
-import { shortDateFormat } from '@/utils/Helper';
+import { getAfterDate, getBeforeDate, shortDateFormat } from '@/utils/Helper';
 import { getEventList } from '@/services/EventService';
 import { showToastMessage } from '@/components/Toastify';
 import MonthCalender from '@/components/MonthCalender';
@@ -38,10 +38,15 @@ const eventMonthView = () => {
           cohortId = localStorage.getItem('classId') || '';
         }
         if (cohortId !== '') {
+          const afterDate = getAfterDate(date);
+          const beforeDate = getBeforeDate(date);
           const limit = 0;
           const offset = 0;
           const filters = {
-            date: date,
+            date: {
+              after: afterDate,
+              before: beforeDate,
+            },
             cohortId: cohortId,
             status: ['live'],
           };

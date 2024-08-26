@@ -4,7 +4,7 @@ import React from 'react';
 
 interface IFormButtons {
   formData: any;
-  onClick: (formData: any) => void; 
+  onClick: (formData: any) => void;
   isCreateCentered?: boolean;
   isCreatedFacilitator?: boolean;
   isCreatedLearner?: boolean;
@@ -26,7 +26,7 @@ const FormButtons: React.FC<IFormButtons> = ({
   const buttonText = isSingleButton
     ? t('COMMON.SAVE')
     : (isCreateCentered && !isCreatedFacilitator && !isCreatedLearner) ||
-      (isCreatedLearner && !isCreatedFacilitator && !isCreateCentered)
+        (isCreatedLearner && !isCreatedFacilitator && !isCreateCentered)
       ? t('COMMON.CREATE')
       : t('GUIDE_TOUR.NEXT');
 
@@ -75,7 +75,10 @@ const FormButtons: React.FC<IFormButtons> = ({
             height: '2.5rem',
             padding: theme.spacing(1),
             fontWeight: '500',
-            width: '100%',
+            width:
+              !isSingleButton && !isCreateCentered && !isCreatedFacilitator
+                ? '50%'
+                : '100%',
           }}
           type="submit"
           onClick={() => onClick(formData)}

@@ -48,14 +48,15 @@ const CoursePlanner = () => {
   };
 
   useEffect(() => {
-    const fetchCoursePlanner = async () => {
+    const fetchCoursePlanner = async() => {
       try {
         const response = await getCoursePlanner();
         const transformedData = response.map((item: any) => ({
           ...item,
           id: String(item.id),
         }));
-        setSubjects(transformedData);
+        setSubjects(transformedData)
+       
       } catch (error) {
         console.error('Error fetching course planner:', error);
       }

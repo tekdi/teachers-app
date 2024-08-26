@@ -129,6 +129,7 @@ export interface ExtraSessionsCardProps {
 export interface SessionsCardProps {
   data: any;
   children?: React.ReactNode;
+  isEventDeleted?: () => void;
 }
 export interface SessionsModalProps {
   children?: React.ReactNode;
@@ -140,15 +141,21 @@ export interface SessionsModalProps {
   date?: string;
   handlePrimaryModel?: () => void;
   secondary?: string;
+  handleEditModal?: () => void;
 }
 
 export interface PlannedModalProps {
   removeModal?: () => void;
   clickedBox?: string | null;
   scheduleEvent?: boolean;
+  eventDeleted?: boolean;
   cohortName?: string;
   cohortId?: string;
   onCloseModal?: () => void | undefined;
+  editSelection?: string;
+  handleEditSelection?: (selection: string) => void;
+  onEventDeleted?: () => void;
+  editSession?: any;
 }
 
 export interface ScheduleModalProps {
@@ -239,7 +246,7 @@ export interface MarksObtainedCardProps {
   data: { question: string; mark_obtained: number; totalMarks: number }[];
 }
 
-export interface AssessmentListServiceParam {
+export interface AssessmentListParam {
   filters: {
     userId: string;
   };
@@ -446,15 +453,19 @@ export interface scheduleEventParam {
 }
 
 export interface eventFilters {
-  date?: string;
-  startDate?: string;
-  endDate?: string;
+  date?: dateRange;
+  startDate?: dateRange;
+  endDate?: dateRange;
   eventType?: [];
   title?: string;
   status?: string[];
   cohortId?: string;
 }
 
+export interface dateRange {
+  after?: string;
+  before?: string;
+}
 export interface CoursePlannerData {
   id: string;
   subject: string;
@@ -487,12 +498,6 @@ export interface Assessment {
 
 export interface AssessmentSubject {
   userId: number;
-  subject: string;
-  score: string;
-  date: string;
-}
-export interface Assessments {
-  userId: string;
   subject: string;
   score: string;
   date: string;
@@ -581,4 +586,47 @@ export interface BottomDrawerProps {
   setAnchorEl: React.Dispatch<React.SetStateAction<null | HTMLElement>>;
   anchorEl: null | HTMLElement;
   isMobile: boolean;
+}
+
+export interface IAssessmentStatusOptions {
+  userId: string[];
+  contentId: string[];
+  batchId: string;
+}
+
+export interface GetTargetedSolutionsParams {
+  state: string;
+  role: string;
+  class: string;
+  board: string;
+  courseType: string;
+}
+
+export interface GetUserProjectDetailsParams {
+  id: string;
+  userId: string[];
+  contentId: string[];
+  batchId: string;
+}
+
+export interface EditEvent {
+  isMainEvent: boolean;
+  status: string;
+}
+
+export interface ISearchAssessment {
+  userId: string,
+  contentId: string,
+  batchId: string
+}
+
+export interface IQuestion {
+  duration: number;
+  maxScore: number;
+  pass: string;
+  queTitle: string;
+  questionId: string;
+  resValue: string;
+  score: number;
+  sectionId: string;
 }

@@ -2,7 +2,7 @@ import {
   GenerateSchemaAndUiSchema,
   customFields,
 } from '@/components/GeneratedSchemas';
-import { FormContext, FormContextType, RoleId } from '@/utils/app.constant';
+import { FormContext, FormContextType, RoleId, Telemetry } from '@/utils/app.constant';
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 
@@ -31,6 +31,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { modalStyles } from '@/styles/modalStyles';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
+import { telemetryFactory } from '@/utils/telemetry';
 interface AddFacilitatorModalprops {
   open: boolean;
   onClose: () => void;
@@ -280,6 +281,20 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                   ReactGA.event('facilitator-created-successfully', {
                     userName: username,
                   });
+
+                  const telemetryInteract = {
+                    context: {
+                      env: 'teaching-center',
+                      cdata: [],
+                    },
+                    edata: {
+                      id: 'facilitator-created-success',
+                      type: Telemetry.CLICK,
+                      subtype: '',
+                      pageid: 'centers',
+                    },
+                  };
+                  telemetryFactory.interact(telemetryInteract);
 
                   const isQueue = false;
                   const context = 'USER';
