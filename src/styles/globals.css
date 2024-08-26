@@ -1069,12 +1069,8 @@ legend.Mui-focused {
 .swiper-pagination-fraction{
   position: absolute;
   width: fit-content !important;
-  bottom: 0px !important;
+  bottom: 13px !important;
 }
 
-.swiper-pagination-fraction{
-  color: var(--mui-palette-warning-400) !important;
-  font-size: 12px;
-  font-weight: 500;
-}
+ 
 
