@@ -1,53 +1,27 @@
 name: PROD DEPLOYMENT WITH TAG
-
 on:
   push:
     branches:
       - main
     tags:
-      - 'v1.0.1' 
-
-env:
-  DEPLOY_TAG: ${{ github.ref_name }}  
-
+      - 'v0.0.0'
 jobs:
-  PROD_deploy:
+  deploy:
+    #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - name: Checkout code from tag
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  
 
-      - name: Fetch all tags and checkout tag or branch
-        run: |
-          git fetch --all
-          if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            git checkout -b main tags/${{ github.ref_name }}
-          else
-            git checkout main
-          fi
-
-      - name: Create .env and Dockerfile
-        run: |
-          echo "${{ secrets.DOCKER_FILE_PROD }}" > Dockerfile
-          echo "${{ secrets.ENV_FILE_PROD }}" > .env
-
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKER_IMAGE_NAME_PROD }} .
-
-      - name: Log in to Docker Hub
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME_PROD }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD_PROD }}
-        run: |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker push ${{ secrets.DOCKER_IMAGE_NAME_PROD }}
-
-      - name: Deploy to Remote Server
-        uses: appleboy/ssh-action@master
-        with:
+    - name: Set TAG environment variable
+      id: get_tag
+      run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+    - name: Deploy Stack
+      uses: appleboy/ssh-action@master
+      with:
           host: ${{ secrets.HOST_NAME_PROD }}
           username: ${{ secrets.USERNAME_PROD }}
           key: ${{ secrets.SSH_KEY_PROD }}
@@ -63,8 +37,8 @@ jobs:
             ${{ secrets.PROD_ENV }}
             EOF
             cd ${{ secrets.TARGET_DIR_PROD }}
-            docker stop ${{ secrets.CONTAINER_NAME }}
-            docker rm -f ${{ secrets.CONTAINER_NAME }}
-            docker images --no-trunc -aqf "dangling=true" | xargs docker rmi
-            docker system prune -af
-            docker-compose up -d --force-recreate --no-deps 
+            #docker stop ${{ secrets.CONTAINER_NAME }}
+            #docker rm -f ${{ secrets.CONTAINER_NAME }}
+            #docker system prune -af 
+            ls -ltra
+            ./deploy.sh $TAG
