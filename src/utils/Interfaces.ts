@@ -130,7 +130,7 @@ export interface SessionsCardProps {
   data: any;
   children?: React.ReactNode;
   isEventDeleted?: () => void;
-  isEventEdited?: () => void;
+  isEventUpdated?: () => void;
 }
 export interface SessionsModalProps {
   children?: React.ReactNode;
@@ -156,7 +156,7 @@ export interface PlannedModalProps {
   editSelection?: string;
   handleEditSelection?: (selection: string) => void;
   onEventDeleted?: () => void;
-  onEventEdited?: boolean;
+  updateEvent?: boolean;
   editSession?: any;
   eventData?: any;
 }
@@ -621,7 +621,7 @@ export interface GetUserProjectDetailsParams {
 
 export interface EditEvent {
   isMainEvent: boolean;
-  status: string;
+  status?: string;
 }
 
 export interface ISearchAssessment {
