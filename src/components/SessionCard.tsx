@@ -16,7 +16,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   data,
   children,
   isEventDeleted,
-  isEventEdited,
+  isEventUpdated,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -24,12 +24,12 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [eventDeleted, setEventDeleted] = React.useState(false);
   const [eventEdited, setEventEdited] = React.useState(false);
-  const [onEventEdited, setOnEventEdited] = React.useState(false);
   const [startTime, setStartTime] = React.useState('');
   const [endTime, setEndTime] = React.useState('');
   const [startDate, setStartDate] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [editSelection, setEditSelection] = React.useState('EDIT_SESSION');
+  const [updateEvent, setUpdateEvent] = React.useState(false);
   const [editSession, setEditSession] = React.useState();
   const handleEditSelection = (selection: string) => {
     setEditSelection(selection);
@@ -49,14 +49,6 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       isEventDeleted();
     }
   };
-
-  // const onEventEdited = () => {
-  //   setOpen(false);
-  //   setEventEdited(true);
-  //   if (isEventEdited) {
-  //     isEventEdited();
-  //   }
-  // };
 
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
@@ -94,7 +86,14 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
 
   const handleEditModal = () => {
     setModalOpen(true);
-    setOnEventEdited(true);
+  };
+
+  const onUpdateClick = () => {
+    console.log('update the event');
+    setUpdateEvent(true);
+    // if (isEventUpdated) {
+    //   isEventUpdated();
+    // }
   };
 
   return (
@@ -190,11 +189,22 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           editSession={editSession}
           handleEditSelection={handleEditSelection}
           onEventDeleted={onEventDeleted}
-          onEventEdited={onEventEdited}
           eventDeleted={eventDeleted}
           eventData={data}
+          updateEvent={updateEvent}
         />
       </CenterSessionModal>
+
+      <ConfirmationModal
+        message={t('CENTER_SESSION.UPDATE_CHANGES')}
+        buttonNames={{
+          primary: t('COMMON.YES'),
+          secondary: t('COMMON.NO_GO_BACK'),
+        }}
+        handleCloseModal={handleCloseModal}
+        handleAction={onUpdateClick}
+        modalOpen={modalOpen}
+      />
 
       <Box>{children}</Box>
       <Snackbar
