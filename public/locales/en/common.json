@@ -516,6 +516,7 @@
     "BOARD_ENROLLMENT": "Board Enrollment",
     "BOARD_SELECTION":"Board Selection",
     "SUBJECTS_SELECTION": "Subjects Selection",
-    "REGISTRATION_COMPLETED":"Registration Completed"
+    "REGISTRATION_COMPLETED":"Registration Completed",
+    "DROPPED_OUT":" Dropped Out"
   }
 }

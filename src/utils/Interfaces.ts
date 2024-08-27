@@ -498,6 +498,13 @@ export interface Assessment {
   progress: string;
   score?: number;
 }
+export interface BoardEnrollment {
+  userId: number;
+  studentName: string;
+  center:string;
+  isDropout:boolean
+}
+
 
 export interface AssessmentSubject {
   userId: number;
