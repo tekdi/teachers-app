@@ -768,19 +768,24 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           };
 
           let startDateTime = sessionBlocks?.[0]?.startDatetime;
-          if (
-            new Date(eventData?.startDateTime).getTime() !==
-            new Date(startDateTime).getTime()
-          ) {
-            apiBody['startDateTime'] = startDateTime;
+
+          if (startDateTime && eventData?.startDateTime) {
+            const startDateTimeDate = new Date(startDateTime);
+            const eventDateTimeDate = new Date(eventData.startDateTime);
+
+            if (startDateTimeDate.getTime() !== eventDateTimeDate.getTime()) {
+              apiBody['startDateTime'] = startDateTime;
+            }
           }
 
           let endDateTime = sessionBlocks?.[0]?.endDatetime;
-          if (
-            new Date(eventData?.endDateTime).getTime() !==
-            new Date(endDateTime).getTime()
-          ) {
-            apiBody['endDateTime'] = endDateTime;
+          if (endDateTime && eventData?.endDateTime) {
+            const endDateTimeDate = new Date(endDateTime);
+            const eventDateTimeDate = new Date(eventData.endDateTime);
+
+            if (endDateTimeDate.getTime() !== eventDateTimeDate.getTime()) {
+              apiBody['endDateTime'] = endDateTime;
+            }
           }
 
           const metadata = {
