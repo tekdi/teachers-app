@@ -33,6 +33,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AssessmentType, Program } from '../../../../../app.config';
 
 const statusKeyMap: any = {
   [AssessmentStatus.COMPLETED]: 'ASSESSMENTS.COMPLETED',
@@ -79,10 +80,10 @@ function AssessmentsDetails() {
       const stateName = localStorage.getItem('stateName');
 
       const filters = {
-        program: ['Second chance'],
+        program: [Program],
         se_boards: [stateName],
         // subject: [subjects || subject],
-        assessment1: assessmentType === 'pre' ? 'Pre Test' : 'Post Test',
+        assessment1: assessmentType === 'pre' ? AssessmentType.PRE_TEST : AssessmentType.POST_TEST,
       };
       try {
         if (stateName) {

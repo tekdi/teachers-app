@@ -332,18 +332,6 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     // ---------- set cohortId and stateName-----------
     const cohort_id = event.target.value;
     localStorage.setItem('cohortId', cohort_id);
-
-    const get_state_name: string | null = getStateByCohortId(cohort_id);
-    if (get_state_name) {
-      localStorage.setItem('stateName', get_state_name);
-    } else {
-      localStorage.setItem('stateName', '');
-      console.log('NO State For Selected Cohort');
-    }
-    function getStateByCohortId(cohortId: any) {
-      const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
-      return cohort ? cohort?.state : null;
-    }
   };
 
   const isAttendanceOverview = pathname === '/attendance-overview';

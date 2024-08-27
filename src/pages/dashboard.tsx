@@ -1041,10 +1041,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Typography
                       textAlign={'left'}
                       fontSize={'0.8rem'}
-                      pl={'1rem'}
                       pt={'1rem'}
+                      variant="h2"
+                      sx={{ fontSize: '14px' }}
                       color={'black'}
-                      fontWeight={'600'}
+                      fontWeight={'500'}
                     >
                       {t('DASHBOARD.MY_TIMETABLE')}
                     </Typography>

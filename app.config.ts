@@ -63,3 +63,11 @@ export const DaysOfWeek = {
   Fri: 5,
   Sat: 6,
 };
+
+export const Program = "Second chance";
+
+export enum AssessmentType {
+  PRE_TEST = 'Pre Test',
+  POST_TEST = 'Post Test',
+}
+

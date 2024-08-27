@@ -1,44 +1,33 @@
-import { Box, Grid, Typography, useMediaQuery } from '@mui/material';
-import {
-  ArrowBack as ArrowBackIcon,
-  East as EastIcon,
-} from '@mui/icons-material';
-import { CustomField } from '@/utils/Interfaces';
-import React, { useEffect, useRef, useState } from 'react';
+import AddFacilitatorModal from '@/components/AddFacilitator';
+import Header from '@/components/Header';
+import Loader from '@/components/Loader';
+import ManageUser from '@/components/ManageUser';
+import { showToastMessage } from '@/components/Toastify';
+import { getFormRead } from '@/services/CreateUserService';
 import { getUserDetails } from '@/services/ProfileService';
+import { useProfileInfo } from '@/services/queries';
+import manageUserStore from '@/store/manageUserStore';
+import {
+  extractAddress,
+  mapFieldIdToValue,
+  toPascalCase,
+} from '@/utils/Helper';
+import { CustomField } from '@/utils/Interfaces';
+import { FormContext, FormContextType, Role } from '@/utils/app.constant';
+import { logEvent } from '@/utils/googleAnalytics';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import { Box, Grid, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import { GetStaticPaths } from 'next';
-import Button from '@mui/material/Button';
-import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
-import Header from '@/components/Header';
-import Image from 'next/image';
-import Loader from '@/components/Loader';
-import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import ReactGA from 'react-ga4';
-import { accessControl } from '../../../app.config';
-import {
-  toPascalCase,
-  mapFieldIdToValue,
-  extractAddress,
-} from '@/utils/Helper';
-import { logEvent } from '@/utils/googleAnalytics';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { showToastMessage } from '@/components/Toastify';
-import { useProfileInfo } from '@/services/queries';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import user_placeholder from '../../assets/images/user_placeholder.png';
-import withAccessControl from '@/utils/hoc/withAccessControl';
-import { getFormRead } from '@/services/CreateUserService';
-import { FormContext, FormContextType, Role } from '@/utils/app.constant';
-import manageUserStore from '@/store/manageUserStore';
-// import useStore from '@/store/store';
-import AddFacilitatorModal from '@/components/AddFacilitator';
-import ManageUser from '@/components/ManageUser';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { accessControl } from '../../../app.config';
 
-interface UserData {
-  name: string;
-}
 interface TeacherProfileProp {
   reloadState?: boolean;
   setReloadState?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -48,28 +37,17 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   reloadState,
   setReloadState,
 }) => {
-  const user_placeholder_img: string = user_placeholder.src;
-
   const { t } = useTranslation();
   const router = useRouter();
   const { userId }: any = router.query;
-  // const store = useStore();
-  // const userRole = store?.userRole;
   const userStore = manageUserStore();
-
   const theme = useTheme<any>();
-
   const [userData, setUserData] = useState<any | null>(null);
   const [userName, setUserName] = useState<any | null>(null);
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [customFieldsData, setCustomFieldsData] = useState<CustomField[]>([]);
-
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(user_placeholder_img);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [address, setAddress] = useState('');
-  const [isError, setIsError] = React.useState<boolean>(false);
   const [isData, setIsData] = React.useState<boolean>(false);
   const [userFormData, setUserFormData] = useState<{ [key: string]: any }>({});
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
@@ -108,7 +86,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   };
 
   const mapFields = (formFields: any, response: any) => {
-    let initialFormData: any = {};
+    const initialFormData: any = {};
     formFields.fields.forEach((item: any) => {
       const userData = response?.userData;
       const customFieldValue = userData?.customFields?.find(
@@ -179,7 +157,10 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const fetchDataAndInitializeForm = async () => {
     try {
       const response = await getUserDetails(userId, true);
-      const formFields = await getFormRead(FormContext.USERS, FormContextType.TEACHER);
+      const formFields = await getFormRead(
+        FormContext.USERS,
+        FormContextType.TEACHER
+      );
       console.log('response', response);
       console.log('formFields', formFields);
       setUserFormData(mapFields(formFields, response?.result));
@@ -189,7 +170,8 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   };
 
   useEffect(() => {
-    fetchDataAndInitializeForm();
+    if (selfUserId && userId && selfUserId === userId)
+      fetchDataAndInitializeForm();
   }, [userId, reload]);
 
   useEffect(() => {
@@ -209,11 +191,8 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
     setLoading(isLoading);
 
     if (error) {
-      setIsError(true);
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       console.error('Error fetching user details:', error);
-    } else {
-      setIsError(false);
     }
 
     if (data) {
@@ -276,9 +255,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
             console.log(`mergedProfileData`, mergedProfileData);
             if (mergedProfileData) {
               setUserData(mergedProfileData?.fields);
-              // const nameField = mergedProfileData.fields.find(
-              //   (field: { name: string }) => field.name === 'name'
-              // );
               const customDataFields = mergedProfileData?.fields;
               setIsData(true);
 
@@ -294,9 +270,12 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
           console.error('Error fetching form data:', error);
         }
       };
-      fetchFormData();
+
+      if (userRole) {
+        fetchFormData();
+      }
     }
-  }, [data, error, isLoading]);
+  }, [data, error, isLoading, userRole]);
 
   // Find fields for "Subjects I Teach" and "My Main Subjects"
   const teachSubjectsField = customFieldsData?.find(
@@ -313,15 +292,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const mainSubjects: string[] = mainSubjectsField
     ? mainSubjectsField?.value?.split(',')
     : [];
-
-  // Find mutual and remaining subjects
-  // const mutualSubjects = teachSubjects?.filter((subject) =>
-  //   mainSubjects?.includes(subject)
-  // );
-
-  // const remainingSubjects = teachSubjects?.filter(
-  //   (subject) => !mainSubjects?.includes(subject)
-  // );
 
   const mutualSubjects =
     teachSubjects && mainSubjects
@@ -379,7 +349,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )}
-      {isData && isData ? (
+      {isData ? (
         <Box
           display="flex"
           flexDirection="column"
@@ -432,7 +402,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                 >
                   <ArrowBackIcon
                     sx={{
-                      color: (theme.palette.warning as any)['A200'],
+                      color: (theme.palette.warning)['A200'],
                       height: '1.5rem',
                       width: '1.5rem',
                       cursor: 'pointer',
@@ -467,104 +437,17 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
               </Box>
               <ManageUser
                 reloadState={reloadState ?? false}
-                setReloadState={setReloadState ?? (() => { })}
+                setReloadState={setReloadState ?? (() => {})}
                 isFromFLProfile={true}
                 teacherUserId={userId}
               />
             </Box>
           )}
-
-          {/* <Box padding="5px 19px" className="w-100">
-            <Box
-              sx={{
-                flex: '1',
-                border: '1px solid #D0C5B4',
-                boxShadow: '0px 1px 2px 0px #0000004D',
-
-                borderColor: theme.palette.warning['A100'],
-              }}
-              minWidth={'100%'}
-              borderRadius={'12px'}
-              border={'1px'}
-              bgcolor={theme.palette.warning.A400}
-              display="flex"
-              gap={'25px'}
-              alignItems={'center'}
-            >
-              <Image
-                src={user_placeholder_img}
-                alt="user"
-                width={116}
-                height={120}
-                style={{
-                  borderTopLeftRadius: '12px',
-                  borderBottomLeftRadius: '12px',
-                }}
-              />
-              <Box width={'100%'}>
-                <Box>
-                  <Box
-                    fontSize={'16px'}
-                    lineHeight={'16px'}
-                    className="text-dark-grey"
-                    width={'100%'}
-                    fontWeight={'500'}
-                  >
-                    <Typography
-                      sx={{ wordBreak: 'break-word' }}
-                      className="text-dark-grey two-line-text"
-                      mr={'40px'}
-                    >
-                      {toPascalCase(
-                        userData?.find(
-                          (field: { name: string }) => field.name === 'name'
-                        )?.value
-                      )}
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box display={'flex'} gap={'4px'} mt={'5px'}>
-                  {address ? (
-                    <PlaceOutlinedIcon
-                      sx={{
-                        fontSize: '1rem',
-                        marginTop: '1px',
-                        fontWeight: '11.7px',
-                        height: '14.4px',
-                      }}
-                    />
-                  ) : (
-                    ''
-                  )}
-
-                  <Typography
-                    margin={0}
-                    color={theme.palette.warning.A200}
-                    fontSize={'12px'}
-                    fontWeight={'500'}
-                    lineHeight={'16px'}
-                    className="text-dark-grey"
-                  >
-                    {address}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Box> */}
           <Box
             className="linerGradient"
             sx={{
               padding: '10px 16px 21px',
               width: '100%',
-              // mt: 3,
-              // '@media (min-width: 900px)': {
-              //   borderRadius: '8px',
-              //   display: 'flex',
-              //   gap: '15px',
-              //   alignItems: 'center',
-              //   flexDirection: 'row-reverse',
-              // },
-
             }}
           >
             {userRole === Role.TEAM_LEADER && userId !== selfUserId ? (
@@ -604,7 +487,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
               </Button>
             ) : null}
             {openAddLearnerModal && (
-              <div>
                 <AddFacilitatorModal
                   open={openAddLearnerModal}
                   onClose={handleCloseAddLearnerModal}
@@ -613,22 +495,16 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                   userId={userId}
                   onReload={handleReload}
                 />
-              </div>
             )}
             <Box
               mt={2}
               sx={{
                 flex: '1',
-                // textAlign: 'center',
                 border: '1px solid',
                 borderColor: theme.palette.warning['A100'],
                 padding: '16px',
-                // '@media (min-width: 900px)': {
-                //   minWidth: '60%',
-                //   width: '60%',
-                // },
                 '@media (min-width: 900px)': {
-                  width: '50%'
+                  width: '50%',
                 },
               }}
               className="bg-white"
@@ -637,13 +513,12 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
               border={'1px'}
               display="flex"
               flexDirection="row"
-
             >
               <Grid container spacing={4}>
-                {filteredSortedForView?.map((item, index) => {
+                {filteredSortedForView?.map((item) => {
                   if (String(item.order) === '7') {
                     return (
-                      <Grid item xs={12} key={index}>
+                      <Grid item xs={12} key={item?.label}>
                         <Typography
                           fontSize={'12px'}
                           fontWeight={'600'}
@@ -665,40 +540,38 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                         >
                           {orderedSubjects &&
                             orderedSubjects.length > 0 &&
-                            orderedSubjects.map(
-                              (subject: any, index: number) => {
-                                const isMutualSubject =
-                                  mutualSubjects?.includes(subject);
-                                return (
-                                  <Button
-                                    key={index}
-                                    size="small"
-                                    variant={
-                                      isMutualSubject ? 'contained' : 'outlined'
-                                    }
-                                    sx={{
-                                      backgroundColor: isMutualSubject
-                                        ? theme.palette.info.contrastText
-                                        : 'none',
-                                      borderRadius: '8px',
-                                      color: theme.palette.warning.A200,
-                                      whiteSpace: 'nowrap',
-                                      boxShadow: 'none',
-                                      border: `1px solid ${theme.palette.warning[900]}`,
-                                      pointerEvents: 'none',
-                                    }}
-                                  >
-                                    {getLabelForSubject(subject)}
-                                  </Button>
-                                );
-                              }
-                            )}
+                            orderedSubjects.map((subject: any) => {
+                              const isMutualSubject =
+                                mutualSubjects?.includes(subject);
+                              return (
+                                <Button
+                                  key={subject}
+                                  size="small"
+                                  variant={
+                                    isMutualSubject ? 'contained' : 'outlined'
+                                  }
+                                  sx={{
+                                    backgroundColor: isMutualSubject
+                                      ? theme.palette.info.contrastText
+                                      : 'none',
+                                    borderRadius: '8px',
+                                    color: theme.palette.warning.A200,
+                                    whiteSpace: 'nowrap',
+                                    boxShadow: 'none',
+                                    border: `1px solid ${theme.palette.warning[900]}`,
+                                    pointerEvents: 'none',
+                                  }}
+                                >
+                                  {getLabelForSubject(subject)}
+                                </Button>
+                              );
+                            })}
                         </Box>
                       </Grid>
                     );
                   } else if (item.order === 7) {
                     return (
-                      <Grid item xs={12} key={index}>
+                      <Grid item xs={12} key={item.label}>
                         <Typography
                           variant="h4"
                           margin={0}
@@ -723,7 +596,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                     );
                   } else {
                     return (
-                      <Grid item xs={6} key={index}>
+                      <Grid item xs={6} key={item?.label}>
                         {/* Profile Field Labels */}
                         <Typography
                           variant="h4"
@@ -750,7 +623,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                           {item?.value
                             ? toPascalCase(getLabelForValue(item, item?.value))
                             : '-'}{' '}
-                          {/* apply elipses/ truncating here */}
                         </Typography>
                       </Grid>
                     );

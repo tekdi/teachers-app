@@ -26,7 +26,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   buttonNames,
   handleCloseModal,
 }) => {
-  const theme = useTheme();
+  const theme = useTheme<any>();
 
   const style = {
     position: 'absolute',
@@ -50,7 +50,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       aria-describedby="confirmation-modal-description"
     >
       <Box sx={style}>
-        <Box sx={{ p: 3 }} id="confirmation-modal-title">
+        <Box sx={{ p: 3 }} color={theme.palette.warning['300']} id="confirmation-modal-title">
           {message}
         </Box>
         <Divider />
