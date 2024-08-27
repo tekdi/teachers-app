@@ -1080,8 +1080,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 <Box mt={3} px="18px">
                   <Grid container spacing={2}>
                     {sessions?.map((item) => (
-                      <Grid xs={12} sm={6} md={6} item>
-                        <SessionCard data={item} key={item.id}>
+                      <Grid xs={12} sm={6} md={6} key={item.id} item>
+                        <SessionCard data={item}>
                           <SessionCardFooter item={item} />
                         </SessionCard>
                       </Grid>
@@ -1089,7 +1089,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     {sessions && sessions?.length === 0 && (
                       <Box
                         className="fs-12 fw-400 italic"
-                        sx={{ color: theme.palette.warning['300'] }}
+                        sx={{ color: theme.palette.warning['300'], paddingLeft: '18px' }}
                       >
                         {t('COMMON.NO_SESSIONS_SCHEDULED')}
                       </Box>
@@ -1107,10 +1107,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     })}
                   </Box>
                   <Box mt={3} px="18px">
-                    <Grid container spacing={2}>
+                    <Grid container spacing={1}>
                       {extraSessions?.map((item) => (
-                        <Grid xs={12} sm={6} md={6} item>
-                          <SessionCard data={item} key={item.id}>
+                        <Grid xs={12} sm={6} md={6} key={item.id} item>
+                          <SessionCard data={item} >
                             <SessionCardFooter item={item} />
                           </SessionCard>
                         </Grid>
