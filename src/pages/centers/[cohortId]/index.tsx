@@ -59,6 +59,7 @@ import {
   modifyAttendanceLimit,
   eventDaysLimit,
   ShowCenterSessionsTab,
+  showEventsByList,
 } from '../../../../app.config';
 
 const CohortPage = () => {
@@ -224,8 +225,9 @@ const CohortPage = () => {
         setSessions([]);
       }
     };
-
-    getSessionsData();
+    if (showEventsByList) {
+      getSessionsData();
+    }
   }, [selectedDate, eventCreated, eventDeleted]);
 
   useEffect(() => {
@@ -260,7 +262,9 @@ const CohortPage = () => {
       }
     };
 
-    getExtraSessionsData();
+    if (showEventsByList) {
+      getExtraSessionsData();
+    }
   }, [eventCreated, eventDeleted]);
 
   const handleEventDeleted = () => {

@@ -53,6 +53,7 @@ import {
   showLablesForOther,
   tourGuideNavigtion,
   showMyTimeTable,
+  showEventsByList,
 } from './../../app.config';
 
 import AttendanceComparison from '@/components/AttendanceComparison';
@@ -927,8 +928,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
         setSessions([]);
       }
     };
-
-    getSessionsData();
+    if (showEventsByList) {
+      getSessionsData();
+    }
   }, [timeTableDate, classId]);
 
   useEffect(() => {
@@ -963,7 +965,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       }
     };
 
-    getExtraSessionsData();
+    if (showEventsByList) {
+      getExtraSessionsData();
+    }
   }, [classId]);
 
   return (
