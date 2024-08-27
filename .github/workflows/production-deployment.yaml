@@ -53,4 +53,5 @@ jobs:
             docker stop ${{ secrets.CONTAINER_NAME }}
             docker rm -f ${{ secrets.CONTAINER_NAME }}
             docker images --no-trunc -aqf "dangling=true" | xargs docker rmi
+            docker system prune -af
             docker-compose up -d --force-recreate --no-deps 
