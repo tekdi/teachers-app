@@ -90,6 +90,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   onEventDeleted,
   eventData,
   updateEvent,
+  onEventUpdated,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -743,7 +744,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       };
       const response = await editEvent(eventRepetitionId, apiBody);
       if (response?.responseCode === 'OK') {
-        showToastMessage(t('COMMON.SESSION_DELETED_SUCCESSFULLY'), 'success');
+        showToastMessage(
+          t('CENTER_SESSION.SESSION_DELETED_SUCCESSFULLY'),
+          'success'
+        );
       } else {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       }
@@ -760,7 +764,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       if (updateEvent && eventData) {
         console.log('eventData', eventData);
         try {
-          const isMainEvent = true;
+          let isMainEvent;
+          if (eventData?.isRecurring === false) {
+            isMainEvent = true;
+          }
+          if (eventData?.isRecurring === true) {
+            if (editSelection === t('CENTER_SESSION.EDIT_THIS_SESSION')) {
+              isMainEvent = false;
+            } else {
+              isMainEvent = true;
+            }
+          }
           const eventRepetitionId = eventData?.eventRepetitionId;
           const apiBody: any = {
             isMainEvent: isMainEvent,
@@ -860,9 +874,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           const response = await editEvent(eventRepetitionId, apiBody);
           if (response?.responseCode === 'OK') {
             showToastMessage(
-              t('COMMON.SESSION_EDITED_SUCCESSFULLY'),
+              t('CENTER_SESSION.SESSION_EDITED_SUCCESSFULLY'),
               'success'
             );
+            if (onEventUpdated) {
+              onEventUpdated();
+            }
           } else {
             showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
           }
@@ -872,7 +889,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       }
     };
     onUpdateEvent();
-  }, [updateEvent, eventData, sessionBlocks]);
+  }, [updateEvent]);
 
   return (
     <Box overflow={'hidden'}>

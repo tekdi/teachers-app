@@ -379,7 +379,9 @@
     "DELETE_ALL_SESSION_MSG": "Are you sure you want to delete all sessions in this series?",
     "DELETE_THIS_SESSION": "Delete this session",
     "DELETE_FOLLOWING_SESSION": "Delete this and following sessions",
-    "UPDATE_CHANGES": "Are you sure you want to update the changes?"
+    "UPDATE_CHANGES": "Are you sure you want to update the changes?",
+    "SESSION_DELETED_SUCCESSFULLY": "Session deleted successfully",
+    "SESSION_EDITED_SUCCESSFULLY": "Session updated successfully"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center Requested Successfully",
@@ -514,8 +516,8 @@
   },
   "BOARD_ENROOLMENT": {
     "BOARD_ENROLLMENT": "Board Enrollment",
-    "BOARD_SELECTION":"Board Selection",
+    "BOARD_SELECTION": "Board Selection",
     "SUBJECTS_SELECTION": "Subjects Selection",
-    "REGISTRATION_COMPLETED":"Registration Completed"
+    "REGISTRATION_COMPLETED": "Registration Completed"
   }
 }
