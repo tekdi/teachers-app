@@ -92,6 +92,26 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
 
         {showFooter ? (
           <Box sx={{ padding: '20px 16px' }} display={'flex'}>
+            {secondaryText && (
+              <Button
+                variant="outlined"
+                color="secondary"
+                sx={{
+                  '&.Mui-disabled': {
+                    backgroundColor: theme?.palette?.primary?.main,
+                  },
+                  minWidth: '84px',
+                  height: '2.5rem',
+                  padding: theme.spacing(1),
+                  fontWeight: '500',
+                  width: '100%',
+                  margin: '10px',
+                }}
+                onClick={secondaryActionHandler}
+              >
+                {secondaryText}
+              </Button>
+            )}
             {primaryText && (
               <Button
                 variant="contained"
@@ -105,30 +125,11 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
                   padding: theme.spacing(1),
                   fontWeight: '500',
                   width: '100%',
+                  margin: '10px',
                 }}
                 onClick={primaryActionHandler}
               >
                 {primaryText}
-              </Button>
-            )}
-
-            {secondaryText && (
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  '&.Mui-disabled': {
-                    backgroundColor: theme?.palette?.primary?.main,
-                  },
-                  minWidth: '84px',
-                  height: '2.5rem',
-                  padding: theme.spacing(1),
-                  fontWeight: '500',
-                  width: '100%',
-                }}
-                onClick={secondaryActionHandler}
-              >
-                {secondaryText}
               </Button>
             )}
           </Box>
