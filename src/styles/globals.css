@@ -991,7 +991,7 @@ legend.Mui-focused {
 
 .form-parent .rjsf  .field-object{
   min-height: 100%;
-  max-height: 55vh;
+  max-height: 48vh;
   overflow-y: auto;
   padding-left: 16px;
   padding-right: 16px;

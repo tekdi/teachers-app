@@ -7,53 +7,15 @@ import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import React, { useEffect, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
+import EastIcon from '@mui/icons-material/East';
+import HorizontalLinearStepper from '@/components/Stepper';
+import PieChartGraph from '@/components/PieChartGraph';
 
-interface DataItem {
-    name: string;
-    value: number;
-}
+
 
 const BoardEnrollment = () => {
     const theme = useTheme<any>();
     const { t } = useTranslation();
-
-    const data: DataItem[] = [
-        { name: 'Not Started', value: 4 },
-        { name: 'Board Selection', value: 5 },
-        { name: 'Subjects Selection', value: 10 },
-        { name: 'Registration Completed', value: 5 },
-    ];
-
-    const COLORS = ['#C0C0C0', '#8000FE', '#FF8042', '#FFBB28'];
-
-    const [isMobile, setIsMobile] = useState<boolean>(false);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 700);
-        };
-
-        handleResize(); // Check initial size
-        window.addEventListener('resize', handleResize);
-
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    const renderLegendText = (value: string, entry: any) => {
-        const isNotStarted = value === 'Not Started';
-        return (
-            <span style={{ color: isNotStarted ? 'black' : '#000000', fontSize: '12px', fontWeight: '400' }}>
-                {value} ({entry.payload.value})
-            </span>
-        );
-    };
-
-
-    const steps = [
-        'Select master blaster campaign settings',
-        'Create an ad group',
-        'Create an ad',
-    ];
 
     return (
         <>
@@ -103,8 +65,8 @@ const BoardEnrollment = () => {
                                         marginBottom: '0rem',
                                     }}
                                 >
-                                    <MenuItem value="">
-                                        <em>All Centers</em>
+                                    <MenuItem value="All Centers">
+                                        All Centers
                                     </MenuItem>
                                 </Select>
                             </FormControl>
@@ -127,78 +89,26 @@ const BoardEnrollment = () => {
                 </Grid>
             </Box>
 
-            <Box sx={{
-                background: '#FFF8F2', p: '16px', mt: 2, '@media (max-width: 700px)': {
-                    p: '16px 16px 0px'
-                },
-            }}>
-                <Box sx={{ color: '#7C766F', fontSize: '14px', fontWeight: '600' }}>
-                    Stages and Number of Students
-                </Box>
-
-                <Box sx={{
-                    height: 150,
-                    '@media (min-width: 400px)': {
-                        height: 200,
-                    },
-                    '@media (min-width: 500px)': {
-                        height: 300,
-                    },
-                    '@media (min-width: 700px)': {
-                        height: 400,
-                    },
-                }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                            <Pie
-                                data={data}
-                                cx="50%"
-                                cy="50%"
-                                labelLine={false}
-                                label={false}
-                                outerRadius="80%"
-                                fill="#8884d8"
-                                dataKey="value"
-                            >
-                                {data.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Pie>
-
-                            {isMobile ? (
-                                <Legend
-                                    layout="vertical"
-                                    align="right"
-                                    verticalAlign="middle"
-                                    formatter={renderLegendText}
-                                    iconType="circle" // Change this line to make the legend icon circular
-                                />
-                            ) : (
-                                <Legend
-                                    layout="horizontal"
-                                    align="center"
-                                    verticalAlign="bottom"
-                                    formatter={renderLegendText}
-                                    iconType="circle" // Change this line to make the legend icon circular
-                                />
-                            )}
-                        </PieChart>
-                    </ResponsiveContainer>
-                </Box>
-            </Box>
+            <PieChartGraph/>
 
 
-            <Box sx={{ mt: 2 }}>
-                <Box sx={{ width: '100%' }}>
-                    <Stepper activeStep={0} alternativeLabel>
-                        {steps.map((label) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                            </Step>
-                        ))}
-                    </Stepper>
-                </Box>
-            </Box>
+            <Grid container sx={{ mt: 4, px: '16px' }} spacing={2}>
+                <Grid item xs={12} md={6} lg={6} xl={4}>
+                    <Box sx={{ border: '1px solid #D0C5B4', p: '12px 16px', borderRadius: '8px' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Box sx={{ fontSize: '16px', fontWeight: '400', color: '#1F1B13' }}>Aanya Gupta</Box>
+                            <EastIcon sx={{ color: '#1F1B13' }} />
+                        </Box>
+                        <Box sx={{ color: '#7C766F', fontWeight: '500', fontSize: '12px', mt: .5 }}>
+                            Khapari Dharmu (Chimur, Chandrapur)
+                        </Box>
+                        <Box mt={2}>
+                            <HorizontalLinearStepper />
+                        </Box>
+                    </Box>
+                </Grid>
+               
+            </Grid>
         </>
     );
 };
