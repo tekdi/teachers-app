@@ -23,6 +23,7 @@ import { accessGranted } from '@/utils/Helper';
 import { accessControl } from '../../app.config';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 import checkBook from '../assets/images/checkbook.svg';
+import board from '../assets/images/Board.svg';
 import Image from 'next/image';
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
@@ -376,8 +377,11 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               marginTop: '15px',
             }}
             startIcon={
-              <EventAvailableOutlinedIcon
-                sx={{ fontSize: '24px !important' }}
+              <Image
+                src={board}
+                alt="badge Icon"
+                width={24}
+                height={24}
               />
             }
             onClick={() => {

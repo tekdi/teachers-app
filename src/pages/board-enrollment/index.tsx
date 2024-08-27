@@ -1,6 +1,19 @@
 import Header from '@/components/Header';
 import { useTheme } from '@mui/material/styles';
-import { Box, Button, FormControl, Grid, IconButton, InputBase, MenuItem, Paper, Select, Step, StepLabel, Stepper } from '@mui/material';
+import {
+    Box,
+    Button,
+    FormControl,
+    Grid,
+    IconButton,
+    InputBase,
+    MenuItem,
+    Paper,
+    Select,
+    Step,
+    StepLabel,
+    Stepper,
+} from '@mui/material';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
@@ -11,17 +24,32 @@ import EastIcon from '@mui/icons-material/East';
 import HorizontalLinearStepper from '@/components/HorizontalLinearStepper';
 import PieChartGraph from '@/components/PieChartGraph';
 
-
+import { boardEnrollment } from '@/services/BoardEnrollmentServics';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const BoardEnrollment = () => {
     const theme = useTheme<any>();
     const { t } = useTranslation();
+    const [boardEnrollmentList, setBoardEnrollmentList] = useState<any>([]);
+
+    useEffect(() => {
+        const res = boardEnrollment();
+        setBoardEnrollmentList(res);
+    }, []);
 
     return (
         <>
             <Header />
 
-            <Box sx={{ px: '16px', color: theme.palette.warning['A200'], fontSize: '22px', fontWeight: '400', mt: 3 }}>
+            <Box
+                sx={{
+                    px: '16px',
+                    color: theme.palette.warning['A200'],
+                    fontSize: '22px',
+                    fontWeight: '400',
+                    mt: 3,
+                }}
+            >
                 {t('BOARD_ENROOLMENT.BOARD_ENROLLMENT')}
             </Box>
 
@@ -66,13 +94,17 @@ const BoardEnrollment = () => {
                                     }}
                                 >
                                     <MenuItem value="All Centers">
-                                        All Centers   {/*will come form API */}
+                                        All Centers {/*will come form API */}
                                     </MenuItem>
                                 </Select>
                             </FormControl>
                         </Box>
                     </Grid>
-                    <Grid sx={{ display: 'flex', justifyContent: 'flex-end' }} xs={4} item>
+                    <Grid
+                        sx={{ display: 'flex', justifyContent: 'flex-end' }}
+                        xs={4}
+                        item
+                    >
                         <Button
                             sx={{
                                 color: theme.palette.warning.A200,
@@ -89,25 +121,76 @@ const BoardEnrollment = () => {
                 </Grid>
             </Box>
 
-            <PieChartGraph/>
+            <PieChartGraph />
 
-
-            <Grid container sx={{ mt: 4, px: '16px' }} spacing={2}>
-                <Grid item xs={12} md={6} lg={6} xl={4}>
-                    <Box sx={{ border: `1px solid ${theme.palette.warning['A100']}`, p: '12px 16px', borderRadius: '8px' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Box sx={{ fontSize: '16px', fontWeight: '400', color: '#1F1B13' }}>Aanya Gupta</Box>
-                            <EastIcon sx={{ color: '#1F1B13' }} />
-                        </Box>
-                        <Box sx={{ color: '#7C766F', fontWeight: '500', fontSize: '12px', mt: .5 }}>
-                            Khapari Dharmu (Chimur, Chandrapur) {/*will come from API*/}
-                        </Box>
-                        <Box mt={2}>
-                            <HorizontalLinearStepper />
-                        </Box>
-                    </Box>
-                </Grid>
-               
+            <Grid container sx={{ my: 4, px: '16px' }} spacing={2}>
+                {boardEnrollmentList.map((item: any, index: any) => {
+                    return (
+                        <Grid key={index} item xs={12} md={6} lg={6} xl={4}>
+                            <Box
+                                sx={{
+                                    border: `1px solid ${theme.palette.warning['A100']}`,
+                                    p: '12px 16px',
+                                    borderRadius: '8px',
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            fontSize: '16px',
+                                            fontWeight: '400',
+                                            color: theme.palette.warning['300'],
+                                        }}
+                                    >
+                                        {item.studentName}
+                                    </Box>
+                                    <EastIcon sx={{ color: theme.palette.warning['300'] }} />
+                                </Box>
+                                <Box
+                                    sx={{
+                                        color: theme.palette.warning['300'],
+                                        fontWeight: '500',
+                                        fontSize: '12px',
+                                        mt: 0.5,
+                                    }}
+                                >
+                                    {item.center}
+                                </Box>
+                                {item.isDropout ? (
+                                    <Box
+                                        mt={2}
+                                        sx={{
+                                            background: theme.palette.error.light,
+                                            p: '4px 8px',
+                                            borderRadius: '8px',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            color: theme.palette.warning['300'],
+                                            fontWeight: '500',
+                                            gap: '5px',
+                                        }}
+                                    >
+                                        {t('BOARD_ENROOLMENT.BOARD_ENROLLMENT')}{' '}
+                                        <InfoOutlinedIcon
+                                            sx={{ color: theme.palette.warning['300'], fontSize: '22px' }}
+                                        />
+                                    </Box>
+                                ) : (
+                                    <Box mt={2}>
+                                        <HorizontalLinearStepper />
+                                    </Box>
+                                )}
+                            </Box>
+                        </Grid>
+                    );
+                })}
             </Grid>
         </>
     );
