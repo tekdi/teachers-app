@@ -123,7 +123,7 @@ const CentersPage = () => {
 
             response.map((res: any) => {
               const centerData = res?.childData.map((child: any) => {
-                const cohortName = child.name;
+                const cohortName = toPascalCase(child.name);
                 const cohortId = child.cohortId;
                 const centerTypeField = child?.customField.find(
                   (field: any) => field.label === 'TYPE_OF_COHORT'

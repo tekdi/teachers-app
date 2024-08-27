@@ -7,10 +7,8 @@ import { useTheme } from '@mui/material/styles';
 interface WeekDaysProps {
   useAbbreviation?: boolean;
   onSelectionChange?: (selectedDays: string[]) => void;
-  selectedDays?: string[];
+  selectedDays?: any[];
 }
-
-
 
 const WeekDays: React.FC<WeekDaysProps> = ({
   useAbbreviation,
@@ -39,45 +37,47 @@ const WeekDays: React.FC<WeekDaysProps> = ({
       const scrollPosition = itemLeft - containerWidth / 2 + itemWidth / 2;
       scrollContainer.scrollTo({ left: scrollPosition, behavior: 'smooth' });
     }
+    setLocalSelectedDays(selectedDays);
   }, []);
 
   const handleDayClick = (index: number) => {
-    if (useAbbreviation) {
-      // setLocalSelectedDays((prev) =>
-      //   prev.includes(index)
-      //     ? prev.filter((day) => day !== index)
-      //     : [...prev, index]
-      // );
-      const newSelectedDays = localSelectedDays.includes(index)
-        ? localSelectedDays.filter((day) => day !== index)
-        : [...localSelectedDays, index];
+    // if (useAbbreviation) {
+    // setLocalSelectedDays((prev) =>
+    //   prev.includes(index)
+    //     ? prev.filter((day) => day !== index)
+    //     : [...prev, index]
+    // );
+    console.log(index);
+    const newSelectedDays = localSelectedDays.includes(index)
+      ? localSelectedDays.filter((day) => day !== index)
+      : [...localSelectedDays, index];
 
-      setLocalSelectedDays(newSelectedDays);
+    setLocalSelectedDays(newSelectedDays);
 
-      if (onSelectionChange) {
-        const selectedWeekDays = newSelectedDays.map(
-          (dayIndex) => fullDays[dayIndex]
-        );
-        onSelectionChange(selectedWeekDays);
-      }
+    if (onSelectionChange) {
+      const selectedWeekDays = newSelectedDays.map(
+        (dayIndex) => fullDays[dayIndex]
+      );
+      onSelectionChange(selectedWeekDays);
     }
+    // }
   };
 
-  useEffect(() => {
-    if (useAbbreviation) {
-      // const selectedWeekDays = selectedDays.map(
-      //   (dayIndex) => fullDays[dayIndex]
-      // );
-      // console.log('Selected days:', selectedWeekDays);
+  // useEffect(() => {
+  // if (useAbbreviation) {
+  // const selectedWeekDays = selectedDays.map(
+  //   (dayIndex) => fullDays[dayIndex]
+  // );
+  // console.log('Selected days:', selectedWeekDays);
 
-      // if (onSelectionChange) {
-      //   onSelectionChange(selectedWeekDays);
-      // }
+  // if (onSelectionChange) {
+  //   onSelectionChange(selectedWeekDays);
+  // }
 
-      const selectedIndices = selectedDays.map((day) => fullDays.indexOf(day));
-      setLocalSelectedDays(selectedIndices);
-    }
-  }, [selectedDays, useAbbreviation, fullDays, onSelectionChange]);
+  // const selectedIndices = selectedDays.map((day) => fullDays.indexOf(day));
+  // setLocalSelectedDays(selectedIndices);
+  // }
+  // }, [selectedDays, useAbbreviation, fullDays, onSelectionChange]);
 
   return (
     <Box
@@ -89,9 +89,9 @@ const WeekDays: React.FC<WeekDaysProps> = ({
         display: 'flex',
         gap: '14.5px',
         overflowX: 'auto',
-        overflowY: "hidden",
+        overflowY: 'hidden',
         paddingTop: '10px',
-        paddingBottom: '10px'
+        paddingBottom: '10px',
       }}
     >
       {days.map((day, index) => (
@@ -110,8 +110,7 @@ const WeekDays: React.FC<WeekDaysProps> = ({
             border: `1px solid ${theme?.palette?.warning['A100']}`,
             borderRadius: '4px',
             justifyContent: 'center',
-            alignItems: 'center'
-
+            alignItems: 'center',
           }}
           onClick={() => handleDayClick(index)}
         >
@@ -120,7 +119,12 @@ const WeekDays: React.FC<WeekDaysProps> = ({
             sx={{ width: 'auto', height: '50px' }}
           >
             <CardContent align-item="center">
-              <Typography sx={{ color: theme?.palette?.warning['300'], fontSize: '14px', }} variant="body1">{day}</Typography>
+              <Typography
+                sx={{ color: theme?.palette?.warning['300'], fontSize: '14px' }}
+                variant="body1"
+              >
+                {day}
+              </Typography>
             </CardContent>
           </Box>
         </Box>
