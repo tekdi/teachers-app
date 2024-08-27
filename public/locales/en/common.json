@@ -354,7 +354,7 @@
     "ERROR_EMPTY": "Center name cannot be empty",
     "ERROR_NUMBER": "Center name cannot be number",
     "LONG_ABSENTEE": "Long Absentee",
-    "TAKEN_TC": "Taken Tc",
+    "TAKEN_TC": "Taken TC",
     "ALLOCATION_CHANGE": "Allocation  Change",
     "INCORRECT_ENTRY": "Incorrect Entry",
     "DUPLICATION_ENTRY": "Duplicate Entry"

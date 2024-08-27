@@ -94,3 +94,5 @@ export const markdDropOut = false;
 // show lables as per product
 export const showLablesForOther = true;
 export const tourGuideNavigtion = false
+
+export const showMyTimeTable = false
