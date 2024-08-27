@@ -39,7 +39,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'next-i18next';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import ReactGA from 'react-ga4';
 import {
   DaysOfWeek,
@@ -89,7 +89,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   editSession,
   onEventDeleted,
   eventData,
-  onEventEdited,
+  updateEvent,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -106,6 +106,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     t('CENTER_SESSION.EDIT_THIS_SESSION')
   );
   const [subjects, setSubjects] = useState<string[]>();
+  const [initialEventData, setInitialEventData] = useState(null);
   const [shortDescription, setShortDescription] = useState<string>();
   const [meetingPasscode, setMeetingPasscode] = useState<string>();
   const [selectedDays, setSelectedDays] = useState<number[]>();
@@ -139,9 +140,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
   useEffect(() => {
     console.log(eventData);
-    console.log(eventData?.metadata?.framework?.subject);
-
     if (eventData) {
+      setInitialEventData(eventData);
       const mode =
         eventData?.meetingDetails?.url !== undefined
           ? sessionMode.ONLINE
@@ -162,7 +162,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
       const localStartDateTime = dayjs.utc(startDateTime).tz(timeZone);
       const localEndDateTime = dayjs.utc(endDateTime).tz(timeZone);
-      const localEndDateValue = dayjs.utc(endDateValue).tz('Asia/Kolkata');
+      const localEndDateValue = dayjs.utc(endDateValue).tz(timeZone);
 
       setStartDate(localStartDateTime.startOf('day'));
       setStartTime(localStartDateTime);
@@ -176,6 +176,15 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
       const recurrencePattern = eventData?.recurrencePattern?.daysOfWeek;
       setSelectedDays(recurrencePattern);
+      setSessionBlocks([
+        {
+          subject: sub,
+          subjectTitle: sessionTitle,
+          startDatetime: startDateTime,
+          endDatetime: endDateTime,
+          endDateValue: endDateValue,
+        },
+      ]);
     }
   }, [eventData, editSelection]);
 
@@ -231,17 +240,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     );
     setSessionBlocks(updatedSessionBlocks);
   };
-
-  // const handleSessionTypeChange = (
-  //   event: ChangeEvent<HTMLInputElement>,
-  //   id: string | number | undefined
-  // ) => {
-  //   setEventType(event.target.value as type);
-  //   const updatedSessionBlocks = sessionBlocks.map((block) =>
-  //     block.id === id ? { ...block, sessionType: event.target.value } : block
-  //   );
-  //   setSessionBlocks(updatedSessionBlocks);
-  // };
 
   useEffect(() => {
     const getAddFacilitatorFormData = async () => {
@@ -757,9 +755,119 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     }
   };
 
-  const handelEditEvent = (eventData: any, deleteSelection: string) => {
-    console.log(eventData);
-  };
+  useEffect(() => {
+    const onUpdateEvent = async () => {
+      if (updateEvent && eventData) {
+        console.log('eventData', eventData);
+        try {
+          const isMainEvent = true;
+          const eventRepetitionId = eventData?.eventRepetitionId;
+          const apiBody: any = {
+            isMainEvent: isMainEvent,
+            status: 'live',
+          };
+
+          let startDateTime = sessionBlocks?.[0]?.startDatetime;
+          if (
+            new Date(eventData?.startDateTime).getTime() !==
+            new Date(startDateTime).getTime()
+          ) {
+            apiBody['startDateTime'] = startDateTime;
+          }
+
+          let endDateTime = sessionBlocks?.[0]?.endDatetime;
+          if (
+            new Date(eventData?.endDateTime).getTime() !==
+            new Date(endDateTime).getTime()
+          ) {
+            apiBody['endDateTime'] = endDateTime;
+          }
+
+          const metadata = {
+            framework: {
+              board: eventData?.metadata?.framework?.board || '',
+              medium: eventData?.metadata?.framework?.medium || '',
+              grade: eventData?.metadata?.framework?.grade || '',
+              subject: eventData?.metadata?.framework?.subject || '',
+              topic: eventData?.metadata?.framework?.topic || '',
+              subTopic: eventData?.metadata?.framework?.subTopic || '',
+              teacherName: eventData?.metadata?.framework?.teacherName || '',
+            },
+            eventType: eventData?.metadata?.clickedBox || '',
+            doId: eventData?.metadata?.doId || '',
+            cohortId: eventData?.metadata?.cohortId || '',
+            cycleId: eventData?.metadata?.cycleId || '',
+            tenant: eventData?.metadata?.tenant || '',
+          };
+
+          const sessionSubject = sessionBlocks?.[0]?.subject || '';
+
+          if (
+            sessionSubject &&
+            eventData?.metadata?.framework?.subject !== sessionSubject
+          ) {
+            metadata.framework.subject = sessionSubject;
+            apiBody['metadata'] = metadata;
+          }
+
+          const sessionTitle = sessionBlocks?.[0]?.subjectTitle;
+          if (
+            eventData?.shortDescription !== sessionTitle &&
+            sessionTitle !== ''
+          ) {
+            apiBody['shortDescription'] = sessionTitle;
+          }
+          if (sessionBlocks?.[0]?.sessionMode === 'online') {
+            const meetingDetails = {
+              id: eventData?.meetingDetails?.id || '',
+              onlineProvider:
+                eventData?.meetingDetails?.onlineProvider || 'zoom',
+              password: eventData?.meetingDetails?.password || '',
+              providerGenerated:
+                eventData?.meetingDetails?.providerGenerated || false,
+              url: eventData?.meetingDetails?.url || '',
+            };
+
+            const meetingUrl = sessionBlocks?.[0]?.meetingLink;
+            if (
+              eventData?.meetingDetails?.url !== meetingUrl &&
+              meetingUrl !== ''
+            ) {
+              meetingDetails.url = meetingUrl;
+              apiBody['meetingDetails'] = meetingDetails;
+            }
+
+            const meetingPassword = sessionBlocks?.[0]?.meetingPasscode;
+            if (
+              eventData?.meetingDetails?.password !== meetingPassword &&
+              meetingPasscode !== ''
+            ) {
+              meetingDetails.password = meetingPassword;
+              apiBody['meetingDetails'] = meetingDetails;
+            }
+          }
+          if (sessionBlocks?.[0]?.sessionMode === 'offline') {
+            apiBody['meetingDetails'] = null;
+          }
+
+          console.log('apiBody', apiBody);
+
+          const response = await editEvent(eventRepetitionId, apiBody);
+          if (response?.responseCode === 'OK') {
+            showToastMessage(
+              t('COMMON.SESSION_EDITED_SUCCESSFULLY'),
+              'success'
+            );
+          } else {
+            showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+          }
+        } catch (error) {
+          console.error('Error in editing event:', error);
+        }
+      }
+    };
+    onUpdateEvent();
+  }, [updateEvent, eventData, sessionBlocks]);
 
   return (
     <Box overflow={'hidden'}>
@@ -1264,19 +1372,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           }}
           handleCloseModal={handleCloseModal}
           handleAction={() => handelDeleteEvent(editSession, editSelection)}
-          modalOpen={modalOpen}
-        />
-      )}
-
-      {onEventEdited && (
-        <ConfirmationModal
-          message={t('CENTER_SESSION.UPDATE_CHANGES')}
-          buttonNames={{
-            primary: t('COMMON.YES'),
-            secondary: t('COMMON.NO_GO_BACK'),
-          }}
-          handleCloseModal={handleCloseModal}
-          handleAction={() => handelEditEvent(editSession, editSelection)}
           modalOpen={modalOpen}
         />
       )}
