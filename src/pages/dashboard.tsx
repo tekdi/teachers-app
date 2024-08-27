@@ -52,6 +52,7 @@ import {
   lowLearnerAttendanceLimit,
   showLablesForOther,
   tourGuideNavigtion,
+  showMyTimeTable,
 } from './../../app.config';
 
 import AttendanceComparison from '@/components/AttendanceComparison';
@@ -258,8 +259,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
     React.useState<boolean>(false);
   const [confirmButtonDisable, setConfirmButtonDisable] =
     React.useState<boolean>(true);
-  const [selectedAttendance, setSelectedAttendance] =
-    React.useState<string>('');
+  const [selectedAttendance, setSelectedAttendance] = React.useState<
+    string | null
+  >('');
   const [isLocationModalOpen, setLocationModalOpen] = React.useState(false);
   const [attendanceLocation, setAttendanceLocation] =
     React.useState<GeolocationPosition | null>(null);
@@ -294,7 +296,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const onCloseEditMOdel = () => {
     setIsAttendanceModalOpen(false);
-    setSelectedAttendance('');
+    // setSelectedAttendance('');
     setConfirmButtonDisable(true);
   };
   const handleRadioChange = (value: string) => {
@@ -391,9 +393,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
     const dateForAttendance = formatSelectedDate(currentDate);
 
     console.log('attendanceLocation?', attendanceLocation);
+    // if (selectedAttendance) {
     const data = {
       userId: userId,
-      attendance: selectedAttendance,
+      attendance: selectedAttendance ? selectedAttendance : '',
       attendanceDate: selectedDate,
       contextId: classId,
       scope: 'self',
@@ -422,11 +425,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
     } finally {
       setLoading(false);
       onCloseEditMOdel();
-      setSelectedAttendance('');
+      // setSelectedAttendance('');
       fetchData(selectedDate);
       setConfirmButtonDisable(true);
-      setSelectedAttendance('');
+      // setSelectedAttendance('');
       setReasonOfAbsent('');
+      // }
     }
   };
   const fetchData = async (selectedDate: any) => {
@@ -452,7 +456,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
         // Update state with attendance data
         if (response?.data?.attendanceList?.length > 0) {
           setAttendanceData(response?.data?.attendanceList);
+          const attendanceData = response?.data?.attendanceList;
+          if (attendanceData) {
+            setSelectedAttendance(attendanceData?.[0]?.attendance);
+          }
         } else {
+          setSelectedAttendance('');
           setAttendanceData([]);
         }
       } else {
@@ -762,7 +771,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
       },
     };
     telemetryFactory.interact(telemetryInteract);
-    
   };
 
   const getMonthName = (dateString: string) => {
@@ -1828,70 +1836,74 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <AttendanceComparison blockName={blockName} />
                   </Box>
                 )}
-                <Box mt={3} px="18px">
-                  <Box
-                    sx={{ background: '#fff', padding: '5px' }}
-                    display={'flex'}
-                    justifyContent={'space-between'}
-                  >
-                    <Typography
-                      textAlign={'left'}
-                      fontSize={'0.8rem'}
-                      pl={'1rem'}
-                      pt={'1rem'}
-                      color={'black'}
-                      fontWeight={'600'}
-                    >
-                      {t('DASHBOARD.MY_TIMETABLE')}
-                    </Typography>
+                {showMyTimeTable && (
+                  <Box mt={3} px="18px">
                     <Box
+                      sx={{ background: '#fff', padding: '5px' }}
                       display={'flex'}
-                      sx={{
-                        cursor: 'pointer',
-                        color: theme.palette.secondary.main,
-                        gap: '4px',
-                        opacity: classId === 'all' ? 0.5 : 1,
-                        alignItems: 'center',
-                      }}
-                      onClick={viewTimeTable}
+                      justifyContent={'space-between'}
                     >
                       <Typography
-                        marginBottom={'0'}
-                        style={{ fontWeight: '500' }}
+                        textAlign={'left'}
+                        fontSize={'0.8rem'}
+                        pl={'1rem'}
+                        pt={'1rem'}
+                        color={'black'}
+                        fontWeight={'600'}
                       >
-                        {getMonthName(selectedDate)}
+                        {t('DASHBOARD.MY_TIMETABLE')}
                       </Typography>
-                      <CalendarMonthIcon sx={{ fontSize: '18px' }} />
-                    </Box>
-                  </Box>
-                  <WeekCalender
-                    showDetailsHandle={showTimeTableDetailsHandle}
-                    data={percentageAttendanceData}
-                    disableDays={classId === 'all'}
-                    classId={classId}
-                    showFromToday={true}
-                    newWidth={'100%'}
-                  />
-                </Box>
-                <Box mt={3} px="18px">
-                  <Grid container spacing={2}>
-                    {sessions?.map((item) => (
-                      <Grid xs={12} sm={6} md={6} item>
-                        <SessionCard data={item} key={item.id}>
-                          <SessionCardFooter item={item} />
-                        </SessionCard>
-                      </Grid>
-                    ))}
-                    {sessions && sessions?.length === 0 && (
                       <Box
-                        className="fs-12 fw-400 italic"
-                        sx={{ color: theme.palette.warning['300'] }}
+                        display={'flex'}
+                        sx={{
+                          cursor: 'pointer',
+                          color: theme.palette.secondary.main,
+                          gap: '4px',
+                          opacity: classId === 'all' ? 0.5 : 1,
+                          alignItems: 'center',
+                        }}
+                        onClick={viewTimeTable}
                       >
-                        {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                        <Typography
+                          marginBottom={'0'}
+                          style={{ fontWeight: '500' }}
+                        >
+                          {getMonthName(selectedDate)}
+                        </Typography>
+                        <CalendarMonthIcon sx={{ fontSize: '18px' }} />
                       </Box>
-                    )}
-                  </Grid>
-                </Box>
+                    </Box>
+                    <WeekCalender
+                      showDetailsHandle={showTimeTableDetailsHandle}
+                      data={percentageAttendanceData}
+                      disableDays={classId === 'all'}
+                      classId={classId}
+                      showFromToday={true}
+                      newWidth={'100%'}
+                    />
+                  </Box>
+                )}
+                {showMyTimeTable && (
+                  <Box mt={3} px="18px">
+                    <Grid container spacing={2}>
+                      {sessions?.map((item) => (
+                        <Grid xs={12} sm={6} md={6} item>
+                          <SessionCard data={item} key={item.id}>
+                            <SessionCardFooter item={item} />
+                          </SessionCard>
+                        </Grid>
+                      ))}
+                      {sessions && sessions?.length === 0 && (
+                        <Box
+                          className="fs-12 fw-400 italic"
+                          sx={{ color: theme.palette.warning['300'] }}
+                        >
+                          {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                        </Box>
+                      )}
+                    </Grid>
+                  </Box>
+                )}
 
                 <Box mt={3} px="18px" gap={'15px'}>
                   <Box
