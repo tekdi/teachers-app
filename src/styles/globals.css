@@ -991,7 +991,7 @@ legend.Mui-focused {
 
 .form-parent .rjsf  .field-object{
   min-height: 100%;
-  max-height: 55vh;
+  max-height: 48vh;
   overflow-y: auto;
   padding-left: 16px;
   padding-right: 16px;
@@ -1069,12 +1069,8 @@ legend.Mui-focused {
 .swiper-pagination-fraction{
   position: absolute;
   width: fit-content !important;
-  bottom: 0px !important;
+  bottom: 13px !important;
 }
 
-.swiper-pagination-fraction{
-  color: var(--mui-palette-warning-400) !important;
-  font-size: 12px;
-  font-weight: 500;
-}
+ 
 

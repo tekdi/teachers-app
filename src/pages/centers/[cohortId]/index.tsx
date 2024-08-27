@@ -640,9 +640,9 @@ const CohortPage = () => {
           </Box>
 
           <Box mt={3} px="18px">
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               {sessions?.map((item) => (
-                <Grid item xs={12} sm={6} md={6} key={item.id}>
+                <Grid item xs={12} sm={6} md={4} key={item.id}>
                   <SessionCard data={item} isEventDeleted={handleEventDeleted}>
                     <SessionCardFooter item={item} />
                   </SessionCard>

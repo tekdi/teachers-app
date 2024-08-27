@@ -511,5 +511,11 @@
     "OVERALL_SCORE": "Overall Score",
     "ASSESSMENT_NOT_STARTED_YET": "Assessment not started yet",
     "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} out of {{totalCount}} completed"
+  },
+  "BOARD_ENROOLMENT": {
+    "BOARD_ENROLLMENT": "Board Enrollment",
+    "BOARD_SELECTION":"Board Selection",
+    "SUBJECTS_SELECTION": "Subjects Selection",
+    "REGISTRATION_COMPLETED":"Registration Completed"
   }
 }
