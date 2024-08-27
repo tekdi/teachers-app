@@ -94,9 +94,6 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isCoursePlanner = router.pathname === '/course-planner';
   const isAssessments = router.pathname === '/assessments';
   const isBoard = router.pathname === '/board-enrollment';
-
-  
-
   // const isManageUser = router.pathname === '/manageUser';
 
   return (

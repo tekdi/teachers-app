@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import EastIcon from '@mui/icons-material/East';
-import HorizontalLinearStepper from '@/components/Stepper';
+import HorizontalLinearStepper from '@/components/HorizontalLinearStepper';
 import PieChartGraph from '@/components/PieChartGraph';
 
 
@@ -21,8 +21,8 @@ const BoardEnrollment = () => {
         <>
             <Header />
 
-            <Box sx={{ px: '16px', color: '#4D4639', fontSize: '22px', fontWeight: '400', mt: 3 }}>
-                Board Enrollment
+            <Box sx={{ px: '16px', color: theme.palette.warning['A200'], fontSize: '22px', fontWeight: '400', mt: 3 }}>
+                {t('BOARD_ENROOLMENT.BOARD_ENROLLMENT')}
             </Box>
 
             <Grid container>
@@ -41,7 +41,7 @@ const BoardEnrollment = () => {
                             <InputBase
                                 sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
                                 placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
-                                inputProps={{ 'aria-label': 'search student' }}
+                                inputProps={{ 'aria-label': t('ASSESSMENTS.SEARCH_STUDENT') }}
                             />
                             <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                                 <SearchIcon />
@@ -66,7 +66,7 @@ const BoardEnrollment = () => {
                                     }}
                                 >
                                     <MenuItem value="All Centers">
-                                        All Centers
+                                        All Centers   {/*will come form API */}
                                     </MenuItem>
                                 </Select>
                             </FormControl>
@@ -94,7 +94,7 @@ const BoardEnrollment = () => {
 
             <Grid container sx={{ mt: 4, px: '16px' }} spacing={2}>
                 <Grid item xs={12} md={6} lg={6} xl={4}>
-                    <Box sx={{ border: '1px solid #D0C5B4', p: '12px 16px', borderRadius: '8px' }}>
+                    <Box sx={{ border: `1px solid ${theme.palette.warning['A100']}`, p: '12px 16px', borderRadius: '8px' }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Box sx={{ fontSize: '16px', fontWeight: '400', color: '#1F1B13' }}>Aanya Gupta</Box>
                             <EastIcon sx={{ color: '#1F1B13' }} />

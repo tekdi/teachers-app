@@ -1,5 +1,7 @@
 import { Box } from '@mui/material'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '@mui/material/styles';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 
 interface DataItem {
@@ -8,16 +10,17 @@ interface DataItem {
 }
 
 const PieChartGraph = () => {
-
+    const { t } = useTranslation();
+    const theme = useTheme<any>();
     const data: DataItem[] = [
-        { name: 'Not Started', value: 4 },
-        { name: 'Board Selection', value: 5 },
-        { name: 'Subjects Selection', value: 10 },
-        { name: 'Registration Completed', value: 5 },
+        { name: t('ASSESSMENTS.NOT_STARTED'), value: 4 },
+        { name: t('BOARD_ENROOLMENT.BOARD_SELECTION'), value: 5 },
+        { name: t('BOARD_ENROOLMENT.SUBJECTS_SELECTION'),  value: 10 },
+        { name: t('BOARD_ENROOLMENT.REGISTRATION_COMPLETED'),  value: 5 },
     ];
 
 
-    const COLORS = ['#C0C0C0', '#8000FE', '#FF8042', '#FFBB28'];
+    const COLORS = ['#C0C0C0', '#8000FE', '#FF8042', '#FFBB28'];   //colors not in custom theme
 
     const [isMobile, setIsMobile] = useState<boolean>(false);
 
@@ -40,14 +43,14 @@ const PieChartGraph = () => {
             </span>
         );
     };
-  return (
-    <>
-        <Box sx={{
+    return (
+        <>
+            <Box sx={{
                 background: '#FFF8F2', p: '16px', mt: 2, '@media (max-width: 700px)': {
                     p: '16px 16px 0px'
                 },
             }}>
-                <Box sx={{ color: '#7C766F', fontSize: '14px', fontWeight: '600' }}>
+                <Box sx={{ color: theme.palette.warning['400'], fontSize: '14px', fontWeight: '600' }}>
                     Stages and Number of Students
                 </Box>
 
@@ -101,8 +104,8 @@ const PieChartGraph = () => {
                     </ResponsiveContainer>
                 </Box>
             </Box>
-    </>
-  )
+        </>
+    )
 }
 
 export default PieChartGraph
