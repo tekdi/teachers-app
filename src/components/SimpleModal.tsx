@@ -85,13 +85,13 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
           </Box>
         </Box>
         <Divider />
-        <Box sx={{  height: '55vh', overflowY: 'auto' }}>
+        <Box sx={{  height: '55vh', }}>
           {children}
         </Box>
         <Divider />
 
         {showFooter ? (
-          <Box sx={{ padding: '20px 16px' }} display={'flex'}>
+          <Box sx={{ padding: '20px 16px' , mb:2 }} display={'flex'}>
             {secondaryText && (
               <Button
                 variant="outlined"

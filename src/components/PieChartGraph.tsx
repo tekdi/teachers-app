@@ -89,7 +89,7 @@ const PieChartGraph = () => {
                                     align="right"
                                     verticalAlign="middle"
                                     formatter={renderLegendText}
-                                    iconType="circle" // Change this line to make the legend icon circular
+                                    iconType="circle"
                                 />
                             ) : (
                                 <Legend
@@ -97,7 +97,7 @@ const PieChartGraph = () => {
                                     align="center"
                                     verticalAlign="bottom"
                                     formatter={renderLegendText}
-                                    iconType="circle" // Change this line to make the legend icon circular
+                                    iconType="circle"
                                 />
                             )}
                         </PieChart>
