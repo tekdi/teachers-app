@@ -10,6 +10,7 @@ import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import CenterSessionModal from './CenterSessionModal';
 import PlannedSession from './PlannedSession';
+import ConfirmationModal from './ConfirmationModal';
 
 const SessionsCard: React.FC<SessionsCardProps> = ({
   data,
