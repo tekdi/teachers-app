@@ -118,6 +118,7 @@ const CohortPage = () => {
   const [isLearnerAdded, setIsLearnerAdded] = useState(false);
   const [createEvent, setCreateEvent] = useState(false);
   const [eventCreated, setEventCreated] = useState(false);
+  const [onEditEvent, setOnEditEvent] = useState(false);
 
   const handleClick = (selection: string) => {
     setClickedBox(selection);
@@ -330,6 +331,10 @@ const CohortPage = () => {
     setIsLearnerAdded(true);
   };
 
+  const handleEditEvent = () => {
+    setOnEditEvent(true);
+  };
+
   return (
     <>
       <Header />
@@ -498,7 +503,9 @@ const CohortPage = () => {
                 ? t('COMMON.OK')
                 : openSchedule
                   ? t('CENTER_SESSION.SCHEDULE')
-                  : t('GUIDE_TOUR.NEXT')
+                  : onEditEvent
+                    ? t('CENTER_SESSION.UPDATE')
+                    : t('GUIDE_TOUR.NEXT')
             }
             secondary={deleteModal ? t('COMMON.CANCEL') : undefined}
             handlePrimaryModel={
@@ -506,8 +513,11 @@ const CohortPage = () => {
                 ? undefined
                 : openSchedule
                   ? handleSchedule
-                  : handleCentermodel
+                  : onEditEvent
+                    ? handleEditEvent
+                    : handleCentermodel
             }
+            handleEditModal={handleEditEvent}
           >
             {deleteModal ? (
               <DeleteSession />
@@ -532,19 +542,19 @@ const CohortPage = () => {
             >
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
-            <Box mt={3} sx={{position:'relative'}}>
+            <Box mt={3} sx={{ position: 'relative' }}>
               <Swiper
                 pagination={{
                   type: 'fraction',
                 }}
                 breakpoints={{
                   500: {
-                    slidesPerView: 1, 
-                    spaceBetween: 20, 
+                    slidesPerView: 1,
+                    spaceBetween: 20,
                   },
                   740: {
-                    slidesPerView: 2, 
-                    spaceBetween: 20, 
+                    slidesPerView: 2,
+                    spaceBetween: 20,
                   },
                   900: {
                     slidesPerView: 3,
@@ -559,22 +569,19 @@ const CohortPage = () => {
                 modules={[Pagination, Navigation]}
                 className="mySwiper"
               >
-
                 {extraSessions?.map((item) => (
                   <>
-                  <SwiperSlide>
-                    <SessionCard
-                      data={item}
-                      isEventDeleted={handleEventDeleted}
-                    >
-                      <SessionCardFooter item={item} />
-                    </SessionCard>
-                  </SwiperSlide>
+                    <SwiperSlide>
+                      <SessionCard
+                        data={item}
+                        isEventDeleted={handleEventDeleted}
+                      >
+                        <SessionCardFooter item={item} />
+                      </SessionCard>
+                    </SwiperSlide>
                   </>
                 ))}
-
               </Swiper>
-
             </Box>
             {extraSessions && extraSessions?.length === 0 && (
               <Box
