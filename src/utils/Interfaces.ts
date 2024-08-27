@@ -156,6 +156,7 @@ export interface PlannedModalProps {
   editSelection?: string;
   handleEditSelection?: (selection: string) => void;
   onEventDeleted?: () => void;
+  onEventUpdated?: () => void;
   updateEvent?: boolean;
   editSession?: any;
   eventData?: any;
@@ -446,7 +447,6 @@ export interface FacilitatorDrawerProps {
 }
 export interface CoursePlannerCardsProps {
   resources: any;
-
 }
 
 export interface scheduleEventParam {
@@ -501,10 +501,9 @@ export interface Assessment {
 export interface BoardEnrollment {
   userId: number;
   studentName: string;
-  center:string;
-  isDropout:boolean
+  center: string;
+  isDropout: boolean;
 }
-
 
 export interface AssessmentSubject {
   userId: number;

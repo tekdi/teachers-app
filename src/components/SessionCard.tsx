@@ -50,6 +50,14 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
     }
   };
 
+  const onEventUpdated = () => {
+    setOpen(false);
+    if (isEventUpdated) {
+      isEventUpdated();
+    }
+    setUpdateEvent(false);
+  };
+
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
   const handleCopyUrl = () => {
@@ -189,6 +197,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           editSession={editSession}
           handleEditSelection={handleEditSelection}
           onEventDeleted={onEventDeleted}
+          onEventUpdated={onEventUpdated}
           eventDeleted={eventDeleted}
           eventData={data}
           updateEvent={updateEvent}

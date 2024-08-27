@@ -109,7 +109,7 @@ const CohortPage = () => {
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
   const [eventDeleted, setEventDeleted] = React.useState(false);
-
+  const [eventUpdated, setEventUpdated] = React.useState(false);
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [cohortName, setCohortName] = React.useState<string>();
   const [clickedBox, setClickedBox] = useState<string | null>(null);
@@ -226,13 +226,15 @@ const CohortPage = () => {
           });
         }
         setSessions(sessionArray);
+        setEventUpdated(false);
+        setEventDeleted(false);
       } catch (error) {
         setSessions([]);
       }
     };
 
     getSessionsData();
-  }, [selectedDate, eventCreated, eventDeleted]);
+  }, [selectedDate, eventCreated, eventDeleted, eventUpdated]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -271,12 +273,17 @@ const CohortPage = () => {
         setExtraSessions([]);
       }
     };
-
+    setEventUpdated(false);
+    setEventDeleted(false);
     getExtraSessionsData();
-  }, [eventCreated, eventDeleted]);
+  }, [eventCreated, eventDeleted, eventUpdated]);
 
   const handleEventDeleted = () => {
     setEventDeleted(true);
+  };
+
+  const handleEventUpdated = () => {
+    setEventUpdated(true);
   };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -583,6 +590,7 @@ const CohortPage = () => {
                       <SessionCard
                         data={item}
                         isEventDeleted={handleEventDeleted}
+                        isEventUpdated={handleEventUpdated}
                       >
                         <SessionCardFooter item={item} />
                       </SessionCard>
@@ -651,7 +659,11 @@ const CohortPage = () => {
             <Grid container spacing={3}>
               {sessions?.map((item) => (
                 <Grid item xs={12} sm={6} md={4} key={item.id}>
-                  <SessionCard data={item} isEventDeleted={handleEventDeleted}>
+                  <SessionCard
+                    data={item}
+                    isEventDeleted={handleEventDeleted}
+                    isEventUpdated={handleEventUpdated}
+                  >
                     <SessionCardFooter item={item} />
                   </SessionCard>
                 </Grid>
