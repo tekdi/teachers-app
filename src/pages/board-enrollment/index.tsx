@@ -50,7 +50,7 @@ const BoardEnrollment = () => {
                     mt: 3,
                 }}
             >
-                {t('BOARD_ENROOLMENT.BOARD_ENROLLMENT')}
+                {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
             </Box>
 
             <Grid container>
@@ -177,7 +177,7 @@ const BoardEnrollment = () => {
                                             gap: '5px',
                                         }}
                                     >
-                                        {t('BOARD_ENROOLMENT.BOARD_ENROLLMENT')}{' '}
+                                        {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}{' '}
                                         <InfoOutlinedIcon
                                             sx={{ color: theme.palette.warning['300'], fontSize: '22px' }}
                                         />

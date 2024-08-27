@@ -388,7 +388,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               router.push(`/board-enrollment`);
             }}
           >
-          {t('BOARD_ENROOLMENT.BOARD_ENROLLMENT')}
+          {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
           </Button>
         </Box>
         <Box sx={{ marginTop: '18px' }}>

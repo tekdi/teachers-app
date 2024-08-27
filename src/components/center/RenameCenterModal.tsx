@@ -5,12 +5,13 @@ import {
   Button,
   Divider,
   Fade,
+  FormHelperText,
   IconButton,
   Modal,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -18,9 +19,10 @@ import { showToastMessage } from '../Toastify';
 
 interface CreateBlockModalProps {
   open: boolean;
-  handleClose: () => void;
+  handleClose: (name: string) => void;
   reloadState: boolean;
   setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
+  name?: string;
 }
 
 const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
@@ -28,15 +30,16 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
   handleClose,
   reloadState,
   setReloadState,
+  name,
 }) => {
   const router = useRouter();
   const { t } = useTranslation();
   const theme = useTheme<any>();
-
   const { cohortId }: any = router.query;
+  const [centerName, setCenterName] = useState<string>(name ?? '');
+  const [error, setError] = useState<boolean>(false);
 
-  const [centerName, setCenterName] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const pattern = /^[a-zA-Z ]*$/;
 
   React.useEffect(() => {
     if (reloadState) {
@@ -48,29 +51,26 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = event.target.value;
-    setCenterName(value);
 
-    if (!value.trim()) {
-      setError(t('CENTERS.ERROR_EMPTY'));
-    } else if (!isNaN(Number(value))) {
-      setError(t('CENTERS.ERROR_NUMBER'));
+    console.log('value', event);
+    // Validate against the pattern
+    if (!pattern.test(value.trim())) {
+      setError(true);
     } else {
-      setError('');
+      setError(false);
     }
+    setCenterName(value);
   };
 
   const handleCreateButtonClick = async () => {
     if (error) return;
 
     console.log('Entered Rename Name:', centerName);
-
-    const name = centerName;
-
-    const response = await renameFacilitator(cohortId, name);
+    const name = centerName.trim();
+    await renameFacilitator(cohortId, name);
     setReloadState(true);
     showToastMessage(t('CENTERS.CENTER_RENAMED'), 'success');
-    
-    handleClose();
+    handleClose(name);
   };
 
   return (
@@ -117,6 +117,7 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
           <Divider sx={{ mb: 2, mx: -2 }} />
 
           <TextField
+            required
             fullWidth
             label={t('CENTERS.UNIT_NAME')}
             id="outlined-size-normal"
@@ -124,11 +125,16 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
             value={centerName}
             onChange={handleTextFieldChange}
             error={!!error}
-            helperText={error}
+            inputProps={{ pattern: pattern }}
           />
           <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
             {t('CENTERS.NOTE')}
           </Typography>
+          {error && (
+            <FormHelperText error sx={{ mb: 2 }}>
+              {t('FORM_ERROR_MESSAGES.ENTER_VALID_CENTER_NAME')}
+            </FormHelperText>
+          )}
           <Divider sx={{ mb: 2, mx: -2 }} />
           <Button
             variant="outlined"

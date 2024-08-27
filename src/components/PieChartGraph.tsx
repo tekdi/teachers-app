@@ -14,9 +14,9 @@ const PieChartGraph = () => {
     const theme = useTheme<any>();
     const data: DataItem[] = [
         { name: t('ASSESSMENTS.NOT_STARTED'), value: 4 },
-        { name: t('BOARD_ENROOLMENT.BOARD_SELECTION'), value: 5 },
-        { name: t('BOARD_ENROOLMENT.SUBJECTS_SELECTION'),  value: 10 },
-        { name: t('BOARD_ENROOLMENT.REGISTRATION_COMPLETED'),  value: 5 },
+        { name: t('BOARD_ENROLMENT.BOARD_SELECTION'), value: 5 },
+        { name: t('BOARD_ENROLMENT.SUBJECTS_SELECTION'),  value: 10 },
+        { name: t('BOARD_ENROLMENT.REGISTRATION_COMPLETED'),  value: 5 },
     ];
 
 
