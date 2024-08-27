@@ -16,9 +16,14 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0 
+
+      - name: Fetch all tags and checkout tag v1.0.1
+        run: |
+          git fetch --all
+          git checkout -b main tags/${{ github.ref_name }}
+
       - name: Create .env and Dockerfile
         run: |
-          
           echo "${{ secrets.DOCKER_FILE_PROD }}" > Dockerfile
 
       - name: Build Docker image
@@ -32,6 +37,7 @@ jobs:
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker push ${{ secrets.DOCKER_IMAGE_NAME_PROD }}
+
       - name: Deploy to Remote Server
         uses: appleboy/ssh-action@master
         with:
