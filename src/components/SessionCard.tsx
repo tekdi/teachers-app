@@ -1,16 +1,15 @@
+import { SessionsCardProps } from '@/utils/Interfaces';
 import { Box, Snackbar, Typography } from '@mui/material';
-import { Session, SessionsCardProps } from '@/utils/Interfaces';
 
-import CenterSessionModal from './CenterSessionModal';
+import { convertUTCToIST } from '@/utils/Helper';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlined from '@mui/icons-material/EditOutlined';
-import PlannedSession from './PlannedSession';
-import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { convertUTCToIST } from '@/utils/Helper';
 import { useTranslation } from 'next-i18next';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ConfirmationModal from './ConfirmationModal';
+import React, { useEffect } from 'react';
+import CenterSessionModal from './CenterSessionModal';
+import PlannedSession from './PlannedSession';
 
 const SessionsCard: React.FC<SessionsCardProps> = ({
   data,
