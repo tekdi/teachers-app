@@ -178,9 +178,8 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
 
   const fetchDataAndInitializeForm = async () => {
     try {
-      let formFields;
       const response = await getUserDetails(userId, true);
-      formFields = await getFormRead('USERS', 'TEACHER');
+      const formFields = await getFormRead(FormContext.USERS, FormContextType.TEACHER);
       console.log('response', response);
       console.log('formFields', formFields);
       setUserFormData(mapFields(formFields, response?.result));

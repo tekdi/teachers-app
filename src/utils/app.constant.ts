@@ -72,12 +72,14 @@ export enum cohortPrivileges {
 
 export enum FormContext {
   USERS = 'USERS',
+  COHORTS = 'COHORTS',
 }
 
 export enum FormContextType {
   STUDENT = 'STUDENT',
   TEACHER = 'TEACHER',
   TEAM_LEADER = 'TEAM LEADER',
+  COHORT= 'COHORT',
 }
 
 export enum CenterType {
