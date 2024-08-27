@@ -100,7 +100,7 @@ const BoardEnrollment = () => {
                             <EastIcon sx={{ color: '#1F1B13' }} />
                         </Box>
                         <Box sx={{ color: '#7C766F', fontWeight: '500', fontSize: '12px', mt: .5 }}>
-                            Khapari Dharmu (Chimur, Chandrapur)
+                            Khapari Dharmu (Chimur, Chandrapur) {/*will come from API*/}
                         </Box>
                         <Box mt={2}>
                             <HorizontalLinearStepper />
