@@ -2,8 +2,10 @@ name: PROD DEPLOYMENT WITH TAG
 
 on:
   push:
+    branches:
+      - main
     tags:
-      - 'v1.0.2' 
+      - 'v1.0.1' 
 
 env:
   DEPLOY_TAG: ${{ github.ref_name }}  
@@ -17,10 +19,14 @@ jobs:
         with:
           fetch-depth: 0 
 
-      - name: Fetch all tags and checkout tag v1.0.1
+      - name: Fetch all tags and checkout tag or branch
         run: |
           git fetch --all
-          git checkout -b main tags/${{ github.ref_name }}
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            git checkout -b main tags/${{ github.ref_name }}
+          else
+            git checkout main
+          fi
 
       - name: Create .env and Dockerfile
         run: |
