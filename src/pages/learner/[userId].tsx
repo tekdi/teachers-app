@@ -216,9 +216,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
 
   const fetchDataAndInitializeForm = async () => {
     try {
-      let formFields;
       const response = await getUserDetails(userId, true);
-      formFields = await getFormRead('USERS', 'STUDENT');
+      const formFields = await getFormRead(FormContext.USERS, FormContextType.STUDENT);
       console.log('response', response);
       console.log('formFields', formFields);
       setFormData(mapFields(formFields, response?.result));

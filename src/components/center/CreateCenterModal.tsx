@@ -19,6 +19,7 @@ import { GenerateSchemaAndUiSchema } from '../GeneratedSchemas';
 import { showToastMessage } from '../Toastify';
 import FormButtons from '../FormButtons';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
+import { FormContext, FormContextType } from '@/utils/app.constant';
 
 interface CreateBlockModalProps {
   open: boolean;
@@ -63,7 +64,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   useEffect(() => {
     const getForm = async () => {
       try {
-        const res = await getFormRead('cohorts', 'cohort');
+        const res = await getFormRead(FormContext.COHORTS, FormContextType.COHORT);
         console.log(res);
         const { schema, uiSchema } = GenerateSchemaAndUiSchema(res, t);
         console.log(schema, uiSchema);

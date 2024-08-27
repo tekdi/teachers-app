@@ -1,6 +1,17 @@
+import CenterList from '@/components/center/centerList';
+import CreateCenterModal from '@/components/center/CreateCenterModal';
+import Header from '@/components/Header';
+import Loader from '@/components/Loader';
+import ManageUser from '@/components/ManageUser';
+import { showToastMessage } from '@/components/Toastify';
 import { getCohortList } from '@/services/CohortServices';
+import useStore from '@/store/store';
+import { CenterType, Role } from '@/utils/app.constant';
 import { accessGranted, toPascalCase } from '@/utils/Helper';
 import { ICohort } from '@/utils/Interfaces';
+import { ArrowDropDown, Clear, Search } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
   Box,
   Button,
@@ -12,28 +23,16 @@ import {
   Tabs,
   TextField,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import FilterModalCenter from '../blocks/components/FilterModalCenter';
-import CenterList from '@/components/center/centerList';
-import Header from '@/components/Header';
-import Loader from '@/components/Loader';
-import ManageUser from '@/components/ManageUser';
-import { showToastMessage } from '@/components/Toastify';
-import CreateCenterModal from '@/components/center/CreateCenterModal';
-import useStore from '@/store/store';
-import { CenterType, Role, Status } from '@/utils/app.constant';
-import { ArrowDropDown, Clear, Search } from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
 import building from '../../assets/images/apartment.png';
+import FilterModalCenter from '../blocks/components/FilterModalCenter';
 
 const CentersPage = () => {
   const [loading, setLoading] = useState(false);
@@ -97,10 +96,9 @@ const CentersPage = () => {
             userId &&
             accessGranted('showBlockLevelCohort', accessControl, userRole)
           ) {
-            let response = await getCohortList(userId, {
+            const response = await getCohortList(userId, {
               customField: 'true',
             });
-
 
             const blockData = response.map((block: any) => {
               const blockName = block.cohortName;
@@ -391,11 +389,13 @@ const CentersPage = () => {
                 )}
               </Grid>
 
-              <CreateCenterModal
-                open={openCreateCenterModal}
-                handleClose={handleCreateCenterClose}
-                onCenterAdded={handleCenterAdded}
-              />
+              {openCreateCenterModal && (
+                <CreateCenterModal
+                  open={openCreateCenterModal}
+                  handleClose={handleCreateCenterClose}
+                  onCenterAdded={handleCenterAdded}
+                />
+              )}
 
               {accessGranted(
                 'showBlockLevelCenterData',
