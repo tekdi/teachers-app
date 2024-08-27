@@ -74,7 +74,7 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
   };
 
   return (
-    <Modal open={open} onClose={handleClose} closeAfterTransition>
+    <Modal open={open} onClose={() => handleClose('')} closeAfterTransition>
       <Fade in={open}>
         <Box
           sx={{
@@ -108,7 +108,7 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
               {t('CENTERS.RENAME_CENTER')}
             </Typography>
             <IconButton
-              onClick={handleClose}
+              onClick={() =>handleClose('')}
               sx={{ color: theme?.palette?.text?.primary }}
             >
               <CloseIcon />
