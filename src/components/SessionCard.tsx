@@ -148,10 +148,19 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             {data?.metadata?.framework?.teacherName}
           </Typography>
         </Box>
-        <EditOutlined
-          onClick={() => handleOpen?.(data)}
-          sx={{ cursor: 'pointer' }}
-        />
+        {(() => {
+          const currentYear = new Date().getFullYear();
+          const sessionDate = new Date(`${startDate} ${currentYear}`);
+          const currentDate = new Date();
+          sessionDate.setHours(0, 0, 0, 0);
+          currentDate.setHours(0, 0, 0, 0);
+          return currentDate <= sessionDate;
+        })() && (
+          <EditOutlined
+            onClick={() => handleOpen?.(data)}
+            sx={{ cursor: 'pointer' }}
+          />
+        )}
       </Box>
       <Box
         sx={{
