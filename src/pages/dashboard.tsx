@@ -53,6 +53,7 @@ import {
   showLablesForOther,
   tourGuideNavigtion,
   showMyTimeTable,
+  showEventsByList,
 } from './../../app.config';
 
 import AttendanceComparison from '@/components/AttendanceComparison';
@@ -927,8 +928,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
         setSessions([]);
       }
     };
-
-    getSessionsData();
+    if (showEventsByList) {
+      getSessionsData();
+    }
   }, [timeTableDate, classId]);
 
   useEffect(() => {
@@ -963,7 +965,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
       }
     };
 
-    getExtraSessionsData();
+    if (showEventsByList) {
+      getExtraSessionsData();
+    }
   }, [classId]);
 
   return (
@@ -1906,35 +1910,37 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Box>
                 )}
 
-                <Box mt={3} px="18px" gap={'15px'}>
-                  <Box
-                    className="fs-14 fw-500"
-                    sx={{ color: theme.palette.warning['300'] }}
-                  >
-                    {t('COMMON.UPCOMING_EXTRA_SESSION', {
-                      days: eventDaysLimit,
-                    })}
-                  </Box>
-                  <Box mt={3} px="18px">
-                    <Grid container spacing={2}>
-                      {extraSessions?.map((item) => (
-                        <Grid xs={12} sm={6} md={6} item>
-                          <SessionCard data={item} key={item.id}>
-                            <SessionCardFooter item={item} />
-                          </SessionCard>
-                        </Grid>
-                      ))}
-                    </Grid>
-                  </Box>
-                  {extraSessions && extraSessions?.length === 0 && (
+                {showMyTimeTable && (
+                  <Box mt={3} px="18px" gap={'15px'}>
                     <Box
-                      className="fs-12 fw-400 italic"
+                      className="fs-14 fw-500"
                       sx={{ color: theme.palette.warning['300'] }}
                     >
-                      {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                      {t('COMMON.UPCOMING_EXTRA_SESSION', {
+                        days: eventDaysLimit,
+                      })}
                     </Box>
-                  )}
-                </Box>
+                    <Box mt={3} px="18px">
+                      <Grid container spacing={2}>
+                        {extraSessions?.map((item) => (
+                          <Grid xs={12} sm={6} md={6} item>
+                            <SessionCard data={item} key={item.id}>
+                              <SessionCardFooter item={item} />
+                            </SessionCard>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
+                    {extraSessions && extraSessions?.length === 0 && (
+                      <Box
+                        className="fs-12 fw-400 italic"
+                        sx={{ color: theme.palette.warning['300'] }}
+                      >
+                        {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                      </Box>
+                    )}
+                  </Box>
+                )}
               </Box>
             )}
           </>
