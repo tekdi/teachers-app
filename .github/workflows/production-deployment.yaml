@@ -19,6 +19,8 @@ jobs:
     - name: Set TAG environment variable
       id: get_tag
       run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+    - name: Debug TAG value
+      run: echo "TAG value ${{ env.TAG }}"
     - name: Deploy Stack
       uses: appleboy/ssh-action@master
       with:
@@ -27,6 +29,7 @@ jobs:
           key: ${{ secrets.SSH_KEY_PROD }}
           port: ${{ secrets.PORT_PROD }}
           script: |
+            TAG="${{ env.TAG }}"
             TARGET_DIR="${{ secrets.TARGET_DIR_PROD }}"
             ENVIRONMENT="$TARGET_DIR/.env"
             if [ -f "$ENVIRONMENT" ]; then
@@ -37,8 +40,5 @@ jobs:
             ${{ secrets.PROD_ENV }}
             EOF
             cd ${{ secrets.TARGET_DIR_PROD }}
-            #docker stop ${{ secrets.CONTAINER_NAME }}
-            #docker rm -f ${{ secrets.CONTAINER_NAME }}
-            #docker system prune -af 
             ls -ltra
             ./deploy.sh $TAG
