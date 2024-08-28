@@ -37,7 +37,7 @@ const CoursePlannerDetail = () => {
   const [expandedPanels, setExpandedPanels] = useState<{
     [key: string]: boolean;
   }>({
-    'panel1-header': false,
+    'panel1-header': true,
     'panel2-header': false, // || example for multiple accordions do this dynamically
     // Add more panels if needed
   });
@@ -50,16 +50,18 @@ const CoursePlannerDetail = () => {
 
   const fetchCourseDetails = useCallback(() => {
     getTargetedSolutions({
-      state: 'Maharashtra',
-      role: 'Learner,Teacher',
-      class: '10',
-      board: 'cbse',
-      courseType: 'foundationCourse',
+      subject: "Marathi",
+      class: "10",
+      state: "Maharasthra",
+      board: "NIOS",
+      type: "foundationCourse",
+      role: "Teacher",
+      medium: "English"
     }).then((response) => {
         const courseId = response.result.data[0]._id;
         setCourseDetails(response.result.data);
   
-        return getUserProjectDetails({ id: '66c8313f6cf0bfa90315ff2e' });
+        return getUserProjectDetails({ id: '66cdb0c86a33880d1f4d60d7' });
       }).then((userProjectDetailsResponse) => {
         setUserProjectDetails(userProjectDetailsResponse.result.tasks);
       }).catch((error) => {
@@ -235,11 +237,11 @@ const CoursePlannerDetail = () => {
   {userProjectDetails.map((topic:any, index) => (
     <Box key={topic._id} sx={{ borderRadius: '8px', mb: 2 }}>
       <Accordion
-        expanded={expandedPanels[`panel${index}-header`] || false}
+        expanded={expandedPanels[`panel1-header`] || false}
         onChange={() =>
           setExpandedPanels((prev) => ({
             ...prev,
-            [`panel${index}-header`]: !prev[`panel${index}-header`],
+            [`panel1-header`]: !prev[`panel1-header`],
           }))
         }
         sx={{
@@ -293,7 +295,7 @@ const CoursePlannerDetail = () => {
               </Typography>
             </Box>
             <Typography fontWeight="600" fontSize="12px" color="#7C766F">
-              {getAbbreviatedMonth(topic?.metaInformation.startDate)}, {getAbbreviatedMonth(topic?.metaInformation.endDate)}
+              {getAbbreviatedMonth(topic?.metaInformation?.startDate)}, {getAbbreviatedMonth(topic?.metaInformation?.endDate)}
             </Typography>
           </Box>
         </AccordionSummary>
@@ -354,7 +356,7 @@ const CoursePlannerDetail = () => {
                         borderRadius: '8px',
                       }}
                     >
-                      {getAbbreviatedMonth(subTopic.metaInformation.startDate)}
+                      {getAbbreviatedMonth(subTopic?.metaInformation?.startDate)}
                     </Box>
                     <CheckCircleIcon
                       onClick={toggleDrawer(true)}
@@ -383,7 +385,7 @@ const CoursePlannerDetail = () => {
                       setResources(subTopic);
                       router.push(`/topic-detail-view`);
                     }}>
-                    {`${subTopic.learningResources.length} ${t('COURSE_PLANNER.RESOURCES')}`}
+                    {`${subTopic?.learningResources?.length} ${t('COURSE_PLANNER.RESOURCES')}`}
                   </Box>
                   <ArrowForwardIcon sx={{ fontSize: '16px' }} />
                 </Box>
