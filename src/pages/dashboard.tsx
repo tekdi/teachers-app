@@ -1095,6 +1095,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               data={percentageAttendanceData}
                               disableDays={classId === 'all'}
                               classId={classId}
+                              Width={'1840px'}
                             />
                           </Box>
                           <Grid container spacing={1}>
