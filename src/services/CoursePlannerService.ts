@@ -19,13 +19,15 @@ export const getCoursePlanner = (): CoursePlanner[] => {
 
 
 export const getTargetedSolutions = async ({
+  subject,
   state,
   role,
+  medium,
   class: className,
   board,
-  courseType,
+  type,
 }: GetTargetedSolutionsParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/solutions/targetedSolutions?type=improvementProject`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/solutions/targetedSolutions?type=improvementProject&currentScopeOnly=true`;
 
   const headers = {
     'X-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
@@ -33,11 +35,13 @@ export const getTargetedSolutions = async ({
   };
 
   const data = {
+    subject,
     state,
     role,
+    medium,
     class: className,
     board,
-    courseType,
+    type,
   };
 
   try {
