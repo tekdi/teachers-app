@@ -33,18 +33,27 @@ export const markAttendance = async ({
   attendanceDate,
   contextId,
   attendance,
+  scope,
+  attendanceLocation,
+  absentReason,
 }: MarkAttendanceParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance`;
+  const { latitude, longitude } = attendanceLocation;
   try {
     const response = await post(apiUrl, {
       userId,
       attendanceDate,
       contextId,
       attendance,
+      scope,
+      latitude,
+      longitude,
+      absentReason,
     });
     return response?.data;
   } catch (error) {
-    console.error('error in marking bulk attendance', error);
+    console.error('error in marking  markAttendance', error);
+    return error;
   }
 };
 
@@ -157,6 +166,21 @@ export const classesMissedAttendancePercentList = async ({
     return response?.data;
   } catch (error) {
     console.error('Error in fetching attendance list', error);
+    // throw error; // Rethrow the error to handle it in the caller function if needed
+  }
+};
+
+export const getAttendanceStatus = async ({
+  limit,
+  page,
+  filters,
+}: any): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance/list`;
+  try {
+    const response = await post(apiUrl, { limit, page, filters });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in fetching getAttendanceStatus list', error);
     // throw error; // Rethrow the error to handle it in the caller function if needed
   }
 };

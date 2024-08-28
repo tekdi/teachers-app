@@ -413,9 +413,10 @@ const Assessments = () => {
                 setManipulatedCohortData={setManipulatedCohortData}
                 isManipulationRequired={false}
                 isCustomFieldRequired={true}
-                showFloatingLabel={true}
-                showDisabledDropDown={true}
-              />
+                showFloatingLabel={true} 
+                setSelectedCohortsData={function (value: React.SetStateAction<ICohort[]>): void {
+                  console.log('Function not implemented.');
+                } }              />
             </Box>
           </Box>
         </Grid>

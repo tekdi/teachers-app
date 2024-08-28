@@ -6,7 +6,8 @@ export const dashboardDaysLimit: number = 30;
 export const modifyAttendanceLimit: number = 6;
 export const eventDaysLimit: number = 7;
 export const toastAutoHideDuration: number = 5000; // 5 seconds
-export const tenantId: string = 'ef99949b-7f3a-4a5f-806a-e67e683e38f3';
+// export const tenantId: string = 'ef99949b-7f3a-4a5f-806a-e67e683e38f3';
+export const tenantId: string = 'b73ddc86-7044-4ae1-9e0c-0eaabbc6f62a';
 export const idealTimeForSession: string = '120';
 export const timeZone: string = 'Asia/Kolkata';
 export const dropoutReasons = [
@@ -26,6 +27,15 @@ export const dropoutReasons = [
   { label: 'DOCUMENT_ISSUE', value: 'Document issue' },
   { label: 'DISTANCE_ISSUE', value: 'Distance issue' },
   { label: 'SCHOOL_ADMISSION', value: 'School admission' },
+];
+
+export const absentReasonOptions = [
+  { label: 'PAID_LEAVE_HALF_DAY', value: 'Paid leave - Half day' },
+  { label: 'PAID_LEAVE_FULL_DAY', value: 'Paid leave - Full day' },
+  { label: 'UNPAID_LEAVE_HALF_DAY', value: 'Unpaid leave - Half day' },
+  { label: 'UNPAID_LEAVE_FULL_DAY', value: 'Unpaid leave - Full day' },
+  { label: 'MENSTRUAL_LEAVE_HALF_DAY', value: 'Menstrual leave - Half day' },
+  { label: 'MENSTRUAL_LEAVE_FULL_DAY', value: 'Menstrual leave - Full day' },
 ];
 
 export const accessControl: { [key: string]: Role[] } = {
@@ -71,3 +81,28 @@ export enum AssessmentType {
   POST_TEST = 'Post Test',
 }
 
+// handle component by this condition
+export const ShowCenterSessionsTab = false;
+
+// menu drawer items
+export const ShowAssesment = false;
+export const ShowCoursePlan = false;
+export const ShowObservationsAndForms = false;
+
+export const ShowMyTeachingCenter = true;
+export const ShowDashboard = true;
+export const ShowManageUsers = false;
+
+//mark attendance model
+export const ShowSelfAttendance = true;
+
+export const reassignCenters = false;
+export const markdDropOut = false;
+
+// show lables as per product
+export const showLablesForOther = true;
+export const tourGuideNavigtion = false
+
+export const showMyTimeTable = false
+
+export const showEventsByList = false

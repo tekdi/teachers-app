@@ -66,7 +66,10 @@
     "LEARNER_REMOVED": "ଶିକ୍ଷାର୍ଥୀ କୁ ହଟାଇ ଦିଆଯାଇଛି",
     "PAGE_NOT_FOUND": "ପୃଷ୍ଠା ଖୋଜିପାରିବନାହି",
     "ACCESS_DENIED": "ପ୍ରବେଶ ନିଷେଧ",
-    "YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE": "ଆପଣଙ୍କୁ ଏହି ପୃଷ୍ଠା ପ୍ରବେଶ କରିବା ଅଧିକାର ନାହି"
+    "YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE": "ଆପଣଙ୍କୁ ଏହି ପୃଷ୍ଠା ପ୍ରବେଶ କରିବା ଅଧିକାର ନାହି",
+    "TURN_ON_DEVICE_LOCATION": "ଡିଭାଇସ୍ ଲୋକେସନ୍ ଚାଲୁ କରନ୍ତୁ",
+    "DEVICE_LOCATION_NEED_TO_ATTENDANCE": "ଆପଣଙ୍କର ଉପସ୍ଥିତି ଚିହ୍ନଟ କରିବାକୁ ଡିଭାଇସ୍ ଲୋକେସନ୍ ଆବଶ୍ୟକ",
+    "TURN_ON": "ଚାଲୁ କରନ୍ତୁ"
   },
   "LOGIN_PAGE": {
     "USERNAME": "ଉପଯୋଗକର୍ତା ନାମ",

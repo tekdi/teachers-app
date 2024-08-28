@@ -93,7 +93,10 @@
     "UPCOMING_EXTRA_SESSION": "आगामी अतिरिक्त सत्र",
     "NO_SESSIONS_SCHEDULED": "कोणतेही सत्र शेड्यूल केलेले नाही",
     "TO_BE_TAUGHT": "काय शिकवले जाईल:",
-    "SELECT_TOPIC": "विषय, उप-विषय निवडा"
+    "SELECT_TOPIC": "विषय, उप-विषय निवडा",
+    "TURN_ON_DEVICE_LOCATION": "डिव्हाइस स्थान चालू करा",
+    "DEVICE_LOCATION_NEED_TO_ATTENDANCE": "हजेरी नोंदवण्यासाठी डिव्हाइस स्थान आवश्यक आहे",
+    "TURN_ON": "चालू करा"
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्तानाव",

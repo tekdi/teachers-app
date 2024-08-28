@@ -65,7 +65,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   const [isAllAttendanceMarked, setIsAllAttendanceMarked] =
     React.useState(false);
   const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
-  const [teacherUserId, setTeacherUserId]= React.useState<string>('');
+  const [teacherUserId, setTeacherUserId] = React.useState<string>('');
 
   const modalContainer = {
     position: 'absolute',
@@ -125,21 +125,35 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     hasEmptyAttendance();
   };
 
-  const getPresentCount = (newArray: { userId: string; name: string; memberStatus: string; attendance: string; }[]) => {
+  const getPresentCount = (
+    newArray: {
+      userId: string;
+      name: string;
+      memberStatus: string;
+      attendance: string;
+    }[]
+  ) => {
     setPresentCount(
       newArray.filter(
-        (user: { attendance: string; }) => user.attendance === 'present'
+        (user: { attendance: string }) => user.attendance === 'present'
       ).length
     );
-  }
-  const getAbsentCount = (newArray: { userId: string; name: string; memberStatus: string; attendance: string; }[]) => {
+  };
+  const getAbsentCount = (
+    newArray: {
+      userId: string;
+      name: string;
+      memberStatus: string;
+      attendance: string;
+    }[]
+  ) => {
     setAbsentCount(
       newArray.filter(
-        (user: { attendance: string; }) => user.attendance === 'absent'
+        (user: { attendance: string }) => user.attendance === 'absent'
       ).length
     );
-  }
-  
+  };
+
   useEffect(() => {
     submitBulkAttendanceAction(true, '', '');
     const getCohortMemberList = async () => {
@@ -257,6 +271,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                         }
                       });
                       if (newArray.length !== 0) {
+                        console.log('newArray', newArray?.length);
                         setNumberOfCohortMembers(newArray?.length);
                         setCohortMemberList(newArray);
                         getPresentCount(newArray);
@@ -294,6 +309,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             (user) => user.memberStatus === Status.DROPOUT
                           )
                         );
+
+                        console.log('nameUserIdArray', nameUserIdArray?.length);
                         setNumberOfCohortMembers(nameUserIdArray?.length);
                       }
                       updateBulkAttendanceStatus(newArray);
@@ -365,7 +382,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
           setLoading(false);
           showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
           ReactGA.event('attendance-marked/update-fail', {
-            error: error
+            error: error,
           });
         }
         // handleClick({ vertical: 'bottom', horizontal: 'center' })();
@@ -496,7 +513,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                         fontSize: '10px',
                         color: theme.palette.warning['A200'],
                         padding: '0 8px',
-                        lineHeight: '16px'
+                        lineHeight: '16px',
                       }}
                     >
                       {t('ATTENDANCE.ACTIVE_STUDENTS', {
@@ -510,7 +527,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                         fontSize: '10px',
                         color: theme.palette.warning['A200'],
                         padding: '0 8px',
-                        lineHeight: '16px'
+                        lineHeight: '16px',
                       }}
                     >
                       {t('ATTENDANCE.DROPOUT_STUDENTS', {
@@ -526,7 +543,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       fontSize: '10px',
                       color: theme.palette.warning['A200'],
                       padding: '0 8px',
-                      lineHeight: '16px'
+                      lineHeight: '16px',
                     }}
                   >
                     {t('ATTENDANCE.TOTAL_STUDENTS', {
@@ -541,7 +558,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                     marginLeft: '0.5rem',
                     fontSize: '10px',
                     color: theme.palette.warning['A200'],
-                    lineHeight: '16px'
+                    lineHeight: '16px',
                   }}
                 >
                   {t('ATTENDANCE.PRESENT_STUDENTS', {
@@ -555,7 +572,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                     fontSize: '10px',
                     color: theme.palette.warning['A200'],
                     padding: '0 8px 0 10px',
-                    lineHeight: '16px'
+                    lineHeight: '16px',
                   }}
                 >
                   {t('ATTENDANCE.ABSENT_STUDENTS', {
@@ -579,6 +596,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       isBulkAction={true}
                       bulkAttendanceStatus={bulkAttendanceStatus}
                       handleBulkAction={submitBulkAttendanceAction}
+                      isDisabled={true}
                     />
                     {cohortMemberList?.map(
                       (
@@ -605,7 +623,6 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       ) => (
                         <AttendanceStatusListView
                           key={user.userId}
-                          isDisabled={true}
                           userData={{
                             userId: user.userId,
                             attendance: user.attendance,
@@ -615,9 +632,9 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                           }}
                           presentCount={presentCount}
                           absentCount={absentCount}
-                        // isEdit={true}
-                        // bulkAttendanceStatus={bulkAttendanceStatus}
-                        // handleBulkAction={submitBulkAttendanceAction}
+                          // isEdit={true}
+                          // bulkAttendanceStatus={bulkAttendanceStatus}
+                          // handleBulkAction={submitBulkAttendanceAction}
                         />
                       )
                     )}

@@ -180,7 +180,12 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         }
       });
 
-      if (!isEditModal) {
+      if (
+        !isEditModal &&
+        fieldData?.state?.blockId &&
+        fieldData?.state?.stateId &&
+        fieldData?.state?.districtId
+      ) {
         apiBody.customFields.push({
           fieldId: fieldData?.state?.blockId,
           value: [fieldData?.state?.blockCode],
@@ -251,11 +256,11 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             if (typeof window !== 'undefined' && window.localStorage) {
               creatorName = localStorage.getItem('userName') as string || '';
             }
-            if (creatorName && userEmail) {
-              sendEmail(creatorName, username, password, userEmail, apiBody['name']);
-            } else {
-              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-            }
+            // if (creatorName && userEmail) {
+            //   sendEmail(creatorName, username, password, userEmail, apiBody['name']);
+            // } else {
+            //   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            // }
           }
         }
       } catch (error) {

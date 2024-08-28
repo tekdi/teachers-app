@@ -146,7 +146,7 @@ function App({ Component, pageProps }: AppProps) {
         }
       `}</style>
       <Head>
-        <title>Pratham SCP Teachers app</title>
+        <title>OBLF</title>
       </Head>
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}

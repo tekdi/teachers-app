@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { Divider } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import Modal from '@mui/material/Modal';
 import { useTheme } from '@mui/material/styles';
 
@@ -12,6 +12,7 @@ interface ConfirmationModalProps {
   buttonNames: ButtonNames;
   handleCloseModal: () => void;
   modalOpen: boolean;
+  error?: string;
 }
 
 interface ButtonNames {
@@ -25,6 +26,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   handleAction,
   buttonNames,
   handleCloseModal,
+  error,
 }) => {
   const theme = useTheme<any>();
 
@@ -53,6 +55,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <Box sx={{ p: 3 }} color={theme.palette.warning['300']} id="confirmation-modal-title">
           {message}
         </Box>
+        
+        {error && (
+          <Typography textAlign={"center"} color="error" >
+            {error}
+          </Typography>
+        )}
         <Divider />
         <Box
           sx={{

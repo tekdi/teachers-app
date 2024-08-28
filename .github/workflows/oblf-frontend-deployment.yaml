@@ -1,0 +1,26 @@
+name: Deploy to OBLF Server
+on:
+  push:
+    branches:
+      - lateMarkingForSelfAttendance
+jobs:
+  OBLF_deploy:
+    #if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Deploy Stack
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_NAME_OBLF }}
+          username: ${{ secrets.USERNAME_OBLF }}
+          key: ${{ secrets.EC2_SSH_KEY_OBLF }}
+          port: ${{ secrets.PORT_OBLF }}
+          script: |
+            cd ${{ secrets.TARGET_DIR_OBLF }}
+            if [ -f .env ]; then
+            rm .env
+            fi
+            echo "${{ secrets.OBLF_ENV }}" > .env
+            ls -ltra
+            ./deploy.sh

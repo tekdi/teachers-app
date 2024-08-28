@@ -380,6 +380,17 @@ export const extractAddress = (
   return address;
 };
 
+export const firstLetterInUpperCase = (label: string): string | null => {
+  if (!label) {
+    return null;
+  }
+
+  return label
+    ?.split(' ')
+    ?.map((word) => word?.charAt(0).toUpperCase() + word?.slice(1))
+    ?.join(' ');
+};
+
 export function filterMiniProfileFields(customFieldsData: UpdateCustomField[]) {
   const filteredFields = [];
   for (const item of customFieldsData) {

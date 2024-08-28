@@ -30,7 +30,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { setTimeout } from 'timers';
-import { accessControl } from '../../../app.config';
+import { accessControl, showLablesForOther } from '../../../app.config';
 import building from '../../assets/images/apartment.png';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
 
@@ -227,7 +227,9 @@ const CentersPage = () => {
             p={'18px 0 0px 18px'}
             color={theme?.palette?.warning['300']}
           >
-            {t('DASHBOARD.MY_TEACHING_CENTERS')}
+            {showLablesForOther
+              ? t('DASHBOARD.MY_CLASSES')
+              : t('DASHBOARD.MY_TEACHING_CENTERS')}
           </Box>
         )}
         {accessGranted('showBlockLevelData', accessControl, userRole) && (

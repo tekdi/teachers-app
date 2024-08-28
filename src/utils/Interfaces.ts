@@ -57,6 +57,9 @@ export interface MarkAttendanceParams {
   attendanceDate: string;
   contextId: string;
   attendance: string;
+  scope: string;
+  absentReason?: string;
+  attendanceLocation: any;
 }
 
 export interface UserIdFilter {
@@ -83,6 +86,7 @@ export interface CohortMemberList {
     role?: string;
     status?: string[];
   };
+  sort?: string[];
 }
 
 export interface UserList {
@@ -238,8 +242,29 @@ export interface ICohort {
   name: string;
   value: string;
   state: string;
+  params?: Params;
+}
+export interface AttendanceParams {
+  allowed: number;
+  allow_late_marking: number;
+  attendance_ends_at: string;
+  update_once_marked: number;
+  capture_geoLocation: number;
+  attendance_starts_at: string;
+  back_dated_attendance: number;
+  restrict_attendance_timings: number;
+  back_dated_attendance_allowed_days: number;
 }
 
+export interface Params {
+  self: AttendanceParams;
+  student: AttendanceParams;
+}
+export interface CohortDetails {
+  cohortId: string;
+  name: string;
+  params: Params;
+}
 export interface LearListHeaderProps {
   numberOfColumns: number;
   firstColumnName: string;
@@ -615,6 +640,8 @@ export interface GetTargetedSolutionsParams {
 
 export interface GetUserProjectDetailsParams {
   id: string;
+}
+export interface IAssessmentStatusOptions {
   userId: string[];
   contentId: string[];
   batchId: string;

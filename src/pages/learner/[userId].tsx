@@ -66,7 +66,7 @@ import {
   getMenuItems,
   limit,
 } from '@/utils/app.constant';
-import { accessControl, Program } from '../../../app.config';
+import { Program,ShowAssesment, accessControl } from '../../../app.config';
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import AssessmentReport from '@/components/AssessmentReport';
@@ -972,19 +972,21 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           </Box>
         </Box>
       </Box>
-      <Box padding={2}>
-        <Card
-          sx={{
-            borderRadius: theme.spacing(3),
-            boxShadow: 'none',
-            border: '1px solid #D0C5B4',
-          }}
-        >
-          <CardContent>
-            <AssessmentReport isTitleRequired={true} />
-          </CardContent>
-        </Card>
-      </Box>
+      {ShowAssesment && (
+        <Box padding={2}>
+          <Card
+            sx={{
+              borderRadius: theme.spacing(3),
+              boxShadow: 'none',
+              border: '1px solid #D0C5B4',
+            }}
+          >
+            <CardContent>
+              <AssessmentReport isTitleRequired={true} />
+            </CardContent>
+          </Card>
+        </Box>
+      )}
     </>
   );
 };

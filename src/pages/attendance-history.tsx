@@ -21,7 +21,7 @@ import {
   AttendancePercentageProps,
   AttendanceStatusListProps,
   ICohort,
-  CohortMemberList
+  CohortMemberList,
 } from '../utils/Interfaces';
 
 import AttendanceStatus from '@/components/AttendanceStatus';
@@ -92,6 +92,9 @@ const UserAttendanceHistory = () => {
   const [manipulatedCohortData, setManipulatedCohortData] =
     React.useState<Array<ICohort>>(cohortsData);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [selectedCohortData, setSelectedCohortData] = React.useState<
+    Array<ICohort>
+  >([]);
 
   const pathname = usePathname();
   const currentDate = getTodayDate();
@@ -340,7 +343,6 @@ const UserAttendanceHistory = () => {
     setSelectedDate(date);
   };
 
-
   // const getAllDatesInRange = (startDate: string, endDate: string): string[] => {
   //   const datesArray: string[] = [];
   //   const currentDate = new Date(startDate);
@@ -585,7 +587,7 @@ const UserAttendanceHistory = () => {
                     setBlockName={setBlockName}
                     handleSaveHasRun={handleSaveHasRun}
                     setHandleSaveHasRun={setHandleSaveHasRun}
-                    isCustomFieldRequired={true}
+                    setSelectedCohortsData={setSelectedCohortData}
                   />
                 </Box>
               </Box>

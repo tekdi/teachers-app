@@ -60,10 +60,15 @@ import Schedule from '../../../components/Schedule';
 import { Session } from '../../../utils/Interfaces';
 
 import manageUserStore from '@/store/manageUserStore';
-import { eventDaysLimit, modifyAttendanceLimit } from '../../../../app.config';
+import {
+  modifyAttendanceLimit,
+  eventDaysLimit,
+  ShowCenterSessionsTab,
+  showEventsByList,
+} from '../../../../app.config';
 
 const CohortPage = () => {
-  const [value, setValue] = React.useState(1);
+  const [value, setValue] = React.useState(2);
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
   const router = useRouter();
@@ -191,8 +196,9 @@ const CohortPage = () => {
           );
 
           cohortData.address =
-            `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
-            '';
+            district?.value && state?.value
+              ? `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}`
+              : '';
         }
         setCohortDetails(cohortData);
         setCohortName(cohortData?.name);
@@ -232,9 +238,10 @@ const CohortPage = () => {
         setSessions([]);
       }
     };
-
-    getSessionsData();
-  }, [selectedDate, eventCreated, eventDeleted, eventUpdated]);
+    if (showEventsByList) {
+      getSessionsData();
+    }
+  }, [selectedDate, eventCreated, eventDeleted]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -275,9 +282,13 @@ const CohortPage = () => {
     };
     setEventUpdated(false);
     setEventDeleted(false);
-    getExtraSessionsData();
+    if (showEventsByList) {
+      getExtraSessionsData();
+    }
   }, [eventCreated, eventDeleted, eventUpdated]);
 
+   
+ 
   const handleEventDeleted = () => {
     setEventDeleted(true);
   };
@@ -476,13 +487,15 @@ const CohortPage = () => {
             },
           }}
         >
-          <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
+          {ShowCenterSessionsTab && (
+            <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
+          )}
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
           <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
         </Tabs>
       </Box>
 
-      {value === 1 && (
+      {value === 1 && ShowCenterSessionsTab && (
         <>
           <Box mt={3} px="18px">
             <Button

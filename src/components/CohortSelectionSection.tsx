@@ -12,7 +12,7 @@ import React, { useEffect } from 'react';
 
 import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
-import { ICohort } from '@/utils/Interfaces';
+import { CohortDetails, ICohort } from '@/utils/Interfaces';
 import { CustomField } from '@/utils/Interfaces';
 import {
   CenterType,
@@ -50,6 +50,8 @@ interface CohortSelectionSectionProps {
   handleSaveHasRun?: boolean;
   setHandleSaveHasRun?: React.Dispatch<React.SetStateAction<boolean>>;
   isCustomFieldRequired?: boolean;
+  // selectedCohortsData: React.Dispatch<React.SetStateAction<Array<ICohort>>>;
+  setSelectedCohortsData: React.Dispatch<React.SetStateAction<Array<ICohort>>>;
   showFloatingLabel?: boolean;
   showDisabledDropDown?: boolean;
 }
@@ -79,6 +81,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   setLoading,
   cohortsData,
   setCohortsData,
+  setSelectedCohortsData,
   manipulatedCohortData,
   setManipulatedCohortData,
   isManipulationRequired = true,
@@ -149,7 +152,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
           //   }
           // });
           console.log('Response:', response);
-          const cohortData = response[0];
+          const cohortData = response ? response?.[0] : [];
           if (cohortData?.customField?.length) {
             const district = cohortData?.customField?.find(
               (item: CustomField) => item?.label === 'DISTRICTS'
@@ -218,8 +221,10 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                   cohortId: item?.cohortId,
                   parentId: item?.parentId,
                   name: item?.cohortName || item?.name,
+                  params: item?.params,
                 }))
                 ?.filter(Boolean);
+              setSelectedCohortsData(filteredData);
               setCohortsData(filteredData);
               if (filteredData.length > 0) {
                 if (typeof window !== 'undefined' && window.localStorage) {
@@ -268,7 +273,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                 ?.filter(Boolean);
 
               console.log(filteredData);
-
+              setSelectedCohortsData(filteredData);
               setCohortsData(filteredData);
 
               if (filteredData.length > 0) {
@@ -291,6 +296,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
           setLoading(false);
         } catch (error) {
           console.error('Error fetching cohort list', error);
+          console.log('error', error);
           setLoading(false);
           showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         }
@@ -301,6 +307,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   }, [
     userId,
     setCohortsData,
+
     setLoading,
     setClassId,
     setManipulatedCohortData,
@@ -332,6 +339,33 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     // ---------- set cohortId and stateName-----------
     const cohort_id = event.target.value;
     localStorage.setItem('cohortId', cohort_id);
+
+    const get_state_name: string | null = getStateByCohortId(cohort_id);
+    if (get_state_name) {
+      localStorage.setItem('stateName', get_state_name);
+    } else {
+      localStorage.setItem('stateName', '');
+      console.log('NO State For Selected Cohort');
+    }
+
+    // set selected cohort details data
+    const getSelectedCohortDetails: ICohort | undefined = cohortsData?.find(
+      (item: any) => item?.cohortId === cohort_id
+    );
+    if (getSelectedCohortDetails) {
+      setSelectedCohortsData([getSelectedCohortDetails]); // Set with the found cohort details
+    } else {
+      setSelectedCohortsData([]); // Set to an empty array if not found
+    }
+
+    console.log('getSelectedCohortDetailsOne', getSelectedCohortDetails);
+
+    function getStateByCohortId(cohortId: any) {
+      const cohort = cohortsData?.find(
+        (item: any) => item.cohortId === cohortId
+      );
+      return cohort ? cohort?.state : null;
+    }
   };
 
   const isAttendanceOverview = pathname === '/attendance-overview';

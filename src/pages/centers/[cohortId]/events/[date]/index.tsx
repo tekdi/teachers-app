@@ -16,6 +16,7 @@ import { showToastMessage } from '@/components/Toastify';
 import MonthCalender from '@/components/MonthCalender';
 import { useRouter } from 'next/router';
 import { GetStaticPaths } from 'next';
+import { showEventsByList } from '../../../../../../app.config';
 
 const eventMonthView = () => {
   const theme = useTheme<any>();
@@ -72,7 +73,10 @@ const eventMonthView = () => {
       }
     };
 
-    getSessionsData();
+    if (showEventsByList) {
+      getSessionsData();
+    }
+  
   }, [selectedDate]);
 
   const handleActiveStartDateChange = (date: Date) => {
