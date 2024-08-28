@@ -1,10 +1,8 @@
 name: PROD DEPLOYMENT WITH TAG
 on:
   push:
-    branches:
-      - main
     tags:
-      - 'v1.0.2'
+      - 'v*' 
 jobs:
   deploy:
     #if: github.event.pull_request.merged == true
@@ -20,7 +18,7 @@ jobs:
       id: get_tag
       run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
     - name: Debug TAG value
-      run: echo "TAG value ${{ env.TAG }}"
+      run: echo "TAG value -  ${{ env.TAG }}"
     - name: Deploy Stack
       uses: appleboy/ssh-action@master
       with:
