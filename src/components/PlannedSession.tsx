@@ -764,6 +764,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       if (updateEvent && eventData) {
         console.log('eventData', eventData);
         try {
+          const userId =
+            typeof window !== 'undefined'
+              ? localStorage.getItem('userId') || ''
+              : '';
           let isMainEvent;
           if (eventData?.isRecurring === false) {
             isMainEvent = true;
@@ -779,6 +783,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           const apiBody: any = {
             isMainEvent: isMainEvent,
             status: 'live',
+            updatedBy: userId,
           };
 
           let startDateTime = sessionBlocks?.[0]?.startDatetime;
@@ -788,7 +793,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             const eventDateTimeDate = new Date(eventData.startDateTime);
 
             if (startDateTimeDate.getTime() !== eventDateTimeDate.getTime()) {
-              apiBody['startDateTime'] = startDateTime;
+              apiBody['startDatetime'] = startDateTime;
             }
           }
 
@@ -798,7 +803,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             const eventDateTimeDate = new Date(eventData.endDateTime);
 
             if (endDateTimeDate.getTime() !== eventDateTimeDate.getTime()) {
-              apiBody['endDateTime'] = endDateTime;
+              apiBody['endDatetime'] = endDateTime;
             }
           }
 
