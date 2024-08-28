@@ -96,3 +96,5 @@ export const showLablesForOther = true;
 export const tourGuideNavigtion = false
 
 export const showMyTimeTable = false
+
+export const showEventsByList = false
