@@ -10,7 +10,7 @@ import { cohortList, getCohortList } from '@/services/CohortServices';
 import { getMyUserList } from '@/services/MyClassDetailsService';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import useStore from '@/store/store';
-import { Role, Status } from '@/utils/app.constant';
+import { QueryKeys, Role, Status } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -30,6 +30,7 @@ import DeleteUserModal from './DeleteUserModal';
 import Loader from './Loader';
 import ReassignModal from './ReassignModal';
 import SimpleModal from './SimpleModal';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface Cohort {
   cohortId: string;
@@ -67,6 +68,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const router = useRouter();
   const store = manageUserStore();
   const newStore = useStore();
+  const queryClient = useQueryClient();
+
   const [value, setValue] = React.useState(1);
   const [users, setUsers] = useState<
     {
@@ -141,7 +144,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           };
           const fields = ['age'];
 
-          const resp = await getMyUserList({ limit, page, filters, fields });
+          // const resp = await getMyUserList({ limit, page, filters, fields });
+          const resp = await queryClient.fetchQuery({
+            queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR, filters],
+            queryFn: () => getMyUserList({ limit, page, filters, fields }),
+          });
+
           const facilitatorList = resp.result?.getUserDetails;
 
           if (!facilitatorList || facilitatorList?.length === 0) {
@@ -150,9 +158,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           }
           const userIds = facilitatorList?.map((user: any) => user.userId);
 
-          const cohortDetailsPromises = userIds?.map((userId: string) =>
-            getCohortList(userId, { filter: 'true' })
+          const cohortDetailsPromises = userIds.map((userId: string) =>
+            queryClient.fetchQuery({
+              queryKey: [QueryKeys.MY_COHORTS, userId],
+              queryFn: () => getCohortList(userId, { filter: 'true' }),
+            })
           );
+
           const cohortDetailsResults = await Promise.allSettled(
             cohortDetailsPromises
           );

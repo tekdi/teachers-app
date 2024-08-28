@@ -28,6 +28,7 @@ import { showToastMessage } from './Toastify';
 import manageUserStore from '@/store/manageUserStore';
 import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
 import { telemetryFactory } from '@/utils/telemetry';
+import { toPascalCase } from '@/utils/Helper';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -424,7 +425,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                         </FormControl>
                       ) : (
                         <Typography color={theme.palette.warning['300']}>
-                          {cohortsData[0]?.name}
+                          {toPascalCase(cohortsData[0]?.name)}
                         </Typography>
                       )}
                     </Box>

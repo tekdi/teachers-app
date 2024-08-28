@@ -5,6 +5,7 @@ import {
 import {
   FormContext,
   FormContextType,
+  QueryKeys,
   RoleId,
   Telemetry,
 } from '@/utils/app.constant';
@@ -38,6 +39,7 @@ import { useTranslation } from 'next-i18next';
 import { tenantId } from '../../app.config';
 import FormButtons from './FormButtons';
 import { showToastMessage } from './Toastify';
+import { useQueryClient } from '@tanstack/react-query';
 interface AddFacilitatorModalprops {
   open: boolean;
   onClose: () => void;
@@ -61,6 +63,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   const [createFacilitator, setCreateFacilitator] = React.useState(false);
   const [isVisible, setIsVisible] = React.useState(true);
   const [uiSchema, setUiSchema] = React.useState<any>();
+  const queryClient = useQueryClient();
   const [reloadProfile, setReloadProfile] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const [formData, setFormData] = React.useState<any>();
@@ -287,6 +290,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             );
             setReloadProfile(true);
             onReload?.();
+            queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR] });
           }
           onClose();
         } else {
@@ -299,6 +303,8 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 if (response) {
                   onFacilitatorAdded?.();
                   onClose();
+                  queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR] });
+                  queryClient.invalidateQueries({ queryKey: [QueryKeys.MY_COHORTS, userId] });
                   showToastMessage(
                     t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
                     'success'

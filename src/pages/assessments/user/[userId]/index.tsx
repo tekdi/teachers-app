@@ -34,6 +34,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AssessmentType, Program } from '../../../../../app.config';
+import { useQueryClient } from '@tanstack/react-query';
 
 const statusKeyMap: any = {
   [AssessmentStatus.COMPLETED]: 'ASSESSMENTS.COMPLETED',
@@ -46,6 +47,7 @@ function AssessmentsDetails() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const assessmentTypeParam = searchParams.get('assessmentType');
   const centerId = searchParams.get('center');
   const params = useParams<{ userId: string }>();
@@ -92,10 +94,12 @@ function AssessmentsDetails() {
             setAssessmentList([]);
             setSubject([]);
             setAssessmentInfo({});
-            const searchResults = await getDoIdForAssessmentDetails({
-              filters,
-            });
+            
 
+            const searchResults = await queryClient.fetchQuery({
+              queryKey: ['contentSearch', { filters }],
+              queryFn: () => getDoIdForAssessmentDetails({ filters }),
+            });
             if (searchResults?.responseCode === 'OK') {
               const result = searchResults?.result;
               if (result) {
@@ -203,7 +207,7 @@ function AssessmentsDetails() {
   useEffect(() => {
     const getUserInfo = async () => {
       try {
-        const response = await getUserDetails(params.userId);
+        const response = await queryClient.fetchQuery({ queryKey: ['userRead', params.userId], queryFn: () => getUserDetails(params.userId) }); 
         console.log('response', response);
         if (response?.result?.userData) {
           setUserDetails(response?.result?.userData);

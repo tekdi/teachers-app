@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getUserDetails } from './ProfileService';
 import { cohortList } from './CohortServices';
-import { refetchInterval, gcTime } from '@/utils/app.constant';
+import { refetchInterval } from '@/utils/app.constant';
 
 export function useProfileInfo(
   userId: string | string[],
