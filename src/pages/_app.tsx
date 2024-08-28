@@ -31,7 +31,6 @@ import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
 import { Telemetry } from '@/utils/app.constant';
 
-const queryClient = new QueryClient();
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
@@ -70,6 +69,7 @@ export function DarkTheme() {
 }
 
 function App({ Component, pageProps }: AppProps) {
+  const [client] = React.useState(new QueryClient())
   const router = useRouter();
   const isFullWidthPage = fullWidthPages.includes(router.pathname);
   useEffect(() => {
@@ -154,7 +154,7 @@ function App({ Component, pageProps }: AppProps) {
             },
           }}
         >
-          <QueryClientProvider client={queryClient}>
+          <QueryClientProvider client={client}>
             <Component {...pageProps} />
           </QueryClientProvider>
           <ToastContainer

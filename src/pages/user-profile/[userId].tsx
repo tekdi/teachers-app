@@ -170,7 +170,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   };
 
   useEffect(() => {
-    if (selfUserId && userId && selfUserId === userId)
       fetchDataAndInitializeForm();
   }, [userId, reload]);
 
