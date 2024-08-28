@@ -14,7 +14,12 @@ import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
 import { ICohort } from '@/utils/Interfaces';
 import { CustomField } from '@/utils/Interfaces';
-import { CenterType, cohortHierarchy, Telemetry } from '@/utils/app.constant';
+import {
+  CenterType,
+  cohortHierarchy,
+  Status,
+  Telemetry,
+} from '@/utils/app.constant';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import ReactGA from 'react-ga4';
@@ -46,6 +51,7 @@ interface CohortSelectionSectionProps {
   setHandleSaveHasRun?: React.Dispatch<React.SetStateAction<boolean>>;
   isCustomFieldRequired?: boolean;
   showFloatingLabel?: boolean;
+  showDisabledDropDown?: boolean;
 }
 
 interface ChildData {
@@ -82,6 +88,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   setHandleSaveHasRun,
   isCustomFieldRequired = true,
   showFloatingLabel = false,
+  showDisabledDropDown = false,
 }) => {
   const router = useRouter();
   const theme = useTheme<any>();
@@ -91,6 +98,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   const setBlock = useStore((state) => state.setBlock);
 
   const store = manageUserStore();
+
   const setDistrictCode = manageUserStore(
     (state: { setDistrictCode: any }) => state.setDistrictCode
   );
@@ -132,26 +140,43 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
           const response = await getCohortList(userId, {
             customField: 'true',
           });
+          // response = response.filter((block: any) => {
+          //   if (
+          //     block?.cohortMemberStatus === Status.ACTIVE &&
+          //     block?.cohortStatus === Status.ACTIVE
+          //   ) {
+          //     return block;
+          //   }
+          // });
           console.log('Response:', response);
           const cohortData = response[0];
           if (cohortData?.customField?.length) {
             const district = cohortData?.customField?.find(
               (item: CustomField) => item?.label === 'DISTRICTS'
             );
-            setDistrictCode(district?.code);
-            setDistrictId(district?.fieldId);
+
+            if (district) {
+              setDistrictCode(district?.code);
+              setDistrictId(district?.fieldId);
+            }
 
             const state = cohortData?.customField?.find(
               (item: CustomField) => item?.label === 'STATES'
             );
-            setStateCode(state?.code);
-            setStateId(state?.fieldId);
+
+            if (state) {
+              setStateCode(state?.code);
+              setStateId(state?.fieldId);
+            }
 
             const blockField = cohortData?.customField?.find(
               (field: any) => field?.label === 'BLOCKS'
             );
-            setBlockCode(blockField?.code);
-            setBlockId(blockField?.fieldId);
+
+            if (blockField) {
+              setBlockCode(blockField?.code);
+              setBlockId(blockField?.fieldId);
+            }
           }
 
           if (response && response?.length > 0) {
@@ -307,27 +332,17 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     // ---------- set cohortId and stateName-----------
     const cohort_id = event.target.value;
     localStorage.setItem('cohortId', cohort_id);
-
-    const get_state_name: string | null = getStateByCohortId(cohort_id);
-    if (get_state_name) {
-      localStorage.setItem('stateName', get_state_name);
-    } else {
-      localStorage.setItem('stateName', '');
-      console.log('NO State For Selected Cohort');
-    }
-    function getStateByCohortId(cohortId: any) {
-      const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
-      return cohort ? cohort?.state : null;
-    }
   };
 
   const isAttendanceOverview = pathname === '/attendance-overview';
 
-  const isAssessment = pathname === '/assessments'
+  const isAssessment = pathname === '/assessments';
 
   return (
     <Box className={isAttendanceOverview || isAssessment ? 'w-100' : 'w-md-40'}>
-      {loading && <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />}
+      {loading && (
+        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+      )}
       {!loading && cohortsData && (
         <Box>
           {!loading && cohortsData && (
@@ -421,7 +436,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                     <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
                       {cohortsData?.length > 1 ? (
                         <FormControl
-                          className={showFloatingLabel ? '' : "drawer-select"}
+                          className={showFloatingLabel ? '' : 'drawer-select'}
                           sx={{ m: 0, width: '100%' }}
                         >
                           {showFloatingLabel && (
@@ -438,13 +453,21 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             // style={{ borderRadius: '4px' }}
 
                             inputProps={{ 'aria-label': 'Without label' }}
-                            className={showFloatingLabel ? '' : "select-languages fs-14 fw-500 bg-white"}
-                            style={showFloatingLabel ? { borderRadius: '4px' } : {
-                              borderRadius: '0.5rem',
-                              color: theme.palette.warning['200'],
-                              width: '100%',
-                              marginBottom: '0rem',
-                            }}
+                            className={
+                              showFloatingLabel
+                                ? ''
+                                : 'select-languages fs-14 fw-500 bg-white'
+                            }
+                            style={
+                              showFloatingLabel
+                                ? { borderRadius: '4px' }
+                                : {
+                                    borderRadius: '0.5rem',
+                                    color: theme.palette.warning['200'],
+                                    width: '100%',
+                                    marginBottom: '0rem',
+                                  }
+                            }
                           >
                             {cohortsData?.length !== 0 ? (
                               manipulatedCohortData?.map((cohort) => (
@@ -476,9 +499,47 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                           </Select>
                         </FormControl>
                       ) : (
-                        <Typography color={theme.palette.warning['300']}>
-                          {cohortsData[0]?.name}
-                        </Typography>
+                        <>
+                          {showDisabledDropDown ? (
+                            <FormControl
+                            disabled= {true}
+                              className={
+                                showFloatingLabel ? '' : 'drawer-select'
+                              }
+                              sx={{ m: 0, width: '100%' }}
+                            >
+                              {showFloatingLabel && (
+                                <InputLabel id="center-select-label">
+                                  {t('COMMON.CENTER')}
+                                </InputLabel>
+                              )}
+                              <Select
+                                labelId="center-select-label"
+                                label={
+                                  showFloatingLabel ? t('COMMON.CENTER') : ''
+                                }
+                                value={cohortsData[0]?.cohortId}
+                              >
+                                <MenuItem
+                                  key={cohortsData[0]?.cohortId}
+                                  value={cohortsData[0]?.cohortId}
+                                  style={{
+                                    fontWeight: '500',
+                                    fontSize: '14px',
+                                    color: theme.palette.warning['A200'],
+                                    textTransform: 'capitalize',
+                                  }}
+                                >
+                                  {cohortsData[0]?.name}
+                                </MenuItem>
+                              </Select>
+                            </FormControl>
+                          ) : (
+                            <Typography color={theme.palette.warning['300']}>
+                              {cohortsData[0]?.name}
+                            </Typography>
+                          )}
+                        </>
                       )}
                     </Box>
                   </Box>

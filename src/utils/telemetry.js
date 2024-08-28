@@ -34,10 +34,10 @@ const telemetryConfig = {
     (typeof window !== 'undefined' && localStorage.getItem('userName')) ||
     'Anonymous',
   sid: generateUUID(),
-  batchsize: 1,
+  batchsize: 20,
   mode: '',
   host: hostURL,
-  endpoint: '/telemetry/v1/telemetry',
+  endpoint: '/v1/telemetry',
   tags: [],
   enableValidation: true
 };

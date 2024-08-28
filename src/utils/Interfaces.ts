@@ -130,6 +130,7 @@ export interface SessionsCardProps {
   data: any;
   children?: React.ReactNode;
   isEventDeleted?: () => void;
+  isEventUpdated?: () => void;
 }
 export interface SessionsModalProps {
   children?: React.ReactNode;
@@ -155,7 +156,10 @@ export interface PlannedModalProps {
   editSelection?: string;
   handleEditSelection?: (selection: string) => void;
   onEventDeleted?: () => void;
+  onEventUpdated?: () => void;
+  updateEvent?: boolean;
   editSession?: any;
+  eventData?: any;
 }
 
 export interface ScheduleModalProps {
@@ -443,7 +447,6 @@ export interface FacilitatorDrawerProps {
 }
 export interface CoursePlannerCardsProps {
   resources: any;
-
 }
 
 export interface scheduleEventParam {
@@ -494,6 +497,12 @@ export interface Assessment {
   studentName: string;
   progress: string;
   score?: number;
+}
+export interface BoardEnrollment {
+  userId: number;
+  studentName: string;
+  center: string;
+  isDropout: boolean;
 }
 
 export interface AssessmentSubject {
@@ -613,13 +622,13 @@ export interface GetUserProjectDetailsParams {
 
 export interface EditEvent {
   isMainEvent: boolean;
-  status: string;
+  status?: string;
 }
 
 export interface ISearchAssessment {
-  userId: string,
-  contentId: string,
-  batchId: string
+  userId: string;
+  contentId: string;
+  batchId: string;
 }
 
 export interface IQuestion {

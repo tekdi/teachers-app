@@ -1,15 +1,6 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Fade,
-  Modal,
-  Radio,
-  Typography
-} from '@mui/material';
-import { styled, useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import ConfirmationModal from '../ConfirmationModal';
 import { showToastMessage } from '../Toastify';
 
 interface CreateBlockModalProps {
@@ -17,19 +8,11 @@ interface CreateBlockModalProps {
   handleClose: () => void;
 }
 
-const CustomRadio = styled(Radio)(({ theme }) => ({
-  color: theme.palette.text.primary,
-  '&.Mui-checked': {
-    color: theme.palette.text.primary,
-  },
-}));
-
 const DeleteCenterModal: React.FC<CreateBlockModalProps> = ({
   open,
   handleClose,
 }) => {
   const { t } = useTranslation();
-  const theme = useTheme<any>();
 
   const handleDeleteButtonClick = () => {
     console.log('Delete request sent');
@@ -38,70 +21,16 @@ const DeleteCenterModal: React.FC<CreateBlockModalProps> = ({
   };
 
   return (
-    <Modal open={open} onClose={handleClose} closeAfterTransition>
-      <Fade in={open}>
-        <Box
-          sx={{
-            backgroundColor: 'white',
-            boxShadow: 24,
-            maxWidth: 400,
-            width: '90%',
-            margin: 'auto',
-            borderRadius: 3,
-            outline: 'none',
-            p: 2,
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
-        >
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            sx={{ mb: 2, mt: 2 }}
-          >
-            {t('CENTERS.YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN')}
-          </Typography>
-          <Divider sx={{ mb: 2, mx: -2 }} />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-
-              pl: 1,
-              pr: 2,
-            }}
-          >
-            <Button
-              variant="outlined"
-              onClick={handleClose}
-              sx={{
-                width: '60%',
-                border: 'none',
-                color: theme?.palette?.secondary?.main,
-                mb: 2,
-              }}
-            >
-              {t('COMMON.CANCEL')}
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={handleDeleteButtonClick}
-              sx={{
-                width: '100%',
-                border: 'none',
-                backgroundColor: theme?.palette?.primary?.main,
-                mb: 2,
-              }}
-            >
-              {t('CENTERS.SEND_REQUEST')}
-            </Button>
-          </Box>
-        </Box>
-      </Fade>
-    </Modal>
+    <ConfirmationModal
+      message={t('CENTERS.YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN')}
+      buttonNames={{
+        primary: t('CENTERS.SEND_REQUEST'),
+        secondary: t('COMMON.CANCEL'),
+      }}
+      handleCloseModal={handleClose}
+      handleAction={() => handleDeleteButtonClick}
+      modalOpen={open}
+    />
   );
 };
 

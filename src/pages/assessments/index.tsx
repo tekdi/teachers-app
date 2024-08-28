@@ -32,6 +32,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { AssessmentType, Program } from '../../../app.config';
 
 const Assessments = () => {
   const theme = useTheme<any>();
@@ -121,10 +122,10 @@ const Assessments = () => {
       const stateName = localStorage.getItem('stateName');
 
       const filters = {
-        program: ['Second chance'],
+        program: [Program],
         se_boards: [stateName],
         // subject: [subjects || subject],
-        assessment1: assessmentType === 'pre' ? 'Pre Test' : 'Post Test',
+        assessment1: assessmentType === 'pre' ? AssessmentType.PRE_TEST : AssessmentType.POST_TEST,
       };
       try {
         if (stateName) {
@@ -413,6 +414,7 @@ const Assessments = () => {
                 isManipulationRequired={false}
                 isCustomFieldRequired={true}
                 showFloatingLabel={true}
+                showDisabledDropDown={true}
               />
             </Box>
           </Box>

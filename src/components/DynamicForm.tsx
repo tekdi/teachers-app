@@ -86,6 +86,11 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     const currentYearPattern = new RegExp(getCurrentYearPattern());
     const emailPattern = new RegExp(getEmailPattern());
 
+    errors = errors.filter(
+      (item: any, index: number, self: any) =>
+        index === self.findIndex((t: any) => t.property === item.property)
+    );
+
     return errors.map((error: any) => {
       switch (error.name) {
         case 'required': {

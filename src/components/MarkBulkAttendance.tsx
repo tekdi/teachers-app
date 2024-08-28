@@ -76,7 +76,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     bgcolor: theme.palette.warning['A400'],
     boxShadow: 24,
     p: 4,
-    Height: '526px',
+    height: '526px',
     '@media (min-width: 600px)': {
       width: '450px',
     },
@@ -665,13 +665,13 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       onClick={attendanceUpdate}
                     >
                       {presentCount == 0 && absentCount == 0
-                        ? t('COMMON.MARK_ALL_AS')
+                        ? t('COMMON.MARK')
                         : t('COMMON.MODIFY')}
                     </Button>
                   </Box>
                 </Box>
               ) : (
-                <Typography style={{ fontWeight: 'bold', marginLeft: '1rem' }}>
+                <Typography style={{ fontWeight: 'bold', marginLeft: '1rem', textAlign: 'center', marginTop: '1rem' }}>
                   {t('COMMON.NO_DATA_FOUND')}
                 </Typography>
               )}
