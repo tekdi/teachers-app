@@ -12,7 +12,7 @@ const Calendar: React.FC<any> = ({
   disableDays,
   classId,
   showFromToday,
-  newWidth,
+  Width,
 }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
@@ -211,7 +211,7 @@ const Calendar: React.FC<any> = ({
           classId === 'all' ? 'hidden' : showFromToday ? 'clip' : 'auto',
       }}
     >
-      <Box sx={{ width: newWidth }} className="calender_body_width">
+      <Box sx={{ width: Width }} className="calender_body_width">
         {renderDays()}
         {renderCells()}
       </Box>
