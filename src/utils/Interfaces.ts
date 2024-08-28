@@ -595,11 +595,13 @@ export interface IAssessmentStatusOptions {
 }
 
 export interface GetTargetedSolutionsParams {
+  subject:string,
   state: string;
   role: string;
+  medium: string
   class: string;
   board: string;
-  courseType: string;
+  type: string;
 }
 
 export interface GetUserProjectDetailsParams {
