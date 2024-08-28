@@ -1272,6 +1272,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           }
                           format="DD MMM, YYYY"
                           sx={{ borderRadius: '4px' }}
+                          disabled={dayjs(startDate).isBefore(dayjs(), 'day')}
                         />
                       </Stack>
                     </LocalizationProvider>
