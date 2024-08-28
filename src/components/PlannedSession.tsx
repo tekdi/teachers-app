@@ -108,7 +108,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   );
   const [subjects, setSubjects] = useState<string[]>();
   const [initialEventData, setInitialEventData] = useState(null);
-  const [shortDescription, setShortDescription] = useState<string>();
+  const [shortDescription, setShortDescription] = useState<string>('');
   const [meetingPasscode, setMeetingPasscode] = useState<string>();
   const [selectedDays, setSelectedDays] = useState<number[]>();
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
@@ -1272,6 +1272,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           }
                           format="DD MMM, YYYY"
                           sx={{ borderRadius: '4px' }}
+                          disabled={dayjs(startDate).isBefore(dayjs(), 'day')}
                         />
                       </Stack>
                     </LocalizationProvider>

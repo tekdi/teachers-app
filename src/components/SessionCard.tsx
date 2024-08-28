@@ -30,6 +30,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [editSelection, setEditSelection] = React.useState('EDIT_SESSION');
   const [updateEvent, setUpdateEvent] = React.useState(false);
+  const [showEdit, setShowEdit] = React.useState(false);
   const [editSession, setEditSession] = React.useState();
   const handleEditSelection = (selection: string) => {
     setEditSelection(selection);
@@ -87,6 +88,19 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
 
     console.log(startDate, startTime, endDate, endTime);
   }, [data]);
+
+  useEffect(() => {
+    const currentYear = new Date().getFullYear();
+    const sessionDate = new Date(`${startDate} ${currentYear}`);
+    const currentDate = new Date();
+    sessionDate.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
+    if (currentDate <= sessionDate) {
+      setShowEdit(true);
+    } else {
+      setShowEdit(false);
+    }
+  }, [startDate]);
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -148,10 +162,12 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             {data?.metadata?.framework?.teacherName}
           </Typography>
         </Box>
-        <EditOutlined
-          onClick={() => handleOpen?.(data)}
-          sx={{ cursor: 'pointer' }}
-        />
+        {showEdit && (
+          <EditOutlined
+            onClick={() => handleOpen?.(data)}
+            sx={{ cursor: 'pointer' }}
+          />
+        )}
       </Box>
       <Box
         sx={{
