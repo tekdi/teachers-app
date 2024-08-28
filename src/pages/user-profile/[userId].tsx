@@ -27,6 +27,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { accessControl } from '../../../app.config';
+import { useFormRead } from '@/hooks/useFormRead';
 
 interface TeacherProfileProp {
   reloadState?: boolean;
@@ -54,6 +55,12 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const [reload, setReload] = React.useState(false);
   const [selfUserId, setSelfUserId] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
+
+  const {
+    data: formResponse,
+    isPending,
+  } = useFormRead(FormContext.USERS, FormContextType.STUDENT);
+
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {

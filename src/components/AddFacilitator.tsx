@@ -304,9 +304,9 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                     receipients: [formData?.email],
                   };
 
-                  let createrName;
+                  let creatorName;
                   if (typeof window !== 'undefined' && window.localStorage) {
-                    createrName = localStorage.getItem('userName');
+                    creatorName = localStorage.getItem('userName');
                   }
 
                   if (replacements && sendTo) {
