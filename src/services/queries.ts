@@ -11,7 +11,6 @@ export function useProfileInfo(
   return useQuery({
     queryKey: ['profile', userId],
     queryFn: () => getUserDetails(userId, fieldValue),
-    // refetchInterval: refetchInterval,
     staleTime: 1000 * 60 * 60, // 1 hour
   });
 }
@@ -21,6 +20,7 @@ export function useCohortList(limit: any, offset: any, filters: any) {
     queryKey: ['cohort'],
     queryFn: () => cohortList({ limit, offset, filters }),
     refetchInterval: refetchInterval,
-    gcTime: gcTime,
+    staleTime: 1000 * 60 * 60, // 1 hour
+
   });
 }
