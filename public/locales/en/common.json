@@ -104,6 +104,7 @@
     "CREDENTIALS_EMAILED_OF_LEARNER": "The login credentials have been send to your email ",
     "NEW": "New {{role}}",
     "USER_CREDENTIAL_SEND_SUCCESSFULLY": "User credentials sent successfully!",
+    "USER_CREDENTIAL_SEND_FAILED": "User credentials failed to send!",
     "CENTER_SESSIONS": "Center Sessions",
     "SCHEDULE_NEW": "Schedule New",
     "UPCOMING_EXTRA_SESSION": "Upcoming Extra Sessions (Next {{days}} days)",

@@ -486,7 +486,7 @@ export interface SendCredentialsRequest {
   isQueue: boolean;
   context: string;
   key: string;
-  replacements: any[];
+  replacements: any;
   email: {
     receipients: any[];
   };

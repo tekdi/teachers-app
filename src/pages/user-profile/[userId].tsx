@@ -28,6 +28,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { accessControl } from '../../../app.config';
 import { useFormRead } from '@/hooks/useFormRead';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface TeacherProfileProp {
   reloadState?: boolean;
@@ -41,6 +42,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const { t } = useTranslation();
   const router = useRouter();
   const { userId }: any = router.query;
+  const queryClient = useQueryClient()
   const userStore = manageUserStore();
   const theme = useTheme<any>();
   const [userData, setUserData] = useState<any | null>(null);
@@ -56,11 +58,12 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const [selfUserId, setSelfUserId] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
 
-  const {
-    data: formResponse,
-    isPending,
-  } = useFormRead(FormContext.USERS, FormContextType.STUDENT);
+  const { data: formResponse, isPending } = useFormRead(
+    FormContext.USERS,
+    FormContextType.TEACHER
+  );
 
+  const { data: userDetails, error, isLoading } = useProfileInfo(userId ?? '', true);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -72,6 +75,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   }, []);
   const handleReload = () => {
     setReload((prev) => !prev);
+    queryClient.invalidateQueries({ queryKey: ['profile', userId] });
   };
 
   const handleOpenAddLearnerModal = () => {
@@ -163,22 +167,17 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
 
   const fetchDataAndInitializeForm = async () => {
     try {
-      const response = await getUserDetails(userId, true);
-      const formFields = await getFormRead(
-        FormContext.USERS,
-        FormContextType.TEACHER
-      );
-      console.log('response', response);
-      console.log('formFields', formFields);
-      setUserFormData(mapFields(formFields, response?.result));
+      if (formResponse && userDetails) {
+        setUserFormData(mapFields(formResponse, userDetails?.result));
+      }
     } catch (error) {
       console.error('Error fetching data or initializing form:', error);
     }
   };
 
   useEffect(() => {
-      fetchDataAndInitializeForm();
-  }, [userId, reload]);
+    fetchDataAndInitializeForm();
+  }, [userId, reload, formResponse, userDetails]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -191,8 +190,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
     }
   }, []);
 
-  const { data, error, isLoading } = useProfileInfo(userId ?? '', true, reload);
-
   useEffect(() => {
     setLoading(isLoading);
 
@@ -201,10 +198,10 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
       console.error('Error fetching user details:', error);
     }
 
-    if (data) {
-      const coreFieldData = data?.result?.userData;
+    if (userDetails) {
+      const coreFieldData = userDetails?.result?.userData;
       setUserName(toPascalCase(coreFieldData?.name));
-      const fields: CustomField[] = data?.result?.userData?.customFields;
+      const fields: CustomField[] = userDetails?.result?.userData?.customFields;
       if (fields?.length > 0) {
         setAddress(
           extractAddress(
@@ -281,7 +278,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
         fetchFormData();
       }
     }
-  }, [data, error, isLoading, userRole]);
+  }, [userDetails, error, isLoading, userRole]);
 
   // Find fields for "Subjects I Teach" and "My Main Subjects"
   const teachSubjectsField = customFieldsData?.find(
@@ -408,7 +405,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                 >
                   <ArrowBackIcon
                     sx={{
-                      color: (theme.palette.warning)['A200'],
+                      color: theme.palette.warning['A200'],
                       height: '1.5rem',
                       width: '1.5rem',
                       cursor: 'pointer',
@@ -493,14 +490,14 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
               </Button>
             ) : null}
             {openAddLearnerModal && (
-                <AddFacilitatorModal
-                  open={openAddLearnerModal}
-                  onClose={handleCloseAddLearnerModal}
-                  userFormData={userFormData}
-                  isEditModal={true}
-                  userId={userId}
-                  onReload={handleReload}
-                />
+              <AddFacilitatorModal
+                open={openAddLearnerModal}
+                onClose={handleCloseAddLearnerModal}
+                userFormData={userFormData}
+                isEditModal={true}
+                userId={userId}
+                onReload={handleReload}
+              />
             )}
             <Box
               mt={2}

@@ -6,7 +6,9 @@ import {
 import SimpleModal from '@/components/SimpleModal';
 import { useFormRead } from '@/hooks/useFormRead';
 import { createUser } from '@/services/CreateUserService';
-import { sendCredentialService } from '@/services/NotificationService';
+import {
+  sendEmailOnLearnerCreation,
+} from '@/services/NotificationService';
 import { editEditUser } from '@/services/ProfileService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 import { generateUsernameAndPassword } from '@/utils/Helper';
@@ -54,10 +56,10 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   const [learnerFormData, setLearnerFormData] = React.useState<any>();
   const [fullname, setFullname] = React.useState<any>();
 
-  const {
-    data: formResponse,
-    isPending,
-  } = useFormRead(FormContext.USERS, FormContextType.STUDENT);
+  const { data: formResponse, isPending } = useFormRead(
+    FormContext.USERS,
+    FormContextType.STUDENT
+  );
 
   const { t } = useTranslation();
   const setSubmittedButtonStatus = useSubmittedButtonStore(
@@ -76,6 +78,27 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       setUiSchema(uiSchema);
     }
   }, [formResponse]);
+
+  const sendEmail = async (name: string, username: string, password: string, email: string, learnerName: string) => {
+    try {
+      const response = await sendEmailOnLearnerCreation(
+        name,
+        username,
+        password,
+        email,
+        learnerName
+      );
+      if (response?.email?.data?.[0]?.[0]?.status !== 'success') {
+        showToastMessage(
+          t('COMMON.USER_CREDENTIAL_SEND_FAILED'),
+          'error'
+        );
+      } 
+      setOpenModal(true);
+    } catch (error) {
+      console.error('error in sending email', error);
+    }
+  };
 
   const handleSubmit = async (
     data: IChangeEvent<any, RJSFSchema, any>,
@@ -224,40 +247,12 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             };
             telemetryFactory.interact(telemetryInteract);
 
-            const isQueue = false;
-            const context = 'USER';
-            let creatorName;
-            const key = 'onLearnerCreated';
+            let creatorName: string  = '';
             if (typeof window !== 'undefined' && window.localStorage) {
-              creatorName = localStorage.getItem('userName');
+              creatorName = localStorage.getItem('userName') as string || '';
             }
-            let replacements;
-            if (creatorName) {
-              replacements = [creatorName, apiBody['name'], username, password];
-            }
-            const sendTo = {
-              receipients: [userEmail],
-            };
-            if (replacements && sendTo) {
-              const response = await sendCredentialService({
-                isQueue,
-                context,
-                key,
-                replacements,
-                email: sendTo,
-              });
-              if (response?.result[0]?.data[0]?.status === 'success') {
-                showToastMessage(
-                  t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
-                  'success'
-                );
-              } else {
-                showToastMessage(
-                  t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
-                  'success'
-                );
-              }
-              setOpenModal(true);
+            if (creatorName && userEmail) {
+              sendEmail(creatorName, username, password, userEmail, apiBody['name']);
             } else {
               showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
             }
