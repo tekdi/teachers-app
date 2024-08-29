@@ -14,6 +14,9 @@ const manageUserStore = create(
       stateId: '',
       districtId: '',
       blockId: '',
+      districtName: '',
+      blockName: '',
+      stateName: '',
       setUserId: (newUserId) => set((state) => ({ userId: newUserId })),
       setCohortDeleteId: (newCohortDeleteId) =>
         set((state) => ({ deleteId: newCohortDeleteId })),
@@ -27,6 +30,9 @@ const manageUserStore = create(
       setDistrictId: (newDistrictId) =>
         set(() => ({ districtId: newDistrictId })),
       setStateId: (newStateId) => set(() => ({ stateId: newStateId })),
+      setDistrictName: (newDistrictName) => set(() => ({ districtName: newDistrictName })),
+      setBlockName: (newBlockName) => set(() => ({ blockName: newBlockName })),
+      setStateName: (newStateName) => set(() => ({ stateName: newStateName })),
     }),
     {
       name: 'fieldData',

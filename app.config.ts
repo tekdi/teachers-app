@@ -8,6 +8,7 @@ export const eventDaysLimit: number = 7;
 export const toastAutoHideDuration: number = 5000; // 5 seconds
 export const tenantId: string = 'ef99949b-7f3a-4a5f-806a-e67e683e38f3';
 export const idealTimeForSession: string = '120';
+export const timeZone: string = 'Asia/Kolkata';
 export const dropoutReasons = [
   {
     label: 'UNABLE_TO_COPE_WITH_STUDIES',
@@ -62,3 +63,11 @@ export const DaysOfWeek = {
   Fri: 5,
   Sat: 6,
 };
+
+export const Program = "Second chance";
+
+export enum AssessmentType {
+  PRE_TEST = 'Pre Test',
+  POST_TEST = 'Post Test',
+}
+

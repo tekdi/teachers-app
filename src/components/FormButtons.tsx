@@ -37,11 +37,12 @@ const FormButtons: React.FC<IFormButtons> = ({
       <Divider />
       <Box
         sx={{
-          padding: '16px 16px 0',
+          padding: '16px 16px 16px',
           background: theme.palette.warning['A400'],
           display: 'flex',
           justifyContent: 'center',
           gap: '15px',
+          borderRadius:'10px'
         }}
       >
         {!isSingleButton && !isCreateCentered && !isCreatedFacilitator && (

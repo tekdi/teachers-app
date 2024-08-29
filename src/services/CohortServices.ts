@@ -1,6 +1,7 @@
 import { CohortListParam } from '@/utils/Interfaces';
 import { get, post } from './RestClient';
 import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
+import { Status } from '@/utils/app.constant';
 
 export const cohortList = async ({
   limit,
@@ -39,6 +40,18 @@ export const getCohortList = async (
   }
   try {
     const response = await get(apiUrl);
+    if (response?.data?.result?.length) {
+      let res = response?.data?.result;
+      res = res.filter((block: any) => {
+        if (
+          block?.cohortMemberStatus === Status.ACTIVE &&
+          block?.cohortStatus === Status.ACTIVE
+        ) {
+          return block;
+        }
+      });
+      return res
+    }
     return response?.data?.result;
   } catch (error) {
     console.error('Error in getting cohort details', error);
