@@ -165,7 +165,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   ) => {
     try {
       const response = await sendEmailOnFacilitatorCreation(name, username, password, email);
-      if (response?.email?.data?.[0]?.[0]?.status !== 'success') {
+      if (response?.email?.data?.[0]?.status !== 200) {
         showToastMessage(
           t('COMMON.USER_CREDENTIAL_SEND_FAILED'),
           'error'
