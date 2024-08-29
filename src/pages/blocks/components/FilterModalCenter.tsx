@@ -16,6 +16,7 @@ import {
 import { Search, Close } from '@mui/icons-material';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
+import { showFilterCenterType } from '../../../../app.config';
 
 type CenterType = '' | 'regular' | 'remote';
 
@@ -95,7 +96,7 @@ const FilterModalCenter: React.FC<FilterModalProps> = ({
             >
               {t('COMMON.FILTERS')}
             </Typography>
-            <IconButton onClick={handleClose} sx={{color: "#4D4639"}}>
+            <IconButton onClick={handleClose} sx={{ color: '#4D4639' }}>
               <Close />
             </IconButton>
           </Box>
@@ -142,48 +143,53 @@ const FilterModalCenter: React.FC<FilterModalProps> = ({
               label={t('COMMON.Z_TO_A')}
             />
           </RadioGroup>
-          <Typography fontSize="12px" variant="subtitle1" mt={2} mb={1}>
-            {t('CENTERS.CENTER_TYPE')}
-          </Typography>
-          <RadioGroup
-            value={centerType}
-            onChange={(e) => setCenterType(e.target.value as CenterType)}
-          >
-            <FormControlLabel
-              sx={{ justifyContent: 'space-between' }}
-              value="regular"
-              control={
-                <Radio
-                  sx={{
-                    color: '#4D4639',
-                    '&.Mui-checked': {
-                      color: '#4D4639',
-                    },
-                  }}
+          {showFilterCenterType && (
+            <>
+              {' '}
+              <Typography fontSize="12px" variant="subtitle1" mt={2} mb={1}>
+                {t('CENTERS.CENTER_TYPE')}
+              </Typography>
+              <RadioGroup
+                value={centerType}
+                onChange={(e) => setCenterType(e.target.value as CenterType)}
+              >
+                <FormControlLabel
+                  sx={{ justifyContent: 'space-between' }}
+                  value="regular"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#4D4639',
+                        '&.Mui-checked': {
+                          color: '#4D4639',
+                        },
+                      }}
+                    />
+                  }
+                  className="modal_label"
+                  labelPlacement="start"
+                  label={t('CENTERS.REGULAR')}
                 />
-              }
-              className="modal_label"
-              labelPlacement="start"
-              label={t('CENTERS.REGULAR')}
-            />
-            <FormControlLabel
-              sx={{ justifyContent: 'space-between' }}
-              value="remote"
-              control={
-                <Radio
-                  sx={{
-                    color: '#4D4639',
-                    '&.Mui-checked': {
-                      color: '#4D4639',
-                    },
-                  }}
+                <FormControlLabel
+                  sx={{ justifyContent: 'space-between' }}
+                  value="remote"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#4D4639',
+                        '&.Mui-checked': {
+                          color: '#4D4639',
+                        },
+                      }}
+                    />
+                  }
+                  className="modal_label"
+                  labelPlacement="start"
+                  label={t('CENTERS.REMOTE')}
                 />
-              }
-              className="modal_label"
-              labelPlacement="start"
-              label={t('CENTERS.REMOTE')}
-            />
-          </RadioGroup>
+              </RadioGroup>
+            </>
+          )}
           <Divider sx={{ mt: 2, mx: -2 }} />
           <Button
             variant="contained"

@@ -28,6 +28,7 @@ import {
   ShowObservationsAndForms,
   accessControl,
   showLablesForOther,
+  showProgramYear,
 } from '../../app.config';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 import checkBook from '../assets/images/checkbook.svg';
@@ -175,22 +176,24 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               </Select>
             </FormControl>
           </Box>
-          <Box sx={{ flexBasis: '70%' }}>
-            <FormControl className="drawer-select" sx={{ width: '100%' }}>
-              <Select
-                className="select-languages"
-                displayEmpty
-                style={{
-                  borderRadius: '0.5rem',
-                  color: theme.palette.warning['200'],
-                  width: '100%',
-                  marginBottom: '0rem',
-                }}
-              >
-                <MenuItem>Program 2024-25</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
+          {showProgramYear && (
+            <Box sx={{ flexBasis: '70%' }}>
+              <FormControl className="drawer-select" sx={{ width: '100%' }}>
+                <Select
+                  className="select-languages"
+                  displayEmpty
+                  style={{
+                    borderRadius: '0.5rem',
+                    color: theme.palette.warning['200'],
+                    width: '100%',
+                    marginBottom: '0rem',
+                  }}
+                >
+                  <MenuItem>Program 2024-25</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          )}
         </Box>
 
         {ShowDashboard && (

@@ -340,7 +340,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     const cohort_id = event.target.value;
     localStorage.setItem('cohortId', cohort_id);
 
-    const get_state_name: string | null = getStateByCohortId(cohort_id);
+    const get_state_name: string | null = getStateByCohortId(cohort_id) ?? null;
     if (get_state_name) {
       localStorage.setItem('stateName', get_state_name);
     } else {
