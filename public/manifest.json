@@ -4,9 +4,9 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "Pratham Teacher App",
+  "name": "OBLF Teacher App",
   "short_name": "Teacher app",
-  "description": "Teacher App for Pratham",
+  "description": "Teacher App for OBLF",
   "icons": [
     {
       "src": "/icon-192x192.png",

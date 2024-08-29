@@ -65,6 +65,7 @@ import {
   eventDaysLimit,
   ShowCenterSessionsTab,
   showEventsByList,
+  ShowFacilitatorListTab,
 } from '../../../../app.config';
 
 const CohortPage = () => {
@@ -287,8 +288,6 @@ const CohortPage = () => {
     }
   }, [eventCreated, eventDeleted, eventUpdated]);
 
-   
- 
   const handleEventDeleted = () => {
     setEventDeleted(true);
   };
@@ -491,7 +490,10 @@ const CohortPage = () => {
             <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
           )}
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
-          <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
+
+          {ShowFacilitatorListTab && (
+            <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
+          )}
         </Tabs>
       </Box>
 
@@ -716,7 +718,12 @@ const CohortPage = () => {
             <Box
               px={'18px'}
               mt={2}
-              sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}
+              sx={{
+                display: 'flex',
+                gap: '4px',
+                alignItems: 'center',
+                cursor: 'pointer',
+              }}
             >
               <Box
                 sx={{ color: theme.palette.secondary.main }}
@@ -750,7 +757,7 @@ const CohortPage = () => {
         )}
       </Box>
       <Box>
-        {value === 3 && (
+        {value === 3 && ShowFacilitatorListTab && (
           <>
             <Box mt={3} px={'18px'}></Box>
             <CohortFacilitatorList
