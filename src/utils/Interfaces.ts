@@ -632,3 +632,14 @@ export interface IQuestion {
   score: number;
   sectionId: string;
 }
+
+export interface GetSolutionDetailsParams {
+  id: string;
+  role: string;
+}
+
+export interface GetUserProjectTemplateParams {
+  templateId: string;
+  solutionId: string;
+  role: string;
+}
