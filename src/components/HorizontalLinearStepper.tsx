@@ -8,14 +8,15 @@ import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import { HorizontalLinearStepperProps } from '@/utils/Interfaces';
-
+import { useTranslation } from 'react-i18next';
 
 const steps: string[] = ['Board', 'Subjects', 'Registration', 'Fees'];
 
-export default function HorizontalLinearStepper({ activeStep }: HorizontalLinearStepperProps)  {
+export default function HorizontalLinearStepper({
+  activeStep,
+}: HorizontalLinearStepperProps) {
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
@@ -25,7 +26,9 @@ export default function HorizontalLinearStepper({ activeStep }: HorizontalLinear
     if (completed) {
       return <CheckCircleIcon sx={{ color: theme.palette.primary.main }} />;
     } else if (active) {
-      return <RadioButtonCheckedIcon sx={{ color: theme.palette.primary.main }} />;
+      return (
+        <RadioButtonCheckedIcon sx={{ color: theme.palette.primary.main }} />
+      );
     } else {
       return <RadioButtonUncheckedIcon />;
     }
@@ -33,9 +36,9 @@ export default function HorizontalLinearStepper({ activeStep }: HorizontalLinear
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Stepper 
+      <Stepper
         activeStep={activeStep}
-        alternativeLabel  
+        alternativeLabel
         connector={<StepConnector />}
         sx={{
           justifyContent: 'space-between',
@@ -43,7 +46,7 @@ export default function HorizontalLinearStepper({ activeStep }: HorizontalLinear
             marginTop: '2px !important',
           },
           '& .MuiStep-root': {
-            flex: '1', 
+            flex: '1',
             padding: 0,
           },
           '& .MuiStepConnector-root': {

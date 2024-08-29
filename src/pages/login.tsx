@@ -181,24 +181,33 @@ const LoginPage = () => {
             if (userDetails?.result?.userData) {
               const customFields = userDetails?.result?.userData?.customFields;
               if (customFields?.length) {
-                const state = customFields.find((field: any) => field?.label === "STATES");
-                const district = customFields.find((field: any) => field?.label === "DISTRICTS");
-                const block = customFields.find((field: any) => field?.label === "BLOCKS");
+                const state = customFields.find(
+                  (field: any) => field?.label === 'STATES'
+                );
+                const district = customFields.find(
+                  (field: any) => field?.label === 'DISTRICTS'
+                );
+                const block = customFields.find(
+                  (field: any) => field?.label === 'BLOCKS'
+                );
 
-                if(state) {
+                if (state) {
                   localStorage.setItem('stateName', state?.value);
                   setStateName(state?.value);
-                  setStateCode(state?.id);
+                  setStateCode(state?.code);
+                  setStateId(state?.fieldId);
                 }
-                 
+
                 if (district) {
                   setDistrictName(district?.value);
                   setDistrictCode(district?.code);
+                  setDistrictId(district?.fieldId);
                 }
 
                 if (block) {
                   setBlockName(block?.value);
                   setBlockCode(block?.code);
+                  setBlockId(block?.fieldId);
                 }
               }
 
