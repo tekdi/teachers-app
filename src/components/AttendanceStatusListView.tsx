@@ -202,7 +202,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           className="two-line-text"
         >
           {isBulkAction ? (
-            t('ATTENDANCE.MARK_ALL')
+            t('COMMON.MARK_ALL_AS')
           ) : showLink ? (
             <Link style={{ color: theme.palette.secondary.main }} href={''}>
               {userData?.name}

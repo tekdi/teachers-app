@@ -4,23 +4,32 @@ import {
   customFields,
 } from '@/components/GeneratedSchemas';
 import SimpleModal from '@/components/SimpleModal';
-import { createUser, getFormRead } from '@/services/CreateUserService';
+import { useFormRead } from '@/hooks/useFormRead';
+import { createUser } from '@/services/CreateUserService';
+import {
+  sendEmailOnLearnerCreation,
+} from '@/services/NotificationService';
+import { editEditUser } from '@/services/ProfileService';
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 import { generateUsernameAndPassword } from '@/utils/Helper';
-import { FormData } from '@/utils/Interfaces';
-import { FormContext, FormContextType, RoleId, Telemetry } from '@/utils/app.constant';
+import {
+  FormContext,
+  FormContextType,
+  RoleId,
+  Telemetry,
+} from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 import { IChangeEvent } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import React, { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { showToastMessage } from './Toastify';
-import { editEditUser } from '@/services/ProfileService';
-import { tenantId } from '../../app.config';
-import SendCredentialModal from './SendCredentialModal';
-import FormButtons from './FormButtons';
-import { sendCredentialService } from '@/services/NotificationService';
-import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 import ReactGA from 'react-ga4';
-import { telemetryFactory } from '@/utils/telemetry';
+import { useTranslation } from 'react-i18next';
+import { tenantId } from '../../app.config';
+import FormButtons from './FormButtons';
+import SendCredentialModal from './SendCredentialModal';
+import { showToastMessage } from './Toastify';
+import Loader from './Loader';
+import { Box } from '@mui/material';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -47,34 +56,49 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   const [learnerFormData, setLearnerFormData] = React.useState<any>();
   const [fullname, setFullname] = React.useState<any>();
 
+  const { data: formResponse, isPending } = useFormRead(
+    FormContext.USERS,
+    FormContextType.STUDENT
+  );
+
   const { t } = useTranslation();
   const setSubmittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.setSubmittedButtonStatus
   );
   let userEmail: string = '';
   if (typeof window !== 'undefined' && window.localStorage) {
-    userEmail = localStorage.getItem('userEmail') || '';
+    userEmail = localStorage.getItem('userEmail') ?? '';
   }
-  useEffect(() => {
-    const getAddLearnerFormData = async () => {
-      try {
-        const response: FormData = await getFormRead(
-          FormContext.USERS,
-          FormContextType.STUDENT
-        );
-        console.log('sortedFields', response);
 
-        if (response) {
-          const { schema, uiSchema } = GenerateSchemaAndUiSchema(response, t);
-          setSchema(schema);
-          setUiSchema(uiSchema);
-        }
-      } catch (error) {
-        console.error('Error fetching form data:', error);
-      }
-    };
-    getAddLearnerFormData();
-  }, []);
+  useEffect(() => {
+    if (formResponse) {
+      console.log('formResponse', formResponse);
+      const { schema, uiSchema } = GenerateSchemaAndUiSchema(formResponse, t);
+      setSchema(schema);
+      setUiSchema(uiSchema);
+    }
+  }, [formResponse]);
+
+  const sendEmail = async (name: string, username: string, password: string, email: string, learnerName: string) => {
+    try {
+      const response = await sendEmailOnLearnerCreation(
+        name,
+        username,
+        password,
+        email,
+        learnerName
+      );
+      if (response?.email?.data?.[0]?.[0]?.status !== 'success') {
+        showToastMessage(
+          t('COMMON.USER_CREDENTIAL_SEND_FAILED'),
+          'error'
+        );
+      } 
+      setOpenModal(true);
+    } catch (error) {
+      console.error('error in sending email', error);
+    }
+  };
 
   const handleSubmit = async (
     data: IChangeEvent<any, RJSFSchema, any>,
@@ -83,21 +107,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     setTimeout(() => {
       setLearnerFormData(data.formData);
     });
-    const target = event.target as HTMLFormElement;
-    const elementsArray = Array.from(target.elements);
 
-    // for (const element of elementsArray) {
-    //   if (
-    //     (element instanceof HTMLInputElement ||
-    //       element instanceof HTMLSelectElement ||
-    //       element instanceof HTMLTextAreaElement) &&
-    //     (element.value === '' ||
-    //       (Array.isArray(element.value) && element.value.length === 0))
-    //   ) {
-    //     element.focus();
-    //     return;
-    //   }
-    // }
     console.log('Form data submitted:', data.formData);
 
     const formData = data.formData;
@@ -154,8 +164,8 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           }
         } else {
           if (
-            fieldSchema?.hasOwnProperty('isDropdown') ||
-            fieldSchema.hasOwnProperty('isCheckbox')
+            Object.hasOwn(fieldSchema, 'isDropdown') ||
+            Object.hasOwn(fieldSchema, 'isCheckbox')
           ) {
             apiBody.customFields.push({
               fieldId: fieldId,
@@ -184,7 +194,6 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           fieldId: fieldData?.state?.stateId,
           value: [fieldData?.state?.stateCode],
         });
-        fieldData;
         apiBody.customFields.push({
           fieldId: fieldData?.state?.districtId,
           value: [fieldData?.state?.districtCode],
@@ -243,53 +252,23 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             };
             telemetryFactory.interact(telemetryInteract);
 
-            const isQueue = false;
-            const context = 'USER';
-            let createrName;
-            const key = 'onLearnerCreated';
+            let creatorName: string  = '';
             if (typeof window !== 'undefined' && window.localStorage) {
-              createrName = localStorage.getItem('userName');
+              creatorName = localStorage.getItem('userName') as string || '';
             }
-            let replacements;
-            if (createrName) {
-              replacements = [createrName, apiBody['name'], username, password];
-            }
-            const sendTo = {
-              receipients: [userEmail],
-            };
-            // if (replacements && sendTo) {
-            //   const response = await sendCredentialService({
-            //     isQueue,
-            //     context,
-            //     key,
-            //     replacements,
-            //     email: sendTo,
-            //   });
-            //   if (response?.result[0]?.data[0]?.status === 'success') {
-            //     showToastMessage(
-            //       t('COMMON.USER_CREDENTIAL_SEND_SUCCESSFULLY'),
-            //       'success'
-            //     );
-            //   } else {
-            //     showToastMessage(
-            //       t('COMMON.USER_CREDENTIALS_WILL_BE_SEND_SOON'),
-            //       'success'
-            //     );
-            //   }
-            //   setOpenModal(true);
+            // if (creatorName && userEmail) {
+            //   sendEmail(creatorName, username, password, userEmail, apiBody['name']);
             // } else {
             //   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
             // }
           }
         }
-        // onClose();
       } catch (error) {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setReloadProfile(true);
         ReactGA.event('learner-creation-fail', {
           error: error,
         });
-        
       }
     }
   };
@@ -320,47 +299,41 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           isEditModal ? t('COMMON.EDIT_LEARNER') : t('COMMON.NEW_LEARNER')
         }
       >
-        {formData
-          ? schema &&
-            uiSchema && (
-              <DynamicForm
-                schema={schema}
-                uiSchema={uiSchema}
-                onSubmit={handleSubmit}
-                onChange={handleChange}
-                onError={handleError}
-                widgets={{}}
-                showErrorList={true}
-                customFields={customFields}
-                formData={formData}
-              >
-                <FormButtons
-                  formData={formData}
-                  onClick={handleButtonClick}
-                  isSingleButton={true}
-                />
-              </DynamicForm>
-            )
-          : schema &&
-            uiSchema && (
-              <DynamicForm
-                schema={schema}
-                uiSchema={uiSchema}
-                onSubmit={handleSubmit}
-                onChange={handleChange}
-                onError={handleError}
-                widgets={{}}
-                showErrorList={true}
-                customFields={customFields}
-              >
-                <FormButtons
-                  formData={learnerFormData}
-                  onClick={handleButtonClick}
-                  actions={{ back: handleBack }}
-                  isCreatedLearner={true}
-                />
-              </DynamicForm>
-            )}
+        {isPending && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: '20px',
+            }}
+          >
+            <Loader showBackdrop={false} loadingText={t('COMMON.LOADING')} />
+          </Box>
+        )}
+
+        {!isPending && schema && uiSchema && (
+          <DynamicForm
+            schema={schema}
+            uiSchema={uiSchema}
+            onSubmit={handleSubmit}
+            onChange={handleChange}
+            onError={handleError}
+            widgets={{}}
+            showErrorList={true}
+            customFields={customFields}
+            formData={formData ?? undefined}
+          >
+            <FormButtons
+              formData={formData ?? learnerFormData}
+              onClick={handleButtonClick}
+              isSingleButton={!!formData}
+              actions={formData ? undefined : { back: handleBack }}
+              isCreatedLearner={!formData}
+            />
+          </DynamicForm>
+        )}
       </SimpleModal>
       <SendCredentialModal
         open={openModal}

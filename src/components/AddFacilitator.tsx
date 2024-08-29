@@ -2,24 +2,28 @@ import {
   GenerateSchemaAndUiSchema,
   customFields,
 } from '@/components/GeneratedSchemas';
-import { FormContext, FormContextType, RoleId, Telemetry } from '@/utils/app.constant';
+import {
+  FormContext,
+  FormContextType,
+  RoleId,
+  Telemetry,
+} from '@/utils/app.constant';
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 
 import DynamicForm from '@/components/DynamicForm';
-import SendCredentialModal from '@/components/SendCredentialModal';
 import SimpleModal from '@/components/SimpleModal';
 import { createUser, getFormRead } from '@/services/CreateUserService';
+import {
+  sendEmailOnFacilitatorCreation
+} from '@/services/NotificationService';
+import { editEditUser } from '@/services/ProfileService';
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
+import { modalStyles } from '@/styles/modalStyles';
 import { generateUsernameAndPassword } from '@/utils/Helper';
 import { Field, FormData } from '@/utils/Interfaces';
-import { IChangeEvent } from '@rjsf/core';
-import { RJSFSchema } from '@rjsf/utils';
-import { useTranslation } from 'next-i18next';
-import { showToastMessage } from './Toastify';
-import { editEditUser } from '@/services/ProfileService';
-import { tenantId } from '../../app.config';
-import FormButtons from './FormButtons';
-import { sendCredentialService } from '@/services/NotificationService';
+import { telemetryFactory } from '@/utils/telemetry';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
   Button,
@@ -28,10 +32,12 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { modalStyles } from '@/styles/modalStyles';
-import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
-import { telemetryFactory } from '@/utils/telemetry';
+import { IChangeEvent } from '@rjsf/core';
+import { RJSFSchema } from '@rjsf/utils';
+import { useTranslation } from 'next-i18next';
+import { tenantId } from '../../app.config';
+import FormButtons from './FormButtons';
+import { showToastMessage } from './Toastify';
 interface AddFacilitatorModalprops {
   open: boolean;
   onClose: () => void;
@@ -147,6 +153,25 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       setIsVisible(false);
     }
   }, [formData, createFacilitator]);
+
+  const sendEmail = async (
+    name: string,
+    username: string,
+    password: string,
+    email: string
+  ) => {
+    try {
+      const response = await sendEmailOnFacilitatorCreation(name, username, password, email);
+      if (response?.email?.data?.[0]?.[0]?.status !== 'success') {
+        showToastMessage(
+          t('COMMON.USER_CREDENTIAL_SEND_FAILED'),
+          'error'
+        );
+      } 
+    } catch (error) {
+      console.error('error in sending email', error);
+    }
+  };
 
   const handleButtonClick = async () => {
     console.log('Form data:', formData);
@@ -296,28 +321,12 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                   };
                   telemetryFactory.interact(telemetryInteract);
 
-                  const isQueue = false;
-                  const context = 'USER';
-                  const key = 'onFacilitatorCreated';
-                  const replacements = [apiBody['name'], username, password];
-                  const sendTo = {
-                    receipients: [formData?.email],
-                  };
-
-                  let createrName;
-                  if (typeof window !== 'undefined' && window.localStorage) {
-                    createrName = localStorage.getItem('userName');
-                  }
-
-                  if (replacements && sendTo) {
-                    const credentialResponse = await sendCredentialService({
-                      isQueue,
-                      context,
-                      key,
-                      replacements,
-                      email: sendTo,
-                    });
-                  }
+                  await sendEmail(
+                    apiBody['name'],
+                    username,
+                    password,
+                    formData?.email
+                  );
                 } else {
                   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
                 }

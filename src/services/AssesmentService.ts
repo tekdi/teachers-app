@@ -2,6 +2,7 @@ import {
   AssessmentListParam,
   GetDoIdServiceParam,
   IAssessmentStatusOptions,
+  ISearchAssessment,
 } from '@/utils/Interfaces';
 import { post } from './RestClient';
 
@@ -59,3 +60,15 @@ export const getAssessmentStatus = async (body: IAssessmentStatusOptions) => {
     return error;
   }
 };
+
+export const searchAssessment = async (body: ISearchAssessment) => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/v1/tracking/assessment/search`;
+  try {
+    const response = await post(apiUrl, body);
+    return response?.data?.data;
+  } catch (error) {
+    console.error('error in getting Assessment Status Service list', error);
+
+    return error;
+  }
+}

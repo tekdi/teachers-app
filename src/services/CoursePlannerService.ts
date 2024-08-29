@@ -5,13 +5,13 @@ export const getCoursePlanner = (): CoursePlanner[] => {
   // TODO: Add API call here
 
   const CoursePlannerService: CoursePlanner[] = [
-    { id: 1, subject: 'Mathematics', circular: 10 },
-    { id: 2, subject: 'Science', circular: 50 },
-    { id: 3, subject: 'History', circular: 30 },
-    { id: 4, subject: 'Geography', circular: 60 },
-    { id: 5, subject: 'Marathi', circular: 90 },
+    // { id: 1, subject: 'Mathematics', circular: 10 },
+    // { id: 2, subject: 'Science', circular: 50 },
+    // { id: 3, subject: 'History', circular: 30 },
+    // { id: 4, subject: 'Geography', circular: 60 },
+    // { id: 5, subject: 'Marathi', circular: 90 },
     { id: 6, subject: 'Hindi', circular: 70 },
-    { id: 7, subject: 'Social Science', circular: 80 },
+    // { id: 7, subject: 'Social Science', circular: 80 },
   ];
 
   return CoursePlannerService;
@@ -19,13 +19,15 @@ export const getCoursePlanner = (): CoursePlanner[] => {
 
 
 export const getTargetedSolutions = async ({
+  subject,
   state,
   role,
+  medium,
   class: className,
   board,
-  courseType,
+  type,
 }: GetTargetedSolutionsParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/solutions/targetedSolutions?type=improvementProject`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/solutions/targetedSolutions?type=improvementProject&currentScopeOnly=true`;
 
   const headers = {
     'X-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
@@ -33,11 +35,13 @@ export const getTargetedSolutions = async ({
   };
 
   const data = {
+    subject,
     state,
     role,
+    medium,
     class: className,
     board,
-    courseType,
+    type,
   };
 
   try {

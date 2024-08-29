@@ -40,24 +40,7 @@ export const learnerAssessmentReport = (): Assessment[] => {
     ];
 };
 
-export const getAssessmentSubjects = (): AssessmentSubject[] => {
-    return [
-        {
-            userId: 1,
-            subject: 'Hindi',
-            score: '210/250',
-            date:'2 Feb, 2024'
-        },
-        {
-            userId: 2,
-            subject: 'English',
-            score: '60/75',
-            date:'2 Feb, 2024' 
 
-        },
-        
-    ];
-};
 export const getAssessmentQuestion = (): AssessmentQuestion[] => {
     return [
         {

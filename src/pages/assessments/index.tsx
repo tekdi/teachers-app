@@ -1,7 +1,8 @@
+import AssessmentSortModal from '@/components/AssessmentSortModal';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
-import SortingModal from '@/components/SortingModal';
+import SearchBar from '@/components/Searchbar';
 import { showToastMessage } from '@/components/Toastify';
 import {
   getAssessmentStatus,
@@ -10,23 +11,19 @@ import {
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { toPascalCase } from '@/utils/Helper';
 import { ICohort } from '@/utils/Interfaces';
-import { Role, Status } from '@/utils/app.constant';
+import { AssessmentStatus, Role, Status } from '@/utils/app.constant';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import RemoveIcon from '@mui/icons-material/Remove';
-import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Button,
   FormControl,
   Grid,
-  IconButton,
-  InputBase,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   Typography,
 } from '@mui/material';
@@ -34,29 +31,30 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { AssessmentType, Program } from '../../../app.config';
 
 const Assessments = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const { t } = useTranslation();
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const [assessmentList, setAssessmentList] = React.useState([]);
-  const [classId, setClassId] = React.useState('');
-  const [userId, setUserId] = React.useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
+  const [assessmentList, setAssessmentList] = useState([]);
+  const [classId, setClassId] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [cohortsData, setCohortsData] = useState<Array<ICohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
-    React.useState<Array<ICohort>>(cohortsData);
+    useState<Array<ICohort>>(cohortsData);
 
-  const [assessmentType, setAssessmentType] = React.useState<string>('pre');
-  const [cohortMembers, setCohortMembers] = React.useState<any>([]);
-  const [learnerList, setLearnerList] = React.useState<any>([]);
-  const [testCompletionCount, setTestCompletionCount] = React.useState<any>({
+  const [assessmentType, setAssessmentType] = useState<string>('pre');
+  const [cohortMembers, setCohortMembers] = useState<any>([]);
+  const [learnerList, setLearnerList] = useState<any>([]);
+  const [filteredLearnerList, setFilteredLearnerList] = useState<any>([]);
+  const [testCompletionCount, setTestCompletionCount] = useState<any>({
     completionCount: 0,
     totalCount: 0,
   });
@@ -77,6 +75,7 @@ const Assessments = () => {
 
   useEffect(() => {
     const getCohortMemberList = async () => {
+      resetValues();
       setIsLoading(true);
       try {
         const filters = {
@@ -120,19 +119,20 @@ const Assessments = () => {
 
   useEffect(() => {
     const getDoIdForAssessmentReport = async () => {
-      const stateName = localStorage.getItem('stateName') || 'Maharashtra';
+      const stateName = localStorage.getItem('stateName');
 
       const filters = {
-        program: ['Second chance'],
+        program: [Program],
         se_boards: [stateName],
         // subject: [subjects || subject],
-        assessment1: assessmentType === 'pre' ? 'Pre Test' : 'Post Test',
+        assessment1: assessmentType === 'pre' ? AssessmentType.PRE_TEST : AssessmentType.POST_TEST,
       };
       try {
         if (stateName) {
           if (filters) {
             setIsLoading(true);
             setLearnerList([]);
+            setFilteredLearnerList([]);
             setAssessmentList([]);
             const searchResults = await getDoIdForAssessmentDetails({
               filters,
@@ -182,65 +182,83 @@ const Assessments = () => {
 
   useEffect(() => {
     const getAssessmentsForLearners = async () => {
-      if (assessmentList?.length > 0) {
-        try {
-          const options = {
-            userId: cohortMembers?.map((user: any) => user.userId),
-            contentId: assessmentList,
-            batchId: classId,
-          };
-          const assessmentStatus = await getAssessmentStatus(options);
-          console.log('assessmentStatus', assessmentStatus);
-          let completionCount = 0;
-          if (assessmentStatus) {
-            const userList = cohortMembers.map((user: any) => {
-              const assessment = assessmentStatus?.find(
-                (item: any) => item.userId === user.userId
-              );
+      try {
+        const options = {
+          userId: cohortMembers?.map((user: any) => user.userId),
+          contentId: assessmentList,
+          batchId: classId,
+        };
+        const assessmentStatus = await getAssessmentStatus(options);
+        console.log('assessmentStatus', assessmentStatus);
+        let completionCount = 0;
+        if (assessmentStatus) {
+          const userList = cohortMembers.map((user: any) => {
+            const assessment = assessmentStatus?.find(
+              (item: any) => item.userId === user.userId
+            );
 
-              if (assessment) {
-                if (assessment?.status === 'Completed') {
-                  completionCount++;
-                }
-                return {
-                  ...user,
-                  percentageString: assessment?.percentageString,
-                  percentage: assessment?.percentage,
-                  status: assessment?.status,
-                };
+            if (assessment) {
+              if (assessment?.status === AssessmentStatus.COMPLETED) {
+                completionCount++;
               }
-              return user;
-            });
-            console.log('userList', userList);
-            setLearnerList(userList);
-          }
-
-          setTestCompletionCount({
-            completionCount,
-            totalCount: cohortMembers?.length,
+              return {
+                ...user,
+                percentageString: assessment?.percentageString,
+                percentage: assessment?.percentage,
+                status: assessment?.status,
+              };
+            }
+            return user;
           });
-
-          setIsLoading(false);
-          console.log('assessmentStatus', learnerList);
-        } catch (e: any) {
-          setIsLoading(false);
-          console.log('Error in getAssessmentStatus', e);
+          console.log('userList', userList);
+          setLearnerList(userList);
+          setFilteredLearnerList(userList);
         }
+
+        setTestCompletionCount({
+          completionCount,
+          totalCount: cohortMembers?.length,
+        });
+
+        setIsLoading(false);
+        console.log('assessmentStatus', learnerList);
+      } catch (e: any) {
+        setIsLoading(false);
+        console.log('Error in getAssessmentStatus', e);
       }
     };
-    if (assessmentList.length && cohortMembers.length) {
+    if (assessmentList?.length && cohortMembers?.length) {
       getAssessmentsForLearners();
     }
   }, [assessmentList, cohortMembers]);
 
-  const handleScrollDown = () => {
-    if (inputRef.current) {
-      const inputRect = inputRef.current.getBoundingClientRect();
-      const scrollMargin = 20;
-      const scrollY = window.scrollY;
-      const targetY = inputRect.top + scrollY - scrollMargin;
-      window.scrollTo({ top: targetY - 70, behavior: 'smooth' });
+  const resetValues = () => {
+    setFilteredLearnerList([]);
+    setLearnerList([]);
+    setTestCompletionCount({ completionCount: 0, totalCount: 0 });
+  };
+
+  const handleSearch = (searchTerm: string) => {
+    const term = searchTerm.trim();
+    if (term.length > 0) {
+      console.log('hii', searchTerm);
+      const filteredList = learnerList?.filter((item: any) => {
+        return item?.name?.toLowerCase().includes(term.toLowerCase());
+      });
+      setFilteredLearnerList(filteredList);
+    } else {
+      setFilteredLearnerList(learnerList);
     }
+  };
+
+  const NoDataFound = () => {
+    return (
+      <Box sx={{ mt: '4rem', px: '20px', width: '100%', textAlign: 'center' }}>
+        <Typography variant="h3" color="text.primary">
+          {t('COMMON.NO_DATA_FOUND')}
+        </Typography>
+      </Box>
+    );
   };
 
   // open modal of sort
@@ -252,20 +270,22 @@ const Assessments = () => {
   };
 
   const handleAssessmentDetails = (userId: string) => {
-    router.push(`${router.pathname}/user/${userId}`);
+    router.push(
+      `${router.pathname}/user/${userId}?assessmentType=${assessmentType}&center=${classId}`
+    );
   };
 
   const MemberListItemIcon = ({ status }: { status: string }) => {
     switch (status) {
-      case 'Not_Started':
+      case AssessmentStatus.NOT_STARTED:
         return <RemoveIcon sx={{ color: theme.palette.warning[300] }} />;
-      case 'In_Progress':
+      case AssessmentStatus.IN_PROGRESS:
         return (
           <RadioButtonUncheckedIcon
             sx={{ color: theme.palette.warning[300] }}
           />
         );
-      case 'Completed':
+      case AssessmentStatus.COMPLETED:
         return <CheckCircleIcon sx={{ color: theme.palette.warning[300] }} />;
       default:
         return null;
@@ -290,18 +310,65 @@ const Assessments = () => {
     }
 
     switch (status) {
-      case 'Not_Started':
-        return <Box>Not Started</Box>;
-      case 'In_Progress':
-        return <Box>In Progress</Box>;
-      case 'Completed':
+      case AssessmentStatus.NOT_STARTED:
+        return <Box>{t('ASSESSMENTS.NOT_STARTED')}</Box>;
+      case AssessmentStatus.IN_PROGRESS:
+        return <Box>{t('ASSESSMENTS.IN_PROGRESS')}</Box>;
+      case AssessmentStatus.COMPLETED:
         return (
           <Box>
-            Overall Score: <span style={{ color: color }}>{percentage}%</span>
+            {t('ASSESSMENTS.OVERALL_SCORE')}: <span style={{ color: color }}>{percentage}%</span>
           </Box>
         );
       default:
         return null;
+    }
+  };
+
+  const sortByStatus = (status: string) => {
+    const filteredList = learnerList?.filter((item: any) => {
+      return item?.status === status;
+    });
+    setFilteredLearnerList(filteredList);
+  };
+
+  const sortByMarks = (order: string) => {
+    let list = [...learnerList];
+    list.sort((a: any, b: any) => Number(a.percentage) - Number(b.percentage));
+    if (order === 'asc') {
+      list = list.reverse();
+    }
+    setFilteredLearnerList(list);
+  };
+
+  const sortByNames = (order: string) => {
+    const list = [...learnerList];
+    if (order === 'A_To_Z') {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+      list.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    setFilteredLearnerList(list);
+  };
+
+  const handleSorting = (selectedValue: {
+    sortByKey: string;
+    sortByValue: string;
+  }) => {
+    setModalOpen(false);
+    console.log('selectedValues', selectedValue);
+
+    switch (selectedValue.sortByKey) {
+      case 'attendanceStatus':
+        sortByStatus(selectedValue.sortByValue);
+        break;
+      case 'marksObtained':
+        sortByMarks(selectedValue.sortByValue);
+        break;
+      case 'names':
+        sortByNames(selectedValue.sortByValue);
+        break;
     }
   };
 
@@ -325,57 +392,10 @@ const Assessments = () => {
           {t('ASSESSMENTS.ASSESSMENTS')}
         </Typography>
       </Box>
-      <Grid container>
-        <Grid item xs={12} md={6}>
-          <Box sx={{ mt: 2, px: '20px' }}>
-            <Paper
-              component="form"
-              className="100"
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                borderRadius: '100px',
-                background: theme.palette.warning.A700,
-                boxShadow: 'none',
-              }}
-            >
-              <InputBase
-                ref={inputRef}
-                sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
-                placeholder="Search.."
-                inputProps={{ 'aria-label': t('ASSESSMENTS.SEARCH_STUDENT') }}
-                onClick={handleScrollDown}
-              />
-              <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                <SearchIcon />
-              </IconButton>
-            </Paper>
-          </Box>
-        </Grid>
-      </Grid>
+      <SearchBar onSearch={handleSearch} placeholder="Search..." />
       <Grid container>
         <Grid item xs={12} md={6}>
           <Box sx={{ mt: 2, px: '20px', width: '100%' }}>
-            {/* <FormControl fullWidth>
-              <InputLabel
-                style={{
-                  color: theme?.palette?.warning['A200'],
-                  background: theme?.palette?.warning['A400'],
-                  paddingLeft: '2px',
-                  paddingRight: '2px',
-                }}
-                id="demo-simple-select-label"
-              >
-                {t('ASSESSMENTS.CENTER')}
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label={t('ASSESSMENTS.CENTER')}
-                style={{ borderRadius: '4px' }}
-              >
-              </Select>
-            </FormControl> */}
             <Box className="w-100 d-md-flex">
               <CohortSelectionSection
                 classId={classId}
@@ -395,7 +415,7 @@ const Assessments = () => {
                 isCustomFieldRequired={true}
                 showFloatingLabel={true} 
                 setSelectedCohortsData={function (value: React.SetStateAction<ICohort[]>): void {
-                  throw new Error('Function not implemented.');
+                  console.log('Function not implemented.');
                 } }              />
             </Box>
           </Box>
@@ -431,7 +451,15 @@ const Assessments = () => {
         </Grid>
       </Grid>
       {isLoading && (
-        <Box sx={{ display: 'flex', width: '100%', mt: 2, flexDirection: 'column', alignItems: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            width: '100%',
+            mt: 2,
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
           <Loader showBackdrop={false} loadingText="Loading" />
         </Box>
       )}
@@ -444,134 +472,141 @@ const Assessments = () => {
         </Box>
       )}
 
-      {!isLoading && learnerList?.length > 0 && (
-        <>
+      {!isLoading && !!assessmentList?.length && (
+        <Grid
+          sx={{
+            mt: 2,
+            px: '20px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+          }}
+          container
+        >
           <Grid
+            xs={8}
+            item
             sx={{
-              mt: 2,
-              px: '20px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 2,
+              fontSize: '14px',
+              fontWeight: '500',
+              color: theme?.palette?.warning['400'],
             }}
-            container
           >
-            <Grid
-              xs={8}
-              item
-              sx={{
-                fontSize: '14px',
-                fontWeight: '500',
-                color: theme?.palette?.warning['400'],
-              }}
-            >
-              {`${testCompletionCount.completionCount}/${testCompletionCount.totalCount}`}{' '}
-              {t('ASSESSMENTS.COMPLETED_THE_ASSESSMENT')}
-            </Grid>
-            <Grid
-              sx={{ display: 'flex', justifyContent: 'flex-end' }}
-              xs={4}
-              item
-            >
-              <Button
-                onClick={handleOpenModal}
-                sx={{
-                  color: theme.palette.warning.A200,
-
-                  borderRadius: '10px',
-                  fontSize: '14px',
-                }}
-                endIcon={<ArrowDropDownSharpIcon />}
-                size="small"
-                variant="outlined"
-              >
-                {t('COMMON.SORT_BY').length > 7
-                  ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
-                  : t('COMMON.SORT_BY')}
-              </Button>
-            </Grid>
+            {testCompletionCount.totalCount > 0 && (
+              <span>
+                {`${testCompletionCount.completionCount}/${testCompletionCount.totalCount}`}{' '}
+                {t('ASSESSMENTS.COMPLETED_THE_ASSESSMENT')}
+              </span>
+            )}
           </Grid>
+          <Grid
+            sx={{ display: 'flex', justifyContent: 'flex-end' }}
+            xs={4}
+            item
+          >
+            <Button
+              onClick={handleOpenModal}
+              sx={{
+                color: theme.palette.warning.A200,
 
-          <Box sx={{ background: '#FBF4E4', padding: '20px' }}>
-            <Grid container spacing={2}>
-              {learnerList?.map((member: any) => (
-                <Grid item xs={12} sm={6} md={4} key={member?.userId}>
+                borderRadius: '10px',
+                fontSize: '14px',
+              }}
+              endIcon={<ArrowDropDownSharpIcon />}
+              size="small"
+              variant="outlined"
+            >
+              {t('COMMON.SORT_BY')}
+            </Button>
+          </Grid>
+        </Grid>
+      )}
+      {!isLoading && filteredLearnerList?.length > 0 && (
+        <Box sx={{ background: '#FBF4E4', padding: '20px' }}>
+          <Grid container spacing={2}>
+            {filteredLearnerList?.map((member: any) => (
+              <Grid item xs={12} sm={6} md={4} key={member?.userId}>
+                <Box
+                  sx={{
+                    border: `1px solid ${theme?.palette?.warning['A100']}`,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    borderRadius: '8px',
+                    gap: '5px',
+                    background: theme.palette.warning['A400'],
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleAssessmentDetails(member?.userId)}
+                >
                   <Box
                     sx={{
-                      border: `1px solid ${theme?.palette?.warning['A100']}`,
+                      flexBasis: '20%',
+                      background: theme?.palette?.primary?.light,
                       display: 'flex',
-                      justifyContent: 'space-between',
-                      borderRadius: '8px',
-                      gap: '5px',
-                      background: theme.palette.warning['A400'],
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      padding: '7px',
                     }}
-                    onClick={() => handleAssessmentDetails(member?.userId)}
                   >
+                    <MemberListItemIcon status={member.status} />
+                  </Box>
+                  <Box sx={{ flexBasis: '80%' }}>
                     <Box
                       sx={{
-                        flexBasis: '20%',
-                        background: theme?.palette?.primary?.light,
+                        px: '10px',
                         display: 'flex',
-                        justifyContent: 'center',
+                        justifyContent: 'space-between',
                         alignItems: 'center',
                         padding: '7px',
                       }}
                     >
-                      {/* Todo : replaced with proper flag coming from backend  */}
-
-                      <MemberListItemIcon status={member.status} />
-                    </Box>
-                    <Box sx={{ flexBasis: '80%' }}>
-                      <Box
-                        sx={{
-                          px: '10px',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          padding: '7px',
-                        }}
-                      >
-                        <Box>
-                          <Box
-                            sx={{
-                              color: theme.palette.warning[300],
-                              fontSize: '16px',
-                              fontWeight: '400',
-                            }}
-                          >
-                            {member?.name}
-                          </Box>
-                          <Box
-                            sx={{
-                              gap: '4px',
-                              display: 'flex',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <ProgressStatus
-                              status={member?.status}
-                              percentage={member?.percentage}
-                            />
-                          </Box>
+                      <Box>
+                        <Box
+                          sx={{
+                            color: theme.palette.warning[300],
+                            fontSize: '16px',
+                            fontWeight: '400',
+                          }}
+                        >
+                          {member?.name}
                         </Box>
-
-                        <KeyboardArrowRightIcon
-                          sx={{ color: theme.palette.warning[300] }}
-                        />
+                        <Box
+                          sx={{
+                            gap: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <ProgressStatus
+                            status={member?.status}
+                            percentage={member?.percentage}
+                          />
+                        </Box>
                       </Box>
+
+                      <KeyboardArrowRightIcon
+                        sx={{ color: theme.palette.warning[300] }}
+                      />
                     </Box>
                   </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
-          <SortingModal
-            isModalOpen={modalOpen}
-            handleCloseModal={handleCloseModal}
-          />
-        </>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       )}
+      {!isLoading && !filteredLearnerList?.length && !!assessmentList?.length && (
+        <NoDataFound />
+      )}
+
+      <AssessmentSortModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        modalTitle={t('COMMON.SORT_BY')}
+        btnText={t('COMMON.APPLY')}
+        onFilterApply={handleSorting}
+      />
     </>
   );
 };

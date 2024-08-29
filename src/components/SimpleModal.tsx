@@ -34,7 +34,6 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
 
   const modalStyle = {
     padding: '0',
-
     paddingBottom: theme.spacing(2),
     position: 'absolute',
     top: '50%',
@@ -67,12 +66,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
       aria-describedby="child-modal-description"
     >
       <Box sx={modalStyle}>
-        <Box
-          display={'flex'}
-          justifyContent={'space-between'}
-          // sx={{ padding: '18px 16px' }}
-          sx={titleStyle}
-        >
+        <Box display={'flex'} justifyContent={'space-between'} sx={titleStyle}>
           <Box marginBottom={'0px'}>
             <Typography
               variant="h2"
@@ -101,11 +95,34 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
         </Box>
 
         <Divider />
-        <Box sx={{ padding: '0px 16px' }}>{children}</Box>
+        <Box sx={{ padding: '0px 16px' }}>
+          {children}
+        </Box>
         <Divider />
 
         {showFooter ? (
-          <Box sx={{ padding: '20px 16px' }} display={'flex'}>
+          <Box sx={{ padding: '8px 16px' , mb:2 }} display={'flex'}>
+            {secondaryText && (
+              <Button
+                variant="outlined"
+                color="secondary"
+                sx={{
+                  '&.Mui-disabled': {
+                    backgroundColor: theme?.palette?.primary?.main,
+                  },
+                  minWidth: '84px',
+                  height: '2.5rem',
+                  padding: theme.spacing(1),
+                  fontWeight: '500',
+                  width: '100%',
+                  margin: '10px',
+                }}
+                onClick={primaryActionHandler}
+                disabled={primaryBtnDisabled}
+              >
+                {secondaryText}
+              </Button>
+            )}
             {primaryText && (
               <Button
                 variant="contained"
@@ -119,31 +136,11 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
                   padding: theme.spacing(1),
                   fontWeight: '500',
                   width: '100%',
+                  margin: '10px',
                 }}
                 onClick={primaryActionHandler}
-                disabled={primaryBtnDisabled}
               >
                 {primaryText}
-              </Button>
-            )}
-
-            {secondaryText && (
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  '&.Mui-disabled': {
-                    backgroundColor: theme?.palette?.primary?.main,
-                  },
-                  minWidth: '84px',
-                  height: '2.5rem',
-                  padding: theme.spacing(1),
-                  fontWeight: '500',
-                  width: '100%',
-                }}
-                onClick={secondaryActionHandler}
-              >
-                {secondaryText}
               </Button>
             )}
           </Box>

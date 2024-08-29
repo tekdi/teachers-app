@@ -1,6 +1,17 @@
+import CenterList from '@/components/center/centerList';
+import CreateCenterModal from '@/components/center/CreateCenterModal';
+import Header from '@/components/Header';
+import Loader from '@/components/Loader';
+import ManageUser from '@/components/ManageUser';
+import { showToastMessage } from '@/components/Toastify';
 import { getCohortList } from '@/services/CohortServices';
+import useStore from '@/store/store';
+import { CenterType, Role } from '@/utils/app.constant';
 import { accessGranted, toPascalCase } from '@/utils/Helper';
 import { ICohort } from '@/utils/Interfaces';
+import { ArrowDropDown, Clear, Search } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
   Box,
   Button,
@@ -12,28 +23,16 @@ import {
   Tabs,
   TextField,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import FilterModalCenter from '../blocks/components/FilterModalCenter';
-import CenterList from '@/components/center/centerList';
-import Header from '@/components/Header';
-import Loader from '@/components/Loader';
-import ManageUser from '@/components/ManageUser';
-import { showToastMessage } from '@/components/Toastify';
-import CreateCenterModal from '@/components/center/CreateCenterModal';
-import useStore from '@/store/store';
-import { CenterType, Role } from '@/utils/app.constant';
-import { ArrowDropDown, Clear, Search } from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { setTimeout } from 'timers';
 import { accessControl, showLablesForOther } from '../../../app.config';
 import building from '../../assets/images/apartment.png';
+import FilterModalCenter from '../blocks/components/FilterModalCenter';
 
 const CentersPage = () => {
   const [loading, setLoading] = useState(false);
@@ -100,6 +99,7 @@ const CentersPage = () => {
             const response = await getCohortList(userId, {
               customField: 'true',
             });
+
             const blockData = response.map((block: any) => {
               const blockName = block.cohortName;
               const blockId = block.cohortId;
@@ -121,7 +121,7 @@ const CentersPage = () => {
 
             response.map((res: any) => {
               const centerData = res?.childData.map((child: any) => {
-                const cohortName = child.name;
+                const cohortName = toPascalCase(child.name);
                 const cohortId = child.cohortId;
                 const centerTypeField = child?.customField.find(
                   (field: any) => field.label === 'TYPE_OF_COHORT'
@@ -372,68 +372,76 @@ const CentersPage = () => {
                   accessControl,
                   userRole
                 ) && (
-                    <Box mt={'18px'} px={'18px'}>
-                      <Button
-                        sx={{
-                          border: '1px solid #1E1B16',
-                          borderRadius: '100px',
-                          height: '40px',
-                          width: '9rem',
-                          color: theme.palette.error.contrastText,
-                        }}
-                        className="text-1E"
-                        endIcon={<AddIcon />}
-                        onClick={() => setOpenCreateCenterModal(true)}
-                      >
-                        {t('BLOCKS.CREATE_NEW')}
-                      </Button>
-                    </Box>
-                  )}
+                  <Box mt={'18px'} px={'18px'}>
+                    <Button
+                      sx={{
+                        border: '1px solid #1E1B16',
+                        borderRadius: '100px',
+                        height: '40px',
+                        width: '9rem',
+                        color: theme.palette.error.contrastText,
+                      }}
+                      className="text-1E"
+                      endIcon={<AddIcon />}
+                      onClick={() => setOpenCreateCenterModal(true)}
+                    >
+                      {t('BLOCKS.CREATE_NEW')}
+                    </Button>
+                  </Box>
+                )}
               </Grid>
 
-              <CreateCenterModal
-                open={openCreateCenterModal}
-                handleClose={handleCreateCenterClose}
-                onCenterAdded={handleCenterAdded}
-              />
+              {openCreateCenterModal && (
+                <CreateCenterModal
+                  open={openCreateCenterModal}
+                  handleClose={handleCreateCenterClose}
+                  onCenterAdded={handleCenterAdded}
+                />
+              )}
 
-              {accessGranted('showBlockLevelCenterData', accessControl, userRole) &&
+              {accessGranted(
+                'showBlockLevelCenterData',
+                accessControl,
+                userRole
+              ) &&
                 (filteredCenters && filteredCenters.length > 0 ? (
                   <>
                     {/* Regular Centers */}
                     {filteredCenters.some(
                       (center) =>
-                        center.centerType?.toUpperCase() === CenterType.REGULAR ||
-                        center.centerType === ''
+                        center.centerType?.toUpperCase() ===
+                          CenterType.REGULAR || center.centerType === ''
                     ) && (
-                        <CenterList
-                          title="CENTERS.REGULAR_CENTERS"
-                          centers={filteredCenters.filter(
-                            (center) =>
-                              center.centerType?.toUpperCase() === CenterType.REGULAR ||
-                              center.centerType === ''
-                          )}
-                          router={router}
-                          theme={theme}
-                          t={t}
-                        />
-                      )}
+                      <CenterList
+                        title="CENTERS.REGULAR_CENTERS"
+                        centers={filteredCenters.filter(
+                          (center) =>
+                            center.centerType?.toUpperCase() ===
+                              CenterType.REGULAR || center.centerType === ''
+                        )}
+                        router={router}
+                        theme={theme}
+                        t={t}
+                      />
+                    )}
 
                     {/* Remote Centers */}
                     {filteredCenters.some(
-                      (center) => center.centerType?.toUpperCase() === CenterType.REMOTE
+                      (center) =>
+                        center.centerType?.toUpperCase() === CenterType.REMOTE
                     ) && (
-                        <CenterList
-                          title="CENTERS.REMOTE_CENTERS"
-                          centers={filteredCenters.filter(
-                            (center) =>
-                              center.centerType?.toUpperCase() === CenterType.REMOTE
-                          )}
-                          router={router}
-                          theme={theme}
-                          t={t}
-                        />
-                      )}
+                      <CenterList
+                        title="CENTERS.REMOTE_CENTERS"
+                        centers={filteredCenters.filter(
+                          (center) =>
+                            center.centerType?.toUpperCase() ===
+                            CenterType.REMOTE
+                        )}
+                        router={router}
+                        theme={theme}
+                        t={t}
+                      />
+                    )}
                   </>
                 ) : (
                   <Box
@@ -442,84 +450,100 @@ const CentersPage = () => {
                       fontWeight: '500',
                       color: theme.palette.warning['400'],
                       m: 2,
+                      textAlign: 'center',
                     }}
                   >
                     {t('COMMON.NO_DATA_FOUND')}
                   </Box>
                 ))}
 
-
               {/* Teacher-Level Centers */}
-              <Box sx={{
-                cursor: 'pointer',
-                marginBottom: '20px',
-                background: theme.palette.action.selected,
-                p: 2,
-                m: 2,
-                borderRadius: 5,
-              }}>
-                <Grid container spacing={3}>
-                  {accessGranted('showTeacherLevelCenterData', accessControl, userRole) &&
-                    cohortsData?.map((cohort: any) => {
-                      return (
-                        <Grid item xs={12} sm={6} md={4} key={cohort?.cohortId}>
-                          <Box
-                            onClick={() => {
-                              router.push(`/centers/${cohort?.cohortId}/`);
-                              localStorage.setItem('classId', cohort.cohortId);
-                            }}
+              {cohortsData?.length > 0 && (
+                <Box
+                  sx={{
+                    cursor: 'pointer',
+                    marginBottom: '20px',
+                    background: theme.palette.action.selected,
+                    p: 2,
+                    m: 2,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Grid container spacing={3}>
+                    {accessGranted(
+                      'showTeacherLevelCenterData',
+                      accessControl,
+                      userRole
+                    ) &&
+                      cohortsData?.map((cohort: any) => {
+                        return (
+                          <Grid
+                            item
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            key={cohort?.cohortId}
                           >
                             <Box
-                              sx={{
-                                display: 'flex',
-                                gap: '10px',
-                                background: '#fff',
-                                height: '56px',
-                                borderRadius: '8px',
+                              onClick={() => {
+                                router.push(`/centers/${cohort?.cohortId}/`);
+                                localStorage.setItem(
+                                  'classId',
+                                  cohort.cohortId
+                                );
                               }}
                             >
                               <Box
                                 sx={{
-                                  width: '56px',
                                   display: 'flex',
-                                  background: theme.palette.primary.light,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  borderTopLeftRadius: '8px',
-                                  borderBottomLeftRadius: '8px',
-                                }}
-                              >
-                                <Image src={building} alt="center" />
-                              </Box>
-
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'center',
-                                  width: '100%',
-                                  padding: '0 10px',
+                                  gap: '10px',
+                                  background: '#fff',
+                                  height: '56px',
+                                  borderRadius: '8px',
                                 }}
                               >
                                 <Box
                                   sx={{
-                                    fontSize: '16px',
-                                    fontWeight: '400',
-                                    color: theme.palette.warning['300'],
+                                    width: '56px',
+                                    display: 'flex',
+                                    background: theme.palette.primary.light,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderTopLeftRadius: '8px',
+                                    borderBottomLeftRadius: '8px',
                                   }}
                                 >
-                                  {cohort?.cohortName}
+                                  <Image src={building} alt="center" />
                                 </Box>
-                                <ChevronRightIcon />
+
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                    padding: '0 10px',
+                                  }}
+                                >
+                                  <Box
+                                    sx={{
+                                      fontSize: '16px',
+                                      fontWeight: '400',
+                                      color: theme.palette.warning['300'],
+                                    }}
+                                  >
+                                    {cohort?.cohortName}
+                                  </Box>
+                                  <ChevronRightIcon />
+                                </Box>
                               </Box>
                             </Box>
-                          </Box>
-                        </Grid>
-                      );
-                    })}
-                </Grid>
-
-              </Box>
+                          </Grid>
+                        );
+                      })}
+                  </Grid>
+                </Box>
+              )}
             </>
           )}
         </Box>

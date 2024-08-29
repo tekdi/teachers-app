@@ -66,7 +66,7 @@ import {
   getMenuItems,
   limit,
 } from '@/utils/app.constant';
-import { ShowAssesment, accessControl } from '../../../app.config';
+import { Program,ShowAssesment, accessControl } from '../../../app.config';
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import AssessmentReport from '@/components/AssessmentReport';
@@ -216,9 +216,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
 
   const fetchDataAndInitializeForm = async () => {
     try {
-      let formFields;
       const response = await getUserDetails(userId, true);
-      formFields = await getFormRead('USERS', 'STUDENT');
+      const formFields = await getFormRead(FormContext.USERS, FormContextType.STUDENT);
       console.log('response', response);
       console.log('formFields', formFields);
       setFormData(mapFields(formFields, response?.result));
@@ -428,7 +427,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     const test = event?.target?.value;
     setTest(test);
     ReactGA.event('pre-post-test-selected', { testTypeSelected: test });
-    getDoIdForAssesmentReport(test, subject);
+    getDoIdForAssessmentReport(test, subject);
   };
 
   const handleChangeSubject = (event: SelectChangeEvent) => {
@@ -437,15 +436,15 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     ReactGA.event('select-subject-learner-details-page', {
       subjectSelected: subject,
     });
-    getDoIdForAssesmentReport(test, subject);
+    getDoIdForAssessmentReport(test, subject);
   };
 
-  const getDoIdForAssesmentReport = async (tests: string, subjects: string) => {
+  const getDoIdForAssessmentReport = async (tests: string, subjects: string) => {
     // const stateName = localStorage.getItem('stateName');
 
     const stateName: any = address?.split(',')[0];
     const filters = {
-      program: ['Second chance'],
+      program: [Program],
       se_boards: [stateName ?? ''],
       subject: [subjects || subject],
       assessment1: tests || test,
@@ -581,7 +580,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     getAttendanceData(isFromDate, toDay);
     fetchUserDetails();
     // testReportDetails();
-    getDoIdForAssesmentReport(test, subject);
+    getDoIdForAssessmentReport(test, subject);
   }, [address]);
 
   const getLearnerAttendance = () => {

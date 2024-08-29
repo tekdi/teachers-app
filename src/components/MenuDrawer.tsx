@@ -31,6 +31,7 @@ import {
 } from '../../app.config';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 import checkBook from '../assets/images/checkbook.svg';
+import board from '../assets/images/Board.svg';
 import Image from 'next/image';
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
@@ -100,7 +101,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isTeacherCenter = router.pathname === '/centers';
   const isCoursePlanner = router.pathname === '/course-planner';
   const isAssessments = router.pathname === '/assessments';
-
+  const isBoard = router.pathname === '/board-enrollment';
   // const isManageUser = router.pathname === '/manageUser';
 
   return (

@@ -134,6 +134,7 @@ export interface SessionsCardProps {
   data: any;
   children?: React.ReactNode;
   isEventDeleted?: () => void;
+  isEventUpdated?: () => void;
 }
 export interface SessionsModalProps {
   children?: React.ReactNode;
@@ -159,7 +160,10 @@ export interface PlannedModalProps {
   editSelection?: string;
   handleEditSelection?: (selection: string) => void;
   onEventDeleted?: () => void;
+  onEventUpdated?: () => void;
+  updateEvent?: boolean;
   editSession?: any;
+  eventData?: any;
 }
 
 export interface ScheduleModalProps {
@@ -467,8 +471,7 @@ export interface FacilitatorDrawerProps {
   drawerState: { bottom: boolean };
 }
 export interface CoursePlannerCardsProps {
-  title: string;
-  subtitle: string;
+  resources: any;
 }
 
 export interface scheduleEventParam {
@@ -478,15 +481,19 @@ export interface scheduleEventParam {
 }
 
 export interface eventFilters {
-  date?: string;
-  startDate?: string;
-  endDate?: string;
+  date?: dateRange;
+  startDate?: dateRange;
+  endDate?: dateRange;
   eventType?: [];
   title?: string;
   status?: string[];
   cohortId?: string;
 }
 
+export interface dateRange {
+  after?: string;
+  before?: string;
+}
 export interface CoursePlannerData {
   id: string;
   subject: string;
@@ -504,7 +511,7 @@ export interface SendCredentialsRequest {
   isQueue: boolean;
   context: string;
   key: string;
-  replacements: any[];
+  replacements: any;
   email: {
     receipients: any[];
   };
@@ -516,15 +523,15 @@ export interface Assessment {
   progress: string;
   score?: number;
 }
+export interface BoardEnrollment {
+  userId: number;
+  studentName: string;
+  center: string;
+  isDropout: boolean;
+}
 
 export interface AssessmentSubject {
   userId: number;
-  subject: string;
-  score: string;
-  date: string;
-}
-export interface Assessments {
-  userId: string;
   subject: string;
   score: string;
   date: string;
@@ -616,17 +623,19 @@ export interface BottomDrawerProps {
 }
 
 export interface IAssessmentStatusOptions {
-  userId: string[],
-  contentId: string[],
-  batchId: string
+  userId: string[];
+  contentId: string[];
+  batchId: string;
 }
 
 export interface GetTargetedSolutionsParams {
+  subject:string,
   state: string;
   role: string;
+  medium: string
   class: string;
   board: string;
-  courseType: string;
+  type: string;
 }
 
 export interface GetUserProjectDetailsParams {
@@ -640,6 +649,22 @@ export interface IAssessmentStatusOptions {
 
 export interface EditEvent {
   isMainEvent: boolean;
-  status: string;
+  status?: string;
 }
 
+export interface ISearchAssessment {
+  userId: string;
+  contentId: string;
+  batchId: string;
+}
+
+export interface IQuestion {
+  duration: number;
+  maxScore: number;
+  pass: string;
+  queTitle: string;
+  questionId: string;
+  resValue: string;
+  score: number;
+  sectionId: string;
+}

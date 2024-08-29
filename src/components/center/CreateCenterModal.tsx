@@ -1,4 +1,6 @@
-import { createCohort, getFormRead } from '@/services/CreateUserService';
+import { createCohort } from '@/services/CreateUserService';
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
+import { FormContext, FormContextType } from '@/utils/app.constant';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -6,19 +8,19 @@ import {
   Fade,
   IconButton,
   Modal,
-  Radio,
   Typography,
 } from '@mui/material';
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { IChangeEvent } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import DynamicForm from '../DynamicForm';
+import FormButtons from '../FormButtons';
 import { GenerateSchemaAndUiSchema } from '../GeneratedSchemas';
 import { showToastMessage } from '../Toastify';
-import FormButtons from '../FormButtons';
-import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
+import { useFormRead } from '@/hooks/useFormRead';
+import Loader from '../Loader';
 
 interface CreateBlockModalProps {
   open: boolean;
@@ -37,12 +39,6 @@ interface CohortDetails {
   parentId: string | null;
   customFields: CustomField[];
 }
-const CustomRadio = styled(Radio)(({ theme }) => ({
-  color: theme.palette.text.primary,
-  '&.Mui-checked': {
-    color: theme.palette.text.primary,
-  },
-}));
 
 const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   open,
@@ -51,30 +47,26 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const [centerName, setCenterName] = useState<string>('');
-  const [centerType, setCenterType] = useState<string>('Regular');
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [formData, setFormData] = useState<any>();
+  const { data: formResponse, isPending } = useFormRead(
+    FormContext.COHORTS,
+    FormContextType.COHORT
+  );
 
   const setSubmittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.setSubmittedButtonStatus
   );
+
   useEffect(() => {
-    const getForm = async () => {
-      try {
-        const res = await getFormRead('cohorts', 'cohort');
-        console.log(res);
-        const { schema, uiSchema } = GenerateSchemaAndUiSchema(res, t);
-        console.log(schema, uiSchema);
-        setSchema(schema);
-        setUiSchema(uiSchema);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getForm();
-  }, []);
+    if (formResponse) {
+      const { schema, uiSchema } = GenerateSchemaAndUiSchema(formResponse, t);
+      console.log(schema, uiSchema);
+      setSchema(schema);
+      setUiSchema(uiSchema);
+    }
+  }, [formResponse]);
 
   const handleSubmit = async (
     data: IChangeEvent<any, RJSFSchema, any>,
@@ -106,7 +98,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
       };
       if (typeof window !== 'undefined' && window.localStorage) {
         const fieldData = JSON.parse(localStorage.getItem('fieldData') ?? '');
-        Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
+        Object.entries(formData).forEach(([fieldKey]) => {
           const fieldSchema = schema.properties[fieldKey];
           const fieldId = fieldSchema?.fieldId;
           if (fieldId !== null) {
@@ -189,7 +181,20 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
           </Box>
           <Divider sx={{ mb: -2, mx: -2 }} />
 
-          {schema && uiSchema && (
+          {isPending && (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '20px',
+              }}
+            >
+              <Loader showBackdrop={false} loadingText={t('COMMON.LOADING')} />
+            </Box>
+          )}
+          {!isPending && schema && uiSchema && (
             <DynamicForm
               schema={schema}
               uiSchema={uiSchema}
