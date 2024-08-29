@@ -190,7 +190,7 @@ const BoardEnrollment = () => {
                   </Box>
                 ) : (
                   <Box mt={2}>
-                    <HorizontalLinearStepper  activeStep={activeStep}/>
+                    <HorizontalLinearStepper activeStep={activeStep} />
                   </Box>
                 )}
               </Box>

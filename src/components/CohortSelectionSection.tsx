@@ -28,6 +28,7 @@ import { showToastMessage } from './Toastify';
 import manageUserStore from '@/store/manageUserStore';
 import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
 import { telemetryFactory } from '@/utils/telemetry';
+import { toPascalCase } from '@/utils/Helper';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -332,18 +333,6 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     // ---------- set cohortId and stateName-----------
     const cohort_id = event.target.value;
     localStorage.setItem('cohortId', cohort_id);
-
-    const get_state_name: string | null = getStateByCohortId(cohort_id);
-    if (get_state_name) {
-      localStorage.setItem('stateName', get_state_name);
-    } else {
-      localStorage.setItem('stateName', '');
-      console.log('NO State For Selected Cohort');
-    }
-    function getStateByCohortId(cohortId: any) {
-      const cohort = cohortsData?.find((item) => item.cohortId === cohortId);
-      return cohort ? cohort?.state : null;
-    }
   };
 
   const isAttendanceOverview = pathname === '/attendance-overview';
@@ -436,7 +425,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                         </FormControl>
                       ) : (
                         <Typography color={theme.palette.warning['300']}>
-                          {cohortsData[0]?.name}
+                          {toPascalCase(cohortsData[0]?.name)}
                         </Typography>
                       )}
                     </Box>

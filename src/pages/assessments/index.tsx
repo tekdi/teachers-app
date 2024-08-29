@@ -32,10 +32,13 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { AssessmentType, Program } from '../../../app.config';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Assessments = () => {
   const theme = useTheme<any>();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -94,9 +97,6 @@ const Assessments = () => {
             ...user,
             name: toPascalCase(user.name),
             userId: user.userId,
-            // percentageString: '0%',
-            // percentage: 0,
-            // status: 'Not_Started',
           }));
           console.log(`userDetails`, userDetails);
           setCohortMembers(userDetails);
@@ -121,10 +121,13 @@ const Assessments = () => {
       const stateName = localStorage.getItem('stateName');
 
       const filters = {
-        program: ['Second chance'],
+        program: [Program],
         se_boards: [stateName],
         // subject: [subjects || subject],
-        assessment1: assessmentType === 'pre' ? 'Pre Test' : 'Post Test',
+        assessment1:
+          assessmentType === 'pre'
+            ? AssessmentType.PRE_TEST
+            : AssessmentType.POST_TEST,
       };
       try {
         if (stateName) {
@@ -133,8 +136,10 @@ const Assessments = () => {
             setLearnerList([]);
             setFilteredLearnerList([]);
             setAssessmentList([]);
-            const searchResults = await getDoIdForAssessmentDetails({
-              filters,
+
+            const searchResults = await queryClient.fetchQuery({
+              queryKey: ['contentSearch', { filters }],
+              queryFn: () => getDoIdForAssessmentDetails({ filters }),
             });
 
             if (searchResults?.responseCode === 'OK') {
@@ -316,7 +321,8 @@ const Assessments = () => {
       case AssessmentStatus.COMPLETED:
         return (
           <Box>
-            {t('ASSESSMENTS.OVERALL_SCORE')}: <span style={{ color: color }}>{percentage}%</span>
+            {t('ASSESSMENTS.OVERALL_SCORE')}:{' '}
+            <span style={{ color: color }}>{percentage}%</span>
           </Box>
         );
       default:
@@ -594,9 +600,9 @@ const Assessments = () => {
           </Grid>
         </Box>
       )}
-      {!isLoading && !filteredLearnerList?.length && !!assessmentList?.length && (
-        <NoDataFound />
-      )}
+      {!isLoading &&
+        !filteredLearnerList?.length &&
+        !!assessmentList?.length && <NoDataFound />}
 
       <AssessmentSortModal
         open={modalOpen}

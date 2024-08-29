@@ -151,7 +151,7 @@ const TopicDetailView = () => {
                     fontSize="14px"
                     sx={{ color: theme?.palette?.warning['300'] }}
                   >
-                    {t('CENTER_SESSION.FACILITATORS')}
+                    {t('CENTER_SESSION.LEARNERS')}
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails

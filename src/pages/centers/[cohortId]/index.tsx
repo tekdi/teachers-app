@@ -31,8 +31,10 @@ import WeekCalender from '@/components/WeekCalender';
 import DeleteCenterModal from '@/components/center/DeleteCenterModal';
 import RenameCenterModal from '@/components/center/RenameCenterModal';
 import { getCohortDetails } from '@/services/CohortServices';
-import { getSessions } from '@/services/Sessionservice';
+import { getEventList } from '@/services/EventService';
+import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { CustomField } from '@/utils/Interfaces';
+import { Role } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -49,20 +51,16 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
-import { Session } from '../../../utils/Interfaces';
-import Schedule from '../../../components/Schedule';
-import reassignLearnerStore from '@/store/reassignLearnerStore';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation } from 'swiper/modules';
-import { Role } from '@/utils/app.constant';
-import { showToastMessage } from '@/components/Toastify';
-import { getEventList } from '@/services/EventService';
 import 'swiper/css';
-import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import Schedule from '../../../components/Schedule';
+import { Session } from '../../../utils/Interfaces';
 
 import manageUserStore from '@/store/manageUserStore';
-import { modifyAttendanceLimit, eventDaysLimit } from '../../../../app.config';
+import { eventDaysLimit, modifyAttendanceLimit } from '../../../../app.config';
 
 const CohortPage = () => {
   const [value, setValue] = React.useState(1);
@@ -111,7 +109,7 @@ const CohortPage = () => {
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
   const [eventDeleted, setEventDeleted] = React.useState(false);
-
+  const [eventUpdated, setEventUpdated] = React.useState(false);
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [cohortName, setCohortName] = React.useState<string>();
   const [clickedBox, setClickedBox] = useState<string | null>(null);
@@ -219,22 +217,24 @@ const CohortPage = () => {
           status: ['live'],
         };
         const response = await getEventList({ limit, offset, filters });
-        let sessionArray: any[] = [];
-        if (response?.events.length > 0) {
-          response?.events.forEach((event: any) => {
-            if (event.isRecurring) {
+        const sessionArray: any[] = [];
+        if (response?.events?.length > 0) {
+          response.events.forEach((event: any) => {
+            if (event?.isRecurring) {
               sessionArray.push(event);
             }
           });
         }
         setSessions(sessionArray);
+        setEventUpdated(false);
+        setEventDeleted(false);
       } catch (error) {
         setSessions([]);
       }
     };
 
     getSessionsData();
-  }, [selectedDate, eventCreated, eventDeleted]);
+  }, [selectedDate, eventCreated, eventDeleted, eventUpdated]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -260,9 +260,9 @@ const CohortPage = () => {
           status: ['live'],
         };
         const response = await getEventList({ limit, offset, filters });
-        let extraSessionArray: any[] = [];
-        if (response?.events.length > 0) {
-          response?.events.forEach((event: any) => {
+        const extraSessionArray: any[] = [];
+        if (response?.events?.length > 0) {
+          response.events.forEach((event: any) => {
             if (!event.isRecurring) {
               extraSessionArray.push(event);
             }
@@ -273,12 +273,17 @@ const CohortPage = () => {
         setExtraSessions([]);
       }
     };
-
+    setEventUpdated(false);
+    setEventDeleted(false);
     getExtraSessionsData();
-  }, [eventCreated, eventDeleted]);
+  }, [eventCreated, eventDeleted, eventUpdated]);
 
   const handleEventDeleted = () => {
     setEventDeleted(true);
+  };
+
+  const handleEventUpdated = () => {
+    setEventUpdated(true);
   };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -304,7 +309,13 @@ const CohortPage = () => {
     setAnchorEl(null);
   };
 
-  const handleRenameCenterClose = () => {
+  const handleRenameCenterClose = (name: string) => {
+    if (name) {
+      setCohortName(name);
+      const cohortInfo: any = { ...cohortDetails };
+      cohortInfo.name = name;
+      setCohortDetails(cohortInfo);
+    }
     setOpenRenameCenterModal(false);
   };
 
@@ -420,12 +431,16 @@ const CohortPage = () => {
               {t('CENTERS.REQUEST_TO_DELETE')}
             </MenuItem>
           </Menu>
-          <RenameCenterModal
-            open={openRenameCenterModal}
-            handleClose={handleRenameCenterClose}
-            reloadState={reloadState}
-            setReloadState={setReloadState}
-          />
+
+          {openRenameCenterModal && (
+            <RenameCenterModal
+              open={openRenameCenterModal}
+              handleClose={handleRenameCenterClose}
+              reloadState={reloadState}
+              setReloadState={setReloadState}
+              name={cohortDetails?.name}
+            />
+          )}
           <DeleteCenterModal
             open={openDeleteCenterModal}
             handleClose={handleDeleteCenterClose}
@@ -575,6 +590,7 @@ const CohortPage = () => {
                       <SessionCard
                         data={item}
                         isEventDeleted={handleEventDeleted}
+                        isEventUpdated={handleEventUpdated}
                       >
                         <SessionCardFooter item={item} />
                       </SessionCard>
@@ -643,7 +659,11 @@ const CohortPage = () => {
             <Grid container spacing={3}>
               {sessions?.map((item) => (
                 <Grid item xs={12} sm={6} md={4} key={item.id}>
-                  <SessionCard data={item} isEventDeleted={handleEventDeleted}>
+                  <SessionCard
+                    data={item}
+                    isEventDeleted={handleEventDeleted}
+                    isEventUpdated={handleEventUpdated}
+                  >
                     <SessionCardFooter item={item} />
                   </SessionCard>
                 </Grid>
@@ -706,57 +726,25 @@ const CohortPage = () => {
                 isLearnerAdded={isLearnerAdded}
               />
             </Box>
-            <AddLearnerModal
-              open={openAddLearnerModal}
-              onClose={handleCloseAddLearnerModal}
-              onLearnerAdded={handleLearnerAdded}
-            />
+            {openAddLearnerModal && (
+              <AddLearnerModal
+                open={openAddLearnerModal}
+                onClose={handleCloseAddLearnerModal}
+                onLearnerAdded={handleLearnerAdded}
+              />
+            )}
           </>
         )}
       </Box>
       <Box>
         {value === 3 && (
           <>
-            <Box mt={3} px={'18px'}>
-              {/* <Button
-                sx={{
-                  border: '1px solid #1E1B16',
-                  borderRadius: '100px',
-                  height: '40px',
-                  width: '126px',
-                  color: theme.palette.error.contrastText,
-                }}
-                className="text-1E"
-                endIcon={<AddIcon />}
-              >
-                {t('COMMON.ADD_NEW')}
-              </Button> */}
-            </Box>
-            <Box
-              px={'18px'}
-              mt={2}
-              sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}
-            >
-              {/* <Box
-                sx={{ color: theme.palette.secondary.main }}
-                className="fs-14 fw-500"
-                onClick={() => {
-                  router.push('/attendance-overview');
-                }}
-              >
-                {t('COMMON.REVIEW_ATTENDANCE')}
-              </Box> */}
-              {/* <ArrowForwardIcon
-                sx={{ fontSize: '18px', color: theme.palette.secondary.main }}
-              /> */}
-            </Box>
-            <Box>
-              <CohortFacilitatorList
-                cohortId={cohortId}
-                reloadState={reloadState}
-                setReloadState={setReloadState}
-              />
-            </Box>
+            <Box mt={3} px={'18px'}></Box>
+            <CohortFacilitatorList
+              cohortId={cohortId}
+              reloadState={reloadState}
+              setReloadState={setReloadState}
+            />
           </>
         )}
       </Box>

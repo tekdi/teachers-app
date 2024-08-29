@@ -112,3 +112,9 @@ export enum AssessmentStatus {
   IN_PROGRESS = 'In_Progress',
   COMPLETED = 'Completed',
 }
+
+
+export enum QueryKeys {
+  GET_ACTIVE_FACILITATOR = 'getActiveFacilitatorList',
+  MY_COHORTS = 'myCohorts',
+}

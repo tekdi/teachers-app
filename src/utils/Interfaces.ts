@@ -156,6 +156,7 @@ export interface PlannedModalProps {
   editSelection?: string;
   handleEditSelection?: (selection: string) => void;
   onEventDeleted?: () => void;
+  onEventUpdated?: () => void;
   updateEvent?: boolean;
   editSession?: any;
   eventData?: any;
@@ -446,7 +447,6 @@ export interface FacilitatorDrawerProps {
 }
 export interface CoursePlannerCardsProps {
   resources: any;
-
 }
 
 export interface scheduleEventParam {
@@ -486,7 +486,7 @@ export interface SendCredentialsRequest {
   isQueue: boolean;
   context: string;
   key: string;
-  replacements: any[];
+  replacements: any;
   email: {
     receipients: any[];
   };
@@ -501,10 +501,9 @@ export interface Assessment {
 export interface BoardEnrollment {
   userId: number;
   studentName: string;
-  center:string;
-  isDropout:boolean
+  center: string;
+  isDropout: boolean;
 }
-
 
 export interface AssessmentSubject {
   userId: number;
@@ -605,11 +604,13 @@ export interface IAssessmentStatusOptions {
 }
 
 export interface GetTargetedSolutionsParams {
+  subject:string,
   state: string;
   role: string;
+  medium: string
   class: string;
   board: string;
-  courseType: string;
+  type: string;
 }
 
 export interface GetUserProjectDetailsParams {
@@ -639,4 +640,15 @@ export interface IQuestion {
   resValue: string;
   score: number;
   sectionId: string;
+}
+
+export interface GetSolutionDetailsParams {
+  id: string;
+  role: string;
+}
+
+export interface GetUserProjectTemplateParams {
+  templateId: string;
+  solutionId: string;
+  role: string;
 }
