@@ -17,10 +17,11 @@ const PieChartGraph = () => {
         { name: t('BOARD_ENROLMENT.BOARD_SELECTION'), value: 5 },
         { name: t('BOARD_ENROLMENT.SUBJECTS_SELECTION'),  value: 10 },
         { name: t('BOARD_ENROLMENT.REGISTRATION_COMPLETED'),  value: 5 },
+        { name: t('BOARD_ENROLMENT.FEE_PAYMENT'),  value: 2 },
     ];
 
 
-    const COLORS = ['#C0C0C0', '#8000FE', '#FF8042', '#FFBB28'];   //colors not in custom theme
+    const COLORS = ['#C0C0C0', '#8000FE', '#FF8042', '#FFBB28', '#78590C'];   //colors not in custom theme
 
     const [isMobile, setIsMobile] = useState<boolean>(false);
 

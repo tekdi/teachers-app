@@ -652,3 +652,7 @@ export interface GetUserProjectTemplateParams {
   solutionId: string;
   role: string;
 }
+
+export interface HorizontalLinearStepperProps {
+  activeStep: number;
+}

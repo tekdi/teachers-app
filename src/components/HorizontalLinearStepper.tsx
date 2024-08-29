@@ -9,11 +9,16 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import { useTheme } from '@mui/material/styles';
-const steps: string[] = ['Board', 'Subjects', 'Registration'];
+import { HorizontalLinearStepperProps } from '@/utils/Interfaces';
+import { useTranslation } from 'react-i18next';
 
-export default function HorizontalLinearStepper({activeStep}: {activeStep: any}) {
+const steps: string[] = ['Board', 'Subjects', 'Registration', 'Fees'];
+
+export default function HorizontalLinearStepper({
+  activeStep,
+}: HorizontalLinearStepperProps) {
+  const { t } = useTranslation();
   const theme = useTheme<any>();
-  
 
   const CustomStepIcon = (props: any) => {
     const { icon, active, completed } = props;
@@ -21,7 +26,9 @@ export default function HorizontalLinearStepper({activeStep}: {activeStep: any})
     if (completed) {
       return <CheckCircleIcon sx={{ color: theme.palette.primary.main }} />;
     } else if (active) {
-      return <RadioButtonCheckedIcon sx={{ color: theme.palette.primary.main }} />;
+      return (
+        <RadioButtonCheckedIcon sx={{ color: theme.palette.primary.main }} />
+      );
     } else {
       return <RadioButtonUncheckedIcon />;
     }
@@ -29,7 +36,24 @@ export default function HorizontalLinearStepper({activeStep}: {activeStep: any})
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Stepper activeStep={activeStep} connector={<StepConnector />}>
+      <Stepper
+        activeStep={activeStep}
+        alternativeLabel
+        connector={<StepConnector />}
+        sx={{
+          justifyContent: 'space-between',
+          '& .MuiStepLabel-alternativeLabel': {
+            marginTop: '2px !important',
+          },
+          '& .MuiStep-root': {
+            flex: '1',
+            padding: 0,
+          },
+          '& .MuiStepConnector-root': {
+            top: '16px',
+          },
+        }}
+      >
         {steps.map((label, index) => (
           <Step key={index} completed={index < activeStep}>
             <StepLabel
@@ -38,12 +62,15 @@ export default function HorizontalLinearStepper({activeStep}: {activeStep: any})
                 '& .MuiStepLabel-label': {
                   marginBottom: '3px',
                   alignSelf: 'center',
-                  fontSize: '11px'
+                  fontSize: '11px',
                 },
                 '& .MuiStepLabel-iconContainer': {
                   alignItems: 'center',
                 },
-                fontSize: '11px !important'
+                fontSize: '11px !important',
+                '& .MuiStepLabel-alternativeLabel': {
+                  marginTop: '2px',
+                },
               }}
             >
               {label}
