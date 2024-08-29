@@ -83,6 +83,7 @@ export enum AssessmentType {
 
 // handle component by this condition
 export const ShowCenterSessionsTab = false;
+export const ShowFacilitatorListTab = false
 
 // menu drawer items
 export const ShowAssesment = false;
