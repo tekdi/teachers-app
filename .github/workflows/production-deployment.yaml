@@ -1,11 +1,11 @@
-name: PROD DEPLOYMENT WITH TAG
+name: PROD FRONTEND DEPLOYMENT WITH TAG
 on:
   push:
     tags:
       - 'v*' 
 
 jobs:
-  deploy:
+  PROD-FRONTEND-TAG-BASE-DEPLOYMENT:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
