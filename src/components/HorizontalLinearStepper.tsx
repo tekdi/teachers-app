@@ -12,11 +12,10 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 const steps: string[] = ['Board', 'Subjects', 'Registration'];
 
-export default function HorizontalLinearStepper() {
-  const [activeStep, setActiveStep] = React.useState<number>(1);
-
+export default function HorizontalLinearStepper({activeStep}) {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+  
 
   const CustomStepIcon = (props: any) => {
     const { icon, active, completed } = props;

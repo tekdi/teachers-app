@@ -514,9 +514,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             padding: '15px 20px 5px',
           }}
           width={'100%'}
-          onClick={handleBackEvent}
         >
           <KeyboardBackspaceOutlinedIcon
+            onClick={handleBackEvent}
             cursor={'pointer'}
             sx={{ color: theme.palette.warning['A200'] }}
           />
