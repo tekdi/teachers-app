@@ -71,7 +71,7 @@ const CentersPage = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
-      if (role === Role.TEAM_LEADER) {
+      if (role === Role.TEAM_LEADER || role === Role.TEACHER) {
         setIsTeamLeader(true);
       } else {
         setIsTeamLeader(false);
@@ -100,6 +100,8 @@ const CentersPage = () => {
               customField: 'true',
             });
 
+            console.log('responseFromData', response);
+
             const blockData = response.map((block: any) => {
               const blockName = block.cohortName;
               const blockId = block.cohortId;
@@ -127,7 +129,9 @@ const CentersPage = () => {
                   (field: any) => field.label === 'TYPE_OF_COHORT'
                 );
 
-                const centerType = centerTypeField ? centerTypeField.value : '';
+                const centerType = centerTypeField
+                  ? centerTypeField.value
+                  : 'REGULAR';
                 return { cohortName, cohortId, centerType };
               });
               setCenterData(centerData);
@@ -140,12 +144,15 @@ const CentersPage = () => {
             accessGranted('showTeacherCohorts', accessControl, userRole)
           ) {
             const response = await getCohortList(userId);
-            const cohortData = response.map((block: any) => {
+            const cohortData = response?.map((block: any) => {
               const cohortName = block.cohortName;
               const cohortId = block.cohortId;
               return { cohortName, cohortId };
             });
-            console.log(cohortData);
+
+            console.log('cohortData', cohortData);
+
+            setCenterData(cohortData);
 
             setTimeout(() => {
               setCohortsData(cohortData);
@@ -164,10 +171,20 @@ const CentersPage = () => {
   };
 
   useEffect(() => {
-    const filtered = centerData.filter((center) =>
-      center.cohortName.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    setFilteredCenters(filtered);
+    const searchTerm = searchInput.toLowerCase();
+
+    const filtered = centerData
+      ?.filter((center) =>
+        center.cohortName.toLowerCase().startsWith(searchTerm)
+      ) // First, filter items that start with the search term
+      .concat(
+        centerData?.filter(
+          (center) =>
+            !center.cohortName.toLowerCase().startsWith(searchTerm) &&
+            center.cohortName.toLowerCase().includes(searchTerm)
+        )
+      );
+    setCohortsData(filtered);
   }, [searchInput, centerData]);
 
   const handleFilterApply = () => {
@@ -186,7 +203,7 @@ const CentersPage = () => {
     } else if (sortOrder === 'desc') {
       filtered.sort((a, b) => b.cohortName.localeCompare(a.cohortName));
     }
-    setFilteredCenters(filtered);
+    setCohortsData(filtered);
     handleFilterModalClose();
   };
 
@@ -399,66 +416,60 @@ const CentersPage = () => {
                 />
               )}
 
-              {accessGranted(
+              {/* {accessGranted(
                 'showBlockLevelCenterData',
                 accessControl,
                 userRole
-              ) &&
-                (filteredCenters && filteredCenters.length > 0 ? (
-                  <>
-                    {/* Regular Centers */}
-                    {filteredCenters.some(
-                      (center) =>
-                        center.centerType?.toUpperCase() ===
-                          CenterType.REGULAR || center.centerType === ''
-                    ) && (
-                      <CenterList
-                        title="CENTERS.REGULAR_CENTERS"
-                        centers={filteredCenters.filter(
-                          (center) =>
-                            center.centerType?.toUpperCase() ===
-                              CenterType.REGULAR || center.centerType === ''
-                        )}
-                        router={router}
-                        theme={theme}
-                        t={t}
-                      />
-                    )}
+              ) && */}
 
-                    {/* Remote Centers */}
-                    {filteredCenters.some(
-                      (center) =>
-                        center.centerType?.toUpperCase() === CenterType.REMOTE
-                    ) && (
-                      <CenterList
-                        title="CENTERS.REMOTE_CENTERS"
-                        centers={filteredCenters.filter(
-                          (center) =>
-                            center.centerType?.toUpperCase() ===
-                            CenterType.REMOTE
-                        )}
-                        router={router}
-                        theme={theme}
-                        t={t}
-                      />
-                    )}
-                  </>
-                ) : (
-                  <Box
-                    sx={{
-                      fontSize: '16px',
-                      fontWeight: '500',
-                      color: theme.palette.warning['400'],
-                      m: 2,
-                      textAlign: 'center',
-                    }}
-                  >
-                    {t('COMMON.NO_DATA_FOUND')}
-                  </Box>
-                ))}
+              {/* {filteredCenters && filteredCenters.length > 0 ? (
+                <>
+                  {console.log('filteredCentersLatest', filteredCenters)}
+                  
+                  {filteredCenters.length > 0 && (
+                    <CenterList
+                      title="CENTERS.REGULAR_CENTERS"
+                      centers={filteredCenters}
+                      router={router}
+                      theme={theme}
+                      t={t}
+                    />
+                  )}
+
+                 
+                  {filteredCenters.some(
+                    (center) =>
+                      center.centerType?.toUpperCase() === CenterType.REMOTE
+                  ) && (
+                    <CenterList
+                      title="CENTERS.REMOTE_CENTERS"
+                      centers={filteredCenters.filter(
+                        (center) =>
+                          center.centerType?.toUpperCase() === CenterType.REMOTE
+                      )}
+                      router={router}
+                      theme={theme}
+                      t={t}
+                    />
+                  )}
+                </>
+              ) : (
+                <Box
+                  sx={{
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    color: theme.palette.warning['400'],
+                    m: 2,
+                    textAlign: 'center',
+                  }}
+                >
+                  {t('COMMON.NO_DATA_FOUND')}
+                </Box>
+              )} */}
+              {/* } */}
 
               {/* Teacher-Level Centers */}
-              {cohortsData?.length > 0 && (
+              {cohortsData?.length > 0 ? (
                 <Box
                   sx={{
                     cursor: 'pointer',
@@ -542,6 +553,18 @@ const CentersPage = () => {
                         );
                       })}
                   </Grid>
+                </Box>
+              ) : (
+                <Box
+                  sx={{
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    color: theme.palette.warning['400'],
+                    m: 2,
+                    textAlign: 'center',
+                  }}
+                >
+                  {t('COMMON.NO_DATA_FOUND')}
                 </Box>
               )}
             </>

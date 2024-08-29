@@ -236,13 +236,14 @@ export interface UpdateCustomField {
   order: number;
 }
 export interface ICohort {
-  typeOfCohort: string;
-  presentPercentage: number;
-  cohortId: string;
-  name: string;
-  value: string;
-  state: string;
+  typeOfCohort?: string;
+  presentPercentage?: number;
+  cohortId?: string;
+  name?: string;
+  value?: string;
+  state?: string;
   params?: Params;
+  centerType?: string;
 }
 export interface AttendanceParams {
   allowed: number;

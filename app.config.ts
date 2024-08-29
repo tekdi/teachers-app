@@ -74,7 +74,7 @@ export const DaysOfWeek = {
   Sat: 6,
 };
 
-export const Program = "Second chance";
+export const Program = 'Second chance';
 
 export enum AssessmentType {
   PRE_TEST = 'Pre Test',
@@ -101,8 +101,12 @@ export const markdDropOut = false;
 
 // show lables as per product
 export const showLablesForOther = true;
-export const tourGuideNavigtion = false
+export const tourGuideNavigtion = false;
 
-export const showMyTimeTable = false
+export const showMyTimeTable = false;
 
-export const showEventsByList = false
+export const showEventsByList = false;
+
+export const showProgramYear = false;
+
+export const showFilterCenterType = false;
