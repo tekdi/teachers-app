@@ -14,6 +14,7 @@ import ConfirmationModal from './ConfirmationModal';
 
 const SessionsCard: React.FC<SessionsCardProps> = ({
   data,
+  showCenterName=false,
   children,
   isEventDeleted,
   isEventUpdated,
@@ -159,7 +160,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             {startTime} - {endTime}
           </Typography>
           <Typography fontWeight={'400'} textAlign={'left'} fontSize={'14px'}>
-            {data?.metadata?.framework?.teacherName}
+            {showCenterName ? data?.location : data?.metadata?.framework?.teacherName}
           </Typography>
         </Box>
         {showEdit && (
