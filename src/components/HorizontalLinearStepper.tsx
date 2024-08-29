@@ -8,12 +8,10 @@ import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 const steps: string[] = ['Board', 'Subjects', 'Registration'];
 
-export default function HorizontalLinearStepper({activeStep}) {
-  const { t } = useTranslation();
+export default function HorizontalLinearStepper({activeStep}: {activeStep: any}) {
   const theme = useTheme<any>();
   
 
