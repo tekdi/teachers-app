@@ -50,7 +50,7 @@ const BoardEnrollment = () => {
           mt: 3,
         }}
       >
-        {t('BOARD_ENROOLMENT.BOARD_ENROLLMENT')}
+        {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
       </Box>
 
       <Grid container>
@@ -130,7 +130,7 @@ const BoardEnrollment = () => {
               <Box
                 sx={{
                   border: `1px solid ${theme.palette.warning['A100']}`,
-                  p: '12px 16px',
+                  minHeight:'143px',
                   borderRadius: '8px',
                 }}
                 onClick={() => {
@@ -142,6 +142,7 @@ const BoardEnrollment = () => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    p: '12px 16px 0',
                   }}
                 >
                   <Box
@@ -161,6 +162,7 @@ const BoardEnrollment = () => {
                     fontWeight: '500',
                     fontSize: '12px',
                     mt: 0.5,
+                    px:'16px'
                   }}
                 >
                   {item.center}
@@ -178,9 +180,11 @@ const BoardEnrollment = () => {
                       color: theme.palette.warning['300'],
                       fontWeight: '500',
                       gap: '5px',
+                      mb:'12px',
+                      mx:'16px'
                     }}
                   >
-                    {t('BOARD_ENROOLMENT.BOARD_ENROLLMENT')}{' '}
+                    {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}{' '}
                     <InfoOutlinedIcon
                       sx={{
                         color: theme.palette.warning['300'],
@@ -189,7 +193,7 @@ const BoardEnrollment = () => {
                     />
                   </Box>
                 ) : (
-                  <Box mt={2}>
+                  <Box mt={2} pb={'12px'}>
                     <HorizontalLinearStepper activeStep={activeStep} />
                   </Box>
                 )}
