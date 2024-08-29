@@ -1,14 +1,14 @@
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
+import { getCurrentYearPattern, getEmailPattern } from '@/utils/Helper';
 import { IChangeEvent, withTheme } from '@rjsf/core';
 import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { useTranslation } from 'next-i18next';
-import React, { Children, ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import CustomRadioWidget from './CustomRadioWidget';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
-import { getCurrentYearPattern, getEmailPattern } from '@/utils/Helper';
-import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -110,14 +110,12 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 maxLength: schema.properties?.[property]?.maxLength,
               });
             }
-          } else {
-            if (
-              schema.properties?.[property]?.validation?.includes('numeric')
-            ) {
-              error.message = t('FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR', {
-                maxLength: schema.properties?.[property]?.maxLength,
-              });
-            }
+          } else if (
+            schema.properties?.[property]?.validation?.includes('numeric')
+          ) {
+            error.message = t('FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR', {
+              maxLength: schema.properties?.[property]?.maxLength,
+            });
           }
 
           break;
@@ -134,14 +132,12 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 minLength: schema.properties?.[property]?.minLength,
               });
             }
-          } else {
-            if (
-              schema.properties?.[property]?.validation?.includes('numeric')
-            ) {
-              error.message = t('FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR', {
-                minLength: schema.properties?.[property]?.minLength,
-              });
-            }
+          } else if (
+            schema.properties?.[property]?.validation?.includes('numeric')
+          ) {
+            error.message = t('FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR', {
+              minLength: schema.properties?.[property]?.minLength,
+            });
           }
           break;
         }
