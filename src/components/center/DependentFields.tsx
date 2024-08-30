@@ -98,7 +98,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
     const handleBMGS = async () => {
       try {
         const url =
-          'https://diksha.gov.in/api/channel/v1/read/0126684405014528002';
+          'https://sunbirdsaas.com/api/channel/v1/read/01369885294383923244';
         const boardData = await fetch(url).then((res) => res.json());
         const frameworks = boardData?.result?.channel?.frameworks;
         const options = mapFrameworksToOptionsWithFieldId(frameworks);
@@ -117,7 +117,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
   useEffect(() => {
     const fetchMediumOptions = async (boardId: string) => {
       try {
-        const url = `https://diksha.gov.in/api/framework/v1/read/${boardId}?categories=gradeLevel,medium,class,subject`;
+        const url = `https://sunbirdsaas.com/api/framework/v1/read/${boardId}?categories=gradeLevel,medium,class,subject`;
         const mediumRes = await fetch(url).then((res) => res.json());
         const mediumData = mediumRes?.result?.framework?.categories;
         if (mediumData) {
@@ -148,8 +148,10 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
     console.log('selectedValue', selectedOption.label);
     setSelectedBoard(selectedOption.label);
     setSelectedBoardId(board);
+    setSelectedMedium('')
     setMediumOptions([]);
     setGradeOptions([]);
+    setSelectedGrade('')
     setSubjectOptions([]);
     setShowForm(false);
   };
@@ -178,6 +180,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
   const handleGradeChange = (event: SelectChangeEvent<string>) => {
     const grade = event.target.value;
     setShowForm(false);
+    setSelectedSubject([])
     let selectedOption: any = gradeOptions.find(
       (option) => option.value === grade
     );
