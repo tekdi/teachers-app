@@ -142,23 +142,11 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
       setLoading(true);
       const fetchCohorts = async () => {
         try {
-          // const response = await getCohortList(userId, {
-          //   customField: 'true',
-          // });
-
           const response = await queryClient.fetchQuery({
             queryKey: [QueryKeys.MY_COHORTS, userId],
-            queryFn: () => getCohortList(userId as string, { filter: 'true' }),
+            queryFn: () => getCohortList(userId, { customField: 'true' }),
           });
   
-          // response = response.filter((block: any) => {
-          //   if (
-          //     block?.cohortMemberStatus === Status.ACTIVE &&
-          //     block?.cohortStatus === Status.ACTIVE
-          //   ) {
-          //     return block;
-          //   }
-          // });
           console.log('Response:', response);
           const cohortData = response[0];
           if (cohortData?.customField?.length) {
