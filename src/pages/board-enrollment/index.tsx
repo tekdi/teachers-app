@@ -130,7 +130,7 @@ const BoardEnrollment = () => {
               <Box
                 sx={{
                   border: `1px solid ${theme.palette.warning['A100']}`,
-                  minHeight:'143px',
+                  minHeight: '143px',
                   borderRadius: '8px',
                 }}
                 onClick={() => {
@@ -162,7 +162,7 @@ const BoardEnrollment = () => {
                     fontWeight: '500',
                     fontSize: '12px',
                     mt: 0.5,
-                    px:'16px'
+                    px: '16px',
                   }}
                 >
                   {item.center}
@@ -180,8 +180,8 @@ const BoardEnrollment = () => {
                       color: theme.palette.warning['300'],
                       fontWeight: '500',
                       gap: '5px',
-                      mb:'12px',
-                      mx:'16px'
+                      mb: '12px',
+                      mx: '16px',
                     }}
                   >
                     {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}{' '}
