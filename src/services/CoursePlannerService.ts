@@ -10,7 +10,7 @@ export const getCoursePlanner = (): CoursePlanner[] => {
     // { id: 3, subject: 'History', circular: 30 },
     // { id: 4, subject: 'Geography', circular: 60 },
     // { id: 5, subject: 'Marathi', circular: 90 },
-    { id: 6, subject: 'Marathi', circular: 0 },
+    { id: 6, subject: 'English', circular: 0 },
     // { id: 7, subject: 'Social Science', circular: 80 },
   ];
 
@@ -21,7 +21,6 @@ export const getCoursePlanner = (): CoursePlanner[] => {
 export const getTargetedSolutions = async ({
   subject,
   state,
-  role,
   medium,
   class: className,
   board,
@@ -37,7 +36,6 @@ export const getTargetedSolutions = async ({
   const data = {
     subject,
     state,
-    role,
     medium,
     class: className,
     board,
