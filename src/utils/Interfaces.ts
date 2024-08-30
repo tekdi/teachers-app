@@ -597,7 +597,6 @@ export interface IAssessmentStatusOptions {
 export interface GetTargetedSolutionsParams {
   subject:string,
   state: string;
-  role: string;
   medium: string
   class: string;
   board: string;

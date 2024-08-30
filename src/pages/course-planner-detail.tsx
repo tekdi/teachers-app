@@ -30,6 +30,7 @@ import {
 import useCourseStore from '@/store/coursePlannerStore';
 import dayjs from 'dayjs';
 import { Role } from '@/utils/app.constant';
+import Loader from '@/components/Loader';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
@@ -37,7 +38,7 @@ const CoursePlannerDetail = () => {
   const { t } = useTranslation();
   const setResources = useCourseStore((state) => state.setResources);
   const store = useCourseStore();
-
+  const [loading, setLoading] = useState(false);
   // Initialize the panels' state, assuming you have a known set of panel IDs
   const [expandedPanels, setExpandedPanels] = useState<{
     [key: string]: boolean;
@@ -50,20 +51,19 @@ const CoursePlannerDetail = () => {
   const [drawerState, setDrawerState] = React.useState({ bottom: false });
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
-
   const [courseDetails, setCourseDetails] = useState(null);
   const [userProjectDetails, setUserProjectDetails] = useState([]);
 
   const fetchCourseDetails = useCallback(async () => {
     try {
+      setLoading(true);
       const response = await getTargetedSolutions({
-        subject: 'Marathi',
-        class: '10',
-        state: 'Assam',
-        board: 'ASEB',
+        subject: 'Assamese',
+        class: '6',
+        state: 'Maharashtra',
+        board: 'AAKR',
         type: 'mainCourse',
-        role: 'Teacher',
-        medium: 'Hindi',
+        medium: 'Assamese',
       });
   
       const courseData = response.result.data[0];
@@ -74,7 +74,7 @@ const CoursePlannerDetail = () => {
       }
   
       await fetchAndSetUserProjectDetails(courseId);
-  
+      
     } catch (error) {
       console.error('Error fetching course planner:', error);
     }
@@ -96,15 +96,14 @@ const CoursePlannerDetail = () => {
       });
   
       const updatedResponse = await getTargetedSolutions({
-        subject: 'Marathi',
-        class: '10',
-        state: 'Kerala',
-        board: 'KSEB',
+        subject: 'Assamese',
+        class: '6',
+        state: 'Maharashtra',
+        board: 'AAKR',
         type: 'mainCourse',
-        role: 'Teacher',
-        medium: 'Hindi',
+        medium: 'Assamese',
       });
-  
+      setLoading(false);
       return updatedResponse.result.data[0]._id;
     } catch (error) {
       console.error('Error fetching solution details:', error);
@@ -114,10 +113,12 @@ const CoursePlannerDetail = () => {
   
   const fetchAndSetUserProjectDetails = async (courseId: string) => {
     try {
+      setLoading(true);
       const userProjectDetailsResponse = await getUserProjectDetails({
         id: courseId,
       });
       setUserProjectDetails(userProjectDetailsResponse.result.tasks);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching user project details:', error);
     }
@@ -179,7 +180,7 @@ const CoursePlannerDetail = () => {
   };
 
   return (
-    <>
+   <>
       <Header />
       <Box
         sx={{
@@ -286,7 +287,14 @@ const CoursePlannerDetail = () => {
           )}
         </Box>
       </Box>
+
+<div>
+{loading ? (
+  <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+) : (
+  <>
       <Box mt={2}>
+ 
         {userProjectDetails.map((topic: any, index) => (
           <Box key={topic._id} sx={{ borderRadius: '8px', mb: 2 }}>
             <Accordion
@@ -456,7 +464,9 @@ const CoursePlannerDetail = () => {
           </Box>
         ))}
       </Box>
-
+      </>
+      )}
+    </div>
       <FacilitatorDrawer
         secondary={'Cancel'}
         primary={'Mark as Complete (2)'}
