@@ -58,12 +58,12 @@ const CoursePlannerDetail = () => {
     try {
       setLoading(true);
       const response = await getTargetedSolutions({
-        subject: 'Assamese',
-        class: '6',
+        subject: 'Tamil',
+        class: '4',
         state: 'Maharashtra',
-        board: 'AAKR',
+        board: 'TQKR',
         type: 'mainCourse',
-        medium: 'Assamese',
+        medium: 'Telugu',
       });
   
       const courseData = response.result.data[0];
@@ -96,12 +96,12 @@ const CoursePlannerDetail = () => {
       });
   
       const updatedResponse = await getTargetedSolutions({
-        subject: 'Assamese',
-        class: '6',
+       subject: 'Malayalam',
+        class: '5',
         state: 'Maharashtra',
-        board: 'AAKR',
+        board: 'LPKR',
         type: 'mainCourse',
-        medium: 'Assamese',
+        medium: 'Malayalam',
       });
       setLoading(false);
       return updatedResponse.result.data[0]._id;
