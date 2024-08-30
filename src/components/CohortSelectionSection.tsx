@@ -499,7 +499,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                         </FormControl>
                       ) : (
                         <>
-                          {showDisabledDropDown ? (
+                          {showDisabledDropDown && cohortsData?.length === 1 ? (
                             <FormControl
                             disabled= {true}
                               className={
