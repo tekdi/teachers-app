@@ -166,7 +166,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     const getMyCohortList = async () => {
       const myCohortList = await queryClient.fetchQuery({
         queryKey: [QueryKeys.MY_COHORTS, userId],
-        queryFn: () => getCohortList(userId as string, { filter: 'true' }),
+        queryFn: () => getCohortList(userId as string, { customField: 'true' }),
       });
 
       setMyCohortList(myCohortList);

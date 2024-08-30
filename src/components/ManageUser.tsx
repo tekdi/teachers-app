@@ -161,7 +161,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           const cohortDetailsPromises = userIds.map((userId: string) =>
             queryClient.fetchQuery({
               queryKey: [QueryKeys.MY_COHORTS, userId],
-              queryFn: () => getCohortList(userId, { filter: 'true' }),
+              queryFn: () => getCohortList(userId, { customField: 'true' }),
             })
           );
 
