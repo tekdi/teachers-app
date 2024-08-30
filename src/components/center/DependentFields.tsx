@@ -20,11 +20,13 @@ import {
 interface DependentFieldsProps {
   customFormData: any;
   onFieldsChange: (fields: any) => void;
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DependentFields: React.FC<DependentFieldsProps> = ({
   customFormData,
   onFieldsChange,
+  setShowForm
 }) => {
   const [MGSData, setMGSData] = useState<any[]>();
   const [boardOptions, setBoardOptions] = useState<any[]>([]);
@@ -149,6 +151,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
     setMediumOptions([]);
     setGradeOptions([]);
     setSubjectOptions([]);
+    setShowForm(false);
   };
 
   const handleMediumChange = (event: SelectChangeEvent<string>) => {
@@ -161,6 +164,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
     setSelectedMedium(selectedOption.label);
     setSelectedGrade('');
     setSubjectOptions([]);
+    setShowForm(false);
     if (selectedCode) {
       const getGradeSubjectData = getAssociatesByCode(MGSData, selectedCode);
       const extractedGradeOptions = filterByCategory(
@@ -173,6 +177,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
 
   const handleGradeChange = (event: SelectChangeEvent<string>) => {
     const grade = event.target.value;
+    setShowForm(false);
     let selectedOption: any = gradeOptions.find(
       (option) => option.value === grade
     );

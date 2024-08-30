@@ -51,13 +51,12 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [formData, setFormData] = useState<any>();
+  const [showForm, setShowForm] = useState(false);
   const { data: formResponse, isPending } = useFormRead(
     FormContext.COHORTS,
     FormContextType.COHORT
   );
   const [customFormData, setCustomFormData] = useState<any>();
-  const [areDependentFieldsFilled, setAreDependentFieldsFilled] =
-    useState(false);
 
   const setSubmittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.setSubmittedButtonStatus
@@ -85,8 +84,8 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
     }
   }, [formResponse]);
 
-  const handleDependentFieldsChange = (areFieldsFilled: boolean) => {
-    setAreDependentFieldsFilled(areFieldsFilled);
+  const handleDependentFieldsChange = () => {
+    setShowForm(true); 
   };
 
   const handleSubmit = async (
@@ -246,8 +245,9 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
               <DependentFields
                 customFormData={customFormData}
                 onFieldsChange={handleDependentFieldsChange}
+                setShowForm={setShowForm}
               />
-              {areDependentFieldsFilled && (
+              {showForm && (
                 <DynamicForm
                   schema={schema}
                   uiSchema={uiSchema}
