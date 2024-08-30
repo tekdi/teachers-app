@@ -66,7 +66,7 @@ import {
   getMenuItems,
   limit,
 } from '@/utils/app.constant';
-import { accessControl } from '../../../app.config';
+import { accessControl, Program } from '../../../app.config';
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import AssessmentReport from '@/components/AssessmentReport';
@@ -216,9 +216,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
 
   const fetchDataAndInitializeForm = async () => {
     try {
-      let formFields;
       const response = await getUserDetails(userId, true);
-      formFields = await getFormRead('USERS', 'STUDENT');
+      const formFields = await getFormRead(FormContext.USERS, FormContextType.STUDENT);
       console.log('response', response);
       console.log('formFields', formFields);
       setFormData(mapFields(formFields, response?.result));
@@ -445,7 +444,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
 
     const stateName: any = address?.split(',')[0];
     const filters = {
-      program: ['Second chance'],
+      program: [Program],
       se_boards: [stateName ?? ''],
       subject: [subjects || subject],
       assessment1: tests || test,

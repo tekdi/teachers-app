@@ -1,4 +1,6 @@
-import { createCohort, getFormRead } from '@/services/CreateUserService';
+import { createCohort } from '@/services/CreateUserService';
+import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
+import { FormContext, FormContextType } from '@/utils/app.constant';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -6,19 +8,20 @@ import {
   Fade,
   IconButton,
   Modal,
-  Radio,
   Typography,
 } from '@mui/material';
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { IChangeEvent } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import DynamicForm from '../DynamicForm';
+import FormButtons from '../FormButtons';
 import { GenerateSchemaAndUiSchema } from '../GeneratedSchemas';
 import { showToastMessage } from '../Toastify';
-import FormButtons from '../FormButtons';
-import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
+import { useFormRead } from '@/hooks/useFormRead';
+import Loader from '../Loader';
+import DependentFields from './DependentFields';
 
 interface CreateBlockModalProps {
   open: boolean;
@@ -37,12 +40,6 @@ interface CohortDetails {
   parentId: string | null;
   customFields: CustomField[];
 }
-const CustomRadio = styled(Radio)(({ theme }) => ({
-  color: theme.palette.text.primary,
-  '&.Mui-checked': {
-    color: theme.palette.text.primary,
-  },
-}));
 
 const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   open,
@@ -51,30 +48,45 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const [centerName, setCenterName] = useState<string>('');
-  const [centerType, setCenterType] = useState<string>('Regular');
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [formData, setFormData] = useState<any>();
+  const [showForm, setShowForm] = useState(false);
+  const { data: formResponse, isPending } = useFormRead(
+    FormContext.COHORTS,
+    FormContextType.COHORT
+  );
+  const [customFormData, setCustomFormData] = useState<any>();
 
   const setSubmittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.setSubmittedButtonStatus
   );
+
+  function removeHiddenFields(formResponse: any) {
+    return {
+      ...formResponse,
+      fields: formResponse.fields.filter((field: any) => !field.isHidden),
+    };
+  }
+
   useEffect(() => {
-    const getForm = async () => {
-      try {
-        const res = await getFormRead('cohorts', 'cohort');
-        console.log(res);
-        const { schema, uiSchema } = GenerateSchemaAndUiSchema(res, t);
-        console.log(schema, uiSchema);
+    if (formResponse) {
+      const updatedFormResponse = removeHiddenFields(formResponse);
+      if (updatedFormResponse) {
+        let { schema, uiSchema } = GenerateSchemaAndUiSchema(
+          updatedFormResponse,
+          t
+        );
         setSchema(schema);
         setUiSchema(uiSchema);
-      } catch (error) {
-        console.log(error);
+        setCustomFormData(formResponse);
       }
-    };
-    getForm();
-  }, []);
+    }
+  }, [formResponse]);
+
+  const handleDependentFieldsChange = () => {
+    setShowForm(true); 
+  };
 
   const handleSubmit = async (
     data: IChangeEvent<any, RJSFSchema, any>,
@@ -106,7 +118,8 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
       };
       if (typeof window !== 'undefined' && window.localStorage) {
         const fieldData = JSON.parse(localStorage.getItem('fieldData') ?? '');
-        Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
+        const bmgsData = JSON.parse(localStorage.getItem('BMGSData') ?? '');
+        Object.entries(formData).forEach(([fieldKey]) => {
           const fieldSchema = schema.properties[fieldKey];
           const fieldId = fieldSchema?.fieldId;
           if (fieldId !== null) {
@@ -127,13 +140,38 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
               value: [fieldData?.state?.blockCode],
             });
           }
+          if (bmgsData) {
+            cohortDetails.customFields.push({
+              fieldId: bmgsData.board.fieldId,
+              value: bmgsData.board.boardName,
+            });
+            cohortDetails.customFields.push({
+              fieldId: bmgsData.medium.fieldId,
+              value: bmgsData.medium.mediumName,
+            });
+            cohortDetails.customFields.push({
+              fieldId: bmgsData.grade.fieldId,
+              value: bmgsData.grade.gradeName,
+            });
+            cohortDetails.customFields.push({
+              fieldId: bmgsData.subject.fieldId,
+              value: bmgsData.subject.subjectName.join(', '),
+            });
+          }
         });
       }
+      cohortDetails.customFields = Array.from(
+        new Map(
+          cohortDetails.customFields.map((item) => [item.fieldId, item])
+        ).values()
+      );
+
       const cohortData = await createCohort(cohortDetails);
       if (cohortData) {
         showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
         onCenterAdded();
         handleClose();
+        localStorage.removeItem('BMGSData');
       }
     }
   };
@@ -189,23 +227,45 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
           </Box>
           <Divider sx={{ mb: -2, mx: -2 }} />
 
-          {schema && uiSchema && (
-            <DynamicForm
-              schema={schema}
-              uiSchema={uiSchema}
-              onSubmit={handleSubmit}
-              onChange={handleChange}
-              onError={handleError}
-              widgets={{}}
-              showErrorList={true}
+          {isPending && (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '20px',
+              }}
             >
-              <FormButtons
-                formData={formData}
-                onClick={handleButtonClick}
-                isCreateCentered={true}
-                isCreatedFacilitator={false}
+              <Loader showBackdrop={false} loadingText={t('COMMON.LOADING')} />
+            </Box>
+          )}
+          {!isPending && schema && uiSchema && (
+            <>
+              <DependentFields
+                customFormData={customFormData}
+                onFieldsChange={handleDependentFieldsChange}
+                setShowForm={setShowForm}
               />
-            </DynamicForm>
+              {showForm && (
+                <DynamicForm
+                  schema={schema}
+                  uiSchema={uiSchema}
+                  onSubmit={handleSubmit}
+                  onChange={handleChange}
+                  onError={handleError}
+                  widgets={{}}
+                  showErrorList={true}
+                >
+                  <FormButtons
+                    formData={formData}
+                    onClick={handleButtonClick}
+                    isCreateCentered={true}
+                    isCreatedFacilitator={false}
+                  />
+                </DynamicForm>
+              )}
+            </>
           )}
         </Box>
       </Fade>

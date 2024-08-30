@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, post } from './RestClient';
+import { post } from './RestClient';
 import { tenantId } from '../../app.config';
 
 export const getFormRead = async (
