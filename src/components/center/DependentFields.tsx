@@ -39,6 +39,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
   const [subjectData, setSubjectData] = useState<any[]>([]);
   const [subjectOptions, setSubjectOptions] = useState<any[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<string[]>([]);
+  const [selectedSubjectLabel, setSelectedSubjectLabel] = useState<string[]>([]);
 
   const res = customFormData;
 
@@ -74,7 +75,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
         },
         subject: {
           fieldId: fieldIds.subject,
-          subjectName: selectedSubject,
+          subjectName: selectedSubjectLabel,
         },
       };
       // console.log(`arrangedData`, arrangedData)
@@ -82,7 +83,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
         selectedBoard &&
         selectedMedium &&
         selectedGrade &&
-        selectedSubject.length > 0 &&
+        selectedSubjectLabel.length > 0 &&
         arrangedData
       ) {
         localStorage.setItem('BMGSData', JSON.stringify(arrangedData));
@@ -92,6 +93,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
 
   useEffect(() => {
     setSelectedSubject([]);
+    setSelectedSubjectLabel([])
   }, [selectedBoard, selectedMedium, selectedGrade]);
 
   useEffect(() => {
@@ -181,6 +183,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
     const grade = event.target.value;
     setShowForm(false);
     setSelectedSubject([])
+    setSelectedSubjectLabel([])
     let selectedOption: any = gradeOptions.find(
       (option) => option.value === grade
     );
@@ -204,14 +207,21 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
 
   const handleSubjectChange = (event: SelectChangeEvent<string[]>) => {
     const subjects = event.target.value as string[];
+
+    const selectedLabels = subjects.map((value) => {
+      const option = subjectOptions.find((option) => option.value === value);
+      return option ? option.label : value;
+    });
+
     setSelectedSubject(subjects);
-    console.log('Subjects', subjects);
+    setSelectedSubjectLabel(selectedLabels)
+    console.log('Subjects', selectedLabels);
 
     onFieldsChange({
       board: selectedBoard,
       medium: selectedMedium,
       grade: selectedGrade,
-      subject: subjects,
+      subject: selectedLabels,
     });
   };
 
