@@ -17,6 +17,7 @@ import { CustomField } from '@/utils/Interfaces';
 import {
   CenterType,
   cohortHierarchy,
+  QueryKeys,
   Status,
   Telemetry,
 } from '@/utils/app.constant';
@@ -29,6 +30,7 @@ import manageUserStore from '@/store/manageUserStore';
 import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
 import { telemetryFactory } from '@/utils/telemetry';
 import { toPascalCase } from '@/utils/Helper';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -93,6 +95,8 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
 }) => {
   const router = useRouter();
   const theme = useTheme<any>();
+  const queryClient = useQueryClient();
+
   const pathname = usePathname(); // Get the current pathname
   const { t } = useTranslation();
   const setCohorts = useStore((state) => state.setCohorts);
@@ -138,9 +142,15 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
       setLoading(true);
       const fetchCohorts = async () => {
         try {
-          const response = await getCohortList(userId, {
-            customField: 'true',
+          // const response = await getCohortList(userId, {
+          //   customField: 'true',
+          // });
+
+          const response = await queryClient.fetchQuery({
+            queryKey: [QueryKeys.MY_COHORTS, userId],
+            queryFn: () => getCohortList(userId as string, { filter: 'true' }),
           });
+  
           // response = response.filter((block: any) => {
           //   if (
           //     block?.cohortMemberStatus === Status.ACTIVE &&

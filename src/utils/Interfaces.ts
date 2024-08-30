@@ -128,6 +128,7 @@ export interface ExtraSessionsCardProps {
 
 export interface SessionsCardProps {
   data: any;
+  showCenterName?: boolean;
   children?: React.ReactNode;
   isEventDeleted?: () => void;
   isEventUpdated?: () => void;
