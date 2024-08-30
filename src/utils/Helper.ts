@@ -434,3 +434,100 @@ export const format2DigitDate = (dateStr: any) => {
   // Format the date into "2 Feb, 2024" format
   return format(dateObj, "d MMM, yyyy");
 }
+type Field = {
+  options?: Option[];
+  name?: string;
+  dependsOn: string | boolean | null;
+  sourceDetails?: {
+    url?: string;
+  };
+  fieldId?: string;
+  fileds?: any
+};
+
+type Framework = {
+  name: string;
+  identifier: string;
+};
+
+type Option = {
+  label: string;
+  value: string;
+};
+
+export const mapFrameworksToOptionsWithFieldId = (frameworks: Framework[]) => {
+  return frameworks.map(framework => ({
+     label: framework.name, value: framework.identifier
+  }));
+};
+
+export const formatOptions = (data: any[]) => {
+  return data.map((item) => ({
+    label: item.name,
+    value: item.code,
+  }));
+};
+
+export const getAssociatesByCode = (data: any, selectedCode: string): any[] => {
+  const selectedItem = data.find((item: { code: string; }) => item.code === selectedCode);
+  return selectedItem ? selectedItem.associates : [];
+};
+
+export const getAssociatesByIdentifier = (data: any, selectedIdentifier: string): any[] => {
+  const selectedItem = data.find((item: { identifier: string; }) => item.identifier === selectedIdentifier);
+  return selectedItem ? selectedItem.associates : [];
+};
+
+// export const updateFieldOptions = (
+//   fields: Field[], 
+//   optionsList: Array<{ fieldId: string, options: Option[] }>
+// ): Field[] => {
+//   return fields.map(field => {
+//     // Only update options if 'dependsOn' is explicitly set to false
+//     if (field.dependsOn === false) {
+//       const matchingOptions = optionsList.find(option => option.fieldId === field.fieldId);
+//       if (matchingOptions) {
+//         return { ...field, options: matchingOptions.options };
+//       }
+//     }
+//     return field;
+//   });
+// };
+
+export const getOptionsByCode = (data: any, code: string) => {
+  const mediumData = data?.find((item: any) => item.code === code);
+
+  if (mediumData) {
+    return mediumData.terms
+      .filter((term: any) => term.status === 'Live')
+      .map((term: any) => ({
+        name: term.name,
+        code: term.code,
+        identifier: term.identifier,
+        associates: term.associations,
+      }));
+  }
+
+  return [];
+};
+
+export const filterByCategory = (data: any, category: string) => {
+  const categoryData = data
+    ?.filter((item: any) => item.category === category && item.status === 'Live')
+    .map((element: any) => ({
+      label: element.name,
+      value: element.identifier,
+    }));
+
+  return categoryData || [];
+};
+
+// export function sortByKeyWithNumericHandling(data: any[], key: string | number) {
+//   return data.sort((a, b) => {
+//       return a[key].localeCompare(b[key], undefined, {
+//           numeric: true,
+//           sensitivity: 'base' // Case-insensitive comparison
+//       });
+//   });
+// }
+
