@@ -234,8 +234,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
       )}
 
       {/* Medium dropdown */}
-      {mediumOptions.length > 0 && (
-        <FormControl fullWidth variant="outlined" margin="normal">
+        <FormControl fullWidth variant="outlined" margin="normal"  disabled={!selectedBoard}>
           <InputLabel id="medium-select-label">Medium</InputLabel>
           <Select
             labelId="medium-select-label"
@@ -250,11 +249,9 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
             ))}
           </Select>
         </FormControl>
-      )}
 
-      {/* Grade dropdown */}
-      {gradeOptions.length > 0 && (
-        <FormControl fullWidth variant="outlined" margin="normal">
+      {/* Grade dropdown */}  
+        <FormControl fullWidth variant="outlined" margin="normal"  disabled={!selectedMedium}>
           <InputLabel id="grade-select-label">Grade</InputLabel>
           <Select
             labelId="grade-select-label"
@@ -269,11 +266,9 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
             ))}
           </Select>
         </FormControl>
-      )}
 
       {/* Subject dropdown (multi-select with checkboxes) */}
-      {subjectOptions.length > 0 && (
-        <FormControl fullWidth variant="outlined" margin="normal">
+        <FormControl fullWidth variant="outlined" margin="normal"  disabled={!selectedGrade}>
           <InputLabel id="subject-select-label">Subject</InputLabel>
           <Select
             labelId="subject-select-label"
@@ -301,7 +296,6 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
             ))}
           </Select>
         </FormControl>
-      )}
     </div>
   );
 };
