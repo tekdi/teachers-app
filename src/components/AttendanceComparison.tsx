@@ -17,12 +17,14 @@ import {
   FormControl,
   Typography,
   Box,
+  useMediaQuery,
 } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import useStore from '../store/store';
 import { useTheme } from '@mui/material/styles';
 import { overallAttendanceInPercentageStatusList } from '@/services/AttendanceService';
 import { CenterType, cohortPrivileges } from '@/utils/app.constant';
+import { toPascalCase } from '@/utils/Helper';
 
 interface AttendanceComparisonProps {
   blockName: string;
@@ -58,6 +60,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
 }) => {
   const { t } = useTranslation();
   const [centerType, setCenterType] = useState('REGULAR');
+  const isMobile = useMediaQuery('(max-width:600px)');
   const [attendanceData, setAttendanceData] = useState<Record<string, string>>(
     {}
   );
@@ -118,9 +121,20 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
     store?.cohorts
       ?.filter((pair: Cohort) => pair?.cohortType === centerType)
       .map((pair: Cohort) => ({
-        name: pair.name,
+        name: toPascalCase(pair?.name),
         Attendance: Number(attendanceData[pair?.cohortId]) || 0,
       })) || [];
+
+  const YAxisLabel = (value: any) => {
+    let maxLength = 25;
+    value = toPascalCase(value);
+
+    if (isMobile) {
+      maxLength = 6;
+    } 
+    return value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
+  }
+
 
   const renderCustomLabel = (props: any) => {
     const { x, y, width, height, value } = props;
@@ -225,7 +239,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
               <BarChart
                 layout="vertical"
                 data={data}
-                margin={{ top: 5, left: 15 }}
+                margin={{ top: 5, left: isMobile ? 0 : 70, right: isMobile ? 0 : 5 }}
               >
                 <CartesianGrid
                   stroke={theme.palette.warning.A700}
@@ -239,40 +253,42 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                 <YAxis
                   type="category"
                   dataKey="name"
-                  tick={(props) => {
-                    const { x, y, payload } = props;
-                    const name = payload.value;
-                    const firstLine = name.slice(0, 7);
-                    const secondLine = name.slice(7, 13);
-                    const thirdLine = name.slice(13, 19);
-                    const capitalizedFirstLine =
-                      firstLine.charAt(0).toUpperCase() + firstLine.slice(1);
+                  tickFormatter={YAxisLabel}
+                  tick={{ fontSize: 12, width: isMobile ? 50 : 100 }}
+                  // tick={(props) => {
+                  //   const { x, y, payload } = props;
+                  //   const name = payload.value;
+                  //   const firstLine = name.slice(0, 7);
+                  //   const secondLine = name.slice(7, 13);
+                  //   const thirdLine = name.slice(13, 19);
+                  //   const capitalizedFirstLine =
+                  //     firstLine.charAt(0).toUpperCase() + firstLine.slice(1);
 
-                    return (
-                      <text
-                        x={x}
-                        y={y}
-                        dy={4}
-                        textAnchor="end"
-                        fontSize={16}
-                        fill="gray"
-                      >
-                        <tspan x={x} dy="0em">
-                          {capitalizedFirstLine}
-                        </tspan>
-                        {secondLine && (
-                          <tspan x={x} dy="1.3em">
-                            {secondLine}
-                          </tspan>
-                        )}
-                        {thirdLine && (
-                          <tspan x={x} dy="1.3em">
-                            {thirdLine}
-                          </tspan>
-                        )}
-                      </text>
-                    );
-                  }}
+                  //   return (
+                  //     <text
+                  //       x={x}
+                  //       y={y}
+                  //       dy={4}
+                  //       textAnchor="end"
+                  //       fontSize={16}
+                  //       fill="gray"
+                  //     >
+                  //       <tspan x={x} dy="0em">
+                  //         {capitalizedFirstLine}
+                  //       </tspan>
+                  //       {secondLine && (
+                  //         <tspan x={x} dy="1.3em">
+                  //           {secondLine}
+                  //         </tspan>
+                  //       )}
+                  //       {thirdLine && (
+                  //         <tspan x={x} dy="1.3em">
+                  //           {thirdLine}
+                  //         </tspan>
+                  //       )}
+                  //     </text>
+                  //   );
+                  // }}
                 />
 
                 <Tooltip formatter={(value: number) => `${value}%`} />
@@ -291,11 +307,11 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
             <BarChart
               layout="vertical"
               data={[{ name: '', Attendance: 0 }]}
-              margin={{ left: 75 }}
+              margin={{ left: isMobile ? 60 : 130, right: isMobile ? 0 : 5 }}
             >
               <XAxis
                 type="number"
-                tickFormatter={(value: any) => `${value}%`}
+                // tickFormatter={(value: any) => `${value}`}
                 domain={[0, 100]}
               />
               <Tooltip formatter={(value: number) => `${value}%`} />

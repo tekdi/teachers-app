@@ -87,7 +87,7 @@ const CoursePlanner = () => {
         </Typography>
       </Box>
 
-      <Grid sx={{ display: 'flex', alignItems: 'center' }} container>
+      {/* <Grid sx={{ display: 'flex', alignItems: 'center' }} container>
         <Grid item md={6} xs={12}>
           <Box sx={{ mt: 2, px: '20px' }}>
             <Box sx={{ flexBasis: '70%' }}>
@@ -103,7 +103,7 @@ const CoursePlanner = () => {
                   }}
                 >
                   <MenuItem className="text-truncate">
-                    Khapari Dharmu (Chimur, Chandrap) {/* will come from API */}
+                    Khapari Dharmu (Chimur, Chandrap)
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -136,7 +136,7 @@ const CoursePlanner = () => {
             </Paper>
           </Box>
         </Grid>
-      </Grid>
+      </Grid> */}
 
       <Box sx={{ mt: 2 }}>
         <Box
