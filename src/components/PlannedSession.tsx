@@ -5,6 +5,7 @@ import { createEvent, editEvent } from '@/services/EventService';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { CreateEvent, PlannedModalProps } from '@/utils/Interfaces';
 import {
+  CenterType,
   FormContext,
   FormContextType,
   Role,
@@ -96,7 +97,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const [mode, setMode] = useState<mode>(
-    cohortType === 'reular' ? sessionMode.OFFLINE : sessionMode.ONLINE
+    cohortType === CenterType.REGULAR ? sessionMode.OFFLINE : sessionMode.ONLINE
   );
   // const [eventType, setEventType] = useState<type>(sessionType.JUST);
   const [link, setLink] = useState('');
@@ -1003,7 +1004,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 mode2: t('CENTER_SESSION.OFFLINE'),
               }}
               cohortType={cohortType}
-              disabled={editSession ? true : false}
+              disabled={editSession}
             />
           </Box>
           {(clickedBox === 'PLANNED_SESSION' || editSession) && (

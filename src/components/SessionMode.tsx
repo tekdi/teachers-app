@@ -10,6 +10,8 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { SessionModeProps } from '../utils/Interfaces';
+import { CenterType } from '@/utils/app.constant';
+import { toPascalCase } from '@/utils/Helper';
 
 const SessionMode: React.FC<SessionModeProps> = ({
   handleSessionModeChange,
@@ -19,14 +21,6 @@ const SessionMode: React.FC<SessionModeProps> = ({
   cohortType,
 }) => {
   const theme = useTheme<any>();
-
-  const toTitleCase = (str: string) => {
-    return str
-      .toLowerCase()
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
 
   console.log('SessionMode Rendered with mode:', mode);
 
@@ -56,24 +50,24 @@ const SessionMode: React.FC<SessionModeProps> = ({
             <Radio
               style={{
                 color:
-                  cohortType === 'remote' || disabled
+                  cohortType === CenterType.REMOTE || disabled
                     ? theme?.palette?.warning['400']
                     : theme?.palette?.warning['300'],
               }}
-              disabled={cohortType === 'remote' || disabled}
+              disabled={cohortType === CenterType.REMOTE || disabled}
             />
           }
           label={
             <span
               style={{
                 color:
-                  cohortType === 'remote' || disabled
+                  cohortType === CenterType.REMOTE || disabled
                     ? theme?.palette?.warning['400']
                     : theme?.palette?.warning['300'],
                 fontSize: '16px',
               }}
             >
-              {toTitleCase(sessions.mode2)}
+              {toPascalCase(sessions.mode2)}
             </span>
           }
         />
@@ -98,7 +92,7 @@ const SessionMode: React.FC<SessionModeProps> = ({
                 fontSize: '16px',
               }}
             >
-              {toTitleCase(sessions.mode1)}
+              {toPascalCase(sessions.mode1)}
             </span>
           }
         />

@@ -198,7 +198,7 @@ const CohortPage = () => {
           const typeOfCohort = cohortData.customField.find(
             (item: CustomField) => item.label === 'TYPE_OF_COHORT'
           );
-          setCohortType(typeOfCohort?.code);
+          setCohortType(typeOfCohort?.value);
         }
         setCohortDetails(cohortData);
         setCohortName(cohortData?.name);
