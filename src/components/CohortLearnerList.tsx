@@ -54,24 +54,23 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             filters,
           });
           const resp = response?.result?.userDetails;
-
+                    
           if (resp) {
-            const userDetails = resp.map((user: any) => ({
-              name: toPascalCase(user.name),
-              userId: user.userId,
-              memberStatus: user.status,
-              statusReason: user.statusReason,
-              cohortMembershipId: user.cohortMembershipId,
-              enrollmentNumber: capitalizeEachWord(
-                getFieldValue(
-                  user?.customField,
-                  'fieldname',
-                  'Enrollment Number',
-                  'fieldvalues',
-                  '-'
-                )
-              ),
-            }));
+
+  
+            const userDetails = resp.map((user: any) => {
+              const ageField = user.customField.find((field: { label: string }) => field.label === "AGE");
+              return {
+                name: toPascalCase(user?.name),
+                userId: user?.userId,
+                memberStatus: user?.status,
+                statusReason: user?.statusReason,
+                cohortMembershipId: user?.cohortMembershipId,
+                enrollmentNumber: user?.username,
+                age: ageField ? ageField.value : null, // Extract age for the specific user
+              };
+            });
+            
             console.log(`userDetails`, userDetails);
             setUserData(userDetails);
           }
@@ -117,6 +116,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                     userId={data.userId}
                     learnerName={data.name}
                     enrollmentId={data.enrollmentNumber}
+                    age={data.age}
                     cohortMembershipId={data.cohortMembershipId}
                     isDropout={data.memberStatus === Status.DROPOUT}
                     statusReason={data.statusReason}

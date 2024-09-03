@@ -469,6 +469,21 @@ const LoginPage = () => {
                     />
                   </Box>
 
+                  <Box
+                    sx={{
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: theme.palette.secondary.main,
+                      mt: 1,
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      router.push('/reset-password');
+                    }}
+                  >
+                    {t('LOGIN_PAGE.FORGOT_PASSWORD')}
+                  </Box>
+
                   {/* {
                     <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
                       <Link

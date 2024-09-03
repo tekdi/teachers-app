@@ -78,7 +78,6 @@ const MenuDrawer: React.FC<DrawerProps> = ({
       handleToggleDrawer(false)();
     }
   };
-  
 
   const navigateToDashboard = () => {
     closeDrawer();
@@ -91,18 +90,16 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   };
 
   const isDashboard = router.pathname === '/dashboard';
-  const isTeacherCenter = router.pathname === '/centers';
-  const isCoursePlanner = router.pathname === '/course-planner';
-  const isAssessments = router.pathname === '/assessments';
-  const isBoard = router.pathname === '/board-enrollment';
+  const isTeacherCenter = router.pathname.includes('/centers');
+  const isCoursePlanner = router.pathname.includes('/course-planner');
+  const isAssessments = router.pathname.includes('/assessments');
+  const isBoard = router.pathname.includes('/board-enrollment');
   // const isManageUser = router.pathname === '/manageUser';
 
   return (
     <Drawer
       open={isDesktop || isOpen}
-      onClose={
-        closeDrawer
-      }
+      onClose={closeDrawer}
       transitionDuration={{ enter: 500, exit: 500 }}
       className="backgroundFaded"
       variant={isDesktop ? 'persistent' : 'temporary'}
@@ -132,11 +129,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           </Box>
           {!isDesktop && (
             <Box>
-              <IconButton
-                onClick={
-                  closeDrawer
-                }
-              >
+              <IconButton onClick={closeDrawer}>
                 <ClearIcon sx={{ color: theme.palette.warning['300'] }} />
               </IconButton>
             </Box>
@@ -360,35 +353,26 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               width: '100%',
               display: 'flex',
               justifyContent: 'flex-start',
-              background: isBoard 
-                ? theme.palette.primary.main
-                : 'transparent',
+              background: isBoard ? theme.palette.primary.main : 'transparent',
 
-              padding: isBoard  
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isBoard   ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isBoard  ? '600' : 500,
+              padding: isBoard ? '16px 18px !important' : '0px 18px !important',
+              color: isBoard ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isBoard ? '600' : 500,
               '&:hover': {
-                background: isBoard 
+                background: isBoard
                   ? theme.palette.primary.main
                   : 'transparent',
               },
               marginTop: '15px',
             }}
             startIcon={
-              <Image
-                src={board}
-                alt="badge Icon"
-                width={24}
-                height={24}
-              />
+              <Image src={board} alt="badge Icon" width={24} height={24} />
             }
             onClick={() => {
               router.push(`/board-enrollment`);
             }}
           >
-          {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
+            {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
           </Button>
         </Box>
         <Box sx={{ marginTop: '18px' }}>
@@ -407,13 +391,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               },
               marginTop: '15px',
             }}
-            endIcon={
-              <ErrorOutlineIcon
-                sx={{ fontSize: '18px !important' }}
-              />
-            }
+            endIcon={<ErrorOutlineIcon sx={{ fontSize: '18px !important' }} />}
             onClick={() => {
-              localStorage.removeItem('hasSeenTutorial')
+              localStorage.removeItem('hasSeenTutorial');
               setTimeout(() => {
                 closeDrawer();
                 router.push(`/`);
@@ -423,8 +403,6 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             {t('GUIDE_TOUR.LEARN_HOW_TO_USE')}
           </Button>
         </Box>
-
-        
 
         {/* <Box sx={{ marginTop: '12px' }}>
           <Button

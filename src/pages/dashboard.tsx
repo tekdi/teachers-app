@@ -524,7 +524,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   }
 
-
   useEffect(() => {
     const getSessionsData = async () => {
       try {
@@ -629,7 +628,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
       getExtraSessionsData();
     }
   }, [timeTableDate, userId, myCohortList]);
-
 
   return (
     <>
@@ -1123,7 +1121,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Box>
                   <WeekCalender
                     showDetailsHandle={showTimeTableDetailsHandle}
-                    data={percentageAttendanceData}
                     disableDays={classId === 'all'}
                     classId={classId}
                     showFromToday={true}
