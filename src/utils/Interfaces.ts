@@ -324,7 +324,8 @@ export interface LearnerListProps {
   type?: string;
   userId: string;
   isDropout: boolean;
-  enrollmentId?: string | number;
+  enrollmentId?: any;
+  age: string | number;
   cohortMembershipId: string | number;
   learnerName: string;
   statusReason: string;
