@@ -465,8 +465,8 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                   <Box>
                     <Avatar
                       sx={{
-                        background: '#EDE1CF',
-                        color: '#1F1B13',
+                        background: '#EDE1CF' /* not in custom theme */,
+                        color: theme.palette.warning['300'],
                         fontSize: '16px',
                         fontWeight: '500',
                       }}
