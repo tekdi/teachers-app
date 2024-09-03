@@ -31,6 +31,7 @@ import Loader from './Loader';
 import ReassignModal from './ReassignModal';
 import SimpleModal from './SimpleModal';
 import { useQueryClient } from '@tanstack/react-query';
+import { toPascalCase } from '@/utils/Helper';
 
 interface Cohort {
   cohortId: string;
@@ -186,8 +187,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               const cohorts = cohortDetails[index] || [];
 
               const cohortNames = cohorts
-                .filter((cohort: any) => cohort.status === 'active')
-                .map((cohort: any) => cohort.cohortName)
+                .filter(({ cohortStatus }: any) => cohortStatus === 'active')
+                .map(({ cohortName }: any) => toPascalCase(cohortName))
                 .join(', ');
 
               return {
@@ -240,7 +241,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
         const cohortNamesArray = user?.cohortNames?.split(', ');
         const centerNames = cohortNamesArray?.map((cohortName: string) =>
           cohortName.trim()
-        ) || [t('ATTENDANCE.N/A')];
+        ) || [t('ATTENDANCE.NO_CENTERS_ASSIGNED')];
         setCenters(centerNames);
         setSelectedUser(user);
       }
@@ -427,6 +428,23 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const handleMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const getCohortNames = (cohortNames: string) => {
+    const cohorts = cohortNames.split(', ');
+    if (cohorts.length > 2) {
+      const names = `${cohorts[0]}, ${cohorts[1]}`;
+      return (
+        <>
+          {names}{"  "}
+          <span style={{fontWeight: 400}}>
+            {t('COMMON.AND_COUNT_MORE', { count: cohorts.length - 2 })}
+          </span>
+        </>
+      );
+    }
+    return cohortNames;
+  };
+
   return (
     <div>
       <Box>
@@ -525,7 +543,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                   key={user.userId}
                                 >
                                   <Box
-                                    key={user.userId}
                                     display={'flex'}
                                     borderBottom={`1px solid ${theme.palette.warning['A100']}`}
                                     width={'100%'}
@@ -567,8 +584,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                                 theme.palette.secondary.main,
                                             }}
                                           >
-                                            {user.name.charAt(0).toUpperCase() +
-                                              user.name.slice(1)}
+                                            {toPascalCase(user.name)}
                                           </Typography>
                                         </CustomLink>
                                         <Box
@@ -583,13 +599,10 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                           }}
                                         >
                                           {user?.cohortNames
-                                            ? `${
-                                                user.cohortNames
-                                                  .charAt(0)
-                                                  .toUpperCase() +
-                                                user.cohortNames.slice(1)
-                                              }`
-                                            : t('ATTENDANCE.N/A')}
+                                            ? getCohortNames(user.cohortNames)
+                                            : t(
+                                                'ATTENDANCE.NO_CENTERS_ASSIGNED'
+                                              )}
                                         </Box>
                                       </Box>
                                     </Box>

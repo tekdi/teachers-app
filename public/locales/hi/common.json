@@ -157,7 +157,7 @@
     "ATTENDANCE_OVERVIEW": "उपस्थिति अवलोकन",
     "CENTER_ATTENDANCE": "केंद्र उपस्थिति",
     "LOW_ATTENDANCE_STUDENTS": "कम उपस्थिति वाले छात्र",
-    "N/A": "उपलब्ध नहीं",
+    "NO_CENTERS_ASSIGNED": "उपलब्ध नहीं",
     "CENTER_NAME": "केंद्र का नाम",
     "ALL_CENTERS": "सभी केंद्र",
     "NO_LEARNER_WITH_LOW_ATTENDANCE": "कम उपस्थिति वाले कोई शिक्षार्थी नहीं",
