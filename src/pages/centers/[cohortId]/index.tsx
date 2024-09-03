@@ -478,7 +478,7 @@ const CohortPage = () => {
         >
           <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
-          <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
+          {role === Role.TEAM_LEADER && <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />}
         </Tabs>
       </Box>
 
