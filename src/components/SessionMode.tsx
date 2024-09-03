@@ -15,8 +15,18 @@ const SessionMode: React.FC<SessionModeProps> = ({
   handleSessionModeChange,
   mode,
   sessions,
+  disabled,
+  cohortType,
 }) => {
   const theme = useTheme<any>();
+
+  const toTitleCase = (str: string) => {
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
 
   console.log('SessionMode Rendered with mode:', mode);
 
@@ -42,29 +52,53 @@ const SessionMode: React.FC<SessionModeProps> = ({
       >
         <FormControlLabel
           value={sessions.mode2}
-          control={<Radio style={{ color: theme?.palette?.warning['300'] }} />}
+          control={
+            <Radio
+              style={{
+                color:
+                  cohortType === 'remote' || disabled
+                    ? theme?.palette?.warning['400']
+                    : theme?.palette?.warning['300'],
+              }}
+              disabled={cohortType === 'remote' || disabled}
+            />
+          }
           label={
             <span
               style={{
-                color: theme?.palette?.warning['300'],
+                color:
+                  cohortType === 'remote' || disabled
+                    ? theme?.palette?.warning['400']
+                    : theme?.palette?.warning['300'],
                 fontSize: '16px',
               }}
             >
-              {sessions.mode2}
+              {toTitleCase(sessions.mode2)}
             </span>
           }
         />
         <FormControlLabel
           value={sessions.mode1}
-          control={<Radio style={{ color: theme?.palette?.warning['300'] }} />}
+          control={
+            <Radio
+              style={{
+                color: disabled
+                  ? theme?.palette?.warning['400']
+                  : theme?.palette?.warning['300'],
+              }}
+              disabled={disabled}
+            />
+          }
           label={
             <span
               style={{
-                color: theme?.palette?.warning['300'],
+                color: disabled
+                  ? theme?.palette?.warning['400']
+                  : theme?.palette?.warning['300'],
                 fontSize: '16px',
               }}
             >
-              {sessions.mode1}
+              {toTitleCase(sessions.mode1)}
             </span>
           }
         />

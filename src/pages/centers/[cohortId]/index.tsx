@@ -112,6 +112,7 @@ const CohortPage = () => {
   const [eventUpdated, setEventUpdated] = React.useState(false);
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [cohortName, setCohortName] = React.useState<string>();
+  const [cohortType, setCohortType] = React.useState<string>();
   const [clickedBox, setClickedBox] = useState<string | null>(null);
   const [isLearnerAdded, setIsLearnerAdded] = useState(false);
   const [createEvent, setCreateEvent] = useState(false);
@@ -193,6 +194,11 @@ const CohortPage = () => {
           cohortData.address =
             `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
             '';
+
+          const typeOfCohort = cohortData.customField.find(
+            (item: CustomField) => item.label === 'TYPE_OF_COHORT'
+          );
+          setCohortType(typeOfCohort?.code);
         }
         setCohortDetails(cohortData);
         setCohortName(cohortData?.name);
@@ -542,6 +548,7 @@ const CohortPage = () => {
                 removeModal={removeModal}
                 scheduleEvent={createEvent}
                 cohortName={cohortName}
+                cohortType={cohortType}
                 cohortId={cohortId}
                 onCloseModal={handleCloseSchedule}
               />

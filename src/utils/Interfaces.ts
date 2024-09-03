@@ -152,6 +152,7 @@ export interface PlannedModalProps {
   scheduleEvent?: boolean;
   eventDeleted?: boolean;
   cohortName?: string;
+  cohortType?: string;
   cohortId?: string;
   onCloseModal?: () => void | undefined;
   editSelection?: string;
@@ -208,6 +209,8 @@ export interface SessionModeProps {
     mode1: string;
     mode2: string;
   };
+  disabled?: boolean;
+  cohortType?: string;
 }
 export interface LearnerAttendanceProps {
   limit: number;
@@ -563,20 +566,12 @@ export interface MeetingDetails {
 }
 
 export interface MetaData {
-  framework?: {
-    board?: string;
-    medium?: string;
-    grade?: string;
-    subject?: string;
-    topic?: string;
-    subTopic?: string;
-    teacherName?: string;
-  };
-  eventType?: string;
-  doId?: string;
+  category?: string;
+  subject?: string;
+  teacherName?: string;
   cohortId?: string;
   cycleId?: string;
-  tenant?: string;
+  tenantId?: string;
 }
 type Anchor = 'bottom';
 export interface BottomDrawerProps {
@@ -606,9 +601,9 @@ export interface IAssessmentStatusOptions {
 }
 
 export interface GetTargetedSolutionsParams {
-  subject:string,
+  subject: string;
   state: string;
-  medium: string
+  medium: string;
   class: string;
   board: string;
   type: string;

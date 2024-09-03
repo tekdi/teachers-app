@@ -84,6 +84,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   clickedBox,
   scheduleEvent,
   cohortName,
+  cohortType,
   cohortId,
   onCloseModal,
   editSession,
@@ -94,7 +95,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const [mode, setMode] = useState<mode>(sessionMode.OFFLINE);
+  const [mode, setMode] = useState<mode>(
+    cohortType === 'reular' ? sessionMode.OFFLINE : sessionMode.ONLINE
+  );
   // const [eventType, setEventType] = useState<type>(sessionType.JUST);
   const [link, setLink] = useState('');
   const [linkError, setLinkError] = useState('');
@@ -148,7 +151,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           ? sessionMode.ONLINE
           : sessionMode.OFFLINE;
       setMode(mode);
-      let sub = eventData?.metadata?.framework?.subject;
+      let sub = eventData?.metadata?.subject;
       setSelectedSubject(sub);
       let sessionTitle = eventData?.shortDescription;
       setShortDescription(sessionTitle);
@@ -160,17 +163,23 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       const startDateTime = eventData?.startDateTime;
       const endDateTime = eventData?.endDateTime;
       const endDateValue = eventData?.recurrencePattern?.endCondition?.value;
+      const recurringStartDate =
+        eventData?.recurrencePattern?.recurringStartDate;
 
       const localStartDateTime = dayjs.utc(startDateTime).tz(timeZone);
       const localEndDateTime = dayjs.utc(endDateTime).tz(timeZone);
       const localEndDateValue = dayjs.utc(endDateValue).tz(timeZone);
+      const recurringStartDateValue = dayjs
+        .utc(recurringStartDate)
+        .tz(timeZone);
 
-      setStartDate(localStartDateTime.startOf('day'));
       setStartTime(localStartDateTime);
       if (editSelection === t('CENTER_SESSION.EDIT_THIS_SESSION')) {
         setEndDate(localEndDateTime.startOf('day'));
+        setStartDate(localStartDateTime.startOf('day'));
       } else {
         setEndDate(localEndDateValue.startOf('day'));
+        setStartDate(recurringStartDateValue.startOf('day'));
       }
 
       setEndTime(localEndDateTime);
@@ -641,20 +650,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           registrationStartDate: '',
           registrationEndDate: '',
           metaData: {
-            framework: {
-              board: '',
-              medium: '',
-              grade: '',
-              subject: block?.subject || '',
-              topic: '',
-              subTopic: '',
-              teacherName: userName,
-            },
-            eventType: clickedBox || '',
-            doId: '',
+            category: title,
+            subject: block?.subject || '',
+            teacherName: userName,
             cohortId: cohortId || '',
             cycleId: '',
-            tenant: '',
+            tenantId: '',
           },
         };
 
@@ -786,51 +787,65 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             updatedBy: userId,
           };
 
-          let startDateTime = sessionBlocks?.[0]?.startDatetime;
+          if (editSelection === t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS')) {
+            let DaysOfWeek = sessionBlocks?.[0]?.DaysOfWeek;
+            let endDate = sessionBlocks?.[0]?.endDatetime;
+            let startDate = sessionBlocks?.[0]?.startDatetime;
+            let endDateTime = sessionBlocks?.[0]?.endDateValue;
+            apiBody['endDateTime'] = endDateTime;
+            const datePart = sessionBlocks?.[0]?.endDateValue?.split('T')[0];
+            const timePart = sessionBlocks?.[0]?.startDatetime?.split('T')[1];
+            const startDateValue = `${datePart}T${timePart}`;
+            apiBody['startDateTime'] = startDateValue;
+            apiBody['recurrencePattern'] = {
+              interval: 1,
+              frequency: 'weekly',
+              daysOfWeek: DaysOfWeek,
+              endCondition: {
+                type: 'endDate',
+                value: endDate,
+              },
+              recurringStartDate: startDate,
+            };
+          } else if (editSelection === t('CENTER_SESSION.EDIT_THIS_SESSION')) {
+            let startDateTime = sessionBlocks?.[0]?.startDatetime;
 
-          if (startDateTime && eventData?.startDateTime) {
-            const startDateTimeDate = new Date(startDateTime);
-            const eventDateTimeDate = new Date(eventData.startDateTime);
+            if (startDateTime && eventData?.startDateTime) {
+              const startDateTimeDate = new Date(startDateTime);
+              const eventDateTimeDate = new Date(eventData.startDateTime);
 
-            if (startDateTimeDate.getTime() !== eventDateTimeDate.getTime()) {
-              apiBody['startDatetime'] = startDateTime;
+              if (startDateTimeDate.getTime() !== eventDateTimeDate.getTime()) {
+                apiBody['startDatetime'] = startDateTime;
+              }
             }
-          }
 
-          let endDateTime = sessionBlocks?.[0]?.endDatetime;
-          if (endDateTime && eventData?.endDateTime) {
-            const endDateTimeDate = new Date(endDateTime);
-            const eventDateTimeDate = new Date(eventData.endDateTime);
+            let endDateTime = sessionBlocks?.[0]?.endDatetime;
+            if (endDateTime && eventData?.endDateTime) {
+              const endDateTimeDate = new Date(endDateTime);
+              const eventDateTimeDate = new Date(eventData.endDateTime);
 
-            if (endDateTimeDate.getTime() !== eventDateTimeDate.getTime()) {
-              apiBody['endDatetime'] = endDateTime;
+              if (endDateTimeDate.getTime() !== eventDateTimeDate.getTime()) {
+                apiBody['endDatetime'] = endDateTime;
+              }
             }
           }
 
           const metadata = {
-            framework: {
-              board: eventData?.metadata?.framework?.board || '',
-              medium: eventData?.metadata?.framework?.medium || '',
-              grade: eventData?.metadata?.framework?.grade || '',
-              subject: eventData?.metadata?.framework?.subject || '',
-              topic: eventData?.metadata?.framework?.topic || '',
-              subTopic: eventData?.metadata?.framework?.subTopic || '',
-              teacherName: eventData?.metadata?.framework?.teacherName || '',
-            },
-            eventType: eventData?.metadata?.clickedBox || '',
-            doId: eventData?.metadata?.doId || '',
+            category: eventData?.title || '',
+            subject: eventData?.metadata?.subject || '',
+            teacherName: eventData?.metadata?.teacherName || '',
             cohortId: eventData?.metadata?.cohortId || '',
             cycleId: eventData?.metadata?.cycleId || '',
-            tenant: eventData?.metadata?.tenant || '',
+            tenantId: eventData?.metadata?.tenantId || '',
           };
 
           const sessionSubject = sessionBlocks?.[0]?.subject || '';
 
           if (
             sessionSubject &&
-            eventData?.metadata?.framework?.subject !== sessionSubject
+            eventData?.metadata?.subject !== sessionSubject
           ) {
-            metadata.framework.subject = sessionSubject;
+            metadata.subject = sessionSubject;
             apiBody['metadata'] = metadata;
           }
 
@@ -987,6 +1002,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 mode1: t('CENTER_SESSION.ONLINE'),
                 mode2: t('CENTER_SESSION.OFFLINE'),
               }}
+              cohortType={cohortType}
+              disabled={editSession ? true : false}
             />
           </Box>
           {(clickedBox === 'PLANNED_SESSION' || editSession) && (
