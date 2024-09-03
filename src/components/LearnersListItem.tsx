@@ -37,6 +37,7 @@ import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { bulkCreateCohortMembers } from '@/services/CohortServices';
 import { capitalizeEachWord, filterMiniProfileFields } from '@/utils/Helper';
 import { useMediaQuery } from '@mui/material';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 type Anchor = 'bottom';
 
@@ -46,6 +47,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   learnerName,
   isDropout,
   enrollmentId,
+  age,
   cohortMembershipId,
   statusReason,
   reloadState,
@@ -561,7 +563,17 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                             color: theme.palette.warning['400'],
                           }}
                         >
-                          {enrollmentId}
+                          {age + ' y/o'}
+                        </Box>
+                        <FiberManualRecordIcon style={{ fontSize: '8px', color:'#CDC5BD' }} />
+                        <Box
+                          sx={{
+                            fontSize: '14px',
+                            fontWeight: '400',
+                            color: theme.palette.warning['400'],
+                          }}
+                        >
+                          {enrollmentId?.toUpperCase()}
                         </Box>
                       </>
                     )}
