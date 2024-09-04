@@ -606,12 +606,12 @@ export interface IAssessmentStatusOptions {
 }
 
 export interface GetTargetedSolutionsParams {
-  subject:string,
-  state: string;
-  medium: string
-  class: string;
-  board: string;
-  type: string;
+  subject: any  
+  state: any;             
+  medium: any;            
+  class: any;              
+  board: any;             
+  type: string;              
 }
 
 export interface GetUserProjectDetailsParams {
@@ -656,4 +656,10 @@ export interface GetUserProjectTemplateParams {
 
 export interface HorizontalLinearStepperProps {
   activeStep: number;
+}
+
+export interface GetCohortSearchParams {
+  cohortId: string;
+  limit?: number;
+  offset?: number;
 }

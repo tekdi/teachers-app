@@ -1,4 +1,4 @@
-import { CohortListParam } from '@/utils/Interfaces';
+import { CohortListParam, GetCohortSearchParams } from '@/utils/Interfaces';
 import { get, post } from './RestClient';
 import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 import { Status } from '@/utils/app.constant';
@@ -67,5 +67,26 @@ export const bulkCreateCohortMembers = async (payload: any): Promise<any> => {
   } catch (error) {
     console.error('Error in bulk creating cohort members', error);
     throw error;
+  }
+};
+
+
+export const getCohortSearch = async ({ cohortId, limit = 20, offset = 0 }: GetCohortSearchParams): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohort/search`;
+
+  const data = {
+    filters: {
+      cohortId,
+    },
+    limit,
+    offset,
+  };
+
+  try {
+    const response = await post(apiUrl, data);
+    return response?.data;
+  } catch (error) {
+    console.error('Error in searching Cohorts', error);
+    return error;
   }
 };

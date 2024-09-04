@@ -23,12 +23,21 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { getCoursePlanner } from '@/services/CoursePlannerService';
 import { CoursePlannerData } from '@/utils/Interfaces';
 import useCourseStore from '@/store/coursePlannerStore';
+import { getCohortSearch } from '@/services/CohortServices';
+import { CoursePlannerConstants } from '@/utils/app.constant';
+
 
 // Define a type for the course planner data
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState(1);
   const [subjects, setSubjects] = React.useState<CoursePlannerData[]>([]);
+  const [state, setState] = React.useState<string>('');
+  const [board, setBoard] = React.useState<string>('');
+  const [medium, setMedium] = React.useState<string>('');
+  const [grade, setGrade] = React.useState<string>('');
+  
+
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const router = useRouter();
@@ -50,23 +59,61 @@ const CoursePlanner = () => {
   };
 
   useEffect(() => {
-    const fetchCoursePlanner = async() => {
+    const fetchCohortSearchResults = async () => {
       try {
-        const response = await getCoursePlanner();
-        const transformedData = response.map((item: any) => ({
-          ...item,
-          id: String(item.id),
-        }));
-        setSubjects(transformedData)
-       
+        const data = await getCohortSearch({
+          cohortId: 'bce0e6af-9dff-4535-8a4d-827c4a5fb2c8',
+          limit: 20,
+          offset: 0,
+        });
+  
+        const cohortDetails = data?.result?.results?.cohortDetails?.[0];
+        console.log(cohortDetails);
+  
+        if (cohortDetails) {
+
+          const arrayFields = [
+            { label: CoursePlannerConstants.SUBJECT, setter: setSubjects },
+          ];
+  
+          const stringFields = [
+            { label: CoursePlannerConstants.STATES, setter: setState },
+            { label: CoursePlannerConstants.BOARD, setter: setBoard },
+            { label: CoursePlannerConstants.MEDIUM, setter: setMedium },
+            { label: CoursePlannerConstants.GRADE, setter: setGrade },
+          ];
+  
+ 
+          arrayFields.forEach(({ label, setter }) => {
+            const field = cohortDetails.customFields.find(
+              (field: any) => field.label === label
+            );
+  
+            if (field && field.value) {
+              const valuesArray = field.value.split(',').map((item: string) => item.trim());
+              setter(valuesArray);
+            }
+          });
+  
+          stringFields.forEach(({ label, setter }) => {
+            const field = cohortDetails.customFields.find(
+              (field: any) => field.label === label
+            );
+  
+            if (field && field.value) {
+              setter(field.value.trim());
+            }
+          });
+        }
       } catch (error) {
-        console.error('Error fetching course planner:', error);
+        console.error('Failed to fetch cohort search results:', error);
       }
     };
-
-    fetchCoursePlanner();
+  
+    fetchCohortSearchResults();
   }, []);
-
+  ;
+  
   return (
     <Box minHeight="100vh">
       <Box>
@@ -190,7 +237,7 @@ const CoursePlanner = () => {
               }}
             >
               <Grid container>
-                {subjects.map((item) => (
+                {subjects.map((item: any) => (
                  
                   <Grid key={item.id} item xs={12} sm={6} md={4}>
                     <Box
@@ -203,8 +250,11 @@ const CoursePlanner = () => {
                         background: theme.palette.warning['A400']
                       }}
                       onClick={() => {
-                        setSubject(item.subject)
-                        router.push(`/course-planner-detail`); // Check route
+                        setSubject(item)
+                        router.push({
+                          pathname: '/course-planner-detail',
+                          query: { subject: item , state: state, board:board, medium: medium, grade: grade},
+                        });
                       }}
                     >
                       <Box
@@ -272,7 +322,7 @@ const CoursePlanner = () => {
                                 color: theme.palette.warning['300'],
                               }}
                             >
-                              {item.subject}
+                              {item}
                             </Box>
                           </Box>
                         </Box>
