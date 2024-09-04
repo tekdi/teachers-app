@@ -16,7 +16,7 @@ import { useRouter } from 'next/router';
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
+  const theme = useTheme<any>();
 
   const [inputValue, setInputValue] = useState('');
 
@@ -46,25 +46,24 @@ const ForgotPassword = () => {
       >
         <Box
           sx={{
-            color: '#1F1B13',
+            color: theme.palette.warning['300'],
             fontWeight: '400',
             fontSize: '22px',
             textAlign: 'center',
           }}
         >
-          Trouble with logging in?
+          {t('LOGIN_PAGE.TROUBLE_LOGIN')}
         </Box>
         <Box
           sx={{
-            color: '#1F1B13',
+            color: theme.palette.warning['300'],
             fontWeight: '400',
             fontSize: '14px',
             textAlign: 'center',
             mt: 0.5,
           }}
         >
-          Enter your username or email address and we’ll send you a link to get
-          back into your account.
+          {t('LOGIN_PAGE.ENTER_USERNAME')}
         </Box>
 
         <Box
@@ -98,7 +97,7 @@ const ForgotPassword = () => {
                 </InputAdornment>
               ),
             }}
-            label={'Enter username or email'}
+            label={t('LOGIN_PAGE.ENTER_USERNAME_PASSWORD')}
           />
         </Box>
 
@@ -123,7 +122,7 @@ const ForgotPassword = () => {
                 router.push('/forgot-password/create-password');
               }}
             >
-              Next
+              {t('LOGIN_PAGE.NEXT')}
             </Button>
           </Box>
         </Box>
@@ -134,7 +133,7 @@ const ForgotPassword = () => {
         <Box
           sx={{
             mt: 3,
-            color: '#0D599E',
+            color: theme.palette.secondary.main,
             textAlign: 'center',
             fontSize: '14px',
             fontWeight: '500',
@@ -143,7 +142,7 @@ const ForgotPassword = () => {
             router.push('/login');
           }}
         >
-          Back to Login
+          {t('LOGIN_PAGE.BACK_TO_LOGIN')}
         </Box>
       </Box>
     </Box>

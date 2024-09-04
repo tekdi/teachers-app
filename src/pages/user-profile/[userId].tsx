@@ -645,8 +645,14 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
         </Box>
       )}{' '}
       <Box sx={{ px: '16px', mt: 2 }}>
-        <Box sx={{ fontSize: '14px', fontWeight: '500', color: '#1F1B13' }}>
-          Other settings
+        <Box
+          sx={{
+            fontSize: '14px',
+            fontWeight: '500',
+            color: theme.palette.warning['300'],
+          }}
+        >
+          {t('LOGIN_PAGE.OTHER_SETTING')}
         </Box>
         <Box sx={{ mt: 2.5 }}>
           <Button
@@ -669,7 +675,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
               router.push('/edit-forgot-password');
             }}
           >
-            Reset Password
+            {t('LOGIN_PAGE.RESET_PASSWORD')}
           </Button>
         </Box>
       </Box>

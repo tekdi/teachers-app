@@ -14,7 +14,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const CreatePassword = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
+  const theme = useTheme<any>();
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -81,26 +81,24 @@ const CreatePassword = () => {
       >
         <Box
           sx={{
-            color: '#1F1B13',
+            color: theme.palette.warning['300'],
             fontWeight: '400',
             fontSize: '22px',
             textAlign: 'center',
           }}
         >
-          {t('Create a strong password')}
+          {t('LOGIN_PAGE.CREATE_STRONG_PASSWORD')}
         </Box>
         <Box
           sx={{
-            color: '#1F1B13',
+            color: theme.palette.warning['300'],
             fontWeight: '400',
             fontSize: '14px',
             textAlign: 'center',
             mt: 0.5,
           }}
         >
-          {t(
-            "Create a new, strong password that you don't use for other websites"
-          )}
+          {t('LOGIN_PAGE.CREATE_NEW')}
         </Box>
 
         <Box
@@ -126,15 +124,17 @@ const CreatePassword = () => {
             error={passwordError}
             FormHelperTextProps={{
               sx: {
-                color: passwordError ? '#4D4639' : 'inherit',
+                color: passwordError
+                  ? theme.palette.warning['A200']
+                  : 'inherit',
               },
             }}
-            helperText={passwordError && t('Your password needs to:')}
+            helperText={passwordError && t('LOGIN_PAGE.YOUR_PASSWORD_NEEDS_TO')}
             label={t('LOGIN_PAGE.PASSWORD')}
             fullWidth
             sx={{
               '.MuiFormHelperText-root.Mui-error': {
-                color: '#4D4639',
+                color: theme.palette.warning['A200'],
               },
             }}
           />
@@ -146,7 +146,7 @@ const CreatePassword = () => {
               variant="body2"
               color={passwordError ? 'error' : 'textPrimary'}
               sx={{
-                color: '#4D4639',
+                color: theme.palette.warning['A200'],
                 fontSize: '16px',
                 fontWeight: '400',
               }}
@@ -155,42 +155,47 @@ const CreatePassword = () => {
                 sx={{
                   color:
                     password.match(/[A-Z]/) && password.match(/[a-z]/)
-                      ? '#1A8825'
-                      : '#BA1A1A',
+                      ? theme.palette.success.main
+                      : theme.palette.error.main,
                   fontSize: '12px',
                   fontWeight: '400',
                 }}
               >
-                ✓ Include both upper case and lower case
+                ✓ {t('LOGIN_PAGE.INCLUDE_BOTH')}
               </Box>
               <Box
                 sx={{
-                  color: password.match(/\d/) ? '#1A8825' : '#BA1A1A',
+                  color: password.match(/\d/)
+                    ? theme.palette.success.main
+                    : theme.palette.error.main,
                   fontSize: '12px',
                   fontWeight: '400',
                 }}
               >
-                ✓ Include at least one number
+                ✓ {t('LOGIN_PAGE.INCLUDE_NUMBER')}
               </Box>
               <Box
                 sx={{
                   color: password.match(/[!@#$%^&*(),.?":{}|<>]/)
-                    ? '#1A8825'
-                    : '#BA1A1A',
+                    ? theme.palette.success.main
+                    : theme.palette.error.main,
                   fontSize: '12px',
                   fontWeight: '400',
                 }}
               >
-                ✓ Include at least one special character
+                ✓ {t('LOGIN_PAGE.INCLUDE_SPECIAL')}
               </Box>
               <Box
                 sx={{
-                  color: password.length >= 8 ? '#1A8825' : '#BA1A1A',
+                  color:
+                    password.length >= 8
+                      ? theme.palette.success.main
+                      : theme.palette.error.main,
                   fontSize: '12px',
                   fontWeight: '400',
                 }}
               >
-                ✓ Must be at least 8 characters long
+                ✓ {t('LOGIN_PAGE.MUST_BE_AT')}
               </Box>
             </Typography>
           </Box>
@@ -217,12 +222,12 @@ const CreatePassword = () => {
             value={confirmPassword}
             onChange={handleConfirmPasswordChange}
             error={confirmPasswordError}
-            helperText={confirmPasswordError && t('Passwords do not match')}
+            helperText={confirmPasswordError && t('LOGIN_PAGE.NOT_MATCH')}
             label={t('LOGIN_PAGE.CONFIRM_PASSWORD')}
             fullWidth
             sx={{
               '.MuiFormHelperText-root.Mui-error': {
-                color: '#BA1A1A',
+                color: theme.palette.error.main,
               },
             }}
           />

@@ -17,7 +17,7 @@ import { useRouter } from 'next/router';
 
 const EditForgotPassword = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
+  const theme = useTheme<any>();
 
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -63,20 +63,26 @@ const EditForgotPassword = () => {
       <Header />
       <Box sx={{ px: '16px', mt: 2 }}>
         <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <WestIcon sx={{ color: '#4D4639' }} />
-          <Box sx={{ color: '#4D4639', fontWeight: '400', fontSize: '22px' }}>
-            Reset Password
+          <WestIcon sx={{ color: theme.palette.warning['A200'] }} />
+          <Box
+            sx={{
+              color: theme.palette.warning['A200'],
+              fontWeight: '400',
+              fontSize: '22px',
+            }}
+          >
+            {t('LOGIN_PAGE.RESET_PASSWORD')}
           </Box>
         </Box>
         <Box
           sx={{
             fontSize: '14px',
-            color: '#1F1B13',
+            color: theme.palette.warning['300'],
             fontWeight: '400',
             mt: 1.5,
           }}
         >
-          Create a new, strong password that you don't use for other websites
+          {t('LOGIN_PAGE.CREATE_NEW')}
         </Box>
 
         <Box
@@ -114,7 +120,15 @@ const EditForgotPassword = () => {
                       onClick={handleClickShowPassword}
                       edge="end"
                     >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                      {showPassword ? (
+                        <VisibilityOff
+                          sx={{ color: theme.palette.warning['A200'] }}
+                        />
+                      ) : (
+                        <Visibility
+                          sx={{ color: theme.palette.warning['A200'] }}
+                        />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -152,7 +166,15 @@ const EditForgotPassword = () => {
                       onClick={handleClickShowPassword}
                       edge="end"
                     >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                      {showPassword ? (
+                        <VisibilityOff
+                          sx={{ color: theme.palette.warning['A200'] }}
+                        />
+                      ) : (
+                        <Visibility
+                          sx={{ color: theme.palette.warning['A200'] }}
+                        />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -196,12 +218,20 @@ const EditForgotPassword = () => {
                       onClick={handleClickShowPassword}
                       edge="end"
                     >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                      {showPassword ? (
+                        <VisibilityOff
+                          sx={{ color: theme.palette.warning['A200'] }}
+                        />
+                      ) : (
+                        <Visibility
+                          sx={{ color: theme.palette.warning['A200'] }}
+                        />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
-              label={t('LOGIN_PAGE.CONFIRM_PASSWORD')}
+              label={t('LOGIN_PAGE.CONFIRM_NEW_PASSWORD')}
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
               error={
@@ -255,7 +285,7 @@ const EditForgotPassword = () => {
       <Box
         sx={{
           px: '16px',
-          color: '#0D599E',
+          color: theme.palette.secondary.main,
           fontSize: '14px',
           fontWeight: '500',
           mt: 3,
@@ -265,7 +295,7 @@ const EditForgotPassword = () => {
           router.push('/reset-password');
         }}
       >
-        Forgot Password?
+        {t('LOGIN_PAGE.FORGOT_PASSWORD')}
       </Box>
     </Box>
   );
