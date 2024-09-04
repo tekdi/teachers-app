@@ -63,8 +63,54 @@ const eventMonthView = () => {
               }
             });
           }
-          setSessions(sessionArray);
-          setExtraSessions(extraSessionArray);
+          if (extraSessionArray) {
+            const passed: any = [];
+            const live: any = [];
+            const upcoming: any = [];
+
+            const currentTime = new Date();
+
+            extraSessionArray?.map((item) => {
+              const eventStart = new Date(item?.startDateTime);
+              const eventEnd = new Date(item?.endDateTime);
+
+              if (currentTime < eventStart) {
+                upcoming.push(item);
+              } else if (currentTime >= eventStart && currentTime <= eventEnd) {
+                live.push(item);
+              } else if (currentTime > eventEnd) {
+                passed.push(item);
+              }
+            });
+
+            const combinedSessions = [...passed, ...live, ...upcoming];
+
+            setExtraSessions(combinedSessions);
+          }
+          if (sessionArray) {
+            const passed: any = [];
+            const live: any = [];
+            const upcoming: any = [];
+
+            const currentTime = new Date();
+
+            sessionArray?.map((item) => {
+              const eventStart = new Date(item?.startDateTime);
+              const eventEnd = new Date(item?.endDateTime);
+
+              if (currentTime < eventStart) {
+                upcoming.push(item);
+              } else if (currentTime >= eventStart && currentTime <= eventEnd) {
+                live.push(item);
+              } else if (currentTime > eventEnd) {
+                passed.push(item);
+              }
+            });
+
+            const combinedSessions = [...passed, ...live, ...upcoming];
+
+            setSessions(combinedSessions);
+          }
         }
       } catch (error) {
         setSessions([]);

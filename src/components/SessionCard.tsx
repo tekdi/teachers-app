@@ -11,7 +11,9 @@ import React, { useEffect } from 'react';
 import CenterSessionModal from './CenterSessionModal';
 import PlannedSession from './PlannedSession';
 import ConfirmationModal from './ConfirmationModal';
-
+import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
+import SensorsTwoToneIcon from '@mui/icons-material/SensorsTwoTone';
+import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
 const SessionsCard: React.FC<SessionsCardProps> = ({
   data,
   showCenterName = false,
@@ -33,6 +35,8 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const [updateEvent, setUpdateEvent] = React.useState(false);
   const [showEdit, setShowEdit] = React.useState(false);
   const [editSession, setEditSession] = React.useState();
+  const [eventStatus, setEventStatus] = React.useState('');
+
   const handleEditSelection = (selection: string) => {
     setEditSelection(selection);
   };
@@ -87,8 +91,32 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
     const endTime = endDateTime.time;
     setEndTime(endTime);
 
+    const currentTime = new Date();
+    const eventStart = new Date(data?.startDateTime);
+    const eventEnd = new Date(data?.endDateTime);
+
+    if (currentTime < eventStart) {
+      setEventStatus('upcoming');
+    } else if (currentTime >= eventStart && currentTime <= eventEnd) {
+      setEventStatus('live');
+    } else if (currentTime > eventEnd) {
+      setEventStatus('passed');
+    }
     console.log(startDate, startTime, endDate, endTime);
   }, [data]);
+
+  const getStatusIcon = () => {
+    switch (eventStatus) {
+      case 'upcoming':
+        return <CircleTwoToneIcon sx={{ color: 'grey' }} />;
+      case 'live':
+        return <SensorsTwoToneIcon sx={{ color: 'red' }} />;
+      case 'passed':
+        return <CheckCircleTwoToneIcon sx={{ color: 'green' }} />;
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     const currentYear = new Date().getFullYear();
@@ -135,15 +163,21 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
         }}
       >
         <Box>
-          <Typography
-            color={theme.palette.warning['300']}
-            fontWeight={'400'}
-            textAlign={'left'}
-            fontSize={'16px'}
-          >
-            {data?.metadata?.subject}
-          </Typography>
-
+          <Box display={'flex'} gap={1.5}>
+            {data?.isRecurring === false ? getStatusIcon() : ''}
+            <Typography
+              color={theme.palette.warning['300']}
+              fontWeight={'400'}
+              textAlign={'left'}
+              fontSize={'16px'}
+            >
+              {data?.metadata?.subject && data?.shortDescription
+                ? `${data?.metadata?.subject} - ${data?.shortDescription}`
+                : data?.metadata?.subject
+                  ? data?.metadata?.subject
+                  : data?.shortDescription}{' '}
+            </Typography>
+          </Box>
           <Typography
             fontWeight={'400'}
             textAlign={'left'}

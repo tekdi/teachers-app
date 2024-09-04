@@ -118,6 +118,8 @@ const CohortPage = () => {
   const [createEvent, setCreateEvent] = useState(false);
   const [eventCreated, setEventCreated] = useState(false);
   const [onEditEvent, setOnEditEvent] = useState(false);
+  const [sortedSessions, setSortedSessions] = useState<any>([]);
+  const [initialSlideIndex, setInitialSlideIndex] = useState<any>();
 
   const handleClick = (selection: string) => {
     setClickedBox(selection);
@@ -283,6 +285,39 @@ const CohortPage = () => {
     setEventDeleted(false);
     getExtraSessionsData();
   }, [eventCreated, eventDeleted, eventUpdated]);
+
+  useEffect(() => {
+    if (extraSessions) {
+      const passed: any = [];
+      const live: any = [];
+      const upcoming: any = [];
+
+      const currentTime = new Date();
+
+      extraSessions?.map((item) => {
+        const eventStart = new Date(item?.startDateTime);
+        const eventEnd = new Date(item?.endDateTime);
+
+        if (currentTime < eventStart) {
+          upcoming.push(item);
+        } else if (currentTime >= eventStart && currentTime <= eventEnd) {
+          live.push(item);
+        } else if (currentTime > eventEnd) {
+          passed.push(item);
+        }
+      });
+
+      const combinedSessions = [...passed, ...live, ...upcoming];
+
+      setSortedSessions(combinedSessions);
+
+      if (passed.length > 0) {
+        setInitialSlideIndex(passed.length);
+      } else {
+        setInitialSlideIndex(0);
+      }
+    }
+  }, [extraSessions]);
 
   const handleEventDeleted = () => {
     setEventDeleted(true);
@@ -565,35 +600,36 @@ const CohortPage = () => {
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
             <Box mt={3} sx={{ position: 'relative' }}>
-              <Swiper
-                pagination={{
-                  type: 'fraction',
-                }}
-                breakpoints={{
-                  500: {
-                    slidesPerView: 1,
-                    spaceBetween: 20,
-                  },
-                  740: {
-                    slidesPerView: 2,
-                    spaceBetween: 20,
-                  },
-                  900: {
-                    slidesPerView: 3,
-                    spaceBetween: 30,
-                  },
-                  2000: {
-                    slidesPerView: 4,
-                    spaceBetween: 40,
-                  },
-                }}
-                navigation={true}
-                modules={[Pagination, Navigation]}
-                className="mySwiper"
-              >
-                {extraSessions?.map((item) => (
-                  <>
-                    <SwiperSlide>
+              {initialSlideIndex && initialSlideIndex >= 0 && (
+                <Swiper
+                  initialSlide={initialSlideIndex}
+                  pagination={{
+                    type: 'fraction',
+                  }}
+                  breakpoints={{
+                    500: {
+                      slidesPerView: 1,
+                      spaceBetween: 20,
+                    },
+                    740: {
+                      slidesPerView: 2,
+                      spaceBetween: 20,
+                    },
+                    900: {
+                      slidesPerView: 3,
+                      spaceBetween: 30,
+                    },
+                    2000: {
+                      slidesPerView: 4,
+                      spaceBetween: 40,
+                    },
+                  }}
+                  navigation={true}
+                  modules={[Pagination, Navigation]}
+                  className="mySwiper"
+                >
+                  {sortedSessions?.map((item: any, index: any) => (
+                    <SwiperSlide key={index}>
                       <SessionCard
                         data={item}
                         isEventDeleted={handleEventDeleted}
@@ -602,9 +638,9 @@ const CohortPage = () => {
                         <SessionCardFooter item={item} />
                       </SessionCard>
                     </SwiperSlide>
-                  </>
-                ))}
-              </Swiper>
+                  ))}
+                </Swiper>
+              )}
             </Box>
             {extraSessions && extraSessions?.length === 0 && (
               <Box

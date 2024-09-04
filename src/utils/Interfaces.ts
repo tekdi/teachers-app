@@ -361,6 +361,8 @@ export interface AssignCentersToFacilitatorListParam {
 }
 
 export interface Session {
+  endDateTime: string | number | Date;
+  startDateTime: string | number | Date;
   id: number;
   subject: string;
   time: string;
