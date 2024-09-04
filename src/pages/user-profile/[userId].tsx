@@ -42,7 +42,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const { t } = useTranslation();
   const router = useRouter();
   const { userId }: any = router.query;
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const userStore = manageUserStore();
   const theme = useTheme<any>();
   const [userData, setUserData] = useState<any | null>(null);
@@ -63,7 +63,11 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
     FormContextType.TEACHER
   );
 
-  const { data: userDetails, error, isLoading } = useProfileInfo(userId ?? '', true);
+  const {
+    data: userDetails,
+    error,
+    isLoading,
+  } = useProfileInfo(userId ?? '', true);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -640,6 +644,35 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
           <Typography textAlign={'center'}>{t('COMMON.LOADING')}</Typography>
         </Box>
       )}{' '}
+      <Box sx={{ px: '16px', mt: 2 }}>
+        <Box sx={{ fontSize: '14px', fontWeight: '500', color: '#1F1B13' }}>
+          Other settings
+        </Box>
+        <Box sx={{ mt: 2.5 }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            sx={{
+              '&.Mui-disabled': {
+                backgroundColor: theme?.palette?.primary?.main,
+              },
+              minWidth: '84px',
+              padding: theme.spacing(1),
+              fontWeight: '500',
+              width: '128px',
+              height: '40px',
+              '@media (max-width: 430px)': {
+                width: '100%',
+              },
+            }}
+            onClick={() => {
+              router.push('/edit-forgot-password');
+            }}
+          >
+            Reset Password
+          </Button>
+        </Box>
+      </Box>
     </Box>
   );
 };
