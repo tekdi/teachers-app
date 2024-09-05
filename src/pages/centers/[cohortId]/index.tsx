@@ -5,6 +5,7 @@ import {
   getMonthName,
   getTodayDate,
   shortDateFormat,
+  sortSessionsByTime,
   toPascalCase,
 } from '@/utils/Helper';
 import {
@@ -112,11 +113,14 @@ const CohortPage = () => {
   const [eventUpdated, setEventUpdated] = React.useState(false);
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [cohortName, setCohortName] = React.useState<string>();
+  const [cohortType, setCohortType] = React.useState<string>();
   const [clickedBox, setClickedBox] = useState<string | null>(null);
   const [isLearnerAdded, setIsLearnerAdded] = useState(false);
   const [createEvent, setCreateEvent] = useState(false);
   const [eventCreated, setEventCreated] = useState(false);
   const [onEditEvent, setOnEditEvent] = useState(false);
+  const [sortedSessions, setSortedSessions] = useState<any>([]);
+  const [initialSlideIndex, setInitialSlideIndex] = useState<any>();
 
   const handleClick = (selection: string) => {
     setClickedBox(selection);
@@ -193,6 +197,11 @@ const CohortPage = () => {
           cohortData.address =
             `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
             '';
+
+          const typeOfCohort = cohortData.customField.find(
+            (item: CustomField) => item.label === 'TYPE_OF_COHORT'
+          );
+          setCohortType(typeOfCohort?.value);
         }
         setCohortDetails(cohortData);
         setCohortName(cohortData?.name);
@@ -277,6 +286,19 @@ const CohortPage = () => {
     setEventDeleted(false);
     getExtraSessionsData();
   }, [eventCreated, eventDeleted, eventUpdated]);
+
+  useEffect(() => {
+    if (extraSessions) {
+      const { sessionList, index } = sortSessionsByTime(extraSessions);
+      setSortedSessions(sessionList);
+
+      if (index > 0) {
+        setInitialSlideIndex(index);
+      } else {
+        setInitialSlideIndex(0);
+      }
+    }
+  }, [extraSessions]);
 
   const handleEventDeleted = () => {
     setEventDeleted(true);
@@ -478,7 +500,9 @@ const CohortPage = () => {
         >
           <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
-          <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
+          {role === Role.TEAM_LEADER && (
+            <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
+          )}
         </Tabs>
       </Box>
 
@@ -542,6 +566,7 @@ const CohortPage = () => {
                 removeModal={removeModal}
                 scheduleEvent={createEvent}
                 cohortName={cohortName}
+                cohortType={cohortType}
                 cohortId={cohortId}
                 onCloseModal={handleCloseSchedule}
               />
@@ -558,35 +583,36 @@ const CohortPage = () => {
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
             <Box mt={3} sx={{ position: 'relative' }}>
-              <Swiper
-                pagination={{
-                  type: 'fraction',
-                }}
-                breakpoints={{
-                  500: {
-                    slidesPerView: 1,
-                    spaceBetween: 20,
-                  },
-                  740: {
-                    slidesPerView: 2,
-                    spaceBetween: 20,
-                  },
-                  900: {
-                    slidesPerView: 3,
-                    spaceBetween: 30,
-                  },
-                  2000: {
-                    slidesPerView: 4,
-                    spaceBetween: 40,
-                  },
-                }}
-                navigation={true}
-                modules={[Pagination, Navigation]}
-                className="mySwiper"
-              >
-                {extraSessions?.map((item) => (
-                  <>
-                    <SwiperSlide>
+              {initialSlideIndex >= 0 && (
+                <Swiper
+                  initialSlide={initialSlideIndex}
+                  pagination={{
+                    type: 'fraction',
+                  }}
+                  breakpoints={{
+                    500: {
+                      slidesPerView: 1,
+                      spaceBetween: 20,
+                    },
+                    740: {
+                      slidesPerView: 2,
+                      spaceBetween: 20,
+                    },
+                    900: {
+                      slidesPerView: 3,
+                      spaceBetween: 30,
+                    },
+                    2000: {
+                      slidesPerView: 4,
+                      spaceBetween: 40,
+                    },
+                  }}
+                  navigation={true}
+                  modules={[Pagination, Navigation]}
+                  className="mySwiper"
+                >
+                  {sortedSessions?.map((item: any, index: any) => (
+                    <SwiperSlide key={index}>
                       <SessionCard
                         data={item}
                         isEventDeleted={handleEventDeleted}
@@ -595,9 +621,9 @@ const CohortPage = () => {
                         <SessionCardFooter item={item} />
                       </SessionCard>
                     </SwiperSlide>
-                  </>
-                ))}
-              </Swiper>
+                  ))}
+                </Swiper>
+              )}
             </Box>
             {extraSessions && extraSessions?.length === 0 && (
               <Box

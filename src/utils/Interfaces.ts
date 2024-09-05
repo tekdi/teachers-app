@@ -152,6 +152,7 @@ export interface PlannedModalProps {
   scheduleEvent?: boolean;
   eventDeleted?: boolean;
   cohortName?: string;
+  cohortType?: string;
   cohortId?: string;
   onCloseModal?: () => void | undefined;
   editSelection?: string;
@@ -208,6 +209,8 @@ export interface SessionModeProps {
     mode1: string;
     mode2: string;
   };
+  disabled?: boolean;
+  cohortType?: string;
 }
 export interface LearnerAttendanceProps {
   limit: number;
@@ -358,6 +361,8 @@ export interface AssignCentersToFacilitatorListParam {
 }
 
 export interface Session {
+  endDateTime: string | number | Date;
+  startDateTime: string | number | Date;
   id: number;
   subject: string;
   time: string;
@@ -563,20 +568,12 @@ export interface MeetingDetails {
 }
 
 export interface MetaData {
-  framework?: {
-    board?: string;
-    medium?: string;
-    grade?: string;
-    subject?: string;
-    topic?: string;
-    subTopic?: string;
-    teacherName?: string;
-  };
-  eventType?: string;
-  doId?: string;
+  category?: string;
+  subject?: string;
+  teacherName?: string;
   cohortId?: string;
   cycleId?: string;
-  tenant?: string;
+  tenantId?: string;
 }
 type Anchor = 'bottom';
 export interface BottomDrawerProps {
@@ -606,12 +603,14 @@ export interface IAssessmentStatusOptions {
 }
 
 export interface GetTargetedSolutionsParams {
+
   subject: any  
   state: any;             
   medium: any;            
   class: any;              
   board: any;             
   type: string;              
+
 }
 
 export interface GetUserProjectDetailsParams {
@@ -658,8 +657,10 @@ export interface HorizontalLinearStepperProps {
   activeStep: number;
 }
 
+
 export interface GetCohortSearchParams {
   cohortId: string;
   limit?: number;
   offset?: number;
 }
+

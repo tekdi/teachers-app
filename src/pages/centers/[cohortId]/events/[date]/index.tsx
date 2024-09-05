@@ -4,13 +4,17 @@ import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspace
 import { Session } from '../../../../../utils/Interfaces';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import SessionsCard from '@/components/SessionCard';
-import { getSessions } from '@/services/Sessionservice';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { Box, Typography } from '@mui/material';
-import { getAfterDate, getBeforeDate, shortDateFormat } from '@/utils/Helper';
+import {
+  getAfterDate,
+  getBeforeDate,
+  shortDateFormat,
+  sortSessionsByTime,
+} from '@/utils/Helper';
 import { getEventList } from '@/services/EventService';
 import { showToastMessage } from '@/components/Toastify';
 import MonthCalender from '@/components/MonthCalender';
@@ -34,9 +38,11 @@ const eventMonthView = () => {
       try {
         const date = shortDateFormat(selectedDate);
         let cohortId;
+
         if (typeof window !== 'undefined' && window.localStorage) {
           cohortId = localStorage.getItem('classId') || '';
         }
+
         if (cohortId !== '') {
           const afterDate = getAfterDate(date);
           const beforeDate = getBeforeDate(date);
@@ -50,21 +56,32 @@ const eventMonthView = () => {
             cohortId: cohortId,
             status: ['live'],
           };
+
           const response = await getEventList({ limit, offset, filters });
-          let sessionArray: any[] = [];
-          let extraSessionArray: any[] = [];
+
+          let sessionArray: any = [];
+          let extraSessionArray: any = [];
+
           if (response?.events.length > 0) {
-            response?.events?.forEach((event: any) => {
+            response?.events.forEach((event: any) => {
               if (event.isRecurring) {
                 sessionArray.push(event);
-              }
-              if (!event.isRecurring) {
+              } else {
                 extraSessionArray.push(event);
               }
             });
           }
-          setSessions(sessionArray);
-          setExtraSessions(extraSessionArray);
+
+          if (extraSessionArray.length > 0) {
+            const { sessionList, index } =
+              sortSessionsByTime(extraSessionArray);
+            setExtraSessions(sessionList);
+          }
+
+          if (sessionArray.length > 0) {
+            const { sessionList, index } = sortSessionsByTime(sessionArray);
+            setSessions(sessionList);
+          }
         }
       } catch (error) {
         setSessions([]);

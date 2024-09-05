@@ -140,12 +140,11 @@
     "USERNAME_PASSWORD_NOT_CORRECT": "The username or password you entered is incorrect",
     "FORGOT_PASSWORD": "Forgot Password?",
     "REMEMBER_ME": "Remember Me",
-    "CONFIRM_PASSWORD":"Confirm password",
-    "RESET_PASSWORD":"Reset password",
-    "CREATE_NEW":"Create a new, strong password that you don't use for other websites",
-    "NOT_MATCH":"Passwords do not match",
-    "CHARACTERS_LONG":"Passwords must be at least 8 characters long"
-
+    "CONFIRM_PASSWORD": "Confirm password",
+    "RESET_PASSWORD": "Reset password",
+    "CREATE_NEW": "Create a new, strong password that you don't use for other websites",
+    "NOT_MATCH": "Passwords do not match",
+    "CHARACTERS_LONG": "Passwords must be at least 8 characters long"
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",
@@ -344,8 +343,8 @@
     "THIS_SESSION": "This session",
     "FOLLOWING_SESSIONS": "This and following sessions",
     "MODE_OF_SESSION": "Mode of Session",
-    "OFFLINE": "Offline",
-    "ONLINE": "Online",
+    "OFFLINE": "offline",
+    "ONLINE": "online",
     "SUBJECT": "Subject",
     "MEETING_LINK": "Meeting Link",
     "MEETING_PASSCODE": "Meeting Passcode (if applicable)",
@@ -530,6 +529,6 @@
     "SUBJECTS_SELECTION": "Subjects Selection",
     "REGISTRATION_COMPLETED": "Registration Completed",
     "DROPPED_OUT": " Dropped Out",
-    "FEE_PAYMENT":"Fee Payment"
+    "FEE_PAYMENT": "Fee Payment"
   }
 }
