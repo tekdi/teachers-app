@@ -981,7 +981,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           }}
         >
           <CardContent>
-            <AssessmentReport isTitleRequired={true} />
+            <AssessmentReport classId ={classId} userId = {userId}/>
           </CardContent>
         </Card>
       </Box>
