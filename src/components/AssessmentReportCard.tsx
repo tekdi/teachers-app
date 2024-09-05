@@ -31,10 +31,16 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
   const { t } = useTranslation();
 
   const handleAssessmentDetails = (userId: string) => {
-    const type = assessmentType === AssessmentType.PRE_TEST ? 'pre' : 'post';
-    router.push(
-      `/assessments/user/${userId}?assessmentType=${type}&center=${classId}`
-    );
+    if (router.pathname === '/assessments') {
+      router.push(
+        `${router.pathname}/user/${userId}?assessmentType=${assessmentType}&center=${classId}`
+      );
+    } else {
+      const type = assessmentType === AssessmentType.PRE_TEST ? 'pre' : 'post';
+      router.push(
+        `/assessments/user/${userId}?assessmentType=${type}&center=${classId}`
+      );
+    }
   };
 
   const MemberListItemIcon = ({ status }: { status: string }) => {
@@ -89,76 +95,72 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
   };
 
   return (
-    <Box sx={{ background: '#ffffff', pb: '1rem' }}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={4} key={userId}>
+    <Grid item xs={12} sm={6} md={4} key={userId}>
+      <Box
+        sx={{
+          border: `1px solid ${theme?.palette?.warning['A100']}`,
+          display: 'flex',
+          justifyContent: 'space-between',
+          borderRadius: '8px',
+          gap: '5px',
+          background: theme.palette.warning['A400'],
+          cursor: 'pointer',
+        }}
+        onClick={() => handleAssessmentDetails(userId)}
+      >
+        <Box
+          sx={{
+            flexBasis: '20%',
+            background: theme?.palette?.primary?.light,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '7px',
+          }}
+        >
+          <MemberListItemIcon status={assessmentStatus} />
+        </Box>
+        <Box sx={{ flexBasis: '80%' }}>
           <Box
             sx={{
-              border: `1px solid ${theme?.palette?.warning['A100']}`,
+              px: '10px',
               display: 'flex',
               justifyContent: 'space-between',
-              borderRadius: '8px',
-              gap: '5px',
-              background: theme.palette.warning['A400'],
-              cursor: 'pointer',
+              alignItems: 'center',
+              padding: '7px',
             }}
-            onClick={() => handleAssessmentDetails(userId)}
           >
-            <Box
-              sx={{
-                flexBasis: '20%',
-                background: theme?.palette?.primary?.light,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '7px',
-              }}
-            >
-              <MemberListItemIcon status={assessmentStatus} />
-            </Box>
-            <Box sx={{ flexBasis: '80%' }}>
+            <Box>
               <Box
                 sx={{
-                  px: '10px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '7px',
+                  color: theme.palette.warning[300],
+                  fontSize: '16px',
+                  fontWeight: '400',
                 }}
               >
-                <Box>
-                  <Box
-                    sx={{
-                      color: theme.palette.warning[300],
-                      fontSize: '16px',
-                      fontWeight: '400',
-                    }}
-                  >
-                    {cardTitle}
-                  </Box>
-                  <Box
-                    sx={{
-                      gap: '4px',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <ProgressStatus
-                      status={assessmentStatus}
-                      percentage={overallPercentage}
-                    />
-                  </Box>
-                </Box>
-
-                <KeyboardArrowRightIcon
-                  sx={{ color: theme.palette.warning[300] }}
+                {cardTitle}
+              </Box>
+              <Box
+                sx={{
+                  gap: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <ProgressStatus
+                  status={assessmentStatus}
+                  percentage={overallPercentage}
                 />
               </Box>
             </Box>
+
+            <KeyboardArrowRightIcon
+              sx={{ color: theme.palette.warning[300] }}
+            />
           </Box>
-        </Grid>
-      </Grid>
-    </Box>
+        </Box>
+      </Box>
+    </Grid>
   );
 };
 

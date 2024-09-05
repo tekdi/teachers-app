@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -144,18 +144,21 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
       >
         {t('COMMON.ASSESSMENT_REPORT')}
       </Typography>
-
-      {assessmentData?.map((assessment: any) => (
-        <AssessmentReportCard
-          key={assessment.userId}
-          assessmentStatus={assessment.progress}
-          cardTitle={assessment.type}
-          overallPercentage={assessment.score}
-          userId={assessment.userId}
-          classId={classId}
-          assessmentType={assessment.type}
-        />
-      ))}
+      <Box sx={{ background: '#ffffff', pb: '1rem' }}>
+        <Grid container spacing={2}>
+          {assessmentData?.map((assessment: any) => (
+            <AssessmentReportCard
+              key={assessment.userId}
+              assessmentStatus={assessment.progress}
+              cardTitle={assessment.type}
+              overallPercentage={assessment.score}
+              userId={assessment.userId}
+              classId={classId}
+              assessmentType={assessment.type}
+            />
+          ))}
+        </Grid>
+      </Box>
     </Box>
   );
 };

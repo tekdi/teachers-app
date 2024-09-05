@@ -34,6 +34,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { AssessmentType, Program } from '../../../app.config';
 import { useQueryClient } from '@tanstack/react-query';
+import AssessmentReportCard from '@/components/AssessmentReportCard';
 
 const Assessments = () => {
   const theme = useTheme<any>();
@@ -273,63 +274,6 @@ const Assessments = () => {
     setModalOpen(false);
   };
 
-  const handleAssessmentDetails = (userId: string) => {
-    router.push(
-      `${router.pathname}/user/${userId}?assessmentType=${assessmentType}&center=${classId}`
-    );
-  };
-
-  const MemberListItemIcon = ({ status }: { status: string }) => {
-    switch (status) {
-      case AssessmentStatus.NOT_STARTED:
-        return <RemoveIcon sx={{ color: theme.palette.warning[300] }} />;
-      case AssessmentStatus.IN_PROGRESS:
-        return (
-          <RadioButtonUncheckedIcon
-            sx={{ color: theme.palette.warning[300] }}
-          />
-        );
-      case AssessmentStatus.COMPLETED:
-        return <CheckCircleIcon sx={{ color: theme.palette.warning[300] }} />;
-      default:
-        return null;
-    }
-  };
-
-  const ProgressStatus = ({
-    status,
-    percentage,
-  }: {
-    status: string;
-    percentage: string | number;
-  }) => {
-    let color = 'black';
-    percentage = Number(percentage);
-    if (percentage < 33) {
-      color = 'red';
-    } else if (percentage >= 33 && percentage < 66) {
-      color = 'orange';
-    } else if (percentage >= 66) {
-      color = 'green';
-    }
-
-    switch (status) {
-      case AssessmentStatus.NOT_STARTED:
-        return <Box>{t('ASSESSMENTS.NOT_STARTED')}</Box>;
-      case AssessmentStatus.IN_PROGRESS:
-        return <Box>{t('ASSESSMENTS.IN_PROGRESS')}</Box>;
-      case AssessmentStatus.COMPLETED:
-        return (
-          <Box>
-            {t('ASSESSMENTS.OVERALL_SCORE')}:{' '}
-            <span style={{ color: color }}>{percentage}%</span>
-          </Box>
-        );
-      default:
-        return null;
-    }
-  };
-
   const sortByStatus = (status: string) => {
     const filteredList = learnerList?.filter((item: any) => {
       return item?.status === status;
@@ -530,72 +474,15 @@ const Assessments = () => {
         <Box sx={{ background: '#FBF4E4', padding: '20px' }}>
           <Grid container spacing={2}>
             {filteredLearnerList?.map((member: any) => (
-              <Grid item xs={12} sm={6} md={4} key={member?.userId}>
-                <Box
-                  sx={{
-                    border: `1px solid ${theme?.palette?.warning['A100']}`,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    borderRadius: '8px',
-                    gap: '5px',
-                    background: theme.palette.warning['A400'],
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => handleAssessmentDetails(member?.userId)}
-                >
-                  <Box
-                    sx={{
-                      flexBasis: '20%',
-                      background: theme?.palette?.primary?.light,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      padding: '7px',
-                    }}
-                  >
-                    <MemberListItemIcon status={member.status} />
-                  </Box>
-                  <Box sx={{ flexBasis: '80%' }}>
-                    <Box
-                      sx={{
-                        px: '10px',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '7px',
-                      }}
-                    >
-                      <Box>
-                        <Box
-                          sx={{
-                            color: theme.palette.warning[300],
-                            fontSize: '16px',
-                            fontWeight: '400',
-                          }}
-                        >
-                          {member?.name}
-                        </Box>
-                        <Box
-                          sx={{
-                            gap: '4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <ProgressStatus
-                            status={member?.status}
-                            percentage={member?.percentage}
-                          />
-                        </Box>
-                      </Box>
-
-                      <KeyboardArrowRightIcon
-                        sx={{ color: theme.palette.warning[300] }}
-                      />
-                    </Box>
-                  </Box>
-                </Box>
-              </Grid>
+              <AssessmentReportCard
+                key={member.userId}
+                assessmentStatus={member.status}
+                cardTitle={member.name}
+                overallPercentage={member.percentage}
+                userId={member.userId}
+                classId={classId}
+                assessmentType={assessmentType}
+              />
             ))}
           </Grid>
         </Box>
