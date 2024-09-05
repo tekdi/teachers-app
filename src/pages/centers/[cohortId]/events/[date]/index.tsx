@@ -4,7 +4,6 @@ import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspace
 import { Session } from '../../../../../utils/Interfaces';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import SessionsCard from '@/components/SessionCard';
-import { getSessions } from '@/services/Sessionservice';
 import { logEvent } from '@/utils/googleAnalytics';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
