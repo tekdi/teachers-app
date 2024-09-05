@@ -478,7 +478,7 @@ const LoginPage = () => {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
-                      router.push('/reset-password');
+                      router.push('/forgot-password');
                     }}
                   >
                     {t('LOGIN_PAGE.FORGOT_PASSWORD')}

@@ -144,7 +144,21 @@
     "RESET_PASSWORD": "Reset password",
     "CREATE_NEW": "Create a new, strong password that you don't use for other websites",
     "NOT_MATCH": "Passwords do not match",
-    "CHARACTERS_LONG": "Passwords must be at least 8 characters long"
+    "CHARACTERS_LONG": "Passwords must be at least 8 characters long",
+    "OLD_PASSWORD":"Old Password",
+    "NEW_PASSWORD":"New Password",
+    "CONFIRM_NEW_PASSWORD":"Confirm New Password",
+    "TROUBLE_LOGIN":"Trouble with logging in?",
+    "ENTER_USERNAME":"Enter your username or email address and we’ll send you a link to get back into your account.",
+    "ENTER_USERNAME_PASSWORD":"Enter username or email",
+    "BACK_TO_LOGIN":"Back to Login",
+    "CREATE_STRONG_PASSWORD":"Create a strong password",
+    "YOUR_PASSWORD_NEEDS_TO:":"Your password needs to:",
+    "INCLUDE_BOTH":"Include both upper case and lower case",
+    "INCLUDE_NUMBER":"Include at least one number",
+    "INCLUDE_SPECIAL":"Include at least one special character",
+    "MUST_BE_AT":"Must be at least 8 characters long",
+    "OTHER_SETTING":"Other settings"
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",
