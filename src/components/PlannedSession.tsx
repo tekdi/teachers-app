@@ -265,13 +265,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           const subjectTeach = response?.fields
             .filter((field: any) => field?.label === 'SUBJECTS_I_TEACH')
             .flatMap((field: any) =>
-              field?.options?.map((option: any) => t(`FORM.${option?.label}`))
+              field?.options?.map((option: any) =>
+                t(`FORM.${option?.label.toUpperCase()}`)
+              )
             );
 
           const mainSubjects = response?.fields
             .filter((field: any) => field?.label === 'MY_MAIN_SUBJECTS')
             .flatMap((field: any) =>
-              field?.options?.map((option: any) => t(`FORM.${option?.label}`))
+              field?.options?.map((option: any) =>
+                t(`FORM.${option?.label.toUpperCase()}`)
+              )
             );
 
           const combinedSubjects = Array.from(
