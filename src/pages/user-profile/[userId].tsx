@@ -672,7 +672,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
               },
             }}
             onClick={() => {
-              router.push('/edit-forgot-password');
+              router.push('/edit-password');
             }}
           >
             {t('LOGIN_PAGE.RESET_PASSWORD')}

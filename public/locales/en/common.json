@@ -157,7 +157,8 @@
     "INCLUDE_BOTH":"Include both upper case and lower case",
     "INCLUDE_NUMBER":"Include at least one number",
     "INCLUDE_SPECIAL":"Include at least one special character",
-    "MUST_BE_AT":"Must be at least 8 characters long"
+    "MUST_BE_AT":"Must be at least 8 characters long",
+    "OTHER_SETTING":"Other settings"
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",
