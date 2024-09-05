@@ -10,7 +10,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { Box, Typography } from '@mui/material';
-import { getAfterDate, getBeforeDate, shortDateFormat } from '@/utils/Helper';
+import {
+  getAfterDate,
+  getBeforeDate,
+  shortDateFormat,
+  sortSessionsByTime,
+} from '@/utils/Helper';
 import { getEventList } from '@/services/EventService';
 import { showToastMessage } from '@/components/Toastify';
 import MonthCalender from '@/components/MonthCalender';
@@ -55,28 +60,6 @@ const eventMonthView = () => {
 
           const response = await getEventList({ limit, offset, filters });
 
-          const sortSessionsByTime = (sessionsArray: any) => {
-            const passed: any = [];
-            const live: any = [];
-            const upcoming: any = [];
-            const currentTime = new Date();
-
-            sessionsArray?.forEach((item: any) => {
-              const eventStart = new Date(item?.startDateTime);
-              const eventEnd = new Date(item?.endDateTime);
-
-              if (currentTime < eventStart) {
-                upcoming.push(item);
-              } else if (currentTime >= eventStart && currentTime <= eventEnd) {
-                live.push(item);
-              } else if (currentTime > eventEnd) {
-                passed.push(item);
-              }
-            });
-
-            return [...passed, ...live, ...upcoming];
-          };
-
           let sessionArray: any = [];
           let extraSessionArray: any = [];
 
@@ -91,11 +74,14 @@ const eventMonthView = () => {
           }
 
           if (extraSessionArray.length > 0) {
-            setExtraSessions(sortSessionsByTime(extraSessionArray));
+            const { sessionList, index } =
+              sortSessionsByTime(extraSessionArray);
+            setExtraSessions(sessionList);
           }
 
           if (sessionArray.length > 0) {
-            setSessions(sortSessionsByTime(sessionArray));
+            const { sessionList, index } = sortSessionsByTime(sessionArray);
+            setSessions(sessionList);
           }
         }
       } catch (error) {

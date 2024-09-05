@@ -5,6 +5,7 @@ import {
   getMonthName,
   getTodayDate,
   shortDateFormat,
+  sortSessionsByTime,
   toPascalCase,
 } from '@/utils/Helper';
 import {
@@ -288,31 +289,11 @@ const CohortPage = () => {
 
   useEffect(() => {
     if (extraSessions) {
-      const passed: any = [];
-      const live: any = [];
-      const upcoming: any = [];
+      const { sessionList, index } = sortSessionsByTime(extraSessions);
+      setSortedSessions(sessionList);
 
-      const currentTime = new Date();
-
-      extraSessions?.map((item) => {
-        const eventStart = new Date(item?.startDateTime);
-        const eventEnd = new Date(item?.endDateTime);
-
-        if (currentTime < eventStart) {
-          upcoming.push(item);
-        } else if (currentTime >= eventStart && currentTime <= eventEnd) {
-          live.push(item);
-        } else if (currentTime > eventEnd) {
-          passed.push(item);
-        }
-      });
-
-      const combinedSessions = [...passed, ...live, ...upcoming];
-
-      setSortedSessions(combinedSessions);
-
-      if (passed.length > 0) {
-        setInitialSlideIndex(passed.length);
+      if (index > 0) {
+        setInitialSlideIndex(index);
       } else {
         setInitialSlideIndex(0);
       }
@@ -519,7 +500,9 @@ const CohortPage = () => {
         >
           <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
-          {role === Role.TEAM_LEADER && <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />}
+          {role === Role.TEAM_LEADER && (
+            <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
+          )}
         </Tabs>
       </Box>
 
@@ -600,7 +583,7 @@ const CohortPage = () => {
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
             <Box mt={3} sx={{ position: 'relative' }}>
-              {initialSlideIndex && initialSlideIndex >= 0 && (
+              {initialSlideIndex >= 0 && (
                 <Swiper
                   initialSlide={initialSlideIndex}
                   pagination={{
