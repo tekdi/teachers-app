@@ -34,9 +34,11 @@ const eventMonthView = () => {
       try {
         const date = shortDateFormat(selectedDate);
         let cohortId;
+
         if (typeof window !== 'undefined' && window.localStorage) {
           cohortId = localStorage.getItem('classId') || '';
         }
+
         if (cohortId !== '') {
           const afterDate = getAfterDate(date);
           const beforeDate = getBeforeDate(date);
@@ -50,66 +52,50 @@ const eventMonthView = () => {
             cohortId: cohortId,
             status: ['live'],
           };
+
           const response = await getEventList({ limit, offset, filters });
-          let sessionArray: any[] = [];
-          let extraSessionArray: any[] = [];
+
+          const sortSessionsByTime = (sessionsArray: any) => {
+            const passed: any = [];
+            const live: any = [];
+            const upcoming: any = [];
+            const currentTime = new Date();
+
+            sessionsArray?.forEach((item: any) => {
+              const eventStart = new Date(item?.startDateTime);
+              const eventEnd = new Date(item?.endDateTime);
+
+              if (currentTime < eventStart) {
+                upcoming.push(item);
+              } else if (currentTime >= eventStart && currentTime <= eventEnd) {
+                live.push(item);
+              } else if (currentTime > eventEnd) {
+                passed.push(item);
+              }
+            });
+
+            return [...passed, ...live, ...upcoming];
+          };
+
+          let sessionArray: any = [];
+          let extraSessionArray: any = [];
+
           if (response?.events.length > 0) {
-            response?.events?.forEach((event: any) => {
+            response?.events.forEach((event: any) => {
               if (event.isRecurring) {
                 sessionArray.push(event);
-              }
-              if (!event.isRecurring) {
+              } else {
                 extraSessionArray.push(event);
               }
             });
           }
-          if (extraSessionArray) {
-            const passed: any = [];
-            const live: any = [];
-            const upcoming: any = [];
 
-            const currentTime = new Date();
-
-            extraSessionArray?.map((item) => {
-              const eventStart = new Date(item?.startDateTime);
-              const eventEnd = new Date(item?.endDateTime);
-
-              if (currentTime < eventStart) {
-                upcoming.push(item);
-              } else if (currentTime >= eventStart && currentTime <= eventEnd) {
-                live.push(item);
-              } else if (currentTime > eventEnd) {
-                passed.push(item);
-              }
-            });
-
-            const combinedSessions = [...passed, ...live, ...upcoming];
-
-            setExtraSessions(combinedSessions);
+          if (extraSessionArray.length > 0) {
+            setExtraSessions(sortSessionsByTime(extraSessionArray));
           }
-          if (sessionArray) {
-            const passed: any = [];
-            const live: any = [];
-            const upcoming: any = [];
 
-            const currentTime = new Date();
-
-            sessionArray?.map((item) => {
-              const eventStart = new Date(item?.startDateTime);
-              const eventEnd = new Date(item?.endDateTime);
-
-              if (currentTime < eventStart) {
-                upcoming.push(item);
-              } else if (currentTime >= eventStart && currentTime <= eventEnd) {
-                live.push(item);
-              } else if (currentTime > eventEnd) {
-                passed.push(item);
-              }
-            });
-
-            const combinedSessions = [...passed, ...live, ...upcoming];
-
-            setSessions(combinedSessions);
+          if (sessionArray.length > 0) {
+            setSessions(sortSessionsByTime(sessionArray));
           }
         }
       } catch (error) {

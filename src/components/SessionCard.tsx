@@ -14,6 +14,7 @@ import ConfirmationModal from './ConfirmationModal';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import SensorsTwoToneIcon from '@mui/icons-material/SensorsTwoTone';
 import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
+import { EventStatus } from '@/utils/app.constant';
 const SessionsCard: React.FC<SessionsCardProps> = ({
   data,
   showCenterName = false,
@@ -96,22 +97,22 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
     const eventEnd = new Date(data?.endDateTime);
 
     if (currentTime < eventStart) {
-      setEventStatus('upcoming');
+      setEventStatus(EventStatus.UPCOMING);
     } else if (currentTime >= eventStart && currentTime <= eventEnd) {
-      setEventStatus('live');
+      setEventStatus(EventStatus.LIVE);
     } else if (currentTime > eventEnd) {
-      setEventStatus('passed');
+      setEventStatus(EventStatus.PASSED);
     }
     console.log(startDate, startTime, endDate, endTime);
   }, [data]);
 
   const getStatusIcon = () => {
     switch (eventStatus) {
-      case 'upcoming':
+      case EventStatus.UPCOMING:
         return <CircleTwoToneIcon sx={{ color: 'grey' }} />;
-      case 'live':
+      case EventStatus.LIVE:
         return <SensorsTwoToneIcon sx={{ color: 'red' }} />;
-      case 'passed':
+      case EventStatus.PASSED:
         return <CheckCircleTwoToneIcon sx={{ color: 'green' }} />;
       default:
         return null;
@@ -147,6 +148,9 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
     // }
   };
 
+  const subject = data?.metadata?.subject;
+  const sessionTitle = data?.shortDescription;
+
   return (
     <Box
       sx={{
@@ -171,11 +175,11 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
               textAlign={'left'}
               fontSize={'16px'}
             >
-              {data?.metadata?.subject && data?.shortDescription
-                ? `${data?.metadata?.subject} - ${data?.shortDescription}`
-                : data?.metadata?.subject
-                  ? data?.metadata?.subject
-                  : data?.shortDescription}{' '}
+              {subject && sessionTitle
+                ? `${subject} - ${sessionTitle}`
+                : subject
+                  ? subject
+                  : sessionTitle}{' '}
             </Typography>
           </Box>
           <Typography
