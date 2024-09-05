@@ -53,17 +53,22 @@ const CoursePlannerDetail = () => {
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [courseDetails, setCourseDetails] = useState(null);
   const [userProjectDetails, setUserProjectDetails] = useState([]);
+  const { subject } = router.query;
+  const { state } = router.query;
+  const { medium } = router.query;
+  const { grade } = router.query;
+  const { board } = router.query;
 
   const fetchCourseDetails = useCallback(async () => {
     try {
       setLoading(true);
       const response = await getTargetedSolutions({
-        subject: 'Tamil',
-        class: '4',
-        state: 'Maharashtra',
-        board: 'TQKR',
+        subject: subject ,
+        class: grade,
+        state: state,
+        board: board,
         type: 'mainCourse',
-        medium: 'Telugu',
+        medium: medium,
       });
   
       const courseData = response.result.data[0];
@@ -79,7 +84,7 @@ const CoursePlannerDetail = () => {
       console.error('Error fetching course planner:', error);
     }
   }, []);
-  
+    
   const fetchCourseIdFromSolution = async (solutionId: string): Promise<string> => {
     try {
       const solutionResponse = await getSolutionDetails({
@@ -96,12 +101,12 @@ const CoursePlannerDetail = () => {
       });
   
       const updatedResponse = await getTargetedSolutions({
-       subject: 'Malayalam',
-        class: '5',
-        state: 'Maharashtra',
-        board: 'LPKR',
+        subject: subject,
+        class: grade,
+        state: state,
+        board: board,
         type: 'mainCourse',
-        medium: 'Malayalam',
+        medium: medium,
       });
       setLoading(false);
       return updatedResponse.result.data[0]._id;

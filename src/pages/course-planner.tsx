@@ -23,17 +23,28 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { getCoursePlanner } from '@/services/CoursePlannerService';
 import { CoursePlannerData } from '@/utils/Interfaces';
 import useCourseStore from '@/store/coursePlannerStore';
+import { getCohortSearch } from '@/services/CohortServices';
+import { CoursePlannerConstants } from '@/utils/app.constant';
+import useStore from '@/store/store';
+
 
 // Define a type for the course planner data
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState(1);
   const [subjects, setSubjects] = React.useState<CoursePlannerData[]>([]);
+  const [state, setState] = React.useState<string>('');
+  const [board, setBoard] = React.useState<string>('');
+  const [medium, setMedium] = React.useState<string>('');
+  const [grade, setGrade] = React.useState<string>('');
+  const [selectedValue, setSelectedValue] = React.useState('');
+
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
   const setSubject = useCourseStore((state) => state.setSubject);
+  const store = useStore();
 
   const handleScrollDown = () => {
     if (inputRef.current) {
@@ -49,24 +60,72 @@ const CoursePlanner = () => {
     setValue(newValue);
   };
 
+  const handleCohortChange = (event:any) => {
+    setSelectedValue(event.target.value); 
+  };
+
   useEffect(() => {
-    const fetchCoursePlanner = async() => {
+    if (store.cohorts.length > 0) {
+      setSelectedValue(store.cohorts[0].cohortId);
+    }
+  }, [store.cohorts]);
+
+
+  useEffect(() => {
+    const fetchCohortSearchResults = async () => {
       try {
-        const response = await getCoursePlanner();
-        const transformedData = response.map((item: any) => ({
-          ...item,
-          id: String(item.id),
-        }));
-        setSubjects(transformedData)
-       
+        const data = await getCohortSearch({
+          cohortId: selectedValue,
+          limit: 20,
+          offset: 0,
+        });
+  
+        const cohortDetails = data?.result?.results?.cohortDetails?.[0];
+  
+        if (cohortDetails) {
+          const arrayFields = [
+            { label: CoursePlannerConstants.SUBJECT, setter: setSubjects },
+          ];
+  
+          const stringFields = [
+            { label: CoursePlannerConstants.STATES, setter: setState },
+            { label: CoursePlannerConstants.BOARD, setter: setBoard },
+            { label: CoursePlannerConstants.MEDIUM, setter: setMedium },
+            { label: CoursePlannerConstants.GRADE, setter: setGrade },
+          ];
+  
+          arrayFields.forEach(({ label, setter }) => {
+            const field = cohortDetails.customFields.find(
+              (field: any) => field.label === label
+            );
+  
+            if (field && field.value) {
+              const valuesArray = field.value.split(',').map((item: string) => item.trim());
+              setter(valuesArray);
+            } else if (label === CoursePlannerConstants.SUBJECT) {
+              setter([]);
+            }
+          });
+  
+          stringFields.forEach(({ label, setter }) => {
+            const field = cohortDetails.customFields.find(
+              (field: any) => field.label === label
+            );
+  
+            if (field && field.value) {
+              setter(field.value.trim());
+            }
+          });
+        }
       } catch (error) {
-        console.error('Error fetching course planner:', error);
+        console.error('Failed to fetch cohort search results:', error);
       }
     };
-
-    fetchCoursePlanner();
-  }, []);
-
+  
+    fetchCohortSearchResults();
+  }, [selectedValue]);
+  
+  
   return (
     <Box minHeight="100vh">
       <Box>
@@ -87,56 +146,58 @@ const CoursePlanner = () => {
         </Typography>
       </Box>
 
-      {/* <Grid sx={{ display: 'flex', alignItems: 'center' }} container>
-        <Grid item md={6} xs={12}>
-          <Box sx={{ mt: 2, px: '20px' }}>
-            <Box sx={{ flexBasis: '70%' }}>
-              <FormControl className="drawer-select" sx={{ width: '100%' }}>
-                <Select
-                  className="select-languages"
-                  displayEmpty
-                  style={{
-                    borderRadius: '0.5rem',
-                    color: theme.palette.warning['200'],
-                    width: '100%',
-                    marginBottom: '0rem',
-                  }}
-                >
-                  <MenuItem className="text-truncate">
-                    Khapari Dharmu (Chimur, Chandrap)
+      <Grid sx={{ display: 'flex', alignItems: 'center' }} container>
+      <Grid item md={6} xs={12}>
+        <Box sx={{ mt: 2, px: '20px' }}>
+          <Box sx={{ flexBasis: '70%' }}>
+            <FormControl className="drawer-select" sx={{ width: '100%' }}>
+              <Select
+                className="select-languages"
+                displayEmpty
+                value={selectedValue}
+                onChange={handleCohortChange}
+                style={{
+                  borderRadius: '0.5rem',
+                  color: theme.palette.warning['200'],
+                  width: '100%',
+                  marginBottom: '0rem',
+                }}
+              >
+                {store.cohorts.map((cohort:any) => (
+                  <MenuItem key={cohort.cohortId} value={cohort.cohortId} className="text-truncate">
+                    {cohort.name}
                   </MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
-        </Grid>
-        <Grid item md={6} xs={12}>
-          <Box sx={{ mt: 2, px: '20px' }}>
-            <Paper
-              component="form"
-              className="100"
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                borderRadius: '100px',
-                background: theme.palette.warning.A700,
-                boxShadow: 'none',
-              }}
-            >
-              <InputBase
-                ref={inputRef}
-                sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
-                placeholder="Search.."
-                inputProps={{ 'aria-label': 'search student' }}
-                onClick={handleScrollDown}
-              />
-              <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                <SearchIcon />
-              </IconButton>
-            </Paper>
-          </Box>
-        </Grid>
-      </Grid> */}
+        </Box>
+      </Grid>
+      <Grid item md={6} xs={12}>
+        {/* <Box sx={{ mt: 2, px: '20px' }}>
+          <Paper
+            component="form"
+            className="100"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              borderRadius: '100px',
+              background: theme.palette.warning.A700,
+              boxShadow: 'none',
+            }}
+          >
+            <InputBase
+              sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
+              placeholder="Search.."
+              inputProps={{ 'aria-label': 'search student' }}
+            />
+            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+        </Box> */}
+      </Grid>
+    </Grid>
 
       <Box sx={{ mt: 2 }}>
         <Box
@@ -189,103 +250,128 @@ const CoursePlanner = () => {
                 marginBottom: '20px',
               }}
             >
-              <Grid container>
-                {subjects.map((item) => (
-                 
-                  <Grid key={item.id} item xs={12} sm={6} md={4}>
-                    <Box
+             <Grid container>
+  {subjects?.length > 0 ? (
+    subjects.map((item: any) => (
+      <Grid key={item.id} item xs={12} sm={6} md={4}>
+        <Box
+          sx={{
+            border: `1px solid ${theme.palette.warning.A100}`,
+            borderRadius: '8px',
+            padding: '12px',
+            cursor: 'pointer',
+            margin: '14px',
+            background: theme.palette.warning['A400'],
+          }}
+          onClick={() => {
+            setSubject(item);
+            router.push({
+              pathname: '/course-planner-detail',
+              query: {
+                subject: item,
+                state: state,
+                board: board,
+                medium: medium,
+                grade: grade,
+              },
+            });
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '15px',
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    position: 'relative',
+                    display: 'inline-flex',
+                  }}
+                >
+                  <Box sx={{ width: '40px', height: '40px' }}>
+                    <CircularProgressbar
+                      value={item.circular}
+                      strokeWidth={10}
+                      styles={buildStyles({
+                        pathColor: '#06A816',
+                        trailColor: '#E6E6E6',
+                        strokeLinecap: 'round',
+                      })}
+                    />
+                  </Box>
+
+                  <Box
+                    sx={{
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      position: 'absolute',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Typography
+                      variant="caption"
+                      component="div"
                       sx={{
-                        border: `1px solid ${theme.palette.warning.A100}`,
-                        borderRadius: '8px',
-                        padding: '12px',
-                        cursor: 'pointer',
-                        margin: '14px',
-                        background: theme.palette.warning['A400']
-                      }}
-                      onClick={() => {
-                        setSubject(item.subject)
-                        router.push(`/course-planner-detail`); // Check route
+                        fontSize: '11px',
+                        color: theme.palette.warning['300'],
+                        fontWeight: '500',
                       }}
                     >
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Box>
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              gap: '15px',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <Box
-                              sx={{
-                                position: 'relative',
-                                display: 'inline-flex',
-                              }}
-                            >
-                              <Box sx={{ width: '40px', height: '40px' }}>
-                                <CircularProgressbar
-                                  value={item.circular}
-                                  strokeWidth={10}
-                                  styles={buildStyles({
-                                    pathColor: '#06A816',
-                                    trailColor: '#E6E6E6',
-                                    strokeLinecap: 'round',
-                                  })}
-                                />
-                              </Box>
+                      {item.circular}%
+                    </Typography>
+                  </Box>
+                </Box>
 
-                              <Box
-                                sx={{
-                                  top: 0,
-                                  left: 0,
-                                  bottom: 0,
-                                  right: 0,
-                                  position: 'absolute',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                }}
-                              >
-                                <Typography
-                                  variant="caption"
-                                  component="div"
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: theme.palette.warning['300'],
-                                    fontWeight: '500',
-                                  }}
-                                >
-                                  {item.circular}%
-                                </Typography>
-                              </Box>
-                            </Box>
+                <Box
+                  sx={{
+                    fontSize: '16px',
+                    color: theme.palette.warning['300'],
+                  }}
+                >
+                  {item}
+                </Box>
+              </Box>
+            </Box>
+            <Box>
+              <KeyboardArrowRightIcon
+                sx={{ color: theme.palette.warning['300'] }}
+              />
+            </Box>
+          </Box>
+        </Box>
+      </Grid>
+    ))
+  ) : (
+    <Grid item xs={12}>
+      <Typography
+        variant="h2"
+        sx={{
+          textAlign: 'center',
+          color: theme.palette.warning['300'],
+          marginTop: '20px',
+          marginBottom: '20px',
+        }}
+      >
+       {t('ASSESSMENTS.NO_DATA_FOUND')}
+      </Typography>
+    </Grid>
+  )}
+</Grid>
 
-                            <Box
-                              sx={{
-                                fontSize: '16px',
-                                color: theme.palette.warning['300'],
-                              }}
-                            >
-                              {item.subject}
-                            </Box>
-                          </Box>
-                        </Box>
-                        <Box>
-                          <KeyboardArrowRightIcon
-                            sx={{ color: theme.palette.warning['300'] }}
-                          />
-                        </Box>
-                      </Box>
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
             </Box>
           </Box>
         )}
