@@ -5,6 +5,7 @@ import {
   GetUserProjectTemplateParams,
 } from '../utils/Interfaces';
 import axios from 'axios';
+import { post } from './RestClient';
 
 export const getCoursePlanner = (): CoursePlanner[] => {
   // TODO: Add API call here
@@ -30,11 +31,12 @@ export const getTargetedSolutions = async ({
   board,
   type,
 }: GetTargetedSolutionsParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/solutions/targetedSolutions?type=improvementProject&currentScopeOnly=true`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/solutions/targetedSolutions?type=improvementProject&currentScopeOnly=true`
+
 
   const headers = {
-    'X-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
-    'Content-Type': 'application/json',
+    'X-auth-token': localStorage.getItem('token'),
+    
   };
 
   const data = {
@@ -58,15 +60,12 @@ interface GetUserProjectDetailsParams {
   id: string;
 }
 
-export const getUserProjectDetails = async ({
-  id,
-}: GetUserProjectDetailsParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/userProjects/details/${id}`;
 
+export const getUserProjectDetails = async ({ id }: GetUserProjectDetailsParams): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/userProjects/details/${id}`;
+  
   const headers = {
-    Authorization: process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
-    'Content-Type': 'application/json',
-    'x-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
+    'X-auth-token': localStorage.getItem('token'),
   };
 
   try {
@@ -78,15 +77,13 @@ export const getUserProjectDetails = async ({
   }
 };
 
-export const getSolutionDetails = async ({
-  id,
-  role,
-}: GetSolutionDetailsParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/solutions/details/${id}`;
+export const getSolutionDetails = async ({ id, role }: GetSolutionDetailsParams): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/solutions/details/${id}`;
+
 
   const headers = {
-    'X-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
-    'Content-Type': 'application/json',
+    'X-auth-token': localStorage.getItem('token'),
+    
   };
 
   const data = {
@@ -107,11 +104,11 @@ export const getUserProjectTemplate = async ({
   solutionId,
   role,
 }: GetUserProjectTemplateParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/userProjects/details?templateId=${templateId}&solutionId=${solutionId}`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/userProjects/details?templateId=${templateId}&solutionId=${solutionId}`;
 
   const headers = {
-    'X-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
-    'Content-Type': 'application/json',
+    'X-auth-token': localStorage.getItem('token'),
+    
   };
 
   const data = {
