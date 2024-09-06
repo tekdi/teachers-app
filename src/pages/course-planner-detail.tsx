@@ -71,11 +71,18 @@ const CoursePlannerDetail = () => {
         medium: medium,
       });
 
-      const courseData = response.result.data[0];
+      if (response?.result?.data == '') {
+
+        setLoading(false);
+        return;
+      }
+      
+      const courseData = response?.result?.data[0];
+
       let courseId = courseData._id;
 
       if (!courseId) {
-        courseId = await fetchCourseIdFromSolution(courseData.solutionId);
+        courseId = await fetchCourseIdFromSolution(courseData?.solutionId);
       }
 
       await fetchAndSetUserProjectDetails(courseId);
@@ -110,7 +117,10 @@ const CoursePlannerDetail = () => {
         medium: medium,
       });
       setLoading(false);
-      return updatedResponse.result.data[0]._id;
+
+      
+      
+      return updatedResponse?.result?.data[0]?._id;
     } catch (error) {
       console.error('Error fetching solution details:', error);
       throw error;
@@ -123,7 +133,7 @@ const CoursePlannerDetail = () => {
       const userProjectDetailsResponse = await getUserProjectDetails({
         id: courseId,
       });
-      setUserProjectDetails(userProjectDetailsResponse.result.tasks);
+      setUserProjectDetails(userProjectDetailsResponse?.result?.tasks);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching user project details:', error);
