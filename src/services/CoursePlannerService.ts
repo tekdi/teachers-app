@@ -32,7 +32,7 @@ export const getTargetedSolutions = async ({
 
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
-    'Content-Type': 'application/json',
+    
   };
 
   const data = {
@@ -61,7 +61,7 @@ export const getUserProjectDetails = async ({ id }: GetUserProjectDetailsParams)
   
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
-    'Content-Type': 'application/json',
+    
   };
 
   try {
@@ -79,7 +79,7 @@ export const getSolutionDetails = async ({ id, role }: GetSolutionDetailsParams)
 
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
-    'Content-Type': 'application/json',
+    
   };
 
   const data = {
@@ -104,7 +104,7 @@ export const getUserProjectTemplate = async ({
 
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
-    'Content-Type': 'application/json',
+    
   };
 
   const data = {
