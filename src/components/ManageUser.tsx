@@ -435,8 +435,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       const names = `${cohorts[0]}, ${cohorts[1]}`;
       return (
         <>
-          {names}{"  "}
-          <span style={{fontWeight: 400}}>
+          {names}
+          {'  '}
+          <span style={{ fontWeight: 400 }}>
             {t('COMMON.AND_COUNT_MORE', { count: cohorts.length - 2 })}
           </span>
         </>

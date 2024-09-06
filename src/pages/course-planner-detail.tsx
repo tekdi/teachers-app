@@ -63,43 +63,44 @@ const CoursePlannerDetail = () => {
     try {
       setLoading(true);
       const response = await getTargetedSolutions({
-        subject: subject ,
+        subject: subject,
         class: grade,
         state: state,
         board: board,
         type: 'mainCourse',
         medium: medium,
       });
-  
+
       const courseData = response.result.data[0];
       let courseId = courseData._id;
-  
+
       if (!courseId) {
         courseId = await fetchCourseIdFromSolution(courseData.solutionId);
       }
-  
+
       await fetchAndSetUserProjectDetails(courseId);
-      
     } catch (error) {
       console.error('Error fetching course planner:', error);
     }
   }, []);
-    
-  const fetchCourseIdFromSolution = async (solutionId: string): Promise<string> => {
+
+  const fetchCourseIdFromSolution = async (
+    solutionId: string
+  ): Promise<string> => {
     try {
       const solutionResponse = await getSolutionDetails({
         id: solutionId,
         role: 'Teacher',
       });
-  
+
       const externalId = solutionResponse?.result?.externalId;
-  
+
       const templateResponse = await getUserProjectTemplate({
         templateId: externalId,
         solutionId,
         role: Role.TEACHER,
       });
-  
+
       const updatedResponse = await getTargetedSolutions({
         subject: subject,
         class: grade,
@@ -115,7 +116,7 @@ const CoursePlannerDetail = () => {
       throw error;
     }
   };
-  
+
   const fetchAndSetUserProjectDetails = async (courseId: string) => {
     try {
       setLoading(true);
@@ -128,8 +129,6 @@ const CoursePlannerDetail = () => {
       console.error('Error fetching user project details:', error);
     }
   };
-  
-
 
   useEffect(() => {
     fetchCourseDetails();
@@ -185,7 +184,7 @@ const CoursePlannerDetail = () => {
   };
 
   return (
-   <>
+    <>
       <Header />
       <Box
         sx={{
@@ -293,185 +292,194 @@ const CoursePlannerDetail = () => {
         </Box>
       </Box>
 
-<div>
-{loading ? (
-  <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-) : (
-  <>
-      <Box mt={2}>
- 
-        {userProjectDetails.map((topic: any, index) => (
-          <Box key={topic._id} sx={{ borderRadius: '8px', mb: 2 }}>
-            <Accordion
-              expanded={expandedPanels[`panel${index}-header`] || false}
-              onChange={() =>
-                setExpandedPanels((prev) => ({
-                  ...prev,
-                  [`panel${index}-header`]: !prev[`panel${index}-header`],
-                }))
-              }
-              sx={{
-                boxShadow: 'none',
-                background: '#F1E7D9',
-                border: 'none',
-                transition: '0.3s',
-              }}
-            >
-              <AccordionSummary
-                expandIcon={
-                  <ArrowDropDownIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                }
-                aria-controls={`panel${index}-content`}
-                id={`panel${index}-header`}
-                className="accordion-summary"
-                sx={{
-                  px: '16px',
-                  m: 0,
-                  '&.Mui-expanded': {
-                    minHeight: '48px',
-                  },
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    pr: '5px',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Box
+      <div>
+        {loading ? (
+          <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+        ) : (
+          <>
+            <Box mt={2}>
+              {userProjectDetails.map((topic: any, index) => (
+                <Box key={topic._id} sx={{ borderRadius: '8px', mb: 2 }}>
+                  <Accordion
+                    expanded={expandedPanels[`panel${index}-header`] || false}
+                    onChange={() =>
+                      setExpandedPanels((prev) => ({
+                        ...prev,
+                        [`panel${index}-header`]: !prev[`panel${index}-header`],
+                      }))
+                    }
                     sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      gap: '5px',
+                      boxShadow: 'none',
+                      background: '#F1E7D9',
+                      border: 'none',
+                      transition: '0.3s',
                     }}
                   >
-                    <RadioButtonUncheckedIcon sx={{ fontSize: '15px' }} />
-                    <Typography
-                      fontWeight="500"
-                      fontSize="14px"
-                      color={theme.palette.warning['300']}
-                    >
-                      {`Topic ${index + 1} - ${topic.name}`}
-                    </Typography>
-                  </Box>
-                  <Typography fontWeight="600" fontSize="12px" color="#7C766F">
-                    {getAbbreviatedMonth(topic?.metaInformation?.startDate)},{' '}
-                    {getAbbreviatedMonth(topic?.metaInformation?.endDate)}
-                  </Typography>
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails
-                sx={{ padding: '0', transition: 'max-height 0.3s ease-out' }}
-              >
-                {topic.children.map((subTopic: any) => (
-                  <Box
-                    key={subTopic._id}
-                    sx={{
-                      borderBottom: `1px solid ${theme.palette.warning['A100']}`,
-                    }}
-                  >
-                    <Box
+                    <AccordionSummary
+                      expandIcon={
+                        <ArrowDropDownIcon
+                          sx={{ color: theme.palette.warning['300'] }}
+                        />
+                      }
+                      aria-controls={`panel${index}-content`}
+                      id={`panel${index}-header`}
+                      className="accordion-summary"
                       sx={{
-                        py: '10px',
                         px: '16px',
-                        background: theme.palette.warning['A400'],
+                        m: 0,
+                        '&.Mui-expanded': {
+                          minHeight: '48px',
+                        },
                       }}
                     >
                       <Box
                         sx={{
                           display: 'flex',
                           justifyContent: 'space-between',
+                          width: '100%',
+                          pr: '5px',
                           alignItems: 'center',
-                          gap: '20px',
                         }}
                       >
-                        <Box
-                          sx={{
-                            fontSize: '16px',
-                            fontWeight: '400',
-                            color: theme.palette.warning['300'],
-                            cursor: 'pointer',
-                          }}
-                          onClick={() => {
-                            setResources(subTopic);
-                            router.push(`/topic-detail-view`);
-                          }}
-                        >
-                          {subTopic.name}
-                        </Box>
                         <Box
                           sx={{
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
-                            gap: '6px',
+                            gap: '5px',
+                          }}
+                        >
+                          <RadioButtonUncheckedIcon sx={{ fontSize: '15px' }} />
+                          <Typography
+                            fontWeight="500"
+                            fontSize="14px"
+                            color={theme.palette.warning['300']}
+                          >
+                            {`Topic ${index + 1} - ${topic.name}`}
+                          </Typography>
+                        </Box>
+                        <Typography
+                          fontWeight="600"
+                          fontSize="12px"
+                          color="#7C766F"
+                        >
+                          {getAbbreviatedMonth(
+                            topic?.metaInformation?.startDate
+                          )}
+                          ,{' '}
+                          {getAbbreviatedMonth(topic?.metaInformation?.endDate)}
+                        </Typography>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails
+                      sx={{
+                        padding: '0',
+                        transition: 'max-height 0.3s ease-out',
+                      }}
+                    >
+                      {topic.children.map((subTopic: any) => (
+                        <Box
+                          key={subTopic._id}
+                          sx={{
+                            borderBottom: `1px solid ${theme.palette.warning['A100']}`,
                           }}
                         >
                           <Box
                             sx={{
-                              padding: '5px',
-                              background: '  #C1D6FF',
-                              fontSize: '12px',
-                              fontWeight: '500',
-                              color: '#4D4639',
-                              borderRadius: '8px',
+                              py: '10px',
+                              px: '16px',
+                              background: theme.palette.warning['A400'],
                             }}
                           >
-                            {getAbbreviatedMonth(
-                              subTopic?.metaInformation?.startDate
-                            )}
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                gap: '20px',
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  fontSize: '16px',
+                                  fontWeight: '400',
+                                  color: theme.palette.warning['300'],
+                                  cursor: 'pointer',
+                                }}
+                                onClick={() => {
+                                  setResources(subTopic);
+                                  router.push(`/topic-detail-view`);
+                                }}
+                              >
+                                {subTopic.name}
+                              </Box>
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  gap: '6px',
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    padding: '5px',
+                                    background: '  #C1D6FF',
+                                    fontSize: '12px',
+                                    fontWeight: '500',
+                                    color: '#4D4639',
+                                    borderRadius: '8px',
+                                  }}
+                                >
+                                  {getAbbreviatedMonth(
+                                    subTopic?.metaInformation?.startDate
+                                  )}
+                                </Box>
+                                <CheckCircleIcon
+                                  onClick={toggleDrawer(true)}
+                                  sx={{
+                                    fontSize: '20px',
+                                    color: '#7C766F',
+                                    cursor: 'pointer',
+                                  }}
+                                />
+                              </Box>
+                            </Box>
+                            <Box
+                              sx={{
+                                color: theme.palette.secondary.main,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                mt: 0.8,
+                                cursor: 'pointer',
+                              }}
+                              onClick={() => {
+                                router.push(`/topic-detail-view`);
+                              }}
+                            >
+                              <Box
+                                sx={{ fontSize: '12px', fontWeight: '500' }}
+                                onClick={() => {
+                                  setResources(subTopic);
+                                  router.push(`/topic-detail-view`);
+                                }}
+                              >
+                                {`${subTopic?.learningResources?.length} ${t('COURSE_PLANNER.RESOURCES')}`}
+                              </Box>
+                              <ArrowForwardIcon sx={{ fontSize: '16px' }} />
+                            </Box>
                           </Box>
-                          <CheckCircleIcon
-                            onClick={toggleDrawer(true)}
-                            sx={{
-                              fontSize: '20px',
-                              color: '#7C766F',
-                              cursor: 'pointer',
-                            }}
-                          />
                         </Box>
-                      </Box>
-                      <Box
-                        sx={{
-                          color: theme.palette.secondary.main,
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          mt: 0.8,
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => {
-                          router.push(`/topic-detail-view`);
-                        }}
-                      >
-                        <Box
-                          sx={{ fontSize: '12px', fontWeight: '500' }}
-                          onClick={() => {
-                            setResources(subTopic);
-                            router.push(`/topic-detail-view`);
-                          }}
-                        >
-                          {`${subTopic?.learningResources?.length} ${t('COURSE_PLANNER.RESOURCES')}`}
-                        </Box>
-                        <ArrowForwardIcon sx={{ fontSize: '16px' }} />
-                      </Box>
-                    </Box>
-                  </Box>
-                ))}
-              </AccordionDetails>
-            </Accordion>
-          </Box>
-        ))}
-      </Box>
-      </>
-      )}
-    </div>
+                      ))}
+                    </AccordionDetails>
+                  </Accordion>
+                </Box>
+              ))}
+            </Box>
+          </>
+        )}
+      </div>
       <FacilitatorDrawer
         secondary={'Cancel'}
         primary={'Mark as Complete (2)'}

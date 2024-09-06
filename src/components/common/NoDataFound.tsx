@@ -3,10 +3,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface NoDataFoundProps {
-    title?: string;
+  title?: string;
 }
 
-const NoDataFound: React.FC<NoDataFoundProps> = ({ title = 'COMMON.NO_DATA_FOUND' }) => {
+const NoDataFound: React.FC<NoDataFoundProps> = ({
+  title = 'COMMON.NO_DATA_FOUND',
+}) => {
   const { t } = useTranslation();
   return (
     <Box
@@ -22,6 +24,6 @@ const NoDataFound: React.FC<NoDataFoundProps> = ({ title = 'COMMON.NO_DATA_FOUND
       </Typography>
     </Box>
   );
-}
+};
 
 export default NoDataFound;

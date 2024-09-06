@@ -117,7 +117,6 @@ export enum QueryKeys {
   MY_COHORTS = 'myCohorts',
 }
 
-
 export enum CoursePlannerConstants {
   SUBJECT = 'SUBJECT',
   STATES = 'STATES',
@@ -131,4 +130,3 @@ export enum EventStatus {
   LIVE = 'LIVE',
   PASSED = 'PASSED',
 }
-

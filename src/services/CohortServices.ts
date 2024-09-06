@@ -50,7 +50,7 @@ export const getCohortList = async (
           return block;
         }
       });
-      return res
+      return res;
     }
     return response?.data?.result;
   } catch (error) {
@@ -70,8 +70,11 @@ export const bulkCreateCohortMembers = async (payload: any): Promise<any> => {
   }
 };
 
-
-export const getCohortSearch = async ({ cohortId, limit = 20, offset = 0 }: GetCohortSearchParams): Promise<any> => {
+export const getCohortSearch = async ({
+  cohortId,
+  limit = 20,
+  offset = 0,
+}: GetCohortSearchParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohort/search`;
 
   const data = {

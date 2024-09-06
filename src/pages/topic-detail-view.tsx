@@ -73,7 +73,7 @@ const TopicDetailView = () => {
                   color: theme.palette.warning['300'],
                 }}
               >
-               {store.resources.name}
+                {store.resources.name}
               </Box>
             </Box>
           </Box>
@@ -170,9 +170,7 @@ const TopicDetailView = () => {
         )}
         {value === 2 && (
           <Box>
-            <CoursePlannerCards
-              resources={store.resources.learningResources}
-            />
+            <CoursePlannerCards resources={store.resources.learningResources} />
           </Box>
         )}
       </Box>

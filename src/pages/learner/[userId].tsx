@@ -151,7 +151,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   };
 
   const mapFields = (formFields: any, response: any) => {
-    let initialFormData: any = {};
+    const initialFormData: any = {};
     formFields.fields.forEach((item: any) => {
       const userData = response?.userData;
       const customFieldValue = userData?.customFields?.find(
@@ -217,7 +217,10 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   const fetchDataAndInitializeForm = async () => {
     try {
       const response = await getUserDetails(userId, true);
-      const formFields = await getFormRead(FormContext.USERS, FormContextType.STUDENT);
+      const formFields = await getFormRead(
+        FormContext.USERS,
+        FormContextType.STUDENT
+      );
       console.log('response', response);
       console.log('formFields', formFields);
       setFormData(mapFields(formFields, response?.result));
@@ -439,7 +442,10 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     getDoIdForAssessmentReport(test, subject);
   };
 
-  const getDoIdForAssessmentReport = async (tests: string, subjects: string) => {
+  const getDoIdForAssessmentReport = async (
+    tests: string,
+    subjects: string
+  ) => {
     // const stateName = localStorage.getItem('stateName');
 
     const stateName: any = address?.split(',')[0];
@@ -525,10 +531,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         }
       } else {
         setUniqueDoId('');
-        console.log(
-          'getAssessmentList data',
-          response?.response?.statusText
-        );
+        console.log('getAssessmentList data', response?.response?.statusText);
       }
     } else {
       console.log('No Do Id Found');
@@ -981,7 +984,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           }}
         >
           <CardContent>
-            <AssessmentReport classId ={classId} userId = {userId}/>
+            <AssessmentReport classId={classId} userId={userId} />
           </CardContent>
         </Card>
       </Box>

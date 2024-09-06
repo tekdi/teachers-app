@@ -131,10 +131,9 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
 
     if (isMobile) {
       maxLength = 6;
-    } 
+    }
     return value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
-  }
-
+  };
 
   const renderCustomLabel = (props: any) => {
     const { x, y, width, height, value } = props;
@@ -223,23 +222,27 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
       </FormControl>
       {data?.length > 0 && (
         <>
-        <Box sx={{ mt: 2 }}>
-          <Typography
-            align="left"
-            sx={{ marginBottom: '16px', fontSize: '15px' }}
-          >
-            {centerType === CenterType.REMOTE
-              ? t('DASHBOARD.REMOTE_AVERAGE_ATTENDANCE')
-              : t('DASHBOARD.REGULAR_AVERAGE_ATTENDANCE')}
-            : {averageAttendance.toFixed(2)}%
-          </Typography>
-        </Box>
+          <Box sx={{ mt: 2 }}>
+            <Typography
+              align="left"
+              sx={{ marginBottom: '16px', fontSize: '15px' }}
+            >
+              {centerType === CenterType.REMOTE
+                ? t('DASHBOARD.REMOTE_AVERAGE_ATTENDANCE')
+                : t('DASHBOARD.REGULAR_AVERAGE_ATTENDANCE')}
+              : {averageAttendance.toFixed(2)}%
+            </Typography>
+          </Box>
           <Box sx={{ maxHeight: '400px', overflowY: 'scroll' }}>
             <ResponsiveContainer width="100%" height={data.length * 70}>
               <BarChart
                 layout="vertical"
                 data={data}
-                margin={{ top: 5, left: isMobile ? 0 : 70, right: isMobile ? 0 : 5 }}
+                margin={{
+                  top: 5,
+                  left: isMobile ? 0 : 70,
+                  right: isMobile ? 0 : 5,
+                }}
               >
                 <CartesianGrid
                   stroke={theme.palette.warning.A700}

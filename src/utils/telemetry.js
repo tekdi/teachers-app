@@ -30,7 +30,7 @@ const telemetryConfig = {
   uid:
     (typeof window !== 'undefined' && localStorage.getItem('userId')) ||
     'Anonymous',
-    userName:
+  userName:
     (typeof window !== 'undefined' && localStorage.getItem('userName')) ||
     'Anonymous',
   sid: generateUUID(),
@@ -39,10 +39,8 @@ const telemetryConfig = {
   host: hostURL,
   endpoint: '/v1/telemetry',
   tags: [],
-  enableValidation: true
+  enableValidation: true,
 };
-
-
 
 if (typeof window !== 'undefined') {
   getDeviceId().then((deviceId) => {
@@ -198,7 +196,8 @@ function getEventContext(eventInput) {
     uid:
       (typeof window !== 'undefined' && localStorage.getItem('userId')) ||
       telemetryConfig.uid, //user id
-      userName: (typeof window !== 'undefined' && localStorage.getItem('userName')) ||
+    userName:
+      (typeof window !== 'undefined' && localStorage.getItem('userName')) ||
       telemetryConfig.userName, //user id
     cdata: eventInput.context.cdata || [],
   };

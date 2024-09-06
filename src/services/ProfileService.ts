@@ -31,7 +31,7 @@ export const getUserDetails = async (
 ): Promise<any> => {
   let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/read/${userId}`;
   apiUrl = fieldValue ? `${apiUrl}?fieldvalue=true` : apiUrl;
-  
+
   try {
     const response = await get(apiUrl);
     return response?.data;

@@ -6,9 +6,7 @@ import {
 import SimpleModal from '@/components/SimpleModal';
 import { useFormRead } from '@/hooks/useFormRead';
 import { createUser } from '@/services/CreateUserService';
-import {
-  sendEmailOnLearnerCreation,
-} from '@/services/NotificationService';
+import { sendEmailOnLearnerCreation } from '@/services/NotificationService';
 import { editEditUser } from '@/services/ProfileService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 import { generateUsernameAndPassword } from '@/utils/Helper';
@@ -79,7 +77,13 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     }
   }, [formResponse]);
 
-  const sendEmail = async (name: string, username: string, password: string, email: string, learnerName: string) => {
+  const sendEmail = async (
+    name: string,
+    username: string,
+    password: string,
+    email: string,
+    learnerName: string
+  ) => {
     try {
       const response = await sendEmailOnLearnerCreation(
         name,
@@ -89,11 +93,8 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         learnerName
       );
       if (response?.email?.data?.[0]?.status !== 200) {
-        showToastMessage(
-          t('COMMON.USER_CREDENTIAL_SEND_FAILED'),
-          'error'
-        );
-      } 
+        showToastMessage(t('COMMON.USER_CREDENTIAL_SEND_FAILED'), 'error');
+      }
       setOpenModal(true);
     } catch (error) {
       console.error('error in sending email', error);
@@ -247,12 +248,18 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             };
             telemetryFactory.interact(telemetryInteract);
 
-            let creatorName: string  = '';
+            let creatorName: string = '';
             if (typeof window !== 'undefined' && window.localStorage) {
-              creatorName = localStorage.getItem('userName') as string || '';
+              creatorName = (localStorage.getItem('userName') as string) || '';
             }
             if (creatorName && userEmail) {
-              sendEmail(creatorName, username, password, userEmail, apiBody['name']);
+              sendEmail(
+                creatorName,
+                username,
+                password,
+                userEmail,
+                apiBody['name']
+              );
             } else {
               showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
             }

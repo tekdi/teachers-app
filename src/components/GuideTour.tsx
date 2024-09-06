@@ -81,8 +81,7 @@ const GuideTour: React.FC<GuideTourProps> = ({ toggleDrawer }) => {
           category: 'Dashboard Page',
           label: 'Previous Button Click',
         });
-      }
-      else if (action === 'close') {
+      } else if (action === 'close') {
         setRunTour(false);
         toggleDrawer(false)();
       }

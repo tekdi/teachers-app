@@ -168,8 +168,8 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
           <IconButton
             color="inherit"
             onClick={() => {
-              setSearchInput(''); 
-              handleCloseReassignModal(); 
+              setSearchInput('');
+              handleCloseReassignModal();
             }}
           >
             <CloseIcon />

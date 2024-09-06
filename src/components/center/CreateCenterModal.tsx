@@ -73,7 +73,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
     if (formResponse) {
       const updatedFormResponse = removeHiddenFields(formResponse);
       if (updatedFormResponse) {
-        let { schema, uiSchema } = GenerateSchemaAndUiSchema(
+        const { schema, uiSchema } = GenerateSchemaAndUiSchema(
           updatedFormResponse,
           t
         );
@@ -85,7 +85,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   }, [formResponse]);
 
   // const handleDependentFieldsChange = () => {
-  //   setShowForm(true); 
+  //   setShowForm(true);
   // };
 
   const handleSubmit = async (
@@ -248,22 +248,22 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
                 setShowForm={setShowForm}
               /> */}
               {/* {showForm && ( */}
-                <DynamicForm
-                  schema={schema}
-                  uiSchema={uiSchema}
-                  onSubmit={handleSubmit}
-                  onChange={handleChange}
-                  onError={handleError}
-                  widgets={{}}
-                  showErrorList={true}
-                >
-                  <FormButtons
-                    formData={formData}
-                    onClick={handleButtonClick}
-                    isCreateCentered={true}
-                    isCreatedFacilitator={false}
-                  />
-                </DynamicForm>
+              <DynamicForm
+                schema={schema}
+                uiSchema={uiSchema}
+                onSubmit={handleSubmit}
+                onChange={handleChange}
+                onError={handleError}
+                widgets={{}}
+                showErrorList={true}
+              >
+                <FormButtons
+                  formData={formData}
+                  onClick={handleButtonClick}
+                  isCreateCentered={true}
+                  isCreatedFacilitator={false}
+                />
+              </DynamicForm>
               {/* )} */}
             </>
           )}
