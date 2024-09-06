@@ -257,13 +257,16 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   }, [userId, reload, cohortId]);
 
   const getAttendanceData = async (fromDates: any, toDates: any) => {
-    const fromDate = fromDates;
-    const toDate = toDates;
-    const filters = {
-      fromDate,
-      toDate,
+    const filters: any = {
       userId: userId,
     };
+
+    // Conditionally add fromDate and toDate to filters if selectedValue doesn't match the specific condition
+    if (selectedValue !== t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })) {
+      filters.fromDate = fromDates;
+      filters.toDate = toDates;
+    }
+
     const response = await classesMissedAttendancePercentList({
       filters,
       facets: ['userId'],
