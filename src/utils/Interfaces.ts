@@ -382,7 +382,14 @@ export interface CoursePlanner {
   circular?: number;
 }
 export interface SessionCardFooterProps {
-  item: Session;
+  item: any;
+}
+
+export interface TopicSubtopicProps {
+  topics?: string[];
+  subTopicsList?: any;
+  onTopicSelected: any;
+  onSubtopicSelected: any;
 }
 
 export interface FieldOption {

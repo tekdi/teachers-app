@@ -7,7 +7,7 @@ import CenterSessionModal from './CenterSessionModal';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SelectTopic from './SelectTopic';
 import { SessionCardFooterProps } from '../utils/Interfaces';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
@@ -15,13 +15,68 @@ import TopicDetails from './TopicDetails';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import {
+  getTargetedSolutions,
+  getUserProjectDetails,
+} from '@/services/CoursePlannerService';
 
 const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
+  const [topicList, setTopicList] = React.useState([]);
+  const [transformedTasks, setTransformedTasks] = React.useState();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const [selectedSubtopics, setSelectedSubtopics] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchTopicSubtopic = async () => {
+      try {
+        const response = await getTargetedSolutions({
+          subject: 'Tamil',
+          class: '4',
+          state: 'Maharashtra',
+          board: 'TQKR',
+          type: 'mainCourse',
+          medium: 'Telugu',
+        });
+
+        const courseData = response.result.data[0];
+        let courseId = courseData._id;
+
+        const res = await getUserProjectDetails({
+          id: courseId,
+        });
+        const tasks = res?.result?.tasks;
+        const topics = tasks?.map((task: any) => task?.name);
+        setTopicList(topics);
+        const subTopics = tasks.reduce((acc: any, task: any) => {
+          acc[task.name] = task.children.map((child: any) => child.name);
+          return acc;
+        }, {});
+        setTransformedTasks(subTopics);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchTopicSubtopic();
+  }, [item]);
+
+  const updateTopicSubtopic = () => {
+    console.log('updateTopicSubtopic');
+  };
+  const handleTopicSelection = (topic: string) => {
+    setSelectedTopic(topic);
+    console.log(topic);
+  };
+
+  const handleSubtopicSelection = (subtopics: string[]) => {
+    setSelectedSubtopics(subtopics);
+    console.log(subtopics);
+  };
 
   return (
     <>
@@ -136,8 +191,19 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
         title={item.subject}
         center={'Khapari Dharmu'}
         date={'25 May, 2024'}
+        primary={'Save'}
+        handlePrimaryModel={updateTopicSubtopic}
       >
-        {item?.topic ? <TopicDetails /> : <SelectTopic />}
+        {item?.topic ? (
+          <TopicDetails />
+        ) : (
+          <SelectTopic
+            topics={topicList}
+            subTopicsList={transformedTasks}
+            onTopicSelected={handleTopicSelection}
+            onSubtopicSelected={handleSubtopicSelection}
+          />
+        )}
       </CenterSessionModal>
     </>
   );
