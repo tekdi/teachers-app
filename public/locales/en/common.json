@@ -119,7 +119,7 @@
     "NEW_FACILITATOR": "New Facilitator",
     "EDIT_FACILITATOR": "Edit Facilitator",
     "SUBMIT": "Submit",
-    "LEARNER_CREATED_SUCCESSFULLY": "Leaner has been successfully created!",
+    "LEARNER_CREATED_SUCCESSFULLY": "Learner has been successfully created!",
     "FACILITATOR_ADDED_SUCCESSFULLY": "Facilitator added successfully!",
     "LEARNER_UPDATED_SUCCESSFULLY": "Learner profile updated successfully!",
     "FACILITATOR_UPDATED_SUCCESSFULLY": "Facilitator profile updated successfully!",
@@ -129,7 +129,8 @@
     "HELD_EVERY_WEEK_ON": "Held every week on {{days}}",
     "SESSION_SCHEDULED_SUCCESSFULLY": "Session has been scheduled successfully!",
     "CENTER": "Center",
-    "AND_COUNT_MORE": "and {{count}} more"
+    "AND_COUNT_MORE": "and {{count}} more",
+    "RETURN_TO_LOGIN": "Return to Login"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
