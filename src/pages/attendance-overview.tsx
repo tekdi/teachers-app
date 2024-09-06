@@ -202,14 +202,15 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           // console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
             //Write logic to call class missed api
-            const fromDate = isFromDate;
-            const toDate = isToDate;
-            const filters = {
-              contextId: classId,
-              fromDate,
-              toDate,
+            const filters: any = {
               scope: 'student',
+              contextId: classId,
             };
+            // Conditionally add fromDate and toDate to filters if selectedValue doesn't match the specific condition
+            if (selectedValue !== t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })) {
+              filters.fromDate = isFromDate;
+              filters.toDate = isToDate;
+            }
             const response = await classesMissedAttendancePercentList({
               filters,
               facets: ['userId'],
@@ -259,18 +260,27 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               }
             }
           }
+        }else{
+          setLearnerData([]);
+          setDisplayStudentList([]);
         }
         if (classId) {
           const cohortAttendancePercent = async () => {
+
+            const filters: any = {
+              scope: 'student',
+              contextId: classId,
+            };
+        
+            // Conditionally add fromDate and toDate to filters if selectedValue doesn't match the specific condition
+            if (selectedValue !== t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })) {
+              filters.fromDate = isFromDate;
+              filters.toDate = isToDate;
+            }
             const cohortAttendanceData: CohortAttendancePercentParam = {
               limit: 0,
               page: 0,
-              filters: {
-                scope: 'student',
-                fromDate: isFromDate,
-                toDate: isToDate,
-                contextId: classId,
-              },
+              filters,
               facets: ['contextId'],
               sort: ['present_percentage', 'asc'],
             };
@@ -302,7 +312,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               scope: 'student',
               contextId: cohortId,
             };
-            console.log('Filters:', filters); // Log filters to ensure contextId is set
+            console.log('Filters:', filters);
 
             try {
               const response = await getAllCenterAttendance({
@@ -311,7 +321,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 filters,
                 facets,
               });
-              console.log(`Response for cohortId ${cohortId}:`, response); // Log the response
+              console.log(`Response for cohortId ${cohortId}:`, response);
               return { cohortId, data: response?.data?.result };
             } catch (error) {
               console.error(
