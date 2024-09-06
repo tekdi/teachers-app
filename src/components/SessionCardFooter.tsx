@@ -20,7 +20,10 @@ import {
   getUserProjectDetails,
 } from '@/services/CoursePlannerService';
 
-const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
+const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
+  item,
+  cohortName,
+}) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
@@ -43,7 +46,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
           medium: 'Telugu',
         });
 
-        const courseData = response.result.data[0];
+        const courseData = response?.result?.data[0];
         let courseId = courseData._id;
 
         const res = await getUserProjectDetails({
@@ -188,10 +191,10 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({ item }) => {
       <CenterSessionModal
         open={open}
         handleClose={handleClose}
-        title={item.subject}
-        center={'Khapari Dharmu'}
+        title={item?.metadata?.framework?.subject || item?.metadata?.subject}
+        center={cohortName}
         date={'25 May, 2024'}
-        primary={'Save'}
+        primary={t('COMMON.SAVE')}
         handlePrimaryModel={updateTopicSubtopic}
       >
         {item?.topic ? (

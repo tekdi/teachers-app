@@ -383,6 +383,7 @@ export interface CoursePlanner {
 }
 export interface SessionCardFooterProps {
   item: any;
+  cohortName?: string;
 }
 
 export interface TopicSubtopicProps {
