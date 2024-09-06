@@ -1,4 +1,9 @@
-import { CoursePlanner, GetSolutionDetailsParams, GetTargetedSolutionsParams, GetUserProjectTemplateParams } from '../utils/Interfaces';
+import {
+  CoursePlanner,
+  GetSolutionDetailsParams,
+  GetTargetedSolutionsParams,
+  GetUserProjectTemplateParams,
+} from '../utils/Interfaces';
 import axios from 'axios';
 import { post } from './RestClient';
 
@@ -17,7 +22,6 @@ export const getCoursePlanner = (): CoursePlanner[] => {
 
   return CoursePlannerService;
 };
-
 
 export const getTargetedSolutions = async ({
   subject,
@@ -56,12 +60,12 @@ interface GetUserProjectDetailsParams {
   id: string;
 }
 
+
 export const getUserProjectDetails = async ({ id }: GetUserProjectDetailsParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/userProjects/details/${id}`;
   
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
-    
   };
 
   try {
@@ -73,9 +77,9 @@ export const getUserProjectDetails = async ({ id }: GetUserProjectDetailsParams)
   }
 };
 
-
 export const getSolutionDetails = async ({ id, role }: GetSolutionDetailsParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/solutions/details/${id}`;
+
 
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
@@ -119,6 +123,3 @@ export const getUserProjectTemplate = async ({
     throw error;
   }
 };
-
-
-

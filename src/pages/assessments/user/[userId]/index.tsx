@@ -8,10 +8,7 @@ import {
 import { getUserDetails } from '@/services/ProfileService';
 import { AssessmentStatus } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
-import {
-  format2DigitDate,
-  toPascalCase
-} from '@/utils/Helper';
+import { format2DigitDate, toPascalCase } from '@/utils/Helper';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
@@ -85,7 +82,10 @@ function AssessmentsDetails() {
         program: [Program],
         se_boards: [stateName],
         // subject: [subjects || subject],
-        assessment1: assessmentType === 'pre' ? AssessmentType.PRE_TEST : AssessmentType.POST_TEST,
+        assessment1:
+          assessmentType === 'pre'
+            ? AssessmentType.PRE_TEST
+            : AssessmentType.POST_TEST,
       };
       try {
         if (stateName) {
@@ -94,7 +94,6 @@ function AssessmentsDetails() {
             setAssessmentList([]);
             setSubject([]);
             setAssessmentInfo({});
-            
 
             const searchResults = await queryClient.fetchQuery({
               queryKey: ['contentSearch', { filters }],
@@ -207,7 +206,10 @@ function AssessmentsDetails() {
   useEffect(() => {
     const getUserInfo = async () => {
       try {
-        const response = await queryClient.fetchQuery({ queryKey: ['userRead', params.userId], queryFn: () => getUserDetails(params.userId) }); 
+        const response = await queryClient.fetchQuery({
+          queryKey: ['userRead', params.userId],
+          queryFn: () => getUserDetails(params.userId),
+        });
         console.log('response', response);
         if (response?.result?.userData) {
           setUserDetails(response?.result?.userData);
@@ -350,7 +352,8 @@ function AssessmentsDetails() {
           px: '16px',
         }}
       >
-        {t('ASSESSMENTS.OVERALL_SCORE')}{': '}
+        {t('ASSESSMENTS.OVERALL_SCORE')}
+        {': '}
         {assessmentInfo?.status === AssessmentStatus.COMPLETED && (
           <span>
             {`${assessmentInfo?.totalObtainedScore}/${assessmentInfo?.totalMaxScore}`}{' '}
@@ -360,7 +363,6 @@ function AssessmentsDetails() {
         {assessmentInfo?.status !== AssessmentStatus.COMPLETED && (
           <span> --</span>
         )}
-
       </Box>
       {subject?.length > 0 && (
         <Box

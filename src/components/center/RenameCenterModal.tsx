@@ -108,7 +108,7 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
               {t('CENTERS.RENAME_CENTER')}
             </Typography>
             <IconButton
-              onClick={() =>handleClose('')}
+              onClick={() => handleClose('')}
               sx={{ color: theme?.palette?.text?.primary }}
             >
               <CloseIcon />

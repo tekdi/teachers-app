@@ -168,9 +168,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   }, [
     classId,
     selectedValue ===
-    t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-      date_range: dateRange,
-    }),
+      t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+        date_range: dateRange,
+      }),
   ]);
 
   const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
@@ -202,14 +202,15 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           // console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
             //Write logic to call class missed api
-            const fromDate = isFromDate;
-            const toDate = isToDate;
-            const filters = {
-              contextId: classId,
-              fromDate,
-              toDate,
+            const filters: any = {
               scope: 'student',
+              contextId: classId,
             };
+            // Conditionally add fromDate and toDate to filters if selectedValue doesn't match the specific condition
+            if (selectedValue !== t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })) {
+              filters.fromDate = isFromDate;
+              filters.toDate = isToDate;
+            }
             const response = await classesMissedAttendancePercentList({
               filters,
               facets: ['userId'],
@@ -259,18 +260,27 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               }
             }
           }
+        }else{
+          setLearnerData([]);
+          setDisplayStudentList([]);
         }
         if (classId) {
           const cohortAttendancePercent = async () => {
+
+            const filters: any = {
+              scope: 'student',
+              contextId: classId,
+            };
+        
+            // Conditionally add fromDate and toDate to filters if selectedValue doesn't match the specific condition
+            if (selectedValue !== t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })) {
+              filters.fromDate = isFromDate;
+              filters.toDate = isToDate;
+            }
             const cohortAttendanceData: CohortAttendancePercentParam = {
               limit: 0,
               page: 0,
-              filters: {
-                scope: 'student',
-                fromDate: isFromDate,
-                toDate: isToDate,
-                contextId: classId,
-              },
+              filters,
               facets: ['contextId'],
               sort: ['present_percentage', 'asc'],
             };
@@ -302,7 +312,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               scope: 'student',
               contextId: cohortId,
             };
-            console.log('Filters:', filters); // Log filters to ensure contextId is set
+            console.log('Filters:', filters);
 
             try {
               const response = await getAllCenterAttendance({
@@ -311,7 +321,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 filters,
                 facets,
               });
-              console.log(`Response for cohortId ${cohortId}:`, response); // Log the response
+              console.log(`Response for cohortId ${cohortId}:`, response);
               return { cohortId, data: response?.data?.result };
             } catch (error) {
               console.error(
@@ -411,7 +421,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         },
       };
       telemetryFactory.interact(telemetryInteract);
-
     } else {
       setDisplayStudentList(learnerData);
     }
@@ -551,7 +560,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 isCustomFieldRequired={true}
               />
             </Box>
-            <Box sx={{ marginTop: blockName ? '25px' : '0px' }} className="flex-basis-md-50">
+            <Box
+              sx={{ marginTop: blockName ? '25px' : '0px' }}
+              className="flex-basis-md-50"
+            >
               <DateRangePopup
                 menuItems={menuItems}
                 selectedValue={selectedValue}
@@ -601,20 +613,20 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     ))}
                     valuePartOne={
                       Array.isArray(lowAttendanceLearnerList) &&
-                        lowAttendanceLearnerList.length > 2
+                      lowAttendanceLearnerList.length > 2
                         ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                         : lowAttendanceLearnerList.length === 2
                           ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
                           : lowAttendanceLearnerList.length === 1
                             ? `${lowAttendanceLearnerList[0]}`
                             : Array.isArray(lowAttendanceLearnerList) &&
-                              lowAttendanceLearnerList.length === 0
+                                lowAttendanceLearnerList.length === 0
                               ? t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
                               : t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
                     }
                     valuePartTwo={
                       Array.isArray(lowAttendanceLearnerList) &&
-                        lowAttendanceLearnerList.length > 2
+                      lowAttendanceLearnerList.length > 2
                         ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                         : null
                     }
@@ -789,7 +801,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           p={'1rem'}
           borderRadius={'1rem'}
           bgcolor={theme.palette.warning['A400']}
-        // bgcolor={'secondary.light'}
+          // bgcolor={'secondary.light'}
         >
           <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
         </Box>

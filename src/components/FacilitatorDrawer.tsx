@@ -23,14 +23,14 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
         sx={{
           position: 'unset',
           '@media (min-width: 900px)': {
-          '& .MuiPaper-root': {
-            marginLeft: '352px',
-            // bottom:'3rem',
-            // borderRadius:'16px'
+            '& .MuiPaper-root': {
+              marginLeft: '352px',
+              // bottom:'3rem',
+              // borderRadius:'16px'
+            },
           },
-        }
         }}
-        className='facilitator-drawer'
+        className="facilitator-drawer"
         BackdropProps={{ invisible: true }}
       >
         <Box
@@ -49,8 +49,8 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
               fontWeight: '400',
               color: theme?.palette?.warning['A400'],
               '@media (min-width: 600px)': {
-              textAlign: 'center',
-              }
+                textAlign: 'center',
+              },
             }}
           >
             Khapari Dharmu (Chimur, Chandrapur) {/*  will come from API */}
@@ -86,7 +86,7 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
                         width: '100%',
                       },
                     }}
-                  // onClick={handleSecondaryModel} // Uncomment and implement this function if needed
+                    // onClick={handleSecondaryModel} // Uncomment and implement this function if needed
                   >
                     {secondary}
                   </Button>

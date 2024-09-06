@@ -20,7 +20,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
   date,
   secondary,
   handlePrimaryModel,
-  handleEditModal
+  handleEditModal,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -106,7 +106,14 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
           />
         </Box>
         <Divider />
-        <Box sx={{ maxHeight: '49vh', minHeight: '100%', overflowY: 'auto', overflowX: 'hidden' }}>
+        <Box
+          sx={{
+            maxHeight: '49vh',
+            minHeight: '100%',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }}
+        >
           {children}
         </Box>
 

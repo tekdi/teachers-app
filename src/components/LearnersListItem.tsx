@@ -565,7 +565,9 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                         >
                           {age + ' y/o'}
                         </Box>
-                        <FiberManualRecordIcon style={{ fontSize: '8px', color:'#CDC5BD' }} />
+                        <FiberManualRecordIcon
+                          style={{ fontSize: '8px', color: '#CDC5BD' }}
+                        />
                         <Box
                           sx={{
                             fontSize: '14px',

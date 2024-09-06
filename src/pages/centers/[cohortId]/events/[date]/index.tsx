@@ -59,8 +59,8 @@ const eventMonthView = () => {
 
           const response = await getEventList({ limit, offset, filters });
 
-          let sessionArray: any = [];
-          let extraSessionArray: any = [];
+          const sessionArray: any = [];
+          const extraSessionArray: any = [];
 
           if (response?.events.length > 0) {
             response?.events.forEach((event: any) => {

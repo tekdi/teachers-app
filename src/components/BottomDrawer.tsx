@@ -11,8 +11,6 @@ import { BottomDrawerProps } from '@/utils/Interfaces';
 
 // Type alias for the anchor positions
 
-
-
 const BottomDrawer: React.FC<BottomDrawerProps> = ({
   toggleDrawer,
   state,
@@ -123,7 +121,6 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
             </MenuItem>
           ))}
         </Menu>
-
       )}
     </div>
   );

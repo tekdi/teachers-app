@@ -469,7 +469,7 @@ const LoginPage = () => {
                     />
                   </Box>
 
-                  <Box
+                  {/* <Box
                     sx={{
                       fontSize: '14px',
                       fontWeight: '500',
@@ -482,7 +482,7 @@ const LoginPage = () => {
                     }}
                   >
                     {t('LOGIN_PAGE.FORGOT_PASSWORD')}
-                  </Box>
+                  </Box> */}
 
                   {/* {
                     <Box marginTop={'1rem'} marginLeft={'0.8rem'}>

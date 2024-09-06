@@ -728,11 +728,13 @@ main {
   justify-content: center;
   width: 40px;
   height: 40px;
+  padding: 8px;
   background-color: var(--mui-palette-warning-A400);
   border: 1.5px solid var(--mui-palette-warning-A400);
-  padding: 8px;
   border-radius: 100px;
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.30), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 1px 2px 0 rgb(0 0 0 / 30%),
+    0 2px 6px 2px rgb(0 0 0 / 15%);
 }
 
 .modal-bottom div:nth-child(3) {
@@ -989,16 +991,15 @@ legend.Mui-focused {
   color: inherit !important;
 }
 
-
-.form-parent .rjsf  .field-object{
+.form-parent .rjsf .field-object {
   min-height: 100%;
   max-height: 48vh;
-  overflow-y: auto;
-  padding-left: 16px;
   padding-right: 16px;
+  padding-left: 16px;
+  overflow-y: auto;
 }
 
-.login-img{
+.login-img {
   /* height: 500px !important; */
   width: 90% !important;
 }
@@ -1011,7 +1012,7 @@ legend.Mui-focused {
   color: var(--mui-palette-warning-300) !important;
 }
 
-.__floater __floater__open  {
+.__floater __floater__open {
   z-index: 9999 !important;
 }
 
@@ -1026,55 +1027,57 @@ legend.Mui-focused {
 
 /* Remove yellow color from label on focus */
 .MuiInputLabel-root.Mui-focused {
-  color: var(--mui-palette-warning-300) !important; 
+  color: var(--mui-palette-warning-300) !important;
 }
 
-
-.swiper-button-prev, .swiper-rtl .swiper-button-next{
+.swiper-button-prev,
+.swiper-rtl .swiper-button-next {
   right: 50px !important;
   left: unset !important;
-  border: 1px solid var(--mui-palette-warning-A100);
-  height: 32px !important;
   width: 32px !important;
+  height: 32px !important;
+  border: 1px solid var(--mui-palette-warning-A100);
   border-radius: 4px !important;
-  
 }
 
-.swiper-button-next{
+.swiper-button-next {
   left: unset !important;
-  border: 1px solid var(--mui-palette-warning-A100);
-  height: 32px !important;
   width: 32px !important;
+  height: 32px !important;
+  border: 1px solid var(--mui-palette-warning-A100);
   border-radius: 4px !important;
 }
-.swiper-button-prev, .swiper-button-next{
+
+.swiper-button-prev,
+.swiper-button-next {
   top: unset !important;
-  bottom: 0px !important;
+  bottom: 0 !important;
 }
 
-.swiper-button-prev:after, .swiper-rtl .swiper-button-next:after {
+.swiper-button-prev::after,
+.swiper-rtl .swiper-button-next::after {
+  color: #1c1b1f !important; /* not in custom theme */
+  font-size: 14px !important;
   content: 'prev';
-  font-size: 14px !important;
-   color: #1C1B1F !important;   /* not in custom theme */
 }
 
-.swiper-button-next:after, .swiper-rtl .swiper-button-prev:after{
-  content: 'next';
+.swiper-button-next::after,
+.swiper-rtl .swiper-button-prev::after {
+  color: #1c1b1f !important; /* not in custom theme */
   font-size: 14px !important;
-  color: #1C1B1F !important; /* not in custom theme */
+  content: 'next';
 }
-.swiper{
+
+.swiper {
   position: unset !important;
 }
 
-.swiper-pagination-fraction{
+.swiper-pagination-fraction {
   position: absolute;
-  width: fit-content !important;
   bottom: 13px !important;
+  width: fit-content !important;
 }
 
 .css-1i1js26-MuiSvgIcon-root-MuiSelect-icon {
   color: var(--mui-palette-warning-300) !important;
 }
- 
-

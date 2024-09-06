@@ -26,7 +26,7 @@ interface DependentFieldsProps {
 const DependentFields: React.FC<DependentFieldsProps> = ({
   customFormData,
   onFieldsChange,
-  setShowForm
+  setShowForm,
 }) => {
   const [MGSData, setMGSData] = useState<any[]>();
   const [boardOptions, setBoardOptions] = useState<any[]>([]);
@@ -39,7 +39,9 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
   const [subjectData, setSubjectData] = useState<any[]>([]);
   const [subjectOptions, setSubjectOptions] = useState<any[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<string[]>([]);
-  const [selectedSubjectLabel, setSelectedSubjectLabel] = useState<string[]>([]);
+  const [selectedSubjectLabel, setSelectedSubjectLabel] = useState<string[]>(
+    []
+  );
 
   const res = customFormData;
 
@@ -93,7 +95,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
 
   useEffect(() => {
     setSelectedSubject([]);
-    setSelectedSubjectLabel([])
+    setSelectedSubjectLabel([]);
   }, [selectedBoard, selectedMedium, selectedGrade]);
 
   useEffect(() => {
@@ -146,21 +148,21 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
 
   const handleBoardChange = (event: SelectChangeEvent<string>) => {
     const board = event.target.value;
-    let selectedOption = boardOptions.find((option) => option.value === board);
+    const selectedOption = boardOptions.find((option) => option.value === board);
     console.log('selectedValue', selectedOption.label);
     setSelectedBoard(selectedOption.label);
     setSelectedBoardId(board);
-    setSelectedMedium('')
+    setSelectedMedium('');
     setMediumOptions([]);
     setGradeOptions([]);
-    setSelectedGrade('')
+    setSelectedGrade('');
     setSubjectOptions([]);
     setShowForm(false);
   };
 
   const handleMediumChange = (event: SelectChangeEvent<string>) => {
     const selectedCode = event.target.value;
-    let selectedOption = mediumOptions.find(
+    const selectedOption = mediumOptions.find(
       (option) => option.value === selectedCode
     );
 
@@ -182,9 +184,9 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
   const handleGradeChange = (event: SelectChangeEvent<string>) => {
     const grade = event.target.value;
     setShowForm(false);
-    setSelectedSubject([])
-    setSelectedSubjectLabel([])
-    let selectedOption: any = gradeOptions.find(
+    setSelectedSubject([]);
+    setSelectedSubjectLabel([]);
+    const selectedOption: any = gradeOptions.find(
       (option) => option.value === grade
     );
 
@@ -214,7 +216,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
     });
 
     setSelectedSubject(subjects);
-    setSelectedSubjectLabel(selectedLabels)
+    setSelectedSubjectLabel(selectedLabels);
     console.log('Subjects', selectedLabels);
 
     onFieldsChange({
@@ -247,68 +249,80 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
       )}
 
       {/* Medium dropdown */}
-        <FormControl fullWidth variant="outlined" margin="normal"  disabled={!selectedBoard}>
-          <InputLabel id="medium-select-label">Medium</InputLabel>
-          <Select
-            labelId="medium-select-label"
-            onChange={handleMediumChange}
-            defaultValue=""
-            label="Medium"
-          >
-            {mediumOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      <FormControl
+        fullWidth
+        variant="outlined"
+        margin="normal"
+        disabled={!selectedBoard}
+      >
+        <InputLabel id="medium-select-label">Medium</InputLabel>
+        <Select
+          labelId="medium-select-label"
+          onChange={handleMediumChange}
+          defaultValue=""
+          label="Medium"
+        >
+          {mediumOptions.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-      {/* Grade dropdown */}  
-        <FormControl fullWidth variant="outlined" margin="normal"  disabled={!selectedMedium}>
-          <InputLabel id="grade-select-label">Grade</InputLabel>
-          <Select
-            labelId="grade-select-label"
-            onChange={handleGradeChange}
-            defaultValue=""
-            label="Grade"
-          >
-            {gradeOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      {/* Grade dropdown */}
+      <FormControl
+        fullWidth
+        variant="outlined"
+        margin="normal"
+        disabled={!selectedMedium}
+      >
+        <InputLabel id="grade-select-label">Grade</InputLabel>
+        <Select
+          labelId="grade-select-label"
+          onChange={handleGradeChange}
+          defaultValue=""
+          label="Grade"
+        >
+          {gradeOptions.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
       {/* Subject dropdown (multi-select with checkboxes) */}
-        <FormControl fullWidth variant="outlined" margin="normal"  disabled={!selectedGrade}>
-          <InputLabel id="subject-select-label">Subject</InputLabel>
-          <Select
-            labelId="subject-select-label"
-            multiple
-            value={selectedSubject}
-            onChange={handleSubjectChange}
-            renderValue={(selected) =>
-              (selected as string[])
-                .map(
-                  (value) =>
-                    subjectOptions.find((option) => option.value === value)
-                      ?.label
-                )
-                .join(', ')
-            }
-            label="Subject"
-          >
-            {subjectOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                <Checkbox
-                  checked={selectedSubject.indexOf(option.value) > -1}
-                />
-                <ListItemText primary={option.label} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      <FormControl
+        fullWidth
+        variant="outlined"
+        margin="normal"
+        disabled={!selectedGrade}
+      >
+        <InputLabel id="subject-select-label">Subject</InputLabel>
+        <Select
+          labelId="subject-select-label"
+          multiple
+          value={selectedSubject}
+          onChange={handleSubjectChange}
+          renderValue={(selected) =>
+            (selected as string[])
+              .map(
+                (value) =>
+                  subjectOptions.find((option) => option.value === value)?.label
+              )
+              .join(', ')
+          }
+          label="Subject"
+        >
+          {subjectOptions.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              <Checkbox checked={selectedSubject.indexOf(option.value) > -1} />
+              <ListItemText primary={option.label} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </div>
   );
 };

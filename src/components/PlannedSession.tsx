@@ -152,9 +152,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           ? sessionMode.ONLINE
           : sessionMode.OFFLINE;
       setMode(mode);
-      let sub = eventData?.metadata?.subject;
+      const sub = eventData?.metadata?.subject;
       setSelectedSubject(sub);
-      let sessionTitle = eventData?.shortDescription;
+      const sessionTitle = eventData?.shortDescription;
       setShortDescription(sessionTitle);
       const url = eventData?.meetingDetails?.url;
       setLink(url);
@@ -265,13 +265,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           const subjectTeach = response?.fields
             .filter((field: any) => field?.label === 'SUBJECTS_I_TEACH')
             .flatMap((field: any) =>
-              field?.options?.map((option: any) => t(`FORM.${option?.label}`))
+              field?.options?.map((option: any) =>
+                t(`FORM.${option?.label.toUpperCase()}`)
+              )
             );
 
           const mainSubjects = response?.fields
             .filter((field: any) => field?.label === 'MY_MAIN_SUBJECTS')
             .flatMap((field: any) =>
-              field?.options?.map((option: any) => t(`FORM.${option?.label}`))
+              field?.options?.map((option: any) =>
+                t(`FORM.${option?.label.toUpperCase()}`)
+              )
             );
 
           const combinedSubjects = Array.from(
@@ -385,7 +389,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         : convertToUTC(combinedEndDateValue);
 
     if (startDatetime && endDatetime && endDateValue) {
-      let isRecurringEvent = endDatetime !== endDateValue ? true : false;
+      const isRecurringEvent = endDatetime !== endDateValue ? true : false;
       setSessionBlocks(
         sessionBlocks.map((block) =>
           block?.id === id
@@ -419,7 +423,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         : convertToUTC(combinedEndDateValue);
 
     if (startDatetime && endDatetime && endDateValue) {
-      let isRecurringEvent = endDatetime !== endDateValue ? true : false;
+      const isRecurringEvent = endDatetime !== endDateValue ? true : false;
       setSessionBlocks(
         sessionBlocks.map((block) =>
           block?.id === selectedBlockId
@@ -789,10 +793,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           };
 
           if (editSelection === t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS')) {
-            let DaysOfWeek = sessionBlocks?.[0]?.DaysOfWeek;
-            let endDate = sessionBlocks?.[0]?.endDatetime;
-            let startDate = sessionBlocks?.[0]?.startDatetime;
-            let endDateTime = sessionBlocks?.[0]?.endDateValue;
+            const DaysOfWeek = sessionBlocks?.[0]?.DaysOfWeek;
+            const endDate = sessionBlocks?.[0]?.endDatetime;
+            const startDate = sessionBlocks?.[0]?.startDatetime;
+            const endDateTime = sessionBlocks?.[0]?.endDateValue;
             apiBody['endDateTime'] = endDateTime;
             const datePart = sessionBlocks?.[0]?.endDateValue?.split('T')[0];
             const timePart = sessionBlocks?.[0]?.startDatetime?.split('T')[1];
@@ -809,7 +813,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               recurringStartDate: startDate,
             };
           } else if (editSelection === t('CENTER_SESSION.EDIT_THIS_SESSION')) {
-            let startDateTime = sessionBlocks?.[0]?.startDatetime;
+            const startDateTime = sessionBlocks?.[0]?.startDatetime;
 
             if (startDateTime && eventData?.startDateTime) {
               const startDateTimeDate = new Date(startDateTime);
@@ -820,7 +824,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               }
             }
 
-            let endDateTime = sessionBlocks?.[0]?.endDatetime;
+            const endDateTime = sessionBlocks?.[0]?.endDatetime;
             if (endDateTime && eventData?.endDateTime) {
               const endDateTimeDate = new Date(endDateTime);
               const eventDateTimeDate = new Date(eventData.endDateTime);

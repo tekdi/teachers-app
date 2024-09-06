@@ -15,9 +15,7 @@ import ReactGA from 'react-ga4';
 import DynamicForm from '@/components/DynamicForm';
 import SimpleModal from '@/components/SimpleModal';
 import { createUser, getFormRead } from '@/services/CreateUserService';
-import {
-  sendEmailOnFacilitatorCreation
-} from '@/services/NotificationService';
+import { sendEmailOnFacilitatorCreation } from '@/services/NotificationService';
 import { editEditUser } from '@/services/ProfileService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 import { modalStyles } from '@/styles/modalStyles';
@@ -164,13 +162,15 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     email: string
   ) => {
     try {
-      const response = await sendEmailOnFacilitatorCreation(name, username, password, email);
+      const response = await sendEmailOnFacilitatorCreation(
+        name,
+        username,
+        password,
+        email
+      );
       if (response?.email?.data?.[0]?.status !== 200) {
-        showToastMessage(
-          t('COMMON.USER_CREDENTIAL_SEND_FAILED'),
-          'error'
-        );
-      } 
+        showToastMessage(t('COMMON.USER_CREDENTIAL_SEND_FAILED'), 'error');
+      }
     } catch (error) {
       console.error('error in sending email', error);
     }
@@ -290,7 +290,9 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             );
             setReloadProfile(true);
             onReload?.();
-            queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR] });
+            queryClient.invalidateQueries({
+              queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
+            });
           }
           onClose();
         } else {
@@ -303,8 +305,12 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 if (response) {
                   onFacilitatorAdded?.();
                   onClose();
-                  queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR] });
-                  queryClient.invalidateQueries({ queryKey: [QueryKeys.MY_COHORTS, userId] });
+                  queryClient.invalidateQueries({
+                    queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
+                  });
+                  queryClient.invalidateQueries({
+                    queryKey: [QueryKeys.MY_COHORTS, userId],
+                  });
                   showToastMessage(
                     t('COMMON.FACILITATOR_ADDED_SUCCESSFULLY'),
                     'success'

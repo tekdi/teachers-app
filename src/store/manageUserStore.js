@@ -30,7 +30,8 @@ const manageUserStore = create(
       setDistrictId: (newDistrictId) =>
         set(() => ({ districtId: newDistrictId })),
       setStateId: (newStateId) => set(() => ({ stateId: newStateId })),
-      setDistrictName: (newDistrictName) => set(() => ({ districtName: newDistrictName })),
+      setDistrictName: (newDistrictName) =>
+        set(() => ({ districtName: newDistrictName })),
       setBlockName: (newBlockName) => set(() => ({ blockName: newBlockName })),
       setStateName: (newStateName) => set(() => ({ stateName: newStateName })),
     }),
