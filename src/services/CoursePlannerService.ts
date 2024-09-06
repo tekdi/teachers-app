@@ -1,5 +1,6 @@
 import { CoursePlanner, GetSolutionDetailsParams, GetTargetedSolutionsParams, GetUserProjectTemplateParams } from '../utils/Interfaces';
 import axios from 'axios';
+import { post } from './RestClient';
 
 export const getCoursePlanner = (): CoursePlanner[] => {
   // TODO: Add API call here
@@ -28,8 +29,9 @@ export const getTargetedSolutions = async ({
 }: GetTargetedSolutionsParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/solutions/targetedSolutions?type=improvementProject&currentScopeOnly=true`;
 
+
   const headers = {
-    'X-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
+    'X-auth-token': localStorage.getItem('token'),
     'Content-Type': 'application/json',
   };
 
@@ -56,12 +58,10 @@ interface GetUserProjectDetailsParams {
 
 export const getUserProjectDetails = async ({ id }: GetUserProjectDetailsParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/userProjects/details/${id}`;
-
+  
   const headers = {
-    'Authorization': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
+    'X-auth-token': localStorage.getItem('token'),
     'Content-Type': 'application/json',
-    'x-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
-    
   };
 
   try {
@@ -78,7 +78,7 @@ export const getSolutionDetails = async ({ id, role }: GetSolutionDetailsParams)
   const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/solutions/details/${id}`;
 
   const headers = {
-    'X-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
+    'X-auth-token': localStorage.getItem('token'),
     'Content-Type': 'application/json',
   };
 
@@ -103,7 +103,7 @@ export const getUserProjectTemplate = async ({
   const apiUrl: string = `${process.env.NEXT_PUBLIC_SHIKSHALOKAM_API_URL}/userProjects/details?templateId=${templateId}&solutionId=${solutionId}`;
 
   const headers = {
-    'X-auth-token': process.env.NEXT_PUBLIC_SHIKSHALOKAM_TOKEN,
+    'X-auth-token': localStorage.getItem('token'),
     'Content-Type': 'application/json',
   };
 
