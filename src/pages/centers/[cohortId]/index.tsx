@@ -618,7 +618,10 @@ const CohortPage = () => {
                         isEventDeleted={handleEventDeleted}
                         isEventUpdated={handleEventUpdated}
                       >
-                        <SessionCardFooter item={item} />
+                        <SessionCardFooter
+                          item={item}
+                          cohortName={cohortName}
+                        />
                       </SessionCard>
                     </SwiperSlide>
                   ))}
@@ -690,7 +693,7 @@ const CohortPage = () => {
                     isEventDeleted={handleEventDeleted}
                     isEventUpdated={handleEventUpdated}
                   >
-                    <SessionCardFooter item={item} />
+                    <SessionCardFooter item={item} cohortName={cohortName} />
                   </SessionCard>
                 </Grid>
               ))}
