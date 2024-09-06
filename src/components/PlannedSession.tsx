@@ -53,6 +53,7 @@ import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
 import ConfirmationModal from './ConfirmationModal';
 import timezone from 'dayjs/plugin/timezone';
+import { useQueryClient } from '@tanstack/react-query';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -104,6 +105,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [linkError, setLinkError] = useState('');
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>();
   const [editEventData, setEditEventData] = useState(eventData);
+
+
+  const queryClient = useQueryClient();
+
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [selectedBlockId, setSelectedBlockId] = useState(0);
@@ -255,10 +260,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   useEffect(() => {
     const getAddFacilitatorFormData = async () => {
       try {
-        const response = await getFormRead(
-          FormContext.USERS,
-          FormContextType.TEACHER
-        );
+        const response = await queryClient.fetchQuery({
+          queryKey: ['formRead', FormContext.USERS, FormContextType.TEACHER],
+          queryFn: () => getFormRead(FormContext.USERS, FormContextType.TEACHER),
+        });
 
         console.log('sortedFields', response);
         if (response) {

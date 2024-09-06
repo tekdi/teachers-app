@@ -78,15 +78,15 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   useEffect(() => {
     const getAddFacilitatorFormData = async () => {
       try {
-        const response: FormData = await getFormRead(
-          FormContext.USERS,
-          FormContextType.TEACHER
-        );
+        const response = await queryClient.fetchQuery({
+          queryKey: ['formRead', FormContext.USERS, FormContextType.TEACHER],
+          queryFn: () => getFormRead(FormContext.USERS, FormContextType.TEACHER),
+        });
         console.log('sortedFields', response);
         if (response) {
           const filteredFieldNames = response?.fields
-            .filter((field) => field?.coreField === 1)
-            .map((field) => field?.name);
+            .filter((field: any) => field?.coreField === 1)
+            .map((field: any) => field?.name);
           setCoreFields(filteredFieldNames);
         }
 

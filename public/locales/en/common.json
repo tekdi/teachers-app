@@ -142,7 +142,7 @@
     "FORGOT_PASSWORD": "Forgot Password?",
     "REMEMBER_ME": "Remember Me",
     "CONFIRM_PASSWORD": "Confirm password",
-    "RESET_PASSWORD": "Reset password",
+    "RESET_PASSWORD": "Reset Password",
     "CREATE_NEW": "Create a new, strong password that you don't use for other websites",
     "NOT_MATCH": "Passwords do not match",
     "CHARACTERS_LONG": "Passwords must be at least 8 characters long",

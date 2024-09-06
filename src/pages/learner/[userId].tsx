@@ -313,7 +313,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
 
               const fetchFormData = async () => {
                 try {
-                  const response: FormData = await getFormRead(
+                  const response = await getFormRead(
                     FormContext.USERS,
                     FormContextType.STUDENT
                   );

@@ -4,9 +4,7 @@ import Loader from '@/components/Loader';
 import ManageUser from '@/components/ManageUser';
 import { showToastMessage } from '@/components/Toastify';
 import { getFormRead } from '@/services/CreateUserService';
-import { getUserDetails } from '@/services/ProfileService';
 import { useProfileInfo } from '@/services/queries';
-import manageUserStore from '@/store/manageUserStore';
 import {
   extractAddress,
   mapFieldIdToValue,
@@ -43,7 +41,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const router = useRouter();
   const { userId }: any = router.query;
   const queryClient = useQueryClient();
-  const userStore = manageUserStore();
   const theme = useTheme<any>();
   const [userData, setUserData] = useState<any | null>(null);
   const [userName, setUserName] = useState<any | null>(null);
@@ -58,7 +55,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const [selfUserId, setSelfUserId] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
 
-  const { data: formResponse, isPending } = useFormRead(
+  const { data: formResponse } = useFormRead(
     FormContext.USERS,
     FormContextType.TEACHER
   );
@@ -229,10 +226,10 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
             userRole === Role.TEAM_LEADER && selfUserId === userId
               ? FormContextType.TEAM_LEADER
               : FormContextType.TEACHER;
-          const response: FormData = await getFormRead(
-            FormContext.USERS,
-            formContextType
-          );
+          const response = await queryClient.fetchQuery({
+            queryKey: ['formRead', FormContext.USERS, formContextType],
+            queryFn: () => getFormRead(FormContext.USERS, formContextType),
+          });
           console.log('response', response);
           if (response) {
             const mergeData = (
