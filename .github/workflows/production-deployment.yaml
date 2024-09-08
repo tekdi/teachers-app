@@ -2,32 +2,32 @@ name: PROD FRONTEND DEPLOYMENT WITH TAG
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*' 
 
 jobs:
   PROD-FRONTEND-TAG-BASE-DEPLOYMENT:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  
 
-      - name: Set TAG environment variable
-        id: get_tag
-        run: |
-          # Extract the tag from the ref and set it as an environment variable
-          echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+    - name: Set TAG environment variable
+      id: get_tag
+      run: |
+        # Extract the tag from the ref and set it as an environment variable
+        echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      - name: Debug TAG value
-        run: |
-          # Print the TAG value to ensure the correct tag is being used
-          echo "TAG value -  ${{ env.TAG }}"
+    - name: Debug TAG value
+      run: |
+        # Print the TAG value to ensure the correct tag is being used
+        echo "TAG value -  ${{ env.TAG }}"
 
-      - name: Deploy Stack
-        uses: appleboy/ssh-action@master
-        with:
+    - name: Deploy Stack
+      uses: appleboy/ssh-action@master
+      with:
           host: ${{ secrets.HOST_NAME_PROD }}
           username: ${{ secrets.USERNAME_PROD }}
           key: ${{ secrets.SSH_KEY_PROD }}
@@ -35,11 +35,11 @@ jobs:
           script: |
             # Assign the TAG value from the environment variable
             TAG="${{ env.TAG }}"
-
+            
             # Define the target directory and environment file
             TARGET_DIR="${{ secrets.TARGET_DIR_PROD }}"
             ENVIRONMENT="$TARGET_DIR/.env"
-
+            
             # Remove the existing .env file if it exists
             if [ -f "$ENVIRONMENT" ]; then
               rm "$ENVIRONMENT"
