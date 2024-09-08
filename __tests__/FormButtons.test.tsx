@@ -1,17 +1,17 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import { ThemeProvider, createTheme } from "@mui/material";
-import FormButtons from "@/components/FormButtons";
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { ThemeProvider, createTheme } from '@mui/material';
+import FormButtons from '@/components/FormButtons';
 
 // Mock the useTranslation hook
-jest.mock("react-i18next", () => ({
+jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
 }));
 
-describe("FormButtons Component", () => {
+describe('FormButtons Component', () => {
   const mockOnClick = jest.fn();
   const mockActions = { back: jest.fn() };
   const theme = createTheme();
@@ -35,12 +35,12 @@ describe("FormButtons Component", () => {
       </ThemeProvider>
     );
 
-    const createButton = screen.getByRole("button", {
-      name: "COMMON.CREATE",
+    const createButton = screen.getByRole('button', {
+      name: 'COMMON.CREATE',
     });
 
     expect(createButton).toBeInTheDocument();
-    expect(createButton).toHaveTextContent("COMMON.CREATE");
+    expect(createButton).toHaveTextContent('COMMON.CREATE');
   });
 
   it("should render the 'Next' button when isCreateCentered is false and isCreatedFacilitator is true", () => {
@@ -58,10 +58,10 @@ describe("FormButtons Component", () => {
       </ThemeProvider>
     );
 
-    const nextButton = screen.getByRole("button", { name: "GUIDE_TOUR.NEXT" });
+    const nextButton = screen.getByRole('button', { name: 'GUIDE_TOUR.NEXT' });
 
     expect(nextButton).toBeInTheDocument();
-    expect(nextButton).toHaveTextContent("GUIDE_TOUR.NEXT");
+    expect(nextButton).toHaveTextContent('GUIDE_TOUR.NEXT');
   });
 
   it("should render the 'Save' button when isSingleButton is true", () => {
@@ -79,14 +79,14 @@ describe("FormButtons Component", () => {
       </ThemeProvider>
     );
 
-    const saveButton = screen.getByRole("button", { name: "COMMON.SAVE" });
+    const saveButton = screen.getByRole('button', { name: 'COMMON.SAVE' });
 
     expect(saveButton).toBeInTheDocument();
-    expect(saveButton).toHaveTextContent("COMMON.SAVE");
+    expect(saveButton).toHaveTextContent('COMMON.SAVE');
   });
 
-  it("should call onClick with formData when the primary button is clicked", () => {
-    const mockFormData = { name: "Test" };
+  it('should call onClick with formData when the primary button is clicked', () => {
+    const mockFormData = { name: 'Test' };
 
     render(
       <ThemeProvider theme={theme}>
@@ -102,8 +102,8 @@ describe("FormButtons Component", () => {
       </ThemeProvider>
     );
 
-    const primaryButton = screen.getByRole("button", {
-      name: "GUIDE_TOUR.NEXT",
+    const primaryButton = screen.getByRole('button', {
+      name: 'GUIDE_TOUR.NEXT',
     });
 
     fireEvent.click(primaryButton);
@@ -126,14 +126,14 @@ describe("FormButtons Component", () => {
       </ThemeProvider>
     );
 
-    const backButton = screen.getByRole("button", { name: "COMMON.BACK" });
+    const backButton = screen.getByRole('button', { name: 'COMMON.BACK' });
 
     fireEvent.click(backButton);
 
     expect(mockActions.back).toHaveBeenCalled();
   });
 
-  it("should render only the primary button when isSingleButton is true", () => {
+  it('should render only the primary button when isSingleButton is true', () => {
     render(
       <ThemeProvider theme={theme}>
         <FormButtons
@@ -148,10 +148,10 @@ describe("FormButtons Component", () => {
       </ThemeProvider>
     );
 
-    const buttons = screen.getAllByRole("button");
+    const buttons = screen.getAllByRole('button');
     expect(buttons).toHaveLength(1);
 
-    const primaryButton = screen.getByRole("button", { name: "COMMON.SAVE" });
+    const primaryButton = screen.getByRole('button', { name: 'COMMON.SAVE' });
     expect(primaryButton).toBeInTheDocument();
   });
 
@@ -170,11 +170,12 @@ describe("FormButtons Component", () => {
       </ThemeProvider>
     );
 
-    const backButton = screen.getByRole("button", { name: "COMMON.BACK" });
+    const backButton = screen.getByRole('button', { name: 'COMMON.BACK' });
     expect(backButton).toBeInTheDocument();
 
-    const primaryButton = screen.getByRole("button", { name: "GUIDE_TOUR.NEXT" });
+    const primaryButton = screen.getByRole('button', {
+      name: 'GUIDE_TOUR.NEXT',
+    });
     expect(primaryButton).toBeInTheDocument();
   });
 });
-

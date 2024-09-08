@@ -21,52 +21,130 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
-import { getTargetedSolutions, getUserProjectDetails } from '@/services/CoursePlannerService';
+import {
+  getSolutionDetails,
+  getTargetedSolutions,
+  getUserProjectDetails,
+  getUserProjectTemplate,
+} from '@/services/CoursePlannerService';
+import useCourseStore from '@/store/coursePlannerStore';
+import dayjs from 'dayjs';
+import { Role } from '@/utils/app.constant';
+import Loader from '@/components/Loader';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import { accessControl } from '../../app.config';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const { t } = useTranslation();
-
-
+  const setResources = useCourseStore((state) => state.setResources);
+  const store = useCourseStore();
+  const [loading, setLoading] = useState(false);
   // Initialize the panels' state, assuming you have a known set of panel IDs
   const [expandedPanels, setExpandedPanels] = useState<{
     [key: string]: boolean;
   }>({
-    'panel1-header': false,
-    'panel2-header': false, // || example for multiple accordions do this dynamically
-    // Add more panels if needed
+    'panel0-header': true,
+    'panel1-header': true,
+    'panel2-header': true,
+    'panel3-header': true,
   });
   const [drawerState, setDrawerState] = React.useState({ bottom: false });
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
-
   const [courseDetails, setCourseDetails] = useState(null);
   const [userProjectDetails, setUserProjectDetails] = useState([]);
+  const { subject } = router.query;
+  const { state } = router.query;
+  const { medium } = router.query;
+  const { grade } = router.query;
+  const { board } = router.query;
 
-  const fetchCourseDetails = useCallback(() => {
-    getTargetedSolutions({
-      state: 'Maharashtra',
-      role: 'Learner,Teacher',
-      class: '10',
-      board: 'cbse',
-      courseType: 'foundationCourse',
-    }).then((response) => {
-        const courseId = response.result.data[0]._id;
-        setCourseDetails(response.result.data);
-  
-        return getUserProjectDetails({ id: courseId });
-      }).then((userProjectDetailsResponse) => {
-        setUserProjectDetails(userProjectDetailsResponse.result.tasks);
-      }).catch((error) => {
-        console.error('Error fetching course planner:', error);
+  const fetchCourseDetails = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await getTargetedSolutions({
+        subject: subject,
+        class: grade,
+        state: state,
+        board: board,
+        type: 'mainCourse',
+        medium: medium,
       });
+
+      if (response?.result?.data == '') {
+
+        setLoading(false);
+        return;
+      }
+      
+      const courseData = response?.result?.data[0];
+
+      let courseId = courseData._id;
+
+      if (!courseId) {
+        courseId = await fetchCourseIdFromSolution(courseData?.solutionId);
+      }
+
+      await fetchAndSetUserProjectDetails(courseId);
+    } catch (error) {
+      console.error('Error fetching course planner:', error);
+    }
   }, []);
-  
+
+  const fetchCourseIdFromSolution = async (
+    solutionId: string
+  ): Promise<string> => {
+    try {
+      const solutionResponse = await getSolutionDetails({
+        id: solutionId,
+        role: 'Teacher',
+      });
+
+      const externalId = solutionResponse?.result?.externalId;
+
+      const templateResponse = await getUserProjectTemplate({
+        templateId: externalId,
+        solutionId,
+        role: Role.TEACHER,
+      });
+
+      const updatedResponse = await getTargetedSolutions({
+        subject: subject,
+        class: grade,
+        state: state,
+        board: board,
+        type: 'mainCourse',
+        medium: medium,
+      });
+      setLoading(false);
+
+      
+      
+      return updatedResponse?.result?.data[0]?._id;
+    } catch (error) {
+      console.error('Error fetching solution details:', error);
+      throw error;
+    }
+  };
+
+  const fetchAndSetUserProjectDetails = async (courseId: string) => {
+    try {
+      setLoading(true);
+      const userProjectDetailsResponse = await getUserProjectDetails({
+        id: courseId,
+      });
+      setUserProjectDetails(userProjectDetailsResponse?.result?.tasks);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching user project details:', error);
+    }
+  };
+
   useEffect(() => {
     fetchCourseDetails();
   }, [fetchCourseDetails]);
-  
 
   const handleBackEvent = () => {
     window.history.back();
@@ -109,8 +187,13 @@ const CoursePlannerDetail = () => {
   //   setModalOpen(true);
   // };
 
-  console.log(userProjectDetails);
-  
+  const getAbbreviatedMonth = (dateString: string | number | Date) => {
+    const date = new Date(dateString);
+    const months = Array.from({ length: 12 }, (_, i) =>
+      dayjs().month(i).format('MMM')
+    );
+    return months[date.getMonth()];
+  };
 
   return (
     <>
@@ -184,7 +267,7 @@ const CoursePlannerDetail = () => {
                 color: theme.palette.warning['300'],
               }}
             >
-              Mathematics {/* will come from API */}
+              {store.subject}
             </Box>
           </Box>
         </Box>
@@ -220,168 +303,195 @@ const CoursePlannerDetail = () => {
           )}
         </Box>
       </Box>
-      <Box mt={2}>
-  {userProjectDetails.map((topic:any, index) => (
-    <Box key={topic._id} sx={{ borderRadius: '8px', mb: 2 }}>
-      <Accordion
-        expanded={expandedPanels[`panel${index}-header`] || false}
-        onChange={() =>
-          setExpandedPanels((prev) => ({
-            ...prev,
-            [`panel${index}-header`]: !prev[`panel${index}-header`],
-          }))
-        }
-        sx={{
-          boxShadow: 'none',
-          background: '#F1E7D9',
-          border: 'none',
-          transition: '0.3s',
-        }}
-      >
-        <AccordionSummary
-          expandIcon={
-            <ArrowDropDownIcon
-              sx={{ color: theme.palette.warning['300'] }}
-            />
-          }
-          aria-controls={`panel${index}-content`}
-          id={`panel${index}-header`}
-          className="accordion-summary"
-          sx={{
-            px: '16px',
-            m: 0,
-            '&.Mui-expanded': {
-              minHeight: '48px',
-            },
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              width: '100%',
-              pr: '5px',
-              alignItems: 'center',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                gap: '5px',
-              }}
-            >
-              <RadioButtonUncheckedIcon sx={{ fontSize: '15px' }} />
-              <Typography
-                fontWeight="500"
-                fontSize="14px"
-                color={theme.palette.warning['300']}
-              >
-                {`Topic ${index + 1} - ${topic.name}`}
-              </Typography>
-            </Box>
-            <Typography fontWeight="600" fontSize="12px" color="#7C766F">
-              {/* Here you can add dynamic date or other information if needed */}
-              Jan, Feb
-            </Typography>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails
-          sx={{ padding: '0', transition: 'max-height 0.3s ease-out' }}
-        >
-          {topic.children.map((subTopic:any) => (
-            <Box
-              key={subTopic._id}
-              sx={{
-                borderBottom: `1px solid ${theme.palette.warning['A100']}`,
-              }}
-            >
-              <Box
-                sx={{
-                  py: '10px',
-                  px: '16px',
-                  background: theme.palette.warning['A400'],
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: '20px',
-                  }}
-                >
-                  <Box
+
+      <div>
+        {loading ? (
+          <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+        ) : (
+          <>
+            <Box mt={2}>
+              {userProjectDetails.map((topic: any, index) => (
+                <Box key={topic._id} sx={{ borderRadius: '8px', mb: 2 }}>
+                  <Accordion
+                    expanded={expandedPanels[`panel${index}-header`] || false}
+                    onChange={() =>
+                      setExpandedPanels((prev) => ({
+                        ...prev,
+                        [`panel${index}-header`]: !prev[`panel${index}-header`],
+                      }))
+                    }
                     sx={{
-                      fontSize: '16px',
-                      fontWeight: '400',
-                      color: theme.palette.warning['300'],
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => {
-                      router.push(`/topic-detail-view`);
+                      boxShadow: 'none',
+                      background: '#F1E7D9',
+                      border: 'none',
+                      transition: '0.3s',
                     }}
                   >
-                    {subTopic.name}
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      gap: '6px',
-                    }}
-                  >
-                    <Box
+                    <AccordionSummary
+                      expandIcon={
+                        <ArrowDropDownIcon
+                          sx={{ color: theme.palette.warning['300'] }}
+                        />
+                      }
+                      aria-controls={`panel${index}-content`}
+                      id={`panel${index}-header`}
+                      className="accordion-summary"
                       sx={{
-                        padding: '5px',
-                        background: '  #C1D6FF',
-                        fontSize: '12px',
-                        fontWeight: '500',
-                        color: '#4D4639',
-                        borderRadius: '8px',
+                        px: '16px',
+                        m: 0,
+                        '&.Mui-expanded': {
+                          minHeight: '48px',
+                        },
                       }}
                     >
-                      JAN
-                    </Box>
-                    <CheckCircleIcon
-                      onClick={toggleDrawer(true)}
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          width: '100%',
+                          pr: '5px',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            gap: '5px',
+                          }}
+                        >
+                          <RadioButtonUncheckedIcon sx={{ fontSize: '15px' }} />
+                          <Typography
+                            fontWeight="500"
+                            fontSize="14px"
+                            color={theme.palette.warning['300']}
+                          >
+                            {`Topic ${index + 1} - ${topic.name}`}
+                          </Typography>
+                        </Box>
+                        <Typography
+                          fontWeight="600"
+                          fontSize="12px"
+                          color="#7C766F"
+                        >
+                          {getAbbreviatedMonth(
+                            topic?.metaInformation?.startDate
+                          )}
+                          ,{' '}
+                          {getAbbreviatedMonth(topic?.metaInformation?.endDate)}
+                        </Typography>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails
                       sx={{
-                        fontSize: '20px',
-                        color: '#7C766F',
-                        cursor: 'pointer',
+                        padding: '0',
+                        transition: 'max-height 0.3s ease-out',
                       }}
-                    />
-                  </Box>
+                    >
+                      {topic.children.map((subTopic: any) => (
+                        <Box
+                          key={subTopic._id}
+                          sx={{
+                            borderBottom: `1px solid ${theme.palette.warning['A100']}`,
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              py: '10px',
+                              px: '16px',
+                              background: theme.palette.warning['A400'],
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                gap: '20px',
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  fontSize: '16px',
+                                  fontWeight: '400',
+                                  color: theme.palette.warning['300'],
+                                  cursor: 'pointer',
+                                }}
+                                onClick={() => {
+                                  setResources(subTopic);
+                                  router.push(`/topic-detail-view`);
+                                }}
+                              >
+                                {subTopic.name}
+                              </Box>
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  gap: '6px',
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    padding: '5px',
+                                    background: '  #C1D6FF',
+                                    fontSize: '12px',
+                                    fontWeight: '500',
+                                    color: '#4D4639',
+                                    borderRadius: '8px',
+                                  }}
+                                >
+                                  {getAbbreviatedMonth(
+                                    subTopic?.metaInformation?.startDate
+                                  )}
+                                </Box>
+                                <CheckCircleIcon
+                                  onClick={toggleDrawer(true)}
+                                  sx={{
+                                    fontSize: '20px',
+                                    color: '#7C766F',
+                                    cursor: 'pointer',
+                                  }}
+                                />
+                              </Box>
+                            </Box>
+                            <Box
+                              sx={{
+                                color: theme.palette.secondary.main,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                mt: 0.8,
+                                cursor: 'pointer',
+                              }}
+                              onClick={() => {
+                                router.push(`/topic-detail-view`);
+                              }}
+                            >
+                              <Box
+                                sx={{ fontSize: '12px', fontWeight: '500' }}
+                                onClick={() => {
+                                  setResources(subTopic);
+                                  router.push(`/topic-detail-view`);
+                                }}
+                              >
+                                {`${subTopic?.learningResources?.length} ${t('COURSE_PLANNER.RESOURCES')}`}
+                              </Box>
+                              <ArrowForwardIcon sx={{ fontSize: '16px' }} />
+                            </Box>
+                          </Box>
+                        </Box>
+                      ))}
+                    </AccordionDetails>
+                  </Accordion>
                 </Box>
-                <Box
-                  sx={{
-                    color: theme.palette.secondary.main,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    mt: 0.8,
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => {
-                    router.push(`/topic-detail-view`);
-                  }}
-                >
-                  <Box sx={{ fontSize: '12px', fontWeight: '500' }}>
-                    {`${subTopic.children.length} ${t('COURSE_PLANNER.RESOURCES')}`}
-                  </Box>
-                  <ArrowForwardIcon sx={{ fontSize: '16px' }} />
-                </Box>
-              </Box>
+              ))}
             </Box>
-          ))}
-        </AccordionDetails>
-      </Accordion>
-    </Box>
-  ))}
-</Box>
-
+          </>
+        )}
+      </div>
       <FacilitatorDrawer
         secondary={'Cancel'}
         primary={'Mark as Complete (2)'}
@@ -413,4 +523,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default CoursePlannerDetail;
+export default withAccessControl('accessCoursePlannerDetails', accessControl)(CoursePlannerDetail);

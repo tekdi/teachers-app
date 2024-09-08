@@ -1,6 +1,7 @@
-import { CohortListParam } from '@/utils/Interfaces';
+import { CohortListParam, GetCohortSearchParams } from '@/utils/Interfaces';
 import { get, post } from './RestClient';
 import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
+import { Status } from '@/utils/app.constant';
 
 export const cohortList = async ({
   limit,
@@ -39,6 +40,18 @@ export const getCohortList = async (
   }
   try {
     const response = await get(apiUrl);
+    if (response?.data?.result?.length) {
+      let res = response?.data?.result;
+      res = res.filter((block: any) => {
+        if (
+          block?.cohortMemberStatus === Status.ACTIVE &&
+          block?.cohortStatus === Status.ACTIVE
+        ) {
+          return block;
+        }
+      });
+      return res;
+    }
     return response?.data?.result;
   } catch (error) {
     console.error('Error in getting cohort details', error);
@@ -54,5 +67,29 @@ export const bulkCreateCohortMembers = async (payload: any): Promise<any> => {
   } catch (error) {
     console.error('Error in bulk creating cohort members', error);
     throw error;
+  }
+};
+
+export const getCohortSearch = async ({
+  cohortId,
+  limit = 20,
+  offset = 0,
+}: GetCohortSearchParams): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohort/search`;
+
+  const data = {
+    filters: {
+      cohortId,
+    },
+    limit,
+    offset,
+  };
+
+  try {
+    const response = await post(apiUrl, data);
+    return response?.data;
+  } catch (error) {
+    console.error('Error in searching Cohorts', error);
+    return error;
   }
 };

@@ -71,4 +71,4 @@ export const searchAssessment = async (body: ISearchAssessment) => {
 
     return error;
   }
-}
+};

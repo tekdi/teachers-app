@@ -1,8 +1,6 @@
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import {
-  Status
-} from '@/utils/app.constant';
+import { Status } from '@/utils/app.constant';
 import { UserData, UpdateCustomField } from '@/utils/Interfaces';
 
 import DropoutLabel from './DropoutLabel';

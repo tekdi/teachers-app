@@ -72,12 +72,14 @@ export enum cohortPrivileges {
 
 export enum FormContext {
   USERS = 'USERS',
+  COHORTS = 'COHORTS',
 }
 
 export enum FormContextType {
   STUDENT = 'STUDENT',
   TEACHER = 'TEACHER',
   TEAM_LEADER = 'TEAM LEADER',
+  COHORT = 'COHORT',
 }
 
 export enum CenterType {
@@ -99,14 +101,32 @@ export enum Pagination {
 }
 
 export enum Telemetry {
-CLICK = 'CLICK',
-SEARCH = 'SEARCH',
-VIEW = 'VIEW'
+  CLICK = 'CLICK',
+  SEARCH = 'SEARCH',
+  VIEW = 'VIEW',
 }
-
 
 export enum AssessmentStatus {
   NOT_STARTED = 'Not_Started',
   IN_PROGRESS = 'In_Progress',
   COMPLETED = 'Completed',
+}
+
+export enum QueryKeys {
+  GET_ACTIVE_FACILITATOR = 'getActiveFacilitatorList',
+  MY_COHORTS = 'myCohorts',
+}
+
+export enum CoursePlannerConstants {
+  SUBJECT = 'SUBJECT',
+  STATES = 'STATES',
+  BOARD = 'BOARD',
+  MEDIUM = 'MEDIUM',
+  GRADE = 'GRADE',
+}
+
+export enum EventStatus {
+  UPCOMING = 'UPCOMING',
+  LIVE = 'LIVE',
+  PASSED = 'PASSED',
 }

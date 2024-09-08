@@ -66,7 +66,10 @@ const AssessmentSortModal: React.FC<IAssessmentSortModal> = ({
   const [selectedValue, setSelectedValue] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>, sortByKey: string) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    sortByKey: string
+  ) => {
     setSortBy(sortByKey);
     setSelectedValue(event.target.value);
   };

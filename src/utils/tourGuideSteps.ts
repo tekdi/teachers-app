@@ -3,7 +3,7 @@ import { modifyAttendanceLimit } from '../../app.config';
 export const getSteps = (t: TFunction) => [
   {
     target: 'joyride-step-0',
-    content: t('GUIDE_TOUR.STEP_0'),  
+    content: t('GUIDE_TOUR.STEP_0'),
   },
   {
     target: '.joyride-step-1',
@@ -12,7 +12,7 @@ export const getSteps = (t: TFunction) => [
   {
     target: '.joyride-step-2',
     content: t('GUIDE_TOUR.STEP_2'),
-    placement: "bottom-start" as "bottom",
+    placement: 'bottom-start' as 'bottom',
   },
   {
     target: '.joyride-step-3',
@@ -37,5 +37,5 @@ export const getSteps = (t: TFunction) => [
   {
     target: '.joyride-step-8',
     content: t('GUIDE_TOUR.STEP_8'),
-  }
+  },
 ];

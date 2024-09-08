@@ -1,9 +1,9 @@
-import React from 'react';
+import WarningIcon from '@mui/icons-material/Warning';
+import { Link, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
-import { useTheme } from '@mui/material';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const Unauthorized = () => {
   const { t } = useTranslation();
@@ -18,7 +18,7 @@ const Unauthorized = () => {
       alignItems="center"
       sx={{ height: '100vh' }} // '-webkit-fill-available' can be approximated with '100vh'
     >
-      {/* <Image width={270} src={ErrorIcon} alt="Error icon" /> */}
+      <WarningIcon color="primary" sx={{ fontSize: '68px' }} />
       <Typography
         mt={4}
         variant="h2"
@@ -32,6 +32,7 @@ const Unauthorized = () => {
 
       <Typography
         mt={4}
+        mb={2}
         variant="subtitle2"
         fontSize="16px"
         lineHeight="16px"
@@ -40,6 +41,10 @@ const Unauthorized = () => {
       >
         {t('COMMON.YOU_DONT_HAVE_PERMISSION_TO_ACCESS_THIS_PAGE')}
       </Typography>
+
+      <Link href="/logout" color={'secondary'}>
+        {t('COMMON.RETURN_TO_LOGIN')}
+      </Link>
     </Box>
   );
 };
