@@ -39,6 +39,41 @@ const LoginPage = () => {
   const setUserRole = useStore(
     (state: { setUserRole: any }) => state.setUserRole
   );
+
+  const setAccessToken = useStore((state: { setAccessToken: any }) => state.setAccessToken);
+
+  const setDistrictCode = manageUserStore(
+    (state: { setDistrictCode: any }) => state.setDistrictCode
+  );
+  const setDistrictId = manageUserStore(
+    (state: { setDistrictId: any }) => state.setDistrictId
+  );
+
+  const setDistrictName = manageUserStore(
+    (state: { setDistrictName: any }) => state.setDistrictName
+  );
+
+  const setStateCode = manageUserStore(
+    (state: { setStateCode: any }) => state.setStateCode
+  );
+  const setStateId = manageUserStore(
+    (state: { setStateId: any }) => state.setStateId
+  );
+
+  const setStateName = manageUserStore(
+    (state: { setStateName: any }) => state.setStateName
+  );
+
+  const setBlockCode = manageUserStore(
+    (state: { setBlockCode: any }) => state.setBlockCode
+  );
+  const setBlockId = manageUserStore(
+    (state: { setBlockId: any }) => state.setBlockId
+  );
+  const setBlockName = manageUserStore(
+    (state: { setBlockName: any }) => state.setBlockName
+  );
+
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -140,16 +175,42 @@ const LoginPage = () => {
             localStorage.setItem('userName', userResponse?.name);
             localStorage.setItem('userId', userResponse?.userId);
             setUserRole(userResponse?.tenantData[0]?.roleName);
+            setAccessToken(token);
 
             const userDetails = await getUserDetails(
               userResponse?.userId,
               true
             );
             if (userDetails?.result?.userData) {
-              if (userDetails.result.userData?.customFields?.length) {
-                const state = userDetails.result.userData?.customFields.find((field: any) => field?.label === "STATES");
-                if(state) {
+              const customFields = userDetails?.result?.userData?.customFields;
+              if (customFields?.length) {
+                const state = customFields.find(
+                  (field: any) => field?.label === 'STATES'
+                );
+                const district = customFields.find(
+                  (field: any) => field?.label === 'DISTRICTS'
+                );
+                const block = customFields.find(
+                  (field: any) => field?.label === 'BLOCKS'
+                );
+
+                if (state) {
                   localStorage.setItem('stateName', state?.value);
+                  setStateName(state?.value);
+                  setStateCode(state?.code);
+                  setStateId(state?.fieldId);
+                }
+
+                if (district) {
+                  setDistrictName(district?.value);
+                  setDistrictCode(district?.code);
+                  setDistrictId(district?.fieldId);
+                }
+
+                if (block) {
+                  setBlockName(block?.value);
+                  setBlockCode(block?.code);
+                  setBlockId(block?.fieldId);
                 }
               }
 
@@ -411,7 +472,22 @@ const LoginPage = () => {
                     />
                   </Box>
 
-                  {
+                  {/* <Box
+                    sx={{
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: theme.palette.secondary.main,
+                      mt: 1,
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      router.push('/forgot-password');
+                    }}
+                  >
+                    {t('LOGIN_PAGE.FORGOT_PASSWORD')}
+                  </Box> */}
+
+                  {/* {
                     <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
                       <Link
                         sx={{ color: theme.palette.secondary.main }}
@@ -422,7 +498,7 @@ const LoginPage = () => {
                         {t('LOGIN_PAGE.FORGOT_PASSWORD')}
                       </Link>
                     </Box>
-                  }
+                  } */}
                   <Box marginTop={'1.2rem'} className="remember-me-checkbox">
                     <Checkbox
                       onChange={(e) => setRememberMe(e.target.checked)}

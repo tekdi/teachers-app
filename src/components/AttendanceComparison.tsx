@@ -17,12 +17,14 @@ import {
   FormControl,
   Typography,
   Box,
+  useMediaQuery,
 } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import useStore from '../store/store';
 import { useTheme } from '@mui/material/styles';
 import { overallAttendanceInPercentageStatusList } from '@/services/AttendanceService';
 import { CenterType, cohortPrivileges } from '@/utils/app.constant';
+import { toPascalCase } from '@/utils/Helper';
 
 interface AttendanceComparisonProps {
   blockName: string;
@@ -58,6 +60,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
 }) => {
   const { t } = useTranslation();
   const [centerType, setCenterType] = useState('REGULAR');
+  const isMobile = useMediaQuery('(max-width:600px)');
   const [attendanceData, setAttendanceData] = useState<Record<string, string>>(
     {}
   );
@@ -74,7 +77,9 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
 
   useEffect(() => {
     const cohortIds =
-      store?.cohorts?.filter((item: Cohort) => item?.cohortType === centerType).map((pair: Cohort) => pair?.cohortId) || [];
+      store?.cohorts
+        ?.filter((item: Cohort) => item?.cohortType === centerType)
+        .map((pair: Cohort) => pair?.cohortId) || [];
 
     const fetchData = async () => {
       const promises = cohortIds?.map((cohortId: string) =>
@@ -116,9 +121,19 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
     store?.cohorts
       ?.filter((pair: Cohort) => pair?.cohortType === centerType)
       .map((pair: Cohort) => ({
-        name: pair.name,
+        name: toPascalCase(pair?.name),
         Attendance: Number(attendanceData[pair?.cohortId]) || 0,
       })) || [];
+
+  const YAxisLabel = (value: any) => {
+    let maxLength = 25;
+    value = toPascalCase(value);
+
+    if (isMobile) {
+      maxLength = 6;
+    }
+    return value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
+  };
 
   const renderCustomLabel = (props: any) => {
     const { x, y, width, height, value } = props;
@@ -158,146 +173,174 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
           {t('DASHBOARD.CENTER_TYPE')}
         </Typography>
         <RadioGroup
-        row
-        aria-label="center type"
-        name="centerType"
-        value={centerType}
-        onChange={handleCenterTypeChange}
-      >
-        <FormControlLabel
-          color="black"
-          value="REGULAR"
-          control={
-            <Radio
-              sx={{
-                '&.Mui-checked': {
-                  color: 'black',
-                },
-              }}
-            />
-          }
-          label="Regular"
-          sx={{
-            '& .MuiFormControlLabel-label': {
-              color: 'black',
-              fontSize: '18px',
-            },
-          }}
-        />
-        <FormControlLabel
-          value="REMOTE"
-          control={
-            <Radio
-              sx={{
-                '&.Mui-checked': {
-                  color: 'black',
-                },
-              }}
-            />
-          }
-          label="Remote"
-          sx={{
-            '& .MuiFormControlLabel-label': {
-              color: 'black',
-              fontSize: '18px',
-            },
-          }}
-        />
-      </RadioGroup>
-      <Box sx={{ mt: 2 }}>
-        <Typography align="left" sx={{ marginBottom: '16px', fontSize: '15px'}}>
-          {centerType === CenterType.REMOTE
-            ? t('DASHBOARD.REMOTE_AVERAGE_ATTENDANCE')
-            : t('DASHBOARD.REGULAR_AVERAGE_ATTENDANCE')}
-          : {averageAttendance.toFixed(2)}%
-        </Typography>
-      </Box>
-    </FormControl>
-        <Box sx={{ height: '400px', overflowY: 'scroll' }}>
-          <ResponsiveContainer width="100%" height={data.length * 70}>
-            <BarChart
-              layout="vertical"
-              data={data}
-              margin={{ top: 5, left: 15 }}
-            >
-              <CartesianGrid
-                stroke={theme.palette.warning.A700}
-                horizontal={false}
-              />
-              <XAxis
-                type="number"
-                tickFormatter={(value: any) => `${value}%`}
-                height={0}
-              />
-              <YAxis
-                type="category"
-                dataKey="name"
-                tick={(props) => {
-                  const { x, y, payload } = props;
-                  const name = payload.value;
-                  const firstLine = name.slice(0, 7);
-                  const secondLine = name.slice(7, 13);
-                  const thirdLine = name.slice(13, 19);
-                  const capitalizedFirstLine =
-                    firstLine.charAt(0).toUpperCase() + firstLine.slice(1);
-
-                  return (
-                    <text
-                      x={x}
-                      y={y}
-                      dy={4} 
-                      textAnchor="end"
-                      fontSize={16} 
-                      fill="gray" 
-                    >
-                      <tspan x={x} dy="0em">
-                        {capitalizedFirstLine}
-                      </tspan>
-                      {secondLine && (
-                        <tspan x={x} dy="1.3em">
-                          {secondLine}
-                        </tspan>
-                      )}
-                      {thirdLine && (
-                        <tspan x={x} dy="1.3em">
-                          {thirdLine}
-                        </tspan>
-                      )}
-                    </text>
-                  );
+          row
+          aria-label="center type"
+          name="centerType"
+          value={centerType}
+          onChange={handleCenterTypeChange}
+        >
+          <FormControlLabel
+            color="black"
+            value="REGULAR"
+            control={
+              <Radio
+                sx={{
+                  '&.Mui-checked': {
+                    color: 'black',
+                  },
                 }}
               />
+            }
+            label={t('CENTERS.REGULAR')}
+            sx={{
+              '& .MuiFormControlLabel-label': {
+                color: 'black',
+                fontSize: '18px',
+              },
+            }}
+          />
+          <FormControlLabel
+            value="REMOTE"
+            control={
+              <Radio
+                sx={{
+                  '&.Mui-checked': {
+                    color: 'black',
+                  },
+                }}
+              />
+            }
+            label={t('CENTERS.REMOTE')}
+            sx={{
+              '& .MuiFormControlLabel-label': {
+                color: 'black',
+                fontSize: '18px',
+              },
+            }}
+          />
+        </RadioGroup>
+      </FormControl>
+      {data?.length > 0 && (
+        <>
+          <Box sx={{ mt: 2 }}>
+            <Typography
+              align="left"
+              sx={{ marginBottom: '16px', fontSize: '15px' }}
+            >
+              {centerType === CenterType.REMOTE
+                ? t('DASHBOARD.REMOTE_AVERAGE_ATTENDANCE')
+                : t('DASHBOARD.REGULAR_AVERAGE_ATTENDANCE')}
+              : {averageAttendance.toFixed(2)}%
+            </Typography>
+          </Box>
+          <Box sx={{ maxHeight: '400px', overflowY: 'scroll' }}>
+            <ResponsiveContainer width="100%" height={data.length * 70}>
+              <BarChart
+                layout="vertical"
+                data={data}
+                margin={{
+                  top: 5,
+                  left: isMobile ? 0 : 70,
+                  right: isMobile ? 0 : 5,
+                }}
+              >
+                <CartesianGrid
+                  stroke={theme.palette.warning.A700}
+                  horizontal={false}
+                />
+                <XAxis
+                  type="number"
+                  tickFormatter={(value: any) => `${value}%`}
+                  height={0}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  tickFormatter={YAxisLabel}
+                  tick={{ fontSize: 12, width: isMobile ? 50 : 100 }}
+                  // tick={(props) => {
+                  //   const { x, y, payload } = props;
+                  //   const name = payload.value;
+                  //   const firstLine = name.slice(0, 7);
+                  //   const secondLine = name.slice(7, 13);
+                  //   const thirdLine = name.slice(13, 19);
+                  //   const capitalizedFirstLine =
+                  //     firstLine.charAt(0).toUpperCase() + firstLine.slice(1);
 
+                  //   return (
+                  //     <text
+                  //       x={x}
+                  //       y={y}
+                  //       dy={4}
+                  //       textAnchor="end"
+                  //       fontSize={16}
+                  //       fill="gray"
+                  //     >
+                  //       <tspan x={x} dy="0em">
+                  //         {capitalizedFirstLine}
+                  //       </tspan>
+                  //       {secondLine && (
+                  //         <tspan x={x} dy="1.3em">
+                  //           {secondLine}
+                  //         </tspan>
+                  //       )}
+                  //       {thirdLine && (
+                  //         <tspan x={x} dy="1.3em">
+                  //           {thirdLine}
+                  //         </tspan>
+                  //       )}
+                  //     </text>
+                  //   );
+                  // }}
+                />
+
+                <Tooltip formatter={(value: number) => `${value}%`} />
+                <Bar
+                  dataKey="Attendance"
+                  fill="#DAA200"
+                  barSize={40}
+                  radius={2}
+                >
+                  <LabelList dataKey="Attendance" content={renderCustomLabel} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </Box>
+          <ResponsiveContainer width="100%" height={32}>
+            <BarChart
+              layout="vertical"
+              data={[{ name: '', Attendance: 0 }]}
+              margin={{ left: isMobile ? 60 : 130, right: isMobile ? 0 : 5 }}
+            >
+              <XAxis
+                type="number"
+                // tickFormatter={(value: any) => `${value}`}
+                domain={[0, 100]}
+              />
               <Tooltip formatter={(value: number) => `${value}%`} />
-              <Bar dataKey="Attendance" fill="#DAA200" barSize={40} radius={2}>
-                <LabelList dataKey="Attendance" content={renderCustomLabel} />
-              </Bar>
+              <LabelList dataKey="Attendance" content={renderCustomLabel} />
+              <Legend />
             </BarChart>
           </ResponsiveContainer>
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <Typography color="black" mt={1}>
+              {t('DASHBOARD.ATTENDANCE')}
+            </Typography>
+          </Box>
+        </>
+      )}
+
+      {data?.length === 0 && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+        >
+          <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
         </Box>
-        <ResponsiveContainer width="100%" height={32}>
-          <BarChart
-            layout="vertical"
-            data={[{ name: '', Attendance: 0 }]}
-            margin={{ left: 75 }}
-          >
-            <XAxis
-              type="number"
-              tickFormatter={(value: any) => `${value}%`}
-              domain={[0, 100]}
-            />
-            <Tooltip formatter={(value: number) => `${value}%`} />
-            <LabelList dataKey="Attendance" content={renderCustomLabel} />
-            <Legend />
-          </BarChart>
-        </ResponsiveContainer>
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <Typography color="black" mt={1}>
-            {t('DASHBOARD.ATTENDANCE')}
-          </Typography>
-        </Box>
-      </Box>
-    
+      )}
+    </Box>
   );
 };
 

@@ -198,7 +198,7 @@ const LearnerModal = ({
                           {Array.isArray(item.displayValue)
                             ? toPascalCase(item.displayValue.join(', '))
                             : item?.displayValue
-                              ?  translateString(t, item.displayValue)
+                              ? translateString(t, item.displayValue)
                               : '-'}
                         </Typography>
                       </Grid>

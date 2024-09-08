@@ -9,10 +9,15 @@ const reassignLearnerStore = create(
       reassignId: '',
       cohortId: '',
       removeCohortId: '',
-      setReassignFacilitatorUserId: (newReassignFacilitatorUserId) => set((state) => ({ reassignFacilitatorUserId: newReassignFacilitatorUserId })),
-      setReassignId: (newReassignId) => set((state) => ({ reassignId: newReassignId })),
+      setReassignFacilitatorUserId: (newReassignFacilitatorUserId) =>
+        set((state) => ({
+          reassignFacilitatorUserId: newReassignFacilitatorUserId,
+        })),
+      setReassignId: (newReassignId) =>
+        set((state) => ({ reassignId: newReassignId })),
       setCohortId: (newCohortId) => set((state) => ({ cohortId: newCohortId })),
-      setRemoveCohortId: (newRemoveCohortId) => set((state) => ({ removeCohortId: newRemoveCohortId })),
+      setRemoveCohortId: (newRemoveCohortId) =>
+        set((state) => ({ removeCohortId: newRemoveCohortId })),
     }),
     {
       name: 'teacherApp',

@@ -10,11 +10,15 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { SessionModeProps } from '../utils/Interfaces';
+import { CenterType } from '@/utils/app.constant';
+import { toPascalCase } from '@/utils/Helper';
 
 const SessionMode: React.FC<SessionModeProps> = ({
   handleSessionModeChange,
   mode,
   sessions,
+  disabled,
+  cohortType,
 }) => {
   const theme = useTheme<any>();
 
@@ -42,29 +46,53 @@ const SessionMode: React.FC<SessionModeProps> = ({
       >
         <FormControlLabel
           value={sessions.mode2}
-          control={<Radio style={{ color: theme?.palette?.warning['300'] }} />}
+          control={
+            <Radio
+              style={{
+                color:
+                  cohortType === CenterType.REMOTE || disabled
+                    ? theme?.palette?.warning['400']
+                    : theme?.palette?.warning['300'],
+              }}
+              disabled={cohortType === CenterType.REMOTE || disabled}
+            />
+          }
           label={
             <span
               style={{
-                color: theme?.palette?.warning['300'],
+                color:
+                  cohortType === CenterType.REMOTE || disabled
+                    ? theme?.palette?.warning['400']
+                    : theme?.palette?.warning['300'],
                 fontSize: '16px',
               }}
             >
-              {sessions.mode2}
+              {toPascalCase(sessions.mode2)}
             </span>
           }
         />
         <FormControlLabel
           value={sessions.mode1}
-          control={<Radio style={{ color: theme?.palette?.warning['300'] }} />}
+          control={
+            <Radio
+              style={{
+                color: disabled
+                  ? theme?.palette?.warning['400']
+                  : theme?.palette?.warning['300'],
+              }}
+              disabled={disabled}
+            />
+          }
           label={
             <span
               style={{
-                color: theme?.palette?.warning['300'],
+                color: disabled
+                  ? theme?.palette?.warning['400']
+                  : theme?.palette?.warning['300'],
                 fontSize: '16px',
               }}
             >
-              {sessions.mode1}
+              {toPascalCase(sessions.mode1)}
             </span>
           }
         />

@@ -1,147 +1,165 @@
 import { Box, Grid, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { useRouter } from 'next/router';
-import RemoveIcon from '@mui/icons-material/Remove';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import { learnerAssessmentReport } from '@/services/UpdateAssesmentService';
+import {
+  getAssessmentStatus,
+  getDoIdForAssessmentDetails,
+} from '@/services/AssesmentService';
+import { showToastMessage } from './Toastify';
+import AssessmentReportCard from './AssessmentReportCard';
+import { AssessmentType, Program } from '../../app.config';
+import { useQueryClient } from '@tanstack/react-query';
 
-interface AssessmentReportProp{
-    isTitleRequired?: boolean
+interface AssessmentReportProp {
+  classId: string;
+  userId: string;
 }
 
-const AssessmentReport: React.FC<AssessmentReportProp> = ({ isTitleRequired }) => {
+const AssessmentReport: React.FC<AssessmentReportProp> = ({
+  classId,
+  userId,
+}) => {
   const theme = useTheme<any>();
-  const router = useRouter();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
-  const [assessmentList, setAssessmentList] = React.useState([]);
+  const [preAssessmentList, setPreAssessmentList] = useState<string[]>([]);
+  const [postAssessmentList, setPostAssessmentList] = useState<string[]>([]);
+  const [assessmentData, setAssessmentData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const res: any = learnerAssessmentReport();
-    setAssessmentList(res);
-  }, []);
+  const fetchAssessmentData = async (
+    type: AssessmentType,
+    setList: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    const stateName = localStorage.getItem('stateName');
 
-  const handleAssessmentDetails = (userId: string) => {
-    router.push(`${router.pathname}/user/${userId}`);
+    const filters = {
+      program: [Program],
+      se_boards: [stateName],
+      assessment1: type,
+    };
+
+    try {
+      if (stateName && filters) {
+        setIsLoading(true);
+        setList([]);
+        const searchResults = await queryClient.fetchQuery({
+          queryKey: ['contentSearch', { filters }],
+          queryFn: () => getDoIdForAssessmentDetails({ filters }),
+        });
+
+        if (searchResults?.responseCode === 'OK') {
+          const result = searchResults?.result;
+          if (result?.QuestionSet?.length > 0) {
+            const assessmentIds = result.QuestionSet.map(
+              (item: any) => item?.IL_UNIQUE_ID
+            );
+            setList(assessmentIds);
+          } else {
+            setList([]);
+          }
+        } else {
+          console.log(`No Data found for ${type}`);
+        }
+      } else {
+        console.log('NO State Found');
+      }
+    } catch (error) {
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      console.error(`Error fetching ${type} results:`, error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  return (
-    <Box sx={{ background: isTitleRequired?'#ffffff': '#FBF4E4', padding: isTitleRequired? '0px': '20px' }}>
-        {isTitleRequired ? (
-          <Typography
-            sx={{
-              color: theme.palette.warning['A200'],
-              fontWeight: 600,
-              fontSize: '16px',
-              pb: '0.75rem'
-            }}
-            variant="h5"
-            gutterBottom
-          >
-            {t('COMMON.ASSESSMENT_REPORT')}
-          </Typography>
-        ) : null}
-        <Grid container spacing={2}>
-          {assessmentList.map((assessment: any) => (
-            <Grid item xs={12} sm={6} md={4} key={assessment.userId}>
-              <Box
-                sx={{
-                  border: `1px solid ${theme?.palette?.warning['A100']}`,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  borderRadius: '8px',
-                  gap: '5px',
-                }}
-                // onClick={() => handleAssessmentDetails(assessment.userId)}
-              >
-                <Box
-                  sx={{
-                    flexBasis: '20%',
-                    background: theme?.palette?.primary?.light,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    padding: '7px',
-                  }}
-                >
-                  {/* Todo : replaced with proper flag coming from backend  */}
-                  {assessment.progress === 'Overall score :' ? (
-                    <CheckCircleIcon
-                      sx={{ color: theme.palette.warning[300] }}
-                    />
-                  ) : assessment.progress === 'Not Started' ? (
-                    <RemoveIcon sx={{ color: theme.palette.warning[300] }} />
-                  ) : assessment.progress === 'In Progress' ? (
-                    <RadioButtonUncheckedIcon
-                      sx={{ color: theme.palette.warning[300] }}
-                    />
-                  ) : null}
-                </Box>
-                <Box sx={{ flexBasis: '80%' }}>
-                  <Box
-                    sx={{
-                      px: '10px',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: '7px',
-                    }}
-                  >
-                    <Box>
-                      <Box
-                        sx={{
-                          color: theme.palette.warning[300],
-                          fontSize: '16px',
-                          fontWeight: '400',
-                        }}
-                      >
-                        {assessment.studentName}
-                      </Box>
-                      <Box
-                        sx={{
-                          gap: '4px',
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            color: theme.palette.warning[300],
-                            fontSize: '14px',
-                            fontWeight: '500',
-                            py: '2px',
-                          }}
-                        >
-                          {assessment.progress}
-                        </Box>
-                        {assessment.progress === 'Overall score :' && (
-                          <Box
-                            sx={{
-                              color: theme.palette.success.main,
-                              fontSize: '14px',
-                              fontWeight: '500',
-                            }}
-                          >
-                            {assessment.score}%
-                          </Box>
-                        )}
-                      </Box>
-                    </Box>
+  const fetchAssessmentStatus = async (
+    assessmentList: string[],
+    type: AssessmentType
+  ) => {
+    if (assessmentList.length) {
+      try {
+        const options = {
+          userId: [userId],
+          contentId: assessmentList,
+          batchId: classId,
+        };
+        const assessmentStatus = await getAssessmentStatus(options);
+        if (assessmentStatus?.length) {
+          const info = assessmentStatus[0];
+          const newAssessmentData = {
+            userId: info.userId,
+            progress: info.status,
+            score: parseFloat(info.percentage),
+            type,
+          };
+          setAssessmentData((prevData) =>
+            prevData.some((data) => data.type === type)
+              ? prevData.map((data) =>
+                  data.type === type ? newAssessmentData : data
+                )
+              : [...prevData, newAssessmentData]
+          );
+        }
+      } catch (e: any) {
+        console.error(`Error fetching ${type} status:`, e);
+      }
+    }
+  };
 
-                    <KeyboardArrowRightIcon
-                      sx={{ color: theme.palette.warning[300] }}
-                    />
-                  </Box>
-                </Box>
-              </Box>
-            </Grid>
+  useEffect(() => {
+    fetchAssessmentData(AssessmentType.PRE_TEST, setPreAssessmentList);
+    fetchAssessmentData(AssessmentType.POST_TEST, setPostAssessmentList);
+  }, [classId]);
+
+  useEffect(() => {
+    if (preAssessmentList.length) {
+      fetchAssessmentStatus(preAssessmentList, AssessmentType.PRE_TEST);
+    }
+  }, [preAssessmentList]);
+
+  useEffect(() => {
+    if (postAssessmentList.length) {
+      fetchAssessmentStatus(postAssessmentList, AssessmentType.POST_TEST);
+    }
+  }, [postAssessmentList]);
+
+  return (
+    <Box
+      sx={{
+        background: '#ffffff',
+        padding: '0px',
+      }}
+    >
+      <Typography
+        sx={{
+          color: theme.palette.warning['A200'],
+          fontWeight: 600,
+          fontSize: '16px',
+          pb: '0.75rem',
+        }}
+        variant="h5"
+        gutterBottom
+      >
+        {t('COMMON.ASSESSMENT_REPORT')}
+      </Typography>
+      <Box sx={{ background: '#ffffff', pb: '1rem' }}>
+        <Grid container spacing={2}>
+          {assessmentData?.map((assessment: any) => (
+            <AssessmentReportCard
+              key={assessment.userId}
+              assessmentStatus={assessment.progress}
+              cardTitle={assessment.type}
+              overallPercentage={assessment.score}
+              userId={assessment.userId}
+              classId={classId}
+              assessmentType={assessment.type}
+            />
           ))}
         </Grid>
       </Box>
+    </Box>
   );
 };
 

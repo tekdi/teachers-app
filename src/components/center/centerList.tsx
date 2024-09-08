@@ -1,31 +1,34 @@
-import { CenterType } from "@/utils/app.constant";
-import { Box, Grid } from "@mui/material";
+import { CenterType } from '@/utils/app.constant';
+import { Box, Grid } from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
 import building from '../../assets/images/apartment.png';
-import Image from "next/image";
+import Image from 'next/image';
 
 interface Center {
-    cohortId: string;
-    cohortName: string;
-    centerType?: string | null;
-  }
-  
-  interface CenterListProps {
-    title: string;
-    centers: Center[];
-    router: any;
-    theme: any;
-    t: (key: string) => string;
-  }
+  cohortId: string;
+  cohortName: string;
+  centerType?: string | null;
+}
 
-  
-  const CenterList: React.FC<CenterListProps> = ({ title, centers, router, theme, t }) => {
+interface CenterListProps {
+  title: string;
+  centers: Center[];
+  router: any;
+  theme: any;
+  t: (key: string) => string;
+}
 
-    
-    console.log(centers); 
-  
-    return (
+const CenterList: React.FC<CenterListProps> = ({
+  title,
+  centers,
+  router,
+  theme,
+  t,
+}) => {
+  console.log(centers);
+
+  return (
     <>
       <Box
         sx={{
@@ -38,7 +41,7 @@ interface Center {
       >
         {t(title)}
       </Box>
-  
+
       <Box
         sx={{
           borderRadius: '16px',
@@ -87,7 +90,7 @@ interface Center {
                       <SmartDisplayOutlinedIcon sx={{ color: '#4D4639' }} />
                     )}
                   </Box>
-  
+
                   <Box
                     sx={{
                       display: 'flex',
@@ -120,4 +123,3 @@ interface Center {
 };
 
 export default CenterList;
-  

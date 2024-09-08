@@ -1,38 +1,31 @@
-name: PROD DEPLOYMENT WITH TAG
-
+name: PROD FRONTEND DEPLOYMENT WITH TAG
 on:
   push:
     tags:
-      - 'v1.0.1' 
-
-env:
-  DEPLOY_TAG: ${{ github.ref_name }}  
+      - 'v*'
 
 jobs:
-  PROD_deploy:
+  PROD-FRONTEND-TAG-BASE-DEPLOYMENT:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - name: Checkout code from tag
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 
-      - name: Create .env and Dockerfile
-        run: |
-          
-          echo "${{ secrets.DOCKER_FILE_PROD }}" > Dockerfile
+          fetch-depth: 0
 
-      - name: Build Docker image
+      - name: Set TAG environment variable
+        id: get_tag
         run: |
-          docker build -t ${{ secrets.DOCKER_IMAGE_NAME_PROD }} .
+          # Extract the tag from the ref and set it as an environment variable
+          echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      - name: Log in to Docker Hub
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME_PROD }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD_PROD }}
+      - name: Debug TAG value
         run: |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker push ${{ secrets.DOCKER_IMAGE_NAME_PROD }}
-      - name: Deploy to Remote Server
+          # Print the TAG value to ensure the correct tag is being used
+          echo "TAG value -  ${{ env.TAG }}"
+
+      - name: Deploy Stack
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_NAME_PROD }}
@@ -40,17 +33,29 @@ jobs:
           key: ${{ secrets.SSH_KEY_PROD }}
           port: ${{ secrets.PORT_PROD }}
           script: |
+            # Assign the TAG value from the environment variable
+            TAG="${{ env.TAG }}"
+
+            # Define the target directory and environment file
             TARGET_DIR="${{ secrets.TARGET_DIR_PROD }}"
             ENVIRONMENT="$TARGET_DIR/.env"
+
+            # Remove the existing .env file if it exists
             if [ -f "$ENVIRONMENT" ]; then
-            rm "$ENVIRONMENT"
+              rm "$ENVIRONMENT"
             fi
+
+            # Create the target directory if it doesn't exist and write environment variables to .env
             mkdir -p "$TARGET_DIR"
             cat << EOF > "$ENVIRONMENT"
             ${{ secrets.PROD_ENV }}
             EOF
+
+            # Navigate to the target directory
             cd ${{ secrets.TARGET_DIR_PROD }}
-            docker stop ${{ secrets.CONTAINER_NAME }}
-            docker rm -f ${{ secrets.CONTAINER_NAME }}
-            docker images --no-trunc -aqf "dangling=true" | xargs docker rmi
-            docker-compose up -d --force-recreate --no-deps 
+
+            # List the contents of the directory for verification
+            ls -ltra
+
+            # Run the deployment script with the correct TAG
+            ./deploy.sh $TAG

@@ -21,7 +21,7 @@ import {
   AttendancePercentageProps,
   AttendanceStatusListProps,
   ICohort,
-  CohortMemberList
+  CohortMemberList,
 } from '../utils/Interfaces';
 
 import AttendanceStatus from '@/components/AttendanceStatus';
@@ -115,7 +115,6 @@ const UserAttendanceHistory = () => {
       },
     };
     telemetryFactory.interact(telemetryInteract);
-    
   };
 
   const handleClose = () => {
@@ -201,9 +200,9 @@ const UserAttendanceHistory = () => {
         const resp = response?.result?.userDetails || [];
 
         if (resp) {
-          let selectedDateStart = new Date(selectedDate);
+          const selectedDateStart = new Date(selectedDate);
           selectedDateStart.setHours(0, 0, 0, 0);
-          let nameUserIdArray = resp
+          const nameUserIdArray = resp
             .filter((entry: any) => {
               const createdAtDate = new Date(entry.createdAt);
               createdAtDate.setHours(0, 0, 0, 0);
@@ -339,7 +338,6 @@ const UserAttendanceHistory = () => {
   const handleActiveStartDateChange = (date: Date) => {
     setSelectedDate(date);
   };
-
 
   // const getAllDatesInRange = (startDate: string, endDate: string): string[] => {
   //   const datesArray: string[] = [];

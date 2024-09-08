@@ -1,20 +1,18 @@
-import React, { useEffect } from 'react';
-import {
-  getMyCohortFacilitatorList,
-  getMyCohortMemberList,
-} from '@/services/MyClassDetailsService';
+import LearnersList from '@/components/LearnersListItem';
+import { getMyCohortFacilitatorList } from '@/services/MyClassDetailsService';
+import { Status, limit } from '@/utils/app.constant';
 import {
   capitalizeEachWord,
   getFieldValue,
   toPascalCase,
 } from '@/utils/Helper';
-import LearnersList from '@/components/LearnersListItem';
-import { Status, limit } from '@/utils/app.constant';
-import { showToastMessage } from './Toastify';
-import { useTranslation } from 'next-i18next';
-import { Box, Grid, Typography } from '@mui/material';
-import Loader from './Loader';
+import { Box, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
+import React, { useEffect } from 'react';
+import NoDataFound from './common/NoDataFound';
+import Loader from './Loader';
+import { showToastMessage } from './Toastify';
 
 interface UserDataProps {
   name: string;
@@ -57,22 +55,21 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
           const resp = response?.result?.userDetails;
 
           if (resp) {
-            const userDetails = resp.map((user: any) => ({
-              name: toPascalCase(user.name),
-              userId: user.userId,
-              memberStatus: user.status,
-              statusReason: user.statusReason,
-              cohortMembershipId: user.cohortMembershipId,
-              enrollmentNumber: capitalizeEachWord(
-                getFieldValue(
-                  user?.customField,
-                  'fieldname',
-                  'Enrollment Number',
-                  'fieldvalues',
-                  '-'
-                )
-              ),
-            }));
+            const userDetails = resp.map((user: any) => {
+              const ageField = user.customField.find(
+                (field: { label: string }) => field.label === 'AGE'
+              );
+              return {
+                name: toPascalCase(user?.name),
+                userId: user?.userId,
+                memberStatus: user?.status,
+                statusReason: user?.statusReason,
+                cohortMembershipId: user?.cohortMembershipId,
+                enrollmentNumber: user?.username,
+                age: ageField ? ageField.value : null, // Extract age for the specific user
+              };
+            });
+
             console.log(`userDetails`, userDetails);
             setUserData(userDetails);
           }
@@ -88,7 +85,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
     getCohortMemberList();
   }, [cohortId, reloadState]);
 
-  const onDelete = () => { };
+  const onDelete = () => {};
 
   console.log('userData', userData);
   const theme = useTheme<any>();
@@ -97,50 +94,37 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       {loading ? (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       ) : (
-        <>
-          <Box sx={{
+        <Box
+          sx={{
             '@media (min-width: 900px)': {
               background: theme.palette.action.selected,
-              paddingBottom: '20px'
+              paddingBottom: '20px',
             },
-          }}>
-            <Grid container>
-              {userData?.map((data: any) => {
-                return (
-                  <Grid xs={12} sm={6} md={4} >
-                    <LearnersList
-                      key={data.userId}
-                      userId={data.userId}
-                      learnerName={data.name}
-                      enrollmentId={data.enrollmentNumber}
-                      cohortMembershipId={data.cohortMembershipId}
-                      isDropout={data.memberStatus === Status.DROPOUT}
-                      statusReason={data.statusReason}
-                      reloadState={reloadState}
-                      setReloadState={setReloadState}
-                      showMiniProfile={false}
-                      onLearnerDelete={onDelete}
-                    />
-                  </Grid>
-                );
-              })}
-              {!userData?.length && (
-                <Box
-                  sx={{
-                    m: '1.125rem',
-                    display: 'flex',
-                    justifyContent: 'left',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Typography style={{ fontWeight: 'bold' }}>
-                    {t('COMMON.NO_DATA_FOUND')}
-                  </Typography>
-                </Box>
-              )}
-            </Grid>
-          </Box>
-        </>
+          }}
+        >
+          <Grid container>
+            {userData?.map((data: any) => {
+              return (
+                <Grid xs={12} sm={6} md={4} key={data.userId}>
+                  <LearnersList
+                    userId={data.userId}
+                    learnerName={data.name}
+                    enrollmentId={data.enrollmentNumber}
+                    age={data.age}
+                    cohortMembershipId={data.cohortMembershipId}
+                    isDropout={data.memberStatus === Status.DROPOUT}
+                    statusReason={data.statusReason}
+                    reloadState={reloadState}
+                    setReloadState={setReloadState}
+                    showMiniProfile={false}
+                    onLearnerDelete={onDelete}
+                  />
+                </Grid>
+              );
+            })}
+            {!userData?.length && <NoDataFound />}
+          </Grid>
+        </Box>
       )}
     </div>
   );

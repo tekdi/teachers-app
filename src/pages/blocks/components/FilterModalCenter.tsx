@@ -95,7 +95,7 @@ const FilterModalCenter: React.FC<FilterModalProps> = ({
             >
               {t('COMMON.FILTERS')}
             </Typography>
-            <IconButton onClick={handleClose} sx={{color: "#4D4639"}}>
+            <IconButton onClick={handleClose} sx={{ color: '#4D4639' }}>
               <Close />
             </IconButton>
           </Box>

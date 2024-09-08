@@ -56,17 +56,21 @@ import calendar from '../assets/images/calendar.svg';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { Role, Telemetry } from '@/utils/app.constant';
+import { QueryKeys, Role, Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import { getEventList } from '@/services/EventService';
 import SessionCard from '@/components/SessionCard';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { useQueryClient } from '@tanstack/react-query';
+import { getCohortList } from '@/services/CohortServices';
 
 interface DashboardProps {}
 
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
@@ -106,6 +110,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [openDrawer, setOpenDrawer] = React.useState<boolean>(false);
   const [sessions, setSessions] = React.useState<Session[]>();
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
+  const [myCohortList, setMyCohortList] = React.useState<any>();
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
@@ -156,6 +161,20 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setUserId(storedUserId);
     }
   }, []);
+
+  useEffect(() => {
+    const getMyCohortList = async () => {
+      const myCohortList = await queryClient.fetchQuery({
+        queryKey: [QueryKeys.MY_COHORTS, userId],
+        queryFn: () => getCohortList(userId as string, { customField: 'true' }),
+      });
+
+      setMyCohortList(myCohortList);
+    };
+    if (userId) {
+      getMyCohortList();
+    }
+  }, [userId]);
 
   //API for getting student list
   useEffect(() => {
@@ -517,14 +536,27 @@ const Dashboard: React.FC<DashboardProps> = () => {
             after: afterDate,
             before: beforeDate,
           },
-          cohortId: classId,
+          // cohortId: classId,
+          createdBy: userId,
           status: ['live'],
         };
         const response = await getEventList({ limit, offset, filters });
-        let sessionArray: any[] = [];
+
+        // check if cohort's membership is active
+
+        // const myCohortList = await queryClient.fetchQuery({
+        //   queryKey: [QueryKeys.MY_COHORTS, userId],
+        //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
+        // });
+
+        const sessionArray: any[] = [];
         if (response?.events.length > 0) {
           response?.events.forEach((event: any) => {
-            if (event.isRecurring) {
+            console.log('myCohortList', myCohortList);
+            const cohort = myCohortList?.[0]?.childData?.find(
+              (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
+            );
+            if (cohort && event.isRecurring) {
               sessionArray.push(event);
             }
           });
@@ -535,8 +567,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
       }
     };
 
-    getSessionsData();
-  }, [timeTableDate, classId]);
+    if (userId && myCohortList) {
+      getSessionsData();
+    }
+  }, [timeTableDate, userId, myCohortList]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -547,8 +581,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
           date.setDate(date.getDate() + modifyAttendanceLimit)
         );
         const endDate = shortDateFormat(lastDate);
-        const afterDate = getAfterDate(startDate);
-        const beforeDate = getBeforeDate(endDate);
+        const afterDate = getAfterDate(timeTableDate);
+        const beforeDate = getBeforeDate(timeTableDate);
         const limit = 0;
         const offset = 0;
         const filters = {
@@ -558,14 +592,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
           endDate: {
             before: beforeDate,
           },
-          cohortId: classId,
+          // cohortId: classId,
+          createdBy: userId,
           status: ['live'],
         };
         const response = await getEventList({ limit, offset, filters });
-        let extraSessionArray: any[] = [];
+
+        // check if cohort's membership is active
+
+        // const myCohortList = await queryClient.fetchQuery({
+        //   queryKey: [QueryKeys.MY_COHORTS, userId],
+        //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
+        // });
+
+        const extraSessionArray: any[] = [];
         if (response?.events.length > 0) {
           response?.events.forEach((event: any) => {
-            if (!event.isRecurring) {
+            console.log('myCohortList', myCohortList);
+            const cohort = myCohortList?.[0]?.childData?.find(
+              (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
+            );
+
+            if (cohort && !event.isRecurring) {
               extraSessionArray.push(event);
             }
           });
@@ -576,8 +624,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
       }
     };
 
-    getExtraSessionsData();
-  }, [classId]);
+    if (userId && myCohortList) {
+      getExtraSessionsData();
+    }
+  }, [timeTableDate, userId, myCohortList]);
 
   return (
     <>
@@ -1041,10 +1091,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <Typography
                       textAlign={'left'}
                       fontSize={'0.8rem'}
-                      pl={'1rem'}
                       pt={'1rem'}
+                      variant="h2"
+                      sx={{ fontSize: '14px' }}
                       color={'black'}
-                      fontWeight={'600'}
+                      fontWeight={'500'}
                     >
                       {t('DASHBOARD.MY_TIMETABLE')}
                     </Typography>
@@ -1070,7 +1121,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   </Box>
                   <WeekCalender
                     showDetailsHandle={showTimeTableDetailsHandle}
-                    data={percentageAttendanceData}
                     disableDays={classId === 'all'}
                     classId={classId}
                     showFromToday={true}
@@ -1080,8 +1130,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 <Box mt={3} px="18px">
                   <Grid container spacing={2}>
                     {sessions?.map((item) => (
-                      <Grid xs={12} sm={6} md={6} item>
-                        <SessionCard data={item} key={item.id}>
+                      <Grid xs={12} sm={6} md={6} key={item.id} item>
+                        <SessionCard data={item} showCenterName={true}>
                           <SessionCardFooter item={item} />
                         </SessionCard>
                       </Grid>
@@ -1089,7 +1139,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     {sessions && sessions?.length === 0 && (
                       <Box
                         className="fs-12 fw-400 italic"
-                        sx={{ color: theme.palette.warning['300'] }}
+                        sx={{
+                          color: theme.palette.warning['300'],
+                          paddingLeft: '18px',
+                        }}
                       >
                         {t('COMMON.NO_SESSIONS_SCHEDULED')}
                       </Box>
@@ -1102,15 +1155,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     className="fs-14 fw-500"
                     sx={{ color: theme.palette.warning['300'] }}
                   >
-                    {t('COMMON.UPCOMING_EXTRA_SESSION', {
+                    {t('CENTER_SESSION.EXTRA_SESSION', {
                       days: eventDaysLimit,
                     })}
                   </Box>
                   <Box mt={3} px="18px">
-                    <Grid container spacing={2}>
+                    <Grid container spacing={1}>
                       {extraSessions?.map((item) => (
-                        <Grid xs={12} sm={6} md={6} item>
-                          <SessionCard data={item} key={item.id}>
+                        <Grid xs={12} sm={6} md={6} key={item.id} item>
+                          <SessionCard data={item} showCenterName={true}>
                             <SessionCardFooter item={item} />
                           </SessionCard>
                         </Grid>

@@ -128,8 +128,10 @@ export interface ExtraSessionsCardProps {
 
 export interface SessionsCardProps {
   data: any;
+  showCenterName?: boolean;
   children?: React.ReactNode;
   isEventDeleted?: () => void;
+  isEventUpdated?: () => void;
 }
 export interface SessionsModalProps {
   children?: React.ReactNode;
@@ -150,12 +152,16 @@ export interface PlannedModalProps {
   scheduleEvent?: boolean;
   eventDeleted?: boolean;
   cohortName?: string;
+  cohortType?: string;
   cohortId?: string;
   onCloseModal?: () => void | undefined;
   editSelection?: string;
   handleEditSelection?: (selection: string) => void;
   onEventDeleted?: () => void;
+  onEventUpdated?: () => void;
+  updateEvent?: boolean;
   editSession?: any;
+  eventData?: any;
 }
 
 export interface ScheduleModalProps {
@@ -203,6 +209,8 @@ export interface SessionModeProps {
     mode1: string;
     mode2: string;
   };
+  disabled?: boolean;
+  cohortType?: string;
 }
 export interface LearnerAttendanceProps {
   limit: number;
@@ -319,7 +327,8 @@ export interface LearnerListProps {
   type?: string;
   userId: string;
   isDropout: boolean;
-  enrollmentId?: string | number;
+  enrollmentId?: any;
+  age?: string | number;
   cohortMembershipId: string | number;
   learnerName: string;
   statusReason: string;
@@ -352,6 +361,8 @@ export interface AssignCentersToFacilitatorListParam {
 }
 
 export interface Session {
+  endDateTime: string | number | Date;
+  startDateTime: string | number | Date;
   id: number;
   subject: string;
   time: string;
@@ -371,7 +382,15 @@ export interface CoursePlanner {
   circular?: number;
 }
 export interface SessionCardFooterProps {
-  item: Session;
+  item: any;
+  cohortName?: string;
+}
+
+export interface TopicSubtopicProps {
+  topics?: string[];
+  subTopicsList?: any;
+  onTopicSelected: any;
+  onSubtopicSelected: any;
 }
 
 export interface FieldOption {
@@ -442,8 +461,7 @@ export interface FacilitatorDrawerProps {
   drawerState: { bottom: boolean };
 }
 export interface CoursePlannerCardsProps {
-  title: string;
-  subtitle: string;
+  resources: any;
 }
 
 export interface scheduleEventParam {
@@ -483,7 +501,7 @@ export interface SendCredentialsRequest {
   isQueue: boolean;
   context: string;
   key: string;
-  replacements: any[];
+  replacements: any;
   email: {
     receipients: any[];
   };
@@ -494,6 +512,12 @@ export interface Assessment {
   studentName: string;
   progress: string;
   score?: number;
+}
+export interface BoardEnrollment {
+  userId: number;
+  studentName: string;
+  center: string;
+  isDropout: boolean;
 }
 
 export interface AssessmentSubject {
@@ -552,20 +576,12 @@ export interface MeetingDetails {
 }
 
 export interface MetaData {
-  framework?: {
-    board?: string;
-    medium?: string;
-    grade?: string;
-    subject?: string;
-    topic?: string;
-    subTopic?: string;
-    teacherName?: string;
-  };
-  eventType?: string;
-  doId?: string;
+  category?: string;
+  subject?: string;
+  teacherName?: string;
   cohortId?: string;
   cycleId?: string;
-  tenant?: string;
+  tenantId?: string;
 }
 type Anchor = 'bottom';
 export interface BottomDrawerProps {
@@ -595,11 +611,12 @@ export interface IAssessmentStatusOptions {
 }
 
 export interface GetTargetedSolutionsParams {
-  state: string;
-  role: string;
-  class: string;
-  board: string;
-  courseType: string;
+  subject: any;
+  state: any;
+  medium: any;
+  class: any;
+  board: any;
+  type: string;
 }
 
 export interface GetUserProjectDetailsParams {
@@ -611,13 +628,13 @@ export interface GetUserProjectDetailsParams {
 
 export interface EditEvent {
   isMainEvent: boolean;
-  status: string;
+  status?: string;
 }
 
 export interface ISearchAssessment {
-  userId: string,
-  contentId: string,
-  batchId: string
+  userId: string;
+  contentId: string;
+  batchId: string;
 }
 
 export interface IQuestion {
@@ -629,4 +646,25 @@ export interface IQuestion {
   resValue: string;
   score: number;
   sectionId: string;
+}
+
+export interface GetSolutionDetailsParams {
+  id: string;
+  role: string;
+}
+
+export interface GetUserProjectTemplateParams {
+  templateId: string;
+  solutionId: string;
+  role: string;
+}
+
+export interface HorizontalLinearStepperProps {
+  activeStep: number;
+}
+
+export interface GetCohortSearchParams {
+  cohortId: string;
+  limit?: number;
+  offset?: number;
 }
