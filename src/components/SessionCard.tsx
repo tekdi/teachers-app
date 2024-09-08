@@ -203,7 +203,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
         </Box>
         {showEdit && (
           <EditOutlined
-            onClick={() => handleOpen?.(data)}
+            onClick={() => handleOpen(data)}
             sx={{ cursor: 'pointer' }}
           />
         )}

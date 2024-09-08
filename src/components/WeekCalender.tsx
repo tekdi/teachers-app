@@ -71,7 +71,7 @@ const Calendar: React.FC<any> = ({
     return (
       <div
         className="days row"
-        style={{ width: showFromToday ? '100%' : '100%' }}
+        style={{ width: '100%' }}
       >
         {days}
       </div>
@@ -195,7 +195,7 @@ const Calendar: React.FC<any> = ({
     }
 
     return (
-      <div className="body" style={{ width: showFromToday ? '100%' : '100%' }}>
+      <div className="body" style={{ width: '100%' }}>
         {rows}
       </div>
     );
