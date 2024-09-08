@@ -34,7 +34,6 @@ import {
   getCohortAttendance,
 } from '@/services/AttendanceService';
 import { getUserDetails } from '@/services/ProfileService';
-import { getFormRead } from '@/services/CreateUserService';
 import {
   extractAddress,
   formatSelectedDate,
@@ -70,6 +69,7 @@ import { accessControl, Program } from '../../../app.config';
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import AssessmentReport from '@/components/AssessmentReport';
+import { getFormRead } from '@/hooks/useFormRead';
 
 interface LearnerProfileProp {
   reloadState?: boolean;
