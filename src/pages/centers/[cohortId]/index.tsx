@@ -195,9 +195,8 @@ const CohortPage = () => {
             (field: any) => field.label === 'BLOCKS'
           );
 
-          cohortData.address =
-            `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
-            '';
+          const address = `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}`;
+          cohortData.address = address || '';
 
           const typeOfCohort = cohortData.customField.find(
             (item: CustomField) => item.label === 'TYPE_OF_COHORT'

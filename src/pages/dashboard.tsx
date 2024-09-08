@@ -1029,23 +1029,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 />
                               ))}
                               valuePartOne={
-                                Array.isArray(lowAttendanceLearnerList) &&
-                                lowAttendanceLearnerList.length > 2
-                                  ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
-                                  : lowAttendanceLearnerList.length === 2
-                                    ? `${lowAttendanceLearnerList[0]}, ${lowAttendanceLearnerList[1]}`
-                                    : lowAttendanceLearnerList.length === 1
-                                      ? `${lowAttendanceLearnerList[0]}`
-                                      : Array.isArray(
-                                            lowAttendanceLearnerList
-                                          ) &&
-                                          lowAttendanceLearnerList.length === 0
-                                        ? t(
-                                            'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
-                                          )
-                                        : t(
-                                            'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
-                                          )
+                                lowAttendanceLearnerList.length > 0
+                                  ? lowAttendanceLearnerList
+                                      .slice(0, 2)
+                                      .join(', ')
+                                  : t(
+                                      'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
+                                    )
                               }
                               valuePartTwo={
                                 Array.isArray(lowAttendanceLearnerList) &&

@@ -397,7 +397,7 @@ main {
 /* This is for react-calender month view and classes are from library */
 .react-calendar {
   width: 100% !important;
-  font-family: Poppins !important;
+  font-family: Poppins, sans-serif !important;
 }
 
 .react-calendar_month-viewdays_day {
@@ -422,12 +422,12 @@ main {
 
 .react-calendar button abbr {
   color: #1f1b13;
-  font-family: Poppins !important;
+  font-family: Poppins, sans-serif !important;
 }
 
 .react-calendar__month-view__weekdays__weekday abbr {
   color: #1f1b13;
-  font-family: Poppins !important;
+  font-family: Poppins, sans-serif !important;
 }
 
 .present-marker {
@@ -1012,7 +1012,7 @@ legend.Mui-focused {
   color: var(--mui-palette-warning-300) !important;
 }
 
-.__floater __floater__open {
+.__floater .__floater__open {
   z-index: 9999 !important;
 }
 
