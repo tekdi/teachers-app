@@ -5,6 +5,7 @@ import { getUserDetails } from '@/services/ProfileService';
 import { Pagination } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
 import { toPascalCase } from '@/utils/Helper';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 import { IQuestion } from '@/utils/Interfaces';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -14,6 +15,7 @@ import { useTheme } from '@mui/material/styles';
 import { useParams, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { accessControl } from '../../../../../../../app.config';
 
 function SubjectDetail() {
   const theme = useTheme<any>();
@@ -242,4 +244,4 @@ function SubjectDetail() {
   );
 }
 
-export default SubjectDetail;
+export default withAccessControl('accessAssessments', accessControl)(SubjectDetail);

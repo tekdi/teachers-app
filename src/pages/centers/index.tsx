@@ -33,6 +33,7 @@ import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
 import building from '../../assets/images/apartment.png';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 
 const CentersPage = () => {
   const [loading, setLoading] = useState(false);
@@ -579,4 +580,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default CentersPage;
+export default withAccessControl('accessCenters', accessControl)(CentersPage);

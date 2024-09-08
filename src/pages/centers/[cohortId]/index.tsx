@@ -61,7 +61,8 @@ import Schedule from '../../../components/Schedule';
 import { Session } from '../../../utils/Interfaces';
 
 import manageUserStore from '@/store/manageUserStore';
-import { eventDaysLimit, modifyAttendanceLimit } from '../../../../app.config';
+import { accessControl, eventDaysLimit, modifyAttendanceLimit } from '../../../../app.config';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 
 const CohortPage = () => {
   const [value, setValue] = React.useState(1);
@@ -796,4 +797,4 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default CohortPage;
+export default withAccessControl('accessCenters', accessControl)(CohortPage);

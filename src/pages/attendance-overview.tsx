@@ -819,7 +819,6 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-// export default AttendanceOverview;
 export default withAccessControl(
   'accessAttendanceOverview',
   accessControl

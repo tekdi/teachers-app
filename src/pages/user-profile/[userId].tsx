@@ -46,7 +46,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const [userName, setUserName] = useState<any | null>(null);
   const [customFieldsData, setCustomFieldsData] = useState<CustomField[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [address, setAddress] = useState('');
   const [isData, setIsData] = React.useState<boolean>(false);
   const [userFormData, setUserFormData] = useState<{ [key: string]: any }>({});
@@ -179,17 +178,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   useEffect(() => {
     fetchDataAndInitializeForm();
   }, [userId, reload, formResponse, userDetails]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const token = localStorage.getItem('token');
-      if (token) {
-        setIsAuthenticated(true);
-      } else {
-        router.push('/login');
-      }
-    }
-  }, []);
 
   useEffect(() => {
     setLoading(isLoading);

@@ -40,6 +40,8 @@ const LoginPage = () => {
     (state: { setUserRole: any }) => state.setUserRole
   );
 
+  const setAccessToken = useStore((state: { setAccessToken: any }) => state.setAccessToken);
+
   const setDistrictCode = manageUserStore(
     (state: { setDistrictCode: any }) => state.setDistrictCode
   );
@@ -173,6 +175,7 @@ const LoginPage = () => {
             localStorage.setItem('userName', userResponse?.name);
             localStorage.setItem('userId', userResponse?.userId);
             setUserRole(userResponse?.tenantData[0]?.roleName);
+            setAccessToken(token);
 
             const userDetails = await getUserDetails(
               userResponse?.userId,

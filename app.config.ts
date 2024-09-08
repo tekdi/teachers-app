@@ -42,6 +42,10 @@ export const accessControl: { [key: string]: Role[] } = {
   showCreateCenterButton: [Role.TEAM_LEADER],
   showBlockLevelCenterData: [Role.TEAM_LEADER],
   showTeacherLevelCenterData: [Role.TEACHER],
+  accessCoursePlanner: [Role.TEACHER, Role.TEAM_LEADER],
+  accessCoursePlannerDetails: [Role.TEACHER, Role.TEAM_LEADER],
+  accessAssessments: [Role.TEACHER, Role.TEAM_LEADER],
+  accessCenters: [Role.TEACHER, Role.TEAM_LEADER]
 };
 
 export const fullWidthPages = [

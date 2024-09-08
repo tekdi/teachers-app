@@ -26,6 +26,8 @@ import useCourseStore from '@/store/coursePlannerStore';
 import { getCohortSearch } from '@/services/CohortServices';
 import { CoursePlannerConstants } from '@/utils/app.constant';
 import useStore from '@/store/store';
+import { accessControl } from '../../app.config';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 
 // Define a type for the course planner data
 
@@ -396,4 +398,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default CoursePlanner;
+export default withAccessControl('accessCoursePlanner', accessControl)(CoursePlanner);

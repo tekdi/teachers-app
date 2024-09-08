@@ -32,9 +32,10 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { AssessmentType, Program } from '../../../app.config';
+import { accessControl, AssessmentType, Program } from '../../../app.config';
 import { useQueryClient } from '@tanstack/react-query';
 import AssessmentReportCard from '@/components/AssessmentReportCard';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 
 const Assessments = () => {
   const theme = useTheme<any>();
@@ -511,4 +512,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default Assessments;
+export default withAccessControl('accessAssessments', accessControl)(Assessments);

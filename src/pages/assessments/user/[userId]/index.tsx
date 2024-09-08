@@ -30,8 +30,9 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AssessmentType, Program } from '../../../../../app.config';
+import { accessControl, AssessmentType, Program } from '../../../../../app.config';
 import { useQueryClient } from '@tanstack/react-query';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 
 const statusKeyMap: any = {
   [AssessmentStatus.COMPLETED]: 'ASSESSMENTS.COMPLETED',
@@ -499,4 +500,4 @@ export async function getStaticProps({
   };
 }
 
-export default AssessmentsDetails;
+export default withAccessControl('accessAssessments', accessControl)(AssessmentsDetails);

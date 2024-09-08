@@ -20,6 +20,8 @@ import { showToastMessage } from '@/components/Toastify';
 import MonthCalender from '@/components/MonthCalender';
 import { useRouter } from 'next/router';
 import { GetStaticPaths } from 'next';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import { accessControl } from '../../../../../../app.config';
 
 const eventMonthView = () => {
   const theme = useTheme<any>();
@@ -239,7 +241,6 @@ const eventMonthView = () => {
   );
 };
 
-export default eventMonthView;
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -255,3 +256,5 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
     fallback: 'blocking', //indicates the type of fallback
   };
 };
+
+export default withAccessControl('accessCenters', accessControl)(eventMonthView);

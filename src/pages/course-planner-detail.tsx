@@ -31,6 +31,8 @@ import useCourseStore from '@/store/coursePlannerStore';
 import dayjs from 'dayjs';
 import { Role } from '@/utils/app.constant';
 import Loader from '@/components/Loader';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import { accessControl } from '../../app.config';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
@@ -521,4 +523,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default CoursePlannerDetail;
+export default withAccessControl('accessCoursePlannerDetails', accessControl)(CoursePlannerDetail);
