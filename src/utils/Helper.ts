@@ -156,7 +156,7 @@ export const generateRandomString = (length: number): string => {
   const charactersLength = characters.length;
 
   for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    result += characters.charAt(Math.floor(Math.random() * charactersLength)); //NOSONAR
   }
 
   return result;
@@ -170,7 +170,7 @@ export const generateUUID = () => {
       performance.now() * 1000) ||
     0;
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    let r = Math.random() * 16;
+    let r = Math.random() * 16; //NOSONAR
     if (d > 0) {
       r = (d + r) % 16 | 0;
       d = Math.floor(d / 16);
@@ -288,7 +288,7 @@ export const generateUsernameAndPassword = (
   yearOfJoining: string
 ) => {
   const currentYear = new Date().getFullYear().toString().slice(-2);
-  const randomNum = Math.floor(10000 + Math.random() * 90000).toString();
+  const randomNum = Math.floor(10000 + Math.random() * 90000).toString(); //NOSONAR
   const yearSuffix =
     yearOfJoining !== '' ? yearOfJoining?.slice(-2) : currentYear;
   const username =

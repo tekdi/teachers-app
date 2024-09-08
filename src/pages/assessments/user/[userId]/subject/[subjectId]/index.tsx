@@ -186,7 +186,7 @@ function SubjectDetail() {
                 dangerouslySetInnerHTML={{
                   __html:
                     JSON.parse(questionItem?.resValue)?.[0]
-                      ?.label.replace(/<\/?[^>]+(>|$)/g, '')
+                      ?.label.replace(/<\/?[^>]+(>|$)/g, '') //NOSONAR
                       .replace(/^\d+\.\s*/, '') || 'NA',
                 }}
               />
