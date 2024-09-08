@@ -14,13 +14,13 @@ import ReactGA from 'react-ga4';
 
 import DynamicForm from '@/components/DynamicForm';
 import SimpleModal from '@/components/SimpleModal';
-import { createUser, getFormRead } from '@/services/CreateUserService';
+import { createUser } from '@/services/CreateUserService';
 import { sendEmailOnFacilitatorCreation } from '@/services/NotificationService';
 import { editEditUser } from '@/services/ProfileService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 import { modalStyles } from '@/styles/modalStyles';
 import { generateUsernameAndPassword } from '@/utils/Helper';
-import { Field, FormData } from '@/utils/Interfaces';
+import { Field } from '@/utils/Interfaces';
 import { telemetryFactory } from '@/utils/telemetry';
 import CloseIcon from '@mui/icons-material/Close';
 import {
@@ -38,6 +38,7 @@ import { tenantId } from '../../app.config';
 import FormButtons from './FormButtons';
 import { showToastMessage } from './Toastify';
 import { useQueryClient } from '@tanstack/react-query';
+import { useFormRead } from '@/hooks/useFormRead';
 interface AddFacilitatorModalprops {
   open: boolean;
   onClose: () => void;
@@ -75,69 +76,63 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   const setSubmittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.setSubmittedButtonStatus
   );
+
+  const { data: formResponse } = useFormRead(
+    FormContext.USERS,
+    FormContextType.TEACHER
+  );
+
   useEffect(() => {
-    const getAddFacilitatorFormData = async () => {
-      try {
-        const response = await queryClient.fetchQuery({
-          queryKey: ['formRead', FormContext.USERS, FormContextType.TEACHER],
-          queryFn: () => getFormRead(FormContext.USERS, FormContextType.TEACHER),
-        });
-        console.log('sortedFields', response);
-        if (response) {
-          const filteredFieldNames = response?.fields
-            .filter((field: any) => field?.coreField === 1)
-            .map((field: any) => field?.name);
-          setCoreFields(filteredFieldNames);
-        }
+    if (formResponse) {
+      const filteredFieldNames = formResponse?.fields
+        .filter((field: any) => field?.coreField === 1)
+        .map((field: any) => field?.name);
+      setCoreFields(filteredFieldNames);
 
-        let centerOptionsList;
-        if (typeof window !== 'undefined' && window.localStorage) {
-          const CenterList = localStorage.getItem('CenterList');
-          const centerOptions = CenterList ? JSON.parse(CenterList) : [];
-          centerOptionsList = centerOptions.map(
-            (center: { cohortId: string; cohortName: string }) => ({
-              value: center.cohortId,
-              label: center.cohortName,
-            })
-          );
-          console.log(centerOptionsList);
-        }
-        const assignCentersField: Field = {
-          name: 'assignCenters',
-          type: 'checkbox',
-          label: 'ASSIGN_CENTERS',
-          order: '7',
-          fieldId: 'null',
-          options: centerOptionsList,
-          dependsOn: null,
-          maxLength: null,
-          minLength: null,
-          isEditable: true,
-          isPIIField: null,
-          validation: [],
-          placeholder: '',
-          isMultiSelect: true,
-          sourceDetails: {},
-          isRequired: true,
-          coreField: 0,
-          maxSelections: null,
-        };
-        if (!isEditModal) {
-          response?.fields.push(assignCentersField);
-          console.log(response);
-        }
-
-        if (response) {
-          const { schema, uiSchema } = GenerateSchemaAndUiSchema(response, t);
-          setSchema(schema);
-          setUiSchema(uiSchema);
-        }
-      } catch (error) {
-        console.error('Error fetching form data:', error);
+      let centerOptionsList;
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const CenterList = localStorage.getItem('CenterList');
+        const centerOptions = CenterList ? JSON.parse(CenterList) : [];
+        centerOptionsList = centerOptions.map(
+          (center: { cohortId: string; cohortName: string }) => ({
+            value: center.cohortId,
+            label: center.cohortName,
+          })
+        );
+        console.log(centerOptionsList);
       }
-    };
-    getAddFacilitatorFormData();
-  }, []);
+      const assignCentersField: Field = {
+        name: 'assignCenters',
+        type: 'checkbox',
+        label: 'ASSIGN_CENTERS',
+        order: '7',
+        fieldId: 'null',
+        options: centerOptionsList,
+        dependsOn: null,
+        maxLength: null,
+        minLength: null,
+        isEditable: true,
+        isPIIField: null,
+        validation: [],
+        placeholder: '',
+        isMultiSelect: true,
+        sourceDetails: {},
+        isRequired: true,
+        coreField: 0,
+        maxSelections: null,
+      };
+      if (!isEditModal) {
+        formResponse?.fields.push(assignCentersField);
+        console.log(formResponse);
+      }
+
+      if (formResponse) {
+        const { schema, uiSchema } = GenerateSchemaAndUiSchema(formResponse, t);
+        setSchema(schema);
+        setUiSchema(uiSchema);
+      }
+    }
+  }, [formResponse]);
 
   const handleSubmit = async (
     data: IChangeEvent<any, RJSFSchema, any>,

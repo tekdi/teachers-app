@@ -35,7 +35,7 @@ export const getFormRead = async (
     return formData;
   } catch (error) {
     console.error('error in getting cohort details', error);
-    // throw error;
+    throw error;
   }
 };
 

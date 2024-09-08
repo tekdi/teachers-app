@@ -3,7 +3,6 @@ import Header from '@/components/Header';
 import Loader from '@/components/Loader';
 import ManageUser from '@/components/ManageUser';
 import { showToastMessage } from '@/components/Toastify';
-import { getFormRead } from '@/services/CreateUserService';
 import { useProfileInfo } from '@/services/queries';
 import {
   extractAddress,
@@ -25,7 +24,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { accessControl } from '../../../app.config';
-import { useFormRead } from '@/hooks/useFormRead';
+import { getFormRead, useFormRead } from '@/hooks/useFormRead';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface TeacherProfileProp {

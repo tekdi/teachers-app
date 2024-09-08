@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { getFormRead } from '@/services/CreateUserService';
+import { getFormRead } from '@/hooks/useFormRead';
 import { createEvent, editEvent } from '@/services/EventService';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { CreateEvent, PlannedModalProps } from '@/utils/Interfaces';
@@ -10,8 +10,7 @@ import {
   FormContextType,
   Role,
   Status,
-  sessionMode,
-  sessionType,
+  sessionMode
 } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -37,10 +36,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { useQueryClient } from '@tanstack/react-query';
 import dayjs, { Dayjs } from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'next-i18next';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import ReactGA from 'react-ga4';
 import {
   DaysOfWeek,
@@ -48,12 +49,10 @@ import {
   idealTimeForSession,
   timeZone,
 } from '../../app.config';
+import ConfirmationModal from './ConfirmationModal';
 import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
-import ConfirmationModal from './ConfirmationModal';
-import timezone from 'dayjs/plugin/timezone';
-import { useQueryClient } from '@tanstack/react-query';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
