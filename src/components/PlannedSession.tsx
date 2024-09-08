@@ -10,7 +10,7 @@ import {
   FormContextType,
   Role,
   Status,
-  sessionMode
+  sessionMode,
 } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -104,7 +104,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [linkError, setLinkError] = useState('');
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>();
   const [editEventData, setEditEventData] = useState(eventData);
-
 
   const queryClient = useQueryClient();
 
@@ -261,7 +260,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       try {
         const response = await queryClient.fetchQuery({
           queryKey: ['formRead', FormContext.USERS, FormContextType.TEACHER],
-          queryFn: () => getFormRead(FormContext.USERS, FormContextType.TEACHER),
+          queryFn: () =>
+            getFormRead(FormContext.USERS, FormContextType.TEACHER),
         });
 
         console.log('sortedFields', response);
@@ -936,7 +936,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 <FormControlLabel
                   value={t('CENTER_SESSION.EDIT_THIS_SESSION')}
                   onClick={() =>
-                    handleEditSelection?.(
+                    handleEditSelection(
                       t('CENTER_SESSION.EDIT_THIS_SESSION'),
                       editSession
                     )
