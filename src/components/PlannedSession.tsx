@@ -968,7 +968,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 <FormControlLabel
                   value={t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS')}
                   onClick={() =>
-                    handleEditSelection?.(
+                    handleEditSelection(
                       t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS'),
                       editSession
                     )
