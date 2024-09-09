@@ -12,8 +12,12 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+interface TopicDetailsProps {
+  topic: string;
+  subTopic: [];
+}
 
-const TopicDetails = () => {
+const TopicDetails: React.FC<TopicDetailsProps> = ({ topic, subTopic }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   return (
@@ -36,7 +40,7 @@ const TopicDetails = () => {
               <Box
                 sx={{ fontSize: '16px', fontWeight: '400', color: '#4D4639' }}
               >
-                Real Numbers {/*   will came from API */}
+                {topic}
               </Box>
             </Box>
             <CreateOutlinedIcon sx={{ fontSize: '18px', color: '#0D599E' }} />
@@ -53,7 +57,7 @@ const TopicDetails = () => {
             {t('CENTER_SESSION.SUBTOPIC')}
           </Box>
           <Box sx={{ fontSize: '16px', fontWeight: '400', color: '#4D4639' }}>
-            Revisiting Irrational Numbers {/*   will came from API */}
+            {subTopic?.join(', ')}
           </Box>
         </Box>
 
