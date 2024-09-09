@@ -583,7 +583,7 @@ const CentersPage = () => {
       <FilterModalCenter
         open={filterModalOpen}
         handleClose={handleFilterModalClose}
-        centers={centerData.map((center) => center.cohortName)}
+        centers={centerData?.map((center) => center.cohortName)}
         selectedCenters={selectedCenters}
         setSelectedCenters={setSelectedCenters}
         sortOrder={sortOrder}

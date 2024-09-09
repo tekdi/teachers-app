@@ -170,7 +170,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
         </Box>
         <>
           <Box padding={'0 1rem'}>
-            {reasons.map((option) => (
+            {reasons?.map((option) => (
               <>
                 <Box
                   display={'flex'}
