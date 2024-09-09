@@ -1029,6 +1029,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 />
                               ))}
                               valuePartOne={
+                                Array.isArray(lowAttendanceLearnerList) &&
                                 lowAttendanceLearnerList.length > 0
                                   ? lowAttendanceLearnerList
                                       .slice(0, 2)
@@ -1038,7 +1039,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                     )
                               }
                               valuePartTwo={
-                                Array.isArray(lowAttendanceLearnerList) &&
+                                Array.isArray(lowAttendanceLearnerList) && 
                                 lowAttendanceLearnerList.length > 2
                                   ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                                   : null
