@@ -22,6 +22,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { Status } from '@/utils/app.constant';
 import ReactGA from 'react-ga4';
+import NoDataFound from './common/NoDataFound';
 
 interface MarkBulkAttendanceProps {
   open: boolean;
@@ -652,7 +653,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   >
                     <Button
                       variant="outlined"
-                      disabled={isAllAttendanceMarked ? false : true}
+                      disabled={!isAllAttendanceMarked}
                       onClick={() => submitBulkAttendanceAction(true, '', '')}
                       sx={{
                         width: '128px',
@@ -685,16 +686,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   </Box>
                 </Box>
               ) : (
-                <Typography
-                  style={{
-                    fontWeight: 'bold',
-                    marginLeft: '1rem',
-                    textAlign: 'center',
-                    marginTop: '1rem',
-                  }}
-                >
-                  {t('COMMON.NO_DATA_FOUND')}
-                </Typography>
+                <NoDataFound />
               )}
             </Box>
           </Box>

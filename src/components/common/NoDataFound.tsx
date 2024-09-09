@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next';
 
 interface NoDataFoundProps {
   title?: string;
+  bgColor?: string;
 }
 
 const NoDataFound: React.FC<NoDataFoundProps> = ({
   title = 'COMMON.NO_DATA_FOUND',
+  bgColor
 }) => {
   const { t } = useTranslation();
   return (
@@ -15,10 +17,11 @@ const NoDataFound: React.FC<NoDataFoundProps> = ({
       sx={{
         m: '1.125rem',
         width: '100%',
+        bgcolor: bgColor ?? 'inherit',
       }}
     >
       <Typography
-        style={{ fontWeight: 'bold', textAlign: 'center', width: '100%' }}
+        style={{ fontWeight: '500', textAlign: 'center', width: '100%' }}
       >
         {t(title)}
       </Typography>

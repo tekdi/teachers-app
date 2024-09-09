@@ -54,6 +54,7 @@ import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
 import { getMenuItems, Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
+import NoDataFound from '@/components/common/NoDataFound';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -746,20 +747,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     />
                   ))
                 ) : (
-                  <Box
-                    sx={{
-                      mt: '1rem',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography
-                      style={{ fontWeight: 'bold', marginLeft: '1rem' }}
-                    >
-                      {t('COMMON.NO_DATA_FOUND')}
-                    </Typography>
-                  </Box>
+                  <NoDataFound />
                 )}
               </Box>
             </Box>
@@ -786,17 +774,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           )}
         </Box>
       ) : (
-        <Box
-          display={'flex'}
-          justifyContent={'center'}
-          mt={2}
-          p={'1rem'}
-          borderRadius={'1rem'}
-          bgcolor={theme.palette.warning['A400']}
-          // bgcolor={'secondary.light'}
-        >
-          <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
-        </Box>
+        <NoDataFound />
       )}
     </Box>
   );

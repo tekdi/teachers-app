@@ -28,6 +28,7 @@ import { CoursePlannerConstants } from '@/utils/app.constant';
 import useStore from '@/store/store';
 import { accessControl } from '../../app.config';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import NoDataFound from '@/components/common/NoDataFound';
 
 // Define a type for the course planner data
 
@@ -361,19 +362,7 @@ const CoursePlanner = () => {
                     </Grid>
                   ))
                 ) : (
-                  <Grid item xs={12}>
-                    <Typography
-                      variant="h2"
-                      sx={{
-                        textAlign: 'center',
-                        color: theme.palette.warning['300'],
-                        marginTop: '20px',
-                        marginBottom: '20px',
-                      }}
-                    >
-                      {t('ASSESSMENTS.NO_DATA_FOUND')}
-                    </Typography>
-                  </Grid>
+                  <NoDataFound />
                 )}
               </Grid>
             </Box>
@@ -398,4 +387,7 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default withAccessControl('accessCoursePlanner', accessControl)(CoursePlanner);
+export default withAccessControl(
+  'accessCoursePlanner',
+  accessControl
+)(CoursePlanner);

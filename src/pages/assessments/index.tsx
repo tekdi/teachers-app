@@ -36,6 +36,7 @@ import { accessControl, AssessmentType, Program } from '../../../app.config';
 import { useQueryClient } from '@tanstack/react-query';
 import AssessmentReportCard from '@/components/AssessmentReportCard';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import NoDataFound from '@/components/common/NoDataFound';
 
 const Assessments = () => {
   const theme = useTheme<any>();
@@ -247,7 +248,6 @@ const Assessments = () => {
   const handleSearch = (searchTerm: string) => {
     const term = searchTerm.trim();
     if (term.length > 0) {
-      console.log('hii', searchTerm);
       const filteredList = learnerList?.filter((item: any) => {
         return item?.name?.toLowerCase().includes(term.toLowerCase());
       });
@@ -255,16 +255,6 @@ const Assessments = () => {
     } else {
       setFilteredLearnerList(learnerList);
     }
-  };
-
-  const NoDataFound = () => {
-    return (
-      <Box sx={{ mt: '4rem', px: '20px', width: '100%', textAlign: 'center' }}>
-        <Typography variant="h3" color="text.primary">
-          {t('COMMON.NO_DATA_FOUND')}
-        </Typography>
-      </Box>
-    );
   };
 
   // open modal of sort

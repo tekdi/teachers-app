@@ -52,6 +52,7 @@ import Loader from '../components/Loader';
 import SortingModal from '../components/SortingModal';
 import { attendanceStatusList } from '../services/AttendanceService';
 import { telemetryFactory } from '@/utils/telemetry';
+import NoDataFound from '@/components/common/NoDataFound';
 
 interface user {
   memberStatus: string;
@@ -787,34 +788,11 @@ const UserAttendanceHistory = () => {
                     />
                   ))
                 ) : (
-                  <Box
-                    sx={{
-                      m: '1rem',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography
-                      style={{ fontWeight: 'bold', marginLeft: '1rem' }}
-                    >
-                      {t('COMMON.NO_DATA_FOUND')}
-                    </Typography>
-                  </Box>
+                  <NoDataFound />
                 )}
               </Box>
             ) : (
-              <Box
-                display={'flex'}
-                justifyContent={'center'}
-                mt={2}
-                p={'1rem'}
-                borderRadius={'1rem'}
-                bgcolor={theme.palette.warning['A400']}
-                // bgcolor={'secondary.light'}
-              >
-                <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
-              </Box>
+              <NoDataFound bgColor={theme.palette.warning['A400']} />
             )}
           </Box>
           {open && (
