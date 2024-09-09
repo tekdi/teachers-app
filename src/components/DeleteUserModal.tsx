@@ -21,6 +21,9 @@ import { updateFacilitator } from '@/services/ManageUser';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import { Role, Status } from '@/utils/app.constant';
 import manageUserStore from '@/store/manageUserStore';
+import { LearnerAttendanceProps } from '@/utils/Interfaces';
+import { formatSelectedDate } from '@/utils/Helper';
+import { getLearnerAttendanceStatus } from '@/services/AttendanceService';
 
 interface DeleteUserModalProps {
   type: Role.STUDENT | Role.TEACHER;
@@ -79,29 +82,53 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
   };
 
   const handleDeleteAction = async () => {
-    if (type == Role.TEACHER) {
+    if (type === Role.TEACHER) {
       const studentData = {
         status: Status.ARCHIVED,
         reason: selectedValue,
       };
 
       const studentResponse = await updateFacilitator(userId, studentData);
-    } else if (type == Role.STUDENT) {
-      const memberStatus = Status.ARCHIVED;
-      const statusReason = selectedValue;
-      const membershipId = store?.learnerDeleteId;
+      showToastMessage(t('COMMON.USER_DELETED_PERMANENTLY'), 'success');
+    } else if (type === Role.STUDENT) {
+      //API call to check if today's attendance is marked. If yes, don't allow achieve today
+      const classId = localStorage.getItem('classId') ?? '';
+      const today = new Date();
 
-      const teacherResponse = await updateCohortMemberStatus({
-        memberStatus,
-        statusReason,
-        membershipId,
-      });
+      const attendanceRequest: LearnerAttendanceProps = {
+        filters: {
+          contextId: classId,
+          fromDate: formatSelectedDate(today),
+          toDate: formatSelectedDate(today),
+          scope: 'student',
+          userId: userId,
+        },
+      };
+      const response = await getLearnerAttendanceStatus(attendanceRequest);
+      const attendanceStats = response?.data?.attendanceList;
+
+      if (attendanceStats && attendanceStats.length > 0) {
+        showToastMessage(
+          t('COMMON.CANNOT_DELETE_TODAY_ATTENDANCE_MARKED'),
+          'error'
+        );
+      } else {
+        const memberStatus = Status.ARCHIVED;
+        const statusReason = selectedValue;
+        const membershipId = store?.learnerDeleteId;
+
+        const teacherResponse = await updateCohortMemberStatus({
+          memberStatus,
+          statusReason,
+          membershipId,
+        });
+        showToastMessage(t('COMMON.USER_DELETED_PERMANENTLY'), 'success');
+      }
     }
 
     setSelectedValue('');
     onClose();
     onUserDelete();
-    showToastMessage(t('COMMON.USER_DELETED_PERMANENTLY'), 'success');
     setReloadState(true);
   };
 

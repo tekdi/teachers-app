@@ -3,6 +3,7 @@ import {
   LearnerListProps,
   UserData,
   UpdateCustomField,
+  LearnerAttendanceProps,
 } from '@/utils/Interfaces';
 import React, { useEffect, useState } from 'react';
 import { Status, Role } from '@/utils/app.constant';
@@ -35,9 +36,14 @@ import manageUserStore from '../store/manageUserStore';
 import useStore from '@/store/store';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { bulkCreateCohortMembers } from '@/services/CohortServices';
-import { capitalizeEachWord, filterMiniProfileFields } from '@/utils/Helper';
+import {
+  capitalizeEachWord,
+  filterMiniProfileFields,
+  formatSelectedDate,
+} from '@/utils/Helper';
 import { useMediaQuery } from '@mui/material';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { getLearnerAttendanceStatus } from '@/services/AttendanceService';
 
 type Anchor = 'bottom';
 
@@ -229,7 +235,29 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const handleAction = async () => {
     try {
       setLoading(true);
-      if (cohortMembershipId) {
+      //API call to check if today's attendance is marked. If yes, don't allow achieve today
+      if (type == Role.STUDENT) {
+        const classId = localStorage.getItem('classId') ?? '';
+        const today = new Date();
+
+        const attendanceRequest: LearnerAttendanceProps = {
+          filters: {
+            contextId: classId,
+            fromDate: formatSelectedDate(today),
+            toDate: formatSelectedDate(today),
+            scope: 'student',
+            userId: userId,
+          },
+        };
+        const response = await getLearnerAttendanceStatus(attendanceRequest);
+        const attendanceStats = response?.data?.attendanceList;
+        if (attendanceStats && attendanceStats.length > 0) {
+          showToastMessage(
+            t('COMMON.CANNOT_DELETE_TODAY_ATTENDANCE_MARKED'),
+            'error'
+          );
+        }
+      } else if (cohortMembershipId) {
         const memberStatus = Status.ARCHIVED;
         const membershipId = cohortMembershipId;
 

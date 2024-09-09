@@ -95,6 +95,7 @@
     "DELETE_USER": "Delete User Permanently",
     "DELETE_USER_WITH_REASON": "Delete User",
     "USER_DELETED_PERMANENTLY": "User successfully deleted!",
+    "CANNOT_DELETE_TODAY_ATTENDANCE_MARKED": "Cannot delete learner as Attendance has already been marked for today",
     "OBSERVATIONS_FORMS": "Observations and Forms",
     "OTHER_REASON": "Other Reason",
     "OTHER_REASON_PLACEHOLDER": "Enter Other Reason",
