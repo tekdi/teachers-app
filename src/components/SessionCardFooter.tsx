@@ -30,12 +30,14 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
+  const [editTopic, setEditTopic] = React.useState(false);
   const [topicList, setTopicList] = React.useState([]);
   const [transformedTasks, setTransformedTasks] = React.useState();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [selectedSubtopics, setSelectedSubtopics] = useState<string[]>([]);
+  const [learningResources, setLearningResources] = useState<any>();
   const Date = getDayMonthYearFormat(item?.startDateTime);
 
   useEffect(() => {
@@ -65,12 +67,19 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
         }, {});
         setTransformedTasks(subTopics);
         const learningResources = tasks.reduce((acc: any, task: any) => {
-          acc[task.name] = task.children.map((child: any) =>
-            child.learningResources.map((resource: any) => resource.link)
-          );
+          acc[task.name] = task.children.reduce((subAcc: any, child: any) => {
+            subAcc[child.name] = child.learningResources.map(
+              (resource: any) => ({
+                name: resource.name,
+                link: resource.link,
+              })
+            );
+            return subAcc;
+          }, {});
           return acc;
         }, {});
         console.log(learningResources);
+        setLearningResources(learningResources);
       } catch (error) {
         console.log(error);
       }
@@ -129,6 +138,12 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleOpenSelectTopic = () => {
+    setOpen(true);
+    setEditTopic(true);
+    console.log('open true');
   };
 
   return (
@@ -247,10 +262,12 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
         primary={t('COMMON.SAVE')}
         handlePrimaryModel={updateTopicSubtopic}
       >
-        {item?.erMetaData?.topic ? (
+        {item?.erMetaData?.topic && !editTopic ? (
           <TopicDetails
             topic={item?.erMetaData?.topic}
             subTopic={item?.erMetaData?.subTopic}
+            learningResources={learningResources}
+            handleOpen={handleOpenSelectTopic}
           />
         ) : (
           <SelectTopic
