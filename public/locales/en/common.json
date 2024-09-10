@@ -150,7 +150,7 @@
     "CONFIRM_NEW_PASSWORD":"Confirm New Password",
     "TROUBLE_LOGIN":"Trouble with logging in?",
     "ENTER_USERNAME":"Enter your username or email address and we’ll send you a link to get back into your account.",
-    "ENTER_USERNAME_PASSWORD":"Enter username or email",
+    "ENTER_USERNAME_PASSWORD":"Enter username",
     "BACK_TO_LOGIN":"Back to Login",
     "CREATE_STRONG_PASSWORD":"Create a strong password",
     "YOUR_PASSWORD_NEEDS_TO:":"Your password needs to:",
