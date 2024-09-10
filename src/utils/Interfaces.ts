@@ -669,7 +669,7 @@ export interface GetCohortSearchParams {
   offset?: number;
 }
 
-export interface ForgotModalProps {
+export interface CentralizedModalProps {
   title: string;
   subTitle: string;
   secondary: string;

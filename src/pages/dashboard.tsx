@@ -64,9 +64,7 @@ import SessionCardFooter from '@/components/SessionCardFooter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useQueryClient } from '@tanstack/react-query';
 import { getCohortList } from '@/services/CohortServices';
-import { getUserAuth } from '@/services/LoginService';
-import ConfirmationModal from '@/components/ConfirmationModal';
-import ForgotModal from '@/components/ForgotModal';
+import CentralizedModal from '@/components/CentralizedModal';
 
 interface DashboardProps {}
 
@@ -114,7 +112,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [sessions, setSessions] = React.useState<Session[]>();
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
   const [myCohortList, setMyCohortList] = React.useState<any>();
-  const [authUser, setAuthUser] = useState(false);
+  const [centralizedModal, setCentralizedModal] = useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
@@ -638,7 +636,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       const skipResetPassword = localStorage.getItem('skipResetPassword');
       const temporaryPassword = localStorage.getItem('temporaryPassword');
       if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
-        setAuthUser(true);
+        setCentralizedModal(true);
       }
     }
   }, []);
@@ -1061,7 +1059,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                     )
                               }
                               valuePartTwo={
-                                Array.isArray(lowAttendanceLearnerList) && 
+                                Array.isArray(lowAttendanceLearnerList) &&
                                 lowAttendanceLearnerList.length > 2
                                   ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                                   : null
@@ -1197,13 +1195,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
           </>
         </>
       )}
-
-      <ForgotModal
-        title={'Welcome!'}
-        subTitle={'Please reset your password to ensure your account is secure'}
-        secondary={'I’ll do it later'}
-        primary={'Reset Password'}
-        modalOpen={authUser}
+      <CentralizedModal
+        title={t('LOGIN_PAGE.WELCOME')}
+        subTitle={t('LOGIN_PAGE.PLEASE_RESET_YOUR_PASSWORD')}
+        secondary={t('LOGIN_PAGE.DO_IT_LATER')}
+        primary={t('LOGIN_PAGE.RESET_PASSWORD')}
+        modalOpen={centralizedModal}
         handlePrimaryButton={handlePrimaryButton}
         handleSkipButton={handleSkipButton}
       />

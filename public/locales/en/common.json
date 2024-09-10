@@ -160,7 +160,10 @@
     "INCLUDE_NUMBER":"Include at least one number",
     "INCLUDE_SPECIAL":"Include at least one special character",
     "MUST_BE_AT":"Must be at least 8 characters long",
-    "OTHER_SETTING":"Other settings"
+    "OTHER_SETTING":"Other settings",
+    "WELCOME":"Welcome!",
+    "PLEASE_RESET_YOUR_PASSWORD":"Please reset your password to ensure your account is secure",
+    "DO_IT_LATER":"I’ll do it later"
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",

@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/router';
 import Modal from '@mui/material/Modal';
 import { Divider } from '@mui/material';
-import { ForgotModalProps } from '@/utils/Interfaces';
+import { CentralizedModalProps } from '@/utils/Interfaces';
 import { useTheme } from '@mui/material/styles';
 
 const style = {
@@ -22,7 +22,7 @@ const style = {
   },
 };
 
-const ForgotModal: React.FC<ForgotModalProps> = ({
+const CentralizedModal: React.FC<CentralizedModalProps> = ({
   title,
   subTitle,
   secondary,
@@ -124,4 +124,4 @@ const ForgotModal: React.FC<ForgotModalProps> = ({
   );
 };
 
-export default ForgotModal;
+export default CentralizedModal;
