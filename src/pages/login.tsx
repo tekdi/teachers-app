@@ -172,6 +172,10 @@ const LoginPage = () => {
             localStorage.setItem('userEmail', userResponse?.email);
             localStorage.setItem('userName', userResponse?.name);
             localStorage.setItem('userId', userResponse?.userId);
+            localStorage.setItem(
+              'temporaryPassword',
+              userResponse?.temporaryPassword ?? 'false'
+            );
             setUserRole(userResponse?.tenantData[0]?.roleName);
 
             const userDetails = await getUserDetails(

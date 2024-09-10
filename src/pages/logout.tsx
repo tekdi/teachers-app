@@ -46,6 +46,8 @@ function Logout() {
     localStorage.removeItem('parentCohortId');
     localStorage.removeItem('learnerId');
     localStorage.removeItem('classId');
+    localStorage.removeItem('temporaryPassword');
+    localStorage.removeItem('skipResetPassword');
 
     router.replace('/login');
   }, []);

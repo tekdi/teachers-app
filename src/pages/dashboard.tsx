@@ -2,7 +2,7 @@
 
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import {
   classesMissedAttendancePercentList,
@@ -64,6 +64,9 @@ import SessionCardFooter from '@/components/SessionCardFooter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useQueryClient } from '@tanstack/react-query';
 import { getCohortList } from '@/services/CohortServices';
+import { getUserAuth } from '@/services/LoginService';
+import ConfirmationModal from '@/components/ConfirmationModal';
+import ForgotModal from '@/components/ForgotModal';
 
 interface DashboardProps {}
 
@@ -111,6 +114,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [sessions, setSessions] = React.useState<Session[]>();
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
   const [myCohortList, setMyCohortList] = React.useState<any>();
+  const [authUser, setAuthUser] = useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
@@ -628,6 +632,22 @@ const Dashboard: React.FC<DashboardProps> = () => {
       getExtraSessionsData();
     }
   }, [timeTableDate, userId, myCohortList]);
+
+  useEffect(() => {
+    const skipResetPassword = localStorage.getItem('skipResetPassword');
+    const temporaryPassword = localStorage.getItem('temporaryPassword');
+    if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
+      setAuthUser(true);
+    }
+  }, []);
+
+  const handlePrimaryButton = () => {
+    router.push(`/create-password`);
+  };
+
+  const handleSkipButton = () => {
+    localStorage.setItem('skipResetPassword', 'true');
+  };
 
   return (
     <>
@@ -1184,6 +1204,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
           </>
         </>
       )}
+
+      <ForgotModal
+        title={'Welcome!'}
+        subTitle={'Please reset your password to ensure your account is secure'}
+        secondary={'I’ll do it later'}
+        primary={'Reset Password'}
+        modalOpen={authUser}
+        handlePrimaryButton={handlePrimaryButton}
+        handleSkipButton={handleSkipButton}
+      />
     </>
   );
 };
