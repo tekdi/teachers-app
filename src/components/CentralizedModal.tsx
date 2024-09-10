@@ -7,20 +7,7 @@ import Modal from '@mui/material/Modal';
 import { Divider } from '@mui/material';
 import { CentralizedModalProps } from '@/utils/Interfaces';
 import { useTheme } from '@mui/material/styles';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '75%',
-  bgcolor: '#fff',
-  boxShadow: 24,
-  borderRadius: '16px',
-  '@media (min-width: 600px)': {
-    width: '350px',
-  },
-};
+import { modalStyles } from '@/styles/modalStyles';
 
 const CentralizedModal: React.FC<CentralizedModalProps> = ({
   title,
@@ -47,7 +34,7 @@ const CentralizedModal: React.FC<CentralizedModalProps> = ({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={modalStyles}>
         <Box sx={{ padding: '16px' }}>
           <Box
             sx={{
