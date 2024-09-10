@@ -5,7 +5,7 @@ import { refetchInterval } from '@/utils/app.constant';
 
 export function useProfileInfo(
   userId: string | string[],
-  fieldValue: boolean,
+  fieldValue: boolean
   // reload: boolean
 ) {
   return useQuery({
@@ -21,6 +21,5 @@ export function useCohortList(limit: any, offset: any, filters: any) {
     queryFn: () => cohortList({ limit, offset, filters }),
     refetchInterval: refetchInterval,
     staleTime: 1000 * 60 * 60, // 1 hour
-
   });
 }

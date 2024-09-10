@@ -213,8 +213,8 @@ export interface SessionModeProps {
   cohortType?: string;
 }
 export interface LearnerAttendanceProps {
-  limit: number;
-  page: number;
+  limit?: number;
+  page?: number;
   filters: {
     contextId: string;
     scope: string;
@@ -361,6 +361,8 @@ export interface AssignCentersToFacilitatorListParam {
 }
 
 export interface Session {
+  endDateTime: string | number | Date;
+  startDateTime: string | number | Date;
   id: number;
   subject: string;
   time: string;
@@ -380,7 +382,15 @@ export interface CoursePlanner {
   circular?: number;
 }
 export interface SessionCardFooterProps {
-  item: Session;
+  item: any;
+  cohortName?: string;
+}
+
+export interface TopicSubtopicProps {
+  topics?: string[];
+  subTopicsList?: any;
+  onTopicSelected: any;
+  onSubtopicSelected: any;
 }
 
 export interface FieldOption {
@@ -601,11 +611,11 @@ export interface IAssessmentStatusOptions {
 }
 
 export interface GetTargetedSolutionsParams {
-  subject: string;
-  state: string;
-  medium: string;
-  class: string;
-  board: string;
+  subject: any;
+  state: any;
+  medium: any;
+  class: any;
+  board: any;
   type: string;
 }
 
@@ -651,6 +661,12 @@ export interface GetUserProjectTemplateParams {
 
 export interface HorizontalLinearStepperProps {
   activeStep: number;
+}
+
+export interface GetCohortSearchParams {
+  cohortId: string;
+  limit?: number;
+  offset?: number;
 }
 
 export interface ForgotModalProps {

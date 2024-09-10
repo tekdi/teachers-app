@@ -95,6 +95,7 @@
     "DELETE_USER": "Delete User Permanently",
     "DELETE_USER_WITH_REASON": "Delete User",
     "USER_DELETED_PERMANENTLY": "User successfully deleted!",
+    "CANNOT_DELETE_TODAY_ATTENDANCE_MARKED": "Cannot delete learner as Attendance has already been marked for today",
     "OBSERVATIONS_FORMS": "Observations and Forms",
     "OTHER_REASON": "Other Reason",
     "OTHER_REASON_PLACEHOLDER": "Enter Other Reason",
@@ -119,7 +120,7 @@
     "NEW_FACILITATOR": "New Facilitator",
     "EDIT_FACILITATOR": "Edit Facilitator",
     "SUBMIT": "Submit",
-    "LEARNER_CREATED_SUCCESSFULLY": "Leaner has been successfully created!",
+    "LEARNER_CREATED_SUCCESSFULLY": "Learner has been successfully created!",
     "FACILITATOR_ADDED_SUCCESSFULLY": "Facilitator added successfully!",
     "LEARNER_UPDATED_SUCCESSFULLY": "Learner profile updated successfully!",
     "FACILITATOR_UPDATED_SUCCESSFULLY": "Facilitator profile updated successfully!",
@@ -129,7 +130,8 @@
     "HELD_EVERY_WEEK_ON": "Held every week on {{days}}",
     "SESSION_SCHEDULED_SUCCESSFULLY": "Session has been scheduled successfully!",
     "CENTER": "Center",
-    "AND_COUNT_MORE": "and {{count}} more"
+    "AND_COUNT_MORE": "and {{count}} more",
+    "RETURN_TO_LOGIN": "Return to Login"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -141,7 +143,7 @@
     "FORGOT_PASSWORD": "Forgot Password?",
     "REMEMBER_ME": "Remember Me",
     "CONFIRM_PASSWORD": "Confirm password",
-    "RESET_PASSWORD": "Reset password",
+    "RESET_PASSWORD": "Reset Password",
     "CREATE_NEW": "Create a new, strong password that you don't use for other websites",
     "NOT_MATCH": "Passwords do not match",
     "CHARACTERS_LONG": "Passwords must be at least 8 characters long",
@@ -403,7 +405,8 @@
     "DELETE_FOLLOWING_SESSION": "Delete this and following sessions",
     "UPDATE_CHANGES": "Are you sure you want to update the changes?",
     "SESSION_DELETED_SUCCESSFULLY": "Session deleted successfully",
-    "SESSION_EDITED_SUCCESSFULLY": "Session updated successfully"
+    "SESSION_EDITED_SUCCESSFULLY": "Session updated successfully",
+    "TOPIC_SUBTOPIC_ADDED_SUCCESSFULLY": "Topic and Subtopic added successfully!"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center requested successfully",

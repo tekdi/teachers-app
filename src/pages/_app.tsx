@@ -69,16 +69,16 @@ export function DarkTheme() {
 }
 
 function App({ Component, pageProps }: AppProps) {
-  const [client] = React.useState(new QueryClient(
-    {
+  const [client] = React.useState(
+    new QueryClient({
       defaultOptions: {
         queries: {
           gcTime: 1000 * 60 * 60 * 24, // 24 hours
           staleTime: 1000 * 60 * 60 * 24, // 24 hours
         },
       },
-    }
-  ))
+    })
+  );
   const router = useRouter();
   const isFullWidthPage = fullWidthPages.includes(router.pathname);
   useEffect(() => {
@@ -106,7 +106,7 @@ function App({ Component, pageProps }: AppProps) {
           type: Telemetry.VIEW,
           subtype: '',
           pageid: cleanedUrl,
-          uri:''
+          uri: '',
         },
       };
       telemetryFactory.impression(telemetryImpression);

@@ -146,7 +146,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             queryKey: [QueryKeys.MY_COHORTS, userId],
             queryFn: () => getCohortList(userId, { customField: 'true' }),
           });
-  
+
           console.log('Response:', response);
           const cohortData = response[0];
           if (cohortData?.customField?.length) {
@@ -501,7 +501,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                         <>
                           {showDisabledDropDown && cohortsData?.length === 1 ? (
                             <FormControl
-                            disabled= {true}
+                              disabled={true}
                               className={
                                 showFloatingLabel ? '' : 'drawer-select'
                               }

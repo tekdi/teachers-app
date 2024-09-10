@@ -1,23 +1,28 @@
-import React, { useEffect, useState } from 'react';
 import Header from '@/components/Header';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import { Session } from '../../../../../utils/Interfaces';
-import SessionCardFooter from '@/components/SessionCardFooter';
-import SessionsCard from '@/components/SessionCard';
-import { getSessions } from '@/services/Sessionservice';
-import { logEvent } from '@/utils/googleAnalytics';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import { Box, Typography } from '@mui/material';
-import { getAfterDate, getBeforeDate, shortDateFormat } from '@/utils/Helper';
-import { getEventList } from '@/services/EventService';
-import { showToastMessage } from '@/components/Toastify';
 import MonthCalender from '@/components/MonthCalender';
-import { useRouter } from 'next/router';
+import SessionsCard from '@/components/SessionCard';
+import SessionCardFooter from '@/components/SessionCardFooter';
+import { getEventList } from '@/services/EventService';
+import { logEvent } from '@/utils/googleAnalytics';
+import {
+  getAfterDate,
+  getBeforeDate,
+  shortDateFormat,
+  sortSessionsByTime,
+} from '@/utils/Helper';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import { Box, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { GetStaticPaths } from 'next';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { accessControl } from '../../../../../../app.config';
+import { Session } from '../../../../../utils/Interfaces';
 
-const eventMonthView = () => {
+const EventMonthView:React.FC<any> = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const router = useRouter();
@@ -34,9 +39,11 @@ const eventMonthView = () => {
       try {
         const date = shortDateFormat(selectedDate);
         let cohortId;
+
         if (typeof window !== 'undefined' && window.localStorage) {
           cohortId = localStorage.getItem('classId') || '';
         }
+
         if (cohortId !== '') {
           const afterDate = getAfterDate(date);
           const beforeDate = getBeforeDate(date);
@@ -50,21 +57,32 @@ const eventMonthView = () => {
             cohortId: cohortId,
             status: ['live'],
           };
+
           const response = await getEventList({ limit, offset, filters });
-          let sessionArray: any[] = [];
-          let extraSessionArray: any[] = [];
+
+          const sessionArray: any = [];
+          const extraSessionArray: any = [];
+
           if (response?.events.length > 0) {
-            response?.events?.forEach((event: any) => {
+            response?.events.forEach((event: any) => {
               if (event.isRecurring) {
                 sessionArray.push(event);
-              }
-              if (!event.isRecurring) {
+              } else {
                 extraSessionArray.push(event);
               }
             });
           }
-          setSessions(sessionArray);
-          setExtraSessions(extraSessionArray);
+
+          if (extraSessionArray.length > 0) {
+            const { sessionList, index } =
+              sortSessionsByTime(extraSessionArray);
+            setExtraSessions(sessionList);
+          }
+
+          if (sessionArray.length > 0) {
+            const { sessionList, index } = sortSessionsByTime(sessionArray);
+            setSessions(sessionList);
+          }
         }
       } catch (error) {
         setSessions([]);
@@ -222,8 +240,6 @@ const eventMonthView = () => {
   );
 };
 
-export default eventMonthView;
-
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
@@ -238,3 +254,8 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
     fallback: 'blocking', //indicates the type of fallback
   };
 };
+
+export default withAccessControl(
+  'accessCenters',
+  accessControl
+)(EventMonthView);

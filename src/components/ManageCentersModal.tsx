@@ -20,7 +20,7 @@ interface ManageUsersModalProps {
   open: boolean;
   onClose: () => void;
   centersName?: string[];
-  centers?: { name: string, cohortId: string }[];
+  centers?: { name: string; cohortId: string }[];
   onAssign?: (selectedCenters: string[]) => void;
   isForLearner?: boolean;
 }
@@ -57,7 +57,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
 
   React.useEffect(() => {
     if (centers) {
-      setCheckedCenters(centers?.map(center => center?.name));
+      setCheckedCenters(centers?.map((center) => center?.name));
     }
   }, [centers]);
 
@@ -92,7 +92,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
     setSearchQuery(event.target.value);
   };
 
-  const filteredCenters = centers?.filter(center =>
+  const filteredCenters = centers?.filter((center) =>
     center?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
   );
 
@@ -179,7 +179,9 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                         <Radio
                           sx={{ pb: '20px' }}
                           checked={selectedValue === center?.name}
-                          onChange={() => handleRadioChange(center?.name, center?.cohortId)}
+                          onChange={() =>
+                            handleRadioChange(center?.name, center?.cohortId)
+                          }
                           value={selectedValue}
                         />
                       ) : (

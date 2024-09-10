@@ -42,7 +42,7 @@ const FormButtons: React.FC<IFormButtons> = ({
           display: 'flex',
           justifyContent: 'center',
           gap: '15px',
-          borderRadius:'10px'
+          borderRadius: '10px',
         }}
       >
         {!isSingleButton && !isCreateCentered && !isCreatedFacilitator && (

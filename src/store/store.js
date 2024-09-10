@@ -5,6 +5,7 @@ import { persist } from 'zustand/middleware';
 const useStore = create(
   persist(
     (set) => ({
+      accessToken: '',
       value: '',
       block: '',
       cohorts: [],
@@ -14,6 +15,7 @@ const useStore = create(
       setBlock: (newBlock) => set((state) => ({ block: newBlock })),
       setUserRole: (newRole) => set((state) => ({ userRole: newRole })),
       setCohorts: (newCohorts) => set(() => ({ cohorts: newCohorts })),
+      setAccessToken: (newAccessToken) => set((state) => ({accessToken: newAccessToken}))
     }),
     {
       name: 'teacherApp',

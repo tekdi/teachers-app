@@ -42,6 +42,10 @@ export const accessControl: { [key: string]: Role[] } = {
   showCreateCenterButton: [Role.TEAM_LEADER],
   showBlockLevelCenterData: [Role.TEAM_LEADER],
   showTeacherLevelCenterData: [Role.TEACHER],
+  accessCoursePlanner: [Role.TEACHER, Role.TEAM_LEADER],
+  accessCoursePlannerDetails: [Role.TEACHER, Role.TEAM_LEADER],
+  accessAssessments: [Role.TEACHER, Role.TEAM_LEADER],
+  accessCenters: [Role.TEACHER, Role.TEAM_LEADER]
 };
 
 export const fullWidthPages = [
@@ -64,10 +68,9 @@ export const DaysOfWeek = {
   Sat: 6,
 };
 
-export const Program = "Second chance";
+export const Program = 'Second chance';
 
 export enum AssessmentType {
   PRE_TEST = 'Pre Test',
   POST_TEST = 'Post Test',
 }
-

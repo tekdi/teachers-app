@@ -1,7 +1,5 @@
 import LearnersList from '@/components/LearnersListItem';
-import {
-  getMyCohortFacilitatorList
-} from '@/services/MyClassDetailsService';
+import { getMyCohortFacilitatorList } from '@/services/MyClassDetailsService';
 import { Status, limit } from '@/utils/app.constant';
 import {
   capitalizeEachWord,
@@ -58,7 +56,9 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
           if (resp) {
             const userDetails = resp.map((user: any) => {
-              const ageField = user.customField.find((field: { label: string }) => field.label === "AGE");
+              const ageField = user.customField.find(
+                (field: { label: string }) => field.label === 'AGE'
+              );
               return {
                 name: toPascalCase(user?.name),
                 userId: user?.userId,
@@ -69,7 +69,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 age: ageField ? ageField.value : null, // Extract age for the specific user
               };
             });
-            
+
             console.log(`userDetails`, userDetails);
             setUserData(userDetails);
           }
@@ -122,9 +122,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 </Grid>
               );
             })}
-            {!userData?.length && (
-              <NoDataFound />
-            )}
+            {!userData?.length && <NoDataFound />}
           </Grid>
         </Box>
       )}

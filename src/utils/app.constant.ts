@@ -116,3 +116,17 @@ export enum QueryKeys {
   GET_ACTIVE_FACILITATOR = 'getActiveFacilitatorList',
   MY_COHORTS = 'myCohorts',
 }
+
+export enum CoursePlannerConstants {
+  SUBJECT = 'SUBJECT',
+  STATES = 'STATES',
+  BOARD = 'BOARD',
+  MEDIUM = 'MEDIUM',
+  GRADE = 'GRADE',
+}
+
+export enum EventStatus {
+  UPCOMING = 'UPCOMING',
+  LIVE = 'LIVE',
+  PASSED = 'PASSED',
+}

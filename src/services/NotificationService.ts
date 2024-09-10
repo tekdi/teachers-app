@@ -61,7 +61,7 @@ export const sendEmailOnLearnerCreation = async (
     '{FirstName}': name,
     '{UserName}': username,
     '{Password}': password,
-    "{LearnerName}" : learnerName
+    '{LearnerName}': learnerName,
   };
 
   const sendTo = {
@@ -75,4 +75,4 @@ export const sendEmailOnLearnerCreation = async (
     replacements,
     email: sendTo,
   });
-}
+};

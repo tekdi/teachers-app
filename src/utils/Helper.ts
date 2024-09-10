@@ -29,7 +29,6 @@ export const MONTHS = [
   'December',
 ];
 
-
 export const formatDate = (dateString: string) => {
   const [year, monthIndex, day] = dateString.split('-');
   const month = MONTHS[parseInt(monthIndex, 10) - 1];
@@ -157,7 +156,7 @@ export const generateRandomString = (length: number): string => {
   const charactersLength = characters.length;
 
   for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    result += characters.charAt(Math.floor(Math.random() * charactersLength)); //NOSONAR
   }
 
   return result;
@@ -171,7 +170,7 @@ export const generateUUID = () => {
       performance.now() * 1000) ||
     0;
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    let r = Math.random() * 16;
+    let r = Math.random() * 16; //NOSONAR
     if (d > 0) {
       r = (d + r) % 16 | 0;
       d = Math.floor(d / 16);
@@ -289,7 +288,7 @@ export const generateUsernameAndPassword = (
   yearOfJoining: string
 ) => {
   const currentYear = new Date().getFullYear().toString().slice(-2);
-  const randomNum = Math.floor(10000 + Math.random() * 90000).toString();
+  const randomNum = Math.floor(10000 + Math.random() * 90000).toString(); //NOSONAR
   const yearSuffix =
     yearOfJoining !== '' ? yearOfJoining?.slice(-2) : currentYear;
   const username =
@@ -427,13 +426,12 @@ export const getBeforeDate = (selectedDate: string) => {
 };
 
 export const format2DigitDate = (dateStr: any) => {
-
   if (dateStr === undefined || dateStr === null) return '';
   const dateObj = parseISO(dateStr);
 
   // Format the date into "2 Feb, 2024" format
-  return format(dateObj, "d MMM, yyyy");
-}
+  return format(dateObj, 'd MMM, yyyy');
+};
 type Field = {
   options?: Option[];
   name?: string;
@@ -442,7 +440,7 @@ type Field = {
     url?: string;
   };
   fieldId?: string;
-  fileds?: any
+  fileds?: any;
 };
 
 type Framework = {
@@ -456,8 +454,9 @@ type Option = {
 };
 
 export const mapFrameworksToOptionsWithFieldId = (frameworks: Framework[]) => {
-  return frameworks.map(framework => ({
-     label: framework.name, value: framework.identifier
+  return frameworks.map((framework) => ({
+    label: framework.name,
+    value: framework.identifier,
   }));
 };
 
@@ -469,17 +468,24 @@ export const formatOptions = (data: any[]) => {
 };
 
 export const getAssociatesByCode = (data: any, selectedCode: string): any[] => {
-  const selectedItem = data.find((item: { code: string; }) => item.code === selectedCode);
+  const selectedItem = data.find(
+    (item: { code: string }) => item.code === selectedCode
+  );
   return selectedItem ? selectedItem.associates : [];
 };
 
-export const getAssociatesByIdentifier = (data: any, selectedIdentifier: string): any[] => {
-  const selectedItem = data.find((item: { identifier: string; }) => item.identifier === selectedIdentifier);
+export const getAssociatesByIdentifier = (
+  data: any,
+  selectedIdentifier: string
+): any[] => {
+  const selectedItem = data.find(
+    (item: { identifier: string }) => item.identifier === selectedIdentifier
+  );
   return selectedItem ? selectedItem.associates : [];
 };
 
 // export const updateFieldOptions = (
-//   fields: Field[], 
+//   fields: Field[],
 //   optionsList: Array<{ fieldId: string, options: Option[] }>
 // ): Field[] => {
 //   return fields.map(field => {
@@ -513,13 +519,37 @@ export const getOptionsByCode = (data: any, code: string) => {
 
 export const filterByCategory = (data: any, category: string) => {
   const categoryData = data
-    ?.filter((item: any) => item.category === category && item.status === 'Live')
+    ?.filter(
+      (item: any) => item.category === category && item.status === 'Live'
+    )
     .map((element: any) => ({
       label: element.name,
       value: element.identifier,
     }));
 
   return categoryData || [];
+};
+
+export const sortSessionsByTime = (sessionsArray: any) => {
+  const passed: any = [];
+  const live: any = [];
+  const upcoming: any = [];
+  const currentTime = new Date();
+
+  sessionsArray?.forEach((item: any) => {
+    const eventStart = new Date(item?.startDateTime);
+    const eventEnd = new Date(item?.endDateTime);
+
+    if (currentTime < eventStart) {
+      upcoming.push(item);
+    } else if (currentTime >= eventStart && currentTime <= eventEnd) {
+      live.push(item);
+    } else if (currentTime > eventEnd) {
+      passed.push(item);
+    }
+  });
+  const index = passed.length;
+  return { sessionList: [...passed, ...live, ...upcoming], index };
 };
 
 // export function sortByKeyWithNumericHandling(data: any[], key: string | number) {
@@ -530,4 +560,3 @@ export const filterByCategory = (data: any, category: string) => {
 //       });
 //   });
 // }
-

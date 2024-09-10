@@ -6,7 +6,7 @@ const useCourseStore = create(
   persist(
     (set) => ({
       resources: '',
-      subject:'',
+      subject: '',
       setResources: (newResources) => set(() => ({ resources: newResources })),
       setSubject: (newSubject) => set(() => ({ subject: newSubject })),
     }),

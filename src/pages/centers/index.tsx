@@ -33,6 +33,8 @@ import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
 import building from '../../assets/images/apartment.png';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import NoDataFound from '@/components/common/NoDataFound';
 
 const CentersPage = () => {
   const [loading, setLoading] = useState(false);
@@ -442,17 +444,7 @@ const CentersPage = () => {
                     )}
                   </>
                 ) : (
-                  <Box
-                    sx={{
-                      fontSize: '16px',
-                      fontWeight: '500',
-                      color: theme.palette.warning['400'],
-                      m: 2,
-                      textAlign: 'center',
-                    }}
-                  >
-                    {t('COMMON.NO_DATA_FOUND')}
-                  </Box>
+                  <NoDataFound />
                 ))}
 
               {/* Teacher-Level Centers */}
@@ -579,4 +571,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default CentersPage;
+export default withAccessControl('accessCenters', accessControl)(CentersPage);

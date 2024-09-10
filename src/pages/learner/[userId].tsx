@@ -34,7 +34,6 @@ import {
   getCohortAttendance,
 } from '@/services/AttendanceService';
 import { getUserDetails } from '@/services/ProfileService';
-import { getFormRead } from '@/services/CreateUserService';
 import {
   extractAddress,
   formatSelectedDate,
@@ -70,6 +69,7 @@ import { accessControl, Program } from '../../../app.config';
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import AssessmentReport from '@/components/AssessmentReport';
+import { getFormRead } from '@/hooks/useFormRead';
 
 interface LearnerProfileProp {
   reloadState?: boolean;
@@ -151,7 +151,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   };
 
   const mapFields = (formFields: any, response: any) => {
-    let initialFormData: any = {};
+    const initialFormData: any = {};
     formFields.fields.forEach((item: any) => {
       const userData = response?.userData;
       const customFieldValue = userData?.customFields?.find(
@@ -217,7 +217,10 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   const fetchDataAndInitializeForm = async () => {
     try {
       const response = await getUserDetails(userId, true);
-      const formFields = await getFormRead(FormContext.USERS, FormContextType.STUDENT);
+      const formFields = await getFormRead(
+        FormContext.USERS,
+        FormContextType.STUDENT
+      );
       console.log('response', response);
       console.log('formFields', formFields);
       setFormData(mapFields(formFields, response?.result));
@@ -254,13 +257,16 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   }, [userId, reload, cohortId]);
 
   const getAttendanceData = async (fromDates: any, toDates: any) => {
-    const fromDate = fromDates;
-    const toDate = toDates;
-    const filters = {
-      fromDate,
-      toDate,
+    const filters: any = {
       userId: userId,
     };
+
+    // Conditionally add fromDate and toDate to filters if selectedValue doesn't match the specific condition
+    if (selectedValue !== t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })) {
+      filters.fromDate = fromDates;
+      filters.toDate = toDates;
+    }
+
     const response = await classesMissedAttendancePercentList({
       filters,
       facets: ['userId'],
@@ -307,7 +313,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
 
               const fetchFormData = async () => {
                 try {
-                  const response: FormData = await getFormRead(
+                  const response = await getFormRead(
                     FormContext.USERS,
                     FormContextType.STUDENT
                   );
@@ -439,7 +445,10 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     getDoIdForAssessmentReport(test, subject);
   };
 
-  const getDoIdForAssessmentReport = async (tests: string, subjects: string) => {
+  const getDoIdForAssessmentReport = async (
+    tests: string,
+    subjects: string
+  ) => {
     // const stateName = localStorage.getItem('stateName');
 
     const stateName: any = address?.split(',')[0];
@@ -525,10 +534,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         }
       } else {
         setUniqueDoId('');
-        console.log(
-          'getAssessmentList data',
-          response?.response?.statusText
-        );
+        console.log('getAssessmentList data', response?.response?.statusText);
       }
     } else {
       console.log('No Do Id Found');
@@ -981,7 +987,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           }}
         >
           <CardContent>
-            <AssessmentReport isTitleRequired={true} />
+            <AssessmentReport classId={classId} userId={userId} />
           </CardContent>
         </Card>
       </Box>

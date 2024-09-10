@@ -40,6 +40,8 @@ const LoginPage = () => {
     (state: { setUserRole: any }) => state.setUserRole
   );
 
+  const setAccessToken = useStore((state: { setAccessToken: any }) => state.setAccessToken);
+
   const setDistrictCode = manageUserStore(
     (state: { setDistrictCode: any }) => state.setDistrictCode
   );
@@ -177,6 +179,7 @@ const LoginPage = () => {
               userResponse?.temporaryPassword ?? 'false'
             );
             setUserRole(userResponse?.tenantData[0]?.roleName);
+            setAccessToken(token);
 
             const userDetails = await getUserDetails(
               userResponse?.userId,
@@ -473,7 +476,7 @@ const LoginPage = () => {
                     />
                   </Box>
 
-                  <Box
+                  {/* <Box
                     sx={{
                       fontSize: '14px',
                       fontWeight: '500',
@@ -486,7 +489,7 @@ const LoginPage = () => {
                     }}
                   >
                     {t('LOGIN_PAGE.FORGOT_PASSWORD')}
-                  </Box>
+                  </Box> */}
 
                   {/* {
                     <Box marginTop={'1rem'} marginLeft={'0.8rem'}>

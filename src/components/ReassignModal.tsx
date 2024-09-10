@@ -135,7 +135,6 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
       showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');
     } finally {
       handleCloseReassignModal();
-      return;
     }
   };
 
@@ -168,8 +167,8 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
           <IconButton
             color="inherit"
             onClick={() => {
-              setSearchInput(''); 
-              handleCloseReassignModal(); 
+              setSearchInput('');
+              handleCloseReassignModal();
             }}
           >
             <CloseIcon />

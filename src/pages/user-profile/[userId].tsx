@@ -3,10 +3,7 @@ import Header from '@/components/Header';
 import Loader from '@/components/Loader';
 import ManageUser from '@/components/ManageUser';
 import { showToastMessage } from '@/components/Toastify';
-import { getFormRead } from '@/services/CreateUserService';
-import { getUserDetails } from '@/services/ProfileService';
 import { useProfileInfo } from '@/services/queries';
-import manageUserStore from '@/store/manageUserStore';
 import {
   extractAddress,
   mapFieldIdToValue,
@@ -27,7 +24,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { accessControl } from '../../../app.config';
-import { useFormRead } from '@/hooks/useFormRead';
+import { getFormRead, useFormRead } from '@/hooks/useFormRead';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface TeacherProfileProp {
@@ -43,13 +40,11 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const router = useRouter();
   const { userId }: any = router.query;
   const queryClient = useQueryClient();
-  const userStore = manageUserStore();
   const theme = useTheme<any>();
   const [userData, setUserData] = useState<any | null>(null);
   const [userName, setUserName] = useState<any | null>(null);
   const [customFieldsData, setCustomFieldsData] = useState<CustomField[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [address, setAddress] = useState('');
   const [isData, setIsData] = React.useState<boolean>(false);
   const [userFormData, setUserFormData] = useState<{ [key: string]: any }>({});
@@ -58,7 +53,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const [selfUserId, setSelfUserId] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
 
-  const { data: formResponse, isPending } = useFormRead(
+  const { data: formResponse } = useFormRead(
     FormContext.USERS,
     FormContextType.TEACHER
   );
@@ -184,17 +179,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   }, [userId, reload, formResponse, userDetails]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const token = localStorage.getItem('token');
-      if (token) {
-        setIsAuthenticated(true);
-      } else {
-        router.push('/login');
-      }
-    }
-  }, []);
-
-  useEffect(() => {
     setLoading(isLoading);
 
     if (error) {
@@ -229,10 +213,10 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
             userRole === Role.TEAM_LEADER && selfUserId === userId
               ? FormContextType.TEAM_LEADER
               : FormContextType.TEACHER;
-          const response: FormData = await getFormRead(
-            FormContext.USERS,
-            formContextType
-          );
+          const response = await queryClient.fetchQuery({
+            queryKey: ['formRead', FormContext.USERS, formContextType],
+            queryFn: () => getFormRead(FormContext.USERS, formContextType),
+          });
           console.log('response', response);
           if (response) {
             const mergeData = (
@@ -644,7 +628,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
           <Typography textAlign={'center'}>{t('COMMON.LOADING')}</Typography>
         </Box>
       )}{' '}
-      <Box sx={{ px: '16px', mt: 2 }}>
+      {/* <Box sx={{ px: '16px', mt: 2 }}>
         <Box
           sx={{
             fontSize: '14px',
@@ -678,7 +662,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
             {t('LOGIN_PAGE.RESET_PASSWORD')}
           </Button>
         </Box>
-      </Box>
+      </Box> */}
     </Box>
   );
 };

@@ -5,6 +5,7 @@ import {
   getMonthName,
   getTodayDate,
   shortDateFormat,
+  sortSessionsByTime,
   toPascalCase,
 } from '@/utils/Helper';
 import {
@@ -60,7 +61,8 @@ import Schedule from '../../../components/Schedule';
 import { Session } from '../../../utils/Interfaces';
 
 import manageUserStore from '@/store/manageUserStore';
-import { eventDaysLimit, modifyAttendanceLimit } from '../../../../app.config';
+import { accessControl, eventDaysLimit, modifyAttendanceLimit } from '../../../../app.config';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 
 const CohortPage = () => {
   const [value, setValue] = React.useState(1);
@@ -118,6 +120,8 @@ const CohortPage = () => {
   const [createEvent, setCreateEvent] = useState(false);
   const [eventCreated, setEventCreated] = useState(false);
   const [onEditEvent, setOnEditEvent] = useState(false);
+  const [sortedSessions, setSortedSessions] = useState<any>([]);
+  const [initialSlideIndex, setInitialSlideIndex] = useState<any>();
 
   const handleClick = (selection: string) => {
     setClickedBox(selection);
@@ -191,9 +195,8 @@ const CohortPage = () => {
             (field: any) => field.label === 'BLOCKS'
           );
 
-          cohortData.address =
-            `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}` ||
-            '';
+          const address = `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}`;
+          cohortData.address = address || '';
 
           const typeOfCohort = cohortData.customField.find(
             (item: CustomField) => item.label === 'TYPE_OF_COHORT'
@@ -283,6 +286,19 @@ const CohortPage = () => {
     setEventDeleted(false);
     getExtraSessionsData();
   }, [eventCreated, eventDeleted, eventUpdated]);
+
+  useEffect(() => {
+    if (extraSessions) {
+      const { sessionList, index } = sortSessionsByTime(extraSessions);
+      setSortedSessions(sessionList);
+
+      if (index > 0) {
+        setInitialSlideIndex(index);
+      } else {
+        setInitialSlideIndex(0);
+      }
+    }
+  }, [extraSessions]);
 
   const handleEventDeleted = () => {
     setEventDeleted(true);
@@ -484,7 +500,9 @@ const CohortPage = () => {
         >
           <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
-          {role === Role.TEAM_LEADER && <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />}
+          {role === Role.TEAM_LEADER && (
+            <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
+          )}
         </Tabs>
       </Box>
 
@@ -565,46 +583,50 @@ const CohortPage = () => {
               {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
             </Box>
             <Box mt={3} sx={{ position: 'relative' }}>
-              <Swiper
-                pagination={{
-                  type: 'fraction',
-                }}
-                breakpoints={{
-                  500: {
-                    slidesPerView: 1,
-                    spaceBetween: 20,
-                  },
-                  740: {
-                    slidesPerView: 2,
-                    spaceBetween: 20,
-                  },
-                  900: {
-                    slidesPerView: 3,
-                    spaceBetween: 30,
-                  },
-                  2000: {
-                    slidesPerView: 4,
-                    spaceBetween: 40,
-                  },
-                }}
-                navigation={true}
-                modules={[Pagination, Navigation]}
-                className="mySwiper"
-              >
-                {extraSessions?.map((item) => (
-                  <>
-                    <SwiperSlide>
+              {initialSlideIndex >= 0 && (
+                <Swiper
+                  initialSlide={initialSlideIndex}
+                  pagination={{
+                    type: 'fraction',
+                  }}
+                  breakpoints={{
+                    500: {
+                      slidesPerView: 1,
+                      spaceBetween: 20,
+                    },
+                    740: {
+                      slidesPerView: 2,
+                      spaceBetween: 20,
+                    },
+                    900: {
+                      slidesPerView: 3,
+                      spaceBetween: 30,
+                    },
+                    2000: {
+                      slidesPerView: 4,
+                      spaceBetween: 40,
+                    },
+                  }}
+                  navigation={true}
+                  modules={[Pagination, Navigation]}
+                  className="mySwiper"
+                >
+                  {sortedSessions?.map((item: any, index: any) => (
+                    <SwiperSlide key={index}>
                       <SessionCard
                         data={item}
                         isEventDeleted={handleEventDeleted}
                         isEventUpdated={handleEventUpdated}
                       >
-                        <SessionCardFooter item={item} />
+                        <SessionCardFooter
+                          item={item}
+                          cohortName={cohortName}
+                        />
                       </SessionCard>
                     </SwiperSlide>
-                  </>
-                ))}
-              </Swiper>
+                  ))}
+                </Swiper>
+              )}
             </Box>
             {extraSessions && extraSessions?.length === 0 && (
               <Box
@@ -671,7 +693,7 @@ const CohortPage = () => {
                     isEventDeleted={handleEventDeleted}
                     isEventUpdated={handleEventUpdated}
                   >
-                    <SessionCardFooter item={item} />
+                    <SessionCardFooter item={item} cohortName={cohortName} />
                   </SessionCard>
                 </Grid>
               ))}
@@ -774,4 +796,4 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default CohortPage;
+export default withAccessControl('accessCenters', accessControl)(CohortPage);

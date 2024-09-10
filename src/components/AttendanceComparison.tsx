@@ -25,6 +25,7 @@ import { useTheme } from '@mui/material/styles';
 import { overallAttendanceInPercentageStatusList } from '@/services/AttendanceService';
 import { CenterType, cohortPrivileges } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
+import NoDataFound from './common/NoDataFound';
 
 interface AttendanceComparisonProps {
   blockName: string;
@@ -131,10 +132,9 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
 
     if (isMobile) {
       maxLength = 6;
-    } 
+    }
     return value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
-  }
-
+  };
 
   const renderCustomLabel = (props: any) => {
     const { x, y, width, height, value } = props;
@@ -223,23 +223,27 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
       </FormControl>
       {data?.length > 0 && (
         <>
-        <Box sx={{ mt: 2 }}>
-          <Typography
-            align="left"
-            sx={{ marginBottom: '16px', fontSize: '15px' }}
-          >
-            {centerType === CenterType.REMOTE
-              ? t('DASHBOARD.REMOTE_AVERAGE_ATTENDANCE')
-              : t('DASHBOARD.REGULAR_AVERAGE_ATTENDANCE')}
-            : {averageAttendance.toFixed(2)}%
-          </Typography>
-        </Box>
+          <Box sx={{ mt: 2 }}>
+            <Typography
+              align="left"
+              sx={{ marginBottom: '16px', fontSize: '15px' }}
+            >
+              {centerType === CenterType.REMOTE
+                ? t('DASHBOARD.REMOTE_AVERAGE_ATTENDANCE')
+                : t('DASHBOARD.REGULAR_AVERAGE_ATTENDANCE')}
+              : {averageAttendance.toFixed(2)}%
+            </Typography>
+          </Box>
           <Box sx={{ maxHeight: '400px', overflowY: 'scroll' }}>
             <ResponsiveContainer width="100%" height={data.length * 70}>
               <BarChart
                 layout="vertical"
                 data={data}
-                margin={{ top: 5, left: isMobile ? 0 : 70, right: isMobile ? 0 : 5 }}
+                margin={{
+                  top: 5,
+                  left: isMobile ? 0 : 70,
+                  right: isMobile ? 0 : 5,
+                }}
               >
                 <CartesianGrid
                   stroke={theme.palette.warning.A700}
@@ -255,40 +259,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                   dataKey="name"
                   tickFormatter={YAxisLabel}
                   tick={{ fontSize: 12, width: isMobile ? 50 : 100 }}
-                  // tick={(props) => {
-                  //   const { x, y, payload } = props;
-                  //   const name = payload.value;
-                  //   const firstLine = name.slice(0, 7);
-                  //   const secondLine = name.slice(7, 13);
-                  //   const thirdLine = name.slice(13, 19);
-                  //   const capitalizedFirstLine =
-                  //     firstLine.charAt(0).toUpperCase() + firstLine.slice(1);
 
-                  //   return (
-                  //     <text
-                  //       x={x}
-                  //       y={y}
-                  //       dy={4}
-                  //       textAnchor="end"
-                  //       fontSize={16}
-                  //       fill="gray"
-                  //     >
-                  //       <tspan x={x} dy="0em">
-                  //         {capitalizedFirstLine}
-                  //       </tspan>
-                  //       {secondLine && (
-                  //         <tspan x={x} dy="1.3em">
-                  //           {secondLine}
-                  //         </tspan>
-                  //       )}
-                  //       {thirdLine && (
-                  //         <tspan x={x} dy="1.3em">
-                  //           {thirdLine}
-                  //         </tspan>
-                  //       )}
-                  //     </text>
-                  //   );
-                  // }}
                 />
 
                 <Tooltip formatter={(value: number) => `${value}%`} />
@@ -328,14 +299,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
       )}
 
       {data?.length === 0 && (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="100%"
-        >
-          <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
-        </Box>
+        <NoDataFound />
       )}
     </Box>
   );

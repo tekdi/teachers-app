@@ -9,18 +9,19 @@ const withAccessControl =
     const WrappedComponent = (props: any) => {
       const store = useStore();
       const userRole = store.userRole;
+      const accessToken = store.accessToken;
       const router = useRouter();
 
       useEffect(() => {
-        console.log('userRole', userRole);
-        if (userRole === '') {
+        console.log('userRole', userRole, store);
+        if (!accessToken?.length || userRole === '') {
           router.replace('/logout');
           return;
         }
         if (!userRole || !accessControl[action]?.includes(userRole)) {
           router.replace('/unauthorized');
         }
-      }, [userRole, action, router]);
+      }, [userRole, action, router, accessToken]);
 
       if (!userRole || !accessControl[action]?.includes(userRole)) {
         return null;

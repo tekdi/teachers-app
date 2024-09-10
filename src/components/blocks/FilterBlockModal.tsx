@@ -9,7 +9,7 @@ import {
   Modal,
   Radio,
   RadioGroup,
-  Typography
+  Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
