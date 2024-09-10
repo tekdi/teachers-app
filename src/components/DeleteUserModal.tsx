@@ -16,14 +16,11 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import { showToastMessage } from './Toastify';
-import { getCohortList } from '@/services/CohortServices';
 import { updateFacilitator } from '@/services/ManageUser';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import { Role, Status } from '@/utils/app.constant';
 import manageUserStore from '@/store/manageUserStore';
-import { LearnerAttendanceProps } from '@/utils/Interfaces';
-import { formatSelectedDate } from '@/utils/Helper';
-import { getLearnerAttendanceStatus } from '@/services/AttendanceService';
+import { fetchAttendanceStats } from '@/utils/helperAttendanceStatApi';
 
 interface DeleteUserModalProps {
   type: Role.STUDENT | Role.TEACHER;
@@ -92,20 +89,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
       showToastMessage(t('COMMON.USER_DELETED_PERMANENTLY'), 'success');
     } else if (type === Role.STUDENT) {
       //API call to check if today's attendance is marked. If yes, don't allow achieve today
-      const classId = localStorage.getItem('classId') ?? '';
-      const today = new Date();
-
-      const attendanceRequest: LearnerAttendanceProps = {
-        filters: {
-          contextId: classId,
-          fromDate: formatSelectedDate(today),
-          toDate: formatSelectedDate(today),
-          scope: 'student',
-          userId: userId,
-        },
-      };
-      const response = await getLearnerAttendanceStatus(attendanceRequest);
-      const attendanceStats = response?.data?.attendanceList;
+      const attendanceStats = await fetchAttendanceStats(userId);
 
       if (attendanceStats && attendanceStats.length > 0) {
         showToastMessage(
