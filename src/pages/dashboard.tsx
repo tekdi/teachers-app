@@ -634,10 +634,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, [timeTableDate, userId, myCohortList]);
 
   useEffect(() => {
-    const skipResetPassword = localStorage.getItem('skipResetPassword');
-    const temporaryPassword = localStorage.getItem('temporaryPassword');
-    if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
-      setAuthUser(true);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const skipResetPassword = localStorage.getItem('skipResetPassword');
+      const temporaryPassword = localStorage.getItem('temporaryPassword');
+      if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
+        setAuthUser(true);
+      }
     }
   }, []);
 

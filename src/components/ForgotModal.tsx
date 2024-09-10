@@ -5,14 +5,8 @@ import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/router';
 import Modal from '@mui/material/Modal';
 import { Divider } from '@mui/material';
-
-interface ForgotModalProps {
-  title: string;
-  subTitle: string;
-  secondary: string;
-  primary: string;
-  modalOpen: boolean;
-}
+import { ForgotModalProps } from '@/utils/Interfaces';
+import { useTheme } from '@mui/material/styles';
 
 const style = {
   position: 'absolute',
@@ -42,7 +36,7 @@ const ForgotModal: React.FC<ForgotModalProps> = ({
   React.useEffect(() => {
     setOpen(modalOpen);
   }, [modalOpen]);
-
+  const theme = useTheme<any>();
   const handleClose = () => setOpen(false);
   const router = useRouter();
 
@@ -58,7 +52,7 @@ const ForgotModal: React.FC<ForgotModalProps> = ({
           <Box
             sx={{
               fontSize: '22px',
-              color: '#4D4639',
+              color: theme.palette.warning['A200'],
               fontWeight: '400',
               textAlign: 'center',
             }}
@@ -69,7 +63,7 @@ const ForgotModal: React.FC<ForgotModalProps> = ({
             sx={{
               fontSize: '16px',
               fontWeight: '400',
-              color: '#4D4639',
+              color: theme,
               textAlign: 'center',
               pt: '12px',
             }}
@@ -78,7 +72,7 @@ const ForgotModal: React.FC<ForgotModalProps> = ({
           </Box>
         </Box>
         <Box sx={{ my: 1.2 }}>
-          <Divider sx={{ color: '#D0C5B4' }} />
+          <Divider sx={{ color: theme.palette.warning['A100'] }} />
         </Box>
 
         <Box
@@ -96,7 +90,7 @@ const ForgotModal: React.FC<ForgotModalProps> = ({
               fontSize: '14px',
               fontWeight: '500',
               border: 'none',
-              color: '#0D599E',
+              color: theme.palette.secondary.main,
               '&:hover': {
                 border: 'none',
                 backgroundColor: 'transparent',

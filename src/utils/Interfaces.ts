@@ -652,3 +652,13 @@ export interface GetUserProjectTemplateParams {
 export interface HorizontalLinearStepperProps {
   activeStep: number;
 }
+
+export interface ForgotModalProps {
+  title: string;
+  subTitle: string;
+  secondary: string;
+  primary: string;
+  modalOpen: boolean;
+  handlePrimaryButton: () => void;
+  handleSkipButton: () => void;
+}
