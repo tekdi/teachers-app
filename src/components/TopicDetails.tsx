@@ -12,10 +12,39 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+interface TopicDetailsProps {
+  topic: string;
+  subTopic: [];
+  learningResources: any;
+  handleOpen: any;
+}
 
-const TopicDetails = () => {
+const TopicDetails: React.FC<TopicDetailsProps> = ({
+  topic,
+  subTopic,
+  learningResources,
+  handleOpen,
+}) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+
+  const content: any = [];
+  if (learningResources[topic]) {
+    const subTopics = learningResources[topic];
+    subTopic?.forEach((currentSubTopic: string) => {
+      if (subTopics[currentSubTopic]) {
+        const resources = subTopics[currentSubTopic];
+        resources?.forEach((resource: any) => {
+          content.push(resource);
+        });
+      }
+    });
+  }
+
+  const openTopicModal = () => {
+    handleOpen();
+  };
+
   return (
     <>
       <Box sx={{ padding: '8px 16px' }}>
@@ -36,10 +65,13 @@ const TopicDetails = () => {
               <Box
                 sx={{ fontSize: '16px', fontWeight: '400', color: '#4D4639' }}
               >
-                Real Numbers {/*   will came from API */}
+                {topic}
               </Box>
             </Box>
-            <CreateOutlinedIcon sx={{ fontSize: '18px', color: '#0D599E' }} />
+            <CreateOutlinedIcon
+              sx={{ fontSize: '18px', color: '#0D599E', cursor: 'pointer' }}
+              onClick={openTopicModal}
+            />
           </Box>
 
           <Box
@@ -53,7 +85,7 @@ const TopicDetails = () => {
             {t('CENTER_SESSION.SUBTOPIC')}
           </Box>
           <Box sx={{ fontSize: '16px', fontWeight: '400', color: '#4D4639' }}>
-            Revisiting Irrational Numbers {/*   will came from API */}
+            {subTopic?.join(', ')}
           </Box>
         </Box>
 
@@ -121,50 +153,39 @@ const TopicDetails = () => {
             sx={{ padding: '0px', background: theme?.palette?.warning['A400'] }}
           >
             <Grid container spacing={2} sx={{ px: '16px !important' }}>
-              <Grid item xs={6} sx={{ mt: 2 }}>
-                <Box className="facilitator-bg">
-                  <Box
-                    sx={{
-                      fontSize: '16px',
-                      fontWeight: '500',
-                      color: theme?.palette?.warning['A400'],
-                    }}
-                  >
-                    {t('CENTER_SESSION.TITLE')}
-                  </Box>
-                  <Box
-                    sx={{
-                      fontSize: '11px',
-                      fontWeight: '500',
-                      color: theme?.palette?.warning['A400'],
-                    }}
-                  >
-                    Video {/*   will came from API */}
-                  </Box>
-                </Box>
-              </Grid>
-              <Grid item xs={6} sx={{ mt: 2 }}>
-                <Box className="facilitator-bg">
-                  <Box
-                    sx={{
-                      fontSize: '16px',
-                      fontWeight: '500',
-                      color: theme?.palette?.warning['A400'],
-                    }}
-                  >
-                    {t('CENTER_SESSION.TITLE')}
-                  </Box>
-                  <Box
-                    sx={{
-                      fontSize: '11px',
-                      fontWeight: '500',
-                      color: theme?.palette?.warning['A400'],
-                    }}
-                  >
-                    Game {/*   will came from API */}
-                  </Box>
-                </Box>
-              </Grid>
+              {content &&
+                content.length > 0 &&
+                content.map((item: any) => (
+                  <Grid item xs={6} sx={{ mt: 2 }}>
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <Box className="facilitator-bg">
+                        <Box
+                          sx={{
+                            fontSize: '16px',
+                            fontWeight: '500',
+                            color: theme?.palette?.warning['A400'],
+                          }}
+                        >
+                          {item?.name || subTopic}
+                        </Box>
+                        {/* <Box
+                        sx={{
+                          fontSize: '11px',
+                          fontWeight: '500',
+                          color: theme?.palette?.warning['A400'],
+                        }}
+                        >
+                        Video
+                      </Box> */}
+                      </Box>
+                    </a>
+                  </Grid>
+                ))}
             </Grid>
           </AccordionDetails>
         </Accordion>

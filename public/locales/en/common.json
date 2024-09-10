@@ -405,7 +405,8 @@
     "DELETE_FOLLOWING_SESSION": "Delete this and following sessions",
     "UPDATE_CHANGES": "Are you sure you want to update the changes?",
     "SESSION_DELETED_SUCCESSFULLY": "Session deleted successfully",
-    "SESSION_EDITED_SUCCESSFULLY": "Session updated successfully"
+    "SESSION_EDITED_SUCCESSFULLY": "Session updated successfully",
+    "TOPIC_SUBTOPIC_ADDED_SUCCESSFULLY": "Topic and Subtopic added successfully!"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center requested successfully",
