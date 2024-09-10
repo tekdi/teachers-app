@@ -213,8 +213,8 @@ export interface SessionModeProps {
   cohortType?: string;
 }
 export interface LearnerAttendanceProps {
-  limit: number;
-  page: number;
+  limit?: number;
+  page?: number;
   filters: {
     contextId: string;
     scope: string;

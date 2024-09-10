@@ -148,9 +148,9 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
 
   const handleBoardChange = (event: SelectChangeEvent<string>) => {
     const board = event.target.value;
-    const selectedOption = boardOptions.find((option) => option.value === board);
+    const selectedOption = boardOptions.find((option) => option?.value === board);
     console.log('selectedValue', selectedOption.label);
-    setSelectedBoard(selectedOption.label);
+    setSelectedBoard(selectedOption?.label);
     setSelectedBoardId(board);
     setSelectedMedium('');
     setMediumOptions([]);
@@ -163,7 +163,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
   const handleMediumChange = (event: SelectChangeEvent<string>) => {
     const selectedCode = event.target.value;
     const selectedOption = mediumOptions.find(
-      (option) => option.value === selectedCode
+      (option) => option?.value === selectedCode
     );
 
     console.log(`selectedMedium`, selectedOption.label);
@@ -187,7 +187,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
     setSelectedSubject([]);
     setSelectedSubjectLabel([]);
     const selectedOption: any = gradeOptions.find(
-      (option) => option.value === grade
+      (option) => option?.value === grade
     );
 
     if (selectedOption) {
@@ -210,9 +210,9 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
   const handleSubjectChange = (event: SelectChangeEvent<string[]>) => {
     const subjects = event.target.value as string[];
 
-    const selectedLabels = subjects.map((value) => {
-      const option = subjectOptions.find((option) => option.value === value);
-      return option ? option.label : value;
+    const selectedLabels = subjects?.map((value) => {
+      const option = subjectOptions?.find((option) => option.value === value);
+      return option ? option?.label : value;
     });
 
     setSelectedSubject(subjects);
@@ -239,7 +239,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
             defaultValue=""
             label="Board"
           >
-            {boardOptions.map((option: any) => (
+            {boardOptions?.map((option: any) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>
@@ -262,7 +262,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
           defaultValue=""
           label="Medium"
         >
-          {mediumOptions.map((option) => (
+          {mediumOptions?.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
@@ -284,7 +284,7 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
           defaultValue=""
           label="Grade"
         >
-          {gradeOptions.map((option) => (
+          {gradeOptions?.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
@@ -309,13 +309,13 @@ const DependentFields: React.FC<DependentFieldsProps> = ({
             (selected as string[])
               .map(
                 (value) =>
-                  subjectOptions.find((option) => option.value === value)?.label
+                  subjectOptions?.find((option) => option.value === value)?.label
               )
               .join(', ')
           }
           label="Subject"
         >
-          {subjectOptions.map((option) => (
+          {subjectOptions?.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               <Checkbox checked={selectedSubject.indexOf(option.value) > -1} />
               <ListItemText primary={option.label} />

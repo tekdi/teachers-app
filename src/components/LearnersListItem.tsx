@@ -3,6 +3,7 @@ import {
   LearnerListProps,
   UserData,
   UpdateCustomField,
+  LearnerAttendanceProps,
 } from '@/utils/Interfaces';
 import React, { useEffect, useState } from 'react';
 import { Status, Role } from '@/utils/app.constant';
@@ -27,7 +28,6 @@ import { getUserDetails } from '@/services/ProfileService';
 import { showToastMessage } from './Toastify';
 import { styled } from '@mui/system';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
-import Woman2Icon from '@mui/icons-material/Woman2';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -38,6 +38,7 @@ import { bulkCreateCohortMembers } from '@/services/CohortServices';
 import { capitalizeEachWord, filterMiniProfileFields } from '@/utils/Helper';
 import { useMediaQuery } from '@mui/material';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { fetchAttendanceStats } from '@/utils/helperAttendanceStatApi';
 
 type Anchor = 'bottom';
 
@@ -229,7 +230,16 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const handleAction = async () => {
     try {
       setLoading(true);
-      if (cohortMembershipId) {
+      //API call to check if today's attendance is marked. If yes, don't allow achieve today
+      if (type == Role.STUDENT) {
+        const attendanceStats = await fetchAttendanceStats(userId);
+        if (attendanceStats && attendanceStats.length > 0) {
+          showToastMessage(
+            t('COMMON.CANNOT_DELETE_TODAY_ATTENDANCE_MARKED'),
+            'error'
+          );
+        }
+      } else if (cohortMembershipId) {
         const memberStatus = Status.ARCHIVED;
         const membershipId = cohortMembershipId;
 
