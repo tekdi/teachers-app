@@ -2,7 +2,7 @@
 
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import {
   classesMissedAttendancePercentList,
@@ -64,6 +64,7 @@ import SessionCardFooter from '@/components/SessionCardFooter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useQueryClient } from '@tanstack/react-query';
 import { getCohortList } from '@/services/CohortServices';
+import CentralizedModal from '@/components/CentralizedModal';
 
 interface DashboardProps {}
 
@@ -111,6 +112,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [sessions, setSessions] = React.useState<Session[]>();
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
   const [myCohortList, setMyCohortList] = React.useState<any>();
+  const [centralizedModal, setCentralizedModal] = useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
@@ -629,6 +631,24 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   }, [timeTableDate, userId, myCohortList]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const skipResetPassword = localStorage.getItem('skipResetPassword');
+      const temporaryPassword = localStorage.getItem('temporaryPassword');
+      if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
+        setCentralizedModal(true);
+      }
+    }
+  }, []);
+
+  const handlePrimaryButton = () => {
+    router.push(`/reset-password`);
+  };
+
+  const handleSkipButton = () => {
+    localStorage.setItem('skipResetPassword', 'true');
+  };
+
   return (
     <>
       {isClient && (
@@ -1039,7 +1059,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                     )
                               }
                               valuePartTwo={
-                                Array.isArray(lowAttendanceLearnerList) && 
+                                Array.isArray(lowAttendanceLearnerList) &&
                                 lowAttendanceLearnerList.length > 2
                                   ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                                   : null
@@ -1175,6 +1195,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
           </>
         </>
       )}
+      <CentralizedModal
+        title={t('LOGIN_PAGE.WELCOME')}
+        subTitle={t('LOGIN_PAGE.PLEASE_RESET_YOUR_PASSWORD')}
+        secondary={t('LOGIN_PAGE.DO_IT_LATER')}
+        primary={t('LOGIN_PAGE.RESET_PASSWORD')}
+        modalOpen={centralizedModal}
+        handlePrimaryButton={handlePrimaryButton}
+        handleSkipButton={handleSkipButton}
+      />
     </>
   );
 };

@@ -668,3 +668,13 @@ export interface GetCohortSearchParams {
   limit?: number;
   offset?: number;
 }
+
+export interface CentralizedModalProps {
+  title: string;
+  subTitle: string;
+  secondary: string;
+  primary: string;
+  modalOpen: boolean;
+  handlePrimaryButton: () => void;
+  handleSkipButton: () => void;
+}
