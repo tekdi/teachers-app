@@ -61,7 +61,11 @@ import Schedule from '../../../components/Schedule';
 import { Session } from '../../../utils/Interfaces';
 
 import manageUserStore from '@/store/manageUserStore';
-import { accessControl, eventDaysLimit, modifyAttendanceLimit } from '../../../../app.config';
+import {
+  accessControl,
+  eventDaysLimit,
+  modifyAttendanceLimit,
+} from '../../../../app.config';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 
 const CohortPage = () => {
@@ -621,6 +625,7 @@ const CohortPage = () => {
                         <SessionCardFooter
                           item={item}
                           cohortName={cohortName}
+                          isTopicSubTopicAdded={handleEventUpdated}
                         />
                       </SessionCard>
                     </SwiperSlide>
@@ -693,7 +698,11 @@ const CohortPage = () => {
                     isEventDeleted={handleEventDeleted}
                     isEventUpdated={handleEventUpdated}
                   >
-                    <SessionCardFooter item={item} cohortName={cohortName} />
+                    <SessionCardFooter
+                      item={item}
+                      cohortName={cohortName}
+                      isTopicSubTopicAdded={handleEventUpdated}
+                    />
                   </SessionCard>
                 </Grid>
               ))}

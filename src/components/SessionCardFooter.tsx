@@ -21,16 +21,19 @@ import {
 } from '@/services/CoursePlannerService';
 import { editEvent } from '@/services/EventService';
 import { showToastMessage } from './Toastify';
-import { getDayMonthYearFormat } from '@/utils/Helper';
+import { convertUTCToIST, getDayMonthYearFormat } from '@/utils/Helper';
+import { EventStatus } from '@/utils/app.constant';
 
 const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   item,
   cohortName,
+  isTopicSubTopicAdded,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [editTopic, setEditTopic] = React.useState(false);
+  const [removeTopic, setRemoveTopic] = React.useState(false);
   const [topicList, setTopicList] = React.useState([]);
   const [transformedTasks, setTransformedTasks] = React.useState();
   const handleOpen = () => setOpen(true);
@@ -38,7 +41,12 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [selectedSubtopics, setSelectedSubtopics] = useState<string[]>([]);
   const [learningResources, setLearningResources] = useState<any>();
-  const Date = getDayMonthYearFormat(item?.startDateTime);
+  const [startTime, setStartTime] = React.useState('');
+  const [endTime, setEndTime] = React.useState('');
+  const [startDate, setStartDate] = React.useState('');
+  const [eventStatus, setEventStatus] = React.useState('');
+
+  const EventDate = getDayMonthYearFormat(item?.startDateTime);
 
   useEffect(() => {
     const fetchTopicSubtopic = async () => {
@@ -99,10 +107,15 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
 
   const updateTopicSubtopic = async () => {
     try {
-      const erMetaData = {
-        topic: selectedTopic,
-        subTopic: selectedSubtopics,
-      };
+      let erMetaData;
+      if (removeTopic) {
+        erMetaData = {};
+      } else {
+        erMetaData = {
+          topic: selectedTopic,
+          subTopic: selectedSubtopics,
+        };
+      }
       console.log(erMetaData);
 
       let isMainEvent;
@@ -124,10 +137,20 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
         };
         const response = await editEvent(eventRepetitionId, apiBody);
         if (response) {
-          showToastMessage(
-            'CENTER_SESSION.TOPIC_SUBTOPIC_ADDED_SUCCESSFULLY',
-            'success'
-          );
+          if (erMetaData?.topic === undefined || erMetaData?.topic === null) {
+            showToastMessage(
+              t('CENTER_SESSION.TOPIC_SUBTOPIC_REMOVED_SUCCESSFULLY'),
+              'success'
+            );
+          } else {
+            showToastMessage(
+              t('CENTER_SESSION.TOPIC_SUBTOPIC_ADDED_SUCCESSFULLY'),
+              'success'
+            );
+          }
+          if (isTopicSubTopicAdded) {
+            isTopicSubTopicAdded();
+          }
         } else {
           showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         }
@@ -142,6 +165,37 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     setOpen(true);
     setEditTopic(true);
   };
+
+  const handleRemovetTopicSubTopic = () => {
+    setRemoveTopic(true);
+    updateTopicSubtopic();
+  };
+
+  useEffect(() => {
+    const startDateTime = convertUTCToIST(item?.startDateTime);
+    const startDate = startDateTime.date;
+    const startTime = startDateTime.time;
+    setStartTime(startTime);
+    setStartDate(startDate);
+
+    const endDateTime = convertUTCToIST(item?.endDateTime);
+    const endDate = endDateTime.date;
+    const endTime = endDateTime.time;
+    setEndTime(endTime);
+
+    const currentTime = new Date();
+    const eventStart = new Date(item?.startDateTime);
+    const eventEnd = new Date(item?.endDateTime);
+
+    if (currentTime < eventStart) {
+      setEventStatus(EventStatus.UPCOMING);
+    } else if (currentTime >= eventStart && currentTime <= eventEnd) {
+      setEventStatus(EventStatus.LIVE);
+    } else if (currentTime > eventEnd) {
+      setEventStatus(EventStatus.PASSED);
+    }
+    console.log(startDate, startTime, endDate, endTime);
+  }, [item]);
 
   return (
     <>
@@ -255,7 +309,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
         handleClose={handleClose}
         title={item?.metadata?.framework?.subject || item?.metadata?.subject}
         center={cohortName}
-        date={Date}
+        date={EventDate}
         primary={t('COMMON.SAVE')}
         handlePrimaryModel={updateTopicSubtopic}
       >
@@ -265,6 +319,8 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
             subTopic={item?.erMetaData?.subTopic}
             learningResources={learningResources}
             handleOpen={handleOpenSelectTopic}
+            handleRemove={handleRemovetTopicSubTopic}
+            eventStatus={eventStatus}
           />
         ) : (
           <SelectTopic
