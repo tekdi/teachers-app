@@ -13,7 +13,7 @@ import { useTheme } from '@mui/material/styles';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import PasswordCreate from '@/components/PasswordCreate';
 
-const CreatePassword = () => {
+const ResetPassword = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
@@ -115,4 +115,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default CreatePassword;
+export default ResetPassword;
