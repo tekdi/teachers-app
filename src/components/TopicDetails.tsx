@@ -12,11 +12,14 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { EventStatus } from '@/utils/app.constant';
 interface TopicDetailsProps {
   topic: string;
   subTopic: [];
   learningResources: any;
   handleOpen: any;
+  handleRemove: any;
+  eventStatus?: string;
 }
 
 const TopicDetails: React.FC<TopicDetailsProps> = ({
@@ -24,6 +27,8 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
   subTopic,
   learningResources,
   handleOpen,
+  handleRemove,
+  eventStatus,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -43,6 +48,11 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
 
   const openTopicModal = () => {
     handleOpen();
+  };
+
+  const onRemoveTopicSubtopic = () => {
+    console.log('remove');
+    handleRemove();
   };
 
   return (
@@ -68,10 +78,12 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                 {topic}
               </Box>
             </Box>
-            <CreateOutlinedIcon
-              sx={{ fontSize: '18px', color: '#0D599E', cursor: 'pointer' }}
-              onClick={openTopicModal}
-            />
+            {eventStatus === EventStatus.UPCOMING && (
+              <CreateOutlinedIcon
+                sx={{ fontSize: '18px', color: '#0D599E', cursor: 'pointer' }}
+                onClick={openTopicModal}
+              />
+            )}
           </Box>
 
           <Box
@@ -100,14 +112,31 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
           <Box
             sx={{
               fontSize: '14px',
-              color: theme?.palette?.secondary.main,
+              color:
+                eventStatus === EventStatus.UPCOMING
+                  ? theme?.palette?.secondary.main
+                  : theme?.palette?.grey[500],
               fontWeight: '500',
+              cursor:
+                eventStatus === EventStatus.UPCOMING
+                  ? 'pointer'
+                  : 'not-allowed',
+              pointerEvents:
+                eventStatus === EventStatus.UPCOMING ? 'auto' : 'none',
             }}
+            onClick={
+              eventStatus === EventStatus.UPCOMING
+                ? onRemoveTopicSubtopic
+                : undefined
+            }
           >
             {t('CENTER_SESSION.REMOVE_THIS_SESSION')}
           </Box>
           <DeleteOutlineIcon
-            sx={{ fontSize: '18px', color: theme?.palette?.error.main }}
+            sx={{
+              fontSize: '18px',
+              color: theme?.palette?.error.main,
+            }}
           />
         </Box>
       </Box>
