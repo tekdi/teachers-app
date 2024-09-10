@@ -61,17 +61,17 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
         const tasks = res?.result?.tasks;
         const topics = tasks?.map((task: any) => task?.name);
         setTopicList(topics);
-        const subTopics = tasks.reduce((acc: any, task: any) => {
-          acc[task.name] = task.children.map((child: any) => child.name);
+        const subTopics = tasks?.reduce((acc: any, task: any) => {
+          acc[task?.name] = task?.children.map((child: any) => child?.name);
           return acc;
         }, {});
         setTransformedTasks(subTopics);
-        const learningResources = tasks.reduce((acc: any, task: any) => {
-          acc[task.name] = task.children.reduce((subAcc: any, child: any) => {
-            subAcc[child.name] = child.learningResources.map(
+        const learningResources = tasks?.reduce((acc: any, task: any) => {
+          acc[task.name] = task?.children.reduce((subAcc: any, child: any) => {
+            subAcc[child?.name] = child?.learningResources?.map(
               (resource: any) => ({
-                name: resource.name,
-                link: resource.link,
+                name: resource?.name,
+                link: resource?.link,
               })
             );
             return subAcc;
@@ -95,11 +95,9 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
 
   const handleSubtopicSelection = (subtopics: string[]) => {
     setSelectedSubtopics(subtopics);
-    console.log(subtopics);
   };
 
   const updateTopicSubtopic = async () => {
-    console.log('updateTopicSubtopic');
     try {
       const erMetaData = {
         topic: selectedTopic,
@@ -143,7 +141,6 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const handleOpenSelectTopic = () => {
     setOpen(true);
     setEditTopic(true);
-    console.log('open true');
   };
 
   return (

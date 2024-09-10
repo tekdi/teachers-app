@@ -31,10 +31,10 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
   const content: any = [];
   if (learningResources[topic]) {
     const subTopics = learningResources[topic];
-    subTopic.forEach((currentSubTopic: string) => {
+    subTopic?.forEach((currentSubTopic: string) => {
       if (subTopics[currentSubTopic]) {
         const resources = subTopics[currentSubTopic];
-        resources.forEach((resource: any) => {
+        resources?.forEach((resource: any) => {
           content.push(resource);
         });
       }
