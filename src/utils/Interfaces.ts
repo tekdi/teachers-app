@@ -673,11 +673,12 @@ export interface GetCohortSearchParams {
 }
 
 export interface CentralizedModalProps {
-  title: string;
-  subTitle: string;
-  secondary: string;
-  primary: string;
-  modalOpen: boolean;
-  handlePrimaryButton: () => void;
-  handleSkipButton: () => void;
+  title?: string;
+  subTitle?: string;
+  secondary?: string;
+  primary?: string;
+  modalOpen?: boolean;
+  handlePrimaryButton?: () => void;
+  handleSkipButton?: () => void;
+  icon?:boolean;
 }
