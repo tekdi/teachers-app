@@ -6,12 +6,14 @@ import {
   InputLabel,
   FormControl,
   SelectChangeEvent,
+  Box,
 } from '@mui/material';
 import {
   findCommonAssociations,
   getAssociationsByCode,
   getOptionsByCategory,
 } from '@/utils/Helper';
+import { frameworkId } from '../../../app.config';
 
 interface FrameworkCategoriesProps {
   customFormData: any;
@@ -69,15 +71,10 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
         grade: {
           fieldId: fieldIds.grade,
           gradeName: selectedGrade,
-        }
+        },
       };
       // console.log(`arrangedData`, arrangedData)
-      if (
-        selectedBoard &&
-        selectedMedium &&
-        selectedGrade &&
-        arrangedData
-      ) {
+      if (selectedBoard && selectedMedium && selectedGrade && arrangedData) {
         localStorage.setItem('BMGSData', JSON.stringify(arrangedData));
       }
     }
@@ -86,7 +83,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
   useEffect(() => {
     const handleBMGS = async () => {
       try {
-        const url = `https://sunbirdsaas.com/api/framework/v1/read/gujaratboardfw`;
+        const url = `${process.env.NEXT_PUBLIC_FRAMEWORK_API_URL}/read/${frameworkId}`;
         const boardData = await fetch(url).then((res) => res.json());
         const frameworks = boardData?.result?.framework;
         setFramework(frameworks);
@@ -129,7 +126,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
 
   const handleBoardChange = (event: SelectChangeEvent<string>) => {
     const board = event.target.value;
-    setSelectedBoard(board)
+    setSelectedBoard(board);
     // console.log('board', board);
     setSelectedMedium('');
     setMediumOptions([]);
@@ -260,7 +257,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
   };
 
   return (
-    <div>
+    <Box mt={2}>
       {/* State dropdown */}
       {stateOption && (
         <FormControl fullWidth variant="outlined" margin="normal">
@@ -346,7 +343,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
           ))}
         </Select>
       </FormControl>
-    </div>
+    </Box>
   );
 };
 
