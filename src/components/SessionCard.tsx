@@ -201,7 +201,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             {showCenterName ? data?.location : data?.metadata?.teacherName}
           </Typography>
         </Box>
-        {showEdit && (
+        {eventStatus === EventStatus.UPCOMING && (
           <EditOutlined
             onClick={() => handleOpen(data)}
             sx={{ cursor: 'pointer' }}

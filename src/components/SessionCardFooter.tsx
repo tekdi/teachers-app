@@ -19,31 +19,45 @@ import {
   getTargetedSolutions,
   getUserProjectDetails,
 } from '@/services/CoursePlannerService';
+import { editEvent } from '@/services/EventService';
+import { showToastMessage } from './Toastify';
+import { convertUTCToIST, getDayMonthYearFormat } from '@/utils/Helper';
+import { EventStatus } from '@/utils/app.constant';
 
 const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   item,
   cohortName,
+  isTopicSubTopicAdded,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
+  const [editTopic, setEditTopic] = React.useState(false);
+  const [removeTopic, setRemoveTopic] = React.useState(false);
   const [topicList, setTopicList] = React.useState([]);
   const [transformedTasks, setTransformedTasks] = React.useState();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [selectedSubtopics, setSelectedSubtopics] = useState<string[]>([]);
+  const [learningResources, setLearningResources] = useState<any>();
+  const [startTime, setStartTime] = React.useState('');
+  const [endTime, setEndTime] = React.useState('');
+  const [startDate, setStartDate] = React.useState('');
+  const [eventStatus, setEventStatus] = React.useState('');
+
+  const EventDate = getDayMonthYearFormat(item?.startDateTime);
 
   useEffect(() => {
     const fetchTopicSubtopic = async () => {
       try {
         const response = await getTargetedSolutions({
-          subject: 'Tamil',
-          class: '4',
+          subject: 'English',
           state: 'Maharashtra',
-          board: 'TQKR',
+          medium: 'Hindi',
+          class: 'Grade 10',
+          board: 'Gujarat Secondary and Higher Secondary Education Board',
           type: 'mainCourse',
-          medium: 'Telugu',
         });
 
         const courseData = response?.result?.data[0];
@@ -55,11 +69,25 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
         const tasks = res?.result?.tasks;
         const topics = tasks?.map((task: any) => task?.name);
         setTopicList(topics);
-        const subTopics = tasks.reduce((acc: any, task: any) => {
-          acc[task.name] = task.children.map((child: any) => child.name);
+        const subTopics = tasks?.reduce((acc: any, task: any) => {
+          acc[task?.name] = task?.children.map((child: any) => child?.name);
           return acc;
         }, {});
         setTransformedTasks(subTopics);
+        const learningResources = tasks?.reduce((acc: any, task: any) => {
+          acc[task.name] = task?.children.reduce((subAcc: any, child: any) => {
+            subAcc[child?.name] = child?.learningResources?.map(
+              (resource: any) => ({
+                name: resource?.name,
+                link: resource?.link,
+              })
+            );
+            return subAcc;
+          }, {});
+          return acc;
+        }, {});
+        console.log(learningResources);
+        setLearningResources(learningResources);
       } catch (error) {
         console.log(error);
       }
@@ -68,9 +96,6 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     fetchTopicSubtopic();
   }, [item]);
 
-  const updateTopicSubtopic = () => {
-    console.log('updateTopicSubtopic');
-  };
   const handleTopicSelection = (topic: string) => {
     setSelectedTopic(topic);
     console.log(topic);
@@ -78,12 +103,103 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
 
   const handleSubtopicSelection = (subtopics: string[]) => {
     setSelectedSubtopics(subtopics);
-    console.log(subtopics);
   };
+
+  const updateTopicSubtopic = async () => {
+    try {
+      let erMetaData;
+      if (removeTopic) {
+        erMetaData = {};
+      } else {
+        erMetaData = {
+          topic: selectedTopic,
+          subTopic: selectedSubtopics,
+        };
+      }
+      console.log(erMetaData);
+
+      let isMainEvent;
+      if (item?.isRecurring === false && !item?.recurrencePattern['interval']) {
+        isMainEvent = true;
+      } else if (
+        item?.isRecurring === true &&
+        item?.recurrencePattern['interval']
+      ) {
+        isMainEvent = false;
+      }
+      const userId = localStorage.getItem('userId');
+      const eventRepetitionId = item?.eventRepetitionId;
+      if (isMainEvent !== undefined && userId && eventRepetitionId) {
+        const apiBody = {
+          isMainEvent: isMainEvent,
+          updatedBy: userId,
+          erMetaData: erMetaData,
+        };
+        const response = await editEvent(eventRepetitionId, apiBody);
+        if (response) {
+          if (erMetaData?.topic === undefined || erMetaData?.topic === null) {
+            showToastMessage(
+              t('CENTER_SESSION.TOPIC_SUBTOPIC_REMOVED_SUCCESSFULLY'),
+              'success'
+            );
+          } else {
+            showToastMessage(
+              t('CENTER_SESSION.TOPIC_SUBTOPIC_ADDED_SUCCESSFULLY'),
+              'success'
+            );
+          }
+          if (isTopicSubTopicAdded) {
+            isTopicSubTopicAdded();
+          }
+        } else {
+          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        }
+        handleClose();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleOpenSelectTopic = () => {
+    setOpen(true);
+    setEditTopic(true);
+  };
+
+  const handleRemovetTopicSubTopic = () => {
+    setRemoveTopic(true);
+    updateTopicSubtopic();
+  };
+
+  useEffect(() => {
+    const startDateTime = convertUTCToIST(item?.startDateTime);
+    const startDate = startDateTime.date;
+    const startTime = startDateTime.time;
+    setStartTime(startTime);
+    setStartDate(startDate);
+
+    const endDateTime = convertUTCToIST(item?.endDateTime);
+    const endDate = endDateTime.date;
+    const endTime = endDateTime.time;
+    setEndTime(endTime);
+
+    const currentTime = new Date();
+    const eventStart = new Date(item?.startDateTime);
+    const eventEnd = new Date(item?.endDateTime);
+
+    if (currentTime < eventStart) {
+      setEventStatus(EventStatus.UPCOMING);
+    } else if (currentTime >= eventStart && currentTime <= eventEnd) {
+      setEventStatus(EventStatus.LIVE);
+    } else if (currentTime > eventEnd) {
+      setEventStatus(EventStatus.PASSED);
+    }
+    console.log(startDate, startTime, endDate, endTime);
+  }, [item]);
 
   return (
     <>
-      {item?.topic ? (
+      {item?.erMetaData?.topic ? (
         <Box
           sx={{
             background: theme.palette.background.default,
@@ -129,7 +245,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
                   sx={{ color: theme.palette.secondary.main, fontSize: '18px' }}
                 />
                 <Typography color={theme.palette.secondary.main} variant="h5">
-                  {item?.topic}
+                  {item?.erMetaData?.topic}
                 </Typography>
               </Box>
               <Box
@@ -151,7 +267,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
                   }}
                 />
                 <Typography color={theme.palette.secondary.main} variant="h5">
-                  {item?.subtopic}
+                  {item?.erMetaData?.subTopic?.join(', ')}
                 </Typography>
               </Box>
             </AccordionDetails>
@@ -193,12 +309,19 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
         handleClose={handleClose}
         title={item?.metadata?.framework?.subject || item?.metadata?.subject}
         center={cohortName}
-        date={'25 May, 2024'}
+        date={EventDate}
         primary={t('COMMON.SAVE')}
         handlePrimaryModel={updateTopicSubtopic}
       >
-        {item?.topic ? (
-          <TopicDetails />
+        {item?.erMetaData?.topic && !editTopic ? (
+          <TopicDetails
+            topic={item?.erMetaData?.topic}
+            subTopic={item?.erMetaData?.subTopic}
+            learningResources={learningResources}
+            handleOpen={handleOpenSelectTopic}
+            handleRemove={handleRemovetTopicSubTopic}
+            eventStatus={eventStatus}
+          />
         ) : (
           <SelectTopic
             topics={topicList}

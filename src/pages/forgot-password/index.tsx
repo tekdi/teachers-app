@@ -119,10 +119,10 @@ const ForgotPassword = () => {
                 },
               }}
               onClick={() => {
-                router.push('/forgot-password/create-password');
+                router.push('/create-password');
               }}
             >
-              {t('LOGIN_PAGE.NEXT')}
+              {t('GUIDE_TOUR.NEXT')}
             </Button>
           </Box>
         </Box>

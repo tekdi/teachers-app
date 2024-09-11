@@ -384,6 +384,7 @@ export interface CoursePlanner {
 export interface SessionCardFooterProps {
   item: any;
   cohortName?: string;
+  isTopicSubTopicAdded?: any;
 }
 
 export interface TopicSubtopicProps {
@@ -667,4 +668,14 @@ export interface GetCohortSearchParams {
   cohortId: string;
   limit?: number;
   offset?: number;
+}
+
+export interface CentralizedModalProps {
+  title: string;
+  subTitle: string;
+  secondary: string;
+  primary: string;
+  modalOpen: boolean;
+  handlePrimaryButton: () => void;
+  handleSkipButton: () => void;
 }
