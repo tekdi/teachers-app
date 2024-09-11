@@ -21,26 +21,22 @@ import { GenerateSchemaAndUiSchema } from '../GeneratedSchemas';
 import { showToastMessage } from '../Toastify';
 import { useFormRead } from '@/hooks/useFormRead';
 import Loader from '../Loader';
-// import DependentFields from './DependentFields';
-
+import FrameworkCategories from './FrameworkCategories';
 interface CreateBlockModalProps {
   open: boolean;
   handleClose: () => void;
   onCenterAdded: () => void;
 }
-
 interface CustomField {
   fieldId: any;
   value: any;
 }
-
 interface CohortDetails {
   name: string;
   type: string;
   parentId: string | null;
   customFields: CustomField[];
 }
-
 const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   open,
   handleClose,
@@ -51,43 +47,38 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [formData, setFormData] = useState<any>();
-  // const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const { data: formResponse, isPending } = useFormRead(
     FormContext.COHORTS,
     FormContextType.COHORT
   );
-  // const [customFormData, setCustomFormData] = useState<any>();
-
+  const [customFormData, setCustomFormData] = useState<any>();
   const setSubmittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.setSubmittedButtonStatus
   );
-
   function removeHiddenFields(formResponse: any) {
     return {
       ...formResponse,
       fields: formResponse.fields.filter((field: any) => !field.isHidden),
     };
   }
-
   useEffect(() => {
     if (formResponse) {
       const updatedFormResponse = removeHiddenFields(formResponse);
       if (updatedFormResponse) {
-        const { schema, uiSchema } = GenerateSchemaAndUiSchema(
+        let { schema, uiSchema } = GenerateSchemaAndUiSchema(
           updatedFormResponse,
           t
         );
         setSchema(schema);
         setUiSchema(uiSchema);
-        // setCustomFormData(formResponse);
+        setCustomFormData(formResponse);
       }
     }
   }, [formResponse]);
-
-  // const handleDependentFieldsChange = () => {
-  //   setShowForm(true);
-  // };
-
+  const handleDependentFieldsChange = () => {
+    setShowForm(true);
+  };
   const handleSubmit = async (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
@@ -96,19 +87,16 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
       setFormData(data.formData);
     });
   };
-
   useEffect(() => {
     if (formData) {
       handleButtonClick();
     }
   }, [formData]);
-
   const handleButtonClick = async () => {
     console.log('Form data:', formData);
     setSubmittedButtonStatus(true);
     if (formData) {
       console.log('Form data submitted:', formData);
-
       const parentId = localStorage.getItem('blockParentId');
       const cohortDetails: CohortDetails = {
         name: formData.name,
@@ -118,7 +106,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
       };
       if (typeof window !== 'undefined' && window.localStorage) {
         const fieldData = JSON.parse(localStorage.getItem('fieldData') ?? '');
-        // const bmgsData = JSON.parse(localStorage.getItem('BMGSData') ?? '');
+        const bmgsData = JSON.parse(localStorage.getItem('BMGSData') ?? '');
         Object.entries(formData).forEach(([fieldKey]) => {
           const fieldSchema = schema.properties[fieldKey];
           const fieldId = fieldSchema?.fieldId;
@@ -140,32 +128,27 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
               value: [fieldData?.state?.blockCode],
             });
           }
-          // if (bmgsData) {
-          //   cohortDetails.customFields.push({
-          //     fieldId: bmgsData.board.fieldId,
-          //     value: bmgsData.board.boardName,
-          //   });
-          //   cohortDetails.customFields.push({
-          //     fieldId: bmgsData.medium.fieldId,
-          //     value: bmgsData.medium.mediumName,
-          //   });
-          //   cohortDetails.customFields.push({
-          //     fieldId: bmgsData.grade.fieldId,
-          //     value: bmgsData.grade.gradeName,
-          //   });
-          //   cohortDetails.customFields.push({
-          //     fieldId: bmgsData.subject.fieldId,
-          //     value: bmgsData.subject.subjectName.join(', '),
-          //   });
-          // }
+          if (bmgsData) {
+            cohortDetails.customFields.push({
+              fieldId: bmgsData.board.fieldId,
+              value: bmgsData.board.boardName,
+            });
+            cohortDetails.customFields.push({
+              fieldId: bmgsData.medium.fieldId,
+              value: bmgsData.medium.mediumName,
+            });
+            cohortDetails.customFields.push({
+              fieldId: bmgsData.grade.fieldId,
+              value: bmgsData.grade.gradeName,
+            });
+          }
         });
       }
-      // cohortDetails.customFields = Array.from(
-      //   new Map(
-      //     cohortDetails.customFields.map((item) => [item.fieldId, item])
-      //   ).values()
-      // );
-
+      cohortDetails.customFields = Array.from(
+        new Map(
+          cohortDetails.customFields.map((item) => [item.fieldId, item])
+        ).values()
+      );
       const cohortData = await createCohort(cohortDetails);
       if (cohortData) {
         showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
@@ -175,15 +158,12 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
       }
     }
   };
-
   const handleChange = (event: IChangeEvent<any>) => {
     console.log('Form data changed:', event.formData);
   };
-
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
   };
-
   return (
     <Modal open={open} onClose={handleClose} closeAfterTransition>
       <Fade in={open}>
@@ -226,7 +206,6 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
             </IconButton>
           </Box>
           <Divider sx={{ mb: -2, mx: -2 }} />
-
           {isPending && (
             <Box
               sx={{
@@ -242,29 +221,29 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
           )}
           {!isPending && schema && uiSchema && (
             <>
-              {/* <DependentFields
+              <FrameworkCategories
                 customFormData={customFormData}
                 onFieldsChange={handleDependentFieldsChange}
                 setShowForm={setShowForm}
-              /> */}
-              {/* {showForm && ( */}
-              <DynamicForm
-                schema={schema}
-                uiSchema={uiSchema}
-                onSubmit={handleSubmit}
-                onChange={handleChange}
-                onError={handleError}
-                widgets={{}}
-                showErrorList={true}
-              >
-                <FormButtons
-                  formData={formData}
-                  onClick={handleButtonClick}
-                  isCreateCentered={true}
-                  isCreatedFacilitator={false}
-                />
-              </DynamicForm>
-              {/* )} */}
+              />
+              {showForm && (
+                <DynamicForm
+                  schema={schema}
+                  uiSchema={uiSchema}
+                  onSubmit={handleSubmit}
+                  onChange={handleChange}
+                  onError={handleError}
+                  widgets={{}}
+                  showErrorList={true}
+                >
+                  <FormButtons
+                    formData={formData}
+                    onClick={handleButtonClick}
+                    isCreateCentered={true}
+                    isCreatedFacilitator={false}
+                  />
+                </DynamicForm>
+              )}
             </>
           )}
         </Box>
@@ -272,5 +251,4 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
     </Modal>
   );
 };
-
 export default CreateCenterModal;
