@@ -392,6 +392,8 @@ export interface TopicSubtopicProps {
   subTopicsList?: any;
   onTopicSelected: any;
   onSubtopicSelected: any;
+  selectedTopics?: any;
+  selectedSubTopics?: any;
 }
 
 export interface FieldOption {
@@ -679,4 +681,10 @@ export interface CentralizedModalProps {
   handlePrimaryButton?: () => void;
   handleSkipButton?: () => void;
   icon?:boolean;
+}
+
+export interface GetUserProjectStatusParams {
+  data:any;
+  id: string;
+  lastDownloadedAt: string;
 }

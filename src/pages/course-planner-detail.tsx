@@ -26,10 +26,11 @@ import {
   getTargetedSolutions,
   getUserProjectDetails,
   getUserProjectTemplate,
+  UserStatusDetails,
 } from '@/services/CoursePlannerService';
 import useCourseStore from '@/store/coursePlannerStore';
 import dayjs from 'dayjs';
-import { Role } from '@/utils/app.constant';
+import { AssessmentStatus, Role } from '@/utils/app.constant';
 import Loader from '@/components/Loader';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { accessControl } from '../../app.config';
@@ -54,7 +55,8 @@ const CoursePlannerDetail = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [courseDetails, setCourseDetails] = useState(null);
-  const [userProjectDetails, setUserProjectDetails] = useState([]);
+  const [userProjectDetails, setUserProjectDetails] = useState<any>();
+  const [statusData, setStatusData] = useState<any>();
   const { subject } = router.query;
   const { state } = router.query;
   const { medium } = router.query;
@@ -74,11 +76,10 @@ const CoursePlannerDetail = () => {
       });
 
       if (response?.result?.data == '') {
-
         setLoading(false);
         return;
       }
-      
+
       const courseData = response?.result?.data[0];
 
       let courseId = courseData._id;
@@ -91,7 +92,7 @@ const CoursePlannerDetail = () => {
     } catch (error) {
       console.error('Error fetching course planner:', error);
     }
-  }, []);
+  }, [statusData]);
 
   const fetchCourseIdFromSolution = async (
     solutionId: string
@@ -120,8 +121,6 @@ const CoursePlannerDetail = () => {
       });
       setLoading(false);
 
-      
-      
       return updatedResponse?.result?.data[0]?._id;
     } catch (error) {
       console.error('Error fetching solution details:', error);
@@ -135,7 +134,7 @@ const CoursePlannerDetail = () => {
       const userProjectDetailsResponse = await getUserProjectDetails({
         id: courseId,
       });
-      setUserProjectDetails(userProjectDetailsResponse?.result?.tasks);
+      setUserProjectDetails(userProjectDetailsResponse?.result);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching user project details:', error);
@@ -193,6 +192,64 @@ const CoursePlannerDetail = () => {
       dayjs().month(i).format('MMM')
     );
     return months[date.getMonth()];
+  };
+
+  const markStatus = async (data: any, topid: any, subid: any) => {
+    const updatedData = { ...data };
+
+    updatedData.tasks = updatedData?.tasks.map(
+      (task: { _id: any; children: any[] }) => {
+        if (task._id === topid) {
+          task.children = task?.children?.map((child: { _id: any }) => {
+            if (child._id === subid) {
+              return { ...child, status: AssessmentStatus.COMPLETED_SMALL };
+            }
+            return child;
+          });
+        }
+        return task;
+      }
+    );
+
+    updatedData.tasks = updatedData?.tasks?.filter(
+      (task: { children: any[] }) =>
+        task?.children?.some(
+          (child: { status: string }) =>
+            child.status === AssessmentStatus.COMPLETED_SMALL
+        )
+    );
+
+    const lastDownloadedAt = updatedData?.lastDownloadedAt;
+    const id = updatedData?._id;
+    setStatusData(updatedData);
+    try {
+      const response = await UserStatusDetails({
+        data: updatedData,
+        id,
+        lastDownloadedAt,
+      });
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    } finally {
+    }
+  };
+
+  const isStatusCompleted = (subTopicId: any) => {
+    const taskWithChildren = userProjectDetails.tasks.find(
+      (task: { children: any[] }) =>
+        task.children.some((child: { _id: any }) => child._id === subTopicId)
+    );
+
+    if (taskWithChildren) {
+      const child = taskWithChildren.children.find(
+        (child: { _id: any }) => child._id === subTopicId
+      );
+
+      return child && child.status === 'completed';
+    }
+
+    return false;
   };
 
   return (
@@ -310,7 +367,7 @@ const CoursePlannerDetail = () => {
         ) : (
           <>
             <Box mt={2}>
-              {userProjectDetails.map((topic: any, index) => (
+              {userProjectDetails?.tasks?.map((topic: any, index: number) => (
                 <Box key={topic._id} sx={{ borderRadius: '8px', mb: 2 }}>
                   <Accordion
                     expanded={expandedPanels[`panel${index}-header`] || false}
@@ -448,11 +505,28 @@ const CoursePlannerDetail = () => {
                                   )}
                                 </Box>
                                 <CheckCircleIcon
-                                  onClick={toggleDrawer(true)}
+                                  onClick={() => {
+                                    if (!isStatusCompleted(subTopic._id)) {
+                                      markStatus(
+                                        userProjectDetails,
+                                        topic._id,
+                                        subTopic._id
+                                      );
+                                    }
+                                  }}
                                   sx={{
                                     fontSize: '20px',
-                                    color: '#7C766F',
-                                    cursor: 'pointer',
+                                    color: isStatusCompleted(subTopic._id)
+                                      ? '#4CAF50'
+                                      : '#7C766e',
+                                    cursor: isStatusCompleted(subTopic._id)
+                                      ? 'default'
+                                      : 'pointer',
+                                    pointerEvents: isStatusCompleted(
+                                      subTopic._id
+                                    )
+                                      ? 'none'
+                                      : 'auto',
                                   }}
                                 />
                               </Box>
@@ -523,4 +597,7 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default withAccessControl('accessCoursePlannerDetails', accessControl)(CoursePlannerDetail);
+export default withAccessControl(
+  'accessCoursePlannerDetails',
+  accessControl
+)(CoursePlannerDetail);

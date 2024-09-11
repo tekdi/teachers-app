@@ -2,6 +2,7 @@ import {
   CoursePlanner,
   GetSolutionDetailsParams,
   GetTargetedSolutionsParams,
+  GetUserProjectStatusParams,
   GetUserProjectTemplateParams,
 } from '../utils/Interfaces';
 import axios from 'axios';
@@ -121,5 +122,21 @@ export const getUserProjectTemplate = async ({
   } catch (error) {
     console.error('Error in getting User Project Details', error);
     throw error;
+  }
+};
+
+export const UserStatusDetails = async ({ data , id, lastDownloadedAt }: GetUserProjectStatusParams): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/userProjects/sync/${id}?lastDownloadedAt=${encodeURIComponent(lastDownloadedAt)}`;
+  
+  const headers = {
+    'x-auth-token': localStorage.getItem('token'),
+  };
+
+  try {
+    const response = await axios.post(apiUrl, data, { headers });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in getting User Project Details', error);
+    return error;
   }
 };

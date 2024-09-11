@@ -34,7 +34,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
   const theme = useTheme<any>();
 
   const content: any = [];
-  if (learningResources[topic]) {
+  if (learningResources?.[topic]) {
     const subTopics = learningResources[topic];
     subTopic?.forEach((currentSubTopic: string) => {
       if (subTopics[currentSubTopic]) {
