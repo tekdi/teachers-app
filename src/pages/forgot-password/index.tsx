@@ -118,9 +118,6 @@ const ForgotPassword = () => {
                   width: '50%',
                 },
               }}
-              onClick={() => {
-                router.push('/create-password');
-              }}
             >
               {t('GUIDE_TOUR.NEXT')}
             </Button>

@@ -1,13 +1,35 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import PasswordCreate from '@/components/PasswordCreate';
+import { resetPassword } from '@/services/LoginService';
+import CentralizedModal from '@/components/CentralizedModal';
+import { showToastMessage } from '@/components/Toastify';
+import { useRouter } from 'next/router';
 
-const ResetPassword = () => {
+const CreatePassword = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+  const router = useRouter();
+  const [forgotPassword, setForgotPassword] = useState<boolean>(false);
+
+  const handleResetPassword = async (newPassword: string) => {
+    try {
+      const response = await resetPassword(newPassword);
+      console.log(response);
+      setForgotPassword(true);
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      setForgotPassword(false);
+      showToastMessage('Something Went Wrong', 'error');
+    }
+  };
+
+  const handlePrimaryButton = () => {
+    router.push(`/dashboard`);
+  };
 
   return (
     <Box
@@ -48,8 +70,15 @@ const ResetPassword = () => {
         >
           {t('LOGIN_PAGE.CREATE_NEW')}
         </Box>
-        <PasswordCreate />
+        <PasswordCreate handleResetPassword={handleResetPassword} />
       </Box>
+      <CentralizedModal
+        icon={true}
+        subTitle={'Your password has been successfully reset'}
+        primary={'Okay'}
+        modalOpen={forgotPassword}
+        handlePrimaryButton={handlePrimaryButton}
+      />
     </Box>
   );
 };
@@ -62,4 +91,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default ResetPassword;
+export default CreatePassword;
