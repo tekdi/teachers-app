@@ -71,7 +71,7 @@ export const DaysOfWeek = {
 
 export const Program = 'Second chance';
 
-export const frameworkApiEndpoint = 'gujaratboardfw';
+export const frameworkId = 'gujaratboardfw';
 
 export enum AssessmentType {
   PRE_TEST = 'Pre Test',
