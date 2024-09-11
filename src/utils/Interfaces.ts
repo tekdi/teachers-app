@@ -392,6 +392,8 @@ export interface TopicSubtopicProps {
   subTopicsList?: any;
   onTopicSelected: any;
   onSubtopicSelected: any;
+  selectedTopics?: any;
+  selectedSubTopics?: any;
 }
 
 export interface FieldOption {
@@ -671,13 +673,14 @@ export interface GetCohortSearchParams {
 }
 
 export interface CentralizedModalProps {
-  title: string;
-  subTitle: string;
-  secondary: string;
-  primary: string;
-  modalOpen: boolean;
-  handlePrimaryButton: () => void;
-  handleSkipButton: () => void;
+  title?: string;
+  subTitle?: string;
+  secondary?: string;
+  primary?: string;
+  modalOpen?: boolean;
+  handlePrimaryButton?: () => void;
+  handleSkipButton?: () => void;
+  icon?:boolean;
 }
 
 export interface GetUserProjectStatusParams {

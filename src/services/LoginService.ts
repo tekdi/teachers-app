@@ -47,3 +47,17 @@ export const logout = async (refreshToken: string): Promise<any> => {
     throw error;
   }
 };
+
+export const resetPassword = async (
+  newPassword: any): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password`;
+  try {
+    const response = await post(apiUrl, { newPassword });
+    return response?.data;
+  } catch (error) {
+    console.error('error in reset', error);
+    throw error;
+  }
+};
+
+

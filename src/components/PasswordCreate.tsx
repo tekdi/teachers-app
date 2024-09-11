@@ -1,23 +1,14 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 
-const PasswordCreate = () => {
+const PasswordCreate = ({ handleResetPassword }: any) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-
+  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [showValidationMessages, setShowValidationMessages] = useState(false);
@@ -204,6 +195,7 @@ const PasswordCreate = () => {
                 width: '50%',
               },
             }}
+            onClick={() => handleResetPassword(password)}
             disabled={!isFormValid}
           >
             {t('LOGIN_PAGE.RESET_PASSWORD')}

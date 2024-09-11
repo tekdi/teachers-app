@@ -1,36 +1,36 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { useRouter } from 'next/router';
 import Modal from '@mui/material/Modal';
 import { Divider } from '@mui/material';
 import { CentralizedModalProps } from '@/utils/Interfaces';
 import { useTheme } from '@mui/material/styles';
 import { modalStyles } from '@/styles/modalStyles';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const CentralizedModal: React.FC<CentralizedModalProps> = ({
   title,
   subTitle,
   secondary,
   primary,
-  modalOpen,
+  modalOpen = false,
   handlePrimaryButton,
   handleSkipButton,
+  icon,
 }) => {
   const [open, setOpen] = React.useState(modalOpen);
 
   React.useEffect(() => {
     setOpen(modalOpen);
   }, [modalOpen]);
+
   const theme = useTheme<any>();
   const handleClose = () => setOpen(false);
-  const router = useRouter();
 
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      // onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -45,6 +45,11 @@ const CentralizedModal: React.FC<CentralizedModalProps> = ({
             }}
           >
             {title}
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <CheckCircleOutlineIcon
+              sx={{ color: theme.palette.success.main, fontSize: '33px' }}
+            />
           </Box>
           <Box
             sx={{
@@ -70,41 +75,47 @@ const CentralizedModal: React.FC<CentralizedModalProps> = ({
             my: 2,
           }}
         >
-          <Button
-            sx={{
-              width: 'auto',
-              height: '40px',
-              fontSize: '14px',
-              fontWeight: '500',
-              border: 'none',
-              color: theme.palette.secondary.main,
-              '&:hover': {
+          {secondary && (
+            <Button
+              sx={{
+                width: 'auto',
+                height: '40px',
+                fontSize: '14px',
+                fontWeight: '500',
                 border: 'none',
-                backgroundColor: 'transparent',
-              },
-            }}
-            variant="outlined"
-            color="primary"
-            onClick={() => {
-              handleClose();
-              handleSkipButton();
-            }}
-          >
-            {secondary}
-          </Button>
-          <Button
-            sx={{
-              width: '151px',
-              height: '40px',
-              fontSize: '14px',
-              fontWeight: '500',
-            }}
-            variant="contained"
-            color="primary"
-            onClick={handlePrimaryButton}
-          >
-            {primary}
-          </Button>
+                color: theme.palette.secondary.main,
+                '&:hover': {
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                },
+              }}
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                handleClose();
+                if (handleSkipButton) {
+                  handleSkipButton();
+                }
+              }}
+            >
+              {secondary}
+            </Button>
+          )}
+          {primary && (
+            <Button
+              sx={{
+                width: '151px',
+                height: '40px',
+                fontSize: '14px',
+                fontWeight: '500',
+              }}
+              variant="contained"
+              color="primary"
+              onClick={handlePrimaryButton}
+            >
+              {primary}
+            </Button>
+          )}
         </Box>
       </Box>
     </Modal>

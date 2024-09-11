@@ -56,6 +56,7 @@ export const fullWidthPages = [
   '/500',
   '/offline',
   '/unauthorized',
+  '/create-password'
 ];
 
 export const DaysOfWeek = {
