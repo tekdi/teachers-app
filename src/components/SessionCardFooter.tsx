@@ -33,7 +33,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [editTopic, setEditTopic] = React.useState(false);
-  const [removeTopic, setRemoveTopic] = React.useState(false);
+  // const [removeTopic, setRemoveTopic] = React.useState(false);
   const [topicList, setTopicList] = React.useState([]);
   const [transformedTasks, setTransformedTasks] = React.useState();
   const handleOpen = () => setOpen(true);
@@ -47,7 +47,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const [eventStatus, setEventStatus] = React.useState('');
 
   const EventDate = getDayMonthYearFormat(item?.startDateTime);
-
+  var removeTopic = false;
   useEffect(() => {
     const fetchTopicSubtopic = async () => {
       try {
@@ -61,7 +61,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
         });
 
         const courseData = response?.result?.data[0];
-        let courseId = courseData._id;
+        let courseId = courseData._id || '66daea0246cec8001342a6ce';
 
         const res = await getUserProjectDetails({
           id: courseId,
@@ -94,7 +94,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     };
 
     fetchTopicSubtopic();
-  }, [item]);
+  }, []);
 
   const handleTopicSelection = (topic: string) => {
     setSelectedTopic(topic);
@@ -109,7 +109,10 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     try {
       let erMetaData;
       if (removeTopic) {
-        erMetaData = {};
+        erMetaData = {
+          topic: null,
+          subTopic: [],
+        };
       } else {
         erMetaData = {
           topic: selectedTopic,
@@ -142,11 +145,14 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
               t('CENTER_SESSION.TOPIC_SUBTOPIC_REMOVED_SUCCESSFULLY'),
               'success'
             );
+            // setRemoveTopic(false);
+            removeTopic = false;
           } else {
             showToastMessage(
               t('CENTER_SESSION.TOPIC_SUBTOPIC_ADDED_SUCCESSFULLY'),
               'success'
             );
+            setEditTopic(false);
           }
           if (isTopicSubTopicAdded) {
             isTopicSubTopicAdded();
@@ -167,7 +173,8 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   };
 
   const handleRemovetTopicSubTopic = () => {
-    setRemoveTopic(true);
+    // setRemoveTopic(true);
+    removeTopic = true;
     updateTopicSubtopic();
   };
 
@@ -326,6 +333,8 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
           <SelectTopic
             topics={topicList}
             subTopicsList={transformedTasks}
+            selectedTopics={selectedTopic}
+            selectedSubTopics={selectedSubtopics}
             onTopicSelected={handleTopicSelection}
             onSubtopicSelected={handleSubtopicSelection}
           />

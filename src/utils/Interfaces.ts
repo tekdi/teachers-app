@@ -392,6 +392,8 @@ export interface TopicSubtopicProps {
   subTopicsList?: any;
   onTopicSelected: any;
   onSubtopicSelected: any;
+  selectedTopics?: any;
+  selectedSubTopics?: any;
 }
 
 export interface FieldOption {
