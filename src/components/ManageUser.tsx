@@ -309,12 +309,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           console.log('Cohort List:', cohortList);
           if (cohortList && cohortList?.length > 0) {
             const cohortDetails = cohortList?.map(
-              (cohort: { cohortName: any; cohortId: any; status: any }) => ({
+              (cohort: { cohortName: any; cohortId: any; cohortStatus: any }) => ({
                 name: cohort?.cohortName,
                 id: cohort?.cohortId,
-                status: cohort?.status,
+                status: cohort?.cohortStatus,
               })
-            );
+            );          
             setReassignCohortNames(cohortDetails);
           }
         } catch (error) {

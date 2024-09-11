@@ -110,6 +110,7 @@ export enum AssessmentStatus {
   NOT_STARTED = 'Not_Started',
   IN_PROGRESS = 'In_Progress',
   COMPLETED = 'Completed',
+  COMPLETED_SMALL = 'completed',
 }
 
 export enum QueryKeys {
