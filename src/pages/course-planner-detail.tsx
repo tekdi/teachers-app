@@ -92,7 +92,7 @@ const CoursePlannerDetail = () => {
     } catch (error) {
       console.error('Error fetching course planner:', error);
     }
-  }, []);
+  }, [statusData]);
 
   const fetchCourseIdFromSolution = async (
     solutionId: string
@@ -222,7 +222,6 @@ const CoursePlannerDetail = () => {
     const lastDownloadedAt = updatedData?.lastDownloadedAt;
     const id = updatedData?._id;
     setStatusData(updatedData);
-    setLoading(true);
     try {
       const response = await UserStatusDetails({
         data: updatedData,
@@ -233,7 +232,6 @@ const CoursePlannerDetail = () => {
     } catch (err) {
       console.log(err);
     } finally {
-      setLoading(false);
     }
   };
 
