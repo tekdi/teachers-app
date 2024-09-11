@@ -679,3 +679,9 @@ export interface CentralizedModalProps {
   handlePrimaryButton: () => void;
   handleSkipButton: () => void;
 }
+
+export interface GetUserProjectStatusParams {
+  data:any;
+  id: string;
+  lastDownloadedAt: string;
+}
