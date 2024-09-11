@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
-import { Password } from '@mui/icons-material';
 
-const PasswordCreate = ({ handleResetPassword }) => {
+const PasswordCreate = ({ handleResetPassword }: any) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const [showPassword, setShowPassword] = useState(false);
