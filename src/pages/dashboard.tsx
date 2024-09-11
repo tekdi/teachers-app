@@ -642,7 +642,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, []);
 
   const handlePrimaryButton = () => {
-    router.push(`/reset-password`);
+    router.push(`/create-password`);
   };
 
   const handleSkipButton = () => {
