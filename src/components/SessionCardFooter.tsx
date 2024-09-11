@@ -47,7 +47,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const [eventStatus, setEventStatus] = React.useState('');
 
   const EventDate = getDayMonthYearFormat(item?.startDateTime);
-  var removeTopic = false;
+  let removeTopic = false;
   useEffect(() => {
     const fetchTopicSubtopic = async () => {
       try {
@@ -60,34 +60,41 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
           type: 'mainCourse',
         });
 
-        const courseData = response?.result?.data[0];
-        let courseId = courseData._id || '66daea0246cec8001342a6ce';
+        const courseData = response?.result?.data?.filter(
+          (data: any) => data._id !== ''
+        );
+        let courseId = courseData?._id;
 
         const res = await getUserProjectDetails({
           id: courseId,
         });
-        const tasks = res?.result?.tasks;
-        const topics = tasks?.map((task: any) => task?.name);
-        setTopicList(topics);
-        const subTopics = tasks?.reduce((acc: any, task: any) => {
-          acc[task?.name] = task?.children.map((child: any) => child?.name);
-          return acc;
-        }, {});
-        setTransformedTasks(subTopics);
-        const learningResources = tasks?.reduce((acc: any, task: any) => {
-          acc[task.name] = task?.children.reduce((subAcc: any, child: any) => {
-            subAcc[child?.name] = child?.learningResources?.map(
-              (resource: any) => ({
-                name: resource?.name,
-                link: resource?.link,
-              })
-            );
-            return subAcc;
+        if (res?.result.length > 0) {
+          const tasks = res?.result?.tasks;
+          const topics = tasks?.map((task: any) => task?.name);
+          setTopicList(topics);
+          const subTopics = tasks?.reduce((acc: any, task: any) => {
+            acc[task?.name] = task?.children.map((child: any) => child?.name);
+            return acc;
           }, {});
-          return acc;
-        }, {});
-        console.log(learningResources);
-        setLearningResources(learningResources);
+          setTransformedTasks(subTopics);
+          const learningResources = tasks?.reduce((acc: any, task: any) => {
+            acc[task.name] = task?.children.reduce(
+              (subAcc: any, child: any) => {
+                subAcc[child?.name] = child?.learningResources?.map(
+                  (resource: any) => ({
+                    name: resource?.name,
+                    link: resource?.link,
+                  })
+                );
+                return subAcc;
+              },
+              {}
+            );
+            return acc;
+          }, {});
+          console.log(learningResources);
+          setLearningResources(learningResources);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -170,6 +177,10 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const handleOpenSelectTopic = () => {
     setOpen(true);
     setEditTopic(true);
+  };
+
+  const handleError = () => {
+    showToastMessage(t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE'), 'error');
   };
 
   const handleRemovetTopicSubTopic = () => {
@@ -291,7 +302,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
             cursor: 'pointer',
             alignItems: 'center',
           }}
-          onClick={handleOpen}
+          onClick={topicList && transformedTasks ? handleOpen : handleError}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <PriorityHighIcon

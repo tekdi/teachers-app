@@ -68,7 +68,7 @@ const SelectTopic: React.FC<TopicSubtopicProps> = ({
           <Select
             labelId="topic-select-label"
             id="topic-select"
-            value={selectedTopics || selectedTopic}
+            value={selectedTopic}
             onChange={handleTopicChange}
             style={{ borderRadius: '4px' }}
             className="topic-select"
