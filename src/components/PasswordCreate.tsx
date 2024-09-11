@@ -2,32 +2,38 @@ import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
-import { Password } from '@mui/icons-material';
 
-const PasswordCreate = ({ handleResetPassword }) => {
+interface PasswordCreateProps {
+  handleResetPassword: (password: string) => void;
+}
+
+const PasswordCreate: React.FC<PasswordCreateProps> = ({
+  handleResetPassword,
+}) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [showValidationMessages, setShowValidationMessages] = useState(false);
 
-  const handlePasswordChange = (e: any) => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPassword(value);
     setShowValidationMessages(!!value);
     validatePassword(value);
   };
 
-  const handleConfirmPasswordChange = (e: any) => {
+  const handleConfirmPasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = e.target.value;
     setConfirmPassword(value);
     setConfirmPasswordError(value !== password);
   };
 
-  const validatePassword = (value: any) => {
+  const validatePassword = (value: string) => {
     const hasUpperCase = /[A-Z]/.test(value);
     const hasLowerCase = /[a-z]/.test(value);
     const hasNumber = /\d/.test(value);

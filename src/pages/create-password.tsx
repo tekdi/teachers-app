@@ -29,6 +29,7 @@ const CreatePassword = () => {
 
   const handlePrimaryButton = () => {
     router.push(`/dashboard`);
+    localStorage.setItem('skipResetPassword', 'true');
   };
 
   return (
@@ -38,12 +39,18 @@ const CreatePassword = () => {
         justifyContent: 'center',
         px: '16px',
         alignItems: 'center',
+        '@media (min-width: 700px)': {
+          height: '100vh',
+        },
       }}
     >
       <Box
         sx={{
-          '@media (min-width: 900px)': {
+          '@media (min-width: 700px)': {
             width: '50%',
+            boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
+            padding: '60px',
+            marginTop: '0rem',
           },
           width: '100%',
           marginTop: '8rem',

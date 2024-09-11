@@ -628,7 +628,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
           <Typography textAlign={'center'}>{t('COMMON.LOADING')}</Typography>
         </Box>
       )}{' '}
-      {/* <Box sx={{ px: '16px', mt: 2 }}>
+      <Box sx={{ px: '16px', mt: 2 }}>
         <Box
           sx={{
             fontSize: '14px',
@@ -649,7 +649,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
               minWidth: '84px',
               padding: theme.spacing(1),
               fontWeight: '500',
-              width: '128px',
+              width: '188px',
               height: '40px',
               '@media (max-width: 430px)': {
                 width: '100%',
@@ -662,7 +662,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
             {t('LOGIN_PAGE.RESET_PASSWORD')}
           </Button>
         </Box>
-      </Box> */}
+      </Box>
     </Box>
   );
 };
