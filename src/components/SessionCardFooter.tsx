@@ -60,15 +60,15 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
           type: 'mainCourse',
         });
 
-        const courseData = response?.result?.data?.filter(
-          (data: any) => data._id !== ''
-        );
+        const courseData = response?.result?.data
+          ?.filter((data: any) => data._id !== '')
+          .reduce((data: any) => data?._id);
         let courseId = courseData?._id;
 
         const res = await getUserProjectDetails({
           id: courseId,
         });
-        if (res?.result.length > 0) {
+        if (res?.result || res?.result.length > 0) {
           const tasks = res?.result?.tasks;
           const topics = tasks?.map((task: any) => task?.name);
           setTopicList(topics);
