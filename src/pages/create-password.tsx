@@ -74,8 +74,8 @@ const CreatePassword = () => {
       </Box>
       <CentralizedModal
         icon={true}
-        subTitle={'Your password has been successfully reset'}
-        primary={'Okay'}
+        subTitle={t('LOGIN_PAGE.SUCCESSFULLY_RESET')}
+        primary={t('COMMON.OKAY')}
         modalOpen={forgotPassword}
         handlePrimaryButton={handlePrimaryButton}
       />

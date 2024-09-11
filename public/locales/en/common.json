@@ -163,7 +163,8 @@
     "OTHER_SETTING":"Other settings",
     "WELCOME":"Welcome!",
     "PLEASE_RESET_YOUR_PASSWORD":"Please reset your password to ensure your account is secure",
-    "DO_IT_LATER":"I’ll do it later"
+    "DO_IT_LATER":"I’ll do it later",
+    "SUCCESSFULLY_RESET":"Your password has been successfully reset"
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",

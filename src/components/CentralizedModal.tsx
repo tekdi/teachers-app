@@ -48,7 +48,7 @@ const CentralizedModal: React.FC<CentralizedModalProps> = ({
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <CheckCircleOutlineIcon
-              sx={{ color: '#1A8825', fontSize: '33px' }}
+              sx={{ color: theme.palette.success.main, fontSize: '33px' }}
             />
           </Box>
           <Box
