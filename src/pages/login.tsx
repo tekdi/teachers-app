@@ -15,10 +15,10 @@ import ReactGA from 'react-ga4';
 import { showToastMessage } from '@/components/Toastify';
 import manageUserStore from '@/store/manageUserStore';
 import useStore from '@/store/store';
+import { Telemetry } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
 import { telemetryFactory } from '@/utils/telemetry';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -31,7 +31,6 @@ import Loader from '../components/Loader';
 import { login } from '../services/LoginService';
 import { getUserDetails, getUserId } from '../services/ProfileService';
 import loginImg from './../assets/images/login-image.jpg';
-import { Telemetry } from '@/utils/app.constant';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -274,6 +273,7 @@ const LoginPage = () => {
       ReactGA.event('select-language-login-page', {
         selectedLanguage: event.target.value,
       });
+      setSelectedLanguage(newLocale);
       router.push('/login', undefined, { locale: newLocale });
     }
   };
@@ -385,6 +385,9 @@ const LoginPage = () => {
                   <Box mt={'0.5rem'}>
                     <FormControl sx={{ m: '1rem 0 1rem' }}>
                       <Select
+                        inputProps={{
+                          'aria-label': 'Select Language', // Properly apply aria-label via inputProps
+                        }}
                         className="select-languages"
                         value={language}
                         onChange={handleChange}
@@ -487,34 +490,28 @@ const LoginPage = () => {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
+                      handleForgotPasswordClick();
                       router.push('/forgot-password');
                     }}
                   >
                     {t('LOGIN_PAGE.FORGOT_PASSWORD')}
                   </Box>
 
-                  {/* {
-                    <Box marginTop={'1rem'} marginLeft={'0.8rem'}>
-                      <Link
-                        sx={{ color: theme.palette.secondary.main }}
-                        href="https://qa.prathamteacherapp.tekdinext.com/auth/realms/pratham/login-actions/reset-credentials?client_id=security-admin-console&tab_id=rPJFHSFv50M"
-                        underline="none"
-                        onClick={handleForgotPasswordClick}
-                      >
-                        {t('LOGIN_PAGE.FORGOT_PASSWORD')}
-                      </Link>
-                    </Box>
-                  } */}
                   <Box marginTop={'1.2rem'} className="remember-me-checkbox">
                     <Checkbox
                       onChange={(e) => setRememberMe(e.target.checked)}
                       checked={rememberMe}
+                      inputProps={{ 'aria-label': 'Remember Me' }}
                     />
-                    <span
-                      role="checkbox"
+                    <button
+                      type="button"
                       style={{
                         cursor: 'pointer',
                         color: theme.palette.warning['300'],
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        font: 'inherit',
                       }}
                       className="fw-400"
                       onClick={() => {
@@ -527,13 +524,12 @@ const LoginPage = () => {
                       }}
                     >
                       {t('LOGIN_PAGE.REMEMBER_ME')}
-                    </span>
+                    </button>
                   </Box>
                   <Box
                     alignContent={'center'}
                     textAlign={'center'}
                     marginTop={'2rem'}
-                    // marginBottom={'2rem'}
                     width={'100%'}
                   >
                     <Button
