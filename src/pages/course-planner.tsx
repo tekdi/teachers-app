@@ -80,6 +80,7 @@ const CoursePlanner = () => {
 
   const handleCohortChange = (event: any) => {
     setSelectedValue(event.target.value);
+    addQueryParams({ center: event.target.value });
   };
 
   useEffect(() => {
@@ -121,7 +122,7 @@ const CoursePlanner = () => {
               (field: any) => field.label === label
             );
 
-            if (field && field.value) {
+            if (field?.value) {
               const valuesArray = field.value
                 .split(',')
                 .map((item: string) => item.trim());
@@ -136,7 +137,7 @@ const CoursePlanner = () => {
               (field: any) => field.label === label
             );
 
-            if (field && field.value) {
+            if (field?.value) {
               setter(field.value.trim());
             }
           });
@@ -146,7 +147,9 @@ const CoursePlanner = () => {
       }
     };
 
-    fetchCohortSearchResults();
+    if (selectedValue) {
+      fetchCohortSearchResults();
+    }
   }, [selectedValue]);
 
   return (
