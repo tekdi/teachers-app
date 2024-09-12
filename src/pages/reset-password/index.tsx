@@ -27,10 +27,10 @@ const ResetPassword = () => {
       const response = await forgotPasswordAPI(newPassword, token as string);
       console.log(response);
       setForgotPassword(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error resetting password:', error);
       setForgotPassword(false);
-      showToastMessage('Something Went Wrong', 'error');
+      showToastMessage(error.response.data.params.err, 'error');
     }
   };
 

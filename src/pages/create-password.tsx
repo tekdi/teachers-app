@@ -20,10 +20,10 @@ const CreatePassword = () => {
       const response = await resetPassword(newPassword);
       console.log(response);
       setForgotPassword(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error resetting password:', error);
       setForgotPassword(false);
-      showToastMessage('Something Went Wrong', 'error');
+      showToastMessage(error.response.data.params.err, 'error');
     }
   };
 
@@ -32,25 +32,27 @@ const CreatePassword = () => {
     localStorage.setItem('skipResetPassword', 'true');
   };
 
+  const editPassword = router.pathname.includes('/edit-password');
+
   return (
     <Box
       sx={{
         display: 'flex',
-        justifyContent: 'center',
-        px: '16px',
+        justifyContent: editPassword ? 'flex-start' : 'center',
+        px: editPassword ? '16px' : 0,
         alignItems: 'center',
         '@media (min-width: 700px)': {
-          height: '100vh',
+          height: editPassword ? '100%' : '100vh',
         },
       }}
     >
       <Box
         sx={{
           '@media (min-width: 700px)': {
-            width: '50%',
+            width: editPassword ? '70%' : '50%',
             boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
             padding: '60px',
-            marginTop: '0rem',
+            marginTop: editPassword ? '2rem' : '0rem',
           },
           width: '100%',
           marginTop: '8rem',
@@ -73,6 +75,7 @@ const CreatePassword = () => {
             fontSize: '14px',
             textAlign: 'center',
             mt: 0.5,
+            display: editPassword ? 'none' : 'inline-block',
           }}
         >
           {t('LOGIN_PAGE.CREATE_NEW')}
