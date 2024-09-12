@@ -34,6 +34,7 @@ import { AssessmentStatus, Role } from '@/utils/app.constant';
 import Loader from '@/components/Loader';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { accessControl } from '../../app.config';
+import useDeterminePathColor from '@/hooks/useDeterminePathColor';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
@@ -42,6 +43,7 @@ const CoursePlannerDetail = () => {
   const setResources = useCourseStore((state) => state.setResources);
   const store = useCourseStore();
   const [loading, setLoading] = useState(false);
+  const determinePathColor = useDeterminePathColor();
   // Initialize the panels' state, assuming you have a known set of panel IDs
   const [expandedPanels, setExpandedPanels] = useState<{
     [key: string]: boolean;
@@ -54,9 +56,9 @@ const CoursePlannerDetail = () => {
   const [drawerState, setDrawerState] = React.useState({ bottom: false });
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
-  const [courseDetails, setCourseDetails] = useState(null);
   const [userProjectDetails, setUserProjectDetails] = useState<any>();
   const [statusData, setStatusData] = useState<any>();
+  const [completionPercentage, setCompletionPercentage] = useState(0);
   const { subject } = router.query;
   const { state } = router.query;
   const { medium } = router.query;
@@ -94,6 +96,25 @@ const CoursePlannerDetail = () => {
     }
   }, [statusData]);
 
+  useEffect(() => {
+    const calculateProgress = (tasks: any[]) => {
+      let totalSubtasks = 0;
+      let completedSubtasks = 0;
+
+      tasks.forEach((task: any) => {
+        totalSubtasks += task.children.length ?? 0;
+        completedSubtasks += task?.children?.filter(
+          (subtask: any) => subtask.status === 'completed'
+        ).length;
+      });
+      setCompletionPercentage(totalSubtasks ? Number(((completedSubtasks / totalSubtasks) * 100).toFixed()) : 0);
+    };
+
+    if (userProjectDetails?.tasks?.length) {
+      calculateProgress(userProjectDetails.tasks);
+    }
+  }, [userProjectDetails]);
+
   const fetchCourseIdFromSolution = async (
     solutionId: string
   ): Promise<string> => {
@@ -104,8 +125,7 @@ const CoursePlannerDetail = () => {
       });
 
       const externalId = solutionResponse?.result?.externalId;
-
-      const templateResponse = await getUserProjectTemplate({
+      await getUserProjectTemplate({
         templateId: externalId,
         solutionId,
         role: Role.TEACHER,
@@ -282,10 +302,10 @@ const CoursePlannerDetail = () => {
             <Box sx={{ position: 'relative', display: 'inline-flex' }}>
               <Box sx={{ width: '40px', height: '40px' }}>
                 <CircularProgressbar
-                  value={10}
+                  value={completionPercentage}
                   strokeWidth={10}
                   styles={buildStyles({
-                    pathColor: '#06A816',
+                    pathColor: determinePathColor(completionPercentage),
                     trailColor: '#E6E6E6',
                     strokeLinecap: 'round',
                   })}
@@ -313,7 +333,7 @@ const CoursePlannerDetail = () => {
                     fontWeight: '500',
                   }}
                 >
-                  10%
+                  {completionPercentage}%
                 </Typography>
               </Box>
             </Box>
