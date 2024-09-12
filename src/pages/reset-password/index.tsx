@@ -25,19 +25,19 @@ const ResetPassword = () => {
         const currentTime = Date.now() / 1000;
         if (decodedToken.exp < currentTime) {
           setIsTokenValid(false);
-          showToastMessage('Token has expired', 'error');
+          showToastMessage(t('LOGIN_PAGE.LINK_EXPIRED'), 'error');
         }
       } catch (error) {
         console.error('Invalid token:', error);
         setIsTokenValid(false);
-        showToastMessage('Invalid token', 'error');
+        showToastMessage(t('LOGIN_PAGE.LINK_EXPIRED'), 'error');
       }
     }
   }, [token]);
 
   const handleResetPassword = async (newPassword: string) => {
     if (!token || !isTokenValid) {
-      showToastMessage('Invalid or expired token', 'error');
+      showToastMessage(t('LOGIN_PAGE.LINK_EXPIRED'), 'error');
       return;
     }
 
@@ -114,7 +114,7 @@ const ResetPassword = () => {
               mt: 2,
             }}
           >
-            {t('LOGIN_PAGE.INVALID_OR_EXPIRED_TOKEN')}
+            {t('LOGIN_PAGE.LINK_EXPIRED')}
           </Box>
         )}
         <CentralizedModal

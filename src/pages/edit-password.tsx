@@ -12,10 +12,8 @@ import { logEvent } from '@/utils/googleAnalytics';
 const EditForgotPassword = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const [role, setRole] = React.useState<any>('');
-  const [classId, setClassId] = React.useState('');
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [userId, setUserId] = React.useState<string | null>(null);
+
   const router = useRouter();
 
   const handleBackEvent = () => {
@@ -30,16 +28,11 @@ const EditForgotPassword = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
-      const role = localStorage.getItem('role');
-      setRole(role);
-      const storedUserId = localStorage.getItem('userId');
-      setClassId(localStorage.getItem('classId') ?? '');
       if (token) {
         setIsAuthenticated(true);
       } else {
         router.push('/login');
       }
-      setUserId(storedUserId);
     }
   }, []);
 

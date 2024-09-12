@@ -96,7 +96,7 @@
     "DELETE_USER_WITH_REASON": "Delete User",
     "USER_DELETED_PERMANENTLY": "User successfully deleted!",
     "CANNOT_DELETE_TODAY_ATTENDANCE_MARKED": "Cannot delete learner as attendance has already been marked for today",
-    "CANNOT_DROPOUT_TODAY_ATTENDANCE_MARKED":"Cannot mark learner as dropout as attendance has already been marked for today",
+    "CANNOT_DROPOUT_TODAY_ATTENDANCE_MARKED": "Cannot mark learner as dropout as attendance has already been marked for today",
     "OBSERVATIONS_FORMS": "Observations and Forms",
     "OTHER_REASON": "Other Reason",
     "OTHER_REASON_PLACEHOLDER": "Enter Other Reason",
@@ -166,7 +166,7 @@
     "PLEASE_RESET_YOUR_PASSWORD": "Please reset your password to ensure your account is secure",
     "DO_IT_LATER": "I’ll do it later",
     "SUCCESSFULLY_RESET": "Your password has been successfully reset",
-    "INVALID_OR_EXPIRED_TOKEN":"Invalid or Expired Token"
+    "LINK_EXPIRED": "Link Expired"
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",
@@ -270,7 +270,6 @@
     "ENROLLMENT_NUMBER": "Enrollment Number",
     "SELECT_OPTION": "Select Option"
   },
-
   "FIELDS": {
     "DESIGNATION": "Designation",
     "NUMBER_OF_CLUSTERS_I_TEACH": "Number of Clusters I Teach",
