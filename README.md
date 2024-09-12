@@ -1,3 +1,13 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=tekdi_teachers-app&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=tekdi_teachers-app)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=tekdi_teachers-app&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=tekdi_teachers-app)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=tekdi_teachers-app&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=tekdi_teachers-app)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=tekdi_teachers-app&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=tekdi_teachers-app)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=tekdi_teachers-app&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=tekdi_teachers-app)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=tekdi_teachers-app&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=tekdi_teachers-app)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=tekdi_teachers-app&metric=bugs)](https://sonarcloud.io/summary/new_code?id=tekdi_teachers-app)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=tekdi_teachers-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=tekdi_teachers-app)
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 # Shiksha: Teachers-application
 
 ## What is Shiksha?
@@ -66,3 +76,4 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
    ```console
    npm run build
    ```
+#
