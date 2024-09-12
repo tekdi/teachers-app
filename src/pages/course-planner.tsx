@@ -398,9 +398,7 @@ const CoursePlanner = () => {
           </Box>
         )}
         {value === 2 && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
-            <Typography variant="h2">No Data Found</Typography>
-          </Box>
+          <NoDataFound />
         )}
       </Box>
     </Box>
