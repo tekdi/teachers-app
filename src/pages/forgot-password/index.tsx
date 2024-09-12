@@ -10,18 +10,53 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { resetPasswordLink } from '@/services/LoginService';
+import CentralizedModal from '@/components/CentralizedModal';
+import { showToastMessage } from '@/components/Toastify';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
   const [inputValue, setInputValue] = useState('');
+  const [successMessage, setSuccessMessage] = useState(false);
+  const [maskEmail, setMaskEmail] = useState('');
 
   const handleInputChange = (event: any) => {
     setInputValue(event.target.value);
+  };
+
+  const maskEmailFunction = (email: string) => {
+    const [localPart, domain] = email.split('@');
+    if (localPart.length > 2) {
+      const maskedLocalPart =
+        localPart[0] + '*'.repeat(localPart.length - 2) + localPart.slice(-1);
+      return `${maskedLocalPart}@${domain}`;
+    }
+    return email;
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await resetPasswordLink(inputValue);
+      const email = response?.result?.email;
+
+      if (email) {
+        const maskedEmail = maskEmailFunction(email);
+        setMaskEmail(maskedEmail);
+      }
+
+      setSuccessMessage(true);
+    } catch (error: any) {
+      showToastMessage(error.response.data.params.err, 'error');
+    }
+  };
+
+  const handlePrimaryButton = () => {
+    setSuccessMessage(false);
   };
 
   const router = useRouter();
@@ -33,17 +68,29 @@ const ForgotPassword = () => {
         justifyContent: 'center',
         px: '16px',
         alignItems: 'center',
+        '@media (min-width: 700px)': {
+          height: '100vh',
+        },
       }}
     >
       <Box
         sx={{
-          '@media (min-width: 900px)': {
+          '@media (min-width: 700px)': {
             width: '50%',
+            boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
+            padding: '60px',
+            marginTop: '0rem',
           },
           width: '100%',
+
           marginTop: '8rem',
         }}
       >
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <LockOpenIcon
+            sx={{ fontSize: '40px', color: theme.palette.warning['300'] }}
+          />
+        </Box>
         <Box
           sx={{
             color: theme.palette.warning['300'],
@@ -68,11 +115,7 @@ const ForgotPassword = () => {
 
         <Box
           sx={{
-            width: '668px',
-            '@media (max-width: 768px)': {
-              width: '100%',
-            },
-            '@media (min-width: 900px)': {
+            '@media (min-width: 700px)': {
               width: '100%',
             },
           }}
@@ -101,6 +144,14 @@ const ForgotPassword = () => {
           />
         </Box>
 
+        <CentralizedModal
+          icon={true}
+          subTitle={`We sent an email to ${maskEmail} with a link to reset your password`}
+          primary={t('COMMON.OKAY')}
+          modalOpen={successMessage}
+          handlePrimaryButton={handlePrimaryButton}
+        />
+
         <Box>
           <Box
             alignContent={'center'}
@@ -112,7 +163,8 @@ const ForgotPassword = () => {
               variant="contained"
               type="submit"
               fullWidth={true}
-              disabled={!inputValue} // Disable button if inputValue is empty
+              onClick={handleSubmit}
+              disabled={!inputValue}
               sx={{
                 '@media (min-width: 900px)': {
                   width: '50%',
