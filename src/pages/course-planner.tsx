@@ -333,7 +333,7 @@ const CoursePlanner = () => {
                                   display: 'inline-flex',
                                 }}
                               >
-                                <Box sx={{ width: '40px', height: '40px' }}>
+                                {/* <Box sx={{ width: '40px', height: '40px' }}>
                                   <CircularProgressbar
                                     value={item.circular}
                                     strokeWidth={10}
@@ -368,7 +368,7 @@ const CoursePlanner = () => {
                                   >
                                     {item.circular}%
                                   </Typography>
-                                </Box>
+                                </Box> */}
                               </Box>
 
                               <Box
