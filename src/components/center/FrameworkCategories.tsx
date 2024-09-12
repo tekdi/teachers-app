@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import {
   findCommonAssociations,
-  getAssociationsByCode,
+  getAssociationsByName,
   getOptionsByCategory,
 } from '@/utils/Helper';
 import { frameworkId } from '../../../app.config';
@@ -83,7 +83,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
   useEffect(() => {
     const handleBMGS = async () => {
       try {
-        const url = `${process.env.NEXT_PUBLIC_FRAMEWORK_API_URL}/read/${frameworkId}`;
+        const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/api/framework/v1/read/${frameworkId}`;
         const boardData = await fetch(url).then((res) => res.json());
         const frameworks = boardData?.result?.framework;
         setFramework(frameworks);
@@ -94,7 +94,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
         );
         if (matchingState) {
           setStateOption([matchingState]);
-          setSelectedState(matchingState.code);
+          setSelectedState(matchingState.name);
           setStateAssociations(matchingState.associations);
           console.log('matchingStateAssociations', matchingState.associations);
         }
@@ -136,7 +136,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
 
     if (board) {
       const getMedium = getOptionsByCategory(framework, 'medium');
-      const boardAssociations = getAssociationsByCode(boardOptions, board);
+      const boardAssociations = getAssociationsByName(boardOptions, board);
       setBoardAssociations(boardAssociations);
 
       const commonMediumInState = getMedium
@@ -184,7 +184,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
     console.log('medium', medium);
     if (medium) {
       const getGrades = getOptionsByCategory(framework, 'gradeLevel');
-      const mediumAssociations = getAssociationsByCode(mediumOptions, medium);
+      const mediumAssociations = getAssociationsByName(mediumOptions, medium);
       console.log('boardAssociations', stateAssociations);
       setMediumAssociations(mediumAssociations);
 
@@ -270,7 +270,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
             disabled
           >
             {stateOption?.map((option: any) => (
-              <MenuItem key={option.code} value={option.code}>
+              <MenuItem key={option.code} value={option.name}>
                 {option.name}
               </MenuItem>
             ))}
@@ -290,7 +290,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
             label="Board"
           >
             {boardOptions?.map((option: any) => (
-              <MenuItem key={option.code} value={option.code}>
+              <MenuItem key={option.code} value={option.name}>
                 {option.name}
               </MenuItem>
             ))}
@@ -314,7 +314,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
           label="Medium"
         >
           {mediumOptions?.map((option) => (
-            <MenuItem key={option.code} value={option.code}>
+            <MenuItem key={option.code} value={option.name}>
               {option.name}
             </MenuItem>
           ))}
@@ -337,7 +337,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
           label="Grade"
         >
           {gradeOptions?.map((option) => (
-            <MenuItem key={option.code} value={option.code}>
+            <MenuItem key={option.code} value={option.name}>
               {option.name}
             </MenuItem>
           ))}

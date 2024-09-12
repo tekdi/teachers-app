@@ -29,6 +29,7 @@ import useStore from '@/store/store';
 import { accessControl } from '../../app.config';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import NoDataFound from '@/components/common/NoDataFound';
+import { toPascalCase } from '@/utils/Helper';
 
 // Define a type for the course planner data
 
@@ -164,6 +165,11 @@ const CoursePlanner = () => {
                     width: '100%',
                     marginBottom: '0rem',
                   }}
+                  MenuProps={{
+                    style: {
+                      maxHeight: 400,
+                    }
+                  }}
                 >
                   {store.cohorts.map((cohort: any) => (
                     <MenuItem
@@ -171,7 +177,7 @@ const CoursePlanner = () => {
                       value={cohort.cohortId}
                       className="text-truncate"
                     >
-                      {cohort.name}
+                      {toPascalCase(cohort?.name)}
                     </MenuItem>
                   ))}
                 </Select>
