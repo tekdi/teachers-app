@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
@@ -14,6 +14,10 @@ const CreatePassword = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const [forgotPassword, setForgotPassword] = useState<boolean>(false);
+  const [role, setRole] = React.useState<any>('');
+  const [classId, setClassId] = React.useState('');
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [userId, setUserId] = React.useState<string | null>(null);
 
   const handleResetPassword = async (newPassword: string) => {
     try {
@@ -33,6 +37,22 @@ const CreatePassword = () => {
   };
 
   const editPassword = router.pathname.includes('/edit-password');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const token = localStorage.getItem('token');
+      const role = localStorage.getItem('role');
+      setRole(role);
+      const storedUserId = localStorage.getItem('userId');
+      setClassId(localStorage.getItem('classId') ?? '');
+      if (token) {
+        setIsAuthenticated(true);
+      } else {
+        router.push('/login');
+      }
+      setUserId(storedUserId);
+    }
+  }, []);
 
   return (
     <Box

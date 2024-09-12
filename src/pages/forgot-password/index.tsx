@@ -16,6 +16,8 @@ import { resetPasswordLink } from '@/services/LoginService';
 import CentralizedModal from '@/components/CentralizedModal';
 import { showToastMessage } from '@/components/Toastify';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import Image from 'next/image';
+import Logo from './../../assets/images/Pratham-Logo.png';
 
 const ForgotPassword = () => {
   const { t } = useTranslation();

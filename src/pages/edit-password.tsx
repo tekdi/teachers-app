@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
@@ -12,6 +12,11 @@ import { logEvent } from '@/utils/googleAnalytics';
 const EditForgotPassword = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+  const [role, setRole] = React.useState<any>('');
+  const [classId, setClassId] = React.useState('');
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [userId, setUserId] = React.useState<string | null>(null);
+  const router = useRouter();
 
   const handleBackEvent = () => {
     window.history.back();
@@ -21,6 +26,22 @@ const EditForgotPassword = () => {
       label: 'Back Button Clicked',
     });
   };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const token = localStorage.getItem('token');
+      const role = localStorage.getItem('role');
+      setRole(role);
+      const storedUserId = localStorage.getItem('userId');
+      setClassId(localStorage.getItem('classId') ?? '');
+      if (token) {
+        setIsAuthenticated(true);
+      } else {
+        router.push('/login');
+      }
+      setUserId(storedUserId);
+    }
+  }, []);
 
   return (
     <Box>

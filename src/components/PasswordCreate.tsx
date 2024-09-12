@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
+import CheckIcon from '@mui/icons-material/Check';
 
 interface PasswordCreateProps {
   handleResetPassword: (password: string) => void;
@@ -82,7 +83,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
               color: passwordError ? theme.palette.warning['A200'] : 'inherit',
             },
           }}
-          helperText={passwordError && t('LOGIN_PAGE.YOUR_PASSWORD_NEEDS_TO')}
+          helperText={passwordError && t('LOGIN_PAGE.YOUR_PASSWORD_NEEDS')}
           label={t('LOGIN_PAGE.PASSWORD')}
           fullWidth
           sx={{
@@ -94,64 +95,85 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
       </Box>
 
       {showValidationMessages && passwordError && (
-        <Box sx={{ mt: 1, pl: '16px' }}>
-          <Typography
-            variant="body2"
-            color={passwordError ? 'error' : 'textPrimary'}
-            sx={{
-              color: theme.palette.warning['A200'],
-              fontSize: '16px',
-              fontWeight: '400',
-            }}
-          >
-            <Box
+        <>
+          <Box sx={{ mt: 0.8, pl: '16px' }}>
+            <Typography
+              variant="body2"
+              color={passwordError ? 'error' : 'textPrimary'}
               sx={{
-                color:
-                  password.match(/[A-Z]/) && password.match(/[a-z]/)
+                color: theme.palette.warning['A200'],
+                fontSize: '12px',
+                fontWeight: '400',
+              }}
+            >
+              <Box
+                sx={{
+                  color:
+                    password.match(/[A-Z]/) && password.match(/[a-z]/)
+                      ? theme.palette.success.main
+                      : theme.palette.error.main,
+                  fontSize: '12px',
+                  fontWeight: '400',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                }}
+              >
+                <CheckIcon sx={{ fontSize: '15px' }} />{' '}
+                {t('LOGIN_PAGE.INCLUDE_BOTH')}
+              </Box>
+              <Box
+                sx={{
+                  color: password.match(/\d/)
                     ? theme.palette.success.main
                     : theme.palette.error.main,
-                fontSize: '12px',
-                fontWeight: '400',
-              }}
-            >
-              ✓ {t('LOGIN_PAGE.INCLUDE_BOTH')}
-            </Box>
-            <Box
-              sx={{
-                color: password.match(/\d/)
-                  ? theme.palette.success.main
-                  : theme.palette.error.main,
-                fontSize: '12px',
-                fontWeight: '400',
-              }}
-            >
-              ✓ {t('LOGIN_PAGE.INCLUDE_NUMBER')}
-            </Box>
-            <Box
-              sx={{
-                color: password.match(/[!@#$%^&*(),.?":{}|<>]/)
-                  ? theme.palette.success.main
-                  : theme.palette.error.main,
-                fontSize: '12px',
-                fontWeight: '400',
-              }}
-            >
-              ✓ {t('LOGIN_PAGE.INCLUDE_SPECIAL')}
-            </Box>
-            <Box
-              sx={{
-                color:
-                  password.length >= 8
+                  fontSize: '12px',
+                  fontWeight: '400',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  pt: 0.3,
+                }}
+              >
+                <CheckIcon sx={{ fontSize: '15px' }} />{' '}
+                {t('LOGIN_PAGE.INCLUDE_NUMBER')}
+              </Box>
+              <Box
+                sx={{
+                  color: password.match(/[!@#$%^&*(),.?":{}|<>]/)
                     ? theme.palette.success.main
                     : theme.palette.error.main,
-                fontSize: '12px',
-                fontWeight: '400',
-              }}
-            >
-              ✓ {t('LOGIN_PAGE.MUST_BE_AT')}
-            </Box>
-          </Typography>
-        </Box>
+                  fontSize: '12px',
+                  fontWeight: '400',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  pt: 0.3,
+                }}
+              >
+                <CheckIcon sx={{ fontSize: '15px' }} />{' '}
+                {t('LOGIN_PAGE.INCLUDE_SPECIAL')}
+              </Box>
+              <Box
+                sx={{
+                  color:
+                    password.length >= 8
+                      ? theme.palette.success.main
+                      : theme.palette.error.main,
+                  fontSize: '12px',
+                  fontWeight: '400',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  pt: 0.3,
+                }}
+              >
+                <CheckIcon sx={{ fontSize: '15px' }} />{' '}
+                {t('LOGIN_PAGE.MUST_BE_AT')}
+              </Box>
+            </Typography>
+          </Box>
+        </>
       )}
 
       <Box

@@ -155,7 +155,7 @@
     "ENTER_USERNAME_PASSWORD": "Enter username",
     "BACK_TO_LOGIN": "Back to Login",
     "CREATE_STRONG_PASSWORD": "Create a strong password",
-    "YOUR_PASSWORD_NEEDS_TO:": "Your password needs to:",
+    "YOUR_PASSWORD_NEEDS:": "Your password needs to:",
     "INCLUDE_BOTH": "Include both upper case and lower case",
     "INCLUDE_NUMBER": "Include at least one number",
     "INCLUDE_SPECIAL": "Include at least one special character",
@@ -164,7 +164,8 @@
     "WELCOME": "Welcome!",
     "PLEASE_RESET_YOUR_PASSWORD": "Please reset your password to ensure your account is secure",
     "DO_IT_LATER": "I’ll do it later",
-    "SUCCESSFULLY_RESET": "Your password has been successfully reset"
+    "SUCCESSFULLY_RESET": "Your password has been successfully reset",
+    "INVALID_OR_EXPIRED_TOKEN":"Invalid or Expired Token"
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",
