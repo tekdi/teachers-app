@@ -59,6 +59,21 @@ const CoursePlanner = () => {
     }
   };
 
+  const addQueryParams = (newParams: any) => {
+    // Merge existing query params with new ones
+    const updatedQuery = { ...router.query, ...newParams };
+
+    // Update the URL without reloading the page
+    router.push(
+      {
+        pathname: router.pathname,
+        query: updatedQuery,
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -69,7 +84,12 @@ const CoursePlanner = () => {
 
   useEffect(() => {
     if (store.cohorts.length > 0) {
-      setSelectedValue(store.cohorts[0].cohortId);
+      const cohortId = router.query.center
+        ? router.query.center
+        : store.cohorts[0].cohortId;
+      
+      addQueryParams({ center: cohortId });
+      setSelectedValue(cohortId);
     }
   }, [store.cohorts]);
 
@@ -168,7 +188,7 @@ const CoursePlanner = () => {
                   MenuProps={{
                     style: {
                       maxHeight: 400,
-                    }
+                    },
                   }}
                 >
                   {store.cohorts.map((cohort: any) => (
