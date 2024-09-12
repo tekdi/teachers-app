@@ -484,8 +484,8 @@ interface DataItem {
   code: string;
   associations: Association[];
 }
-export const getAssociationsByCode = (data: DataItem[], code: string): Association[] | [] => {
-  const foundItem = data.find(item => item.code === code);
+export const getAssociationsByName = (data: DataItem[], name: string): Association[] | [] => {
+  const foundItem = data.find(item => item.name === name);
   return foundItem ? foundItem.associations : [];
 };
 
