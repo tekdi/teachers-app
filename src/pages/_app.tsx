@@ -29,7 +29,7 @@ import { fullWidthPages } from '../../app.config';
 import nextI18NextConfig from '../../next-i18next.config.js';
 import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
-import { Telemetry } from '@/utils/app.constant';
+import { metaTags, Telemetry } from '@/utils/app.constant';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -146,7 +146,8 @@ function App({ Component, pageProps }: AppProps) {
         }
       `}</style>
       <Head>
-        <title>Pratham SCP Teachers app</title>
+        <title>{metaTags?.title}</title>
+        <meta name="description" content={metaTags?.description} />
       </Head>
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}

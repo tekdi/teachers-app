@@ -46,11 +46,13 @@ const CentralizedModal: React.FC<CentralizedModalProps> = ({
           >
             {title}
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <CheckCircleOutlineIcon
-              sx={{ color: theme.palette.success.main, fontSize: '33px' }}
-            />
-          </Box>
+          {icon && (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <CheckCircleOutlineIcon
+                sx={{ color: theme.palette.success.main, fontSize: '33px' }}
+              />
+            </Box>
+          )}
           <Box
             sx={{
               fontSize: '16px',
