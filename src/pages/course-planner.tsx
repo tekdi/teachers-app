@@ -459,7 +459,7 @@ const CoursePlanner = () => {
     };
 
     fetchCohortSearchResults();
-  }, []);
+  }, [selectedValue]);
 
   useEffect(() => {
     const fetchTaxonomyResults = async () => {
