@@ -111,3 +111,6 @@ export const showEventsByList = false;
 export const showProgramYear = false;
 
 export const showFilterCenterType = false;
+
+export const addUserName = false
+export const addPassword = false
