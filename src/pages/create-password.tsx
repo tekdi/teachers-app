@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
@@ -14,6 +14,8 @@ const CreatePassword = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const [forgotPassword, setForgotPassword] = useState<boolean>(false);
+
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   const handleResetPassword = async (newPassword: string) => {
     try {
@@ -34,6 +36,17 @@ const CreatePassword = () => {
 
   const editPassword = router.pathname.includes('/edit-password');
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        setIsAuthenticated(true);
+      } else {
+        router.push('/login');
+      }
+    }
+  }, []);
+
   return (
     <Box
       sx={{
@@ -53,6 +66,7 @@ const CreatePassword = () => {
             boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
             padding: '60px',
             marginTop: editPassword ? '2rem' : '0rem',
+            borderRadius: '16px',
           },
           width: '100%',
           marginTop: '8rem',

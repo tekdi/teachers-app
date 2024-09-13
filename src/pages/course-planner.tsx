@@ -144,7 +144,7 @@ const CoursePlanner = () => {
             }
           });
 
-          const url = `${process.env.NEXT_PUBLIC_FRAMEWORK_API_URL}/read/${frameworkId}`;
+          const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/read/${frameworkId}`;
           const boardData = await fetch(url).then((res) => res.json());
           console.log(boardData?.result?.framework);
           const frameworks = boardData?.result?.framework;
@@ -442,7 +442,7 @@ const CoursePlanner = () => {
   useEffect(() => {
     const fetchTaxonomyResults = async () => {
       try {
-        const url = `${process.env.NEXT_PUBLIC_FRAMEWORK_API_URL}/read/${frameworkId}`;
+        const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/api/framework/v1/read/${frameworkId}`;
         const boardData = await fetch(url).then((res) => res.json());
         console.log(boardData?.result?.framework);
         const frameworks = boardData?.result?.framework;
