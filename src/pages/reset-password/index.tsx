@@ -8,7 +8,7 @@ import { showToastMessage } from '@/components/Toastify';
 import { useRouter } from 'next/router';
 import { forgotPasswordAPI } from '@/services/LoginService';
 import CentralizedModal from '@/components/CentralizedModal';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 const ResetPassword = () => {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ const ResetPassword = () => {
   useEffect(() => {
     if (token) {
       try {
-        const decodedToken: any = jwt_decode(token as string);
+        const decodedToken: any = jwtDecode(token as string);
         const currentTime = Date.now() / 1000;
         if (decodedToken.exp < currentTime) {
           setIsTokenValid(false);
