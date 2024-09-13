@@ -119,6 +119,10 @@ const CohortPage = () => {
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [cohortName, setCohortName] = React.useState<string>();
   const [cohortType, setCohortType] = React.useState<string>();
+  const [medium, setMedium] = React.useState<string>();
+  const [grade, setGrade] = React.useState<string>();
+  const [board, setBoard] = React.useState<string>();
+  const [state, setState] = React.useState<string>();
   const [clickedBox, setClickedBox] = useState<string | null>(null);
   const [isLearnerAdded, setIsLearnerAdded] = useState(false);
   const [createEvent, setCreateEvent] = useState(false);
@@ -192,6 +196,7 @@ const CohortPage = () => {
           const state = cohortData.customField.find(
             (item: CustomField) => item.label === 'STATES'
           );
+          setState(state.value);
           const stateCode = state?.code || '';
           const stateId = state?.fieldId || '';
 
@@ -206,6 +211,21 @@ const CohortPage = () => {
             (item: CustomField) => item.label === 'TYPE_OF_COHORT'
           );
           setCohortType(typeOfCohort?.value);
+
+          const medium = cohortData.customField.find(
+            (item: CustomField) => item.label === 'MEDIUM'
+          );
+          setMedium(medium?.value);
+
+          const grade = cohortData.customField.find(
+            (item: CustomField) => item.label === 'GRADE'
+          );
+          setGrade(grade?.value);
+
+          const board = cohortData.customField.find(
+            (item: CustomField) => item.label === 'BOARD'
+          );
+          setBoard(board?.value);
         }
         setCohortDetails(cohortData);
         setCohortName(cohortData?.name);
@@ -626,6 +646,10 @@ const CohortPage = () => {
                           item={item}
                           cohortName={cohortName}
                           isTopicSubTopicAdded={handleEventUpdated}
+                          state={state}
+                          board={board}
+                          medium={medium}
+                          grade={grade}
                         />
                       </SessionCard>
                     </SwiperSlide>

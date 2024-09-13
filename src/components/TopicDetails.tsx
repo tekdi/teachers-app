@@ -13,6 +13,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { EventStatus } from '@/utils/app.constant';
+import { RequisiteType } from '../../app.config';
+import NoDataFound from './common/NoDataFound';
 interface TopicDetailsProps {
   topic: string;
   subTopic: [];
@@ -142,8 +144,9 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
       </Box>
 
       <Box sx={{ mb: 1.5 }}>
+        {/* Facilitator's Requisite */}
         <Accordion
-          // defaultExpanded
+          defaultExpanded
           sx={{
             boxShadow: 'none !important',
             border: 'none !important',
@@ -157,8 +160,8 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                 sx={{ color: theme?.palette?.warning['300'] }}
               />
             }
-            aria-controls="panel1-content"
-            id="panel1-header"
+            aria-controls="facilitator-content"
+            id="facilitator-header"
             className="accordion-summary"
             sx={{
               m: 0,
@@ -175,46 +178,193 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
               fontSize="14px"
               sx={{ color: theme?.palette?.warning['300'] }}
             >
-              {t('CENTER_SESSION.FACILITATORS')}
+              {t('CENTER_SESSION.FACILITATOR_REQUISITES')}
             </Typography>
           </AccordionSummary>
           <AccordionDetails
             sx={{ padding: '0px', background: theme?.palette?.warning['A400'] }}
           >
             <Grid container spacing={2} sx={{ px: '16px !important' }}>
-              {content &&
-                content.length > 0 &&
-                content.map((item: any) => (
-                  <Grid item xs={6} sx={{ mt: 2 }}>
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ textDecoration: 'none' }}
-                    >
-                      <Box className="facilitator-bg">
-                        <Box
-                          sx={{
-                            fontSize: '16px',
-                            fontWeight: '500',
-                            color: theme?.palette?.warning['A400'],
-                          }}
-                        >
-                          {item?.name || subTopic}
+              {content.filter((item: any) => item.type === '').length > 0 ? (
+                content
+                  .filter((item: any) => item.type === '')
+                  .map((item: any) => (
+                    <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <Box className="facilitator-bg">
+                          <Box
+                            sx={{
+                              fontSize: '16px',
+                              fontWeight: '500',
+                              color: theme?.palette?.warning['A400'],
+                            }}
+                          >
+                            {item?.name || subTopic.join(', ')}
+                          </Box>
                         </Box>
-                        {/* <Box
-                        sx={{
-                          fontSize: '11px',
-                          fontWeight: '500',
-                          color: theme?.palette?.warning['A400'],
-                        }}
-                        >
-                        Video
-                      </Box> */}
-                      </Box>
-                    </a>
-                  </Grid>
-                ))}
+                      </a>
+                    </Grid>
+                  ))
+              ) : (
+                <NoDataFound />
+              )}
+            </Grid>
+          </AccordionDetails>
+        </Accordion>
+
+        {/* Learner Prerequisites */}
+        <Accordion
+          sx={{
+            boxShadow: 'none !important',
+            border: 'none !important',
+            mt: 1.5,
+            background: theme?.palette?.action?.selected,
+          }}
+        >
+          <AccordionSummary
+            expandIcon={
+              <ArrowDropDownIcon
+                sx={{ color: theme?.palette?.warning['300'] }}
+              />
+            }
+            aria-controls="prerequisite-content"
+            id="prerequisite-header"
+            className="accordion-summary"
+            sx={{
+              m: 0,
+              background: theme?.palette?.action?.selected,
+              px: '16px',
+              height: '10px !important',
+              '&.Mui-expanded': {
+                minHeight: '48px',
+              },
+            }}
+          >
+            <Typography
+              fontWeight="500"
+              fontSize="14px"
+              sx={{ color: theme?.palette?.warning['300'] }}
+            >
+              {t('CENTER_SESSION.LEARNER_PREREQUISITES')}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails
+            sx={{ padding: '0px', background: theme?.palette?.warning['A400'] }}
+          >
+            <Grid container spacing={2} sx={{ px: '16px !important' }}>
+              {content.filter(
+                (item: any) => item.type === RequisiteType.PRE_REQUISITES
+              ).length > 0 ? (
+                content
+                  .filter(
+                    (item: any) => item.type === RequisiteType.PRE_REQUISITES
+                  )
+                  .map((item: any) => (
+                    <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <Box className="facilitator-bg">
+                          <Box
+                            sx={{
+                              fontSize: '16px',
+                              fontWeight: '500',
+                              color: theme?.palette?.warning['A400'],
+                            }}
+                          >
+                            {item?.name || subTopic.join(', ')}
+                          </Box>
+                        </Box>
+                      </a>
+                    </Grid>
+                  ))
+              ) : (
+                <NoDataFound />
+              )}
+            </Grid>
+          </AccordionDetails>
+        </Accordion>
+
+        {/* Learner Postrequisites */}
+        <Accordion
+          sx={{
+            boxShadow: 'none !important',
+            border: 'none !important',
+            mt: 1.5,
+            background: theme?.palette?.action?.selected,
+          }}
+        >
+          <AccordionSummary
+            expandIcon={
+              <ArrowDropDownIcon
+                sx={{ color: theme?.palette?.warning['300'] }}
+              />
+            }
+            aria-controls="postrequisite-content"
+            id="postrequisite-header"
+            className="accordion-summary"
+            sx={{
+              m: 0,
+              background: theme?.palette?.action?.selected,
+              px: '16px',
+              height: '10px !important',
+              '&.Mui-expanded': {
+                minHeight: '48px',
+              },
+            }}
+          >
+            <Typography
+              fontWeight="500"
+              fontSize="14px"
+              sx={{ color: theme?.palette?.warning['300'] }}
+            >
+              {t('CENTER_SESSION.LEARNER_POSTREQUISITES')}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails
+            sx={{ padding: '0px', background: theme?.palette?.warning['A400'] }}
+          >
+            <Grid container spacing={2} sx={{ px: '16px !important' }}>
+              {content.filter(
+                (item: any) => item.type === RequisiteType.POST_REQUISITES
+              ).length > 0 ? (
+                content
+                  .filter(
+                    (item: any) => item.type === RequisiteType.POST_REQUISITES
+                  )
+                  .map((item: any) => (
+                    <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <Box className="facilitator-bg">
+                          <Box
+                            sx={{
+                              fontSize: '16px',
+                              fontWeight: '500',
+                              color: theme?.palette?.warning['A400'],
+                            }}
+                          >
+                            {item?.name || subTopic.join(', ')}
+                          </Box>
+                        </Box>
+                      </a>
+                    </Grid>
+                  ))
+              ) : (
+                <NoDataFound />
+              )}
             </Grid>
           </AccordionDetails>
         </Accordion>

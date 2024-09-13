@@ -45,7 +45,7 @@ export const accessControl: { [key: string]: Role[] } = {
   accessCoursePlanner: [Role.TEACHER, Role.TEAM_LEADER],
   accessCoursePlannerDetails: [Role.TEACHER, Role.TEAM_LEADER],
   accessAssessments: [Role.TEACHER, Role.TEAM_LEADER],
-  accessCenters: [Role.TEACHER, Role.TEAM_LEADER]
+  accessCenters: [Role.TEACHER, Role.TEAM_LEADER],
 };
 
 export const fullWidthPages = [
@@ -56,7 +56,7 @@ export const fullWidthPages = [
   '/500',
   '/offline',
   '/unauthorized',
-  '/create-password'
+  '/create-password',
 ];
 
 export const DaysOfWeek = {
@@ -77,3 +77,8 @@ export enum AssessmentType {
   PRE_TEST = 'Pre Test',
   POST_TEST = 'Post Test',
 }
+
+export const RequisiteType = {
+  PRE_REQUISITES: 'prerequisite',
+  POST_REQUISITES: 'postrequisite',
+};
