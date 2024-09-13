@@ -374,6 +374,7 @@
     "START_DATE": "Start Date",
     "END_DATE": "End Date",
     "REMOVE_THIS_SESSION": "Remove this session",
+    "REMOVE_TOPIC_SUBTOPIC": "Remove the topic and subtopic",
     "PLANNED_SESSION": "Planned Session",
     "FIXES_SUBJECTS": "For fixed subjects in the timetable",
     "EXTRA_SESSION": "Extra Sessions",
