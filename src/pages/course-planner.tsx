@@ -37,6 +37,7 @@ import {
   findCommonAssociations,
   getAssociationsByCodeNew,
   getOptionsByCategory,
+  toPascalCase,
 } from '@/utils/Helper';
 
 const CoursePlanner = () => {
@@ -86,13 +87,34 @@ const CoursePlanner = () => {
     setType(event.target.value);
   };
 
+  const addQueryParams = (newParams: any) => {
+    // Merge existing query params with new ones
+    const updatedQuery = { ...router.query, ...newParams };
+
+    // Update the URL without reloading the page
+    router.push(
+      {
+        pathname: router.pathname,
+        query: updatedQuery,
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
+
   const handleCohortChange = (event: any) => {
     setSelectedValue(event.target.value);
+    addQueryParams({ center: event.target.value });
   };
 
   useEffect(() => {
     if (store.cohorts.length > 0) {
-      setSelectedValue(store.cohorts[0].cohortId);
+      const cohortId = router.query.center
+        ? router.query.center
+        : store.cohorts[0].cohortId;
+
+      addQueryParams({ center: cohortId });
+      setSelectedValue(cohortId);
     }
   }, [store.cohorts]);
 
@@ -728,7 +750,9 @@ const CoursePlanner = () => {
       }
     };
 
-    fetchTaxonomyResults();
+
+      fetchTaxonomyResults();
+  
   }, [value]);
 
   return (
@@ -767,6 +791,11 @@ const CoursePlanner = () => {
                     width: '100%',
                     marginBottom: '0rem',
                   }}
+                  MenuProps={{
+                    style: {
+                      maxHeight: 400,
+                    }
+                  }}
                 >
                   {store.cohorts.map((cohort: any) => (
                     <MenuItem
@@ -774,7 +803,7 @@ const CoursePlanner = () => {
                       value={cohort.cohortId}
                       className="text-truncate"
                     >
-                      {cohort.name}
+                     {toPascalCase(cohort?.name)}
                     </MenuItem>
                   ))}
                 </Select>
@@ -878,7 +907,7 @@ const CoursePlanner = () => {
                                 display: 'inline-flex',
                               }}
                             >
-                              <Box sx={{ width: '40px', height: '40px' }}>
+                              {/* <Box sx={{ width: '40px', height: '40px' }}>
                                 <CircularProgressbar
                                   value={item.circular || 0}
                                   strokeWidth={10}
@@ -913,7 +942,7 @@ const CoursePlanner = () => {
                                 >
                                   {item.circular || 0}%
                                 </Typography>
-                              </Box>
+                              </Box> */}
                             </Box>
 
                             <Box
