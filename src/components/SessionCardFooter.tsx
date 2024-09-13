@@ -185,7 +185,17 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   };
 
   const handleError = () => {
-    showToastMessage(t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE'), 'error');
+    if (eventStatus !== EventStatus.UPCOMING) {
+      showToastMessage(
+        t('CENTER_SESSION.CANT_SELECT_AS_EVENT_PASSED_LIVE'),
+        'error'
+      );
+    } else if (!topicList) {
+      showToastMessage(
+        t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE'),
+        'error'
+      );
+    }
   };
 
   const handleRemovetTopicSubTopic = () => {
@@ -307,7 +317,13 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
             cursor: 'pointer',
             alignItems: 'center',
           }}
-          onClick={topicList && transformedTasks ? handleOpen : handleError}
+          onClick={
+            topicList &&
+            transformedTasks &&
+            eventStatus === EventStatus.UPCOMING
+              ? handleOpen
+              : handleError
+          }
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <PriorityHighIcon
