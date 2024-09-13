@@ -22,6 +22,7 @@ import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { Status } from '@/utils/app.constant';
+import { fetchAttendanceStats } from '@/utils/helperAttendanceStatApi';
 
 interface DropOutModalProps {
   open: boolean;
@@ -29,6 +30,7 @@ interface DropOutModalProps {
   cohortMembershipId: string | number;
   isButtonAbsent?: boolean;
   statusReason?: string;
+  userId: string;
   reloadState: boolean;
   setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -39,6 +41,7 @@ function DropOutModal({
   cohortMembershipId,
   isButtonAbsent,
   statusReason,
+  userId,
   reloadState,
   setReloadState,
 }: DropOutModalProps) {
@@ -78,8 +81,13 @@ function DropOutModal({
     try {
       onClose(true, selectedReason);
       setLoading(true);
-
-      if (selectedReason && cohortMembershipId) {
+      const attendanceStats = await fetchAttendanceStats(userId);
+      if (attendanceStats && attendanceStats.length > 0) {
+        showToastMessage(
+          t('COMMON.CANNOT_DROPOUT_TODAY_ATTENDANCE_MARKED'),
+          'error'
+        );
+      } else if (selectedReason && cohortMembershipId) {
         const memberStatus = Status.DROPOUT;
         const statusReason = selectedReason;
         const membershipId = cohortMembershipId;
@@ -113,119 +121,117 @@ function DropOutModal({
   };
 
   return (
-    <React.Fragment>
-      <Modal
-        open={open}
-        aria-labelledby="child-modal-title"
-        aria-describedby="child-modal-description"
-      >
-        <Box sx={{ ...style }}>
-          <Box
-            display={'flex'}
-            justifyContent={'space-between'}
-            sx={{ padding: '18px 16px' }}
-          >
-            <Box marginBottom={'0px'}>
-              <Typography
-                variant="h2"
-                sx={{
-                  color: theme.palette.warning['A200'],
-                  fontSize: '14px',
-                }}
-                component="h2"
-              >
-                {t('COMMON.DROP_OUT')}
-              </Typography>
-            </Box>
-            <CloseIcon
+    <Modal
+      open={open}
+      aria-labelledby="child-modal-title"
+      aria-describedby="child-modal-description"
+    >
+      <Box sx={{ ...style }}>
+        <Box
+          display={'flex'}
+          justifyContent={'space-between'}
+          sx={{ padding: '18px 16px' }}
+        >
+          <Box marginBottom={'0px'}>
+            <Typography
+              variant="h2"
               sx={{
-                cursor: 'pointer',
                 color: theme.palette.warning['A200'],
+                fontSize: '14px',
               }}
-              onClick={() => onClose(false)}
-            />
+              component="h2"
+            >
+              {t('COMMON.DROP_OUT')}
+            </Typography>
           </Box>
-          <Divider />
-          {isButtonAbsent ? (
-            <Box sx={{ padding: '18px 16px', width: '100%' }}>
-              <Typography
-                variant="h2"
-                sx={{
-                  color: theme.palette.warning['400'],
-                  fontSize: '14px',
-                }}
-                component="h2"
-              >
-                {t('COMMON.REASON_FOR_DROPOUT')}
-              </Typography>
-
-              <Typography
-                variant="h2"
-                sx={{
-                  color: theme.palette.warning['300'],
-                  fontSize: '16px',
-                }}
-                component="h2"
-              >
-                {statusReason}
-              </Typography>
-            </Box>
-          ) : (
-            <>
-              <Box sx={{ padding: '10px 18px' }}>
-                <FormControl sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel
-                    sx={{
-                      fontSize: '16px',
-                      color: theme.palette.warning['300'],
-                    }}
-                    id="demo-multiple-name-label"
-                  >
-                    {t('COMMON.REASON_FOR_DROPOUT')}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-multiple-name-label"
-                    id="demo-multiple-name"
-                    input={<OutlinedInput label="Reason for Dropout" />}
-                    onChange={handleSelection}
-                  >
-                    {dropoutReasons?.map((reason) => (
-                      <MenuItem
-                        key={reason.value}
-                        value={reason.value}
-                        sx={{
-                          fontSize: '16px',
-                          color: theme.palette.warning['300'],
-                        }}
-                      >
-                        {reason.label
-                          .replace(/_/g, ' ')
-                          .toLowerCase()
-                          .replace(/^\w/, (c) => c.toUpperCase())}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box mt={1.5}>
-                <Divider />
-              </Box>
-              <Box p={'18px'}>
-                <Button
-                  className="w-100"
-                  sx={{ boxShadow: 'none' }}
-                  variant="contained"
-                  onClick={handleMarkDropout}
-                  disabled={isButtonDisabled}
-                >
-                  {t('COMMON.MARK_DROP_OUT')}
-                </Button>
-              </Box>
-            </>
-          )}
+          <CloseIcon
+            sx={{
+              cursor: 'pointer',
+              color: theme.palette.warning['A200'],
+            }}
+            onClick={() => onClose(false)}
+          />
         </Box>
-      </Modal>
-    </React.Fragment>
+        <Divider />
+        {isButtonAbsent ? (
+          <Box sx={{ padding: '18px 16px', width: '100%' }}>
+            <Typography
+              variant="h2"
+              sx={{
+                color: theme.palette.warning['400'],
+                fontSize: '14px',
+              }}
+              component="h2"
+            >
+              {t('COMMON.REASON_FOR_DROPOUT')}
+            </Typography>
+
+            <Typography
+              variant="h2"
+              sx={{
+                color: theme.palette.warning['300'],
+                fontSize: '16px',
+              }}
+              component="h2"
+            >
+              {statusReason}
+            </Typography>
+          </Box>
+        ) : (
+          <>
+            <Box sx={{ padding: '10px 18px' }}>
+              <FormControl sx={{ mt: 1, width: '100%' }}>
+                <InputLabel
+                  sx={{
+                    fontSize: '16px',
+                    color: theme.palette.warning['300'],
+                  }}
+                  id="demo-multiple-name-label"
+                >
+                  {t('COMMON.REASON_FOR_DROPOUT')}
+                </InputLabel>
+                <Select
+                  labelId="demo-multiple-name-label"
+                  id="demo-multiple-name"
+                  input={<OutlinedInput label="Reason for Dropout" />}
+                  onChange={handleSelection}
+                >
+                  {dropoutReasons?.map((reason) => (
+                    <MenuItem
+                      key={reason.value}
+                      value={reason.value}
+                      sx={{
+                        fontSize: '16px',
+                        color: theme.palette.warning['300'],
+                      }}
+                    >
+                      {reason.label
+                        .replace(/_/g, ' ')
+                        .toLowerCase()
+                        .replace(/^\w/, (c) => c.toUpperCase())}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+            <Box mt={1.5}>
+              <Divider />
+            </Box>
+            <Box p={'18px'}>
+              <Button
+                className="w-100"
+                sx={{ boxShadow: 'none' }}
+                variant="contained"
+                onClick={handleMarkDropout}
+                disabled={isButtonDisabled}
+              >
+                {t('COMMON.MARK_DROP_OUT')}
+              </Button>
+            </Box>
+          </>
+        )}
+      </Box>
+    </Modal>
   );
 }
 
