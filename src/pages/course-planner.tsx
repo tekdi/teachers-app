@@ -7,6 +7,7 @@ import {
   Grid,
   IconButton,
   InputBase,
+  InputLabel,
   MenuItem,
   Paper,
   Select,
@@ -18,7 +19,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { getCoursePlanner } from '@/services/CoursePlannerService';
 import { CoursePlannerData } from '@/utils/Interfaces';
@@ -26,29 +27,51 @@ import useCourseStore from '@/store/coursePlannerStore';
 import { getCohortSearch } from '@/services/CohortServices';
 import { CoursePlannerConstants } from '@/utils/app.constant';
 import useStore from '@/store/store';
-import { accessControl } from '../../app.config';
+import { accessControl, frameworkId } from '../../app.config';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import NoDataFound from '@/components/common/NoDataFound';
-import { toPascalCase } from '@/utils/Helper';
-
-// Define a type for the course planner data
+import taxonomyStore from '@/store/taxonomyStore';
+import coursePlannerStore from '@/store/coursePlannerStore';
+import {
+  filterAndMapAssociationsNew,
+  findCommonAssociations,
+  getAssociationsByCodeNew,
+  getOptionsByCategory,
+  toPascalCase,
+} from '@/utils/Helper';
 
 const CoursePlanner = () => {
-  const [value, setValue] = React.useState(1);
+  const [value, setValue] = React.useState();
   const [subjects, setSubjects] = React.useState<CoursePlannerData[]>([]);
-  const [state, setState] = React.useState<string>('');
-  const [board, setBoard] = React.useState<string>('');
-  const [medium, setMedium] = React.useState<string>('');
-  const [grade, setGrade] = React.useState<string>('');
   const [selectedValue, setSelectedValue] = React.useState('');
-
+  const setStateassociations = coursePlannerStore(
+    (state) => state.setStateassociations
+  );
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const [framework, setFramework] = useState<any[]>([]);
   const setSubject = useCourseStore((state) => state.setSubject);
+  const setState = taxonomyStore((state) => state.setState);
+  const setBoard = taxonomyStore((state) => state.setBoard);
+  const [boardOptions, setBoardOptions] = useState<any[]>([]);
+  const [boardAssociations, setBoardAssociations] = useState<any[]>([]);
+  const setMedium = taxonomyStore((state) => state.setMedium);
+  const [mediumOptions, setMediumOptions] = useState<any[]>([]);
+  const [mediumAssociations, setMediumAssociations] = useState<any[]>([]);
+  const setGrade = taxonomyStore((state) => state.setGrade);
+  const [gradeOptions, setGradeOptions] = useState<any[]>([]);
+  const [gradeAssociations, setGradeAssociations] = useState<any[]>([]);
+  const setType = taxonomyStore((state) => state.setType);
+  const [typeOptions, setTypeOptions] = useState<any[]>([]);
+  const [typeAssociations, setTypeAssociations] = useState<any[]>([]);
+  const userStateName = localStorage.getItem('stateName');
   const store = useStore();
-
+  const tStore = taxonomyStore();
+  const [stateOption, setStateOption] = useState<any[]>([]);
+  const [stateAssociations, setStateAssociations] = useState<any[]>([]);
+  const setTaxonomySubject = taxonomyStore((state) => state.setTaxonomySubject);
   const handleScrollDown = () => {
     if (inputRef.current) {
       const inputRect = inputRef.current.getBoundingClientRect();
@@ -57,6 +80,11 @@ const CoursePlanner = () => {
       const targetY = inputRect.top + scrollY - scrollMargin;
       window.scrollTo({ top: targetY - 70, behavior: 'smooth' });
     }
+  };
+
+  const handleChange = (event: any) => {
+    setValue(event.target.value);
+    setType(event.target.value);
   };
 
   const addQueryParams = (newParams: any) => {
@@ -74,10 +102,6 @@ const CoursePlanner = () => {
     );
   };
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
   const handleCohortChange = (event: any) => {
     setSelectedValue(event.target.value);
     addQueryParams({ center: event.target.value });
@@ -88,7 +112,7 @@ const CoursePlanner = () => {
       const cohortId = router.query.center
         ? router.query.center
         : store.cohorts[0].cohortId;
-      
+
       addQueryParams({ center: cohortId });
       setSelectedValue(cohortId);
     }
@@ -122,7 +146,7 @@ const CoursePlanner = () => {
               (field: any) => field.label === label
             );
 
-            if (field?.value) {
+            if (field && field.value) {
               const valuesArray = field.value
                 .split(',')
                 .map((item: string) => item.trim());
@@ -137,20 +161,599 @@ const CoursePlanner = () => {
               (field: any) => field.label === label
             );
 
-            if (field?.value) {
+            if (field && field.value) {
               setter(field.value.trim());
             }
           });
+
+          const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/read/${frameworkId}`;
+          const boardData = await fetch(url).then((res) => res.json());
+          console.log(boardData?.result?.framework);
+          const frameworks = boardData?.result?.framework;
+          const getStates = getOptionsByCategory(frameworks, 'state');
+
+          setFramework(frameworks);
+          const matchingState = getStates.find(
+            (state: any) => state.name === userStateName
+          );
+          if (matchingState) {
+            setStateOption([matchingState]);
+            setStateAssociations(matchingState.associations);
+
+            const getBoards = await getOptionsByCategory(frameworks, 'board');
+            if (getBoards && matchingState) {
+              const commonBoards = getBoards
+                .filter((item1: { code: any }) =>
+                  matchingState.associations.some(
+                    (item2: { code: any; category: string }) =>
+                      item2.code === item1.code && item2.category === 'board'
+                  )
+                )
+                .map((item1: { name: any; code: any; associations: any }) => ({
+                  name: item1.name,
+                  code: item1.code,
+                  associations: item1.associations,
+                }));
+              setBoardOptions(commonBoards);
+              const getMedium = await getOptionsByCategory(framework, 'medium');
+              const boardAssociations = getAssociationsByCodeNew(
+                boardOptions,
+                tStore?.board
+              );
+
+              setBoardAssociations(boardAssociations);
+
+              const commonMediumInState = getMedium
+                .filter((item1: { code: string }) =>
+                  stateAssociations.some(
+                    (item2: { code: string; category: string }) =>
+                      item2.code === item1.code && item2.category === 'medium'
+                  )
+                )
+                .map(
+                  (item1: {
+                    name: string;
+                    code: string;
+                    associations: any[];
+                  }) => ({
+                    name: item1.name,
+                    code: item1.code,
+                    associations: item1.associations,
+                  })
+                );
+
+              const commonMediumInBoard = getMedium
+                .filter((item1: { code: any }) =>
+                  boardAssociations.some(
+                    (item2: { code: any; category: string }) =>
+                      item2.code === item1.code && item2.category === 'medium'
+                  )
+                )
+                .map((item1: { name: any; code: any; associations: any }) => ({
+                  name: item1.name,
+                  code: item1.code,
+                  associations: item1.associations,
+                }));
+              console.log(`commonMediumInState`, commonMediumInState);
+              console.log(`commonMediumInBoard`, commonMediumInBoard);
+
+              const commonMediumData = findCommonAssociations(
+                commonMediumInState,
+                commonMediumInBoard
+              );
+              setMediumOptions(commonMediumData);
+
+              const getGrades = await getOptionsByCategory(
+                framework,
+                'gradeLevel'
+              );
+              const mediumAssociations = getAssociationsByCodeNew(
+                mediumOptions,
+                tStore?.medium
+              );
+              console.log('boardAssociations', stateAssociations);
+              setMediumAssociations(mediumAssociations);
+
+              const commonGradeInState = getGrades
+                .filter((item1: { code: string }) =>
+                  stateAssociations.some(
+                    (item2: { code: string; category: string }) =>
+                      item2.code === item1.code &&
+                      item2.category === 'gradeLevel'
+                  )
+                )
+                .map(
+                  (item1: {
+                    name: string;
+                    code: string;
+                    associations: any[];
+                  }) => ({
+                    name: item1.name,
+                    code: item1.code,
+                    associations: item1.associations,
+                  })
+                );
+
+              const commonGradeInBoard = getGrades
+                .filter((item1: { code: any }) =>
+                  boardAssociations.some(
+                    (item2: { code: any; category: string }) =>
+                      item2.code === item1.code &&
+                      item2.category === 'gradeLevel'
+                  )
+                )
+                .map((item1: { name: any; code: any; associations: any }) => ({
+                  name: item1.name,
+                  code: item1.code,
+                  associations: item1.associations,
+                }));
+
+              const commonGradeInMedium = await getGrades
+                .filter((item1: { code: any }) =>
+                  mediumAssociations.some(
+                    (item2: { code: any; category: string }) =>
+                      item2.code === item1.code &&
+                      item2.category === 'gradeLevel'
+                  )
+                )
+                .map((item1: { name: any; code: any; associations: any }) => ({
+                  name: item1.name,
+                  code: item1.code,
+                  associations: item1.associations,
+                }));
+              console.log(`commonGradeInState`, commonGradeInState);
+              console.log(`commonGradeInMedium`, commonGradeInMedium);
+
+              const commonGradeInStateBoard = findCommonAssociations(
+                commonGradeInState,
+                commonGradeInBoard
+              );
+              const overAllCommonGrade = findCommonAssociations(
+                commonGradeInStateBoard,
+                commonGradeInMedium
+              );
+              setGradeOptions(overAllCommonGrade);
+
+              const gradeAssociations = await getAssociationsByCodeNew(
+                gradeOptions,
+                tStore?.grade
+              );
+              setGradeAssociations(gradeAssociations);
+              const type = await getOptionsByCategory(framework, 'courseType');
+              console.log(type);
+
+              const commonTypeInState = filterAndMapAssociationsNew(
+                'courseType',
+                type,
+                stateAssociations,
+                'code'
+              );
+              const commonTypeInBoard = filterAndMapAssociationsNew(
+                'courseType',
+                type,
+                boardAssociations,
+                'code'
+              );
+              const commonTypeInMedium = filterAndMapAssociationsNew(
+                'courseType',
+                type,
+                mediumAssociations,
+                'code'
+              );
+              const commonTypeInGrade = filterAndMapAssociationsNew(
+                'courseType',
+                type,
+                gradeAssociations,
+                'code'
+              );
+
+              const commonTypeData = findCommonAssociations(
+                commonTypeInState,
+                commonTypeInBoard
+              );
+              const commonType2Data = findCommonAssociations(
+                commonTypeInMedium,
+                commonTypeInGrade
+              );
+              const commonType3Data = findCommonAssociations(
+                commonTypeData,
+                commonType2Data
+              );
+
+              console.log(`commonTypeOverall`, commonType3Data);
+              setTypeOptions(commonType3Data);
+              // setType(commonType3Data);
+
+              const typeAssociations = await getAssociationsByCodeNew(
+                typeOptions,
+                tStore?.type
+              );
+              setTypeAssociations(typeAssociations);
+              const subject = await getOptionsByCategory(framework, 'subject');
+
+              console.log(subject);
+
+              const commonSubjectInState = filterAndMapAssociationsNew(
+                'subject',
+                subject,
+                stateAssociations,
+                'code'
+              );
+              const commonSubjectInBoard = filterAndMapAssociationsNew(
+                'subject',
+                type,
+                boardAssociations,
+                'code'
+              );
+              const commonSubjectInMedium = filterAndMapAssociationsNew(
+                'subject',
+                subject,
+                mediumAssociations,
+                'code'
+              );
+              const commonSubjectInGrade = filterAndMapAssociationsNew(
+                'subject',
+                subject,
+                gradeAssociations,
+                'code'
+              );
+              const commonSubjectInType = filterAndMapAssociationsNew(
+                'subject',
+                subject,
+                typeAssociations,
+                'code'
+              );
+
+              const findCommonAssociationsNew = (
+                array1: any[],
+                array2: any[]
+              ) => {
+                return array1.filter((item1: { code: any }) =>
+                  array2.some(
+                    (item2: { code: any }) => item1.code === item2.code
+                  )
+                );
+              };
+
+              const findOverallCommonSubjects = (arrays: any[]) => {
+                const nonEmptyArrays = arrays.filter(
+                  (array: string | any[]) => array && array.length > 0
+                );
+
+                if (nonEmptyArrays.length === 0) return [];
+
+                let commonSubjects = nonEmptyArrays[0];
+
+                for (let i = 1; i < nonEmptyArrays.length; i++) {
+                  commonSubjects = findCommonAssociationsNew(
+                    commonSubjects,
+                    nonEmptyArrays[i]
+                  );
+
+                  if (commonSubjects.length === 0) return [];
+                }
+
+                return commonSubjects;
+              };
+
+              const arrays = [
+                commonSubjectInState,
+                commonSubjectInBoard,
+                commonSubjectInMedium,
+                commonSubjectInGrade,
+                commonSubjectInType,
+              ];
+
+              const overallCommonSubjects =
+                await findOverallCommonSubjects(arrays);
+
+              console.log(overallCommonSubjects);
+
+              setSubjects(overallCommonSubjects);
+            }
+          }
         }
       } catch (error) {
         console.error('Failed to fetch cohort search results:', error);
       }
     };
 
-    if (selectedValue) {
-      fetchCohortSearchResults();
-    }
-  }, [selectedValue]);
+    fetchCohortSearchResults();
+  }, []);
+
+  useEffect(() => {
+    const fetchTaxonomyResults = async () => {
+      try {
+        const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/api/framework/v1/read/${frameworkId}`;
+        const boardData = await fetch(url).then((res) => res.json());
+        console.log(boardData?.result?.framework);
+        const frameworks = boardData?.result?.framework;
+        const getStates = getOptionsByCategory(frameworks, 'state');
+
+        setFramework(frameworks);
+        const matchingState = getStates.find(
+          (state: any) => state.name === userStateName
+        );
+        if (matchingState) {
+          setStateOption([matchingState]);
+          setStateAssociations(matchingState.associations);
+
+          const getBoards = await getOptionsByCategory(frameworks, 'board');
+          if (getBoards && matchingState) {
+            const commonBoards = getBoards
+              .filter((item1: { code: any }) =>
+                matchingState.associations.some(
+                  (item2: { code: any; category: string }) =>
+                    item2.code === item1.code && item2.category === 'board'
+                )
+              )
+              .map((item1: { name: any; code: any; associations: any }) => ({
+                name: item1.name,
+                code: item1.code,
+                associations: item1.associations,
+              }));
+            setBoardOptions(commonBoards);
+            const getMedium = await getOptionsByCategory(framework, 'medium');
+            const boardAssociations = getAssociationsByCodeNew(
+              boardOptions,
+              tStore?.board
+            );
+
+            setBoardAssociations(boardAssociations);
+
+            const commonMediumInState = getMedium
+              .filter((item1: { code: string }) =>
+                stateAssociations.some(
+                  (item2: { code: string; category: string }) =>
+                    item2.code === item1.code && item2.category === 'medium'
+                )
+              )
+              .map(
+                (item1: {
+                  name: string;
+                  code: string;
+                  associations: any[];
+                }) => ({
+                  name: item1.name,
+                  code: item1.code,
+                  associations: item1.associations,
+                })
+              );
+
+            const commonMediumInBoard = getMedium
+              .filter((item1: { code: any }) =>
+                boardAssociations.some(
+                  (item2: { code: any; category: string }) =>
+                    item2.code === item1.code && item2.category === 'medium'
+                )
+              )
+              .map((item1: { name: any; code: any; associations: any }) => ({
+                name: item1.name,
+                code: item1.code,
+                associations: item1.associations,
+              }));
+            console.log(`commonMediumInState`, commonMediumInState);
+            console.log(`commonMediumInBoard`, commonMediumInBoard);
+
+            const commonMediumData = findCommonAssociations(
+              commonMediumInState,
+              commonMediumInBoard
+            );
+            setMediumOptions(commonMediumData);
+
+            const getGrades = await getOptionsByCategory(
+              framework,
+              'gradeLevel'
+            );
+            const mediumAssociations = getAssociationsByCodeNew(
+              mediumOptions,
+              tStore?.medium
+            );
+            console.log('boardAssociations', stateAssociations);
+            setMediumAssociations(mediumAssociations);
+
+            const commonGradeInState = getGrades
+              .filter((item1: { code: string }) =>
+                stateAssociations.some(
+                  (item2: { code: string; category: string }) =>
+                    item2.code === item1.code && item2.category === 'gradeLevel'
+                )
+              )
+              .map(
+                (item1: {
+                  name: string;
+                  code: string;
+                  associations: any[];
+                }) => ({
+                  name: item1.name,
+                  code: item1.code,
+                  associations: item1.associations,
+                })
+              );
+
+            const commonGradeInBoard = getGrades
+              .filter((item1: { code: any }) =>
+                boardAssociations.some(
+                  (item2: { code: any; category: string }) =>
+                    item2.code === item1.code && item2.category === 'gradeLevel'
+                )
+              )
+              .map((item1: { name: any; code: any; associations: any }) => ({
+                name: item1.name,
+                code: item1.code,
+                associations: item1.associations,
+              }));
+
+            const commonGradeInMedium = await getGrades
+              .filter((item1: { code: any }) =>
+                mediumAssociations.some(
+                  (item2: { code: any; category: string }) =>
+                    item2.code === item1.code && item2.category === 'gradeLevel'
+                )
+              )
+              .map((item1: { name: any; code: any; associations: any }) => ({
+                name: item1.name,
+                code: item1.code,
+                associations: item1.associations,
+              }));
+            console.log(`commonGradeInState`, commonGradeInState);
+            console.log(`commonGradeInMedium`, commonGradeInMedium);
+
+            const commonGradeInStateBoard = findCommonAssociations(
+              commonGradeInState,
+              commonGradeInBoard
+            );
+            const overAllCommonGrade = findCommonAssociations(
+              commonGradeInStateBoard,
+              commonGradeInMedium
+            );
+            setGradeOptions(overAllCommonGrade);
+
+            const gradeAssociations = await getAssociationsByCodeNew(
+              gradeOptions,
+              tStore?.grade
+            );
+            setGradeAssociations(gradeAssociations);
+            const type = await getOptionsByCategory(framework, 'courseType');
+            console.log(type);
+
+            const commonTypeInState = filterAndMapAssociationsNew(
+              'courseType',
+              type,
+              stateAssociations,
+              'code'
+            );
+            const commonTypeInBoard = filterAndMapAssociationsNew(
+              'courseType',
+              type,
+              boardAssociations,
+              'code'
+            );
+            const commonTypeInMedium = filterAndMapAssociationsNew(
+              'courseType',
+              type,
+              mediumAssociations,
+              'code'
+            );
+            const commonTypeInGrade = filterAndMapAssociationsNew(
+              'courseType',
+              type,
+              gradeAssociations,
+              'code'
+            );
+
+            const commonTypeData = findCommonAssociations(
+              commonTypeInState,
+              commonTypeInBoard
+            );
+            const commonType2Data = findCommonAssociations(
+              commonTypeInMedium,
+              commonTypeInGrade
+            );
+            const commonType3Data = findCommonAssociations(
+              commonTypeData,
+              commonType2Data
+            );
+
+            console.log(`commonTypeOverall`, commonType3Data);
+            setTypeOptions(commonType3Data);
+            // setType(commonType3Data);
+
+            const typeAssociations = getAssociationsByCodeNew(
+              typeOptions,
+              tStore?.type
+            );
+            setTypeAssociations(typeAssociations);
+            const subject = await getOptionsByCategory(framework, 'subject');
+
+            console.log(subject);
+
+            const commonSubjectInState = filterAndMapAssociationsNew(
+              'subject',
+              subject,
+              stateAssociations,
+              'code'
+            );
+            const commonSubjectInBoard = filterAndMapAssociationsNew(
+              'subject',
+              type,
+              boardAssociations,
+              'code'
+            );
+            const commonSubjectInMedium = filterAndMapAssociationsNew(
+              'subject',
+              subject,
+              mediumAssociations,
+              'code'
+            );
+            const commonSubjectInGrade = filterAndMapAssociationsNew(
+              'subject',
+              subject,
+              gradeAssociations,
+              'code'
+            );
+            const commonSubjectInType = filterAndMapAssociationsNew(
+              'subject',
+              subject,
+              typeAssociations,
+              'code'
+            );
+
+            const findCommonAssociationsNew = (
+              array1: any[],
+              array2: any[]
+            ) => {
+              return array1.filter((item1: { code: any }) =>
+                array2.some((item2: { code: any }) => item1.code === item2.code)
+              );
+            };
+
+            const findOverallCommonSubjects = (arrays: any[]) => {
+              const nonEmptyArrays = arrays.filter(
+                (array: string | any[]) => array && array.length > 0
+              );
+
+              if (nonEmptyArrays.length === 0) return [];
+
+              let commonSubjects = nonEmptyArrays[0];
+
+              for (let i = 1; i < nonEmptyArrays.length; i++) {
+                commonSubjects = findCommonAssociationsNew(
+                  commonSubjects,
+                  nonEmptyArrays[i]
+                );
+
+                if (commonSubjects.length === 0) return [];
+              }
+
+              return commonSubjects;
+            };
+
+            const arrays = [
+              commonSubjectInState,
+              commonSubjectInBoard,
+              commonSubjectInMedium,
+              commonSubjectInGrade,
+              commonSubjectInType,
+            ];
+
+            const overallCommonSubjects =
+              await findOverallCommonSubjects(arrays);
+
+            console.log(overallCommonSubjects);
+
+            setSubjects(overallCommonSubjects);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch cohort search results:', error);
+      }
+    };
+
+
+      fetchTaxonomyResults();
+  
+  }, [value]);
 
   return (
     <Box minHeight="100vh">
@@ -191,7 +794,7 @@ const CoursePlanner = () => {
                   MenuProps={{
                     style: {
                       maxHeight: 400,
-                    },
+                    }
                   }}
                 >
                   {store.cohorts.map((cohort: any) => (
@@ -200,7 +803,7 @@ const CoursePlanner = () => {
                       value={cohort.cohortId}
                       className="text-truncate"
                     >
-                      {toPascalCase(cohort?.name)}
+                     {toPascalCase(cohort?.name)}
                     </MenuItem>
                   ))}
                 </Select>
@@ -234,172 +837,143 @@ const CoursePlanner = () => {
         </Grid>
       </Grid>
 
-      <Box sx={{ mt: 2 }}>
-        <Box
-          sx={{
-            width: '100%',
-            '@media (max-width: 600px)': {
-              display: 'flex',
-              justifyContent: 'center',
-            },
-            borderBottom: `1px solid ${theme.palette.primary.contrastText}`,
-          }}
-        >
-          <Tabs
+      <Box sx={{ m: 3 }}>
+        <FormControl sx={{ width: '100%' }}>
+          <InputLabel id="course-type-select-label">Course Type</InputLabel>
+          <Select
+            labelId="course-type-select-label"
+            id="course-type-select"
             value={value}
             onChange={handleChange}
-            textColor="inherit"
-            aria-label="secondary tabs example"
+            label="Course Type"
+            sx={{ fontSize: '14px' }}
+          >
+            <MenuItem value={'Foundation Course'}>
+              {t('COURSE_PLANNER.FOUNDATION_COURSE')}
+            </MenuItem>
+            <MenuItem value={'Main Course'}>
+              {t('COURSE_PLANNER.MAIN_COURSE')}
+            </MenuItem>
+          </Select>
+        </FormControl>
+
+        <Box sx={{ px: '16px', mt: 2 }}>
+          <Box
             sx={{
-              fontSize: '14px',
-              '& .MuiTab-root': {
-                color: '#4D4639',
-                padding: '0 20px',
-              },
-              '& .Mui-selected': {
-                color: '#4D4639',
-              },
-              '& .MuiTabs-indicator': {
-                display: 'flex',
-                justifyContent: 'center',
-                backgroundColor: theme.palette.primary.main,
-                borderRadius: '100px',
-                height: '3px',
-              },
-              '& .MuiTabs-scroller': {
-                overflowX: 'unset !important',
-              },
+              background: theme.palette.action.selected,
+              py: '2px',
+              borderRadius: '8px',
+              marginBottom: '20px',
             }}
           >
-            <Tab value={1} label={t('COURSE_PLANNER.FOUNDATION_COURSE')} />
-            <Tab value={2} label={t('COURSE_PLANNER.MAIN_COURSE')} />
-          </Tabs>
-        </Box>
-        {value === 1 && (
-          <Box sx={{ px: '16px', mt: 2 }}>
-            <Box
-              sx={{
-                background: theme.palette.action.selected,
-                py: '2px',
-                borderRadius: '8px',
-                marginBottom: '20px',
-              }}
-            >
-              <Grid container>
-                {subjects?.length > 0 ? (
-                  subjects.map((item: any) => (
-                    <Grid key={item.id} item xs={12} sm={6} md={4}>
+            <Grid container>
+              {subjects?.length > 0 ? (
+                subjects.map((item: any) => (
+                  <Grid key={item.code} item xs={12} sm={6} md={4}>
+                    <Box
+                      sx={{
+                        border: `1px solid ${theme.palette.warning.A100}`,
+                        borderRadius: '8px',
+                        padding: '12px',
+                        cursor: 'pointer',
+                        margin: '14px',
+                        background: theme.palette.warning['A400'],
+                      }}
+                      onClick={() => {
+                        setTaxonomySubject(item.name);
+                        router.push({
+                          pathname: '/course-planner-detail',
+                        });
+                      }}
+                    >
                       <Box
                         sx={{
-                          border: `1px solid ${theme.palette.warning.A100}`,
-                          borderRadius: '8px',
-                          padding: '12px',
-                          cursor: 'pointer',
-                          margin: '14px',
-                          background: theme.palette.warning['A400'],
-                        }}
-                        onClick={() => {
-                          setSubject(item);
-                          router.push({
-                            pathname: '/course-planner-detail',
-                            query: {
-                              subject: item,
-                              state: state,
-                              board: board,
-                              medium: medium,
-                              grade: grade,
-                            },
-                          });
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
                         }}
                       >
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <Box>
+                        <Box>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              gap: '15px',
+                              alignItems: 'center',
+                            }}
+                          >
                             <Box
                               sx={{
-                                display: 'flex',
-                                gap: '15px',
-                                alignItems: 'center',
+                                position: 'relative',
+                                display: 'inline-flex',
                               }}
                             >
+                              {/* <Box sx={{ width: '40px', height: '40px' }}>
+                                <CircularProgressbar
+                                  value={item.circular || 0}
+                                  strokeWidth={10}
+                                  styles={buildStyles({
+                                    pathColor: '#06A816',
+                                    trailColor: '#E6E6E6',
+                                    strokeLinecap: 'round',
+                                  })}
+                                />
+                              </Box>
+
                               <Box
                                 sx={{
-                                  position: 'relative',
-                                  display: 'inline-flex',
+                                  top: 0,
+                                  left: 0,
+                                  bottom: 0,
+                                  right: 0,
+                                  position: 'absolute',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
                                 }}
                               >
-                                {/* <Box sx={{ width: '40px', height: '40px' }}>
-                                  <CircularProgressbar
-                                    value={item.circular}
-                                    strokeWidth={10}
-                                    styles={buildStyles({
-                                      pathColor: '#06A816',
-                                      trailColor: '#E6E6E6',
-                                      strokeLinecap: 'round',
-                                    })}
-                                  />
-                                </Box>
-
-                                <Box
+                                <Typography
+                                  variant="caption"
+                                  component="div"
                                   sx={{
-                                    top: 0,
-                                    left: 0,
-                                    bottom: 0,
-                                    right: 0,
-                                    position: 'absolute',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
+                                    fontSize: '11px',
+                                    color: theme.palette.warning['300'],
+                                    fontWeight: '500',
                                   }}
                                 >
-                                  <Typography
-                                    variant="caption"
-                                    component="div"
-                                    sx={{
-                                      fontSize: '11px',
-                                      color: theme.palette.warning['300'],
-                                      fontWeight: '500',
-                                    }}
-                                  >
-                                    {item.circular}%
-                                  </Typography>
-                                </Box> */}
-                              </Box>
+                                  {item.circular || 0}%
+                                </Typography>
+                              </Box> */}
+                            </Box>
 
-                              <Box
-                                sx={{
-                                  fontSize: '16px',
-                                  color: theme.palette.warning['300'],
-                                }}
-                              >
-                                {item}
-                              </Box>
+                            <Box
+                              sx={{
+                                fontSize: '16px',
+                                color: theme.palette.warning['300'],
+                              }}
+                            >
+                              {item.name}
                             </Box>
                           </Box>
-                          <Box>
-                            <KeyboardArrowRightIcon
-                              sx={{ color: theme.palette.warning['300'] }}
-                            />
-                          </Box>
+                        </Box>
+                        <Box>
+                          <KeyboardArrowRightIcon
+                            sx={{ color: theme.palette.warning['300'] }}
+                          />
                         </Box>
                       </Box>
-                    </Grid>
-                  ))
-                ) : (
-                  <NoDataFound />
-                )}
-              </Grid>
-            </Box>
+                    </Box>
+                  </Grid>
+                ))
+              ) : (
+                <Box sx={{ ml: 2, p: 2 }}>
+                  <Typography variant="h2">
+                    {t('ASSESSMENTS.NO_DATA_FOUND')}
+                  </Typography>
+                </Box>
+              )}
+            </Grid>
           </Box>
-        )}
-        {value === 2 && (
-          <NoDataFound />
-        )}
+        </Box>
       </Box>
     </Box>
   );
