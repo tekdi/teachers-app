@@ -59,13 +59,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
     <>
       <Box
         sx={{
-          width: '668px',
-          '@media (max-width: 768px)': {
-            width: '100%',
-          },
-          '@media (min-width: 900px)': {
-            width: '100%',
-          },
+          width: '100%',
         }}
         margin={'3.2rem 0 0'}
       >
@@ -178,13 +172,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
 
       <Box
         sx={{
-          width: '668px',
-          '@media (max-width: 768px)': {
-            width: '100%',
-          },
-          '@media (min-width: 900px)': {
-            width: '100%',
-          },
+          width: '100%',
         }}
         margin={'2rem 0 0'}
       >
