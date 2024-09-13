@@ -489,11 +489,18 @@ export const getAssociationsByName = (data: DataItem[], name: string): Associati
   return foundItem ? foundItem.associations : [];
 };
 
+
 export const getAssociationsByCodeNew = (data: DataItem[], code: string): Association[] | [] => {
   const foundItem = data.find(item => item.name === code);
   return foundItem ? foundItem.associations : [];
 };
 
+
+
+export const getAssociationsByCode = (data: DataItem[], code: string): Association[] | [] => {
+  const foundItem = data.find(item => item.code === code);
+  return foundItem ? foundItem.associations : [];
+};
 
 export const findCommonAssociations = (data1: any[], data2: any[]) => {
   return data1.map((item1) => {
