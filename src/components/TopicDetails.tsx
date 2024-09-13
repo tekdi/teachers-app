@@ -132,7 +132,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                 : undefined
             }
           >
-            {t('CENTER_SESSION.REMOVE_THIS_SESSION')}
+            {t('CENTER_SESSION.REMOVE_TOPIC_SUBTOPIC')}
           </Box>
           <DeleteOutlineIcon
             sx={{

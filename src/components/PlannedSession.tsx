@@ -747,10 +747,14 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         deleteSelection !== t('CENTER_SESSION.EDIT_THIS_SESSION');
 
       const eventRepetitionId = eventData?.eventRepetitionId;
-
+      const userId =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('userId') || ''
+          : '';
       const apiBody = {
         isMainEvent: isMainEvent,
         status: 'archived',
+        updatedBy: userId,
       };
       const response = await editEvent(eventRepetitionId, apiBody);
       if (response?.responseCode === 'OK') {
