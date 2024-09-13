@@ -489,6 +489,12 @@ export const getAssociationsByCode = (data: DataItem[], code: string): Associati
   return foundItem ? foundItem.associations : [];
 };
 
+export const getAssociationsByCodeNew = (data: DataItem[], code: string): Association[] | [] => {
+  const foundItem = data.find(item => item.name === code);
+  return foundItem ? foundItem.associations : [];
+};
+
+
 export const findCommonAssociations = (data1: any[], data2: any[]) => {
   return data1.map((item1) => {
     const item2 = data2.find((item) => item.code === item1.code);
@@ -504,4 +510,34 @@ export const findCommonAssociations = (data1: any[], data2: any[]) => {
     }
     return null;
   }).filter(Boolean); 
+};
+
+export const filterAndMapAssociationsNew = (
+  category: string,
+  options: any[],
+  associationsList?: any[],
+  codeKey: string = "code"
+) => {
+  if (!Array.isArray(options)) {
+    console.error("Options is not an array:", options);
+    return [];
+  }
+
+  if (!associationsList || associationsList.length === 0) {
+    return [];
+  }
+
+  return options
+    .filter((option) => {
+      const optionCode = option[codeKey];
+
+      return associationsList.some(
+        (assoc) => assoc[codeKey] === optionCode && assoc.category === category
+      );
+    })
+    .map((option) => ({
+      name: option.name,
+      code: option.code,
+      associations: option.associations || [],
+    }));
 };
