@@ -385,6 +385,10 @@ export interface SessionCardFooterProps {
   item: any;
   cohortName?: string;
   isTopicSubTopicAdded?: any;
+  state?: string;
+  board?: string;
+  medium?: string;
+  grade?: string;
 }
 
 export interface TopicSubtopicProps {
@@ -680,11 +684,11 @@ export interface CentralizedModalProps {
   modalOpen?: boolean;
   handlePrimaryButton?: () => void;
   handleSkipButton?: () => void;
-  icon?:boolean;
+  icon?: boolean;
 }
 
 export interface GetUserProjectStatusParams {
-  data:any;
+  data: any;
   id: string;
   lastDownloadedAt: string;
 }

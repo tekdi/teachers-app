@@ -14,6 +14,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { EventStatus } from '@/utils/app.constant';
 import { RequisiteType } from '../../app.config';
+import NoDataFound from './common/NoDataFound';
 interface TopicDetailsProps {
   topic: string;
   subTopic: [];
@@ -210,9 +211,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                     </Grid>
                   ))
               ) : (
-                <Typography sx={{ m: 2 }}>
-                  {t('COMMON.NO_DATA_FOUND')}
-                </Typography>
+                <NoDataFound />
               )}
             </Grid>
           </AccordionDetails>
@@ -288,10 +287,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                     </Grid>
                   ))
               ) : (
-                <Typography sx={{ m: 2 }}>
-                  {' '}
-                  {t('COMMON.NO_DATA_FOUND')}
-                </Typography>
+                <NoDataFound />
               )}
             </Grid>
           </AccordionDetails>
@@ -367,9 +363,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                     </Grid>
                   ))
               ) : (
-                <Typography sx={{ m: 2 }}>
-                  {t('COMMON.NO_DATA_FOUND')}
-                </Typography>
+                <NoDataFound />
               )}
             </Grid>
           </AccordionDetails>

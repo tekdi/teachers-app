@@ -28,6 +28,10 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   item,
   cohortName,
   isTopicSubTopicAdded,
+  state,
+  board,
+  medium,
+  grade,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -52,12 +56,12 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     const fetchTopicSubtopic = async () => {
       try {
         const response = await getTargetedSolutions({
-          subject: 'Science',
-          state: 'Maharashtra',
-          medium: 'English',
-          class: 'Grade 10',
-          board: 'Maharashtra',
+          state: state,
+          medium: medium,
+          class: grade,
+          board: board,
           type: 'Main Course',
+          subject: 'Science',
         });
 
         const courseData = response?.result?.data
