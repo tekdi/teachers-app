@@ -52,12 +52,12 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     const fetchTopicSubtopic = async () => {
       try {
         const response = await getTargetedSolutions({
-          subject: 'English',
+          subject: 'Science',
           state: 'Maharashtra',
-          medium: 'Hindi',
+          medium: 'English',
           class: 'Grade 10',
-          board: 'Gujarat Secondary and Higher Secondary Education Board',
-          type: 'mainCourse',
+          board: 'Maharashtra',
+          type: 'Main Course',
         });
 
         const courseData = response?.result?.data
@@ -84,6 +84,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
                   (resource: any) => ({
                     name: resource?.name,
                     link: resource?.link,
+                    type: resource?.type || '',
                   })
                 );
                 return subAcc;
