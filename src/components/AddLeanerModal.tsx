@@ -6,9 +6,7 @@ import {
 import SimpleModal from '@/components/SimpleModal';
 import { useFormRead } from '@/hooks/useFormRead';
 import { createUser } from '@/services/CreateUserService';
-import {
-  sendEmailOnLearnerCreation,
-} from '@/services/NotificationService';
+import { sendEmailOnLearnerCreation } from '@/services/NotificationService';
 import { editEditUser } from '@/services/ProfileService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 import { generateUsernameAndPassword } from '@/utils/Helper';
@@ -24,7 +22,7 @@ import { RJSFSchema } from '@rjsf/utils';
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { useTranslation } from 'react-i18next';
-import { tenantId } from '../../app.config';
+import { addPassword, addUserName, tenantId } from '../../app.config';
 import FormButtons from './FormButtons';
 import SendCredentialModal from './SendCredentialModal';
 import { showToastMessage } from './Toastify';
@@ -79,7 +77,13 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     }
   }, [formResponse]);
 
-  const sendEmail = async (name: string, username: string, password: string, email: string, learnerName: string) => {
+  const sendEmail = async (
+    name: string,
+    username: string,
+    password: string,
+    email: string,
+    learnerName: string
+  ) => {
     try {
       const response = await sendEmailOnLearnerCreation(
         name,
@@ -89,11 +93,8 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         learnerName
       );
       if (response?.email?.data?.[0]?.[0]?.status !== 'success') {
-        showToastMessage(
-          t('COMMON.USER_CREDENTIAL_SEND_FAILED'),
-          'error'
-        );
-      } 
+        showToastMessage(t('COMMON.USER_CREDENTIAL_SEND_FAILED'), 'error');
+      }
       setOpenModal(true);
     } catch (error) {
       console.error('error in sending email', error);
@@ -136,8 +137,6 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         ''
       );
       const apiBody: any = {
-        username: username,
-        password: password,
         tenantCohortRoleMapping: [
           {
             tenantId: tenantId,
@@ -147,6 +146,13 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         ],
         customFields: [],
       };
+      if (addUserName) {
+        apiBody.username = username;
+      }
+
+      if (addPassword) {
+        apiBody.password = password;
+      }
 
       Object.entries(learnerFormData).forEach(([fieldKey, fieldValue]) => {
         const fieldSchema = schemaProperties[fieldKey];
@@ -252,9 +258,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             };
             telemetryFactory.interact(telemetryInteract);
 
-            let creatorName: string  = '';
+            let creatorName: string = '';
             if (typeof window !== 'undefined' && window.localStorage) {
-              creatorName = localStorage.getItem('userName') as string || '';
+              creatorName = (localStorage.getItem('userName') as string) || '';
             }
             // if (creatorName && userEmail) {
             //   sendEmail(creatorName, username, password, userEmail, apiBody['name']);
