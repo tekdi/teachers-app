@@ -9,6 +9,8 @@ import { useRouter } from 'next/router';
 import { forgotPasswordAPI } from '@/services/LoginService';
 import CentralizedModal from '@/components/CentralizedModal';
 import { jwtDecode } from 'jwt-decode';
+import Image from 'next/image';
+import Logo from './../../assets/images/Pratham-Logo.png';
 
 const ResetPassword = () => {
   const { t } = useTranslation();
@@ -73,7 +75,6 @@ const ResetPassword = () => {
           '@media (min-width: 700px)': {
             width: '50%',
             boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
-            padding: '60px',
             marginTop: '0rem',
             borderRadius: '16px',
           },
@@ -81,49 +82,54 @@ const ResetPassword = () => {
           marginTop: '8rem',
         }}
       >
-        <Box
-          sx={{
-            color: theme.palette.warning['300'],
-            fontWeight: '400',
-            fontSize: '22px',
-            textAlign: 'center',
-          }}
-        >
-          {t('LOGIN_PAGE.CREATE_STRONG_PASSWORD')}
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Image src={Logo} alt="App Logo" height={100} />
         </Box>
-        <Box
-          sx={{
-            color: theme.palette.warning['300'],
-            fontWeight: '400',
-            fontSize: '14px',
-            textAlign: 'center',
-            mt: 0.5,
-          }}
-        >
-          {t('LOGIN_PAGE.CREATE_NEW')}
-        </Box>
-        {isTokenValid ? (
-          <PasswordCreate handleResetPassword={handleResetPassword} />
-        ) : (
+        <Box sx={{ padding: '60px' }}>
           <Box
             sx={{
-              color: theme.palette.error.main,
+              color: theme.palette.warning['300'],
               fontWeight: '400',
-              fontSize: '16px',
+              fontSize: '22px',
               textAlign: 'center',
-              mt: 2,
             }}
           >
-            {t('LOGIN_PAGE.LINK_EXPIRED')}
+            {t('LOGIN_PAGE.CREATE_STRONG_PASSWORD')}
           </Box>
-        )}
-        <CentralizedModal
-          icon={true}
-          subTitle={t('LOGIN_PAGE.SUCCESSFULLY_RESET')}
-          primary={t('COMMON.OKAY')}
-          modalOpen={forgotPassword}
-          handlePrimaryButton={handlePrimaryButton}
-        />
+          <Box
+            sx={{
+              color: theme.palette.warning['300'],
+              fontWeight: '400',
+              fontSize: '14px',
+              textAlign: 'center',
+              mt: 0.5,
+            }}
+          >
+            {t('LOGIN_PAGE.CREATE_NEW')}
+          </Box>
+          {isTokenValid ? (
+            <PasswordCreate handleResetPassword={handleResetPassword} />
+          ) : (
+            <Box
+              sx={{
+                color: theme.palette.error.main,
+                fontWeight: '400',
+                fontSize: '16px',
+                textAlign: 'center',
+                mt: 2,
+              }}
+            >
+              {t('LOGIN_PAGE.LINK_EXPIRED')}
+            </Box>
+          )}
+          <CentralizedModal
+            icon={true}
+            subTitle={t('LOGIN_PAGE.SUCCESSFULLY_RESET')}
+            primary={t('COMMON.OKAY')}
+            modalOpen={forgotPassword}
+            handlePrimaryButton={handlePrimaryButton}
+          />
+        </Box>
       </Box>
     </Box>
   );

@@ -8,6 +8,8 @@ import { resetPassword } from '@/services/LoginService';
 import CentralizedModal from '@/components/CentralizedModal';
 import { showToastMessage } from '@/components/Toastify';
 import { useRouter } from 'next/router';
+import Logo from '../assets/images/Pratham-Logo.png';
+import Image from 'next/image';
 
 const CreatePassword = () => {
   const { t } = useTranslation();
@@ -64,7 +66,6 @@ const CreatePassword = () => {
           '@media (min-width: 700px)': {
             width: editPassword ? '70%' : '50%',
             boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
-            padding: '60px',
             marginTop: editPassword ? '2rem' : '0rem',
             borderRadius: '16px',
           },
@@ -74,27 +75,37 @@ const CreatePassword = () => {
       >
         <Box
           sx={{
-            color: theme.palette.warning['300'],
-            fontWeight: '400',
-            fontSize: '22px',
-            textAlign: 'center',
+            display: editPassword ? 'none' : 'flex',
+            justifyContent: 'center',
           }}
         >
-          {t('LOGIN_PAGE.CREATE_STRONG_PASSWORD')}
+          <Image src={Logo} alt="App Logo" height={100} />
         </Box>
-        <Box
-          sx={{
-            color: theme.palette.warning['300'],
-            fontWeight: '400',
-            fontSize: '14px',
-            textAlign: 'center',
-            mt: 0.5,
-            display: editPassword ? 'none' : 'inline-block',
-          }}
-        >
-          {t('LOGIN_PAGE.CREATE_NEW')}
+        <Box sx={{ padding: '60px' }}>
+          <Box
+            sx={{
+              color: theme.palette.warning['300'],
+              fontWeight: '400',
+              fontSize: '22px',
+              textAlign: 'center',
+            }}
+          >
+            {t('LOGIN_PAGE.CREATE_STRONG_PASSWORD')}
+          </Box>
+          <Box
+            sx={{
+              color: theme.palette.warning['300'],
+              fontWeight: '400',
+              fontSize: '14px',
+              textAlign: 'center',
+              mt: 0.5,
+              display: editPassword ? 'none' : 'inline-block',
+            }}
+          >
+            {t('LOGIN_PAGE.CREATE_NEW')}
+          </Box>
+          <PasswordCreate handleResetPassword={handleResetPassword} />
         </Box>
-        <PasswordCreate handleResetPassword={handleResetPassword} />
       </Box>
       <CentralizedModal
         icon={true}

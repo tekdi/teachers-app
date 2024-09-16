@@ -748,6 +748,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           cohortMembershipId={cohortMembershipId}
           isButtonAbsent={true}
           statusReason={statusReason}
+          userId={userId}
           reloadState={reloadState}
           setReloadState={setReloadState}
         />
@@ -756,6 +757,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           open={showModal}
           onClose={() => setShowModal(false)}
           cohortMembershipId={cohortMembershipId}
+          userId={userId}
           reloadState={reloadState}
           setReloadState={setReloadState}
         />
