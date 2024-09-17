@@ -1,18 +1,22 @@
-import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
+import { experimental_extendTheme as extendTheme, getContrastRatio } from '@mui/material/styles';
 
 // Common component style overrides
 const commonComponents = {
   MuiButton: {
     styleOverrides: {
-      root: {
-        borderRadius: '100px',
-        border: '1px solid #1E1B16',
-        color: '#1E1B16',
+      root: ({ theme }: any) => {
+        const lightA400 = theme.colorSchemes.light.palette.warning.A400;
+        const darkA400 = theme.colorSchemes.dark.palette.warning.A400;
+        return {
+          borderRadius: '100px',
+          border: '1px solid #1E1B16',
+          color: theme.palette.mode === 'dark' ? lightA400 : darkA400, // Replace with a valid color value
+        };
       },
-      containedPrimary: {
-        backgroundColor: '#FDBE16',
+      containedPrimary: ({ theme }: any) => ({
         border: 'none',
-      },
+        color: getContrastRatio(theme.palette.primary.main, '#FFFFFF') >= 3 ? '#FFFFFF' : '#000000',
+      }),
       outlinedPrimary: {
         backgroundColor: 'none',
         border: '1px solid #1E1B16',
@@ -29,8 +33,18 @@ const commonComponents = {
   },
   MuiTextField: {
     styleOverrides: {
-      root: {
-        width: '100%',
+      root: ({ theme }: any) => {
+        const lightA400 = theme.colorSchemes.light.palette.warning.A400;
+        const darkA400 = theme.colorSchemes.dark.palette.warning.A400;
+
+        return {
+          width: '100%',
+          '& .MuiInputBase-input:-webkit-autofill': {
+            '-webkit-box-shadow': `0 0 0 100px ${theme.palette?.warning?.A400 || '#000'} inset`,
+            '-webkit-text-fill-color':
+              theme.palette.mode === 'dark' ? lightA400 : darkA400,
+          },
+        };
       },
     },
   },
@@ -56,6 +70,22 @@ const commonComponents = {
     styleOverrides: {
       root: {
         '&.Mui-focused .MuiOutlinedInput-notchedOutline': {},
+        // background: '#BA1A1A'
+      },
+    },
+  },
+  MuiCheckbox: {
+    styleOverrides: {
+      root: ({ theme }: any) => {
+        const lightA400 = theme.colorSchemes.light.palette.warning.A400;
+        const darkA400 = theme.colorSchemes.dark.palette.warning.A400;
+
+        return {
+          color: theme.palette.mode === 'dark' ? lightA400 : darkA400, // Checkbox default color based on the opposite theme
+          '&.Mui-checked': {
+            color: theme.palette.mode === 'dark' ? lightA400 : darkA400, // Checked color based on opposite theme
+          },
+        };
       },
     },
   },
@@ -139,7 +169,7 @@ const customTheme = extendTheme({
           '900': '#CCCCCC',
           A100: '#E6E6E6',
           A200: '#4D4639',
-          A400: '#000000',
+          A400: '#121212', // #222831
           A700: '#FFFFFF',
         },
         error: {

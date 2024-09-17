@@ -376,7 +376,7 @@ const LoginPage = () => {
                     borderRadius: '16px',
                     boxShadow:
                       darkMode === 'dark'
-                        ? 'rgba(255, 255, 255, 0.8) 0px 2px 8px 0px'
+                        ? 'rgba(0, 0, 0, 0.9) 0px 2px 8px 0px'
                         : 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
                   },
                 }}
@@ -401,7 +401,7 @@ const LoginPage = () => {
                         displayEmpty
                         style={{
                           borderRadius: '0.5rem',
-                          color: theme.palette.warning['A200'],
+                          // color: theme.palette.warning['A200'],
                           width: '117px',
                           height: '32px',
                           marginBottom: '0rem',
@@ -504,8 +504,9 @@ const LoginPage = () => {
                     {t('LOGIN_PAGE.FORGOT_PASSWORD')}
                   </Box>
 
-                  <Box marginTop={'1.2rem'} className="remember-me-checkbox">
+                  <Box marginTop={'1.2rem'} className="">
                     <Checkbox
+                    // color="info"
                       onChange={(e) => setRememberMe(e.target.checked)}
                       checked={rememberMe}
                       inputProps={{ 'aria-label': 'Remember Me' }}
@@ -541,6 +542,7 @@ const LoginPage = () => {
                   >
                     <Button
                       variant="contained"
+                      color="primary"
                       type="submit"
                       fullWidth={true}
                       disabled={isButtonDisabled}
