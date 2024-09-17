@@ -162,7 +162,7 @@ export interface PlannedModalProps {
   updateEvent?: boolean;
   editSession?: any;
   eventData?: any;
-  state?: string;
+  StateName?: string;
   board?: string;
   medium?: string;
   grade?: string;
@@ -589,6 +589,7 @@ export interface MeetingDetails {
 
 export interface MetaData {
   category?: string;
+  courseType?: string;
   subject?: string;
   teacherName?: string;
   cohortId?: string;

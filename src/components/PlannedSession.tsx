@@ -46,6 +46,7 @@ import ReactGA from 'react-ga4';
 import {
   DaysOfWeek,
   eventDaysLimit,
+  frameworkId,
   idealTimeForSession,
   timeZone,
 } from '../../app.config';
@@ -53,6 +54,7 @@ import ConfirmationModal from './ConfirmationModal';
 import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
+import { getOptionsByCategory } from '@/utils/Helper';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -68,6 +70,7 @@ interface Session {
   startDatetime?: string;
   endDatetime?: string;
   endDateValue?: string;
+  courseType?: string;
   subject?: string;
   subjectTitle?: string;
   isRecurring?: boolean;
@@ -93,6 +96,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   eventData,
   updateEvent,
   onEventUpdated,
+  StateName,
+  board,
+  medium,
+  grade,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -109,10 +116,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>();
+  const [selectedCourseType, setSelectedCourseType] = useState<string>();
   const [selectedBlockId, setSelectedBlockId] = useState(0);
   const [editSelection, setEditSelection] = React.useState(
     t('CENTER_SESSION.EDIT_THIS_SESSION')
   );
+  const [courseTypes, setCourseTypes] = useState<string[]>();
+  const [subjectLists, setSubjectLists] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<string[]>();
   const [initialEventData, setInitialEventData] = useState(null);
   const [shortDescription, setShortDescription] = useState<string>('');
@@ -134,6 +144,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       endDatetime: '',
       endDateValue: '',
       subject: '',
+      courseType: '',
       subjectTitle: '',
       isRecurring: false,
       meetingLink: '',
@@ -147,6 +158,80 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   ]);
 
   useEffect(() => {
+    const handleBMGS = async () => {
+      try {
+        const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/api/framework/v1/read/${frameworkId}`;
+        const boardData = await fetch(url).then((res) => res.json());
+        const frameworks = boardData?.result?.framework;
+
+        const getStates = getOptionsByCategory(frameworks, 'state');
+        const matchState = getStates.find(
+          (item: any) => item.name === StateName
+        );
+
+        const getBoards = getOptionsByCategory(frameworks, 'board');
+        const matchBoard = getBoards.find((item: any) => item.name === board);
+
+        const getMedium = getOptionsByCategory(frameworks, 'medium');
+        const matchMedium = getMedium.find((item: any) => item.name === medium);
+
+        const getGrades = getOptionsByCategory(frameworks, 'gradeLevel');
+        const matchGrade = getGrades.find((item: any) => item.name === grade);
+
+        const getCourseTypes = getOptionsByCategory(frameworks, 'courseType');
+        const courseTypes = getCourseTypes?.map((type: any) => type.name);
+        setCourseTypes(courseTypes);
+
+        const courseTypesAssociations = getCourseTypes?.map((type: any) => {
+          return {
+            code: type.code,
+            name: type.name,
+            associations: type.associations,
+          };
+        });
+
+        const courseSubjectLists = courseTypesAssociations.map(
+          (courseType: any) => {
+            const commonAssociations = courseType.associations.filter(
+              (assoc: any) =>
+                matchState.associations.map(
+                  (item: any) => item.code === assoc.code
+                ) &&
+                matchBoard.associations.map(
+                  (item: any) => item.code === assoc.code
+                ) &&
+                matchMedium.associations.map(
+                  (item: any) => item.code === assoc.code
+                ) &&
+                matchGrade.associations.map(
+                  (item: any) => item.code === assoc.code
+                )
+            );
+            console.log(commonAssociations);
+            const getSubjects = getOptionsByCategory(frameworks, 'subject');
+            const subjectAssociations = commonAssociations.filter(
+              (assoc: any) =>
+                getSubjects.map((item: any) => assoc.code === item.code)
+            );
+            console.log(subjectAssociations);
+            return {
+              courseTypeName: courseType.name,
+              courseType: courseType.code,
+              subjects: subjectAssociations.map((subject: any) => subject.name),
+            };
+          }
+        );
+
+        console.log(courseSubjectLists);
+        setSubjectLists(courseSubjectLists);
+      } catch (error) {
+        console.error('Error fetching board data:', error);
+      }
+    };
+    handleBMGS();
+  }, []);
+
+  useEffect(() => {
     console.log(eventData);
     if (eventData) {
       setInitialEventData(eventData);
@@ -155,6 +240,14 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           ? sessionMode.ONLINE
           : sessionMode.OFFLINE;
       setMode(mode);
+      const courseType = eventData?.metadata?.courseType;
+      setSelectedCourseType(courseType);
+      const courseSubjects = subjectLists?.find(
+        (item: any) => item.courseTypeName === courseType
+      );
+      if (courseSubjects) {
+        setSubjects(courseSubjects.subjects);
+      }
       const sub = eventData?.metadata?.subject;
       setSelectedSubject(sub);
       const sessionTitle = eventData?.shortDescription;
@@ -200,7 +293,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         },
       ]);
     }
-  }, [eventData, editSelection]);
+  }, [eventData, editSelection, subjectLists]);
 
   const handleOpenModel = () => {
     setModalOpen(true);
@@ -255,61 +348,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     setSessionBlocks(updatedSessionBlocks);
   };
 
-  useEffect(() => {
-    const getAddFacilitatorFormData = async () => {
-      try {
-        const response = await queryClient.fetchQuery({
-          queryKey: ['formRead', FormContext.USERS, FormContextType.TEACHER],
-          queryFn: () =>
-            getFormRead(FormContext.USERS, FormContextType.TEACHER),
-        });
-
-        console.log('sortedFields', response);
-        if (response) {
-          const subjectTeach = response?.fields
-            .filter((field: any) => field?.label === 'SUBJECTS_I_TEACH')
-            .flatMap((field: any) =>
-              field?.options?.map((option: any) =>
-                t(`FORM.${option?.label.toUpperCase()}`)
-              )
-            );
-
-          const mainSubjects = response?.fields
-            .filter((field: any) => field?.label === 'MY_MAIN_SUBJECTS')
-            .flatMap((field: any) =>
-              field?.options?.map((option: any) =>
-                t(`FORM.${option?.label.toUpperCase()}`)
-              )
-            );
-
-          const combinedSubjects = Array.from(
-            new Set([...subjectTeach, ...mainSubjects])
-          );
-
-          setSubjects(combinedSubjects);
-
-          console.log(combinedSubjects);
-        }
-
-        let centerOptionsList;
-        if (typeof window !== 'undefined' && window.localStorage) {
-          const CenterList = localStorage.getItem('CenterList');
-          const centerOptions = CenterList ? JSON.parse(CenterList) : [];
-          centerOptionsList = centerOptions.map(
-            (center: { cohortId: string; cohortName: string }) => ({
-              value: center.cohortId,
-              label: center.cohortName,
-            })
-          );
-          console.log(centerOptionsList);
-        }
-      } catch (error) {
-        console.error('Error fetching form data:', error);
-      }
-    };
-    getAddFacilitatorFormData();
-  }, []);
-
   const handleSubjectChange = (
     id: number | string | undefined,
     event: React.ChangeEvent<{ value: unknown }>
@@ -322,6 +360,33 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           ? {
               ...block,
               subject: newSubject,
+            }
+          : block
+      )
+    );
+  };
+
+  const handleCourseTypeChange = (
+    id: number | string | undefined,
+    event: React.ChangeEvent<{ value: unknown }>
+  ) => {
+    const newCourseType = event.target.value as string;
+    setSelectedCourseType(newCourseType);
+    const courseSubjects = subjectLists?.find(
+      (item: any) => item.courseTypeName === newCourseType
+    );
+
+    console.log(courseSubjects);
+
+    if (courseSubjects) {
+      setSubjects(courseSubjects.subjects);
+    }
+    setSessionBlocks(
+      sessionBlocks.map((block) =>
+        block.id === id
+          ? {
+              ...block,
+              courseType: newCourseType,
             }
           : block
       )
@@ -660,6 +725,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           registrationEndDate: '',
           metaData: {
             category: title,
+            courseType: block?.courseType,
             subject: block?.subject || '',
             teacherName: userName,
             cohortId: cohortId || '',
@@ -845,6 +911,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
           const metadata = {
             category: eventData?.title || '',
+            courseType: eventData?.metadata?.courseType || '',
             subject: eventData?.metadata?.subject || '',
             teacherName: eventData?.metadata?.teacherName || '',
             cohortId: eventData?.metadata?.cohortId || '',
@@ -1019,6 +1086,37 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               disabled={editSession}
             />
           </Box>
+          <Box sx={{ mt: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel
+                style={{ color: theme?.palette?.warning['A200'] }}
+                id="demo-simple-select-label"
+              >
+                {t('CENTER_SESSION.COURSE_TYPE')}
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label={t('CENTER_SESSION.COURSE_TYPE')}
+                style={{ borderRadius: '4px' }}
+                onChange={(event: any) =>
+                  handleCourseTypeChange(block?.id, event)
+                }
+                value={
+                  selectedCourseType
+                    ? selectedCourseType
+                    : t('CENTER_SESSION.COURSE_TYPE')
+                }
+              >
+                {courseTypes?.map((courseType: string) => (
+                  <MenuItem key={courseType} value={courseType}>
+                    {courseType}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+
           {(clickedBox === 'PLANNED_SESSION' || editSession) && (
             <>
               <Box sx={{ mt: 2 }}>
@@ -1048,9 +1146,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                         {subject}
                       </MenuItem>
                     ))}
-                    <MenuItem key="other" value="other">
+                    {/* <MenuItem key="other" value="other">
                       {t('FORM.OTHER')}
-                    </MenuItem>
+                    </MenuItem> */}
                   </Select>
                 </FormControl>
               </Box>
