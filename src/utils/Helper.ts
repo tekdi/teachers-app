@@ -503,20 +503,26 @@ export const getAssociationsByCode = (data: DataItem[], code: string): Associati
 };
 
 export const findCommonAssociations = (data1: any[], data2: any[]) => {
+
+  if (!data1.length) return data2;
+  if (!data2.length) return data1;
+
   return data1.map((item1) => {
     const item2 = data2.find((item) => item.code === item1.code);
     if (item2) {
       const commonAssociations = item1.associations.filter((assoc1: any) =>
         item2.associations.some((assoc2: any) => assoc1.identifier === assoc2.identifier)
       );
-      return {
-        name: item1.name,
-        code: item1.code,
-        associations: commonAssociations,
-      };
+      if (commonAssociations.length > 0) {
+        return {
+          name: item1.name,
+          code: item1.code,
+          associations: commonAssociations,
+        };
+      }
     }
     return null;
-  }).filter(Boolean); 
+  }).filter(Boolean);
 };
 
 export const filterAndMapAssociationsNew = (

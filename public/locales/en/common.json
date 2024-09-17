@@ -417,7 +417,9 @@
     "COURSE_PLANNER_NOT_AVAILABLE": "Course Planner is not available!",
     "FACILITATOR_REQUISITES": "Facilitator's Requisites",
     "LEARNER_PREREQUISITES": "Learner's Pre-requisites",
-    "LEARNER_POSTREQUISITES": "Learner's Post-requisites"
+    "LEARNER_POSTREQUISITES": "Learner's Post-requisites",
+    "CANT_SELECT_AS_EVENT_PASSED_LIVE": "Can not select topic and subtopic as event is already passed or live.",
+    "COURSE_TYPE": "Course Type"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center requested successfully",
