@@ -153,7 +153,7 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="description" content={metaTags?.description} />
       </Head>
       <CssVarsProvider theme={customTheme}>
-        <ModeToggle />
+        {/* <ModeToggle /> */}
         <Box
           sx={{
             padding: '0',
