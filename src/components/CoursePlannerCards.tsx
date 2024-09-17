@@ -2,13 +2,19 @@ import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { CoursePlannerCardsProps } from '@/utils/Interfaces';
+import { ResourcesType } from '@/utils/app.constant';
 
 const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
   resources,
+  type
 }) => {
   const theme = useTheme<any>();
 
-  console.log(resources);
+  // Filter the resources based on the type
+  const filteredResources = resources?.filter(
+    (resource: { type?: string }) =>
+      (type === ResourcesType.NONE && !resource.type) || resource.type === type
+  );
 
   return (
     <Box>
@@ -17,21 +23,18 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
         spacing={2}
         sx={{ px: '16px !important', cursor: 'pointer' }}
       >
-        {resources?.map(
+        {filteredResources?.map(
           (
             resource: {
               link: string;
-              name: string;
+              name?: string;
             },
             index: number
           ) => (
             <Grid item xs={6} md={2} sx={{ mt: 2 }} key={index}>
               <Box
                 className="facilitator-bg"
-                onClick={() => {
-                  console.log(resources);
-                  window.open(resource?.link, '_blank');
-                }}
+                onClick={() => window.open(resource?.link, '_blank')}
               >
                 <Box
                   sx={{
@@ -40,7 +43,7 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
                     color: theme?.palette?.warning['A400'],
                   }}
                 >
-                  {resource?.name}
+                  {resource?.name || 'Untitled Resource'}
                 </Box>
                 <Box
                   sx={{
