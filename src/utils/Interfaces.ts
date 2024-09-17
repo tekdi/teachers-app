@@ -162,6 +162,10 @@ export interface PlannedModalProps {
   updateEvent?: boolean;
   editSession?: any;
   eventData?: any;
+  state?: string;
+  board?: string;
+  medium?: string;
+  grade?: string;
 }
 
 export interface ScheduleModalProps {
