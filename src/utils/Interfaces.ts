@@ -162,6 +162,10 @@ export interface PlannedModalProps {
   updateEvent?: boolean;
   editSession?: any;
   eventData?: any;
+  state?: string;
+  board?: string;
+  medium?: string;
+  grade?: string;
 }
 
 export interface ScheduleModalProps {
@@ -469,6 +473,7 @@ export interface FacilitatorDrawerProps {
 }
 export interface CoursePlannerCardsProps {
   resources: any;
+  type: string;
 }
 
 export interface scheduleEventParam {

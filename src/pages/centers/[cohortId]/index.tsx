@@ -593,6 +593,10 @@ const CohortPage = () => {
                 cohortType={cohortType}
                 cohortId={cohortId}
                 onCloseModal={handleCloseSchedule}
+                state={state}
+                board={board}
+                medium={medium}
+                grade={grade}
               />
             ) : (
               <Schedule clickedBox={clickedBox} handleClick={handleClick} />
