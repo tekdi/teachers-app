@@ -63,8 +63,10 @@ import SessionCard from '@/components/SessionCard';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useQueryClient } from '@tanstack/react-query';
-import { getCohortList } from '@/services/CohortServices';
+import { getCohortList, getCohortListForStore } from '@/services/CohortServices';
 import CentralizedModal from '@/components/CentralizedModal';
+import manageUserStore from '@/store/manageUserStore';
+import { getUserDetails } from '@/services/ProfileService';
 
 interface DashboardProps {}
 
@@ -113,6 +115,26 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
   const [myCohortList, setMyCohortList] = React.useState<any>();
   const [centralizedModal, setCentralizedModal] = useState(false);
+  const store = manageUserStore();
+
+  const setDistrictCode = manageUserStore(
+    (state: { setDistrictCode: any }) => state.setDistrictCode
+  );
+  const setDistrictId = manageUserStore(
+    (state: { setDistrictId: any }) => state.setDistrictId
+  );
+  const setStateCode = manageUserStore(
+    (state: { setStateCode: any }) => state.setStateCode
+  );
+  const setStateId = manageUserStore(
+    (state: { setStateId: any }) => state.setStateId
+  );
+  const setBlockCode = manageUserStore(
+    (state: { setBlockCode: any }) => state.setBlockCode
+  );
+  const setBlockId = manageUserStore(
+    (state: { setBlockId: any }) => state.setBlockId
+  );
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
@@ -147,8 +169,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
     calculateDateRange();
   }, []);
-
+ 
   useEffect(() => {
+    if(cohortsData[0]?.cohortId)
+      {
+         
+      localStorage.setItem('classId', cohortsData[0]?.cohortId) 
+    
+    }
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
       const role = localStorage.getItem('role');
@@ -162,15 +190,73 @@ const Dashboard: React.FC<DashboardProps> = () => {
       }
       setUserId(storedUserId);
     }
-  }, []);
+  }, [cohortsData]);
 
   useEffect(() => {
+    
     const getMyCohortList = async () => {
       const myCohortList = await queryClient.fetchQuery({
         queryKey: [QueryKeys.MY_COHORTS, userId],
         queryFn: () => getCohortList(userId as string, { customField: 'true' }),
       });
+      let response;
+      if(userId)
+      {
+       response = await getUserDetails(userId, true);
+      }
+const blockObject = response?.result?.userData?.customFields.find((item:any) => item?.label === 'BLOCKS');
+// const stateObject = response?.result?.userData?.customFields.find((item:any) => item?.label === "STATES");
+// const districtObject = response?.result?.userData?.customFields.find((item:any) => item?.label === "DISTRICTS");
 
+// const storedData = JSON.parse(localStorage.getItem('fieldData') || '{}');
+// localStorage.removeItem('fieldData');
+// storedData.state.blockName =  blockObject?.value
+// storedData.state.districtName = districtObject?.value
+// storedData.state.stateName = stateObject?.value
+// storedData.state.blockId = blockObject?.fieldId
+// storedData.state.districtId =    districtObject?.fieldId
+// storedData.state.stateId =  stateObject?.fieldId
+// storedData.state.stateCode =    stateObject?.code
+
+//  storedData.state.blockCode = blockObject?.code
+//  storedData.state.districtCode =  districtObject?.code
+//  console.log("userDetails-----------------------------------",storedData)
+
+//  if (typeof window !== 'undefined' && window.localStorage) {
+
+//  localStorage.setItem('fieldData', JSON.stringify(storedData));
+//  }
+
+      const result=await getCohortListForStore(userId as string, { customField: 'true' })
+    
+      const activeCohorts = result?.filter((cohort: any) => cohort.cohortMemberStatus === "active");
+
+      const district = activeCohorts[0]?.customField?.find(
+        (item: any) => item?.label === 'DISTRICTS'
+      );
+    
+      if (district) {
+        setDistrictCode(district?.code);
+        setDistrictId(district?.fieldId);
+      }
+
+      const state = activeCohorts[0]?.customField?.find(
+        (item: any) => item?.label === 'STATES'
+      );
+
+      if (state) {
+        setStateCode(state?.code);
+        setStateId(state?.fieldId);
+      }
+
+      const blockField = activeCohorts[0]?.customField?.find(
+        (field: any) => field?.label === 'BLOCKS'
+      );
+
+      if (blockObject) {
+        setBlockCode(blockObject?.code);
+        setBlockId(blockObject?.fieldId);
+      }
       setMyCohortList(myCohortList);
     };
     if (userId) {

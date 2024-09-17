@@ -10,7 +10,7 @@ import {
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
-import { getCohortList } from '@/services/CohortServices';
+import { getCohortList, getCohortListForStore } from '@/services/CohortServices';
 import useStore from '@/store/store';
 import { ICohort } from '@/utils/Interfaces';
 import { CustomField } from '@/utils/Interfaces';
@@ -31,6 +31,7 @@ import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
 import { telemetryFactory } from '@/utils/telemetry';
 import { toPascalCase } from '@/utils/Helper';
 import { useQueryClient } from '@tanstack/react-query';
+import { getUserDetails } from '@/services/ProfileService';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -93,6 +94,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   showFloatingLabel = false,
   showDisabledDropDown = false,
 }) => {
+  console.log("cohortsData",classId, cohortsData[0]?.cohortId)
   const router = useRouter();
   const theme = useTheme<any>();
   const queryClient = useQueryClient();
@@ -177,7 +179,41 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
               setBlockId(blockField?.fieldId);
             }
           }
-
+          const result=await getCohortListForStore(userId as string, { customField: 'true' })
+          const activeCohorts = result?.filter((cohort: any) => cohort.cohortMemberStatus === "active");
+         let userResponse;
+          if(userId)
+          {
+            userResponse = await getUserDetails(userId, true);
+          }
+    const blockObject = userResponse?.result?.userData?.customFields.find((item:any) => item?.label === 'BLOCKS');
+          const district = activeCohorts[0]?.customField?.find(
+            (item: any) => item?.label === 'DISTRICTS'
+          );
+    
+          if (district) {
+            setDistrictCode(district?.code);
+            setDistrictId(district?.fieldId);
+          }
+    
+          const state = activeCohorts[0]?.customField?.find(
+            (item: any) => item?.label === 'STATES'
+          );
+    
+          if (state) {
+            setStateCode(state?.code);
+            setStateId(state?.fieldId);
+          }
+    
+          const blockField = activeCohorts[0]?.customField?.find(
+            (field: any) => field?.label === 'BLOCKS'
+          );
+    
+          if (blockObject) {
+            setBlockCode(blockObject?.code);
+            setBlockId(blockObject?.fieldId);
+          }
+    
           if (response && response?.length > 0) {
             const extractNamesAndCohortTypes = (
               data: ChildData[]
@@ -446,7 +482,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                           <Select
                             labelId="center-select-label"
                             label={showFloatingLabel ? t('COMMON.CENTER') : ''}
-                            value={classId}
+                            value={classId? classId: cohortsData[0]?.cohortId}
                             onChange={handleCohortSelection}
                             // displayEmpty
                             // style={{ borderRadius: '4px' }}
