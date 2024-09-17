@@ -139,7 +139,7 @@ body {
   font-weight: 300;
   font-size: 1em;
   line-height: 1.5;
-  background: #fff;
+  background: var(--mui-palette-warning-A400) !important;
 }
 
 header {
@@ -531,6 +531,7 @@ main {
 .calender-body {
   padding: 20px !important;
   background: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%) !important;
+  /* background: linear-gradient(180deg, #2e2e2e 0%, #1b1b1b 100%) !important; */
   border: unset !important;
 }
 
@@ -672,7 +673,7 @@ main {
 }
 
 .bg-white {
-  background-color: #fff;
+  background-color: var(--mui-palette-warning-A400);
 }
 
 .customRange .Mui-selected {
@@ -692,11 +693,11 @@ main {
 }
 
 .userName label {
-  color: #1f1b13 !important;
+  color: var(--mui-palette-warning-300) !important;
 }
 
 .password label {
-  color: #1f1b13 !important;
+  color: var(--mui-palette-warning-300)!important;
 }
 
 .fs-24 {

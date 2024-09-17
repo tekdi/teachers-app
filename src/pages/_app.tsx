@@ -133,11 +133,14 @@ function App({ Component, pageProps }: AppProps) {
         onClick={() => {
           setMode(mode === 'light' ? 'dark' : 'light');
         }}
+        sx={{ position: 'absolute', right: '0px', zIndex: '9999' }}
       >
         {mode === 'light' ? 'Turn dark' : 'Turn light'}
       </Button>
     );
   }
+  const theme = useTheme<any>();
+
   return (
     <>
       <style jsx global>{`
@@ -150,7 +153,7 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="description" content={metaTags?.description} />
       </Head>
       <CssVarsProvider theme={customTheme}>
-        {/* <ModeToggle /> */}
+        <ModeToggle />
         <Box
           sx={{
             padding: '0',
@@ -162,6 +165,7 @@ function App({ Component, pageProps }: AppProps) {
               width: '100%',
               marginLeft: !isFullWidthPage ? '351px' : '0',
             },
+            background: theme.palette.warning['A400'],
           }}
         >
           <QueryClientProvider client={client}>

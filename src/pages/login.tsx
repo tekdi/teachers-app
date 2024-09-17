@@ -306,8 +306,12 @@ const LoginPage = () => {
     });
   };
 
+  const darkMode =
+    typeof window !== 'undefined' && window.localStorage
+      ? localStorage.getItem('mui-mode')
+      : null;
   return (
-    <Box sx={{ overflowY: 'auto', background: 'white' }}>
+    <Box sx={{ overflowY: 'auto', background: theme.palette.warning['A400'] }}>
       <Box
         display="flex"
         flexDirection="column"
@@ -359,7 +363,7 @@ const LoginPage = () => {
               <Box
                 flexGrow={1}
                 display={'flex'}
-                bgcolor="white"
+                bgcolor={theme.palette.warning['A400']}
                 height="auto"
                 zIndex={99}
                 justifyContent={'center'}
@@ -370,7 +374,10 @@ const LoginPage = () => {
                   '@media (min-width: 900px)': {
                     width: '100%',
                     borderRadius: '16px',
-                    boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
+                    boxShadow:
+                      darkMode === 'dark'
+                        ? 'rgba(255, 255, 255, 0.8) 0px 2px 8px 0px'
+                        : 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
                   },
                 }}
               >

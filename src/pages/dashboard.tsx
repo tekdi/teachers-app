@@ -649,6 +649,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
     localStorage.setItem('skipResetPassword', 'true');
   };
 
+  const darkMode =
+    typeof window !== 'undefined' && window.localStorage
+      ? localStorage.getItem('mui-mode')
+      : null;
+
   return (
     <>
       {isClient && (
@@ -668,7 +673,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Box
                     display={'flex'}
                     width={'100%'}
-                    sx={{ backgroundColor: 'white' }}
+                    sx={{ backgroundColor: theme.palette.warning['A400'] }}
                   >
                     <Typography
                       textAlign={'left'}
@@ -691,7 +696,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Box
                     paddingBottom={'25px'}
                     width={'100%'}
-                    className="linerGradient br-md-8 "
+                    sx={{
+                      background:
+                        darkMode === 'dark'
+                          ? 'linear-gradient(180deg, #2e2e2e 0%, #1b1b1b 100%)'
+                          : 'linear-gradient(180deg, #fffdf7 0%, #f8efda 100%)',
+                    }}
+                    className="br-md-8"
                   >
                     <Box className="joyride-step-2">
                       <Box
@@ -708,7 +719,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             <Typography
                               variant="h2"
                               sx={{ fontSize: '14px' }}
-                              color={'black'}
+                              color={theme.palette.warning['300']}
                               fontWeight={'500'}
                             >
                               {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
@@ -811,7 +822,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                           pathColor: pathColor,
                                           trailColor: '#E6E6E6',
                                           strokeLinecap: 'round',
-                                          backgroundColor: '#ffffff',
+                                          backgroundColor:
+                                            theme.palette.warning['A400'],
                                         })}
                                         className="fs-24 htw-24"
                                         strokeWidth={20}
@@ -856,7 +868,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   currentAttendance !== 'futureDate' && (
                                     <Typography
                                       sx={{
-                                        color: theme.palette.warning['A400'],
+                                        color: theme.palette.warning['300'],
                                       }}
                                       fontSize={'0.8rem'}
                                       // variant="h6"
@@ -868,7 +880,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 {currentAttendance === 'futureDate' && (
                                   <Typography
                                     sx={{
-                                      color: theme.palette.warning['A400'],
+                                      color: theme.palette.warning['300'],
                                     }}
                                     fontSize={'0.8rem'}
                                     fontStyle={'italic'}
@@ -1095,7 +1107,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 )}
                 <Box mt={3} px="18px">
                   <Box
-                    sx={{ background: '#fff', padding: '5px' }}
+                    sx={{
+                      background: theme.palette.warning['A400'],
+                      padding: '5px',
+                    }}
                     display={'flex'}
                     justifyContent={'space-between'}
                   >
@@ -1105,7 +1120,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       pt={'1rem'}
                       variant="h2"
                       sx={{ fontSize: '14px' }}
-                      color={'black'}
+                      color={theme.palette.warning['300']}
                       fontWeight={'500'}
                     >
                       {t('DASHBOARD.MY_TIMETABLE')}

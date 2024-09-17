@@ -10,6 +10,7 @@ import { formatToShowDateMonth, shortDateFormat } from '@/utils/Helper';
 import { modifyAttendanceLimit } from '../../app.config';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useTranslation } from 'next-i18next';
+import { useTheme } from '@mui/material/styles';
 
 interface AttendanceStatusProps {
   date: Date;
@@ -53,6 +54,7 @@ function AttendanceStatus({
   const todayDate = shortDateFormat(new Date());
   const currentDate = new Date();
   const sevenDaysAgo = new Date();
+  const theme = useTheme<any>();
   sevenDaysAgo.setDate(currentDate.getDate() - modifyAttendanceLimit);
   const formatedSevenDaysAgo = shortDateFormat(sevenDaysAgo);
   const currentAttendance =
@@ -115,7 +117,7 @@ function AttendanceStatus({
               ml={1}
               fontSize={'14px'}
               fontWeight={'500'}
-              color={'black'}
+              color={theme.palette.warning['300']}
             >
               {formatToShowDateMonth(date)}
             </Typography>
