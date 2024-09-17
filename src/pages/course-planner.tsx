@@ -552,7 +552,7 @@ const CoursePlanner = () => {
             console.log('boardAssociations', stateAssociations);
             setMediumAssociations(mediumAssociations);
 
-            const commonGradeInState = getGrades
+            const commonGradeInState = await getGrades
               .filter((item1: { code: string }) =>
                 stateAssociations.some(
                   (item2: { code: string; category: string }) =>
@@ -571,7 +571,7 @@ const CoursePlanner = () => {
                 })
               );
 
-            const commonGradeInBoard = getGrades
+            const commonGradeInBoard = await getGrades
               .filter((item1: { code: any }) =>
                 boardAssociations.some(
                   (item2: { code: any; category: string }) =>
@@ -609,7 +609,7 @@ const CoursePlanner = () => {
             );
             setGradeOptions(overAllCommonGrade);
 
-            const gradeAssociations = await getAssociationsByCodeNew(
+            const gradeAssociations = getAssociationsByCodeNew(
               gradeOptions,
               tStore?.grade
             );

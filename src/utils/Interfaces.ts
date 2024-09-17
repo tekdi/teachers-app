@@ -469,6 +469,7 @@ export interface FacilitatorDrawerProps {
 }
 export interface CoursePlannerCardsProps {
   resources: any;
+  type: string;
 }
 
 export interface scheduleEventParam {
