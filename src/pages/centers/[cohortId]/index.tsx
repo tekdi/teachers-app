@@ -593,7 +593,7 @@ const CohortPage = () => {
                 cohortType={cohortType}
                 cohortId={cohortId}
                 onCloseModal={handleCloseSchedule}
-                state={state}
+                StateName={state}
                 board={board}
                 medium={medium}
                 grade={grade}
