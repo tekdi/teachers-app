@@ -27,8 +27,10 @@ const ForgotPassword = () => {
   const [successMessage, setSuccessMessage] = useState(false);
   const [maskEmail, setMaskEmail] = useState('');
 
+  // Function to handle input and convert to lowercase
   const handleInputChange = (event: any) => {
-    setInputValue(event.target.value);
+    const lowercaseValue = event.target.value.toLowerCase(); // Convert input to lowercase
+    setInputValue(lowercaseValue);
   };
 
   const maskEmailFunction = (email: string) => {
@@ -84,7 +86,6 @@ const ForgotPassword = () => {
             borderRadius: '16px',
           },
           width: '100%',
-
           marginTop: '8rem',
         }}
       >
@@ -134,7 +135,7 @@ const ForgotPassword = () => {
               }}
               type="text"
               value={inputValue}
-              onChange={handleInputChange}
+              onChange={handleInputChange} // Uses updated function
               className="password"
               InputProps={{
                 endAdornment: (

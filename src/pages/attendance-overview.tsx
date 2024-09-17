@@ -208,7 +208,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               contextId: classId,
             };
             // Conditionally add fromDate and toDate to filters if selectedValue doesn't match the specific condition
-            if (selectedValue !== t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })) {
+            if (
+              selectedValue !==
+              t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })
+            ) {
               filters.fromDate = isFromDate;
               filters.toDate = isToDate;
             }
@@ -261,20 +264,22 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               }
             }
           }
-        }else{
+        } else {
           setLearnerData([]);
           setDisplayStudentList([]);
         }
         if (classId) {
           const cohortAttendancePercent = async () => {
-
             const filters: any = {
               scope: 'student',
               contextId: classId,
             };
-        
+
             // Conditionally add fromDate and toDate to filters if selectedValue doesn't match the specific condition
-            if (selectedValue !== t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })) {
+            if (
+              selectedValue !==
+              t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })
+            ) {
               filters.fromDate = isFromDate;
               filters.toDate = isToDate;
             }
@@ -507,6 +512,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     }
   };
 
+  const darkMode =
+    typeof window !== 'undefined' && window.localStorage
+      ? localStorage.getItem('mui-mode')
+      : null;
+
   return (
     <Box>
       {displayStudentList.length ? <UpDownButton /> : null}
@@ -520,7 +530,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             display: 'flex',
             justifyContent: 'left',
             alignItems: 'center',
-            color: '#4D4639',
+            color: theme.palette.warning['A200'],
             padding: '15px 20px 5px',
           }}
           width={'100%'}
@@ -536,9 +546,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         </Box>
 
         <Box
-          className="linerGradient br-md-8"
+          className="br-md-8"
           sx={{
             padding: '20px 20px',
+            background:
+              darkMode === 'dark'
+                ? 'linear-gradient(180deg, #2e2e2e 0%, #1b1b1b 100%)'
+                : 'linear-gradient(180deg, #fffdf7 0%, #f8efda 100%)',
           }}
         >
           <Box className="d-md-flex space-md-between gap-md-10 w-100">
@@ -614,7 +628,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     ))}
                     valuePartOne={
                       lowAttendanceLearnerList.length > 0
-                        ? lowAttendanceLearnerList.slice(0, 2).join(", ")
+                        ? lowAttendanceLearnerList.slice(0, 2).join(', ')
                         : t('ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE')
                     }
                     valuePartTwo={
@@ -661,7 +675,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       <InputBase
                         ref={inputRef}
                         value={searchWord}
-                        sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
+                        sx={{
+                          ml: 3,
+                          flex: 1,
+                          mb: '0',
+                          fontSize: '14px',
+                          color: theme.palette.warning['A200'],
+                        }}
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
@@ -670,11 +690,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       />
                       <IconButton
                         type="button"
-                        sx={{ p: '10px' }}
+                        sx={{ p: '10px', color: theme.palette.warning['A200'] }}
                         aria-label="search"
                         onClick={handleSearchSubmit}
                       >
-                        <SearchIcon />
+                        <SearchIcon
+                          sx={{ color: theme.palette.warning['A200'] }}
+                        />
                       </IconButton>
 
                       {searchWord?.length > 0 && (
@@ -683,7 +705,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                           aria-label="Clear"
                           onClick={handleSearchClear}
                         >
-                          <ClearIcon />
+                          <ClearIcon
+                            sx={{ color: theme.palette.warning['A200'] }}
+                          />
                         </IconButton>
                       )}
                     </Paper>
