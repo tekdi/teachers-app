@@ -136,6 +136,14 @@ const customTheme = extendTheme({
           activeChannel: '#987100',
           selectedChannel: '#dba403',
         },
+        customTextColors: {
+          custom1: '#FF6347', // Tomato
+          custom2: '#20B2AA', // LightSeaGreen
+          custom3: '#4682B4', // SteelBlue
+          custom4: '#FF4500', // OrangeRed
+          custom5: '#32CD32', // LimeGreen
+          custom6: '#9370DB', // MediumPurple
+        },
       },
     },
     dark: {
@@ -180,6 +188,14 @@ const customTheme = extendTheme({
         action: {
           activeChannel: '#FFC107',
           selectedChannel: '#FF9800',
+        },
+        customTextColors: {
+          custom1: '#FF6347', // Tomato
+          custom2: '#20B2AA', // LightSeaGreen
+          custom3: '#4682B4', // SteelBlue
+          custom4: '#FF4500', // OrangeRed
+          custom5: '#32CD32', // LimeGreen
+          custom6: '#9370DB', // MediumPurple
         },
       },
     },
