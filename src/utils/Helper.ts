@@ -5,6 +5,7 @@ import FingerprintJS from 'fingerprintjs2';
 import { CustomField, UpdateCustomField } from './Interfaces';
 dayjs.extend(utc);
 import { format, parseISO } from 'date-fns';
+import manageUserStore from '@/store/manageUserStore';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -553,4 +554,38 @@ export const filterAndMapAssociationsNew = (
       code: option.code,
       associations: option.associations || [],
     }));
+};
+
+
+export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => {
+  const setDistrictCode = manageUserStore.getState().setDistrictCode;
+  const setDistrictId = manageUserStore.getState().setDistrictId;
+  const setStateCode = manageUserStore.getState().setStateCode;
+  const setStateId = manageUserStore.getState().setStateId;
+  const setBlockCode = manageUserStore.getState().setBlockCode;
+  const setBlockId = manageUserStore.getState().setBlockId;
+
+  const district = activeCohorts[0]?.customField?.find(
+    (item: any) => item?.label === 'DISTRICTS'
+  );
+
+  if (district) {
+    setDistrictCode(district?.code);
+    setDistrictId(district?.fieldId);
+  }
+
+  const state = activeCohorts[0]?.customField?.find(
+    (item: any) => item?.label === 'STATES'
+  );
+
+  if (state) {
+    setStateCode(state?.code);
+    setStateId(state?.fieldId);
+  }
+
+ 
+  if (blockObject) {
+    setBlockCode(blockObject?.code);
+    setBlockId(blockObject?.fieldId);
+  }
 };
