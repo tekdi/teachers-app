@@ -26,6 +26,11 @@ import PieChartGraph from '@/components/PieChartGraph';
 import { boardEnrollment } from '@/services/BoardEnrollmentServics';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useRouter } from 'next/router';
+import CohortSelectionSection from '@/components/CohortSelectionSection';
+import { ICohort, user } from '@/utils/Interfaces';
+import { toPascalCase } from '@/utils/Helper';
+import { showToastMessage } from '@/components/Toastify';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 
 const BoardEnrollment = () => {
   const theme = useTheme<any>();
@@ -33,10 +38,84 @@ const BoardEnrollment = () => {
   const router = useRouter();
   const [boardEnrollmentList, setBoardEnrollmentList] = useState<any>([]);
   const [activeStep, setActiveStep] = React.useState<number>(0);
+  const [classId, setClassId] = React.useState('');
+  const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
+  const [manipulatedCohortData, setManipulatedCohortData] =
+    React.useState<Array<ICohort>>(cohortsData);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [userId, setUserId] = React.useState<string | null>(null);
+  const [blockName, setBlockName] = React.useState<string>('');
+  const [displayStudentList, setDisplayStudentList] = React.useState<
+  Array<user>
+>([]);
+  const [loading, setLoading] = React.useState(false);
+
   useEffect(() => {
     const res = boardEnrollment();
     setBoardEnrollmentList(res);
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const token = localStorage.getItem('token');
+      setClassId(localStorage.getItem('classId') ?? '');
+      const classId = localStorage.getItem('classId') ?? '';
+      localStorage.setItem('cohortId', classId);
+      setLoading(false);
+      if (token) {
+        router.push('/board-enrollment');
+      } else {
+        router.push('/login', undefined, { locale: 'en' });
+      }
+    }
+  }, []);
+
+  useEffect(()=>{
+    const getCohortMemberList = async () => {
+      setLoading(true);
+      try {
+        if (classId) {
+          const limit = 300;
+          const page = 0;
+          const filters = { cohortId: classId };
+          const response = await getMyCohortMemberList({
+            limit,
+            page,
+            filters,
+          });
+          const resp = response?.result?.userDetails || [];
+  
+          if (resp) {
+            const selectedDateStart = new Date();
+            selectedDateStart.setHours(0, 0, 0, 0);
+            const nameUserIdArray = resp
+              .filter((entry: any) => {
+                const createdAtDate = new Date(entry.createdAt);
+                createdAtDate.setHours(0, 0, 0, 0);
+                return createdAtDate <= selectedDateStart;
+              })
+              .map((entry: any) => ({
+                userId: entry.userId,
+                name: toPascalCase(entry.name),
+                memberStatus: entry.status,
+                createdAt: entry.createdAt,
+              }));
+              console.log(`nameUserIdArray`, nameUserIdArray)
+              setDisplayStudentList(nameUserIdArray)
+          } else {
+            setDisplayStudentList([]);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching cohort list:', error);
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getCohortMemberList()
+  },[classId])
 
   return (
     <>
@@ -83,7 +162,7 @@ const BoardEnrollment = () => {
         <Grid container sx={{ mt: '20px' }}>
           <Grid item xs={8}>
             <Box>
-              <FormControl className="drawer-select" sx={{ width: '100%' }}>
+              {/* <FormControl className="drawer-select" sx={{ width: '100%' }}>
                 <Select
                   displayEmpty
                   style={{
@@ -94,10 +173,28 @@ const BoardEnrollment = () => {
                   }}
                 >
                   <MenuItem value="All Centers">
-                    All Centers {/*will come form API */}
+                    All Centers 
                   </MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
+              <CohortSelectionSection
+                classId={classId}
+                setClassId={setClassId}
+                userId={userId}
+                setUserId={setUserId}
+                isAuthenticated={isAuthenticated}
+                setIsAuthenticated={setIsAuthenticated}
+                loading={loading}
+                setLoading={setLoading}
+                cohortsData={cohortsData}
+                setCohortsData={setCohortsData}
+                manipulatedCohortData={manipulatedCohortData}
+                setManipulatedCohortData={setManipulatedCohortData}
+                isManipulationRequired={false}
+                blockName={blockName}
+                setBlockName={setBlockName}
+                isCustomFieldRequired={true}
+              />
             </Box>
           </Grid>
           <Grid
