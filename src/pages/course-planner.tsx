@@ -41,7 +41,7 @@ import {
 } from '@/utils/Helper';
 
 const CoursePlanner = () => {
-  const [value, setValue] = React.useState();
+  const [value, setValue] = React.useState<any>();
   const [subjects, setSubjects] = React.useState<CoursePlannerData[]>([]);
   const [selectedValue, setSelectedValue] = React.useState('');
   const setStateassociations = coursePlannerStore(
@@ -52,7 +52,6 @@ const CoursePlanner = () => {
   const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [framework, setFramework] = useState<any[]>([]);
-  const setSubject = useCourseStore((state) => state.setSubject);
   const setState = taxonomyStore((state) => state.setState);
   const setBoard = taxonomyStore((state) => state.setBoard);
   const [boardOptions, setBoardOptions] = useState<any[]>([]);
@@ -72,15 +71,6 @@ const CoursePlanner = () => {
   const [stateOption, setStateOption] = useState<any[]>([]);
   const [stateAssociations, setStateAssociations] = useState<any[]>([]);
   const setTaxonomySubject = taxonomyStore((state) => state.setTaxonomySubject);
-  const handleScrollDown = () => {
-    if (inputRef.current) {
-      const inputRect = inputRef.current.getBoundingClientRect();
-      const scrollMargin = 20;
-      const scrollY = window.scrollY;
-      const targetY = inputRect.top + scrollY - scrollMargin;
-      window.scrollTo({ top: targetY - 70, behavior: 'smooth' });
-    }
-  };
 
   const handleChange = (event: any) => {
     setValue(event.target.value);
@@ -165,293 +155,6 @@ const CoursePlanner = () => {
               setter(field.value.trim());
             }
           });
-
-          const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/read/${frameworkId}`;
-          const boardData = await fetch(url).then((res) => res.json());
-          console.log(boardData?.result?.framework);
-          const frameworks = boardData?.result?.framework;
-          const getStates = getOptionsByCategory(frameworks, 'state');
-
-          setFramework(frameworks);
-          const matchingState = getStates.find(
-            (state: any) => state.name === userStateName
-          );
-          if (matchingState) {
-            setStateOption([matchingState]);
-            setStateAssociations(matchingState.associations);
-
-            const getBoards = await getOptionsByCategory(frameworks, 'board');
-            if (getBoards && matchingState) {
-              const commonBoards = getBoards
-                .filter((item1: { code: any }) =>
-                  matchingState.associations.some(
-                    (item2: { code: any; category: string }) =>
-                      item2.code === item1.code && item2.category === 'board'
-                  )
-                )
-                .map((item1: { name: any; code: any; associations: any }) => ({
-                  name: item1.name,
-                  code: item1.code,
-                  associations: item1.associations,
-                }));
-              setBoardOptions(commonBoards);
-              const getMedium = await getOptionsByCategory(framework, 'medium');
-              const boardAssociations = getAssociationsByCodeNew(
-                boardOptions,
-                tStore?.board
-              );
-
-              setBoardAssociations(boardAssociations);
-
-              const commonMediumInState = getMedium
-                .filter((item1: { code: string }) =>
-                  stateAssociations.some(
-                    (item2: { code: string; category: string }) =>
-                      item2.code === item1.code && item2.category === 'medium'
-                  )
-                )
-                .map(
-                  (item1: {
-                    name: string;
-                    code: string;
-                    associations: any[];
-                  }) => ({
-                    name: item1.name,
-                    code: item1.code,
-                    associations: item1.associations,
-                  })
-                );
-
-              const commonMediumInBoard = getMedium
-                .filter((item1: { code: any }) =>
-                  boardAssociations.some(
-                    (item2: { code: any; category: string }) =>
-                      item2.code === item1.code && item2.category === 'medium'
-                  )
-                )
-                .map((item1: { name: any; code: any; associations: any }) => ({
-                  name: item1.name,
-                  code: item1.code,
-                  associations: item1.associations,
-                }));
-              console.log(`commonMediumInState`, commonMediumInState);
-              console.log(`commonMediumInBoard`, commonMediumInBoard);
-
-              const commonMediumData = findCommonAssociations(
-                commonMediumInState,
-                commonMediumInBoard
-              );
-              setMediumOptions(commonMediumData);
-
-              const getGrades = await getOptionsByCategory(
-                framework,
-                'gradeLevel'
-              );
-              const mediumAssociations = getAssociationsByCodeNew(
-                mediumOptions,
-                tStore?.medium
-              );
-              console.log('boardAssociations', stateAssociations);
-              setMediumAssociations(mediumAssociations);
-
-              const commonGradeInState = getGrades
-                .filter((item1: { code: string }) =>
-                  stateAssociations.some(
-                    (item2: { code: string; category: string }) =>
-                      item2.code === item1.code &&
-                      item2.category === 'gradeLevel'
-                  )
-                )
-                .map(
-                  (item1: {
-                    name: string;
-                    code: string;
-                    associations: any[];
-                  }) => ({
-                    name: item1.name,
-                    code: item1.code,
-                    associations: item1.associations,
-                  })
-                );
-
-              const commonGradeInBoard = getGrades
-                .filter((item1: { code: any }) =>
-                  boardAssociations.some(
-                    (item2: { code: any; category: string }) =>
-                      item2.code === item1.code &&
-                      item2.category === 'gradeLevel'
-                  )
-                )
-                .map((item1: { name: any; code: any; associations: any }) => ({
-                  name: item1.name,
-                  code: item1.code,
-                  associations: item1.associations,
-                }));
-
-              const commonGradeInMedium = await getGrades
-                .filter((item1: { code: any }) =>
-                  mediumAssociations.some(
-                    (item2: { code: any; category: string }) =>
-                      item2.code === item1.code &&
-                      item2.category === 'gradeLevel'
-                  )
-                )
-                .map((item1: { name: any; code: any; associations: any }) => ({
-                  name: item1.name,
-                  code: item1.code,
-                  associations: item1.associations,
-                }));
-              console.log(`commonGradeInState`, commonGradeInState);
-              console.log(`commonGradeInMedium`, commonGradeInMedium);
-
-              const commonGradeInStateBoard = findCommonAssociations(
-                commonGradeInState,
-                commonGradeInBoard
-              );
-              const overAllCommonGrade = findCommonAssociations(
-                commonGradeInStateBoard,
-                commonGradeInMedium
-              );
-              setGradeOptions(overAllCommonGrade);
-
-              const gradeAssociations = await getAssociationsByCodeNew(
-                gradeOptions,
-                tStore?.grade
-              );
-              setGradeAssociations(gradeAssociations);
-              const type = await getOptionsByCategory(framework, 'courseType');
-              console.log(type);
-
-              const commonTypeInState = filterAndMapAssociationsNew(
-                'courseType',
-                type,
-                stateAssociations,
-                'code'
-              );
-              const commonTypeInBoard = filterAndMapAssociationsNew(
-                'courseType',
-                type,
-                boardAssociations,
-                'code'
-              );
-              const commonTypeInMedium = filterAndMapAssociationsNew(
-                'courseType',
-                type,
-                mediumAssociations,
-                'code'
-              );
-              const commonTypeInGrade = filterAndMapAssociationsNew(
-                'courseType',
-                type,
-                gradeAssociations,
-                'code'
-              );
-
-              const commonTypeData = findCommonAssociations(
-                commonTypeInState,
-                commonTypeInBoard
-              );
-              const commonType2Data = findCommonAssociations(
-                commonTypeInMedium,
-                commonTypeInGrade
-              );
-              const commonType3Data = findCommonAssociations(
-                commonTypeData,
-                commonType2Data
-              );
-
-              console.log(`commonTypeOverall`, commonType3Data);
-              setTypeOptions(commonType3Data);
-              // setType(commonType3Data);
-
-              const typeAssociations = await getAssociationsByCodeNew(
-                typeOptions,
-                tStore?.type
-              );
-              setTypeAssociations(typeAssociations);
-              const subject = await getOptionsByCategory(framework, 'subject');
-
-              console.log(subject);
-
-              const commonSubjectInState = filterAndMapAssociationsNew(
-                'subject',
-                subject,
-                stateAssociations,
-                'code'
-              );
-              const commonSubjectInBoard = filterAndMapAssociationsNew(
-                'subject',
-                type,
-                boardAssociations,
-                'code'
-              );
-              const commonSubjectInMedium = filterAndMapAssociationsNew(
-                'subject',
-                subject,
-                mediumAssociations,
-                'code'
-              );
-              const commonSubjectInGrade = filterAndMapAssociationsNew(
-                'subject',
-                subject,
-                gradeAssociations,
-                'code'
-              );
-              const commonSubjectInType = filterAndMapAssociationsNew(
-                'subject',
-                subject,
-                typeAssociations,
-                'code'
-              );
-
-              const findCommonAssociationsNew = (
-                array1: any[],
-                array2: any[]
-              ) => {
-                return array1.filter((item1: { code: any }) =>
-                  array2.some(
-                    (item2: { code: any }) => item1.code === item2.code
-                  )
-                );
-              };
-
-              const findOverallCommonSubjects = (arrays: any[]) => {
-                const nonEmptyArrays = arrays.filter(
-                  (array: string | any[]) => array && array.length > 0
-                );
-
-                if (nonEmptyArrays.length === 0) return [];
-
-                let commonSubjects = nonEmptyArrays[0];
-
-                for (let i = 1; i < nonEmptyArrays.length; i++) {
-                  commonSubjects = findCommonAssociationsNew(
-                    commonSubjects,
-                    nonEmptyArrays[i]
-                  );
-
-                  if (commonSubjects.length === 0) return [];
-                }
-
-                return commonSubjects;
-              };
-
-              const arrays = [
-                commonSubjectInState,
-                commonSubjectInBoard,
-                commonSubjectInMedium,
-                commonSubjectInGrade,
-                commonSubjectInType,
-              ];
-
-              const overallCommonSubjects =
-                await findOverallCommonSubjects(arrays);
-
-              console.log(overallCommonSubjects);
-
-              setSubjects(overallCommonSubjects);
-            }
-          }
         }
       } catch (error) {
         console.error('Failed to fetch cohort search results:', error);
@@ -661,7 +364,7 @@ const CoursePlanner = () => {
 
             const typeAssociations = getAssociationsByCodeNew(
               typeOptions,
-              tStore?.type
+              value
             );
             setTypeAssociations(typeAssociations);
             const subject = await getOptionsByCategory(framework, 'subject');
@@ -750,10 +453,8 @@ const CoursePlanner = () => {
       }
     };
 
-
-      fetchTaxonomyResults();
-  
-  }, [value]);
+    fetchTaxonomyResults();
+  }, [value, selectedValue]);
 
   return (
     <Box minHeight="100vh">
@@ -794,7 +495,7 @@ const CoursePlanner = () => {
                   MenuProps={{
                     style: {
                       maxHeight: 400,
-                    }
+                    },
                   }}
                 >
                   {store.cohorts.map((cohort: any) => (
@@ -803,7 +504,7 @@ const CoursePlanner = () => {
                       value={cohort.cohortId}
                       className="text-truncate"
                     >
-                     {toPascalCase(cohort?.name)}
+                      {toPascalCase(cohort?.name)}
                     </MenuItem>
                   ))}
                 </Select>
