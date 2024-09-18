@@ -117,27 +117,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
   const [myCohortList, setMyCohortList] = React.useState<any>();
   const [centralizedModal, setCentralizedModal] = useState(false);
-  const store = manageUserStore();
 
-  const setDistrictCode = manageUserStore(
-    (state: { setDistrictCode: any }) => state.setDistrictCode
-  );
-  const setDistrictId = manageUserStore(
-    (state: { setDistrictId: any }) => state.setDistrictId
-  );
-  const setStateCode = manageUserStore(
-    (state: { setStateCode: any }) => state.setStateCode
-  );
-  const setStateId = manageUserStore(
-    (state: { setStateId: any }) => state.setStateId
-  );
-  const setBlockCode = manageUserStore(
-    (state: { setBlockCode: any }) => state.setBlockCode
-  );
-  const setBlockId = manageUserStore(
-    (state: { setBlockId: any }) => state.setBlockId
-  );
-
+ 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
   };
@@ -234,33 +215,7 @@ const blockObject = response?.result?.userData?.customFields.find((item:any) => 
       const activeCohorts = result?.filter((cohort: any) => cohort.cohortMemberStatus === "active");
       updateStoreFromCohorts(activeCohorts[0], blockObject);
 
-      // const district = activeCohorts[0]?.customField?.find(
-      //   (item: any) => item?.label === 'DISTRICTS'
-      // );
-    
-      // if (district) {
-      //   setDistrictCode(district?.code);
-      //   setDistrictId(district?.fieldId);
-      // }
-
-      // const state = activeCohorts[0]?.customField?.find(
-      //   (item: any) => item?.label === 'STATES'
-      // );
-
-      // if (state) {
-      //   setStateCode(state?.code);
-      //   setStateId(state?.fieldId);
-      // }
-
-      // const blockField = activeCohorts[0]?.customField?.find(
-      //   (field: any) => field?.label === 'BLOCKS'
-      // );
-
-      // if (blockObject) {
-      //   setBlockCode(blockObject?.code);
-      //   setBlockId(blockObject?.fieldId);
-      // }
-      setMyCohortList(myCohortList);
+           setMyCohortList(myCohortList);
     };
     if (userId) {
       getMyCohortList();
