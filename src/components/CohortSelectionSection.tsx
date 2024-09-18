@@ -149,8 +149,14 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             queryFn: () => getCohortList(userId, { customField: 'true' }),
           });
 
-          console.log('Response:', response);
           const cohortData = response[0];
+          let userDetailsResponse;
+          if(userId)
+          {
+            userDetailsResponse = await getUserDetails(userId, true);
+          }
+    const blockObject = userDetailsResponse?.result?.userData?.customFields.find((item:any) => item?.label === 'BLOCKS');
+    
           if (cohortData?.customField?.length) {
             const district = cohortData?.customField?.find(
               (item: CustomField) => item?.label === 'DISTRICTS'
@@ -174,46 +180,12 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
               (field: any) => field?.label === 'BLOCKS'
             );
 
-            if (blockField) {
-              setBlockCode(blockField?.code);
-              setBlockId(blockField?.fieldId);
+            if (blockObject) {
+              setBlockCode(blockObject?.code);
+              setBlockId(blockObject?.fieldId);
             }
           }
-          const result=await getCohortListForStore(userId as string, { customField: 'true' })
-          const activeCohorts = result?.filter((cohort: any) => cohort.cohortMemberStatus === "active");
-         let userResponse;
-          if(userId)
-          {
-            userResponse = await getUserDetails(userId, true);
-          }
-    const blockObject = userResponse?.result?.userData?.customFields.find((item:any) => item?.label === 'BLOCKS');
-          const district = activeCohorts[0]?.customField?.find(
-            (item: any) => item?.label === 'DISTRICTS'
-          );
-    
-          if (district) {
-            setDistrictCode(district?.code);
-            setDistrictId(district?.fieldId);
-          }
-    
-          const state = activeCohorts[0]?.customField?.find(
-            (item: any) => item?.label === 'STATES'
-          );
-    
-          if (state) {
-            setStateCode(state?.code);
-            setStateId(state?.fieldId);
-          }
-    
-          const blockField = activeCohorts[0]?.customField?.find(
-            (field: any) => field?.label === 'BLOCKS'
-          );
-    
-          if (blockObject) {
-            setBlockCode(blockObject?.code);
-            setBlockId(blockObject?.fieldId);
-          }
-    
+       
           if (response && response?.length > 0) {
             const extractNamesAndCohortTypes = (
               data: ChildData[]
