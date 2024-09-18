@@ -128,9 +128,9 @@ const CentersPage = () => {
                 const centerTypeField = child?.customField.find(
                   (field: any) => field.label === 'TYPE_OF_COHORT'
                 );
-
+                const cohortStatus = child.status
                 const centerType = centerTypeField ? centerTypeField.value : '';
-                return { cohortName, cohortId, centerType };
+                return { cohortName, cohortId, centerType, cohortStatus };
               });
               setCenterData(centerData);
               console.log(centerData);

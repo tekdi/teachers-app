@@ -6,6 +6,7 @@ import building from '../../assets/images/apartment.png';
 import Image from 'next/image';
 
 interface Center {
+  cohortStatus?: string;
   cohortId: string;
   cohortName: string;
   centerType?: string | null;
@@ -26,8 +27,8 @@ const CenterList: React.FC<CenterListProps> = ({
   theme,
   t,
 }) => {
-  console.log(centers);
-
+  const activeCenters = centers.filter((center) => center.cohortStatus === 'active');
+  
   return (
     <>
       <Box
@@ -51,7 +52,7 @@ const CenterList: React.FC<CenterListProps> = ({
         }}
       >
         <Grid container spacing={2}>
-          {centers.map((center) => (
+        {activeCenters.map((center) => (
             <Grid item xs={12} sm={6} md={4} key={center?.cohortId}>
               <Box
                 onClick={() => {
