@@ -294,6 +294,7 @@ const CentersPage = () => {
                         flexGrow: 1,
                         mr: 1,
                         backgroundColor: theme?.palette?.warning?.A700,
+                        color: theme.palette.warning['A200'],
                         borderRadius: '40px',
                         '& .MuiOutlinedInput-notchedOutline': {
                           border: 'none',
@@ -312,6 +313,7 @@ const CentersPage = () => {
                               <IconButton
                                 onClick={() => setSearchInput('')}
                                 edge="end"
+                                sx={{ color: theme.palette.warning['A200'] }}
                               >
                                 <Clear
                                   sx={{ color: theme?.palette?.warning['300'] }}
@@ -357,6 +359,7 @@ const CentersPage = () => {
                         sx={{
                           borderRadius: '7px',
                           border: `1px solid ${theme?.palette?.warning?.A700}`,
+                          color: theme?.palette?.warning['300'],
                           pl: 3,
                           fontSize: '13px',
                           fontWeight: '500',

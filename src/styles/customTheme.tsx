@@ -105,6 +105,7 @@ const customTheme = extendTheme({
         action: {
           activeChannel: '#987100',
           selectedChannel: '#dba403',
+          selected: '#FBF4E4',
         },
       },
     },
@@ -140,7 +141,7 @@ const customTheme = extendTheme({
           A100: '#E6E6E6',
           A200: '#4D4639',
           A400: '#000000',
-          A700: '#FFFFFF',
+          A700: '#343434!',
         },
         error: {
           main: '#FF4C4C',
