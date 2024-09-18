@@ -269,12 +269,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
         cohortList &&
         cohortList.length > 0 &&
         cohortList.some(
-          (cohort: { status: string }) => cohort.status === 'active'
+          (cohort: { cohortStatus: string }) => cohort.cohortStatus === 'active'
         );
 
       if (hasActiveCohorts) {
         const cohortNames = cohortList
-          .filter((cohort: { status: string }) => cohort.status === 'active')
+          .filter((cohort: { cohortStatus: string }) => cohort.cohortStatus === 'active')
           .map((cohort: { cohortName: string }) => cohort.cohortName)
           .join(', ');
 
