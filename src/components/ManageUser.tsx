@@ -150,7 +150,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR, filters],
             queryFn: () => getMyUserList({ limit, page, filters, fields }),
           });
-
+console.log("facilitator")
           const facilitatorList = resp.result?.getUserDetails;
 
           if (!facilitatorList || facilitatorList?.length === 0) {
