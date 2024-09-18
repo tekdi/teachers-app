@@ -98,6 +98,21 @@ const CoursePlanner = () => {
   };
 
   useEffect(() => {
+    const subjects = localStorage.getItem('overallCommonSubjects');
+    if (subjects) {
+      try {
+        const parsedData = JSON.parse(subjects);
+        setSubjects(parsedData);
+      } catch (error) {
+        console.error("Failed to parse subjects from localStorage:", error);
+      }
+    } else {
+      console.log("No subjects found in localStorage.");
+      setSubjects([]);
+    }
+  }, []);
+
+  useEffect(() => {
     if (store.cohorts.length > 0) {
       const cohortId = router.query.center
         ? router.query.center
@@ -120,9 +135,9 @@ const CoursePlanner = () => {
         const cohortDetails = data?.result?.results?.cohortDetails?.[0];
 
         if (cohortDetails) {
-          const arrayFields = [
-            { label: CoursePlannerConstants.SUBJECT, setter: setSubjects },
-          ];
+          // const arrayFields = [
+          //   { label: CoursePlannerConstants.SUBJECT, setter: setSubject },
+          // ];
 
           const stringFields = [
             { label: CoursePlannerConstants.STATES, setter: setState },
@@ -131,20 +146,20 @@ const CoursePlanner = () => {
             { label: CoursePlannerConstants.GRADE, setter: setGrade },
           ];
 
-          arrayFields.forEach(({ label, setter }) => {
-            const field = cohortDetails.customFields.find(
-              (field: any) => field.label === label
-            );
+          // arrayFields.forEach(({ label, setter }) => {
+          //   const field = cohortDetails.customFields.find(
+          //     (field: any) => field.label === label
+          //   );
 
-            if (field && field.value) {
-              const valuesArray = field.value
-                .split(',')
-                .map((item: string) => item.trim());
-              setter(valuesArray);
-            } else if (label === CoursePlannerConstants.SUBJECT) {
-              setter([]);
-            }
-          });
+          //   if (field && field.value) {
+          //     const valuesArray = field.value
+          //       .split(',')
+          //       .map((item: string) => item.trim());
+          //     setter(valuesArray);
+          //   } else if (label === CoursePlannerConstants.SUBJECT) {
+          //     setter([]);
+          //   }
+          // });
 
           stringFields.forEach(({ label, setter }) => {
             const field = cohortDetails.customFields.find(
@@ -443,8 +458,7 @@ const CoursePlanner = () => {
             const overallCommonSubjects =
               await findOverallCommonSubjects(arrays);
 
-            console.log(overallCommonSubjects);
-
+            localStorage.setItem('overallCommonSubjects', JSON.stringify(overallCommonSubjects));
             setSubjects(overallCommonSubjects);
           }
         }
@@ -480,12 +494,18 @@ const CoursePlanner = () => {
         <Grid item md={6} xs={12}>
           <Box sx={{ mt: 2, px: '20px' }}>
             <Box sx={{ flexBasis: '70%' }}>
-              <FormControl className="drawer-select" sx={{ width: '100%' }}>
+              <FormControl
+                className="drawer-select"
+                sx={{ width: '100%' }}
+                variant="outlined"
+              >
+                <InputLabel id="select-center-label">Select Centers</InputLabel>
                 <Select
-                  className="select-languages"
-                  displayEmpty
+                  labelId="select-center-label"
+                  id="select-center"
                   value={selectedValue}
                   onChange={handleCohortChange}
+                  label="Select Centers"
                   style={{
                     borderRadius: '0.5rem',
                     color: theme.palette.warning['200'],
@@ -498,6 +518,7 @@ const CoursePlanner = () => {
                     },
                   }}
                 >
+                  
                   {store.cohorts.map((cohort: any) => (
                     <MenuItem
                       key={cohort.cohortId}
@@ -558,7 +579,7 @@ const CoursePlanner = () => {
           </Select>
         </FormControl>
 
-        <Box sx={{ px: '16px', mt: 2 }}>
+        <Box sx={{ mt: 2 }}>
           <Box
             sx={{
               background: theme.palette.action.selected,
