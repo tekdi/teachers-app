@@ -10,7 +10,7 @@ import {
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
-import { getCohortList, getCohortListForStore } from '@/services/CohortServices';
+import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
 import { ICohort } from '@/utils/Interfaces';
 import { CustomField } from '@/utils/Interfaces';

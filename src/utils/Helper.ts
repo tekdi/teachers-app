@@ -564,14 +564,18 @@ export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => 
   const setStateId = manageUserStore.getState().setStateId;
   const setBlockCode = manageUserStore.getState().setBlockCode;
   const setBlockId = manageUserStore.getState().setBlockId;
+  const setBlockName = manageUserStore.getState().setBlockName;
+  const setDistrictName = manageUserStore.getState().setDistrictName;
+  const setStateName = manageUserStore.getState().setStateName;
+
 
   const district = activeCohorts[0]?.customField?.find(
     (item: any) => item?.label === 'DISTRICTS'
   );
-
   if (district) {
     setDistrictCode(district?.code);
     setDistrictId(district?.fieldId);
+    setDistrictName(district?.value)
   }
 
   const state = activeCohorts[0]?.customField?.find(
@@ -581,11 +585,15 @@ export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => 
   if (state) {
     setStateCode(state?.code);
     setStateId(state?.fieldId);
+    setStateName(state?.value);
+
   }
 
  
   if (blockObject) {
     setBlockCode(blockObject?.code);
     setBlockId(blockObject?.fieldId);
+    setBlockName(blockObject?.value);
+
   }
 };

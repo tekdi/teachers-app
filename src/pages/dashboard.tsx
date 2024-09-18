@@ -63,7 +63,7 @@ import SessionCard from '@/components/SessionCard';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useQueryClient } from '@tanstack/react-query';
-import { getCohortList, getCohortListForStore } from '@/services/CohortServices';
+import { getCohortList } from '@/services/CohortServices';
 import CentralizedModal from '@/components/CentralizedModal';
 import manageUserStore from '@/store/manageUserStore';
 import { getUserDetails } from '@/services/ProfileService';
@@ -160,6 +160,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
       localStorage.setItem('classId', cohortsData[0]?.cohortId) 
     
     }
+    else
+    {
+      localStorage.setItem('classId', "") 
+
+    }
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
       const role = localStorage.getItem('role');
@@ -188,32 +193,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
        response = await getUserDetails(userId, true);
       }
 const blockObject = response?.result?.userData?.customFields.find((item:any) => item?.label === 'BLOCKS');
-// const stateObject = response?.result?.userData?.customFields.find((item:any) => item?.label === "STATES");
-// const districtObject = response?.result?.userData?.customFields.find((item:any) => item?.label === "DISTRICTS");
 
-// const storedData = JSON.parse(localStorage.getItem('fieldData') || '{}');
-// localStorage.removeItem('fieldData');
-// storedData.state.blockName =  blockObject?.value
-// storedData.state.districtName = districtObject?.value
-// storedData.state.stateName = stateObject?.value
-// storedData.state.blockId = blockObject?.fieldId
-// storedData.state.districtId =    districtObject?.fieldId
-// storedData.state.stateId =  stateObject?.fieldId
-// storedData.state.stateCode =    stateObject?.code
 
-//  storedData.state.blockCode = blockObject?.code
-//  storedData.state.districtCode =  districtObject?.code
-//  console.log("userDetails-----------------------------------",storedData)
-
-//  if (typeof window !== 'undefined' && window.localStorage) {
-
-//  localStorage.setItem('fieldData', JSON.stringify(storedData));
-//  }
-
-      const result=await getCohortListForStore(userId as string, { customField: 'true' })
-    
+let isCustomFields=true;
+      const result=await getCohortList(userId as string, { customField: 'true' }, isCustomFields)
       const activeCohorts = result?.filter((cohort: any) => cohort.cohortMemberStatus === "active");
-      updateStoreFromCohorts(activeCohorts[0], blockObject);
+      updateStoreFromCohorts(activeCohorts, blockObject );
 
            setMyCohortList(myCohortList);
     };
