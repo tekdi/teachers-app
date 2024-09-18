@@ -31,6 +31,7 @@ import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
 import { telemetryFactory } from '@/utils/telemetry';
 import { toPascalCase } from '@/utils/Helper';
 import { useQueryClient } from '@tanstack/react-query';
+import { getUserDetails } from '@/services/ProfileService';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -93,6 +94,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   showFloatingLabel = false,
   showDisabledDropDown = false,
 }) => {
+  console.log("cohortsData",classId, cohortsData[0]?.cohortId)
   const router = useRouter();
   const theme = useTheme<any>();
   const queryClient = useQueryClient();
@@ -147,8 +149,14 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             queryFn: () => getCohortList(userId, { customField: 'true' }),
           });
 
-          console.log('Response:', response);
           const cohortData = response[0];
+          let userDetailsResponse;
+          if(userId)
+          {
+            userDetailsResponse = await getUserDetails(userId, true);
+          }
+    const blockObject = userDetailsResponse?.result?.userData?.customFields.find((item:any) => item?.label === 'BLOCKS');
+    
           if (cohortData?.customField?.length) {
             const district = cohortData?.customField?.find(
               (item: CustomField) => item?.label === 'DISTRICTS'
@@ -172,12 +180,12 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
               (field: any) => field?.label === 'BLOCKS'
             );
 
-            if (blockField) {
-              setBlockCode(blockField?.code);
-              setBlockId(blockField?.fieldId);
+            if (blockObject) {
+              setBlockCode(blockObject?.code);
+              setBlockId(blockObject?.fieldId);
             }
           }
-
+       
           if (response && response?.length > 0) {
             const extractNamesAndCohortTypes = (
               data: ChildData[]
@@ -446,7 +454,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                           <Select
                             labelId="center-select-label"
                             label={showFloatingLabel ? t('COMMON.CENTER') : ''}
-                            value={classId}
+                            value={classId? classId: cohortsData[0]?.cohortId}
                             onChange={handleCohortSelection}
                             // displayEmpty
                             // style={{ borderRadius: '4px' }}
