@@ -583,6 +583,7 @@ export interface RecurrencePattern {
   interval: number;
   endCondition: EndCondtion;
   daysOfWeek: number[];
+  recurringStartDate: string;
 }
 
 export interface EndCondtion {
