@@ -11,6 +11,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  TextField,
   Typography,
 } from '@mui/material';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -314,25 +315,12 @@ const BoardEnrollmentDetail = () => {
             {activeStep === 2 && (
               <>
                 <Box sx={{ mt: 2 }}>
-                  <FormControl fullWidth>
-                    <InputLabel
-                      style={{ color: theme?.palette?.warning['A200'] }}
-                      id="demo-simple-select-label"
-                    >
-                      Board Enrolment Number
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label={'Board Enrolment Number'}
-                      style={{ borderRadius: '4px' }}
-                      value={'Board Enrolment Number'}
-                    >
-                      <MenuItem key="other" value="other">
-                        {t('FORM.OTHER')}
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
+                  <TextField
+                    id="outlined-basic"
+                    label={t('BOARD_ENROLMENT.BOARD_ENROLLMENT_NUMBER')}
+                    variant="outlined"
+                    style={{ color: theme?.palette?.warning['A200'] }}
+                  />
                 </Box>
               </>
             )}
@@ -357,7 +345,7 @@ const BoardEnrollmentDetail = () => {
                     }}
                     id="demo-row-radio-buttons-group-label"
                   >
-                    Exam Fees Paid? (optional)
+                    {t('BOARD_ENROLMENT.EXAM_FEES_PAID')}
                   </FormLabel>
                   <RadioGroup
                     row
@@ -367,13 +355,13 @@ const BoardEnrollmentDetail = () => {
                     <FormControlLabel
                       value="yes"
                       control={<Radio />}
-                      label="Yes"
+                      label={t('COMMON.YES')}
                       sx={{ color: theme.palette.warning['300'] }}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio />}
-                      label="No"
+                      label={t('FORM.NO')}
                       sx={{ color: theme.palette.warning['300'] }}
                     />
                   </RadioGroup>
@@ -395,20 +383,22 @@ const BoardEnrollmentDetail = () => {
             >
               <Button
                 sx={{
-                  color: theme.palette.secondary.main,
+                  color: theme.palette.error.contrastText,
                   fontSize: '14px',
                   fontWeight: '500',
                   '&:hover': {
                     backgroundColor: 'transparent',
+                    border: `1px solid ${theme.palette.error.contrastText}`,
                   },
-                  border: '1px solid #1D1B201F' /* color not in custom theme */,
+                  border: `1px solid ${theme.palette.error.contrastText}`,
                   mt: '15px',
                   width: '144px',
                 }}
                 variant="outlined"
                 onClick={handleBack}
+                disabled={activeStep === 0}
               >
-                Back
+                {t('GUIDE_TOUR.PREVIOUS')}
               </Button>
               <Button
                 sx={{
@@ -422,7 +412,9 @@ const BoardEnrollmentDetail = () => {
                 color="primary"
                 onClick={handleNext}
               >
-                {activeStep > 1 ? 'save' : 'Save & Next'}
+                {activeStep > 2
+                  ? t('COMMON.SAVE')
+                  : t('BOARD_ENROLMENT.SAVE_AND_NEXT')}
               </Button>
             </Box>
             {/* Button end here  */}
@@ -441,8 +433,9 @@ const BoardEnrollmentDetail = () => {
           },
         }}
       >
-        “Save & Next” to save your progress. You can come back and change it
-        anytime.
+        {activeStep > 2
+          ? t('BOARD_ENROLMENT.MANDATORY')
+          : t('BOARD_ENROLMENT.TO_SAVE_YOUR_PROGRESS')}
       </Box>
     </>
   );
