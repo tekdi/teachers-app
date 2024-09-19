@@ -89,7 +89,7 @@ const Assessments = () => {
           status: [Status.ACTIVE],
         };
         const response = await getMyCohortMemberList({
-          limit: 300,
+          limit: 0,
           page: 0,
           filters,
         });
@@ -242,6 +242,7 @@ const Assessments = () => {
   const resetValues = () => {
     setFilteredLearnerList([]);
     setLearnerList([]);
+    setCohortMembers([]);
     setTestCompletionCount({ completionCount: 0, totalCount: 0 });
   };
 
@@ -347,7 +348,6 @@ const Assessments = () => {
                 loading={loading}
                 setLoading={setLoading}
                 cohortsData={cohortsData}
-                // setBlockName={() => { }}
                 setCohortsData={setCohortsData}
                 manipulatedCohortData={manipulatedCohortData}
                 setManipulatedCohortData={setManipulatedCohortData}
