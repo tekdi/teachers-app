@@ -404,14 +404,10 @@ const Assessments = () => {
       )}
 
       {!isLoading && !assessmentList?.length && (
-        <Box sx={{ mt: 2, px: '20px' }}>
-          <Typography textAlign="center" fontSize="16px">
-            {t('ASSESSMENTS.NO_ASSESSMENTS_FOUND')}
-          </Typography>
-        </Box>
+        <NoDataFound />
       )}
 
-      {!isLoading && !!assessmentList?.length && (
+      {!isLoading && !!assessmentList?.length && !!filteredLearnerList?.length && (
         <Grid
           sx={{
             mt: 2,
