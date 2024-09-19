@@ -38,6 +38,12 @@ const WeekDays: React.FC<WeekDaysProps> = ({
       scrollContainer.scrollTo({ left: scrollPosition, behavior: 'smooth' });
     }
     setLocalSelectedDays(selectedDays);
+    if (selectedDays && onSelectionChange) {
+      const selectedWeekDays = selectedDays.map(
+        (dayIndex: any) => fullDays[dayIndex]
+      );
+      onSelectionChange(selectedWeekDays);
+    }
   }, []);
 
   const handleDayClick = (index: number) => {
