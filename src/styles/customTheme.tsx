@@ -196,14 +196,6 @@ const customTheme = extendTheme({
           activeChannel: '#FFC107',
           selectedChannel: '#FF9800',
         },
-        customTextColors: {
-          custom1: '#FF6347', // Tomato
-          custom2: '#20B2AA', // LightSeaGreen
-          custom3: '#4682B4', // SteelBlue
-          custom4: '#FF4500', // OrangeRed
-          custom5: '#32CD32', // LimeGreen
-          custom6: '#9370DB', // MediumPurple
-        },
       },
     },
   },

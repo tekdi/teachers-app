@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -153,7 +153,9 @@ const ForgotPassword = () => {
 
           <CentralizedModal
             icon={true}
-            subTitle={`We sent an email to ${maskEmail} with a link to reset your password`}
+            subTitle={t('LOGIN_PAGE.WE_SEND_AN_EMAIL', {
+              maskEmail: maskEmail,
+            })}
             primary={t('COMMON.OKAY')}
             modalOpen={successMessage}
             handlePrimaryButton={handlePrimaryButton}
