@@ -47,6 +47,14 @@ export interface UserAttendanceObj {
   memberStatus?: string;
 }
 
+export interface user {
+  memberStatus: string;
+  userId: string;
+  name: string;
+  attendance?: string;
+  key?: string;
+}
+
 export interface BulkAttendanceParams {
   attendanceDate: string;
   contextId: string;

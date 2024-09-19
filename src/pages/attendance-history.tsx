@@ -22,6 +22,7 @@ import {
   AttendanceStatusListProps,
   ICohort,
   CohortMemberList,
+  user,
 } from '../utils/Interfaces';
 
 import AttendanceStatus from '@/components/AttendanceStatus';
@@ -53,14 +54,6 @@ import SortingModal from '../components/SortingModal';
 import { attendanceStatusList } from '../services/AttendanceService';
 import { telemetryFactory } from '@/utils/telemetry';
 import NoDataFound from '@/components/common/NoDataFound';
-
-interface user {
-  memberStatus: string;
-  userId: string;
-  name: string;
-  attendance?: string;
-  key?: string;
-}
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
