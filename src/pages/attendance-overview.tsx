@@ -538,14 +538,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           <KeyboardBackspaceOutlinedIcon
             onClick={handleBackEvent}
             cursor={'pointer'}
-            // sx={{ color: theme.palette.warning['A200'] }}
+            sx={{ color: theme.palette.warning['A200'] }}
           />
-          <Typography
-            textAlign={'left'}
-            sx={{ color: theme.palette.text.primary }}
-            fontSize={'22px'}
-            m={'1rem'}
-          >
+          <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
             {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
           </Typography>
         </Box>
