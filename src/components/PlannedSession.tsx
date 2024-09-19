@@ -1131,7 +1131,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
           <Box>
             <SessionMode
-              mode={mode || block?.sessionMode}
+              mode={editSession ? (mode ?? '') : (block?.sessionMode ?? '')}
               handleSessionModeChange={(e) =>
                 handleSessionModeChange(e, block?.id)
               }
@@ -1225,58 +1225,38 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             </>
           )}
 
-          {(block?.sessionMode === sessionMode.ONLINE ||
-            mode === sessionMode.ONLINE) && (
-            <>
-              {/* <Box
-                sx={{
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: theme?.palette?.warning['300'],
-                  mt: 1.5,
-                }}
-              >
-                {t('CENTER_SESSION.SET_UP')}
-              </Box> */}
-
-              <Box sx={{ mt: 2 }}>
-                <TextField
-                  id="outlined-basic"
-                  value={link}
-                  label={t('CENTER_SESSION.MEETING_LINK')}
-                  variant="outlined"
-                  error={!!linkError}
-                  helperText={linkError}
-                  onChange={(e) =>
-                    handleLinkChange(
-                      e as React.ChangeEvent<HTMLInputElement>,
-                      block?.id
-                    )
-                  }
-                />
-              </Box>
-              <Box sx={{ mt: 2 }}>
-                <TextField
-                  id="outlined-basic"
-                  label={t('CENTER_SESSION.MEETING_PASSCODE')}
-                  variant="outlined"
-                  onChange={(e: any) => handlePasscodeChange(block?.id, e)}
-                  value={meetingPasscode ? meetingPasscode : null}
-                />
-              </Box>
-            </>
-          )}
+          {block?.sessionMode === sessionMode.ONLINE &&
+            mode === sessionMode.ONLINE && (
+              <>
+                <Box sx={{ mt: 2 }}>
+                  <TextField
+                    id="outlined-basic"
+                    value={link}
+                    label={t('CENTER_SESSION.MEETING_LINK')}
+                    variant="outlined"
+                    error={!!linkError}
+                    helperText={linkError}
+                    onChange={(e) =>
+                      handleLinkChange(
+                        e as React.ChangeEvent<HTMLInputElement>,
+                        block?.id
+                      )
+                    }
+                  />
+                </Box>
+                <Box sx={{ mt: 2 }}>
+                  <TextField
+                    id="outlined-basic"
+                    label={t('CENTER_SESSION.MEETING_PASSCODE')}
+                    variant="outlined"
+                    onChange={(e: any) => handlePasscodeChange(block?.id, e)}
+                    value={meetingPasscode ? meetingPasscode : null}
+                  />
+                </Box>
+              </>
+            )}
           {clickedBox === 'EXTRA_SESSION' && (
             <Box sx={{ mt: 2 }}>
-              {/* <Box
-                sx={{
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: theme?.palette?.warning['300'],
-                }}
-              >
-                {t('CENTER_SESSION.SESSION_DETAILS')}
-              </Box> */}
               <Box>
                 <FormControl fullWidth>
                   <InputLabel
