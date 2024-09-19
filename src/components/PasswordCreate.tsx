@@ -77,7 +77,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
               color: passwordError ? theme.palette.warning['A200'] : 'inherit',
             },
           }}
-          helperText={passwordError && 'Your password needs to:'}
+          helperText={passwordError && t('LOGIN_PAGE.PASSWORD_NEED')}
           label={t('LOGIN_PAGE.PASSWORD')}
           fullWidth
           sx={{
