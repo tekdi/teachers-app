@@ -31,7 +31,8 @@ export const getCohortDetails = async (cohortId: string): Promise<any> => {
 
 export const getCohortList = async (
   userId: string,
-  filters: { [key: string]: string } = {}
+  filters: { [key: string]: string } = {},
+  isCustomFields: boolean = false
 ): Promise<any> => {
   let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohort/mycohorts/${userId}?children=true`;
   const filterParams = new URLSearchParams(filters).toString();
@@ -40,6 +41,11 @@ export const getCohortList = async (
   }
   try {
     const response = await get(apiUrl);
+    if(isCustomFields)
+    {
+      return response?.data?.result;
+
+    }
     if (response?.data?.result?.length) {
       let res = response?.data?.result;
       res = res.filter((block: any) => {
@@ -53,6 +59,7 @@ export const getCohortList = async (
       return res;
     }
     return response?.data?.result;
+
   } catch (error) {
     console.error('Error in getting cohort details', error);
     // throw error;

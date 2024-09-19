@@ -35,6 +35,7 @@ import building from '../../assets/images/apartment.png';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import NoDataFound from '@/components/common/NoDataFound';
+import { text } from 'stream/consumers';
 
 const CentersPage = () => {
   const [loading, setLoading] = useState(false);
@@ -128,9 +129,9 @@ const CentersPage = () => {
                 const centerTypeField = child?.customField.find(
                   (field: any) => field.label === 'TYPE_OF_COHORT'
                 );
-
+                const cohortStatus = child.status;
                 const centerType = centerTypeField ? centerTypeField.value : '';
-                return { cohortName, cohortId, centerType };
+                return { cohortName, cohortId, centerType, cohortStatus };
               });
               setCenterData(centerData);
               console.log(centerData);
