@@ -156,7 +156,7 @@
     "ENTER_USERNAME_PASSWORD": "Enter username",
     "BACK_TO_LOGIN": "Back to Login",
     "CREATE_STRONG_PASSWORD": "Create a strong password",
-    "YOUR_PASSWORD_NEEDS:": "Your password needs to:",
+    "YOUR_PASSWORD_NEED": "Your password needs to:",
     "INCLUDE_BOTH": "Include both upper case and lower case",
     "INCLUDE_NUMBER": "Include at least one number",
     "INCLUDE_SPECIAL": "Include at least one special character",
@@ -166,7 +166,8 @@
     "PLEASE_RESET_YOUR_PASSWORD": "Please reset your password to ensure your account is secure",
     "DO_IT_LATER": "I’ll do it later",
     "SUCCESSFULLY_RESET": "Your password has been successfully reset",
-    "LINK_EXPIRED": "Link Expired"
+    "LINK_EXPIRED": "Link Expired",
+    "WE_SEND_AN_EMAIL":"We sent an email to {{maskEmail}} with a link to reset your password"
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",
@@ -559,6 +560,11 @@
     "SUBJECTS_SELECTION": "Subjects Selection",
     "REGISTRATION_COMPLETED": "Registration Completed",
     "DROPPED_OUT": " Dropped Out",
-    "FEE_PAYMENT": "Fee Payment"
+    "FEE_PAYMENT": "Fee Payment",
+    "BOARD_ENROLLMENT_NUMBER":"Board Enrolment Number",
+    "EXAM_FEES_PAID":"  Exam Fees Paid? (optional)",
+    "SAVE_AND_NEXT":"Save and Next",
+    "TO_SAVE_YOUR_PROGRESS":"“Save & Next” to save your progress. You can come back and change it anytime.",
+    "MANDATORY":"Mandatory for NIOS only. For other Boards, this step is automatically marked completed. Please click on Save to submit the data."
   }
 }

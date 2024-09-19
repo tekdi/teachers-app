@@ -70,7 +70,7 @@ const CreatePassword = () => {
             borderRadius: '16px',
           },
           width: '100%',
-          marginTop: '8rem',
+          marginTop: editPassword ? '1.5rem' : '8rem',
         }}
       >
         <Box
@@ -81,7 +81,7 @@ const CreatePassword = () => {
         >
           <Image src={Logo} alt="App Logo" height={100} />
         </Box>
-        <Box sx={{ padding: '60px' }}>
+        <Box sx={{ padding: editPassword ? '16px' : '40px' }}>
           <Box
             sx={{
               color: theme.palette.warning['300'],

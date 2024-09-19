@@ -309,12 +309,16 @@ console.log("facilitator")
           console.log('Cohort List:', cohortList);
           if (cohortList && cohortList?.length > 0) {
             const cohortDetails = cohortList?.map(
-              (cohort: { cohortName: any; cohortId: any; cohortStatus: any }) => ({
+              (cohort: {
+                cohortName: any;
+                cohortId: any;
+                cohortStatus: any;
+              }) => ({
                 name: cohort?.cohortName,
                 id: cohort?.cohortId,
                 status: cohort?.cohortStatus,
               })
-            );          
+            );
             setReassignCohortNames(cohortDetails);
           }
         } catch (error) {
@@ -462,7 +466,7 @@ console.log("facilitator")
                 <Box mt={'18px'} px={'18px'}>
                   <Button
                     sx={{
-                      border: '1px solid #1E1B16',
+                      border: `1px solid ${theme.palette.error.contrastText}`,
                       borderRadius: '100px',
                       height: '40px',
                       width: '8rem',
@@ -590,7 +594,8 @@ console.log("facilitator")
                                         </CustomLink>
                                         <Box
                                           sx={{
-                                            backgroundColor: '#FFF8F2',
+                                            backgroundColor:
+                                              theme.palette.action.selected,
                                             padding: '5px',
                                             borderRadius: '5px',
                                             fontSize: '12px',

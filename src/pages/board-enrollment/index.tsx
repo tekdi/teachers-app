@@ -31,6 +31,8 @@ import { ICohort, user } from '@/utils/Interfaces';
 import { toPascalCase } from '@/utils/Helper';
 import { showToastMessage } from '@/components/Toastify';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import CenterSessionModal from '@/components/CenterSessionModal';
+import SortingModal from '@/components/SortingModal';
 
 const BoardEnrollment = () => {
   const theme = useTheme<any>();
@@ -45,10 +47,12 @@ const BoardEnrollment = () => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [userId, setUserId] = React.useState<string | null>(null);
   const [blockName, setBlockName] = React.useState<string>('');
+  const [modalOpen, setModalOpen] = React.useState(false);
   const [displayStudentList, setDisplayStudentList] = React.useState<
-  Array<user>
->([]);
+    Array<user>
+  >([]);
   const [loading, setLoading] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
     const res = boardEnrollment();
@@ -70,7 +74,7 @@ const BoardEnrollment = () => {
     }
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     const getCohortMemberList = async () => {
       setLoading(true);
       try {
@@ -84,7 +88,7 @@ const BoardEnrollment = () => {
             filters,
           });
           const resp = response?.result?.userDetails || [];
-  
+
           if (resp) {
             const selectedDateStart = new Date();
             selectedDateStart.setHours(0, 0, 0, 0);
@@ -100,8 +104,8 @@ const BoardEnrollment = () => {
                 memberStatus: entry.status,
                 createdAt: entry.createdAt,
               }));
-              console.log(`nameUserIdArray`, nameUserIdArray)
-              setDisplayStudentList(nameUserIdArray)
+            console.log(`nameUserIdArray`, nameUserIdArray);
+            setDisplayStudentList(nameUserIdArray);
           } else {
             setDisplayStudentList([]);
           }
@@ -114,8 +118,20 @@ const BoardEnrollment = () => {
         setLoading(false);
       }
     };
-    getCohortMemberList()
-  },[classId])
+    getCohortMemberList();
+  }, [classId]);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => setOpen(false);
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
 
   return (
     <>
@@ -159,7 +175,7 @@ const BoardEnrollment = () => {
       </Grid>
 
       <Box sx={{ px: '16px' }}>
-        <Grid container sx={{ mt: '20px' }}>
+        <Grid container sx={{ mt: '20px', alignItems: 'flex-end' }}>
           <Grid item xs={8}>
             <Box>
               {/* <FormControl className="drawer-select" sx={{ width: '100%' }}>
@@ -203,8 +219,10 @@ const BoardEnrollment = () => {
             item
           >
             <Button
+              onClick={handleOpenModal}
               sx={{
                 color: theme.palette.warning.A200,
+
                 borderRadius: '10px',
                 fontSize: '14px',
               }}
@@ -212,7 +230,9 @@ const BoardEnrollment = () => {
               size="small"
               variant="outlined"
             >
-              {t('COMMON.SORT_BY')}
+              {t('COMMON.SORT_BY').length > 7
+                ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
+                : t('COMMON.SORT_BY')}
             </Button>
           </Grid>
         </Grid>
@@ -231,7 +251,9 @@ const BoardEnrollment = () => {
                   borderRadius: '8px',
                 }}
                 onClick={() => {
-                  router.push(`/board-enrollment/student-detail`);
+                  item.isDropout
+                    ? handleOpen()
+                    : router.push(`/board-enrollment/student-detail`);
                 }}
               >
                 <Box
@@ -246,16 +268,24 @@ const BoardEnrollment = () => {
                     sx={{
                       fontSize: '16px',
                       fontWeight: '400',
-                      color: theme.palette.warning['300'],
+                      color: item.isDropout
+                        ? theme.palette.warning['400']
+                        : theme.palette.warning['300'],
                     }}
                   >
                     {item.studentName}
                   </Box>
-                  <EastIcon sx={{ color: theme.palette.warning['300'] }} />
+                  <EastIcon
+                    sx={{
+                      color: item.isDropout
+                        ? theme.palette.warning['400']
+                        : theme.palette.warning['300'],
+                    }}
+                  />
                 </Box>
                 <Box
                   sx={{
-                    color: theme.palette.warning['300'],
+                    color: theme.palette.warning['400'],
                     fontWeight: '500',
                     fontSize: '12px',
                     mt: 0.5,
@@ -298,6 +328,40 @@ const BoardEnrollment = () => {
             </Grid>
           );
         })}
+        <CenterSessionModal
+          open={open}
+          handleClose={handleClose}
+          title={t('COMMON.DROPPED_OUT')}
+        >
+          <Box sx={{ p: '16px' }}>
+            <Box
+              sx={{
+                color: theme.palette.warning['400'],
+                fontSize: '14px',
+                fontWeight: 500,
+              }}
+            >
+              {t('COMMON.REASON_FOR_DROPOUT')}
+            </Box>
+            <Box
+              sx={{
+                color: theme.palette.warning['300'],
+                fontSize: '16px',
+                fontWeight: 500,
+                mt: '8px',
+              }}
+            >
+              Migration {/*will come from API */}
+            </Box>
+          </Box>
+        </CenterSessionModal>
+
+        <SortingModal
+          isModalOpen={modalOpen}
+          handleCloseModal={handleCloseModal}
+          // handleSorting={handleSorting}
+          // routeName={pathname}
+        />
       </Grid>
     </>
   );

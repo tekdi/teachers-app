@@ -1,4 +1,7 @@
-import { experimental_extendTheme as extendTheme, getContrastRatio } from '@mui/material/styles';
+import {
+  experimental_extendTheme as extendTheme,
+  getContrastRatio,
+} from '@mui/material/styles';
 
 // Common component style overrides
 const commonComponents = {
@@ -15,7 +18,10 @@ const commonComponents = {
       },
       containedPrimary: ({ theme }: any) => ({
         border: 'none',
-        color: getContrastRatio(theme.palette.primary.main, '#FFFFFF') >= 3 ? '#FFFFFF' : '#000000',
+        color:
+          getContrastRatio(theme.palette.primary.main, '#FFFFFF') >= 3
+            ? '#FFFFFF'
+            : '#000000',
       }),
       outlinedPrimary: {
         backgroundColor: 'none',
@@ -135,6 +141,7 @@ const customTheme = extendTheme({
         action: {
           activeChannel: '#987100',
           selectedChannel: '#dba403',
+          selected: '#FBF4E4',
         },
         customTextColors: {
           custom1: '#FF6347', // Tomato
@@ -188,14 +195,6 @@ const customTheme = extendTheme({
         action: {
           activeChannel: '#FFC107',
           selectedChannel: '#FF9800',
-        },
-        customTextColors: {
-          custom1: '#FF6347', // Tomato
-          custom2: '#20B2AA', // LightSeaGreen
-          custom3: '#4682B4', // SteelBlue
-          custom4: '#FF4500', // OrangeRed
-          custom5: '#32CD32', // LimeGreen
-          custom6: '#9370DB', // MediumPurple
         },
       },
     },
