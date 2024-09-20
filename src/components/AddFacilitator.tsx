@@ -19,7 +19,7 @@ import { sendEmailOnFacilitatorCreation } from '@/services/NotificationService';
 import { editEditUser } from '@/services/ProfileService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 import { modalStyles } from '@/styles/modalStyles';
-import { generateUsernameAndPassword } from '@/utils/Helper';
+import { deepClone, generateUsernameAndPassword } from '@/utils/Helper';
 import { Field } from '@/utils/Interfaces';
 import { telemetryFactory } from '@/utils/telemetry';
 import CloseIcon from '@mui/icons-material/Close';
@@ -84,7 +84,8 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
   useEffect(() => {
     if (formResponse) {
-      const filteredFieldNames = formResponse?.fields
+      const teacherReadResponse = deepClone(formResponse);
+      const filteredFieldNames = teacherReadResponse?.fields
         .filter((field: any) => field?.coreField === 1)
         .map((field: any) => field?.name);
       setCoreFields(filteredFieldNames);
@@ -122,12 +123,12 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         maxSelections: null,
       };
       if (!isEditModal) {
-        formResponse?.fields.push(assignCentersField);
-        console.log(formResponse);
+        teacherReadResponse?.fields.push(assignCentersField);
+        console.log(teacherReadResponse);
       }
 
-      if (formResponse) {
-        const { schema, uiSchema } = GenerateSchemaAndUiSchema(formResponse, t);
+      if (teacherReadResponse) {
+        const { schema, uiSchema } = GenerateSchemaAndUiSchema(teacherReadResponse, t);
         setSchema(schema);
         setUiSchema(uiSchema);
       }

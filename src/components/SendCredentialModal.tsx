@@ -1,10 +1,8 @@
+import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, Divider, Modal, Typography } from '@mui/material';
-import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import CloseIcon from '@mui/icons-material/Close';
-import { showToastMessage } from './Toastify';
-import { sendCredentialService } from '@/services/NotificationService';
+import React from 'react';
 
 interface SendCredentialModalProps {
   open: boolean;
@@ -36,10 +34,6 @@ const SendCredentialModal: React.FC<SendCredentialModalProps> = ({
   const handleAction = async () => {
     onClose();
   };
-
-  // const handleBackAction = () => {
-  //   onClose();
-  // };
 
   return (
     <Modal
@@ -74,7 +68,6 @@ const SendCredentialModal: React.FC<SendCredentialModalProps> = ({
           />
         </Box>
         <Divider />
-        {/* {isButtonAbsent ? ( */}
         <Box
           sx={{
             padding: '18px 16px',
@@ -119,14 +112,6 @@ const SendCredentialModal: React.FC<SendCredentialModalProps> = ({
             <Divider />
           </Box>
           <Box p={'18px'} display={'flex'} gap={'1rem'}>
-            {/* <Button
-              className="w-100"
-              sx={{ boxShadow: 'none' }}
-              variant="outlined"
-              onClick={() => handleBackAction()}
-            >
-              {t('COMMON.BACK')}
-            </Button> */}
             <Button
               className="w-100"
               sx={{ boxShadow: 'none' }}
