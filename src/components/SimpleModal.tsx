@@ -29,67 +29,79 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   const theme = useTheme<any>();
 
   const modalStyle = {
-    padding: '0',
-    paddingBottom: theme.spacing(2),
+    padding: 0,
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: '85%',
     maxHeight: '80vh',
-    // overflowY: 'auto',
     backgroundColor: '#fff',
     borderRadius: '18px',
     boxShadow: theme.shadows[5],
+    display: 'flex',
+    flexDirection: 'column',
     '@media (min-width: 600px)': {
       width: '450px',
     },
   };
 
   const titleStyle = {
-    position: 'sticky',
-    top: '0',
     backgroundColor: '#fff',
     padding: theme.spacing(2),
-    zIndex: 9999,
-    borderRadius: '12px',
+    zIndex: 1,
+    borderRadius: '12px 12px 0 0',
+  };
+
+  const footerStyle = {
+    padding: '8px 16px',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    zIndex: 1,
+    borderRadius: '0 0 12px 12px',
+    backgroundColor: '#fff',
+  };
+
+  const contentStyle = {
+    flexGrow: 1,
+    overflowY: 'auto',
+    padding: theme.spacing(2),
   };
 
   return (
     <Modal
       open={open}
+      onClose={onClose}
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
     >
       <Box sx={modalStyle}>
+        {/* Header */}
         <Box display={'flex'} justifyContent={'space-between'} sx={titleStyle}>
-          <Box marginBottom={'0px'}>
-            <Typography
-              variant="h2"
-              sx={{
-                color: theme.palette.warning['A200'],
-              }}
-              component="h2"
-            >
-              {modalTitle}
-            </Typography>
-          </Box>
-          <Box>
-            <CloseSharpIcon
-              sx={{
-                cursor: 'pointer',
-              }}
-              onClick={onClose}
-              aria-label="Close"
-            />
-          </Box>
+          <Typography
+            variant="h3"
+            sx={{ color: theme.palette.warning['A200'] }}
+            component="h2"
+          >
+            {modalTitle}
+          </Typography>
+          <CloseSharpIcon
+            sx={{ cursor: 'pointer' }}
+            onClick={onClose}
+            aria-label="Close"
+          />
         </Box>
-        <Divider />
-        <Box sx={{ height: '55vh', padding: "20px" }}>{children}</Box>
+
         <Divider />
 
-        {showFooter ? (
-          <Box sx={{ padding: '8px 16px', mb: 2 }} display={'flex'}>
+        {/* Scrollable Content */}
+        <Box sx={contentStyle}>{children}</Box>
+
+        <Divider />
+
+        {/* Footer */}
+        {showFooter && (
+          <Box sx={footerStyle}>
             {secondaryText && (
               <Button
                 variant="outlined"
@@ -131,7 +143,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
               </Button>
             )}
           </Box>
-        ) : null}
+        )}
       </Box>
     </Modal>
   );
