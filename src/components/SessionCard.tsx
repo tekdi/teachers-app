@@ -21,6 +21,10 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   children,
   isEventDeleted,
   isEventUpdated,
+  StateName,
+  board,
+  medium,
+  grade,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -256,6 +260,10 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           eventDeleted={eventDeleted}
           eventData={data}
           updateEvent={updateEvent}
+          StateName={StateName}
+          board={board}
+          medium={medium}
+          grade={grade}
         />
       </CenterSessionModal>
 
