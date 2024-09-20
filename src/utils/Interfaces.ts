@@ -140,6 +140,10 @@ export interface SessionsCardProps {
   children?: React.ReactNode;
   isEventDeleted?: () => void;
   isEventUpdated?: () => void;
+  StateName?: string;
+  board?: string;
+  medium?: string;
+  grade?: string;
 }
 export interface SessionsModalProps {
   children?: React.ReactNode;

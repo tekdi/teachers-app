@@ -645,6 +645,10 @@ const CohortPage = () => {
                         data={item}
                         isEventDeleted={handleEventDeleted}
                         isEventUpdated={handleEventUpdated}
+                        StateName={state}
+                        board={board}
+                        medium={medium}
+                        grade={grade}
                       >
                         <SessionCardFooter
                           item={item}
@@ -725,6 +729,10 @@ const CohortPage = () => {
                     data={item}
                     isEventDeleted={handleEventDeleted}
                     isEventUpdated={handleEventUpdated}
+                    StateName={state}
+                    board={board}
+                    medium={medium}
+                    grade={grade}
                   >
                     <SessionCardFooter
                       item={item}

@@ -193,32 +193,34 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
         const courseSubjectLists = courseTypesAssociations.map(
           (courseType: any) => {
-            const commonAssociations = courseType.associations.filter(
+            const commonAssociations = courseType?.associations.filter(
               (assoc: any) =>
-                matchState.associations.map(
+                matchState?.associations.map(
                   (item: any) => item.code === assoc.code
                 ) &&
-                matchBoard.associations.map(
+                matchBoard?.associations.map(
                   (item: any) => item.code === assoc.code
                 ) &&
-                matchMedium.associations.map(
+                matchMedium?.associations.map(
                   (item: any) => item.code === assoc.code
                 ) &&
-                matchGrade.associations.map(
+                matchGrade?.associations.map(
                   (item: any) => item.code === assoc.code
                 )
             );
             console.log(commonAssociations);
             const getSubjects = getOptionsByCategory(frameworks, 'subject');
-            const subjectAssociations = commonAssociations.filter(
+            const subjectAssociations = commonAssociations?.filter(
               (assoc: any) =>
-                getSubjects.map((item: any) => assoc.code === item.code)
+                getSubjects.map((item: any) => assoc.code === item?.code)
             );
             console.log(subjectAssociations);
             return {
-              courseTypeName: courseType.name,
-              courseType: courseType.code,
-              subjects: subjectAssociations.map((subject: any) => subject.name),
+              courseTypeName: courseType?.name,
+              courseType: courseType?.code,
+              subjects: subjectAssociations?.map(
+                (subject: any) => subject?.name
+              ),
             };
           }
         );
