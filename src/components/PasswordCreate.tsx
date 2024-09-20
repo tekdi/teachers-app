@@ -3,21 +3,27 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import CheckIcon from '@mui/icons-material/Check';
+import { login } from '../services/LoginService';
 
 interface PasswordCreateProps {
   handleResetPassword: (password: string) => void;
+  editPassword?: boolean;
 }
 
 const PasswordCreate: React.FC<PasswordCreateProps> = ({
   handleResetPassword,
+  editPassword = false, // default to false
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const [password, setPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [oldPasswordError, setOldPasswordError] = useState(false);
   const [showValidationMessages, setShowValidationMessages] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -55,8 +61,77 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
   const isFormValid =
     !passwordError && !confirmPasswordError && password && confirmPassword;
 
+  const handleFormSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (editPassword) {
+      const userIdName = localStorage.getItem('userIdName');
+      if (!userIdName) {
+        console.error('User ID not found in localStorage');
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        // Call the login API to verify the old password
+        const response = await login({
+          username: userIdName,
+          password: oldPassword,
+        });
+
+        if (response) {
+          // Old password matches, proceed to reset password
+          handleResetPassword(password);
+        } else {
+          // Old password does not match, show error
+          setOldPasswordError(true);
+        }
+      } catch (error) {
+        console.error('Error verifying old password', error);
+        setOldPasswordError(true);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // Directly reset the password if not editing the old one
+      handleResetPassword(password);
+    }
+  };
+
   return (
     <>
+      {/* Conditionally render the old password field */}
+      {editPassword && (
+        <Box
+          sx={{
+            width: '100%',
+          }}
+          margin={'3.2rem 0 0'}
+        >
+          <TextField
+            id="old-password"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            type={'password'}
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+            error={oldPasswordError}
+            helperText={
+              oldPasswordError && t('LOGIN_PAGE.OLD_PASSWORD_INCORRECT')
+            }
+            label="Old Password"
+            fullWidth
+            sx={{
+              '.MuiFormHelperText-root.Mui-error': {
+                color: theme.palette.error.main,
+              },
+            }}
+          />
+        </Box>
+      )}
+
       <Box
         sx={{
           width: '100%',
@@ -162,7 +237,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
                   pt: 0.3,
                 }}
               >
-                <CheckIcon sx={{ fontSize: '15px' }} />{' '}
+                <CheckIcon sx={{ fontSize: '15px' }} />
                 {t('LOGIN_PAGE.MUST_BE_AT')}
               </Box>
             </Typography>
@@ -212,8 +287,8 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
                 width: '50%',
               },
             }}
-            onClick={() => handleResetPassword(password)}
-            disabled={!isFormValid}
+            onClick={handleFormSubmit}
+            disabled={!isFormValid || loading}
           >
             {t('LOGIN_PAGE.RESET_PASSWORD')}
           </Button>
