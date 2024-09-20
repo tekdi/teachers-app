@@ -833,11 +833,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               ReactGA.event('event-created-successfully', {
                 creatorId: userId,
               });
-              if (onCloseModal) {
-                onCloseModal();
-              }
             } else {
               showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            }
+            if (onCloseModal) {
+              onCloseModal();
             }
           } catch (error) {
             console.error('Error creating event:', error);
@@ -1037,11 +1037,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               t('CENTER_SESSION.SESSION_EDITED_SUCCESSFULLY'),
               'success'
             );
-            if (onEventUpdated) {
-              onEventUpdated();
-            }
           } else {
             showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+          }
+          if (onEventUpdated) {
+            onEventUpdated();
           }
         } catch (error) {
           console.error('Error in editing event:', error);
