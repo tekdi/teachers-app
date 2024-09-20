@@ -12,7 +12,7 @@ interface PasswordCreateProps {
 
 const PasswordCreate: React.FC<PasswordCreateProps> = ({
   handleResetPassword,
-  editPassword = false, // default to false
+  editPassword = false,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -74,17 +74,14 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
       setLoading(true);
 
       try {
-        // Call the login API to verify the old password
         const response = await login({
           username: userIdName,
           password: oldPassword,
         });
 
         if (response) {
-          // Old password matches, proceed to reset password
           handleResetPassword(password);
         } else {
-          // Old password does not match, show error
           setOldPasswordError(true);
         }
       } catch (error) {
@@ -94,14 +91,12 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
         setLoading(false);
       }
     } else {
-      // Directly reset the password if not editing the old one
       handleResetPassword(password);
     }
   };
 
   return (
     <>
-      {/* Conditionally render the old password field */}
       {editPassword && (
         <Box
           sx={{
