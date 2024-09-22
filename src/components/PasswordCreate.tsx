@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
 import CheckIcon from '@mui/icons-material/Check';
-import { login } from '../services/LoginService';
+import { login, successfulNotification } from '../services/LoginService';
+import { showToastMessage } from '@/components/Toastify';
 
 interface PasswordCreateProps {
   handleResetPassword: (password: string) => void;
@@ -22,6 +23,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [oldPasswordError, setOldPasswordError] = useState(false);
+  const [samePasswordError, setSamePasswordError] = useState(false);
   const [showValidationMessages, setShowValidationMessages] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -30,6 +32,10 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
     setPassword(value);
     setShowValidationMessages(!!value);
     validatePassword(value);
+    // Reset samePasswordError when user modifies the password field
+    if (samePasswordError) {
+      setSamePasswordError(false);
+    }
   };
 
   const handleConfirmPasswordChange = (
@@ -59,15 +65,29 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
   };
 
   const isFormValid =
-    !passwordError && !confirmPasswordError && password && confirmPassword;
+    !passwordError &&
+    !confirmPasswordError &&
+    !samePasswordError &&
+    password &&
+    confirmPassword &&
+    (!editPassword || (editPassword && oldPassword));
 
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Reset the samePasswordError before validation
+    setSamePasswordError(false);
+
     if (editPassword) {
+      // Check if new password is same as old password
+      if (oldPassword === password) {
+        setSamePasswordError(true);
+        return;
+      }
+
       const userIdName = localStorage.getItem('userIdName');
       if (!userIdName) {
-        console.error('User ID not found in localStorage');
+        showToastMessage(t('LOGIN_PAGE.NO_USERNAME'));
         return;
       }
 
@@ -78,9 +98,14 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
           username: userIdName,
           password: oldPassword,
         });
-
         if (response) {
           handleResetPassword(password);
+          const username = localStorage.getItem('userEmail');
+          if (username) {
+            await successfulNotification(false, 'USER', 'OnPasswordReset', {
+              receipients: [username],
+            });
+          }
         } else {
           setOldPasswordError(true);
         }
@@ -94,6 +119,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
       handleResetPassword(password);
     }
   };
+  ('');
 
   return (
     <>
@@ -111,12 +137,17 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
             }}
             type={'password'}
             value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
+            onChange={(e) => {
+              setOldPassword(e.target.value);
+              if (oldPasswordError) {
+                setOldPasswordError(false);
+              }
+            }}
             error={oldPasswordError}
             helperText={
-              oldPasswordError && t('LOGIN_PAGE.OLD_PASSWORD_INCORRECT')
+              oldPasswordError && t('LOGIN_PAGE.CURRENT_PASSWORD_NOT')
             }
-            label="Old Password"
+            label={t('LOGIN_PAGE.OLD_PASSWORD')}
             fullWidth
             sx={{
               '.MuiFormHelperText-root.Mui-error': {
@@ -141,18 +172,27 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
           type={'password'}
           value={password}
           onChange={handlePasswordChange}
-          error={passwordError}
+          error={passwordError || samePasswordError}
           FormHelperTextProps={{
             sx: {
-              color: passwordError ? theme.palette.warning['A200'] : 'inherit',
+              color:
+                passwordError || samePasswordError
+                  ? theme.palette.error.main
+                  : 'inherit',
             },
           }}
-          helperText={passwordError && t('LOGIN_PAGE.YOUR_PASSWORD_NEED')}
+          helperText={
+            (passwordError && t('LOGIN_PAGE.YOUR_PASSWORD_NEED')) ||
+            (samePasswordError && t('LOGIN_PAGE.PASSWORD_SAME_AS_OLD'))
+          }
           label={t('LOGIN_PAGE.PASSWORD')}
           fullWidth
           sx={{
             '.MuiFormHelperText-root.Mui-error': {
-              color: theme.palette.warning['A200'],
+              color:
+                passwordError || samePasswordError
+                  ? theme.palette.error.main
+                  : 'inherit',
             },
           }}
         />

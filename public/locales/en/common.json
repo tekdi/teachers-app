@@ -167,7 +167,10 @@
     "DO_IT_LATER": "I’ll do it later",
     "SUCCESSFULLY_RESET": "Your password has been successfully reset",
     "LINK_EXPIRED": "Link Expired",
-    "WE_SEND_AN_EMAIL":"We sent an email to {{maskEmail}} with a link to reset your password"
+    "WE_SEND_AN_EMAIL":"We sent an email to {{maskEmail}} with a link to reset your password",
+    "CURRENT_PASSWORD_NOT":"Current Password Not Matched",
+    "NO_USERNAME":"N0 user name found",
+    "PASSWORD_SAME_AS_OLD":"Password Same as Old"
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",
