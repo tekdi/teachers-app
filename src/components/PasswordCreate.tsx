@@ -5,11 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import CheckIcon from '@mui/icons-material/Check';
 import { login, successfulNotification } from '../services/LoginService';
 import { showToastMessage } from '@/components/Toastify';
-
-interface PasswordCreateProps {
-  handleResetPassword: (password: string) => void;
-  editPassword?: boolean;
-}
+import { PasswordCreateProps } from '@/utils/Interfaces';
 
 const PasswordCreate: React.FC<PasswordCreateProps> = ({
   handleResetPassword,
@@ -32,7 +28,6 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
     setPassword(value);
     setShowValidationMessages(!!value);
     validatePassword(value);
-    // Reset samePasswordError when user modifies the password field
     if (samePasswordError) {
       setSamePasswordError(false);
     }
@@ -75,11 +70,9 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Reset the samePasswordError before validation
     setSamePasswordError(false);
 
     if (editPassword) {
-      // Check if new password is same as old password
       if (oldPassword === password) {
         setSamePasswordError(true);
         return;
