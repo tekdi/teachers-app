@@ -1,5 +1,6 @@
 import { SendCredentialsRequest } from '@/utils/Interfaces';
 import { post } from './RestClient';
+import { toPascalCase } from '@/utils/Helper';
 
 export const sendCredentialService = async ({
   isQueue,
@@ -19,7 +20,7 @@ export const sendCredentialService = async ({
     });
     return response?.data?.result;
   } catch (error) {
-    console.error('error in getting Assesment List Service list', error);
+    console.error('error in sending mail', error);
 
     return error;
   }
@@ -32,7 +33,7 @@ export const sendEmailOnFacilitatorCreation = async (
   email: string
 ) => {
   const replacements = {
-    '{FirstName}': name,
+    '{FirstName}': toPascalCase(name),
     '{UserName}': username,
     '{Password}': password,
   };
@@ -58,7 +59,7 @@ export const sendEmailOnLearnerCreation = async (
   learnerName: string
 ) => {
   const replacements = {
-    '{FirstName}': name,
+    '{FirstName}': toPascalCase(name),
     '{UserName}': username,
     '{Password}': password,
     '{LearnerName}': learnerName,

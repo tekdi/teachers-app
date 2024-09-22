@@ -556,6 +556,15 @@ export const filterAndMapAssociationsNew = (
     }));
 };
 
+export function deepClone<T>(obj: T): T {
+  // Check if structuredClone is available
+  if (typeof structuredClone === 'function') {
+    return structuredClone(obj);
+  }
+
+  // Fallback to JSON method for deep cloning
+  return JSON.parse(JSON.stringify(obj));
+}
 
 export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => {
   const setDistrictCode = manageUserStore.getState().setDistrictCode;
@@ -586,14 +595,11 @@ export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => 
     setStateCode(state?.code);
     setStateId(state?.fieldId);
     setStateName(state?.value);
-
   }
 
- 
   if (blockObject) {
     setBlockCode(blockObject?.code);
     setBlockId(blockObject?.fieldId);
     setBlockName(blockObject?.value);
-
   }
 };
