@@ -480,9 +480,12 @@ export interface FacilitatorDrawerProps {
   primary?: string;
   toggleDrawer: (
     open: boolean
-  ) => (event: React.KeyboardEvent | React.MouseEvent) => void;
+  ) => (event?: React.KeyboardEvent | React.MouseEvent) => void;
   drawerState: { bottom: boolean };
+  onPrimaryClick?: () => void;  // Add this prop for the primary button's click action
+  selectedCount?: any
 }
+
 export interface CoursePlannerCardsProps {
   resources: any;
   type: string;

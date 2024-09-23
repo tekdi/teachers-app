@@ -4,29 +4,31 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { FacilitatorDrawerProps } from '@/utils/Interfaces';
+import taxonomyStore from '@/store/taxonomyStore';
 
 const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
   secondary,
   primary,
   toggleDrawer,
   drawerState,
+  onPrimaryClick,
+  selectedCount, 
 }) => {
   const theme = useTheme<any>();
+  const tStore = taxonomyStore();
 
   return (
     <div>
       <SwipeableDrawer
         anchor="bottom"
         open={drawerState.bottom}
-        onClose={toggleDrawer(true)}
-        onOpen={toggleDrawer(true)}
+        onClose={() => toggleDrawer(false)()}
+        onOpen={() => toggleDrawer(true)()}
         sx={{
           position: 'unset',
           '@media (min-width: 900px)': {
             '& .MuiPaper-root': {
               marginLeft: '352px',
-              // bottom:'3rem',
-              // borderRadius:'16px'
             },
           },
         }}
@@ -53,71 +55,30 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
               },
             }}
           >
-            Khapari Dharmu (Chimur, Chandrapur) {/*  will come from API */}
+            {tStore?.center}
           </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              width: '100%',
-              justifyContent: 'center',
-              gap: '10px',
-            }}
-          >
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+            {/* Show selected count */}
+            <Box sx={{ color: '#fff' }}>
+              {selectedCount > 0
+                ? `${selectedCount} subtopics selected`
+                : 'No subtopics selected'}
+            </Box>
+
             {secondary && (
-              <Box>
-                <Box
-                  onClick={toggleDrawer(false)}
-                  sx={{ padding: '20px 16px 0' }}
-                >
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      '&.Mui-disabled': {
-                        backgroundColor: theme?.palette?.primary?.main,
-                      },
-                      minWidth: '84px',
-                      padding: theme.spacing(1),
-                      fontWeight: '500',
-                      width: '128px',
-                      height: '40px',
-                      color: theme?.palette?.warning['A400'],
-                      border: `1px solid ${theme?.palette?.warning['A400']}`,
-                      '@media (max-width: 430px)': {
-                        width: '100%',
-                      },
-                    }}
-                    // onClick={handleSecondaryModel} // Uncomment and implement this function if needed
-                  >
-                    {secondary}
-                  </Button>
-                </Box>
+              <Box onClick={() => toggleDrawer(false)()}>
+                <Button variant="outlined">{secondary}</Button>
               </Box>
             )}
             {primary && (
-              <Box sx={{ width: secondary ? 'unset' : '100%' }}>
-                <Box sx={{ padding: '20px 16px 0' }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{
-                      '&.Mui-disabled': {
-                        backgroundColor: theme?.palette?.primary?.main,
-                      },
-                      minWidth: '84px',
-                      padding: theme.spacing(1),
-                      fontWeight: '500',
-                      width: secondary ? '199px' : '100%',
-                      height: '40px',
-                      '@media (max-width: 430px)': {
-                        width: '100%',
-                      },
-                    }}
-                    // onClick={handlePrimaryModel} // Uncomment and implement this function if needed
-                    onClick={toggleDrawer(false)}
-                  >
-                    {primary}
-                  </Button>
-                </Box>
+              <Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={onPrimaryClick}
+                >
+                  {primary}
+                </Button>
               </Box>
             )}
           </Box>
