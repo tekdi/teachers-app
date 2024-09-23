@@ -41,7 +41,7 @@ import {
 } from '@/utils/Helper';
 
 const CoursePlanner = () => {
-  const [value, setValue] = React.useState<any>();
+  const [value, setValue] = React.useState('');
   const [subjects, setSubjects] = React.useState<CoursePlannerData[]>([]);
   const [selectedValue, setSelectedValue] = React.useState('');
   const setStateassociations = coursePlannerStore(
@@ -76,6 +76,7 @@ const CoursePlanner = () => {
     setValue(event.target.value);
     setType(event.target.value);
   };
+
 
   const addQueryParams = (newParams: any) => {
     // Merge existing query params with new ones
@@ -565,7 +566,7 @@ const CoursePlanner = () => {
           <Select
             labelId="course-type-select-label"
             id="course-type-select"
-            value={value}
+            value={tStore?.type}
             onChange={handleChange}
             label="Course Type"
             sx={{ fontSize: '14px' }}
