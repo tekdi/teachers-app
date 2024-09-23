@@ -5,6 +5,7 @@ import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { FacilitatorDrawerProps } from '@/utils/Interfaces';
 import taxonomyStore from '@/store/taxonomyStore';
+import { useTranslation } from 'next-i18next';
 
 const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
   secondary,
@@ -16,7 +17,8 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
 }) => {
   const theme = useTheme<any>();
   const tStore = taxonomyStore();
-
+  const { t } = useTranslation();
+  
   return (
     <div>
       <SwipeableDrawer
@@ -62,9 +64,8 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
             <Box sx={{ color: '#fff' }}>
               {selectedCount > 0
                 ? `${selectedCount} subtopics selected`
-                : 'No subtopics selected'}
+                : `${t('ASSESSMENTS.NO_SUBTOPIC_SELECTED')}`}
             </Box>
-
             {secondary && (
               <Box onClick={() => toggleDrawer(false)()}>
                 <Button variant="outlined">{secondary}</Button>

@@ -552,7 +552,8 @@
     "MARKS_OBTAINED": "Marks Obtained",
     "OVERALL_SCORE": "Overall Score",
     "ASSESSMENT_NOT_STARTED_YET": "Assessment not started yet",
-    "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} out of {{totalCount}} completed"
+    "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} out of {{totalCount}} completed",
+    "NO_SUBTOPIC_SELECTED": "No Subtopic selected"
   },
   "BOARD_ENROLMENT": {
     "BOARD_ENROLLMENT": "Board Enrollment",
