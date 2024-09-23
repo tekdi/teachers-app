@@ -94,7 +94,7 @@ export const successfulNotification = async (
   key: any,
   email: any
 ): Promise<any> => {
-  const apiUrl: string = 'https://notification-pratham.tekdinext.com/notification/send';
+  const apiUrl: string =   `${process.env.NEXT_PUBLIC_NOTIFICATION_BASE_URL}/notification/send'`;
   try {
     const response = await post(apiUrl, { isQueue, context, key, email });
     console.log(email);
