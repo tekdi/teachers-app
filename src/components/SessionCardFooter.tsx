@@ -160,7 +160,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
           erMetaData: erMetaData,
         };
         const response = await editEvent(eventRepetitionId, apiBody);
-        if (response) {
+        if (response?.responseCode === 'OK') {
           if (erMetaData?.topic === undefined || erMetaData?.topic === null) {
             showToastMessage(
               t('CENTER_SESSION.TOPIC_SUBTOPIC_REMOVED_SUCCESSFULLY'),
@@ -201,7 +201,9 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
       );
     } else if (!topicList || topicList.length === 0) {
       showToastMessage(
-        t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE'),
+        t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE', {
+          subject: item?.metadata?.subject,
+        }),
         'error'
       );
     }

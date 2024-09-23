@@ -192,28 +192,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
       const blockObject = response?.result?.userData?.customFields?.find(
         (item: any) => item?.label === 'BLOCKS'
       );
-      const cohortData = response;
+      const cohortData = response?.result?.userData?.customFields;
 
-      const state = cohortData?.result?.userData?.customField?.find(
+      const state = cohortData?.find(
         (item: CustomField) => item.label === 'STATES'
       );
       setState(state?.value);
 
-      const typeOfCohort = cohortData?.result?.userData?.customField?.find(
+      const typeOfCohort = cohortData?.find(
         (item: CustomField) => item.label === 'TYPE_OF_COHORT'
       );
       setCohortType(typeOfCohort?.value);
 
-      const medium = cohortData?.result?.userData?.customField?.find(
+      const medium = cohortData?.find(
         (item: CustomField) => item.label === 'MEDIUM'
       );
       setMedium(medium?.value);
 
-      const grade = cohortData?.result?.userData?.customField?.find(
+      const grade = cohortData?.find(
         (item: CustomField) => item.label === 'GRADE'
       );
       setGrade(grade?.value);
-
+      console.log('grade', cohortData, grade?.value);
       const board = cohortData?.result?.userData?.customField?.find(
         (item: CustomField) => item.label === 'BOARD'
       );
@@ -597,7 +597,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             after: afterDate,
             before: beforeDate,
           },
-          // cohortId: classId,
+          cohortId: classId,
           createdBy: userId,
           status: ['live'],
         };
@@ -633,7 +633,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (userId && myCohortList) {
       getSessionsData();
     }
-  }, [timeTableDate, userId, myCohortList]);
+  }, [timeTableDate, userId, myCohortList, classId]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -655,7 +655,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           endDate: {
             before: beforeDate,
           },
-          // cohortId: classId,
+          cohortId: classId,
           createdBy: userId,
           status: ['live'],
         };
@@ -692,7 +692,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (userId && myCohortList) {
       getExtraSessionsData();
     }
-  }, [timeTableDate, userId, myCohortList]);
+  }, [timeTableDate, userId, myCohortList, classId]);
 
   const handleEventDeleted = () => {
     setEventDeleted(true);
