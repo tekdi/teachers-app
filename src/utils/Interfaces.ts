@@ -482,7 +482,7 @@ export interface FacilitatorDrawerProps {
     open: boolean
   ) => (event?: React.KeyboardEvent | React.MouseEvent) => void;
   drawerState: { bottom: boolean };
-  onPrimaryClick?: () => void;  // Add this prop for the primary button's click action
+  onPrimaryClick?: () => void;
   selectedCount?: any
 }
 
