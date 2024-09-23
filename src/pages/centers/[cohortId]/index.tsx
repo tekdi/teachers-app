@@ -738,6 +738,10 @@ const CohortPage = () => {
                       item={item}
                       cohortName={cohortName}
                       isTopicSubTopicAdded={handleEventUpdated}
+                      state={state}
+                      board={board}
+                      medium={medium}
+                      grade={grade}
                     />
                   </SessionCard>
                 </Grid>
