@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { post } from './RestClient';
 
 interface LoginParams {
@@ -84,4 +85,26 @@ export const resetPasswordLink = async (
     throw error;
   }
 };
+
+
+
+export const successfulNotification = async (
+  isQueue:boolean,
+  context: any,
+  key: any,
+  email: any
+): Promise<any> => {
+  const apiUrl: string =   `${process.env.NEXT_PUBLIC_NOTIFICATION_BASE_URL}/notification/send'`;
+  try {
+    const response = await post(apiUrl, { isQueue, context, key, email });
+    console.log(email);
+    return response?.data;
+  } catch (error) {
+    console.error('error in reset', error);
+    throw error;
+  }
+};
+
+
+
 

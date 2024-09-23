@@ -711,3 +711,8 @@ export interface GetUserProjectStatusParams {
   id: string;
   lastDownloadedAt: string;
 }
+
+export interface PasswordCreateProps {
+  handleResetPassword: (password: string) => void;
+  editPassword?: boolean;
+}
