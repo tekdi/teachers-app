@@ -64,7 +64,7 @@ import SessionCard from '@/components/SessionCard';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useQueryClient } from '@tanstack/react-query';
-import { getCohortList } from '@/services/CohortServices';
+import { getCohortDetails, getCohortList } from '@/services/CohortServices';
 import CentralizedModal from '@/components/CentralizedModal';
 import manageUserStore from '@/store/manageUserStore';
 import { getUserDetails } from '@/services/ProfileService';
@@ -203,21 +203,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
         (item: CustomField) => item.label === 'TYPE_OF_COHORT'
       );
       setCohortType(typeOfCohort?.value);
-
-      const medium = cohortData?.find(
-        (item: CustomField) => item.label === 'MEDIUM'
-      );
-      setMedium(medium?.value);
-
-      const grade = cohortData?.find(
-        (item: CustomField) => item.label === 'GRADE'
-      );
-      setGrade(grade?.value);
-      console.log('grade', cohortData, grade?.value);
-      const board = cohortData?.result?.userData?.customField?.find(
-        (item: CustomField) => item.label === 'BOARD'
-      );
-      setBoard(board?.value);
 
       let isCustomFields = true;
       const result = await getCohortList(
@@ -586,6 +571,62 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }
 
   useEffect(() => {
+    const getCohortData = async () => {
+      const response = await getCohortDetails(classId);
+
+      let cohortData = null;
+
+      if (response?.cohortData?.length) {
+        cohortData = response?.cohortData[0];
+
+        if (cohortData?.customField?.length) {
+          const district = cohortData.customField.find(
+            (item: CustomField) => item.label === 'DISTRICTS'
+          );
+          const districtCode = district?.code || '';
+          const districtId = district?.fieldId || '';
+          const state = cohortData.customField.find(
+            (item: CustomField) => item.label === 'STATES'
+          );
+          setState(state.value);
+          const stateCode = state?.code || '';
+          const stateId = state?.fieldId || '';
+
+          const blockField = cohortData?.customField.find(
+            (field: any) => field.label === 'BLOCKS'
+          );
+
+          const address = `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}`;
+          cohortData.address = address || '';
+
+          const typeOfCohort = cohortData.customField.find(
+            (item: CustomField) => item.label === 'TYPE_OF_COHORT'
+          );
+          setCohortType(typeOfCohort?.value);
+
+          const medium = cohortData.customField.find(
+            (item: CustomField) => item.label === 'MEDIUM'
+          );
+          setMedium(medium?.value);
+
+          const grade = cohortData.customField.find(
+            (item: CustomField) => item.label === 'GRADE'
+          );
+          setGrade(grade?.value);
+
+          const board = cohortData.customField.find(
+            (item: CustomField) => item.label === 'BOARD'
+          );
+          setBoard(board?.value);
+        }
+        // setCohortDetails(cohortData);
+        // setCohortName(cohortData?.name);
+      }
+    };
+    getCohortData();
+  }, [classId]);
+
+  useEffect(() => {
     const getSessionsData = async () => {
       try {
         const afterDate = getAfterDate(timeTableDate);
@@ -633,7 +674,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (userId && myCohortList) {
       getSessionsData();
     }
-  }, [timeTableDate, userId, myCohortList, classId]);
+  }, [
+    timeTableDate,
+    userId,
+    myCohortList,
+    classId,
+    eventUpdated,
+    eventDeleted,
+  ]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {
@@ -692,7 +740,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (userId && myCohortList) {
       getExtraSessionsData();
     }
-  }, [timeTableDate, userId, myCohortList, classId]);
+  }, [
+    timeTableDate,
+    userId,
+    myCohortList,
+    classId,
+    eventUpdated,
+    eventDeleted,
+  ]);
 
   const handleEventDeleted = () => {
     setEventDeleted(true);
