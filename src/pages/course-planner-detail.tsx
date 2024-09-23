@@ -200,8 +200,8 @@ const CoursePlannerDetail = () => {
       return;
     }
     setDrawerState({ ...drawerState, bottom: open });
-    setIsDrawerOpen(open); // Use `open` parameter directly
-    setSelectedCount(selectedCount); // Store selected count for the drawer
+    setIsDrawerOpen(open); 
+    setSelectedCount(selectedCount);
   };
 
 
@@ -223,7 +223,6 @@ const CoursePlannerDetail = () => {
   const markMultipleStatuses = async (data: any, selectedSubtopics: {topid: string, subid: string}[]) => {
     const updatedData = { ...data };
   
-    // Loop over each selected subtopic
     selectedSubtopics.forEach(({ topid, subid }) => {
       updatedData.tasks = updatedData.tasks.map((task: { status: string; _id: string; children: any[] }) => {
         if (task._id === topid) {
@@ -238,7 +237,7 @@ const CoursePlannerDetail = () => {
             (child: { status: string }) => child.status === AssessmentStatus.COMPLETED_SMALL
           );
   
-          // If all subtopics are completed, mark the task as completed
+         
           if (allSubtasksCompleted) {
             task.status = AssessmentStatus.COMPLETED_SMALL;
           }
@@ -247,7 +246,6 @@ const CoursePlannerDetail = () => {
       });
     });
   
-    // Update state with modified data
     setStatusData(updatedData);
   
     try {
@@ -657,17 +655,17 @@ const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
       </div>
       <FacilitatorDrawer
         secondary={'Cancel'}
-        primary={`Mark as Complete (${selectedCount})`} // Correct string interpolation
+        primary={`Mark as Complete (${selectedCount})`}
         toggleDrawer={toggleDrawer}
         drawerState={drawerState}
         onPrimaryClick={() => {
           if (selectedSubtopics.length > 0) {
             // Mark all selected subtopics as complete
             markMultipleStatuses(userProjectDetails, selectedSubtopics);
-            toggleDrawer(false)(); // Close the drawer after marking
+            toggleDrawer(false)(); 
           }
         }}
-        selectedCount={selectedCount} // Pass selected count
+        selectedCount={selectedCount} 
       />
 
       {/* <ConfirmationModal
