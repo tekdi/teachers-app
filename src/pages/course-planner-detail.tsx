@@ -102,16 +102,25 @@ const CoursePlannerDetail = () => {
     const calculateProgress = (tasks: any[]) => {
       let totalSubtasks = 0;
       let completedSubtasks = 0;
-
+  
       tasks.forEach((task: any) => {
-        totalSubtasks += task.children.length ?? 0;
-        completedSubtasks += task?.children?.filter(
-          (subtask: any) => subtask.status === 'completed'
-        ).length;
+        if (task.status === AssessmentStatus.COMPLETED) {
+          completedSubtasks += 1;
+        }
+  
+        const subtasks = task.children || [];
+        totalSubtasks += subtasks.length;
+        completedSubtasks += subtasks.filter((subtask: any) => subtask.status === AssessmentStatus.COMPLETED).length;
       });
-      setCompletionPercentage(totalSubtasks ? Number(((completedSubtasks / totalSubtasks) * 100).toFixed()) : 0);
+  
+      const totalTasks = tasks.length;
+      const totalItems = totalTasks + totalSubtasks; 
+      const completedItems = completedSubtasks; 
+  
+      const completionPercentage = totalItems ? Number(((completedItems / totalItems) * 100).toFixed()) : 0;
+      setCompletionPercentage(completionPercentage);
     };
-
+  
     if (userProjectDetails?.tasks?.length) {
       calculateProgress(userProjectDetails.tasks);
     }
