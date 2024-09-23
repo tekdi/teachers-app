@@ -62,6 +62,9 @@ const CoursePlannerDetail = () => {
   const [statusData, setStatusData] = useState<any>();
 
   const [completionPercentage, setCompletionPercentage] = useState(0);
+  const [currentSubtopic, setCurrentSubtopic] = useState<{ topid: any; subid: any } | null>(null);
+  const [selectedSubtopics, setSelectedSubtopics] = useState<{topid: string, subid: string}[]>([]);
+  const [selectedCount, setSelectedCount] = React.useState(0);
 
 
   const fetchCourseDetails = useCallback(async () => {
@@ -184,19 +187,23 @@ const CoursePlannerDetail = () => {
     );
     setExpandedPanels(newState);
   };
+
   const toggleDrawer =
-    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event &&
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
-      setDrawerState({ ...drawerState, bottom: open });
-      setIsDrawerOpen((prevIsDrawerOpen) => !prevIsDrawerOpen);
-    };
+  (open: boolean, selectedCount: number = 0) =>
+  (event?: React.KeyboardEvent | React.MouseEvent) => {
+    if (
+      event &&
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' ||
+        (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return;
+    }
+    setDrawerState({ ...drawerState, bottom: open });
+    setIsDrawerOpen(open); 
+    setSelectedCount(selectedCount);
+  };
+
 
   const handleCloseModel = () => {
     setModalOpen(false);
@@ -213,48 +220,47 @@ const CoursePlannerDetail = () => {
     return months[date.getMonth()];
   };
 
-  const markStatus = async (data: any, topid: any, subid: any) => {
+  const markMultipleStatuses = async (data: any, selectedSubtopics: {topid: string, subid: string}[]) => {
     const updatedData = { ...data };
-
-    updatedData.tasks = updatedData?.tasks.map(
-      (task: { status: AssessmentStatus; _id: any; children: any[] }) => {
+  
+    selectedSubtopics.forEach(({ topid, subid }) => {
+      updatedData.tasks = updatedData.tasks.map((task: { status: string; _id: string; children: any[] }) => {
         if (task._id === topid) {
-          task.children = task?.children?.map((child: { _id: any }) => {
+          task.children = task.children.map((child: { _id: string }) => {
             if (child._id === subid) {
               return { ...child, status: AssessmentStatus.COMPLETED_SMALL };
             }
             return child;
           });
-
+  
           const allSubtasksCompleted = task.children.every(
-            (child: { status: string }) =>
-              child.status === AssessmentStatus.COMPLETED_SMALL
+            (child: { status: string }) => child.status === AssessmentStatus.COMPLETED_SMALL
           );
-
+  
+         
           if (allSubtasksCompleted) {
             task.status = AssessmentStatus.COMPLETED_SMALL;
           }
         }
         return task;
-      }
-    );
-
-   
-    const lastDownloadedAt = updatedData?.lastDownloadedAt;
-    const id = updatedData?._id;
+      });
+    });
+  
     setStatusData(updatedData);
+  
     try {
       const response = await UserStatusDetails({
         data: updatedData,
-        id,
-        lastDownloadedAt,
+        id: updatedData._id,
+        lastDownloadedAt: updatedData.lastDownloadedAt,
       });
       console.log(response);
     } catch (err) {
       console.log(err);
     }
   };
-
+  
+  
 
 const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
   if (isSubtask) {
@@ -279,6 +285,7 @@ const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
 
   return false;
 };
+
 
   return (
     <>
@@ -403,7 +410,8 @@ const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
                       onChange={() =>
                         setExpandedPanels((prev) => ({
                           ...prev,
-                          [`panel${index}-header`]: !prev[`panel${index}-header`],
+                          [`panel${index}-header`]:
+                            !prev[`panel${index}-header`],
                         }))
                       }
                       sx={{
@@ -548,18 +556,47 @@ const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
                                   <CheckCircleIcon
                                     onClick={() => {
                                       if (!isStatusCompleted(subTopic._id)) {
-                                        markStatus(
-                                          userProjectDetails,
-                                          topic._id,
-                                          subTopic._id
-                                        );
+                                        const alreadySelected =
+                                          selectedSubtopics.find(
+                                            (s) => s.subid === subTopic._id
+                                          );
+
+                                        if (alreadySelected) {
+                                          setSelectedSubtopics(
+                                            selectedSubtopics.filter(
+                                              (s) => s.subid !== subTopic._id
+                                            )
+                                          );
+
+                                          toggleDrawer(
+                                            true,
+                                            selectedSubtopics.length - 1
+                                          )();
+                                        } else {
+                                          setSelectedSubtopics([
+                                            ...selectedSubtopics,
+                                            {
+                                              topid: topic._id,
+                                              subid: subTopic._id,
+                                            },
+                                          ]);
+
+                                          toggleDrawer(
+                                            true,
+                                            selectedSubtopics.length + 1
+                                          )();
+                                        }
                                       }
                                     }}
                                     sx={{
                                       fontSize: '20px',
-                                      color: isStatusCompleted(subTopic._id)
-                                        ? '#4CAF50'
-                                        : '#7C766e',
+                                      color: selectedSubtopics.find(
+                                        (s) => s.subid === subTopic._id
+                                      )
+                                        ? '#FF9800'
+                                        : isStatusCompleted(subTopic._id)
+                                          ? '#4CAF50'
+                                          : '#7C766e',
                                       cursor: isStatusCompleted(subTopic._id)
                                         ? 'default'
                                         : 'pointer',
@@ -618,9 +655,17 @@ const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
       </div>
       <FacilitatorDrawer
         secondary={'Cancel'}
-        primary={'Mark as Complete (2)'}
+        primary={`Mark as Complete (${selectedCount})`}
         toggleDrawer={toggleDrawer}
         drawerState={drawerState}
+        onPrimaryClick={() => {
+          if (selectedSubtopics.length > 0) {
+            // Mark all selected subtopics as complete
+            markMultipleStatuses(userProjectDetails, selectedSubtopics);
+            toggleDrawer(false)(); 
+          }
+        }}
+        selectedCount={selectedCount} 
       />
 
       {/* <ConfirmationModal
