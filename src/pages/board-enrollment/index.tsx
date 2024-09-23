@@ -230,9 +230,7 @@ const BoardEnrollment = () => {
               size="small"
               variant="outlined"
             >
-              {t('COMMON.SORT_BY').length > 7
-                ? `${t('COMMON.SORT_BY').substring(0, 6)}...`
-                : t('COMMON.SORT_BY')}
+              {t('COMMON.FILTERS')}
             </Button>
           </Grid>
         </Grid>
@@ -311,7 +309,7 @@ const BoardEnrollment = () => {
                       mx: '16px',
                     }}
                   >
-                    {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}{' '}
+                    {t('COMMON.DROPPED_OUT')}{' '}
                     <InfoOutlinedIcon
                       sx={{
                         color: theme.palette.warning['300'],

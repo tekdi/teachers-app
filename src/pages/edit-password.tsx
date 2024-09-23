@@ -86,10 +86,25 @@ const EditForgotPassword = () => {
         >
           {t('LOGIN_PAGE.CREATE_NEW')}
         </Box>
-        <PasswordCreate
-          handleResetPassword={handleResetPassword}
-          editPassword={true}
-        />
+        <Box
+          sx={{
+            '@media (min-width: 700px)': {
+              width: '50%',
+              boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
+              marginTop: '1.8rem',
+              borderRadius: '16px',
+            },
+            width: '100%',
+            marginTop: '8rem',
+          }}
+        >
+          <Box sx={{ padding: '30px' }}>
+            <PasswordCreate
+              handleResetPassword={handleResetPassword}
+              editPassword={true}
+            />
+          </Box>
+        </Box>
       </Box>
       <CentralizedModal
         icon={true}

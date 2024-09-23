@@ -232,7 +232,7 @@ const BoardEnrollmentDetail = () => {
                         mr: 0,
                         color: theme.palette.warning['300'],
                       }}
-                      label="Parent"
+                      label={t('COMMON.SELECT_ALL')}
                       control={
                         <Checkbox
                           checked={checked.every(Boolean)}

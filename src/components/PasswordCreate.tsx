@@ -6,6 +6,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { login, successfulNotification } from '../services/LoginService';
 import { showToastMessage } from '@/components/Toastify';
 import { PasswordCreateProps } from '@/utils/Interfaces';
+import { useRouter } from 'next/router';
 
 const PasswordCreate: React.FC<PasswordCreateProps> = ({
   handleResetPassword,
@@ -13,6 +14,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+  const router = useRouter();
   const [password, setPassword] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,6 +24,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
   const [samePasswordError, setSamePasswordError] = useState(false);
   const [showValidationMessages, setShowValidationMessages] = useState(false);
   const [loading, setLoading] = useState(false);
+  const isEditPassword = router.pathname === '/edit-password';
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -112,19 +115,19 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
       handleResetPassword(password);
     }
   };
-  ('');
 
   return (
-    <>
+    <form autoComplete="off" onSubmit={handleFormSubmit}>
       {editPassword && (
         <Box
           sx={{
             width: '100%',
           }}
-          margin={'3.2rem 0 0'}
         >
           <TextField
             id="old-password"
+            name="old-password-field" // Unique name to prevent autofill
+            autoComplete="new-password" // Prevents autofill
             InputLabelProps={{
               shrink: true,
             }}
@@ -154,11 +157,13 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
       <Box
         sx={{
           width: '100%',
+          margin: isEditPassword ? '1.8rem 0 0' : '3.2rem 0 0',
         }}
-        margin={'3.2rem 0 0'}
       >
         <TextField
           id="password"
+          name="new-password-field"
+          autoComplete="new-password"
           InputLabelProps={{
             shrink: true,
           }}
@@ -281,6 +286,8 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
       >
         <TextField
           id="confirm-password"
+          name="confirm-password-field" // Unique name to prevent autofill
+          autoComplete="new-password" // Helps in preventing autofill
           InputLabelProps={{
             shrink: true,
           }}
@@ -315,14 +322,13 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
                 width: '50%',
               },
             }}
-            onClick={handleFormSubmit}
             disabled={!isFormValid || loading}
           >
             {t('LOGIN_PAGE.RESET_PASSWORD')}
           </Button>
         </Box>
       </Box>
-    </>
+    </form>
   );
 };
 
