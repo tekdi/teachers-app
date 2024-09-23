@@ -8,10 +8,15 @@ import WestIcon from '@mui/icons-material/West';
 import { useRouter } from 'next/router';
 import CreatePassword from './create-password';
 import { logEvent } from '@/utils/googleAnalytics';
+import PasswordCreate from '@/components/PasswordCreate';
+import { resetPassword } from '@/services/LoginService';
+import { showToastMessage } from '@/components/Toastify';
+import CentralizedModal from '@/components/CentralizedModal';
 
 const EditForgotPassword = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+  const [forgotPassword, setForgotPassword] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   const router = useRouter();
@@ -23,6 +28,22 @@ const EditForgotPassword = () => {
       category: 'Password page',
       label: 'Back Button Clicked',
     });
+  };
+
+  const handleResetPassword = async (newPassword: string) => {
+    try {
+      const response = await resetPassword(newPassword);
+      console.log(response);
+      setForgotPassword(true);
+    } catch (error: any) {
+      console.error('Error resetting password:', error);
+      setForgotPassword(false);
+      showToastMessage(error.response.data.params.err, 'error');
+    }
+  };
+  const handlePrimaryButton = () => {
+    router.push(`/dashboard`);
+    localStorage.setItem('skipResetPassword', 'true');
   };
 
   useEffect(() => {
@@ -65,8 +86,18 @@ const EditForgotPassword = () => {
         >
           {t('LOGIN_PAGE.CREATE_NEW')}
         </Box>
-        <CreatePassword />
+        <PasswordCreate
+          handleResetPassword={handleResetPassword}
+          editPassword={true}
+        />
       </Box>
+      <CentralizedModal
+        icon={true}
+        subTitle={t('LOGIN_PAGE.SUCCESSFULLY_RESET')}
+        primary={t('COMMON.OKAY')}
+        modalOpen={forgotPassword}
+        handlePrimaryButton={handlePrimaryButton}
+      />
     </Box>
   );
 };

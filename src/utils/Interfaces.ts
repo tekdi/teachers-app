@@ -480,9 +480,12 @@ export interface FacilitatorDrawerProps {
   primary?: string;
   toggleDrawer: (
     open: boolean
-  ) => (event: React.KeyboardEvent | React.MouseEvent) => void;
+  ) => (event?: React.KeyboardEvent | React.MouseEvent) => void;
   drawerState: { bottom: boolean };
+  onPrimaryClick?: () => void;
+  selectedCount?: any
 }
+
 export interface CoursePlannerCardsProps {
   resources: any;
   type: string;
@@ -710,4 +713,9 @@ export interface GetUserProjectStatusParams {
   data: any;
   id: string;
   lastDownloadedAt: string;
+}
+
+export interface PasswordCreateProps {
+  handleResetPassword: (password: string) => void;
+  editPassword?: boolean;
 }

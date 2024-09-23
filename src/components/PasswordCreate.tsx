@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
 import CheckIcon from '@mui/icons-material/Check';
-
-interface PasswordCreateProps {
-  handleResetPassword: (password: string) => void;
-}
+import { login, successfulNotification } from '../services/LoginService';
+import { showToastMessage } from '@/components/Toastify';
+import { PasswordCreateProps } from '@/utils/Interfaces';
 
 const PasswordCreate: React.FC<PasswordCreateProps> = ({
   handleResetPassword,
+  editPassword = false,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const [password, setPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [oldPasswordError, setOldPasswordError] = useState(false);
+  const [samePasswordError, setSamePasswordError] = useState(false);
   const [showValidationMessages, setShowValidationMessages] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPassword(value);
     setShowValidationMessages(!!value);
     validatePassword(value);
+    if (samePasswordError) {
+      setSamePasswordError(false);
+    }
   };
 
   const handleConfirmPasswordChange = (
@@ -53,10 +60,97 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
   };
 
   const isFormValid =
-    !passwordError && !confirmPasswordError && password && confirmPassword;
+    !passwordError &&
+    !confirmPasswordError &&
+    !samePasswordError &&
+    password &&
+    confirmPassword &&
+    (!editPassword || (editPassword && oldPassword));
+
+  const handleFormSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    setSamePasswordError(false);
+
+    if (editPassword) {
+      if (oldPassword === password) {
+        setSamePasswordError(true);
+        return;
+      }
+
+      const userIdName = localStorage.getItem('userIdName');
+      if (!userIdName) {
+        showToastMessage(t('LOGIN_PAGE.NO_USERNAME'));
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const response = await login({
+          username: userIdName,
+          password: oldPassword,
+        });
+        if (response) {
+          handleResetPassword(password);
+          const username = localStorage.getItem('userEmail');
+          if (username) {
+            await successfulNotification(false, 'USER', 'OnPasswordReset', {
+              receipients: [username],
+            });
+          }
+        } else {
+          setOldPasswordError(true);
+        }
+      } catch (error) {
+        console.error('Error verifying old password', error);
+        setOldPasswordError(true);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      handleResetPassword(password);
+    }
+  };
+  ('');
 
   return (
     <>
+      {editPassword && (
+        <Box
+          sx={{
+            width: '100%',
+          }}
+          margin={'3.2rem 0 0'}
+        >
+          <TextField
+            id="old-password"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            type={'password'}
+            value={oldPassword}
+            onChange={(e) => {
+              setOldPassword(e.target.value);
+              if (oldPasswordError) {
+                setOldPasswordError(false);
+              }
+            }}
+            error={oldPasswordError}
+            helperText={
+              oldPasswordError && t('LOGIN_PAGE.CURRENT_PASSWORD_NOT')
+            }
+            label={t('LOGIN_PAGE.OLD_PASSWORD')}
+            fullWidth
+            sx={{
+              '.MuiFormHelperText-root.Mui-error': {
+                color: theme.palette.error.main,
+              },
+            }}
+          />
+        </Box>
+      )}
+
       <Box
         sx={{
           width: '100%',
@@ -71,18 +165,27 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
           type={'password'}
           value={password}
           onChange={handlePasswordChange}
-          error={passwordError}
+          error={passwordError || samePasswordError}
           FormHelperTextProps={{
             sx: {
-              color: passwordError ? theme.palette.warning['A200'] : 'inherit',
+              color:
+                passwordError || samePasswordError
+                  ? theme.palette.error.main
+                  : 'inherit',
             },
           }}
-          helperText={passwordError && t('LOGIN_PAGE.YOUR_PASSWORD_NEED')}
+          helperText={
+            (passwordError && t('LOGIN_PAGE.YOUR_PASSWORD_NEED')) ||
+            (samePasswordError && t('LOGIN_PAGE.PASSWORD_SAME_AS_OLD'))
+          }
           label={t('LOGIN_PAGE.PASSWORD')}
           fullWidth
           sx={{
             '.MuiFormHelperText-root.Mui-error': {
-              color: theme.palette.warning['A200'],
+              color:
+                passwordError || samePasswordError
+                  ? theme.palette.error.main
+                  : 'inherit',
             },
           }}
         />
@@ -162,7 +265,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
                   pt: 0.3,
                 }}
               >
-                <CheckIcon sx={{ fontSize: '15px' }} />{' '}
+                <CheckIcon sx={{ fontSize: '15px' }} />
                 {t('LOGIN_PAGE.MUST_BE_AT')}
               </Box>
             </Typography>
@@ -212,8 +315,8 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
                 width: '50%',
               },
             }}
-            onClick={() => handleResetPassword(password)}
-            disabled={!isFormValid}
+            onClick={handleFormSubmit}
+            disabled={!isFormValid || loading}
           >
             {t('LOGIN_PAGE.RESET_PASSWORD')}
           </Button>

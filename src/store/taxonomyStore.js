@@ -12,6 +12,7 @@ const taxonomyStore = create(
       type:"",
       taxonomySubject:"",
       stateassociations: [],
+      center:"",
       setState: (newState) => set(() => ({ state: newState })),
       setBoard: (newBoard) => set(() => ({ board: newBoard })),
       setMedium: (newMedium) => set(() => ({ medium: newMedium })),
@@ -20,6 +21,7 @@ const taxonomyStore = create(
       setTaxonomySubject: (newTaxonomySubject) => set(() => ({ taxonomySubject: newTaxonomySubject })),
       setStateassociations: (newStateassociations) =>
         set((state) => ({ stateassociations: newStateassociations })),
+      setCenter: (newCenter) => set(() => ({ center: newCenter})),
     }),
     {
       name: 'taxonomyTeacher',

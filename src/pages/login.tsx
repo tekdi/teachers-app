@@ -175,6 +175,7 @@ const LoginPage = () => {
             localStorage.setItem('userEmail', userResponse?.email);
             localStorage.setItem('userName', userResponse?.name);
             localStorage.setItem('userId', userResponse?.userId);
+            localStorage.setItem('userIdName', userResponse?.username);
             localStorage.setItem(
               'temporaryPassword',
               userResponse?.temporaryPassword ?? 'false'
@@ -506,7 +507,7 @@ const LoginPage = () => {
 
                   <Box marginTop={'1.2rem'} className="">
                     <Checkbox
-                    // color="info"
+                      // color="info"
                       onChange={(e) => setRememberMe(e.target.checked)}
                       checked={rememberMe}
                       inputProps={{ 'aria-label': 'Remember Me' }}
