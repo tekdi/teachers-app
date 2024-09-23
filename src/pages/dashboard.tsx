@@ -23,6 +23,7 @@ import {
   ICohort,
   CohortMemberList,
   Session,
+  CustomField,
 } from '../utils/Interfaces';
 import {
   accessControl,
@@ -67,9 +68,7 @@ import { getCohortList } from '@/services/CohortServices';
 import CentralizedModal from '@/components/CentralizedModal';
 import manageUserStore from '@/store/manageUserStore';
 import { getUserDetails } from '@/services/ProfileService';
-import {
-  updateStoreFromCohorts
-} from '@/utils/Helper';
+import { updateStoreFromCohorts } from '@/utils/Helper';
 interface DashboardProps {}
 
 const Dashboard: React.FC<DashboardProps> = () => {
@@ -117,8 +116,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
   const [myCohortList, setMyCohortList] = React.useState<any>();
   const [centralizedModal, setCentralizedModal] = useState(false);
+  const [cohortType, setCohortType] = React.useState<string>();
+  const [medium, setMedium] = React.useState<string>();
+  const [grade, setGrade] = React.useState<string>();
+  const [board, setBoard] = React.useState<string>();
+  const [state, setState] = React.useState<string>();
+  const [eventDeleted, setEventDeleted] = React.useState(false);
+  const [eventUpdated, setEventUpdated] = React.useState(false);
 
- 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
   };
@@ -152,18 +157,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
     calculateDateRange();
   }, []);
- 
-  useEffect(() => {
-    if(cohortsData[0]?.cohortId)
-      {
-         
-      localStorage.setItem('classId', cohortsData[0]?.cohortId) 
-    
-    }
-    else
-    {
-      localStorage.setItem('classId', "") 
 
+  useEffect(() => {
+    if (cohortsData[0]?.cohortId) {
+      localStorage.setItem('classId', cohortsData[0]?.cohortId);
+    } else {
+      localStorage.setItem('classId', '');
     }
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
@@ -181,26 +180,57 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, [cohortsData]);
 
   useEffect(() => {
-    
     const getMyCohortList = async () => {
       const myCohortList = await queryClient.fetchQuery({
         queryKey: [QueryKeys.MY_COHORTS, userId],
         queryFn: () => getCohortList(userId as string, { customField: 'true' }),
       });
       let response;
-      if(userId)
-      {
-       response = await getUserDetails(userId, true);
+      if (userId) {
+        response = await getUserDetails(userId, true);
       }
-const blockObject = response?.result?.userData?.customFields.find((item:any) => item?.label === 'BLOCKS');
+      const blockObject = response?.result?.userData?.customFields?.find(
+        (item: any) => item?.label === 'BLOCKS'
+      );
+      const cohortData = response;
 
+      const state = cohortData?.result?.userData?.customField?.find(
+        (item: CustomField) => item.label === 'STATES'
+      );
+      setState(state?.value);
 
-let isCustomFields=true;
-      const result=await getCohortList(userId as string, { customField: 'true' }, isCustomFields)
-      const activeCohorts = result?.filter((cohort: any) => cohort.cohortMemberStatus === "active");
-      updateStoreFromCohorts(activeCohorts, blockObject );
+      const typeOfCohort = cohortData?.result?.userData?.customField?.find(
+        (item: CustomField) => item.label === 'TYPE_OF_COHORT'
+      );
+      setCohortType(typeOfCohort?.value);
 
-           setMyCohortList(myCohortList);
+      const medium = cohortData?.result?.userData?.customField?.find(
+        (item: CustomField) => item.label === 'MEDIUM'
+      );
+      setMedium(medium?.value);
+
+      const grade = cohortData?.result?.userData?.customField?.find(
+        (item: CustomField) => item.label === 'GRADE'
+      );
+      setGrade(grade?.value);
+
+      const board = cohortData?.result?.userData?.customField?.find(
+        (item: CustomField) => item.label === 'BOARD'
+      );
+      setBoard(board?.value);
+
+      let isCustomFields = true;
+      const result = await getCohortList(
+        userId as string,
+        { customField: 'true' },
+        isCustomFields
+      );
+      const activeCohorts = result?.filter(
+        (cohort: any) => cohort.cohortMemberStatus === 'active'
+      );
+      updateStoreFromCohorts(activeCohorts, blockObject);
+
+      setMyCohortList(myCohortList);
     };
     if (userId) {
       getMyCohortList();
@@ -593,6 +623,8 @@ let isCustomFields=true;
           });
         }
         setSessions(sessionArray);
+        setEventUpdated(false);
+        setEventDeleted(false);
       } catch (error) {
         setSessions([]);
       }
@@ -650,6 +682,8 @@ let isCustomFields=true;
           });
         }
         setExtraSessions(extraSessionArray);
+        setEventUpdated(false);
+        setEventDeleted(false);
       } catch (error) {
         setExtraSessions([]);
       }
@@ -659,6 +693,14 @@ let isCustomFields=true;
       getExtraSessionsData();
     }
   }, [timeTableDate, userId, myCohortList]);
+
+  const handleEventDeleted = () => {
+    setEventDeleted(true);
+  };
+
+  const handleEventUpdated = () => {
+    setEventUpdated(true);
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -1186,8 +1228,24 @@ let isCustomFields=true;
                   <Grid container spacing={2}>
                     {sessions?.map((item) => (
                       <Grid xs={12} sm={6} md={6} key={item.id} item>
-                        <SessionCard data={item} showCenterName={true}>
-                          <SessionCardFooter item={item} />
+                        <SessionCard
+                          data={item}
+                          showCenterName={true}
+                          isEventDeleted={handleEventDeleted}
+                          isEventUpdated={handleEventUpdated}
+                          StateName={state}
+                          board={board}
+                          medium={medium}
+                          grade={grade}
+                        >
+                          <SessionCardFooter
+                            item={item}
+                            isTopicSubTopicAdded={handleEventUpdated}
+                            state={state}
+                            board={board}
+                            medium={medium}
+                            grade={grade}
+                          />
                         </SessionCard>
                       </Grid>
                     ))}
@@ -1218,8 +1276,24 @@ let isCustomFields=true;
                     <Grid container spacing={1}>
                       {extraSessions?.map((item) => (
                         <Grid xs={12} sm={6} md={6} key={item.id} item>
-                          <SessionCard data={item} showCenterName={true}>
-                            <SessionCardFooter item={item} />
+                          <SessionCard
+                            data={item}
+                            showCenterName={true}
+                            isEventDeleted={handleEventDeleted}
+                            isEventUpdated={handleEventUpdated}
+                            StateName={state}
+                            board={board}
+                            medium={medium}
+                            grade={grade}
+                          >
+                            <SessionCardFooter
+                              item={item}
+                              isTopicSubTopicAdded={handleEventUpdated}
+                              state={state}
+                              board={board}
+                              medium={medium}
+                              grade={grade}
+                            />
                           </SessionCard>
                         </Grid>
                       ))}

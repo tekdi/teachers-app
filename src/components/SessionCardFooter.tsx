@@ -55,50 +55,59 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   useEffect(() => {
     const fetchTopicSubtopic = async () => {
       try {
-        const response = await getTargetedSolutions({
-          state: state,
-          medium: medium,
-          class: grade,
-          board: board,
-          type: item?.metadata?.courseType,
-          subject: item?.metadata?.subject,
-        });
+        if (
+          state &&
+          medium &&
+          grade &&
+          board &&
+          item?.metadata?.courseType &&
+          item?.metadata?.subject
+        ) {
+          const response = await getTargetedSolutions({
+            state: state,
+            medium: medium,
+            class: grade,
+            board: board,
+            type: item?.metadata?.courseType,
+            subject: item?.metadata?.subject,
+          });
 
-        const courseData = response?.result?.data
-          ?.filter((data: any) => data._id !== '')
-          .reduce((data: any) => data?._id);
-        let courseId = courseData?._id;
+          const courseData = response?.result?.data
+            ?.filter((data: any) => data._id !== '')
+            .reduce((data: any) => data?._id);
+          let courseId = courseData?._id;
 
-        const res = await getUserProjectDetails({
-          id: courseId,
-        });
-        if (res?.result || res?.result.length > 0) {
-          const tasks = res?.result?.tasks;
-          const topics = tasks?.map((task: any) => task?.name);
-          setTopicList(topics);
-          const subTopics = tasks?.reduce((acc: any, task: any) => {
-            acc[task?.name] = task?.children.map((child: any) => child?.name);
-            return acc;
-          }, {});
-          setTransformedTasks(subTopics);
-          const learningResources = tasks?.reduce((acc: any, task: any) => {
-            acc[task.name] = task?.children.reduce(
-              (subAcc: any, child: any) => {
-                subAcc[child?.name] = child?.learningResources?.map(
-                  (resource: any) => ({
-                    name: resource?.name,
-                    link: resource?.link,
-                    type: resource?.type || '',
-                  })
-                );
-                return subAcc;
-              },
-              {}
-            );
-            return acc;
-          }, {});
-          console.log(learningResources);
-          setLearningResources(learningResources);
+          const res = await getUserProjectDetails({
+            id: courseId,
+          });
+          if (res?.result || res?.result.length > 0) {
+            const tasks = res?.result?.tasks;
+            const topics = tasks?.map((task: any) => task?.name);
+            setTopicList(topics);
+            const subTopics = tasks?.reduce((acc: any, task: any) => {
+              acc[task?.name] = task?.children.map((child: any) => child?.name);
+              return acc;
+            }, {});
+            setTransformedTasks(subTopics);
+            const learningResources = tasks?.reduce((acc: any, task: any) => {
+              acc[task.name] = task?.children.reduce(
+                (subAcc: any, child: any) => {
+                  subAcc[child?.name] = child?.learningResources?.map(
+                    (resource: any) => ({
+                      name: resource?.name,
+                      link: resource?.link,
+                      type: resource?.type || '',
+                    })
+                  );
+                  return subAcc;
+                },
+                {}
+              );
+              return acc;
+            }, {});
+            console.log(learningResources);
+            setLearningResources(learningResources);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -106,7 +115,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     };
 
     fetchTopicSubtopic();
-  }, []);
+  }, [item]);
 
   const handleTopicSelection = (topic: string) => {
     setSelectedTopic(topic);
