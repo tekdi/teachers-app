@@ -430,7 +430,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const handleDeleteUser = () => {};
 
   const handleFacilitatorAdded = () => {
-    setIsFacilitatorAdded((prev) => prev);
+    setIsFacilitatorAdded((prev) => !prev);
   };
   const handleMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);

@@ -35,7 +35,6 @@ import building from '../../assets/images/apartment.png';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import NoDataFound from '@/components/common/NoDataFound';
-import { text } from 'stream/consumers';
 
 const CentersPage = () => {
   const [loading, setLoading] = useState(false);
