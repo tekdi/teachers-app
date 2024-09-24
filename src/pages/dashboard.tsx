@@ -116,6 +116,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
   const [myCohortList, setMyCohortList] = React.useState<any>();
   const [centralizedModal, setCentralizedModal] = useState(false);
+  const [showCentralisedModal, setShowCentralisedModal] = useState(false);
   const [cohortType, setCohortType] = React.useState<string>();
   const [medium, setMedium] = React.useState<string>();
   const [grade, setGrade] = React.useState<string>();
@@ -124,8 +125,26 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [eventDeleted, setEventDeleted] = React.useState(false);
   const [eventUpdated, setEventUpdated] = React.useState(false);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const skipResetPassword = localStorage.getItem('skipResetPassword');
+      const temporaryPassword = localStorage.getItem('temporaryPassword');
+
+      if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
+        setShowCentralisedModal(true);
+      }
+    }
+  }, []);
+
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
+    //open modal for reset
+    // const skipResetPassword = localStorage.getItem('skipResetPassword');
+    // const temporaryPassword = localStorage.getItem('temporaryPassword');
+
+    if (showCentralisedModal && !newOpen) {
+      setCentralizedModal(true);
+    }
   };
   const [selectedDays, setSelectedDays] = React.useState<any>([]);
 
@@ -702,15 +721,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setEventUpdated(true);
   };
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const skipResetPassword = localStorage.getItem('skipResetPassword');
-      const temporaryPassword = localStorage.getItem('temporaryPassword');
-      if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
-        setCentralizedModal(true);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined' && window.localStorage) {
+  //     const skipResetPassword = localStorage.getItem('skipResetPassword');
+  //     const temporaryPassword = localStorage.getItem('temporaryPassword');
+
+  //     if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
+  //       setCentralizedModal(true);
+  //     }
+  //   }
+  // }, []);
 
   const handlePrimaryButton = () => {
     router.push(`/create-password`);
