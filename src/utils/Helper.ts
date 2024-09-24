@@ -351,7 +351,18 @@ export const convertLocalToUTC = (localDateTime: any) => {
 
 export const getCurrentYearPattern = () => {
   const currentYear = new Date().getFullYear();
-  return `^(19[0-9][0-9]|20[0-${Math.floor(currentYear / 10) % 10}][0-${currentYear % 10}])$`;
+  
+  // Build the dynamic part for the current century
+  let regexPart = '';
+  if (currentYear >= 2000 && currentYear < 2100) {
+    const lastDigit = currentYear % 10;
+    const middleDigit = Math.floor((currentYear % 100) / 10);
+    
+    regexPart = `20[0-${middleDigit - 1}][0-9]|20${middleDigit}[0-${lastDigit}]`;
+  }
+
+  // Full regex covering 1900–1999, 2000 to current year
+  return `^(19[0-9]{2}|${regexPart})$`;
 };
 
 export const extractAddress = (
