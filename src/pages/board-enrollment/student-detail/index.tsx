@@ -436,7 +436,7 @@ const BoardEnrollmentDetail = () => {
       >
         {activeStep > 2
           ? t('BOARD_ENROLMENT.MANDATORY', {
-              NIOS: FeesStepBoards.join(', '),
+              FeesStepBoards: FeesStepBoards.join(', '),
             })
           : t('BOARD_ENROLMENT.TO_SAVE_YOUR_PROGRESS')}
       </Box>
