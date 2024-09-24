@@ -95,63 +95,100 @@ const CentersPage = () => {
         if (typeof window !== 'undefined' && window.localStorage) {
           const userId = localStorage.getItem('userId');
           if (
-            userId &&
-            accessGranted('showBlockLevelCohort', accessControl, userRole)
+            userId
+            // &&
+            // accessGranted('showBlockLevelCohort', accessControl, userRole)
           ) {
             const response = await getCohortList(userId, {
               customField: 'true',
             });
 
-            const blockData = response.map((block: any) => {
-              const blockName = block.cohortName;
-              const blockId = block.cohortId;
-              localStorage.setItem('blockParentId', blockId);
+            if (
+              accessGranted('showBlockLevelCohort', accessControl, userRole)
+            ) {
+              const blockData = response.map((block: any) => {
+                const blockName = block.cohortName;
+                const blockId = block.cohortId;
+                localStorage.setItem('blockParentId', blockId);
 
-              const stateField = block?.customField.find(
-                (field: any) => field.label === 'STATES'
-              );
-              const state = stateField ? stateField.value : '';
+                const stateField = block?.customField.find(
+                  (field: any) => field.label === 'STATES'
+                );
+                const state = stateField ? stateField.value : '';
 
-              const districtField = block?.customField.find(
-                (field: any) => field.label === 'DISTRICTS'
-              );
-              const district = districtField ? districtField.value : '';
-              return { blockName, blockId, state, district };
-            });
-            console.log(blockData);
-            setBlockData(blockData);
+                const districtField = block?.customField.find(
+                  (field: any) => field.label === 'DISTRICTS'
+                );
+                const district = districtField ? districtField.value : '';
+                return { blockName, blockId, state, district };
+              });
+              console.log(blockData);
+              setBlockData(blockData);
+            }
 
-            response.map((res: any) => {
-              const centerData = res?.childData.map((child: any) => {
-                const cohortName = toPascalCase(child.name);
-                const cohortId = child.cohortId;
-                const centerTypeField = child?.customField.find(
+            if (
+              accessGranted('showBlockLevelCohort', accessControl, userRole)
+            ) {
+              response.map((res: any) => {
+                const centerData = res?.childData.map((child: any) => {
+                  const cohortName = toPascalCase(child.name);
+                  const cohortId = child.cohortId;
+                  const centerTypeField = child?.customField.find(
+                    (field: any) => field.label === 'TYPE_OF_COHORT'
+                  );
+                  const cohortStatus = child.status;
+                  const centerType = centerTypeField
+                    ? centerTypeField.value
+                    : '';
+                  return { cohortName, cohortId, centerType, cohortStatus };
+                });
+                setCenterData(centerData);
+                console.log(centerData);
+                localStorage.setItem('CenterList', JSON.stringify(centerData));
+              });
+            }
+
+            if (accessGranted('showTeacherCohorts', accessControl, userRole)) {
+              const cohortData = response.map((center: any) => {
+                const cohortName = center.cohortName;
+                const cohortId = center.cohortId;
+                const centerTypeField = center?.customField.find(
                   (field: any) => field.label === 'TYPE_OF_COHORT'
                 );
-                const cohortStatus = child.status;
                 const centerType = centerTypeField ? centerTypeField.value : '';
-                return { cohortName, cohortId, centerType, cohortStatus };
+                return { cohortName, cohortId, centerType, cohortStatus: center?.cohortStatus };
               });
-              setCenterData(centerData);
-              console.log(centerData);
-              localStorage.setItem('CenterList', JSON.stringify(centerData));
-            });
-          }
-          if (
-            userId &&
-            accessGranted('showTeacherCohorts', accessControl, userRole)
-          ) {
-            const response = await getCohortList(userId);
-            const cohortData = response.map((block: any) => {
-              const cohortName = block.cohortName;
-              const cohortId = block.cohortId;
-              return { cohortName, cohortId };
-            });
-            console.log(cohortData);
+              console.log(cohortData);
 
-            setTimeout(() => {
-              setCohortsData(cohortData);
-            });
+              setTimeout(() => {
+                setCenterData(cohortData);
+              });
+            }
+
+            // }
+            // if (
+            //   userId &&
+            //   accessGranted('showTeacherCohorts', accessControl, userRole)
+            // ) {
+            //   // const response = await getCohortList(userId);
+            //   const response = await getCohortList(userId, {
+            //     customField: 'true',
+            //   });
+            //   const cohortData = response.map((block: any) => {
+            //     const cohortName = block.cohortName;
+            //     const cohortId = block.cohortId;
+            //     const centerTypeField = block?.customField.find(
+            //       (field: any) => field.label === 'TYPE_OF_COHORT'
+            //     );
+            //     const centerType = centerTypeField ? centerTypeField.value : '';
+            //     return { cohortName, cohortId, centerType };
+            //   });
+            //   console.log(cohortData);
+
+            //   setTimeout(() => {
+            //     setCohortsData(cohortData);
+            //   });
+            // }
           }
         }
       } catch (error) {
@@ -402,12 +439,13 @@ const CentersPage = () => {
                 />
               )}
 
-              {accessGranted(
-                'showBlockLevelCenterData',
-                accessControl,
-                userRole
-              ) &&
-                (filteredCenters && filteredCenters.length > 0 ? (
+              {
+                // accessGranted(
+                //   'showBlockLevelCenterData',
+                //   accessControl,
+                //   userRole
+                // ) &&
+                filteredCenters && filteredCenters.length > 0 ? (
                   <>
                     {/* Regular Centers */}
                     {filteredCenters.some(
@@ -448,10 +486,11 @@ const CentersPage = () => {
                   </>
                 ) : (
                   <NoDataFound />
-                ))}
+                )
+              }
 
               {/* Teacher-Level Centers */}
-              {cohortsData?.length > 0 && (
+              {/* {cohortsData?.length > 0 && (
                 <Box
                   sx={{
                     cursor: 'pointer',
@@ -536,7 +575,7 @@ const CentersPage = () => {
                       })}
                   </Grid>
                 </Box>
-              )}
+              )} */}
             </>
           )}
         </Box>
