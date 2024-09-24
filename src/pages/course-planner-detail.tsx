@@ -103,14 +103,14 @@ const CoursePlannerDetail = () => {
       let totalSubtasks = 0;
       let completedSubtasks = 0;
   
-      tasks.forEach((task: any) => {
-        if (task.status === AssessmentStatus.COMPLETED) {
+      tasks.forEach((task: any) => {     
+        if (task.status === AssessmentStatus.COMPLETED_SMALL) {
           completedSubtasks += 1;
         }
   
         const subtasks = task.children || [];
         totalSubtasks += subtasks.length;
-        completedSubtasks += subtasks.filter((subtask: any) => subtask.status === AssessmentStatus.COMPLETED).length;
+        completedSubtasks += subtasks.filter((subtask: any) => subtask.status === AssessmentStatus.COMPLETED_SMALL).length;
       });
   
       const totalTasks = tasks.length;

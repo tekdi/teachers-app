@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -86,41 +86,61 @@ const ResetPassword = () => {
           <Image src={Logo} alt="App Logo" height={100} />
         </Box>
         <Box sx={{ padding: '60px' }}>
-          <Box
-            sx={{
-              color: theme.palette.warning['300'],
-              fontWeight: '400',
-              fontSize: '22px',
-              textAlign: 'center',
-            }}
-          >
-            {t('LOGIN_PAGE.CREATE_STRONG_PASSWORD')}
-          </Box>
-          <Box
-            sx={{
-              color: theme.palette.warning['300'],
-              fontWeight: '400',
-              fontSize: '14px',
-              textAlign: 'center',
-              mt: 0.5,
-            }}
-          >
-            {t('LOGIN_PAGE.CREATE_NEW')}
-          </Box>
           {isTokenValid ? (
-            <PasswordCreate handleResetPassword={handleResetPassword} />
+            <>
+              <Box
+                sx={{
+                  color: theme.palette.warning['300'],
+                  fontWeight: '400',
+                  fontSize: '22px',
+                  textAlign: 'center',
+                }}
+              >
+                {t('LOGIN_PAGE.CREATE_STRONG_PASSWORD')}
+              </Box>
+              <Box
+                sx={{
+                  color: theme.palette.warning['300'],
+                  fontWeight: '400',
+                  fontSize: '14px',
+                  textAlign: 'center',
+                  mt: 0.5,
+                }}
+              >
+                {t('LOGIN_PAGE.CREATE_NEW')}
+              </Box>
+              <PasswordCreate handleResetPassword={handleResetPassword} />
+            </>
           ) : (
-            <Box
-              sx={{
-                color: theme.palette.error.main,
-                fontWeight: '400',
-                fontSize: '16px',
-                textAlign: 'center',
-                mt: 2,
-              }}
-            >
-              {t('LOGIN_PAGE.LINK_EXPIRED')}
-            </Box>
+            <>
+              <Box
+                sx={{
+                  color: theme.palette.error.main,
+                  fontWeight: '500',
+                  fontSize: '22px',
+                  textAlign: 'center',
+                }}
+              >
+                {t('LOGIN_PAGE.LINK_EXPIRED')}
+              </Box>
+              <Box sx={{ mt: 3 }}>
+                <Divider />
+              </Box>
+              <Box
+                sx={{
+                  mt: 2,
+                  color: theme.palette.secondary.main,
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                }}
+                onClick={() => {
+                  router.push('/login');
+                }}
+              >
+                {t('LOGIN_PAGE.BACK_TO_LOGIN')}
+              </Box>
+            </>
           )}
           <CentralizedModal
             icon={true}
