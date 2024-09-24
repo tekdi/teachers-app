@@ -82,3 +82,6 @@ export const RequisiteType = {
   PRE_REQUISITES: 'prerequisite',
   POST_REQUISITES: 'postrequisite',
 };
+export enum BoardNios {
+  NIOS = 'NIOS',
+}

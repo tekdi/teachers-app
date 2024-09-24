@@ -21,6 +21,7 @@ import { logEvent } from '@/utils/googleAnalytics';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import HorizontalLinearStepper from '@/components/HorizontalLinearStepper';
+import { BoardNios } from '../../../../app.config';
 
 const BoardEnrollmentDetail = () => {
   const theme = useTheme<any>();
@@ -434,7 +435,9 @@ const BoardEnrollmentDetail = () => {
         }}
       >
         {activeStep > 2
-          ? t('BOARD_ENROLMENT.MANDATORY')
+          ? t('BOARD_ENROLMENT.MANDATORY', {
+              NIOS: BoardNios.NIOS,
+            })
           : t('BOARD_ENROLMENT.TO_SAVE_YOUR_PROGRESS')}
       </Box>
     </>
