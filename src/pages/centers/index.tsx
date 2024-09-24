@@ -249,7 +249,7 @@ const CentersPage = () => {
                   p={'18px 18px 0 18px'}
                   color={theme?.palette?.warning['300']}
                 >
-                  {block.blockName}
+                  {toPascalCase(block?.blockName)}
                   {block?.district && (
                     <Box textAlign={'left'} fontSize={'16px'} p={'0  '}>
                       {toPascalCase(block?.district)},{' '}
