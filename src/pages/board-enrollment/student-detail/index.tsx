@@ -21,6 +21,7 @@ import { logEvent } from '@/utils/googleAnalytics';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import HorizontalLinearStepper from '@/components/HorizontalLinearStepper';
+import { FeesStepBoards } from '@/utils/app.constant';
 
 const BoardEnrollmentDetail = () => {
   const theme = useTheme<any>();
@@ -232,7 +233,7 @@ const BoardEnrollmentDetail = () => {
                         mr: 0,
                         color: theme.palette.warning['300'],
                       }}
-                      label="Parent"
+                      label={t('COMMON.SELECT_ALL')}
                       control={
                         <Checkbox
                           checked={checked.every(Boolean)}
@@ -434,7 +435,9 @@ const BoardEnrollmentDetail = () => {
         }}
       >
         {activeStep > 2
-          ? t('BOARD_ENROLMENT.MANDATORY')
+          ? t('BOARD_ENROLMENT.MANDATORY', {
+              FeesStepBoards: FeesStepBoards.join(', '),
+            })
           : t('BOARD_ENROLMENT.TO_SAVE_YOUR_PROGRESS')}
       </Box>
     </>

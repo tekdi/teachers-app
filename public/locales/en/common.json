@@ -569,6 +569,7 @@
     "EXAM_FEES_PAID":"  Exam Fees Paid? (optional)",
     "SAVE_AND_NEXT":"Save and Next",
     "TO_SAVE_YOUR_PROGRESS":"“Save & Next” to save your progress. You can come back and change it anytime.",
-    "MANDATORY":"Mandatory for NIOS only. For other Boards, this step is automatically marked completed. Please click on Save to submit the data."
+    "MANDATORY":"Mandatory for {{FeesStepBoards}} only. For other Boards, this step is automatically marked completed. Please click on Save to submit the data.",
+    "COMPLETED":"Completed"
   }
 }
