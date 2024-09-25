@@ -550,7 +550,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const viewTimeTable = () => {
     if (classId !== 'all') {
       router.push(
-        `centers/${classId}/events/${getMonthName(timeTableDate)?.toLowerCase()}?showall=1`
+        `centers/${classId}/events/${getMonthName(timeTableDate)?.toLowerCase()}?showAll=1`
       );
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
