@@ -117,7 +117,7 @@ const ForgotPassword = () => {
               mt: 0.5,
             }}
           >
-            {t('LOGIN_PAGE.ENTER_USERNAME')}
+            {t('LOGIN_PAGE.ENTER_USERNAME_TO_GET_LINK')}
           </Box>
 
           <Box
@@ -147,7 +147,7 @@ const ForgotPassword = () => {
                   </InputAdornment>
                 ),
               }}
-              label={t('LOGIN_PAGE.ENTER_USERNAME_PASSWORD')}
+              label={t('LOGIN_PAGE.ENTER_USERNAME')}
             />
           </Box>
 

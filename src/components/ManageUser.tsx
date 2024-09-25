@@ -150,7 +150,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR, filters],
             queryFn: () => getMyUserList({ limit, page, filters, fields }),
           });
-console.log("facilitator")
+          console.log('facilitator');
           const facilitatorList = resp.result?.getUserDetails;
 
           if (!facilitatorList || facilitatorList?.length === 0) {
@@ -274,7 +274,10 @@ console.log("facilitator")
 
       if (hasActiveCohorts) {
         const cohortNames = cohortList
-          .filter((cohort: { cohortStatus: string }) => cohort.cohortStatus === 'active')
+          .filter(
+            (cohort: { cohortStatus: string }) =>
+              cohort.cohortStatus === 'active'
+          )
           .map((cohort: { cohortName: string }) => cohort.cohortName)
           .join(', ');
 
@@ -427,7 +430,7 @@ console.log("facilitator")
   const handleDeleteUser = () => {};
 
   const handleFacilitatorAdded = () => {
-    setIsFacilitatorAdded((prev) => prev);
+    setIsFacilitatorAdded((prev) => !prev);
   };
   const handleMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -597,6 +600,7 @@ console.log("facilitator")
                                             backgroundColor:
                                               theme.palette.action.selected,
                                             padding: '5px',
+                                            width: 'fit-content',
                                             borderRadius: '5px',
                                             fontSize: '12px',
                                             fontWeight: '600',
