@@ -160,7 +160,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       sx={{
         border: `1px solid ${theme.palette.warning['A100']}`,
         borderRadius: '8px',
-        marginBottom: '38px',
+        // marginBottom: '38px',
       }}
     >
       <Box
@@ -178,6 +178,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
               fontWeight={'400'}
               textAlign={'left'}
               fontSize={'16px'}
+              className="one-line-text"
             >
               {subject && sessionTitle
                 ? `${toPascalCase(subject)} - ${sessionTitle}`
@@ -193,6 +194,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             display={'flex'}
             alignItems={'center'}
             gap={'4px'}
+            className="one-line-text"
           >
             {data?.isRecurring === false && (
               <>
@@ -232,6 +234,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             width: '100%',
             cursor: 'pointer',
           }}
+          className="one-line-text"
         >
           {data?.meetingDetails?.url}
         </Box>

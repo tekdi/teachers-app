@@ -1040,7 +1040,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   currentAttendance !== 'futureDate' && (
                                     <Typography
                                       sx={{
-                                        color: theme.palette.warning['300'],
+                                        color: theme.palette.warning['A400'],
                                       }}
                                       fontSize={'0.8rem'}
                                       // variant="h6"
@@ -1325,7 +1325,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     newWidth={'100%'}
                   />
                 </Box>
-                <Box mt={3} px="18px">
+                <Box mt={2} px="18px">
                   <Grid container spacing={2}>
                     {sessions?.map((item) => (
                       <Grid xs={12} sm={6} md={6} key={item.id} item>
@@ -1373,8 +1373,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       days: eventDaysLimit,
                     })}
                   </Box>
-                  <Box mt={3} px="18px">
-                    <Grid container spacing={1}>
+                  <Box sx={{ mt: 1.5, mb: 2 }}>
+                    <Grid container spacing={2}>
                       {extraSessions?.map((item) => (
                         <Grid xs={12} sm={6} md={6} key={item.id} item>
                           <SessionCard
