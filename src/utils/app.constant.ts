@@ -144,3 +144,4 @@ export enum ResourcesType {
   POSTREQUSITE = 'postrequisite',
   NONE = 'none',
 }
+export const FeesStepBoards = ["NIOS"]

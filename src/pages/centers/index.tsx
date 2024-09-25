@@ -1,17 +1,16 @@
 import CenterList from '@/components/center/centerList';
 import CreateCenterModal from '@/components/center/CreateCenterModal';
+import NoDataFound from '@/components/common/NoDataFound';
 import Header from '@/components/Header';
-import Loader from '@/components/Loader';
 import ManageUser from '@/components/ManageUser';
 import { showToastMessage } from '@/components/Toastify';
 import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
 import { CenterType, Role } from '@/utils/app.constant';
 import { accessGranted, toPascalCase } from '@/utils/Helper';
-import { ICohort } from '@/utils/Interfaces';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 import { ArrowDropDown, Clear, Search } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
   Box,
   Button,
@@ -26,25 +25,19 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
-import building from '../../assets/images/apartment.png';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
-import withAccessControl from '@/utils/hoc/withAccessControl';
-import NoDataFound from '@/components/common/NoDataFound';
-import { text } from 'stream/consumers';
 
 const CentersPage = () => {
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
-  const [cohortsData, setCohortsData] = useState<Array<ICohort>>([]);
   const [reloadState, setReloadState] = React.useState<boolean>(false);
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState<number>();
   const [blockData, setBlockData] = useState<
     { bockName: string; district?: string; blockId: string; state?: string }[]
   >([]);
@@ -72,6 +65,34 @@ const CentersPage = () => {
   };
 
   useEffect(() => {
+    if (router.isReady) {
+      const queryParamValue = router.query.tab ? Number(router.query.tab) : 1;
+
+      if ([1,2].includes(queryParamValue))
+        setValue(queryParamValue);
+      else
+        setValue(1);
+    }
+  }, [router.isReady, router.query.tab]);
+
+  useEffect(() => {
+    // Merge existing query params with new ones
+    if (router.isReady) {
+    const updatedQuery = { ...router.query, tab: value };
+
+    // Update the URL without reloading the page
+    router.push(
+      {
+        pathname: router.pathname,
+        query: updatedQuery,
+      },
+      undefined,
+      { shallow: true }
+    );
+  }
+  }, [value]);
+
+  useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
       if (role === Role.TEAM_LEADER) {
@@ -95,64 +116,77 @@ const CentersPage = () => {
       try {
         if (typeof window !== 'undefined' && window.localStorage) {
           const userId = localStorage.getItem('userId');
-          if (
-            userId &&
-            accessGranted('showBlockLevelCohort', accessControl, userRole)
-          ) {
+          if (userId) {
             const response = await getCohortList(userId, {
               customField: 'true',
             });
 
-            const blockData = response.map((block: any) => {
-              const blockName = block.cohortName;
-              const blockId = block.cohortId;
-              localStorage.setItem('blockParentId', blockId);
+            if (
+              accessGranted('showBlockLevelCohort', accessControl, userRole)
+            ) {
+              const blockData = response.map((block: any) => {
+                const blockName = block.cohortName;
+                const blockId = block.cohortId;
+                localStorage.setItem('blockParentId', blockId);
 
-              const stateField = block?.customField.find(
-                (field: any) => field.label === 'STATES'
-              );
-              const state = stateField ? stateField.value : '';
+                const stateField = block?.customField.find(
+                  (field: any) => field.label === 'STATES'
+                );
+                const state = stateField ? stateField.value : '';
 
-              const districtField = block?.customField.find(
-                (field: any) => field.label === 'DISTRICTS'
-              );
-              const district = districtField ? districtField.value : '';
-              return { blockName, blockId, state, district };
-            });
-            console.log(blockData);
-            setBlockData(blockData);
+                const districtField = block?.customField.find(
+                  (field: any) => field.label === 'DISTRICTS'
+                );
+                const district = districtField ? districtField.value : '';
+                return { blockName, blockId, state, district };
+              });
+              console.log(blockData);
+              setBlockData(blockData);
+            }
 
-            response.map((res: any) => {
-              const centerData = res?.childData.map((child: any) => {
-                const cohortName = toPascalCase(child.name);
-                const cohortId = child.cohortId;
-                const centerTypeField = child?.customField.find(
+            if (
+              accessGranted('showBlockLevelCohort', accessControl, userRole)
+            ) {
+              response.map((res: any) => {
+                const centerData = res?.childData.map((child: any) => {
+                  const cohortName = toPascalCase(child.name);
+                  const cohortId = child.cohortId;
+                  const centerTypeField = child?.customField.find(
+                    (field: any) => field.label === 'TYPE_OF_COHORT'
+                  );
+                  const cohortStatus = child.status;
+                  const centerType = centerTypeField
+                    ? centerTypeField.value
+                    : '';
+                  return { cohortName, cohortId, centerType, cohortStatus };
+                });
+                setCenterData(centerData);
+                console.log(centerData);
+                localStorage.setItem('CenterList', JSON.stringify(centerData));
+              });
+            }
+
+            if (accessGranted('showTeacherCohorts', accessControl, userRole)) {
+              const cohortData = response.map((center: any) => {
+                const cohortName = center.cohortName;
+                const cohortId = center.cohortId;
+                const centerTypeField = center?.customField.find(
                   (field: any) => field.label === 'TYPE_OF_COHORT'
                 );
-                const cohortStatus = child.status;
                 const centerType = centerTypeField ? centerTypeField.value : '';
-                return { cohortName, cohortId, centerType, cohortStatus };
+                return {
+                  cohortName,
+                  cohortId,
+                  centerType,
+                  cohortStatus: center?.cohortStatus,
+                };
               });
-              setCenterData(centerData);
-              console.log(centerData);
-              localStorage.setItem('CenterList', JSON.stringify(centerData));
-            });
-          }
-          if (
-            userId &&
-            accessGranted('showTeacherCohorts', accessControl, userRole)
-          ) {
-            const response = await getCohortList(userId);
-            const cohortData = response.map((block: any) => {
-              const cohortName = block.cohortName;
-              const cohortId = block.cohortId;
-              return { cohortName, cohortId };
-            });
-            console.log(cohortData);
+              console.log(cohortData);
 
-            setTimeout(() => {
-              setCohortsData(cohortData);
-            });
+              setTimeout(() => {
+                setCenterData(cohortData);
+              });
+            }
           }
         }
       } catch (error) {
@@ -200,7 +234,7 @@ const CentersPage = () => {
   return (
     <>
       <Header />
-      {loading && <Loader showBackdrop={false} loadingText={t('LOADING')} />}
+      {/* {loading && <Loader showBackdrop={false} loadingText={t('LOADING')} />} */}
       <Box sx={{ padding: '0' }}>
         {accessGranted('showBlockLevelData', accessControl, userRole) ? (
           <>
@@ -213,7 +247,7 @@ const CentersPage = () => {
                   p={'18px 18px 0 18px'}
                   color={theme?.palette?.warning['300']}
                 >
-                  {block.blockName}
+                  {toPascalCase(block?.blockName)}
                   {block?.district && (
                     <Box textAlign={'left'} fontSize={'16px'} p={'0  '}>
                       {toPascalCase(block?.district)},{' '}
@@ -235,38 +269,40 @@ const CentersPage = () => {
         )}
         {accessGranted('showBlockLevelData', accessControl, userRole) && (
           <Box sx={{ width: '100%' }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              textColor="inherit" // Use "inherit" to apply custom color
-              aria-label="secondary tabs example"
-              sx={{
-                fontSize: '14px',
-                borderBottom: (theme) => `1px solid #EBE1D4`,
+            {value && (
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                textColor="inherit" // Use "inherit" to apply custom color
+                aria-label="secondary tabs example"
+                sx={{
+                  fontSize: '14px',
+                  borderBottom: (theme) => `1px solid #EBE1D4`,
 
-                '& .MuiTab-root': {
-                  color: theme.palette.warning['A200'],
-                  padding: '0 20px',
-                  flexGrow: 1,
-                },
-                '& .Mui-selected': {
-                  color: theme.palette.warning['A200'],
-                },
-                '& .MuiTabs-indicator': {
-                  display: 'flex',
-                  justifyContent: 'center',
-                  backgroundColor: theme.palette.primary.main,
-                  borderRadius: '100px',
-                  height: '3px',
-                },
-                '& .MuiTabs-scroller': {
-                  overflowX: 'unset !important',
-                },
-              }}
-            >
-              <Tab value={1} label={t('CENTERS.CENTERS')} />
-              <Tab value={2} label={t('COMMON.FACILITATORS')} />
-            </Tabs>
+                  '& .MuiTab-root': {
+                    color: theme.palette.warning['A200'],
+                    padding: '0 20px',
+                    flexGrow: 1,
+                  },
+                  '& .Mui-selected': {
+                    color: theme.palette.warning['A200'],
+                  },
+                  '& .MuiTabs-indicator': {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    backgroundColor: theme.palette.primary.main,
+                    borderRadius: '100px',
+                    height: '3px',
+                  },
+                  '& .MuiTabs-scroller': {
+                    overflowX: 'unset !important',
+                  },
+                }}
+              >
+                <Tab value={1} label={t('CENTERS.CENTERS')} />
+                <Tab value={2} label={t('COMMON.FACILITATORS')} />
+              </Tabs>
+            )}
           </Box>
         )}
 
@@ -403,146 +439,52 @@ const CentersPage = () => {
                 />
               )}
 
-              {accessGranted(
-                'showBlockLevelCenterData',
-                accessControl,
-                userRole
-              ) &&
-                (filteredCenters && filteredCenters.length > 0 ? (
-                  <>
-                    {/* Regular Centers */}
-                    {filteredCenters.some(
-                      (center) =>
-                        center.centerType?.toUpperCase() ===
-                          CenterType.REGULAR || center.centerType === ''
-                    ) && (
-                      <CenterList
-                        title="CENTERS.REGULAR_CENTERS"
-                        centers={filteredCenters.filter(
-                          (center) =>
-                            center.centerType?.toUpperCase() ===
-                              CenterType.REGULAR || center.centerType === ''
-                        )}
-                        router={router}
-                        theme={theme}
-                        t={t}
-                      />
-                    )}
+              {filteredCenters && filteredCenters.length > 0 ? (
+                <>
+                  {/* Regular Centers */}
+                  {filteredCenters.some(
+                    (center) =>
+                      center.centerType?.toUpperCase() === CenterType.REGULAR ||
+                      center.centerType === ''
+                  ) && (
+                    <CenterList
+                      title="CENTERS.REGULAR_CENTERS"
+                      centers={filteredCenters.filter(
+                        (center) =>
+                          center.centerType?.toUpperCase() ===
+                            CenterType.REGULAR || center.centerType === ''
+                      )}
+                      router={router}
+                      theme={theme}
+                      t={t}
+                    />
+                  )}
 
-                    {/* Remote Centers */}
-                    {filteredCenters.some(
-                      (center) =>
-                        center.centerType?.toUpperCase() === CenterType.REMOTE
-                    ) && (
-                      <CenterList
-                        title="CENTERS.REMOTE_CENTERS"
-                        centers={filteredCenters.filter(
-                          (center) =>
-                            center.centerType?.toUpperCase() ===
-                            CenterType.REMOTE
-                        )}
-                        router={router}
-                        theme={theme}
-                        t={t}
-                      />
-                    )}
-                  </>
-                ) : (
-                  <NoDataFound />
-                ))}
-
-              {/* Teacher-Level Centers */}
-              {cohortsData?.length > 0 && (
-                <Box
-                  sx={{
-                    cursor: 'pointer',
-                    marginBottom: '20px',
-                    background: theme.palette.action.selected,
-                    p: 2,
-                    m: 2,
-                    borderRadius: 5,
-                  }}
-                >
-                  <Grid container spacing={3}>
-                    {accessGranted(
-                      'showTeacherLevelCenterData',
-                      accessControl,
-                      userRole
-                    ) &&
-                      cohortsData?.map((cohort: any) => {
-                        return (
-                          <Grid
-                            item
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            key={cohort?.cohortId}
-                          >
-                            <Box
-                              onClick={() => {
-                                router.push(`/centers/${cohort?.cohortId}/`);
-                                localStorage.setItem(
-                                  'classId',
-                                  cohort.cohortId
-                                );
-                              }}
-                            >
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  gap: '10px',
-                                  background: '#fff',
-                                  height: '56px',
-                                  borderRadius: '8px',
-                                }}
-                              >
-                                <Box
-                                  sx={{
-                                    width: '56px',
-                                    display: 'flex',
-                                    background: theme.palette.primary.light,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderTopLeftRadius: '8px',
-                                    borderBottomLeftRadius: '8px',
-                                  }}
-                                >
-                                  <Image src={building} alt="center" />
-                                </Box>
-
-                                <Box
-                                  sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    width: '100%',
-                                    padding: '0 10px',
-                                  }}
-                                >
-                                  <Box
-                                    sx={{
-                                      fontSize: '16px',
-                                      fontWeight: '400',
-                                      color: theme.palette.warning['300'],
-                                    }}
-                                  >
-                                    {cohort?.cohortName}
-                                  </Box>
-                                  <ChevronRightIcon />
-                                </Box>
-                              </Box>
-                            </Box>
-                          </Grid>
-                        );
-                      })}
-                  </Grid>
-                </Box>
+                  {/* Remote Centers */}
+                  {filteredCenters.some(
+                    (center) =>
+                      center.centerType?.toUpperCase() === CenterType.REMOTE
+                  ) && (
+                    <CenterList
+                      title="CENTERS.REMOTE_CENTERS"
+                      centers={filteredCenters.filter(
+                        (center) =>
+                          center.centerType?.toUpperCase() === CenterType.REMOTE
+                      )}
+                      router={router}
+                      theme={theme}
+                      t={t}
+                    />
+                  )}
+                </>
+              ) : (
+                <NoDataFound />
               )}
             </>
           )}
         </Box>
         <Box>
-          {value === 2 && (
+          {value === 2 && blockData?.length > 0 && (
             <ManageUser
               reloadState={reloadState}
               setReloadState={setReloadState}
