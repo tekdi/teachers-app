@@ -500,8 +500,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         combinedEndDateTime,
         startTime
       );
-      startDatetime = convertToUTC(startDatetimeValue);
-      endDatetime = convertToUTC(combinedEndDateTime);
+      startDatetime = convertToUTC(startTime);
+      const endDatetimeValue = combineDateAndTime(
+        startTime,
+        combinedEndDateTime
+      );
+      endDatetime = convertToUTC(endDatetimeValue);
       const combinedStartDate = combineDateAndTime(startDate, startTime);
       recurringStartDate = convertToUTC(combinedStartDate);
       endDateValue =
