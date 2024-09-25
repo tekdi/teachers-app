@@ -160,7 +160,6 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       sx={{
         border: `1px solid ${theme.palette.warning['A100']}`,
         borderRadius: '8px',
-        // marginBottom: '38px',
       }}
     >
       <Box
@@ -192,7 +191,11 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             textAlign={'left'}
             fontSize={'14px'}
             display={'flex'}
-            alignItems={'center'}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              marginTop: '4px',
+            }}
             gap={'4px'}
             className="one-line-text"
           >
@@ -203,7 +206,12 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             )}
             {startTime} - {endTime}
           </Typography>
-          <Typography fontWeight={'400'} textAlign={'left'} fontSize={'14px'}>
+          <Typography
+            className="one-line-text"
+            fontWeight={'400'}
+            textAlign={'left'}
+            fontSize={'14px'}
+          >
             {showCenterName ? data?.location : data?.metadata?.teacherName}
           </Typography>
         </Box>
@@ -220,6 +228,8 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           display: 'flex',
           justifyContent: 'space-between',
           gap: '30px',
+          minHeight: '50px',
+          width: '100%',
         }}
         onClick={handleCopyUrl}
       >

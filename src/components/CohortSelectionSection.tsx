@@ -390,7 +390,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                               width: '100%',
                               marginBottom: '0rem',
                               '@media (max-width: 700px)': {
-                                width: '50%',
+                                width: isAttendanceOverview ? '100%' : '50%',
                               },
                             }}
                             MenuProps={{
@@ -486,10 +486,14 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     marginBottom: '0rem',
                                     marginRight: '10px',
                                     '@media (max-width: 902px)': {
-                                      width: '60%',
+                                      width: isAttendanceOverview
+                                        ? '100%'
+                                        : '60%',
                                     },
                                     '@media (max-width: 702px)': {
-                                      width: '50%',
+                                      width: isAttendanceOverview
+                                        ? '100%'
+                                        : '50%',
                                     },
                                   }
                             }
