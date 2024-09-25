@@ -1,7 +1,7 @@
 import { SessionsCardProps } from '@/utils/Interfaces';
 import { Box, Snackbar, Typography } from '@mui/material';
 
-import { convertUTCToIST } from '@/utils/Helper';
+import { convertUTCToIST, toPascalCase } from '@/utils/Helper';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlined from '@mui/icons-material/EditOutlined';
@@ -185,10 +185,10 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
               className="one-line-text"
             >
               {subject && sessionTitle
-                ? `${subject} - ${sessionTitle}`
+                ? `${toPascalCase(subject)} - ${sessionTitle}`
                 : subject
-                  ? subject
-                  : sessionTitle}{' '}
+                  ? toPascalCase(subject)
+                  : toPascalCase(sessionTitle)}{' '}
             </Typography>
           </Box>
           <Typography

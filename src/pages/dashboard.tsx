@@ -662,7 +662,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
             after: afterDate,
             before: beforeDate,
           },
-          cohortId: classId,
+          // cohortId: classId,
+          createdBy: userId,
           status: ['live'],
         };
         const response = await getEventList({ limit, offset, filters });
@@ -675,27 +676,32 @@ const Dashboard: React.FC<DashboardProps> = () => {
         // });
 
         const sessionArray: any[] = [];
+        const extraSessionArray: any[] = [];
         if (response?.events.length > 0) {
           response?.events.forEach((event: any) => {
-            console.log('myCohortList', myCohortList);
-            let cohortList;
-            if (myCohortList.length > 0) {
-              if (myCohortList[0].type === cohortHierarchy.BLOCK) {
-                cohortList = myCohortList[0].childData;
-              } else {
-                cohortList = myCohortList;
-              }
-            }
+            // console.log('myCohortList', myCohortList);
+            // let cohortList;
+            // if (myCohortList.length > 0) {
+            //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
+            //     cohortList = myCohortList[0].childData;
+            //   } else {
+            //     cohortList = myCohortList;
+            //   }
+            // }
 
-            const cohort = cohortList?.find(
-              (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
-            );
-            if (cohort && event.isRecurring) {
+            // const cohort = cohortList?.find(
+            //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
+            // );
+            if (event.isRecurring) {
               sessionArray.push(event);
+            }
+            if (!event.isRecurring) {
+              extraSessionArray.push(event);
             }
           });
         }
         setSessions(sessionArray);
+        setExtraSessions(extraSessionArray);
         setEventUpdated(false);
         setEventDeleted(false);
       } catch (error) {
@@ -715,80 +721,81 @@ const Dashboard: React.FC<DashboardProps> = () => {
     eventDeleted,
   ]);
 
-  useEffect(() => {
-    const getExtraSessionsData = async () => {
-      try {
-        const date = new Date();
-        const startDate = shortDateFormat(new Date());
-        const lastDate = new Date(
-          date.setDate(date.getDate() + modifyAttendanceLimit)
-        );
-        const endDate = shortDateFormat(lastDate);
-        const afterDate = getAfterDate(timeTableDate);
-        const beforeDate = getBeforeDate(timeTableDate);
-        const limit = 0;
-        const offset = 0;
-        const filters = {
-          startDate: {
-            after: afterDate,
-          },
-          endDate: {
-            before: beforeDate,
-          },
-          cohortId: classId,
-          status: ['live'],
-        };
-        const response = await getEventList({ limit, offset, filters });
+  // useEffect(() => {
+  //   const getExtraSessionsData = async () => {
+  //     try {
+  //       const date = new Date();
+  //       const startDate = shortDateFormat(new Date());
+  //       const lastDate = new Date(
+  //         date.setDate(date.getDate() + modifyAttendanceLimit)
+  //       );
+  //       const endDate = shortDateFormat(lastDate);
+  //       const afterDate = getAfterDate(timeTableDate);
+  //       const beforeDate = getBeforeDate(timeTableDate);
+  //       const limit = 0;
+  //       const offset = 0;
+  //       const filters = {
+  //         startDate: {
+  //           after: afterDate,
+  //         },
+  //         endDate: {
+  //           before: beforeDate,
+  //         },
+  //         createdBy: userId,
+  //         // cohortId: classId,
+  //         status: ['live'],
+  //       };
+  //       const response = await getEventList({ limit, offset, filters });
 
-        // check if cohort's membership is active
+  //       // check if cohort's membership is active
 
-        // const myCohortList = await queryClient.fetchQuery({
-        //   queryKey: [QueryKeys.MY_COHORTS, userId],
-        //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
-        // });
+  //       // const myCohortList = await queryClient.fetchQuery({
+  //       //   queryKey: [QueryKeys.MY_COHORTS, userId],
+  //       //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
+  //       // });
 
-        const extraSessionArray: any[] = [];
-        if (response?.events.length > 0) {
-          response?.events.forEach((event: any) => {
-            console.log('myCohortList', myCohortList);
+  //       const extraSessionArray: any[] = [];
+  //       if (response?.events.length > 0) {
+  //         response?.events.forEach((event: any) => {
+  //           console.log('myCohortList', myCohortList);
 
-            let cohortList;
-            if (myCohortList.length > 0) {
-              if (myCohortList[0].type === cohortHierarchy.BLOCK) {
-                cohortList = myCohortList[0].childData;
-              } else {
-                cohortList = myCohortList;
-              }
-            }
+  //           // let cohortList;
+  //           // if (myCohortList.length > 0) {
+  //           //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
+  //           //     cohortList = myCohortList[0].childData;
+  //           //   } else {
+  //           //     cohortList = myCohortList;
+  //           //   }
+  //           // }
 
-            const cohort = cohortList?.find(
-              (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
-            );
+  //           // const cohort = cohortList?.find(
+  //           //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
+  //           // );
 
-            if (cohort && !event.isRecurring) {
-              extraSessionArray.push(event);
-            }
-          });
-        }
-        setExtraSessions(extraSessionArray);
-        setEventUpdated(false);
-        setEventDeleted(false);
-      } catch (error) {
-        setExtraSessions([]);
-      }
-    };
+  //           if (!event.isRecurring) {
+  //             extraSessionArray.push(event);
+  //           }
+  //         });
+  //       }
+  //       setExtraSessions(extraSessionArray);
+  //       setEventUpdated(false);
+  //       setEventDeleted(false);
+  //     } catch (error) {
+  //       setExtraSessions([]);
+  //     }
+  //   };
 
-    if (userId && myCohortList) {
-      getExtraSessionsData();
-    }
-  }, [
-    timeTableDate,
-    userId,
-    myCohortList,
-    classId,
-    eventUpdated,
-    eventDeleted,
-  ]);
+  //   if (userId && myCohortList) {
+  //     getExtraSessionsData();
+  //   }
+  // }, [
+  //   timeTableDate,
+  //   userId,
+  //   myCohortList,
+  //   classId,
+  //   eventUpdated,
+  //   eventDeleted,
+  // ]);
 
   const handleEventDeleted = () => {
     setEventDeleted(true);

@@ -405,7 +405,7 @@
     "EXTRA_OFFLINE": "Extra offline",
     "ENTER_VALID_MEETING_LINK": "Please enter a valid Zoom or Google Meet link.",
     "ZOOM": "Zoom",
-    "GOOGLE_MEET": "GOOGLE_MEET",
+    "GOOGLEMEET": "GoogleMeet",
     "SET_UP": "Set-Up",
     "EDIT_THIS_SESSION": "Edit this session",
     "EDIT_FOLLOWING_SESSIONS": "Edit this and following sessions",
