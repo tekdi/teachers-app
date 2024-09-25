@@ -477,7 +477,7 @@ const CoursePlanner = () => {
 
             const overallCommonSubjects =
               await findOverallCommonSubjects(arrays);
-
+            
             localStorage.setItem(
               'overallCommonSubjects',
               JSON.stringify(overallCommonSubjects)
@@ -603,7 +603,7 @@ const CoursePlanner = () => {
       <Select
         labelId="course-type-select-label"
         id="course-type-select"
-        value={tStore?.type}
+        value={value}
         onChange={handleChange}
         label="Course Type"
         sx={{ fontSize: '14px' }}
