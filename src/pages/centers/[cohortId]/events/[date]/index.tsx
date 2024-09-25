@@ -20,13 +20,14 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { accessControl } from '../../../../../../app.config';
-import { Session } from '../../../../../utils/Interfaces';
+import { Session, eventFilters } from '../../../../../utils/Interfaces';
 
 const EventMonthView: React.FC<any> = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const router = useRouter();
   const { date }: any = router.query;
+  const { showall } = router.query;
 
   const [sessions, setSessions] = useState<Session[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -34,6 +35,10 @@ const EventMonthView: React.FC<any> = () => {
     React.useState<any>(null);
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
 
+  let userId: string = '';
+  if (typeof window !== 'undefined' && window.localStorage) {
+    userId = localStorage.getItem('userId') || '';
+  }
   useEffect(() => {
     const getSessionsData = async () => {
       try {
@@ -49,14 +54,19 @@ const EventMonthView: React.FC<any> = () => {
           const beforeDate = getBeforeDate(date);
           const limit = 0;
           const offset = 0;
-          const filters = {
+          let filters: eventFilters = {
             date: {
               after: afterDate,
               before: beforeDate,
             },
-            cohortId: cohortId,
             status: ['live'],
           };
+
+          if (showall === '1' && userId) {
+            filters['createdBy'] = userId;
+          } else {
+            filters['cohortId'] = cohortId;
+          }
 
           const response = await getEventList({ limit, offset, filters });
 
@@ -194,7 +204,11 @@ const EventMonthView: React.FC<any> = () => {
           <Grid container spacing={2}>
             {sessions?.map((item) => (
               <Grid xs={12} sm={6} md={6} key={item.id} item>
-                <SessionsCard data={item} key={item.id}>
+                <SessionsCard
+                  data={item}
+                  key={item.id}
+                  showCenterName={showall === '1' ? true : false}
+                >
                   <SessionCardFooter item={item} />
                 </SessionsCard>
               </Grid>
@@ -229,7 +243,11 @@ const EventMonthView: React.FC<any> = () => {
           <Grid container spacing={2}>
             {extraSessions?.map((item) => (
               <Grid xs={12} sm={6} md={6} key={item.id} item>
-                <SessionsCard data={item} key={item.id}>
+                <SessionsCard
+                  data={item}
+                  key={item.id}
+                  showCenterName={showall === '1' ? true : false}
+                >
                   <SessionCardFooter item={item} />
                 </SessionsCard>
               </Grid>
