@@ -671,7 +671,13 @@ main {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+.one-line-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .bg-white {
   background-color: var(--mui-palette-warning-A400);
 }

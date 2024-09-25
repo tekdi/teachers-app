@@ -12,7 +12,7 @@ import {
 } from '@/utils/Helper';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import { Box, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { GetStaticPaths } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -22,7 +22,7 @@ import React, { useEffect, useState } from 'react';
 import { accessControl } from '../../../../../../app.config';
 import { Session } from '../../../../../utils/Interfaces';
 
-const EventMonthView:React.FC<any> = () => {
+const EventMonthView: React.FC<any> = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const router = useRouter();
@@ -190,12 +190,16 @@ const EventMonthView:React.FC<any> = () => {
           {t('CENTER_SESSION.PLANNED_SESSIONS')}
         </Typography>
 
-        <Box mt={3} px="18px">
-          {sessions?.map((item) => (
-            <SessionsCard data={item} key={item.id}>
-              <SessionCardFooter item={item} />
-            </SessionsCard>
-          ))}
+        <Box mt={1.5} px="10px">
+          <Grid container spacing={2}>
+            {sessions?.map((item) => (
+              <Grid xs={12} sm={6} md={6} key={item.id} item>
+                <SessionsCard data={item} key={item.id}>
+                  <SessionCardFooter item={item} />
+                </SessionsCard>
+              </Grid>
+            ))}
+          </Grid>
           {sessions && sessions?.length === 0 && (
             <Box
               className="fs-12 fw-400 italic"
@@ -209,6 +213,7 @@ const EventMonthView:React.FC<any> = () => {
 
       <Box
         mt={3}
+        mb={3}
         px="14px"
         sx={{
           fontSize: '16px',
@@ -220,12 +225,16 @@ const EventMonthView:React.FC<any> = () => {
           {t('CENTER_SESSION.EXTRA_SESSION')}
         </Typography>
 
-        <Box mt={3} px="18px">
-          {extraSessions?.map((item) => (
-            <SessionsCard data={item} key={item.id}>
-              <SessionCardFooter item={item} />
-            </SessionsCard>
-          ))}
+        <Box mt={1.5} px="10px">
+          <Grid container spacing={2}>
+            {extraSessions?.map((item) => (
+              <Grid xs={12} sm={6} md={6} key={item.id} item>
+                <SessionsCard data={item} key={item.id}>
+                  <SessionCardFooter item={item} />
+                </SessionsCard>
+              </Grid>
+            ))}
+          </Grid>
           {extraSessions && extraSessions?.length === 0 && (
             <Box
               className="fs-12 fw-400 italic"
