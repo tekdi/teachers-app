@@ -180,10 +180,11 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
               fontSize={'16px'}
             >
               {subject && sessionTitle
-                ? `${subject} - ${sessionTitle}`
+                ? `${subject.charAt(0).toUpperCase() + subject.slice(1)} - ${sessionTitle}`
                 : subject
-                  ? subject
-                  : sessionTitle}{' '}
+                  ? subject.charAt(0).toUpperCase() + subject.slice(1)
+                  : sessionTitle.charAt(0).toUpperCase() +
+                    sessionTitle.slice(1)}{' '}
             </Typography>
           </Box>
           <Typography
