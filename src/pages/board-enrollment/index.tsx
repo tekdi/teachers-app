@@ -1,38 +1,31 @@
+import CenterSessionModal from '@/components/CenterSessionModal';
+import CohortSelectionSection from '@/components/CohortSelectionSection';
 import Header from '@/components/Header';
-import { useTheme } from '@mui/material/styles';
+import HorizontalLinearStepper from '@/components/HorizontalLinearStepper';
+import PieChartGraph from '@/components/PieChartGraph';
+import SortingModal from '@/components/SortingModal';
+import { showToastMessage } from '@/components/Toastify';
+import { boardEnrollment } from '@/services/BoardEnrollmentServics';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { toPascalCase } from '@/utils/Helper';
+import { ICohort, user } from '@/utils/Interfaces';
+import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
+import EastIcon from '@mui/icons-material/East';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Button,
-  FormControl,
   Grid,
   IconButton,
   InputBase,
-  MenuItem,
-  Paper,
-  Select,
-  Step,
-  StepLabel,
-  Stepper,
+  Paper
 } from '@mui/material';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
-import React, { useEffect, useState } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
-import EastIcon from '@mui/icons-material/East';
-import HorizontalLinearStepper from '@/components/HorizontalLinearStepper';
-import PieChartGraph from '@/components/PieChartGraph';
-import { boardEnrollment } from '@/services/BoardEnrollmentServics';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import CohortSelectionSection from '@/components/CohortSelectionSection';
-import { ICohort, user } from '@/utils/Interfaces';
-import { toPascalCase } from '@/utils/Helper';
-import { showToastMessage } from '@/components/Toastify';
-import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import CenterSessionModal from '@/components/CenterSessionModal';
-import SortingModal from '@/components/SortingModal';
+import React, { useEffect, useState } from 'react';
 
 const BoardEnrollment = () => {
   const theme = useTheme<any>();
