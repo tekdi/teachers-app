@@ -124,6 +124,12 @@ export enum CoursePlannerConstants {
   BOARD = 'BOARD',
   MEDIUM = 'MEDIUM',
   GRADE = 'GRADE',
+
+  SUBJECT_SMALL = 'Subject',
+  STATES_SMALL = 'State',
+  BOARD_SMALL = 'Board',
+  MEDIUM_SMALL = 'Medium',
+  GRADE_SMALL = 'Grade',
 }
 
 export enum EventStatus {

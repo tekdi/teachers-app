@@ -1,37 +1,9 @@
 import Header from '@/components/Header';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import SearchIcon from '@mui/icons-material/Search';
-import {
-  Box,
-  FormControl,
-  Grid,
-  IconButton,
-  InputBase,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { getCoursePlanner } from '@/services/CoursePlannerService';
-import { CoursePlannerData } from '@/utils/Interfaces';
-import useCourseStore from '@/store/coursePlannerStore';
 import { getCohortSearch } from '@/services/CohortServices';
-import { CoursePlannerConstants } from '@/utils/app.constant';
-import useStore from '@/store/store';
-import { accessControl, frameworkId } from '../../app.config';
-import withAccessControl from '@/utils/hoc/withAccessControl';
-import NoDataFound from '@/components/common/NoDataFound';
-import taxonomyStore from '@/store/taxonomyStore';
 import coursePlannerStore from '@/store/coursePlannerStore';
+import useStore from '@/store/store';
+import taxonomyStore from '@/store/taxonomyStore';
+import { CoursePlannerConstants } from '@/utils/app.constant';
 import {
   filterAndMapAssociationsNew,
   findCommonAssociations,
@@ -39,6 +11,25 @@ import {
   getOptionsByCategory,
   toPascalCase,
 } from '@/utils/Helper';
+import withAccessControl from '@/utils/hoc/withAccessControl';
+import { CoursePlannerData, ICohort } from '@/utils/Interfaces';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import {
+  Box,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { accessControl, frameworkId } from '../../app.config';
+import CohortSelectionSection from '@/components/CohortSelectionSection';
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState('');
@@ -71,12 +62,19 @@ const CoursePlanner = () => {
   const [stateOption, setStateOption] = useState<any[]>([]);
   const [stateAssociations, setStateAssociations] = useState<any[]>([]);
   const setTaxonomySubject = taxonomyStore((state) => state.setTaxonomySubject);
+  const [classId, setClassId] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [cohortsData, setCohortsData] = useState<Array<ICohort>>([]);
+  const [manipulatedCohortData, setManipulatedCohortData] =
+    useState<Array<ICohort>>(cohortsData);
 
   const handleChange = (event: any) => {
     setValue(event.target.value);
     setType(event.target.value);
   };
-
 
   const addQueryParams = (newParams: any) => {
     // Merge existing query params with new ones
@@ -99,16 +97,23 @@ const CoursePlanner = () => {
   };
 
   useEffect(() => {
+    if (classId) {
+      setSelectedValue(classId);
+      addQueryParams({ center: classId });
+    }
+  }, [classId]);
+
+  useEffect(() => {
     const subjects = localStorage.getItem('overallCommonSubjects');
     if (subjects) {
       try {
         const parsedData = JSON.parse(subjects);
         setSubjects(parsedData);
       } catch (error) {
-        console.error("Failed to parse subjects from localStorage:", error);
+        console.error('Failed to parse subjects from localStorage:', error);
       }
     } else {
-      console.log("No subjects found in localStorage.");
+      console.log('No subjects found in localStorage.');
       setSubjects([]);
     }
   }, []);
@@ -126,6 +131,13 @@ const CoursePlanner = () => {
 
   useEffect(() => {
     const fetchCohortSearchResults = async () => {
+
+      setLoading(true);
+      setState('');
+      setBoard('');
+      setMedium('');
+      setGrade('');
+
       try {
         const data = await getCohortSearch({
           cohortId: selectedValue,
@@ -162,6 +174,8 @@ const CoursePlanner = () => {
           //   }
           // });
 
+         
+
           stringFields.forEach(({ label, setter }) => {
             const field = cohortDetails.customFields.find(
               (field: any) => field.label === label
@@ -172,6 +186,10 @@ const CoursePlanner = () => {
             }
           });
         }
+
+        
+        
+        setLoading(false);
       } catch (error) {
         console.error('Failed to fetch cohort search results:', error);
       }
@@ -179,6 +197,7 @@ const CoursePlanner = () => {
 
     fetchCohortSearchResults();
   }, [selectedValue]);
+
 
   useEffect(() => {
     const fetchTaxonomyResults = async () => {
@@ -459,7 +478,10 @@ const CoursePlanner = () => {
             const overallCommonSubjects =
               await findOverallCommonSubjects(arrays);
 
-            localStorage.setItem('overallCommonSubjects', JSON.stringify(overallCommonSubjects));
+            localStorage.setItem(
+              'overallCommonSubjects',
+              JSON.stringify(overallCommonSubjects)
+            );
             setSubjects(overallCommonSubjects);
           }
         }
@@ -470,6 +492,19 @@ const CoursePlanner = () => {
 
     fetchTaxonomyResults();
   }, [value, selectedValue]);
+
+  const isStateEmpty = !tStore.state;
+  const isBoardEmpty = !tStore.board;
+  const isMediumEmpty = !tStore.medium;
+  const isGradeEmpty = !tStore.grade;
+
+  const emptyFields = [];
+  if (isStateEmpty) emptyFields.push(CoursePlannerConstants.STATES_SMALL);
+  if (isBoardEmpty) emptyFields.push(CoursePlannerConstants.BOARD_SMALL);
+  if (isMediumEmpty) emptyFields.push(CoursePlannerConstants.MEDIUM_SMALL);
+  if (isGradeEmpty) emptyFields.push(CoursePlannerConstants.GRADE_SMALL);
+
+  const anyFieldsEmpty = emptyFields.length > 0;
 
   return (
     <Box minHeight="100vh">
@@ -491,7 +526,7 @@ const CoursePlanner = () => {
         </Typography>
       </Box>
 
-      <Grid sx={{ display: 'flex', alignItems: 'center' }} container>
+      {/* <Grid sx={{ display: 'flex', alignItems: 'center' }} container>
         <Grid item md={6} xs={12}>
           <Box sx={{ mt: 2, px: '20px' }}>
             <Box sx={{ flexBasis: '70%' }}>
@@ -534,52 +569,60 @@ const CoursePlanner = () => {
             </Box>
           </Box>
         </Grid>
-        <Grid item md={6} xs={12}>
-          {/* <Box sx={{ mt: 2, px: '20px' }}>
-          <Paper
-            component="form"
-            className="100"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              borderRadius: '100px',
-              background: theme.palette.warning.A700,
-              boxShadow: 'none',
-            }}
-          >
-            <InputBase
-              sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
-              placeholder="Search.."
-              inputProps={{ 'aria-label': 'search student' }}
-            />
-            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-        </Box> */}
+      </Grid> */}
+
+      <Grid container>
+        <Grid item xs={12} md={6}>
+          <Box sx={{ mt: 2, px: '20px', width: '100%' }}>
+            <Box className="w-100 d-md-flex">
+              <CohortSelectionSection
+                classId={classId}
+                setClassId={setClassId}
+                userId={userId}
+                setUserId={setUserId}
+                isAuthenticated={isAuthenticated}
+                setIsAuthenticated={setIsAuthenticated}
+                loading={loading}
+                setLoading={setLoading}
+                cohortsData={cohortsData}
+                setCohortsData={setCohortsData}
+                manipulatedCohortData={manipulatedCohortData}
+                setManipulatedCohortData={setManipulatedCohortData}
+                isManipulationRequired={false}
+                isCustomFieldRequired={true}
+                showFloatingLabel={true}
+                showDisabledDropDown={true}
+              />
+            </Box>
+          </Box>
         </Grid>
+        <Grid item xs={12} md={6}>
+  <Box sx={{ mt: 2, px: '20px', width: '100%' }}>
+    <FormControl sx={{ width: '100%' }}>
+      <InputLabel id="course-type-select-label">Course Type</InputLabel>
+      <Select
+        labelId="course-type-select-label"
+        id="course-type-select"
+        value={tStore?.type}
+        onChange={handleChange}
+        label="Course Type"
+        sx={{ fontSize: '14px' }}
+        disabled={!tStore.state || !tStore.board || !tStore.medium || !tStore.grade} // Disable if any field is empty
+      >
+        <MenuItem value={'Foundation Course'}>
+          {t('COURSE_PLANNER.FOUNDATION_COURSE')}
+        </MenuItem>
+        <MenuItem value={'Main Course'}>
+          {t('COURSE_PLANNER.MAIN_COURSE')}
+        </MenuItem>
+      </Select>
+    </FormControl>
+  </Box>
+</Grid>
+
       </Grid>
 
       <Box sx={{ m: 3 }}>
-        <FormControl sx={{ width: '100%' }}>
-          <InputLabel id="course-type-select-label">Course Type</InputLabel>
-          <Select
-            labelId="course-type-select-label"
-            id="course-type-select"
-            value={tStore?.type}
-            onChange={handleChange}
-            label="Course Type"
-            sx={{ fontSize: '14px' }}
-          >
-            <MenuItem value={'Foundation Course'}>
-              {t('COURSE_PLANNER.FOUNDATION_COURSE')}
-            </MenuItem>
-            <MenuItem value={'Main Course'}>
-              {t('COURSE_PLANNER.MAIN_COURSE')}
-            </MenuItem>
-          </Select>
-        </FormControl>
-
         <Box sx={{ mt: 2 }}>
           <Box
             sx={{
@@ -589,48 +632,55 @@ const CoursePlanner = () => {
               marginBottom: '20px',
             }}
           >
-            <Grid container>
-              {subjects?.length > 0 ? (
-                subjects.map((item: any) => (
-                  <Grid key={item.code} item xs={12} sm={6} md={4}>
+             <Grid container>
+      {anyFieldsEmpty ? (
+        <Box sx={{ ml: 2, p: 2 }}>
+          <Typography variant="h2">
+            {`No assigned ${emptyFields.join(', ')}`}
+          </Typography>
+        </Box>
+      ) : (
+        subjects?.length > 0 ? (
+          subjects.map((item:any) => (
+            <Grid key={item.code} item xs={12} sm={6} md={4}>
+              <Box
+                sx={{
+                  border: `1px solid ${theme.palette.warning.A100}`,
+                  borderRadius: '8px',
+                  padding: '12px',
+                  cursor: 'pointer',
+                  margin: '14px',
+                  background: theme.palette.warning['A400'],
+                }}
+                onClick={() => {
+                  setTaxonomySubject(item.name);
+                  router.push({
+                    pathname: '/course-planner-detail',
+                  });
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Box>
                     <Box
                       sx={{
-                        border: `1px solid ${theme.palette.warning.A100}`,
-                        borderRadius: '8px',
-                        padding: '12px',
-                        cursor: 'pointer',
-                        margin: '14px',
-                        background: theme.palette.warning['A400'],
-                      }}
-                      onClick={() => {
-                        setTaxonomySubject(item.name);
-                        router.push({
-                          pathname: '/course-planner-detail',
-                        });
+                        display: 'flex',
+                        gap: '15px',
+                        alignItems: 'center',
                       }}
                     >
                       <Box
                         sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
+                          position: 'relative',
+                          display: 'inline-flex',
                         }}
                       >
-                        <Box>
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              gap: '15px',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <Box
-                              sx={{
-                                position: 'relative',
-                                display: 'inline-flex',
-                              }}
-                            >
-                              {/* <Box sx={{ width: '40px', height: '40px' }}>
+                      {/* <Box sx={{ width: '40px', height: '40px' }}>
                                 <CircularProgressbar
                                   value={item.circular || 0}
                                   strokeWidth={10}
@@ -668,33 +718,34 @@ const CoursePlanner = () => {
                               </Box> */}
                             </Box>
 
-                            <Box
-                              sx={{
-                                fontSize: '16px',
-                                color: theme.palette.warning['300'],
-                              }}
-                            >
-                              {item.name}
-                            </Box>
-                          </Box>
-                        </Box>
-                        <Box>
-                          <KeyboardArrowRightIcon
-                            sx={{ color: theme.palette.warning['300'] }}
-                          />
-                        </Box>
+                      <Box
+                        sx={{
+                          fontSize: '16px',
+                          color: theme.palette.warning['300'],
+                        }}
+                      >
+                        {item.name}
                       </Box>
                     </Box>
-                  </Grid>
-                ))
-              ) : (
-                <Box sx={{ ml: 2, p: 2 }}>
-                  <Typography variant="h2">
-                    {t('ASSESSMENTS.NO_DATA_FOUND')}
-                  </Typography>
+                  </Box>
+                  <Box>
+                    <KeyboardArrowRightIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  </Box>
                 </Box>
-              )}
+              </Box>
             </Grid>
+          ))
+        ) : (
+          <Box sx={{ ml: 2, p: 2 }}>
+            <Typography variant="h2">
+              {t('ASSESSMENTS.NO_SUBJECT_FOUND')}
+            </Typography>
+          </Box>
+        )
+      )}
+    </Grid>
           </Box>
         </Box>
       </Box>

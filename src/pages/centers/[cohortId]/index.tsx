@@ -150,6 +150,7 @@ const CohortPage = () => {
 
   const handleCloseSchedule = () => {
     setEventCreated(true);
+    handleClose();
   };
 
   useEffect(() => {
