@@ -658,7 +658,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
             before: beforeDate,
           },
           cohortId: classId,
-          createdBy: userId,
           status: ['live'],
         };
         const response = await getEventList({ limit, offset, filters });
@@ -674,7 +673,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         if (response?.events.length > 0) {
           response?.events.forEach((event: any) => {
             console.log('myCohortList', myCohortList);
-            const cohort = myCohortList?.[0]?.childData?.find(
+            const cohort = myCohortList?.find(
               (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
             );
             if (cohort && event.isRecurring) {
@@ -723,7 +722,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
             before: beforeDate,
           },
           cohortId: classId,
-          createdBy: userId,
           status: ['live'],
         };
         const response = await getEventList({ limit, offset, filters });
@@ -739,7 +737,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         if (response?.events.length > 0) {
           response?.events.forEach((event: any) => {
             console.log('myCohortList', myCohortList);
-            const cohort = myCohortList?.[0]?.childData?.find(
+            const cohort = myCohortList?.find(
               (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
             );
 
