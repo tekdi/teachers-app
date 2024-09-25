@@ -894,13 +894,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           </Box>
 
                           <Box
-                            className="calenderTitle flex-center joyride-step-3 ps-md-ab right-md-20 top-md-185"
+                            className="calenderTitle flex-center joyride-step-3 ps-md-ab right-md-20"
                             display={'flex'}
                             sx={{
                               cursor: 'pointer',
                               color: theme.palette.secondary.main,
                               gap: '4px',
                               opacity: classId === 'all' ? 0.5 : 1,
+                              '@media (max-width: 900px)': {
+                                top:
+                                  role === Role.TEAM_LEADER ? '210px' : '185px',
+                              },
                             }}
                             onClick={viewAttendanceHistory}
                           >

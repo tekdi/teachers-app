@@ -373,9 +373,9 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                           sx={{
                             m: 0,
                             width: '100%',
-                            '@media (max-width: 700px)': {
-                              width: '50%',
-                            },
+                            // '@media (max-width: 700px)': {
+                            //   width: '50%',
+                            // },
                           }}
                         >
                           <Select
@@ -484,7 +484,11 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     color: theme.palette.warning['200'],
                                     width: '100%',
                                     marginBottom: '0rem',
-                                    '@media (max-width: 700px)': {
+                                    marginRight: '10px',
+                                    '@media (max-width: 902px)': {
+                                      width: '60%',
+                                    },
+                                    '@media (max-width: 702px)': {
                                       width: '50%',
                                     },
                                   }
