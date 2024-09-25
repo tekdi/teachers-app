@@ -66,7 +66,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
     if (formResponse) {
       const updatedFormResponse = removeHiddenFields(formResponse);
       if (updatedFormResponse) {
-        let { schema, uiSchema } = GenerateSchemaAndUiSchema(
+        const { schema, uiSchema } = GenerateSchemaAndUiSchema(
           updatedFormResponse,
           t
         );
