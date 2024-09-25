@@ -57,7 +57,12 @@ import calendar from '../assets/images/calendar.svg';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { QueryKeys, Role, Telemetry } from '@/utils/app.constant';
+import {
+  QueryKeys,
+  Role,
+  Telemetry,
+  cohortHierarchy,
+} from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import { getEventList } from '@/services/EventService';
 import SessionCard from '@/components/SessionCard';
@@ -657,7 +662,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             after: afterDate,
             before: beforeDate,
           },
-          cohortId: classId,
+          // cohortId: classId,
           createdBy: userId,
           status: ['live'],
         };
@@ -671,18 +676,32 @@ const Dashboard: React.FC<DashboardProps> = () => {
         // });
 
         const sessionArray: any[] = [];
+        const extraSessionArray: any[] = [];
         if (response?.events.length > 0) {
           response?.events.forEach((event: any) => {
-            console.log('myCohortList', myCohortList);
-            const cohort = myCohortList?.[0]?.childData?.find(
-              (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
-            );
-            if (cohort && event.isRecurring) {
+            // console.log('myCohortList', myCohortList);
+            // let cohortList;
+            // if (myCohortList.length > 0) {
+            //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
+            //     cohortList = myCohortList[0].childData;
+            //   } else {
+            //     cohortList = myCohortList;
+            //   }
+            // }
+
+            // const cohort = cohortList?.find(
+            //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
+            // );
+            if (event.isRecurring) {
               sessionArray.push(event);
+            }
+            if (!event.isRecurring) {
+              extraSessionArray.push(event);
             }
           });
         }
         setSessions(sessionArray);
+        setExtraSessions(extraSessionArray);
         setEventUpdated(false);
         setEventDeleted(false);
       } catch (error) {
@@ -702,71 +721,81 @@ const Dashboard: React.FC<DashboardProps> = () => {
     eventDeleted,
   ]);
 
-  useEffect(() => {
-    const getExtraSessionsData = async () => {
-      try {
-        const date = new Date();
-        const startDate = shortDateFormat(new Date());
-        const lastDate = new Date(
-          date.setDate(date.getDate() + modifyAttendanceLimit)
-        );
-        const endDate = shortDateFormat(lastDate);
-        const afterDate = getAfterDate(timeTableDate);
-        const beforeDate = getBeforeDate(timeTableDate);
-        const limit = 0;
-        const offset = 0;
-        const filters = {
-          startDate: {
-            after: afterDate,
-          },
-          endDate: {
-            before: beforeDate,
-          },
-          cohortId: classId,
-          createdBy: userId,
-          status: ['live'],
-        };
-        const response = await getEventList({ limit, offset, filters });
+  // useEffect(() => {
+  //   const getExtraSessionsData = async () => {
+  //     try {
+  //       const date = new Date();
+  //       const startDate = shortDateFormat(new Date());
+  //       const lastDate = new Date(
+  //         date.setDate(date.getDate() + modifyAttendanceLimit)
+  //       );
+  //       const endDate = shortDateFormat(lastDate);
+  //       const afterDate = getAfterDate(timeTableDate);
+  //       const beforeDate = getBeforeDate(timeTableDate);
+  //       const limit = 0;
+  //       const offset = 0;
+  //       const filters = {
+  //         startDate: {
+  //           after: afterDate,
+  //         },
+  //         endDate: {
+  //           before: beforeDate,
+  //         },
+  //         createdBy: userId,
+  //         // cohortId: classId,
+  //         status: ['live'],
+  //       };
+  //       const response = await getEventList({ limit, offset, filters });
 
-        // check if cohort's membership is active
+  //       // check if cohort's membership is active
 
-        // const myCohortList = await queryClient.fetchQuery({
-        //   queryKey: [QueryKeys.MY_COHORTS, userId],
-        //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
-        // });
+  //       // const myCohortList = await queryClient.fetchQuery({
+  //       //   queryKey: [QueryKeys.MY_COHORTS, userId],
+  //       //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
+  //       // });
 
-        const extraSessionArray: any[] = [];
-        if (response?.events.length > 0) {
-          response?.events.forEach((event: any) => {
-            console.log('myCohortList', myCohortList);
-            const cohort = myCohortList?.[0]?.childData?.find(
-              (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
-            );
+  //       const extraSessionArray: any[] = [];
+  //       if (response?.events.length > 0) {
+  //         response?.events.forEach((event: any) => {
+  //           console.log('myCohortList', myCohortList);
 
-            if (cohort && !event.isRecurring) {
-              extraSessionArray.push(event);
-            }
-          });
-        }
-        setExtraSessions(extraSessionArray);
-        setEventUpdated(false);
-        setEventDeleted(false);
-      } catch (error) {
-        setExtraSessions([]);
-      }
-    };
+  //           // let cohortList;
+  //           // if (myCohortList.length > 0) {
+  //           //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
+  //           //     cohortList = myCohortList[0].childData;
+  //           //   } else {
+  //           //     cohortList = myCohortList;
+  //           //   }
+  //           // }
 
-    if (userId && myCohortList) {
-      getExtraSessionsData();
-    }
-  }, [
-    timeTableDate,
-    userId,
-    myCohortList,
-    classId,
-    eventUpdated,
-    eventDeleted,
-  ]);
+  //           // const cohort = cohortList?.find(
+  //           //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
+  //           // );
+
+  //           if (!event.isRecurring) {
+  //             extraSessionArray.push(event);
+  //           }
+  //         });
+  //       }
+  //       setExtraSessions(extraSessionArray);
+  //       setEventUpdated(false);
+  //       setEventDeleted(false);
+  //     } catch (error) {
+  //       setExtraSessions([]);
+  //     }
+  //   };
+
+  //   if (userId && myCohortList) {
+  //     getExtraSessionsData();
+  //   }
+  // }, [
+  //   timeTableDate,
+  //   userId,
+  //   myCohortList,
+  //   classId,
+  //   eventUpdated,
+  //   eventDeleted,
+  // ]);
 
   const handleEventDeleted = () => {
     setEventDeleted(true);
@@ -1018,7 +1047,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   currentAttendance !== 'futureDate' && (
                                     <Typography
                                       sx={{
-                                        color: theme.palette.warning['300'],
+                                        color: theme.palette.warning['A400'],
                                       }}
                                       fontSize={'0.8rem'}
                                       // variant="h6"
@@ -1303,7 +1332,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     newWidth={'100%'}
                   />
                 </Box>
-                <Box mt={3} px="18px">
+                <Box mt={2} px="18px">
                   <Grid container spacing={2}>
                     {sessions?.map((item) => (
                       <Grid xs={12} sm={6} md={6} key={item.id} item>
@@ -1351,8 +1380,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       days: eventDaysLimit,
                     })}
                   </Box>
-                  <Box mt={3} px="18px">
-                    <Grid container spacing={1}>
+                  <Box sx={{ mt: 1.5, mb: 2 }}>
+                    <Grid container spacing={2}>
                       {extraSessions?.map((item) => (
                         <Grid xs={12} sm={6} md={6} key={item.id} item>
                           <SessionCard

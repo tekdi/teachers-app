@@ -405,7 +405,7 @@
     "EXTRA_OFFLINE": "Extra offline",
     "ENTER_VALID_MEETING_LINK": "Please enter a valid Zoom or Google Meet link.",
     "ZOOM": "Zoom",
-    "GOOGLE_MEET": "GOOGLE_MEET",
+    "GOOGLEMEET": "GoogleMeet",
     "SET_UP": "Set-Up",
     "EDIT_THIS_SESSION": "Edit this session",
     "EDIT_FOLLOWING_SESSIONS": "Edit this and following sessions",
@@ -556,7 +556,9 @@
     "OVERALL_SCORE": "Overall Score",
     "ASSESSMENT_NOT_STARTED_YET": "Assessment not started yet",
     "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} out of {{totalCount}} completed",
-    "NO_SUBTOPIC_SELECTED": "No Subtopic selected"
+    "NO_SUBTOPIC_SELECTED": "No Subtopic selected",
+    "NO_SUBJECT_FOUND": "No Subject found",
+    "NO_ASSIGNED": "No assigned"
   },
   "BOARD_ENROLMENT": {
     "BOARD_ENROLLMENT": "Board Enrollment",

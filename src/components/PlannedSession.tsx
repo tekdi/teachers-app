@@ -586,7 +586,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const value = event?.target?.value;
     setLink(value);
 
-    const zoomLinkPattern = /^(https?:\/\/)?(www\.)?zoom\.us\/j\/\d+$/;
+    const zoomLinkPattern =
+      /^https?:\/\/([a-z0-9]+\.)?zoom\.us\/(j|s)\/\d+(\?pwd=[\w-]+)?$/;
+
     const googleMeetLinkPattern =
       /^(https?:\/\/)?(meet\.google\.com\/[a-zA-Z0-9-]+)$/;
 

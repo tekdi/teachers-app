@@ -1,7 +1,7 @@
 import { SessionsCardProps } from '@/utils/Interfaces';
 import { Box, Snackbar, Typography } from '@mui/material';
 
-import { convertUTCToIST } from '@/utils/Helper';
+import { convertUTCToIST, toPascalCase } from '@/utils/Helper';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlined from '@mui/icons-material/EditOutlined';
@@ -160,7 +160,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       sx={{
         border: `1px solid ${theme.palette.warning['A100']}`,
         borderRadius: '8px',
-        marginBottom: '38px',
+        // marginBottom: '38px',
       }}
     >
       <Box
@@ -178,12 +178,13 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
               fontWeight={'400'}
               textAlign={'left'}
               fontSize={'16px'}
+              className="one-line-text"
             >
               {subject && sessionTitle
-                ? `${subject} - ${sessionTitle}`
+                ? `${toPascalCase(subject)} - ${sessionTitle}`
                 : subject
-                  ? subject
-                  : sessionTitle}{' '}
+                  ? toPascalCase(subject)
+                  : toPascalCase(sessionTitle)}{' '}
             </Typography>
           </Box>
           <Typography
@@ -193,6 +194,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             display={'flex'}
             alignItems={'center'}
             gap={'4px'}
+            className="one-line-text"
           >
             {data?.isRecurring === false && (
               <>
@@ -232,6 +234,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             width: '100%',
             cursor: 'pointer',
           }}
+          className="one-line-text"
         >
           {data?.meetingDetails?.url}
         </Box>
