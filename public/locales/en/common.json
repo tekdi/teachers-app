@@ -166,7 +166,7 @@
     "PLEASE_RESET_YOUR_PASSWORD": "Please reset your password to ensure your account is secure",
     "DO_IT_LATER": "I’ll do it later",
     "SUCCESSFULLY_RESET": "Your password has been successfully reset",
-    "LINK_EXPIRED": "Link Expired",
+    "LINK_EXPIRED": "Link has been expired",
     "WE_SEND_AN_EMAIL": "We sent an email to {{maskEmail}} with a link to reset your password",
     "CURRENT_PASSWORD_NOT": "Current Password Not Matched",
     "NO_USERNAME": "Username not found",
