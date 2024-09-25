@@ -57,7 +57,12 @@ import calendar from '../assets/images/calendar.svg';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { QueryKeys, Role, Telemetry } from '@/utils/app.constant';
+import {
+  QueryKeys,
+  Role,
+  Telemetry,
+  cohortHierarchy,
+} from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import { getEventList } from '@/services/EventService';
 import SessionCard from '@/components/SessionCard';
@@ -673,7 +678,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
         if (response?.events.length > 0) {
           response?.events.forEach((event: any) => {
             console.log('myCohortList', myCohortList);
-            const cohort = myCohortList?.find(
+            let cohortList;
+            if (myCohortList.length > 0) {
+              if (myCohortList[0].type === cohortHierarchy.BLOCK) {
+                cohortList = myCohortList[0].childData;
+              } else {
+                cohortList = myCohortList;
+              }
+            }
+
+            const cohort = cohortList?.find(
               (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
             );
             if (cohort && event.isRecurring) {
@@ -737,7 +751,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
         if (response?.events.length > 0) {
           response?.events.forEach((event: any) => {
             console.log('myCohortList', myCohortList);
-            const cohort = myCohortList?.find(
+
+            let cohortList;
+            if (myCohortList.length > 0) {
+              if (myCohortList[0].type === cohortHierarchy.BLOCK) {
+                cohortList = myCohortList[0].childData;
+              } else {
+                cohortList = myCohortList;
+              }
+            }
+
+            const cohort = cohortList?.find(
               (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
             );
 
