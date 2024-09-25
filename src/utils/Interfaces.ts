@@ -483,7 +483,7 @@ export interface FacilitatorDrawerProps {
   ) => (event?: React.KeyboardEvent | React.MouseEvent) => void;
   drawerState: { bottom: boolean };
   onPrimaryClick?: () => void;
-  selectedCount?: any
+  selectedCount?: any;
 }
 
 export interface CoursePlannerCardsProps {
@@ -505,6 +505,7 @@ export interface eventFilters {
   title?: string;
   status?: string[];
   cohortId?: string;
+  createdBy?: string;
 }
 
 export interface dateRange {
