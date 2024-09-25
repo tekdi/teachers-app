@@ -550,7 +550,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const viewTimeTable = () => {
     if (classId !== 'all') {
       router.push(
-        `centers/${classId}/events/${getMonthName(timeTableDate)?.toLowerCase()}`
+        `centers/${classId}/events/${getMonthName(timeTableDate)?.toLowerCase()}?fromDashboard=true`
       );
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
@@ -653,55 +653,58 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     const getSessionsData = async () => {
       try {
-        const afterDate = getAfterDate(timeTableDate);
-        const beforeDate = getBeforeDate(timeTableDate);
-        const limit = 0;
-        const offset = 0;
-        const filters = {
-          date: {
-            after: afterDate,
-            before: beforeDate,
-          },
-          // cohortId: classId,
-          createdBy: userId,
-          status: ['live'],
-        };
-        const response = await getEventList({ limit, offset, filters });
+        if (userId !== '' && userId !== null) {
+          const afterDate = getAfterDate(timeTableDate);
+          const beforeDate = getBeforeDate(timeTableDate);
+          const limit = 0;
+          const offset = 0;
+          const filters = {
+            date: {
+              after: afterDate,
+              before: beforeDate,
+            },
+            // cohortId: classId,
+            createdBy: userId,
+            status: ['live'],
+          };
 
-        // check if cohort's membership is active
+          const response = await getEventList({ limit, offset, filters });
 
-        // const myCohortList = await queryClient.fetchQuery({
-        //   queryKey: [QueryKeys.MY_COHORTS, userId],
-        //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
-        // });
+          // check if cohort's membership is active
 
-        const sessionArray: any[] = [];
-        const extraSessionArray: any[] = [];
-        if (response?.events.length > 0) {
-          response?.events.forEach((event: any) => {
-            // console.log('myCohortList', myCohortList);
-            // let cohortList;
-            // if (myCohortList.length > 0) {
-            //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
-            //     cohortList = myCohortList[0].childData;
-            //   } else {
-            //     cohortList = myCohortList;
-            //   }
-            // }
+          // const myCohortList = await queryClient.fetchQuery({
+          //   queryKey: [QueryKeys.MY_COHORTS, userId],
+          //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
+          // });
 
-            // const cohort = cohortList?.find(
-            //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
-            // );
-            if (event.isRecurring) {
-              sessionArray.push(event);
-            }
-            if (!event.isRecurring) {
-              extraSessionArray.push(event);
-            }
-          });
+          const sessionArray: any[] = [];
+          const extraSessionArray: any[] = [];
+          if (response?.events.length > 0) {
+            response?.events.forEach((event: any) => {
+              // console.log('myCohortList', myCohortList);
+              // let cohortList;
+              // if (myCohortList.length > 0) {
+              //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
+              //     cohortList = myCohortList[0].childData;
+              //   } else {
+              //     cohortList = myCohortList;
+              //   }
+              // }
+
+              // const cohort = cohortList?.find(
+              //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
+              // );
+              if (event.isRecurring) {
+                sessionArray.push(event);
+              }
+              if (!event.isRecurring) {
+                extraSessionArray.push(event);
+              }
+            });
+          }
+          setSessions(sessionArray);
+          setExtraSessions(extraSessionArray);
         }
-        setSessions(sessionArray);
-        setExtraSessions(extraSessionArray);
         setEventUpdated(false);
         setEventDeleted(false);
       } catch (error) {
