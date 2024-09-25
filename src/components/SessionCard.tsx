@@ -15,6 +15,7 @@ import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import SensorsTwoToneIcon from '@mui/icons-material/SensorsTwoTone';
 import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
 import { EventStatus } from '@/utils/app.constant';
+import { usePathname } from 'next/navigation';
 const SessionsCard: React.FC<SessionsCardProps> = ({
   data,
   showCenterName = false,
@@ -28,6 +29,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [eventDeleted, setEventDeleted] = React.useState(false);
@@ -155,12 +157,14 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const subject = data?.metadata?.subject;
   const sessionTitle = data?.shortDescription;
 
+  const center = pathname.includes('/centers');
+
   return (
     <Box
       sx={{
         border: `1px solid ${theme.palette.warning['A100']}`,
         borderRadius: '8px',
-        // marginBottom: '38px',
+        marginBottom: center ? '38px' : 'unset',
       }}
     >
       <Box
@@ -192,7 +196,11 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             textAlign={'left'}
             fontSize={'14px'}
             display={'flex'}
-            alignItems={'center'}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              marginTop: '4px',
+            }}
             gap={'4px'}
             className="one-line-text"
           >
@@ -203,7 +211,12 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             )}
             {startTime} - {endTime}
           </Typography>
-          <Typography fontWeight={'400'} textAlign={'left'} fontSize={'14px'}>
+          <Typography
+            className="one-line-text"
+            fontWeight={'400'}
+            textAlign={'left'}
+            fontSize={'14px'}
+          >
             {showCenterName ? data?.location : data?.metadata?.teacherName}
           </Typography>
         </Box>
@@ -220,6 +233,8 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           display: 'flex',
           justifyContent: 'space-between',
           gap: '30px',
+          minHeight: '50px',
+          width: '100%',
         }}
         onClick={handleCopyUrl}
       >

@@ -1328,7 +1328,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 <Box mt={2} px="18px">
                   <Grid container spacing={2}>
                     {sessions?.map((item) => (
-                      <Grid xs={12} sm={6} md={6} key={item.id} item>
+                      <Grid xs={12} sm={6} md={4} key={item.id} item>
                         <SessionCard
                           data={item}
                           showCenterName={true}
@@ -1376,7 +1376,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Box sx={{ mt: 1.5, mb: 2 }}>
                     <Grid container spacing={2}>
                       {extraSessions?.map((item) => (
-                        <Grid xs={12} sm={6} md={6} key={item.id} item>
+                        <Grid xs={12} sm={6} md={4} key={item.id} item>
                           <SessionCard
                             data={item}
                             showCenterName={true}
@@ -1403,7 +1403,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   {extraSessions && extraSessions?.length === 0 && (
                     <Box
                       className="fs-12 fw-400 italic"
-                      sx={{ color: theme.palette.warning['300'] }}
+                      sx={{
+                        color: theme.palette.warning['300'],
+                        marginBottom: '12px',
+                      }}
                     >
                       {t('COMMON.NO_SESSIONS_SCHEDULED')}
                     </Box>
