@@ -13,12 +13,12 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
   toggleDrawer,
   drawerState,
   onPrimaryClick,
-  selectedCount, 
+  selectedCount,
 }) => {
   const theme = useTheme<any>();
   const tStore = taxonomyStore();
   const { t } = useTranslation();
-  
+
   return (
     <div>
       <SwipeableDrawer
@@ -59,16 +59,44 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
           >
             {tStore?.center}
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-            {/* Show selected count */}
-            <Box sx={{ color: '#fff' }}>
-              {selectedCount > 0
-                ? `${selectedCount} subtopics selected`
-                : `${t('ASSESSMENTS.NO_SUBTOPIC_SELECTED')}`}
-            </Box>
+          {/* Show selected count */}
+          <Box
+            sx={{
+              color: theme?.palette?.warning['A400'],
+              fontSize: '14px',
+              fontWeight: '400',
+              '@media (min-width: 500px)': {
+                textAlign: 'center',
+              },
+            }}
+          >
+            {selectedCount > 0
+              ? `${selectedCount} subtopics selected`
+              : `${t('ASSESSMENTS.NO_SUBTOPIC_SELECTED')}`}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '10px',
+              '@media (min-width: 500px)': {
+                justifyContent: 'center',
+              },
+              mt: 1.5,
+            }}
+          >
             {secondary && (
               <Box onClick={() => toggleDrawer(false)()}>
-                <Button variant="outlined">{secondary}</Button>
+                <Button
+                  sx={{
+                    border: `1px solid ${theme?.palette?.warning['A400']}`,
+                    color: theme?.palette?.warning['A400'],
+                    width: '121px',
+                  }}
+                  variant="outlined"
+                >
+                  {secondary}
+                </Button>
               </Box>
             )}
             {primary && (
@@ -77,6 +105,7 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
                   variant="contained"
                   color="primary"
                   onClick={onPrimaryClick}
+                  sx={{ width: '199px' }}
                 >
                   {primary}
                 </Button>
