@@ -1142,17 +1142,18 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           )}
 
           <Box>
-            <Box
-              padding="0.5rem"
-              style={{
-                backgroundColor: theme?.palette?.primary['light'],
-              }}
-            >
-              <Typography variant="h2" component="h2">
-                {(!StateName || !medium || !grade || !board) &&
-                  t('CENTER_SESSION.BOARD_MEDIUM_GRADE_NOT_ASSIGNED')}
-              </Typography>
-            </Box>
+            {(!StateName || !medium || !grade || !board) && (
+              <Box
+                padding="0.5rem"
+                style={{
+                  backgroundColor: theme?.palette?.primary['light'],
+                }}
+              >
+                <Typography variant="h2" component="h2">
+                  t('CENTER_SESSION.BOARD_MEDIUM_GRADE_NOT_ASSIGNED')
+                </Typography>
+              </Box>
+            )}
             <SessionMode
               mode={editSession ? (mode ?? '') : (block?.sessionMode ?? '')}
               handleSessionModeChange={(e) =>
