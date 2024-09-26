@@ -62,10 +62,14 @@ const CoursePlannerDetail = () => {
   const [statusData, setStatusData] = useState<any>();
 
   const [completionPercentage, setCompletionPercentage] = useState(0);
-  const [currentSubtopic, setCurrentSubtopic] = useState<{ topid: any; subid: any } | null>(null);
-  const [selectedSubtopics, setSelectedSubtopics] = useState<{topid: string, subid: string}[]>([]);
+  const [currentSubtopic, setCurrentSubtopic] = useState<{
+    topid: any;
+    subid: any;
+  } | null>(null);
+  const [selectedSubtopics, setSelectedSubtopics] = useState<
+    { topid: string; subid: string }[]
+  >([]);
   const [selectedCount, setSelectedCount] = React.useState(0);
-
 
   const fetchCourseDetails = useCallback(async () => {
     try {
@@ -102,25 +106,29 @@ const CoursePlannerDetail = () => {
     const calculateProgress = (tasks: any[]) => {
       let totalSubtasks = 0;
       let completedSubtasks = 0;
-  
-      tasks.forEach((task: any) => {     
+
+      tasks.forEach((task: any) => {
         if (task.status === AssessmentStatus.COMPLETED_SMALL) {
           completedSubtasks += 1;
         }
-  
+
         const subtasks = task.children || [];
         totalSubtasks += subtasks.length;
-        completedSubtasks += subtasks.filter((subtask: any) => subtask.status === AssessmentStatus.COMPLETED_SMALL).length;
+        completedSubtasks += subtasks.filter(
+          (subtask: any) => subtask.status === AssessmentStatus.COMPLETED_SMALL
+        ).length;
       });
-  
+
       const totalTasks = tasks.length;
-      const totalItems = totalTasks + totalSubtasks; 
-      const completedItems = completedSubtasks; 
-  
-      const completionPercentage = totalItems ? Number(((completedItems / totalItems) * 100).toFixed()) : 0;
+      const totalItems = totalTasks + totalSubtasks;
+      const completedItems = completedSubtasks;
+
+      const completionPercentage = totalItems
+        ? Number(((completedItems / totalItems) * 100).toFixed())
+        : 0;
       setCompletionPercentage(completionPercentage);
     };
-  
+
     if (userProjectDetails?.tasks?.length) {
       calculateProgress(userProjectDetails.tasks);
     }
@@ -198,21 +206,20 @@ const CoursePlannerDetail = () => {
   };
 
   const toggleDrawer =
-  (open: boolean, selectedCount: number = 0) =>
-  (event?: React.KeyboardEvent | React.MouseEvent) => {
-    if (
-      event &&
-      event.type === 'keydown' &&
-      ((event as React.KeyboardEvent).key === 'Tab' ||
-        (event as React.KeyboardEvent).key === 'Shift')
-    ) {
-      return;
-    }
-    setDrawerState({ ...drawerState, bottom: open });
-    setIsDrawerOpen(open); 
-    setSelectedCount(selectedCount);
-  };
-
+    (open: boolean, selectedCount: number = 0) =>
+    (event?: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
+      setDrawerState({ ...drawerState, bottom: open });
+      setIsDrawerOpen(open);
+      setSelectedCount(selectedCount);
+    };
 
   const handleCloseModel = () => {
     setModalOpen(false);
@@ -229,34 +236,39 @@ const CoursePlannerDetail = () => {
     return months[date.getMonth()];
   };
 
-  const markMultipleStatuses = async (data: any, selectedSubtopics: {topid: string, subid: string}[]) => {
+  const markMultipleStatuses = async (
+    data: any,
+    selectedSubtopics: { topid: string; subid: string }[]
+  ) => {
     const updatedData = { ...data };
-  
+
     selectedSubtopics.forEach(({ topid, subid }) => {
-      updatedData.tasks = updatedData.tasks.map((task: { status: string; _id: string; children: any[] }) => {
-        if (task._id === topid) {
-          task.children = task.children.map((child: { _id: string }) => {
-            if (child._id === subid) {
-              return { ...child, status: AssessmentStatus.COMPLETED_SMALL };
+      updatedData.tasks = updatedData.tasks.map(
+        (task: { status: string; _id: string; children: any[] }) => {
+          if (task._id === topid) {
+            task.children = task.children.map((child: { _id: string }) => {
+              if (child._id === subid) {
+                return { ...child, status: AssessmentStatus.COMPLETED_SMALL };
+              }
+              return child;
+            });
+
+            const allSubtasksCompleted = task.children.every(
+              (child: { status: string }) =>
+                child.status === AssessmentStatus.COMPLETED_SMALL
+            );
+
+            if (allSubtasksCompleted) {
+              task.status = AssessmentStatus.COMPLETED_SMALL;
             }
-            return child;
-          });
-  
-          const allSubtasksCompleted = task.children.every(
-            (child: { status: string }) => child.status === AssessmentStatus.COMPLETED_SMALL
-          );
-  
-         
-          if (allSubtasksCompleted) {
-            task.status = AssessmentStatus.COMPLETED_SMALL;
           }
+          return task;
         }
-        return task;
-      });
+      );
     });
-  
+
     setStatusData(updatedData);
-  
+
     try {
       const response = await UserStatusDetails({
         data: updatedData,
@@ -268,36 +280,37 @@ const CoursePlannerDetail = () => {
       console.log(err);
     }
   };
-  
-  
 
-const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
-  if (isSubtask) {
-    
-    const taskWithChildren = userProjectDetails.tasks.find(
-      (task: { children: any[] }) =>
-        task.children.some((child: { _id: any }) => child._id === taskId)
-    );
-
-    if (taskWithChildren) {
-      const child = taskWithChildren.children.find(
-        (child: { _id: any }) => child._id === taskId
+  const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
+    if (isSubtask) {
+      const taskWithChildren = userProjectDetails.tasks.find(
+        (task: { children: any[] }) =>
+          task.children.some((child: { _id: any }) => child._id === taskId)
       );
-      return child && child.status === AssessmentStatus.COMPLETED_SMALL;
+
+      if (taskWithChildren) {
+        const child = taskWithChildren.children.find(
+          (child: { _id: any }) => child._id === taskId
+        );
+        return child && child.status === AssessmentStatus.COMPLETED_SMALL;
+      }
+    } else {
+      const task = userProjectDetails.tasks.find(
+        (task: { _id: any }) => task._id === taskId
+      );
+      return task && task.status === AssessmentStatus.COMPLETED_SMALL;
     }
-  } else {
-    const task = userProjectDetails.tasks.find(
-      (task: { _id: any }) => task._id === taskId
-    );
-    return task && task.status === AssessmentStatus.COMPLETED_SMALL;
-  }
 
-  return false;
-};
-
+    return false;
+  };
 
   return (
-    <>
+    <Box
+      sx={{
+        height: '100vh',
+        overflowY: 'auto',
+      }}
+    >
       <Header />
       <Box
         sx={{
@@ -405,7 +418,12 @@ const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
         </Box>
       </Box>
 
-      <div>
+      <div
+        style={{
+          marginBottom: drawerState.bottom ? '115px' : '0px',
+          transition: 'padding-bottom 0.3s ease',
+        }}
+      >
         {loading ? (
           <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
         ) : (
@@ -671,10 +689,10 @@ const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
           if (selectedSubtopics.length > 0) {
             // Mark all selected subtopics as complete
             markMultipleStatuses(userProjectDetails, selectedSubtopics);
-            toggleDrawer(false)(); 
+            toggleDrawer(false)();
           }
         }}
-        selectedCount={selectedCount} 
+        selectedCount={selectedCount}
       />
 
       {/* <ConfirmationModal
@@ -688,7 +706,7 @@ const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
         handleCloseModal={handleCloseModel}
         modalOpen={modalOpen}
       /> */}
-    </>
+    </Box>
   );
 };
 
