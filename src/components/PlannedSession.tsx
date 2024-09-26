@@ -161,72 +161,76 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   useEffect(() => {
     const handleBMGS = async () => {
       try {
-        const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/api/framework/v1/read/${frameworkId}`;
-        const boardData = await fetch(url).then((res) => res.json());
-        const frameworks = boardData?.result?.framework;
+        if (StateName && medium && grade && board) {
+          const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/api/framework/v1/read/${frameworkId}`;
+          const boardData = await fetch(url).then((res) => res.json());
+          const frameworks = boardData?.result?.framework;
 
-        const getStates = getOptionsByCategory(frameworks, 'state');
-        const matchState = getStates.find(
-          (item: any) => item.name === StateName
-        );
+          const getStates = getOptionsByCategory(frameworks, 'state');
+          const matchState = getStates.find(
+            (item: any) => item.name === StateName
+          );
 
-        const getBoards = getOptionsByCategory(frameworks, 'board');
-        const matchBoard = getBoards.find((item: any) => item.name === board);
+          const getBoards = getOptionsByCategory(frameworks, 'board');
+          const matchBoard = getBoards.find((item: any) => item.name === board);
 
-        const getMedium = getOptionsByCategory(frameworks, 'medium');
-        const matchMedium = getMedium.find((item: any) => item.name === medium);
+          const getMedium = getOptionsByCategory(frameworks, 'medium');
+          const matchMedium = getMedium.find(
+            (item: any) => item.name === medium
+          );
 
-        const getGrades = getOptionsByCategory(frameworks, 'gradeLevel');
-        const matchGrade = getGrades.find((item: any) => item.name === grade);
+          const getGrades = getOptionsByCategory(frameworks, 'gradeLevel');
+          const matchGrade = getGrades.find((item: any) => item.name === grade);
 
-        const getCourseTypes = getOptionsByCategory(frameworks, 'courseType');
-        const courseTypes = getCourseTypes?.map((type: any) => type.name);
-        setCourseTypes(courseTypes);
+          const getCourseTypes = getOptionsByCategory(frameworks, 'courseType');
+          const courseTypes = getCourseTypes?.map((type: any) => type.name);
+          setCourseTypes(courseTypes);
 
-        const courseTypesAssociations = getCourseTypes?.map((type: any) => {
-          return {
-            code: type.code,
-            name: type.name,
-            associations: type.associations,
-          };
-        });
-
-        const courseSubjectLists = courseTypesAssociations.map(
-          (courseType: any) => {
-            const commonAssociations = courseType?.associations.filter(
-              (assoc: any) =>
-                matchState?.associations.map(
-                  (item: any) => item.code === assoc.code
-                ) &&
-                matchBoard?.associations.map(
-                  (item: any) => item.code === assoc.code
-                ) &&
-                matchMedium?.associations.map(
-                  (item: any) => item.code === assoc.code
-                ) &&
-                matchGrade?.associations.map(
-                  (item: any) => item.code === assoc.code
-                )
-            );
-            console.log(commonAssociations);
-            const getSubjects = getOptionsByCategory(frameworks, 'subject');
-            const subjectAssociations = commonAssociations?.filter(
-              (assoc: any) =>
-                getSubjects.map((item: any) => assoc.code === item?.code)
-            );
-            console.log(subjectAssociations);
+          const courseTypesAssociations = getCourseTypes?.map((type: any) => {
             return {
-              courseTypeName: courseType?.name,
-              courseType: courseType?.code,
-              subjects: subjectAssociations?.map(
-                (subject: any) => subject?.name
-              ),
+              code: type.code,
+              name: type.name,
+              associations: type.associations,
             };
-          }
-        );
+          });
 
-        console.log(courseSubjectLists);
-        setSubjectLists(courseSubjectLists);
+          const courseSubjectLists = courseTypesAssociations.map(
+            (courseType: any) => {
+              const commonAssociations = courseType?.associations.filter(
+                (assoc: any) =>
+                  matchState?.associations.map(
+                    (item: any) => item.code === assoc.code
+                  ) &&
+                  matchBoard?.associations.map(
+                    (item: any) => item.code === assoc.code
+                  ) &&
+                  matchMedium?.associations.map(
+                    (item: any) => item.code === assoc.code
+                  ) &&
+                  matchGrade?.associations.map(
+                    (item: any) => item.code === assoc.code
+                  )
+              );
+              console.log(commonAssociations);
+              const getSubjects = getOptionsByCategory(frameworks, 'subject');
+              const subjectAssociations = commonAssociations?.filter(
+                (assoc: any) =>
+                  getSubjects.map((item: any) => assoc.code === item?.code)
+              );
+              console.log(subjectAssociations);
+              return {
+                courseTypeName: courseType?.name,
+                courseType: courseType?.code,
+                subjects: subjectAssociations?.map(
+                  (subject: any) => subject?.name
+                ),
+              };
+            }
+          );
+
+          console.log(courseSubjectLists);
+          setSubjectLists(courseSubjectLists);
+        }
       } catch (error) {
         console.error('Error fetching board data:', error);
       }
@@ -1138,6 +1142,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           )}
 
           <Box>
+            <Box
+              padding="0.5rem"
+              style={{
+                backgroundColor: theme?.palette?.primary['light'],
+              }}
+            >
+              <Typography variant="h2" component="h2">
+                {(!StateName || !medium || !grade || !board) &&
+                  t('CENTER_SESSION.BOARD_MEDIUM_GRADE_NOT_ASSIGNED')}
+              </Typography>
+            </Box>
             <SessionMode
               mode={editSession ? (mode ?? '') : (block?.sessionMode ?? '')}
               handleSessionModeChange={(e) =>
@@ -1168,11 +1183,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 onChange={(event: any) =>
                   handleCourseTypeChange(block?.id, event)
                 }
-                value={
-                  selectedCourseType
-                    ? selectedCourseType
-                    : t('CENTER_SESSION.COURSE_TYPE')
-                }
+                value={selectedCourseType || ''}
+                disabled={!StateName || !medium || !grade || !board}
               >
                 {courseTypes?.map((courseType: string) => (
                   <MenuItem key={courseType} value={courseType}>
@@ -1201,11 +1213,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     onChange={(event: any) =>
                       handleSubjectChange(block?.id, event)
                     }
-                    value={
-                      selectedSubject
-                        ? selectedSubject
-                        : t('CENTER_SESSION.SUBJECT')
-                    }
+                    value={selectedSubject || ''}
+                    disabled={!(StateName && medium && grade && board)}
                   >
                     {subjects?.map((subject: string) => (
                       <MenuItem key={subject} value={subject}>
@@ -1287,6 +1296,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       handleSubjectChange(block?.id, event)
                     }
                     value={selectedSubject}
+                    disabled={!(StateName && medium && grade && board)}
                   >
                     {subjects?.map((subject: string) => (
                       <MenuItem key={subject} value={subject}>
