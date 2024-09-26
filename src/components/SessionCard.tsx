@@ -160,6 +160,8 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       sx={{
         border: `1px solid ${theme.palette.warning['A100']}`,
         borderRadius: '8px',
+        minHeight: '158px',
+        position: 'relative',
       }}
     >
       <Box
@@ -228,7 +230,6 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           display: 'flex',
           justifyContent: 'space-between',
           gap: '30px',
-          minHeight: '50px',
           width: '100%',
         }}
         onClick={handleCopyUrl}
@@ -291,7 +292,9 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
         modalOpen={modalOpen}
       />
 
-      <Box>{children}</Box>
+      <Box sx={{ position: 'absolute', bottom: '2px', width: '100%' }}>
+        {children}
+      </Box>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={2000}
