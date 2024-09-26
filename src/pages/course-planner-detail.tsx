@@ -246,7 +246,6 @@ const CoursePlannerDetail = () => {
             (child: { status: string }) => child.status === AssessmentStatus.COMPLETED_SMALL
           );
   
-         
           if (allSubtasksCompleted) {
             task.status = AssessmentStatus.COMPLETED_SMALL;
           }
@@ -263,12 +262,17 @@ const CoursePlannerDetail = () => {
         id: updatedData._id,
         lastDownloadedAt: updatedData.lastDownloadedAt,
       });
+
+      setUserProjectDetails(updatedData); 
+      setSelectedSubtopics([]); 
+      toggleDrawer(false)();
+      
       console.log(response);
     } catch (err) {
       console.log(err);
     }
   };
-  
+
   
 
 const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
@@ -671,10 +675,10 @@ const isStatusCompleted = (taskId: any, isSubtask: boolean = true) => {
           if (selectedSubtopics.length > 0) {
             // Mark all selected subtopics as complete
             markMultipleStatuses(userProjectDetails, selectedSubtopics);
-            toggleDrawer(false)(); 
+            toggleDrawer(false)();
           }
         }}
-        selectedCount={selectedCount} 
+        selectedCount={selectedCount}
       />
 
       {/* <ConfirmationModal

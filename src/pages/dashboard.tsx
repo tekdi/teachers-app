@@ -550,7 +550,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const viewTimeTable = () => {
     if (classId !== 'all') {
       router.push(
-        `centers/${classId}/events/${getMonthName(timeTableDate)?.toLowerCase()}`
+        `centers/${classId}/events/${getMonthName(timeTableDate)?.toLowerCase()}?showAll=1`
       );
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
@@ -653,55 +653,58 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     const getSessionsData = async () => {
       try {
-        const afterDate = getAfterDate(timeTableDate);
-        const beforeDate = getBeforeDate(timeTableDate);
-        const limit = 0;
-        const offset = 0;
-        const filters = {
-          date: {
-            after: afterDate,
-            before: beforeDate,
-          },
-          // cohortId: classId,
-          createdBy: userId,
-          status: ['live'],
-        };
-        const response = await getEventList({ limit, offset, filters });
+        if (userId !== '' && userId !== null) {
+          const afterDate = getAfterDate(timeTableDate);
+          const beforeDate = getBeforeDate(timeTableDate);
+          const limit = 0;
+          const offset = 0;
+          const filters = {
+            date: {
+              after: afterDate,
+              before: beforeDate,
+            },
+            // cohortId: classId,
+            createdBy: userId,
+            status: ['live'],
+          };
 
-        // check if cohort's membership is active
+          const response = await getEventList({ limit, offset, filters });
 
-        // const myCohortList = await queryClient.fetchQuery({
-        //   queryKey: [QueryKeys.MY_COHORTS, userId],
-        //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
-        // });
+          // check if cohort's membership is active
 
-        const sessionArray: any[] = [];
-        const extraSessionArray: any[] = [];
-        if (response?.events.length > 0) {
-          response?.events.forEach((event: any) => {
-            // console.log('myCohortList', myCohortList);
-            // let cohortList;
-            // if (myCohortList.length > 0) {
-            //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
-            //     cohortList = myCohortList[0].childData;
-            //   } else {
-            //     cohortList = myCohortList;
-            //   }
-            // }
+          // const myCohortList = await queryClient.fetchQuery({
+          //   queryKey: [QueryKeys.MY_COHORTS, userId],
+          //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
+          // });
 
-            // const cohort = cohortList?.find(
-            //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
-            // );
-            if (event.isRecurring) {
-              sessionArray.push(event);
-            }
-            if (!event.isRecurring) {
-              extraSessionArray.push(event);
-            }
-          });
+          const sessionArray: any[] = [];
+          const extraSessionArray: any[] = [];
+          if (response?.events.length > 0) {
+            response?.events.forEach((event: any) => {
+              // console.log('myCohortList', myCohortList);
+              // let cohortList;
+              // if (myCohortList.length > 0) {
+              //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
+              //     cohortList = myCohortList[0].childData;
+              //   } else {
+              //     cohortList = myCohortList;
+              //   }
+              // }
+
+              // const cohort = cohortList?.find(
+              //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
+              // );
+              if (event.isRecurring) {
+                sessionArray.push(event);
+              }
+              if (!event.isRecurring) {
+                extraSessionArray.push(event);
+              }
+            });
+          }
+          setSessions(sessionArray);
+          setExtraSessions(extraSessionArray);
         }
-        setSessions(sessionArray);
-        setExtraSessions(extraSessionArray);
         setEventUpdated(false);
         setEventDeleted(false);
       } catch (error) {
@@ -1335,7 +1338,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 <Box mt={2} px="18px">
                   <Grid container spacing={2}>
                     {sessions?.map((item) => (
-                      <Grid xs={12} sm={6} md={6} key={item.id} item>
+                      <Grid xs={12} sm={6} md={4} key={item.id} item>
                         <SessionCard
                           data={item}
                           showCenterName={true}
@@ -1383,7 +1386,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Box sx={{ mt: 1.5, mb: 2 }}>
                     <Grid container spacing={2}>
                       {extraSessions?.map((item) => (
-                        <Grid xs={12} sm={6} md={6} key={item.id} item>
+                        <Grid xs={12} sm={6} md={4} key={item.id} item>
                           <SessionCard
                             data={item}
                             showCenterName={true}
@@ -1410,7 +1413,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   {extraSessions && extraSessions?.length === 0 && (
                     <Box
                       className="fs-12 fw-400 italic"
-                      sx={{ color: theme.palette.warning['300'] }}
+                      sx={{
+                        color: theme.palette.warning['300'],
+                        marginBottom: '12px',
+                      }}
                     >
                       {t('COMMON.NO_SESSIONS_SCHEDULED')}
                     </Box>

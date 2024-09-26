@@ -641,7 +641,7 @@ const CohortPage = () => {
                   className="mySwiper"
                 >
                   {sortedSessions?.map((item: any, index: any) => (
-                    <SwiperSlide key={index}>
+                    <SwiperSlide style={{ paddingBottom: '38px' }} key={index}>
                       <SessionCard
                         data={item}
                         isEventDeleted={handleEventDeleted}

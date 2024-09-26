@@ -9,6 +9,7 @@ import {
   getBeforeDate,
   shortDateFormat,
   sortSessionsByTime,
+  toPascalCase,
 } from '@/utils/Helper';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
@@ -20,20 +21,39 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { accessControl } from '../../../../../../app.config';
-import { Session } from '../../../../../utils/Interfaces';
+import {
+  CustomField,
+  Session,
+  eventFilters,
+} from '../../../../../utils/Interfaces';
+import { getCohortDetails } from '@/services/CohortServices';
 
 const EventMonthView: React.FC<any> = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const router = useRouter();
   const { date }: any = router.query;
+  const { showAll } = router.query;
 
   const [sessions, setSessions] = useState<Session[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [percentageAttendance, setPercentageAttendance] =
     React.useState<any>(null);
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
+  const [eventDeleted, setEventDeleted] = React.useState(false);
+  const [eventUpdated, setEventUpdated] = React.useState(false);
+  const [cohortType, setCohortType] = React.useState<string>();
+  const [medium, setMedium] = React.useState<string>();
+  const [grade, setGrade] = React.useState<string>();
+  const [board, setBoard] = React.useState<string>();
+  const [state, setState] = React.useState<string>();
 
+  let userId: string = '';
+  let classId: string = '';
+  if (typeof window !== 'undefined' && window.localStorage) {
+    userId = localStorage.getItem('userId') || '';
+    classId = localStorage.getItem('classId') || '';
+  }
   useEffect(() => {
     const getSessionsData = async () => {
       try {
@@ -49,14 +69,19 @@ const EventMonthView: React.FC<any> = () => {
           const beforeDate = getBeforeDate(date);
           const limit = 0;
           const offset = 0;
-          const filters = {
+          let filters: eventFilters = {
             date: {
               after: afterDate,
               before: beforeDate,
             },
-            cohortId: cohortId,
             status: ['live'],
           };
+
+          if (showAll === '1' && userId) {
+            filters['createdBy'] = userId;
+          } else {
+            filters['cohortId'] = cohortId;
+          }
 
           const response = await getEventList({ limit, offset, filters });
 
@@ -84,6 +109,8 @@ const EventMonthView: React.FC<any> = () => {
             setSessions(sessionList);
           }
         }
+        setEventUpdated(false);
+        setEventDeleted(false);
       } catch (error) {
         setSessions([]);
         setExtraSessions([]);
@@ -91,7 +118,7 @@ const EventMonthView: React.FC<any> = () => {
     };
 
     getSessionsData();
-  }, [selectedDate]);
+  }, [selectedDate, eventUpdated, eventDeleted]);
 
   const handleActiveStartDateChange = (date: Date) => {
     setSelectedDate(date);
@@ -104,6 +131,72 @@ const EventMonthView: React.FC<any> = () => {
   const handleSelectedDateChange = (date: Date | Date[] | null) => {
     setSelectedDate(date as Date);
   };
+
+  const handleEventDeleted = () => {
+    setEventDeleted(true);
+  };
+
+  const handleEventUpdated = () => {
+    setEventUpdated(true);
+  };
+
+  useEffect(() => {
+    const getCohortData = async () => {
+      if (classId !== '') {
+        const response = await getCohortDetails(classId);
+
+        let cohortData = null;
+
+        if (response?.cohortData?.length) {
+          cohortData = response?.cohortData[0];
+
+          if (cohortData?.customField?.length) {
+            const district = cohortData.customField.find(
+              (item: CustomField) => item.label === 'DISTRICTS'
+            );
+            const districtCode = district?.code || '';
+            const districtId = district?.fieldId || '';
+            const state = cohortData.customField.find(
+              (item: CustomField) => item.label === 'STATES'
+            );
+            setState(state.value);
+            const stateCode = state?.code || '';
+            const stateId = state?.fieldId || '';
+
+            const blockField = cohortData?.customField.find(
+              (field: any) => field.label === 'BLOCKS'
+            );
+
+            const address = `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}`;
+            cohortData.address = address || '';
+
+            const typeOfCohort = cohortData.customField.find(
+              (item: CustomField) => item.label === 'TYPE_OF_COHORT'
+            );
+            setCohortType(typeOfCohort?.value);
+
+            const medium = cohortData.customField.find(
+              (item: CustomField) => item.label === 'MEDIUM'
+            );
+            setMedium(medium?.value);
+
+            const grade = cohortData.customField.find(
+              (item: CustomField) => item.label === 'GRADE'
+            );
+            setGrade(grade?.value);
+
+            const board = cohortData.customField.find(
+              (item: CustomField) => item.label === 'BOARD'
+            );
+            setBoard(board?.value);
+          }
+          // setCohortDetails(cohortData);
+          // setCohortName(cohortData?.name);
+        }
+      }
+    };
+    getCohortData();
+  }, [classId]);
 
   return (
     <>
@@ -194,8 +287,25 @@ const EventMonthView: React.FC<any> = () => {
           <Grid container spacing={2}>
             {sessions?.map((item) => (
               <Grid xs={12} sm={6} md={6} key={item.id} item>
-                <SessionsCard data={item} key={item.id}>
-                  <SessionCardFooter item={item} />
+                <SessionsCard
+                  data={item}
+                  key={item.id}
+                  showCenterName={showAll === '1' ? true : false}
+                  isEventDeleted={handleEventDeleted}
+                  isEventUpdated={handleEventUpdated}
+                  StateName={state}
+                  board={board}
+                  medium={medium}
+                  grade={grade}
+                >
+                  <SessionCardFooter
+                    item={item}
+                    isTopicSubTopicAdded={handleEventUpdated}
+                    state={state}
+                    board={board}
+                    medium={medium}
+                    grade={grade}
+                  />
                 </SessionsCard>
               </Grid>
             ))}
@@ -229,8 +339,25 @@ const EventMonthView: React.FC<any> = () => {
           <Grid container spacing={2}>
             {extraSessions?.map((item) => (
               <Grid xs={12} sm={6} md={6} key={item.id} item>
-                <SessionsCard data={item} key={item.id}>
-                  <SessionCardFooter item={item} />
+                <SessionsCard
+                  data={item}
+                  key={item.id}
+                  showCenterName={showAll === '1' ? true : false}
+                  isEventDeleted={handleEventDeleted}
+                  isEventUpdated={handleEventUpdated}
+                  StateName={state}
+                  board={board}
+                  medium={medium}
+                  grade={grade}
+                >
+                  <SessionCardFooter
+                    item={item}
+                    isTopicSubTopicAdded={handleEventUpdated}
+                    state={state}
+                    board={board}
+                    medium={medium}
+                    grade={grade}
+                  />
                 </SessionsCard>
               </Grid>
             ))}
