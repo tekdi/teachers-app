@@ -1,9 +1,11 @@
+import AssessmentReportCard from '@/components/AssessmentReportCard';
 import AssessmentSortModal from '@/components/AssessmentSortModal';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
 import SearchBar from '@/components/Searchbar';
 import { showToastMessage } from '@/components/Toastify';
+import NoDataFound from '@/components/common/NoDataFound';
 import {
   getAssessmentStatus,
   getDoIdForAssessmentDetails,
@@ -12,11 +14,8 @@ import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { toPascalCase } from '@/utils/Helper';
 import { ICohort } from '@/utils/Interfaces';
 import { AssessmentStatus, Role, Status } from '@/utils/app.constant';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import RemoveIcon from '@mui/icons-material/Remove';
 import {
   Box,
   Button,
@@ -28,14 +27,18 @@ import {
   Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { accessControl, AssessmentType, Program } from '../../../app.config';
-import { useQueryClient } from '@tanstack/react-query';
-import AssessmentReportCard from '@/components/AssessmentReportCard';
-import withAccessControl from '@/utils/hoc/withAccessControl';
+
+const DEFAULT_STATUS_ORDER = {
+  [AssessmentStatus.NOT_STARTED] : 0,
+  [AssessmentStatus.IN_PROGRESS]: 1,
+  [AssessmentStatus.COMPLETED]: 2,
+};
 
 const Assessments = () => {
   const theme = useTheme<any>();
@@ -88,7 +91,7 @@ const Assessments = () => {
           status: [Status.ACTIVE],
         };
         const response = await getMyCohortMemberList({
-          limit: 300,
+          limit: 0,
           page: 0,
           filters,
         });
@@ -241,13 +244,13 @@ const Assessments = () => {
   const resetValues = () => {
     setFilteredLearnerList([]);
     setLearnerList([]);
+    setCohortMembers([]);
     setTestCompletionCount({ completionCount: 0, totalCount: 0 });
   };
 
   const handleSearch = (searchTerm: string) => {
     const term = searchTerm.trim();
     if (term.length > 0) {
-      console.log('hii', searchTerm);
       const filteredList = learnerList?.filter((item: any) => {
         return item?.name?.toLowerCase().includes(term.toLowerCase());
       });
@@ -255,16 +258,6 @@ const Assessments = () => {
     } else {
       setFilteredLearnerList(learnerList);
     }
-  };
-
-  const NoDataFound = () => {
-    return (
-      <Box sx={{ mt: '4rem', px: '20px', width: '100%', textAlign: 'center' }}>
-        <Typography variant="h3" color="text.primary">
-          {t('COMMON.NO_DATA_FOUND')}
-        </Typography>
-      </Box>
-    );
   };
 
   // open modal of sort
@@ -276,10 +269,25 @@ const Assessments = () => {
   };
 
   const sortByStatus = (status: string) => {
-    const filteredList = learnerList?.filter((item: any) => {
-      return item?.status === status;
-    });
-    setFilteredLearnerList(filteredList);
+    // const filteredList = learnerList?.filter((item: any) => {
+    //   return item?.status === status;
+    // });
+    const statusOrder: any = { ...DEFAULT_STATUS_ORDER };
+
+  if (status && Object.prototype.hasOwnProperty.call(statusOrder, status)) {
+    statusOrder[status] = -1; // Make the prioritized status the highest
+    // Adjust other statuses to ensure correct order
+    let orderIndex = 0;
+    for (const key in statusOrder) {
+      if (key !== status) {
+        statusOrder[key] = orderIndex++;
+      }
+    }
+  }
+
+  // Sort based on the adjusted order
+  const sortedList = learnerList.sort((a: any, b: any) => statusOrder[a.status] - statusOrder[b.status]);
+    setFilteredLearnerList(sortedList);
   };
 
   const sortByMarks = (order: string) => {
@@ -357,7 +365,6 @@ const Assessments = () => {
                 loading={loading}
                 setLoading={setLoading}
                 cohortsData={cohortsData}
-                // setBlockName={() => { }}
                 setCohortsData={setCohortsData}
                 manipulatedCohortData={manipulatedCohortData}
                 setManipulatedCohortData={setManipulatedCohortData}
@@ -413,64 +420,60 @@ const Assessments = () => {
         </Box>
       )}
 
-      {!isLoading && !assessmentList?.length && (
-        <Box sx={{ mt: 2, px: '20px' }}>
-          <Typography textAlign="center" fontSize="16px">
-            {t('ASSESSMENTS.NO_ASSESSMENTS_FOUND')}
-          </Typography>
-        </Box>
-      )}
+      {!isLoading && !assessmentList?.length && <NoDataFound />}
 
-      {!isLoading && !!assessmentList?.length && (
-        <Grid
-          sx={{
-            mt: 2,
-            px: '20px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            mb: 2,
-          }}
-          container
-        >
+      {!isLoading &&
+        !!assessmentList?.length &&
+        !!filteredLearnerList?.length && (
           <Grid
-            xs={8}
-            item
             sx={{
-              fontSize: '14px',
-              fontWeight: '500',
-              color: theme?.palette?.warning['400'],
+              mt: 2,
+              px: '20px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 2,
             }}
+            container
           >
-            {testCompletionCount.totalCount > 0 && (
-              <span>
-                {`${testCompletionCount.completionCount}/${testCompletionCount.totalCount}`}{' '}
-                {t('ASSESSMENTS.COMPLETED_THE_ASSESSMENT')}
-              </span>
-            )}
-          </Grid>
-          <Grid
-            sx={{ display: 'flex', justifyContent: 'flex-end' }}
-            xs={4}
-            item
-          >
-            <Button
-              onClick={handleOpenModal}
+            <Grid
+              xs={8}
+              item
               sx={{
-                color: theme.palette.warning.A200,
-
-                borderRadius: '10px',
                 fontSize: '14px',
+                fontWeight: '500',
+                color: theme?.palette?.warning['400'],
               }}
-              endIcon={<ArrowDropDownSharpIcon />}
-              size="small"
-              variant="outlined"
             >
-              {t('COMMON.SORT_BY')}
-            </Button>
+              {testCompletionCount.totalCount > 0 && (
+                <span>
+                  {`${testCompletionCount.completionCount}/${testCompletionCount.totalCount}`}{' '}
+                  {t('ASSESSMENTS.COMPLETED_THE_ASSESSMENT')}
+                </span>
+              )}
+            </Grid>
+            <Grid
+              sx={{ display: 'flex', justifyContent: 'flex-end' }}
+              xs={4}
+              item
+            >
+              <Button
+                onClick={handleOpenModal}
+                sx={{
+                  color: theme.palette.warning.A200,
+
+                  borderRadius: '10px',
+                  fontSize: '14px',
+                }}
+                endIcon={<ArrowDropDownSharpIcon />}
+                size="small"
+                variant="outlined"
+              >
+                {t('COMMON.SORT_BY')}
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-      )}
+        )}
       {!isLoading && filteredLearnerList?.length > 0 && (
         <Box sx={{ background: '#FBF4E4', padding: '20px' }}>
           <Grid container spacing={2}>
@@ -512,4 +515,7 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default withAccessControl('accessAssessments', accessControl)(Assessments);
+export default withAccessControl(
+  'accessAssessments',
+  accessControl
+)(Assessments);

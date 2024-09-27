@@ -4,29 +4,33 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { FacilitatorDrawerProps } from '@/utils/Interfaces';
+import taxonomyStore from '@/store/taxonomyStore';
+import { useTranslation } from 'next-i18next';
 
 const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
   secondary,
   primary,
   toggleDrawer,
   drawerState,
+  onPrimaryClick,
+  selectedCount,
 }) => {
   const theme = useTheme<any>();
+  const tStore = taxonomyStore();
+  const { t } = useTranslation();
 
   return (
     <div>
       <SwipeableDrawer
         anchor="bottom"
         open={drawerState.bottom}
-        onClose={toggleDrawer(true)}
-        onOpen={toggleDrawer(true)}
+        onClose={() => toggleDrawer(false)()}
+        onOpen={() => toggleDrawer(true)()}
         sx={{
           position: 'unset',
           '@media (min-width: 900px)': {
             '& .MuiPaper-root': {
               marginLeft: '352px',
-              // bottom:'3rem',
-              // borderRadius:'16px'
             },
           },
         }}
@@ -53,71 +57,58 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
               },
             }}
           >
-            Khapari Dharmu (Chimur, Chandrapur) {/*  will come from API */}
+            {tStore?.center}
+          </Box>
+          {/* Show selected count */}
+          <Box
+            sx={{
+              color: theme?.palette?.warning['A400'],
+              fontSize: '14px',
+              fontWeight: '400',
+              '@media (min-width: 500px)': {
+                textAlign: 'center',
+              },
+            }}
+          >
+            {selectedCount > 0
+              ? `${selectedCount} subtopics selected`
+              : `${t('ASSESSMENTS.NO_SUBTOPIC_SELECTED')}`}
           </Box>
           <Box
             sx={{
               display: 'flex',
-              width: '100%',
               justifyContent: 'center',
               gap: '10px',
+              '@media (min-width: 500px)': {
+                justifyContent: 'center',
+              },
+              mt: 1.5,
             }}
           >
             {secondary && (
-              <Box>
-                <Box
-                  onClick={toggleDrawer(false)}
-                  sx={{ padding: '20px 16px 0' }}
+              <Box onClick={() => toggleDrawer(false)()}>
+                <Button
+                  sx={{
+                    border: `1px solid ${theme?.palette?.warning['A400']}`,
+                    color: theme?.palette?.warning['A400'],
+                    width: '121px',
+                  }}
+                  variant="outlined"
                 >
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      '&.Mui-disabled': {
-                        backgroundColor: theme?.palette?.primary?.main,
-                      },
-                      minWidth: '84px',
-                      padding: theme.spacing(1),
-                      fontWeight: '500',
-                      width: '128px',
-                      height: '40px',
-                      color: theme?.palette?.warning['A400'],
-                      border: `1px solid ${theme?.palette?.warning['A400']}`,
-                      '@media (max-width: 430px)': {
-                        width: '100%',
-                      },
-                    }}
-                    // onClick={handleSecondaryModel} // Uncomment and implement this function if needed
-                  >
-                    {secondary}
-                  </Button>
-                </Box>
+                  {secondary}
+                </Button>
               </Box>
             )}
             {primary && (
-              <Box sx={{ width: secondary ? 'unset' : '100%' }}>
-                <Box sx={{ padding: '20px 16px 0' }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{
-                      '&.Mui-disabled': {
-                        backgroundColor: theme?.palette?.primary?.main,
-                      },
-                      minWidth: '84px',
-                      padding: theme.spacing(1),
-                      fontWeight: '500',
-                      width: secondary ? '199px' : '100%',
-                      height: '40px',
-                      '@media (max-width: 430px)': {
-                        width: '100%',
-                      },
-                    }}
-                    // onClick={handlePrimaryModel} // Uncomment and implement this function if needed
-                    onClick={toggleDrawer(false)}
-                  >
-                    {primary}
-                  </Button>
-                </Box>
+              <Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={onPrimaryClick}
+                  sx={{ width: '199px' }}
+                >
+                  {primary}
+                </Button>
               </Box>
             )}
           </Box>

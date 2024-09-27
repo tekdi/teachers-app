@@ -95,6 +95,8 @@
     "DELETE_USER": "Delete User Permanently",
     "DELETE_USER_WITH_REASON": "Delete User",
     "USER_DELETED_PERMANENTLY": "User successfully deleted!",
+    "CANNOT_DELETE_TODAY_ATTENDANCE_MARKED": "Cannot delete learner as attendance has already been marked for today",
+    "CANNOT_DROPOUT_TODAY_ATTENDANCE_MARKED": "Cannot mark learner as dropout as attendance has already been marked for today",
     "OBSERVATIONS_FORMS": "Observations and Forms",
     "OTHER_REASON": "Other Reason",
     "OTHER_REASON_PLACEHOLDER": "Enter Other Reason",
@@ -150,16 +152,25 @@
     "NEW_PASSWORD": "New Password",
     "CONFIRM_NEW_PASSWORD": "Confirm New Password",
     "TROUBLE_LOGIN": "Trouble with logging in?",
-    "ENTER_USERNAME": "Enter your username or email address and we’ll send you a link to get back into your account.",
-    "ENTER_USERNAME_PASSWORD": "Enter username or email",
+    "ENTER_USERNAME_TO_GET_LINK": "Enter your username, we’ll send you a link to get back into your account.",
+    "ENTER_USERNAME": "Enter Username",
     "BACK_TO_LOGIN": "Back to Login",
     "CREATE_STRONG_PASSWORD": "Create a strong password",
-    "YOUR_PASSWORD_NEEDS_TO:": "Your password needs to:",
+    "YOUR_PASSWORD_NEED": "Your password needs to:",
     "INCLUDE_BOTH": "Include both upper case and lower case",
     "INCLUDE_NUMBER": "Include at least one number",
     "INCLUDE_SPECIAL": "Include at least one special character",
     "MUST_BE_AT": "Must be at least 8 characters long",
-    "OTHER_SETTING": "Other settings"
+    "OTHER_SETTING": "Other settings",
+    "WELCOME": "Welcome!",
+    "PLEASE_RESET_YOUR_PASSWORD": "Please reset your password to ensure your account is secure",
+    "DO_IT_LATER": "I’ll do it later",
+    "SUCCESSFULLY_RESET": "Your password has been successfully reset",
+    "LINK_EXPIRED": "Link has been expired",
+    "WE_SEND_AN_EMAIL": "We sent an email to {{maskEmail}} with a link to reset your password",
+    "CURRENT_PASSWORD_NOT": "Current Password Not Matched",
+    "NO_USERNAME": "Username not found",
+    "PASSWORD_SAME_AS_OLD": "Password same as old"
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",
@@ -263,7 +274,6 @@
     "ENROLLMENT_NUMBER": "Enrollment Number",
     "SELECT_OPTION": "Select Option"
   },
-
   "FIELDS": {
     "DESIGNATION": "Designation",
     "NUMBER_OF_CLUSTERS_I_TEACH": "Number of Clusters I Teach",
@@ -368,6 +378,7 @@
     "START_DATE": "Start Date",
     "END_DATE": "End Date",
     "REMOVE_THIS_SESSION": "Remove this session",
+    "REMOVE_TOPIC_SUBTOPIC": "Remove the topic and subtopic",
     "PLANNED_SESSION": "Planned Session",
     "FIXES_SUBJECTS": "For fixed subjects in the timetable",
     "EXTRA_SESSION": "Extra Sessions",
@@ -394,7 +405,7 @@
     "EXTRA_OFFLINE": "Extra offline",
     "ENTER_VALID_MEETING_LINK": "Please enter a valid Zoom or Google Meet link.",
     "ZOOM": "Zoom",
-    "GOOGLE_MEET": "GOOGLE_MEET",
+    "GOOGLEMEET": "GoogleMeet",
     "SET_UP": "Set-Up",
     "EDIT_THIS_SESSION": "Edit this session",
     "EDIT_FOLLOWING_SESSIONS": "Edit this and following sessions",
@@ -404,7 +415,16 @@
     "DELETE_FOLLOWING_SESSION": "Delete this and following sessions",
     "UPDATE_CHANGES": "Are you sure you want to update the changes?",
     "SESSION_DELETED_SUCCESSFULLY": "Session deleted successfully",
-    "SESSION_EDITED_SUCCESSFULLY": "Session updated successfully"
+    "SESSION_EDITED_SUCCESSFULLY": "Session updated successfully",
+    "TOPIC_SUBTOPIC_ADDED_SUCCESSFULLY": "Topic and Subtopic added successfully!",
+    "TOPIC_SUBTOPIC_REMOVED_SUCCESSFULLY": "Topic and Subtopic removed successfully!",
+    "COURSE_PLANNER_NOT_AVAILABLE": "Course Planner is not available for {{subject}}!",
+    "FACILITATOR_REQUISITES": "Facilitator's Requisites",
+    "LEARNER_PREREQUISITES": "Learner's Pre-requisites",
+    "LEARNER_POSTREQUISITES": "Learner's Post-requisites",
+    "CANT_SELECT_AS_EVENT_PASSED_LIVE": "Can not select topic and subtopic as event is already passed or live.",
+    "COURSE_TYPE": "Course Type",
+    "BOARD_MEDIUM_GRADE_NOT_ASSIGNED": "Board, Medium, Grade not assigned to Center."
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center requested successfully",
@@ -485,7 +505,7 @@
     "DROP_OUT_REASON": "Reason for Drop Out From School",
     "ASSIGN_CENTERS": "Assign Centers",
     "TYPE_OF_COHORT": "Center type",
-    "NOTE_THIS_WILL_BE_CENTER_NAME": "Note this will be Center name",
+    "NOTE_THIS_WILL_BE_CENTER_NAME": "Note: This will be the Center name",
     "ENGLISH": "English",
     "HOME_SCIENCE": "Home Science",
     "MATH": "Math",
@@ -536,7 +556,10 @@
     "MARKS_OBTAINED": "Marks Obtained",
     "OVERALL_SCORE": "Overall Score",
     "ASSESSMENT_NOT_STARTED_YET": "Assessment not started yet",
-    "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} out of {{totalCount}} completed"
+    "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} out of {{totalCount}} completed",
+    "NO_SUBTOPIC_SELECTED": "No Subtopic selected",
+    "NO_SUBJECT_FOUND": "No Subject found",
+    "NO_ASSIGNED": "No assigned"
   },
   "BOARD_ENROLMENT": {
     "BOARD_ENROLLMENT": "Board Enrollment",
@@ -544,6 +567,12 @@
     "SUBJECTS_SELECTION": "Subjects Selection",
     "REGISTRATION_COMPLETED": "Registration Completed",
     "DROPPED_OUT": " Dropped Out",
-    "FEE_PAYMENT": "Fee Payment"
+    "FEE_PAYMENT": "Fee Payment",
+    "BOARD_ENROLLMENT_NUMBER": "Board Enrolment Number",
+    "EXAM_FEES_PAID": "  Exam Fees Paid? (optional)",
+    "SAVE_AND_NEXT": "Save and Next",
+    "TO_SAVE_YOUR_PROGRESS": "“Save & Next” to save your progress. You can come back and change it anytime.",
+    "MANDATORY": "Mandatory for {{FeesStepBoards}} only. For other Boards, this step is automatically marked completed. Please click on Save to submit the data.",
+    "COMPLETED": "Completed"
   }
 }

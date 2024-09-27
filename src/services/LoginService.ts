@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { post } from './RestClient';
 
 interface LoginParams {
@@ -47,3 +48,63 @@ export const logout = async (refreshToken: string): Promise<any> => {
     throw error;
   }
 };
+
+export const resetPassword = async (
+  newPassword: any): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password`;
+  try {
+    const response = await post(apiUrl, { newPassword });
+    return response?.data;
+  } catch (error) {
+    console.error('error in reset', error);
+    throw error;
+  }
+};
+
+export const forgotPasswordAPI = async (
+  newPassword: any  , token: any): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/forgot-password`;
+  try {
+    const response = await post(apiUrl, { newPassword, token });
+    return response?.data;
+  } catch (error) {
+    console.error('error in reset', error);
+    throw error;
+  }
+};
+
+
+export const resetPasswordLink = async (
+  username: any): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/password-reset-link`;
+  try {
+    const response = await post(apiUrl, { username });
+    return response?.data;
+  } catch (error) {
+    console.error('error in reset', error);
+    throw error;
+  }
+};
+
+
+
+export const successfulNotification = async (
+  isQueue:boolean,
+  context: any,
+  key: any,
+  email: any
+): Promise<any> => {
+  const apiUrl: string =   `${process.env.NEXT_PUBLIC_NOTIFICATION_BASE_URL}/notification/send`;
+  try {
+    const response = await post(apiUrl, { isQueue, context, key, email });
+    console.log(email);
+    return response?.data;
+  } catch (error) {
+    console.error('error in reset', error);
+    throw error;
+  }
+};
+
+
+
+

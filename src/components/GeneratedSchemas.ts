@@ -207,7 +207,13 @@ export const GenerateSchemaAndUiSchema = (
         })),
       };
       fieldSchema.uniqueItems = true;
-      fieldUiSchema['ui:widget'] = 'MultiSelectCheckboxes';
+      fieldUiSchema['ui:widget'] = 'checkboxes';
+      //       fieldUiSchema['ui:widget'] = 'MultiSelectCheckboxes';
+
+
+      if (isRequired) {
+        fieldSchema.minItems = 1;
+      }
     }
 
     if (pattern) {

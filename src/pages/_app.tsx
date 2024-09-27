@@ -29,7 +29,7 @@ import { fullWidthPages } from '../../app.config';
 import nextI18NextConfig from '../../next-i18next.config.js';
 import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
-import { Telemetry } from '@/utils/app.constant';
+import { metaTags, Telemetry } from '@/utils/app.constant';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -133,11 +133,14 @@ function App({ Component, pageProps }: AppProps) {
         onClick={() => {
           setMode(mode === 'light' ? 'dark' : 'light');
         }}
+        sx={{ position: 'absolute', right: '0px', zIndex: '9999' }}
       >
         {mode === 'light' ? 'Turn dark' : 'Turn light'}
       </Button>
     );
   }
+  const theme = useTheme<any>();
+
   return (
     <>
       <style jsx global>{`
@@ -146,7 +149,8 @@ function App({ Component, pageProps }: AppProps) {
         }
       `}</style>
       <Head>
-        <title>Pratham SCP Teachers app</title>
+        <title>{metaTags?.title}</title>
+        <meta name="description" content={metaTags?.description} />
       </Head>
       <CssVarsProvider theme={customTheme}>
         {/* <ModeToggle /> */}
@@ -161,6 +165,7 @@ function App({ Component, pageProps }: AppProps) {
               width: '100%',
               marginLeft: !isFullWidthPage ? '351px' : '0',
             },
+            background: theme.palette.warning['A400'],
           }}
         >
           <QueryClientProvider client={client}>

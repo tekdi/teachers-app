@@ -22,6 +22,7 @@ import {
   AttendanceStatusListProps,
   ICohort,
   CohortMemberList,
+  user,
 } from '../utils/Interfaces';
 
 import AttendanceStatus from '@/components/AttendanceStatus';
@@ -52,14 +53,7 @@ import Loader from '../components/Loader';
 import SortingModal from '../components/SortingModal';
 import { attendanceStatusList } from '../services/AttendanceService';
 import { telemetryFactory } from '@/utils/telemetry';
-
-interface user {
-  memberStatus: string;
-  userId: string;
-  name: string;
-  attendance?: string;
-  key?: string;
-}
+import NoDataFound from '@/components/common/NoDataFound';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
@@ -507,6 +501,11 @@ const UserAttendanceHistory = () => {
     }
   };
 
+  const darkMode =
+    typeof window !== 'undefined' && window.localStorage
+      ? localStorage.getItem('mui-mode')
+      : null;
+
   return (
     <Box minHeight="100vh" textAlign={'center'}>
       <Header />
@@ -599,10 +598,16 @@ const UserAttendanceHistory = () => {
               position: 'sticky',
               top: '65px',
               zIndex: 1000,
-              backgroundColor: 'white',
+              backgroundColor: theme.palette.warning['A400'],
               // boxShadow: '0px 1px 3px 0px #0000004D',
-              boxShadow: '0px 4px 8px 3px #00000026',
-              borderTop: '1px solid rgba(0, 0, 0, 0.15)',
+              boxShadow:
+                darkMode === 'dark'
+                  ? '0px 4px 8px 3px #ffffff1a'
+                  : '0px 4px 8px 3px #00000026',
+              borderTop:
+                darkMode === 'dark'
+                  ? '1px solid rgba(255, 255, 255, 0.1)'
+                  : '1px solid rgba(0, 0, 0, 0.15)',
               borderBottom: 'unset ',
               padding: '5px 10px',
             }}
@@ -658,7 +663,13 @@ const UserAttendanceHistory = () => {
                       <InputBase
                         ref={inputRef}
                         value={searchWord}
-                        sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
+                        sx={{
+                          ml: 3,
+                          flex: 1,
+                          mb: '0',
+                          fontSize: '14px',
+                          color: theme.palette.warning['A200'],
+                        }}
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
                         onChange={handleSearch}
@@ -667,7 +678,7 @@ const UserAttendanceHistory = () => {
                       />
                       <IconButton
                         type="button"
-                        sx={{ p: '10px' }}
+                        sx={{ p: '10px', color: theme.palette.warning['A200'] }}
                         aria-label="search"
                         onClick={handleSearchSubmit}
                       >
@@ -680,7 +691,11 @@ const UserAttendanceHistory = () => {
                           aria-label="Clear"
                           onClick={handleSearchClear}
                         >
-                          <ClearIcon />
+                          <ClearIcon
+                            sx={{
+                              color: theme.palette.warning['A200'],
+                            }}
+                          />
                         </IconButton>
                       )}
                     </Paper>
@@ -695,7 +710,6 @@ const UserAttendanceHistory = () => {
                       onClick={handleOpenModal}
                       sx={{
                         color: theme.palette.warning.A200,
-
                         borderRadius: '10px',
                         fontSize: '14px',
                       }}
@@ -737,8 +751,8 @@ const UserAttendanceHistory = () => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 padding: '8px 18px',
-                borderBottom: '1px solid #D0C5B4',
-                bgcolor: '#E6E6E6',
+                borderBottom: `1px solid ${theme.palette.warning['A100']}`,
+                bgcolor: theme.palette.warning['A100'],
               }}
             >
               <Box
@@ -787,34 +801,11 @@ const UserAttendanceHistory = () => {
                     />
                   ))
                 ) : (
-                  <Box
-                    sx={{
-                      m: '1rem',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography
-                      style={{ fontWeight: 'bold', marginLeft: '1rem' }}
-                    >
-                      {t('COMMON.NO_DATA_FOUND')}
-                    </Typography>
-                  </Box>
+                  <NoDataFound />
                 )}
               </Box>
             ) : (
-              <Box
-                display={'flex'}
-                justifyContent={'center'}
-                mt={2}
-                p={'1rem'}
-                borderRadius={'1rem'}
-                bgcolor={theme.palette.warning['A400']}
-                // bgcolor={'secondary.light'}
-              >
-                <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
-              </Box>
+              <NoDataFound bgColor={theme.palette.warning['A400']} />
             )}
           </Box>
           {open && (

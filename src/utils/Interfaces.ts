@@ -47,6 +47,14 @@ export interface UserAttendanceObj {
   memberStatus?: string;
 }
 
+export interface user {
+  memberStatus: string;
+  userId: string;
+  name: string;
+  attendance?: string;
+  key?: string;
+}
+
 export interface BulkAttendanceParams {
   attendanceDate: string;
   contextId: string;
@@ -132,6 +140,10 @@ export interface SessionsCardProps {
   children?: React.ReactNode;
   isEventDeleted?: () => void;
   isEventUpdated?: () => void;
+  StateName?: string;
+  board?: string;
+  medium?: string;
+  grade?: string;
 }
 export interface SessionsModalProps {
   children?: React.ReactNode;
@@ -162,6 +174,10 @@ export interface PlannedModalProps {
   updateEvent?: boolean;
   editSession?: any;
   eventData?: any;
+  StateName?: string;
+  board?: string;
+  medium?: string;
+  grade?: string;
 }
 
 export interface ScheduleModalProps {
@@ -213,8 +229,8 @@ export interface SessionModeProps {
   cohortType?: string;
 }
 export interface LearnerAttendanceProps {
-  limit: number;
-  page: number;
+  limit?: number;
+  page?: number;
   filters: {
     contextId: string;
     scope: string;
@@ -384,6 +400,11 @@ export interface CoursePlanner {
 export interface SessionCardFooterProps {
   item: any;
   cohortName?: string;
+  isTopicSubTopicAdded?: any;
+  state?: string;
+  board?: string;
+  medium?: string;
+  grade?: string;
 }
 
 export interface TopicSubtopicProps {
@@ -391,6 +412,8 @@ export interface TopicSubtopicProps {
   subTopicsList?: any;
   onTopicSelected: any;
   onSubtopicSelected: any;
+  selectedTopics?: any;
+  selectedSubTopics?: any;
 }
 
 export interface FieldOption {
@@ -457,11 +480,15 @@ export interface FacilitatorDrawerProps {
   primary?: string;
   toggleDrawer: (
     open: boolean
-  ) => (event: React.KeyboardEvent | React.MouseEvent) => void;
+  ) => (event?: React.KeyboardEvent | React.MouseEvent) => void;
   drawerState: { bottom: boolean };
+  onPrimaryClick?: () => void;
+  selectedCount?: any;
 }
+
 export interface CoursePlannerCardsProps {
   resources: any;
+  type: string;
 }
 
 export interface scheduleEventParam {
@@ -478,6 +505,7 @@ export interface eventFilters {
   title?: string;
   status?: string[];
   cohortId?: string;
+  createdBy?: string;
 }
 
 export interface dateRange {
@@ -563,6 +591,7 @@ export interface RecurrencePattern {
   interval: number;
   endCondition: EndCondtion;
   daysOfWeek: number[];
+  recurringStartDate: string;
 }
 
 export interface EndCondtion {
@@ -577,6 +606,7 @@ export interface MeetingDetails {
 
 export interface MetaData {
   category?: string;
+  courseType?: string;
   subject?: string;
   teacherName?: string;
   cohortId?: string;
@@ -667,4 +697,26 @@ export interface GetCohortSearchParams {
   cohortId: string;
   limit?: number;
   offset?: number;
+}
+
+export interface CentralizedModalProps {
+  title?: string;
+  subTitle?: string;
+  secondary?: string;
+  primary?: string;
+  modalOpen?: boolean;
+  handlePrimaryButton?: () => void;
+  handleSkipButton?: () => void;
+  icon?: boolean;
+}
+
+export interface GetUserProjectStatusParams {
+  data: any;
+  id: string;
+  lastDownloadedAt: string;
+}
+
+export interface PasswordCreateProps {
+  handleResetPassword: (password: string) => void;
+  editPassword?: boolean;
 }

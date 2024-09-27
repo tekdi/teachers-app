@@ -25,6 +25,7 @@ import { useTheme } from '@mui/material/styles';
 import { overallAttendanceInPercentageStatusList } from '@/services/AttendanceService';
 import { CenterType, cohortPrivileges } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
+import NoDataFound from './common/NoDataFound';
 
 interface AttendanceComparisonProps {
   blockName: string;
@@ -142,7 +143,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
       <text
         x={x + offsetX}
         y={y + height / 2}
-        fill="black"
+        fill={theme.palette.warning['300']}
         textAnchor={width < 40 ? 'start' : 'middle'} // Adjust anchor based on bar width
         dominantBaseline="middle"
         fontSize={15}
@@ -162,7 +163,11 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
         marginTop: '10px',
       }}
     >
-      <Typography variant="h2" fontSize={'16px'} sx={{ color: 'black' }}>
+      <Typography
+        variant="h2"
+        fontSize={'16px'}
+        sx={{ color: theme.palette.warning['300'] }}
+      >
         {t('DASHBOARD.ATTENDANCE_COMPARISON')}
       </Typography>
       <Typography fontSize={'14px'}>
@@ -180,13 +185,13 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
           onChange={handleCenterTypeChange}
         >
           <FormControlLabel
-            color="black"
+            color={theme.palette.warning['300']}
             value="REGULAR"
             control={
               <Radio
                 sx={{
                   '&.Mui-checked': {
-                    color: 'black',
+                    color: theme.palette.warning['300'],
                   },
                 }}
               />
@@ -194,7 +199,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
             label={t('CENTERS.REGULAR')}
             sx={{
               '& .MuiFormControlLabel-label': {
-                color: 'black',
+                color: theme.palette.warning['300'],
                 fontSize: '18px',
               },
             }}
@@ -205,7 +210,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
               <Radio
                 sx={{
                   '&.Mui-checked': {
-                    color: 'black',
+                    color: theme.palette.warning['300'],
                   },
                 }}
               />
@@ -213,7 +218,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
             label={t('CENTERS.REMOTE')}
             sx={{
               '& .MuiFormControlLabel-label': {
-                color: 'black',
+                color: theme.palette.warning['300'],
                 fontSize: '18px',
               },
             }}
@@ -258,40 +263,6 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                   dataKey="name"
                   tickFormatter={YAxisLabel}
                   tick={{ fontSize: 12, width: isMobile ? 50 : 100 }}
-                  // tick={(props) => {
-                  //   const { x, y, payload } = props;
-                  //   const name = payload.value;
-                  //   const firstLine = name.slice(0, 7);
-                  //   const secondLine = name.slice(7, 13);
-                  //   const thirdLine = name.slice(13, 19);
-                  //   const capitalizedFirstLine =
-                  //     firstLine.charAt(0).toUpperCase() + firstLine.slice(1);
-
-                  //   return (
-                  //     <text
-                  //       x={x}
-                  //       y={y}
-                  //       dy={4}
-                  //       textAnchor="end"
-                  //       fontSize={16}
-                  //       fill="gray"
-                  //     >
-                  //       <tspan x={x} dy="0em">
-                  //         {capitalizedFirstLine}
-                  //       </tspan>
-                  //       {secondLine && (
-                  //         <tspan x={x} dy="1.3em">
-                  //           {secondLine}
-                  //         </tspan>
-                  //       )}
-                  //       {thirdLine && (
-                  //         <tspan x={x} dy="1.3em">
-                  //           {thirdLine}
-                  //         </tspan>
-                  //       )}
-                  //     </text>
-                  //   );
-                  // }}
                 />
 
                 <Tooltip formatter={(value: number) => `${value}%`} />
@@ -323,23 +294,14 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
             </BarChart>
           </ResponsiveContainer>
           <Box display="flex" justifyContent="center" alignItems="center">
-            <Typography color="black" mt={1}>
+            <Typography color={theme.palette.warning['300']} mt={1}>
               {t('DASHBOARD.ATTENDANCE')}
             </Typography>
           </Box>
         </>
       )}
 
-      {data?.length === 0 && (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="100%"
-        >
-          <Typography>{t('COMMON.NO_DATA_FOUND')}</Typography>
-        </Box>
-      )}
+      {data?.length === 0 && <NoDataFound />}
     </Box>
   );
 };

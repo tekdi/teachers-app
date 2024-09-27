@@ -150,7 +150,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR, filters],
             queryFn: () => getMyUserList({ limit, page, filters, fields }),
           });
-
+          console.log('facilitator');
           const facilitatorList = resp.result?.getUserDetails;
 
           if (!facilitatorList || facilitatorList?.length === 0) {
@@ -269,12 +269,15 @@ const ManageUser: React.FC<ManageUsersProps> = ({
         cohortList &&
         cohortList.length > 0 &&
         cohortList.some(
-          (cohort: { status: string }) => cohort.status === 'active'
+          (cohort: { cohortStatus: string }) => cohort.cohortStatus === 'active'
         );
 
       if (hasActiveCohorts) {
         const cohortNames = cohortList
-          .filter((cohort: { status: string }) => cohort.status === 'active')
+          .filter(
+            (cohort: { cohortStatus: string }) =>
+              cohort.cohortStatus === 'active'
+          )
           .map((cohort: { cohortName: string }) => cohort.cohortName)
           .join(', ');
 
@@ -309,10 +312,14 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           console.log('Cohort List:', cohortList);
           if (cohortList && cohortList?.length > 0) {
             const cohortDetails = cohortList?.map(
-              (cohort: { cohortName: any; cohortId: any; status: any }) => ({
+              (cohort: {
+                cohortName: any;
+                cohortId: any;
+                cohortStatus: any;
+              }) => ({
                 name: cohort?.cohortName,
                 id: cohort?.cohortId,
-                status: cohort?.status,
+                status: cohort?.cohortStatus,
               })
             );
             setReassignCohortNames(cohortDetails);
@@ -423,7 +430,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const handleDeleteUser = () => {};
 
   const handleFacilitatorAdded = () => {
-    setIsFacilitatorAdded((prev) => prev);
+    setIsFacilitatorAdded((prev) => !prev);
   };
   const handleMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -462,7 +469,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                 <Box mt={'18px'} px={'18px'}>
                   <Button
                     sx={{
-                      border: '1px solid #1E1B16',
+                      border: `1px solid ${theme.palette.error.contrastText}`,
                       borderRadius: '100px',
                       height: '40px',
                       width: '8rem',
@@ -590,8 +597,10 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                         </CustomLink>
                                         <Box
                                           sx={{
-                                            backgroundColor: '#FFF8F2',
+                                            backgroundColor:
+                                              theme.palette.action.selected,
                                             padding: '5px',
+                                            width: 'fit-content',
                                             borderRadius: '5px',
                                             fontSize: '12px',
                                             fontWeight: '600',

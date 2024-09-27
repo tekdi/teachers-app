@@ -2,7 +2,7 @@
 
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import {
   classesMissedAttendancePercentList,
@@ -23,6 +23,7 @@ import {
   ICohort,
   CohortMemberList,
   Session,
+  CustomField,
 } from '../utils/Interfaces';
 import {
   accessControl,
@@ -56,15 +57,23 @@ import calendar from '../assets/images/calendar.svg';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { QueryKeys, Role, Telemetry } from '@/utils/app.constant';
+import {
+  QueryKeys,
+  Role,
+  Telemetry,
+  cohortHierarchy,
+} from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import { getEventList } from '@/services/EventService';
 import SessionCard from '@/components/SessionCard';
 import SessionCardFooter from '@/components/SessionCardFooter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useQueryClient } from '@tanstack/react-query';
-import { getCohortList } from '@/services/CohortServices';
-
+import { getCohortDetails, getCohortList } from '@/services/CohortServices';
+import CentralizedModal from '@/components/CentralizedModal';
+import manageUserStore from '@/store/manageUserStore';
+import { getUserDetails } from '@/services/ProfileService';
+import { updateStoreFromCohorts } from '@/utils/Helper';
 interface DashboardProps {}
 
 const Dashboard: React.FC<DashboardProps> = () => {
@@ -111,9 +120,36 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [sessions, setSessions] = React.useState<Session[]>();
   const [extraSessions, setExtraSessions] = React.useState<Session[]>();
   const [myCohortList, setMyCohortList] = React.useState<any>();
+  const [centralizedModal, setCentralizedModal] = useState(false);
+  const [showCentralisedModal, setShowCentralisedModal] = useState(false);
+  const [cohortType, setCohortType] = React.useState<string>();
+  const [medium, setMedium] = React.useState<string>();
+  const [grade, setGrade] = React.useState<string>();
+  const [board, setBoard] = React.useState<string>();
+  const [state, setState] = React.useState<string>();
+  const [eventDeleted, setEventDeleted] = React.useState(false);
+  const [eventUpdated, setEventUpdated] = React.useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const skipResetPassword = localStorage.getItem('skipResetPassword');
+      const temporaryPassword = localStorage.getItem('temporaryPassword');
+
+      if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
+        setShowCentralisedModal(true);
+      }
+    }
+  }, []);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenDrawer(newOpen);
+    //open modal for reset
+    // const skipResetPassword = localStorage.getItem('skipResetPassword');
+    // const temporaryPassword = localStorage.getItem('temporaryPassword');
+
+    if (showCentralisedModal && !newOpen) {
+      setCentralizedModal(true);
+    }
   };
   const [selectedDays, setSelectedDays] = React.useState<any>([]);
 
@@ -147,6 +183,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, []);
 
   useEffect(() => {
+    if (cohortsData[0]?.cohortId) {
+      localStorage.setItem('classId', cohortsData[0]?.cohortId);
+    } else {
+      localStorage.setItem('classId', '');
+    }
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
       const role = localStorage.getItem('role');
@@ -160,7 +201,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       }
       setUserId(storedUserId);
     }
-  }, []);
+  }, [cohortsData]);
 
   useEffect(() => {
     const getMyCohortList = async () => {
@@ -168,6 +209,35 @@ const Dashboard: React.FC<DashboardProps> = () => {
         queryKey: [QueryKeys.MY_COHORTS, userId],
         queryFn: () => getCohortList(userId as string, { customField: 'true' }),
       });
+      let response;
+      if (userId) {
+        response = await getUserDetails(userId, true);
+      }
+      const blockObject = response?.result?.userData?.customFields?.find(
+        (item: any) => item?.label === 'BLOCKS'
+      );
+      const cohortData = response?.result?.userData?.customFields;
+
+      const state = cohortData?.find(
+        (item: CustomField) => item.label === 'STATES'
+      );
+      setState(state?.value);
+
+      const typeOfCohort = cohortData?.find(
+        (item: CustomField) => item.label === 'TYPE_OF_COHORT'
+      );
+      setCohortType(typeOfCohort?.value);
+
+      let isCustomFields = true;
+      const result = await getCohortList(
+        userId as string,
+        { customField: 'true' },
+        isCustomFields
+      );
+      const activeCohorts = result?.filter(
+        (cohort: any) => cohort.cohortMemberStatus === 'active'
+      );
+      updateStoreFromCohorts(activeCohorts, blockObject);
 
       setMyCohortList(myCohortList);
     };
@@ -480,7 +550,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const viewTimeTable = () => {
     if (classId !== 'all') {
       router.push(
-        `centers/${classId}/events/${getMonthName(timeTableDate)?.toLowerCase()}`
+        `centers/${classId}/events/${getMonthName(timeTableDate)?.toLowerCase()}?showAll=1`
       );
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
@@ -525,43 +595,118 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }
 
   useEffect(() => {
+    const getCohortData = async () => {
+      const response = await getCohortDetails(classId);
+
+      let cohortData = null;
+
+      if (response?.cohortData?.length) {
+        cohortData = response?.cohortData[0];
+
+        if (cohortData?.customField?.length) {
+          const district = cohortData.customField.find(
+            (item: CustomField) => item.label === 'DISTRICTS'
+          );
+          const districtCode = district?.code || '';
+          const districtId = district?.fieldId || '';
+          const state = cohortData.customField.find(
+            (item: CustomField) => item.label === 'STATES'
+          );
+          setState(state.value);
+          const stateCode = state?.code || '';
+          const stateId = state?.fieldId || '';
+
+          const blockField = cohortData?.customField.find(
+            (field: any) => field.label === 'BLOCKS'
+          );
+
+          const address = `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}`;
+          cohortData.address = address || '';
+
+          const typeOfCohort = cohortData.customField.find(
+            (item: CustomField) => item.label === 'TYPE_OF_COHORT'
+          );
+          setCohortType(typeOfCohort?.value);
+
+          const medium = cohortData.customField.find(
+            (item: CustomField) => item.label === 'MEDIUM'
+          );
+          setMedium(medium?.value);
+
+          const grade = cohortData.customField.find(
+            (item: CustomField) => item.label === 'GRADE'
+          );
+          setGrade(grade?.value);
+
+          const board = cohortData.customField.find(
+            (item: CustomField) => item.label === 'BOARD'
+          );
+          setBoard(board?.value);
+        }
+        // setCohortDetails(cohortData);
+        // setCohortName(cohortData?.name);
+      }
+    };
+    getCohortData();
+  }, [classId]);
+
+  useEffect(() => {
     const getSessionsData = async () => {
       try {
-        const afterDate = getAfterDate(timeTableDate);
-        const beforeDate = getBeforeDate(timeTableDate);
-        const limit = 0;
-        const offset = 0;
-        const filters = {
-          date: {
-            after: afterDate,
-            before: beforeDate,
-          },
-          // cohortId: classId,
-          createdBy: userId,
-          status: ['live'],
-        };
-        const response = await getEventList({ limit, offset, filters });
+        if (userId !== '' && userId !== null) {
+          const afterDate = getAfterDate(timeTableDate);
+          const beforeDate = getBeforeDate(timeTableDate);
+          const limit = 0;
+          const offset = 0;
+          const filters = {
+            date: {
+              after: afterDate,
+              before: beforeDate,
+            },
+            // cohortId: classId,
+            createdBy: userId,
+            status: ['live'],
+          };
 
-        // check if cohort's membership is active
+          const response = await getEventList({ limit, offset, filters });
 
-        // const myCohortList = await queryClient.fetchQuery({
-        //   queryKey: [QueryKeys.MY_COHORTS, userId],
-        //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
-        // });
+          // check if cohort's membership is active
 
-        const sessionArray: any[] = [];
-        if (response?.events.length > 0) {
-          response?.events.forEach((event: any) => {
-            console.log('myCohortList', myCohortList);
-            const cohort = myCohortList?.[0]?.childData?.find(
-              (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
-            );
-            if (cohort && event.isRecurring) {
-              sessionArray.push(event);
-            }
-          });
+          // const myCohortList = await queryClient.fetchQuery({
+          //   queryKey: [QueryKeys.MY_COHORTS, userId],
+          //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
+          // });
+
+          const sessionArray: any[] = [];
+          const extraSessionArray: any[] = [];
+          if (response?.events.length > 0) {
+            response?.events.forEach((event: any) => {
+              // console.log('myCohortList', myCohortList);
+              // let cohortList;
+              // if (myCohortList.length > 0) {
+              //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
+              //     cohortList = myCohortList[0].childData;
+              //   } else {
+              //     cohortList = myCohortList;
+              //   }
+              // }
+
+              // const cohort = cohortList?.find(
+              //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
+              // );
+              if (event.isRecurring) {
+                sessionArray.push(event);
+              }
+              if (!event.isRecurring) {
+                extraSessionArray.push(event);
+              }
+            });
+          }
+          setSessions(sessionArray);
+          setExtraSessions(extraSessionArray);
         }
-        setSessions(sessionArray);
+        setEventUpdated(false);
+        setEventDeleted(false);
       } catch (error) {
         setSessions([]);
       }
@@ -570,64 +715,122 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (userId && myCohortList) {
       getSessionsData();
     }
-  }, [timeTableDate, userId, myCohortList]);
+  }, [
+    timeTableDate,
+    userId,
+    myCohortList,
+    classId,
+    eventUpdated,
+    eventDeleted,
+  ]);
 
-  useEffect(() => {
-    const getExtraSessionsData = async () => {
-      try {
-        const date = new Date();
-        const startDate = shortDateFormat(new Date());
-        const lastDate = new Date(
-          date.setDate(date.getDate() + modifyAttendanceLimit)
-        );
-        const endDate = shortDateFormat(lastDate);
-        const afterDate = getAfterDate(timeTableDate);
-        const beforeDate = getBeforeDate(timeTableDate);
-        const limit = 0;
-        const offset = 0;
-        const filters = {
-          startDate: {
-            after: afterDate,
-          },
-          endDate: {
-            before: beforeDate,
-          },
-          // cohortId: classId,
-          createdBy: userId,
-          status: ['live'],
-        };
-        const response = await getEventList({ limit, offset, filters });
+  // useEffect(() => {
+  //   const getExtraSessionsData = async () => {
+  //     try {
+  //       const date = new Date();
+  //       const startDate = shortDateFormat(new Date());
+  //       const lastDate = new Date(
+  //         date.setDate(date.getDate() + modifyAttendanceLimit)
+  //       );
+  //       const endDate = shortDateFormat(lastDate);
+  //       const afterDate = getAfterDate(timeTableDate);
+  //       const beforeDate = getBeforeDate(timeTableDate);
+  //       const limit = 0;
+  //       const offset = 0;
+  //       const filters = {
+  //         startDate: {
+  //           after: afterDate,
+  //         },
+  //         endDate: {
+  //           before: beforeDate,
+  //         },
+  //         createdBy: userId,
+  //         // cohortId: classId,
+  //         status: ['live'],
+  //       };
+  //       const response = await getEventList({ limit, offset, filters });
 
-        // check if cohort's membership is active
+  //       // check if cohort's membership is active
 
-        // const myCohortList = await queryClient.fetchQuery({
-        //   queryKey: [QueryKeys.MY_COHORTS, userId],
-        //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
-        // });
+  //       // const myCohortList = await queryClient.fetchQuery({
+  //       //   queryKey: [QueryKeys.MY_COHORTS, userId],
+  //       //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
+  //       // });
 
-        const extraSessionArray: any[] = [];
-        if (response?.events.length > 0) {
-          response?.events.forEach((event: any) => {
-            console.log('myCohortList', myCohortList);
-            const cohort = myCohortList?.[0]?.childData?.find(
-              (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
-            );
+  //       const extraSessionArray: any[] = [];
+  //       if (response?.events.length > 0) {
+  //         response?.events.forEach((event: any) => {
+  //           console.log('myCohortList', myCohortList);
 
-            if (cohort && !event.isRecurring) {
-              extraSessionArray.push(event);
-            }
-          });
-        }
-        setExtraSessions(extraSessionArray);
-      } catch (error) {
-        setExtraSessions([]);
-      }
-    };
+  //           // let cohortList;
+  //           // if (myCohortList.length > 0) {
+  //           //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
+  //           //     cohortList = myCohortList[0].childData;
+  //           //   } else {
+  //           //     cohortList = myCohortList;
+  //           //   }
+  //           // }
 
-    if (userId && myCohortList) {
-      getExtraSessionsData();
-    }
-  }, [timeTableDate, userId, myCohortList]);
+  //           // const cohort = cohortList?.find(
+  //           //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
+  //           // );
+
+  //           if (!event.isRecurring) {
+  //             extraSessionArray.push(event);
+  //           }
+  //         });
+  //       }
+  //       setExtraSessions(extraSessionArray);
+  //       setEventUpdated(false);
+  //       setEventDeleted(false);
+  //     } catch (error) {
+  //       setExtraSessions([]);
+  //     }
+  //   };
+
+  //   if (userId && myCohortList) {
+  //     getExtraSessionsData();
+  //   }
+  // }, [
+  //   timeTableDate,
+  //   userId,
+  //   myCohortList,
+  //   classId,
+  //   eventUpdated,
+  //   eventDeleted,
+  // ]);
+
+  const handleEventDeleted = () => {
+    setEventDeleted(true);
+  };
+
+  const handleEventUpdated = () => {
+    setEventUpdated(true);
+  };
+
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined' && window.localStorage) {
+  //     const skipResetPassword = localStorage.getItem('skipResetPassword');
+  //     const temporaryPassword = localStorage.getItem('temporaryPassword');
+
+  //     if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
+  //       setCentralizedModal(true);
+  //     }
+  //   }
+  // }, []);
+
+  const handlePrimaryButton = () => {
+    router.push(`/create-password`);
+  };
+
+  const handleSkipButton = () => {
+    localStorage.setItem('skipResetPassword', 'true');
+  };
+
+  const darkMode =
+    typeof window !== 'undefined' && window.localStorage
+      ? localStorage.getItem('mui-mode')
+      : null;
 
   return (
     <>
@@ -648,7 +851,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Box
                     display={'flex'}
                     width={'100%'}
-                    sx={{ backgroundColor: 'white' }}
+                    sx={{ backgroundColor: theme.palette.warning['A400'] }}
                   >
                     <Typography
                       textAlign={'left'}
@@ -671,7 +874,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   <Box
                     paddingBottom={'25px'}
                     width={'100%'}
-                    className="linerGradient br-md-8 "
+                    sx={{
+                      background:
+                        darkMode === 'dark'
+                          ? 'linear-gradient(180deg, #2e2e2e 0%, #1b1b1b 100%)'
+                          : 'linear-gradient(180deg, #fffdf7 0%, #f8efda 100%)',
+                    }}
+                    className="br-md-8"
                   >
                     <Box className="joyride-step-2">
                       <Box
@@ -688,7 +897,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             <Typography
                               variant="h2"
                               sx={{ fontSize: '14px' }}
-                              color={'black'}
+                              color={theme.palette.warning['300']}
                               fontWeight={'500'}
                             >
                               {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
@@ -724,6 +933,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               color: theme.palette.secondary.main,
                               gap: '4px',
                               opacity: classId === 'all' ? 0.5 : 1,
+                              '@media (max-width: 900px)': {
+                                top:
+                                  role === Role.TEAM_LEADER ? '210px' : '185px',
+                              },
                             }}
                             onClick={viewAttendanceHistory}
                           >
@@ -791,7 +1004,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                           pathColor: pathColor,
                                           trailColor: '#E6E6E6',
                                           strokeLinecap: 'round',
-                                          backgroundColor: '#ffffff',
+                                          backgroundColor:
+                                            theme.palette.warning['A400'],
                                         })}
                                         className="fs-24 htw-24"
                                         strokeWidth={20}
@@ -848,7 +1062,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 {currentAttendance === 'futureDate' && (
                                   <Typography
                                     sx={{
-                                      color: theme.palette.warning['A400'],
+                                      color: theme.palette.warning['300'],
                                     }}
                                     fontSize={'0.8rem'}
                                     fontStyle={'italic'}
@@ -1029,6 +1243,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 />
                               ))}
                               valuePartOne={
+                                Array.isArray(lowAttendanceLearnerList) &&
                                 lowAttendanceLearnerList.length > 0
                                   ? lowAttendanceLearnerList
                                       .slice(0, 2)
@@ -1074,7 +1289,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 )}
                 <Box mt={3} px="18px">
                   <Box
-                    sx={{ background: '#fff', padding: '5px' }}
+                    sx={{
+                      background: theme.palette.warning['A400'],
+                      padding: '5px',
+                    }}
                     display={'flex'}
                     justifyContent={'space-between'}
                   >
@@ -1084,7 +1302,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       pt={'1rem'}
                       variant="h2"
                       sx={{ fontSize: '14px' }}
-                      color={'black'}
+                      color={theme.palette.warning['300']}
                       fontWeight={'500'}
                     >
                       {t('DASHBOARD.MY_TIMETABLE')}
@@ -1117,12 +1335,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     newWidth={'100%'}
                   />
                 </Box>
-                <Box mt={3} px="18px">
+                <Box mt={2} px="18px">
                   <Grid container spacing={2}>
                     {sessions?.map((item) => (
-                      <Grid xs={12} sm={6} md={6} key={item.id} item>
-                        <SessionCard data={item} showCenterName={true}>
-                          <SessionCardFooter item={item} />
+                      <Grid xs={12} sm={6} md={4} key={item.id} item>
+                        <SessionCard
+                          data={item}
+                          showCenterName={true}
+                          isEventDeleted={handleEventDeleted}
+                          isEventUpdated={handleEventUpdated}
+                          StateName={state}
+                          board={board}
+                          medium={medium}
+                          grade={grade}
+                        >
+                          <SessionCardFooter
+                            item={item}
+                            isTopicSubTopicAdded={handleEventUpdated}
+                            state={state}
+                            board={board}
+                            medium={medium}
+                            grade={grade}
+                          />
                         </SessionCard>
                       </Grid>
                     ))}
@@ -1149,12 +1383,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       days: eventDaysLimit,
                     })}
                   </Box>
-                  <Box mt={3} px="18px">
-                    <Grid container spacing={1}>
+                  <Box sx={{ mt: 1.5, mb: 2 }}>
+                    <Grid container spacing={2}>
                       {extraSessions?.map((item) => (
-                        <Grid xs={12} sm={6} md={6} key={item.id} item>
-                          <SessionCard data={item} showCenterName={true}>
-                            <SessionCardFooter item={item} />
+                        <Grid xs={12} sm={6} md={4} key={item.id} item>
+                          <SessionCard
+                            data={item}
+                            showCenterName={true}
+                            isEventDeleted={handleEventDeleted}
+                            isEventUpdated={handleEventUpdated}
+                            StateName={state}
+                            board={board}
+                            medium={medium}
+                            grade={grade}
+                          >
+                            <SessionCardFooter
+                              item={item}
+                              isTopicSubTopicAdded={handleEventUpdated}
+                              state={state}
+                              board={board}
+                              medium={medium}
+                              grade={grade}
+                            />
                           </SessionCard>
                         </Grid>
                       ))}
@@ -1163,7 +1413,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   {extraSessions && extraSessions?.length === 0 && (
                     <Box
                       className="fs-12 fw-400 italic"
-                      sx={{ color: theme.palette.warning['300'] }}
+                      sx={{
+                        color: theme.palette.warning['300'],
+                        marginBottom: '12px',
+                      }}
                     >
                       {t('COMMON.NO_SESSIONS_SCHEDULED')}
                     </Box>
@@ -1174,6 +1427,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
           </>
         </>
       )}
+      <CentralizedModal
+        title={t('LOGIN_PAGE.WELCOME')}
+        subTitle={t('LOGIN_PAGE.PLEASE_RESET_YOUR_PASSWORD')}
+        secondary={t('LOGIN_PAGE.DO_IT_LATER')}
+        primary={t('LOGIN_PAGE.RESET_PASSWORD')}
+        modalOpen={centralizedModal}
+        handlePrimaryButton={handlePrimaryButton}
+        handleSkipButton={handleSkipButton}
+      />
     </>
   );
 };

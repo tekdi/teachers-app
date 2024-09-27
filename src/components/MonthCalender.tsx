@@ -338,7 +338,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
           }
           tileClassName={tileClassName}
           calendarType="gregory"
-          className="calender-body"
+          className="calender-body" // need to add gradient color in custom theme
           formatShortWeekday={formatShortWeekday}
           onActiveStartDateChange={handleActiveStartDateChange}
           onClickDay={handleClickDay}

@@ -46,6 +46,7 @@ import ReactGA from 'react-ga4';
 import {
   DaysOfWeek,
   eventDaysLimit,
+  frameworkId,
   idealTimeForSession,
   timeZone,
 } from '../../app.config';
@@ -53,6 +54,7 @@ import ConfirmationModal from './ConfirmationModal';
 import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
+import { getOptionsByCategory } from '@/utils/Helper';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -65,9 +67,11 @@ interface Session {
   // sessionType?: string;
   selectedWeekDays?: string[];
   DaysOfWeek?: number[];
+  recurringStartDate?: string;
   startDatetime?: string;
   endDatetime?: string;
   endDateValue?: string;
+  courseType?: string;
   subject?: string;
   subjectTitle?: string;
   isRecurring?: boolean;
@@ -93,6 +97,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   eventData,
   updateEvent,
   onEventUpdated,
+  StateName,
+  board,
+  medium,
+  grade,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -109,10 +117,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>();
+  const [selectedCourseType, setSelectedCourseType] = useState<string>();
   const [selectedBlockId, setSelectedBlockId] = useState(0);
   const [editSelection, setEditSelection] = React.useState(
     t('CENTER_SESSION.EDIT_THIS_SESSION')
   );
+  const [courseTypes, setCourseTypes] = useState<string[]>();
+  const [subjectLists, setSubjectLists] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<string[]>();
   const [initialEventData, setInitialEventData] = useState(null);
   const [shortDescription, setShortDescription] = useState<string>('');
@@ -134,6 +145,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       endDatetime: '',
       endDateValue: '',
       subject: '',
+      courseType: '',
       subjectTitle: '',
       isRecurring: false,
       meetingLink: '',
@@ -147,6 +159,86 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   ]);
 
   useEffect(() => {
+    const handleBMGS = async () => {
+      try {
+        if (StateName && medium && grade && board) {
+          const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/api/framework/v1/read/${frameworkId}`;
+          const boardData = await fetch(url).then((res) => res.json());
+          const frameworks = boardData?.result?.framework;
+
+          const getStates = getOptionsByCategory(frameworks, 'state');
+          const matchState = getStates.find(
+            (item: any) => item.name === StateName
+          );
+
+          const getBoards = getOptionsByCategory(frameworks, 'board');
+          const matchBoard = getBoards.find((item: any) => item.name === board);
+
+          const getMedium = getOptionsByCategory(frameworks, 'medium');
+          const matchMedium = getMedium.find(
+            (item: any) => item.name === medium
+          );
+
+          const getGrades = getOptionsByCategory(frameworks, 'gradeLevel');
+          const matchGrade = getGrades.find((item: any) => item.name === grade);
+
+          const getCourseTypes = getOptionsByCategory(frameworks, 'courseType');
+          const courseTypes = getCourseTypes?.map((type: any) => type.name);
+          setCourseTypes(courseTypes);
+
+          const courseTypesAssociations = getCourseTypes?.map((type: any) => {
+            return {
+              code: type.code,
+              name: type.name,
+              associations: type.associations,
+            };
+          });
+
+          const courseSubjectLists = courseTypesAssociations.map(
+            (courseType: any) => {
+              const commonAssociations = courseType?.associations.filter(
+                (assoc: any) =>
+                  matchState?.associations.map(
+                    (item: any) => item.code === assoc.code
+                  ) &&
+                  matchBoard?.associations.map(
+                    (item: any) => item.code === assoc.code
+                  ) &&
+                  matchMedium?.associations.map(
+                    (item: any) => item.code === assoc.code
+                  ) &&
+                  matchGrade?.associations.map(
+                    (item: any) => item.code === assoc.code
+                  )
+              );
+              console.log(commonAssociations);
+              const getSubjects = getOptionsByCategory(frameworks, 'subject');
+              const subjectAssociations = commonAssociations?.filter(
+                (assoc: any) =>
+                  getSubjects.map((item: any) => assoc.code === item?.code)
+              );
+              console.log(subjectAssociations);
+              return {
+                courseTypeName: courseType?.name,
+                courseType: courseType?.code,
+                subjects: subjectAssociations?.map(
+                  (subject: any) => subject?.name
+                ),
+              };
+            }
+          );
+
+          console.log(courseSubjectLists);
+          setSubjectLists(courseSubjectLists);
+        }
+      } catch (error) {
+        console.error('Error fetching board data:', error);
+      }
+    };
+    handleBMGS();
+  }, []);
+
+  useEffect(() => {
     console.log(eventData);
     if (eventData) {
       setInitialEventData(eventData);
@@ -155,6 +247,14 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           ? sessionMode.ONLINE
           : sessionMode.OFFLINE;
       setMode(mode);
+      const courseType = eventData?.metadata?.courseType;
+      setSelectedCourseType(courseType);
+      const courseSubjects = subjectLists?.find(
+        (item: any) => item.courseTypeName === courseType
+      );
+      if (courseSubjects) {
+        setSubjects(courseSubjects.subjects);
+      }
       const sub = eventData?.metadata?.subject;
       setSelectedSubject(sub);
       const sessionTitle = eventData?.shortDescription;
@@ -200,7 +300,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         },
       ]);
     }
-  }, [eventData, editSelection]);
+  }, [eventData, editSelection, subjectLists]);
 
   const handleOpenModel = () => {
     setModalOpen(true);
@@ -255,61 +355,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     setSessionBlocks(updatedSessionBlocks);
   };
 
-  useEffect(() => {
-    const getAddFacilitatorFormData = async () => {
-      try {
-        const response = await queryClient.fetchQuery({
-          queryKey: ['formRead', FormContext.USERS, FormContextType.TEACHER],
-          queryFn: () =>
-            getFormRead(FormContext.USERS, FormContextType.TEACHER),
-        });
-
-        console.log('sortedFields', response);
-        if (response) {
-          const subjectTeach = response?.fields
-            .filter((field: any) => field?.label === 'SUBJECTS_I_TEACH')
-            .flatMap((field: any) =>
-              field?.options?.map((option: any) =>
-                t(`FORM.${option?.label.toUpperCase()}`)
-              )
-            );
-
-          const mainSubjects = response?.fields
-            .filter((field: any) => field?.label === 'MY_MAIN_SUBJECTS')
-            .flatMap((field: any) =>
-              field?.options?.map((option: any) =>
-                t(`FORM.${option?.label.toUpperCase()}`)
-              )
-            );
-
-          const combinedSubjects = Array.from(
-            new Set([...subjectTeach, ...mainSubjects])
-          );
-
-          setSubjects(combinedSubjects);
-
-          console.log(combinedSubjects);
-        }
-
-        let centerOptionsList;
-        if (typeof window !== 'undefined' && window.localStorage) {
-          const CenterList = localStorage.getItem('CenterList');
-          const centerOptions = CenterList ? JSON.parse(CenterList) : [];
-          centerOptionsList = centerOptions.map(
-            (center: { cohortId: string; cohortName: string }) => ({
-              value: center.cohortId,
-              label: center.cohortName,
-            })
-          );
-          console.log(centerOptionsList);
-        }
-      } catch (error) {
-        console.error('Error fetching form data:', error);
-      }
-    };
-    getAddFacilitatorFormData();
-  }, []);
-
   const handleSubjectChange = (
     id: number | string | undefined,
     event: React.ChangeEvent<{ value: unknown }>
@@ -328,12 +373,44 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     );
   };
 
+  const handleCourseTypeChange = (
+    id: number | string | undefined,
+    event: React.ChangeEvent<{ value: unknown }>
+  ) => {
+    const newCourseType = event.target.value as string;
+    setSelectedCourseType(newCourseType);
+    const courseSubjects = subjectLists?.find(
+      (item: any) => item.courseTypeName === newCourseType
+    );
+
+    console.log(courseSubjects);
+
+    if (courseSubjects) {
+      setSubjects(courseSubjects.subjects);
+    }
+    setSessionBlocks(
+      sessionBlocks.map((block) =>
+        block.id === id
+          ? {
+              ...block,
+              courseType: newCourseType,
+            }
+          : block
+      )
+    );
+  };
+
   const combineDateAndTime = (
     date: Dayjs | null,
     time: Dayjs | null
   ): Dayjs | null => {
     if (date && time) {
-      return date.hour(time.hour()).minute(time.minute()).second(time.second());
+      const dateTime = date
+        .hour(time.hour())
+        .minute(time.minute())
+        .second(time.second());
+      console.log('dateTime', dateTime);
+      return dateTime;
     }
     return null;
   };
@@ -352,25 +429,39 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       if (type === 'start' && field === 'date') {
         setStartDate((prev) => {
           const combinedStartDateTime = combineDateAndTime(newValue, startTime);
-          updateSessionBlock(id, combinedStartDateTime, endDate, endTime, type);
+          const combinedEndDateTime = combineDateAndTime(newValue, endTime);
+          updateSessionBlock(
+            id,
+            combinedStartDateTime,
+            combinedEndDateTime,
+            endDate,
+            type
+          );
           return newValue;
         });
       } else if (type === 'start' && field === 'time') {
         setStartTime((prev) => {
           const combinedStartDateTime = combineDateAndTime(startDate, newValue);
-          updateSessionBlock(id, combinedStartDateTime, endDate, endTime, type);
+          updateSessionBlock(id, combinedStartDateTime, endTime, endDate, type);
           return newValue;
         });
       } else if (type === 'end' && field === 'date') {
         setEndDate((prev) => {
           const combinedEndDateTime = combineDateAndTime(newValue, endTime);
-          updateSessionBlock(id, startDate, combinedEndDateTime, endTime, type);
+          updateSessionBlock(id, startDate, endTime, combinedEndDateTime, type);
           return newValue;
         });
       } else if (type === 'end' && field === 'time') {
         setEndTime((prev) => {
           const combinedEndDateTime = combineDateAndTime(startDate, newValue);
-          updateSessionBlock(id, startDate, combinedEndDateTime, endTime, type);
+          const combinedEndDateValue = combineDateAndTime(endDate, newValue);
+          updateSessionBlock(
+            id,
+            startDate,
+            combinedEndDateTime,
+            combinedEndDateValue,
+            type
+          );
           return newValue;
         });
       }
@@ -385,12 +476,47 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     type: 'start' | 'end'
   ) => {
     // const EndDateTime = combineDateAndTime(startDate, endTime);
-    const startDatetime = convertToUTC(combinedStartDateTime);
-    const endDatetime = convertToUTC(combinedEndDateTime);
-    const endDateValue =
-      clickedBox === 'EXTRA_SESSION'
-        ? endDatetime
-        : convertToUTC(combinedEndDateValue);
+    let endDatetime: any;
+    let startDatetime: any;
+    let recurringStartDate: any;
+    let endDateValue: any;
+    if (type === 'start') {
+      const combinedStartDate = combineDateAndTime(
+        startDate,
+        combinedStartDateTime
+      );
+      const combinedEndDate = combineDateAndTime(
+        startDate,
+        combinedEndDateTime
+      );
+      endDatetime = convertToUTC(combinedEndDate);
+      startDatetime = convertToUTC(combinedStartDate);
+
+      recurringStartDate = convertToUTC(combinedStartDateTime);
+      const endValue = combineDateAndTime(
+        combinedEndDateValue,
+        combinedEndDateTime
+      );
+      endDateValue =
+        clickedBox === 'EXTRA_SESSION' ? endDatetime : convertToUTC(endValue);
+    } else if (type === 'end') {
+      const startDatetimeValue = combineDateAndTime(
+        combinedEndDateTime,
+        startTime
+      );
+      startDatetime = convertToUTC(startTime);
+      const endDatetimeValue = combineDateAndTime(
+        startTime,
+        combinedEndDateTime
+      );
+      endDatetime = convertToUTC(endDatetimeValue);
+      const combinedStartDate = combineDateAndTime(startDate, startTime);
+      recurringStartDate = convertToUTC(combinedStartDate);
+      endDateValue =
+        clickedBox === 'EXTRA_SESSION'
+          ? endDatetime
+          : convertToUTC(combinedEndDateValue);
+    }
 
     if (startDatetime && endDatetime && endDateValue) {
       const isRecurringEvent = endDatetime !== endDateValue ? true : false;
@@ -399,6 +525,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           block?.id === id
             ? {
                 ...block,
+                recurringStartDate: recurringStartDate,
                 startDatetime: startDatetime,
                 endDatetime: endDatetime,
                 endDateValue: endDateValue,
@@ -411,6 +538,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             : block
         )
       );
+      console.log('sessionBlocks updated', sessionBlocks);
     }
   };
 
@@ -445,6 +573,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             : block
         )
       );
+      console.log('sessionBlocks initially', sessionBlocks);
     }
   }, [startDate, endDate, startTime, endTime, selectedBlockId]);
 
@@ -461,7 +590,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const value = event?.target?.value;
     setLink(value);
 
-    const zoomLinkPattern = /^(https?:\/\/)?(www\.)?zoom\.us\/j\/\d+$/;
+    const zoomLinkPattern =
+      /^https?:\/\/([a-z0-9]+\.)?zoom\.us\/(j|s)\/\d+(\?pwd=[\w-]+)?$/;
+
     const googleMeetLinkPattern =
       /^(https?:\/\/)?(meet\.google\.com\/[a-zA-Z0-9-]+)$/;
 
@@ -660,6 +791,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           registrationEndDate: '',
           metaData: {
             category: title,
+            courseType: block?.courseType,
             subject: block?.subject || '',
             teacherName: userName,
             cohortId: cohortId || '',
@@ -680,6 +812,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               type: 'endDate',
               value: block?.endDateValue || '',
             },
+            recurringStartDate: block?.startDatetime || '',
           };
         }
 
@@ -710,11 +843,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               ReactGA.event('event-created-successfully', {
                 creatorId: userId,
               });
-              if (onCloseModal) {
-                onCloseModal();
-              }
             } else {
               showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            }
+            if (onCloseModal) {
+              onCloseModal();
             }
           } catch (error) {
             console.error('Error creating event:', error);
@@ -747,10 +880,14 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         deleteSelection !== t('CENTER_SESSION.EDIT_THIS_SESSION');
 
       const eventRepetitionId = eventData?.eventRepetitionId;
-
+      const userId =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('userId') || ''
+          : '';
       const apiBody = {
         isMainEvent: isMainEvent,
         status: 'archived',
+        updatedBy: userId,
       };
       const response = await editEvent(eventRepetitionId, apiBody);
       if (response?.responseCode === 'OK') {
@@ -797,24 +934,27 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           };
 
           if (editSelection === t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS')) {
+            console.log('sessionBlocks edit call', sessionBlocks);
             const DaysOfWeek = sessionBlocks?.[0]?.DaysOfWeek;
-            const endDate = sessionBlocks?.[0]?.endDatetime;
-            const startDate = sessionBlocks?.[0]?.startDatetime;
-            const endDateTime = sessionBlocks?.[0]?.endDateValue;
-            apiBody['endDateTime'] = endDateTime;
+            const RecurringEndDate = sessionBlocks?.[0]?.endDateValue;
+            const RecurringstartDate =
+              sessionBlocks?.[0]?.recurringStartDate ??
+              sessionBlocks?.[0]?.startDatetime;
+            const endDateTime = sessionBlocks?.[0]?.endDatetime;
+            apiBody['endDatetime'] = sessionBlocks?.[0]?.endDatetime;
             const datePart = sessionBlocks?.[0]?.endDateValue?.split('T')[0];
             const timePart = sessionBlocks?.[0]?.startDatetime?.split('T')[1];
             const startDateValue = `${datePart}T${timePart}`;
-            apiBody['startDateTime'] = startDateValue;
+            apiBody['startDatetime'] = sessionBlocks?.[0]?.startDatetime;
             apiBody['recurrencePattern'] = {
               interval: 1,
               frequency: 'weekly',
               daysOfWeek: DaysOfWeek,
               endCondition: {
                 type: 'endDate',
-                value: endDate,
+                value: RecurringEndDate,
               },
-              recurringStartDate: startDate,
+              recurringStartDate: RecurringstartDate,
             };
           } else if (editSelection === t('CENTER_SESSION.EDIT_THIS_SESSION')) {
             const startDateTime = sessionBlocks?.[0]?.startDatetime;
@@ -841,6 +981,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
           const metadata = {
             category: eventData?.title || '',
+            courseType: eventData?.metadata?.courseType || '',
             subject: eventData?.metadata?.subject || '',
             teacherName: eventData?.metadata?.teacherName || '',
             cohortId: eventData?.metadata?.cohortId || '',
@@ -906,11 +1047,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               t('CENTER_SESSION.SESSION_EDITED_SUCCESSFULLY'),
               'success'
             );
-            if (onEventUpdated) {
-              onEventUpdated();
-            }
           } else {
             showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+          }
+          if (onEventUpdated) {
+            onEventUpdated();
           }
         } catch (error) {
           console.error('Error in editing event:', error);
@@ -1001,8 +1142,20 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           )}
 
           <Box>
+            {(!StateName || !medium || !grade || !board) && (
+              <Box
+                padding="0.5rem"
+                style={{
+                  backgroundColor: theme?.palette?.primary['light'],
+                }}
+              >
+                <Typography variant="h2" component="h2">
+                  t('CENTER_SESSION.BOARD_MEDIUM_GRADE_NOT_ASSIGNED')
+                </Typography>
+              </Box>
+            )}
             <SessionMode
-              mode={mode || block?.sessionMode}
+              mode={editSession ? (mode ?? '') : (block?.sessionMode ?? '')}
               handleSessionModeChange={(e) =>
                 handleSessionModeChange(e, block?.id)
               }
@@ -1015,6 +1168,34 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               disabled={editSession}
             />
           </Box>
+          <Box sx={{ mt: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel
+                style={{ color: theme?.palette?.warning['A200'] }}
+                id="demo-simple-select-label"
+              >
+                {t('CENTER_SESSION.COURSE_TYPE')}
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label={t('CENTER_SESSION.COURSE_TYPE')}
+                style={{ borderRadius: '4px' }}
+                onChange={(event: any) =>
+                  handleCourseTypeChange(block?.id, event)
+                }
+                value={selectedCourseType || ''}
+                disabled={!StateName || !medium || !grade || !board}
+              >
+                {courseTypes?.map((courseType: string) => (
+                  <MenuItem key={courseType} value={courseType}>
+                    {courseType}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+
           {(clickedBox === 'PLANNED_SESSION' || editSession) && (
             <>
               <Box sx={{ mt: 2 }}>
@@ -1033,20 +1214,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     onChange={(event: any) =>
                       handleSubjectChange(block?.id, event)
                     }
-                    value={
-                      selectedSubject
-                        ? selectedSubject
-                        : t('CENTER_SESSION.SUBJECT')
-                    }
+                    value={selectedSubject || ''}
+                    disabled={!(StateName && medium && grade && board)}
                   >
                     {subjects?.map((subject: string) => (
                       <MenuItem key={subject} value={subject}>
                         {subject}
                       </MenuItem>
                     ))}
-                    <MenuItem key="other" value="other">
+                    {/* <MenuItem key="other" value="other">
                       {t('FORM.OTHER')}
-                    </MenuItem>
+                    </MenuItem> */}
                   </Select>
                 </FormControl>
               </Box>
@@ -1065,58 +1243,38 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             </>
           )}
 
-          {(block?.sessionMode === sessionMode.ONLINE ||
-            mode === sessionMode.ONLINE) && (
-            <>
-              {/* <Box
-                sx={{
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: theme?.palette?.warning['300'],
-                  mt: 1.5,
-                }}
-              >
-                {t('CENTER_SESSION.SET_UP')}
-              </Box> */}
-
-              <Box sx={{ mt: 2 }}>
-                <TextField
-                  id="outlined-basic"
-                  value={link}
-                  label={t('CENTER_SESSION.MEETING_LINK')}
-                  variant="outlined"
-                  error={!!linkError}
-                  helperText={linkError}
-                  onChange={(e) =>
-                    handleLinkChange(
-                      e as React.ChangeEvent<HTMLInputElement>,
-                      block?.id
-                    )
-                  }
-                />
-              </Box>
-              <Box sx={{ mt: 2 }}>
-                <TextField
-                  id="outlined-basic"
-                  label={t('CENTER_SESSION.MEETING_PASSCODE')}
-                  variant="outlined"
-                  onChange={(e: any) => handlePasscodeChange(block?.id, e)}
-                  value={meetingPasscode ? meetingPasscode : null}
-                />
-              </Box>
-            </>
-          )}
+          {block?.sessionMode === sessionMode.ONLINE &&
+            mode === sessionMode.ONLINE && (
+              <>
+                <Box sx={{ mt: 2 }}>
+                  <TextField
+                    id="outlined-basic"
+                    value={link}
+                    label={t('CENTER_SESSION.MEETING_LINK')}
+                    variant="outlined"
+                    error={!!linkError}
+                    helperText={linkError}
+                    onChange={(e) =>
+                      handleLinkChange(
+                        e as React.ChangeEvent<HTMLInputElement>,
+                        block?.id
+                      )
+                    }
+                  />
+                </Box>
+                <Box sx={{ mt: 2 }}>
+                  <TextField
+                    id="outlined-basic"
+                    label={t('CENTER_SESSION.MEETING_PASSCODE')}
+                    variant="outlined"
+                    onChange={(e: any) => handlePasscodeChange(block?.id, e)}
+                    value={meetingPasscode ? meetingPasscode : null}
+                  />
+                </Box>
+              </>
+            )}
           {clickedBox === 'EXTRA_SESSION' && (
             <Box sx={{ mt: 2 }}>
-              {/* <Box
-                sx={{
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: theme?.palette?.warning['300'],
-                }}
-              >
-                {t('CENTER_SESSION.SESSION_DETAILS')}
-              </Box> */}
               <Box>
                 <FormControl fullWidth>
                   <InputLabel
@@ -1139,6 +1297,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       handleSubjectChange(block?.id, event)
                     }
                     value={selectedSubject}
+                    disabled={!(StateName && medium && grade && board)}
                   >
                     {subjects?.map((subject: string) => (
                       <MenuItem key={subject} value={subject}>

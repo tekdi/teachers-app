@@ -5,6 +5,7 @@ import FingerprintJS from 'fingerprintjs2';
 import { CustomField, UpdateCustomField } from './Interfaces';
 dayjs.extend(utc);
 import { format, parseISO } from 'date-fns';
+import manageUserStore from '@/store/manageUserStore';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -350,7 +351,18 @@ export const convertLocalToUTC = (localDateTime: any) => {
 
 export const getCurrentYearPattern = () => {
   const currentYear = new Date().getFullYear();
-  return `^(19[0-9][0-9]|20[0-${Math.floor(currentYear / 10) % 10}][0-${currentYear % 10}])$`;
+  
+  // Build the dynamic part for the current century
+  let regexPart = '';
+  if (currentYear >= 2000 && currentYear < 2100) {
+    const lastDigit = currentYear % 10;
+    const middleDigit = Math.floor((currentYear % 100) / 10);
+    
+    regexPart = `20[0-${middleDigit - 1}][0-9]|20${middleDigit}[0-${lastDigit}]`;
+  }
+
+  // Full regex covering 1900–1999, 2000 to current year
+  return `^(19[0-9]{2}|${regexPart})$`;
 };
 
 export const extractAddress = (
@@ -432,103 +444,6 @@ export const format2DigitDate = (dateStr: any) => {
   // Format the date into "2 Feb, 2024" format
   return format(dateObj, 'd MMM, yyyy');
 };
-type Field = {
-  options?: Option[];
-  name?: string;
-  dependsOn: string | boolean | null;
-  sourceDetails?: {
-    url?: string;
-  };
-  fieldId?: string;
-  fileds?: any;
-};
-
-type Framework = {
-  name: string;
-  identifier: string;
-};
-
-type Option = {
-  label: string;
-  value: string;
-};
-
-export const mapFrameworksToOptionsWithFieldId = (frameworks: Framework[]) => {
-  return frameworks.map((framework) => ({
-    label: framework.name,
-    value: framework.identifier,
-  }));
-};
-
-export const formatOptions = (data: any[]) => {
-  return data.map((item) => ({
-    label: item.name,
-    value: item.code,
-  }));
-};
-
-export const getAssociatesByCode = (data: any, selectedCode: string): any[] => {
-  const selectedItem = data.find(
-    (item: { code: string }) => item.code === selectedCode
-  );
-  return selectedItem ? selectedItem.associates : [];
-};
-
-export const getAssociatesByIdentifier = (
-  data: any,
-  selectedIdentifier: string
-): any[] => {
-  const selectedItem = data.find(
-    (item: { identifier: string }) => item.identifier === selectedIdentifier
-  );
-  return selectedItem ? selectedItem.associates : [];
-};
-
-// export const updateFieldOptions = (
-//   fields: Field[],
-//   optionsList: Array<{ fieldId: string, options: Option[] }>
-// ): Field[] => {
-//   return fields.map(field => {
-//     // Only update options if 'dependsOn' is explicitly set to false
-//     if (field.dependsOn === false) {
-//       const matchingOptions = optionsList.find(option => option.fieldId === field.fieldId);
-//       if (matchingOptions) {
-//         return { ...field, options: matchingOptions.options };
-//       }
-//     }
-//     return field;
-//   });
-// };
-
-export const getOptionsByCode = (data: any, code: string) => {
-  const mediumData = data?.find((item: any) => item.code === code);
-
-  if (mediumData) {
-    return mediumData.terms
-      .filter((term: any) => term.status === 'Live')
-      .map((term: any) => ({
-        name: term.name,
-        code: term.code,
-        identifier: term.identifier,
-        associates: term.associations,
-      }));
-  }
-
-  return [];
-};
-
-export const filterByCategory = (data: any, category: string) => {
-  const categoryData = data
-    ?.filter(
-      (item: any) => item.category === category && item.status === 'Live'
-    )
-    .map((element: any) => ({
-      label: element.name,
-      value: element.identifier,
-    }));
-
-  return categoryData || [];
-};
 
 export const sortSessionsByTime = (sessionsArray: any) => {
   const passed: any = [];
@@ -552,11 +467,150 @@ export const sortSessionsByTime = (sessionsArray: any) => {
   return { sessionList: [...passed, ...live, ...upcoming], index };
 };
 
-// export function sortByKeyWithNumericHandling(data: any[], key: string | number) {
-//   return data.sort((a, b) => {
-//       return a[key].localeCompare(b[key], undefined, {
-//           numeric: true,
-//           sensitivity: 'base' // Case-insensitive comparison
-//       });
-//   });
-// }
+// Helper function to get options by category
+export const getOptionsByCategory = (frameworks: any, categoryCode: string) => {
+  // Find the category by code
+  const category = frameworks.categories.find(
+    (category: any) => category.code === categoryCode
+  );
+
+  // Return the mapped terms
+  return category.terms.map((term: any) => ({
+    name: term.name,
+    code: term.code,
+    associations: term.associations
+  }));
+};
+
+interface Association {
+  identifier: string;
+  code: string;
+  name: string;
+  category: string;
+  status: string;
+  [key: string]: any; // To include any additional fields
+}
+
+interface DataItem {
+  name: string;
+  code: string;
+  associations: Association[];
+}
+export const getAssociationsByName = (data: DataItem[], name: string): Association[] | [] => {
+  const foundItem = data.find(item => item.name === name);
+  return foundItem ? foundItem.associations : [];
+};
+
+
+export const getAssociationsByCodeNew = (data: DataItem[], code: string): Association[] | [] => {
+  const foundItem = data.find(item => item.name === code);
+  return foundItem ? foundItem.associations : [];
+};
+
+
+
+export const getAssociationsByCode = (data: DataItem[], code: string): Association[] | [] => {
+  const foundItem = data.find(item => item.code === code);
+  return foundItem ? foundItem.associations : [];
+};
+
+export const findCommonAssociations = (data1: any[], data2: any[]) => {
+
+  if (!data1.length) return data2;
+  if (!data2.length) return data1;
+
+  return data1.map((item1) => {
+    const item2 = data2.find((item) => item.code === item1.code);
+    if (item2) {
+      const commonAssociations = item1.associations.filter((assoc1: any) =>
+        item2.associations.some((assoc2: any) => assoc1.identifier === assoc2.identifier)
+      );
+      if (commonAssociations.length > 0) {
+        return {
+          name: item1.name,
+          code: item1.code,
+          associations: commonAssociations,
+        };
+      }
+    }
+    return null;
+  }).filter(Boolean);
+};
+
+export const filterAndMapAssociationsNew = (
+  category: string,
+  options: any[],
+  associationsList?: any[],
+  codeKey: string = "code"
+) => {
+  if (!Array.isArray(options)) {
+    console.error("Options is not an array:", options);
+    return [];
+  }
+
+  if (!associationsList || associationsList.length === 0) {
+    return [];
+  }
+
+  return options
+    .filter((option) => {
+      const optionCode = option[codeKey];
+
+      return associationsList.some(
+        (assoc) => assoc[codeKey] === optionCode && assoc.category === category
+      );
+    })
+    .map((option) => ({
+      name: option.name,
+      code: option.code,
+      associations: option.associations || [],
+    }));
+};
+
+export function deepClone<T>(obj: T): T {
+  // Check if structuredClone is available
+  if (typeof structuredClone === 'function') {
+    return structuredClone(obj);
+  }
+
+  // Fallback to JSON method for deep cloning
+  return JSON.parse(JSON.stringify(obj));
+}
+
+export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => {
+  const setDistrictCode = manageUserStore.getState().setDistrictCode;
+  const setDistrictId = manageUserStore.getState().setDistrictId;
+  const setStateCode = manageUserStore.getState().setStateCode;
+  const setStateId = manageUserStore.getState().setStateId;
+  const setBlockCode = manageUserStore.getState().setBlockCode;
+  const setBlockId = manageUserStore.getState().setBlockId;
+  const setBlockName = manageUserStore.getState().setBlockName;
+  const setDistrictName = manageUserStore.getState().setDistrictName;
+  const setStateName = manageUserStore.getState().setStateName;
+
+
+  const district = activeCohorts[0]?.customField?.find(
+    (item: any) => item?.label === 'DISTRICTS'
+  );
+  if (district) {
+    setDistrictCode(district?.code);
+    setDistrictId(district?.fieldId);
+    setDistrictName(district?.value)
+  }
+
+  const state = activeCohorts[0]?.customField?.find(
+    (item: any) => item?.label === 'STATES'
+  );
+
+  if (state) {
+    setStateCode(state?.code);
+    setStateId(state?.fieldId);
+    setStateName(state?.value);
+  }
+
+  if (blockObject) {
+    setBlockCode(blockObject?.code);
+    setBlockId(blockObject?.fieldId);
+    setBlockName(blockObject?.value);
+  }
+};

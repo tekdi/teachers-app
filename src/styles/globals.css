@@ -139,7 +139,7 @@ body {
   font-weight: 300;
   font-size: 1em;
   line-height: 1.5;
-  background: #fff;
+  background: var(--mui-palette-warning-A400) !important;
 }
 
 header {
@@ -531,6 +531,7 @@ main {
 .calender-body {
   padding: 20px !important;
   background: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%) !important;
+  /* background: linear-gradient(180deg, #2e2e2e 0%, #1b1b1b 100%) !important; */
   border: unset !important;
 }
 
@@ -670,9 +671,15 @@ main {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+.one-line-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .bg-white {
-  background-color: #fff;
+  background-color: var(--mui-palette-warning-A400);
 }
 
 .customRange .Mui-selected {
@@ -692,11 +699,11 @@ main {
 }
 
 .userName label {
-  color: #1f1b13 !important;
+  color: var(--mui-palette-warning-300) !important;
 }
 
 .password label {
-  color: #1f1b13 !important;
+  color: var(--mui-palette-warning-300)!important;
 }
 
 .fs-24 {
@@ -922,7 +929,7 @@ main {
     width: 111%;
   } */
   .mt-md-16 {
-    margin-top: 16px;
+    margin-top: 10px;
   }
 
   .ps-md-ab {
@@ -931,6 +938,10 @@ main {
 
   .right-md-20 {
     right: 20px;
+  }
+
+  .top-md-185{
+    top: 185px;
   }
 
   .mt-md-3 {

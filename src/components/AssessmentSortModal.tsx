@@ -85,9 +85,10 @@ const AssessmentSortModal: React.FC<IAssessmentSortModal> = ({
       onClose={onClose}
       primaryText={btnText}
       primaryActionHandler={onApply}
+      showFooter={true}
     >
       <Grid container sx={{ padding: '10px 0px 0' }} spacing={2}>
-        {filters.map((filter) => (
+        {filters?.map((filter) => (
           <Grid item xs={12} key={filter.label}>
             <FormControl component="fieldset" sx={{ width: '100%' }}>
               <FormLabel

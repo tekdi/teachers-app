@@ -31,6 +31,7 @@ import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
 import { telemetryFactory } from '@/utils/telemetry';
 import { toPascalCase } from '@/utils/Helper';
 import { useQueryClient } from '@tanstack/react-query';
+import { getUserDetails } from '@/services/ProfileService';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -93,6 +94,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   showFloatingLabel = false,
   showDisabledDropDown = false,
 }) => {
+  console.log('cohortsData', classId, cohortsData[0]?.cohortId);
   const router = useRouter();
   const theme = useTheme<any>();
   const queryClient = useQueryClient();
@@ -147,8 +149,16 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             queryFn: () => getCohortList(userId, { customField: 'true' }),
           });
 
-          console.log('Response:', response);
           const cohortData = response[0];
+          let userDetailsResponse;
+          if (userId) {
+            userDetailsResponse = await getUserDetails(userId, true);
+          }
+          const blockObject =
+            userDetailsResponse?.result?.userData?.customFields.find(
+              (item: any) => item?.label === 'BLOCKS'
+            );
+
           if (cohortData?.customField?.length) {
             const district = cohortData?.customField?.find(
               (item: CustomField) => item?.label === 'DISTRICTS'
@@ -172,9 +182,9 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
               (field: any) => field?.label === 'BLOCKS'
             );
 
-            if (blockField) {
-              setBlockCode(blockField?.code);
-              setBlockId(blockField?.fieldId);
+            if (blockObject) {
+              setBlockCode(blockObject?.code);
+              setBlockId(blockObject?.fieldId);
             }
           }
 
@@ -360,7 +370,13 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                       {cohortsData?.length > 1 ? (
                         <FormControl
                           className="drawer-select"
-                          sx={{ m: 0, width: '100%' }}
+                          sx={{
+                            m: 0,
+                            width: '100%',
+                            // '@media (max-width: 700px)': {
+                            //   width: '50%',
+                            // },
+                          }}
                         >
                           <Select
                             value={classId}
@@ -368,11 +384,14 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             displayEmpty
                             inputProps={{ 'aria-label': 'Without label' }}
                             className="select-languages capitalize fs-14 fw-500 bg-white"
-                            style={{
+                            sx={{
                               borderRadius: '0.5rem',
                               color: theme.palette.warning['200'],
                               width: '100%',
                               marginBottom: '0rem',
+                              '@media (max-width: 700px)': {
+                                width: isAttendanceOverview ? '100%' : '50%',
+                              },
                             }}
                             MenuProps={{
                               PaperProps: {
@@ -446,7 +465,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                           <Select
                             labelId="center-select-label"
                             label={showFloatingLabel ? t('COMMON.CENTER') : ''}
-                            value={classId}
+                            value={classId ? classId : cohortsData[0]?.cohortId}
                             onChange={handleCohortSelection}
                             // displayEmpty
                             // style={{ borderRadius: '4px' }}
@@ -457,7 +476,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                 ? ''
                                 : 'select-languages fs-14 fw-500 bg-white'
                             }
-                            style={
+                            sx={
                               showFloatingLabel
                                 ? { borderRadius: '4px' }
                                 : {
@@ -465,6 +484,17 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     color: theme.palette.warning['200'],
                                     width: '100%',
                                     marginBottom: '0rem',
+                                    marginRight: '10px',
+                                    '@media (max-width: 902px)': {
+                                      width: isAttendanceOverview
+                                        ? '100%'
+                                        : '60%',
+                                    },
+                                    '@media (max-width: 702px)': {
+                                      width: isAttendanceOverview
+                                        ? '100%'
+                                        : '50%',
+                                    },
                                   }
                             }
                           >

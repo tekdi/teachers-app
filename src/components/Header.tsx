@@ -17,6 +17,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import StyledMenu from './StyledMenu';
 import MenuDrawer from './MenuDrawer';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 
 interface HeaderProps {
   toggleDrawer?: (newOpen: boolean) => () => void;
@@ -110,6 +111,10 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     handleClose();
     setModalOpen(true);
   };
+  const darkMode =
+    typeof window !== 'undefined' && window.localStorage
+      ? localStorage.getItem('mui-mode')
+      : null;
 
   return (
     <Box
@@ -126,7 +131,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
           top: '0px',
           zIndex: '999',
           width: '100%',
-          bgcolor: ' #FFFFFF',
+          bgcolor: theme.palette.warning['A400'],
         }}
       >
         <Stack
@@ -135,7 +140,11 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
           justifyContent={'space-between'}
           alignItems={'center'}
           height="64px"
-          boxShadow="0px 1px 3px 0px #0000004D"
+          boxShadow={
+            darkMode === 'dark'
+              ? '0px 1px 3px 0px #ffffff1a'
+              : '0px 1px 3px 0px #0000004D'
+          }
           className="pl-md-20"
         >
           <Box
@@ -182,12 +191,8 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
             flexDirection={'column'}
             mt={'0.5rem'}
           >
-            <Image
-              height={20}
-              width={20}
-              src={accountIcon}
-              alt="logo"
-              style={{ cursor: 'pointer' }}
+            <AccountCircleOutlinedIcon
+              sx={{ color: theme.palette.warning['A200'] }}
             />
             {/* <AccountCircleIcon
               fontSize="large"

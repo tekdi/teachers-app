@@ -15,7 +15,7 @@ const fetchCohortMemberList = async ({
   try {
     const response = await post(apiUrl, {
       limit,
-      page,
+      offset: page,
       filters,
     });
     console.log('data', response?.data);

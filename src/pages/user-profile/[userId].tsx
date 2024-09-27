@@ -627,42 +627,44 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
         <Box mt={5}>
           <Typography textAlign={'center'}>{t('COMMON.LOADING')}</Typography>
         </Box>
-      )}{' '}
-      {/* <Box sx={{ px: '16px', mt: 2 }}>
-        <Box
-          sx={{
-            fontSize: '14px',
-            fontWeight: '500',
-            color: theme.palette.warning['300'],
-          }}
-        >
-          {t('LOGIN_PAGE.OTHER_SETTING')}
-        </Box>
-        <Box sx={{ mt: 2.5 }}>
-          <Button
-            variant="outlined"
-            color="primary"
+      )}
+      {selfUserId === userId ? (
+        <Box sx={{ px: '16px', mt: 2 }}>
+          <Box
             sx={{
-              '&.Mui-disabled': {
-                backgroundColor: theme?.palette?.primary?.main,
-              },
-              minWidth: '84px',
-              padding: theme.spacing(1),
+              fontSize: '14px',
               fontWeight: '500',
-              width: '128px',
-              height: '40px',
-              '@media (max-width: 430px)': {
-                width: '100%',
-              },
-            }}
-            onClick={() => {
-              router.push('/edit-password');
+              color: theme.palette.warning['300'],
             }}
           >
-            {t('LOGIN_PAGE.RESET_PASSWORD')}
-          </Button>
+            {t('LOGIN_PAGE.OTHER_SETTING')}
+          </Box>
+          <Box sx={{ mt: 2.5 }}>
+            <Button
+              variant="outlined"
+              color="primary"
+              sx={{
+                '&.Mui-disabled': {
+                  backgroundColor: theme?.palette?.primary?.main,
+                },
+                minWidth: '84px',
+                padding: theme.spacing(1),
+                fontWeight: '500',
+                width: '188px',
+                height: '40px',
+                '@media (max-width: 430px)': {
+                  width: '100%',
+                },
+              }}
+              onClick={() => {
+                router.push('/edit-password');
+              }}
+            >
+              {t('LOGIN_PAGE.RESET_PASSWORD')}
+            </Button>
+          </Box>
         </Box>
-      </Box> */}
+      ) : null}
     </Box>
   );
 };

@@ -1,7 +1,7 @@
 import { SessionsCardProps } from '@/utils/Interfaces';
 import { Box, Snackbar, Typography } from '@mui/material';
 
-import { convertUTCToIST } from '@/utils/Helper';
+import { convertUTCToIST, toPascalCase } from '@/utils/Helper';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlined from '@mui/icons-material/EditOutlined';
@@ -21,6 +21,10 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   children,
   isEventDeleted,
   isEventUpdated,
+  StateName,
+  board,
+  medium,
+  grade,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -156,7 +160,8 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       sx={{
         border: `1px solid ${theme.palette.warning['A100']}`,
         borderRadius: '8px',
-        marginBottom: '38px',
+        minHeight: '158px',
+        position: 'relative',
       }}
     >
       <Box
@@ -174,12 +179,13 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
               fontWeight={'400'}
               textAlign={'left'}
               fontSize={'16px'}
+              className="one-line-text"
             >
               {subject && sessionTitle
-                ? `${subject} - ${sessionTitle}`
+                ? `${toPascalCase(subject)} - ${sessionTitle}`
                 : subject
-                  ? subject
-                  : sessionTitle}{' '}
+                  ? toPascalCase(subject)
+                  : toPascalCase(sessionTitle)}{' '}
             </Typography>
           </Box>
           <Typography
@@ -187,8 +193,13 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             textAlign={'left'}
             fontSize={'14px'}
             display={'flex'}
-            alignItems={'center'}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              marginTop: '4px',
+            }}
             gap={'4px'}
+            className="one-line-text"
           >
             {data?.isRecurring === false && (
               <>
@@ -197,11 +208,16 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             )}
             {startTime} - {endTime}
           </Typography>
-          <Typography fontWeight={'400'} textAlign={'left'} fontSize={'14px'}>
+          <Typography
+            className="one-line-text"
+            fontWeight={'400'}
+            textAlign={'left'}
+            fontSize={'14px'}
+          >
             {showCenterName ? data?.location : data?.metadata?.teacherName}
           </Typography>
         </Box>
-        {showEdit && (
+        {eventStatus === EventStatus.UPCOMING && (
           <EditOutlined
             onClick={() => handleOpen(data)}
             sx={{ cursor: 'pointer' }}
@@ -214,6 +230,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           display: 'flex',
           justifyContent: 'space-between',
           gap: '30px',
+          width: '100%',
         }}
         onClick={handleCopyUrl}
       >
@@ -228,6 +245,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
             width: '100%',
             cursor: 'pointer',
           }}
+          className="one-line-text"
         >
           {data?.meetingDetails?.url}
         </Box>
@@ -256,6 +274,10 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           eventDeleted={eventDeleted}
           eventData={data}
           updateEvent={updateEvent}
+          StateName={StateName}
+          board={board}
+          medium={medium}
+          grade={grade}
         />
       </CenterSessionModal>
 
@@ -270,7 +292,9 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
         modalOpen={modalOpen}
       />
 
-      <Box>{children}</Box>
+      <Box sx={{ position: 'absolute', bottom: '2px', width: '100%' }}>
+        {children}
+      </Box>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={2000}

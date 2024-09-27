@@ -33,6 +33,7 @@ import { useTranslation } from 'react-i18next';
 import { accessControl, AssessmentType, Program } from '../../../../../app.config';
 import { useQueryClient } from '@tanstack/react-query';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import NoDataFound from '@/components/common/NoDataFound';
 
 const statusKeyMap: any = {
   [AssessmentStatus.COMPLETED]: 'ASSESSMENTS.COMPLETED',
@@ -448,18 +449,7 @@ function AssessmentsDetails() {
       )}
 
       {!isLoading && !assessmentList?.length && (
-        <Box
-          sx={{
-            mt: 2,
-            color: theme.palette.warning['300'],
-            fontWeight: 500,
-            fontSize: '14px',
-            px: '16px',
-            textAlign: 'center',
-          }}
-        >
-          {t('ASSESSMENTS.NO_ASSESSMENTS_FOUND')}
-        </Box>
+        <NoDataFound />
       )}
 
       {isLoading && (

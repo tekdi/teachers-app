@@ -8,7 +8,7 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { TopicSubtopicProps } from '@/utils/Interfaces';
@@ -18,6 +18,8 @@ const SelectTopic: React.FC<TopicSubtopicProps> = ({
   subTopicsList,
   onTopicSelected,
   onSubtopicSelected,
+  selectedTopics,
+  selectedSubTopics,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -25,6 +27,14 @@ const SelectTopic: React.FC<TopicSubtopicProps> = ({
   const [selectedTopic, setSelectedTopic] = useState<string>('');
   const [subtopics, setSubtopics] = useState<string[]>([]);
   const [selectedSubValues, setSelectedSubValues] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (selectedTopics !== undefined) {
+      setSelectedTopic(selectedTopics);
+      setSelectedSubValues(selectedSubTopics);
+      setSubtopics(subTopicsList[selectedTopics]);
+    }
+  }, []);
 
   const handleTopicChange = (event: SelectChangeEvent<string>) => {
     const topic = event.target.value;

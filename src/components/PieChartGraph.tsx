@@ -13,14 +13,14 @@ const PieChartGraph = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const data: DataItem[] = [
-    { name: t('ASSESSMENTS.NOT_STARTED'), value: 4 },
     { name: t('BOARD_ENROLMENT.BOARD_SELECTION'), value: 5 },
     { name: t('BOARD_ENROLMENT.SUBJECTS_SELECTION'), value: 10 },
     { name: t('BOARD_ENROLMENT.REGISTRATION_COMPLETED'), value: 5 },
     { name: t('BOARD_ENROLMENT.FEE_PAYMENT'), value: 2 },
+    { name: t('BOARD_ENROLMENT.COMPLETED'), value: 2 },
   ];
 
-  const COLORS = ['#C0C0C0', '#8000FE', '#FF8042', '#FFBB28', '#78590C']; //colors not in custom theme
+  const COLORS = ['#8000FE', '#FF8042', '#FFBB28', '#78590C', '#30CA2D']; //colors not in custom theme
 
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
