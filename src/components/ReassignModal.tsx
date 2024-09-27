@@ -19,6 +19,7 @@ import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { bulkCreateCohortMembers } from '@/services/CohortServices';
 import { showToastMessage } from './Toastify';
 import { Status } from '@/utils/app.constant';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface ReassignModalProps {
   cohortNames?: any;
@@ -138,23 +139,9 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     }
   };
 
-  const modalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '80%',
-    bgcolor: '#fff',
-    boxShadow: 24,
-    borderRadius: '16px',
-    '@media (min-width: 600px)': {
-      width: '350px',
-    },
-  };
-
   return (
     <Modal open={modalOpen} onClose={handleCloseReassignModal}>
-      <Box sx={modalStyle}>
+      <Box sx={modalStyles}>
         <Box
           sx={{
             p: 2,

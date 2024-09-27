@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import { useTheme } from '@mui/material/styles';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface SimpleModalProps {
   secondaryActionHandler?: () => void;
@@ -28,26 +29,8 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
 }) => {
   const theme = useTheme<any>();
 
-  const modalStyle = {
-    padding: 0,
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '85%',
-    maxHeight: '80vh',
-    backgroundColor: '#fff',
-    borderRadius: '18px',
-    boxShadow: theme.shadows[5],
-    display: 'flex',
-    flexDirection: 'column',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
-
   const titleStyle = {
-    backgroundColor: '#fff',
+    backgroundColor: theme.palette.warning['A400'],
     padding: theme.spacing(2),
     zIndex: 1,
     borderRadius: '12px 12px 0 0',
@@ -59,13 +42,13 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
     justifyContent: 'flex-end',
     zIndex: 1,
     borderRadius: '0 0 12px 12px',
-    backgroundColor: '#fff',
+    backgroundColor: theme.palette.warning['A400'],
   };
 
   const contentStyle = {
     flexGrow: 1,
     overflowY: 'auto',
-    padding: theme.spacing(2),
+    padding: '0 16px 16px',
   };
 
   return (
@@ -75,7 +58,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
     >
-      <Box sx={modalStyle}>
+      <Box sx={modalStyles}>
         {/* Header */}
         <Box display={'flex'} justifyContent={'space-between'} sx={titleStyle}>
           <Typography

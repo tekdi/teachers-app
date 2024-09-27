@@ -27,8 +27,10 @@ const CenterList: React.FC<CenterListProps> = ({
   theme,
   t,
 }) => {
-  const activeCenters = centers.filter((center) => center.cohortStatus === 'active');
-  
+  const activeCenters = centers.filter(
+    (center) => center.cohortStatus === 'active'
+  );
+
   return (
     <>
       <Box
@@ -52,8 +54,8 @@ const CenterList: React.FC<CenterListProps> = ({
         }}
       >
         <Grid container spacing={2}>
-        {activeCenters.map((center) => (
-            <Grid item xs={12} sm={6} md={4} key={center?.cohortId}>
+          {activeCenters.map((center) => (
+            <Grid item xs={12} sm={12} md={6} lg={4} key={center?.cohortId}>
               <Box
                 onClick={() => {
                   router.push(`/centers/${center?.cohortId}`);

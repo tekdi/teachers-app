@@ -344,7 +344,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   };
 
   const isAttendanceOverview = pathname === '/attendance-overview';
-
+  const teacher = localStorage.getItem('role');
   const isAssessment = pathname === '/assessments';
   const dashboard = pathname === '/dashboard';
 
@@ -357,7 +357,11 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
         <Box
           sx={{
             '@media (min-width: 900px)': {
-              marginTop: dashboard ? '-25px' : 'unset',
+              marginTop: dashboard
+                ? teacher === 'Teacher'
+                  ? '0px'
+                  : '-25px'
+                : 'unset',
               marginRight: dashboard ? '15px' : 'unset',
             },
           }}
