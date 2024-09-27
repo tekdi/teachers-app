@@ -2,11 +2,7 @@ import { bulkCreateCohortMembers } from '@/services/CohortServices';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import useStore from '@/store/store';
 import { Status } from '@/utils/app.constant';
-import {
-  Box,
-  Checkbox,
-  Divider
-} from '@mui/material';
+import { Box, Checkbox, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -78,10 +74,6 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     }
   }, [cohortNames]);
 
-  const onSearch = (value: string) => {
-    setSearchInput(value);
-  }
-
   const handleToggle = (name: string) => {
     setCheckedCenters((prev) => {
       const updatedCheckedCenters = prev.includes(name)
@@ -92,18 +84,20 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     });
   };
 
-  const filteredCenters = cohorts
-    .filter((center) =>
-      center.name.toLowerCase().includes(searchInput.toLowerCase())
-    )
-    .sort((a, b) => {
-      const aChecked = checkedCenters.includes(a.name);
-      const bChecked = checkedCenters.includes(b.name);
-      if (aChecked === bChecked) {
-        return 0;
-      }
-      return aChecked ? -1 : 1;
-    });
+  const filteredCenters = React.useMemo(() => {
+    return cohorts
+      .map(({ cohortId, name }) => ({ id: cohortId, name }))
+      .filter(({ name }) =>
+        name.toLowerCase().includes(searchInput.toLowerCase())
+      )
+      .sort((a, b) =>
+        checkedCenters.includes(a.name) === checkedCenters.includes(b.name)
+          ? 0
+          : checkedCenters.includes(a.name)
+            ? -1
+            : 1
+      );
+  }, [cohorts, searchInput, checkedCenters]);
 
   const handleReassign = async () => {
     const selectedData = cohorts
@@ -146,7 +140,12 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
           secondaryText={filteredCenters?.length > 0 ? '' : t('COMMON.CANCEL')}
           secondaryActionHandler={handleCloseReassignModal}
         >
-          <SearchBar onSearch={onSearch} value={searchInput} placeholder={t('CENTERS.SEARCH_CENTERS')} fullWidth={true}></SearchBar>
+          <SearchBar
+            onSearch={setSearchInput}
+            value={searchInput}
+            placeholder={t('CENTERS.SEARCH_CENTERS')}
+            fullWidth={true}
+          ></SearchBar>
           <Box sx={{ p: 3, maxHeight: '180px', overflowY: 'auto' }}>
             {filteredCenters.map((center, index) => (
               <Box key={center.id}>
@@ -157,7 +156,9 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
                     mb: 2,
                   }}
                 >
-                  <span style={{ color: 'black' }}>{toPascalCase(center?.name)}</span>
+                  <span style={{ color: 'black' }}>
+                    {toPascalCase(center?.name)}
+                  </span>
                   <Checkbox
                     checked={checkedCenters.includes(center.name)}
                     onChange={() => handleToggle(center.name)}
