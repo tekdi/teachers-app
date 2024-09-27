@@ -72,9 +72,9 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
   const handleCopyUrl = () => {
-    if (data?.url) {
+    if (data?.meetingDetails?.url) {
       navigator.clipboard
-        .writeText(data.url)
+        .writeText(data?.meetingDetails?.url)
         .then(() => {
           setSnackbarOpen(true);
         })

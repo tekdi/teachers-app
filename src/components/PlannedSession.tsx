@@ -138,7 +138,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [endTimeError, setEndTimeError] = useState<string | null>(null);
   const [startDateError, setStartDateError] = useState<string | null>(null);
   const [endDateError, setEndDateError] = useState<string | null>(null);
-  const [eventValid, setEventValid] = useState(false);
+  const [eventValid, setEventValid] = useState(true);
   const [sessionBlocks, setSessionBlocks] = useState<Session[]>([
     {
       id: 0,
@@ -438,15 +438,46 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       setStartDateError(null);
       setEndDateError(null);
 
-      if (type === 'start' && field === 'time') {
+      if (type === 'start' && field === 'date') {
+        if (newValue.isAfter(endDate)) {
+          setEventValid(false);
+          setStartDateError(t('CENTER_SESSION.START_DATE_ERROR'));
+        }
+        setStartDate((prev) => {
+          const combinedStartDateTime = combineDateAndTime(newValue, startTime);
+          const combinedEndDateTime = combineDateAndTime(newValue, endTime);
+          updateSessionBlock(
+            id,
+            combinedStartDateTime,
+            combinedEndDateTime,
+            endDate,
+            type
+          );
+          return newValue;
+        });
+      } else if (type === 'start' && field === 'time') {
         const combinedStartDateTime = combineDateAndTime(startDate, newValue);
         if (
           combinedStartDateTime?.isAfter(combineDateAndTime(startDate, endTime))
         ) {
-          isValid = false;
           setEventValid(false);
           setStartTimeError(t('CENTER_SESSION.START_TIME_ERROR'));
         }
+        setStartTime((prev) => {
+          const combinedStartDateTime = combineDateAndTime(startDate, newValue);
+          updateSessionBlock(id, combinedStartDateTime, endTime, endDate, type);
+          return newValue;
+        });
+      } else if (type === 'end' && field === 'date') {
+        if (newValue.isBefore(startDate)) {
+          setEventValid(false);
+          setEndDateError(t('CENTER_SESSION.END_DATE_ERROR'));
+        }
+        setEndDate((prev) => {
+          const combinedEndDateTime = combineDateAndTime(newValue, endTime);
+          updateSessionBlock(id, startDate, endTime, combinedEndDateTime, type);
+          return newValue;
+        });
       } else if (type === 'end' && field === 'time') {
         const combinedEndDateTime = combineDateAndTime(startDate, newValue);
         if (
@@ -454,83 +485,21 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             combineDateAndTime(startDate, startTime)
           )
         ) {
-          isValid = false;
           setEventValid(false);
           setEndTimeError(t('CENTER_SESSION.END_TIME_ERROR'));
         }
-      } else if (type === 'start' && field === 'date') {
-        if (newValue.isAfter(endDate)) {
-          isValid = false;
-          setEventValid(false);
-          setStartDateError(t('CENTER_SESSION.START_DATE_ERROR'));
-        }
-      } else if (type === 'end' && field === 'date') {
-        if (newValue.isBefore(startDate)) {
-          isValid = false;
-          setEventValid(false);
-          setEndDateError(t('CENTER_SESSION.END_DATE_ERROR'));
-        }
-      }
-
-      if (isValid) {
-        setEventValid(true);
-        if (type === 'start' && field === 'date') {
-          setStartDate((prev) => {
-            const combinedStartDateTime = combineDateAndTime(
-              newValue,
-              startTime
-            );
-            const combinedEndDateTime = combineDateAndTime(newValue, endTime);
-            updateSessionBlock(
-              id,
-              combinedStartDateTime,
-              combinedEndDateTime,
-              endDate,
-              type
-            );
-            return newValue;
-          });
-        } else if (type === 'start' && field === 'time') {
-          setStartTime((prev) => {
-            const combinedStartDateTime = combineDateAndTime(
-              startDate,
-              newValue
-            );
-            updateSessionBlock(
-              id,
-              combinedStartDateTime,
-              endTime,
-              endDate,
-              type
-            );
-            return newValue;
-          });
-        } else if (type === 'end' && field === 'date') {
-          setEndDate((prev) => {
-            const combinedEndDateTime = combineDateAndTime(newValue, endTime);
-            updateSessionBlock(
-              id,
-              startDate,
-              endTime,
-              combinedEndDateTime,
-              type
-            );
-            return newValue;
-          });
-        } else if (type === 'end' && field === 'time') {
-          setEndTime((prev) => {
-            const combinedEndDateTime = combineDateAndTime(startDate, newValue);
-            const combinedEndDateValue = combineDateAndTime(endDate, newValue);
-            updateSessionBlock(
-              id,
-              startDate,
-              combinedEndDateTime,
-              combinedEndDateValue,
-              type
-            );
-            return newValue;
-          });
-        }
+        setEndTime((prev) => {
+          const combinedEndDateTime = combineDateAndTime(startDate, newValue);
+          const combinedEndDateValue = combineDateAndTime(endDate, newValue);
+          updateSessionBlock(
+            id,
+            startDate,
+            combinedEndDateTime,
+            combinedEndDateValue,
+            type
+          );
+          return newValue;
+        });
       }
     }
   };
@@ -896,35 +865,35 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
         return baseBody;
       });
-      if (eventValid) {
-        await Promise.all(
-          apiBodies.map(async (apiBody) => {
-            try {
-              const response = await createEvent(apiBody);
-              console.log(response);
-              if (response?.responseCode === 'Created') {
-                showToastMessage(
-                  t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
-                  'success'
-                );
-                ReactGA.event('event-created-successfully', {
-                  creatorId: userId,
-                });
-              } else {
-                showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-              }
-              if (onCloseModal) {
-                onCloseModal();
-              }
-            } catch (error) {
-              console.error('Error creating event:', error);
-              // if (onCloseModal) {
-              //   onCloseModal();
-              // }
+      // if (eventValid) {
+      await Promise.all(
+        apiBodies.map(async (apiBody) => {
+          try {
+            const response = await createEvent(apiBody);
+            console.log(response);
+            if (response?.responseCode === 'Created') {
+              showToastMessage(
+                t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
+                'success'
+              );
+              ReactGA.event('event-created-successfully', {
+                creatorId: userId,
+              });
+            } else {
+              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
             }
-          })
-        );
-      }
+            if (onCloseModal) {
+              onCloseModal();
+            }
+          } catch (error) {
+            console.error('Error creating event:', error);
+            if (onCloseModal) {
+              onCloseModal();
+            }
+          }
+        })
+      );
+      // }
     } catch (error) {
       console.error('Error scheduling new event:', error);
       ReactGA.event('event-creation-fail', {
