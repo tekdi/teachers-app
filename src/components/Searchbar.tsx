@@ -16,12 +16,14 @@ export interface SearchBarProps {
   value?: string;
   onClear?: () => void;
   placeholder: string;
+  fullWidth?: boolean;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
   value = '',
   placeholder = 'Search...',
+  fullWidth = false,
 }) => {
   const theme = useTheme<any>();
   const [searchTerm, setSearchTerm] = useState(value);
@@ -46,7 +48,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <Grid container>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={fullWidth ?  12 : 6}>
         <Box sx={{ mt: 2, px: theme.spacing(2.5) }}>
           <Paper
             component="form"

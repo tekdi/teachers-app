@@ -1,24 +1,21 @@
-import * as React from 'react';
+import { bulkCreateCohortMembers } from '@/services/CohortServices';
+import reassignLearnerStore from '@/store/reassignLearnerStore';
+import useStore from '@/store/store';
+import { Status } from '@/utils/app.constant';
 import {
   Box,
-  Button,
-  Divider,
-  TextField,
   Checkbox,
-  InputAdornment,
-  IconButton,
-  Modal,
+  Divider
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import useStore from '@/store/store';
-import SearchIcon from '@mui/icons-material/Search';
-import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'next-i18next';
+import * as React from 'react';
 import { useEffect, useState } from 'react';
-import reassignLearnerStore from '@/store/reassignLearnerStore';
-import { bulkCreateCohortMembers } from '@/services/CohortServices';
+import SearchBar from './Searchbar';
+import SimpleModal from './SimpleModal';
 import { showToastMessage } from './Toastify';
-import { Status } from '@/utils/app.constant';
+import NoDataFound from './common/NoDataFound';
+import { toPascalCase } from '@/utils/Helper';
 
 interface ReassignModalProps {
   cohortNames?: any;
@@ -33,7 +30,7 @@ interface ReassignModalProps {
 
 interface ButtonNames {
   primary: string;
-  secondary: string;
+  secondary?: string;
 }
 
 interface Cohort {
@@ -81,11 +78,9 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     }
   }, [cohortNames]);
 
-  const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSearchInput(event.target.value);
-  };
+  const onSearch = (value: string) => {
+    setSearchInput(value);
+  }
 
   const handleToggle = (name: string) => {
     setCheckedCenters((prev) => {
@@ -138,108 +133,57 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     }
   };
 
-  const modalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '80%',
-    bgcolor: '#fff',
-    boxShadow: 24,
-    borderRadius: '16px',
-    '@media (min-width: 600px)': {
-      width: '350px',
-    },
-  };
-
   return (
-    <Modal open={modalOpen} onClose={handleCloseReassignModal}>
-      <Box sx={modalStyle}>
-        <Box
-          sx={{
-            p: 2,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
+    <>
+      {modalOpen && (
+        <SimpleModal
+          open={modalOpen}
+          onClose={handleCloseReassignModal}
+          showFooter={true}
+          modalTitle={message}
+          primaryText={filteredCenters?.length > 0 ? buttonNames?.primary : ''}
+          primaryActionHandler={handleReassign}
+          secondaryText={filteredCenters?.length > 0 ? '' : t('COMMON.CANCEL')}
+          secondaryActionHandler={handleCloseReassignModal}
         >
-          <span style={{ color: 'black', fontWeight: 400 }}>{message}</span>
-          <IconButton
-            color="inherit"
-            onClick={() => {
-              setSearchInput('');
-              handleCloseReassignModal();
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <Divider />
-        <Box sx={{ p: 3 }}>
-          <TextField
-            sx={{
-              backgroundColor: theme.palette.warning['A700'],
-              borderRadius: 8,
-              '& .MuiOutlinedInput-root fieldset': { border: 'none' },
-              '& .MuiOutlinedInput-input': { borderRadius: 8 },
-            }}
-            placeholder={t('CENTERS.SEARCH_CENTERS')}
-            value={searchInput}
-            onChange={handleSearchInputChange}
-            fullWidth
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-        <Box sx={{ p: 3, maxHeight: '300px', overflowY: 'auto' }}>
-          {filteredCenters.map((center, index) => (
-            <Box key={center.id}>
-              <Box
-                sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}
-              >
-                <span style={{ color: 'black' }}>{center.name}</span>
-                <Checkbox
-                  checked={checkedCenters.includes(center.name)}
-                  onChange={() => handleToggle(center.name)}
+          <SearchBar onSearch={onSearch} value={searchInput} placeholder={t('CENTERS.SEARCH_CENTERS')} fullWidth={true}></SearchBar>
+          <Box sx={{ p: 3, maxHeight: '180px', overflowY: 'auto' }}>
+            {filteredCenters.map((center, index) => (
+              <Box key={center.id}>
+                <Box
                   sx={{
-                    color: theme.palette.text.primary,
-                    '&.Mui-checked': {
-                      color: 'black',
-                    },
-                    verticalAlign: 'middle',
-                    marginTop: '-10px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    mb: 2,
                   }}
-                />
+                >
+                  <span style={{ color: 'black' }}>{toPascalCase(center?.name)}</span>
+                  <Checkbox
+                    checked={checkedCenters.includes(center.name)}
+                    onChange={() => handleToggle(center.name)}
+                    sx={{
+                      color: theme.palette.text.primary,
+                      '&.Mui-checked': {
+                        color: 'black',
+                      },
+                      verticalAlign: 'middle',
+                      marginTop: '-10px',
+                    }}
+                  />
+                </Box>
+                {index < filteredCenters?.length - 1 && (
+                  <Divider sx={{ mb: 2 }} />
+                )}
               </Box>
-              {index < filteredCenters.length - 1 && <Divider sx={{ mb: 2 }} />}
-            </Box>
-          ))}
-        </Box>
-        <Divider />
-        <Box
-          sx={{ display: 'flex', justifyContent: 'center', gap: '18px', p: 2 }}
-        >
-          <Button
-            sx={{
-              width: '100%',
-              height: '40px',
-              fontSize: '14px',
-              fontWeight: '500',
-            }}
-            variant="contained"
-            color="primary"
-            onClick={handleReassign}
-          >
-            {buttonNames?.primary || 'Save'}
-          </Button>
-        </Box>
-      </Box>
-    </Modal>
+            ))}
+
+            {filteredCenters.length === 0 && (
+              <NoDataFound title={t('COMMON.NO_CENTER_FOUND')} />
+            )}
+          </Box>
+        </SimpleModal>
+      )}
+    </>
   );
 };
 
