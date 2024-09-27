@@ -13,6 +13,7 @@ const nextConfig = {
 
 const pwaConfig = withPWA({
   dest: 'public',
+  reloadOnOnline: false,
 });
 
 export default pwaConfig(nextConfig);
