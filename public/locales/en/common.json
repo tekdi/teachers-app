@@ -423,7 +423,12 @@
     "LEARNER_PREREQUISITES": "Learner's Pre-requisites",
     "LEARNER_POSTREQUISITES": "Learner's Post-requisites",
     "CANT_SELECT_AS_EVENT_PASSED_LIVE": "Can not select topic and subtopic as event is already passed or live.",
-    "COURSE_TYPE": "Course Type"
+    "COURSE_TYPE": "Course Type",
+    "BOARD_MEDIUM_GRADE_NOT_ASSIGNED": "Board, Medium, Grade not assigned to Center.",
+    "START_TIME_ERROR": "Start time cannot be later than end time.",
+    "END_TIME_ERROR": "End time cannot be earlier than start time.",
+    "START_DATE_ERROR": "Start date cannot be later than end date.",
+    "END_DATE_ERROR": "End date cannot be earlier than start date."
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center requested successfully",
@@ -504,7 +509,7 @@
     "DROP_OUT_REASON": "Reason for Drop Out From School",
     "ASSIGN_CENTERS": "Assign Centers",
     "TYPE_OF_COHORT": "Center type",
-    "NOTE_THIS_WILL_BE_CENTER_NAME": "Note this will be Center name",
+    "NOTE_THIS_WILL_BE_CENTER_NAME": "Note: This will be the Center name",
     "ENGLISH": "English",
     "HOME_SCIENCE": "Home Science",
     "MATH": "Math",

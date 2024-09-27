@@ -19,12 +19,14 @@ interface FrameworkCategoriesProps {
   customFormData: any;
   onFieldsChange: (fields: any) => void;
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+  children?: React.ReactNode;
 }
 
 const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
   customFormData,
   onFieldsChange,
   setShowForm,
+  children
 }) => {
   const [framework, setFramework] = useState<any[]>([]);
   const [stateOption, setStateOption] = useState<any[]>([]);
@@ -343,6 +345,8 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
           ))}
         </Select>
       </FormControl>
+
+      {children}
     </Box>
   );
 };

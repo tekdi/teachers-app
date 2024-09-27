@@ -11,7 +11,7 @@ interface SimpleModalProps {
   secondaryText?: string;
   primaryText?: string;
   showFooter?: boolean;
-  children: ReactNode;
+  children?: ReactNode;
   open: boolean;
   onClose: () => void;
   modalTitle: string;
