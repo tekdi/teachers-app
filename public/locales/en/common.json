@@ -132,7 +132,8 @@
     "SESSION_SCHEDULED_SUCCESSFULLY": "Session has been scheduled successfully!",
     "CENTER": "Center",
     "AND_COUNT_MORE": "and {{count}} more",
-    "RETURN_TO_LOGIN": "Return to Login"
+    "RETURN_TO_LOGIN": "Return to Login",
+    "NO_CENTER_FOUND": "No Center found"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
