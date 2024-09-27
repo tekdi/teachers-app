@@ -509,7 +509,7 @@
     "DROP_OUT_REASON": "Reason for Drop Out From School",
     "ASSIGN_CENTERS": "Assign Centers",
     "TYPE_OF_COHORT": "Center type",
-    "NOTE_THIS_WILL_BE_CENTER_NAME": "Note this will be Center name",
+    "NOTE_THIS_WILL_BE_CENTER_NAME": "Note: This will be the Center name",
     "ENGLISH": "English",
     "HOME_SCIENCE": "Home Science",
     "MATH": "Math",
