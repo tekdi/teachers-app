@@ -35,7 +35,7 @@ import { useEffect, useState } from 'react';
 import { accessControl, AssessmentType, Program } from '../../../app.config';
 
 const DEFAULT_STATUS_ORDER = {
-  [AssessmentStatus.NOT_STARTED] : 0,
+  [AssessmentStatus.NOT_STARTED]: 0,
   [AssessmentStatus.IN_PROGRESS]: 1,
   [AssessmentStatus.COMPLETED]: 2,
 };
@@ -274,19 +274,21 @@ const Assessments = () => {
     // });
     const statusOrder: any = { ...DEFAULT_STATUS_ORDER };
 
-  if (status && Object.prototype.hasOwnProperty.call(statusOrder, status)) {
-    statusOrder[status] = -1; // Make the prioritized status the highest
-    // Adjust other statuses to ensure correct order
-    let orderIndex = 0;
-    for (const key in statusOrder) {
-      if (key !== status) {
-        statusOrder[key] = orderIndex++;
+    if (status && Object.prototype.hasOwnProperty.call(statusOrder, status)) {
+      statusOrder[status] = -1; // Make the prioritized status the highest
+      // Adjust other statuses to ensure correct order
+      let orderIndex = 0;
+      for (const key in statusOrder) {
+        if (key !== status) {
+          statusOrder[key] = orderIndex++;
+        }
       }
     }
-  }
 
-  // Sort based on the adjusted order
-  const sortedList = learnerList.sort((a: any, b: any) => statusOrder[a.status] - statusOrder[b.status]);
+    // Sort based on the adjusted order
+    const sortedList = learnerList.sort(
+      (a: any, b: any) => statusOrder[a.status] - statusOrder[b.status]
+    );
     setFilteredLearnerList(sortedList);
   };
 

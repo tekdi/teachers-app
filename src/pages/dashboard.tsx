@@ -922,6 +922,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               handleSaveHasRun={handleSaveHasRun}
                               setHandleSaveHasRun={setHandleSaveHasRun}
                               isCustomFieldRequired={false}
+                              showFloatingLabel={true}
                             />
                           </Box>
 
