@@ -134,6 +134,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [startTime, setStartTime] = useState<Dayjs | null>(dayjs());
   dayjs.extend(utc);
   const [endTime, setEndTime] = useState<Dayjs | null>(dayjs());
+  const [startTimeError, setStartTimeError] = useState<string | null>(null);
+  const [endTimeError, setEndTimeError] = useState<string | null>(null);
+  const [startDateError, setStartDateError] = useState<string | null>(null);
+  const [endDateError, setEndDateError] = useState<string | null>(null);
+  const [eventValid, setEventValid] = useState(false);
   const [sessionBlocks, setSessionBlocks] = useState<Session[]>([
     {
       id: 0,
@@ -426,44 +431,106 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     field: 'date' | 'time'
   ) => {
     if (newValue) {
-      if (type === 'start' && field === 'date') {
-        setStartDate((prev) => {
-          const combinedStartDateTime = combineDateAndTime(newValue, startTime);
-          const combinedEndDateTime = combineDateAndTime(newValue, endTime);
-          updateSessionBlock(
-            id,
-            combinedStartDateTime,
-            combinedEndDateTime,
-            endDate,
-            type
-          );
-          return newValue;
-        });
-      } else if (type === 'start' && field === 'time') {
-        setStartTime((prev) => {
-          const combinedStartDateTime = combineDateAndTime(startDate, newValue);
-          updateSessionBlock(id, combinedStartDateTime, endTime, endDate, type);
-          return newValue;
-        });
-      } else if (type === 'end' && field === 'date') {
-        setEndDate((prev) => {
-          const combinedEndDateTime = combineDateAndTime(newValue, endTime);
-          updateSessionBlock(id, startDate, endTime, combinedEndDateTime, type);
-          return newValue;
-        });
+      let isValid = true;
+
+      setStartTimeError(null);
+      setEndTimeError(null);
+      setStartDateError(null);
+      setEndDateError(null);
+
+      if (type === 'start' && field === 'time') {
+        const combinedStartDateTime = combineDateAndTime(startDate, newValue);
+        if (
+          combinedStartDateTime?.isAfter(combineDateAndTime(startDate, endTime))
+        ) {
+          isValid = false;
+          setEventValid(false);
+          setStartTimeError(t('CENTER_SESSION.START_TIME_ERROR'));
+        }
       } else if (type === 'end' && field === 'time') {
-        setEndTime((prev) => {
-          const combinedEndDateTime = combineDateAndTime(startDate, newValue);
-          const combinedEndDateValue = combineDateAndTime(endDate, newValue);
-          updateSessionBlock(
-            id,
-            startDate,
-            combinedEndDateTime,
-            combinedEndDateValue,
-            type
-          );
-          return newValue;
-        });
+        const combinedEndDateTime = combineDateAndTime(startDate, newValue);
+        if (
+          combinedEndDateTime?.isBefore(
+            combineDateAndTime(startDate, startTime)
+          )
+        ) {
+          isValid = false;
+          setEventValid(false);
+          setEndTimeError(t('CENTER_SESSION.END_TIME_ERROR'));
+        }
+      } else if (type === 'start' && field === 'date') {
+        if (newValue.isAfter(endDate)) {
+          isValid = false;
+          setEventValid(false);
+          setStartDateError(t('CENTER_SESSION.START_DATE_ERROR'));
+        }
+      } else if (type === 'end' && field === 'date') {
+        if (newValue.isBefore(startDate)) {
+          isValid = false;
+          setEventValid(false);
+          setEndDateError(t('CENTER_SESSION.END_DATE_ERROR'));
+        }
+      }
+
+      if (isValid) {
+        setEventValid(true);
+        if (type === 'start' && field === 'date') {
+          setStartDate((prev) => {
+            const combinedStartDateTime = combineDateAndTime(
+              newValue,
+              startTime
+            );
+            const combinedEndDateTime = combineDateAndTime(newValue, endTime);
+            updateSessionBlock(
+              id,
+              combinedStartDateTime,
+              combinedEndDateTime,
+              endDate,
+              type
+            );
+            return newValue;
+          });
+        } else if (type === 'start' && field === 'time') {
+          setStartTime((prev) => {
+            const combinedStartDateTime = combineDateAndTime(
+              startDate,
+              newValue
+            );
+            updateSessionBlock(
+              id,
+              combinedStartDateTime,
+              endTime,
+              endDate,
+              type
+            );
+            return newValue;
+          });
+        } else if (type === 'end' && field === 'date') {
+          setEndDate((prev) => {
+            const combinedEndDateTime = combineDateAndTime(newValue, endTime);
+            updateSessionBlock(
+              id,
+              startDate,
+              endTime,
+              combinedEndDateTime,
+              type
+            );
+            return newValue;
+          });
+        } else if (type === 'end' && field === 'time') {
+          setEndTime((prev) => {
+            const combinedEndDateTime = combineDateAndTime(startDate, newValue);
+            const combinedEndDateValue = combineDateAndTime(endDate, newValue);
+            updateSessionBlock(
+              id,
+              startDate,
+              combinedEndDateTime,
+              combinedEndDateValue,
+              type
+            );
+            return newValue;
+          });
+        }
       }
     }
   };
@@ -829,34 +896,35 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
         return baseBody;
       });
-
-      await Promise.all(
-        apiBodies.map(async (apiBody) => {
-          try {
-            const response = await createEvent(apiBody);
-            console.log(response);
-            if (response?.responseCode === 'Created') {
-              showToastMessage(
-                t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
-                'success'
-              );
-              ReactGA.event('event-created-successfully', {
-                creatorId: userId,
-              });
-            } else {
-              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      if (eventValid) {
+        await Promise.all(
+          apiBodies.map(async (apiBody) => {
+            try {
+              const response = await createEvent(apiBody);
+              console.log(response);
+              if (response?.responseCode === 'Created') {
+                showToastMessage(
+                  t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
+                  'success'
+                );
+                ReactGA.event('event-created-successfully', {
+                  creatorId: userId,
+                });
+              } else {
+                showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+              }
+              if (onCloseModal) {
+                onCloseModal();
+              }
+            } catch (error) {
+              console.error('Error creating event:', error);
+              // if (onCloseModal) {
+              //   onCloseModal();
+              // }
             }
-            if (onCloseModal) {
-              onCloseModal();
-            }
-          } catch (error) {
-            console.error('Error creating event:', error);
-            if (onCloseModal) {
-              onCloseModal();
-            }
-          }
-        })
-      );
+          })
+        );
+      }
     } catch (error) {
       console.error('Error scheduling new event:', error);
       ReactGA.event('event-creation-fail', {
@@ -1150,7 +1218,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 }}
               >
                 <Typography variant="h2" component="h2">
-                  t('CENTER_SESSION.BOARD_MEDIUM_GRADE_NOT_ASSIGNED')
+                  {t('CENTER_SESSION.BOARD_MEDIUM_GRADE_NOT_ASSIGNED')}
                 </Typography>
               </Box>
             )}
@@ -1168,66 +1236,70 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               disabled={editSession}
             />
           </Box>
-          <Box sx={{ mt: 2 }}>
-            <FormControl fullWidth>
-              <InputLabel
-                style={{ color: theme?.palette?.warning['A200'] }}
-                id="demo-simple-select-label"
-              >
-                {t('CENTER_SESSION.COURSE_TYPE')}
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label={t('CENTER_SESSION.COURSE_TYPE')}
-                style={{ borderRadius: '4px' }}
-                onChange={(event: any) =>
-                  handleCourseTypeChange(block?.id, event)
-                }
-                value={selectedCourseType || ''}
-                disabled={!StateName || !medium || !grade || !board}
-              >
-                {courseTypes?.map((courseType: string) => (
-                  <MenuItem key={courseType} value={courseType}>
-                    {courseType}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
+          {(StateName || medium || grade || board) && (
+            <Box sx={{ mt: 2 }}>
+              <FormControl fullWidth>
+                <InputLabel
+                  style={{ color: theme?.palette?.warning['A200'] }}
+                  id="demo-simple-select-label"
+                >
+                  {t('CENTER_SESSION.COURSE_TYPE')}
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label={t('CENTER_SESSION.COURSE_TYPE')}
+                  style={{ borderRadius: '4px' }}
+                  onChange={(event: any) =>
+                    handleCourseTypeChange(block?.id, event)
+                  }
+                  value={selectedCourseType || ''}
+                  disabled={!StateName || !medium || !grade || !board}
+                >
+                  {courseTypes?.map((courseType: string) => (
+                    <MenuItem key={courseType} value={courseType}>
+                      {courseType}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          )}
 
           {(clickedBox === 'PLANNED_SESSION' || editSession) && (
             <>
-              <Box sx={{ mt: 2 }}>
-                <FormControl fullWidth>
-                  <InputLabel
-                    style={{ color: theme?.palette?.warning['A200'] }}
-                    id="demo-simple-select-label"
-                  >
-                    {t('CENTER_SESSION.SUBJECT')}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label={t('CENTER_SESSION.SUBJECT')}
-                    style={{ borderRadius: '4px' }}
-                    onChange={(event: any) =>
-                      handleSubjectChange(block?.id, event)
-                    }
-                    value={selectedSubject || ''}
-                    disabled={!(StateName && medium && grade && board)}
-                  >
-                    {subjects?.map((subject: string) => (
-                      <MenuItem key={subject} value={subject}>
-                        {subject}
-                      </MenuItem>
-                    ))}
-                    {/* <MenuItem key="other" value="other">
+              {(StateName || medium || grade || board) && (
+                <Box sx={{ mt: 2 }}>
+                  <FormControl fullWidth>
+                    <InputLabel
+                      style={{ color: theme?.palette?.warning['A200'] }}
+                      id="demo-simple-select-label"
+                    >
+                      {t('CENTER_SESSION.SUBJECT')}
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      label={t('CENTER_SESSION.SUBJECT')}
+                      style={{ borderRadius: '4px' }}
+                      onChange={(event: any) =>
+                        handleSubjectChange(block?.id, event)
+                      }
+                      value={selectedSubject || ''}
+                      disabled={!(StateName && medium && grade && board)}
+                    >
+                      {subjects?.map((subject: string) => (
+                        <MenuItem key={subject} value={subject}>
+                          {subject}
+                        </MenuItem>
+                      ))}
+                      {/* <MenuItem key="other" value="other">
                       {t('FORM.OTHER')}
                     </MenuItem> */}
-                  </Select>
-                </FormControl>
-              </Box>
+                    </Select>
+                  </FormControl>
+                </Box>
+              )}
 
               <Box sx={{ mt: 2 }}>
                 <TextField
@@ -1275,38 +1347,40 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             )}
           {clickedBox === 'EXTRA_SESSION' && (
             <Box sx={{ mt: 2 }}>
-              <Box>
-                <FormControl fullWidth>
-                  <InputLabel
-                    style={{
-                      color: theme?.palette?.warning['A200'],
-                      background: theme?.palette?.warning['A400'],
-                      paddingLeft: '2px',
-                      paddingRight: '2px',
-                    }}
-                    id="demo-simple-select-label"
-                  >
-                    {t('CENTER_SESSION.SUBJECT_OPTIONAL')}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label={t('CENTER_SESSION.SUBJECT_OPTIONAL')}
-                    style={{ borderRadius: '4px' }}
-                    onChange={(event: any) =>
-                      handleSubjectChange(block?.id, event)
-                    }
-                    value={selectedSubject}
-                    disabled={!(StateName && medium && grade && board)}
-                  >
-                    {subjects?.map((subject: string) => (
-                      <MenuItem key={subject} value={subject}>
-                        {subject}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
+              {(StateName || medium || grade || board) && (
+                <Box>
+                  <FormControl fullWidth>
+                    <InputLabel
+                      style={{
+                        color: theme?.palette?.warning['A200'],
+                        background: theme?.palette?.warning['A400'],
+                        paddingLeft: '2px',
+                        paddingRight: '2px',
+                      }}
+                      id="demo-simple-select-label"
+                    >
+                      {t('CENTER_SESSION.SUBJECT_OPTIONAL')}
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      label={t('CENTER_SESSION.SUBJECT_OPTIONAL')}
+                      style={{ borderRadius: '4px' }}
+                      onChange={(event: any) =>
+                        handleSubjectChange(block?.id, event)
+                      }
+                      value={selectedSubject}
+                      disabled={!(StateName && medium && grade && board)}
+                    >
+                      {subjects?.map((subject: string) => (
+                        <MenuItem key={subject} value={subject}>
+                          {subject}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+              )}
               <Box sx={{ mt: 2 }}>
                 <TextField
                   id="outlined-basic"
@@ -1354,6 +1428,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                             sx={{ borderRadius: '4px', fontSize: '2px' }}
                           />
                         </LocalizationProvider>
+                        {startTimeError && (
+                          <Box sx={{ color: 'red', fontSize: '12px', mt: 1 }}>
+                            {startTimeError}
+                          </Box>
+                        )}
                       </Box>
                     </Grid>
                     <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
@@ -1368,6 +1447,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                             sx={{ borderRadius: '4px' }}
                           />
                         </LocalizationProvider>
+                        {endTimeError && (
+                          <Box sx={{ color: 'red', fontSize: '12px', mt: 1 }}>
+                            {endTimeError}
+                          </Box>
+                        )}
                       </Box>
                     </Grid>
                   </Grid>
@@ -1418,6 +1502,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                         sx={{ borderRadius: '4px', fontSize: '2px' }}
                       />
                     </LocalizationProvider>
+                    {startTimeError && (
+                      <Box sx={{ color: 'red', fontSize: '12px', mt: 1 }}>
+                        {startTimeError}
+                      </Box>
+                    )}
                   </Box>
                 </Grid>
                 <Grid
@@ -1436,6 +1525,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                         sx={{ borderRadius: '4px' }}
                       />
                     </LocalizationProvider>
+                    {endTimeError && (
+                      <Box sx={{ color: 'red', fontSize: '12px', mt: 1 }}>
+                        {endTimeError}
+                      </Box>
+                    )}
                   </Box>
                 </Grid>
               </Grid>
@@ -1461,6 +1555,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                         />
                       </Stack>
                     </LocalizationProvider>
+                    {startDateError && (
+                      <Box sx={{ color: 'red', fontSize: '12px', mt: 1 }}>
+                        {startDateError}
+                      </Box>
+                    )}
                   </Box>
                 </Grid>
                 <Grid
@@ -1482,6 +1581,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                         />
                       </Stack>
                     </LocalizationProvider>
+                    {endDateError && (
+                      <Box sx={{ color: 'red', fontSize: '12px', mt: 1 }}>
+                        {endDateError}
+                      </Box>
+                    )}
                   </Box>
                 </Grid>
               </Grid>
