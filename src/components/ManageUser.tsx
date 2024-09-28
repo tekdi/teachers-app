@@ -799,6 +799,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               modalOpen={reassignModalOpen}
               reloadState={reloadState}
               setReloadState={setReloadState}
+              buttonNames={{primary: t('COMMON.SAVE')}}
             />
 
             <DeleteUserModal
