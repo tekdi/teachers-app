@@ -343,6 +343,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
               fontWeight={500}
               color={theme.palette.secondary.main}
               ml={1}
+              className="one-line-text"
             >
               {t('COMMON.SELECT_TOPIC')}
             </Box>

@@ -902,6 +902,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             >
                               {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
                             </Typography>
+
                             <CohortSelectionSection
                               classId={classId}
                               setClassId={setClassId}
@@ -922,6 +923,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               handleSaveHasRun={handleSaveHasRun}
                               setHandleSaveHasRun={setHandleSaveHasRun}
                               isCustomFieldRequired={false}
+                              // showFloatingLabel={true}
                             />
                           </Box>
 

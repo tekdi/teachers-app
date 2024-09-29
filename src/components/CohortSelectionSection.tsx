@@ -344,8 +344,9 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   };
 
   const isAttendanceOverview = pathname === '/attendance-overview';
-
+  const teacher = localStorage.getItem('role');
   const isAssessment = pathname === '/assessments';
+  const dashboard = pathname === '/dashboard';
 
   return (
     <Box className={isAttendanceOverview || isAssessment ? 'w-100' : 'w-md-40'}>
@@ -353,7 +354,18 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )}
       {!loading && cohortsData && (
-        <Box>
+        <Box
+          sx={{
+            '@media (min-width: 900px)': {
+              marginTop: dashboard
+                ? teacher === 'Teacher'
+                  ? '0px'
+                  : '-25px'
+                : 'unset',
+              marginRight: dashboard ? '15px' : 'unset',
+            },
+          }}
+        >
           {!loading && cohortsData && (
             <Box>
               {blockName ? (
@@ -378,8 +390,14 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             // },
                           }}
                         >
+                          {showFloatingLabel && (
+                            <InputLabel id="center-select-label">
+                              {t('COMMON.CENTER')}
+                            </InputLabel>
+                          )}
                           <Select
                             value={classId}
+                            labelId="center-select-label"
                             onChange={handleCohortSelection}
                             displayEmpty
                             inputProps={{ 'aria-label': 'Without label' }}
@@ -389,7 +407,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                               color: theme.palette.warning['200'],
                               width: '100%',
                               marginBottom: '0rem',
-                              '@media (max-width: 700px)': {
+                              '@media (max-width: 900px)': {
                                 width: isAttendanceOverview ? '100%' : '50%',
                               },
                             }}
