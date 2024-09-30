@@ -2,9 +2,7 @@ import { useFormRead } from '@/hooks/useFormRead';
 import { createCohort } from '@/services/CreateUserService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
 import { FormContext, FormContextType } from '@/utils/app.constant';
-import {
-  Box
-} from '@mui/material';
+import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { IChangeEvent } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
@@ -43,6 +41,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [formData, setFormData] = useState<any>();
   const [showForm, setShowForm] = useState(false);
+  const [isHiddenFieldPresent, setIsHiddenFieldPresent] = useState(false);
   const { data: formResponse, isPending } = useFormRead(
     FormContext.COHORTS,
     FormContextType.COHORT
@@ -68,6 +67,10 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
         setSchema(schema);
         setUiSchema(uiSchema);
         setCustomFormData(formResponse);
+        const isAnyFieldHidden = formResponse.fields.some(
+          (field: { isHidden: boolean }) => field.isHidden === true
+        );
+        setIsHiddenFieldPresent(isAnyFieldHidden);
       }
     }
   }, [formResponse]);
@@ -159,6 +162,26 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
   };
+
+  const renderDynamicForm = () => (
+    <DynamicForm
+      schema={schema}
+      uiSchema={uiSchema}
+      onSubmit={handleSubmit}
+      onChange={handleChange}
+      onError={handleError}
+      widgets={{}}
+      showErrorList={true}
+    >
+      <FormButtons
+        formData={formData}
+        onClick={handleButtonClick}
+        isCreateCentered={true}
+        isCreatedFacilitator={false}
+      />
+    </DynamicForm>
+  );
+
   return (
     <SimpleModal
       open={open}
@@ -181,28 +204,17 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
       )}
       {!isPending && schema && uiSchema && (
         <>
-          <FrameworkCategories
-            customFormData={customFormData}
-            onFieldsChange={handleDependentFieldsChange}
-            setShowForm={setShowForm}
-          />
-          {showForm && (
-            <DynamicForm
-              schema={schema}
-              uiSchema={uiSchema}
-              onSubmit={handleSubmit}
-              onChange={handleChange}
-              onError={handleError}
-              widgets={{}}
-              showErrorList={true}
-            >
-              <FormButtons
-                formData={formData}
-                onClick={handleButtonClick}
-                isCreateCentered={true}
-                isCreatedFacilitator={false}
+          {isHiddenFieldPresent ? (
+            <>
+              <FrameworkCategories
+                customFormData={customFormData}
+                onFieldsChange={handleDependentFieldsChange}
+                setShowForm={setShowForm}
               />
-            </DynamicForm>
+              {showForm && renderDynamicForm()}
+            </>
+          ) : (
+            renderDynamicForm()
           )}
         </>
       )}
