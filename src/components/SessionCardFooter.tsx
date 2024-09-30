@@ -201,7 +201,9 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
       );
     } else if (!topicList || topicList.length === 0) {
       showToastMessage(
-        t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE'),
+        t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE', {
+          subject: item?.metadata?.subject,
+        }),
         'error'
       );
     }
