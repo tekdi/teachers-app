@@ -351,9 +351,16 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   const isAttendanceOverview = pathname === '/attendance-overview';
   const isAssessment = pathname === '/assessments';
   const dashboard = pathname === '/dashboard';
+  const isCoursePlanner = pathname === '/course-planner';
 
   return (
-    <Box className={isAttendanceOverview || isAssessment ? 'w-100' : 'w-md-40'}>
+    <Box
+      className={
+        isAttendanceOverview || isAssessment || isCoursePlanner
+          ? 'w-100'
+          : 'w-md-40'
+      }
+    >
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )}
