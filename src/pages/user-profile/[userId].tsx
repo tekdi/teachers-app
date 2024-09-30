@@ -443,7 +443,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
           >
             {userRole === Role.TEAM_LEADER && userId !== selfUserId ? (
               <Button
-                className="min-width-md-20"
                 sx={{
                   fontSize: '14px',
                   lineHeight: '20px',

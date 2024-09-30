@@ -13,14 +13,7 @@ import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import EastIcon from '@mui/icons-material/East';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import {
-  Box,
-  Button,
-  Grid,
-  IconButton,
-  InputBase,
-  Paper
-} from '@mui/material';
+import { Box, Button, Grid, IconButton, InputBase, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -234,12 +227,14 @@ const BoardEnrollment = () => {
       <Grid container sx={{ my: 4, px: '16px' }} spacing={2}>
         {boardEnrollmentList.map((item: any, index: any) => {
           return (
-            <Grid key={index} item xs={12} md={6} lg={6} xl={4}>
+            <Grid key={index} item xs={12} sm={12} md={6} lg={4}>
               <Box
                 sx={{
                   border: `1px solid ${theme.palette.warning['A100']}`,
                   minHeight: '143px',
                   borderRadius: '8px',
+                  position: 'relative',
+                  cursor: 'pointer',
                 }}
                 onClick={() => {
                   item.isDropout
@@ -300,6 +295,7 @@ const BoardEnrollment = () => {
                       gap: '5px',
                       mb: '12px',
                       mx: '16px',
+                      mt: 4,
                     }}
                   >
                     {t('COMMON.DROPPED_OUT')}{' '}
