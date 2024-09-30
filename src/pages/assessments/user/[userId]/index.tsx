@@ -30,7 +30,11 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { accessControl, AssessmentType, Program } from '../../../../../app.config';
+import {
+  accessControl,
+  AssessmentType,
+  Program,
+} from '../../../../../app.config';
 import { useQueryClient } from '@tanstack/react-query';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import NoDataFound from '@/components/common/NoDataFound';
@@ -377,7 +381,14 @@ function AssessmentsDetails() {
         >
           <Grid container spacing={2}>
             {subject?.map((assessment: any) => (
-              <Grid item xs={12} sm={6} md={4} key={assessment.identifier}>
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={6}
+                lg={4}
+                key={assessment.identifier}
+              >
                 <Box
                   sx={{
                     border: `1px solid ${theme.palette.warning['A100']}`,
@@ -399,6 +410,7 @@ function AssessmentsDetails() {
                       fontWeight: '400',
                       color: theme.palette.warning['300'],
                     }}
+                    className="one-line-text"
                   >
                     {assessment?.subject}
                   </Box>
@@ -448,9 +460,7 @@ function AssessmentsDetails() {
         </Box>
       )}
 
-      {!isLoading && !assessmentList?.length && (
-        <NoDataFound />
-      )}
+      {!isLoading && !assessmentList?.length && <NoDataFound />}
 
       {isLoading && (
         <Box
@@ -490,4 +500,7 @@ export async function getStaticProps({
   };
 }
 
-export default withAccessControl('accessAssessments', accessControl)(AssessmentsDetails);
+export default withAccessControl(
+  'accessAssessments',
+  accessControl
+)(AssessmentsDetails);

@@ -443,11 +443,11 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
           >
             {userRole === Role.TEAM_LEADER && userId !== selfUserId ? (
               <Button
-                className="min-width-md-20"
                 sx={{
                   fontSize: '14px',
                   lineHeight: '20px',
-                  minWidth: '100%',
+                  width: '100%',
+                  minWidth: '182px',
                   padding: '10px 24px 10px 16px',
                   gap: '8px',
                   borderRadius: '100px',
@@ -456,6 +456,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                   textAlign: 'center',
                   color: theme.palette.warning.A200,
                   border: `1px solid #4D4639`,
+                  maxWidth: '40%',
                 }}
                 onClick={handleOpenAddLearnerModal}
               >

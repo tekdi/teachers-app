@@ -343,8 +343,12 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     localStorage.setItem('cohortId', cohort_id);
   };
 
+  const teacher: string | null =
+    typeof window !== 'undefined' && window.localStorage
+      ? localStorage.getItem('role')
+      : null;
+
   const isAttendanceOverview = pathname === '/attendance-overview';
-  const teacher = localStorage.getItem('role');
   const isAssessment = pathname === '/assessments';
   const dashboard = pathname === '/dashboard';
 

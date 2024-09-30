@@ -95,7 +95,7 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
   };
 
   return (
-    <Grid item xs={12} sm={6} md={4} key={userId}>
+    <Grid item xs={12} sm={12} md={6} lg={4} key={userId}>
       <Box
         sx={{
           border: `1px solid ${theme?.palette?.warning['A100']}`,
