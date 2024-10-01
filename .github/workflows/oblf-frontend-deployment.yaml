@@ -24,3 +24,4 @@ jobs:
             echo "${{ secrets.OBLF_ENV }}" > .env
             ls -ltra
             ./deploy.sh
+#Testing
