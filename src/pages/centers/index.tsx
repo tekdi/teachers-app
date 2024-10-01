@@ -30,6 +30,7 @@ import React, { useEffect, useState } from 'react';
 import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
+import taxonomyStore from '@/store/taxonomyStore';
 
 const CentersPage = () => {
   const [loading, setLoading] = useState(false);
@@ -56,7 +57,7 @@ const CentersPage = () => {
   const handleFilterModalOpen = () => setFilterModalOpen(true);
   const handleFilterModalClose = () => setFilterModalOpen(false);
   const [isCenterAdded, setIsCenterAdded] = useState(false);
-
+  const setType = taxonomyStore((state) => state.setType);
   const store = useStore();
   const userRole = store.userRole;
 
@@ -95,6 +96,7 @@ const CentersPage = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
+      setType("");
       if (role === Role.TEAM_LEADER) {
         setIsTeamLeader(true);
       } else {

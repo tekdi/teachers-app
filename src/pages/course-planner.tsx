@@ -393,7 +393,7 @@ const CoursePlanner = () => {
 
             const typeAssociations = getAssociationsByCodeNew(
               typeOptions,
-              value
+              tStore?.type
             );
             setTypeAssociations(typeAssociations);
             const subject = await getOptionsByCategory(framework, 'subject');
@@ -597,7 +597,7 @@ const CoursePlanner = () => {
               <Select
                 labelId="course-type-select-label"
                 id="course-type-select"
-                value={value}
+                value={tStore?.type}
                 onChange={handleChange}
                 label="Course Type"
                 sx={{ fontSize: '14px' }}
