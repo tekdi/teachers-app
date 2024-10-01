@@ -381,7 +381,7 @@ const CoursePlannerDetail = () => {
                 color: theme.palette.warning['300'],
               }}
             >
-              {store.subject}
+              {tStore?.taxonomySubject}
             </Box>
           </Box>
         </Box>
