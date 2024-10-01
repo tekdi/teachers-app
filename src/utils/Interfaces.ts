@@ -484,6 +484,7 @@ export interface FacilitatorDrawerProps {
   drawerState: { bottom: boolean };
   onPrimaryClick?: () => void;
   selectedCount?: any;
+  onSecondaryClick?: () => void;
 }
 
 export interface CoursePlannerCardsProps {

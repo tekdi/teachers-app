@@ -681,19 +681,24 @@ const CoursePlannerDetail = () => {
         )}
       </div>
       <FacilitatorDrawer
-        secondary={'Cancel'}
-        primary={`Mark as Complete (${selectedCount})`}
-        toggleDrawer={toggleDrawer}
-        drawerState={drawerState}
-        onPrimaryClick={() => {
-          if (selectedSubtopics.length > 0) {
-            // Mark all selected subtopics as complete
-            markMultipleStatuses(userProjectDetails, selectedSubtopics);
-            toggleDrawer(false)();
-          }
-        }}
-        selectedCount={selectedCount}
-      />
+  secondary={'Cancel'}
+  primary={`Mark as Complete (${selectedCount})`}
+  toggleDrawer={toggleDrawer}
+  drawerState={drawerState}
+  onPrimaryClick={() => {
+    if (selectedSubtopics.length > 0) {
+      // Mark all selected subtopics as complete
+      markMultipleStatuses(userProjectDetails, selectedSubtopics);
+      toggleDrawer(false)();
+    }
+  }}
+  onSecondaryClick={() => {
+    setSelectedSubtopics([]);
+    toggleDrawer(false)(); 
+  }}
+  selectedCount={selectedCount} 
+/>
+
 
       {/* <ConfirmationModal
         message={

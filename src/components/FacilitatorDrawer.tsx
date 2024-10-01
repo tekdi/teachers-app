@@ -14,6 +14,7 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
   drawerState,
   onPrimaryClick,
   selectedCount,
+  onSecondaryClick,
 }) => {
   const theme = useTheme<any>();
   const tStore = taxonomyStore();
@@ -86,7 +87,7 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
             }}
           >
             {secondary && (
-              <Box onClick={() => toggleDrawer(false)()}>
+              <Box onClick={onSecondaryClick}> 
                 <Button
                   sx={{
                     border: `1px solid ${theme?.palette?.warning['A400']}`,
