@@ -750,7 +750,7 @@ const CohortPage = () => {
               {sessions && sessions.length === 0 && (
                 <Box
                   className="fs-12 fw-400 italic"
-                  sx={{ color: theme.palette.warning['300'] }}
+                  sx={{ color: theme.palette.warning['300'], px: '16px' }}
                 >
                   {t('COMMON.NO_SESSIONS_SCHEDULED')}
                 </Box>

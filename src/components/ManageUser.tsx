@@ -546,8 +546,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                 <Grid
                                   item
                                   xs={12}
-                                  sm={6}
-                                  md={4}
+                                  sm={12}
+                                  md={6}
+                                  lg={4}
                                   key={user.userId}
                                 >
                                   <Box
@@ -798,6 +799,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               modalOpen={reassignModalOpen}
               reloadState={reloadState}
               setReloadState={setReloadState}
+              buttonNames={{primary: t('COMMON.SAVE')}}
             />
 
             <DeleteUserModal

@@ -532,11 +532,6 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                       justifyContent: 'left',
                     }}
                   >
-                    {/* <Box
-                  sx={{ fontSize: '12px', color: theme.palette.warning['400'] }}
-                >
-                  19 y/o
-                </Box> */}
                     {isDropout ? (
                       <Box
                         sx={{
@@ -583,7 +578,9 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                             fontSize: '14px',
                             fontWeight: '400',
                             color: theme.palette.warning['400'],
+                            wordBreak: 'break-all',
                           }}
+                          className="one-line-text"
                         >
                           {enrollmentId?.toUpperCase()}
                         </Box>

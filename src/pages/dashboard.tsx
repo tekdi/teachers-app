@@ -74,6 +74,7 @@ import CentralizedModal from '@/components/CentralizedModal';
 import manageUserStore from '@/store/manageUserStore';
 import { getUserDetails } from '@/services/ProfileService';
 import { updateStoreFromCohorts } from '@/utils/Helper';
+import taxonomyStore from '@/store/taxonomyStore';
 interface DashboardProps {}
 
 const Dashboard: React.FC<DashboardProps> = () => {
@@ -129,11 +130,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [state, setState] = React.useState<string>();
   const [eventDeleted, setEventDeleted] = React.useState(false);
   const [eventUpdated, setEventUpdated] = React.useState(false);
+  const setType = taxonomyStore((state) => state.setType);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const skipResetPassword = localStorage.getItem('skipResetPassword');
       const temporaryPassword = localStorage.getItem('temporaryPassword');
+      setType("");
 
       if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
         setShowCentralisedModal(true);
@@ -902,6 +905,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             >
                               {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
                             </Typography>
+
                             <CohortSelectionSection
                               classId={classId}
                               setClassId={setClassId}
@@ -922,6 +926,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               handleSaveHasRun={handleSaveHasRun}
                               setHandleSaveHasRun={setHandleSaveHasRun}
                               isCustomFieldRequired={false}
+                              // showFloatingLabel={true}
                             />
                           </Box>
 

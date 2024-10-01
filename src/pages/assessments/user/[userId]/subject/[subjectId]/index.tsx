@@ -244,4 +244,7 @@ function SubjectDetail() {
   );
 }
 
-export default withAccessControl('accessAssessments', accessControl)(SubjectDetail);
+export default withAccessControl(
+  'accessAssessments',
+  accessControl
+)(SubjectDetail);

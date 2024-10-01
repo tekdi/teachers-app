@@ -201,7 +201,9 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
       );
     } else if (!topicList || topicList.length === 0) {
       showToastMessage(
-        t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE'),
+        t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE', {
+          subject: item?.metadata?.subject,
+        }),
         'error'
       );
     }
@@ -343,6 +345,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
               fontWeight={500}
               color={theme.palette.secondary.main}
               ml={1}
+              className="one-line-text"
             >
               {t('COMMON.SELECT_TOPIC')}
             </Box>
