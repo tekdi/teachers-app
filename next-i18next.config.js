@@ -5,7 +5,7 @@ module.exports = {
     localeDetection: false,
   },
   fallbackLng: 'en',
-  // localePath:
+  // localePath:  
   //   typeof window === "undefined"
   //     ? require("path").resolve("./public/locales/")
   //     : "/locales",
