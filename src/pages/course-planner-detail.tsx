@@ -681,8 +681,8 @@ const CoursePlannerDetail = () => {
         )}
       </div>
       <FacilitatorDrawer
-  secondary={'Cancel'}
-  primary={`Mark as Complete (${selectedCount})`}
+  secondary= {t('COMMON.CANCEL')}
+  primary={`${t('COURSE_PLANNER.MARK_AS_COMPLETED')} (${selectedCount})`}
   toggleDrawer={toggleDrawer}
   drawerState={drawerState}
   onPrimaryClick={() => {
