@@ -262,7 +262,10 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     };
 
     // Conditionally add fromDate and toDate to filters if selectedValue doesn't match the specific condition
-    if (selectedValue !== t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })) {
+    if (
+      selectedValue !==
+      t('DASHBOARD.AS_OF_TODAY_DATE', { day_date: currentDayMonth })
+    ) {
       filters.fromDate = fromDates;
       filters.toDate = toDates;
     }
@@ -863,11 +866,10 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         // }}
         >
           <Button
-            className="min-width-md-20"
             sx={{
               fontSize: '14px',
               lineHeight: '20px',
-              minWidth: '100%',
+              minWidth: 'fit-content',
               padding: '10px 24px 10px 16px',
               gap: '8px',
               borderRadius: '100px',

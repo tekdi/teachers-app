@@ -446,8 +446,8 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                 sx={{
                   fontSize: '14px',
                   lineHeight: '20px',
-                  width: '100%',
-                  minWidth: '182px',
+
+                  minWidth: 'fit-content',
                   padding: '10px 24px 10px 16px',
                   gap: '8px',
                   borderRadius: '100px',
@@ -456,7 +456,8 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                   textAlign: 'center',
                   color: theme.palette.warning.A200,
                   border: `1px solid #4D4639`,
-                  maxWidth: '40%',
+
+                  px: '16px',
                 }}
                 onClick={handleOpenAddLearnerModal}
               >

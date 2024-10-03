@@ -91,7 +91,8 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
                   sx={{
                     border: `1px solid ${theme?.palette?.warning['A400']}`,
                     color: theme?.palette?.warning['A400'],
-                    width: '121px',
+                    width: 'fit-content',
+                    px: '20px',
                   }}
                   variant="outlined"
                 >
@@ -105,7 +106,8 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
                   variant="contained"
                   color="primary"
                   onClick={onPrimaryClick}
-                  sx={{ width: '199px' }}
+                  sx={{ width: 'fit-content', px: '20px' }}
+                  className="one-line-text"
                 >
                   {primary}
                 </Button>
