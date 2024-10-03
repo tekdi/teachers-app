@@ -393,8 +393,10 @@ const BoardEnrollmentDetail = () => {
                   },
                   border: `1px solid ${theme.palette.error.contrastText}`,
                   mt: '15px',
-                  width: '144px',
+                  width: 'fit-content',
+                  px: '20px',
                 }}
+                className="one-line-text"
                 variant="outlined"
                 onClick={handleBack}
                 disabled={activeStep === 0}
@@ -403,12 +405,14 @@ const BoardEnrollmentDetail = () => {
               </Button>
               <Button
                 sx={{
-                  width: '144px',
                   height: '40px',
                   fontSize: '14px',
                   fontWeight: '500',
                   mt: '15px',
+                  width: 'fit-content',
+                  px: '20px',
                 }}
+                className="one-line-text"
                 variant="contained"
                 color="primary"
                 onClick={handleNext}

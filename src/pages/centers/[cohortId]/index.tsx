@@ -539,7 +539,7 @@ const CohortPage = () => {
                 border: `1px solid ${theme.palette.error.contrastText}`,
                 borderRadius: '100px',
                 height: '40px',
-                width: '163px',
+                px: '16px',
                 color: theme.palette.error.contrastText,
               }}
               onClick={handleOpen}
@@ -769,7 +769,7 @@ const CohortPage = () => {
                   border: '1px solid #1E1B16',
                   borderRadius: '100px',
                   height: '40px',
-                  width: '126px',
+                  px: '16px',
                   color: theme.palette.error.contrastText,
                 }}
                 className="text-1E"
