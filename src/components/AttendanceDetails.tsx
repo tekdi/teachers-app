@@ -1,7 +1,7 @@
 import { attendanceStatusList } from '@/services/AttendanceService';
 import { shortDateFormat } from '@/utils/Helper';
 import { AttendanceStatusListProps, DropoutMember } from '@/utils/Interfaces';
-import { Status } from '@/utils/app.constant';
+import { Status, cohortPrivileges } from '@/utils/app.constant';
 
 export const fetchAttendanceDetails = async (
   nameUserIdArray: any[],
@@ -43,13 +43,13 @@ export const fetchAttendanceDetails = async (
     const formatSelectedDate = shortDateFormat(new Date(selectedDate));
 
     const attendanceStatusData: AttendanceStatusListProps = {
-      limit: 300,
+      limit: 0,
       page: 0,
       filters: {
         fromDate: formatSelectedDate,
         toDate: formatSelectedDate,
         contextId: classId,
-        scope: 'student',
+        scope: cohortPrivileges.STUDENT,
       },
     };
 
