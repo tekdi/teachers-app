@@ -619,15 +619,15 @@ const CohortPage = () => {
                     type: 'fraction',
                   }}
                   breakpoints={{
-                    500: {
+                    600: {
                       slidesPerView: 1,
                       spaceBetween: 20,
                     },
-                    740: {
+                    900: {
                       slidesPerView: 2,
                       spaceBetween: 20,
                     },
-                    900: {
+                    1200: {
                       slidesPerView: 3,
                       spaceBetween: 30,
                     },
@@ -725,7 +725,7 @@ const CohortPage = () => {
           <Box mt={3} px="18px">
             <Grid container spacing={3}>
               {sessions?.map((item) => (
-                <Grid item xs={12} sm={6} md={4} key={item.id}>
+                <Grid item xs={12} sm={12} md={6} lg={4} mb={2} key={item.id}>
                   <SessionCard
                     data={item}
                     isEventDeleted={handleEventDeleted}
