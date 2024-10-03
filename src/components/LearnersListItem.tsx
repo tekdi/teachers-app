@@ -344,24 +344,32 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   };
 
   const handleReassignCenterRequest = async () => {
-    const payload: BulkCreateCohortMembersRequest = {
-      userId: [reassignStore?.reassignId],
-      cohortId: [reassignStore?.cohortId],
-      removeCohortId: [reassignStore?.removeCohortId],
-    };
-
-    try {
-      const response = await bulkCreateCohortMembers(payload);
-      console.log('Cohort members created successfully', response);
-
+    const attendanceStats = await fetchAttendanceStats(userId);
+    if (attendanceStats && attendanceStats.length > 0) {
       showToastMessage(
-        t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'),
-        'success'
+        t('COMMON.CANNOT_REASSIGN_TODAY_ATTENDANCE_MARKED'),
+        'error'
       );
-      setReloadState(true);
-    } catch (error) {
-      console.error('Error creating cohort members', error);
-      showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');
+    } else {
+      const payload: BulkCreateCohortMembersRequest = {
+        userId: [reassignStore?.reassignId],
+        cohortId: [reassignStore?.cohortId],
+        removeCohortId: [reassignStore?.removeCohortId],
+      };
+
+      try {
+        const response = await bulkCreateCohortMembers(payload);
+        console.log('Cohort members created successfully', response);
+
+        showToastMessage(
+          t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'),
+          'success'
+        );
+        setReloadState(true);
+      } catch (error) {
+        console.error('Error creating cohort members', error);
+        showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');
+      }
     }
   };
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
