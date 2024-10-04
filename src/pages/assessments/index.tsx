@@ -194,6 +194,8 @@ const Assessments = () => {
       try {
         const options = {
           userId: cohortMembers?.map((user: any) => user.userId),
+          courseId:assessmentList, // temporary added here assessmentList(contentId)... if assessment is done then need to pass actual course id and unit id here
+          unitId:assessmentList,
           contentId: assessmentList,
           batchId: classId,
         };
