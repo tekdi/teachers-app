@@ -74,6 +74,8 @@ import CentralizedModal from '@/components/CentralizedModal';
 import manageUserStore from '@/store/manageUserStore';
 import { getUserDetails } from '@/services/ProfileService';
 import { updateStoreFromCohorts } from '@/utils/Helper';
+import taxonomyStore from '@/store/taxonomyStore';
+import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 interface DashboardProps {}
 
 const Dashboard: React.FC<DashboardProps> = () => {
@@ -129,11 +131,26 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [state, setState] = React.useState<string>();
   const [eventDeleted, setEventDeleted] = React.useState(false);
   const [eventUpdated, setEventUpdated] = React.useState(false);
+  const setType = taxonomyStore((state) => state.setType);
+  const [attendanceData, setAttendanceData] = useState({
+    cohortMemberList: [],
+    presentCount: 0,
+    absentCount: 0,
+    numberOfCohortMembers: 0,
+    dropoutMemberList: [],
+    dropoutCount: 0,
+    bulkAttendanceStatus: '',
+  });
+
+  const handleAttendanceDataUpdate = (data: any) => {
+    setAttendanceData(data);
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const skipResetPassword = localStorage.getItem('skipResetPassword');
       const temporaryPassword = localStorage.getItem('temporaryPassword');
+      setType("");
 
       if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
         setShowCentralisedModal(true);
@@ -151,7 +168,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setCentralizedModal(true);
     }
   };
-  const [selectedDays, setSelectedDays] = React.useState<any>([]);
+  // const [isTourCompleted, setIsTourCompleted] = React.useState(false);
+
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined' && window.localStorage) {
+  //     const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+
+  //     if (hasSeenTutorial === 'true') {
+  //       setIsTourCompleted(true);
+  //     }
+  //   }
+  // }, []);
 
   useEffect(() => {
     setIsClient(true);
@@ -262,10 +289,18 @@ const Dashboard: React.FC<DashboardProps> = () => {
           });
           const resp = response?.result?.userDetails;
           if (resp) {
-            const nameUserIdArray = resp?.map((entry: any) => ({
-              userId: entry.userId,
-              name: toPascalCase(entry.name),
-            }));
+            const nameUserIdArray = resp
+              ?.map((entry: any) => ({
+                userId: entry.userId,
+                name: toPascalCase(entry.name),
+                memberStatus: entry.status,
+                createdAt: entry.createdAt,
+              }))
+              .filter((member: { createdAt: string | number | Date }) => {
+                const createdAt = new Date(member.createdAt);
+                createdAt.setHours(0, 0, 0, 0);
+                return createdAt <= new Date(selectedDate);
+              });
             if (nameUserIdArray) {
               //Logic to call class missed api
               const fromDate = startDateRange;
@@ -321,6 +356,25 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 }
               }
             }
+
+            if (nameUserIdArray && selectedDate && classId) {
+              fetchAttendanceDetails(
+                nameUserIdArray,
+                selectedDate,
+                classId,
+                handleAttendanceDataUpdate
+              );
+            }
+          }else{
+            setAttendanceData({
+              cohortMemberList: [],
+              presentCount: 0,
+              absentCount: 0,
+              numberOfCohortMembers: 0,
+              dropoutMemberList: [],
+              dropoutCount: 0,
+              bulkAttendanceStatus: '',
+            });
           }
           if (classId) {
             const cohortAttendancePercent = async () => {
@@ -859,6 +913,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       m={'1.5rem 1.2rem 0.8rem'}
                       color={theme?.palette?.warning['300']}
                       className="joyride-step-1"
+                      // className={!isTourCompleted ? 'joyride-step-1' : ''}
                     >
                       {t('DASHBOARD.DASHBOARD')}
                     </Typography>
@@ -1025,7 +1080,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                         >
                                           {t('DASHBOARD.PERCENT_ATTENDANCE', {
                                             percent_students:
-                                              currentAttendance?.present_percentage,
+                                              attendanceData?.numberOfCohortMembers &&
+                                              attendanceData.numberOfCohortMembers !==
+                                                0
+                                                ? (
+                                                    (attendanceData.presentCount /
+                                                      attendanceData.numberOfCohortMembers) *
+                                                    100
+                                                  ).toFixed(2)
+                                                : '0',
                                           })}
                                         </Typography>
                                         <Typography
@@ -1039,10 +1102,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                           className="word-break"
                                         >
                                           {t('DASHBOARD.PRESENT_STUDENTS', {
-                                            present_students:
-                                              currentAttendance?.present_students,
-                                            total_students:
-                                              currentAttendance?.totalcount,
+                                            present_students: attendanceData.presentCount,
+                                            total_students: attendanceData.numberOfCohortMembers,
                                           })}
                                         </Typography>
                                       </Box>
@@ -1132,6 +1193,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 }
                                 setHandleSaveHasRun(!handleSaveHasRun);
                               }}
+                              memberList={attendanceData?.cohortMemberList}
+                              presentCount={attendanceData?.presentCount}
+                              absentCount={attendanceData?.absentCount}
+                              numberOfCohortMembers={
+                                attendanceData?.numberOfCohortMembers
+                              }
+                              dropoutMemberList={
+                                attendanceData?.dropoutMemberList
+                              }
+                              dropoutCount={attendanceData?.dropoutCount}
+                              bulkStatus={attendanceData?.bulkAttendanceStatus}
                             />
                           )}
                         </Box>

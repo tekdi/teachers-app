@@ -30,6 +30,7 @@ import React, { useEffect, useState } from 'react';
 import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
+import taxonomyStore from '@/store/taxonomyStore';
 
 const CentersPage = () => {
   const [loading, setLoading] = useState(false);
@@ -56,7 +57,7 @@ const CentersPage = () => {
   const handleFilterModalOpen = () => setFilterModalOpen(true);
   const handleFilterModalClose = () => setFilterModalOpen(false);
   const [isCenterAdded, setIsCenterAdded] = useState(false);
-
+  const setType = taxonomyStore((state) => state.setType);
   const store = useStore();
   const userRole = store.userRole;
 
@@ -68,33 +69,32 @@ const CentersPage = () => {
     if (router.isReady) {
       const queryParamValue = router.query.tab ? Number(router.query.tab) : 1;
 
-      if ([1,2].includes(queryParamValue))
-        setValue(queryParamValue);
-      else
-        setValue(1);
+      if ([1, 2].includes(queryParamValue)) setValue(queryParamValue);
+      else setValue(1);
     }
   }, [router.isReady, router.query.tab]);
 
   useEffect(() => {
     // Merge existing query params with new ones
     if (router.isReady) {
-    const updatedQuery = { ...router.query, tab: value };
+      const updatedQuery = { ...router.query, tab: value };
 
-    // Update the URL without reloading the page
-    router.push(
-      {
-        pathname: router.pathname,
-        query: updatedQuery,
-      },
-      undefined,
-      { shallow: true }
-    );
-  }
+      // Update the URL without reloading the page
+      router.push(
+        {
+          pathname: router.pathname,
+          query: updatedQuery,
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
   }, [value]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
+      setType('');
       if (role === Role.TEAM_LEADER) {
         setIsTeamLeader(true);
       } else {
@@ -418,7 +418,7 @@ const CentersPage = () => {
                         border: '1px solid #1E1B16',
                         borderRadius: '100px',
                         height: '40px',
-                        width: '9rem',
+                        px: '20px',
                         color: theme.palette.error.contrastText,
                       }}
                       className="text-1E"
