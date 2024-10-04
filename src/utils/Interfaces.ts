@@ -636,8 +636,11 @@ export interface BottomDrawerProps {
 
 export interface IAssessmentStatusOptions {
   userId: string[];
+  courseId?:string[];
+  unitId?:string[];
   contentId: string[];
   batchId: string;
+ 
 }
 
 export interface GetTargetedSolutionsParams {
@@ -663,6 +666,8 @@ export interface EditEvent {
 
 export interface ISearchAssessment {
   userId: string;
+  courseId?:string;
+  unitId?:string;
   contentId: string;
   batchId: string;
 }

@@ -154,6 +154,12 @@ function AssessmentsDetails() {
       try {
         const options = {
           userId: [params.userId],
+          courseId:assessmentList.map(
+            (item: any) => item.identifier
+          ) as string[], // temporary added here assessmentList(contentId)... if assessment is done then need to pass actual course id and unit id here
+          unitId:assessmentList.map(
+            (item: any) => item.identifier
+          ) as string[],
           contentId: assessmentList.map(
             (item: any) => item.identifier
           ) as string[],
