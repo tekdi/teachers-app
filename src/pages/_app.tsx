@@ -4,7 +4,6 @@ import '@/styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import * as React from 'react';
-
 import { Button } from '@mui/material';
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
@@ -30,6 +29,7 @@ import nextI18NextConfig from '../../next-i18next.config.js';
 import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
 import { metaTags, Telemetry } from '@/utils/app.constant';
+import { useTranslation } from 'next-i18next';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -56,7 +56,6 @@ export function DarkTheme() {
         borderRadius: 1,
       }}
     >
-      {/* {theme.palette.mode} mode */}
       <IconButton onClick={colorMode.toggleColorMode} color="inherit">
         {theme.palette.mode === 'dark' ? (
           <Brightness7Icon />
@@ -69,6 +68,7 @@ export function DarkTheme() {
 }
 
 function App({ Component, pageProps }: AppProps) {
+  const { i18n } = useTranslation(); // Get the i18n object to access the selected language
   const [client] = React.useState(
     new QueryClient({
       defaultOptions: {
@@ -79,8 +79,19 @@ function App({ Component, pageProps }: AppProps) {
       },
     })
   );
+
   const router = useRouter();
   const isFullWidthPage = fullWidthPages.includes(router.pathname);
+
+  useEffect(() => {
+    const htmlElement = document.documentElement;
+    if (i18n.language === 'ur') {
+      htmlElement.setAttribute('dir', 'rtl');
+    } else {
+      htmlElement.setAttribute('dir', 'ltr');
+    }
+  }, [i18n.language]);
+
   useEffect(() => {
     telemetryFactory.init();
   }, []);
@@ -94,7 +105,6 @@ function App({ Component, pageProps }: AppProps) {
 
     const handleRouteChange = (url: string) => {
       const windowUrl = url;
-
       const cleanedUrl = windowUrl.replace(/^\//, '');
 
       const telemetryImpression = {
@@ -126,19 +136,6 @@ function App({ Component, pageProps }: AppProps) {
     };
   }, [router.events]);
 
-  function ModeToggle() {
-    const { mode, setMode } = useColorScheme();
-    return (
-      <Button
-        onClick={() => {
-          setMode(mode === 'light' ? 'dark' : 'light');
-        }}
-        sx={{ position: 'absolute', right: '0px', zIndex: '9999' }}
-      >
-        {mode === 'light' ? 'Turn dark' : 'Turn light'}
-      </Button>
-    );
-  }
   const theme = useTheme<any>();
 
   return (
@@ -153,15 +150,24 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="description" content={metaTags?.description} />
       </Head>
       <CssVarsProvider theme={customTheme}>
-        {/* <ModeToggle /> */}
         <Box
           sx={{
             padding: '0',
             '@media (min-width: 900px)': {
               width: !isFullWidthPage ? 'calc(100% - 22rem)' : '100%',
-              marginLeft: !isFullWidthPage ? '351px' : '0',
+              marginLeft:
+                i18n.language === 'ur'
+                  ? !isFullWidthPage
+                    ? '0px'
+                    : '0'
+                  : !isFullWidthPage
+                    ? '351px'
+                    : '0',
+              marginRight:
+                i18n.language === 'ur' && !isFullWidthPage ? '351px' : '0',
             },
             background: theme.palette.warning['A400'],
+            overflowX: 'hidden',
           }}
         >
           <QueryClientProvider client={client}>

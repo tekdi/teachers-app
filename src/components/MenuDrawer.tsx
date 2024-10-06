@@ -25,6 +25,7 @@ import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlin
 import checkBook from '../assets/images/checkbook.svg';
 import board from '../assets/images/Board.svg';
 import Image from 'next/image';
+
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
   open: boolean;
@@ -44,6 +45,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [isOpen, setIsOpen] = useState(open);
   const [isTeamLeader, setIsTeamLeader] = useState(false);
+  const [drawerDirection, setDrawerDirection] = useState<'ltr' | 'rtl'>('ltr'); // Added state for drawer direction
   const { t } = useTranslation();
   const router = useRouter();
   const store = useStore();
@@ -55,6 +57,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     if (typeof window !== 'undefined' && window.localStorage) {
       const lang = localStorage.getItem('preferredLanguage') || 'en';
       setLanguage(lang);
+      setDrawerDirection(lang === 'ur' ? 'rtl' : 'ltr'); // Set drawer direction based on language
+
       const role = localStorage.getItem('role');
       if (role === 'Team Leader') {
         setIsTeamLeader(true);
@@ -67,6 +71,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     setLanguage(newLocale);
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem('preferredLanguage', newLocale);
+      setDrawerDirection(newLocale === 'ur' ? 'rtl' : 'ltr'); // Update drawer direction on language change
       router.replace(router.pathname, router.asPath, { locale: newLocale });
     }
   };
@@ -94,13 +99,13 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isCoursePlanner = router.pathname.includes('/course-planner');
   const isAssessments = router.pathname.includes('/assessments');
   const isBoard = router.pathname.includes('/board-enrollment');
-  // const isManageUser = router.pathname === '/manageUser';
 
   return (
     <Drawer
       open={isDesktop || isOpen}
       onClose={closeDrawer}
       transitionDuration={{ enter: 500, exit: 500 }}
+      anchor={drawerDirection === 'rtl' ? 'right' : 'left'} // Set anchor based on direction
       className="backgroundFaded"
       variant={isDesktop ? 'persistent' : 'temporary'}
       sx={{
@@ -113,6 +118,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
       <Box
         sx={{ padding: '16px 16px 12px 16px', width: '350px' }}
         role="presentation"
+        dir={drawerDirection} // Set text direction for the menu
       >
         <Box
           sx={{
@@ -189,6 +195,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           <Button
             className="fs-14"
             sx={{
+              gap: '10px',
               width: '100%',
               display: 'flex',
               justifyContent: 'flex-start',
@@ -237,6 +244,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   : 'transparent',
               },
               marginTop: '15px',
+              gap: '10px',
             }}
             startIcon={
               <LocalLibraryOutlinedIcon sx={{ fontSize: '24px !important' }} />
@@ -265,6 +273,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 background: 'transparent',
               },
               marginTop: '15px',
+              gap: '10px',
             }}
             startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
             // onClick={navigateToManageUser}
@@ -294,6 +303,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                     : 'transparent',
                 },
                 marginTop: '15px',
+                gap: '10px',
               }}
               startIcon={
                 <Image
@@ -333,6 +343,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   : 'transparent',
               },
               marginTop: '15px',
+              gap: '10px',
             }}
             startIcon={
               <EventAvailableOutlinedIcon
@@ -354,7 +365,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               display: 'flex',
               justifyContent: 'flex-start',
               background: isBoard ? theme.palette.primary.main : 'transparent',
-
+              gap: '10px',
               padding: isBoard ? '16px 18px !important' : '0px 18px !important',
               color: isBoard ? '#2E1500' : theme.palette.warning.A200,
               fontWeight: isBoard ? '600' : 500,
@@ -384,6 +395,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               justifyContent: 'flex-start',
               background: 'transparent',
               padding: '0px 18px !important',
+              gap: '10px',
               color: theme.palette.secondary.main,
               fontWeight: 500,
               '&:hover': {

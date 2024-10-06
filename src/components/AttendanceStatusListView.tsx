@@ -34,7 +34,8 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   presentCount,
   absentCount,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const theme = useTheme<any>();
 
   const boxStyling = {
@@ -135,7 +136,8 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
       <Box sx={boxStyling}>
         <Typography
           variant="body1"
-          marginRight="auto"
+          marginRight={isUrdu ? 'unset' : 'auto'}
+          marginLeft={isUrdu ? 'auto' : 'unset'}
           marginY="auto"
           sx={{
             textAlign: 'left',
