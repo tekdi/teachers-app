@@ -34,7 +34,8 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   grade,
 }) => {
   const theme = useTheme<any>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const [open, setOpen] = React.useState(false);
   const [editTopic, setEditTopic] = React.useState(false);
   // const [removeTopic, setRemoveTopic] = React.useState(false);
@@ -351,7 +352,11 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
             </Box>
           </Box>
           <ArrowForwardIcon
-            sx={{ color: theme.palette.secondary.main, fontSize: '18px' }}
+            sx={{
+              color: theme.palette.secondary.main,
+              fontSize: '18px',
+              transform: isUrdu ? ' rotate(180deg)' : 'unset',
+            }}
           />
         </Box>
       )}

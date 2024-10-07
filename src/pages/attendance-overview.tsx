@@ -61,7 +61,8 @@ interface AttendanceOverviewProps {
 }
 
 const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const { push } = useRouter();
   const today = new Date();
   const [classId, setClassId] = React.useState('');
@@ -528,7 +529,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'left',
             alignItems: 'center',
             color: theme.palette.warning['A200'],
             padding: '15px 20px 5px',
@@ -538,7 +538,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           <KeyboardBackspaceOutlinedIcon
             onClick={handleBackEvent}
             cursor={'pointer'}
-            sx={{ color: theme.palette.warning['A200'] }}
+            sx={{
+              color: theme.palette.warning['A200'],
+              transform: isUrdu ? ' rotate(180deg)' : 'unset',
+            }}
           />
           <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
             {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}

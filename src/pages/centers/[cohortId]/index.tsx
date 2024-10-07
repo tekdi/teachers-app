@@ -74,7 +74,8 @@ const CohortPage = () => {
   const [classId, setClassId] = React.useState('');
   const router = useRouter();
   const { cohortId }: any = router.query;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const [role, setRole] = React.useState<any>('');
 
   const store = manageUserStore();
@@ -415,7 +416,11 @@ const CohortPage = () => {
             onClick={handleBackEvent}
           >
             <KeyboardBackspaceOutlinedIcon
-              sx={{ color: theme.palette.warning['A200'], marginTop: '18px' }}
+              sx={{
+                color: theme.palette.warning['A200'],
+                marginTop: '18px',
+                transform: isUrdu ? ' rotate(180deg)' : 'unset',
+              }}
             />
             <Box m={'1rem 1rem 0.5rem 0.5rem'} display={'column'} gap={'5px'}>
               <Typography textAlign={'left'} fontSize={'22px'}>
@@ -794,7 +799,11 @@ const CohortPage = () => {
                 {t('COMMON.REVIEW_ATTENDANCE')}
               </Box>
               <ArrowForwardIcon
-                sx={{ fontSize: '18px', color: theme.palette.secondary.main }}
+                sx={{
+                  fontSize: '18px',
+                  color: theme.palette.secondary.main,
+                  transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                }}
               />
             </Box>
             <Box>

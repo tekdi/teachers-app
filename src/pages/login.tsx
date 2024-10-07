@@ -339,6 +339,7 @@ const LoginPage = () => {
         justifyContent={'center'}
         px={'30px'}
         alignItems={'center'}
+        width={'100% !important'}
       >
         <Grid
           sx={{

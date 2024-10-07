@@ -9,7 +9,8 @@ import { logEvent } from '@/utils/googleAnalytics';
 
 const ProfileEnrolment = () => {
   const theme = useTheme<any>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
 
   const handleBackEvent = () => {
     window.history.back();
@@ -34,7 +35,11 @@ const ProfileEnrolment = () => {
         <KeyboardBackspaceOutlinedIcon
           onClick={handleBackEvent}
           cursor={'pointer'}
-          sx={{ color: theme.palette.warning['A200'], marginTop: '18px' }}
+          sx={{
+            color: theme.palette.warning['A200'],
+            marginTop: '18px',
+            transform: isUrdu ? ' rotate(180deg)' : 'unset',
+          }}
         />
         <Box my={'1rem'} ml={'0.5rem'}>
           <Typography

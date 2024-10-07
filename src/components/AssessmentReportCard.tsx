@@ -28,7 +28,8 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
 }) => {
   const theme = useTheme<any>();
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
 
   const handleAssessmentDetails = (userId: string) => {
     if (router.pathname === '/assessments') {
@@ -155,7 +156,10 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
             </Box>
 
             <KeyboardArrowRightIcon
-              sx={{ color: theme.palette.warning[300] }}
+              sx={{
+                color: theme.palette.warning[300],
+                transform: isUrdu ? ' rotate(180deg)' : 'unset',
+              }}
             />
           </Box>
         </Box>

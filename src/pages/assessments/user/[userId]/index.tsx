@@ -47,7 +47,8 @@ const statusKeyMap: any = {
 
 function AssessmentsDetails() {
   const theme = useTheme<any>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -154,10 +155,10 @@ function AssessmentsDetails() {
       try {
         const options = {
           userId: [params.userId],
-          courseId:assessmentList.map(
+          courseId: assessmentList.map(
             (item: any) => item.identifier
           ) as string[], // temporary added here assessmentList(contentId)... if assessment is done then need to pass actual course id and unit id here
-          unitId:assessmentList.map(
+          unitId: assessmentList.map(
             (item: any) => item.identifier
           ) as string[],
           contentId: assessmentList.map(
@@ -284,7 +285,6 @@ function AssessmentsDetails() {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'left',
           alignItems: 'center',
           color: theme.palette.warning['A200'],
           padding: '15px 20px 5px',
@@ -294,7 +294,10 @@ function AssessmentsDetails() {
       >
         <KeyboardBackspaceOutlinedIcon
           cursor={'pointer'}
-          sx={{ color: theme.palette.warning['A200'] }}
+          sx={{
+            color: theme.palette.warning['A200'],
+            transform: isUrdu ? ' rotate(180deg)' : 'unset',
+          }}
         />
         <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
           {toPascalCase(userDetails?.name)}

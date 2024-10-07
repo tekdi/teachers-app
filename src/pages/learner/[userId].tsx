@@ -80,7 +80,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   reloadState,
   setReloadState,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const theme = useTheme<any>();
   const today = new Date();
   const router = useRouter();
@@ -665,7 +666,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )}
 
-      <Grid container spacing={2} alignItems="flex-start" padding={'20px 18px'}>
+      <Grid container spacing={2} padding={'20px 18px'}>
         <Grid item>
           <Box
             onClick={() => {
@@ -682,6 +683,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                 color: theme.palette.warning['A200'],
                 fontSize: '1.5rem',
                 cursor: 'pointer',
+                transform: isUrdu ? ' rotate(180deg)' : 'unset',
               }}
             />
           </Box>
@@ -691,7 +693,6 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
             <Typography
               style={{
                 letterSpacing: '0.1px',
-                textAlign: 'left',
                 marginBottom: '2px',
               }}
               fontSize={'22px'}
@@ -748,7 +749,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           >
             {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Typography
               sx={{
                 color: theme.palette.secondary.main,
@@ -767,6 +768,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
               sx={{
                 color: theme.palette.secondary.main,
                 marginBottom: '5px',
+                transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                marginTop: '5px',
               }}
             />
           </Box>

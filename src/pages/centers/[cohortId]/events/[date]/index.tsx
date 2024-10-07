@@ -30,7 +30,8 @@ import { getCohortDetails } from '@/services/CohortServices';
 
 const EventMonthView: React.FC<any> = () => {
   const theme = useTheme<any>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const router = useRouter();
   const { date }: any = router.query;
   const { showAll } = router.query;
@@ -241,7 +242,10 @@ const EventMonthView: React.FC<any> = () => {
                       <Box>
                         <KeyboardBackspaceOutlinedIcon
                           cursor={'pointer'}
-                          sx={{ color: theme.palette.warning['A200'] }}
+                          sx={{
+                            color: theme.palette.warning['A200'],
+                            transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                          }}
                         />
                       </Box>
                     </Box>

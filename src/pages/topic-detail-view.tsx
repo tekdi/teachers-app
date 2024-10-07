@@ -24,7 +24,8 @@ import { ResourcesType } from '@/utils/app.constant';
 const TopicDetailView = () => {
   const [value, setValue] = React.useState(1);
   const theme = useTheme<any>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -59,7 +60,10 @@ const TopicDetailView = () => {
           <KeyboardBackspaceOutlinedIcon
             onClick={handleBackEvent}
             cursor={'pointer'}
-            sx={{ color: theme.palette.warning['A200'] }}
+            sx={{
+              color: theme.palette.warning['A200'],
+              transform: isUrdu ? ' rotate(180deg)' : 'unset',
+            }}
           />
           <Box>
             <Box

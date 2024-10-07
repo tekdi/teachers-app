@@ -40,7 +40,8 @@ import useDeterminePathColor from '@/hooks/useDeterminePathColor';
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const setResources = useCourseStore((state) => state.setResources);
   const store = useCourseStore();
   const tStore = taxonomyStore();
@@ -326,7 +327,10 @@ const CoursePlannerDetail = () => {
         <KeyboardBackspaceOutlinedIcon
           onClick={handleBackEvent}
           cursor={'pointer'}
-          sx={{ color: theme.palette.warning['A200'] }}
+          sx={{
+            color: theme.palette.warning['A200'],
+            transform: isUrdu ? ' rotate(180deg)' : 'unset',
+          }}
         />
         <Box>
           <Box

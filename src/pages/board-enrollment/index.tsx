@@ -22,7 +22,8 @@ import React, { useEffect, useState } from 'react';
 
 const BoardEnrollment = () => {
   const theme = useTheme<any>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const router = useRouter();
   const [boardEnrollmentList, setBoardEnrollmentList] = useState<any>([]);
   const [activeStep, setActiveStep] = React.useState<number>(0);
@@ -248,6 +249,7 @@ const BoardEnrollment = () => {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     p: '12px 16px 0',
+                    gap: '6px',
                   }}
                 >
                   <Box
@@ -266,6 +268,7 @@ const BoardEnrollment = () => {
                       color: item.isDropout
                         ? theme.palette.warning['400']
                         : theme.palette.warning['300'],
+                      transform: isUrdu ? ' rotate(180deg)' : 'unset',
                     }}
                   />
                 </Box>

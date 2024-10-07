@@ -39,7 +39,8 @@ const CoursePlanner = () => {
     (state) => state.setStateassociations
   );
   const theme = useTheme<any>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [framework, setFramework] = useState<any[]>([]);
@@ -727,7 +728,10 @@ const CoursePlanner = () => {
                         </Box>
                         <Box>
                           <KeyboardArrowRightIcon
-                            sx={{ color: theme.palette.warning['300'] }}
+                            sx={{
+                              color: theme.palette.warning['300'],
+                              transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                            }}
                           />
                         </Box>
                       </Box>

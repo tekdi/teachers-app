@@ -31,7 +31,8 @@ type AttendanceRecord = {
 };
 
 const LearnerAttendanceHistory = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === 'ur';
   const theme = useTheme<any>();
   const { push } = useRouter();
 
@@ -178,7 +179,10 @@ const LearnerAttendanceHistory = () => {
                 <Box>
                   <KeyboardBackspaceOutlinedIcon
                     cursor={'pointer'}
-                    sx={{ color: theme.palette.warning['A200'] }}
+                    sx={{
+                      color: theme.palette.warning['A200'],
+                      transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                    }}
                   />
                 </Box>
               </Box>

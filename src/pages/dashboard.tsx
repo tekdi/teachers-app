@@ -1264,7 +1264,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               >
                                 {t('DASHBOARD.MORE_DETAILS')}
                                 <ArrowForwardSharpIcon
-                                  sx={{ height: '18px' }}
+                                  sx={{
+                                    height: '18px',
+                                    transform: isUrdu
+                                      ? ' rotate(180deg)'
+                                      : 'unset',
+                                  }}
                                 />
                               </Link>
                             </Box>
