@@ -55,6 +55,7 @@ import ReactGA from 'react-ga4';
 import { getMenuItems, Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import NoDataFound from '@/components/common/NoDataFound';
+import { useDirection } from '../hooks/useDirection';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -62,7 +63,7 @@ interface AttendanceOverviewProps {
 
 const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const { push } = useRouter();
   const today = new Date();
   const [classId, setClassId] = React.useState('');
@@ -540,7 +541,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             cursor={'pointer'}
             sx={{
               color: theme.palette.warning['A200'],
-              transform: isUrdu ? ' rotate(180deg)' : 'unset',
+              transform: isRTL ? ' rotate(180deg)' : 'unset',
             }}
           />
           <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>

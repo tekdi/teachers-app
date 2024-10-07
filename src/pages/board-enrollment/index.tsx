@@ -16,6 +16,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Box, Button, Grid, IconButton, InputBase, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { useDirection } from '../../hooks/useDirection';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -23,7 +24,7 @@ import React, { useEffect, useState } from 'react';
 const BoardEnrollment = () => {
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const router = useRouter();
   const [boardEnrollmentList, setBoardEnrollmentList] = useState<any>([]);
   const [activeStep, setActiveStep] = React.useState<number>(0);
@@ -268,7 +269,7 @@ const BoardEnrollment = () => {
                       color: item.isDropout
                         ? theme.palette.warning['400']
                         : theme.palette.warning['300'],
-                      transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                      transform: isRTL ? ' rotate(180deg)' : 'unset',
                     }}
                   />
                 </Box>

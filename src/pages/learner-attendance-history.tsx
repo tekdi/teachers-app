@@ -18,6 +18,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { accessControl } from '../../app.config';
+import { useDirection } from '../hooks/useDirection';
 
 type LearnerAttendanceData = {
   [date: string]: {
@@ -32,7 +33,7 @@ type AttendanceRecord = {
 
 const LearnerAttendanceHistory = () => {
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const theme = useTheme<any>();
   const { push } = useRouter();
 
@@ -181,7 +182,7 @@ const LearnerAttendanceHistory = () => {
                     cursor={'pointer'}
                     sx={{
                       color: theme.palette.warning['A200'],
-                      transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                      transform: isRTL ? ' rotate(180deg)' : 'unset',
                     }}
                   />
                 </Box>

@@ -17,6 +17,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import StyledMenu from './StyledMenu';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import { useDirection } from '../hooks/useDirection';
 
 interface HeaderProps {
   toggleDrawer?: (newOpen: boolean) => () => void;
@@ -42,7 +43,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
   const [language, setLanguage] = useState<string>(selectedLanguage);
   const [darkMode, setDarkMode] = useState<string | null>(null);
-  const isUrdu = language === 'ur';
+  const { dir, isRTL } = useDirection();
 
   // Retrieve stored userId and language
   useEffect(() => {
@@ -111,7 +112,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     <Box
       sx={{
         height: '64px',
-        direction: isUrdu ? 'rtl' : 'ltr',
+        direction: isRTL ? 'rtl' : 'ltr',
       }}
     >
       <Box
@@ -152,7 +153,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
             mt={'0.5rem'}
             className="display-md-none"
             paddingLeft={'20px'}
-            sx={{ marginRight: isUrdu ? '20px' : '0px' }}
+            sx={{ marginRight: isRTL ? '20px' : '0px' }}
           >
             <Image
               height={12}
@@ -169,7 +170,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
             src={logoLight}
             alt="logo"
             onClick={() => router.push('/dashboard')}
-            style={{ marginRight: isUrdu ? '20px' : '0px' }}
+            style={{ marginRight: isRTL ? '20px' : '0px' }}
           />
 
           <Box
@@ -177,7 +178,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
             sx={{
               cursor: 'pointer',
               position: 'relative',
-              marginLeft: isUrdu ? '16px' : '0px',
+              marginLeft: isRTL ? '16px' : '0px',
             }}
             aria-controls={open ? 'account-menu' : undefined}
             aria-haspopup="true"

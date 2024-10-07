@@ -5,12 +5,13 @@ import React from 'react';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { useDirection } from '../../../../hooks/useDirection';
 import { logEvent } from '@/utils/googleAnalytics';
 
 const ProfileEnrolment = () => {
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
 
   const handleBackEvent = () => {
     window.history.back();
@@ -38,7 +39,7 @@ const ProfileEnrolment = () => {
           sx={{
             color: theme.palette.warning['A200'],
             marginTop: '18px',
-            transform: isUrdu ? ' rotate(180deg)' : 'unset',
+            transform: isRTL ? ' rotate(180deg)' : 'unset',
           }}
         />
         <Box my={'1rem'} ml={'0.5rem'}>

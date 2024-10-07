@@ -4,6 +4,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
 import building from '../../assets/images/apartment.png';
 import Image from 'next/image';
+import { useDirection } from '../../hooks/useDirection';
 import { useTranslation } from 'next-i18next';
 
 interface Center {
@@ -32,7 +33,7 @@ const CenterList: React.FC<CenterListProps> = ({
     (center) => center.cohortStatus === 'active'
   );
   const { i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
 
   return (
     <>
@@ -119,7 +120,7 @@ const CenterList: React.FC<CenterListProps> = ({
                     <ChevronRightIcon
                       sx={{
                         color: theme.palette.warning['A200'],
-                        transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                        transform: isRTL ? ' rotate(180deg)' : 'unset',
                       }}
                     />
                   </Box>

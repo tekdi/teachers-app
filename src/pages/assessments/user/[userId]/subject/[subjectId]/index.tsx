@@ -16,11 +16,12 @@ import { useParams, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { accessControl } from '../../../../../../../app.config';
+import { useDirection } from '../../../../../../hooks/useDirection';
 
 function SubjectDetail() {
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const searchParams = useSearchParams();
   const centerId = searchParams.get('center');
   const assessmentName = searchParams.get('assessmentName');
@@ -133,7 +134,7 @@ function SubjectDetail() {
           sx={{
             color: theme.palette.warning['A200'],
             marginTop: '14px',
-            transform: isUrdu ? ' rotate(180deg)' : 'unset',
+            transform: isRTL ? ' rotate(180deg)' : 'unset',
           }}
         />
         <Box

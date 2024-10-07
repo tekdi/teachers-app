@@ -70,6 +70,7 @@ import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import AssessmentReport from '@/components/AssessmentReport';
 import { getFormRead } from '@/hooks/useFormRead';
+import { useDirection } from '../../hooks/useDirection';
 
 interface LearnerProfileProp {
   reloadState?: boolean;
@@ -81,7 +82,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   setReloadState,
 }) => {
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const theme = useTheme<any>();
   const today = new Date();
   const router = useRouter();
@@ -683,7 +684,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                 color: theme.palette.warning['A200'],
                 fontSize: '1.5rem',
                 cursor: 'pointer',
-                transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                transform: isRTL ? ' rotate(180deg)' : 'unset',
               }}
             />
           </Box>
@@ -768,7 +769,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
               sx={{
                 color: theme.palette.secondary.main,
                 marginBottom: '5px',
-                transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                transform: isRTL ? ' rotate(180deg)' : 'unset',
                 marginTop: '5px',
               }}
             />

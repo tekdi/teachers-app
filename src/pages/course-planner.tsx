@@ -30,6 +30,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { accessControl, frameworkId } from '../../app.config';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
+import { useDirection } from '../hooks/useDirection';
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState('');
@@ -40,7 +41,7 @@ const CoursePlanner = () => {
   );
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [framework, setFramework] = useState<any[]>([]);
@@ -730,7 +731,7 @@ const CoursePlanner = () => {
                           <KeyboardArrowRightIcon
                             sx={{
                               color: theme.palette.warning['300'],
-                              transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                              transform: isRTL ? ' rotate(180deg)' : 'unset',
                             }}
                           />
                         </Box>

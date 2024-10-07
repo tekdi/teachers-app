@@ -75,13 +75,14 @@ import manageUserStore from '@/store/manageUserStore';
 import { getUserDetails } from '@/services/ProfileService';
 import { updateStoreFromCohorts } from '@/utils/Helper';
 import taxonomyStore from '@/store/taxonomyStore';
+import { useDirection } from '../hooks/useDirection';
 import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 interface DashboardProps {}
 
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
 
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
@@ -993,8 +994,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               '@media (max-width: 900px)': {
                                 top:
                                   role === Role.TEAM_LEADER ? '210px' : '185px',
-                                right: isUrdu ? 'unset' : '20px',
-                                left: isUrdu ? '20px' : 'unset',
+                                right: isRTL ? 'unset' : '20px',
+                                left: isRTL ? '20px' : 'unset',
                               },
                             }}
                             onClick={viewAttendanceHistory}
@@ -1266,7 +1267,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 <ArrowForwardSharpIcon
                                   sx={{
                                     height: '18px',
-                                    transform: isUrdu
+                                    transform: isRTL
                                       ? ' rotate(180deg)'
                                       : 'unset',
                                   }}

@@ -21,6 +21,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { accessControl } from '../../../../../../app.config';
+import { useDirection } from '../../../../../hooks/useDirection';
+
 import {
   CustomField,
   Session,
@@ -31,7 +33,7 @@ import { getCohortDetails } from '@/services/CohortServices';
 const EventMonthView: React.FC<any> = () => {
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const router = useRouter();
   const { date }: any = router.query;
   const { showAll } = router.query;
@@ -244,7 +246,7 @@ const EventMonthView: React.FC<any> = () => {
                           cursor={'pointer'}
                           sx={{
                             color: theme.palette.warning['A200'],
-                            transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                            transform: isRTL ? ' rotate(180deg)' : 'unset',
                           }}
                         />
                       </Box>

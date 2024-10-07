@@ -30,6 +30,8 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDirection } from '../../../../hooks/useDirection';
+
 import {
   accessControl,
   AssessmentType,
@@ -48,7 +50,7 @@ const statusKeyMap: any = {
 function AssessmentsDetails() {
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -296,7 +298,7 @@ function AssessmentsDetails() {
           cursor={'pointer'}
           sx={{
             color: theme.palette.warning['A200'],
-            transform: isUrdu ? ' rotate(180deg)' : 'unset',
+            transform: isRTL ? ' rotate(180deg)' : 'unset',
           }}
         />
         <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>

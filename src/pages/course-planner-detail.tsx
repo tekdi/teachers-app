@@ -36,12 +36,13 @@ import withAccessControl from '@/utils/hoc/withAccessControl';
 import { accessControl } from '../../app.config';
 import taxonomyStore from '@/store/taxonomyStore';
 import useDeterminePathColor from '@/hooks/useDeterminePathColor';
+import { useDirection } from '../hooks/useDirection';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const setResources = useCourseStore((state) => state.setResources);
   const store = useCourseStore();
   const tStore = taxonomyStore();
@@ -329,7 +330,7 @@ const CoursePlannerDetail = () => {
           cursor={'pointer'}
           sx={{
             color: theme.palette.warning['A200'],
-            transform: isUrdu ? ' rotate(180deg)' : 'unset',
+            transform: isRTL ? ' rotate(180deg)' : 'unset',
           }}
         />
         <Box>

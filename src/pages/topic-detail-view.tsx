@@ -19,13 +19,14 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React from 'react';
 import useCourseStore from '@/store/coursePlannerStore';
 import CourseAccordion from '@/components/CourseAccordion';
+import { useDirection } from '../hooks/useDirection';
 import { ResourcesType } from '@/utils/app.constant';
 
 const TopicDetailView = () => {
   const [value, setValue] = React.useState(1);
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -62,7 +63,7 @@ const TopicDetailView = () => {
             cursor={'pointer'}
             sx={{
               color: theme.palette.warning['A200'],
-              transform: isUrdu ? ' rotate(180deg)' : 'unset',
+              transform: isRTL ? ' rotate(180deg)' : 'unset',
             }}
           />
           <Box>

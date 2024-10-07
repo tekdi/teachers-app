@@ -23,6 +23,7 @@ import { editEvent } from '@/services/EventService';
 import { showToastMessage } from './Toastify';
 import { convertUTCToIST, getDayMonthYearFormat } from '@/utils/Helper';
 import { EventStatus } from '@/utils/app.constant';
+import { useDirection } from '../hooks/useDirection';
 
 const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   item,
@@ -35,7 +36,8 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
+
   const [open, setOpen] = React.useState(false);
   const [editTopic, setEditTopic] = React.useState(false);
   // const [removeTopic, setRemoveTopic] = React.useState(false);
@@ -355,7 +357,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
             sx={{
               color: theme.palette.secondary.main,
               fontSize: '18px',
-              transform: isUrdu ? ' rotate(180deg)' : 'unset',
+              transform: isRTL ? ' rotate(180deg)' : 'unset',
             }}
           />
         </Box>

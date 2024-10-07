@@ -55,11 +55,12 @@ import { attendanceStatusList } from '../services/AttendanceService';
 import { telemetryFactory } from '@/utils/telemetry';
 import NoDataFound from '@/components/common/NoDataFound';
 import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
+import { useDirection } from '../hooks/useDirection';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const { push } = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [classId, setClassId] = React.useState('');
@@ -589,7 +590,7 @@ const UserAttendanceHistory = () => {
                         cursor={'pointer'}
                         sx={{
                           color: theme.palette.warning['A200'],
-                          transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                          transform: isRTL ? ' rotate(180deg)' : 'unset',
                         }}
                       />
                     </Box>

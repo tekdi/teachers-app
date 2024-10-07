@@ -67,6 +67,7 @@ import {
   modifyAttendanceLimit,
 } from '../../../../app.config';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import { useDirection } from '../../../hooks/useDirection';
 
 const CohortPage = () => {
   const [value, setValue] = React.useState(1);
@@ -75,7 +76,7 @@ const CohortPage = () => {
   const router = useRouter();
   const { cohortId }: any = router.query;
   const { t, i18n } = useTranslation();
-  const isUrdu = i18n.language === 'ur';
+  const { dir, isRTL } = useDirection();
   const [role, setRole] = React.useState<any>('');
 
   const store = manageUserStore();
@@ -419,7 +420,7 @@ const CohortPage = () => {
               sx={{
                 color: theme.palette.warning['A200'],
                 marginTop: '18px',
-                transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                transform: isRTL ? ' rotate(180deg)' : 'unset',
               }}
             />
             <Box m={'1rem 1rem 0.5rem 0.5rem'} display={'column'} gap={'5px'}>
@@ -802,7 +803,7 @@ const CohortPage = () => {
                 sx={{
                   fontSize: '18px',
                   color: theme.palette.secondary.main,
-                  transform: isUrdu ? ' rotate(180deg)' : 'unset',
+                  transform: isRTL ? ' rotate(180deg)' : 'unset',
                 }}
               />
             </Box>
