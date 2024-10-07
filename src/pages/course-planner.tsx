@@ -40,7 +40,7 @@ const CoursePlanner = () => {
     (state) => state.setStateassociations
   );
   const theme = useTheme<any>();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);

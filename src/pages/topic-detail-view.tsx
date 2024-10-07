@@ -25,7 +25,7 @@ import { ResourcesType } from '@/utils/app.constant';
 const TopicDetailView = () => {
   const [value, setValue] = React.useState(1);
   const theme = useTheme<any>();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);

@@ -49,7 +49,7 @@ const statusKeyMap: any = {
 
 function AssessmentsDetails() {
   const theme = useTheme<any>();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const router = useRouter();
   const searchParams = useSearchParams();

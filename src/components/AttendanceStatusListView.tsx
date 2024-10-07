@@ -35,7 +35,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   presentCount,
   absentCount,
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const theme = useTheme<any>();
 

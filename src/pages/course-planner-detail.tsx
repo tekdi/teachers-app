@@ -41,7 +41,7 @@ import { useDirection } from '../hooks/useDirection';
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const router = useRouter();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const setResources = useCourseStore((state) => state.setResources);
   const store = useCourseStore();

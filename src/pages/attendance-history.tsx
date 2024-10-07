@@ -59,7 +59,7 @@ import { useDirection } from '../hooks/useDirection';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const { push } = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());

@@ -80,7 +80,7 @@ import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 interface DashboardProps {}
 
 const Dashboard: React.FC<DashboardProps> = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { dir, isRTL } = useDirection();
 

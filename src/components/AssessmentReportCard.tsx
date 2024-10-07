@@ -29,7 +29,7 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
 }) => {
   const theme = useTheme<any>();
   const router = useRouter();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
 
   const handleAssessmentDetails = (userId: string) => {

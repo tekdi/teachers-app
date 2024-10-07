@@ -30,6 +30,7 @@ import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
 import { metaTags, Telemetry } from '@/utils/app.constant';
 import { useTranslation } from 'next-i18next';
+import { useDirection } from '../hooks/useDirection';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -137,6 +138,7 @@ function App({ Component, pageProps }: AppProps) {
   }, [router.events]);
 
   const theme = useTheme<any>();
+  const { dir, isRTL } = useDirection();
 
   return (
     <>
@@ -155,16 +157,14 @@ function App({ Component, pageProps }: AppProps) {
             padding: '0',
             '@media (min-width: 900px)': {
               width: !isFullWidthPage ? 'calc(100% - 22rem)' : '100%',
-              marginLeft:
-                i18n.language === 'ur'
-                  ? !isFullWidthPage
-                    ? '0px'
-                    : '0'
-                  : !isFullWidthPage
-                    ? '351px'
-                    : '0',
-              marginRight:
-                i18n.language === 'ur' && !isFullWidthPage ? '351px' : '0',
+              marginLeft: isRTL
+                ? !isFullWidthPage
+                  ? '0px'
+                  : '0'
+                : !isFullWidthPage
+                  ? '351px'
+                  : '0',
+              marginRight: isRTL && !isFullWidthPage ? '351px' : '0',
             },
             background: theme.palette.warning['A400'],
             overflowX: 'hidden',

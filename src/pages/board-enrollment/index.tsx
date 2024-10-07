@@ -23,7 +23,7 @@ import React, { useEffect, useState } from 'react';
 
 const BoardEnrollment = () => {
   const theme = useTheme<any>();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const router = useRouter();
   const [boardEnrollmentList, setBoardEnrollmentList] = useState<any>([]);

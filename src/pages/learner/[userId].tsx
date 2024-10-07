@@ -81,7 +81,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   reloadState,
   setReloadState,
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const theme = useTheme<any>();
   const today = new Date();

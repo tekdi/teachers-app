@@ -614,7 +614,3 @@ export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => 
     setBlockName(blockObject?.value);
   }
 };
-
-export const isRTL = () => {
-  document.documentElement.getAttribute('dir') === 'rtl';
-}
