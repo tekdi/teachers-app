@@ -22,10 +22,12 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import HorizontalLinearStepper from '@/components/HorizontalLinearStepper';
 import { FeesStepBoards } from '@/utils/app.constant';
+import { useDirection } from '../../../hooks/useDirection';
 
 const BoardEnrollmentDetail = () => {
   const theme = useTheme<any>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const handleBackEvent = () => {
     window.history.back();
     logEvent({
@@ -89,7 +91,11 @@ const BoardEnrollmentDetail = () => {
           <KeyboardBackspaceOutlinedIcon
             onClick={handleBackEvent}
             cursor={'pointer'}
-            sx={{ color: theme.palette.warning['A200'], marginTop: '18px' }}
+            sx={{
+              color: theme.palette.warning['A200'],
+              marginTop: '18px',
+              transform: isRTL ? ' rotate(180deg)' : 'unset',
+            }}
           />
           <Box my={'1rem'} ml={'0.5rem'}>
             <Typography

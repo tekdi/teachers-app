@@ -55,17 +55,19 @@ import { attendanceStatusList } from '../services/AttendanceService';
 import { telemetryFactory } from '@/utils/telemetry';
 import NoDataFound from '@/components/common/NoDataFound';
 import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
+import { useDirection } from '../hooks/useDirection';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const { push } = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [classId, setClassId] = React.useState('');
   const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
   const [percentageAttendance, setPercentageAttendance] =
     React.useState<any>(null);
-    const [attendanceProgressBarData, setAttendanceProgressBarData] =
+  const [attendanceProgressBarData, setAttendanceProgressBarData] =
     React.useState<any>(null);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<user>>(
     []
@@ -102,23 +104,23 @@ const UserAttendanceHistory = () => {
     dropoutCount: 0,
     bulkAttendanceStatus: '',
   });
-  
+
   const handleAttendanceDataUpdate = (data: any) => {
     setAttendanceData(data);
-  
+
     const attendanceInfo = {
       present_students: data.presentCount,
       totalcount: data.numberOfCohortMembers,
-      present_percentage: ((data.presentCount / data.numberOfCohortMembers) * 100).toFixed(2)
+      present_percentage: (
+        (data.presentCount / data.numberOfCohortMembers) *
+        100
+      ).toFixed(2),
     };
-  
-    setAttendanceProgressBarData(
-      {
-        [shortDateFormat(selectedDate)]: attendanceInfo
-      }
-    );
+
+    setAttendanceProgressBarData({
+      [shortDateFormat(selectedDate)]: attendanceInfo,
+    });
   };
-  
 
   const handleOpen = () => {
     setOpen(true);
@@ -334,10 +336,14 @@ const UserAttendanceHistory = () => {
             };
             userAttendanceStatusList();
           }
-          if(nameUserIdArray && (selectedDate || currentDate)){
-            fetchAttendanceDetails(nameUserIdArray, selectedDate, classId, handleAttendanceDataUpdate);
+          if (nameUserIdArray && (selectedDate || currentDate)) {
+            fetchAttendanceDetails(
+              nameUserIdArray,
+              selectedDate,
+              classId,
+              handleAttendanceDataUpdate
+            );
           }
-         
         } else {
           setDisplayStudentList([]);
         }
@@ -582,7 +588,10 @@ const UserAttendanceHistory = () => {
                     <Box>
                       <KeyboardBackspaceOutlinedIcon
                         cursor={'pointer'}
-                        sx={{ color: theme.palette.warning['A200'] }}
+                        sx={{
+                          color: theme.palette.warning['A200'],
+                          transform: isRTL ? ' rotate(180deg)' : 'unset',
+                        }}
                       />
                     </Box>
                   </Box>

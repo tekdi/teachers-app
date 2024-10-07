@@ -75,12 +75,14 @@ import manageUserStore from '@/store/manageUserStore';
 import { getUserDetails } from '@/services/ProfileService';
 import { updateStoreFromCohorts } from '@/utils/Helper';
 import taxonomyStore from '@/store/taxonomyStore';
+import { useDirection } from '../hooks/useDirection';
 import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 interface DashboardProps {}
 
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const { dir, isRTL } = useDirection();
 
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
@@ -150,7 +152,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const skipResetPassword = localStorage.getItem('skipResetPassword');
       const temporaryPassword = localStorage.getItem('temporaryPassword');
-      setType("");
+      setType('');
 
       if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
         setShowCentralisedModal(true);
@@ -365,7 +367,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 handleAttendanceDataUpdate
               );
             }
-          }else{
+          } else {
             setAttendanceData({
               cohortMemberList: [],
               presentCount: 0,
@@ -844,7 +846,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   //   if (userId && myCohortList) {
   //     getExtraSessionsData();
-  //   }
+  //   }  const { t } = useTranslation();
   // }, [
   //   timeTableDate,
   //   userId,
@@ -862,7 +864,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setEventUpdated(true);
   };
 
-  // useEffect(() => {
+  // useEffect(() => {  const { t } = useTranslation();
   //   if (typeof window !== 'undefined' && window.localStorage) {
   //     const skipResetPassword = localStorage.getItem('skipResetPassword');
   //     const temporaryPassword = localStorage.getItem('temporaryPassword');
@@ -880,7 +882,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const handleSkipButton = () => {
     localStorage.setItem('skipResetPassword', 'true');
   };
-
   const darkMode =
     typeof window !== 'undefined' && window.localStorage
       ? localStorage.getItem('mui-mode')
@@ -983,7 +984,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           </Box>
 
                           <Box
-                            className="calenderTitle flex-center joyride-step-3 ps-md-ab right-md-20"
+                            className="calenderTitle flex-center joyride-step-3 ps-md-ab"
                             display={'flex'}
                             sx={{
                               cursor: 'pointer',
@@ -993,6 +994,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               '@media (max-width: 900px)': {
                                 top:
                                   role === Role.TEAM_LEADER ? '210px' : '185px',
+                                right: isRTL ? 'unset' : '20px',
+                                left: isRTL ? '20px' : 'unset',
                               },
                             }}
                             onClick={viewAttendanceHistory}
@@ -1102,8 +1105,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                           className="word-break"
                                         >
                                           {t('DASHBOARD.PRESENT_STUDENTS', {
-                                            present_students: attendanceData.presentCount,
-                                            total_students: attendanceData.numberOfCohortMembers,
+                                            present_students:
+                                              attendanceData.presentCount,
+                                            total_students:
+                                              attendanceData.numberOfCohortMembers,
                                           })}
                                         </Typography>
                                       </Box>
@@ -1260,7 +1265,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               >
                                 {t('DASHBOARD.MORE_DETAILS')}
                                 <ArrowForwardSharpIcon
-                                  sx={{ height: '18px' }}
+                                  sx={{
+                                    height: '18px',
+                                    transform: isRTL
+                                      ? ' rotate(180deg)'
+                                      : 'unset',
+                                  }}
                                 />
                               </Link>
                             </Box>

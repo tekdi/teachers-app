@@ -36,11 +36,13 @@ import withAccessControl from '@/utils/hoc/withAccessControl';
 import { accessControl } from '../../app.config';
 import taxonomyStore from '@/store/taxonomyStore';
 import useDeterminePathColor from '@/hooks/useDeterminePathColor';
+import { useDirection } from '../hooks/useDirection';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const setResources = useCourseStore((state) => state.setResources);
   const store = useCourseStore();
   const tStore = taxonomyStore();
@@ -326,7 +328,10 @@ const CoursePlannerDetail = () => {
         <KeyboardBackspaceOutlinedIcon
           onClick={handleBackEvent}
           cursor={'pointer'}
-          sx={{ color: theme.palette.warning['A200'] }}
+          sx={{
+            color: theme.palette.warning['A200'],
+            transform: isRTL ? ' rotate(180deg)' : 'unset',
+          }}
         />
         <Box>
           <Box

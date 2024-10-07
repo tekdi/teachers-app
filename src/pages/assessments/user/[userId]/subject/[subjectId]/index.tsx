@@ -16,10 +16,12 @@ import { useParams, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { accessControl } from '../../../../../../../app.config';
+import { useDirection } from '../../../../../../hooks/useDirection';
 
 function SubjectDetail() {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const searchParams = useSearchParams();
   const centerId = searchParams.get('center');
   const assessmentName = searchParams.get('assessmentName');
@@ -54,8 +56,8 @@ function SubjectDetail() {
       try {
         const body = {
           userId: params.userId,
-          courseId:params.subjectId,//temporary added content id here for both courseId and unitId
-          unitId:params.subjectId,
+          courseId: params.subjectId, //temporary added content id here for both courseId and unitId
+          unitId: params.subjectId,
           contentId: params.subjectId,
           batchId: centerId as string,
         };
@@ -129,7 +131,11 @@ function SubjectDetail() {
       >
         <KeyboardBackspaceOutlinedIcon
           cursor={'pointer'}
-          sx={{ color: theme.palette.warning['A200'], marginTop: '14px' }}
+          sx={{
+            color: theme.palette.warning['A200'],
+            marginTop: '14px',
+            transform: isRTL ? ' rotate(180deg)' : 'unset',
+          }}
         />
         <Box
           sx={{ display: 'flex', flexDirection: 'column', margin: '0.8rem' }}
