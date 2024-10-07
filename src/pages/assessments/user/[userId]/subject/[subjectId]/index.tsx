@@ -54,6 +54,8 @@ function SubjectDetail() {
       try {
         const body = {
           userId: params.userId,
+          courseId:params.subjectId,//temporary added content id here for both courseId and unitId
+          unitId:params.subjectId,
           contentId: params.subjectId,
           batchId: centerId as string,
         };
