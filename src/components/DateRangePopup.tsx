@@ -25,6 +25,7 @@ import checkMark from '../assets/images/checkMark.svg';
 import MonthCalender from './MonthCalender';
 import { telemetryFactory } from '@/utils/telemetry';
 import { Telemetry } from '@/utils/app.constant';
+import { useDirection } from '../hooks/useDirection';
 
 const modalStyle = {
   position: 'absolute',
@@ -103,6 +104,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     setIsCalenderModalOpen(!isCalendarModalOpen);
   const { t } = useTranslation();
   const theme = useTheme<any>();
+  const { dir, isRTL } = useDirection();
 
   const handleMenuItemClick = (index: number, item: string) => {
     setSelectedIndex(index);
@@ -281,19 +283,26 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
           borderRadius={'1rem'}
         >
           <Box>
-            <Grid sx={{ padding: '20px 20px 5px' }} container>
-              <Grid item xs={6}>
-                <Typography className="text-dark-grey" textAlign={'left'}>
+            <Box
+              sx={{
+                padding: '20px 20px 5px',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Box>
+                <Typography className="text-dark-grey">
                   {t('COMMON.DATE_RANGE')}
                 </Typography>
-              </Grid>
-              <Grid item xs={6} textAlign={'right'}>
+              </Box>
+              <Box>
                 <CloseIcon
                   className="text-dark-grey"
                   onClick={handleModalClose}
+                  sx={{ cursor: 'pointer' }}
                 />
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
           </Box>
           <Divider />
           <MenuList className="customRange" sx={{ margin: '0 9px' }} dense>
@@ -379,7 +388,10 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
                 <Box>
                   <WestIcon
                     onClick={() => handleCancelClicked()}
-                    style={{ cursor: 'pointer' }}
+                    style={{
+                      cursor: 'pointer',
+                      transform: isRTL ? ' rotate(180deg)' : 'unset',
+                    }}
                   />
                 </Box>
                 <Box className="text-dark-grey">{t('COMMON.CUSTOM_RANGE')}</Box>

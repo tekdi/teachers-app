@@ -510,7 +510,6 @@ const CoursePlanner = () => {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'left',
           alignItems: 'center',
           color: '#4D4639',
           padding: '20px 20px 5px',

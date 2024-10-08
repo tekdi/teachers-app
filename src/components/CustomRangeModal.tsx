@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
 import WestIcon from '@mui/icons-material/West';
 import { useTranslation } from 'next-i18next';
+import { useDirection } from '../hooks/useDirection';
 
 const style = {
   width: '300px', // Adjust width as needed
@@ -28,7 +29,7 @@ const CustomRangeModal: React.FC = () => {
   const [isCalendarModalOpen, setIsCalenderModalOpen] = React.useState(false);
   const toggleCalendarModal = () =>
     setIsCalenderModalOpen(!isCalendarModalOpen);
-
+  const { dir, isRTL } = useDirection();
   const { t } = useTranslation();
   return (
     <div>
@@ -56,7 +57,10 @@ const CustomRangeModal: React.FC = () => {
               <Box>
                 <WestIcon
                   onClick={toggleCalendarModal}
-                  style={{ cursor: 'pointer' }}
+                  style={{
+                    cursor: 'pointer',
+                    transform: isRTL ? ' rotate(180deg)' : 'unset',
+                  }}
                 />
               </Box>
               <Box className="text-dark-grey">{t('COMMON.CUSTOM_RANGE')}</Box>

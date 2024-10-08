@@ -31,6 +31,7 @@ import Loader from '../components/Loader';
 import { login } from '../services/LoginService';
 import { getUserDetails, getUserId } from '../services/ProfileService';
 import loginImg from './../assets/images/login-image.jpg';
+import { useDirection } from '../hooks/useDirection';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -38,6 +39,8 @@ const LoginPage = () => {
   const setUserRole = useStore(
     (state: { setUserRole: any }) => state.setUserRole
   );
+
+  const { dir, isRTL } = useDirection();
 
   const setAccessToken = useStore(
     (state: { setAccessToken: any }) => state.setAccessToken
@@ -395,19 +398,22 @@ const LoginPage = () => {
                     <FormControl sx={{ m: '1rem 0 1rem' }}>
                       <Select
                         inputProps={{
-                          'aria-label': 'Select Language', // Properly apply aria-label via inputProps
+                          'aria-label': 'Select Language',
                         }}
                         className="select-languages"
                         value={language}
                         onChange={handleChange}
                         displayEmpty
-                        style={{
+                        sx={{
                           borderRadius: '0.5rem',
-                          // color: theme.palette.warning['A200'],
                           width: '117px',
                           height: '32px',
                           marginBottom: '0rem',
                           fontSize: '14px',
+                          '& .MuiSelect-icon': {
+                            right: isRTL ? 'unset' : '7px',
+                            left: isRTL ? '7px' : 'unset',
+                          },
                         }}
                       >
                         {config?.languages.map((lang) => (

@@ -252,8 +252,9 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                 data={data}
                 margin={{
                   top: 5,
-                  left: isMobile ? 0 : 70,
-                  right: isMobile ? 0 : 5,
+                  left: isMobile ? 0 : isRTL ? 0 : 70,
+                  right: isMobile ? 0 : isRTL ? 70 : 5,
+                  // right: isMobile ? 0 : 5,
                 }}
                 style={{ direction: isRTL ? 'rtl' : 'ltr' }}
               >
