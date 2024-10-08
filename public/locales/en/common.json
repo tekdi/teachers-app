@@ -95,6 +95,7 @@
     "DELETE_USER": "Delete User Permanently",
     "DELETE_USER_WITH_REASON": "Delete User",
     "USER_DELETED_PERMANENTLY": "User successfully deleted!",
+    "CANNOT_REASSIGN_TODAY_ATTENDANCE_MARKED": "Cannot re-assign learner as attendance has already been marked for today",
     "CANNOT_DELETE_TODAY_ATTENDANCE_MARKED": "Cannot delete learner as attendance has already been marked for today",
     "CANNOT_DROPOUT_TODAY_ATTENDANCE_MARKED": "Cannot mark learner as dropout as attendance has already been marked for today",
     "OBSERVATIONS_FORMS": "Observations and Forms",
@@ -579,6 +580,7 @@
     "SAVE_AND_NEXT": "Save and Next",
     "TO_SAVE_YOUR_PROGRESS": "“Save & Next” to save your progress. You can come back and change it anytime.",
     "MANDATORY": "Mandatory for {{FeesStepBoards}} only. For other Boards, this step is automatically marked completed. Please click on Save to submit the data.",
-    "COMPLETED": "Completed"
+    "COMPLETED": "Completed",
+    "MARK_AS_COMPLETE":"Mark as Complete"
   }
 }

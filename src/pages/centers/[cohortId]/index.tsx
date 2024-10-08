@@ -67,6 +67,7 @@ import {
   modifyAttendanceLimit,
 } from '../../../../app.config';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import { useDirection } from '../../../hooks/useDirection';
 
 const CohortPage = () => {
   const [value, setValue] = React.useState(1);
@@ -74,7 +75,8 @@ const CohortPage = () => {
   const [classId, setClassId] = React.useState('');
   const router = useRouter();
   const { cohortId }: any = router.query;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const [role, setRole] = React.useState<any>('');
 
   const store = manageUserStore();
@@ -415,7 +417,11 @@ const CohortPage = () => {
             onClick={handleBackEvent}
           >
             <KeyboardBackspaceOutlinedIcon
-              sx={{ color: theme.palette.warning['A200'], marginTop: '18px' }}
+              sx={{
+                color: theme.palette.warning['A200'],
+                marginTop: '18px',
+                transform: isRTL ? ' rotate(180deg)' : 'unset',
+              }}
             />
             <Box m={'1rem 1rem 0.5rem 0.5rem'} display={'column'} gap={'5px'}>
               <Typography textAlign={'left'} fontSize={'22px'}>
@@ -539,7 +545,7 @@ const CohortPage = () => {
                 border: `1px solid ${theme.palette.error.contrastText}`,
                 borderRadius: '100px',
                 height: '40px',
-                width: '163px',
+                px: '16px',
                 color: theme.palette.error.contrastText,
               }}
               onClick={handleOpen}
@@ -619,15 +625,15 @@ const CohortPage = () => {
                     type: 'fraction',
                   }}
                   breakpoints={{
-                    500: {
+                    600: {
                       slidesPerView: 1,
                       spaceBetween: 20,
                     },
-                    740: {
+                    900: {
                       slidesPerView: 2,
                       spaceBetween: 20,
                     },
-                    900: {
+                    1200: {
                       slidesPerView: 3,
                       spaceBetween: 30,
                     },
@@ -725,7 +731,7 @@ const CohortPage = () => {
           <Box mt={3} px="18px">
             <Grid container spacing={3}>
               {sessions?.map((item) => (
-                <Grid item xs={12} sm={6} md={4} key={item.id}>
+                <Grid item xs={12} sm={12} md={6} lg={4} mb={2} key={item.id}>
                   <SessionCard
                     data={item}
                     isEventDeleted={handleEventDeleted}
@@ -769,7 +775,7 @@ const CohortPage = () => {
                   border: '1px solid #1E1B16',
                   borderRadius: '100px',
                   height: '40px',
-                  width: '126px',
+                  px: '16px',
                   color: theme.palette.error.contrastText,
                 }}
                 className="text-1E"
@@ -794,7 +800,11 @@ const CohortPage = () => {
                 {t('COMMON.REVIEW_ATTENDANCE')}
               </Box>
               <ArrowForwardIcon
-                sx={{ fontSize: '18px', color: theme.palette.secondary.main }}
+                sx={{
+                  fontSize: '18px',
+                  color: theme.palette.secondary.main,
+                  transform: isRTL ? ' rotate(180deg)' : 'unset',
+                }}
               />
             </Box>
             <Box>

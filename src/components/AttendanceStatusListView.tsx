@@ -22,6 +22,7 @@ import {
 import DropoutLabel from './DropoutLabel';
 import LearnerModal from './LearnerModal';
 import Loader from './Loader';
+import { useDirection } from '../hooks/useDirection';
 
 const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   isDisabled = false,
@@ -35,6 +36,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   absentCount,
 }) => {
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const theme = useTheme<any>();
 
   const boxStyling = {
@@ -135,7 +137,8 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
       <Box sx={boxStyling}>
         <Typography
           variant="body1"
-          marginRight="auto"
+          marginRight={isRTL ? 'unset' : 'auto'}
+          marginLeft={isRTL ? 'auto' : 'unset'}
           marginY="auto"
           sx={{
             textAlign: 'left',

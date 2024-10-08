@@ -22,10 +22,12 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import HorizontalLinearStepper from '@/components/HorizontalLinearStepper';
 import { FeesStepBoards } from '@/utils/app.constant';
+import { useDirection } from '../../../hooks/useDirection';
 
 const BoardEnrollmentDetail = () => {
   const theme = useTheme<any>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const handleBackEvent = () => {
     window.history.back();
     logEvent({
@@ -89,7 +91,11 @@ const BoardEnrollmentDetail = () => {
           <KeyboardBackspaceOutlinedIcon
             onClick={handleBackEvent}
             cursor={'pointer'}
-            sx={{ color: theme.palette.warning['A200'], marginTop: '18px' }}
+            sx={{
+              color: theme.palette.warning['A200'],
+              marginTop: '18px',
+              transform: isRTL ? ' rotate(180deg)' : 'unset',
+            }}
           />
           <Box my={'1rem'} ml={'0.5rem'}>
             <Typography
@@ -393,8 +399,10 @@ const BoardEnrollmentDetail = () => {
                   },
                   border: `1px solid ${theme.palette.error.contrastText}`,
                   mt: '15px',
-                  width: '144px',
+                  width: 'fit-content',
+                  px: '20px',
                 }}
+                className="one-line-text"
                 variant="outlined"
                 onClick={handleBack}
                 disabled={activeStep === 0}
@@ -403,12 +411,14 @@ const BoardEnrollmentDetail = () => {
               </Button>
               <Button
                 sx={{
-                  width: '144px',
                   height: '40px',
                   fontSize: '14px',
                   fontWeight: '500',
                   mt: '15px',
+                  width: 'fit-content',
+                  px: '20px',
                 }}
+                className="one-line-text"
                 variant="contained"
                 color="primary"
                 onClick={handleNext}

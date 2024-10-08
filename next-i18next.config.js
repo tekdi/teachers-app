@@ -1,7 +1,7 @@
 module.exports = {
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'mr', 'hi', 'or'],
+    locales: ['en', 'mr', 'hi', 'or', 'ur', 'ml'],
     localeDetection: false,
   },
   fallbackLng: 'en',
@@ -10,5 +10,6 @@ module.exports = {
   //     ? require("path").resolve("./public/locales/")
   //     : "/locales",
   ns: ['common'],
-  reloadOnPrerender: process.env.NODE_ENV === 'development',
+  reloadOnPrerender: process.env.NODE_ENV === 'development', 
 };
+
