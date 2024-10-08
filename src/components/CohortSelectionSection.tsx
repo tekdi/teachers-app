@@ -535,6 +535,10 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                       right: isRTL ? 'unset' : '7px',
                                       left: isRTL ? '7px' : 'unset',
                                     },
+                                    ' & .MuiFormLabel-root-MuiInputLabel-root':
+                                      {
+                                        right: isRTL ? '30px' : 'unset',
+                                      },
                                   }
                             }
                           >

@@ -301,7 +301,7 @@ function AssessmentsDetails() {
             transform: isRTL ? ' rotate(180deg)' : 'unset',
           }}
         />
-        <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
+        <Typography fontSize={'22px'} m={'1rem'}>
           {toPascalCase(userDetails?.name)}
         </Typography>
       </Box>
