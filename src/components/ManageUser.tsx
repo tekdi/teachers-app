@@ -32,6 +32,7 @@ import ReassignModal from './ReassignModal';
 import SimpleModal from './SimpleModal';
 import { useQueryClient } from '@tanstack/react-query';
 import { toPascalCase } from '@/utils/Helper';
+import { useDirection } from '../hooks/useDirection';
 
 interface Cohort {
   cohortId: string;
@@ -70,6 +71,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const store = manageUserStore();
   const newStore = useStore();
   const queryClient = useQueryClient();
+  const { dir, isRTL } = useDirection();
 
   const [value, setValue] = React.useState(1);
   const [users, setUsers] = useState<
@@ -474,6 +476,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                       height: '40px',
                       width: '8rem',
                       color: theme.palette.error.contrastText,
+                      '& .MuiButton-endIcon': {
+                        marginLeft: isRTL ? '0px !important' : '8px !important',
+                        marginRight: isRTL
+                          ? '8px !important'
+                          : '-2px !important',
+                      },
                     }}
                     className="text-1E"
                     onClick={handleOpenAddFaciModal}
@@ -799,7 +807,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               modalOpen={reassignModalOpen}
               reloadState={reloadState}
               setReloadState={setReloadState}
-              buttonNames={{primary: t('COMMON.SAVE')}}
+              buttonNames={{ primary: t('COMMON.SAVE') }}
             />
 
             <DeleteUserModal

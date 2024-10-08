@@ -138,7 +138,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
               ? '0px 1px 3px 0px #ffffff1a'
               : '0px 1px 3px 0px #0000004D'
           }
-          className="pl-md-20"
+          className={isRTL ? '' : 'pl-md-20'}
         >
           <Box
             onClick={() => {

@@ -26,6 +26,7 @@ import React, { useEffect, useState } from 'react';
 import { accessControl } from '../../../app.config';
 import { getFormRead, useFormRead } from '@/hooks/useFormRead';
 import { useQueryClient } from '@tanstack/react-query';
+import { useDirection } from '@/hooks/useDirection';
 
 interface TeacherProfileProp {
   reloadState?: boolean;
@@ -52,6 +53,8 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const [reload, setReload] = React.useState(false);
   const [selfUserId, setSelfUserId] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
+
+  const { dir, isRTL } = useDirection();
 
   const { data: formResponse } = useFormRead(
     FormContext.USERS,
@@ -398,6 +401,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                       width: '1.5rem',
                       cursor: 'pointer',
                       pr: '5px',
+                      transform: isRTL ? ' rotate(180deg)' : 'unset',
                     }}
                   />
                 </Box>
