@@ -386,7 +386,7 @@ const CoursePlannerDetail = () => {
                 color: theme.palette.warning['300'],
               }}
             >
-              {store.subject}
+              {tStore?.taxonomySubject}
             </Box>
           </Box>
         </Box>
@@ -686,19 +686,24 @@ const CoursePlannerDetail = () => {
         )}
       </div>
       <FacilitatorDrawer
-        secondary={t('COMMON.CANCEL')}
-        primary={`${t('BOARD_ENROLMENT.MARK_AS_COMPLETE')} (${selectedCount})`}
-        toggleDrawer={toggleDrawer}
-        drawerState={drawerState}
-        onPrimaryClick={() => {
-          if (selectedSubtopics.length > 0) {
-            // Mark all selected subtopics as complete
-            markMultipleStatuses(userProjectDetails, selectedSubtopics);
-            toggleDrawer(false)();
-          }
-        }}
-        selectedCount={selectedCount}
-      />
+  secondary= {t('COMMON.CANCEL')}
+  primary={`${t('COURSE_PLANNER.MARK_AS_COMPLETED')} (${selectedCount})`}
+  toggleDrawer={toggleDrawer}
+  drawerState={drawerState}
+  onPrimaryClick={() => {
+    if (selectedSubtopics.length > 0) {
+      // Mark all selected subtopics as complete
+      markMultipleStatuses(userProjectDetails, selectedSubtopics);
+      toggleDrawer(false)();
+    }
+  }}
+  onSecondaryClick={() => {
+    setSelectedSubtopics([]);
+    toggleDrawer(false)(); 
+  }}
+  selectedCount={selectedCount} 
+/>
+
 
       {/* <ConfirmationModal
         message={
