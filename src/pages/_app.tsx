@@ -90,10 +90,8 @@ function App({ Component, pageProps }: AppProps) {
     const htmlElement = document.documentElement;
     if (i18n.language === 'ur') {
       htmlElement.setAttribute('dir', 'rtl');
-      myTheme = { ...customTheme, direction: 'rtl' };
     } else {
       htmlElement.setAttribute('dir', 'ltr');
-      myTheme = { ...customTheme, direction: 'ltr' };
     }
   }, [i18n.language]);
 
