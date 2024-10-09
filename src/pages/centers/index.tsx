@@ -11,6 +11,7 @@ import { accessGranted, toPascalCase } from '@/utils/Helper';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { ArrowDropDown, Clear, Search } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
+import { useDirection } from '@/hooks/useDirection';
 import {
   Box,
   Button,
@@ -110,6 +111,8 @@ const CentersPage = () => {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(event.target.value);
   };
+
+  const { dir, isRTL } = useDirection();
 
   useEffect(() => {
     const getCohortListForTL = async () => {
@@ -420,6 +423,14 @@ const CentersPage = () => {
                         height: '40px',
                         px: '20px',
                         color: theme.palette.error.contrastText,
+                        '& .MuiButton-endIcon': {
+                          marginLeft: isRTL
+                            ? '0px !important'
+                            : '8px !important',
+                          marginRight: isRTL
+                            ? '8px !important'
+                            : '-2px !important',
+                        },
                       }}
                       className="text-1E"
                       endIcon={<AddIcon />}

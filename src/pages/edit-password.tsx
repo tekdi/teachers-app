@@ -12,6 +12,7 @@ import PasswordCreate from '@/components/PasswordCreate';
 import { resetPassword } from '@/services/LoginService';
 import { showToastMessage } from '@/components/Toastify';
 import CentralizedModal from '@/components/CentralizedModal';
+import { useDirection } from '../hooks/useDirection';
 
 const EditForgotPassword = () => {
   const { t } = useTranslation();
@@ -56,6 +57,7 @@ const EditForgotPassword = () => {
       }
     }
   }, []);
+  const { dir, isRTL } = useDirection();
 
   return (
     <Box>
@@ -64,7 +66,11 @@ const EditForgotPassword = () => {
         <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <WestIcon
             onClick={handleBackEvent}
-            sx={{ color: theme.palette.warning['A200'] }}
+            sx={{
+              color: theme.palette.warning['A200'],
+              cursor: 'pointer',
+              transform: isRTL ? ' rotate(180deg)' : 'unset',
+            }}
           />
           <Box
             sx={{

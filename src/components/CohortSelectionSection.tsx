@@ -32,6 +32,7 @@ import { telemetryFactory } from '@/utils/telemetry';
 import { toPascalCase } from '@/utils/Helper';
 import { useQueryClient } from '@tanstack/react-query';
 import { getUserDetails } from '@/services/ProfileService';
+import { useDirection } from '../hooks/useDirection';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -353,6 +354,8 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   const dashboard = pathname === '/dashboard';
   const isCoursePlanner = pathname === '/course-planner';
 
+  const { dir, isRTL } = useDirection();
+
   return (
     <Box
       className={
@@ -420,6 +423,10 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                               marginBottom: '0rem',
                               '@media (max-width: 900px)': {
                                 width: isAttendanceOverview ? '100%' : '62%',
+                              },
+                              '& .MuiSelect-icon': {
+                                right: isRTL ? 'unset' : '7px',
+                                left: isRTL ? '7px' : 'unset',
                               },
                             }}
                             MenuProps={{
@@ -524,6 +531,14 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                         ? '100%'
                                         : '65%',
                                     },
+                                    '& .MuiSelect-icon': {
+                                      right: isRTL ? 'unset' : '7px',
+                                      left: isRTL ? '7px' : 'unset',
+                                    },
+                                    ' & .MuiFormLabel-root-MuiInputLabel-root':
+                                      {
+                                        right: isRTL ? '30px' : 'unset',
+                                      },
                                   }
                             }
                           >

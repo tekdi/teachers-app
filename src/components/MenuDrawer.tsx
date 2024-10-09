@@ -143,11 +143,19 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 onChange={handleChange}
                 displayEmpty
                 className="select-languages fs-14 fw-500"
-                style={{
+                sx={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
                   width: '100%',
                   marginBottom: '0rem',
+                  '& .MuiSelect-icon': {
+                    right: isRTL ? 'unset' : '7px',
+                    left: isRTL ? '7px' : 'unset',
+                  },
+                  '& .MuiSelect-select': {
+                    paddingRight: isRTL ? '10px !important' : '32px !important',
+                    paddingLeft: isRTL ? '32px' : '12px',
+                  },
                 }}
               >
                 {config?.languages.map((lang) => (
@@ -163,11 +171,19 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               <Select
                 className="select-languages"
                 displayEmpty
-                style={{
+                sx={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
                   width: '100%',
                   marginBottom: '0rem',
+                  '& .MuiSelect-icon': {
+                    right: isRTL ? 'unset' : '7px',
+                    left: isRTL ? '7px' : 'unset',
+                  },
+                  '& .MuiSelect-select': {
+                    paddingRight: isRTL ? '10px !important' : '32px !important',
+                    paddingLeft: isRTL ? '32px' : '12px',
+                  },
                 }}
               >
                 <MenuItem>Program 2024-25</MenuItem>

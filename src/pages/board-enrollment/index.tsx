@@ -150,7 +150,13 @@ const BoardEnrollment = () => {
               }}
             >
               <InputBase
-                sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
+                sx={{
+                  ml: isRTL ? 0 : 3,
+                  mr: isRTL ? 3 : 0,
+                  flex: 1,
+                  mb: '0',
+                  fontSize: '14px',
+                }}
                 placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                 inputProps={{ 'aria-label': t('ASSESSMENTS.SEARCH_STUDENT') }}
               />

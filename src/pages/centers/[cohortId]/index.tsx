@@ -777,6 +777,10 @@ const CohortPage = () => {
                   height: '40px',
                   px: '16px',
                   color: theme.palette.error.contrastText,
+                  '& .MuiButton-endIcon': {
+                    marginLeft: isRTL ? '0px !important' : '8px !important',
+                    marginRight: isRTL ? '8px !important' : '-2px !important',
+                  },
                 }}
                 className="text-1E"
                 endIcon={<AddIcon />}

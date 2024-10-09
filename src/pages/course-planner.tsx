@@ -510,7 +510,6 @@ const CoursePlanner = () => {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'left',
           alignItems: 'center',
           color: '#4D4639',
           padding: '20px 20px 5px',
@@ -602,7 +601,13 @@ const CoursePlanner = () => {
                 value={tStore?.type}
                 onChange={handleChange}
                 label="Course Type"
-                sx={{ fontSize: '14px' }}
+                sx={{
+                  fontSize: '14px',
+                  '& .MuiSelect-icon': {
+                    right: isRTL ? 'unset' : '7px',
+                    left: isRTL ? '7px' : 'unset',
+                  },
+                }}
                 disabled={
                   !tStore.state ||
                   !tStore.board ||

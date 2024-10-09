@@ -46,6 +46,8 @@ const emptyInitialI18NextConfig: UserConfig = {
   },
 };
 
+let myTheme: any;
+
 export function DarkTheme() {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
@@ -156,7 +158,7 @@ function App({ Component, pageProps }: AppProps) {
           sx={{
             padding: '0',
             '@media (min-width: 900px)': {
-              width: !isFullWidthPage ? 'calc(100% - 22rem)' : '100%',
+              width: !isFullWidthPage ? 'calc(100% - 22.2rem)' : '100%',
               marginLeft: isRTL
                 ? !isFullWidthPage
                   ? '0px'

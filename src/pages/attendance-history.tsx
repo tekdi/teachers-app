@@ -707,7 +707,8 @@ const UserAttendanceHistory = () => {
                         ref={inputRef}
                         value={searchWord}
                         sx={{
-                          ml: 3,
+                          ml: isRTL ? 0 : 3,
+                          mr: isRTL ? 3 : 0,
                           flex: 1,
                           mb: '0',
                           fontSize: '14px',
@@ -755,6 +756,14 @@ const UserAttendanceHistory = () => {
                         color: theme.palette.warning.A200,
                         borderRadius: '10px',
                         fontSize: '14px',
+                        '& .MuiButton-endIcon': {
+                          marginLeft: isRTL
+                            ? '0px !important'
+                            : '8px !important',
+                          marginRight: isRTL
+                            ? '8px !important'
+                            : '-2px !important',
+                        },
                       }}
                       endIcon={<ArrowDropDownSharpIcon />}
                       size="small"
