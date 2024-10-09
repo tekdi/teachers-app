@@ -38,7 +38,6 @@ import {
   extractAddress,
   formatSelectedDate,
   getUserDetailsById,
-  isEliminatedFromBuild,
   mapFieldIdToValue,
   toPascalCase,
   translateString,
@@ -73,6 +72,7 @@ import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { getFormRead } from '@/hooks/useFormRead';
 import { useDirection } from '../../hooks/useDirection';
 import dynamic from 'next/dynamic';
+import { isEliminatedFromBuild } from '../../../featureEliminationUtil';
 let AssessmentReport: ComponentType<AssessmentReportProp> | null = null;
 
 if (!isEliminatedFromBuild("AssessmentReport", "component")) {
