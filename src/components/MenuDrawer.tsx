@@ -18,13 +18,14 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { Role } from '@/utils/app.constant';
 import useStore from '@/store/store';
-import { accessGranted, isEliminatedFromBuild } from '@/utils/Helper';
+import { accessGranted } from '@/utils/Helper';
 import { accessControl } from '../../app.config';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 import checkBook from '../assets/images/checkbook.svg';
 import board from '../assets/images/Board.svg';
 import Image from 'next/image';
 import { useDirection } from '../hooks/useDirection';
+import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
