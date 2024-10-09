@@ -627,15 +627,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const value = event?.target?.value;
     setLink(value);
 
-    const zoomLinkPattern =
-      /^https?:\/\/([a-z0-9]+\.)?zoom\.us\/(j|s)\/\d+(\?pwd=[\w-]+)?$/;
-
     const googleMeetLinkPattern =
       /^(https?:\/\/)?(meet\.google\.com\/[a-zA-Z0-9-]+)$/;
 
     let onlineProvider: string;
-    if (zoomLinkPattern.test(value)) {
-      setLinkError('');
+    if (value.includes('zoom')) {
       onlineProvider = t('CENTER_SESSION.ZOOM');
     } else if (googleMeetLinkPattern.test(value)) {
       setLinkError('');
@@ -1193,7 +1189,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </Box>
             )}
             <SessionMode
-              mode={editSession ? (mode ?? '') : (block?.sessionMode ?? '')}
+              mode={editSession ? mode ?? '' : block?.sessionMode ?? ''}
               handleSessionModeChange={(e) =>
                 handleSessionModeChange(e, block?.id)
               }
