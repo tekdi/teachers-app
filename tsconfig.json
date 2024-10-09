@@ -22,7 +22,8 @@
     "**/*.ts",
     "**/*.tsx",
     "types/global.d.ts",
-    "cypress/e2e/app.cy.js"
+    "cypress/e2e/app.cy.js",
+    "module.config.js"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "temp_skipped_features"]
 }

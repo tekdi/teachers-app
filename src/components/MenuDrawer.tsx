@@ -18,7 +18,7 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { Role } from '@/utils/app.constant';
 import useStore from '@/store/store';
-import { accessGranted } from '@/utils/Helper';
+import { accessGranted, isEliminatedFromBuild } from '@/utils/Helper';
 import { accessControl } from '../../app.config';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 import checkBook from '../assets/images/checkbook.svg';
@@ -322,6 +322,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             </Button>
           </Box>
         </Box>
+        {!isEliminatedFromBuild('Assessments', 'feature') && 
         <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-8"
@@ -358,6 +359,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             {t('ASSESSMENTS.ASSESSMENTS')}
           </Button>
         </Box>
+        }
         <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-8"

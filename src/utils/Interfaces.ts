@@ -673,6 +673,11 @@ export interface ISearchAssessment {
   batchId: string;
 }
 
+export interface AssessmentReportProp {
+  classId: string;
+  userId: string;
+}
+
 export interface IQuestion {
   duration: number;
   maxScore: number;

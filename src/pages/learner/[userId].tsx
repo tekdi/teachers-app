@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ComponentType, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { GetStaticPaths } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -38,6 +38,7 @@ import {
   extractAddress,
   formatSelectedDate,
   getUserDetailsById,
+  isEliminatedFromBuild,
   mapFieldIdToValue,
   toPascalCase,
   translateString,
@@ -48,6 +49,7 @@ import {
   CohortAttendancePercentParam,
   UpdateCustomField,
   OverallAttendance,
+  AssessmentReportProp,
 } from '@/utils/Interfaces';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
@@ -68,9 +70,16 @@ import {
 import { accessControl, Program } from '../../../app.config';
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import AssessmentReport from '@/components/AssessmentReport';
 import { getFormRead } from '@/hooks/useFormRead';
 import { useDirection } from '../../hooks/useDirection';
+import dynamic from 'next/dynamic';
+let AssessmentReport: ComponentType<AssessmentReportProp> | null = null;
+
+if (!isEliminatedFromBuild("AssessmentReport", "component")) {
+  AssessmentReport = dynamic(() => import("../../components/AssessmentReport"), {
+    ssr: false,
+  });
+}
 
 interface LearnerProfileProp {
   reloadState?: boolean;
@@ -984,6 +993,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           </Box>
         </Box>
       </Box>
+      {(!isEliminatedFromBuild("AssessmentReport", "component") && AssessmentReport) && 
       <Box padding={2}>
         <Card
           sx={{
@@ -997,6 +1007,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           </CardContent>
         </Card>
       </Box>
+      }
     </>
   );
 };
