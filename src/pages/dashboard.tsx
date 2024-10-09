@@ -2,7 +2,7 @@
 
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
-import React, { useEffect, useState } from 'react';
+import React, { ComponentType, useEffect, useState } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import {
   classesMissedAttendancePercentList,
@@ -65,8 +65,8 @@ import {
 } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import { getEventList } from '@/services/EventService';
-import SessionCard from '@/components/SessionCard';
-import SessionCardFooter from '@/components/SessionCardFooter';
+// import SessionCard from '@/components/SessionCard';
+// import SessionCardFooter from '@/components/SessionCardFooter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useQueryClient } from '@tanstack/react-query';
 import { getCohortDetails, getCohortList } from '@/services/CohortServices';
@@ -77,8 +77,23 @@ import { updateStoreFromCohorts } from '@/utils/Helper';
 import taxonomyStore from '@/store/taxonomyStore';
 import { useDirection } from '../hooks/useDirection';
 import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
-interface DashboardProps {}
 
+import dynamic from 'next/dynamic';
+import { isEliminatedFromBuild } from '../../featureEliminationUtil';
+let SessionCardFooter: ComponentType<any> | null = null;
+if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
+  SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
+    ssr: false,
+  });
+}
+let SessionCard: ComponentType<any> | null = null;
+if (!isEliminatedFromBuild('SessionCard', 'component')) {
+  SessionCard = dynamic(() => import('@/components/SessionCard'), {
+    ssr: false,
+  });
+}
+
+interface DashboardProps {}
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -1371,141 +1386,158 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <AttendanceComparison blockName={blockName} />
                   </Box>
                 )}
-                <Box mt={3} px="18px">
-                  <Box
-                    sx={{
-                      background: theme.palette.warning['A400'],
-                      padding: '5px',
-                    }}
-                    display={'flex'}
-                    justifyContent={'space-between'}
-                  >
-                    <Typography
-                      textAlign={'left'}
-                      fontSize={'0.8rem'}
-                      pt={'1rem'}
-                      variant="h2"
-                      sx={{ fontSize: '14px' }}
-                      color={theme.palette.warning['300']}
-                      fontWeight={'500'}
-                    >
-                      {t('DASHBOARD.MY_TIMETABLE')}
-                    </Typography>
-                    <Box
-                      display={'flex'}
-                      sx={{
-                        cursor: 'pointer',
-                        color: theme.palette.secondary.main,
-                        gap: '4px',
-                        opacity: classId === 'all' ? 0.5 : 1,
-                        alignItems: 'center',
-                      }}
-                      onClick={viewTimeTable}
-                    >
-                      <Typography
-                        marginBottom={'0'}
-                        style={{ fontWeight: '500' }}
-                      >
-                        {getMonthName(selectedDate)}
-                      </Typography>
-                      <CalendarMonthIcon sx={{ fontSize: '18px' }} />
-                    </Box>
-                  </Box>
-                  <WeekCalender
-                    showDetailsHandle={showTimeTableDetailsHandle}
-                    disableDays={classId === 'all'}
-                    classId={classId}
-                    showFromToday={true}
-                    newWidth={'100%'}
-                  />
-                </Box>
-                <Box mt={2} px="18px">
-                  <Grid container spacing={2}>
-                    {sessions?.map((item) => (
-                      <Grid xs={12} sm={6} md={4} key={item.id} item>
-                        <SessionCard
-                          data={item}
-                          showCenterName={true}
-                          isEventDeleted={handleEventDeleted}
-                          isEventUpdated={handleEventUpdated}
-                          StateName={state}
-                          board={board}
-                          medium={medium}
-                          grade={grade}
+                {!isEliminatedFromBuild('SessionCardFooter', 'component') &&
+                  SessionCardFooter &&
+                  SessionCard && (
+                    <>
+                      <Box mt={3} px="18px">
+                        <Box
+                          sx={{
+                            background: theme.palette.warning['A400'],
+                            padding: '5px',
+                          }}
+                          display={'flex'}
+                          justifyContent={'space-between'}
                         >
-                          <SessionCardFooter
-                            item={item}
-                            isTopicSubTopicAdded={handleEventUpdated}
-                            state={state}
-                            board={board}
-                            medium={medium}
-                            grade={grade}
-                          />
-                        </SessionCard>
-                      </Grid>
-                    ))}
-                    {sessions && sessions?.length === 0 && (
-                      <Box
-                        className="fs-12 fw-400 italic"
-                        sx={{
-                          color: theme.palette.warning['300'],
-                          paddingLeft: '18px',
-                        }}
-                      >
-                        {t('COMMON.NO_SESSIONS_SCHEDULED')}
-                      </Box>
-                    )}
-                  </Grid>
-                </Box>
-
-                <Box mt={3} px="18px" gap={'15px'}>
-                  <Box
-                    className="fs-14 fw-500"
-                    sx={{ color: theme.palette.warning['300'] }}
-                  >
-                    {t('CENTER_SESSION.EXTRA_SESSION', {
-                      days: eventDaysLimit,
-                    })}
-                  </Box>
-                  <Box sx={{ mt: 1.5, mb: 2 }}>
-                    <Grid container spacing={2}>
-                      {extraSessions?.map((item) => (
-                        <Grid xs={12} sm={6} md={4} key={item.id} item>
-                          <SessionCard
-                            data={item}
-                            showCenterName={true}
-                            isEventDeleted={handleEventDeleted}
-                            isEventUpdated={handleEventUpdated}
-                            StateName={state}
-                            board={board}
-                            medium={medium}
-                            grade={grade}
+                          <Typography
+                            textAlign={'left'}
+                            fontSize={'0.8rem'}
+                            pt={'1rem'}
+                            variant="h2"
+                            sx={{ fontSize: '14px' }}
+                            color={theme.palette.warning['300']}
+                            fontWeight={'500'}
                           >
-                            <SessionCardFooter
-                              item={item}
-                              isTopicSubTopicAdded={handleEventUpdated}
-                              state={state}
-                              board={board}
-                              medium={medium}
-                              grade={grade}
-                            />
-                          </SessionCard>
+                            {t('DASHBOARD.MY_TIMETABLE')}
+                          </Typography>
+                          <Box
+                            display={'flex'}
+                            sx={{
+                              cursor: 'pointer',
+                              color: theme.palette.secondary.main,
+                              gap: '4px',
+                              opacity: classId === 'all' ? 0.5 : 1,
+                              alignItems: 'center',
+                            }}
+                            onClick={viewTimeTable}
+                          >
+                            <Typography
+                              marginBottom={'0'}
+                              style={{ fontWeight: '500' }}
+                            >
+                              {getMonthName(selectedDate)}
+                            </Typography>
+                            <CalendarMonthIcon sx={{ fontSize: '18px' }} />
+                          </Box>
+                        </Box>
+                        <WeekCalender
+                          showDetailsHandle={showTimeTableDetailsHandle}
+                          disableDays={classId === 'all'}
+                          classId={classId}
+                          showFromToday={true}
+                          newWidth={'100%'}
+                        />
+                      </Box>
+
+                      <Box mt={2} px="18px">
+                        <Grid container spacing={2}>
+                          {sessions?.map((item) => (
+                            <Grid xs={12} sm={6} md={4} key={item.id} item>
+                              {SessionCard && (
+                                <SessionCard
+                                  data={item}
+                                  showCenterName={true}
+                                  isEventDeleted={handleEventDeleted}
+                                  isEventUpdated={handleEventUpdated}
+                                  StateName={state}
+                                  board={board}
+                                  medium={medium}
+                                  grade={grade}
+                                >
+                                  {SessionCardFooter && (
+                                    <SessionCardFooter
+                                      item={item}
+                                      isTopicSubTopicAdded={handleEventUpdated}
+                                      state={state}
+                                      board={board}
+                                      medium={medium}
+                                      grade={grade}
+                                    />
+                                  )}
+                                </SessionCard>
+                              )}
+                            </Grid>
+                          ))}
+                          {sessions && sessions?.length === 0 && (
+                            <Box
+                              className="fs-12 fw-400 italic"
+                              sx={{
+                                color: theme.palette.warning['300'],
+                                paddingLeft: '18px',
+                              }}
+                            >
+                              {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                            </Box>
+                          )}
                         </Grid>
-                      ))}
-                    </Grid>
-                  </Box>
-                  {extraSessions && extraSessions?.length === 0 && (
-                    <Box
-                      className="fs-12 fw-400 italic"
-                      sx={{
-                        color: theme.palette.warning['300'],
-                        marginBottom: '12px',
-                      }}
-                    >
-                      {t('COMMON.NO_SESSIONS_SCHEDULED')}
-                    </Box>
+                      </Box>
+
+                      <Box mt={3} px="18px" gap={'15px'}>
+                        <Box
+                          className="fs-14 fw-500"
+                          sx={{ color: theme.palette.warning['300'] }}
+                        >
+                          {t('CENTER_SESSION.EXTRA_SESSION', {
+                            days: eventDaysLimit,
+                          })}
+                        </Box>
+                        <Box sx={{ mt: 1.5, mb: 2 }}>
+                          <Grid container spacing={2}>
+                            {extraSessions?.map((item) => (
+                              <Grid xs={12} sm={6} md={4} key={item.id} item>
+                                {SessionCard && (
+                                  <SessionCard
+                                    data={item}
+                                    showCenterName={true}
+                                    isEventDeleted={handleEventDeleted}
+                                    isEventUpdated={handleEventUpdated}
+                                    StateName={state}
+                                    board={board}
+                                    medium={medium}
+                                    grade={grade}
+                                  >
+                                    {SessionCardFooter && (
+                                      <SessionCardFooter
+                                        item={item}
+                                        isTopicSubTopicAdded={
+                                          handleEventUpdated
+                                        }
+                                        state={state}
+                                        board={board}
+                                        medium={medium}
+                                        grade={grade}
+                                      />
+                                    )}
+                                  </SessionCard>
+                                )}
+                              </Grid>
+                            ))}
+                          </Grid>
+                        </Box>
+                        {extraSessions && extraSessions?.length === 0 && (
+                          <Box
+                            className="fs-12 fw-400 italic"
+                            sx={{
+                              color: theme.palette.warning['300'],
+                              marginBottom: '12px',
+                            }}
+                          >
+                            {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                          </Box>
+                        )}
+                      </Box>
+                    </>
                   )}
-                </Box>
               </Box>
             )}
           </>
