@@ -3,7 +3,7 @@ set -e
 
 # Path to the config file
 CONFIG_FILE="./module.config.js"
-TEMP_FOLDER="./temp_skipped_features"
+TEMP_FOLDER="./temp_eliminated_features"
 FILE_LOCATIONS="$TEMP_FOLDER/file_locations.txt" # File to store original locations
 
 # Function to extract skipped features from the app.config.ts file using Node.js

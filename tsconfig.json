@@ -25,5 +25,5 @@
     "cypress/e2e/app.cy.js",
     "module.config.js"
   ],
-  "exclude": ["node_modules", "temp_skipped_features"]
+  "exclude": ["node_modules", "temp_eliminated_features"]
 }
