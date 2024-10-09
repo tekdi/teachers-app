@@ -603,10 +603,6 @@ const CoursePlanner = () => {
                 label="Course Type"
                 sx={{
                   fontSize: '14px',
-                  '& .MuiSelect-icon': {
-                    right: isRTL ? 'unset' : '7px',
-                    left: isRTL ? '7px' : 'unset',
-                  },
                 }}
                 disabled={
                   !tStore.state ||

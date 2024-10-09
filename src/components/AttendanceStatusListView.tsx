@@ -50,6 +50,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
     // position: isBulkAction ? 'fixed' : 'none',
     // width: isBulkAction ? '89%' : '100%',
     borderBottom: isBulkAction ? 'none' : '1px solid #D0C5B4',
+    justifyContent: 'space-between',
   };
 
   const handleClickAction = (
@@ -137,8 +138,6 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
       <Box sx={boxStyling}>
         <Typography
           variant="body1"
-          marginRight={isRTL ? 'unset' : 'auto'}
-          marginLeft={isRTL ? 'auto' : 'unset'}
           marginY="auto"
           sx={{
             textAlign: 'left',
@@ -162,168 +161,170 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             userData?.name
           )}
         </Typography>
-        {userData?.memberStatus === Status.DROPOUT ? (
-          <Box display="column">
-            {presentCount === 0 && absentCount === 0 ? (
-              <DropoutLabel />
-            ) : (
-              <>
-                <Box display="flex">
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    className="icon_holder"
-                    p={1}
-                  >
-                    {[userData?.attendance, bulkAttendanceStatus].includes(
-                      ATTENDANCE_ENUM.PRESENT
-                    ) ? (
-                      <CheckCircleIcon
-                        sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
-                        style={{
-                          fill: theme.palette.success.main,
-                        }}
-                      />
-                    ) : (
-                      <CheckCircleOutlineIcon
-                        sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
-                        style={{
-                          fill: isDisabled
-                            ? theme.palette.warning['400']
-                            : theme.palette.warning[100],
-                        }}
-                      />
-                    )}
-                    <Typography
-                      variant="h6"
-                      marginTop={1}
-                      sx={{ color: () => theme.palette.warning[400] }}
-                    >
-                      {t('ATTENDANCE.PRESENT')}
-                    </Typography>
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    className="icon_holder"
-                    p={1}
-                  >
-                    {[userData?.attendance, bulkAttendanceStatus].includes(
-                      ATTENDANCE_ENUM.ABSENT
-                    ) ? (
-                      <CancelIcon
-                        sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
-                        style={{ fill: theme.palette.error.main }}
-                      />
-                    ) : (
-                      <HighlightOffIcon
-                        sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
-                        style={{
-                          fill: isDisabled
-                            ? theme.palette.warning['400']
-                            : theme.palette.warning[100],
-                        }}
-                      />
-                    )}
-                    <Typography
-                      variant="h6"
-                      marginTop={1}
-                      sx={{ color: () => theme.palette.warning[400] }}
-                    >
-                      {t('ATTENDANCE.ABSENT')}
-                    </Typography>
-                  </Box>
-                </Box>
+        <Box sx={{ display: 'flex', gap: '10px' }}>
+          {userData?.memberStatus === Status.DROPOUT ? (
+            <Box display="column">
+              {presentCount === 0 && absentCount === 0 ? (
                 <DropoutLabel />
-              </>
-            )}
-          </Box>
-        ) : (
-          <>
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              className="icon_holder"
-              p={1}
-              onClick={() =>
-                handleClickAction(
-                  isBulkAction,
-                  ATTENDANCE_ENUM.PRESENT,
-                  isBulkAction ? '' : userData?.userId
-                )
-              }
-            >
-              {[userData?.attendance, bulkAttendanceStatus].includes(
-                ATTENDANCE_ENUM.PRESENT
-              ) ? (
-                <CheckCircleIcon
-                  sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
-                  style={{
-                    fill: theme.palette.success.main,
-                  }}
-                />
               ) : (
-                <CheckCircleOutlineIcon
-                  sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
-                  style={{
-                    fill: isDisabled
-                      ? theme.palette.warning['400']
-                      : theme.palette.warning[100],
-                  }}
-                />
+                <>
+                  <Box display="flex">
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="center"
+                      className="icon_holder"
+                      p={1}
+                    >
+                      {[userData?.attendance, bulkAttendanceStatus].includes(
+                        ATTENDANCE_ENUM.PRESENT
+                      ) ? (
+                        <CheckCircleIcon
+                          sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+                          style={{
+                            fill: theme.palette.success.main,
+                          }}
+                        />
+                      ) : (
+                        <CheckCircleOutlineIcon
+                          sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+                          style={{
+                            fill: isDisabled
+                              ? theme.palette.warning['400']
+                              : theme.palette.warning[100],
+                          }}
+                        />
+                      )}
+                      <Typography
+                        variant="h6"
+                        marginTop={1}
+                        sx={{ color: () => theme.palette.warning[400] }}
+                      >
+                        {t('ATTENDANCE.PRESENT')}
+                      </Typography>
+                    </Box>
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="center"
+                      className="icon_holder"
+                      p={1}
+                    >
+                      {[userData?.attendance, bulkAttendanceStatus].includes(
+                        ATTENDANCE_ENUM.ABSENT
+                      ) ? (
+                        <CancelIcon
+                          sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+                          style={{ fill: theme.palette.error.main }}
+                        />
+                      ) : (
+                        <HighlightOffIcon
+                          sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+                          style={{
+                            fill: isDisabled
+                              ? theme.palette.warning['400']
+                              : theme.palette.warning[100],
+                          }}
+                        />
+                      )}
+                      <Typography
+                        variant="h6"
+                        marginTop={1}
+                        sx={{ color: () => theme.palette.warning[400] }}
+                      >
+                        {t('ATTENDANCE.ABSENT')}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <DropoutLabel />
+                </>
               )}
-              <Typography
-                variant="h6"
-                marginTop={1}
-                sx={{ color: () => theme.palette.warning[400] }}
-              >
-                {t('ATTENDANCE.PRESENT')}
-              </Typography>
             </Box>
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              className="icon_holder"
-              p={1}
-              onClick={() =>
-                handleClickAction(
-                  isBulkAction,
-                  ATTENDANCE_ENUM.ABSENT,
-                  isBulkAction ? '' : userData?.userId
-                )
-              }
-            >
-              {[userData?.attendance, bulkAttendanceStatus].includes(
-                ATTENDANCE_ENUM.ABSENT
-              ) ? (
-                <CancelIcon
-                  sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
-                  style={{ fill: theme.palette.error.main }}
-                />
-              ) : (
-                <HighlightOffIcon
-                  sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
-                  style={{
-                    fill: isDisabled
-                      ? theme.palette.warning['400']
-                      : theme.palette.warning[100],
-                  }}
-                />
-              )}
-              <Typography
-                variant="h6"
-                marginTop={1}
-                sx={{ color: () => theme.palette.warning[400] }}
+          ) : (
+            <>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                className="icon_holder"
+                p={1}
+                onClick={() =>
+                  handleClickAction(
+                    isBulkAction,
+                    ATTENDANCE_ENUM.PRESENT,
+                    isBulkAction ? '' : userData?.userId
+                  )
+                }
               >
-                {t('ATTENDANCE.ABSENT')}
-              </Typography>
-            </Box>
-          </>
-        )}
+                {[userData?.attendance, bulkAttendanceStatus].includes(
+                  ATTENDANCE_ENUM.PRESENT
+                ) ? (
+                  <CheckCircleIcon
+                    sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+                    style={{
+                      fill: theme.palette.success.main,
+                    }}
+                  />
+                ) : (
+                  <CheckCircleOutlineIcon
+                    sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+                    style={{
+                      fill: isDisabled
+                        ? theme.palette.warning['400']
+                        : theme.palette.warning[100],
+                    }}
+                  />
+                )}
+                <Typography
+                  variant="h6"
+                  marginTop={1}
+                  sx={{ color: () => theme.palette.warning[400] }}
+                >
+                  {t('ATTENDANCE.PRESENT')}
+                </Typography>
+              </Box>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                className="icon_holder"
+                p={1}
+                onClick={() =>
+                  handleClickAction(
+                    isBulkAction,
+                    ATTENDANCE_ENUM.ABSENT,
+                    isBulkAction ? '' : userData?.userId
+                  )
+                }
+              >
+                {[userData?.attendance, bulkAttendanceStatus].includes(
+                  ATTENDANCE_ENUM.ABSENT
+                ) ? (
+                  <CancelIcon
+                    sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+                    style={{ fill: theme.palette.error.main }}
+                  />
+                ) : (
+                  <HighlightOffIcon
+                    sx={{ cursor: isDisabled ? 'default' : 'pointer' }}
+                    style={{
+                      fill: isDisabled
+                        ? theme.palette.warning['400']
+                        : theme.palette.warning[100],
+                    }}
+                  />
+                )}
+                <Typography
+                  variant="h6"
+                  marginTop={1}
+                  sx={{ color: () => theme.palette.warning[400] }}
+                >
+                  {t('ATTENDANCE.ABSENT')}
+                </Typography>
+              </Box>
+            </>
+          )}
+        </Box>
       </Box>
     </Box>
   );

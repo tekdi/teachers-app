@@ -202,7 +202,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
           </Box>
           <Box p={'18px'}>
             <Button
-              className="w-100"
+              className="w-100  one-line-text"
               sx={{ boxShadow: 'none' }}
               variant="contained"
               onClick={() => handleDeleteAction()}

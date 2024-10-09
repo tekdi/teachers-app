@@ -128,7 +128,10 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       }
 
       if (teacherReadResponse) {
-        const { schema, uiSchema } = GenerateSchemaAndUiSchema(teacherReadResponse, t);
+        const { schema, uiSchema } = GenerateSchemaAndUiSchema(
+          teacherReadResponse,
+          t
+        );
         setSchema(schema);
         setUiSchema(uiSchema);
       }
@@ -513,7 +516,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             </Box>
             <Box p={'18px'} display={'flex'} gap={'1rem'}>
               <Button
-                className="w-100"
+                className="w-100 one-line-text"
                 sx={{ boxShadow: 'none' }}
                 variant="outlined"
                 onClick={() => handleBackAction()}
@@ -521,7 +524,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 {t('COMMON.BACK')}
               </Button>
               <Button
-                className="w-100"
+                className="w-100 one-line-text"
                 sx={{ boxShadow: 'none' }}
                 variant="contained"
                 onClick={() => handleAction()}

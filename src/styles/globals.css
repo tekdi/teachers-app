@@ -868,7 +868,7 @@ main {
   }
 
   .top-md-0 {
-    top: 0;
+    top: 0 !important;
   }
 
   .br-md-8 {

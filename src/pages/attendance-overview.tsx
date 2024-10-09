@@ -684,6 +684,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                           mr: isRTL ? 3 : 0,
                           flex: 1,
                           mb: '0',
+                          px: '10px',
                           fontSize: '14px',
                           color: theme.palette.warning['A200'],
                         }}
@@ -729,14 +730,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                         color: theme.palette.warning.A200,
                         borderRadius: '10px',
                         fontSize: '14px',
-                        '& .MuiButton-endIcon': {
-                          marginLeft: isRTL
-                            ? '0px !important'
-                            : '8px !important',
-                          marginRight: isRTL
-                            ? '8px !important'
-                            : '-2px !important',
-                        },
                       }}
                       endIcon={<ArrowDropDownSharpIcon />}
                       size="small"

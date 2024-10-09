@@ -471,10 +471,6 @@ const Assessments = () => {
                 onClick={handleOpenModal}
                 sx={{
                   color: theme.palette.warning.A200,
-                  '&.MuiButton-endIcon': {
-                    marginLeft: isRTL ? '0px !important' : '8px !important',
-                    marginRight: isRTL ? '8px !important' : '-2px !important',
-                  },
                   borderRadius: '10px',
                   fontSize: '14px',
                 }}

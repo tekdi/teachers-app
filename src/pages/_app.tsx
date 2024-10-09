@@ -31,6 +31,10 @@ import { telemetryFactory } from '../utils/telemetry';
 import { metaTags, Telemetry } from '@/utils/app.constant';
 import { useTranslation } from 'next-i18next';
 import { useDirection } from '../hooks/useDirection';
+import rtlPlugin from 'stylis-plugin-rtl';
+import { prefixer } from 'stylis';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -142,6 +146,15 @@ function App({ Component, pageProps }: AppProps) {
   const theme = useTheme<any>();
   const { dir, isRTL } = useDirection();
 
+  const rtlCache = createCache({
+    key: 'muirtl',
+    stylisPlugins: [prefixer, rtlPlugin],
+  });
+
+  const ltrCache = createCache({
+    key: 'mui',
+  });
+
   return (
     <>
       <style jsx global>{`
@@ -153,35 +166,34 @@ function App({ Component, pageProps }: AppProps) {
         <title>{metaTags?.title}</title>
         <meta name="description" content={metaTags?.description} />
       </Head>
-      <CssVarsProvider theme={customTheme}>
-        <Box
-          sx={{
-            padding: '0',
-            '@media (min-width: 900px)': {
-              width: !isFullWidthPage ? 'calc(100% - 22.2rem)' : '100%',
-              marginLeft: isRTL
-                ? !isFullWidthPage
-                  ? '0px'
-                  : '0'
-                : !isFullWidthPage
-                  ? '351px'
-                  : '0',
-              marginRight: isRTL && !isFullWidthPage ? '351px' : '0',
-            },
-            background: theme.palette.warning['A400'],
-            overflowX: 'hidden',
-          }}
-        >
-          <QueryClientProvider client={client}>
-            <Component {...pageProps} />
-          </QueryClientProvider>
-          <ToastContainer
-            position="bottom-left"
-            autoClose={3000}
-            stacked={false}
-          />
-        </Box>
-      </CssVarsProvider>
+      <CacheProvider value={isRTL ? rtlCache : ltrCache}>
+        <CssVarsProvider theme={customTheme}>
+          <Box
+            sx={{
+              padding: '0',
+              '@media (min-width: 900px)': {
+                width: !isFullWidthPage ? 'calc(100% - 22rem)' : '100%',
+                marginLeft: !isFullWidthPage ? '351px' : '0',
+              },
+              '@media (min-width: 2000px)': {
+                width: '100%',
+                marginLeft: !isFullWidthPage ? '351px' : '0',
+              },
+              background: theme.palette.warning['A400'],
+              overflowX: 'hidden',
+            }}
+          >
+            <QueryClientProvider client={client}>
+              <Component {...pageProps} />
+            </QueryClientProvider>
+            <ToastContainer
+              position="bottom-left"
+              autoClose={3000}
+              stacked={false}
+            />
+          </Box>
+        </CssVarsProvider>
+      </CacheProvider>
     </>
   );
 }

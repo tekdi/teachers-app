@@ -232,6 +232,7 @@ function AttendanceStatus({
                 (attendanceStatus !== 'futureDate' &&
                   formatedSevenDaysAgo > selectedDate)
               }
+              className="one-line-text"
             >
               {learnerAttendanceStatus === 'notMarked' ||
               learnerAttendanceStatus === 'futureDate' ||
