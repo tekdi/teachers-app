@@ -247,7 +247,17 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           }}
           className="one-line-text"
         >
-          {data?.meetingDetails?.url}
+          <a
+            href={data?.meetingDetails?.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: theme.palette.secondary.main,
+              textDecoration: 'none',
+            }}
+          >
+            {data?.meetingDetails?.url}
+          </a>{' '}
         </Box>
         {data?.meetingDetails?.url && (
           <ContentCopyIcon
