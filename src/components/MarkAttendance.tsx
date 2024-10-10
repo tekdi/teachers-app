@@ -243,7 +243,7 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-update-dialog-title">
           <Typography variant="h2" sx={{ marginBottom: 0 }}>
-            {t('ATTENDANCE.UPDATE_ATTENDANCE_ALERT')}
+            {currentStatus === ATTENDANCE_ENUM.NOT_MARKED ? t('COMMON.SURE_MARK') : t('COMMON.SURE_UPDATE')}
           </Typography>
         </DialogTitle>
         {/* <Typography variant="h2">Mark Attendance</Typography> */}

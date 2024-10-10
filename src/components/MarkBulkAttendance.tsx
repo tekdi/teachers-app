@@ -201,7 +201,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   // };
 
   const getMessage = () => {
-    if (updateAttendance) return t('COMMON.SURE_UPDATE');
+    if (updateAttendance) return presentCount == 0 && absentCount == 0 ?  t('COMMON.SURE_MARK') : t('COMMON.SURE_UPDATE');
     if (confirmation) return t('COMMON.SURE_CLOSE');
     return '';
   };
