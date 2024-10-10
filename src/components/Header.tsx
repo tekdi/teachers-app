@@ -112,12 +112,6 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     <Box
       sx={{
         height: '64px',
-        // direction: isRTL ? 'rtl' : 'ltr',
-        '@media (max-width: 500px)': {
-          position: 'fixed',
-          width: '100%',
-          zIndex: '999',
-        },
       }}
     >
       <Box
@@ -125,7 +119,9 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          position: hasSeenTutorial ? 'relative' : 'relative',
+          '@media (max-width: 500px)': {
+            position: hasSeenTutorial ? 'fixed' : 'relative',
+          },
           top: '0px',
           zIndex: '999',
           width: '100%',
