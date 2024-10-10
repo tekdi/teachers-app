@@ -16,26 +16,44 @@ import menuIcon from '../assets/images/menuIcon.svg';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import StyledMenu from './StyledMenu';
-import MenuDrawer from './MenuDrawer';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import { useDirection } from '../hooks/useDirection';
 
 interface HeaderProps {
   toggleDrawer?: (newOpen: boolean) => () => void;
   openDrawer?: boolean;
 }
 
+// Dynamic import for MenuDrawer to avoid SSR issues
+const MenuDrawer = dynamic(() => import('./MenuDrawer'), {
+  ssr: false,
+});
+
 const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
   const router = useRouter();
   const { t } = useTranslation();
   const pathname = usePathname();
   const theme = useTheme<any>();
-  const [userId, setUserId] = React.useState<string>('');
-  const [openMenu, setOpenMenu] = useState<boolean>(false);
 
+  const [userId, setUserId] = useState<string>('');
+  const [openMenu, setOpenMenu] = useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
+  const [language, setLanguage] = useState<string>(selectedLanguage);
+  const [darkMode, setDarkMode] = useState<string | null>(null);
+  const { dir, isRTL } = useDirection();
+
+  // Retrieve stored userId and language
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const storedUserId = localStorage.getItem('userId') as string;
-      setUserId(storedUserId);
+      const storedLanguage = localStorage.getItem('preferredLanguage');
+      const storedDarkMode = localStorage.getItem('mui-mode');
+      if (storedUserId) setUserId(storedUserId);
+      if (storedLanguage) setSelectedLanguage(storedLanguage);
+      if (storedDarkMode) setDarkMode(storedDarkMode);
     }
   }, []);
 
@@ -59,10 +77,6 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     });
   };
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
-
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -74,29 +88,11 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
   const handleToggleDrawer = (newOpen: boolean) => () => {
     setOpenMenu(newOpen);
   };
-  // const MenuDrawer = dynamic(() => import('./MenuDrawer'), {
-  //   ssr: false,
-  // });
 
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const storedLanguage = localStorage.getItem('preferredLanguage');
-      if (storedLanguage) {
-        setSelectedLanguage(storedLanguage);
-      }
-    }
-  }, []);
-
-  const [language, setLanguage] = React.useState(selectedLanguage);
-
-  let hasSeenTutorial = false;
-  if (typeof window !== 'undefined' && window.localStorage) {
-    const storedValue = localStorage.getItem('hasSeenTutorial');
-    if (storedValue !== null) {
-      hasSeenTutorial = storedValue === 'true'; // Convert string 'true' or 'false' to boolean
-    }
-  }
+  // Check if the user has seen the tutorial
+  const hasSeenTutorial =
+    typeof window !== 'undefined' &&
+    window.localStorage.getItem('hasSeenTutorial') === 'true';
 
   const getMessage = () => {
     if (modalOpen) return t('COMMON.SURE_LOGOUT');
@@ -111,15 +107,17 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     handleClose();
     setModalOpen(true);
   };
-  const darkMode =
-    typeof window !== 'undefined' && window.localStorage
-      ? localStorage.getItem('mui-mode')
-      : null;
 
   return (
     <Box
       sx={{
         height: '64px',
+        // direction: isRTL ? 'rtl' : 'ltr',
+        '@media (max-width: 500px)': {
+          position: 'fixed',
+          width: '100%',
+          zIndex: '999',
+        },
       }}
     >
       <Box
@@ -127,7 +125,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          position: hasSeenTutorial ? 'fixed' : 'relative',
+          position: hasSeenTutorial ? 'relative' : 'relative',
           top: '0px',
           zIndex: '999',
           width: '100%',
@@ -145,7 +143,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
               ? '0px 1px 3px 0px #ffffff1a'
               : '0px 1px 3px 0px #0000004D'
           }
-          className="pl-md-20"
+          className={isRTL ? '' : 'pl-md-20'}
         >
           <Box
             onClick={() => {
@@ -160,12 +158,13 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
             mt={'0.5rem'}
             className="display-md-none"
             paddingLeft={'20px'}
+            sx={{ marginRight: isRTL ? '20px' : '0px' }}
           >
             <Image
               height={12}
               width={18}
               src={menuIcon}
-              alt="logo"
+              alt="menu"
               style={{ cursor: 'pointer' }}
             />
           </Box>
@@ -176,11 +175,16 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
             src={logoLight}
             alt="logo"
             onClick={() => router.push('/dashboard')}
+            style={{ marginRight: isRTL ? '20px' : '0px' }}
           />
 
           <Box
             onClick={handleClick}
-            sx={{ cursor: 'pointer', position: 'relative' }}
+            sx={{
+              cursor: 'pointer',
+              position: 'relative',
+              marginLeft: isRTL ? '16px' : '0px',
+            }}
             aria-controls={open ? 'account-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : 'false'}
@@ -194,47 +198,41 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
             <AccountCircleOutlinedIcon
               sx={{ color: theme.palette.warning['A200'] }}
             />
-            {/* <AccountCircleIcon
-              fontSize="large"
-              className="accIcon"
-              style={{ fill: theme.palette.warning['A200'] }}
-            /> */}
           </Box>
-          <div style={{ position: 'absolute' }}>
-            <StyledMenu
-              id="profile-menu"
-              MenuListProps={{
-                'aria-labelledby': 'profile-button',
-              }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-            >
-              {pathname !== `/user-profile/${userId}` && (
-                <MenuItem
-                  onClick={handleProfileClick}
-                  disableRipple
-                  sx={{ 'letter-spacing': 'normal' }}
-                >
-                  <PersonOutlineOutlinedIcon />
-                  {t('PROFILE.MY_PROFILE')}
-                </MenuItem>
-              )}
+
+          <StyledMenu
+            id="profile-menu"
+            MenuListProps={{
+              'aria-labelledby': 'profile-button',
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            {pathname !== `/user-profile/${userId}` && (
               <MenuItem
-                onClick={logoutOpen}
+                onClick={handleProfileClick}
                 disableRipple
-                sx={{
-                  'letter-spacing': 'normal',
-                  color: theme.palette.warning['300'],
-                }}
+                sx={{ 'letter-spacing': 'normal' }}
               >
-                <LogoutOutlinedIcon
-                  sx={{ color: theme.palette.warning['300'] }}
-                />
-                {t('COMMON.LOGOUT')}
+                <PersonOutlineOutlinedIcon />
+                {t('PROFILE.MY_PROFILE')}
               </MenuItem>
-            </StyledMenu>
-          </div>
+            )}
+            <MenuItem
+              onClick={logoutOpen}
+              disableRipple
+              sx={{
+                'letter-spacing': 'normal',
+                color: theme.palette.warning['300'],
+              }}
+            >
+              <LogoutOutlinedIcon
+                sx={{ color: theme.palette.warning['300'] }}
+              />
+              {t('COMMON.LOGOUT')}
+            </MenuItem>
+          </StyledMenu>
         </Stack>
       </Box>
 

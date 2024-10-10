@@ -484,6 +484,7 @@ export interface FacilitatorDrawerProps {
   drawerState: { bottom: boolean };
   onPrimaryClick?: () => void;
   selectedCount?: any;
+  onSecondaryClick?: () => void;
 }
 
 export interface CoursePlannerCardsProps {
@@ -636,8 +637,11 @@ export interface BottomDrawerProps {
 
 export interface IAssessmentStatusOptions {
   userId: string[];
+  courseId?:string[];
+  unitId?:string[];
   contentId: string[];
   batchId: string;
+ 
 }
 
 export interface GetTargetedSolutionsParams {
@@ -663,8 +667,15 @@ export interface EditEvent {
 
 export interface ISearchAssessment {
   userId: string;
+  courseId?:string;
+  unitId?:string;
   contentId: string;
   batchId: string;
+}
+
+export interface AssessmentReportProp {
+  classId: string;
+  userId: string;
 }
 
 export interface IQuestion {

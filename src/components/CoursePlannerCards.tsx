@@ -6,7 +6,7 @@ import { ResourcesType } from '@/utils/app.constant';
 
 const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
   resources,
-  type
+  type,
 }) => {
   const theme = useTheme<any>();
 
@@ -31,7 +31,7 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
             },
             index: number
           ) => (
-            <Grid item xs={6} md={2} sx={{ mt: 2 }} key={index}>
+            <Grid item xs={6} md={4} lg={2} sx={{ mt: 2 }} key={index}>
               <Box
                 className="facilitator-bg"
                 onClick={() => window.open(resource?.link, '_blank')}

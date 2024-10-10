@@ -8,6 +8,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { AssessmentType } from '../../app.config';
+import { useDirection } from '../hooks/useDirection';
 
 interface AssessmentReportCardProp {
   assessmentStatus: string;
@@ -29,6 +30,7 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
   const theme = useTheme<any>();
   const router = useRouter();
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
 
   const handleAssessmentDetails = (userId: string) => {
     if (router.pathname === '/assessments') {
@@ -95,7 +97,7 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
   };
 
   return (
-    <Grid item xs={12} sm={6} md={4} key={userId}>
+    <Grid item xs={12} sm={12} md={6} lg={4} key={userId}>
       <Box
         sx={{
           border: `1px solid ${theme?.palette?.warning['A100']}`,
@@ -155,7 +157,10 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
             </Box>
 
             <KeyboardArrowRightIcon
-              sx={{ color: theme.palette.warning[300] }}
+              sx={{
+                color: theme.palette.warning[300],
+                transform: isRTL ? ' rotate(180deg)' : 'unset',
+              }}
             />
           </Box>
         </Box>

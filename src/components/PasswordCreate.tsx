@@ -322,6 +322,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
                 width: '50%',
               },
             }}
+            className="one-line-text"
             disabled={!isFormValid || loading}
           >
             {t('LOGIN_PAGE.RESET_PASSWORD')}

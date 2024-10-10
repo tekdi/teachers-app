@@ -1,6 +1,5 @@
 import { SessionsCardProps } from '@/utils/Interfaces';
 import { Box, Snackbar, Typography } from '@mui/material';
-
 import { convertUTCToIST, toPascalCase } from '@/utils/Helper';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -15,6 +14,7 @@ import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import SensorsTwoToneIcon from '@mui/icons-material/SensorsTwoTone';
 import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
 import { EventStatus } from '@/utils/app.constant';
+
 const SessionsCard: React.FC<SessionsCardProps> = ({
   data,
   showCenterName = false,
@@ -74,7 +74,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const handleCopyUrl = () => {
     if (data?.meetingDetails?.url) {
       navigator.clipboard
-        .writeText(data?.meetingDetails?.url)
+        .writeText(data.meetingDetails.url)
         .then(() => {
           setSnackbarOpen(true);
         })
@@ -247,7 +247,17 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           }}
           className="one-line-text"
         >
-          {data?.meetingDetails?.url}
+          <a
+            href={data?.meetingDetails?.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: theme.palette.secondary.main,
+              textDecoration: 'none',
+            }}
+          >
+            {data?.meetingDetails?.url}
+          </a>{' '}
         </Box>
         {data?.meetingDetails?.url && (
           <ContentCopyIcon
@@ -256,6 +266,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
               color: theme.palette.secondary.main,
               cursor: 'pointer',
             }}
+            onClick={handleCopyUrl}
           />
         )}
       </Box>
@@ -291,7 +302,6 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
         handleAction={onUpdateClick}
         modalOpen={modalOpen}
       />
-
       <Box sx={{ position: 'absolute', bottom: '2px', width: '100%' }}>
         {children}
       </Box>

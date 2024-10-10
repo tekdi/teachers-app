@@ -14,6 +14,7 @@ export default function ButtonFunctional({
   return (
     <Button
       variant="contained"
+      className="one-line-text"
       style={{
         boxShadow: 'none',
         background:

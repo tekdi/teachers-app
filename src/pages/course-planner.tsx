@@ -30,6 +30,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { accessControl, frameworkId } from '../../app.config';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
+import { useDirection } from '../hooks/useDirection';
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState('');
@@ -40,6 +41,7 @@ const CoursePlanner = () => {
   );
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [framework, setFramework] = useState<any[]>([]);
@@ -131,7 +133,6 @@ const CoursePlanner = () => {
 
   useEffect(() => {
     const fetchCohortSearchResults = async () => {
-
       setLoading(true);
       setState('');
       setBoard('');
@@ -174,8 +175,6 @@ const CoursePlanner = () => {
           //   }
           // });
 
-         
-
           stringFields.forEach(({ label, setter }) => {
             const field = cohortDetails.customFields.find(
               (field: any) => field.label === label
@@ -187,8 +186,6 @@ const CoursePlanner = () => {
           });
         }
 
-        
-        
         setLoading(false);
       } catch (error) {
         console.error('Failed to fetch cohort search results:', error);
@@ -197,7 +194,6 @@ const CoursePlanner = () => {
 
     fetchCohortSearchResults();
   }, [selectedValue]);
-
 
   useEffect(() => {
     const fetchTaxonomyResults = async () => {
@@ -399,7 +395,7 @@ const CoursePlanner = () => {
 
             const typeAssociations = getAssociationsByCodeNew(
               typeOptions,
-              value
+              tStore?.type
             );
             setTypeAssociations(typeAssociations);
             const subject = await getOptionsByCategory(framework, 'subject');
@@ -477,7 +473,7 @@ const CoursePlanner = () => {
 
             const overallCommonSubjects =
               await findOverallCommonSubjects(arrays);
-            
+
             localStorage.setItem(
               'overallCommonSubjects',
               JSON.stringify(overallCommonSubjects)
@@ -514,7 +510,6 @@ const CoursePlanner = () => {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'left',
           alignItems: 'center',
           color: '#4D4639',
           padding: '20px 20px 5px',
@@ -597,29 +592,35 @@ const CoursePlanner = () => {
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-  <Box sx={{ mt: 2, px: '20px', width: '100%' }}>
-    <FormControl sx={{ width: '100%' }}>
-      <InputLabel id="course-type-select-label">Course Type</InputLabel>
-      <Select
-        labelId="course-type-select-label"
-        id="course-type-select"
-        value={value}
-        onChange={handleChange}
-        label="Course Type"
-        sx={{ fontSize: '14px' }}
-        disabled={!tStore.state || !tStore.board || !tStore.medium || !tStore.grade} // Disable if any field is empty
-      >
-        <MenuItem value={'Foundation Course'}>
-          {t('COURSE_PLANNER.FOUNDATION_COURSE')}
-        </MenuItem>
-        <MenuItem value={'Main Course'}>
-          {t('COURSE_PLANNER.MAIN_COURSE')}
-        </MenuItem>
-      </Select>
-    </FormControl>
-  </Box>
-</Grid>
-
+          <Box sx={{ mt: 2, px: '20px', width: '100%' }}>
+            <FormControl sx={{ width: '100%' }}>
+              <InputLabel id="course-type-select-label">Course Type</InputLabel>
+              <Select
+                labelId="course-type-select-label"
+                id="course-type-select"
+                value={tStore?.type}
+                onChange={handleChange}
+                label="Course Type"
+                sx={{
+                  fontSize: '14px',
+                }}
+                disabled={
+                  !tStore.state ||
+                  !tStore.board ||
+                  !tStore.medium ||
+                  !tStore.grade
+                } // Disable if any field is empty
+              >
+                <MenuItem value={'Foundation Course'}>
+                  {t('COURSE_PLANNER.FOUNDATION_COURSE')}
+                </MenuItem>
+                <MenuItem value={'Main Course'}>
+                  {t('COURSE_PLANNER.MAIN_COURSE')}
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </Grid>
       </Grid>
 
       <Box sx={{ m: 3 }}>
@@ -632,55 +633,54 @@ const CoursePlanner = () => {
               marginBottom: '20px',
             }}
           >
-             <Grid container>
-      {anyFieldsEmpty ? (
-        <Box sx={{ ml: 2, p: 2 }}>
-          <Typography variant="h2">
-            {`No assigned ${emptyFields.join(', ')}`}
-          </Typography>
-        </Box>
-      ) : (
-        subjects?.length > 0 ? (
-          subjects.map((item:any) => (
-            <Grid key={item.code} item xs={12} sm={6} md={4}>
-              <Box
-                sx={{
-                  border: `1px solid ${theme.palette.warning.A100}`,
-                  borderRadius: '8px',
-                  padding: '12px',
-                  cursor: 'pointer',
-                  margin: '14px',
-                  background: theme.palette.warning['A400'],
-                }}
-                onClick={() => {
-                  setTaxonomySubject(item.name);
-                  router.push({
-                    pathname: '/course-planner-detail',
-                  });
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Box>
+            <Grid container>
+              {anyFieldsEmpty ? (
+                <Box sx={{ ml: 2, p: 2 }}>
+                  <Typography variant="h2">
+                    {`No assigned ${emptyFields.join(', ')}`}
+                  </Typography>
+                </Box>
+              ) : subjects?.length > 0 ? (
+                subjects.map((item: any) => (
+                  <Grid key={item.code} item xs={12} sm={12} md={6} lg={4}>
                     <Box
                       sx={{
-                        display: 'flex',
-                        gap: '15px',
-                        alignItems: 'center',
+                        border: `1px solid ${theme.palette.warning.A100}`,
+                        borderRadius: '8px',
+                        padding: '12px',
+                        cursor: 'pointer',
+                        margin: '14px',
+                        background: theme.palette.warning['A400'],
+                      }}
+                      onClick={() => {
+                        setTaxonomySubject(item.name);
+                        router.push({
+                          pathname: '/course-planner-detail',
+                        });
                       }}
                     >
                       <Box
                         sx={{
-                          position: 'relative',
-                          display: 'inline-flex',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
                         }}
                       >
-                      {/* <Box sx={{ width: '40px', height: '40px' }}>
+                        <Box>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              gap: '15px',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                position: 'relative',
+                                display: 'inline-flex',
+                              }}
+                            >
+                              {/* <Box sx={{ width: '40px', height: '40px' }}>
                                 <CircularProgressbar
                                   value={item.circular || 0}
                                   strokeWidth={10}
@@ -718,34 +718,36 @@ const CoursePlanner = () => {
                               </Box> */}
                             </Box>
 
-                      <Box
-                        sx={{
-                          fontSize: '16px',
-                          color: theme.palette.warning['300'],
-                        }}
-                      >
-                        {item.name}
+                            <Box
+                              sx={{
+                                fontSize: '16px',
+                                color: theme.palette.warning['300'],
+                              }}
+                            >
+                              {item.name}
+                            </Box>
+                          </Box>
+                        </Box>
+                        <Box>
+                          <KeyboardArrowRightIcon
+                            sx={{
+                              color: theme.palette.warning['300'],
+                              transform: isRTL ? ' rotate(180deg)' : 'unset',
+                            }}
+                          />
+                        </Box>
                       </Box>
                     </Box>
-                  </Box>
-                  <Box>
-                    <KeyboardArrowRightIcon
-                      sx={{ color: theme.palette.warning['300'] }}
-                    />
-                  </Box>
+                  </Grid>
+                ))
+              ) : (
+                <Box sx={{ ml: 2, p: 2 }}>
+                  <Typography variant="h2">
+                    {t('ASSESSMENTS.NO_SUBJECT_FOUND')}
+                  </Typography>
                 </Box>
-              </Box>
+              )}
             </Grid>
-          ))
-        ) : (
-          <Box sx={{ ml: 2, p: 2 }}>
-            <Typography variant="h2">
-              {t('ASSESSMENTS.NO_SUBJECT_FOUND')}
-            </Typography>
-          </Box>
-        )
-      )}
-    </Grid>
           </Box>
         </Box>
       </Box>

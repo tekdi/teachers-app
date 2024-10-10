@@ -32,6 +32,7 @@ import { telemetryFactory } from '@/utils/telemetry';
 import { toPascalCase } from '@/utils/Helper';
 import { useQueryClient } from '@tanstack/react-query';
 import { getUserDetails } from '@/services/ProfileService';
+import { useDirection } from '../hooks/useDirection';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -343,17 +344,42 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     localStorage.setItem('cohortId', cohort_id);
   };
 
-  const isAttendanceOverview = pathname === '/attendance-overview';
+  const teacher: string | null =
+    typeof window !== 'undefined' && window.localStorage
+      ? localStorage.getItem('role')
+      : null;
 
+  const isAttendanceOverview = pathname === '/attendance-overview';
   const isAssessment = pathname === '/assessments';
+  const dashboard = pathname === '/dashboard';
+  const isCoursePlanner = pathname === '/course-planner';
+
+  const { dir, isRTL } = useDirection();
 
   return (
-    <Box className={isAttendanceOverview || isAssessment ? 'w-100' : 'w-md-40'}>
+    <Box
+      className={
+        isAttendanceOverview || isAssessment || isCoursePlanner
+          ? 'w-100'
+          : 'w-md-40'
+      }
+    >
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )}
       {!loading && cohortsData && (
-        <Box>
+        <Box
+          sx={{
+            '@media (min-width: 900px)': {
+              marginTop: dashboard
+                ? teacher === 'Teacher'
+                  ? '0px'
+                  : '-25px'
+                : 'unset',
+              marginRight: dashboard ? '15px' : 'unset',
+            },
+          }}
+        >
           {!loading && cohortsData && (
             <Box>
               {blockName ? (
@@ -378,8 +404,14 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             // },
                           }}
                         >
+                          {showFloatingLabel && (
+                            <InputLabel id="center-select-label">
+                              {t('COMMON.CENTER')}
+                            </InputLabel>
+                          )}
                           <Select
                             value={classId}
+                            labelId="center-select-label"
                             onChange={handleCohortSelection}
                             displayEmpty
                             inputProps={{ 'aria-label': 'Without label' }}
@@ -389,9 +421,13 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                               color: theme.palette.warning['200'],
                               width: '100%',
                               marginBottom: '0rem',
-                              '@media (max-width: 700px)': {
-                                width: isAttendanceOverview ? '100%' : '50%',
+                              '@media (max-width: 900px)': {
+                                width: isAttendanceOverview ? '100%' : '62%',
                               },
+                              // '& .MuiSelect-icon': {
+                              //   right: isRTL ? 'unset' : '7px',
+                              //   left: isRTL ? '7px' : 'unset',
+                              // },
                             }}
                             MenuProps={{
                               PaperProps: {
@@ -488,13 +524,21 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     '@media (max-width: 902px)': {
                                       width: isAttendanceOverview
                                         ? '100%'
-                                        : '60%',
+                                        : '62%',
                                     },
                                     '@media (max-width: 702px)': {
                                       width: isAttendanceOverview
                                         ? '100%'
-                                        : '50%',
+                                        : '65%',
                                     },
+                                    // '& .MuiSelect-icon': {
+                                    //   right: isRTL ? 'unset' : '7px',
+                                    //   left: isRTL ? '7px' : 'unset',
+                                    // },
+                                    // ' & .MuiFormLabel-root-MuiInputLabel-root':
+                                    //   {
+                                    //     right: isRTL ? '30px' : 'unset',
+                                    //   },
                                   }
                             }
                           >

@@ -55,6 +55,7 @@ import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
 import { getOptionsByCategory } from '@/utils/Helper';
+import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -626,15 +627,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const value = event?.target?.value;
     setLink(value);
 
-    const zoomLinkPattern =
-      /^https?:\/\/([a-z0-9]+\.)?zoom\.us\/(j|s)\/\d+(\?pwd=[\w-]+)?$/;
-
     const googleMeetLinkPattern =
       /^(https?:\/\/)?(meet\.google\.com\/[a-zA-Z0-9-]+)$/;
 
     let onlineProvider: string;
-    if (zoomLinkPattern.test(value)) {
-      setLinkError('');
+    if (value.includes('zoom')) {
       onlineProvider = t('CENTER_SESSION.ZOOM');
     } else if (googleMeetLinkPattern.test(value)) {
       setLinkError('');
@@ -1192,7 +1189,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </Box>
             )}
             <SessionMode
-              mode={editSession ? (mode ?? '') : (block?.sessionMode ?? '')}
+              mode={editSession ? mode ?? '' : block?.sessionMode ?? ''}
               handleSessionModeChange={(e) =>
                 handleSessionModeChange(e, block?.id)
               }
@@ -1388,7 +1385,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
                       <Box sx={{ mt: 3 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <CustomTimePicker
+                          <MobileTimePicker
                             label={t('CENTER_SESSION.START_TIME')}
                             value={block?.sessionStartTime || startTime}
                             onChange={(newValue) =>
@@ -1407,7 +1404,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
                       <Box sx={{ mt: 3 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <CustomTimePicker
+                          <MobileTimePicker
                             label={t('CENTER_SESSION.END_TIME')}
                             value={block?.sessionEndTime || endTime}
                             onChange={(newValue) =>
@@ -1462,7 +1459,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <CustomTimePicker
+                      <MobileTimePicker
                         label={t('CENTER_SESSION.START_TIME')}
                         value={block?.sessionStartTime || startTime}
                         onChange={(newValue) =>
@@ -1485,7 +1482,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <CustomTimePicker
+                      <MobileTimePicker
                         label={t('CENTER_SESSION.END_TIME')}
                         value={block?.sessionEndTime || endTime}
                         onChange={(newValue) =>

@@ -26,6 +26,7 @@ import { overallAttendanceInPercentageStatusList } from '@/services/AttendanceSe
 import { CenterType, cohortPrivileges } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
 import NoDataFound from './common/NoDataFound';
+import { useDirection } from '../hooks/useDirection';
 
 interface AttendanceComparisonProps {
   blockName: string;
@@ -69,6 +70,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
   const store = useStore();
   const theme = useTheme<any>();
   const scope = cohortPrivileges?.STUDENT;
+  const { dir, isRTL } = useDirection();
 
   const handleCenterTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -133,7 +135,12 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
     if (isMobile) {
       maxLength = 6;
     }
-    return value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
+
+    const formattedValue =
+      value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
+
+    // Return a plain string, not a React element
+    return formattedValue;
   };
 
   const renderCustomLabel = (props: any) => {
@@ -245,9 +252,11 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                 data={data}
                 margin={{
                   top: 5,
-                  left: isMobile ? 0 : 70,
-                  right: isMobile ? 0 : 5,
+                  left: isMobile ? 0 : isRTL ? 0 : 70,
+                  right: isMobile ? 0 : isRTL ? 70 : 5,
+                  // right: isMobile ? 0 : 5,
                 }}
+                style={{ direction: isRTL ? 'rtl' : 'ltr' }}
               >
                 <CartesianGrid
                   stroke={theme.palette.warning.A700}
@@ -257,12 +266,18 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                   type="number"
                   tickFormatter={(value: any) => `${value}%`}
                   height={0}
+                  reversed={isRTL ? true : false}
                 />
                 <YAxis
                   type="category"
                   dataKey="name"
                   tickFormatter={YAxisLabel}
-                  tick={{ fontSize: 12, width: isMobile ? 50 : 100 }}
+                  tick={{
+                    fontSize: 12,
+                    width: isMobile ? 50 : 100,
+                    ...(isRTL ? { textAnchor: 'end' } : {}),
+                  }}
+                  orientation={isRTL ? 'right' : 'left'}
                 />
 
                 <Tooltip formatter={(value: number) => `${value}%`} />
@@ -282,6 +297,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
               layout="vertical"
               data={[{ name: '', Attendance: 0 }]}
               margin={{ left: isMobile ? 60 : 130, right: isMobile ? 0 : 5 }}
+              style={{ direction: isRTL ? 'rtl' : 'ltr' }}
             >
               <XAxis
                 type="number"

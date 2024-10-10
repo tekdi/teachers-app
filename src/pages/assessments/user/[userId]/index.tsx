@@ -30,7 +30,13 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { accessControl, AssessmentType, Program } from '../../../../../app.config';
+import { useDirection } from '../../../../hooks/useDirection';
+
+import {
+  accessControl,
+  AssessmentType,
+  Program,
+} from '../../../../../app.config';
 import { useQueryClient } from '@tanstack/react-query';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import NoDataFound from '@/components/common/NoDataFound';
@@ -44,6 +50,7 @@ const statusKeyMap: any = {
 function AssessmentsDetails() {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -150,6 +157,12 @@ function AssessmentsDetails() {
       try {
         const options = {
           userId: [params.userId],
+          courseId: assessmentList.map(
+            (item: any) => item.identifier
+          ) as string[], // temporary added here assessmentList(contentId)... if assessment is done then need to pass actual course id and unit id here
+          unitId: assessmentList.map(
+            (item: any) => item.identifier
+          ) as string[],
           contentId: assessmentList.map(
             (item: any) => item.identifier
           ) as string[],
@@ -274,7 +287,6 @@ function AssessmentsDetails() {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'left',
           alignItems: 'center',
           color: theme.palette.warning['A200'],
           padding: '15px 20px 5px',
@@ -284,9 +296,12 @@ function AssessmentsDetails() {
       >
         <KeyboardBackspaceOutlinedIcon
           cursor={'pointer'}
-          sx={{ color: theme.palette.warning['A200'] }}
+          sx={{
+            color: theme.palette.warning['A200'],
+            transform: isRTL ? ' rotate(180deg)' : 'unset',
+          }}
         />
-        <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
+        <Typography fontSize={'22px'} m={'1rem'}>
           {toPascalCase(userDetails?.name)}
         </Typography>
       </Box>
@@ -377,7 +392,14 @@ function AssessmentsDetails() {
         >
           <Grid container spacing={2}>
             {subject?.map((assessment: any) => (
-              <Grid item xs={12} sm={6} md={4} key={assessment.identifier}>
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={6}
+                lg={4}
+                key={assessment.identifier}
+              >
                 <Box
                   sx={{
                     border: `1px solid ${theme.palette.warning['A100']}`,
@@ -399,6 +421,7 @@ function AssessmentsDetails() {
                       fontWeight: '400',
                       color: theme.palette.warning['300'],
                     }}
+                    className="one-line-text"
                   >
                     {assessment?.subject}
                   </Box>
@@ -448,9 +471,7 @@ function AssessmentsDetails() {
         </Box>
       )}
 
-      {!isLoading && !assessmentList?.length && (
-        <NoDataFound />
-      )}
+      {!isLoading && !assessmentList?.length && <NoDataFound />}
 
       {isLoading && (
         <Box
@@ -490,4 +511,7 @@ export async function getStaticProps({
   };
 }
 
-export default withAccessControl('accessAssessments', accessControl)(AssessmentsDetails);
+export default withAccessControl(
+  'accessAssessments',
+  accessControl
+)(AssessmentsDetails);

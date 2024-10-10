@@ -55,6 +55,7 @@ import ReactGA from 'react-ga4';
 import { getMenuItems, Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import NoDataFound from '@/components/common/NoDataFound';
+import { useDirection } from '../hooks/useDirection';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -62,6 +63,7 @@ interface AttendanceOverviewProps {
 
 const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const { push } = useRouter();
   const today = new Date();
   const [classId, setClassId] = React.useState('');
@@ -528,7 +530,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'left',
             alignItems: 'center',
             color: theme.palette.warning['A200'],
             padding: '15px 20px 5px',
@@ -538,7 +539,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           <KeyboardBackspaceOutlinedIcon
             onClick={handleBackEvent}
             cursor={'pointer'}
-            sx={{ color: theme.palette.warning['A200'] }}
+            sx={{
+              color: theme.palette.warning['A200'],
+              transform: isRTL ? ' rotate(180deg)' : 'unset',
+            }}
           />
           <Typography textAlign={'left'} fontSize={'22px'} m={'1rem'}>
             {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
@@ -676,9 +680,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                         ref={inputRef}
                         value={searchWord}
                         sx={{
-                          ml: 3,
+                          ml: isRTL ? 0 : 3,
+                          mr: isRTL ? 3 : 0,
                           flex: 1,
                           mb: '0',
+                          px: '10px',
                           fontSize: '14px',
                           color: theme.palette.warning['A200'],
                         }}
@@ -722,7 +728,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                       onClick={handleOpenModal}
                       sx={{
                         color: theme.palette.warning.A200,
-
                         borderRadius: '10px',
                         fontSize: '14px',
                       }}

@@ -11,6 +11,7 @@ import { accessGranted, toPascalCase } from '@/utils/Helper';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { ArrowDropDown, Clear, Search } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
+import { useDirection } from '@/hooks/useDirection';
 import {
   Box,
   Button,
@@ -30,6 +31,7 @@ import React, { useEffect, useState } from 'react';
 import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
+import taxonomyStore from '@/store/taxonomyStore';
 
 const CentersPage = () => {
   const [loading, setLoading] = useState(false);
@@ -56,7 +58,7 @@ const CentersPage = () => {
   const handleFilterModalOpen = () => setFilterModalOpen(true);
   const handleFilterModalClose = () => setFilterModalOpen(false);
   const [isCenterAdded, setIsCenterAdded] = useState(false);
-
+  const setType = taxonomyStore((state) => state.setType);
   const store = useStore();
   const userRole = store.userRole;
 
@@ -68,33 +70,32 @@ const CentersPage = () => {
     if (router.isReady) {
       const queryParamValue = router.query.tab ? Number(router.query.tab) : 1;
 
-      if ([1,2].includes(queryParamValue))
-        setValue(queryParamValue);
-      else
-        setValue(1);
+      if ([1, 2].includes(queryParamValue)) setValue(queryParamValue);
+      else setValue(1);
     }
   }, [router.isReady, router.query.tab]);
 
   useEffect(() => {
     // Merge existing query params with new ones
     if (router.isReady) {
-    const updatedQuery = { ...router.query, tab: value };
+      const updatedQuery = { ...router.query, tab: value };
 
-    // Update the URL without reloading the page
-    router.push(
-      {
-        pathname: router.pathname,
-        query: updatedQuery,
-      },
-      undefined,
-      { shallow: true }
-    );
-  }
+      // Update the URL without reloading the page
+      router.push(
+        {
+          pathname: router.pathname,
+          query: updatedQuery,
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
   }, [value]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
+      setType('');
       if (role === Role.TEAM_LEADER) {
         setIsTeamLeader(true);
       } else {
@@ -110,6 +111,8 @@ const CentersPage = () => {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(event.target.value);
   };
+
+  const { dir, isRTL } = useDirection();
 
   useEffect(() => {
     const getCohortListForTL = async () => {
@@ -418,8 +421,16 @@ const CentersPage = () => {
                         border: '1px solid #1E1B16',
                         borderRadius: '100px',
                         height: '40px',
-                        width: '9rem',
+                        px: '20px',
                         color: theme.palette.error.contrastText,
+                        '& .MuiButton-endIcon': {
+                          marginLeft: isRTL
+                            ? '0px !important'
+                            : '8px !important',
+                          marginRight: isRTL
+                            ? '8px !important'
+                            : '-2px !important',
+                        },
                       }}
                       className="text-1E"
                       endIcon={<AddIcon />}

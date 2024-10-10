@@ -1,26 +1,21 @@
 import { Box, Button, Fade, Modal, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
+import { bulkAttendance } from '@/services/AttendanceService';
 import {
-  attendanceStatusList,
-  bulkAttendance,
-} from '@/services/AttendanceService';
-import {
+  deepClone,
   getDayMonthYearFormat,
   shortDateFormat,
-  toPascalCase,
 } from '../utils/Helper';
 
-import { AttendanceStatusListProps, DropoutMember } from '../utils/Interfaces';
+import { DropoutMember } from '../utils/Interfaces';
 import AttendanceStatusListView from './AttendanceStatusListView';
 import Backdrop from '@mui/material/Backdrop';
 import CloseIcon from '@mui/icons-material/Close';
 import ConfirmationModal from './ConfirmationModal';
 import Loader from './Loader';
-import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { showToastMessage } from './Toastify';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { Status } from '@/utils/app.constant';
 import ReactGA from 'react-ga4';
 import NoDataFound from './common/NoDataFound';
 
@@ -30,6 +25,13 @@ interface MarkBulkAttendanceProps {
   classId: string;
   selectedDate: Date;
   onSaveSuccess?: (isModified?: boolean) => void;
+  memberList: Array<{}>;
+  presentCount: number;
+  absentCount: number;
+  numberOfCohortMembers: number;
+  dropoutMemberList: Array<DropoutMember>;
+  dropoutCount: any;
+  bulkStatus: any;
 }
 
 const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
@@ -38,6 +40,13 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   classId,
   selectedDate,
   onSaveSuccess,
+  memberList,
+  presentCount,
+  absentCount,
+  numberOfCohortMembers,
+  dropoutMemberList,
+  dropoutCount,
+  bulkStatus,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -55,17 +64,13 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   };
   const [loading, setLoading] = React.useState(false);
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);
-  const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>([]);
-  const [dropoutMemberList, setDropoutMemberList] = React.useState<
-    Array<DropoutMember>
-  >([]);
-  const [presentCount, setPresentCount] = React.useState(0);
-  const [absentCount, setAbsentCount] = React.useState(0);
-  const [dropoutCount, setDropoutCount] = React.useState(0);
-  const [bulkAttendanceStatus, setBulkAttendanceStatus] = React.useState('');
+  const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>(
+    deepClone(memberList)
+  );
+  const [bulkAttendanceStatus, setBulkAttendanceStatus] =
+    React.useState(bulkStatus);
   const [isAllAttendanceMarked, setIsAllAttendanceMarked] =
     React.useState(false);
-  const [numberOfCohortMembers, setNumberOfCohortMembers] = React.useState(0);
   const [teacherUserId, setTeacherUserId] = React.useState<string>('');
 
   const modalContainer = {
@@ -126,215 +131,13 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     hasEmptyAttendance();
   };
 
-  const getPresentCount = (
-    newArray: {
-      userId: string;
-      name: string;
-      memberStatus: string;
-      attendance: string;
-    }[]
-  ) => {
-    setPresentCount(
-      newArray.filter(
-        (user: { attendance: string }) => user.attendance === 'present'
-      ).length
-    );
-  };
-  const getAbsentCount = (
-    newArray: {
-      userId: string;
-      name: string;
-      memberStatus: string;
-      attendance: string;
-    }[]
-  ) => {
-    setAbsentCount(
-      newArray.filter(
-        (user: { attendance: string }) => user.attendance === 'absent'
-      ).length
-    );
-  };
-
   useEffect(() => {
-    submitBulkAttendanceAction(true, '', '');
-    const getCohortMemberList = async () => {
-      setLoading(true);
-      if (typeof window !== 'undefined' && window.localStorage) {
-        const storedUserID = localStorage.getItem('userId');
-        setTeacherUserId(storedUserID ?? '');
-      }
-      try {
-        if (classId) {
-          const limit = 300;
-          const page = 0;
-          const filters = { cohortId: classId };
-          const response = await getMyCohortMemberList({
-            limit,
-            page,
-            filters,
-          });
-          const resp = response?.result?.userDetails;
-          if (resp) {
-            const nameUserIdArray = resp
-              .map((entry: any) => ({
-                userId: entry.userId,
-                name: toPascalCase(entry.name),
-                memberStatus: entry.status,
-                createdAt: entry.createdAt,
-              }))
-              .filter((member: { createdAt: string | number | Date }) => {
-                const createdAt = new Date(member.createdAt);
-                createdAt.setHours(0, 0, 0, 0);
-                return createdAt <= selectedDate;
-              });
-
-            if (nameUserIdArray && selectedDate) {
-              const formatSelectedDate = shortDateFormat(selectedDate);
-              const userAttendanceStatusList = async () => {
-                const attendanceStatusData: AttendanceStatusListProps = {
-                  limit: 300,
-                  page: 0,
-                  filters: {
-                    fromDate: formatSelectedDate,
-                    toDate: formatSelectedDate,
-                    contextId: classId,
-                    scope: 'student',
-                  },
-                };
-                const res = await attendanceStatusList(attendanceStatusData);
-                const response = res?.data?.attendanceList;
-                console.log('attendanceStatusList', response);
-                if (nameUserIdArray && response) {
-                  const getUserAttendanceStatus = (
-                    nameUserIdArray: any[],
-                    response: any[]
-                  ) => {
-                    const userAttendanceArray: {
-                      userId: any;
-                      attendance: any;
-                    }[] = [];
-
-                    nameUserIdArray.forEach((user) => {
-                      const userId = user.userId;
-                      const attendance = response.find(
-                        (status) => status.userId === userId
-                      );
-                      userAttendanceArray.push({
-                        userId,
-                        attendance: attendance?.attendance
-                          ? attendance.attendance
-                          : '',
-                      });
-                    });
-                    return userAttendanceArray;
-                  };
-                  const userAttendanceArray = getUserAttendanceStatus(
-                    nameUserIdArray,
-                    response
-                  );
-                  console.log('userAttendanceArray', userAttendanceArray);
-
-                  if (nameUserIdArray && userAttendanceArray) {
-                    const mergeArrays = (
-                      nameUserIdArray: {
-                        userId: string;
-                        name: string;
-                        memberStatus: string;
-                      }[],
-                      userAttendanceArray: {
-                        userId: string;
-                        attendance: string;
-                      }[]
-                    ): {
-                      userId: string;
-                      name: string;
-                      memberStatus: string;
-                      attendance: string;
-                    }[] => {
-                      const newArray: {
-                        userId: string;
-                        name: string;
-                        memberStatus: string;
-                        attendance: string;
-                      }[] = [];
-                      nameUserIdArray.forEach((user) => {
-                        const userId = user.userId;
-                        const attendanceEntry = userAttendanceArray.find(
-                          (entry) => entry.userId === userId
-                        );
-                        if (attendanceEntry) {
-                          newArray.push({
-                            userId,
-                            name: user.name,
-                            memberStatus: user.memberStatus,
-                            attendance: attendanceEntry.attendance,
-                          });
-                        }
-                      });
-                      if (newArray.length !== 0) {
-                        setNumberOfCohortMembers(newArray?.length);
-                        setCohortMemberList(newArray);
-                        getPresentCount(newArray);
-                        getAbsentCount(newArray);
-                        const hasDropout = newArray.some(
-                          (user) => user.memberStatus === Status.DROPOUT
-                        );
-                        if (hasDropout) {
-                          setCohortMemberList(
-                            newArray.filter(
-                              (user) => user.memberStatus === Status.ACTIVE
-                            )
-                          );
-                          setDropoutMemberList(
-                            newArray.filter(
-                              (user) => user.memberStatus === Status.DROPOUT
-                            )
-                          );
-                          getPresentCount(newArray);
-                          getAbsentCount(newArray);
-                          setDropoutCount(
-                            newArray.filter(
-                              (user) => user.memberStatus === Status.DROPOUT
-                            ).length
-                          );
-                        }
-                      } else {
-                        setCohortMemberList(
-                          nameUserIdArray.filter(
-                            (user) => user.memberStatus === Status.ACTIVE
-                          )
-                        );
-                        setDropoutMemberList(
-                          nameUserIdArray.filter(
-                            (user) => user.memberStatus === Status.DROPOUT
-                          )
-                        );
-                        setNumberOfCohortMembers(nameUserIdArray?.length);
-                      }
-                      updateBulkAttendanceStatus(newArray);
-                      return newArray;
-                    };
-                    mergeArrays(nameUserIdArray, userAttendanceArray);
-                  }
-                }
-                setLoading(false);
-              };
-              userAttendanceStatusList();
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching cohort list:', error);
-        setLoading(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (classId !== '') {
-      getCohortMemberList();
+    // submitBulkAttendanceAction(true, '', '');
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedUserID = localStorage.getItem('userId');
+      setTeacherUserId(storedUserID ?? '');
     }
-  }, [classId, selectedDate, showUpdateButton]);
+  }, []);
 
   const handleSave = () => {
     onClose();
@@ -498,11 +301,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
               )}
 
-              <Box
-                display={'flex'}
-                flexDirection="row"
-                justifyContent={'space-between'}
-              >
+              <Box display={'flex'} justifyContent={'space-between'}>
                 {dropoutCount > 0 ? (
                   <>
                     <Typography

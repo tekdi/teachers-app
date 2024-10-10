@@ -110,7 +110,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
           <Grid container>
             {userData?.map((data: any) => {
               return (
-                <Grid xs={12} sm={6} md={4} key={data.userId}>
+                <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
                   <LearnersListItem
                     type={Role.STUDENT}
                     userId={data.userId}

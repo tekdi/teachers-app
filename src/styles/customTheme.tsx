@@ -4,6 +4,7 @@ import {
 } from '@mui/material/styles';
 
 // Common component style overrides
+
 const commonComponents = {
   MuiButton: {
     styleOverrides: {
@@ -98,6 +99,7 @@ const commonComponents = {
 };
 
 const customTheme = extendTheme({
+  // direction: 'rtl',
   colorSchemes: {
     light: {
       palette: {

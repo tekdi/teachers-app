@@ -17,17 +17,17 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { ComponentType, useEffect, useState } from 'react';
 
 import AddLearnerModal from '@/components/AddLeanerModal';
 import CenterSessionModal from '@/components/CenterSessionModal';
 import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 import CohortLearnerList from '@/components/CohortLearnerList';
-import DeleteSession from '@/components/DeleteSession';
+// import DeleteSession from '@/components/DeleteSession';
 import Header from '@/components/Header';
-import PlannedSession from '@/components/PlannedSession';
-import SessionCard from '@/components/SessionCard';
-import SessionCardFooter from '@/components/SessionCardFooter';
+// import PlannedSession from '@/components/PlannedSession';
+// import SessionCard from '@/components/SessionCard';
+// import SessionCardFooter from '@/components/SessionCardFooter';
 import WeekCalender from '@/components/WeekCalender';
 import DeleteCenterModal from '@/components/center/DeleteCenterModal';
 import RenameCenterModal from '@/components/center/RenameCenterModal';
@@ -57,7 +57,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import Schedule from '../../../components/Schedule';
+// import Schedule from '../../../components/Schedule';
 import { Session } from '../../../utils/Interfaces';
 
 import manageUserStore from '@/store/manageUserStore';
@@ -67,14 +67,54 @@ import {
   modifyAttendanceLimit,
 } from '../../../../app.config';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import { useDirection } from '../../../hooks/useDirection';
+
+import dynamic from 'next/dynamic';
+import { isEliminatedFromBuild } from '../../../../featureEliminationUtil';
+let SessionCardFooter: ComponentType<any> | null = null;
+if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
+  SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
+    ssr: false,
+  });
+}
+let SessionCard: ComponentType<any> | null = null;
+if (!isEliminatedFromBuild('SessionCard', 'component')) {
+  SessionCard = dynamic(() => import('@/components/SessionCard'), {
+    ssr: false,
+  });
+}
+
+let DeleteSession: ComponentType<any> | null = null;
+if (!isEliminatedFromBuild('DeleteSession', 'component')) {
+  DeleteSession = dynamic(() => import('@/components/DeleteSession'), {
+    ssr: false,
+  });
+}
+
+let PlannedSession: ComponentType<any> | null = null;
+if (!isEliminatedFromBuild('PlannedSession', 'component')) {
+  PlannedSession = dynamic(() => import('@/components/PlannedSession'), {
+    ssr: false,
+  });
+}
+
+let Schedule: ComponentType<any> | null = null;
+if (!isEliminatedFromBuild('Schedule', 'component')) {
+  Schedule = dynamic(() => import('@/components/Schedule'), {
+    ssr: false,
+  });
+}
 
 const CohortPage = () => {
-  const [value, setValue] = React.useState(1);
+  const [value, setValue] = React.useState(() => {
+    return isEliminatedFromBuild('Events', 'feature') ? 2 : 1;
+  });
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
   const router = useRouter();
   const { cohortId }: any = router.query;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const [role, setRole] = React.useState<any>('');
 
   const store = manageUserStore();
@@ -415,7 +455,11 @@ const CohortPage = () => {
             onClick={handleBackEvent}
           >
             <KeyboardBackspaceOutlinedIcon
-              sx={{ color: theme.palette.warning['A200'], marginTop: '18px' }}
+              sx={{
+                color: theme.palette.warning['A200'],
+                marginTop: '18px',
+                transform: isRTL ? ' rotate(180deg)' : 'unset',
+              }}
             />
             <Box m={'1rem 1rem 0.5rem 0.5rem'} display={'column'} gap={'5px'}>
               <Typography textAlign={'left'} fontSize={'22px'}>
@@ -523,242 +567,279 @@ const CohortPage = () => {
             },
           }}
         >
-          <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
+          {!isEliminatedFromBuild('Events', 'feature') && (
+            <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
+          )}
+
           <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
           {role === Role.TEAM_LEADER && (
             <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
           )}
         </Tabs>
       </Box>
-
-      {value === 1 && (
-        <>
-          <Box mt={3} px="18px">
-            <Button
-              sx={{
-                border: `1px solid ${theme.palette.error.contrastText}`,
-                borderRadius: '100px',
-                height: '40px',
-                width: '163px',
-                color: theme.palette.error.contrastText,
-              }}
-              onClick={handleOpen}
-              className="text-1E"
-              endIcon={<AddIcon />}
-            >
-              {t('COMMON.SCHEDULE_NEW')}
-            </Button>
-          </Box>
-
-          <CenterSessionModal
-            open={open}
-            handleClose={handleClose}
-            title={
-              deleteModal
-                ? t('CENTER_SESSION.DELETE_SESSION')
-                : openSchedule
-                  ? clickedBox === 'EXTRA_SESSION'
-                    ? 'Extra Session'
-                    : t('CENTER_SESSION.PLANNED_SESSION')
-                  : t('CENTER_SESSION.SCHEDULE')
-            }
-            primary={
-              deleteModal
-                ? t('COMMON.OK')
-                : openSchedule
-                  ? t('CENTER_SESSION.SCHEDULE')
-                  : onEditEvent
-                    ? t('CENTER_SESSION.UPDATE')
-                    : t('GUIDE_TOUR.NEXT')
-            }
-            secondary={deleteModal ? t('COMMON.CANCEL') : undefined}
-            handlePrimaryModel={
-              deleteModal
-                ? undefined
-                : openSchedule
-                  ? handleSchedule
-                  : onEditEvent
-                    ? handleEditEvent
-                    : handleCentermodel
-            }
-            handleEditModal={handleEditEvent}
-          >
-            {deleteModal ? (
-              <DeleteSession />
-            ) : openSchedule ? (
-              <PlannedSession
-                clickedBox={clickedBox}
-                removeModal={removeModal}
-                scheduleEvent={createEvent}
-                cohortName={cohortName}
-                cohortType={cohortType}
-                cohortId={cohortId}
-                onCloseModal={handleCloseSchedule}
-                StateName={state}
-                board={board}
-                medium={medium}
-                grade={grade}
-              />
-            ) : (
-              <Schedule clickedBox={clickedBox} handleClick={handleClick} />
-            )}
-          </CenterSessionModal>
-
-          <Box mt={3} px="18px">
-            <Box
-              className="fs-14 fw-500"
-              sx={{ color: theme.palette.warning['300'] }}
-            >
-              {t('COMMON.UPCOMING_EXTRA_SESSION', { days: eventDaysLimit })}
-            </Box>
-            <Box mt={3} sx={{ position: 'relative' }}>
-              {initialSlideIndex >= 0 && (
-                <Swiper
-                  initialSlide={initialSlideIndex}
-                  pagination={{
-                    type: 'fraction',
-                  }}
-                  breakpoints={{
-                    500: {
-                      slidesPerView: 1,
-                      spaceBetween: 20,
-                    },
-                    740: {
-                      slidesPerView: 2,
-                      spaceBetween: 20,
-                    },
-                    900: {
-                      slidesPerView: 3,
-                      spaceBetween: 30,
-                    },
-                    2000: {
-                      slidesPerView: 4,
-                      spaceBetween: 40,
-                    },
-                  }}
-                  navigation={true}
-                  modules={[Pagination, Navigation]}
-                  className="mySwiper"
-                >
-                  {sortedSessions?.map((item: any, index: any) => (
-                    <SwiperSlide style={{ paddingBottom: '38px' }} key={index}>
-                      <SessionCard
-                        data={item}
-                        isEventDeleted={handleEventDeleted}
-                        isEventUpdated={handleEventUpdated}
-                        StateName={state}
-                        board={board}
-                        medium={medium}
-                        grade={grade}
-                      >
-                        <SessionCardFooter
-                          item={item}
-                          cohortName={cohortName}
-                          isTopicSubTopicAdded={handleEventUpdated}
-                          state={state}
-                          board={board}
-                          medium={medium}
-                          grade={grade}
-                        />
-                      </SessionCard>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              )}
-            </Box>
-            {extraSessions && extraSessions?.length === 0 && (
-              <Box
-                className="fs-12 fw-400 italic"
-                sx={{ color: theme.palette.warning['300'] }}
-              >
-                {t('COMMON.NO_SESSIONS_SCHEDULED')}
-              </Box>
-            )}
-          </Box>
-
-          <Box sx={{ padding: '10px 16px', mt: 1 }}>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Box
-                sx={{
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: theme?.palette?.warning['300'],
-                }}
-              >
-                {t('CENTER_SESSION.PLANNED_SESSIONS')}
-              </Box>
-              <Box>
-                <Box
-                  display={'flex'}
-                  sx={{
-                    cursor: 'pointer',
-                    color: theme.palette.secondary.main,
-                    gap: '4px',
-                    opacity: classId === 'all' ? 0.5 : 1,
-                    alignItems: 'center',
-                  }}
-                  onClick={viewAttendanceHistory}
-                >
-                  <Typography marginBottom={'0'} style={{ fontWeight: '500' }}>
-                    {getMonthName()}
-                  </Typography>
-                  <CalendarMonthIcon sx={{ fontSize: '18px' }} />
-                </Box>
-              </Box>
-            </Box>
-            <WeekCalender
-              showDetailsHandle={showDetailsHandle}
-              data={percentageAttendanceData}
-              disableDays={classId === 'all'}
-              classId={classId}
-              showFromToday={true}
-              newWidth={'100%'}
-            />
-          </Box>
-
-          <Box mt={3} px="18px">
-            <Grid container spacing={3}>
-              {sessions?.map((item) => (
-                <Grid item xs={12} sm={6} md={4} key={item.id}>
-                  <SessionCard
-                    data={item}
-                    isEventDeleted={handleEventDeleted}
-                    isEventUpdated={handleEventUpdated}
-                    StateName={state}
-                    board={board}
-                    medium={medium}
-                    grade={grade}
+      {!isEliminatedFromBuild('SessionCardFooter', 'component') &&
+        SessionCardFooter &&
+        SessionCard && (
+          <>
+            {value === 1 && (
+              <>
+                <Box mt={3} px="18px">
+                  <Button
+                    sx={{
+                      border: `1px solid ${theme.palette.error.contrastText}`,
+                      borderRadius: '100px',
+                      height: '40px',
+                      px: '16px',
+                      color: theme.palette.error.contrastText,
+                    }}
+                    onClick={handleOpen}
+                    className="text-1E"
+                    endIcon={<AddIcon />}
                   >
-                    <SessionCardFooter
-                      item={item}
-                      cohortName={cohortName}
-                      isTopicSubTopicAdded={handleEventUpdated}
-                      state={state}
-                      board={board}
-                      medium={medium}
-                      grade={grade}
-                    />
-                  </SessionCard>
-                </Grid>
-              ))}
-              {sessions && sessions.length === 0 && (
-                <Box
-                  className="fs-12 fw-400 italic"
-                  sx={{ color: theme.palette.warning['300'] }}
-                >
-                  {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                    {t('COMMON.SCHEDULE_NEW')}
+                  </Button>
                 </Box>
-              )}
-            </Grid>
-          </Box>
-        </>
-      )}
+
+                <CenterSessionModal
+                  open={open}
+                  handleClose={handleClose}
+                  title={
+                    deleteModal
+                      ? t('CENTER_SESSION.DELETE_SESSION')
+                      : openSchedule
+                        ? clickedBox === 'EXTRA_SESSION'
+                          ? 'Extra Session'
+                          : t('CENTER_SESSION.PLANNED_SESSION')
+                        : t('CENTER_SESSION.SCHEDULE')
+                  }
+                  primary={
+                    deleteModal
+                      ? t('COMMON.OK')
+                      : openSchedule
+                        ? t('CENTER_SESSION.SCHEDULE')
+                        : onEditEvent
+                          ? t('CENTER_SESSION.UPDATE')
+                          : t('GUIDE_TOUR.NEXT')
+                  }
+                  secondary={deleteModal ? t('COMMON.CANCEL') : undefined}
+                  handlePrimaryModel={
+                    deleteModal
+                      ? undefined
+                      : openSchedule
+                        ? handleSchedule
+                        : onEditEvent
+                          ? handleEditEvent
+                          : handleCentermodel
+                  }
+                  handleEditModal={handleEditEvent}
+                >
+                  {deleteModal
+                    ? DeleteSession && <DeleteSession />
+                    : openSchedule
+                      ? PlannedSession && (
+                          <PlannedSession
+                            clickedBox={clickedBox}
+                            removeModal={removeModal}
+                            scheduleEvent={createEvent}
+                            cohortName={cohortName}
+                            cohortType={cohortType}
+                            cohortId={cohortId}
+                            onCloseModal={handleCloseSchedule}
+                            StateName={state}
+                            board={board}
+                            medium={medium}
+                            grade={grade}
+                          />
+                        )
+                      : Schedule && (
+                          <Schedule
+                            clickedBox={clickedBox}
+                            handleClick={handleClick}
+                          />
+                        )}
+                </CenterSessionModal>
+
+                <Box mt={3} px="18px">
+                  <Box
+                    className="fs-14 fw-500"
+                    sx={{ color: theme.palette.warning['300'] }}
+                  >
+                    {t('COMMON.UPCOMING_EXTRA_SESSION', {
+                      days: eventDaysLimit,
+                    })}
+                  </Box>
+                  <Box mt={3} sx={{ position: 'relative' }}>
+                    {initialSlideIndex >= 0 && (
+                      <Swiper
+                        initialSlide={initialSlideIndex}
+                        pagination={{
+                          type: 'fraction',
+                        }}
+                        breakpoints={{
+                          600: {
+                            slidesPerView: 1,
+                            spaceBetween: 20,
+                          },
+                          900: {
+                            slidesPerView: 2,
+                            spaceBetween: 20,
+                          },
+                          1200: {
+                            slidesPerView: 3,
+                            spaceBetween: 30,
+                          },
+                          2000: {
+                            slidesPerView: 4,
+                            spaceBetween: 40,
+                          },
+                        }}
+                        navigation={true}
+                        modules={[Pagination, Navigation]}
+                        className="mySwiper"
+                      >
+                        {sortedSessions?.map((item: any, index: any) => (
+                          <SwiperSlide
+                            style={{ paddingBottom: '38px' }}
+                            key={index}
+                          >
+                            {SessionCard && (
+                              <SessionCard
+                                data={item}
+                                isEventDeleted={handleEventDeleted}
+                                isEventUpdated={handleEventUpdated}
+                                StateName={state}
+                                board={board}
+                                medium={medium}
+                                grade={grade}
+                              >
+                                {SessionCardFooter && (
+                                  <SessionCardFooter
+                                    item={item}
+                                    cohortName={cohortName}
+                                    isTopicSubTopicAdded={handleEventUpdated}
+                                    state={state}
+                                    board={board}
+                                    medium={medium}
+                                    grade={grade}
+                                  />
+                                )}
+                              </SessionCard>
+                            )}
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+                    )}
+                  </Box>
+                  {extraSessions && extraSessions?.length === 0 && (
+                    <Box
+                      className="fs-12 fw-400 italic"
+                      sx={{ color: theme.palette.warning['300'] }}
+                    >
+                      {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                    </Box>
+                  )}
+                </Box>
+
+                <Box sx={{ padding: '10px 16px', mt: 1 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: theme?.palette?.warning['300'],
+                      }}
+                    >
+                      {t('CENTER_SESSION.PLANNED_SESSIONS')}
+                    </Box>
+                    <Box>
+                      <Box
+                        display={'flex'}
+                        sx={{
+                          cursor: 'pointer',
+                          color: theme.palette.secondary.main,
+                          gap: '4px',
+                          opacity: classId === 'all' ? 0.5 : 1,
+                          alignItems: 'center',
+                        }}
+                        onClick={viewAttendanceHistory}
+                      >
+                        <Typography
+                          marginBottom={'0'}
+                          style={{ fontWeight: '500' }}
+                        >
+                          {getMonthName()}
+                        </Typography>
+                        <CalendarMonthIcon sx={{ fontSize: '18px' }} />
+                      </Box>
+                    </Box>
+                  </Box>
+                  <WeekCalender
+                    showDetailsHandle={showDetailsHandle}
+                    data={percentageAttendanceData}
+                    disableDays={classId === 'all'}
+                    classId={classId}
+                    showFromToday={true}
+                    newWidth={'100%'}
+                  />
+                </Box>
+
+                <Box mt={3} px="18px">
+                  <Grid container spacing={3}>
+                    {sessions?.map((item) => (
+                      <Grid
+                        item
+                        xs={12}
+                        sm={12}
+                        md={6}
+                        lg={4}
+                        mb={2}
+                        key={item.id}
+                      >
+                        {SessionCard && (
+                          <SessionCard
+                            data={item}
+                            isEventDeleted={handleEventDeleted}
+                            isEventUpdated={handleEventUpdated}
+                            StateName={state}
+                            board={board}
+                            medium={medium}
+                            grade={grade}
+                          >
+                            {SessionCardFooter && (
+                              <SessionCardFooter
+                                item={item}
+                                cohortName={cohortName}
+                                isTopicSubTopicAdded={handleEventUpdated}
+                                state={state}
+                                board={board}
+                                medium={medium}
+                                grade={grade}
+                              />
+                            )}
+                          </SessionCard>
+                        )}
+                      </Grid>
+                    ))}
+                    {sessions && sessions.length === 0 && (
+                      <Box
+                        className="fs-12 fw-400 italic"
+                        sx={{ color: theme.palette.warning['300'], px: '16px' }}
+                      >
+                        {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                      </Box>
+                    )}
+                  </Grid>
+                </Box>
+              </>
+            )}
+          </>
+        )}
 
       <Box>
         {value === 2 && (
@@ -769,8 +850,12 @@ const CohortPage = () => {
                   border: '1px solid #1E1B16',
                   borderRadius: '100px',
                   height: '40px',
-                  width: '126px',
+                  px: '16px',
                   color: theme.palette.error.contrastText,
+                  '& .MuiButton-endIcon': {
+                    marginLeft: isRTL ? '0px !important' : '8px !important',
+                    marginRight: isRTL ? '8px !important' : '-2px !important',
+                  },
                 }}
                 className="text-1E"
                 endIcon={<AddIcon />}
@@ -794,7 +879,11 @@ const CohortPage = () => {
                 {t('COMMON.REVIEW_ATTENDANCE')}
               </Box>
               <ArrowForwardIcon
-                sx={{ fontSize: '18px', color: theme.palette.secondary.main }}
+                sx={{
+                  fontSize: '18px',
+                  color: theme.palette.secondary.main,
+                  transform: isRTL ? ' rotate(180deg)' : 'unset',
+                }}
               />
             </Box>
             <Box>

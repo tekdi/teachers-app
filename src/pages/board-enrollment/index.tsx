@@ -13,16 +13,10 @@ import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import EastIcon from '@mui/icons-material/East';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import {
-  Box,
-  Button,
-  Grid,
-  IconButton,
-  InputBase,
-  Paper
-} from '@mui/material';
+import { Box, Button, Grid, IconButton, InputBase, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { useDirection } from '../../hooks/useDirection';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -30,6 +24,7 @@ import React, { useEffect, useState } from 'react';
 const BoardEnrollment = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const router = useRouter();
   const [boardEnrollmentList, setBoardEnrollmentList] = useState<any>([]);
   const [activeStep, setActiveStep] = React.useState<number>(0);
@@ -155,7 +150,13 @@ const BoardEnrollment = () => {
               }}
             >
               <InputBase
-                sx={{ ml: 3, flex: 1, mb: '0', fontSize: '14px' }}
+                sx={{
+                  ml: isRTL ? 0 : 3,
+                  mr: isRTL ? 3 : 0,
+                  flex: 1,
+                  mb: '0',
+                  fontSize: '14px',
+                }}
                 placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                 inputProps={{ 'aria-label': t('ASSESSMENTS.SEARCH_STUDENT') }}
               />
@@ -215,7 +216,10 @@ const BoardEnrollment = () => {
               onClick={handleOpenModal}
               sx={{
                 color: theme.palette.warning.A200,
-
+                '& .MuiButton-endIcon': {
+                  marginLeft: isRTL ? '0px !important' : '8px !important',
+                  marginRight: isRTL ? '8px !important' : '-2px !important',
+                },
                 borderRadius: '10px',
                 fontSize: '14px',
               }}
@@ -234,12 +238,14 @@ const BoardEnrollment = () => {
       <Grid container sx={{ my: 4, px: '16px' }} spacing={2}>
         {boardEnrollmentList.map((item: any, index: any) => {
           return (
-            <Grid key={index} item xs={12} md={6} lg={6} xl={4}>
+            <Grid key={index} item xs={12} sm={12} md={6} lg={4}>
               <Box
                 sx={{
                   border: `1px solid ${theme.palette.warning['A100']}`,
                   minHeight: '143px',
                   borderRadius: '8px',
+                  position: 'relative',
+                  cursor: 'pointer',
                 }}
                 onClick={() => {
                   item.isDropout
@@ -253,6 +259,7 @@ const BoardEnrollment = () => {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     p: '12px 16px 0',
+                    gap: '6px',
                   }}
                 >
                   <Box
@@ -271,6 +278,7 @@ const BoardEnrollment = () => {
                       color: item.isDropout
                         ? theme.palette.warning['400']
                         : theme.palette.warning['300'],
+                      transform: isRTL ? ' rotate(180deg)' : 'unset',
                     }}
                   />
                 </Box>
@@ -300,6 +308,7 @@ const BoardEnrollment = () => {
                       gap: '5px',
                       mb: '12px',
                       mx: '16px',
+                      mt: 4,
                     }}
                   >
                     {t('COMMON.DROPPED_OUT')}{' '}

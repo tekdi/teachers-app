@@ -23,6 +23,7 @@ import { editEvent } from '@/services/EventService';
 import { showToastMessage } from './Toastify';
 import { convertUTCToIST, getDayMonthYearFormat } from '@/utils/Helper';
 import { EventStatus } from '@/utils/app.constant';
+import { useDirection } from '../hooks/useDirection';
 
 const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   item,
@@ -34,7 +35,9 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   grade,
 }) => {
   const theme = useTheme<any>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { dir, isRTL } = useDirection();
+
   const [open, setOpen] = React.useState(false);
   const [editTopic, setEditTopic] = React.useState(false);
   // const [removeTopic, setRemoveTopic] = React.useState(false);
@@ -201,7 +204,9 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
       );
     } else if (!topicList || topicList.length === 0) {
       showToastMessage(
-        t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE'),
+        t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE', {
+          subject: item?.metadata?.subject,
+        }),
         'error'
       );
     }
@@ -343,12 +348,17 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
               fontWeight={500}
               color={theme.palette.secondary.main}
               ml={1}
+              className="one-line-text"
             >
               {t('COMMON.SELECT_TOPIC')}
             </Box>
           </Box>
           <ArrowForwardIcon
-            sx={{ color: theme.palette.secondary.main, fontSize: '18px' }}
+            sx={{
+              color: theme.palette.secondary.main,
+              fontSize: '18px',
+              transform: isRTL ? ' rotate(180deg)' : 'unset',
+            }}
           />
         </Box>
       )}

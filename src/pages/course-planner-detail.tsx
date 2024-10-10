@@ -36,11 +36,13 @@ import withAccessControl from '@/utils/hoc/withAccessControl';
 import { accessControl } from '../../app.config';
 import taxonomyStore from '@/store/taxonomyStore';
 import useDeterminePathColor from '@/hooks/useDeterminePathColor';
+import { useDirection } from '../hooks/useDirection';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const setResources = useCourseStore((state) => state.setResources);
   const store = useCourseStore();
   const tStore = taxonomyStore();
@@ -326,7 +328,10 @@ const CoursePlannerDetail = () => {
         <KeyboardBackspaceOutlinedIcon
           onClick={handleBackEvent}
           cursor={'pointer'}
-          sx={{ color: theme.palette.warning['A200'] }}
+          sx={{
+            color: theme.palette.warning['A200'],
+            transform: isRTL ? ' rotate(180deg)' : 'unset',
+          }}
         />
         <Box>
           <Box
@@ -381,7 +386,7 @@ const CoursePlannerDetail = () => {
                 color: theme.palette.warning['300'],
               }}
             >
-              {store.subject}
+              {tStore?.taxonomySubject}
             </Box>
           </Box>
         </Box>
@@ -681,19 +686,24 @@ const CoursePlannerDetail = () => {
         )}
       </div>
       <FacilitatorDrawer
-        secondary={'Cancel'}
-        primary={`Mark as Complete (${selectedCount})`}
-        toggleDrawer={toggleDrawer}
-        drawerState={drawerState}
-        onPrimaryClick={() => {
-          if (selectedSubtopics.length > 0) {
-            // Mark all selected subtopics as complete
-            markMultipleStatuses(userProjectDetails, selectedSubtopics);
-            toggleDrawer(false)();
-          }
-        }}
-        selectedCount={selectedCount}
-      />
+  secondary= {t('COMMON.CANCEL')}
+  primary={`${t('COURSE_PLANNER.MARK_AS_COMPLETED')} (${selectedCount})`}
+  toggleDrawer={toggleDrawer}
+  drawerState={drawerState}
+  onPrimaryClick={() => {
+    if (selectedSubtopics.length > 0) {
+      // Mark all selected subtopics as complete
+      markMultipleStatuses(userProjectDetails, selectedSubtopics);
+      toggleDrawer(false)();
+    }
+  }}
+  onSecondaryClick={() => {
+    setSelectedSubtopics([]);
+    toggleDrawer(false)(); 
+  }}
+  selectedCount={selectedCount} 
+/>
+
 
       {/* <ConfirmationModal
         message={

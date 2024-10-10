@@ -26,6 +26,7 @@ import React, { useEffect, useState } from 'react';
 import { accessControl } from '../../../app.config';
 import { getFormRead, useFormRead } from '@/hooks/useFormRead';
 import { useQueryClient } from '@tanstack/react-query';
+import { useDirection } from '@/hooks/useDirection';
 
 interface TeacherProfileProp {
   reloadState?: boolean;
@@ -52,6 +53,8 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const [reload, setReload] = React.useState(false);
   const [selfUserId, setSelfUserId] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
+
+  const { dir, isRTL } = useDirection();
 
   const { data: formResponse } = useFormRead(
     FormContext.USERS,
@@ -398,6 +401,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                       width: '1.5rem',
                       cursor: 'pointer',
                       pr: '5px',
+                      transform: isRTL ? ' rotate(180deg)' : 'unset',
                     }}
                   />
                 </Box>
@@ -443,11 +447,11 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
           >
             {userRole === Role.TEAM_LEADER && userId !== selfUserId ? (
               <Button
-                className="min-width-md-20"
                 sx={{
                   fontSize: '14px',
                   lineHeight: '20px',
-                  minWidth: '100%',
+
+                  minWidth: 'fit-content',
                   padding: '10px 24px 10px 16px',
                   gap: '8px',
                   borderRadius: '100px',
@@ -456,6 +460,8 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                   textAlign: 'center',
                   color: theme.palette.warning.A200,
                   border: `1px solid #4D4639`,
+
+                  px: '16px',
                 }}
                 onClick={handleOpenAddLearnerModal}
               >
@@ -655,10 +661,12 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                 '@media (max-width: 430px)': {
                   width: '100%',
                 },
+                whiteSpace: 'nowrap',
               }}
               onClick={() => {
                 router.push('/edit-password');
               }}
+              className="one-line-text"
             >
               {t('LOGIN_PAGE.RESET_PASSWORD')}
             </Button>

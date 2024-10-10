@@ -4,6 +4,8 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
 import building from '../../assets/images/apartment.png';
 import Image from 'next/image';
+import { useDirection } from '../../hooks/useDirection';
+import { useTranslation } from 'next-i18next';
 
 interface Center {
   cohortStatus?: string;
@@ -27,8 +29,12 @@ const CenterList: React.FC<CenterListProps> = ({
   theme,
   t,
 }) => {
-  const activeCenters = centers.filter((center) => center.cohortStatus === 'active');
-  
+  const activeCenters = centers.filter(
+    (center) => center.cohortStatus === 'active'
+  );
+  const { i18n } = useTranslation();
+  const { dir, isRTL } = useDirection();
+
   return (
     <>
       <Box
@@ -52,8 +58,8 @@ const CenterList: React.FC<CenterListProps> = ({
         }}
       >
         <Grid container spacing={2}>
-        {activeCenters.map((center) => (
-            <Grid item xs={12} sm={6} md={4} key={center?.cohortId}>
+          {activeCenters.map((center) => (
+            <Grid item xs={12} sm={12} md={6} lg={4} key={center?.cohortId}>
               <Box
                 onClick={() => {
                   router.push(`/centers/${center?.cohortId}`);
@@ -111,7 +117,12 @@ const CenterList: React.FC<CenterListProps> = ({
                       {center.cohortName.charAt(0).toUpperCase() +
                         center.cohortName.slice(1)}
                     </Box>
-                    <ChevronRightIcon />
+                    <ChevronRightIcon
+                      sx={{
+                        color: theme.palette.warning['A200'],
+                        transform: isRTL ? ' rotate(180deg)' : 'unset',
+                      }}
+                    />
                   </Box>
                 </Box>
               </Box>

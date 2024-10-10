@@ -54,15 +54,20 @@ import SortingModal from '../components/SortingModal';
 import { attendanceStatusList } from '../services/AttendanceService';
 import { telemetryFactory } from '@/utils/telemetry';
 import NoDataFound from '@/components/common/NoDataFound';
+import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
+import { useDirection } from '../hooks/useDirection';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const { push } = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [classId, setClassId] = React.useState('');
   const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
   const [percentageAttendance, setPercentageAttendance] =
+    React.useState<any>(null);
+  const [attendanceProgressBarData, setAttendanceProgressBarData] =
     React.useState<any>(null);
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<user>>(
     []
@@ -89,6 +94,33 @@ const UserAttendanceHistory = () => {
 
   const pathname = usePathname();
   const currentDate = getTodayDate();
+
+  const [attendanceData, setAttendanceData] = useState({
+    cohortMemberList: [],
+    presentCount: 0,
+    absentCount: 0,
+    numberOfCohortMembers: 0,
+    dropoutMemberList: [],
+    dropoutCount: 0,
+    bulkAttendanceStatus: '',
+  });
+
+  const handleAttendanceDataUpdate = (data: any) => {
+    setAttendanceData(data);
+
+    const attendanceInfo = {
+      present_students: data.presentCount,
+      totalcount: data.numberOfCohortMembers,
+      present_percentage: (
+        (data.presentCount / data.numberOfCohortMembers) *
+        100
+      ).toFixed(2),
+    };
+
+    setAttendanceProgressBarData({
+      [shortDateFormat(selectedDate)]: attendanceInfo,
+    });
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -303,6 +335,14 @@ const UserAttendanceHistory = () => {
               setLoading(false);
             };
             userAttendanceStatusList();
+          }
+          if (nameUserIdArray && (selectedDate || currentDate)) {
+            fetchAttendanceDetails(
+              nameUserIdArray,
+              selectedDate,
+              classId,
+              handleAttendanceDataUpdate
+            );
           }
         } else {
           setDisplayStudentList([]);
@@ -548,7 +588,10 @@ const UserAttendanceHistory = () => {
                     <Box>
                       <KeyboardBackspaceOutlinedIcon
                         cursor={'pointer'}
-                        sx={{ color: theme.palette.warning['A200'] }}
+                        sx={{
+                          color: theme.palette.warning['A200'],
+                          transform: isRTL ? ' rotate(180deg)' : 'unset',
+                        }}
                       />
                     </Box>
                   </Box>
@@ -615,7 +658,7 @@ const UserAttendanceHistory = () => {
             <Box>
               <AttendanceStatus
                 date={selectedDate}
-                formattedAttendanceData={percentageAttendance}
+                formattedAttendanceData={attendanceProgressBarData}
                 onDateSelection={selectedDate}
                 onUpdate={handleOpen}
               />
@@ -664,11 +707,11 @@ const UserAttendanceHistory = () => {
                         ref={inputRef}
                         value={searchWord}
                         sx={{
-                          ml: 3,
                           flex: 1,
                           mb: '0',
                           fontSize: '14px',
                           color: theme.palette.warning['A200'],
+                          px: '10px',
                         }}
                         placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
                         inputProps={{ 'aria-label': 'search student' }}
@@ -815,6 +858,13 @@ const UserAttendanceHistory = () => {
               classId={classId}
               selectedDate={selectedDate}
               onSaveSuccess={() => setHandleSaveHasRun(!handleSaveHasRun)}
+              memberList={attendanceData.cohortMemberList}
+              presentCount={attendanceData.presentCount}
+              absentCount={attendanceData.absentCount}
+              numberOfCohortMembers={attendanceData.numberOfCohortMembers}
+              dropoutMemberList={attendanceData.dropoutMemberList}
+              dropoutCount={attendanceData.dropoutCount}
+              bulkStatus={attendanceData.bulkAttendanceStatus}
             />
           )}
         </Box>

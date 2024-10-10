@@ -2,7 +2,7 @@
 
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { format, isAfter, isValid, parse, startOfDay } from 'date-fns';
-import React, { useEffect, useState } from 'react';
+import React, { ComponentType, useEffect, useState } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import {
   classesMissedAttendancePercentList,
@@ -65,8 +65,8 @@ import {
 } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import { getEventList } from '@/services/EventService';
-import SessionCard from '@/components/SessionCard';
-import SessionCardFooter from '@/components/SessionCardFooter';
+// import SessionCard from '@/components/SessionCard';
+// import SessionCardFooter from '@/components/SessionCardFooter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useQueryClient } from '@tanstack/react-query';
 import { getCohortDetails, getCohortList } from '@/services/CohortServices';
@@ -74,11 +74,30 @@ import CentralizedModal from '@/components/CentralizedModal';
 import manageUserStore from '@/store/manageUserStore';
 import { getUserDetails } from '@/services/ProfileService';
 import { updateStoreFromCohorts } from '@/utils/Helper';
-interface DashboardProps {}
+import taxonomyStore from '@/store/taxonomyStore';
+import { useDirection } from '../hooks/useDirection';
+import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 
+import dynamic from 'next/dynamic';
+import { isEliminatedFromBuild } from '../../featureEliminationUtil';
+let SessionCardFooter: ComponentType<any> | null = null;
+if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
+  SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
+    ssr: false,
+  });
+}
+let SessionCard: ComponentType<any> | null = null;
+if (!isEliminatedFromBuild('SessionCard', 'component')) {
+  SessionCard = dynamic(() => import('@/components/SessionCard'), {
+    ssr: false,
+  });
+}
+
+interface DashboardProps {}
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const { dir, isRTL } = useDirection();
 
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
@@ -129,11 +148,26 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [state, setState] = React.useState<string>();
   const [eventDeleted, setEventDeleted] = React.useState(false);
   const [eventUpdated, setEventUpdated] = React.useState(false);
+  const setType = taxonomyStore((state) => state.setType);
+  const [attendanceData, setAttendanceData] = useState({
+    cohortMemberList: [],
+    presentCount: 0,
+    absentCount: 0,
+    numberOfCohortMembers: 0,
+    dropoutMemberList: [],
+    dropoutCount: 0,
+    bulkAttendanceStatus: '',
+  });
+
+  const handleAttendanceDataUpdate = (data: any) => {
+    setAttendanceData(data);
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const skipResetPassword = localStorage.getItem('skipResetPassword');
       const temporaryPassword = localStorage.getItem('temporaryPassword');
+      setType('');
 
       if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
         setShowCentralisedModal(true);
@@ -151,7 +185,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setCentralizedModal(true);
     }
   };
-  const [selectedDays, setSelectedDays] = React.useState<any>([]);
+  // const [isTourCompleted, setIsTourCompleted] = React.useState(false);
+
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined' && window.localStorage) {
+  //     const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+
+  //     if (hasSeenTutorial === 'true') {
+  //       setIsTourCompleted(true);
+  //     }
+  //   }
+  // }, []);
 
   useEffect(() => {
     setIsClient(true);
@@ -262,10 +306,18 @@ const Dashboard: React.FC<DashboardProps> = () => {
           });
           const resp = response?.result?.userDetails;
           if (resp) {
-            const nameUserIdArray = resp?.map((entry: any) => ({
-              userId: entry.userId,
-              name: toPascalCase(entry.name),
-            }));
+            const nameUserIdArray = resp
+              ?.map((entry: any) => ({
+                userId: entry.userId,
+                name: toPascalCase(entry.name),
+                memberStatus: entry.status,
+                createdAt: entry.createdAt,
+              }))
+              .filter((member: { createdAt: string | number | Date }) => {
+                const createdAt = new Date(member.createdAt);
+                createdAt.setHours(0, 0, 0, 0);
+                return createdAt <= new Date(selectedDate);
+              });
             if (nameUserIdArray) {
               //Logic to call class missed api
               const fromDate = startDateRange;
@@ -321,6 +373,25 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 }
               }
             }
+
+            if (nameUserIdArray && selectedDate && classId) {
+              fetchAttendanceDetails(
+                nameUserIdArray,
+                selectedDate,
+                classId,
+                handleAttendanceDataUpdate
+              );
+            }
+          } else {
+            setAttendanceData({
+              cohortMemberList: [],
+              presentCount: 0,
+              absentCount: 0,
+              numberOfCohortMembers: 0,
+              dropoutMemberList: [],
+              dropoutCount: 0,
+              bulkAttendanceStatus: '',
+            });
           }
           if (classId) {
             const cohortAttendancePercent = async () => {
@@ -790,7 +861,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   //   if (userId && myCohortList) {
   //     getExtraSessionsData();
-  //   }
+  //   }  const { t } = useTranslation();
   // }, [
   //   timeTableDate,
   //   userId,
@@ -808,7 +879,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setEventUpdated(true);
   };
 
-  // useEffect(() => {
+  // useEffect(() => {  const { t } = useTranslation();
   //   if (typeof window !== 'undefined' && window.localStorage) {
   //     const skipResetPassword = localStorage.getItem('skipResetPassword');
   //     const temporaryPassword = localStorage.getItem('temporaryPassword');
@@ -826,7 +897,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const handleSkipButton = () => {
     localStorage.setItem('skipResetPassword', 'true');
   };
-
   const darkMode =
     typeof window !== 'undefined' && window.localStorage
       ? localStorage.getItem('mui-mode')
@@ -859,6 +929,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                       m={'1.5rem 1.2rem 0.8rem'}
                       color={theme?.palette?.warning['300']}
                       className="joyride-step-1"
+                      // className={!isTourCompleted ? 'joyride-step-1' : ''}
                     >
                       {t('DASHBOARD.DASHBOARD')}
                     </Typography>
@@ -902,6 +973,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                             >
                               {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
                             </Typography>
+
                             <CohortSelectionSection
                               classId={classId}
                               setClassId={setClassId}
@@ -922,11 +994,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               handleSaveHasRun={handleSaveHasRun}
                               setHandleSaveHasRun={setHandleSaveHasRun}
                               isCustomFieldRequired={false}
+                              // showFloatingLabel={true}
                             />
                           </Box>
 
                           <Box
-                            className="calenderTitle flex-center joyride-step-3 ps-md-ab right-md-20"
+                            className="calenderTitle flex-center joyride-step-3 ps-md-ab"
                             display={'flex'}
                             sx={{
                               cursor: 'pointer',
@@ -936,6 +1009,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               '@media (max-width: 900px)': {
                                 top:
                                   role === Role.TEAM_LEADER ? '210px' : '185px',
+                                right: isRTL ? 'unset' : '20px',
+                                left: isRTL ? '20px' : 'unset',
                               },
                             }}
                             onClick={viewAttendanceHistory}
@@ -1023,7 +1098,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                         >
                                           {t('DASHBOARD.PERCENT_ATTENDANCE', {
                                             percent_students:
-                                              currentAttendance?.present_percentage,
+                                              attendanceData?.numberOfCohortMembers &&
+                                              attendanceData.numberOfCohortMembers !==
+                                                0
+                                                ? (
+                                                    (attendanceData.presentCount /
+                                                      attendanceData.numberOfCohortMembers) *
+                                                    100
+                                                  ).toFixed(2)
+                                                : '0',
                                           })}
                                         </Typography>
                                         <Typography
@@ -1038,9 +1121,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                         >
                                           {t('DASHBOARD.PRESENT_STUDENTS', {
                                             present_students:
-                                              currentAttendance?.present_students,
+                                              attendanceData.presentCount,
                                             total_students:
-                                              currentAttendance?.totalcount,
+                                              attendanceData.numberOfCohortMembers,
                                           })}
                                         </Typography>
                                       </Box>
@@ -1130,6 +1213,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 }
                                 setHandleSaveHasRun(!handleSaveHasRun);
                               }}
+                              memberList={attendanceData?.cohortMemberList}
+                              presentCount={attendanceData?.presentCount}
+                              absentCount={attendanceData?.absentCount}
+                              numberOfCohortMembers={
+                                attendanceData?.numberOfCohortMembers
+                              }
+                              dropoutMemberList={
+                                attendanceData?.dropoutMemberList
+                              }
+                              dropoutCount={attendanceData?.dropoutCount}
+                              bulkStatus={attendanceData?.bulkAttendanceStatus}
                             />
                           )}
                         </Box>
@@ -1186,7 +1280,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               >
                                 {t('DASHBOARD.MORE_DETAILS')}
                                 <ArrowForwardSharpIcon
-                                  sx={{ height: '18px' }}
+                                  sx={{
+                                    height: '18px',
+                                    transform: isRTL
+                                      ? ' rotate(180deg)'
+                                      : 'unset',
+                                  }}
                                 />
                               </Link>
                             </Box>
@@ -1287,141 +1386,158 @@ const Dashboard: React.FC<DashboardProps> = () => {
                     <AttendanceComparison blockName={blockName} />
                   </Box>
                 )}
-                <Box mt={3} px="18px">
-                  <Box
-                    sx={{
-                      background: theme.palette.warning['A400'],
-                      padding: '5px',
-                    }}
-                    display={'flex'}
-                    justifyContent={'space-between'}
-                  >
-                    <Typography
-                      textAlign={'left'}
-                      fontSize={'0.8rem'}
-                      pt={'1rem'}
-                      variant="h2"
-                      sx={{ fontSize: '14px' }}
-                      color={theme.palette.warning['300']}
-                      fontWeight={'500'}
-                    >
-                      {t('DASHBOARD.MY_TIMETABLE')}
-                    </Typography>
-                    <Box
-                      display={'flex'}
-                      sx={{
-                        cursor: 'pointer',
-                        color: theme.palette.secondary.main,
-                        gap: '4px',
-                        opacity: classId === 'all' ? 0.5 : 1,
-                        alignItems: 'center',
-                      }}
-                      onClick={viewTimeTable}
-                    >
-                      <Typography
-                        marginBottom={'0'}
-                        style={{ fontWeight: '500' }}
-                      >
-                        {getMonthName(selectedDate)}
-                      </Typography>
-                      <CalendarMonthIcon sx={{ fontSize: '18px' }} />
-                    </Box>
-                  </Box>
-                  <WeekCalender
-                    showDetailsHandle={showTimeTableDetailsHandle}
-                    disableDays={classId === 'all'}
-                    classId={classId}
-                    showFromToday={true}
-                    newWidth={'100%'}
-                  />
-                </Box>
-                <Box mt={2} px="18px">
-                  <Grid container spacing={2}>
-                    {sessions?.map((item) => (
-                      <Grid xs={12} sm={6} md={4} key={item.id} item>
-                        <SessionCard
-                          data={item}
-                          showCenterName={true}
-                          isEventDeleted={handleEventDeleted}
-                          isEventUpdated={handleEventUpdated}
-                          StateName={state}
-                          board={board}
-                          medium={medium}
-                          grade={grade}
+                {!isEliminatedFromBuild('SessionCardFooter', 'component') &&
+                  SessionCardFooter &&
+                  SessionCard && (
+                    <>
+                      <Box mt={3} px="18px">
+                        <Box
+                          sx={{
+                            background: theme.palette.warning['A400'],
+                            padding: '5px',
+                          }}
+                          display={'flex'}
+                          justifyContent={'space-between'}
                         >
-                          <SessionCardFooter
-                            item={item}
-                            isTopicSubTopicAdded={handleEventUpdated}
-                            state={state}
-                            board={board}
-                            medium={medium}
-                            grade={grade}
-                          />
-                        </SessionCard>
-                      </Grid>
-                    ))}
-                    {sessions && sessions?.length === 0 && (
-                      <Box
-                        className="fs-12 fw-400 italic"
-                        sx={{
-                          color: theme.palette.warning['300'],
-                          paddingLeft: '18px',
-                        }}
-                      >
-                        {t('COMMON.NO_SESSIONS_SCHEDULED')}
-                      </Box>
-                    )}
-                  </Grid>
-                </Box>
-
-                <Box mt={3} px="18px" gap={'15px'}>
-                  <Box
-                    className="fs-14 fw-500"
-                    sx={{ color: theme.palette.warning['300'] }}
-                  >
-                    {t('CENTER_SESSION.EXTRA_SESSION', {
-                      days: eventDaysLimit,
-                    })}
-                  </Box>
-                  <Box sx={{ mt: 1.5, mb: 2 }}>
-                    <Grid container spacing={2}>
-                      {extraSessions?.map((item) => (
-                        <Grid xs={12} sm={6} md={4} key={item.id} item>
-                          <SessionCard
-                            data={item}
-                            showCenterName={true}
-                            isEventDeleted={handleEventDeleted}
-                            isEventUpdated={handleEventUpdated}
-                            StateName={state}
-                            board={board}
-                            medium={medium}
-                            grade={grade}
+                          <Typography
+                            textAlign={'left'}
+                            fontSize={'0.8rem'}
+                            pt={'1rem'}
+                            variant="h2"
+                            sx={{ fontSize: '14px' }}
+                            color={theme.palette.warning['300']}
+                            fontWeight={'500'}
                           >
-                            <SessionCardFooter
-                              item={item}
-                              isTopicSubTopicAdded={handleEventUpdated}
-                              state={state}
-                              board={board}
-                              medium={medium}
-                              grade={grade}
-                            />
-                          </SessionCard>
+                            {t('DASHBOARD.MY_TIMETABLE')}
+                          </Typography>
+                          <Box
+                            display={'flex'}
+                            sx={{
+                              cursor: 'pointer',
+                              color: theme.palette.secondary.main,
+                              gap: '4px',
+                              opacity: classId === 'all' ? 0.5 : 1,
+                              alignItems: 'center',
+                            }}
+                            onClick={viewTimeTable}
+                          >
+                            <Typography
+                              marginBottom={'0'}
+                              style={{ fontWeight: '500' }}
+                            >
+                              {getMonthName(selectedDate)}
+                            </Typography>
+                            <CalendarMonthIcon sx={{ fontSize: '18px' }} />
+                          </Box>
+                        </Box>
+                        <WeekCalender
+                          showDetailsHandle={showTimeTableDetailsHandle}
+                          disableDays={classId === 'all'}
+                          classId={classId}
+                          showFromToday={true}
+                          newWidth={'100%'}
+                        />
+                      </Box>
+
+                      <Box mt={2} px="18px">
+                        <Grid container spacing={2}>
+                          {sessions?.map((item) => (
+                            <Grid xs={12} sm={6} md={4} key={item.id} item>
+                              {SessionCard && (
+                                <SessionCard
+                                  data={item}
+                                  showCenterName={true}
+                                  isEventDeleted={handleEventDeleted}
+                                  isEventUpdated={handleEventUpdated}
+                                  StateName={state}
+                                  board={board}
+                                  medium={medium}
+                                  grade={grade}
+                                >
+                                  {SessionCardFooter && (
+                                    <SessionCardFooter
+                                      item={item}
+                                      isTopicSubTopicAdded={handleEventUpdated}
+                                      state={state}
+                                      board={board}
+                                      medium={medium}
+                                      grade={grade}
+                                    />
+                                  )}
+                                </SessionCard>
+                              )}
+                            </Grid>
+                          ))}
+                          {sessions && sessions?.length === 0 && (
+                            <Box
+                              className="fs-12 fw-400 italic"
+                              sx={{
+                                color: theme.palette.warning['300'],
+                                paddingLeft: '18px',
+                              }}
+                            >
+                              {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                            </Box>
+                          )}
                         </Grid>
-                      ))}
-                    </Grid>
-                  </Box>
-                  {extraSessions && extraSessions?.length === 0 && (
-                    <Box
-                      className="fs-12 fw-400 italic"
-                      sx={{
-                        color: theme.palette.warning['300'],
-                        marginBottom: '12px',
-                      }}
-                    >
-                      {t('COMMON.NO_SESSIONS_SCHEDULED')}
-                    </Box>
+                      </Box>
+
+                      <Box mt={3} px="18px" gap={'15px'}>
+                        <Box
+                          className="fs-14 fw-500"
+                          sx={{ color: theme.palette.warning['300'] }}
+                        >
+                          {t('CENTER_SESSION.EXTRA_SESSION', {
+                            days: eventDaysLimit,
+                          })}
+                        </Box>
+                        <Box sx={{ mt: 1.5, mb: 2 }}>
+                          <Grid container spacing={2}>
+                            {extraSessions?.map((item) => (
+                              <Grid xs={12} sm={6} md={4} key={item.id} item>
+                                {SessionCard && (
+                                  <SessionCard
+                                    data={item}
+                                    showCenterName={true}
+                                    isEventDeleted={handleEventDeleted}
+                                    isEventUpdated={handleEventUpdated}
+                                    StateName={state}
+                                    board={board}
+                                    medium={medium}
+                                    grade={grade}
+                                  >
+                                    {SessionCardFooter && (
+                                      <SessionCardFooter
+                                        item={item}
+                                        isTopicSubTopicAdded={
+                                          handleEventUpdated
+                                        }
+                                        state={state}
+                                        board={board}
+                                        medium={medium}
+                                        grade={grade}
+                                      />
+                                    )}
+                                  </SessionCard>
+                                )}
+                              </Grid>
+                            ))}
+                          </Grid>
+                        </Box>
+                        {extraSessions && extraSessions?.length === 0 && (
+                          <Box
+                            className="fs-12 fw-400 italic"
+                            sx={{
+                              color: theme.palette.warning['300'],
+                              marginBottom: '12px',
+                            }}
+                          >
+                            {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                          </Box>
+                        )}
+                      </Box>
+                    </>
                   )}
-                </Box>
               </Box>
             )}
           </>

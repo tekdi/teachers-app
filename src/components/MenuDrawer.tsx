@@ -3,7 +3,6 @@
 import { Button, FormControl, IconButton, MenuItem } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-
 import Box from '@mui/material/Box';
 import ClearIcon from '@mui/icons-material/Clear';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
@@ -25,6 +24,9 @@ import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlin
 import checkBook from '../assets/images/checkbook.svg';
 import board from '../assets/images/Board.svg';
 import Image from 'next/image';
+import { useDirection } from '../hooks/useDirection';
+import { isEliminatedFromBuild } from '../../featureEliminationUtil';
+
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
   open: boolean;
@@ -48,19 +50,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const router = useRouter();
   const store = useStore();
   const userRole = store.userRole;
+  const { dir, isRTL } = useDirection();
 
   useEffect(() => setIsOpen(open), [open]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const lang = localStorage.getItem('preferredLanguage') || 'en';
-      setLanguage(lang);
-      const role = localStorage.getItem('role');
-      if (role === 'Team Leader') {
-        setIsTeamLeader(true);
-      }
-    }
-  }, [setLanguage]);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newLocale = event.target.value;
@@ -94,13 +86,14 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isCoursePlanner = router.pathname.includes('/course-planner');
   const isAssessments = router.pathname.includes('/assessments');
   const isBoard = router.pathname.includes('/board-enrollment');
-  // const isManageUser = router.pathname === '/manageUser';
 
   return (
     <Drawer
       open={isDesktop || isOpen}
       onClose={closeDrawer}
       transitionDuration={{ enter: 500, exit: 500 }}
+      // anchor={isRTL ? 'right' : 'left'} // Set anchor based on direction
+      anchor="left"
       className="backgroundFaded"
       variant={isDesktop ? 'persistent' : 'temporary'}
       sx={{
@@ -152,11 +145,19 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 onChange={handleChange}
                 displayEmpty
                 className="select-languages fs-14 fw-500"
-                style={{
+                sx={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
                   width: '100%',
                   marginBottom: '0rem',
+                  '& .MuiSelect-icon': {
+                    right: isRTL ? 'unset' : '7px',
+                    left: isRTL ? '7px' : 'unset',
+                  },
+                  '& .MuiSelect-select': {
+                    paddingRight: isRTL ? '10px !important' : '32px !important',
+                    paddingLeft: isRTL ? '32px' : '12px',
+                  },
                 }}
               >
                 {config?.languages.map((lang) => (
@@ -172,11 +173,19 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               <Select
                 className="select-languages"
                 displayEmpty
-                style={{
+                sx={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
                   width: '100%',
                   marginBottom: '0rem',
+                  '& .MuiSelect-icon': {
+                    right: isRTL ? 'unset' : '7px',
+                    left: isRTL ? '7px' : 'unset',
+                  },
+                  '& .MuiSelect-select': {
+                    paddingRight: isRTL ? '10px !important' : '32px !important',
+                    paddingLeft: isRTL ? '32px' : '12px',
+                  },
                 }}
               >
                 <MenuItem>Program 2024-25</MenuItem>
@@ -189,6 +198,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           <Button
             className="fs-14"
             sx={{
+              gap: '10px',
               width: '100%',
               display: 'flex',
               justifyContent: 'flex-start',
@@ -237,6 +247,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   : 'transparent',
               },
               marginTop: '15px',
+              gap: '10px',
             }}
             startIcon={
               <LocalLibraryOutlinedIcon sx={{ fontSize: '24px !important' }} />
@@ -265,6 +276,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 background: 'transparent',
               },
               marginTop: '15px',
+              gap: '10px',
             }}
             startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
             // onClick={navigateToManageUser}
@@ -294,6 +306,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                     : 'transparent',
                 },
                 marginTop: '15px',
+                gap: '10px',
               }}
               startIcon={
                 <Image
@@ -311,6 +324,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             </Button>
           </Box>
         </Box>
+        {!isEliminatedFromBuild('Assessments', 'feature') && 
         <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-8"
@@ -333,6 +347,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   : 'transparent',
               },
               marginTop: '15px',
+              gap: '10px',
             }}
             startIcon={
               <EventAvailableOutlinedIcon
@@ -346,6 +361,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             {t('ASSESSMENTS.ASSESSMENTS')}
           </Button>
         </Box>
+        }
         <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-8"
@@ -354,7 +370,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               display: 'flex',
               justifyContent: 'flex-start',
               background: isBoard ? theme.palette.primary.main : 'transparent',
-
+              gap: '10px',
               padding: isBoard ? '16px 18px !important' : '0px 18px !important',
               color: isBoard ? '#2E1500' : theme.palette.warning.A200,
               fontWeight: isBoard ? '600' : 500,
@@ -384,6 +400,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               justifyContent: 'flex-start',
               background: 'transparent',
               padding: '0px 18px !important',
+              gap: '10px',
               color: theme.palette.secondary.main,
               fontWeight: 500,
               '&:hover': {
@@ -403,36 +420,6 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             {t('GUIDE_TOUR.LEARN_HOW_TO_USE')}
           </Button>
         </Box>
-
-        {/* <Box sx={{ marginTop: '12px' }}>
-          <Button
-            className="fs-14"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isManageUser
-                ? theme.palette.primary.main
-                : 'transparent',
-
-              padding: isManageUser
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isManageUser ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isManageUser ? '600' : 500,
-              '&:hover': {
-                background: isManageUser
-                  ? theme.palette.primary.main
-                  : 'transparent',
-              },
-              marginTop: '15px',
-            }}
-            startIcon={<PeopleOutlineOutlinedIcon />}
-            onClick={navigateToManageUser}
-          >
-            {t('COMMON.MANAGE_USERS')}
-          </Button>
-        </Box> */}
       </Box>
     </Drawer>
   );

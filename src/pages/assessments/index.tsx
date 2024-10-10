@@ -33,9 +33,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { accessControl, AssessmentType, Program } from '../../../app.config';
+import { useDirection } from '../../hooks/useDirection';
 
 const DEFAULT_STATUS_ORDER = {
-  [AssessmentStatus.NOT_STARTED] : 0,
+  [AssessmentStatus.NOT_STARTED]: 0,
   [AssessmentStatus.IN_PROGRESS]: 1,
   [AssessmentStatus.COMPLETED]: 2,
 };
@@ -46,7 +47,7 @@ const Assessments = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
-
+  const { dir, isRTL } = useDirection();
   const [assessmentList, setAssessmentList] = useState([]);
   const [classId, setClassId] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
@@ -194,6 +195,8 @@ const Assessments = () => {
       try {
         const options = {
           userId: cohortMembers?.map((user: any) => user.userId),
+          courseId: assessmentList, // temporary added here assessmentList(contentId)... if assessment is done then need to pass actual course id and unit id here
+          unitId: assessmentList,
           contentId: assessmentList,
           batchId: classId,
         };
@@ -274,19 +277,21 @@ const Assessments = () => {
     // });
     const statusOrder: any = { ...DEFAULT_STATUS_ORDER };
 
-  if (status && Object.prototype.hasOwnProperty.call(statusOrder, status)) {
-    statusOrder[status] = -1; // Make the prioritized status the highest
-    // Adjust other statuses to ensure correct order
-    let orderIndex = 0;
-    for (const key in statusOrder) {
-      if (key !== status) {
-        statusOrder[key] = orderIndex++;
+    if (status && Object.prototype.hasOwnProperty.call(statusOrder, status)) {
+      statusOrder[status] = -1; // Make the prioritized status the highest
+      // Adjust other statuses to ensure correct order
+      let orderIndex = 0;
+      for (const key in statusOrder) {
+        if (key !== status) {
+          statusOrder[key] = orderIndex++;
+        }
       }
     }
-  }
 
-  // Sort based on the adjusted order
-  const sortedList = learnerList.sort((a: any, b: any) => statusOrder[a.status] - statusOrder[b.status]);
+    // Sort based on the adjusted order
+    const sortedList = learnerList.sort(
+      (a: any, b: any) => statusOrder[a.status] - statusOrder[b.status]
+    );
     setFilteredLearnerList(sortedList);
   };
 
@@ -339,16 +344,13 @@ const Assessments = () => {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'left',
           alignItems: 'center',
           color: theme?.palette?.warning['A200'],
           padding: '20px 20px 5px',
         }}
         width="100%"
       >
-        <Typography textAlign="left" fontSize="22px">
-          {t('ASSESSMENTS.ASSESSMENTS')}
-        </Typography>
+        <Typography fontSize="22px">{t('ASSESSMENTS.ASSESSMENTS')}</Typography>
       </Box>
       <SearchBar onSearch={handleSearch} placeholder="Search..." />
       <Grid container>
@@ -377,7 +379,7 @@ const Assessments = () => {
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box sx={{ mt: 2, px: '20px' }}>
+          <Box sx={{ mt: 2, px: '20px', width: '100%', direction: 'rtl' }}>
             <FormControl fullWidth>
               <InputLabel
                 style={{
@@ -385,6 +387,7 @@ const Assessments = () => {
                   background: theme?.palette?.warning['A400'],
                   paddingLeft: '2px',
                   paddingRight: '2px',
+                  textAlign: 'right', // Align the label text to the right
                 }}
                 id="demo-simple-select-label"
               >
@@ -394,13 +397,20 @@ const Assessments = () => {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label={t('ASSESSMENTS.ASSESSMENT_TYPE')}
-                style={{ borderRadius: '4px' }}
+                style={{
+                  borderRadius: '4px',
+                  textAlign: 'right', // Align the dropdown text to the right
+                }}
                 onChange={(e) => setAssessmentType(e.target.value)}
                 defaultValue={'pre'}
                 value={assessmentType}
               >
-                <MenuItem value={'pre'}>{t('PROFILE.PRE_TEST')}</MenuItem>
-                <MenuItem value={'post'}>{t('PROFILE.POST_TEST')}</MenuItem>
+                <MenuItem value={'pre'} style={{ textAlign: 'right' }}>
+                  {t('PROFILE.PRE_TEST')}
+                </MenuItem>
+                <MenuItem value={'post'} style={{ textAlign: 'right' }}>
+                  {t('PROFILE.POST_TEST')}
+                </MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -461,7 +471,6 @@ const Assessments = () => {
                 onClick={handleOpenModal}
                 sx={{
                   color: theme.palette.warning.A200,
-
                   borderRadius: '10px',
                   fontSize: '14px',
                 }}

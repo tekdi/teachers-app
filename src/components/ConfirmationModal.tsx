@@ -77,6 +77,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 backgroundColor: 'transparent',
               },
             }}
+            className="one-line-text"
             variant="outlined"
             onClick={handleCloseModal}
           >
@@ -89,6 +90,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               fontSize: '14px',
               fontWeight: '500',
             }}
+            className="one-line-text"
             variant="contained"
             color="primary"
             onClick={() => {

@@ -18,6 +18,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { accessControl } from '../../app.config';
+import { useDirection } from '../hooks/useDirection';
 
 type LearnerAttendanceData = {
   [date: string]: {
@@ -32,6 +33,7 @@ type AttendanceRecord = {
 
 const LearnerAttendanceHistory = () => {
   const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const theme = useTheme<any>();
   const { push } = useRouter();
 
@@ -178,7 +180,10 @@ const LearnerAttendanceHistory = () => {
                 <Box>
                   <KeyboardBackspaceOutlinedIcon
                     cursor={'pointer'}
-                    sx={{ color: theme.palette.warning['A200'] }}
+                    sx={{
+                      color: theme.palette.warning['A200'],
+                      transform: isRTL ? ' rotate(180deg)' : 'unset',
+                    }}
                   />
                 </Box>
               </Box>

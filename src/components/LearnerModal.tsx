@@ -157,7 +157,7 @@ const LearnerModal = ({
               <Box sx={contentBoxStyles}>
                 <Box sx={fieldContainerStyles}>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} textAlign="left">
+                    <Grid item xs={12}>
                       <Typography sx={fieldTitleStyles(theme)}>
                         {t('PROFILE.FULL_NAME')}
                       </Typography>
@@ -167,7 +167,7 @@ const LearnerModal = ({
                         </Typography>
                       </Box>
                     </Grid>
-                    <Grid item xs={6} textAlign="left">
+                    <Grid item xs={6}>
                       <Typography sx={fieldTitleStyles(theme)}>
                         {t('PROFILE.CONTACT_NUMBER')}
                       </Typography>
@@ -177,7 +177,7 @@ const LearnerModal = ({
                         </Typography>
                       </Box>
                     </Grid>
-                    <Grid item xs={6} textAlign="left">
+                    <Grid item xs={6}>
                       <Typography sx={fieldTitleStyles(theme)}>
                         {t('PROFILE.ENROLLMENT_NUMBER')}
                       </Typography>
@@ -188,7 +188,7 @@ const LearnerModal = ({
                       </Box>
                     </Grid>
                     {learnerDetailsByOrder?.map((item: any, index: number) => (
-                      <Grid item xs={6} key={index} textAlign="left">
+                      <Grid item xs={6} key={index}>
                         <Typography sx={fieldTitleStyles(theme)}>
                           {item?.label
                             ? t(`FORM.${item.label.toUpperCase()}`, item.label)
@@ -211,6 +211,7 @@ const LearnerModal = ({
             <Box sx={buttonContainerStyles}>
               <Button
                 sx={closeButtonStyles(theme)}
+                style={{ width: 'fit-content', padding: '5px 16px' }}
                 onClick={onClose}
                 variant="outlined"
               >
@@ -218,8 +219,10 @@ const LearnerModal = ({
               </Button>
               <Button
                 sx={profileButtonStyles(theme)}
+                style={{ width: 'fit-content', padding: '5px 16px' }}
                 variant="contained"
                 onClick={handleLearnerFullProfile}
+                fullWidth
               >
                 {t('PROFILE.VIEW_FULL_PROFILE')}
               </Button>
