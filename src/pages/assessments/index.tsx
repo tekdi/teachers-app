@@ -379,7 +379,7 @@ const Assessments = () => {
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box sx={{ mt: 2, px: '20px', width: '100%', direction: 'rtl' }}>
+          <Box sx={{ mt: 2, px: '20px', width: '100%' }}>
             <FormControl fullWidth>
               <InputLabel
                 style={{
@@ -387,7 +387,6 @@ const Assessments = () => {
                   background: theme?.palette?.warning['A400'],
                   paddingLeft: '2px',
                   paddingRight: '2px',
-                  textAlign: 'right', // Align the label text to the right
                 }}
                 id="demo-simple-select-label"
               >
@@ -399,7 +398,6 @@ const Assessments = () => {
                 label={t('ASSESSMENTS.ASSESSMENT_TYPE')}
                 style={{
                   borderRadius: '4px',
-                  textAlign: 'right', // Align the dropdown text to the right
                 }}
                 onChange={(e) => setAssessmentType(e.target.value)}
                 defaultValue={'pre'}
@@ -477,6 +475,7 @@ const Assessments = () => {
                 endIcon={<ArrowDropDownSharpIcon />}
                 size="small"
                 variant="outlined"
+                className="one-line-text"
               >
                 {t('COMMON.SORT_BY')}
               </Button>
