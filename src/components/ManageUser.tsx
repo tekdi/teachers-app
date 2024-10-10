@@ -690,7 +690,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                 isMobile={isMobile}
                 optionList={[
                   {
-                    label: t('COMMON.REASSIGN_BLOCKS'),
+                    label: t('COMMON.ADD_OR_REASSIGN_CENTERS'),
                     icon: (
                       <ApartmentIcon
                         sx={{ color: theme.palette.warning['300'] }}
@@ -698,15 +698,16 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                     ),
                     name: 'reassign-block',
                   },
-                  {
-                    label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
-                    icon: (
-                      <LocationOnOutlinedIcon
-                        sx={{ color: theme.palette.warning['300'] }}
-                      />
-                    ),
-                    name: 'reassign-block-request',
-                  },
+                  // TODO: Integrate todo service
+                  // {
+                  //   label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
+                  //   icon: (
+                  //     <LocationOnOutlinedIcon
+                  //       sx={{ color: theme.palette.warning['300'] }}
+                  //     />
+                  //   ),
+                  //   name: 'reassign-block-request',
+                  // },
                   {
                     label: t('COMMON.DELETE_USER'),
                     icon: (
@@ -801,7 +802,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             />
             <ReassignModal
               cohortNames={reassignCohortNames}
-              message={t('COMMON.REASSIGN_BLOCKS')}
+              message={t('COMMON.ADD_OR_REASSIGN_CENTERS')}
               handleAction={handleRequestBlockAction}
               handleCloseReassignModal={handleCloseReassignModal}
               modalOpen={reassignModalOpen}

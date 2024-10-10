@@ -81,7 +81,7 @@
     "FACILITATORS": "راستہ دکھانے والے",
     "CENTERS_ASSIGNED": "{{block}} میں تفویض کردہ مراکز",
     "REASSIGN_CENTERS": "مرکز دوبارہ تفویض کریں",
-    "REASSIGN_BLOCKS": "مراکز شامل کریں یا دوبارہ تفویض کریں",
+    "ADD_OR_REASSIGN_CENTERS": "مراکز شامل کریں یا دوبارہ تفویض کریں",
     "REASSIGN_BLOCKS_REQUEST": "بلاکس دوبارہ تفویض کرنے کی درخواست",
     "ASSIGN": "تفویض کریں",
     "SEARCH_FACILITATORS": "راستہ دکھانے والوں کی تلاش کریں..",

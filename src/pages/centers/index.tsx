@@ -27,14 +27,13 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
 import taxonomyStore from '@/store/taxonomyStore';
 
 const CentersPage = () => {
-  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
@@ -53,6 +52,10 @@ const CentersPage = () => {
   const [selectedCenters, setSelectedCenters] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState('');
   const [centerType, setCenterType] = useState<'regular' | 'remote' | ''>('');
+  const [appliedFilters, setAppliedFilters] = useState({
+    centerType: '',
+    sortOrder: ''
+  });
   const [openCreateCenterModal, setOpenCreateCenterModal] =
     React.useState(false);
   const handleFilterModalOpen = () => setFilterModalOpen(true);
@@ -112,7 +115,7 @@ const CentersPage = () => {
     setSearchInput(event.target.value);
   };
 
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
 
   useEffect(() => {
     const getCohortListForTL = async () => {
@@ -203,30 +206,42 @@ const CentersPage = () => {
     setIsCenterAdded((prev) => !prev);
   };
 
-  useEffect(() => {
-    const filtered = centerData.filter((center) =>
-      center.cohortName.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    setFilteredCenters(filtered);
-  }, [searchInput, centerData]);
-
-  const handleFilterApply = () => {
-    let filtered = [...centerData];
-
+  const getFilteredCenters = useMemo(() => {
+    let filteredCenters = centerData;
+  
+    // Apply search filter
+    if (searchInput) {
+      filteredCenters = filteredCenters.filter((center) =>
+        center.cohortName.toLowerCase().includes(searchInput.toLowerCase())
+      );
+    }
+  
+    // Apply center type filter
     if (centerType) {
-      filtered = filtered.filter(
+      filteredCenters = filteredCenters.filter(
         (center) =>
           center.centerType &&
           center.centerType.toLowerCase() === centerType.toLowerCase()
       );
     }
-
+  
+    // Apply sorting
     if (sortOrder === 'asc') {
-      filtered.sort((a, b) => a.cohortName.localeCompare(b.cohortName));
+      filteredCenters.sort((a, b) => a.cohortName.localeCompare(b.cohortName));
     } else if (sortOrder === 'desc') {
-      filtered.sort((a, b) => b.cohortName.localeCompare(a.cohortName));
+      filteredCenters.sort((a, b) => b.cohortName.localeCompare(a.cohortName));
     }
-    setFilteredCenters(filtered);
+  
+    return filteredCenters;
+  }, [centerData, searchInput, appliedFilters]);
+  
+  useEffect(() => {
+    setFilteredCenters(getFilteredCenters);
+  }, [getFilteredCenters]);
+  
+  const handleFilterApply = () => {
+    setAppliedFilters({ centerType, sortOrder });
+    setFilteredCenters(getFilteredCenters);
     handleFilterModalClose();
   };
 
@@ -391,7 +406,7 @@ const CentersPage = () => {
                       <Button
                         variant="outlined"
                         onClick={() => {
-                          setSearchInput('');
+                          // setSearchInput('');
                           handleFilterModalOpen();
                         }}
                         size="medium"

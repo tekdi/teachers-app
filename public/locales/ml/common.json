@@ -81,7 +81,7 @@
     "FACILITATORS": "സഹായികൾ",
     "CENTERS_ASSIGNED": "{{block}} ൽ ലഭ്യമായ സെന്ററുകൾ",
     "REASSIGN_CENTERS": "സെന്റർ വീണ്ടും നൽകുക",
-    "REASSIGN_BLOCKS": "സെന്റർ/ബ്ലോക്ക് വീണ്ടും നൽകുക",
+    "ADD_OR_REASSIGN_CENTERS": "സെന്റർ/ബ്ലോക്ക് വീണ്ടും നൽകുക",
     "REASSIGN_BLOCKS_REQUEST": "ബ്ലോക്കുകൾ വീണ്ടും നൽകാൻ അഭ്യർത്ഥിക്കുക",
     "ASSIGN": "നൽകുക",
     "SEARCH_FACILITATORS": "സഹായികളെ തിരയുക..",

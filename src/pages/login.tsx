@@ -21,7 +21,7 @@ import { telemetryFactory } from '@/utils/telemetry';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
+import { i18n, useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -34,7 +34,7 @@ import loginImg from './../assets/images/login-image.jpg';
 import { useDirection } from '../hooks/useDirection';
 
 const LoginPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const setUserId = manageUserStore((state) => state.setUserId);
   const setUserRole = useStore(
     (state: { setUserRole: any }) => state.setUserRole
@@ -401,7 +401,7 @@ const LoginPage = () => {
                           'aria-label': 'Select Language',
                         }}
                         className="select-languages"
-                        value={language}
+                        value={i18n.language}
                         onChange={handleChange}
                         displayEmpty
                         sx={{
