@@ -301,11 +301,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
               )}
 
-              <Box
-                display={'flex'}
-                flexDirection="row"
-                justifyContent={'space-between'}
-              >
+              <Box display={'flex'} justifyContent={'space-between'}>
                 {dropoutCount > 0 ? (
                   <>
                     <Typography

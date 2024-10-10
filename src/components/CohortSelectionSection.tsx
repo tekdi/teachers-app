@@ -424,10 +424,10 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                               '@media (max-width: 900px)': {
                                 width: isAttendanceOverview ? '100%' : '62%',
                               },
-                              '& .MuiSelect-icon': {
-                                right: isRTL ? 'unset' : '7px',
-                                left: isRTL ? '7px' : 'unset',
-                              },
+                              // '& .MuiSelect-icon': {
+                              //   right: isRTL ? 'unset' : '7px',
+                              //   left: isRTL ? '7px' : 'unset',
+                              // },
                             }}
                             MenuProps={{
                               PaperProps: {
@@ -531,14 +531,14 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                         ? '100%'
                                         : '65%',
                                     },
-                                    '& .MuiSelect-icon': {
-                                      right: isRTL ? 'unset' : '7px',
-                                      left: isRTL ? '7px' : 'unset',
-                                    },
-                                    ' & .MuiFormLabel-root-MuiInputLabel-root':
-                                      {
-                                        right: isRTL ? '30px' : 'unset',
-                                      },
+                                    // '& .MuiSelect-icon': {
+                                    //   right: isRTL ? 'unset' : '7px',
+                                    //   left: isRTL ? '7px' : 'unset',
+                                    // },
+                                    // ' & .MuiFormLabel-root-MuiInputLabel-root':
+                                    //   {
+                                    //     right: isRTL ? '30px' : 'unset',
+                                    //   },
                                   }
                             }
                           >

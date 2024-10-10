@@ -99,7 +99,7 @@ const commonComponents = {
 };
 
 const customTheme = extendTheme({
-  direction: 'rtl',
+  // direction: 'rtl',
   colorSchemes: {
     light: {
       palette: {

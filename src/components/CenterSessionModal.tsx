@@ -132,6 +132,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
               <Box sx={{ padding: '20px 16px' }}>
                 <Button
                   variant="outlined"
+                  className="one-line-text"
                   color="primary"
                   sx={{
                     '&.Mui-disabled': {
@@ -159,6 +160,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
                 <Button
                   variant="contained"
                   color="primary"
+                  className="one-line-text"
                   sx={{
                     '&.Mui-disabled': {
                       backgroundColor: theme?.palette?.primary?.main,

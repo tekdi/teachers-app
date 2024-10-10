@@ -79,6 +79,7 @@ const CentralizedModal: React.FC<CentralizedModalProps> = ({
         >
           {secondary && (
             <Button
+              className="one-line-text"
               sx={{
                 width: 'auto',
                 height: '40px',
@@ -105,6 +106,7 @@ const CentralizedModal: React.FC<CentralizedModalProps> = ({
           )}
           {primary && (
             <Button
+              className="one-line-text"
               sx={{
                 width: '151px',
                 height: '40px',

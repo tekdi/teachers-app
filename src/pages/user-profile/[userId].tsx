@@ -661,10 +661,12 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                 '@media (max-width: 430px)': {
                   width: '100%',
                 },
+                whiteSpace: 'nowrap',
               }}
               onClick={() => {
                 router.push('/edit-password');
               }}
+              className="one-line-text"
             >
               {t('LOGIN_PAGE.RESET_PASSWORD')}
             </Button>
