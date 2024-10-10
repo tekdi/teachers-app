@@ -25,6 +25,7 @@ import checkBook from '../assets/images/checkbook.svg';
 import board from '../assets/images/Board.svg';
 import Image from 'next/image';
 import { useDirection } from '../hooks/useDirection';
+import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
@@ -323,6 +324,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             </Button>
           </Box>
         </Box>
+        {!isEliminatedFromBuild('Assessments', 'feature') && 
         <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-8"
@@ -359,6 +361,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             {t('ASSESSMENTS.ASSESSMENTS')}
           </Button>
         </Box>
+        }
         <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-8"
