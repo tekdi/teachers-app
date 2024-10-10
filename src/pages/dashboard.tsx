@@ -1009,8 +1009,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               '@media (max-width: 900px)': {
                                 top:
                                   role === Role.TEAM_LEADER ? '210px' : '185px',
-                                right: isRTL ? 'unset' : '20px',
-                                left: isRTL ? '20px' : 'unset',
+                                right: isRTL ? '20px' : 'unset',
+                                left: isRTL ? 'unset' : '20px',
                               },
                             }}
                             onClick={viewAttendanceHistory}
