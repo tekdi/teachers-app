@@ -112,12 +112,6 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     <Box
       sx={{
         height: '64px',
-        // direction: isRTL ? 'rtl' : 'ltr',
-        // '@media (max-width: 500px)': {
-        //   position: 'fixed',
-        //   width: '100%',
-        //   zIndex: '999',
-        // },
       }}
     >
       <Box
