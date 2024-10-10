@@ -226,6 +226,7 @@ const BoardEnrollment = () => {
               endIcon={<ArrowDropDownSharpIcon />}
               size="small"
               variant="outlined"
+              className="one-line-text"
             >
               {t('COMMON.FILTERS')}
             </Button>

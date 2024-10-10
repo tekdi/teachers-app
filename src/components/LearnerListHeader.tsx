@@ -39,17 +39,24 @@ const LearnerListHeader: React.FC<LearListHeaderProps> = ({
                   fontWeight: '500',
                   paddingLeft: '12px',
                 }}
+                className="one-line-text"
               >
                 {t('COMMON.LEARNER_NAME')}
               </Typography>
             </Grid>
             <Grid item xs={3}>
-              <Typography sx={{ fontSize: '11px', fontWeight: '500' }}>
+              <Typography
+                className="one-line-text"
+                sx={{ fontSize: '11px', fontWeight: '500' }}
+              >
                 {firstColumnName}
               </Typography>
             </Grid>
             <Grid item xs={3}>
-              <Typography sx={{ fontSize: '11px', fontWeight: '500' }}>
+              <Typography
+                className="one-line-text"
+                sx={{ fontSize: '11px', fontWeight: '500' }}
+              >
                 {secondColumnName}
               </Typography>
             </Grid>

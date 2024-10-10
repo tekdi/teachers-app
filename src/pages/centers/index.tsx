@@ -404,6 +404,7 @@ const CentersPage = () => {
                           fontSize: '13px',
                           fontWeight: '500',
                         }}
+                        className="one-line-text"
                       >
                         {t('COMMON.FILTERS')}
                       </Button>
