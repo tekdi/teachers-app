@@ -46,7 +46,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [isOpen, setIsOpen] = useState(open);
   const [isTeamLeader, setIsTeamLeader] = useState(false);
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const router = useRouter();
   const store = useStore();
   const userRole = store.userRole;
@@ -92,8 +92,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
       open={isDesktop || isOpen}
       onClose={closeDrawer}
       transitionDuration={{ enter: 500, exit: 500 }}
-      anchor={isRTL ? 'right' : 'left'} // Set anchor based on direction
-      // anchor="left"
+      anchor="left"
       className="backgroundFaded"
       variant={isDesktop ? 'persistent' : 'temporary'}
       sx={{
@@ -141,21 +140,19 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           <Box sx={{ flexBasis: '30%' }} className="joyride-step-5">
             <FormControl className="drawer-select" sx={{ width: '100%' }}>
               <Select
-                value={language}
+                value={i18n.language} // Directly use the language from i18n
                 onChange={handleChange}
                 displayEmpty
-                className="select-languages fs-14 fw-500"
                 sx={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
                   width: '100%',
-                  marginBottom: '0rem',
                   '& .MuiSelect-icon': {
                     right: isRTL ? 'unset' : '7px',
                     left: isRTL ? '7px' : 'unset',
                   },
                   '& .MuiSelect-select': {
-                    paddingRight: isRTL ? '10px !important' : '32px !important',
+                    paddingRight: isRTL ? '10px' : '32px',
                     paddingLeft: isRTL ? '32px' : '12px',
                   },
                 }}
@@ -317,51 +314,51 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 />
               }
               onClick={() => {
-                router.push(`/course-planner`); // Check route
+                router.push(`/course-planner`);
               }}
             >
               {t('COURSE_PLANNER.COURSE_PLANNER')}
             </Button>
           </Box>
         </Box>
-        {!isEliminatedFromBuild('Assessments', 'feature') && 
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14 joyride-step-8"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isAssessments
-                ? theme.palette.primary.main
-                : 'transparent',
-
-              padding: isAssessments
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isAssessments ? '600' : 500,
-              '&:hover': {
+        {!isEliminatedFromBuild('Assessments', 'feature') && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14 joyride-step-8"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isAssessments
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-              marginTop: '15px',
-              gap: '10px',
-            }}
-            startIcon={
-              <EventAvailableOutlinedIcon
-                sx={{ fontSize: '24px !important' }}
-              />
-            }
-            onClick={() => {
-              router.push(`/assessments`);
-            }}
-          >
-            {t('ASSESSMENTS.ASSESSMENTS')}
-          </Button>
-        </Box>
-        }
+
+                padding: isAssessments
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isAssessments ? '600' : 500,
+                '&:hover': {
+                  background: isAssessments
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+                gap: '10px',
+              }}
+              startIcon={
+                <EventAvailableOutlinedIcon
+                  sx={{ fontSize: '24px !important' }}
+                />
+              }
+              onClick={() => {
+                router.push(`/assessments`);
+              }}
+            >
+              {t('ASSESSMENTS.ASSESSMENTS')}
+            </Button>
+          </Box>
+        )}
         <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-8"
