@@ -1098,3 +1098,34 @@ legend.Mui-focused {
 *{
   border: 1px solid red !important;
 } */
+/* questionnaire-player-main .custom-font{
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif !important;
+}
+:root{
+  --primary-color:#663399;
+  --btn-outline:#663399;
+  --error-color:rgb(150, 4, 4);
+  --question-tip:gray;
+  --general-btn-text-color:white;
+  --general-btn-hover-bg:white;
+  --secondary-btn-bg:white;
+  --secondary-btn-hover-bg:whitesmoke;
+  --card-bg:white;
+  --disabled-btn-bg:gainsboro;
+  --disabled-btn-text:gray;  
+} */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary-color: #1B4CA1;
+  --btn-outline: #1B4CA1;
+  --error-color: rgb(150, 4, 4);
+  --question-tip: gray;
+  --general-btn-text-color: white;
+  --general-btn-hover-bg: white;
+  --secondary-btn-bg: white;
+  --secondary-btn-hover-bg: whitesmoke;
+  --card-bg: white;
+  --disabled-btn-bg: gainsboro;
+  --disabled-btn-text: gray;
+}

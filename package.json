@@ -58,7 +58,9 @@
     "stylis": "^4.3.4",
     "stylis-plugin-rtl": "^2.1.1",
     "swiper": "^11.1.10",
-    "zustand": "^4.5.4"
+    "zustand": "^4.5.4",
+    "questionnaire-webcomponent": "3.1.6"
+
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.6",
