@@ -1042,8 +1042,7 @@ legend.Mui-focused {
   color: var(--mui-palette-warning-300) !important;
 }
 
-.swiper-button-prev,
-.swiper-rtl .swiper-button-next {
+html[dir="ltr"] .swiper-button-prev {
   right: 50px !important;
   left: unset !important;
   width: 32px !important;
@@ -1051,13 +1050,31 @@ legend.Mui-focused {
   border: 1px solid var(--mui-palette-warning-A100);
   border-radius: 4px !important;
 }
-
-.swiper-button-next {
-  left: unset !important;
+html[dir="rtl"] .swiper-button-prev {
+  right: unset !important;
+  left: 50px !important;
   width: 32px !important;
   height: 32px !important;
   border: 1px solid var(--mui-palette-warning-A100);
   border-radius: 4px !important;
+}
+
+
+html[dir="ltr"] .swiper-button-next {
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid var(--mui-palette-warning-A100);
+  border-radius: 4px !important;
+  right: 0px !important;
+  left: unset !important;
+}
+html[dir="rtl"] .swiper-button-next {
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid var(--mui-palette-warning-A100);
+  border-radius: 4px !important;
+  right: unset !important;
+  left: 0px !important;
 }
 
 .swiper-button-prev,
@@ -1084,10 +1101,17 @@ legend.Mui-focused {
   position: unset !important;
 }
 
-.swiper-pagination-fraction {
+html[dir="ltr"] .swiper-pagination-fraction {
   position: absolute;
-  bottom: 13px !important;
+  bottom: 0px !important;
   width: fit-content !important;
+}
+html[dir="rtl"] .swiper-pagination-fraction {
+  position: absolute;
+  bottom: 0px !important;
+  width: fit-content !important;
+  right: 0px !important;
+  left: unset !important;
 }
 
 .css-1i1js26-MuiSvgIcon-root-MuiSelect-icon {
