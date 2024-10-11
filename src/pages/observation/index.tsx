@@ -2,18 +2,18 @@ import dynamic from 'next/dynamic';
 // Assuming this is in the correct folder for Next.js
 // import reportWebVitals from '../reportWebVitals';
 import Header from '@/components/Header';
-import ObservationCard from '@/components/ObservationCard';
+// import ObservationCard from '@/components/ObservationCard';
 import { useEffect, useState } from 'react';
-import {
-  getEntityList,
-  getObservationList,
-} from '@/services/ObservationServices';
+// import {
+//   getEntityList,
+//   getObservationList,
+// } from '@/services/ObservationServices';
 import { Box, Typography } from '@mui/material';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { on } from 'events';
 import { useRouter } from 'next/router';
 import { FormContext, FormContextType , Role} from '@/utils/app.constant';
-import { entityList } from '../../../app.config';
+// import { entityList } from '../../../app.config';
 // import QuestionnaireApp from '@/components/QuestionnaireApp';
 const QuestionnaireApp = dynamic(
   () => import('@/components/QuestionnaireApp'),
@@ -95,65 +95,65 @@ const ObservationForms: React.FC = () => {
   const [observationData, setObservationData] = useState<any>();
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchEntityList = async () => {
-      //  setLoading(true);
-      try {
-        const role = localStorage.getItem('role');
-        if (role) {
-          // const response = await getEntityList({ role: role });
-          // setEntityNames(response);
-console.log(role,Role.TEACHER)
-          if (role===Role.TEAM_LEADER) {
-            const response = entityList.TEAM_LEADER
-            setEntityNames(response);
+//   useEffect(() => {
+//     const fetchEntityList = async () => {
+//       //  setLoading(true);
+//       try {
+//         const role = localStorage.getItem('role');
+//         if (role) {
+//           // const response = await getEntityList({ role: role });
+//           // setEntityNames(response);
+// console.log(role,Role.TEACHER)
+//           if (role===Role.TEAM_LEADER) {
+//             const response = entityList.TEAM_LEADER
+//             setEntityNames(response);
 
             
-          }else if(role===Role.TEACHER){
-            const response = entityList.TEACHER
-            setEntityNames(response);
+//           }else if(role===Role.TEACHER){
+//             const response = entityList.TEACHER
+//             setEntityNames(response);
 
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching cohort list:', error);
-      } finally {
-        // setLoading(false);
-      }
-    };
-    fetchEntityList();
-  }, []);
+//           }
+//         }
+//       } catch (error) {
+//         console.error('Error fetching cohort list:', error);
+//       } finally {
+//         // setLoading(false);
+//       }
+//     };
+//     fetchEntityList();
+//   }, []);
 
-  useEffect(() => {
-    const fetchObservationData = async () => {
-      //  setLoading(true);
-      try {
-        for (const name of entityNames || []) {
-          console.log('name', name);
-          let entityName = name; // Output each name
+  // useEffect(() => {
+  //   const fetchObservationData = async () => {
+  //     //  setLoading(true);
+  //     try {
+  //       for (const name of entityNames || []) {
+  //         console.log('name', name);
+  //         let entityName = name; // Output each name
 
-          if (entityName) {
-            console.log('we are here', entityName);
+  //         if (entityName) {
+  //           console.log('we are here', entityName);
 
-            const response = await getObservationList({
-              entityName: entityName,
-            });
-            //console.log("response", response);
-            setObservationData((prevFilters: any) => ({
-              ...prevFilters,
-              [entityName as string]: response,
-            }));
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching cohort list:', error);
-      } finally {
-        // setLoading(false);
-      }
-    };
-    fetchObservationData();
-  }, [entityNames]);
-  console.log('observationData', entityList);
+  //           const response = await getObservationList({
+  //             entityName: entityName,
+  //           });
+  //           //console.log("response", response);
+  //           setObservationData((prevFilters: any) => ({
+  //             ...prevFilters,
+  //             [entityName as string]: response,
+  //           }));
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching cohort list:', error);
+  //     } finally {
+  //       // setLoading(false);
+  //     }
+  //   };
+  //   fetchObservationData();
+  // }, [entityNames]);
+  // console.log('observationData', entityList);
 
   const onCardClick = (observationId: string, entity: string) => {
      const fullPath = router.asPath;
