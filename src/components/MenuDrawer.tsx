@@ -76,7 +76,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     router.push('/dashboard');
   };
 
-  const navigateToManageUser = () => {
+  const navigateToObservation = () => {
     closeDrawer();
     router.push('/observation');
   };
@@ -296,7 +296,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               
             }}
             startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
-            onClick={navigateToManageUser}
+            onClick={navigateToObservation}
           >
             {t('COMMON.OBSERVATIONS_FORMS')}
           </Button>
