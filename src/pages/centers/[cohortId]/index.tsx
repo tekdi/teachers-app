@@ -432,6 +432,11 @@ const CohortPage = () => {
   const handleEditEvent = () => {
     setOnEditEvent(true);
   };
+  const [swiperKey, setSwiperKey] = useState(0);
+
+  useEffect(() => {
+    setSwiperKey((prevKey) => prevKey + 1);
+  }, [i18n.language]);
 
   return (
     <>
@@ -671,6 +676,7 @@ const CohortPage = () => {
                   <Box mt={3} sx={{ position: 'relative' }}>
                     {initialSlideIndex >= 0 && (
                       <Swiper
+                        key={swiperKey} // This will force Swiper to remount when the key changes
                         initialSlide={initialSlideIndex}
                         pagination={{
                           type: 'fraction',
