@@ -76,14 +76,17 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     router.push('/dashboard');
   };
 
-  const navigateToManageUser = () => {
+  const navigateToObservation = () => {
     closeDrawer();
-    router.push('/manageUser');
+    router.push('/observation');
   };
 
   const isDashboard = router.pathname === '/dashboard';
   const isTeacherCenter = router.pathname.includes('/centers');
   const isCoursePlanner = router.pathname.includes('/course-planner');
+  const isObservation = router.pathname.includes('/observation');
+
+  
   const isAssessments = router.pathname.includes('/assessments');
   const isBoard = router.pathname.includes('/board-enrollment');
 
@@ -265,18 +268,35 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               width: '100%',
               display: 'flex',
               justifyContent: 'flex-start',
-              background: 'transparent',
-              padding: '0px 18px !important',
-              color: theme.palette.warning.A200,
-              fontWeight: 500,
+              // background: 'transparent',
+              // padding: '0px 18px !important',
+              // color: theme.palette.warning.A200,
+              // fontWeight: 500,
+              // '&:hover': {
+              //   background: 'transparent',
+              // },
+              // marginTop: '15px',
+              // gap: '10px',
+
+
+              background: isObservation ? theme.palette.primary.main : 'transparent',
+              gap: '10px',
+              padding: isObservation? '16px 18px !important' : '0px 18px !important',
+              color: isObservation ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isObservation ? '600' : 500,
               '&:hover': {
-                background: 'transparent',
+                background: isObservation
+                  ? theme.palette.primary.main
+                  : 'transparent',
               },
               marginTop: '15px',
-              gap: '10px',
+
+
+
+              
             }}
             startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
-            // onClick={navigateToManageUser}
+            onClick={navigateToObservation}
           >
             {t('COMMON.OBSERVATIONS_FORMS')}
           </Button>
