@@ -24,6 +24,7 @@ import board from '../assets/images/Board.svg';
 import Image from 'next/image';
 import { useDirection } from '../hooks/useDirection';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
+import { getAcademicYear } from '../services/AcademicYearService';
 
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
@@ -31,6 +32,11 @@ interface DrawerProps {
   language: string;
   setLanguage: (lang: string) => void;
   handleToggleDrawer?: (open: boolean) => () => void;
+}
+
+interface AcademicYear {
+  id: string;
+  session: string;
 }
 
 const MenuDrawer: React.FC<DrawerProps> = ({
@@ -43,6 +49,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const theme = useTheme<any>();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [isOpen, setIsOpen] = useState(open);
+  const [academicYearList, setAcademicYearList] = useState<AcademicYear[]>([]);
+  const [selectedSessionId, setSelectedSessionId] = useState<string>('');
+
   const { i18n, t } = useTranslation();
   const router = useRouter();
   const store = useStore();
@@ -51,6 +60,26 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 
   useEffect(() => setIsOpen(open), [open]);
 
+  useEffect(() => {
+    const getAcademicYearList = async () => {
+      const academicYearList: AcademicYear[] = await getAcademicYear();
+      const extractedAcademicYears = academicYearList.map(
+        ({ id, session }) => ({ id, session })
+      );
+      setAcademicYearList(extractedAcademicYears);
+      console.log('extractedAcademicYears', extractedAcademicYears);
+    };
+
+    getAcademicYearList();
+  }, []);
+
+  useEffect(() => {
+    if (academicYearList?.length > 0) {
+      setSelectedSessionId(academicYearList[0]?.id);
+      localStorage.setItem('academicYearId', academicYearList[0]?.id)
+    }
+  }, [academicYearList]);
+
   const handleChange = (event: SelectChangeEvent) => {
     const newLocale = event.target.value;
     setLanguage(newLocale);
@@ -58,6 +87,12 @@ const MenuDrawer: React.FC<DrawerProps> = ({
       localStorage.setItem('preferredLanguage', newLocale);
       router.replace(router.pathname, router.asPath, { locale: newLocale });
     }
+  };
+
+  const handleSelectChange = (event: SelectChangeEvent) => {
+    setSelectedSessionId(event.target.value);
+    console.log('selected academic year id', event.target.value);
+    localStorage.setItem('academicYearId', event.target.value)
   };
 
   const closeDrawer = () => {
@@ -167,6 +202,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           <Box sx={{ flexBasis: '70%' }}>
             <FormControl className="drawer-select" sx={{ width: '100%' }}>
               <Select
+                onChange={handleSelectChange}
+                value={selectedSessionId}
                 className="select-languages"
                 displayEmpty
                 sx={{
@@ -184,7 +221,11 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   },
                 }}
               >
-                <MenuItem>Program 2024-25</MenuItem>
+                {academicYearList.map(({ id, session }) => (
+                  <MenuItem key={id} value={id}>
+                    {session}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>
