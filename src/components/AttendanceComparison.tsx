@@ -27,6 +27,7 @@ import { CenterType, cohortPrivileges } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
 import NoDataFound from './common/NoDataFound';
 import { useDirection } from '../hooks/useDirection';
+import { AttendanceAPILimit } from '../../app.config';
 
 interface AttendanceComparisonProps {
   blockName: string;
@@ -87,7 +88,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
     const fetchData = async () => {
       const promises = cohortIds?.map((cohortId: string) =>
         overallAttendanceInPercentageStatusList({
-          limit: 0,
+          limit: AttendanceAPILimit,
           page: 0,
           filters: { contextId: cohortId, scope },
           facets: ['contextId'],

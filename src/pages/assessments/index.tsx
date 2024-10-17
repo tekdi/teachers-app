@@ -32,7 +32,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { accessControl, AssessmentType, Program } from '../../../app.config';
+import { accessControl, AssessmentType, AttendanceAPILimit, Program } from '../../../app.config';
 import { useDirection } from '../../hooks/useDirection';
 
 const DEFAULT_STATUS_ORDER = {
@@ -92,7 +92,7 @@ const Assessments = () => {
           status: [Status.ACTIVE],
         };
         const response = await getMyCohortMemberList({
-          limit: 0,
+          limit: AttendanceAPILimit,
           page: 0,
           filters,
         });
