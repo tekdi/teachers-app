@@ -5,7 +5,6 @@
       "label": "English",
       "code": "en"
     },
-
     {
       "label": "हिंदी",
       "code": "hi"
@@ -17,15 +16,6 @@
     {
       "label": "ଓଡ଼ିଆ",
       "code": "or"
-    },
-     {
-      "label": "اردو",
-      "code": "ur"
-    },
-     {
-      "label": "മലയാളം",
-      "code": "ml"
     }
-
   ]
 }

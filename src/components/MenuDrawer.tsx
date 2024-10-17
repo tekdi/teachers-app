@@ -13,10 +13,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { Role } from '@/utils/app.constant';
 import useStore from '@/store/store';
 import { accessGranted } from '@/utils/Helper';
 import { accessControl } from '../../app.config';
@@ -45,12 +43,11 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const theme = useTheme<any>();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [isOpen, setIsOpen] = useState(open);
-  const [isTeamLeader, setIsTeamLeader] = useState(false);
   const { i18n, t } = useTranslation();
   const router = useRouter();
   const store = useStore();
   const userRole = store.userRole;
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
 
   useEffect(() => setIsOpen(open), [open]);
 
@@ -263,23 +260,13 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               : t('DASHBOARD.MY_TEACHING_CENTERS')}
           </Button>
         </Box>
-        <Box sx={{ marginTop: '18px' }}>
+        {/* <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14"
             sx={{
               width: '100%',
               display: 'flex',
               justifyContent: 'flex-start',
-              // background: 'transparent',
-              // padding: '0px 18px !important',
-              // color: theme.palette.warning.A200,
-              // fontWeight: 500,
-              // '&:hover': {
-              //   background: 'transparent',
-              // },
-              // marginTop: '15px',
-              // gap: '10px',
-
               background: isObservation
                 ? theme.palette.primary.main
                 : 'transparent',
@@ -301,46 +288,45 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           >
             {t('COMMON.OBSERVATIONS_FORMS')}
           </Button>
+        </Box> */}
+        <Box sx={{ marginTop: '18px' }}>
+          <Button
+            className="fs-14 joyride-step-7"
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: isCoursePlanner
+                ? theme.palette.primary.main
+                : 'transparent',
 
-          <Box sx={{ marginTop: '18px' }}>
-            <Button
-              className="fs-14 joyride-step-7"
-              sx={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'flex-start',
+              padding: isCoursePlanner
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              color: isCoursePlanner ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isCoursePlanner ? '600' : 500,
+              '&:hover': {
                 background: isCoursePlanner
                   ? theme.palette.primary.main
                   : 'transparent',
-
-                padding: isCoursePlanner
-                  ? '16px 18px !important'
-                  : '0px 18px !important',
-                color: isCoursePlanner ? '#2E1500' : theme.palette.warning.A200,
-                fontWeight: isCoursePlanner ? '600' : 500,
-                '&:hover': {
-                  background: isCoursePlanner
-                    ? theme.palette.primary.main
-                    : 'transparent',
-                },
-                marginTop: '15px',
-                gap: '10px',
-              }}
-              startIcon={
-                <Image
-                  src={checkBook}
-                  alt="CheckBook Icon"
-                  width={24}
-                  height={24}
-                />
-              }
-              onClick={() => {
-                router.push(`/course-planner`);
-              }}
-            >
-              {t('COURSE_PLANNER.COURSE_PLANNER')}
-            </Button>
-          </Box>
+              },
+              marginTop: '15px',
+              gap: '10px',
+            }}
+            startIcon={
+              <Image
+                src={checkBook}
+                alt="CheckBook Icon"
+                width={24}
+                height={24}
+              />
+            }
+            onClick={() => {
+              router.push(`/course-planner`);
+            }}
+          >
+            {t('COURSE_PLANNER.COURSE_PLANNER')}
+          </Button>
         </Box>
         {!isEliminatedFromBuild('Assessments', 'feature') && (
           <Box sx={{ marginTop: '18px' }}>
@@ -380,7 +366,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             </Button>
           </Box>
         )}
-        <Box sx={{ marginTop: '18px' }}>
+        {/* <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-8"
             sx={{
@@ -408,7 +394,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           >
             {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
           </Button>
-        </Box>
+        </Box> */}
         <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14"
