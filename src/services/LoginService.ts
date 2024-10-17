@@ -75,10 +75,10 @@ export const forgotPasswordAPI = async (
 
 
 export const resetPasswordLink = async (
-  username: any): Promise<any> => {
+  username: any , redirectUrl : any ): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/password-reset-link`;
   try {
-    const response = await post(apiUrl, { username });
+    const response = await post(apiUrl, { username  , redirectUrl:process.env.NEXT_PUBLIC_BASE_LOGIN_URL });
     return response?.data;
   } catch (error) {
     console.error('error in reset', error);
