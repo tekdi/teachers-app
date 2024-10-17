@@ -3,7 +3,7 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
 import CheckIcon from '@mui/icons-material/Check';
-import { login, successfulNotification } from '../services/LoginService';
+import { login } from '../services/LoginService';
 import { showToastMessage } from '@/components/Toastify';
 import { PasswordCreateProps } from '@/utils/Interfaces';
 import { useRouter } from 'next/router';
@@ -97,11 +97,11 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
         if (response) {
           handleResetPassword(password);
           const username = localStorage.getItem('userEmail');
-          if (username) {
-            await successfulNotification(false, 'USER', 'OnPasswordReset', {
-              receipients: [username],
-            });
-          }
+          // if (username) {
+          //   await successfulNotification(false, 'USER', 'OnPasswordReset', {
+          //     receipients: [username],
+          //   });
+          // }
         } else {
           setOldPasswordError(true);
         }
