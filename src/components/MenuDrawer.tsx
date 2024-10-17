@@ -86,7 +86,6 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isCoursePlanner = router.pathname.includes('/course-planner');
   const isObservation = router.pathname.includes('/observation');
 
-  
   const isAssessments = router.pathname.includes('/assessments');
   const isBoard = router.pathname.includes('/board-enrollment');
 
@@ -95,13 +94,16 @@ const MenuDrawer: React.FC<DrawerProps> = ({
       open={isDesktop || isOpen}
       onClose={closeDrawer}
       transitionDuration={{ enter: 500, exit: 500 }}
-      anchor="left"
+      anchor={isRTL ? 'right' : 'left'}
       className="backgroundFaded"
       variant={isDesktop ? 'persistent' : 'temporary'}
       sx={{
         '& .MuiPaper-root': {
-          borderRight: `1px solid theme.palette.warning['A100']`,
+          borderRight: `1px solid ${theme.palette.warning['A100']}`,
           zIndex: '998 !important',
+          left: isRTL ? '0px !important' : '0px !important',
+
+          width: isRTL ? '350px !important' : 'unset !important',
         },
       }}
     >
@@ -278,10 +280,13 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               // marginTop: '15px',
               // gap: '10px',
 
-
-              background: isObservation ? theme.palette.primary.main : 'transparent',
+              background: isObservation
+                ? theme.palette.primary.main
+                : 'transparent',
               gap: '10px',
-              padding: isObservation? '16px 18px !important' : '0px 18px !important',
+              padding: isObservation
+                ? '16px 18px !important'
+                : '0px 18px !important',
               color: isObservation ? '#2E1500' : theme.palette.warning.A200,
               fontWeight: isObservation ? '600' : 500,
               '&:hover': {
@@ -290,10 +295,6 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   : 'transparent',
               },
               marginTop: '15px',
-
-
-
-              
             }}
             startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
             onClick={navigateToObservation}
