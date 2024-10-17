@@ -1,5 +1,6 @@
 import { Role } from '@/utils/app.constant';
 
+export const AttendanceAPILimit: number = 300;
 export const lowLearnerAttendanceLimit: number = 32;
 export const avgLearnerAttendanceLimit: number = 66;
 export const dashboardDaysLimit: number = 30;

@@ -26,7 +26,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
+import { accessControl, AttendanceAPILimit, lowLearnerAttendanceLimit } from './../../app.config';
 
 import CohortAttendanceListView from '@/components/CohortAttendanceListView';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
@@ -146,7 +146,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         setDateRange(`(${startDay} ${startDayMonth}-${endDay} ${endDayMonth})`);
       }
       const cohortAttendanceData: CohortAttendancePercentParam = {
-        limit: 0,
+        limit: AttendanceAPILimit,
         page: 0,
         filters: {
           scope: 'student',
@@ -286,7 +286,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               filters.toDate = isToDate;
             }
             const cohortAttendanceData: CohortAttendancePercentParam = {
-              limit: 0,
+              limit: AttendanceAPILimit,
               page: 0,
               filters,
               facets: ['contextId'],
