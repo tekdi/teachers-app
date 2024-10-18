@@ -731,3 +731,8 @@ export interface PasswordCreateProps {
   handleResetPassword: (password: string) => void;
   editPassword?: boolean;
 }
+
+export interface AcademicYear {
+  id: string;
+  session: string;
+}
