@@ -25,6 +25,7 @@ import Image from 'next/image';
 import { useDirection } from '../hooks/useDirection';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 import { getAcademicYear } from '../services/AcademicYearService';
+import { AcademicYear } from '@/utils/Interfaces';
 
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
@@ -32,11 +33,6 @@ interface DrawerProps {
   language: string;
   setLanguage: (lang: string) => void;
   handleToggleDrawer?: (open: boolean) => () => void;
-}
-
-interface AcademicYear {
-  id: string;
-  session: string;
 }
 
 const MenuDrawer: React.FC<DrawerProps> = ({
@@ -61,24 +57,14 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   useEffect(() => setIsOpen(open), [open]);
 
   useEffect(() => {
-    const getAcademicYearList = async () => {
-      const academicYearList: AcademicYear[] = await getAcademicYear();
-      const extractedAcademicYears = academicYearList.map(
-        ({ id, session }) => ({ id, session })
-      );
-      setAcademicYearList(extractedAcademicYears);
-      console.log('extractedAcademicYears', extractedAcademicYears);
-    };
-
-    getAcademicYearList();
-  }, []);
-
-  useEffect(() => {
-    if (academicYearList?.length > 0) {
-      setSelectedSessionId(academicYearList[0]?.id);
-      localStorage.setItem('academicYearId', academicYearList[0]?.id)
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedList = localStorage.getItem('academicYearList');
+      setAcademicYearList(storedList ? JSON.parse(storedList) : []);
+      const selectedAcademicYearId = localStorage.getItem('academicYearId');
+      setSelectedSessionId(selectedAcademicYearId ?? '');
+      console.log('Retrieved academicYearList:', academicYearList);
     }
-  }, [academicYearList]);
+  }, []);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newLocale = event.target.value;
@@ -92,7 +78,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const handleSelectChange = (event: SelectChangeEvent) => {
     setSelectedSessionId(event.target.value);
     console.log('selected academic year id', event.target.value);
-    localStorage.setItem('academicYearId', event.target.value)
+    localStorage.setItem('academicYearId', event.target.value);
   };
 
   const closeDrawer = () => {
