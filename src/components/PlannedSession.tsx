@@ -204,18 +204,18 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             (courseType: any) => {
               const commonAssociations = courseType?.associations.filter(
                 (assoc: any) =>
-                  matchState?.associations.map(
+                  matchState?.associations.filter(
                     (item: any) => item.code === assoc.code
-                  ) &&
-                  matchBoard?.associations.map(
+                  )?.length &&
+                  matchBoard?.associations.filter(
                     (item: any) => item.code === assoc.code
-                  ) &&
-                  matchMedium?.associations.map(
+                  )?.length &&
+                  matchMedium?.associations.filter(
                     (item: any) => item.code === assoc.code
-                  ) &&
-                  matchGrade?.associations.map(
+                  )?.length &&
+                  matchGrade?.associations.filter(
                     (item: any) => item.code === assoc.code
-                  )
+                  )?.length
               );
               console.log(commonAssociations);
               const getSubjects = getOptionsByCategory(frameworks, 'subject');

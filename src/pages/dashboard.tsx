@@ -27,6 +27,7 @@ import {
 } from '../utils/Interfaces';
 import {
   accessControl,
+  AttendanceAPILimit,
   dashboardDaysLimit,
   eventDaysLimit,
   lowLearnerAttendanceLimit,
@@ -396,7 +397,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           if (classId) {
             const cohortAttendancePercent = async () => {
               const cohortAttendanceData: CohortAttendancePercentParam = {
-                limit: 0,
+                limit: AttendanceAPILimit,
                 page: 0,
                 filters: {
                   scope: 'student',

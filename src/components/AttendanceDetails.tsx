@@ -2,6 +2,7 @@ import { attendanceStatusList } from '@/services/AttendanceService';
 import { shortDateFormat } from '@/utils/Helper';
 import { AttendanceStatusListProps, DropoutMember } from '@/utils/Interfaces';
 import { Status, cohortPrivileges } from '@/utils/app.constant';
+import { AttendanceAPILimit } from '../../app.config';
 
 export const fetchAttendanceDetails = async (
   nameUserIdArray: any[],
@@ -43,7 +44,7 @@ export const fetchAttendanceDetails = async (
     const formatSelectedDate = shortDateFormat(new Date(selectedDate));
 
     const attendanceStatusData: AttendanceStatusListProps = {
-      limit: 0,
+      limit: AttendanceAPILimit,
       page: 0,
       filters: {
         fromDate: formatSelectedDate,
