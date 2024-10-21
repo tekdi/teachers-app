@@ -79,6 +79,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     setSelectedSessionId(event.target.value);
     console.log('selected academic year id', event.target.value);
     localStorage.setItem('academicYearId', event.target.value);
+    window.location.reload();
   };
 
   const closeDrawer = () => {
