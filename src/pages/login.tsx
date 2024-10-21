@@ -506,7 +506,10 @@ const LoginPage = () => {
                     }}
                     onClick={() => {
                       handleForgotPasswordClick();
-                      router.push('/forgot-password');
+                      // router.push('/forgot-password');
+                      window.open(
+                        'https://poetic-biscuit-096b12.netlify.app/?redirectUrl=http://localhost:3000/login'
+                      );
                     }}
                   >
                     {t('LOGIN_PAGE.FORGOT_PASSWORD')}
