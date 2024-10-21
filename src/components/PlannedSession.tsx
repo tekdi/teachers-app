@@ -627,11 +627,15 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const value = event?.target?.value;
     setLink(value);
 
+    const zoomLinkPattern =
+      /^https?:\/\/[\w-]*\.?zoom\.(com|us)\/(j|my)\/[\w-]+(\?[\w=&-]*)?$/;
+
     const googleMeetLinkPattern =
-      /^(https?:\/\/)?(meet\.google\.com\/[a-zA-Z0-9-]+)$/;
+      /^https?:\/\/meet\.(google\.com|[a-zA-Z0-9-]+\.com)\/[a-z]{3,}-[a-z]{3,}-[a-z]{3}(\?[\w=&-]*)?$/;
 
     let onlineProvider: string;
-    if (value.includes('zoom')) {
+    if (zoomLinkPattern.test(value)) {
+      setLinkError('');
       onlineProvider = t('CENTER_SESSION.ZOOM');
     } else if (googleMeetLinkPattern.test(value)) {
       setLinkError('');
@@ -855,8 +859,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             (baseBody.isMeetingNew = false),
             (baseBody.meetingDetails = {
               url: block?.meetingLink || '',
-              password: block?.meetingPasscode || '7674534',
-              id: '123-456-789',
+              password: block?.meetingPasscode || '',
+              id: '',
             });
         }
 
@@ -1189,7 +1193,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               </Box>
             )}
             <SessionMode
-              mode={editSession ? mode ?? '' : block?.sessionMode ?? ''}
+              mode={editSession ? (mode ?? '') : (block?.sessionMode ?? '')}
               handleSessionModeChange={(e) =>
                 handleSessionModeChange(e, block?.id)
               }
@@ -1219,7 +1223,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   onChange={(event: any) =>
                     handleCourseTypeChange(block?.id, event)
                   }
-                  value={selectedCourseType || ''}
+                  value={
+                    block?.courseType === undefined ? '' : selectedCourseType
+                  }
                   disabled={!StateName || !medium || !grade || !board}
                 >
                   {courseTypes?.map((courseType: string) => (
@@ -1251,7 +1257,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       onChange={(event: any) =>
                         handleSubjectChange(block?.id, event)
                       }
-                      value={selectedSubject || ''}
+                      value={block?.subject ?? selectedSubject}
                       disabled={!(StateName && medium && grade && board)}
                     >
                       {subjects?.map((subject: string) => (
@@ -1272,7 +1278,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   id="outlined-basic"
                   label={t('CENTER_SESSION.SESSION_TITLE_OPTIONAL')}
                   variant="outlined"
-                  value={block?.subjectTitle || shortDescription}
+                  value={block?.subjectTitle ?? shortDescription}
                   onChange={(e) => {
                     handleSubjectTitleChange(e, block?.id);
                   }}
@@ -1287,7 +1293,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 <Box sx={{ mt: 2 }}>
                   <TextField
                     id="outlined-basic"
-                    value={link}
+                    value={block?.meetingLink ?? link}
                     label={t('CENTER_SESSION.MEETING_LINK')}
                     variant="outlined"
                     error={!!linkError}
@@ -1442,7 +1448,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   useAbbreviation={true}
                   selectedDays={
                     selectedDays?.length
-                      ? selectedDays
+                      ? editSession?.daysOfWeek
                       : block?.selectedWeekDays
                   }
                   onSelectionChange={(newSelectedDays) => {
