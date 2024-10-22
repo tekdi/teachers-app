@@ -1140,16 +1140,16 @@ html[dir="rtl"] .swiper-pagination-fraction {
 } */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-  --primary-color: #1B4CA1;
-  --btn-outline: #1B4CA1;
+  --foreground: #F7BE36;
+  --primary-color: black;
+  --btn-outline:#F7BE36;
   --error-color: rgb(150, 4, 4);
   --question-tip: gray;
   --general-btn-text-color: white;
-  --general-btn-hover-bg: white;
-  --secondary-btn-bg: white;
-  --secondary-btn-hover-bg: whitesmoke;
-  --card-bg: white;
+  --general-btn-hover-bg:#F7BE36;
+  --secondary-btn-bg: #F7BE36;
+  --secondary-btn-hover-bg: #F7BE36;
+  --card-bg: #FBF4E5;
   --disabled-btn-bg: gainsboro;
-  --disabled-btn-text: gray;
+  --disabled-btn-text: #F7BE36;
 }

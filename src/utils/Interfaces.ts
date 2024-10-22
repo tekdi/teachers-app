@@ -90,6 +90,7 @@ export interface CohortMemberList {
     cohortId: string;
     role?: string;
     status?: string[];
+    name?:string |undefined
   };
 }
 
@@ -730,4 +731,9 @@ export interface GetUserProjectStatusParams {
 export interface PasswordCreateProps {
   handleResetPassword: (password: string) => void;
   editPassword?: boolean;
+}
+
+export interface observationInterface
+{
+role?:string
 }

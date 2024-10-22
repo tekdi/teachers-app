@@ -81,6 +81,11 @@ export enum FormContextType {
   TEAM_LEADER = 'TEAM LEADER',
   COHORT = 'COHORT',
 }
+export enum ObservationEntityType {
+  LEARNER = 'learner',
+  FACILITATOR = 'facilitator',
+  CENTER = 'center',
+}
 
 export enum CenterType {
   REGULAR = 'REGULAR',

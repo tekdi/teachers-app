@@ -257,7 +257,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               : t('DASHBOARD.MY_TEACHING_CENTERS')}
           </Button>
         </Box>
-        {/* <Box sx={{ marginTop: '18px' }}>
+        <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14"
             sx={{
@@ -285,7 +285,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           >
             {t('COMMON.OBSERVATIONS_FORMS')}
           </Button>
-        </Box> */}
+        </Box>
         <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-7"
