@@ -627,17 +627,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const value = event?.target?.value;
     setLink(value);
 
-    const zoomLinkPattern =
-      /^https?:\/\/[\w-]*\.?zoom\.(com|us)\/(j|my)\/[\w-]+(\?[\w=&-]*)?$/;
+    // const zoomLinkPattern =
+    //   /^https?:\/\/[\w-]*\.?zoom\.(com|us)\/(j|my)\/[\w-]+(\?[\w=&-]*)?$/;
 
-    const googleMeetLinkPattern =
-      /^https?:\/\/meet\.(google\.com|[a-zA-Z0-9-]+\.com)\/[a-z]{3,}-[a-z]{3,}-[a-z]{3}(\?[\w=&-]*)?$/;
+    // const googleMeetLinkPattern =
+    //   /^https?:\/\/meet\.(google\.com|[a-zA-Z0-9-]+\.com)\/[a-z]{3,}-[a-z]{3,}-[a-z]{3}(\?[\w=&-]*)?$/;
 
     let onlineProvider: string;
-    if (zoomLinkPattern.test(value)) {
+    if (value.includes('zoom')) {
       setLinkError('');
       onlineProvider = t('CENTER_SESSION.ZOOM');
-    } else if (googleMeetLinkPattern.test(value)) {
+    } else if (value.includes('google')) {
       setLinkError('');
       onlineProvider = t('CENTER_SESSION.GOOGLEMEET');
     } else {
