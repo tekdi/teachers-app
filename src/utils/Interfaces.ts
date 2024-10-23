@@ -733,7 +733,13 @@ export interface PasswordCreateProps {
   editPassword?: boolean;
 }
 
-export interface observationInterface
-{
-role?:string
+export interface AcademicYear {
+  id: string;
+  session: string;
+}
+
+export enum ObservationEntityType {
+  LEARNER = 'learner',
+  FACILITATOR = 'facilitator',
+  CENTER = 'center',
 }
