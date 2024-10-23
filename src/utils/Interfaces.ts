@@ -735,4 +735,5 @@ export interface PasswordCreateProps {
 export interface AcademicYear {
   id: string;
   session: string;
+  isActive: string;
 }
