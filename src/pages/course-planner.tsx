@@ -192,7 +192,9 @@ const CoursePlanner = () => {
       }
     };
 
-    fetchCohortSearchResults();
+    if (selectedValue.length) {
+      fetchCohortSearchResults();
+    }
   }, [selectedValue]);
 
   useEffect(() => {
@@ -502,6 +504,15 @@ const CoursePlanner = () => {
 
   const anyFieldsEmpty = emptyFields.length > 0;
 
+  const redirectTODetailsPage = (item: any) => {
+    if (tStore.type) {
+      setTaxonomySubject(item.name);
+      router.push({
+        pathname: '/course-planner-detail',
+      });
+    }
+  };
+
   return (
     <Box minHeight="100vh">
       <Box>
@@ -652,12 +663,7 @@ const CoursePlanner = () => {
                         margin: '14px',
                         background: theme.palette.warning['A400'],
                       }}
-                      onClick={() => {
-                        setTaxonomySubject(item.name);
-                        router.push({
-                          pathname: '/course-planner-detail',
-                        });
-                      }}
+                      onClick={() => redirectTODetailsPage(item)}
                     >
                       <Box
                         sx={{

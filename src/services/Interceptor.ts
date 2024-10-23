@@ -38,6 +38,10 @@ instance.interceptors.request.use(
 
 
       }
+      const academicYearId = localStorage.getItem('academicYearId')
+      if (academicYearId) {
+        config.headers.academicyearid = academicYearId;
+      }
     }
     // config.headers.tenantid = '4783a636-1191-487a-8b09-55eca51b5036';
     // config.headers.tenantid = 'fbe108db-e236-48a7-8230-80d34c370800';

@@ -66,7 +66,7 @@ import {
   getMenuItems,
   limit,
 } from '@/utils/app.constant';
-import { accessControl, Program } from '../../../app.config';
+import { accessControl, AttendanceAPILimit, Program } from '../../../app.config';
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { getFormRead } from '@/hooks/useFormRead';
@@ -635,7 +635,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
       }
 
       const cohortAttendanceData: CohortAttendancePercentParam = {
-        limit: 0,
+        limit: AttendanceAPILimit,
         page: 0,
         filters: {
           scope: 'student',
