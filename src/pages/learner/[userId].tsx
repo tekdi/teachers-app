@@ -285,7 +285,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
       filters,
       facets: ['userId'],
     });
-    if (response?.statusCode === 200) {
+    if (response?.responseCode === 200) {
       const userData = response?.data?.result?.userId[userId];
       setOverallAttendance(userData);
     }

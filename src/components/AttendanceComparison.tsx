@@ -47,7 +47,8 @@ interface AttendanceResult {
 }
 
 interface AttendanceResponse {
-  statusCode: number;
+  responseCode?: number;
+  // statusCode?: number;
   message: string;
   data: {
     result: {
@@ -99,10 +100,10 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
       const dataMap: Record<string, string> = {};
 
       results.forEach((result) => {
-        if (result?.statusCode === 200 && result?.data?.result?.contextId) {
+        if (result?.responseCode === 200 && result?.data?.result?.contextId) {
           Object.keys(result?.data?.result?.contextId).forEach((id) => {
             dataMap[id] =
-              result?.data?.result?.contextId[id]?.present_percentage ?? '0';
+              result.data.result.contextId[id]?.present_percentage ?? '0';
           });
         }
       });
