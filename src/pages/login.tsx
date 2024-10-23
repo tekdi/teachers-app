@@ -32,6 +32,8 @@ import { login } from '../services/LoginService';
 import { getUserDetails, getUserId } from '../services/ProfileService';
 import loginImg from './../assets/images/login-image.jpg';
 import { useDirection } from '../hooks/useDirection';
+import { getAcademicYear } from '@/services/AcademicYearService';
+import { AcademicYear } from '@/utils/Interfaces';
 
 const LoginPage = () => {
   const { t, i18n } = useTranslation();
@@ -241,6 +243,16 @@ const LoginPage = () => {
           },
         };
         telemetryFactory.interact(telemetryInteract);
+        const getAcademicYearList = async () => {
+          const academicYearList: AcademicYear[] = await getAcademicYear();
+          localStorage.setItem('academicYearList', JSON.stringify(academicYearList));
+          const extractedAcademicYears = academicYearList.map(
+            ({ id, session }) => ({ id, session })
+          );
+          localStorage.setItem('academicYearId', extractedAcademicYears[0]?.id || '');
+          console.log('extractedAcademicYears', extractedAcademicYears);
+        };
+        getAcademicYearList();
         router.push('/dashboard');
       } catch (error: any) {
         setLoading(false);
