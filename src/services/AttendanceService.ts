@@ -15,7 +15,7 @@ export const bulkAttendance = async ({
   contextId,
   userAttendance,
 }: BulkAttendanceParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance/bulkAttendance`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_ATTENDANCE_URL}/attendance/bulkAttendance`;
   try {
     const response = await post(apiUrl, {
       attendanceDate,
@@ -34,7 +34,7 @@ export const markAttendance = async ({
   contextId,
   attendance,
 }: MarkAttendanceParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_ATTENDANCE_URL}/attendance`;
   try {
     const response = await post(apiUrl, {
       userId,
@@ -54,7 +54,7 @@ const postAttendanceList = async ({
   filters,
   facets,
 }: any): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_ATTENDANCE_URL}/attendance/list`;
   try {
     const response = await post(apiUrl, { limit, page, filters, facets });
     return response?.data;
@@ -151,7 +151,7 @@ export const classesMissedAttendancePercentList = async ({
   facets,
   sort,
 }: any): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/attendance/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_ATTENDANCE_URL}/attendance/list`;
   try {
     const response = await post(apiUrl, { filters, facets, sort });
     return response?.data;
