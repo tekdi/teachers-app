@@ -247,10 +247,12 @@ const LoginPage = () => {
           const academicYearList: AcademicYear[] = await getAcademicYear();
           localStorage.setItem('academicYearList', JSON.stringify(academicYearList));
           const extractedAcademicYears = academicYearList.map(
-            ({ id, session }) => ({ id, session })
+            ({ id, session, isActive }) => ({ id, session, isActive })
           );
-          localStorage.setItem('academicYearId', extractedAcademicYears[0]?.id || '');
-          console.log('extractedAcademicYears', extractedAcademicYears);
+          const activeSession = extractedAcademicYears.find(item => item.isActive);
+          const activeSessionId = activeSession ? activeSession.id : '';
+
+          localStorage.setItem('academicYearId', activeSessionId);
         };
         getAcademicYearList();
         router.push('/dashboard');
@@ -518,7 +520,10 @@ const LoginPage = () => {
                     }}
                     onClick={() => {
                       handleForgotPasswordClick();
-                      router.push('/forgot-password');
+                      // router.push('/forgot-password');
+                      window.open(
+                        `${process.env.NEXT_PUBLIC_RESET_PASSWORD_URL}?redirectUrl=${window.location.origin}/login`
+                      );
                     }}
                   >
                     {t('LOGIN_PAGE.FORGOT_PASSWORD')}
