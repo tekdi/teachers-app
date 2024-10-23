@@ -250,7 +250,9 @@ const LoginPage = () => {
           const extractedAcademicYears = academicYearList?.map(
             ({ id, session, isActive }) => ({ id, session, isActive })
           );
-          const activeSession = extractedAcademicYears?.find(item => item.isActive);
+          const activeSession = extractedAcademicYears?.find(
+            (item) => item.isActive
+          );
           const activeSessionId = activeSession ? activeSession.id : '';
           localStorage.setItem('academicYearId', activeSessionId);
         };
@@ -521,6 +523,8 @@ const LoginPage = () => {
                     onClick={() => {
                       handleForgotPasswordClick();
                       // router.push('/forgot-password');
+                      const link = `${process.env.NEXT_PUBLIC_RESET_PASSWORD_URL}?redirectUrl=${window.location.origin}/login`;
+                      console.log('link', link);
                       window.open(
                         `${process.env.NEXT_PUBLIC_RESET_PASSWORD_URL}?redirectUrl=${window.location.origin}/login`
                       );
