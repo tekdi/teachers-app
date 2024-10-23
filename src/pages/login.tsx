@@ -245,6 +245,7 @@ const LoginPage = () => {
         telemetryFactory.interact(telemetryInteract);
         const getAcademicYearList = async () => {
           const academicYearList: AcademicYear[] = await getAcademicYear();
+          if(academicYearList){
           localStorage.setItem('academicYearList', JSON.stringify(academicYearList));
           console.log('!!!!!!!!!!!!!!!!!', academicYearList)
           const extractedAcademicYears = academicYearList?.map(
@@ -255,6 +256,7 @@ const LoginPage = () => {
           );
           const activeSessionId = activeSession ? activeSession.id : '';
           localStorage.setItem('academicYearId', activeSessionId);
+        }
         };
         getAcademicYearList();
         router.push('/dashboard');
