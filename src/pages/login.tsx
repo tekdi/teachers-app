@@ -245,11 +245,17 @@ const LoginPage = () => {
         telemetryFactory.interact(telemetryInteract);
         const getAcademicYearList = async () => {
           const academicYearList: AcademicYear[] = await getAcademicYear();
-          localStorage.setItem('academicYearList', JSON.stringify(academicYearList));
+          localStorage.setItem(
+            'academicYearList',
+            JSON.stringify(academicYearList)
+          );
           const extractedAcademicYears = academicYearList.map(
             ({ id, session }) => ({ id, session })
           );
-          localStorage.setItem('academicYearId', extractedAcademicYears[0]?.id || '');
+          localStorage.setItem(
+            'academicYearId',
+            extractedAcademicYears[0]?.id || ''
+          );
           console.log('extractedAcademicYears', extractedAcademicYears);
         };
         getAcademicYearList();
@@ -519,6 +525,8 @@ const LoginPage = () => {
                     onClick={() => {
                       handleForgotPasswordClick();
                       // router.push('/forgot-password');
+                      const link = `${process.env.NEXT_PUBLIC_RESET_PASSWORD_URL}?redirectUrl=${window.location.origin}/login`;
+                      console.log('link', link);
                       window.open(
                         `${process.env.NEXT_PUBLIC_RESET_PASSWORD_URL}?redirectUrl=${window.location.origin}/login`
                       );
