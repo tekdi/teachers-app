@@ -525,12 +525,12 @@ const LoginPage = () => {
                     onClick={() => {
                       handleForgotPasswordClick();
                       // router.push('/forgot-password');
-                      const resetUrl = process.env.RESET_PASSWORD_URL || 'https://qa-reset-password.tekdinext.com';
+                      const resetAppUrl = process.env.NEXT_PUBLIC_RESET_PASSWORD_URL;
                       console.log('NEXT_PUBLIC_RESET_PASSWORD_URL', process.env.NEXT_PUBLIC_RESET_PASSWORD_URL);
                       console.log('NEXT_PUBLIC_BASE_URL', process.env.NEXT_PUBLIC_BASE_URL);
                       console.log('RESET_PASSWORD_URL', process.env.RESET_PASSWORD_URL);
                       window.open(
-                        `${resetUrl}?redirectUrl=${window.location.origin}/login`
+                        `${resetAppUrl}?redirectUrl=${window.location.origin}/login`
                       );
                     }}
                   >
