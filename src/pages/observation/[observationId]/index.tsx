@@ -284,7 +284,11 @@ const ObservationDetails = () => {
     console.log("cohortId", cohortId)
     const basePath = router.asPath.split('?')[0];
     const newFullPath = `${basePath}/questionary`;
-    router.push(newFullPath);
+    const queryParams = { cohortId:cohortId, Id:Id};
+    router.push({
+      pathname: newFullPath,
+      query: queryParams,
+    });
   };
 
   const renderEntityData = (data: EntityData[], entityType: string) =>

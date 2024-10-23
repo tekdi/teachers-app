@@ -7,9 +7,10 @@ import { Box } from '@mui/material';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { GetStaticPaths } from 'next';
+import { fetchQuestion } from '@/services/ObservationServices';
 
-const QuestionnaireApp = dynamic(
-  () => import('@/components/QuestionnaireApp'),
+const ObservationComponent = dynamic(
+  () => import('@/components/ObservationComponent'),
   {
     ssr: false,
     // loading: () => <p>Loading Questionnaire App...</p>,
@@ -18,12 +19,44 @@ const QuestionnaireApp = dynamic(
 
 const ObservationQuestions: React.FC = () => {
   const router = useRouter();
+  const { Id } = router.query;
+  const { cohortId } = router.query;
+  const [questionResponse, setQuestionResponseResponse] =
+  useState<any>(null);
+  useEffect(() => {
+    const fetchQuestionsList = async () => {
+      try {
+       const observationId=Id;
+        const entityId=cohortId;  
+        if(observationId && Id)
+        {
+          const response=await fetchQuestion({observationId,entityId})
+          const combinedData = {
+            solution: response.solution,
+            assessment: {
+              ...response.assessment, // Spread all properties from assessment
+              endDate: "2026-07-13T23:59:59.000Z",
+
+            }
+          };
+       
+          setQuestionResponseResponse(
+            combinedData
+          )
+          console.log("setQuestionResponseResponse", combinedData)
+        }
+      } catch (error) {
+        console.error('Error fetching cohort list', error);
+      }
+    };
+    fetchQuestionsList();
+  }, [Id, cohortId]);
 
   return (
     <Box>
       <Header />
 
-      <QuestionnaireApp />
+      <ObservationComponent observationQuestions={questionResponse} />
     </Box>
   );
 };

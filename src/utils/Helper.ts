@@ -614,3 +614,31 @@ export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => 
     setBlockName(blockObject?.value);
   }
 };
+
+export function formatEndDate({diffDays}: any) {
+  // Check if structuredClone is available
+  if(diffDays)
+    {
+      let remainingTime = '';
+    if (diffDays >= 365) {
+      const years = Math.floor(diffDays / 365);
+      const remainingDays = diffDays % 365;
+      
+      const months = Math.floor(remainingDays / 30.44); 
+      const days = Math.round(remainingDays % 30.44);
+      
+      remainingTime = `${years} year(s)${months > 0 ? `, ${months} months` : ''}${days > 0 ? `, , ${days} days` : ''}`;
+    } else if (diffDays > 31) {
+      const months = Math.floor(diffDays / 30.44); 
+      const days = Math.round(diffDays % 30.44);
+      
+      remainingTime = `${months} months ${days > 0 ? ` , ${days} days` : ''}`;
+    } else {
+      remainingTime = `${diffDays} days`;
+    }
+    return remainingTime;
+  }
+  return "";
+      
+}
+

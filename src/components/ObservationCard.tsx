@@ -1,20 +1,21 @@
 import { Box, Typography, Card, CardContent } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import { formatEndDate } from '@/utils/Helper';
 
 interface ObservationCardProp {
-  observationName?: string;
-  observationId?: string;
-  observationDescription?: string;
+  name?: string;
+  id?: string;
+  description?: string;
   onCardClick?: (observationId: string) => void;
   startDate?: string;
   endDate?: string;
 }
 
 const ObservationCard: React.FC<ObservationCardProp> = ({
-  observationName,
-  observationId,
-  observationDescription,
+  name,
+  id,
+  description,
   onCardClick,
   startDate,
   endDate
@@ -25,31 +26,27 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
 
   useEffect(() => {
     const today = new Date(); 
-    const targetDate = new Date('2025-10-21T14:58:44.524Z'); 
-    
-    const diffTime = Math.abs(targetDate.getTime() - today.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    setRemainingTimes(diffDays)
-    let remainingTime = '';
-    if (diffDays >= 365) {
-      const years = Math.floor(diffDays / 365);
-      const remainingDays = diffDays % 365;
-      
-      const months = Math.floor(remainingDays / 30.44); 
-      const days = Math.round(remainingDays % 30.44);
-      
-      remainingTime = `${years} year(s)${months > 0 ? `, ${months} months` : ''}${days > 0 ? `, and ${days} days` : ''}`;
-    } else if (diffDays > 31) {
-      const months = Math.floor(diffDays / 30.44); 
-      const days = Math.round(diffDays % 30.44);
-      
-      remainingTime = `${months} months ${days > 0 ? ` and ${days} days` : ''}`;
-    } else {
-      remainingTime = `${diffDays} days`;
-    }
+    console.log("endDate", endDate)
+    if(endDate)
+    {
+      const targetDate = new Date(endDate.toString()); 
+       console.log("targetDate", targetDate)
+      const diffTime = Math.abs(targetDate?.getTime() - today.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    setRemainingDays(remainingTime)
-  }, []);
+      setRemainingTimes(diffDays)
+      if(diffDays)
+      {
+
+        const remainingTime=formatEndDate({diffDays})
+        setRemainingDays(remainingTime)
+
+
+      }
+  
+    }
+   
+  }, [endDate]);
   return (
     <Card
       variant="outlined"
@@ -71,7 +68,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
         display: 'flex',
         flexDirection: 'column',
       }}
-      onClick={() => onCardClick?.(observationId || '')}
+      onClick={() => onCardClick?.(id || '')}
     >
       <Box display="flex" justifyContent="space-between" alignItems="center" flexGrow={1}>
         <CardContent sx={{ flexGrow: 1 }}>
@@ -86,7 +83,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
             }}
           >
             <Typography color={remainingTimes<=5?"#BA1A1A":"#7A5900"}variant="h5">   
-              {remainingDays} 
+              {remainingDays} left
             </Typography>
           </Box>
 
@@ -99,12 +96,12 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
                 flexGrow: 1,
               }}
             >
-              {observationName}
+              {name}
             </Typography>
           </Box>
 
           {/* Description */}
-          {observationDescription && (
+          {description && (
             <Typography
               variant="body2"
               component="p"
@@ -120,7 +117,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
                 height: '3em',
               }}
             >
-              {observationDescription}
+              {description}
             </Typography>
           )}
 

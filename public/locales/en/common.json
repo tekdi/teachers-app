@@ -590,6 +590,7 @@
     "OBSERVATION_DETAILS":"Observation Details",
     "ADD_ENTITY":"Add {{entityType}} in observation list",
     "SEARCH_ENTITY":"Search {{entityType}} name",
-    "OBSERVATIONS":"{{name}} Observations"
+    "OBSERVATIONS":"{{name}} Observations",
+    "SEARCH_OBSERVATIONS":"Search Observations"
 }
 }

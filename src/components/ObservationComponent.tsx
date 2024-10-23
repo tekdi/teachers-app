@@ -4,6 +4,7 @@ import axios from 'axios';
 import 'questionnaire-webcomponent/questionnaire-player-webcomponent.js';
 import 'questionnaire-webcomponent/styles.css';
 import mockData from "@/pages/data.json";
+import { updateSubmission } from '@/services/ObservationServices';
 
 
 
@@ -15,7 +16,9 @@ interface FileUploadEvent {
     question_id: string;
   };
 }
-
+interface QuestionnaireAppProps {
+  observationQuestions: any; // Define the correct type here based on your data structure
+}
 interface PresignedUrlResponse {
   url: string;
   getDownloadableUrl: string[];
@@ -35,12 +38,14 @@ interface FileUploadData {
   [key: string]: any;
 }
 
-const QuestionnaireApp: React.FC = () => {
+const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQuestions }) => {
   const questionairePlayerMainRef = useRef<HTMLElement | null>(null);
-  console.log('questionairePlayerMainRef', questionairePlayerMainRef);
+  console.log('questionairePlayerMainRef',  observationQuestions);
+
   const [fileUploadResponse, setFileUploadResponse] =
     useState<FileUploadResponse | null>(null);
-  const assessment = mockData;
+  const assessment = observationQuestions;
+
   const uploadFileToPresignedUrl = async (event: FileUploadEvent) => {
     const payload: any = {
       ref: 'survey',
@@ -124,7 +129,14 @@ const QuestionnaireApp: React.FC = () => {
 
       if (playerElement) {
         console.log('playerElement', playerElement);
-        const handlePlayerSubmitOrSaveEvent = (event: Event) => {
+        const handlePlayerSubmitOrSaveEvent = async(event: Event) => {
+          const submissionData={
+            evidence:  (event as CustomEvent).detail
+          }
+          const submissionId=observationQuestions?.assessment?.submissionId
+           const response= await updateSubmission({submissionId, submissionData})
+
+
           console.log(
             'Event Data Logged from the react app',
             (event as CustomEvent).detail
@@ -155,13 +167,16 @@ const QuestionnaireApp: React.FC = () => {
 
   return (
     <>
+    {
+      observationQuestions && 
       <questionnaire-player-main
-        assessment={JSON.stringify(assessment)}
-        fileuploadresponse={JSON.stringify(fileUploadResponse)}
-        ref={questionairePlayerMainRef}
+      assessment={JSON.stringify(observationQuestions)}
+      fileuploadresponse={JSON.stringify(fileUploadResponse)}
+      ref={questionairePlayerMainRef}
       ></questionnaire-player-main>
+    }
     </>
   );
 };
 
-export default QuestionnaireApp;
+export default ObservationComponent;

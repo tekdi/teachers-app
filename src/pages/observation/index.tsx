@@ -225,11 +225,12 @@ const ObservationForms: React.FC = () => {
                 (item: any) => (
                   <Box key={item._id} sx={{ margin: 1 }}>
                     <ObservationCard
-                      observationName={item.name}
+                      name={item.name}
                       onCardClick={() =>
                         onCardClick(item?.solutionId, item?.entityType, item?.name,item?._id)
                       }
-                      observationDescription={item?.description}
+                      description={item?.description}
+                      endDate={item?.endDate}
                     />
                   </Box>
                 )
