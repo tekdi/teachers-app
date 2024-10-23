@@ -249,14 +249,15 @@ const LoginPage = () => {
             'academicYearList',
             JSON.stringify(academicYearList)
           );
-          const extractedAcademicYears = academicYearList.map(
-            ({ id, session }) => ({ id, session })
+          const extractedAcademicYears = academicYearList?.map(
+            ({ id, session, isActive }) => ({ id, session, isActive })
           );
-          localStorage.setItem(
-            'academicYearId',
-            extractedAcademicYears[0]?.id || ''
+          const activeSession = extractedAcademicYears?.find(
+            (item) => item.isActive
           );
-          console.log('extractedAcademicYears', extractedAcademicYears);
+          const activeSessionId = activeSession ? activeSession.id : '';
+          localStorage.setItem('academicYearId', activeSessionId);
+          window.location.reload();
         };
         getAcademicYearList();
         router.push('/dashboard');
