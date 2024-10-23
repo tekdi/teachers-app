@@ -247,10 +247,12 @@ const LoginPage = () => {
           const academicYearList: AcademicYear[] = await getAcademicYear();
           localStorage.setItem('academicYearList', JSON.stringify(academicYearList));
           const extractedAcademicYears = academicYearList.map(
-            ({ id, session }) => ({ id, session })
+            ({ id, session, isActive }) => ({ id, session, isActive })
           );
-          localStorage.setItem('academicYearId', extractedAcademicYears[0]?.id || '');
-          console.log('extractedAcademicYears', extractedAcademicYears);
+          const activeSession = extractedAcademicYears.find(item => item.isActive);
+          const activeSessionId = activeSession ? activeSession.id : '';
+
+          localStorage.setItem('academicYearId', activeSessionId);
         };
         getAcademicYearList();
         router.push('/dashboard');
