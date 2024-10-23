@@ -246,13 +246,13 @@ const LoginPage = () => {
         const getAcademicYearList = async () => {
           const academicYearList: AcademicYear[] = await getAcademicYear();
           localStorage.setItem('academicYearList', JSON.stringify(academicYearList));
-          const extractedAcademicYears = academicYearList.map(
+          const extractedAcademicYears = academicYearList?.map(
             ({ id, session, isActive }) => ({ id, session, isActive })
           );
-          const activeSession = extractedAcademicYears.find(item => item.isActive);
+          const activeSession = extractedAcademicYears?.find(item => item.isActive);
           const activeSessionId = activeSession ? activeSession.id : '';
-
           localStorage.setItem('academicYearId', activeSessionId);
+          window.location.reload();
         };
         getAcademicYearList();
         router.push('/dashboard');
