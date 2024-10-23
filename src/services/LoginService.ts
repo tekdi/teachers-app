@@ -75,10 +75,14 @@ export const forgotPasswordAPI = async (
 
 
 export const resetPasswordLink = async (
-  username: any): Promise<any> => {
+  username: any , ): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/password-reset-link`;
   try {
-    const response = await post(apiUrl, { username });
+    let redirectUrl = process.env.NEXT_PUBLIC_FRONTEND_BASE_URL  || ''
+    if(redirectUrl === ''  && typeof window !== 'undefined' ){
+      redirectUrl = window.location.origin
+    }
+    const response = await post(apiUrl, { username  , redirectUrl});
     return response?.data;
   } catch (error) {
     console.error('error in reset', error);
@@ -88,22 +92,22 @@ export const resetPasswordLink = async (
 
 
 
-export const successfulNotification = async (
-  isQueue:boolean,
-  context: any,
-  key: any,
-  email: any
-): Promise<any> => {
-  const apiUrl: string =   `${process.env.NEXT_PUBLIC_NOTIFICATION_BASE_URL}/notification/send`;
-  try {
-    const response = await post(apiUrl, { isQueue, context, key, email });
-    console.log(email);
-    return response?.data;
-  } catch (error) {
-    console.error('error in reset', error);
-    throw error;
-  }
-};
+// export const successfulNotification = async (
+//   isQueue:boolean,
+//   context: any,
+//   key: any,
+//   email: any
+// ): Promise<any> => {
+//   const apiUrl: string =   `${process.env.NEXT_PUBLIC_NOTIFICATION_BASE_URL}/notification/send`;
+//   try {
+//     const response = await post(apiUrl, { isQueue, context, key, email });
+//     console.log(email);
+//     return response?.data;
+//   } catch (error) {
+//     console.error('error in reset', error);
+//     throw error;
+//   }
+// };
 
 
 

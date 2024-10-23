@@ -113,13 +113,16 @@ const MenuDrawer: React.FC<DrawerProps> = ({
       open={isDesktop || isOpen}
       onClose={closeDrawer}
       transitionDuration={{ enter: 500, exit: 500 }}
-      anchor="left"
+      anchor={isRTL ? 'right' : 'left'}
       className="backgroundFaded"
       variant={isDesktop ? 'persistent' : 'temporary'}
       sx={{
         '& .MuiPaper-root': {
-          borderRight: `1px solid theme.palette.warning['A100']`,
+          borderRight: `1px solid ${theme.palette.warning['A100']}`,
           zIndex: '998 !important',
+          left: isRTL ? '0px !important' : '0px !important',
+
+          width: isRTL ? '350px !important' : 'unset !important',
         },
       }}
     >
