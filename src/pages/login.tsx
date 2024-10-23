@@ -518,7 +518,10 @@ const LoginPage = () => {
                     }}
                     onClick={() => {
                       handleForgotPasswordClick();
-                      router.push('/forgot-password');
+                      // router.push('/forgot-password');
+                      window.open(
+                        `${process.env.NEXT_PUBLIC_RESET_PASSWORD_URL}?redirectUrl=${window.location.origin}/login`
+                      );
                     }}
                   >
                     {t('LOGIN_PAGE.FORGOT_PASSWORD')}

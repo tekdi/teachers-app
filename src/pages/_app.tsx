@@ -165,8 +165,10 @@ function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>{metaTags?.title}</title>
         <meta name="description" content={metaTags?.description} />
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-
+        <link
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"
+        />
       </Head>
       <CacheProvider value={isRTL ? rtlCache : ltrCache}>
         <CssVarsProvider theme={customTheme}>
