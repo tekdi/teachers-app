@@ -90,6 +90,7 @@ export interface CohortMemberList {
     cohortId: string;
     role?: string;
     status?: string[];
+    name?:string |undefined
   };
 }
 
@@ -736,4 +737,10 @@ export interface AcademicYear {
   id: string;
   session: string;
   isActive: string;
+}
+
+export enum ObservationEntityType {
+  LEARNER = 'learner',
+  FACILITATOR = 'facilitator',
+  CENTER = 'center',
 }

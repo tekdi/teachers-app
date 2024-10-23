@@ -83,3 +83,7 @@ export const RequisiteType = {
   PRE_REQUISITES: 'prerequisite',
   POST_REQUISITES: 'postrequisite',
 };
+export const entityList={
+  TEAM_LEADER: ['center', 'facilitator', 'learner'],
+  TEACHER: ['learner']
+}

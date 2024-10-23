@@ -584,5 +584,13 @@
     "MANDATORY": "Mandatory for {{FeesStepBoards}} only. For other Boards, this step is automatically marked completed. Please click on Save to submit the data.",
     "COMPLETED": "Completed",
     "MARK_AS_COMPLETE":"Mark as Complete"
-  }
+  },
+  "OBSERVATION_SURVEYS": {
+    "OBSERVATION_START": "Start Observation",
+    "OBSERVATION_DETAILS":"Observation Details",
+    "ADD_ENTITY":"Add {{entityType}} in observation list",
+    "SEARCH_ENTITY":"Search {{entityType}} name",
+    "OBSERVATIONS":"{{name}} Observations",
+    "SEARCH_OBSERVATIONS":"Search Observations"
+}
 }
