@@ -59,10 +59,17 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const storedList = localStorage.getItem('academicYearList');
+      try {
       setAcademicYearList(storedList ? JSON.parse(storedList) : []);
       const selectedAcademicYearId = localStorage.getItem('academicYearId');
       setSelectedSessionId(selectedAcademicYearId ?? '');
       console.log('Retrieved academicYearList:', academicYearList);
+      }
+      catch (error) {
+        console.error('Error parsing stored academic year list:', error);
+        setAcademicYearList([]);
+        setSelectedSessionId('');
+      }
     }
   }, []);
 
