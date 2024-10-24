@@ -30,12 +30,18 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import Pagination from '@mui/material/Pagination';
 import { CohortMemberList } from '@/utils/Interfaces';
-import { addEntities, checkEntityStatus, fetchEntities } from '@/services/ObservationServices';
+import {
+  addEntities,
+  checkEntityStatus,
+  fetchEntities,
+} from '@/services/ObservationServices';
 import { useTranslation } from 'react-i18next';
+import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
 
 interface EntityData {
-  cohortId: string;
-  name: string;
+  cohortId?: string;
+  name?: string;
+  userId?:string
 }
 
 const ObservationDetails = () => {
@@ -48,17 +54,20 @@ const ObservationDetails = () => {
   const [myCohortList, setMyCohortList] = useState<any[]>([]);
   const [myCohortListForCenter, setmyCohortListForCenter] = useState<any[]>([]);
   const [cohortIdData, setCohortIdData] = useState<any[]>([]);
+  const [userIdData, setUserIdData] = useState<any[]>([]);
+
 
   const [totalCountForCenter, setTotalCountForCenter] = React.useState(0);
 
   const [selectedCohort, setSelectedCohort] = useState<string>('');
   const [Data, setData] = React.useState<Array<any>>([]);
+  const [firstEntityStatus, setFirstEntityStatus] = React.useState<string>("");
+
   const [totalCount, setTotalCount] = React.useState(0);
   const [pageLimit, setPageLimit] = React.useState(5);
   const [page, setPage] = React.useState(0);
   const [pageForCenter, setPageForCenter] = React.useState(0);
   const [currentPage, setCurrentPage] = React.useState(0);
-
 
   const [limit, setLimit] = React.useState(pageLimit);
 
@@ -96,7 +105,7 @@ const ObservationDetails = () => {
             if (selectedCohort === '') setSelectedCohort(response[0]?.cohortId);
           }
 
-          if (searchInput !== '' && ObservationEntityType.CENTER) {
+          if (searchInput !== '' || entity===ObservationEntityType.CENTER) {
             const filteredData = response[0]?.childData?.filter((cohort: any) =>
               cohort?.name?.toLowerCase().includes(searchInput?.toLowerCase())
             );
@@ -111,8 +120,6 @@ const ObservationDetails = () => {
     fetchCohorts();
   }, [searchInput]);
 
- 
-
   useEffect(() => {
     setmyCohortListForCenter(
       myCohortList.slice(pageForCenter, pageForCenter + pageLimit)
@@ -121,71 +128,108 @@ const ObservationDetails = () => {
     setTotalCountForCenter(myCohortList?.length);
   }, [myCohortList, pageForCenter]);
 
-
   useEffect(() => {
     const fetchEntityList = async () => {
       try {
-        
+
         const urlPath = window.location.pathname;
 
         // Split the URL path to extract the ID after "/observation"
         //console.log("urlPath", urlPath)
         const solutionId = urlPath.split('/observation/')[1];
-        console.log("urlPath", solutionId)
+        if(solutionId){
+          const response = await fetchEntities({ solutionId });
 
-     const response=await fetchEntities({solutionId})
+          const entityIds = response?.result?.entities?.map(
+            (item: any) => item?._id
+          );
+          const unmatchedCohorts = myCohortListForCenter?.filter(
+            (child: any) => !entityIds?.includes(child.cohortId)
+          );
+          const unmatchedUsers = Data?.filter(
+            (child: any) => !entityIds?.includes(child.userId)
+          );
+  
+          const unmatchedUserIds = unmatchedUsers?.map(
+            (child: any) => child?.userId
+          );
+          const unmatchedCohortIds = unmatchedCohorts?.map(
+            (cohort) => cohort?.cohortId
+          );
+          setCohortIdData(unmatchedCohortIds);
+          setUserIdData(unmatchedUserIds)
+          // const data=unmatchedCohortIds
+          const data = {
+            data: entity!==ObservationEntityType.CENTER?unmatchedUserIds:unmatchedCohortIds,
+          };
+          if (Id && unmatchedCohortIds.length !== 0 && entity===ObservationEntityType.CENTER) {
+            let observationId = Id;
+            let r = await addEntities({ data, observationId });
+          }
+          else if(Id && unmatchedUserIds.length !== 0)
+  
+          {
+            console.log("unmatchedUserIds------------------", unmatchedUserIds)
+            let observationId = Id;
+            let r = await addEntities({ data, observationId });
+          }
+        }
 
-     const entityIds = response?.result?.entities.map((item: any )=> item._id);
-     const unmatchedCohorts = myCohortListForCenter.filter((child:any )=> !entityIds.includes(child.cohortId));
-     const unmatchedCohortIds = unmatchedCohorts.map(cohort => cohort.cohortId);
-     setCohortIdData(unmatchedCohortIds)
-    // const data=unmatchedCohortIds
-     const data={
-      "data":unmatchedCohortIds
-     }
-     if(Id && unmatchedCohortIds.length!==0)
-     {
-      let observationId=Id
-      let r=await addEntities({data, observationId})
-
-     }
-
-
+       
       } catch (error) {
-        setData([]);
 
         console.error('Error fetching cohort list:', error);
       } finally {
       }
     };
     fetchEntityList();
-  }, [myCohortListForCenter]);
-
-
+  }, [myCohortListForCenter, Data]);
 
   useEffect(() => {
     const entityStatus = async () => {
       try {
-        let observationId=Id;
-        let entityId=myCohortListForCenter[0]?.cohortId
-        if(myCohortListForCenter.length!==0 && Id)
-        {
-          const response=await checkEntityStatus({observationId,entityId})
+        let observationId = Id;
+        let entityId = myCohortListForCenter[0]?.cohortId;
+        if (myCohortListForCenter.length !== 0 && Id && entity===ObservationEntityType.CENTER) {
+          const response = await checkEntityStatus({ observationId, entityId });
+          if(response.result.length!==0)
+           {
+            if(response?.result[0]?.evidencesStatus[0]?.status==="draft")
+                setFirstEntityStatus("draft")
+              else
+              setFirstEntityStatus("submit")
+
+           }
+           else
+           {
+               setFirstEntityStatus("")
+           }
+        }
+        else{
+          entityId = Data[0]?.userId;
+          const response = await checkEntityStatus({ observationId, entityId });
+          console.log("response.result.length",response.result.length)
+          if(response.result.length!==0)
+           {
+            if(response?.result[0]?.evidencesStatus[0]?.status==="draft")
+            setFirstEntityStatus("draft")
+          else
+          setFirstEntityStatus("submit")
+           }
+           else
+           {
+            setFirstEntityStatus("")
+          }
 
         }
-
-
       } catch (error) {
-        setData([]);
 
         console.error('Error fetching cohort list:', error);
       } finally {
       }
     };
     entityStatus();
-  }, [myCohortListForCenter, Id]);
-
-
+  }, [myCohortListForCenter, Id, Data]);
 
   useEffect(() => {
     const handleCohortChange = async () => {
@@ -259,12 +303,8 @@ const ObservationDetails = () => {
   const handleSearchInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    
-
-
-
     const value = event.target.value;
-    setSearchInput(value)
+    setSearchInput(value);
     // Trigger the search logic only if input has 3 or more characters
     if (value.length >= 3) {
       // Call your search logic here
@@ -277,14 +317,11 @@ const ObservationDetails = () => {
     setSelectedCohort(event.target.value);
   };
 
-  const onStartObservation = (cohortId:any) => {
-
-
-   
-    console.log("cohortId", cohortId)
+  const onStartObservation = (cohortId: any) => {
+    console.log('cohortId', cohortId);
     const basePath = router.asPath.split('?')[0];
     const newFullPath = `${basePath}/questionary`;
-    const queryParams = { cohortId:cohortId, Id:Id};
+    const queryParams = { cohortId: cohortId, Id: Id };
     router.push({
       pathname: newFullPath,
       query: queryParams,
@@ -292,8 +329,7 @@ const ObservationDetails = () => {
   };
 
   const renderEntityData = (data: EntityData[], entityType: string) =>
-    data.map((item) => (
-      
+    data.map((item, index) => (
       <Box
         key={item.cohortId}
         sx={{
@@ -303,25 +339,30 @@ const ObservationDetails = () => {
           alignItems: 'center',
         }}
       >
-        <Typography margin="10px">{item.name}</Typography>
+        <Typography margin="10px">{toPascalCase(item?.name) }</Typography>
         <Button
           sx={{ width: '160px', height: '40px', marginLeft: 'auto' }}
-          onClick={() => onStartObservation(item?.cohortId)}
-          >
-          {t('OBSERVATION_SURVEYS.OBSERVATION_START')}
+          onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
+        >
+
+         {index === 0 && firstEntityStatus==="draft"
+        ? t('OBSERVATION_SURVEYS.CONTINUE') 
+        : (index === 0 && firstEntityStatus==="submit")?t('OBSERVATION_SURVEYS.SUBMITTED'):t('OBSERVATION_SURVEYS.OBSERVATION_START')}
         </Button>
       </Box>
     ));
 
-  const entityContent = useMemo(() => 
-  {
-    console.log("myCohortListForCenter", myCohortListForCenter)
+  const entityContent = useMemo(() => {
     switch (entity?.toString()) {
       case ObservationEntityType.CENTER:
-        return renderEntityData(
-          myCohortListForCenter,
-          ObservationEntityType.CENTER
-        );
+        if(myCohortListForCenter.length!==0)
+        {
+          return renderEntityData(
+            myCohortListForCenter,
+            ObservationEntityType.CENTER
+          );
+        }
+        
       case ObservationEntityType.LEARNER:
         return renderEntityData(Data, ObservationEntityType.LEARNER);
       case ObservationEntityType.FACILITATOR:
@@ -329,7 +370,7 @@ const ObservationDetails = () => {
       default:
         return null;
     }
-  }, [entity, myCohortListForCenter, Data]);
+  }, [entity, myCohortListForCenter, Data, firstEntityStatus]);
 
   const handlePaginationChange = (
     event: React.ChangeEvent<unknown>,
@@ -358,9 +399,7 @@ const ObservationDetails = () => {
             display: 'flex',
             direction: 'row',
             gap: '24px',
-            // alignItems: 'center',
-            // color: theme.palette.warning['A200'],
-            // padding: '15px 20px 5px',
+            
           }}
           width={'100%'}
         >
@@ -368,7 +407,6 @@ const ObservationDetails = () => {
             cursor={'pointer'}
             sx={{
               color: theme.palette.warning['A200'],
-              // transform: isRTL ? ' rotate(180deg)' : 'unset',
             }}
             onClick={handleBackEvent}
           />
@@ -382,7 +420,9 @@ const ObservationDetails = () => {
             {/* Increased the left side size */}
             <Box position="relative" bgcolor="#FBF4E5" width="100%" p="20px">
               <Box sx={{ marginTop: '10px', marginLeft: '10px' }}>
-                <Typography variant="h2">{t('OBSERVATION_SURVEYS.OBSERVATION_DETAILS')}</Typography>
+                <Typography variant="h2">
+                  {t('OBSERVATION_SURVEYS.OBSERVATION_DETAILS')}
+                </Typography>
               </Box>
 
               <Box
@@ -394,7 +434,7 @@ const ObservationDetails = () => {
                 {entity !== ObservationEntityType?.CENTER && (
                   <FormControl sx={{ m: 3, width: 300 }}>
                     <InputLabel id="demo-single-name-label">
-                    {t("COMMON.CENTER_NAME")}
+                      {t('ATTENDANCE.CENTER_NAME')}
                     </InputLabel>
                     <Select
                       labelId="demo-single-name-label"

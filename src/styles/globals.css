@@ -1149,7 +1149,14 @@ html[dir="rtl"] .swiper-pagination-fraction {
   --general-btn-hover-bg:#F7BE36;
   --secondary-btn-bg: #F7BE36;
   --secondary-btn-hover-bg: #F7BE36;
-  --card-bg: #FBF4E5;
+  /* --card-bg: #FBF4E5; */
   --disabled-btn-bg: gainsboro;
   --disabled-btn-text: #F7BE36;
+
+}
+
+
+mat-radio-group.mat-mdc-radio-group {
+  display: flex;
+  gap: 50px;
 }

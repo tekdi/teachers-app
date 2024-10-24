@@ -3,11 +3,12 @@ import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import ObservationCard from '@/components/ObservationCard';
 import { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, useTheme , Typography} from '@mui/material';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { GetStaticPaths } from 'next';
 import { fetchQuestion } from '@/services/ObservationServices';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 
 const ObservationComponent = dynamic(
   () => import('@/components/ObservationComponent'),
@@ -23,6 +24,8 @@ const ObservationQuestions: React.FC = () => {
   const { cohortId } = router.query;
   const [questionResponse, setQuestionResponseResponse] =
   useState<any>(null);
+  const theme = useTheme<any>();
+
   useEffect(() => {
     const fetchQuestionsList = async () => {
       try {
@@ -51,11 +54,32 @@ const ObservationQuestions: React.FC = () => {
     };
     fetchQuestionsList();
   }, [Id, cohortId]);
-
+  const handleBackEvent = () => {
+    window.history.back();
+  };
   return (
     <Box>
       <Header />
+      <Box
+          sx={{
+            display: 'flex',
+            direction: 'row',
+            gap: '24px',
+            mt:"15px",
+            marginLeft:"10px"
+            
+          }}
+          width={'100%'}
+          onClick={handleBackEvent}
 
+        >
+          <KeyboardBackspaceOutlinedIcon
+            cursor={'pointer'}
+            sx={{
+              color: theme.palette.warning['A200'],
+            }}
+          />
+        </Box>
       <ObservationComponent observationQuestions={questionResponse} />
     </Box>
   );

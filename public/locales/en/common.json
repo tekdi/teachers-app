@@ -591,6 +591,8 @@
     "ADD_ENTITY":"Add {{entityType}} in observation list",
     "SEARCH_ENTITY":"Search {{entityType}} name",
     "OBSERVATIONS":"{{name}} Observations",
-    "SEARCH_OBSERVATIONS":"Search Observations"
+    "SEARCH_OBSERVATIONS":"Search Observations",
+    "CONTINUE":"Continue",
+    "SUBMITTED":"Submitted"
 }
 }

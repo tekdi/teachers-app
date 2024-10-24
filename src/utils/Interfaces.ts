@@ -744,3 +744,7 @@ export enum ObservationEntityType {
   FACILITATOR = 'facilitator',
   CENTER = 'center',
 }
+export interface observationInterface
+{
+role?:string
+}
