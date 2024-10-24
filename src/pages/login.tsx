@@ -229,7 +229,7 @@ const LoginPage = () => {
             }
           }
         }
-        setLoading(false);
+        // setLoading(false);
         const telemetryInteract = {
           context: {
             env: 'sign-in',
@@ -257,9 +257,11 @@ const LoginPage = () => {
           const activeSessionId = activeSession ? activeSession.id : '';
           localStorage.setItem('academicYearId', activeSessionId);
         }
+        router.push('/dashboard');
+        setLoading(false)
         };
         getAcademicYearList();
-        router.push('/dashboard');
+        
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 404) {
