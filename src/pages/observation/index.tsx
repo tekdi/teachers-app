@@ -144,7 +144,7 @@ const ObservationForms: React.FC = () => {
         "mappedTo":"teamLeader",
         "roles": "Team Leader"
     }
-        const response=await targetSolution({scopeObject})
+        const response=await targetSolution()
         setObservationData(response?.result?.data)
 
       } catch (error) {
@@ -202,46 +202,50 @@ const ObservationForms: React.FC = () => {
             placeholder={t('OBSERVATION_SURVEYS.SEARCH_OBSERVATIONS')}
            // fullWidth={true}
           ></SearchBar>
-      {entityNames &&
-        entityNames.map((name, index) => (
-          <Box
-            key={index}
-            sx={{
-              padding: 2,
-              marginBottom: 2,
-              borderRadius: 1,
-            }}
-          >
-            <Typography variant="h2">
-            
-           {t('OBSERVATION_SURVEYS.OBSERVATIONS', {
-                name:toPascalCase(name)
-              })}
-            </Typography>
-            <Box
-              sx={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row' }}
-            >
-               {observationData?.filter((item: any) => item.entityType === name).map(
-                (item: any) => (
-                  <Box key={item._id} sx={{ margin: 1 }}>
-                    <ObservationCard
-                      name={item.name}
-                      onCardClick={() =>
-                        onCardClick(item?.solutionId, item?.entityType, item?.name,item?._id)
-                      }
-                      description={item?.description}
-                      endDate={item?.endDate}
-                    />
-                  </Box>
-                )
-              )} 
+     {entityNames &&
+  entityNames.map((name, index) => (
+    <Box
+      key={index}
+      sx={{
+        padding: 2,
+        marginBottom: 2,
+        borderRadius: 1,
+      }}
+    >
+      <Typography variant="h2">
+        {t('OBSERVATION_SURVEYS.OBSERVATIONS', {
+          name: toPascalCase(name),
+        })}
+      </Typography>
 
+      <Box
+        sx={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row' }}
+      >
+        {observationData?.filter((item: any) => item.entityType === name).length > 0 ? (
+          observationData
+            .filter((item: any) => item.entityType === name)
+            .map((item: any) => (
+              <Box key={item._id} sx={{ margin: 1 }}>
+                <ObservationCard
+                  name={item.name}
+                  onCardClick={() =>
+                    onCardClick(item?.solutionId, item?.entityType, item?.name, item?._id)
+                  }
+                  description={item?.description}
+                  endDate={item?.endDate}
+                />
+              </Box>
+            ))
+        ) : (
+          // Render message when no data is found for the entity name
+          <Typography variant="h5" color="textSecondary">
+            observations are coming soon for {toPascalCase(name)}
+          </Typography>
+        )}
+      </Box>
+    </Box>
+  ))}
 
-
-
-            </Box>
-          </Box>
-        ))}
     </div>
   );
 };

@@ -128,19 +128,24 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
       const playerElement = questionairePlayerMainRef.current;
 
       if (playerElement) {
-        console.log('playerElement', playerElement);
         const handlePlayerSubmitOrSaveEvent = async(event: Event) => {
-          const submissionData={
-            evidence:  (event as CustomEvent).detail
-          }
-          const submissionId=observationQuestions?.assessment?.submissionId
-           const response= await updateSubmission({submissionId, submissionData})
-
+          
 
           console.log(
             'Event Data Logged from the react app',
             (event as CustomEvent).detail
           );
+
+          const submissionData = {
+            evidence: {
+              status: (event as CustomEvent).detail.status, 
+              ...((event as CustomEvent).detail.data) 
+            }
+          };
+          
+          const submissionId=observationQuestions?.assessment?.submissionId
+           const response= await updateSubmission({submissionId, submissionData})
+
         };
 
         playerElement.addEventListener(
@@ -156,7 +161,7 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
         };
       }
     }
-  }, []);
+  }, [observationQuestions]);
   useEffect(() => {
     if (questionairePlayerMainRef.current) {
       console.log('Web component ref set correctly');

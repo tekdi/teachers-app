@@ -1,6 +1,6 @@
 import { get, post } from './RestClient';
 
-export const targetSolution = async ({ scopeObject }: any): Promise<any> => {
+export const targetSolution = async (): Promise<any> => {
   try {
     const apiUrl: string = `${process.env.NEXT_PUBLIC_SURVEY_URL}/solutions/targetedSolutions?type=observation&currentScopeOnly=true`;
 
@@ -8,7 +8,7 @@ export const targetSolution = async ({ scopeObject }: any): Promise<any> => {
       'X-auth-token': localStorage.getItem('token'),
     };
 
-    const response = await post(apiUrl, scopeObject, headers);
+    const response = await post(apiUrl, {}, headers);
     return response?.data;
   } catch (error) {
     console.error('Error in fetching attendance list', error);
@@ -84,6 +84,7 @@ export const fetchQuestion = async ({
     console.error('Error in fetching attendance list', error);
   }
 };
+
 
 
 export const updateSubmission = async ({
