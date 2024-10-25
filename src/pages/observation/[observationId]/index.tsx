@@ -72,6 +72,8 @@ const ObservationDetails = () => {
   const [limit, setLimit] = React.useState(pageLimit);
 
   const [searchInput, setSearchInput] = useState('');
+  const [description, setDescription] = useState('');
+
   const { t } = useTranslation();
 
   const theme = useTheme<any>();
@@ -98,11 +100,25 @@ const ObservationDetails = () => {
               setMyCohortList(response[0]?.childData);
             }
             if (selectedCohort === '')
-              setSelectedCohort(response[0]?.childData[0]?.cohortId);
+            {
+              const data= typeof window !== 'undefined'
+              ? localStorage.getItem("selectedCohort") || response[0]?.childData[0]?.cohortId
+              : response[0]?.childData[0]?.cohortId;
+              
+              setSelectedCohort(data)
+            }
+             
             console.log('myCohortList', response[0]?.childData);
           } else {
             setMyCohortList(response);
-            if (selectedCohort === '') setSelectedCohort(response[0]?.cohortId);
+            if (selectedCohort === '')
+            {
+              const data= typeof window !== 'undefined'
+              ? localStorage.getItem("selectedCohort") || response[0]?.childData[0]?.cohortId
+              : response[0]?.cohortId;
+              
+              setSelectedCohort(data)
+            } ;
           }
 
           if (searchInput !== '' || entity===ObservationEntityType.CENTER) {
@@ -169,7 +185,6 @@ const ObservationDetails = () => {
           else if(Id && unmatchedUserIds.length !== 0)
   
           {
-            console.log("unmatchedUserIds------------------", unmatchedUserIds)
             let observationId = Id;
             let r = await addEntities({ data, observationId });
           }
@@ -320,6 +335,7 @@ const ObservationDetails = () => {
     setCurrentPage(0);
     setPage(0);
     setSelectedCohort(event.target.value);
+    localStorage.setItem("selectedCohort",event.target.value)
   };
 
   const onStartObservation = (cohortId: any) => {
@@ -394,6 +410,12 @@ const ObservationDetails = () => {
   const handleBackEvent = () => {
     window.history.back();
   };
+  useEffect(() => {
+    const data= typeof window !== 'undefined'
+          ? localStorage.getItem("observationDescription") || ''
+          : '';
+          setDescription(data)
+  }, []);
 
   return (
     <>
@@ -427,6 +449,9 @@ const ObservationDetails = () => {
               <Box sx={{ marginTop: '10px', marginLeft: '10px' }}>
                 <Typography variant="h2">
                   {t('OBSERVATION_SURVEYS.OBSERVATION_DETAILS')}
+                </Typography>
+                <Typography variant="h2">
+                  {description}
                 </Typography>
               </Box>
 
