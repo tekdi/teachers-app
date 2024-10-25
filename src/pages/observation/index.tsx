@@ -54,13 +54,15 @@ const ObservationForms: React.FC = () => {
     observationId: string,
     entity: string,
     observationName: string,
-    id: string
+    id: string,
+    description:string
   ) => {
     const fullPath = router.asPath;
     const [basePath, queryString] = fullPath.split('?');
     const newRoute = `/${observationId}`;
     let newFullPath = `${basePath}${newRoute}`;
     const queryParams = { entity: entity, observationName: observationName, Id: id };
+    localStorage.setItem("observationDescription", description)
     router.push({
       pathname: newFullPath,
       query: queryParams,
@@ -126,7 +128,7 @@ const ObservationForms: React.FC = () => {
                     <ObservationCard
                       name={item.name}
                       onCardClick={() =>
-                        onCardClick(item?.solutionId, item?.entityType, item?.name, item?._id)
+                        onCardClick(item?.solutionId, item?.entityType, item?.name, item?._id, item?.description)
                       }
                       description={item?.description}
                       endDate={item?.endDate}
