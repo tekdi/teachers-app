@@ -5,6 +5,9 @@ import 'questionnaire-webcomponent/questionnaire-player-webcomponent.js';
 import 'questionnaire-webcomponent/styles.css';
 import mockData from "@/pages/data.json";
 import { updateSubmission } from '@/services/ObservationServices';
+import { mock } from 'node:test';
+import { showToastMessage } from './Toastify';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -44,7 +47,8 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
 
   const [fileUploadResponse, setFileUploadResponse] =
     useState<FileUploadResponse | null>(null);
-  const assessment = observationQuestions;
+  const assessment = mockData;
+  const { t } = useTranslation();
 
   const uploadFileToPresignedUrl = async (event: FileUploadEvent) => {
     const payload: any = {
@@ -145,7 +149,21 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
           
           const submissionId=observationQuestions?.assessment?.submissionId
            const response= await updateSubmission({submissionId, submissionData})
+          if((event as CustomEvent).detail.status==="draft")
+          {
+            t('OBSERVATION_SURVEYS.FORM_SAVED_SUCCESSFULLY')
+            showToastMessage( t('OBSERVATION_SURVEYS.FORM_SUBMIT_SUCCESSFULLY'), 'success');
+           // window.history.back();
 
+
+          }
+          else if((event as CustomEvent).detail.status==="submit")
+          {
+            showToastMessage( t('OBSERVATION_SURVEYS.FORM_SAVED_SUCCESSFULLY'), 'success');
+           // window.history.back();
+
+
+          }
         };
 
         playerElement.addEventListener(

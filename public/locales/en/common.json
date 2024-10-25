@@ -593,6 +593,8 @@
     "OBSERVATIONS":"{{name}} Observations",
     "SEARCH_OBSERVATIONS":"Search Observations",
     "CONTINUE":"Continue",
-    "SUBMITTED":"Submitted"
+    "SUBMITTED":"Submitted",
+    "FORM_SAVED_SUCCESSFULLY":"Form changes saved successfully",
+    "FORM_SUBMIT_SUCCESSFULLY":"Form submitted successfully"
 }
 }
