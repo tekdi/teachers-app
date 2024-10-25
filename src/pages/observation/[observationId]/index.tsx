@@ -196,8 +196,10 @@ const ObservationDetails = () => {
            {
             if(response?.result[0]?.evidencesStatus[0]?.status==="draft")
                 setFirstEntityStatus("draft")
-              else
+              else if(response?.result[0]?.evidencesStatus[0]?.status==="completed")
               setFirstEntityStatus("submit")
+            else if(response?.result[0]?.evidencesStatus[0]?.status==="notstarted")
+            setFirstEntityStatus("")
 
            }
            else
@@ -212,9 +214,12 @@ const ObservationDetails = () => {
           if(response.result.length!==0)
            {
             if(response?.result[0]?.evidencesStatus[0]?.status==="draft")
-            setFirstEntityStatus("draft")
-          else
-          setFirstEntityStatus("submit")
+                setFirstEntityStatus("draft")
+              else if(response?.result[0]?.evidencesStatus[0]?.status==="completed")
+              setFirstEntityStatus("submit")
+            else if(response?.result[0]?.evidencesStatus[0]?.status==="notstarted")
+            setFirstEntityStatus("")
+        
            }
            else
            {
