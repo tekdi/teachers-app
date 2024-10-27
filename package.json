@@ -44,6 +44,7 @@
     "next-i18next": "^15.3.0",
     "next-pwa": "^5.6.0",
     "prettier": "^3.2.5",
+    "questionnaire-webcomponent": "3.1.6",
     "react": "^18",
     "react-calendar": "^5.0.0",
     "react-circular-progressbar": "^2.1.0",
@@ -58,14 +59,15 @@
     "stylis": "^4.3.4",
     "stylis-plugin-rtl": "^2.1.1",
     "swiper": "^11.1.10",
-    "zustand": "^4.5.4",
-    "questionnaire-webcomponent": "3.1.6"
-
+    "webpack": "^5.95.0",
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
+    "@module-federation/nextjs-mf": "^8.5.5",
+    "@module-federation/utilities": "3.0.11",
     "@types/fingerprintjs2": "^2.0.0",
     "@types/jest": "^29.5.12",
     "@types/jwt-decode": "^2.2.1",

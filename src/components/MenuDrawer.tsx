@@ -60,12 +60,11 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     if (typeof window !== 'undefined' && window.localStorage) {
       const storedList = localStorage.getItem('academicYearList');
       try {
-      setAcademicYearList(storedList ? JSON.parse(storedList) : []);
-      const selectedAcademicYearId = localStorage.getItem('academicYearId');
-      setSelectedSessionId(selectedAcademicYearId ?? '');
-      console.log('Retrieved academicYearList:', academicYearList);
-      }
-      catch (error) {
+        setAcademicYearList(storedList ? JSON.parse(storedList) : []);
+        const selectedAcademicYearId = localStorage.getItem('academicYearId');
+        setSelectedSessionId(selectedAcademicYearId ?? '');
+        console.log('Retrieved academicYearList:', academicYearList);
+      } catch (error) {
         console.error('Error parsing stored academic year list:', error);
         setAcademicYearList([]);
         setSelectedSessionId('');
@@ -102,6 +101,11 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     router.push('/dashboard');
   };
 
+  const navigateToWorkspace = () => {
+    closeDrawer();
+    router.push('/workspace/content/create');
+  };
+
   const navigateToObservation = () => {
     closeDrawer();
     router.push('/observation');
@@ -111,6 +115,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isTeacherCenter = router.pathname.includes('/centers');
   const isCoursePlanner = router.pathname.includes('/course-planner');
   const isObservation = router.pathname.includes('/observation');
+  const isWorkspace = router.pathname.includes('/workspace/');
 
   const isAssessments = router.pathname.includes('/assessments');
   const isBoard = router.pathname.includes('/board-enrollment');
@@ -401,6 +406,38 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             </Button>
           </Box>
         )}
+        <Box>
+          <Button
+            className="fs-14"
+            sx={{
+              gap: '10px',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              background: isWorkspace
+                ? theme.palette.primary.main
+                : 'transparent',
+              padding: isWorkspace
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              marginTop: '25px',
+              color: isWorkspace ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isWorkspace ? '600' : 500,
+              '&:hover': {
+                background: isWorkspace
+                  ? theme.palette.primary.main
+                  : 'transparent',
+              },
+            }}
+            startIcon={
+              <DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />
+            }
+            onClick={navigateToWorkspace}
+          >
+            {t('DASHBOARD.WORKSPACE')}
+          </Button>
+        </Box>
+
         {/* <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-8"
