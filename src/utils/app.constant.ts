@@ -86,6 +86,11 @@ export enum ObservationEntityType {
   FACILITATOR = 'facilitator',
   CENTER = 'center',
 }
+export enum ObservationStatus {
+  DRAFT = 'draft',
+  COMPLETED = 'completed',
+  NOT_STARTED = 'notstarted',
+}
 
 export enum CenterType {
   REGULAR = 'REGULAR',

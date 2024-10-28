@@ -37,7 +37,7 @@ import {
 } from '@/services/ObservationServices';
 import { useTranslation } from 'react-i18next';
 import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
-
+import EntityMember from '@/components/observations/EntityMember';
 interface EntityData {
   cohortId?: string;
   name?: string;
@@ -64,7 +64,7 @@ const ObservationDetails = () => {
   const [firstEntityStatus, setFirstEntityStatus] = React.useState<string>("");
 
   const [totalCount, setTotalCount] = React.useState(0);
-  const [pageLimit, setPageLimit] = React.useState(5);
+  const [pageLimit, setPageLimit] = React.useState(0);
   const [page, setPage] = React.useState(0);
   const [pageForCenter, setPageForCenter] = React.useState(0);
   const [currentPage, setCurrentPage] = React.useState(0);
@@ -138,7 +138,7 @@ const ObservationDetails = () => {
 
   useEffect(() => {
     setmyCohortListForCenter(
-      myCohortList.slice(pageForCenter, pageForCenter + pageLimit)
+      myCohortList
     );
 
     setTotalCountForCenter(myCohortList?.length);
@@ -212,14 +212,14 @@ const ObservationDetails = () => {
             if(response?.result[0]?.evidencesStatus[0]?.status==="draft")
                 setFirstEntityStatus("draft")
               else if(response?.result[0]?.evidencesStatus[0]?.status==="completed")
-              setFirstEntityStatus("submit")
+              setFirstEntityStatus("completed")
             else if(response?.result[0]?.evidencesStatus[0]?.status==="notstarted")
-            setFirstEntityStatus("")
+            setFirstEntityStatus("notstarted")
 
            }
            else
            {
-               setFirstEntityStatus("")
+               setFirstEntityStatus("notstarted")
            }
         }
         else{
@@ -231,14 +231,14 @@ const ObservationDetails = () => {
             if(response?.result[0]?.evidencesStatus[0]?.status==="draft")
                 setFirstEntityStatus("draft")
               else if(response?.result[0]?.evidencesStatus[0]?.status==="completed")
-              setFirstEntityStatus("submit")
+              setFirstEntityStatus("completed")
             else if(response?.result[0]?.evidencesStatus[0]?.status==="notstarted")
-            setFirstEntityStatus("")
+            setFirstEntityStatus("notstarted")
         
            }
            else
            {
-            setFirstEntityStatus("")
+            setFirstEntityStatus("notstarted")
           }
 
         }
@@ -351,26 +351,31 @@ const ObservationDetails = () => {
 
   const renderEntityData = (data: EntityData[], entityType: string) =>
     data.map((item, index) => (
-      <Box
-        key={item.cohortId}
-        sx={{
-          margin: '10px',
-          background: 'white',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Typography margin="10px">{toPascalCase(item?.name) }</Typography>
-        <Button
-          sx={{ width: '160px', height: '40px', marginLeft: 'auto' }}
-          onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
-        >
+      // <Box
+      //   key={item.cohortId}
+      //   sx={{
+      //     margin: '10px',
+      //     background: 'white',
+      //     display: 'flex',
+      //     alignItems: 'center',
+      //   }}
+      // >
+      //   <Typography margin="10px">{toPascalCase(item?.name) }</Typography>
+      //   <Button
+      //     sx={{ width: '160px', height: '40px', marginLeft: 'auto' }}
+      //     onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
+      //   >
 
-         {index === 0 && firstEntityStatus==="draft"
-        ? t('OBSERVATION_SURVEYS.CONTINUE') 
-        : (index === 0 && firstEntityStatus==="submit")?t('OBSERVATION_SURVEYS.SUBMITTED'):t('OBSERVATION_SURVEYS.OBSERVATION_START')}
-        </Button>
-      </Box>
+      //    {index === 0 && firstEntityStatus==="draft"
+      //   ? t('OBSERVATION_SURVEYS.CONTINUE') 
+      //   : (index === 0 && firstEntityStatus==="submit")?t('OBSERVATION_SURVEYS.SUBMITTED'):t('OBSERVATION_SURVEYS.OBSERVATION_START')}
+      //   </Button>
+      // </Box>
+      <EntityMember
+      entityMemberValue={toPascalCase(item?.name)}
+      status={index === 0?firstEntityStatus:"notstarted"}
+      onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
+      />
     ));
 
   const entityContent = useMemo(() => {
@@ -421,6 +426,7 @@ const ObservationDetails = () => {
     <>
       <Header />
       <Box m="20px">
+
         <Box
           sx={{
             display: 'flex',
@@ -440,9 +446,9 @@ const ObservationDetails = () => {
           <Typography variant="h1">{observationName}</Typography>
         </Box>
 
-        <Grid container spacing={2}>
+        <Grid >
           {/* Left side - Observation details and buttons */}
-          <Grid item xs={12} md={9}>
+          <Grid >
             {' '}
             {/* Increased the left side size */}
             <Box position="relative" bgcolor="#FBF4E5" width="100%" p="20px">
@@ -508,8 +514,8 @@ const ObservationDetails = () => {
                 />
               </Box>
 
-              <Box sx={{ marginTop: '20px' }}>{entityContent}</Box>
-              {totalCountForCenter > 6 &&
+              <Box sx={{ marginTop: '20px' , display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap:"20px"}}>{entityContent}</Box>
+              {/* {totalCountForCenter > 6 &&
                 entity === ObservationEntityType.CENTER && (
                   <Box
                     sx={{
@@ -554,10 +560,11 @@ const ObservationDetails = () => {
                     sx={{ marginTop: '10px' }}
                   />
                 </Box>
-              )}
+              )} */}
             </Box>
           </Grid>
         </Grid>
+
       </Box>
     </>
   );

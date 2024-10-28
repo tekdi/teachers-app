@@ -595,6 +595,9 @@
     "CONTINUE":"Continue",
     "SUBMITTED":"Submitted",
     "FORM_SAVED_SUCCESSFULLY":"Form changes saved successfully",
-    "FORM_SUBMIT_SUCCESSFULLY":"Form submitted successfully"
+    "FORM_SUBMIT_SUCCESSFULLY":"Form submitted successfully",
+    "NOT_STARTED":"Not Started",
+    "COMPLETED":"Completed",
+    "INPROGRESS":"In-Progress"
 }
 }
