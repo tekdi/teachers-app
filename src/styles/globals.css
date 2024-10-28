@@ -704,7 +704,7 @@ main {
 }
 
 .password label {
-  color: var(--mui-palette-warning-300)!important;
+  color: var(--mui-palette-warning-300) !important;
 }
 
 .fs-24 {
@@ -941,7 +941,7 @@ main {
     right: 20px;
   }
 
-  .top-md-185{
+  .top-md-185 {
     top: 185px;
   }
 
@@ -1042,7 +1042,7 @@ legend.Mui-focused {
   color: var(--mui-palette-warning-300) !important;
 }
 
-html[dir="ltr"] .swiper-button-prev {
+html[dir='ltr'] .swiper-button-prev {
   right: 50px !important;
   left: unset !important;
   width: 32px !important;
@@ -1050,7 +1050,7 @@ html[dir="ltr"] .swiper-button-prev {
   border: 1px solid var(--mui-palette-warning-A100);
   border-radius: 4px !important;
 }
-html[dir="rtl"] .swiper-button-prev {
+html[dir='rtl'] .swiper-button-prev {
   right: unset !important;
   left: 50px !important;
   width: 32px !important;
@@ -1059,8 +1059,7 @@ html[dir="rtl"] .swiper-button-prev {
   border-radius: 4px !important;
 }
 
-
-html[dir="ltr"] .swiper-button-next {
+html[dir='ltr'] .swiper-button-next {
   width: 32px !important;
   height: 32px !important;
   border: 1px solid var(--mui-palette-warning-A100);
@@ -1068,7 +1067,7 @@ html[dir="ltr"] .swiper-button-next {
   right: 0px !important;
   left: unset !important;
 }
-html[dir="rtl"] .swiper-button-next {
+html[dir='rtl'] .swiper-button-next {
   width: 32px !important;
   height: 32px !important;
   border: 1px solid var(--mui-palette-warning-A100);
@@ -1101,12 +1100,12 @@ html[dir="rtl"] .swiper-button-next {
   position: unset !important;
 }
 
-html[dir="ltr"] .swiper-pagination-fraction {
+html[dir='ltr'] .swiper-pagination-fraction {
   position: absolute;
   bottom: 0px !important;
   width: fit-content !important;
 }
-html[dir="rtl"] .swiper-pagination-fraction {
+html[dir='rtl'] .swiper-pagination-fraction {
   position: absolute;
   bottom: 0px !important;
   width: fit-content !important;
@@ -1140,23 +1139,25 @@ html[dir="rtl"] .swiper-pagination-fraction {
 } */
 :root {
   --background: #ffffff;
-  --foreground: #F7BE36;
+  --foreground: #f7be36;
   --primary-color: black;
-  --btn-outline:#F7BE36;
+  --btn-outline: #f7be36;
   --error-color: rgb(150, 4, 4);
   --question-tip: gray;
   --general-btn-text-color: white;
-  --general-btn-hover-bg:#F7BE36;
-  --secondary-btn-bg: #F7BE36;
-  --secondary-btn-hover-bg: #F7BE36;
+  --general-btn-hover-bg: #f7be36;
+  --secondary-btn-bg: #f7be36;
+  --secondary-btn-hover-bg: #f7be36;
   /* --card-bg: #FBF4E5; */
   --disabled-btn-bg: gainsboro;
-  --disabled-btn-text: #F7BE36;
-
+  --disabled-btn-text: #f7be36;
 }
-
 
 mat-radio-group.mat-mdc-radio-group {
   display: flex;
   gap: 50px;
+}
+
+.player-grid {
+  height: 100vh !important;
 }
