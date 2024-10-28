@@ -21,7 +21,7 @@ interface MemberProps {
   onClick?: any;
 }
 
-const EntityMember: React.FC<MemberProps> = ({
+const Entity: React.FC<MemberProps> = ({
   entityMemberValue,
   status,
   onClick,
@@ -33,11 +33,11 @@ const EntityMember: React.FC<MemberProps> = ({
 
   useEffect(() => {
     if (status === ObservationStatus.NOT_STARTED) {
-      setObservationStatus(t('OBSERVATION_SURVEYS.NOT_STARTED'));
+      setObservationStatus(t('OBSERVATION.NOT_STARTED'));
     } else if (status === ObservationStatus.DRAFT) {
-      setObservationStatus(t('OBSERVATION_SURVEYS.INPROGRESS'));
+      setObservationStatus(t('OBSERVATION.INPROGRESS'));
     } else if (status === ObservationStatus.COMPLETED) {
-      setObservationStatus(t('OBSERVATION_SURVEYS.COMPLETED'));
+      setObservationStatus(t('OBSERVATION.COMPLETED'));
     }
   }, [status]);
   return (
@@ -120,4 +120,4 @@ const EntityMember: React.FC<MemberProps> = ({
   );
 };
 
-export default EntityMember;
+export default Entity;

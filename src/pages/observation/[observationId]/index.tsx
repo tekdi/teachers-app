@@ -16,7 +16,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/Header';
 // import AddEntityModal from '@/components/observations/AddEntityModal';
-import { ObservationEntityType, Role } from '@/utils/app.constant';
+import { ObservationEntityType, Role , ObservationStatus} from '@/utils/app.constant';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticPaths } from 'next';
 import { toPascalCase } from '@/utils/Helper';
@@ -37,7 +37,7 @@ import {
 } from '@/services/ObservationServices';
 import { useTranslation } from 'react-i18next';
 import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
-import EntityMember from '@/components/observations/EntityMember';
+import Entity from '@/components/observations/Entity';
 interface EntityData {
   cohortId?: string;
   name?: string;
@@ -209,11 +209,11 @@ const ObservationDetails = () => {
           const response = await checkEntityStatus({ observationId, entityId });
           if(response.result.length!==0)
            {
-            if(response?.result[0]?.evidencesStatus[0]?.status==="draft")
+            if(response?.result[0]?.evidencesStatus[0]?.status===ObservationStatus.DRAFT)
                 setFirstEntityStatus("draft")
-              else if(response?.result[0]?.evidencesStatus[0]?.status==="completed")
+              else if(response?.result[0]?.evidencesStatus[0]?.status===ObservationStatus.COMPLETED)
               setFirstEntityStatus("completed")
-            else if(response?.result[0]?.evidencesStatus[0]?.status==="notstarted")
+            else if(response?.result[0]?.evidencesStatus[0]?.status=== ObservationStatus.NOT_STARTED)
             setFirstEntityStatus("notstarted")
 
            }
@@ -340,6 +340,7 @@ const ObservationDetails = () => {
 
   const onStartObservation = (cohortId: any) => {
     console.log('cohortId', cohortId);
+    localStorage.setItem("observationPath",  router.asPath)
     const basePath = router.asPath.split('?')[0];
     const newFullPath = `${basePath}/questionary`;
     const queryParams = { cohortId: cohortId, Id: Id };
@@ -371,7 +372,7 @@ const ObservationDetails = () => {
       //   : (index === 0 && firstEntityStatus==="submit")?t('OBSERVATION_SURVEYS.SUBMITTED'):t('OBSERVATION_SURVEYS.OBSERVATION_START')}
       //   </Button>
       // </Box>
-      <EntityMember
+      <Entity
       entityMemberValue={toPascalCase(item?.name)}
       status={index === 0?firstEntityStatus:"notstarted"}
       onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
@@ -414,6 +415,7 @@ const ObservationDetails = () => {
 
   const handleBackEvent = () => {
     window.history.back();
+    
   };
   useEffect(() => {
     const data= typeof window !== 'undefined'
@@ -454,7 +456,7 @@ const ObservationDetails = () => {
             <Box position="relative" bgcolor="#FBF4E5" width="100%" p="20px">
               <Box sx={{ marginTop: '10px', marginLeft: '10px' }}>
                 <Typography variant="h2">
-                  {t('OBSERVATION_SURVEYS.OBSERVATION_DETAILS')}
+                  {t('OBSERVATION.OBSERVATION_DETAILS')}
                 </Typography>
                 <Typography variant="h2">
                   {description}

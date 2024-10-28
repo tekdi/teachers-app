@@ -585,7 +585,7 @@
     "COMPLETED": "Completed",
     "MARK_AS_COMPLETE":"Mark as Complete"
   },
-  "OBSERVATION_SURVEYS": {
+  "OBSERVATION": {
     "OBSERVATION_START": "Start Observation",
     "OBSERVATION_DETAILS":"Observation Details",
     "ADD_ENTITY":"Add {{entityType}} in observation list",
