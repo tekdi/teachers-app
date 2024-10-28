@@ -90,7 +90,7 @@ export interface CohortMemberList {
     cohortId: string;
     role?: string;
     status?: string[];
-    name?:string |undefined
+    name?: string | undefined;
   };
 }
 
@@ -638,11 +638,10 @@ export interface BottomDrawerProps {
 
 export interface IAssessmentStatusOptions {
   userId: string[];
-  courseId?:string[];
-  unitId?:string[];
+  courseId?: string[];
+  unitId?: string[];
   contentId: string[];
   batchId: string;
- 
 }
 
 export interface GetTargetedSolutionsParams {
@@ -668,8 +667,8 @@ export interface EditEvent {
 
 export interface ISearchAssessment {
   userId: string;
-  courseId?:string;
-  unitId?:string;
+  courseId?: string;
+  unitId?: string;
   contentId: string;
   batchId: string;
 }
@@ -744,7 +743,6 @@ export enum ObservationEntityType {
   FACILITATOR = 'facilitator',
   CENTER = 'center',
 }
-export interface observationInterface
-{
-role?:string
+export interface observationInterface {
+  role?: string;
 }
