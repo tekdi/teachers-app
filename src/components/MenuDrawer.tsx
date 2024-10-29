@@ -60,12 +60,11 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     if (typeof window !== 'undefined' && window.localStorage) {
       const storedList = localStorage.getItem('academicYearList');
       try {
-      setAcademicYearList(storedList ? JSON.parse(storedList) : []);
-      const selectedAcademicYearId = localStorage.getItem('academicYearId');
-      setSelectedSessionId(selectedAcademicYearId ?? '');
-      console.log('Retrieved academicYearList:', academicYearList);
-      }
-      catch (error) {
+        setAcademicYearList(storedList ? JSON.parse(storedList) : []);
+        const selectedAcademicYearId = localStorage.getItem('academicYearId');
+        setSelectedSessionId(selectedAcademicYearId ?? '');
+        console.log('Retrieved academicYearList:', academicYearList);
+      } catch (error) {
         console.error('Error parsing stored academic year list:', error);
         setAcademicYearList([]);
         setSelectedSessionId('');
@@ -401,6 +400,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             </Button>
           </Box>
         )}
+
         {/* <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-8"

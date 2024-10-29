@@ -178,6 +178,7 @@
   },
   "DASHBOARD": {
     "DASHBOARD": "Dashboard",
+    "WORKSPACE": "Workspace",
     "DAY_WISE_ATTENDANCE": "Day-Wise Attendance",
     "HISTORY": "History",
     "MY_CLASSES": "My Classes",
@@ -583,7 +584,7 @@
     "TO_SAVE_YOUR_PROGRESS": "“Save & Next” to save your progress. You can come back and change it anytime.",
     "MANDATORY": "Mandatory for {{FeesStepBoards}} only. For other Boards, this step is automatically marked completed. Please click on Save to submit the data.",
     "COMPLETED": "Completed",
-    "MARK_AS_COMPLETE":"Mark as Complete"
+    "MARK_AS_COMPLETE": "Mark as Complete"
   },
   "OBSERVATION": {
     "OBSERVATION_START": "Start Observation",
@@ -600,4 +601,5 @@
     "COMPLETED":"Completed",
     "INPROGRESS":"In-Progress"
 }
+  
 }

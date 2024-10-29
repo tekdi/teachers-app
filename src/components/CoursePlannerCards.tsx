@@ -3,6 +3,7 @@ import { Box, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { CoursePlannerCardsProps } from '@/utils/Interfaces';
 import { ResourcesType } from '@/utils/app.constant';
+import router from 'next/router';
 
 const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
   resources,
@@ -34,7 +35,12 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
             <Grid item xs={6} md={4} lg={2} sx={{ mt: 2 }} key={index}>
               <Box
                 className="facilitator-bg"
-                onClick={() => window.open(resource?.link, '_blank')}
+                onClick={() =>
+                  router.push({
+                    pathname: '/players',
+                    query: { identifier: resource?.link },
+                  })
+                }
               >
                 <Box
                   sx={{
