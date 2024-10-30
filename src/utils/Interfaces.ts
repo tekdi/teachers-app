@@ -641,7 +641,7 @@ export interface IAssessmentStatusOptions {
   courseId?: string[];
   unitId?: string[];
   contentId: string[];
-  batchId: string;
+  // batchId: string;
 }
 
 export interface GetTargetedSolutionsParams {
@@ -670,7 +670,7 @@ export interface ISearchAssessment {
   courseId?: string;
   unitId?: string;
   contentId: string;
-  batchId: string;
+  // batchId: string;
 }
 
 export interface AssessmentReportProp {

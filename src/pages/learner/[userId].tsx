@@ -513,7 +513,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     const filters = {
       userId: userId,
       courseId: do_Id,
-      batchId: cohortId, // user cohort id
+      // batchId: cohortId, // user cohort id
       contentId: do_Id, // do_Id
     };
     const pagination = {

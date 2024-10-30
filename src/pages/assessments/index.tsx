@@ -198,7 +198,7 @@ const Assessments = () => {
           courseId: assessmentList, // temporary added here assessmentList(contentId)... if assessment is done then need to pass actual course id and unit id here
           unitId: assessmentList,
           contentId: assessmentList,
-          batchId: classId,
+          // batchId: classId,
         };
         const assessmentStatus = await getAssessmentStatus(options);
         console.log('assessmentStatus', assessmentStatus);
