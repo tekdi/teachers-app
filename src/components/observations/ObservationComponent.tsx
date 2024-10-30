@@ -6,7 +6,7 @@ import 'questionnaire-webcomponent/styles.css';
 import mockData from "@/pages/data.json";
 import { updateSubmission } from '@/services/ObservationServices';
 import { mock } from 'node:test';
-import { showToastMessage } from './Toastify';
+import { showToastMessage } from '../Toastify';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
 
@@ -166,9 +166,9 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
             showToastMessage( t('OBSERVATION.FORM_SAVED_SUCCESSFULLY'), 'success');
            // window.history.back();
 
-           router.push(
-            `${localStorage.getItem('observationPath')}`
-          );
+          //  router.push(
+          //   `${localStorage.getItem('observationPath')}`
+          // );
           }
         };
 
