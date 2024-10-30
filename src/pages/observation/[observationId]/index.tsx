@@ -16,7 +16,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/Header';
 // import AddEntityModal from '@/components/observations/AddEntityModal';
-import { ObservationEntityType, Role } from '@/utils/app.constant';
+import { ObservationEntityType, Role , ObservationStatus} from '@/utils/app.constant';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticPaths } from 'next';
 import { toPascalCase } from '@/utils/Helper';
@@ -37,7 +37,7 @@ import {
 } from '@/services/ObservationServices';
 import { useTranslation } from 'react-i18next';
 import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
-
+import Entity from '@/components/observations/Entity';
 interface EntityData {
   cohortId?: string;
   name?: string;
@@ -64,7 +64,7 @@ const ObservationDetails = () => {
   const [firstEntityStatus, setFirstEntityStatus] = React.useState<string>("");
 
   const [totalCount, setTotalCount] = React.useState(0);
-  const [pageLimit, setPageLimit] = React.useState(5);
+  const [pageLimit, setPageLimit] = React.useState(0);
   const [page, setPage] = React.useState(0);
   const [pageForCenter, setPageForCenter] = React.useState(0);
   const [currentPage, setCurrentPage] = React.useState(0);
@@ -138,7 +138,7 @@ const ObservationDetails = () => {
 
   useEffect(() => {
     setmyCohortListForCenter(
-      myCohortList.slice(pageForCenter, pageForCenter + pageLimit)
+      myCohortList
     );
 
     setTotalCountForCenter(myCohortList?.length);
@@ -209,17 +209,17 @@ const ObservationDetails = () => {
           const response = await checkEntityStatus({ observationId, entityId });
           if(response.result.length!==0)
            {
-            if(response?.result[0]?.evidencesStatus[0]?.status==="draft")
+            if(response?.result[0]?.evidencesStatus[0]?.status===ObservationStatus.DRAFT)
                 setFirstEntityStatus("draft")
-              else if(response?.result[0]?.evidencesStatus[0]?.status==="completed")
-              setFirstEntityStatus("submit")
-            else if(response?.result[0]?.evidencesStatus[0]?.status==="notstarted")
-            setFirstEntityStatus("")
+              else if(response?.result[0]?.evidencesStatus[0]?.status===ObservationStatus.COMPLETED)
+              setFirstEntityStatus("completed")
+            else if(response?.result[0]?.evidencesStatus[0]?.status=== ObservationStatus.NOT_STARTED)
+            setFirstEntityStatus("notstarted")
 
            }
            else
            {
-               setFirstEntityStatus("")
+               setFirstEntityStatus("notstarted")
            }
         }
         else{
@@ -231,14 +231,14 @@ const ObservationDetails = () => {
             if(response?.result[0]?.evidencesStatus[0]?.status==="draft")
                 setFirstEntityStatus("draft")
               else if(response?.result[0]?.evidencesStatus[0]?.status==="completed")
-              setFirstEntityStatus("submit")
+              setFirstEntityStatus("completed")
             else if(response?.result[0]?.evidencesStatus[0]?.status==="notstarted")
-            setFirstEntityStatus("")
+            setFirstEntityStatus("notstarted")
         
            }
            else
            {
-            setFirstEntityStatus("")
+            setFirstEntityStatus("notstarted")
           }
 
         }
@@ -340,6 +340,7 @@ const ObservationDetails = () => {
 
   const onStartObservation = (cohortId: any) => {
     console.log('cohortId', cohortId);
+    localStorage.setItem("observationPath",  router.asPath)
     const basePath = router.asPath.split('?')[0];
     const newFullPath = `${basePath}/questionary`;
     const queryParams = { cohortId: cohortId, Id: Id };
@@ -351,26 +352,31 @@ const ObservationDetails = () => {
 
   const renderEntityData = (data: EntityData[], entityType: string) =>
     data.map((item, index) => (
-      <Box
-        key={item.cohortId}
-        sx={{
-          margin: '10px',
-          background: 'white',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Typography margin="10px">{toPascalCase(item?.name) }</Typography>
-        <Button
-          sx={{ width: '160px', height: '40px', marginLeft: 'auto' }}
-          onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
-        >
+      // <Box
+      //   key={item.cohortId}
+      //   sx={{
+      //     margin: '10px',
+      //     background: 'white',
+      //     display: 'flex',
+      //     alignItems: 'center',
+      //   }}
+      // >
+      //   <Typography margin="10px">{toPascalCase(item?.name) }</Typography>
+      //   <Button
+      //     sx={{ width: '160px', height: '40px', marginLeft: 'auto' }}
+      //     onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
+      //   >
 
-         {index === 0 && firstEntityStatus==="draft"
-        ? t('OBSERVATION_SURVEYS.CONTINUE') 
-        : (index === 0 && firstEntityStatus==="submit")?t('OBSERVATION_SURVEYS.SUBMITTED'):t('OBSERVATION_SURVEYS.OBSERVATION_START')}
-        </Button>
-      </Box>
+      //    {index === 0 && firstEntityStatus==="draft"
+      //   ? t('OBSERVATION_SURVEYS.CONTINUE') 
+      //   : (index === 0 && firstEntityStatus==="submit")?t('OBSERVATION_SURVEYS.SUBMITTED'):t('OBSERVATION_SURVEYS.OBSERVATION_START')}
+      //   </Button>
+      // </Box>
+      <Entity
+      entityMemberValue={toPascalCase(item?.name)}
+      status={index === 0?firstEntityStatus:"notstarted"}
+      onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
+      />
     ));
 
   const entityContent = useMemo(() => {
@@ -409,6 +415,7 @@ const ObservationDetails = () => {
 
   const handleBackEvent = () => {
     window.history.back();
+    
   };
   useEffect(() => {
     const data= typeof window !== 'undefined'
@@ -421,6 +428,7 @@ const ObservationDetails = () => {
     <>
       <Header />
       <Box m="20px">
+
         <Box
           sx={{
             display: 'flex',
@@ -440,15 +448,15 @@ const ObservationDetails = () => {
           <Typography variant="h1">{observationName}</Typography>
         </Box>
 
-        <Grid container spacing={2}>
+        <Grid >
           {/* Left side - Observation details and buttons */}
-          <Grid item xs={12} md={9}>
+          <Grid >
             {' '}
             {/* Increased the left side size */}
             <Box position="relative" bgcolor="#FBF4E5" width="100%" p="20px">
               <Box sx={{ marginTop: '10px', marginLeft: '10px' }}>
                 <Typography variant="h2">
-                  {t('OBSERVATION_SURVEYS.OBSERVATION_DETAILS')}
+                  {t('OBSERVATION.OBSERVATION_DETAILS')}
                 </Typography>
                 <Typography variant="h2">
                   {description}
@@ -508,8 +516,8 @@ const ObservationDetails = () => {
                 />
               </Box>
 
-              <Box sx={{ marginTop: '20px' }}>{entityContent}</Box>
-              {totalCountForCenter > 6 &&
+              <Box sx={{ marginTop: '20px' , display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap:"20px"}}>{entityContent}</Box>
+              {/* {totalCountForCenter > 6 &&
                 entity === ObservationEntityType.CENTER && (
                   <Box
                     sx={{
@@ -554,10 +562,11 @@ const ObservationDetails = () => {
                     sx={{ marginTop: '10px' }}
                   />
                 </Box>
-              )}
+              )} */}
             </Box>
           </Grid>
         </Grid>
+
       </Box>
     </>
   );
