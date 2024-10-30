@@ -38,6 +38,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
 import Entity from '@/components/observations/Entity';
+import SearchBar from '@/components/Searchbar';
 interface EntityData {
   cohortId?: string;
   name?: string;
@@ -54,6 +55,8 @@ const ObservationDetails = () => {
   const [myCohortList, setMyCohortList] = useState<any[]>([]);
   const [myCohortListForCenter, setmyCohortListForCenter] = useState<any[]>([]);
   const [cohortIdData, setCohortIdData] = useState<any[]>([]);
+  const [entityIds, setEntityIds] = useState<any[]>([]);
+
   const [userIdData, setUserIdData] = useState<any[]>([]);
 
 
@@ -126,8 +129,9 @@ const ObservationDetails = () => {
               cohort?.name?.toLowerCase().includes(searchInput?.toLowerCase())
             );
 
-            setmyCohortListForCenter(filteredData.slice(0, 5));
-          } else setmyCohortListForCenter(response.slice(0, 5));
+            setmyCohortListForCenter(filteredData);
+          } else 
+          setmyCohortListForCenter(response);
         }
       } catch (error) {
         console.error('Error fetching cohort list', error);
@@ -136,76 +140,82 @@ const ObservationDetails = () => {
     fetchCohorts();
   }, [searchInput]);
 
-  useEffect(() => {
-    setmyCohortListForCenter(
-      myCohortList
-    );
+  
 
-    setTotalCountForCenter(myCohortList?.length);
-  }, [myCohortList, pageForCenter]);
+
 
   useEffect(() => {
     const fetchEntityList = async () => {
       try {
-
         const urlPath = window.location.pathname;
-
-        // Split the URL path to extract the ID after "/observation"
-        //console.log("urlPath", urlPath)
         const solutionId = urlPath.split('/observation/')[1];
-        if(solutionId){
-          const response = await fetchEntities({ solutionId });
-
-          const entityIds = response?.result?.entities?.map(
-            (item: any) => item?._id
-          );
-          const unmatchedCohorts = myCohortListForCenter?.filter(
-            (child: any) => !entityIds?.includes(child.cohortId)
-          );
-          const unmatchedUsers = Data?.filter(
-            (child: any) => !entityIds?.includes(child.userId)
-          );
+        if (solutionId) {
+          let entities = entityIds;
   
-          const unmatchedUserIds = unmatchedUsers?.map(
-            (child: any) => child?.userId
-          );
-          const unmatchedCohortIds = unmatchedCohorts?.map(
-            (cohort) => cohort?.cohortId
-          );
-          setCohortIdData(unmatchedCohortIds);
-          setUserIdData(unmatchedUserIds)
-          // const data=unmatchedCohortIds
-          const data = {
-            data: entity!==ObservationEntityType.CENTER?unmatchedUserIds:unmatchedCohortIds,
-          };
-          if (Id && unmatchedCohortIds.length !== 0 && entity===ObservationEntityType.CENTER) {
-            let observationId = Id;
-            let r = await addEntities({ data, observationId });
-          }
-          else if(Id && unmatchedUserIds.length !== 0)
+          if (entities?.length === 0) {
+            console.log("entityIds?.length", entities?.length);
+            const response = await fetchEntities({ solutionId });
+            entities = response?.result?.entities?.map(
+              (item: any) => item?._id
+            );
   
-          {
-            let observationId = Id;
-            let r = await addEntities({ data, observationId });
+            setEntityIds(entities);
+            console.log("setEntityIds", entities.length);
           }
         }
-
-       
       } catch (error) {
-
         console.error('Error fetching cohort list:', error);
-      } finally {
       }
     };
+  
     fetchEntityList();
-  }, [myCohortListForCenter, Data]);
-
+  }, []);
+  
+  useEffect(() => {
+    if (entityIds?.length > 0) {
+      let unmatchedCohorts = myCohortListForCenter?.filter(
+        (child: any) => !entityIds?.includes(child.cohortId)
+      );
+      let unmatchedUsers = Data?.filter(
+        (child: any) => !entityIds?.includes(child.userId)
+      );
+  
+      const unmatchedUserIds = unmatchedUsers?.map(
+        (child: any) => child?.userId
+      );
+      const unmatchedCohortIds = unmatchedCohorts?.map(
+        (cohort) => cohort?.cohortId
+      );
+  
+      setCohortIdData(unmatchedCohortIds);
+      setUserIdData(unmatchedUserIds);
+  
+      const data = {
+        data: entity !== ObservationEntityType.CENTER ? unmatchedUserIds : unmatchedCohortIds,
+      };
+  
+      const executeAddEntities = async () => {
+        if (Id) {
+          const observationId = Id;
+          if (entity === ObservationEntityType.CENTER && unmatchedCohortIds.length !== 0) {
+            await addEntities({ data, observationId });
+          } else if (unmatchedUserIds.length !== 0) {
+            await addEntities({ data, observationId });
+          }
+        }
+      };
+  
+      executeAddEntities();
+    }
+  }, [entityIds, myCohortListForCenter, Data, Id]);
+  
   useEffect(() => {
     const entityStatus = async () => {
       try {
         let observationId = Id;
         let entityId = myCohortListForCenter[0]?.cohortId;
-        if (myCohortListForCenter.length !== 0 && Id && entity===ObservationEntityType.CENTER) {
+        
+ if (myCohortListForCenter.length !== 0 && Id && entity===ObservationEntityType.CENTER && entityId) {
           const response = await checkEntityStatus({ observationId, entityId });
           if(response.result.length!==0)
            {
@@ -221,10 +231,14 @@ const ObservationDetails = () => {
            {
                setFirstEntityStatus("notstarted")
            }
+        
         }
+       
         else{
           entityId = Data[0]?.userId;
-          const response = await checkEntityStatus({ observationId, entityId });
+          if(entityId)
+          {
+            const response = await checkEntityStatus({ observationId, entityId });
           console.log("response.result.length",response.result.length)
           if(response.result.length!==0)
            {
@@ -241,6 +255,8 @@ const ObservationDetails = () => {
             setFirstEntityStatus("notstarted")
           }
 
+          }
+          
         }
       } catch (error) {
 
@@ -343,7 +359,9 @@ const ObservationDetails = () => {
     localStorage.setItem("observationPath",  router.asPath)
     const basePath = router.asPath.split('?')[0];
     const newFullPath = `${basePath}/questionary`;
-    const queryParams = { cohortId: cohortId, Id: Id };
+    const { observationName } = router.query;
+
+    const queryParams = { cohortId: cohortId, Id: Id , observationName: observationName };
     router.push({
       pathname: newFullPath,
       query: queryParams,
@@ -414,7 +432,8 @@ const ObservationDetails = () => {
   };
 
   const handleBackEvent = () => {
-    window.history.back();
+    router.push('/observation');
+
     
   };
   useEffect(() => {
@@ -500,20 +519,19 @@ const ObservationDetails = () => {
                   </FormControl>
                 )}
 
-                <TextField
-                  variant="outlined"
-                  placeholder="Search..."
-                  value={searchInput}
-                  onChange={handleSearchInputChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{ marginTop: 3, width: '300px' }}
-                />
+                <Box
+                mt="10px"
+                >
+
+<SearchBar
+            onSearch={setSearchInput}
+            value={searchInput}
+            placeholder="Search..."   
+            backgroundColor={"white"}
+            fullWidth={true}
+                   ></SearchBar>
+                </Box>
+                 
               </Box>
 
               <Box sx={{ marginTop: '20px' , display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap:"20px"}}>{entityContent}</Box>

@@ -11,7 +11,7 @@ const fetchCohortMemberList = async ({
   page,
   filters,
 }: CohortMemberList): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/cohortmember/list`;
   try {
     const response = await post(apiUrl, {
       limit,
@@ -32,7 +32,7 @@ export const getMyUserList = async ({
   filters,
   fields,
 }: UserList): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/list`;
   try {
     const response = await post(apiUrl, {
       limit,
@@ -87,7 +87,7 @@ export const updateCohortMemberStatus = async ({
   statusReason,
   membershipId,
 }: UpdateCohortMemberStatusParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/update/${membershipId}`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/cohortmember/update/${membershipId}`;
   try {
     const response = await put(apiUrl, {
       status: memberStatus,
