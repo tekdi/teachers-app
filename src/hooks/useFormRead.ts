@@ -10,7 +10,7 @@ export const getFormRead = async (
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/form/read`,
+        `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/form/read`,
         {
           params: {
             context,
