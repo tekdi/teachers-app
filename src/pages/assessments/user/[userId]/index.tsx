@@ -166,7 +166,7 @@ function AssessmentsDetails() {
           contentId: assessmentList.map(
             (item: any) => item.identifier
           ) as string[],
-          batchId: centerId as string,
+          // batchId: centerId as string,
         };
         const assessmentStatus = await getAssessmentStatus(options);
         console.log('assessmentStatus', assessmentStatus);
