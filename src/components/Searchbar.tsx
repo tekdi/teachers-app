@@ -17,6 +17,7 @@ export interface SearchBarProps {
   onClear?: () => void;
   placeholder: string;
   fullWidth?: boolean;
+  backgroundColor?:any
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -24,6 +25,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   value = '',
   placeholder = 'Search...',
   fullWidth = false,
+  backgroundColor="#EDEDED"
 }) => {
   const theme = useTheme<any>();
   const [searchTerm, setSearchTerm] = useState(value);
@@ -43,7 +45,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
     setSearchTerm(searchTerm);
-    handleSearch(searchTerm);
+
+    if(searchTerm.length>=3|| searchTerm==="")
+    {
+
+      handleSearch(searchTerm);
+    }
+  
   };
 
   return (
@@ -56,7 +64,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
               display: 'flex',
               alignItems: 'center',
               borderRadius: '50px',
-              background: theme.palette.warning.A700,
+              background: backgroundColor,
               boxShadow: 'none',
             }}
           >
