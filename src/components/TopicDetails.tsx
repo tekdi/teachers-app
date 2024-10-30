@@ -15,6 +15,7 @@ import { useTranslation } from 'next-i18next';
 import { EventStatus } from '@/utils/app.constant';
 import { RequisiteType } from '../../app.config';
 import NoDataFound from './common/NoDataFound';
+import router from 'next/router';
 interface TopicDetailsProps {
   topic: string;
   subTopic: [];
@@ -55,6 +56,14 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
   const onRemoveTopicSubtopic = () => {
     console.log('remove');
     handleRemove();
+  };
+
+  const handlePlayers = (identifier: string) => {
+    sessionStorage.setItem('previousPage', window.location.href);
+    router.push({
+      pathname: '/players',
+      query: { identifier: identifier },
+    });
   };
 
   return (
@@ -190,24 +199,20 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                   .filter((item: any) => item.type === '')
                   .map((item: any) => (
                     <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ textDecoration: 'none' }}
+                      <Box
+                        className="facilitator-bg"
+                        onClick={() => handlePlayers(item?.link)}
                       >
-                        <Box className="facilitator-bg">
-                          <Box
-                            sx={{
-                              fontSize: '16px',
-                              fontWeight: '500',
-                              color: theme?.palette?.warning['A400'],
-                            }}
-                          >
-                            {item?.name || subTopic.join(', ')}
-                          </Box>
+                        <Box
+                          sx={{
+                            fontSize: '16px',
+                            fontWeight: '500',
+                            color: theme?.palette?.warning['A400'],
+                          }}
+                        >
+                          {item?.name || subTopic.join(', ')}
                         </Box>
-                      </a>
+                      </Box>
                     </Grid>
                   ))
               ) : (
@@ -266,24 +271,20 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                   )
                   .map((item: any) => (
                     <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ textDecoration: 'none' }}
+                      <Box
+                        className="facilitator-bg"
+                        onClick={() => handlePlayers(item?.link)}
                       >
-                        <Box className="facilitator-bg">
-                          <Box
-                            sx={{
-                              fontSize: '16px',
-                              fontWeight: '500',
-                              color: theme?.palette?.warning['A400'],
-                            }}
-                          >
-                            {item?.name || subTopic.join(', ')}
-                          </Box>
+                        <Box
+                          sx={{
+                            fontSize: '16px',
+                            fontWeight: '500',
+                            color: theme?.palette?.warning['A400'],
+                          }}
+                        >
+                          {item?.name || subTopic.join(', ')}
                         </Box>
-                      </a>
+                      </Box>
                     </Grid>
                   ))
               ) : (
@@ -342,24 +343,20 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                   )
                   .map((item: any) => (
                     <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ textDecoration: 'none' }}
+                      <Box
+                        className="facilitator-bg"
+                        onClick={() => handlePlayers(item?.link)}
                       >
-                        <Box className="facilitator-bg">
-                          <Box
-                            sx={{
-                              fontSize: '16px',
-                              fontWeight: '500',
-                              color: theme?.palette?.warning['A400'],
-                            }}
-                          >
-                            {item?.name || subTopic.join(', ')}
-                          </Box>
+                        <Box
+                          sx={{
+                            fontSize: '16px',
+                            fontWeight: '500',
+                            color: theme?.palette?.warning['A400'],
+                          }}
+                        >
+                          {item?.name || subTopic.join(', ')}
                         </Box>
-                      </a>
+                      </Box>
                     </Grid>
                   ))
               ) : (
