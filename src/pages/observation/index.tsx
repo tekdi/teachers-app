@@ -47,6 +47,7 @@ const ObservationForms: React.FC = () => {
         console.error('Error fetching cohort list:', error);
       }
     };
+    if(entityNames &&entityNames?.length!==0)
     fetchObservationData();
   }, [entityNames]);
 
