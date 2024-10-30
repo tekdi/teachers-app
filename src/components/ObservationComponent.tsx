@@ -8,6 +8,7 @@ import { updateSubmission } from '@/services/ObservationServices';
 import { mock } from 'node:test';
 import { showToastMessage } from './Toastify';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/router';
 
 
 
@@ -49,6 +50,7 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
     useState<FileUploadResponse | null>(null);
   const assessment = mockData;
   const { t } = useTranslation();
+  const router = useRouter();
 
   const uploadFileToPresignedUrl = async (event: FileUploadEvent) => {
     const payload: any = {
@@ -151,18 +153,22 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
            const response= await updateSubmission({submissionId, submissionData})
           if((event as CustomEvent).detail.status==="draft")
           {
-            t('OBSERVATION_SURVEYS.FORM_SAVED_SUCCESSFULLY')
-            showToastMessage( t('OBSERVATION_SURVEYS.FORM_SUBMIT_SUCCESSFULLY'), 'success');
+            t('OBSERVATION.FORM_SAVED_SUCCESSFULLY')
+            showToastMessage( t('OBSERVATION.FORM_SUBMIT_SUCCESSFULLY'), 'success');
            // window.history.back();
-
+           router.push(
+            `${localStorage.getItem('observationPath')}`
+          );
 
           }
           else if((event as CustomEvent).detail.status==="submit")
           {
-            showToastMessage( t('OBSERVATION_SURVEYS.FORM_SAVED_SUCCESSFULLY'), 'success');
+            showToastMessage( t('OBSERVATION.FORM_SAVED_SUCCESSFULLY'), 'success');
            // window.history.back();
 
-
+           router.push(
+            `${localStorage.getItem('observationPath')}`
+          );
           }
         };
 

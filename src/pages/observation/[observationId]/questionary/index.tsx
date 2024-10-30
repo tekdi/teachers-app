@@ -55,7 +55,10 @@ const ObservationQuestions: React.FC = () => {
     fetchQuestionsList();
   }, [Id, cohortId]);
   const handleBackEvent = () => {
-    window.history.back();
+  //  window.history.back();
+  router.push(
+    `${localStorage.getItem('observationPath')}`
+  );
   };
   return (
     <Box>
