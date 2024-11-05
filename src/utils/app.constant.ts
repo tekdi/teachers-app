@@ -114,8 +114,16 @@ export enum Telemetry {
   CLICK = 'CLICK',
   SEARCH = 'SEARCH',
   VIEW = 'VIEW',
-}
+  Radio="RADIO"
 
+}
+export enum TelemetryEventType {
+  CLICK = 'CLICK',
+  SEARCH = 'SEARCH',
+  VIEW = 'VIEW',
+  Radio="RADIO"
+
+}
 export enum AssessmentStatus {
   NOT_STARTED = 'Not_Started',
   IN_PROGRESS = 'In_Progress',

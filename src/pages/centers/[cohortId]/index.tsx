@@ -35,7 +35,7 @@ import { getCohortDetails } from '@/services/CohortServices';
 import { getEventList } from '@/services/EventService';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { CustomField } from '@/utils/Interfaces';
-import { Role } from '@/utils/app.constant';
+import { Role, Telemetry } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -71,6 +71,7 @@ import { useDirection } from '../../../hooks/useDirection';
 
 import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../../../featureEliminationUtil';
+import { telemetryFactory } from '@/utils/telemetry';
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
   SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
@@ -200,7 +201,25 @@ const CohortPage = () => {
     }
   }, [eventCreated, createEvent]);
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => 
+  {
+  setOpen(true);
+  const windowUrl = window.location.pathname;
+  const cleanedUrl = windowUrl.replace(/^\//, '');
+  const telemetryInteract = {
+    context: {
+      env: 'teaching-center',
+      cdata: [],
+    },
+    edata: {
+      id: 'click-on-schedule-sessions',
+      type: Telemetry.CLICK,
+      subtype: '',
+      pageid: cleanedUrl,
+    },
+  };
+  telemetryFactory.interact(telemetryInteract);
+  }
 
   const handleClose = () => {
     setOpen(false);
@@ -375,6 +394,22 @@ const CohortPage = () => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+console.log(newValue)
+const windowUrl = window.location.pathname;
+const cleanedUrl = windowUrl.replace(/^\//, '');
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id:newValue===1? 'change-tab-to-center-session':newValue===2?'change-tab-to-learners-list':'change-tab-to-facilitators-list',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   const handleBackEvent = () => {
@@ -412,7 +447,23 @@ const CohortPage = () => {
 
   const handleOpenAddLearnerModal = () => {
     setOpenAddLearnerModal(true);
-  };
+
+    const windowUrl = window.location.pathname;
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id: 'click-on-add-new-learner',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+    };
 
   const handleCloseAddLearnerModal = () => {
     setOpenAddLearnerModal(false);
@@ -508,6 +559,22 @@ const CohortPage = () => {
               onClick={() => {
                 setOpenRenameCenterModal(true);
                 handleMenuClose();
+
+                const windowUrl = window.location.pathname;
+  const cleanedUrl = windowUrl.replace(/^\//, '');
+  const telemetryInteract = {
+    context: {
+      env: 'teaching-center',
+      cdata: [],
+    },
+    edata: {
+      id: 'click-on-rename-center',
+      type: Telemetry.CLICK,
+      subtype: '',
+      pageid: cleanedUrl,
+    },
+  };
+  telemetryFactory.interact(telemetryInteract);
               }}
             >
               <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>
@@ -519,6 +586,23 @@ const CohortPage = () => {
               onClick={() => {
                 setOpenDeleteCenterModal(true);
                 handleMenuClose();
+
+                const windowUrl = window.location.pathname;
+                const cleanedUrl = windowUrl.replace(/^\//, '');
+                const telemetryInteract = {
+                  context: {
+                    env: 'teaching-center',
+                    cdata: [],
+                  },
+                  edata: {
+                    id: 'click-on-delete-center-option',
+                    type: Telemetry.CLICK,
+                    subtype: '',
+                    pageid: cleanedUrl,
+                  },
+                };
+                telemetryFactory.interact(telemetryInteract);
+              
               }}
             >
               <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>

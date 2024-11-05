@@ -599,7 +599,8 @@
     "FORM_SUBMIT_SUCCESSFULLY":"Form submitted successfully",
     "NOT_STARTED":"Not Started",
     "COMPLETED":"Completed",
-    "INPROGRESS":"In-Progress"
+    "INPROGRESS":"In-Progress",
+    "NO_DATA_FOUND":"No {{entity}} found"
 }
   
 }

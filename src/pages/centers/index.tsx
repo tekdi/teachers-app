@@ -6,7 +6,7 @@ import ManageUser from '@/components/ManageUser';
 import { showToastMessage } from '@/components/Toastify';
 import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
-import { CenterType, Role } from '@/utils/app.constant';
+import { CenterType, Role, Telemetry , TelemetryEventType} from '@/utils/app.constant';
 import { accessGranted, toPascalCase } from '@/utils/Helper';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { ArrowDropDown, Clear, Search } from '@mui/icons-material';
@@ -32,6 +32,7 @@ import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
 import taxonomyStore from '@/store/taxonomyStore';
+import { telemetryFactory } from '@/utils/telemetry';
 
 const CentersPage = () => {
   const { t } = useTranslation();
@@ -67,6 +68,19 @@ const CentersPage = () => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id:newValue===2? 'change-tab-to-facilitator':'change-tab-to-center',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'centers',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   useEffect(() => {
@@ -113,6 +127,19 @@ const CentersPage = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(event.target.value);
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id:'search-centers',
+        type: Telemetry.SEARCH,
+        subtype: '',
+        pageid: 'centers',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   const { isRTL } = useDirection();
@@ -243,7 +270,20 @@ const CentersPage = () => {
     setAppliedFilters({ centerType, sortOrder });
     setFilteredCenters(getFilteredCenters);
     handleFilterModalClose();
-  };
+
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id:'apply-filter',
+        type: TelemetryEventType.Radio,
+        subtype: '',
+        pageid: 'centers',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);  };
 
   const handleCreateCenterClose = () => {
     setOpenCreateCenterModal(false);
@@ -450,7 +490,21 @@ const CentersPage = () => {
                       }}
                       className="text-1E"
                       endIcon={<AddIcon />}
-                      onClick={() => setOpenCreateCenterModal(true)}
+                      onClick={() => {setOpenCreateCenterModal(true)
+                        const telemetryInteract = {
+                          context: {
+                            env: 'teaching-center',
+                            cdata: [],
+                          },
+                          edata: {
+                            id:'click-on-create-center',
+                            type: Telemetry.CLICK,
+                            subtype: '',
+                            pageid: 'centers',
+                          },
+                        };
+                        telemetryFactory.interact(telemetryInteract);
+                      }}
                     >
                       {t('BLOCKS.CREATE_NEW')}
                     </Button>

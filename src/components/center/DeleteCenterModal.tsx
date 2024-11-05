@@ -2,6 +2,8 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import ConfirmationModal from '../ConfirmationModal';
 import { showToastMessage } from '../Toastify';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface CreateBlockModalProps {
   open: boolean;
@@ -17,6 +19,22 @@ const DeleteCenterModal: React.FC<CreateBlockModalProps> = ({
   const handleDeleteButtonClick = () => {
     console.log('Delete request sent');
     showToastMessage(t('CENTERS.REQUEST_TO_DELETE_HAS_BEEN_SENT'), 'success');
+
+    const windowUrl = window.location.pathname;
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id: 'event-created-successfully',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
     handleClose();
   };
 
