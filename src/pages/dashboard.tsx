@@ -721,7 +721,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
         // setCohortName(cohortData?.name);
       }
     };
-    getCohortData();
+
+    if (classId) {
+      getCohortData();
+    }
   }, [classId]);
 
   useEffect(() => {

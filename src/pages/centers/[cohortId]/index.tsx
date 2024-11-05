@@ -291,8 +291,11 @@ const CohortPage = () => {
         setCohortName(cohortData?.name);
       }
     };
-    getCohortData();
-  }, []);
+
+    if (cohortId) {
+      getCohortData();
+    }
+  }, [cohortId]);
 
   useEffect(() => {
     const getSessionsData = async () => {
