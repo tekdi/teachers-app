@@ -1,6 +1,8 @@
 import { SendCredentialsRequest } from '@/utils/Interfaces';
-import { post } from './RestClient';
+import { post,get } from './RestClient';
 import { toPascalCase } from '@/utils/Helper';
+import axios from 'axios';
+
 
 export const sendCredentialService = async ({
   isQueue,
@@ -16,15 +18,15 @@ export const sendCredentialService = async ({
       context,
       key,
       replacements,
-      email,
+      email
     });
     return response?.data?.result;
   } catch (error) {
     console.error('error in sending mail', error);
-
     return error;
   }
 };
+
 
 export const sendEmailOnFacilitatorCreation = async (
   name: string,
@@ -77,3 +79,66 @@ export const sendEmailOnLearnerCreation = async (
     email: sendTo,
   });
 };
+
+
+
+// Push App Notification
+
+
+
+export const UpdateDeviceNotification = async (
+  userData: { deviceId: string }[],
+  userId: string,
+  headers: { tenantId: string; Authorization: string }
+): Promise<any> => {
+  const apiUrl = `https://qa.prathamteacherapp.tekdinext.com/user/v1/update/${userId}`;
+
+  try {
+    const response = await axios.patch(apiUrl, { userData }, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating device notification:', error);
+    throw error;
+  }
+};
+
+
+
+export const readUserId = async (
+  userId?: string | string[],
+  fieldValue?: boolean
+): Promise<any> => {
+  let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/read/${userId}?fieldvalue=false`;
+
+  try {
+    const response = await get(apiUrl);
+    return response?.data;
+  } catch (error) {
+    console.error('error in fetching user details', error);
+    return error;
+  }
+};
+
+
+export const sendNotification = async ({
+  isQueue,
+  context,
+  key,
+  push
+}: SendCredentialsRequest): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_NOTIFICATION_BASE_URL}/notification/send`;
+  try {
+    const response = await post(apiUrl, {
+      isQueue,
+      context,
+      key,
+     push
+    });
+    return response?.data?.result;
+  } catch (error) {
+    console.error('Error in sending notification', error);
+    return error;
+  }
+};
+
+
