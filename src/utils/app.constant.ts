@@ -120,7 +120,7 @@ export enum TelemetryEventType {
   CLICK = 'CLICK',
   SEARCH = 'SEARCH',
   VIEW = 'VIEW',
-  Radio="RADIO"
+  RADIO="RADIO"
 
 }
 export enum AssessmentStatus {
