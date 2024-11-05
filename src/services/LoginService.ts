@@ -17,7 +17,7 @@ export const login = async ({
   const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/auth/login`;
 
   try {
-    const response = await post(apiUrl, { username, password });
+    const response = await axios.post(apiUrl, { username, password });
     return response?.data;
   } catch (error) {
     console.error('error in login', error);
