@@ -13,27 +13,27 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactGA from 'react-ga4';
 
 import { showToastMessage } from '@/components/Toastify';
+import { getAcademicYear } from '@/services/AcademicYearService';
 import manageUserStore from '@/store/manageUserStore';
 import useStore from '@/store/store';
 import { Telemetry } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
+import { AcademicYear } from '@/utils/Interfaces';
 import { telemetryFactory } from '@/utils/telemetry';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
-import { i18n, useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import config from '../../config.json';
 import appLogo from '../../public/images/appLogo.png';
 import Loader from '../components/Loader';
+import { useDirection } from '../hooks/useDirection';
 import { login } from '../services/LoginService';
 import { getUserDetails, getUserId } from '../services/ProfileService';
 import loginImg from './../assets/images/login-image.jpg';
-import { useDirection } from '../hooks/useDirection';
-import { getAcademicYear } from '@/services/AcademicYearService';
-import { AcademicYear } from '@/utils/Interfaces';
 
 const LoginPage = () => {
   const { t, i18n } = useTranslation();
@@ -42,7 +42,7 @@ const LoginPage = () => {
     (state: { setUserRole: any }) => state.setUserRole
   );
 
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
 
   const setAccessToken = useStore(
     (state: { setAccessToken: any }) => state.setAccessToken
@@ -160,10 +160,10 @@ const LoginPage = () => {
         if (response) {
           if (typeof window !== 'undefined' && window.localStorage) {
             const token = response?.result?.access_token;
-            const refreshToken = response?.result?.refresh_token;  
-            if(token){
+            const refreshToken = response?.result?.refresh_token;
+            if (token) {
               localStorage.setItem('token', token);
-            }  
+            }
             rememberMe
               ? localStorage.setItem('refreshToken', refreshToken)
               : localStorage.removeItem('refreshToken');
@@ -247,26 +247,26 @@ const LoginPage = () => {
         telemetryFactory.interact(telemetryInteract);
         const getAcademicYearList = async () => {
           const academicYearList: AcademicYear[] = await getAcademicYear();
-          if(academicYearList){
-          localStorage.setItem('academicYearList', JSON.stringify(academicYearList));
-          console.log('!!!!!!!!!!!!!!!!!', academicYearList)
-          const extractedAcademicYears = academicYearList?.map(
-            ({ id, session, isActive }) => ({ id, session, isActive })
-          );
-          const activeSession = extractedAcademicYears?.find(
-            (item) => item.isActive
-          );
-          const activeSessionId = activeSession ? activeSession.id : '';
-          localStorage.setItem('academicYearId', activeSessionId);
-          if(activeSessionId){
-            router.push('/dashboard');
+          if (academicYearList) {
+            localStorage.setItem(
+              'academicYearList',
+              JSON.stringify(academicYearList)
+            );
+            const extractedAcademicYears = academicYearList?.map(
+              ({ id, session, isActive }) => ({ id, session, isActive })
+            );
+            const activeSession = extractedAcademicYears?.find(
+              (item) => item.isActive
+            );
+            const activeSessionId = activeSession ? activeSession.id : '';
+            localStorage.setItem('academicYearId', activeSessionId);
+            if (activeSessionId) {
+              setLoading(false);
+              router.push('/dashboard');
+            }
           }
-        }
-        
-        setLoading(false)
         };
         getAcademicYearList();
-        
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 404) {
@@ -532,10 +532,8 @@ const LoginPage = () => {
                     onClick={() => {
                       handleForgotPasswordClick();
                       // router.push('/forgot-password');
-                      const resetAppUrl = process.env.NEXT_PUBLIC_RESET_PASSWORD_URL;
-                      console.log('NEXT_PUBLIC_RESET_PASSWORD_URL', process.env.NEXT_PUBLIC_RESET_PASSWORD_URL);
-                      console.log('NEXT_PUBLIC_MIDDLEWARE_URL', process.env.NEXT_PUBLIC_MIDDLEWARE_URL);
-                      console.log('RESET_PASSWORD_URL', process.env.RESET_PASSWORD_URL);
+                      const resetAppUrl =
+                        process.env.NEXT_PUBLIC_RESET_PASSWORD_URL;
                       window.open(
                         `${resetAppUrl}?redirectUrl=${window.location.origin}/login`
                       );

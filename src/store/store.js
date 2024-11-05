@@ -19,7 +19,7 @@ const useStore = create(
     }),
     {
       name: 'teacherApp',
-      getStorage: () => localStorage,
+      storage: typeof window !== 'undefined' ? localStorage : undefined,
     }
   )
 );

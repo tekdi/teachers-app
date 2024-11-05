@@ -12,7 +12,7 @@ const useCourseStore = create(
     }),
     {
       name: 'resources',
-      getStorage: () => localStorage,
+      storage: typeof window !== 'undefined' ? localStorage : undefined,
     }
   )
 );
