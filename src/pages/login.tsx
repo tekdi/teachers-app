@@ -160,8 +160,10 @@ const LoginPage = () => {
         if (response) {
           if (typeof window !== 'undefined' && window.localStorage) {
             const token = response?.result?.access_token;
-            const refreshToken = response?.result?.refresh_token;
-            localStorage.setItem('token', token);
+            const refreshToken = response?.result?.refresh_token;  
+            if(token){
+              localStorage.setItem('token', token);
+            }  
             rememberMe
               ? localStorage.setItem('refreshToken', refreshToken)
               : localStorage.removeItem('refreshToken');
@@ -532,7 +534,7 @@ const LoginPage = () => {
                       // router.push('/forgot-password');
                       const resetAppUrl = process.env.NEXT_PUBLIC_RESET_PASSWORD_URL;
                       console.log('NEXT_PUBLIC_RESET_PASSWORD_URL', process.env.NEXT_PUBLIC_RESET_PASSWORD_URL);
-                      console.log('NEXT_PUBLIC_BASE_URL', process.env.NEXT_PUBLIC_BASE_URL);
+                      console.log('NEXT_PUBLIC_MIDDLEWARE_URL', process.env.NEXT_PUBLIC_MIDDLEWARE_URL);
                       console.log('RESET_PASSWORD_URL', process.env.RESET_PASSWORD_URL);
                       window.open(
                         `${resetAppUrl}?redirectUrl=${window.location.origin}/login`

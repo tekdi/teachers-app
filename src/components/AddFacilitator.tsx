@@ -292,6 +292,23 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             queryClient.invalidateQueries({
               queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
             });
+            const windowUrl = window.location.pathname;
+            const cleanedUrl = windowUrl.replace(/^\//, '');
+      
+
+            const telemetryInteract = {
+              context: {
+                env: 'teaching-center',
+                cdata: [],
+              },
+              edata: {
+                id: 'facilitator-updated-success',
+                type: Telemetry.CLICK,
+                subtype: '',
+                pageid: 'cleanedUrl',
+              },
+            };
+            telemetryFactory.interact(telemetryInteract);
           }
           onClose();
         } else {

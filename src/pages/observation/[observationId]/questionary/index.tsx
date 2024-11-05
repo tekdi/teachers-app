@@ -11,7 +11,7 @@ import { fetchQuestion } from '@/services/ObservationServices';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 
 const ObservationComponent = dynamic(
-  () => import('@/components/ObservationComponent'),
+  () => import('@/components/observations/ObservationComponent'),
   {
     ssr: false,
     // loading: () => <p>Loading Questionnaire App...</p>,
@@ -22,6 +22,8 @@ const ObservationQuestions: React.FC = () => {
   const router = useRouter();
   const { Id } = router.query;
   const { cohortId } = router.query;
+  const { observationName } = router.query;
+
   const [questionResponse, setQuestionResponseResponse] =
   useState<any>(null);
   const theme = useTheme<any>();
@@ -55,7 +57,10 @@ const ObservationQuestions: React.FC = () => {
     fetchQuestionsList();
   }, [Id, cohortId]);
   const handleBackEvent = () => {
-    window.history.back();
+  window.history.back();
+  // router.push(
+  //   `${localStorage.getItem('observationPath')}`
+  // );
   };
   return (
     <Box>
@@ -79,6 +84,11 @@ const ObservationQuestions: React.FC = () => {
               color: theme.palette.warning['A200'],
             }}
           />
+          <Typography variant='h2'>
+          {observationName}
+
+          </Typography>
+
         </Box>
       <ObservationComponent observationQuestions={questionResponse} />
     </Box>

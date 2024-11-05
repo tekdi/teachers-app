@@ -16,6 +16,8 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { showToastMessage } from '../Toastify';
+import { telemetryFactory } from '@/utils/telemetry';
+import { Telemetry } from '@/utils/app.constant';
 
 interface CreateBlockModalProps {
   open: boolean;
@@ -70,6 +72,22 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
     await renameFacilitator(cohortId, name);
     setReloadState(true);
     showToastMessage(t('CENTERS.CENTER_RENAMED'), 'success');
+
+    const windowUrl = window.location.pathname;
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id: 'rename-center-successfully',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
     handleClose(name);
   };
 

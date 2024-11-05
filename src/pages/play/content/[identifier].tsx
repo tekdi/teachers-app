@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { fetchContent } from '@/services/PlayerService';
+import {
+  fetchContent,
+  getHierarchy,
+  getQumlData,
+} from '@/services/PlayerService';
 
 // @ts-ignore
 const SunbirdPlayers = dynamic(() => import('editor/SunbirdPlayers'), {
@@ -52,10 +56,10 @@ const playerConfig = {
       { id: 'org.sunbird.player.endpage', ver: 1.1, type: 'plugin' },
     ],
     sideMenu: {
-      showShare: true,
+      showShare: false,
       showDownload: true,
       showExit: true,
-      showPrint: true,
+      showPrint: false,
       showReplay: true,
     },
   },
@@ -70,7 +74,7 @@ interface SunbirdPlayerProps {
 const players: React.FC<SunbirdPlayerProps> = () => {
   const router = useRouter();
   const { identifier } = router.query;
-  const [metadata, setMetadata] = useState<any>();
+  const [loading, setLoading] = useState(true);
   // playerConfig.metadata = pdfMetadata;
 
   useEffect(() => {
@@ -79,25 +83,44 @@ const players: React.FC<SunbirdPlayerProps> = () => {
         if (identifier) {
           console.log('identifier on players page:', identifier);
           const data = await fetchContent(identifier);
-          setMetadata(data);
           console.log('data', data);
-          playerConfig.metadata = data;
-          // You can pass identifier to SunbirdPlayers if needed
+          if (data.mimeType === 'application/vnd.sunbird.questionset') {
+            const Q1 = await getHierarchy(identifier);
+            console.log('Q1', Q1?.questionset);
+            const Q2 = await getQumlData(identifier);
+            console.log('Q2', Q2?.questionset);
+            const metadata = { ...Q1?.questionset, ...Q2?.questionset };
+            playerConfig.metadata = metadata;
+            console.log('playerConfig', playerConfig);
+          } else {
+            playerConfig.metadata = data;
+          }
+          setLoading(false);
         }
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     };
     loadContent();
   }, [identifier]);
 
-  return metadata ? <SunbirdPlayers player-config={playerConfig} /> : null;
+  return !loading ? <SunbirdPlayers player-config={playerConfig} /> : null;
 };
 
-export async function getStaticProps({ locale }: any) {
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+}
+
+export async function getStaticProps({ locale, params }: any) {
+  const { identifier } = params;
   return {
     props: {
       noLayout: true,
+      identifier,
       ...(await serverSideTranslations(locale, ['common'])),
     },
   };

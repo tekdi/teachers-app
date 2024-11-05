@@ -23,11 +23,12 @@ import { useTranslation } from 'next-i18next';
 import useStore from '../store/store';
 import { useTheme } from '@mui/material/styles';
 import { overallAttendanceInPercentageStatusList } from '@/services/AttendanceService';
-import { CenterType, cohortPrivileges } from '@/utils/app.constant';
+import { CenterType, Telemetry, cohortPrivileges } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
 import NoDataFound from './common/NoDataFound';
 import { useDirection } from '../hooks/useDirection';
 import { AttendanceAPILimit } from '../../app.config';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface AttendanceComparisonProps {
   blockName: string;
@@ -78,6 +79,20 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setCenterType(event.target.value);
+
+    const telemetryInteract = {
+      context: {
+        env: 'dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'center-type-selection: '+event.target.value,
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'dashboard',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   useEffect(() => {

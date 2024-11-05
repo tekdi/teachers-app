@@ -11,7 +11,7 @@ export const sendCredentialService = async ({
   replacements,
   email,
 }: SendCredentialsRequest): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_NOTIFICATION_BASE_URL}/notification/send`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/notification/send`;
   try {
     const response = await post(apiUrl, {
       isQueue,

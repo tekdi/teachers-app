@@ -35,12 +35,7 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
             <Grid item xs={6} md={4} lg={2} sx={{ mt: 2 }} key={index}>
               <Box
                 className="facilitator-bg"
-                onClick={() =>
-                  router.push({
-                    pathname: '/players',
-                    query: { identifier: resource?.link },
-                  })
-                }
+                onClick={() => router.push(`/play/content/${resource?.link}`)}
               >
                 <Box
                   sx={{

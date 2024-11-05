@@ -86,6 +86,11 @@ export enum ObservationEntityType {
   FACILITATOR = 'facilitator',
   CENTER = 'center',
 }
+export enum ObservationStatus {
+  DRAFT = 'draft',
+  COMPLETED = 'completed',
+  NOT_STARTED = 'notstarted',
+}
 
 export enum CenterType {
   REGULAR = 'REGULAR',
@@ -109,8 +114,15 @@ export enum Telemetry {
   CLICK = 'CLICK',
   SEARCH = 'SEARCH',
   VIEW = 'VIEW',
-}
 
+}
+export enum TelemetryEventType {
+  CLICK = 'CLICK',
+  SEARCH = 'SEARCH',
+  VIEW = 'VIEW',
+  RADIO="RADIO"
+
+}
 export enum AssessmentStatus {
   NOT_STARTED = 'Not_Started',
   IN_PROGRESS = 'In_Progress',

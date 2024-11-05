@@ -47,6 +47,7 @@ const ObservationForms: React.FC = () => {
         console.error('Error fetching cohort list:', error);
       }
     };
+    if(entityNames &&entityNames?.length!==0)
     fetchObservationData();
   }, [entityNames]);
 
@@ -101,7 +102,7 @@ const ObservationForms: React.FC = () => {
       <SearchBar
         onSearch={handleSearch}
         value={searchInput}
-        placeholder={t('OBSERVATION_SURVEYS.SEARCH_OBSERVATIONS')}
+        placeholder={t('OBSERVATION.SEARCH_OBSERVATIONS')}
       />
 
       {entityNames && entityNames.map((name, index) => (
@@ -114,7 +115,7 @@ const ObservationForms: React.FC = () => {
           }}
         >
           <Typography variant="h2">
-            {t('OBSERVATION_SURVEYS.OBSERVATIONS', {
+            {t('OBSERVATION.OBSERVATIONS', {
               name: toPascalCase(name),
             })}
           </Typography>

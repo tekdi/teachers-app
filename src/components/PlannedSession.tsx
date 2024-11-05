@@ -10,6 +10,7 @@ import {
   FormContextType,
   Role,
   Status,
+  Telemetry,
   sessionMode,
 } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
@@ -56,6 +57,7 @@ import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
 import { getOptionsByCategory } from '@/utils/Helper';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
+import { telemetryFactory } from '@/utils/telemetry';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -877,6 +879,24 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
                 'success'
               );
+
+
+              const windowUrl = window.location.pathname;
+  const cleanedUrl = windowUrl.replace(/^\//, '');
+  const telemetryInteract = {
+    context: {
+      env: 'teaching-center',
+      cdata: [],
+    },
+    edata: {
+      id: 'event-created-successfully',
+      type: Telemetry.CLICK,
+      subtype: '',
+      pageid: cleanedUrl,
+    },
+  };
+  telemetryFactory.interact(telemetryInteract);
+
               ReactGA.event('event-created-successfully', {
                 creatorId: userId,
               });
