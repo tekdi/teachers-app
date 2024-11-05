@@ -24,9 +24,6 @@ const CreatePassword = () => {
       const response = await resetPassword(newPassword);
       console.log(response);
       setForgotPassword(true);
-      if(response){
-        localStorage.removeItem('token');
-      }
     } catch (error: any) {
       console.error('Error resetting password:', error);
       setForgotPassword(false);
