@@ -114,7 +114,6 @@ export enum Telemetry {
   CLICK = 'CLICK',
   SEARCH = 'SEARCH',
   VIEW = 'VIEW',
-  Radio="RADIO"
 
 }
 export enum TelemetryEventType {
