@@ -6,7 +6,7 @@ export const getEventList = async ({
   offset,
   filters,
 }: scheduleEventParam): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_EVENT_BASE_URL}/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/event-service/event/v1/list`;
   try {
     const response = await post(apiUrl, { limit, offset, filters });
     return response?.data?.result;
@@ -17,7 +17,7 @@ export const getEventList = async ({
 };
 
 export const createEvent = async (apiBody: CreateEvent): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_EVENT_BASE_URL}/create`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/event-service/event/v1/create`;
   try {
     const response = await post(apiUrl, apiBody);
     return response?.data;
@@ -31,7 +31,7 @@ export const editEvent = async (
   eventRepetitionId: string,
   apiBody: EditEvent
 ): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_EVENT_BASE_URL}/${eventRepetitionId}`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/event-service/event/v1/${eventRepetitionId}`;
   try {
     const response = await patch(apiUrl, apiBody);
     return response?.data;
