@@ -531,8 +531,11 @@ export interface SendCredentialsRequest {
   isQueue: boolean;
   context: string;
   key: string;
-  replacements: any;
-  email: {
+  replacements?: any;
+  email?: {
+    receipients: any[];
+  };
+    push?: {
     receipients: any[];
   };
 }

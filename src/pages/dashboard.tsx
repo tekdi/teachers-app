@@ -81,6 +81,8 @@ import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 
 import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
+import AllowNotification from '@/components/AllowNotification';
+import GetButtonNotification from '@/components/GetButtonNotification';
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
   SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
@@ -908,6 +910,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       {isClient && (
         <>
           <GuideTour toggleDrawer={toggleDrawer} />
+          <AllowNotification />
           <>
             {!isAuthenticated && (
               <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -918,6 +921,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 <Box>
                   <Header toggleDrawer={toggleDrawer} openDrawer={openDrawer} />
                 </Box>
+                <Box>{/* <GetButtonNotification /> */}</Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Box
                     display={'flex'}

@@ -24,6 +24,18 @@ const Home: React.FC = () => {
       }
     }
   }, []);
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register('/firebase-messaging-sw.js')
+        .then((registration) => {
+          console.log('Service worker registered:', registration);
+        })
+        .catch((error) =>
+          console.error('Service worker registration failed:', error)
+        );
+    }
+  }, []);
 
   return <>{loading && <p>{t('COMMON.LOADING')}...</p>}</>;
 };
