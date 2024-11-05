@@ -278,7 +278,7 @@ const CentersPage = () => {
       },
       edata: {
         id:'apply-filter',
-        type: TelemetryEventType.Radio,
+        type: TelemetryEventType.RADIO,
         subtype: '',
         pageid: 'centers',
       },
