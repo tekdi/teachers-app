@@ -239,14 +239,14 @@ const ObservationDetails = () => {
           if(entityId)
           {
             const response = await checkEntityStatus({ observationId, entityId });
-          console.log("response.result.length",response.result.length)
-          if(response.result.length!==0)
+          console.log("response.result.length",response?.result?.length)
+          if(response?.result?.length!==0)
            {
-            if(response?.result[response.result.length-1]?.evidencesStatus[0]?.status==="draft")
+            if(response?.result[response?.result?.length-1]?.evidencesStatus[0]?.status==="draft")
                 setFirstEntityStatus("draft")
-              else if(response?.result[response.result.length-1]?.evidencesStatus[0]?.status==="completed")
+              else if(response?.result[response?.result?.length-1]?.evidencesStatus[0]?.status==="completed")
               setFirstEntityStatus("completed")
-            else if(response?.result[response.result.length-1]?.evidencesStatus[0]?.status==="notstarted")
+            else if(response?.result[response?.result?.length-1]?.evidencesStatus[0]?.status==="notstarted")
             setFirstEntityStatus("notstarted")
         
            }

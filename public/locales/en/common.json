@@ -606,7 +606,8 @@
     "OBSERVATION_COMING_SOON":" Observations are coming soon for {{entity}}",
     "NO_RESULT_FOUND":" No matching observation found for {{entity}}",
     "NO_OBSERVATION_EXPIRED":"No observation expired for {{entity}}",
-    "DAYS_LEFT":"Days left"
+    "DAYS_LEFT":"Days left",
+    "THIS_OBSERVATION_EXPIRED":"This observation is expired"
 
 
 }
