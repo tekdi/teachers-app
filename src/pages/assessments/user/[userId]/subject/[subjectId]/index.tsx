@@ -59,7 +59,7 @@ function SubjectDetail() {
           courseId: params.subjectId, //temporary added content id here for both courseId and unitId
           unitId: params.subjectId,
           contentId: params.subjectId,
-          batchId: centerId as string,
+          // batchId: centerId as string,
         };
         const assessmentRes = await searchAssessment(body);
         console.log('response===>', assessmentRes);
