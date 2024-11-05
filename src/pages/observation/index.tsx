@@ -210,7 +210,7 @@ const ObservationForms: React.FC = () => {
           labelId="filter-label"
           value={selectedOption}
           onChange={handleFilterChange}
-          label="Filter By"
+          label={t('COMMON.FILTER_BY')}
         >
           <MenuItem value="all">{t('COMMON.ALL')}</MenuItem> 
           <MenuItem value="center">{t('CENTERS.CENTERS')}</MenuItem>
