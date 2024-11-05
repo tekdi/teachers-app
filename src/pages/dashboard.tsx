@@ -921,9 +921,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 <Box>
                   <Header toggleDrawer={toggleDrawer} openDrawer={openDrawer} />
                 </Box>
-                <Box sx={{ marginTop: '2px' }}>
-                  {/* <GetButtonNotification /> */}
-                </Box>
+                <Box>{/* <GetButtonNotification /> */}</Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Box
                     display={'flex'}

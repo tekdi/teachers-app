@@ -1,10 +1,8 @@
-// public/firebase-messaging-sw.js
-
 importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js');
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCmhNz-HMkkf42QNmnf7pnZm49FP5g4INw",
+  apiKey: process.env.NEXT_PUBLIC_FCM_API_kEY,
   authDomain: "backend-e99c8.firebaseapp.com",
   projectId: "backend-e99c8",
   storageBucket: "backend-e99c8.appspot.com",

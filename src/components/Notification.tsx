@@ -21,7 +21,7 @@ const Notification: React.FC = () => {
 
   const notify = () =>
     toast(<ToastDisplay />, {
-      duration: Infinity,
+      duration: 4000,
     });
 
   const closeNotification = () => toast.dismiss();
