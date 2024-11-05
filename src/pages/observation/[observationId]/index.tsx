@@ -242,11 +242,11 @@ const ObservationDetails = () => {
           console.log("response.result.length",response.result.length)
           if(response.result.length!==0)
            {
-            if(response?.result[0]?.evidencesStatus[0]?.status==="draft")
+            if(response?.result[response.result.length-1]?.evidencesStatus[0]?.status==="draft")
                 setFirstEntityStatus("draft")
-              else if(response?.result[0]?.evidencesStatus[0]?.status==="completed")
+              else if(response?.result[response.result.length-1]?.evidencesStatus[0]?.status==="completed")
               setFirstEntityStatus("completed")
-            else if(response?.result[0]?.evidencesStatus[0]?.status==="notstarted")
+            else if(response?.result[response.result.length-1]?.evidencesStatus[0]?.status==="notstarted")
             setFirstEntityStatus("notstarted")
         
            }
@@ -320,6 +320,7 @@ const ObservationDetails = () => {
       } finally {
       }
     };
+    if(selectedCohort && selectedCohort!=='')
     handleCohortChange();
   }, [page, selectedCohort, searchInput]);
 
@@ -466,7 +467,14 @@ const ObservationDetails = () => {
           : '';
           setDescription(data)
   }, []);
+  const [endDate, setEndDate] = useState('');
 
+  useEffect(() => {
+    const storedEndDate = localStorage.getItem("endDateForSelectedObservation");
+    if (storedEndDate) {
+      setEndDate(storedEndDate);
+    }
+  }, []);
   return (
     <>
       <Header />
@@ -498,12 +506,16 @@ const ObservationDetails = () => {
             {/* Increased the left side size */}
             <Box position="relative" bgcolor="#FBF4E5" width="100%" p="20px">
               <Box sx={{ marginTop: '10px', marginLeft: '10px' }}>
-                <Typography variant="h2">
-                  {t('OBSERVATION.OBSERVATION_DETAILS')}
+                <Typography variant="h2" sx={{ fontWeight: 'bold' }}>
+                 {t('OBSERVATION.OBSERVATION_DETAILS')}
                 </Typography>
-                <Typography variant="h2">
+               
+                <Typography variant="h2" mt="20px">
                   {description}
                 </Typography>
+                <Typography variant="body1">
+                {t('CENTER_SESSION.END_DATE')}: {endDate || "N/A"}
+      </Typography>
               </Box>
 
               <Box
@@ -513,7 +525,7 @@ const ObservationDetails = () => {
                 }}
               >
                 {entity !== ObservationEntityType?.CENTER && (
-                  <FormControl sx={{ m: 3, width: 300 }}>
+                  <FormControl sx={{ m: 3, width: 300, }}>
                     <InputLabel id="demo-single-name-label">
                       {t('ATTENDANCE.CENTER_NAME')}
                     </InputLabel>

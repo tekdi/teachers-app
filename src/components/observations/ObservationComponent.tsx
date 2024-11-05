@@ -153,8 +153,9 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
            const response= await updateSubmission({submissionId, submissionData})
           if((event as CustomEvent).detail.status==="draft")
           {
+            showToastMessage( t('OBSERVATION.FORM_SAVED_SUCCESSFULLY'), 'success');
+
             t('OBSERVATION.FORM_SAVED_SUCCESSFULLY')
-            showToastMessage( t('OBSERVATION.FORM_SUBMIT_SUCCESSFULLY'), 'success');
            // window.history.back();
           //  router.push(
           //   `${localStorage.getItem('observationPath')}`
@@ -163,7 +164,8 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
           }
           else if((event as CustomEvent).detail.status==="submit")
           {
-            showToastMessage( t('OBSERVATION.FORM_SAVED_SUCCESSFULLY'), 'success');
+            showToastMessage( t('OBSERVATION.FORM_SUBMIT_SUCCESSFULLY'), 'success');
+
           //  window.history.back();
 
            router.push(
