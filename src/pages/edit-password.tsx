@@ -13,6 +13,8 @@ import { resetPassword } from '@/services/LoginService';
 import { showToastMessage } from '@/components/Toastify';
 import CentralizedModal from '@/components/CentralizedModal';
 import { useDirection } from '../hooks/useDirection';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 const EditForgotPassword = () => {
   const { t } = useTranslation();
@@ -32,11 +34,27 @@ const EditForgotPassword = () => {
   };
 
   const handleResetPassword = async (newPassword: string) => {
+    
     try {
       const response = await resetPassword(newPassword);
       console.log(response);
       setForgotPassword(true);
-    } catch (error: any) {
+      const telemetryInteract = {
+        context: {
+          env: 'profile',
+          cdata: [],
+        },
+        edata: {
+          id: 'reset-password',
+          type: Telemetry.CLICK,
+          subtype: '',
+          pageid: 'edit-password',
+        },
+      };
+      telemetryFactory.interact(telemetryInteract);
+    }
+
+     catch (error: any) {
       console.error('Error resetting password:', error);
       setForgotPassword(false);
       showToastMessage(error.response.data.params.err, 'error');

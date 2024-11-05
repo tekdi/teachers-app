@@ -368,34 +368,58 @@ const ObservationDetails = () => {
     });
   };
 
-  const renderEntityData = (data: EntityData[], entityType: string) =>
-    data.map((item, index) => (
-      // <Box
-      //   key={item.cohortId}
-      //   sx={{
-      //     margin: '10px',
-      //     background: 'white',
-      //     display: 'flex',
-      //     alignItems: 'center',
-      //   }}
-      // >
-      //   <Typography margin="10px">{toPascalCase(item?.name) }</Typography>
-      //   <Button
-      //     sx={{ width: '160px', height: '40px', marginLeft: 'auto' }}
-      //     onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
-      //   >
+  // const renderEntityData = (data: EntityData[], entityType: string) =>
+  //   data?.map((item, index) => (
+  //     // <Box
+  //     //   key={item.cohortId}
+  //     //   sx={{
+  //     //     margin: '10px',
+  //     //     background: 'white',
+  //     //     display: 'flex',
+  //     //     alignItems: 'center',
+  //     //   }}
+  //     // >
+  //     //   <Typography margin="10px">{toPascalCase(item?.name) }</Typography>
+  //     //   <Button
+  //     //     sx={{ width: '160px', height: '40px', marginLeft: 'auto' }}
+  //     //     onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
+  //     //   >
 
-      //    {index === 0 && firstEntityStatus==="draft"
-      //   ? t('OBSERVATION_SURVEYS.CONTINUE') 
-      //   : (index === 0 && firstEntityStatus==="submit")?t('OBSERVATION_SURVEYS.SUBMITTED'):t('OBSERVATION_SURVEYS.OBSERVATION_START')}
-      //   </Button>
-      // </Box>
+  //     //    {index === 0 && firstEntityStatus==="draft"
+  //     //   ? t('OBSERVATION_SURVEYS.CONTINUE') 
+  //     //   : (index === 0 && firstEntityStatus==="submit")?t('OBSERVATION_SURVEYS.SUBMITTED'):t('OBSERVATION_SURVEYS.OBSERVATION_START')}
+  //     //   </Button>
+  //     // </Box>
+  //     <Entity
+  //     entityMemberValue={toPascalCase(item?.name)}
+  //     status={index === 0?firstEntityStatus:"notstarted"}
+  //     onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
+  //     />
+  //   ));
+
+
+  const renderEntityData = (data: EntityData[], entityType: string) => {
+    if (!data || data.length === 0) {
+      return <Typography ml="60px"> {t('OBSERVATION.NO_DATA_FOUND',{
+        entity:entity,
+      })}
+      </Typography>;
+    }
+  
+    return data.map((item, index) => (
       <Entity
-      entityMemberValue={toPascalCase(item?.name)}
-      status={index === 0?firstEntityStatus:"notstarted"}
-      onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
+        key={item.cohortId || index} // Use a unique key here
+        entityMemberValue={toPascalCase(item?.name)}
+        status={index === 0 ? firstEntityStatus : "notstarted"}
+        onClick={() =>
+          entityType !== ObservationEntityType.CENTER
+            ? onStartObservation(item?.userId)
+            : onStartObservation(item?.cohortId)
+        }
       />
     ));
+  };
+  
 
   const entityContent = useMemo(() => {
     switch (entity?.toString()) {

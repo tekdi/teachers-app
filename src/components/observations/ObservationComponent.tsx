@@ -156,19 +156,19 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
             t('OBSERVATION.FORM_SAVED_SUCCESSFULLY')
             showToastMessage( t('OBSERVATION.FORM_SUBMIT_SUCCESSFULLY'), 'success');
            // window.history.back();
-           router.push(
-            `${localStorage.getItem('observationPath')}`
-          );
+          //  router.push(
+          //   `${localStorage.getItem('observationPath')}`
+          // );
 
           }
           else if((event as CustomEvent).detail.status==="submit")
           {
             showToastMessage( t('OBSERVATION.FORM_SAVED_SUCCESSFULLY'), 'success');
-           // window.history.back();
+          //  window.history.back();
 
-          //  router.push(
-          //   `${localStorage.getItem('observationPath')}`
-          // );
+           router.push(
+            `${localStorage.getItem('observationPath')}`
+          );
           }
         };
 
