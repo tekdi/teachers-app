@@ -176,7 +176,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
               });
               const telemetryInteract = {
                 context: {
-                  env: 'teaching-center',
+                  env: 'dashboard',
                   cdata: [],
                 },
                 edata: {

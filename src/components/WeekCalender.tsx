@@ -46,7 +46,7 @@ const Calendar: React.FC<any> = ({
     showDetailsHandle(dayStr);
     const telemetryInteract = {
       context: {
-        env: 'teaching-center',
+        env: 'dashboard',
         cdata: [],
       },
       edata: {

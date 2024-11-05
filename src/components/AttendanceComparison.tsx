@@ -82,7 +82,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
 
     const telemetryInteract = {
       context: {
-        env: 'teaching-center',
+        env: 'dashboard',
         cdata: [],
       },
       edata: {
