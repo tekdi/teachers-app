@@ -108,10 +108,25 @@ const players: React.FC<SunbirdPlayerProps> = () => {
   return !loading ? <SunbirdPlayers player-config={playerConfig} /> : null;
 };
 
-export async function getStaticProps({ locale }: any) {
+export async function getStaticPaths() {
+  const identifiers = ['example1', 'example2'];
+
+  const paths = identifiers.map((id) => ({
+    params: { identifier: id },
+  }));
+
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+}
+
+export async function getStaticProps({ locale, params }: any) {
+  const { identifier } = params;
   return {
     props: {
       noLayout: true,
+      identifier,
       ...(await serverSideTranslations(locale, ['common'])),
     },
   };

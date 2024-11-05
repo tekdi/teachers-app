@@ -34,6 +34,14 @@ const nextConfig = {
         destination: `${process.env.WORKSPACE_BASE_URL}/assets/pdfjs/:path*`, // Serve the assets from the public folder
       },
       {
+        source: '/play/content/assets/pdfjs/:path*', // Match any URL starting with /workspace/content/assets/
+        destination: `${process.env.WORKSPACE_BASE_URL}/assets/pdfjs/:path*`, // Serve the assets from the public folder
+      },
+      {
+        source: '/play/content/assets/:path*', // Match any URL starting with /workspace/content/assets/
+        destination: `${process.env.WORKSPACE_BASE_URL}/assets/:path*`, // Serve the assets from the public folder
+      },
+      {
         source: '/action/asset/:path*', // Match other /action/asset routes
         destination: `${process.env.WORKSPACE_BASE_URL}/api/proxy?path=/action/asset/:path*`, // Forward other /action/asset requests to proxy.js
       },
