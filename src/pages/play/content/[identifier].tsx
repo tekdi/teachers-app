@@ -109,9 +109,9 @@ const players: React.FC<SunbirdPlayerProps> = () => {
 };
 
 export async function getStaticPaths() {
-  const identifiers = ['example1', 'example2'];
+  const identifiers = [''];
 
-  const paths = identifiers.map((id) => ({
+  const paths = identifiers?.map((id) => ({
     params: { identifier: id },
   }));
 
