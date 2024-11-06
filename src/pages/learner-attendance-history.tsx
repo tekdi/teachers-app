@@ -19,6 +19,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { accessControl } from '../../app.config';
 import { useDirection } from '../hooks/useDirection';
+import useStore from '@/store/store';
 
 type LearnerAttendanceData = {
   [date: string]: {
@@ -36,7 +37,8 @@ const LearnerAttendanceHistory = () => {
   const { dir, isRTL } = useDirection();
   const theme = useTheme<any>();
   const { push } = useRouter();
-
+  const store = useStore();
+  const isActiveYear = store.isActiveYearSelected;
   const [loading, setLoading] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [open, setOpen] = useState(false);
@@ -54,6 +56,7 @@ const LearnerAttendanceHistory = () => {
       } else {
         push('/login', undefined, { locale: 'en' });
       }
+      !isActiveYear && push('/centers');
     }
   }, []);
 

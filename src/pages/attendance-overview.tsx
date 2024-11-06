@@ -56,6 +56,7 @@ import { getMenuItems, Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import NoDataFound from '@/components/common/NoDataFound';
 import { useDirection } from '../hooks/useDirection';
+import useStore from '@/store/store';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -100,6 +101,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const theme = useTheme<any>();
   const pathname = usePathname();
+  const store = useStore();
+  const isActiveYear = store.isActiveYearSelected;
 
   const menuItems = getMenuItems(t, dateRange, currentDayMonth);
 
@@ -120,6 +123,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       } else {
         push('/login', undefined, { locale: 'en' });
       }
+      !isActiveYear && push('/centers');
     }
   }, []);
 
