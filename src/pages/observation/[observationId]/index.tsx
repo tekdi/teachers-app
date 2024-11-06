@@ -34,6 +34,7 @@ import {
   addEntities,
   checkEntityStatus,
   fetchEntities,
+  targetSolution,
 } from '@/services/ObservationServices';
 import { useTranslation } from 'react-i18next';
 import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
@@ -75,9 +76,13 @@ const ObservationDetails = () => {
   const [limit, setLimit] = React.useState(pageLimit);
 
   const [searchInput, setSearchInput] = useState('');
-  const [description, setDescription] = useState('');
 
   const { t } = useTranslation();
+  const [observationData, setObservationData] = useState<any>([]);
+  const [observationDescription, setObservationDescription] = useState<any>();
+  const [observationEndDate, setObservationEndDate] = useState<any>();
+
+
 
   const theme = useTheme<any>();
 
@@ -140,9 +145,26 @@ const ObservationDetails = () => {
     fetchCohorts();
   }, [searchInput]);
 
-  
+  useEffect(() => {
+    const fetchObservationData = async () => {
+      try {
+        const response = await targetSolution();
+        setObservationData(response?.result?.data || []);
+      
 
+      } catch (error) {
+        console.error('Error fetching cohort list:', error);
+      }
+    };
+    fetchObservationData();
+  }, []);
 
+  useEffect(() => {
+   const result = observationData?.find((item:any) => item._id === Id);
+   setObservationDescription(result?.description)
+   setObservationEndDate(result?.endDate)
+
+  }, [Id, observationData]);
 
   useEffect(() => {
     const fetchEntityList = async () => {
@@ -361,6 +383,8 @@ const ObservationDetails = () => {
     const basePath = router.asPath.split('?')[0];
     const newFullPath = `${basePath}/questionary`;
     const { observationName } = router.query;
+    const { Id } = router.query;
+
 
     const queryParams = { cohortId: cohortId, Id: Id , observationName: observationName };
     router.push({
@@ -461,20 +485,7 @@ const ObservationDetails = () => {
 
     
   };
-  useEffect(() => {
-    const data= typeof window !== 'undefined'
-          ? localStorage.getItem("observationDescription") || ''
-          : '';
-          setDescription(data)
-  }, []);
-  const [endDate, setEndDate] = useState('');
-
-  useEffect(() => {
-    const storedEndDate = localStorage.getItem("endDateForSelectedObservation");
-    if (storedEndDate) {
-      setEndDate(storedEndDate);
-    }
-  }, []);
+ 
   return (
     <>
       <Header />
@@ -511,10 +522,10 @@ const ObservationDetails = () => {
                 </Typography>
                
                 <Typography variant="h2" mt="20px">
-                  {description}
+                  {observationDescription}
                 </Typography>
                 <Typography variant="body1">
-                {t('CENTER_SESSION.END_DATE')}: {endDate || "N/A"}
+                {t('CENTER_SESSION.END_DATE')}: {observationEndDate || "N/A"}
       </Typography>
               </Box>
 

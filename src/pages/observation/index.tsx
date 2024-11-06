@@ -13,6 +13,7 @@ import SearchBar from '@/components/Searchbar';
 import { toPascalCase } from '@/utils/Helper';
 import { telemetryFactory } from '@/utils/telemetry';
 import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import FilterSelect from '@/components/FilterSelect';
 
 const ObservationForms: React.FC = () => {
   const [entityNames, setEntityNames] = useState<String[]>();
@@ -23,6 +24,12 @@ const ObservationForms: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState('all');  
   const [sortOrder, setSortOrder] = useState('lowToHigh');
   const currentDate = new Date();
+  const menuItems = [
+    { value: 'all', label: t('COMMON.ALL') },
+    { value: 'center', label: t('CENTERS.CENTERS') },
+    { value: 'facilitator', label: t('COMMON.FACILITATORS') },
+    { value: 'learner', label: t('COMMON.LEARNERS') }
+  ];
   useEffect(() => {
     const fetchEntityList = async () => {
       try {
@@ -204,22 +211,15 @@ const ObservationForms: React.FC = () => {
           <MenuItem value="highToLow">{t('COMMON.HIGH_TO_LOW')}</MenuItem>
         </Select>
       </FormControl>)}
-     {typeof window !== 'undefined' && window.localStorage&& localStorage.getItem('role')=== Role.TEAM_LEADER &&( <FormControl sx={{ minWidth: 200, marginLeft:"20px" ,  backgroundColor:"#F0F0F0"}} variant="outlined" margin="normal">
-        <InputLabel id="filter-label">{t('COMMON.FILTER_BY')}</InputLabel>
-        <Select
-          labelId="filter-label"
-          value={selectedOption}
-          onChange={handleFilterChange}
-          label={t('COMMON.FILTER_BY')}
-        >
-          <MenuItem value="all">{t('COMMON.ALL')}</MenuItem> 
-          <MenuItem value="center">{t('CENTERS.CENTERS')}</MenuItem>
-          <MenuItem value="facilitator">{t('COMMON.FACILITATORS')}</MenuItem>
-          <MenuItem value="learner">{t('COMMON.LEARNERS')}</MenuItem>
-        </Select>
-      </FormControl>
-     )
-}
+     {typeof window !== 'undefined' && window.localStorage&& localStorage.getItem('role')=== Role.TEAM_LEADER &&(
+            <FilterSelect
+        menuItems={menuItems}
+        selectedOption={selectedOption}
+        handleFilterChange={handleFilterChange}
+        label={t('COMMON.FILTER_BY')}
+      />)}
+     
+
     </Box>
       {entityNames && entityNames.map((name, index) => (
         <Box
