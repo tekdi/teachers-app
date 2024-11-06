@@ -59,6 +59,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
   };
 
   const handlePlayers = (identifier: string) => {
+    sessionStorage.setItem('previousPage', window.location.href);
     router.push(`/play/content/${identifier}`);
   };
 
