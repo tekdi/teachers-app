@@ -72,6 +72,7 @@ import { useDirection } from '../../../hooks/useDirection';
 import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../../../featureEliminationUtil';
 import { telemetryFactory } from '@/utils/telemetry';
+import useStore from '@/store/store';
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
   SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
@@ -107,8 +108,10 @@ if (!isEliminatedFromBuild('Schedule', 'component')) {
 }
 
 const CohortPage = () => {
+  const userStore = useStore();
+  const isActiveYear = userStore.isActiveYearSelected;
   const [value, setValue] = React.useState(() => {
-    return isEliminatedFromBuild('Events', 'feature') ? 2 : 1;
+    return isEliminatedFromBuild('Events', 'feature') || !isActiveYear ? 2 : 1;
   });
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
@@ -118,7 +121,7 @@ const CohortPage = () => {
   const { dir, isRTL } = useDirection();
   const [role, setRole] = React.useState<any>('');
 
-  const store = manageUserStore();
+  // const store = manageUserStore();
   const setDistrictCode = manageUserStore(
     (state: { setDistrictCode: any }) => state.setDistrictCode
   );
@@ -540,7 +543,7 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
               </Box>
             </Box>
           </Box>
-          {role === Role.TEAM_LEADER && (
+          {role === Role.TEAM_LEADER && isActiveYear && (
             <IconButton
               aria-label="more"
               aria-controls="long-menu"
@@ -659,7 +662,7 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
             },
           }}
         >
-          {!isEliminatedFromBuild('Events', 'feature') && (
+          {!isEliminatedFromBuild('Events', 'feature') && isActiveYear && (
             <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
           )}
 
@@ -937,48 +940,54 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
       <Box>
         {value === 2 && (
           <>
-            <Box mt={3} px={'18px'}>
-              <Button
-                sx={{
-                  border: '1px solid #1E1B16',
-                  borderRadius: '100px',
-                  height: '40px',
-                  px: '16px',
-                  color: theme.palette.error.contrastText,
-                  '& .MuiButton-endIcon': {
-                    marginLeft: isRTL ? '0px !important' : '8px !important',
-                    marginRight: isRTL ? '8px !important' : '-2px !important',
-                  },
-                }}
-                className="text-1E"
-                endIcon={<AddIcon />}
-                onClick={handleOpenAddLearnerModal}
-              >
-                {t('COMMON.ADD_NEW')}
-              </Button>
-            </Box>
-            <Box
-              px={'18px'}
-              mt={2}
-              sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}
-            >
-              <Box
-                sx={{ color: theme.palette.secondary.main }}
-                className="fs-14 fw-500"
-                onClick={() => {
-                  router.push('/attendance-overview');
-                }}
-              >
-                {t('COMMON.REVIEW_ATTENDANCE')}
+            {isActiveYear && (
+              <Box>
+                <Box mt={3} px={'18px'}>
+                  <Button
+                    sx={{
+                      border: '1px solid #1E1B16',
+                      borderRadius: '100px',
+                      height: '40px',
+                      px: '16px',
+                      color: theme.palette.error.contrastText,
+                      '& .MuiButton-endIcon': {
+                        marginLeft: isRTL ? '0px !important' : '8px !important',
+                        marginRight: isRTL
+                          ? '8px !important'
+                          : '-2px !important',
+                      },
+                    }}
+                    className="text-1E"
+                    endIcon={<AddIcon />}
+                    onClick={handleOpenAddLearnerModal}
+                  >
+                    {t('COMMON.ADD_NEW')}
+                  </Button>
+                </Box>
+                <Box
+                  px={'18px'}
+                  mt={2}
+                  sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}
+                >
+                  <Box
+                    sx={{ color: theme.palette.secondary.main }}
+                    className="fs-14 fw-500"
+                    onClick={() => {
+                      router.push('/attendance-overview');
+                    }}
+                  >
+                    {t('COMMON.REVIEW_ATTENDANCE')}
+                  </Box>
+                  <ArrowForwardIcon
+                    sx={{
+                      fontSize: '18px',
+                      color: theme.palette.secondary.main,
+                      transform: isRTL ? ' rotate(180deg)' : 'unset',
+                    }}
+                  />
+                </Box>
               </Box>
-              <ArrowForwardIcon
-                sx={{
-                  fontSize: '18px',
-                  color: theme.palette.secondary.main,
-                  transform: isRTL ? ' rotate(180deg)' : 'unset',
-                }}
-              />
-            </Box>
+            )}
             <Box>
               <CohortLearnerList
                 cohortId={cohortId}
