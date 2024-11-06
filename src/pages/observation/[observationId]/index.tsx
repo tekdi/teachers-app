@@ -16,7 +16,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/Header';
 // import AddEntityModal from '@/components/observations/AddEntityModal';
-import { ObservationEntityType, Role , ObservationStatus} from '@/utils/app.constant';
+import { ObservationEntityType, Role , ObservationStatus, Telemetry} from '@/utils/app.constant';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticPaths } from 'next';
 import { toPascalCase } from '@/utils/Helper';
@@ -40,6 +40,7 @@ import { useTranslation } from 'react-i18next';
 import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
 import Entity from '@/components/observations/Entity';
 import SearchBar from '@/components/Searchbar';
+import { telemetryFactory } from '@/utils/telemetry';
 interface EntityData {
   cohortId?: string;
   name?: string;
@@ -375,6 +376,21 @@ const ObservationDetails = () => {
     setPage(0);
     setSelectedCohort(event.target.value);
     localStorage.setItem("selectedCohort",event.target.value)
+    const windowUrl = window.location.pathname;
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const telemetryInteract = {
+      context: {
+        env: 'observation',
+        cdata: [],
+      },
+      edata: {
+        id: 'filter-by-center:'+event.target.value,
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   const onStartObservation = (cohortId: any) => {

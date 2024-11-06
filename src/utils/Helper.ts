@@ -634,7 +634,7 @@ export function formatEndDate({diffDays}: any) {
       
       remainingTime = `${months} month(s) ${days > 0 ? ` , ${days} day(s)` : ''}`;
     } else {
-      remainingTime = `${diffDays} day(s0`;
+      remainingTime = `${diffDays} day(s)`;
     }
     return remainingTime;
   }

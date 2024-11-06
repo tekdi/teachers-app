@@ -9,6 +9,8 @@ import { mock } from 'node:test';
 import { showToastMessage } from '../Toastify';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 
 
@@ -160,6 +162,21 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
           //  router.push(
           //   `${localStorage.getItem('observationPath')}`
           // );
+          const windowUrl = window.location.pathname;
+          const cleanedUrl = windowUrl.replace(/^\//, '');
+          const telemetryInteract = {
+            context: {
+              env: 'observation',
+              cdata: [],
+            },
+            edata: {
+              id: 'save-observation-successfully',
+              type: Telemetry.CLICK,
+              subtype: '',
+              pageid: cleanedUrl,
+            },
+          };
+          telemetryFactory.interact(telemetryInteract);
 
           }
           else if((event as CustomEvent).detail.status==="submit")
@@ -171,6 +188,26 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
            router.push(
             `${localStorage.getItem('observationPath')}`
           );
+
+
+          const windowUrl = window.location.pathname;
+          const cleanedUrl = windowUrl.replace(/^\//, '');
+          const telemetryInteract = {
+            context: {
+              env: 'observation',
+              cdata: [],
+            },
+            edata: {
+              id: 'submit-observation-successfully',
+              type: Telemetry.CLICK,
+              subtype: '',
+              pageid: cleanedUrl,
+            },
+          };
+          telemetryFactory.interact(telemetryInteract);
+
+
+          
           }
         };
 

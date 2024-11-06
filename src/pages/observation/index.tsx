@@ -137,7 +137,7 @@ const ObservationForms: React.FC = () => {
         cdata: [],
       },
       edata: {
-        id: 'search-observations',
+        id: 'search-observations-bysearchterm:'+searchTerm,
         type: Telemetry.SEARCH,
         subtype: '',
         pageid: 'observation',
@@ -163,6 +163,20 @@ const ObservationForms: React.FC = () => {
     else{
       setEntityNames([event.target.value as string])
     }
+
+    const telemetryInteract = {
+      context: {
+        env: 'observation',
+        cdata: [],
+      },
+      edata: {
+        id: 'apply-entity-filter:'+event.target.value,
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'observation',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
 
@@ -177,6 +191,20 @@ const ObservationForms: React.FC = () => {
     });
 
     setFilteredObservationData(sortedData);
+
+    const telemetryInteract = {
+      context: {
+        env: 'observation',
+        cdata: [],
+      },
+      edata: {
+        id: 'apply-datewise-filter:'+selectedValue,
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'observation',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
   return (
     <div>
@@ -283,7 +311,7 @@ const ObservationForms: React.FC = () => {
               )
             ) : searchInput === "" && value === 0 ? (
               <Typography variant="h5" color="textSecondary">
-                {t('OBSERVATION.OBSERVATION_COMING_SOON', {
+                {t('OBSERVATION.NO_RESULT_FOUND', {
                   entity: toPascalCase(name),
                 })}
               </Typography>

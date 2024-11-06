@@ -110,7 +110,7 @@ export enum Pagination {
   MAX_ITEMS = 50,
 }
 export enum LeftDays {
- MILLISECOND_TO_DAYS=1000 * 60 * 60 * 24
+  ONE_DAY_IN_MILLISECONDS=1000 * 60 * 60 * 24
 }
 
 export enum Telemetry {

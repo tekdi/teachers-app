@@ -36,7 +36,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
       // Calculate the difference in time
       const diffTime = (targetDate.getTime() - today.getTime());
 
-      const diffDays = Math.ceil(diffTime / LeftDays.MILLISECOND_TO_DAYS);
+      const diffDays = Math.ceil(diffTime / LeftDays.ONE_DAY_IN_MILLISECONDS);
       
       // Update remaining times and days
       setRemainingTimes(diffDays);
