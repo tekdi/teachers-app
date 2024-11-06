@@ -143,6 +143,57 @@ const LoginPage = () => {
     event.preventDefault();
   };
 
+  const telemetryOnSubmit = () => {
+    const telemetryInteract = {
+      context: {
+        env: 'sign-in',
+        cdata: [],
+      },
+      edata: {
+        id: 'login-success',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'sign-in',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+  }
+
+  const getAcademicYearList = async () => {
+    const academicYearList: AcademicYear[] = await getAcademicYear();
+    if (academicYearList) {
+      localStorage.setItem(
+        'academicYearList',
+        JSON.stringify(academicYearList)
+      );
+      const extractedAcademicYears = academicYearList?.map(
+        ({ id, session, isActive }) => ({ id, session, isActive })
+      );
+      const activeSession = extractedAcademicYears?.find(
+        (item) => item.isActive
+      );
+      const activeSessionId = activeSession ? activeSession.id : '';
+      localStorage.setItem('academicYearId', activeSessionId);
+      if (activeSessionId) {
+        setLoading(false);
+        router.push('/dashboard');
+      }
+    }
+  };
+  
+
+  const handleInvalidUsernameOrPassword = () => {
+    showToastMessage(
+      t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
+      'error'
+    );
+    logEvent({
+      action: 'login-fail',
+      category: 'Login Page',
+      label: 'Login Fail',
+    });
+  }
+
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     logEvent({
@@ -157,9 +208,9 @@ const LoginPage = () => {
           username: username,
           password: password,
         });
-        if (response) {
+        if (response?.result?.access_token) {
           if (typeof window !== 'undefined' && window.localStorage) {
-            const token = response?.result?.access_token;
+            const token = response.result.access_token;
             const refreshToken = response?.result?.refresh_token;
             if (token) {
               localStorage.setItem('token', token);
@@ -169,6 +220,7 @@ const LoginPage = () => {
               : localStorage.removeItem('refreshToken');
 
             const userResponse = await getUserId();
+            await getAcademicYearList();
             localStorage.setItem('userId', userResponse?.userId);
             setUserId(userResponse?.userId);
             logEvent({
@@ -230,56 +282,15 @@ const LoginPage = () => {
               console.log('userDetails', userDetails);
             }
           }
+        } else if (response?.responseCode === 404) {
+          handleInvalidUsernameOrPassword();
+          setLoading(false);
         }
-        // setLoading(false);
-        const telemetryInteract = {
-          context: {
-            env: 'sign-in',
-            cdata: [],
-          },
-          edata: {
-            id: 'login-success',
-            type: Telemetry.CLICK,
-            subtype: '',
-            pageid: 'sign-in',
-          },
-        };
-        telemetryFactory.interact(telemetryInteract);
-        const getAcademicYearList = async () => {
-          const academicYearList: AcademicYear[] = await getAcademicYear();
-          if (academicYearList) {
-            localStorage.setItem(
-              'academicYearList',
-              JSON.stringify(academicYearList)
-            );
-            const extractedAcademicYears = academicYearList?.map(
-              ({ id, session, isActive }) => ({ id, session, isActive })
-            );
-            const activeSession = extractedAcademicYears?.find(
-              (item) => item.isActive
-            );
-            const activeSessionId = activeSession ? activeSession.id : '';
-            localStorage.setItem('academicYearId', activeSessionId);
-            if (activeSessionId) {
-              setLoading(false);
-              router.push('/dashboard');
-            }
-          }
-        };
-        getAcademicYearList();
+        telemetryOnSubmit();  
       } catch (error: any) {
         setLoading(false);
-        if (error.response && error.response.status === 404) {
-          showToastMessage(
-            t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
-            'error'
-          );
-          logEvent({
-            action: 'login-fail',
-            category: 'Login Page',
-            label: 'Login Fail',
-            value: error.response,
-          });
+        if (error?.response?.status === 404) {
+          handleInvalidUsernameOrPassword()
         } else {
           console.error('Error:', error);
           showToastMessage(
