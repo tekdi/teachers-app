@@ -589,7 +589,7 @@ export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => 
   const setStateName = manageUserStore.getState().setStateName;
 
 
-  const district = activeCohorts[0]?.customField?.find(
+  const district = activeCohorts?.[0]?.customField?.find(
     (item: any) => item?.label === 'DISTRICTS'
   );
   if (district) {
@@ -598,7 +598,7 @@ export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => 
     setDistrictName(district?.value)
   }
 
-  const state = activeCohorts[0]?.customField?.find(
+  const state = activeCohorts?.[0]?.customField?.find(
     (item: any) => item?.label === 'STATES'
   );
 
