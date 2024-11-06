@@ -1161,7 +1161,10 @@ mat-radio-group.mat-mdc-radio-group {
 .player-grid {
   height: 100vh !important;
 }
-.wrapper[_ngcontent-ng-c2640644362]
-{
-min-height: 0 !important;
+.wrapper[_ngcontent-ng-c2640644362] {
+  min-height: 0 !important;
+}
+
+#overlay-button[aria-label='Player Menu Open'] {
+  margin-top: 4rem !important;
 }

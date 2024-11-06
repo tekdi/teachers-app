@@ -7,6 +7,8 @@ import {
   getHierarchy,
   getQumlData,
 } from '@/services/PlayerService';
+import { Box } from '@mui/material';
+import Header from '@/components/Header';
 
 // @ts-ignore
 const SunbirdPlayers = dynamic(() => import('editor/SunbirdPlayers'), {
@@ -105,7 +107,16 @@ const players: React.FC<SunbirdPlayerProps> = () => {
     loadContent();
   }, [identifier]);
 
-  return !loading ? <SunbirdPlayers player-config={playerConfig} /> : null;
+  return (
+    <Box>
+      <Box>
+        <Header />
+      </Box>
+      <Box>
+        {!loading ? <SunbirdPlayers player-config={playerConfig} /> : null}
+      </Box>
+    </Box>
+  );
 };
 
 export async function getStaticPaths() {
