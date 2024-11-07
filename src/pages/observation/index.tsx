@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import ObservationCard from '@/components/ObservationCard';
 import React, { useEffect, useState } from 'react';
 import { targetSolution } from '@/services/ObservationServices';
-import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Tab, Tabs, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { FormContext, FormContextType, Role, Status, Telemetry } from '@/utils/app.constant';
@@ -20,9 +20,11 @@ const ObservationForms: React.FC = () => {
   const [observationData, setObservationData] = useState<any>([]);
   const [filteredObservationData, setFilteredObservationData] = useState<any>([]);
   const router = useRouter();
+  const theme = useTheme();
+
   const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState('all');  
-  const [sortOrder, setSortOrder] = useState('lowToHigh');
+  const [sortOrder, setSortOrder] = useState('');
   const currentDate = new Date();
   const menuItems = [
     { value: 'all', label: t('COMMON.ALL') },
@@ -30,6 +32,8 @@ const ObservationForms: React.FC = () => {
     { value: 'facilitator', label: t('COMMON.FACILITATORS') },
     { value: 'learner', label: t('COMMON.LEARNERS') }
   ];
+  const isSmallScreen = useMediaQuery('(max-width:938px)');
+
   useEffect(() => {
     const fetchEntityList = async () => {
       try {
@@ -218,15 +222,23 @@ const ObservationForms: React.FC = () => {
     
 
     <Box
-    flexDirection={'row'}
-    display={'flex'}
-    mr="20px">
+    // flexDirection={'row'}
+    // display={'flex'}
+    // mr="20px"
+    flexDirection={isSmallScreen ? 'column' : 'row'}
+      display={'flex'}
+      alignItems={isSmallScreen ? 'flex-start' : 'center'}
+      mr={isSmallScreen ? 0 : '20px'}
+      gap={isSmallScreen ? '10px' : '20px'}
+    
+    >
     <SearchBar
         onSearch={handleSearch}
         value={searchInput}
         placeholder={t('OBSERVATION.SEARCH_OBSERVATIONS')}
+        fullWidth
       />
-       {value===0 &&(<FormControl sx={{ minWidth: 200 , backgroundColor:"#F0F0F0"}} variant="outlined" margin="normal">
+       {value===0 &&(<FormControl sx={{ minWidth: 200 , marginLeft:"20px",backgroundColor:"#F0F0F0"}} variant="outlined" margin="normal">
         <InputLabel id="days-sort-label">{t('OBSERVATION.DAYS_LEFT')}</InputLabel>
         <Select
           labelId="days-sort-label"
