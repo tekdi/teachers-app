@@ -11,6 +11,17 @@ const remotes = (isServer) => {
   };
 };
 
+const PORTAL_BASE_URL = "https://sunbird-editor.tekdinext.com";
+
+const routes = {
+  API: {
+    GENERAL: {
+      CONTENT_PREVIEW: "/content/preview/:path*",
+      CONTENT_PLUGINS: "/content-plugins/:path*"
+    }
+  }
+};
+
 const nextConfig = {
   eslint: {
     // Disabling on production builds because we're running checks on PRs via GitHub Actions.
@@ -66,6 +77,14 @@ const nextConfig = {
         source: '/app/telemetry', // Match telemetry route
         destination: `${process.env.WORKSPACE_BASE_URL}/api/telemetry`, // Redirect to telemetry proxy
       },
+      {
+        source: routes.API.GENERAL.CONTENT_PREVIEW,
+        destination: `${PORTAL_BASE_URL}${routes.API.GENERAL.CONTENT_PREVIEW}`, // Proxy to portal
+      },
+      {
+        source: routes.API.GENERAL.CONTENT_PLUGINS,
+        destination: `${PORTAL_BASE_URL}${routes.API.GENERAL.CONTENT_PLUGINS}`, // Proxy to portal
+      }
     ];
   },
   webpack: (config, { isServer }) => {
