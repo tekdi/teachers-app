@@ -6,7 +6,7 @@ const firebaseApp = initializeApp(config.firebaseConfig);
 let messaging;
 
 if (typeof window !== 'undefined') {
-  messaging = getMessaging(); 
+  messaging = getMessaging();
 }
 
 export const requestPermission = async () => {
