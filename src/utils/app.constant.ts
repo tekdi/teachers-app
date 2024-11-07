@@ -109,6 +109,9 @@ export enum Pagination {
   ITEMS_PER_PAGE = 10,
   MAX_ITEMS = 50,
 }
+export enum LeftDays {
+  ONE_DAY_IN_MILLISECONDS=1000 * 60 * 60 * 24
+}
 
 export enum Telemetry {
   CLICK = 'CLICK',
