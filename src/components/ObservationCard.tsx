@@ -1,7 +1,9 @@
-import { Box, Typography, Card, CardContent } from '@mui/material';
+import { Box, Typography, Card, CardContent, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import { formatEndDate } from '@/utils/Helper';
+import { useTranslation } from 'react-i18next';
+import { LeftDays } from '@/utils/app.constant';
 
 interface ObservationCardProp {
   name?: string;
@@ -20,34 +22,44 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
   startDate,
   endDate
 }) => {
-  const [remainingDays, setRemainingDays] = useState<string>("");
+  const [remainingDays, setRemainingDays] = useState<any>();
   const [remainingTimes, setRemainingTimes] = useState<any>();
+  const { t } = useTranslation();
 
 
   useEffect(() => {
     const today = new Date(); 
-    console.log("endDate", endDate)
-    if(endDate)
-    {
+    
+    if (endDate) {
       const targetDate = new Date(endDate.toString()); 
-       console.log("targetDate", targetDate)
-      const diffTime = Math.abs(targetDate?.getTime() - today.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      // Calculate the difference in time
+      const diffTime = (targetDate.getTime() - today.getTime());
 
-      setRemainingTimes(diffDays)
-      if(diffDays)
-      {
-
-        const remainingTime=formatEndDate({diffDays})
-        setRemainingDays(remainingTime)
-
-
+      const diffDays = Math.ceil(diffTime / LeftDays.ONE_DAY_IN_MILLISECONDS);
+      
+      // Update remaining times and days
+      setRemainingTimes(diffDays);
+      
+      if (diffDays > 0) {
+        const remainingTime = formatEndDate({ diffDays });
+        console.log("remainingTime",typeof remainingTime)
+        setRemainingDays(remainingTime);
+        
+      } else {
+        // If diffDays is 0 or negative, set the status to 'expired'
+        setRemainingDays(0);
+        setRemainingTimes(0)
       }
-  
     }
-   
-  }, [endDate]);
+  }, [endDate]); 
+  
   return (
+    <Tooltip
+      title={remainingDays === 0 ? t('OBSERVATION.THIS_OBSERVATION_EXPIRED') : ""} 
+      disableHoverListener={remainingDays !== 0} 
+      disableFocusListener={remainingDays !== 0} 
+    >
     <Card
       variant="outlined"
       sx={{
@@ -61,18 +73,18 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
         },
         width: '300px',
         cursor: 'pointer',
-        background: 'linear-gradient(135deg, #fff9e6 0%, #faf2d6 100%)',
+        background: "#FEF8F2",
         borderRadius: '16px',
-        border: '1px solid #f0e68c',
+        border: '1px solid #D0C5B4',
         height: '200px', // Fixed height for all cards
         display: 'flex',
         flexDirection: 'column',
       }}
-      onClick={() => onCardClick?.(id || '')}
+      onClick={remainingDays===0?()=>{}:() => onCardClick?.(id || '')}
     >
       <Box display="flex" justifyContent="space-between" alignItems="center" flexGrow={1}>
         <CardContent sx={{ flexGrow: 1 }}>
-          <Box
+        {remainingDays!==0 && ( <Box
             sx={{
               width: '100px',
               padding: '4px 8px',
@@ -85,7 +97,8 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
             <Typography color={remainingTimes<=5?"#BA1A1A":"#7A5900"}variant="h5">   
               {remainingDays} left
             </Typography>
-          </Box>
+
+          </Box>)}
 
           <Box display="flex" alignItems="center" mb={1} mt={1}>
             <Typography
@@ -137,6 +150,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
         </CardContent>
       </Box>
     </Card>
+    </Tooltip>
   );
 };
 

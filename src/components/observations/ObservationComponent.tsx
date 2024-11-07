@@ -9,6 +9,8 @@ import { mock } from 'node:test';
 import { showToastMessage } from '../Toastify';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 
 
@@ -153,22 +155,59 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
            const response= await updateSubmission({submissionId, submissionData})
           if((event as CustomEvent).detail.status==="draft")
           {
+            showToastMessage( t('OBSERVATION.FORM_SAVED_SUCCESSFULLY'), 'success');
+
             t('OBSERVATION.FORM_SAVED_SUCCESSFULLY')
-            showToastMessage( t('OBSERVATION.FORM_SUBMIT_SUCCESSFULLY'), 'success');
            // window.history.back();
           //  router.push(
           //   `${localStorage.getItem('observationPath')}`
           // );
+          const windowUrl = window.location.pathname;
+          const cleanedUrl = windowUrl.replace(/^\//, '');
+          const telemetryInteract = {
+            context: {
+              env: 'observation',
+              cdata: [],
+            },
+            edata: {
+              id: 'save-observation-successfully',
+              type: Telemetry.CLICK,
+              subtype: '',
+              pageid: cleanedUrl,
+            },
+          };
+          telemetryFactory.interact(telemetryInteract);
 
           }
           else if((event as CustomEvent).detail.status==="submit")
           {
-            showToastMessage( t('OBSERVATION.FORM_SAVED_SUCCESSFULLY'), 'success');
+            showToastMessage( t('OBSERVATION.FORM_SUBMIT_SUCCESSFULLY'), 'success');
+
           //  window.history.back();
 
            router.push(
             `${localStorage.getItem('observationPath')}`
           );
+
+
+          const windowUrl = window.location.pathname;
+          const cleanedUrl = windowUrl.replace(/^\//, '');
+          const telemetryInteract = {
+            context: {
+              env: 'observation',
+              cdata: [],
+            },
+            edata: {
+              id: 'submit-observation-successfully',
+              type: Telemetry.CLICK,
+              subtype: '',
+              pageid: cleanedUrl,
+            },
+          };
+          telemetryFactory.interact(telemetryInteract);
+
+
+          
           }
         };
 

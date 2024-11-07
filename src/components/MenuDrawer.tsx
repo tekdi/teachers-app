@@ -26,6 +26,8 @@ import { useDirection } from '../hooks/useDirection';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 import { getAcademicYear } from '../services/AcademicYearService';
 import { AcademicYear } from '@/utils/Interfaces';
+import { telemetryFactory } from '@/utils/telemetry';
+import { Telemetry } from '@/utils/app.constant';
 
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;

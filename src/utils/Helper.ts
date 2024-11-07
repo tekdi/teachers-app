@@ -627,14 +627,14 @@ export function formatEndDate({diffDays}: any) {
       const months = Math.floor(remainingDays / 30.44); 
       const days = Math.round(remainingDays % 30.44);
       
-      remainingTime = `${years} year(s)${months > 0 ? `, ${months} months` : ''}${days > 0 ? `, , ${days} days` : ''}`;
+      remainingTime = `${years} year(s)${months > 0 ? `, ${months} month(s)` : ''}${days > 0 ? `,  ${days} day(s)` : ''}`;
     } else if (diffDays > 31) {
       const months = Math.floor(diffDays / 30.44); 
       const days = Math.round(diffDays % 30.44);
       
-      remainingTime = `${months} months ${days > 0 ? ` , ${days} days` : ''}`;
+      remainingTime = `${months} month(s) ${days > 0 ? ` , ${days} day(s)` : ''}`;
     } else {
-      remainingTime = `${diffDays} days`;
+      remainingTime = `${diffDays} day(s)`;
     }
     return remainingTime;
   }
