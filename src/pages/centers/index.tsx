@@ -65,6 +65,7 @@ const CentersPage = () => {
   const setType = taxonomyStore((state) => state.setType);
   const store = useStore();
   const userRole = store.userRole;
+  const isActiveYear = store.isActiveYearSelected;
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -470,7 +471,7 @@ const CentersPage = () => {
                   'showCreateCenterButton',
                   accessControl,
                   userRole
-                ) && (
+                ) && isActiveYear && (
                   <Box mt={'18px'} px={'18px'}>
                     <Button
                       sx={{

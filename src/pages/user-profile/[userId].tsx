@@ -27,6 +27,7 @@ import { accessControl } from '../../../app.config';
 import { getFormRead, useFormRead } from '@/hooks/useFormRead';
 import { useQueryClient } from '@tanstack/react-query';
 import { useDirection } from '@/hooks/useDirection';
+import useStore from '@/store/store';
 
 interface TeacherProfileProp {
   reloadState?: boolean;
@@ -42,6 +43,9 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const { userId }: any = router.query;
   const queryClient = useQueryClient();
   const theme = useTheme<any>();
+  const store = useStore();
+  const isActiveYear = store.isActiveYearSelected;
+
   const [userData, setUserData] = useState<any | null>(null);
   const [userName, setUserName] = useState<any | null>(null);
   const [customFieldsData, setCustomFieldsData] = useState<CustomField[]>([]);
@@ -430,12 +434,14 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                   </Typography>
                 </Box>
               </Box>
-              <ManageUser
-                reloadState={reloadState ?? false}
-                setReloadState={setReloadState ?? (() => {})}
-                isFromFLProfile={true}
-                teacherUserId={userId}
-              />
+              {isActiveYear && (
+                <ManageUser
+                  reloadState={reloadState ?? false}
+                  setReloadState={setReloadState ?? (() => {})}
+                  isFromFLProfile={true}
+                  teacherUserId={userId}
+                />
+              )}
             </Box>
           )}
           <Box
@@ -445,7 +451,9 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
               width: '100%',
             }}
           >
-            {userRole === Role.TEAM_LEADER && userId !== selfUserId ? (
+            {userRole === Role.TEAM_LEADER &&
+            userId !== selfUserId &&
+            isActiveYear ? (
               <Button
                 sx={{
                   fontSize: '14px',

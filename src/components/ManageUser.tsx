@@ -73,6 +73,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const newStore = useStore();
   const queryClient = useQueryClient();
   const { dir, isRTL } = useDirection();
+  const isActiveYear = newStore.isActiveYearSelected;
 
   const [value, setValue] = React.useState(1);
   const [users, setUsers] = useState<
@@ -506,7 +507,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       <Box>
         {value === 1 && (
           <>
-            {!isFromFLProfile && (
+            {!isFromFLProfile && isActiveYear && (
               <Grid
                 px={'18px'}
                 spacing={2}

@@ -55,6 +55,10 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const store = useStore();
   const userRole = store.userRole;
   const { isRTL } = useDirection();
+  const setIsActiveYearSelected = useStore(
+    (state: { setIsActiveYearSelected: any }) => state.setIsActiveYearSelected
+  );
+  const isActiveYear = store.isActiveYearSelected;
 
   useEffect(() => setIsOpen(open), [open]);
 
@@ -87,7 +91,21 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     setSelectedSessionId(event.target.value);
     console.log('selected academic year id', event.target.value);
     localStorage.setItem('academicYearId', event.target.value);
-    window.location.reload();
+
+    // Check if the selected academic year is active
+    const selectedYear = academicYearList?.find(
+      (year) => year.id === event.target.value
+    );
+    const isActive = selectedYear ? selectedYear.isActive : false;
+    // localStorage.setItem('isActiveYearSelected', JSON.stringify(isActive));
+    setIsActiveYearSelected(isActive);
+    if (isActive) {
+      window.location.reload();
+    } else {
+      router.push('/centers').then(() => {
+        window.location.reload();
+      });
+    }
   };
 
   const closeDrawer = () => {
@@ -229,37 +247,39 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           </Box>
         </Box>
 
-        <Box>
-          <Button
-            className="fs-14"
-            sx={{
-              gap: '10px',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isDashboard
-                ? theme.palette.primary.main
-                : 'transparent',
-              padding: isDashboard
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              marginTop: '25px',
-              color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isDashboard ? '600' : 500,
-              '&:hover': {
+        {isActiveYear && (
+          <Box>
+            <Button
+              className="fs-14"
+              sx={{
+                gap: '10px',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isDashboard
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-            }}
-            startIcon={
-              <DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />
-            }
-            onClick={navigateToDashboard}
-          >
-            {t('DASHBOARD.DASHBOARD')}
-          </Button>
-        </Box>
+                padding: isDashboard
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                marginTop: '25px',
+                color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isDashboard ? '600' : 500,
+                '&:hover': {
+                  background: isDashboard
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+              }}
+              startIcon={
+                <DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />
+              }
+              onClick={navigateToDashboard}
+            >
+              {t('DASHBOARD.DASHBOARD')}
+            </Button>
+          </Box>
+        )}
         <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-6"
@@ -325,46 +345,48 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             {t('COMMON.OBSERVATIONS_FORMS')}
           </Button>
         </Box>
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14 joyride-step-7"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isCoursePlanner
-                ? theme.palette.primary.main
-                : 'transparent',
-
-              padding: isCoursePlanner
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isCoursePlanner ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isCoursePlanner ? '600' : 500,
-              '&:hover': {
+        {isActiveYear && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14 joyride-step-7"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isCoursePlanner
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-              marginTop: '15px',
-              gap: '10px',
-            }}
-            startIcon={
-              <Image
-                src={checkBook}
-                alt="CheckBook Icon"
-                width={24}
-                height={24}
-              />
-            }
-            onClick={() => {
-              router.push(`/course-planner`);
-            }}
-          >
-            {t('COURSE_PLANNER.COURSE_PLANNER')}
-          </Button>
-        </Box>
-        {!isEliminatedFromBuild('Assessments', 'feature') && (
+
+                padding: isCoursePlanner
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isCoursePlanner ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isCoursePlanner ? '600' : 500,
+                '&:hover': {
+                  background: isCoursePlanner
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+                gap: '10px',
+              }}
+              startIcon={
+                <Image
+                  src={checkBook}
+                  alt="CheckBook Icon"
+                  width={24}
+                  height={24}
+                />
+              }
+              onClick={() => {
+                router.push(`/course-planner`);
+              }}
+            >
+              {t('COURSE_PLANNER.COURSE_PLANNER')}
+            </Button>
+          </Box>
+        )}
+        {!isEliminatedFromBuild('Assessments', 'feature') && isActiveYear && (
           <Box sx={{ marginTop: '18px' }}>
             <Button
               className="fs-14 joyride-step-8"
@@ -432,53 +454,39 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
           </Button>
         </Box> */}
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: 'transparent',
-              padding: '0px 18px !important',
-              gap: '10px',
-              color: theme.palette.secondary.main,
-              fontWeight: 500,
-              '&:hover': {
+        {isActiveYear && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: 'transparent',
-              },
-              marginTop: '15px',
-            }}
-            endIcon={<ErrorOutlineIcon sx={{ fontSize: '18px !important' }} />}
-            onClick={() => {
-              localStorage.removeItem('hasSeenTutorial');
-              setTimeout(() => {
-                closeDrawer();
-                router.push(`/`);
-              }, 0);
-
-              const windowUrl = window.location.pathname;
-            const cleanedUrl = windowUrl.replace(/^\//, '');
-      
-
-            const telemetryInteract = {
-              context: {
-               // env: '',
-                cdata: [],
-              },
-              edata: {
-                id: 'click-on-learn-how-to-use',
-                type: Telemetry.CLICK,
-                subtype: '',
-                pageid: cleanedUrl
-              },
-            };
-            telemetryFactory.interact(telemetryInteract)
-            }}
-          >
-            {t('GUIDE_TOUR.LEARN_HOW_TO_USE')}
-          </Button>
-        </Box>
+                padding: '0px 18px !important',
+                gap: '10px',
+                color: theme.palette.secondary.main,
+                fontWeight: 500,
+                '&:hover': {
+                  background: 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              endIcon={
+                <ErrorOutlineIcon sx={{ fontSize: '18px !important' }} />
+              }
+              onClick={() => {
+                localStorage.removeItem('hasSeenTutorial');
+                setTimeout(() => {
+                  closeDrawer();
+                  router.push(`/`);
+                }, 0);
+              }}
+            >
+              {t('GUIDE_TOUR.LEARN_HOW_TO_USE')}
+            </Button>
+          </Box>
+        )}
       </Box>
     </Drawer>
   );
