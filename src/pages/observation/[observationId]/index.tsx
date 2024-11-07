@@ -27,6 +27,7 @@ import {
 } from '@/services/MyClassDetailsService';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import SearchIcon from '@mui/icons-material/Search';
+import { formatDate } from '@/utils/Helper';
 
 import Pagination from '@mui/material/Pagination';
 import { CohortMemberList } from '@/utils/Interfaces';
@@ -55,6 +56,8 @@ const ObservationDetails = () => {
   const { observationName } = router.query;
 
   const [myCohortList, setMyCohortList] = useState<any[]>([]);
+  const [centerList, setCenterList] = useState<any[]>([]);
+
   const [myCohortListForCenter, setmyCohortListForCenter] = useState<any[]>([]);
   const [cohortIdData, setCohortIdData] = useState<any[]>([]);
   const [entityIds, setEntityIds] = useState<any[]>([]);
@@ -81,7 +84,7 @@ const ObservationDetails = () => {
   const { t } = useTranslation();
   const [observationData, setObservationData] = useState<any>([]);
   const [observationDescription, setObservationDescription] = useState<any>();
-  const [observationEndDate, setObservationEndDate] = useState<any>();
+  const [observationEndDate, setObservationEndDate] = useState<any>("");
 
 
 
@@ -441,7 +444,7 @@ const ObservationDetails = () => {
 
   const renderEntityData = (data: EntityData[], entityType: string) => {
     if (!data || data.length === 0) {
-      return <Typography ml="60px"> {t('OBSERVATION.NO_DATA_FOUND',{
+      return <Typography ml="40%"> {t('OBSERVATION.NO_DATA_FOUND',{
         entity:entity,
       })}
       </Typography>;
@@ -523,7 +526,7 @@ const ObservationDetails = () => {
             }}
             onClick={handleBackEvent}
           />
-          <Typography variant="h1">{observationName}</Typography>
+          <Typography variant="h1" color={"black"}>{observationName}</Typography>
         </Box>
 
         <Grid >
@@ -531,17 +534,17 @@ const ObservationDetails = () => {
           <Grid >
             {' '}
             {/* Increased the left side size */}
-            <Box position="relative" bgcolor="#FBF4E5" width="100%" p="20px">
+            <Box position="relative" bgcolor="#FBF4E5" width="100%" p="20px" >
               <Box sx={{ marginTop: '10px', marginLeft: '10px' }}>
-                <Typography variant="h2" sx={{ fontWeight: 'bold' }}>
+                <Typography variant="h2" color={"black"} sx={{ fontWeight: 'bold' }}>
                  {t('OBSERVATION.OBSERVATION_DETAILS')}
                 </Typography>
                
-                <Typography variant="h2" mt="20px">
+                <Typography variant="h2"color={"black"} mt="20px">
                   {observationDescription}
                 </Typography>
-                <Typography variant="body1">
-                {t('CENTER_SESSION.END_DATE')}: {observationEndDate || "N/A"}
+                <Typography variant="body1" color={"black"}>
+                {t('OBSERVATION.DUE_DATE')}: {formatDate(observationEndDate?.toString()) || "N/A"}
       </Typography>
               </Box>
 
@@ -552,9 +555,10 @@ const ObservationDetails = () => {
                 }}
               >
                 {entity !== ObservationEntityType?.CENTER && (
-                  <FormControl sx={{ m: 3, width: 300, }}>
-                    <InputLabel id="demo-single-name-label">
-                      {t('ATTENDANCE.CENTER_NAME')}
+                  <FormControl sx={{ m: 3, width: 300, backgroundColor:"white"}}>
+                    <InputLabel  id="demo-single-name-label">
+                      <Typography variant="h2"color={"black"}>
+                      {t('ATTENDANCE.CENTER_NAME')}                </Typography>
                     </InputLabel>
                     <Select
                       labelId="demo-single-name-label"
