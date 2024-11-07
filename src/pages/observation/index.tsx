@@ -310,7 +310,7 @@ const ObservationForms: React.FC = () => {
                   ))
               ) : searchInput === "" ?(
                 <Typography variant="h5" color="textSecondary">
-                {t('OBSERVATION.NO_OBSERVATION_EXPIRED', {
+                {t('OBSERVATION.NO_RESULT_FOUND', {
                   entity: toPascalCase(name),
                 })}
               </Typography>

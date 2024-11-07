@@ -31,9 +31,16 @@ export const MONTHS = [
 ];
 
 export const formatDate = (dateString: string) => {
-  const [year, monthIndex, day] = dateString.split('-');
-  const month = MONTHS[parseInt(monthIndex, 10) - 1];
-  return `${day} ${month}, ${year}`;
+  if(dateString)
+  {
+    const dateOnly = dateString?.split('T')[0];
+  
+    const [year, monthIndex, day] = dateOnly.split('-');
+    const month = MONTHS[parseInt(monthIndex, 10) - 1];
+    
+    return `${day} ${month}, ${year}`;
+  }
+  
 };
 
 export const formatToShowDateMonth = (date: Date) => {
