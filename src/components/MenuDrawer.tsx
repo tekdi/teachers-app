@@ -26,6 +26,8 @@ import { useDirection } from '../hooks/useDirection';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 import { getAcademicYear } from '../services/AcademicYearService';
 import { AcademicYear } from '@/utils/Interfaces';
+import { telemetryFactory } from '@/utils/telemetry';
+import { Telemetry } from '@/utils/app.constant';
 
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
@@ -454,6 +456,24 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 closeDrawer();
                 router.push(`/`);
               }, 0);
+
+              const windowUrl = window.location.pathname;
+            const cleanedUrl = windowUrl.replace(/^\//, '');
+      
+
+            const telemetryInteract = {
+              context: {
+               // env: '',
+                cdata: [],
+              },
+              edata: {
+                id: 'click-on-learn-how-to-use',
+                type: Telemetry.CLICK,
+                subtype: '',
+                pageid: cleanedUrl
+              },
+            };
+            telemetryFactory.interact(telemetryInteract)
             }}
           >
             {t('GUIDE_TOUR.LEARN_HOW_TO_USE')}
