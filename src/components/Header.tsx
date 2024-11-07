@@ -18,6 +18,7 @@ import { useTranslation } from 'next-i18next';
 import StyledMenu from './StyledMenu';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { useDirection } from '../hooks/useDirection';
+import useStore from '../store/store';
 
 interface HeaderProps {
   toggleDrawer?: (newOpen: boolean) => () => void;
@@ -34,6 +35,8 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
   const { t } = useTranslation();
   const pathname = usePathname();
   const theme = useTheme<any>();
+  const store = useStore();
+  const isActiveYear = store.isActiveYearSelected;
 
   const [userId, setUserId] = useState<string>('');
   const [openMenu, setOpenMenu] = useState<boolean>(false);
@@ -170,7 +173,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
             width={44}
             src={logoLight}
             alt="logo"
-            onClick={() => router.push('/dashboard')}
+            onClick={() => isActiveYear && router.push('/dashboard')}
             style={{ marginRight: isRTL ? '20px' : '0px' }}
           />
 

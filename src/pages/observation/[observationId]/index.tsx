@@ -16,7 +16,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/Header';
 // import AddEntityModal from '@/components/observations/AddEntityModal';
-import { ObservationEntityType, Role , ObservationStatus} from '@/utils/app.constant';
+import { ObservationEntityType, Role , ObservationStatus, Telemetry} from '@/utils/app.constant';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticPaths } from 'next';
 import { toPascalCase } from '@/utils/Helper';
@@ -34,11 +34,13 @@ import {
   addEntities,
   checkEntityStatus,
   fetchEntities,
+  targetSolution,
 } from '@/services/ObservationServices';
 import { useTranslation } from 'react-i18next';
 import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
 import Entity from '@/components/observations/Entity';
 import SearchBar from '@/components/Searchbar';
+import { telemetryFactory } from '@/utils/telemetry';
 interface EntityData {
   cohortId?: string;
   name?: string;
@@ -75,9 +77,13 @@ const ObservationDetails = () => {
   const [limit, setLimit] = React.useState(pageLimit);
 
   const [searchInput, setSearchInput] = useState('');
-  const [description, setDescription] = useState('');
 
   const { t } = useTranslation();
+  const [observationData, setObservationData] = useState<any>([]);
+  const [observationDescription, setObservationDescription] = useState<any>();
+  const [observationEndDate, setObservationEndDate] = useState<any>();
+
+
 
   const theme = useTheme<any>();
 
@@ -140,9 +146,26 @@ const ObservationDetails = () => {
     fetchCohorts();
   }, [searchInput]);
 
-  
+  useEffect(() => {
+    const fetchObservationData = async () => {
+      try {
+        const response = await targetSolution();
+        setObservationData(response?.result?.data || []);
+      
 
+      } catch (error) {
+        console.error('Error fetching cohort list:', error);
+      }
+    };
+    fetchObservationData();
+  }, []);
 
+  useEffect(() => {
+   const result = observationData?.find((item:any) => item._id === Id);
+   setObservationDescription(result?.description)
+   setObservationEndDate(result?.endDate)
+
+  }, [Id, observationData]);
 
   useEffect(() => {
     const fetchEntityList = async () => {
@@ -239,14 +262,14 @@ const ObservationDetails = () => {
           if(entityId)
           {
             const response = await checkEntityStatus({ observationId, entityId });
-          console.log("response.result.length",response.result.length)
-          if(response.result.length!==0)
+          console.log("response.result.length",response?.result?.length)
+          if(response?.result?.length!==0)
            {
-            if(response?.result[0]?.evidencesStatus[0]?.status==="draft")
+            if(response?.result[response?.result?.length-1]?.evidencesStatus[0]?.status==="draft")
                 setFirstEntityStatus("draft")
-              else if(response?.result[0]?.evidencesStatus[0]?.status==="completed")
+              else if(response?.result[response?.result?.length-1]?.evidencesStatus[0]?.status==="completed")
               setFirstEntityStatus("completed")
-            else if(response?.result[0]?.evidencesStatus[0]?.status==="notstarted")
+            else if(response?.result[response?.result?.length-1]?.evidencesStatus[0]?.status==="notstarted")
             setFirstEntityStatus("notstarted")
         
            }
@@ -320,6 +343,7 @@ const ObservationDetails = () => {
       } finally {
       }
     };
+    if(selectedCohort && selectedCohort!=='')
     handleCohortChange();
   }, [page, selectedCohort, searchInput]);
 
@@ -352,6 +376,21 @@ const ObservationDetails = () => {
     setPage(0);
     setSelectedCohort(event.target.value);
     localStorage.setItem("selectedCohort",event.target.value)
+    const windowUrl = window.location.pathname;
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const telemetryInteract = {
+      context: {
+        env: 'observation',
+        cdata: [],
+      },
+      edata: {
+        id: 'filter-by-center:'+event.target.value,
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   const onStartObservation = (cohortId: any) => {
@@ -360,6 +399,8 @@ const ObservationDetails = () => {
     const basePath = router.asPath.split('?')[0];
     const newFullPath = `${basePath}/questionary`;
     const { observationName } = router.query;
+    const { Id } = router.query;
+
 
     const queryParams = { cohortId: cohortId, Id: Id , observationName: observationName };
     router.push({
@@ -460,13 +501,7 @@ const ObservationDetails = () => {
 
     
   };
-  useEffect(() => {
-    const data= typeof window !== 'undefined'
-          ? localStorage.getItem("observationDescription") || ''
-          : '';
-          setDescription(data)
-  }, []);
-
+ 
   return (
     <>
       <Header />
@@ -498,12 +533,16 @@ const ObservationDetails = () => {
             {/* Increased the left side size */}
             <Box position="relative" bgcolor="#FBF4E5" width="100%" p="20px">
               <Box sx={{ marginTop: '10px', marginLeft: '10px' }}>
-                <Typography variant="h2">
-                  {t('OBSERVATION.OBSERVATION_DETAILS')}
+                <Typography variant="h2" sx={{ fontWeight: 'bold' }}>
+                 {t('OBSERVATION.OBSERVATION_DETAILS')}
                 </Typography>
-                <Typography variant="h2">
-                  {description}
+               
+                <Typography variant="h2" mt="20px">
+                  {observationDescription}
                 </Typography>
+                <Typography variant="body1">
+                {t('CENTER_SESSION.END_DATE')}: {observationEndDate || "N/A"}
+      </Typography>
               </Box>
 
               <Box
@@ -513,7 +552,7 @@ const ObservationDetails = () => {
                 }}
               >
                 {entity !== ObservationEntityType?.CENTER && (
-                  <FormControl sx={{ m: 3, width: 300 }}>
+                  <FormControl sx={{ m: 3, width: 300, }}>
                     <InputLabel id="demo-single-name-label">
                       {t('ATTENDANCE.CENTER_NAME')}
                     </InputLabel>

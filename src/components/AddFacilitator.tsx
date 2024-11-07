@@ -305,7 +305,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 id: 'facilitator-updated-success',
                 type: Telemetry.CLICK,
                 subtype: '',
-                pageid: 'cleanedUrl',
+                pageid: cleanedUrl
               },
             };
             telemetryFactory.interact(telemetryInteract);

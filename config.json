@@ -18,14 +18,14 @@
       "code": "or"
     }
   ],
-   "firebaseConfig": {
-   "apiKey": "process.env.NEXT_PUBLIC_FCM_API_KEY",
-   "authDomain": "backend-e99c8.firebaseapp.com",
-   "projectId": "backend-e99c8",
-   "storageBucket": "backend-e99c8.appspot.com",
-   "messagingSenderId": "839139131975",
-   "appId": "1:839139131975:web:90af50d01e2eb0f510e762",
-   "measurementId": "G-5237RSF3TC"
- },
- "vapidKey": "process.env.NEXT_PUBLIC_VAPID_KEY"
+  "firebaseConfig": {
+    "apiKey": "AIzaSyCmhNz-HMkkf42QNmnf7pnZm49FP5g4INw",
+    "authDomain": "backend-e99c8.firebaseapp.com",
+    "projectId": "backend-e99c8",
+    "storageBucket": "backend-e99c8.appspot.com",
+    "messagingSenderId": "839139131975",
+    "appId": "1:839139131975:web:90af50d01e2eb0f510e762",
+    "measurementId": "G-5237RSF3TC"
+  },
+  "vapidKey": "BOZ_JkC62vr767LoC7APU26ZdGYW5htBkfqIEtsVX6zmE3Fi-XgcN_TggSaXKh5rGKcaa4vuQxaYiRPU2B955GI"
 }

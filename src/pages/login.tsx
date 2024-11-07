@@ -37,6 +37,9 @@ import loginImg from './../assets/images/login-image.jpg';
 
 const LoginPage = () => {
   const { t, i18n } = useTranslation();
+  const setIsActiveYearSelected = useStore(
+    (state: { setIsActiveYearSelected: any }) => state.setIsActiveYearSelected
+  );
   const setUserId = manageUserStore((state) => state.setUserId);
   const setUserRole = useStore(
     (state: { setUserRole: any }) => state.setUserRole
@@ -174,6 +177,7 @@ const LoginPage = () => {
       );
       const activeSessionId = activeSession ? activeSession.id : '';
       localStorage.setItem('academicYearId', activeSessionId);
+      setIsActiveYearSelected(true);
       if (activeSessionId) {
         setLoading(false);
         router.push('/dashboard');

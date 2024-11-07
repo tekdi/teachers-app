@@ -10,6 +10,8 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { debounce } from '@/utils/Helper';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 export interface SearchBarProps {
   onSearch: (value: string) => void;
@@ -50,6 +52,25 @@ const SearchBar: React.FC<SearchBarProps> = ({
     {
 
       handleSearch(searchTerm);
+
+
+      const windowUrl = window.location.pathname;
+      const cleanedUrl = windowUrl.replace(/^\//, '');
+      const env = cleanedUrl.split("/")[0];
+console.log(env)
+      const telemetryInteract = {
+        context: {
+          env: env,
+          cdata: [],
+        },
+        edata: {
+          id: 'search-value:'+searchTerm,
+          type: Telemetry.SEARCH,
+          subtype: '',
+          pageid: cleanedUrl,
+        },
+      };
+      telemetryFactory.interact(telemetryInteract);
     }
   
   };
