@@ -24,6 +24,8 @@ const FilterSelect: React.FC<FilterSelectProps> = ({
         value={selectedOption}
         onChange={handleFilterChange}
         label={label}
+        sx={{height:"50px"}}
+
       >
         {menuItems.map((item) => (
           <MenuItem key={item.value} value={item.value}>

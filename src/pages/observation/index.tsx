@@ -238,13 +238,18 @@ const ObservationForms: React.FC = () => {
         placeholder={t('OBSERVATION.SEARCH_OBSERVATIONS')}
         fullWidth
       />
-       {value===0 &&(<FormControl sx={{ minWidth: 200 , marginLeft:"20px",backgroundColor:"#F0F0F0"}} variant="outlined" margin="normal">
-        <InputLabel id="days-sort-label">{t('OBSERVATION.DAYS_LEFT')}</InputLabel>
+       {value===0 &&(<FormControl sx={{ minWidth: 200 ,  marginLeft:"20px",backgroundColor:"#F0F0F0"}} variant="outlined" margin="normal">
+        <InputLabel id="days-sort-label">
+        <Typography variant="h3" >
+        {t('OBSERVATION.DAYS_LEFT')}              </Typography>
+          
+         </InputLabel>
         <Select
           labelId="days-sort-label"
            value={sortOrder}
            onChange={handleSortChange}
           label={t('OBSERVATION.DAYS_LEFT')}
+          sx={{height:"50px"}}
           
         >
           <MenuItem value="lowToHigh">{t('COMMON.LOW_TO_HIGH')}</MenuItem>
@@ -270,7 +275,7 @@ const ObservationForms: React.FC = () => {
             borderRadius: 1,
           }}
         >
-          <Typography variant="h2">
+          <Typography variant="h2" color={"black"}>
             {t('OBSERVATION.OBSERVATIONS', {
               name: toPascalCase(name),
             })}
@@ -309,26 +314,26 @@ const ObservationForms: React.FC = () => {
                     </Box>
                   ))
               ) : searchInput === "" ?(
-                <Typography variant="h5" color="textSecondary">
+                <Typography variant="h4" color="textSecondary">
                 {t('OBSERVATION.NO_RESULT_FOUND', {
                   entity: toPascalCase(name),
                 })}
               </Typography>
               ):(
-                <Typography variant="h5" color="textSecondary">
+                <Typography variant="h4" color="textSecondary">
                 {t('OBSERVATION.NO_RESULT_FOUND', {
                   entity: toPascalCase(name),
                 })}
               </Typography>
               )
             ) : searchInput === "" && value === 0 ? (
-              <Typography variant="h5" color="textSecondary">
+              <Typography variant="h4" color="textSecondary">
                 {t('OBSERVATION.NO_RESULT_FOUND', {
                   entity: toPascalCase(name),
                 })}
               </Typography>
             ) : (
-              <Typography variant="h5" color="textSecondary">
+              <Typography variant="h4" color="textSecondary">
               {t('OBSERVATION.NO_RESULT_FOUND', {
                 entity: toPascalCase(name),
               })}

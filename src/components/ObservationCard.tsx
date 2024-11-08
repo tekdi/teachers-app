@@ -53,7 +53,6 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
       <Card
         variant="outlined"
         sx={{
-          padding: '8px',
           boxShadow: 3,
           transition: 'transform 0.3s ease-in-out',
           '&:hover': {
@@ -65,14 +64,14 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
         background: "#f8efda",
                  borderRadius: '16px',
           border: '1px solid #E0E0E0',
-          height: '220px',
+         // height: '220px',
           display: 'flex',
           flexDirection: 'column',
         }}
         onClick={remainingDays === 0 ? undefined : () => onCardClick?.(id || '')}
       >
-        <Box display="flex" justifyContent="space-between" alignItems="center" flexGrow={1}>
-          <CardContent sx={{ flexGrow: 1, padding: '16px' }}>
+        <Box display="flex"  alignItems="center" >
+          <CardContent sx={{  }}>
             {/* {remainingDays !== 0 && (
               <Chip
                 label={`${remainingDays} ${t('OBSERVATION.DAYS_LEFT')}`}
@@ -85,34 +84,16 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
               />
             )} */}
 
-            {endDate &&(<Box
-              sx={{
-               // display: 'flex',
-                alignItems: 'center',
-                mb: 1,
-                mt: 1,
-                color: 'black',
-              backgroundColor: 'white',
-                borderRadius: '8px',
-                padding: '6px 10px',
-              }}
-            >
-              <Typography variant="body1" color="text.primary" sx={{ mr: 1 }}>
-                {t('OBSERVATION.DUE_DATE')}:
-              </Typography>
-              <Typography variant="body1" color="text.primary">
-                {endDate ? formatDate(endDate) : 'N/A'}
-              </Typography>
-            </Box>)}
+           
 
             <Typography
-              variant="h5"
+              variant="h3"
               component="div"
               sx={{
                 fontWeight: 'bold',
                 lineHeight: 1.3,
                 color: '#333',
-                mb: 1,
+               // mb: 1,
               }}
             >
               {name}
@@ -135,6 +116,22 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
                 {description}
               </Typography>
             )}
+
+{endDate &&(<Box
+              sx={{
+                alignItems: 'center',
+             
+               
+                borderRadius: '8px',
+              }}
+            >
+              <Typography variant="h5" color="black"  sx={{ mr: 1 }}>
+                {t('OBSERVATION.DUE_DATE')}:
+              </Typography>
+              <Typography variant="h5" color= '#555' >
+                {endDate ? formatDate(endDate) : 'N/A'}
+              </Typography>
+            </Box>)}
           </CardContent>
         </Box>
       </Card>
