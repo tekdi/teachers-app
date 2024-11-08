@@ -62,7 +62,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
           },
           width: '320px',
          cursor: 'pointer',
-        //background: "#FEF8F2",
+        background: "#f8efda",
                  borderRadius: '16px',
           border: '1px solid #E0E0E0',
           height: '220px',
@@ -92,7 +92,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
                 mb: 1,
                 mt: 1,
                 color: 'black',
-                backgroundColor: remainingTimes <= 5 ? '#FFE7E3' : '#E9F5FF',
+              backgroundColor: 'white',
                 borderRadius: '8px',
                 padding: '6px 10px',
               }}
