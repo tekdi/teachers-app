@@ -32,7 +32,7 @@ export const getHierarchy = async (identifier: any) => {
 
 export const getQumlData = async (identifier: any) => {
   try {
-    const API_URL = `${process.env.NEXT_PUBLIC_WORKSPACE_BASE_URL}${URL_CONFIG.API.QUESTIONSET_READ}${identifier}`;
+    const API_URL = `${URL_CONFIG.API.QUESTIONSET_READ}${identifier}`;
     const FIELDS = URL_CONFIG.PARAMS.HIERARCHY_FEILDS;
     const response = await axios.get(`${API_URL}?fields=${FIELDS}`);
     console.log('response =====>', response);
