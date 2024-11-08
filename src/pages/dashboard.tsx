@@ -246,11 +246,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setClassId(localStorage.getItem('classId') ?? '');
       if (token) {
         setIsAuthenticated(true);
+        setUserId(storedUserId);
+      
+        if (!isActiveYear) {
+          router.push('/centers');
+        }
       } else {
         router.push('/login');
       }
-      setUserId(storedUserId);
-      !isActiveYear && router.push('/centers');
     }
   }, [cohortsData]);
 
