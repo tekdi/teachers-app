@@ -546,7 +546,8 @@ const LoginPage = () => {
                       const resetAppUrl =
                         process.env.NEXT_PUBLIC_RESET_PASSWORD_URL;
                       window.open(
-                        `${resetAppUrl}?redirectUrl=${window.location.origin}/login`
+                        `${resetAppUrl}?redirectUrl=${window.location.origin}/login`, 
+                        '_self'
                       );
                     }}
                   >
