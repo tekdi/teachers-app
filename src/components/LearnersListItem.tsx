@@ -101,6 +101,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const setCohortLearnerDeleteId = manageUserStore(
     (state) => state.setCohortLearnerDeleteId
   );
+  const isActiveYear = userStore.isActiveYearSelected;
 
   useEffect(() => {
     if (reloadState) {
@@ -625,7 +626,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                   )}
                 </Box>
               </Box>
-              <MoreVertIcon
+              {isActiveYear && <MoreVertIcon
                 onClick={(event) => {
                   isMobile
                     ? toggleDrawer('bottom', true)(event)
@@ -636,7 +637,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                   color: theme.palette.warning['300'],
                   cursor: 'pointer',
                 }}
-              />
+              />}
             </Box>
           </Box>
         </Box>

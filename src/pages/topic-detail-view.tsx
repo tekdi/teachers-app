@@ -21,6 +21,7 @@ import useCourseStore from '@/store/coursePlannerStore';
 import CourseAccordion from '@/components/CourseAccordion';
 import { useDirection } from '../hooks/useDirection';
 import { ResourcesType } from '@/utils/app.constant';
+import router from 'next/router';
 
 const TopicDetailView = () => {
   const [value, setValue] = React.useState(1);
@@ -33,12 +34,17 @@ const TopicDetailView = () => {
   const store = useCourseStore();
 
   const handleBackEvent = () => {
-    window.history.back();
+    // window.history.back();
+    router.push(`/course-planner-detail`);
     logEvent({
       action: 'back-button-clicked-attendance-overview',
       category: 'Attendance Overview Page',
       label: 'Back Button Clicked',
     });
+  };
+
+  const handlePlayers = () => {
+    sessionStorage.setItem('previousPage', window.location.href);
   };
 
   return (
@@ -122,7 +128,7 @@ const TopicDetailView = () => {
         </Box>
 
         {value === 1 && (
-          <Box>
+          <Box onClick={handlePlayers}>
             <CourseAccordion
               title={t('CENTER_SESSION.LEARNER_PREREQUISITES')}
               type={ResourcesType.PREREQUSITE}

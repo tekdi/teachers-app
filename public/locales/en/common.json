@@ -136,7 +136,9 @@
     "CENTER": "Center",
     "AND_COUNT_MORE": "and {{count}} more",
     "RETURN_TO_LOGIN": "Return to Login",
-    "NO_CENTER_FOUND": "No Center found"
+    "NO_CENTER_FOUND": "No Center found",
+    "FILTER_BY":"Filter By",
+    "ALL":"All"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -600,7 +602,14 @@
     "NOT_STARTED":"Not Started",
     "COMPLETED":"Completed",
     "INPROGRESS":"In-Progress",
-    "NO_DATA_FOUND":"No {{entity}} found"
+    "NO_DATA_FOUND":"No {{entity}} found",
+    "NO_RESULT_FOUND":"No Observations found for {{entity}}",
+    "NO_OBSERVATION_EXPIRED":"No observation expired for {{entity}}",
+    "DAYS_LEFT":"Days left",
+    "THIS_OBSERVATION_EXPIRED":"This observation is expired",
+    "DUE_DATE":"Due date"
+
+
 }
   
 }
