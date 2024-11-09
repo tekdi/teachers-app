@@ -42,10 +42,13 @@ import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
 import Entity from '@/components/observations/Entity';
 import SearchBar from '@/components/Searchbar';
 import { telemetryFactory } from '@/utils/telemetry';
+import centers from '@/pages/centers';
 interface EntityData {
   cohortId?: string;
   name?: string;
-  userId?:string
+  userId?:string;
+  status?:string;
+  _id?:string
 }
 
 const ObservationDetails = () => {
@@ -61,6 +64,10 @@ const ObservationDetails = () => {
   const [myCohortListForCenter, setmyCohortListForCenter] = useState<any[]>([]);
   const [cohortIdData, setCohortIdData] = useState<any[]>([]);
   const [entityIds, setEntityIds] = useState<any[]>([]);
+  const [fetchEntityResponse, setFetchEntityResponse] = useState<any[]>([]);
+  const [entityData, setEntityData] = useState<any[]>([]);
+
+
 
   const [userIdData, setUserIdData] = useState<any[]>([]);
 
@@ -97,7 +104,6 @@ const ObservationDetails = () => {
 
         if (userId) {
           const response = await getCohortList(userId, { customField: 'true' });
-          console.log('response', response[0]?.childData);
 
           if (localStorage.getItem('role') === Role.TEAM_LEADER) {
             if (searchInput !== '' && entity === ObservationEntityType.CENTER) {
@@ -178,9 +184,11 @@ const ObservationDetails = () => {
         if (solutionId) {
           let entities = entityIds;
   
-          if (entities?.length === 0) {
+        //  if (entities?.length === 0) 
+          {
             console.log("entityIds?.length", entities?.length);
             const response = await fetchEntities({ solutionId });
+            setFetchEntityResponse(response?.result?.entities)
             entities = response?.result?.entities?.map(
               (item: any) => item?._id
             );
@@ -193,11 +201,49 @@ const ObservationDetails = () => {
         console.error('Error fetching cohort list:', error);
       }
     };
-  
+    if(entity!==ObservationEntityType.CENTER && Data.length!==0)
     fetchEntityList();
-  }, []);
-  
+  else if(entity===ObservationEntityType.CENTER && myCohortListForCenter.length!==0)
+  fetchEntityList();
+
+  }, [Data, myCohortListForCenter]);
+
   useEffect(() => {
+    
+if( entity!==ObservationEntityType.CENTER)
+{
+  const result = Data.map(user => {
+    const submission = fetchEntityResponse.find(sub => sub._id === user.userId) || {};
+    return {
+        name: user.name,
+        _id: user.userId,
+        submissionsCount: submission.submissionsCount || 0,
+        submissionId: submission.submissionId || null,
+        status: submission.status || ObservationStatus.NOT_STARTED
+    };
+});
+setEntityData(result)
+
+}
+else{
+  const result = myCohortListForCenter?.map(cohort => {
+    const submission = fetchEntityResponse.find(sub => sub._id === cohort.cohortId) || {};
+    return {
+        name: cohort?.name,
+        _id: cohort?.cohortId,
+        submissionsCount: submission.submissionsCount || 0,
+        submissionId: submission.submissionId || null,
+        status: submission.status || ObservationStatus.NOT_STARTED
+    };
+});
+setEntityData(result)
+}
+    
+  
+
+  }, [fetchEntityResponse, Data, myCohortListForCenter]);
+  useEffect(() => {
+
     if (entityIds?.length > 0) {
       let unmatchedCohorts = myCohortListForCenter?.filter(
         (child: any) => !entityIds?.includes(child.cohortId)
@@ -233,65 +279,9 @@ const ObservationDetails = () => {
   
       executeAddEntities();
     }
-  }, [entityIds, myCohortListForCenter, Data, Id]);
+  }, [entityIds, Data]);
   
-  useEffect(() => {
-    const entityStatus = async () => {
-      try {
-        let observationId = Id;
-        let entityId = myCohortListForCenter[0]?.cohortId;
-        
- if (myCohortListForCenter.length !== 0 && Id && entity===ObservationEntityType.CENTER && entityId) {
-          const response = await checkEntityStatus({ observationId, entityId });
-          if(response.result.length!==0)
-           {
-            if(response?.result[0]?.evidencesStatus[0]?.status===ObservationStatus.DRAFT)
-                setFirstEntityStatus("draft")
-              else if(response?.result[0]?.evidencesStatus[0]?.status===ObservationStatus.COMPLETED)
-              setFirstEntityStatus("completed")
-            else if(response?.result[0]?.evidencesStatus[0]?.status=== ObservationStatus.NOT_STARTED)
-            setFirstEntityStatus("notstarted")
-
-           }
-           else
-           {
-               setFirstEntityStatus("notstarted")
-           }
-        
-        }
-       
-        else{
-          entityId = Data[0]?.userId;
-          if(entityId)
-          {
-            const response = await checkEntityStatus({ observationId, entityId });
-          console.log("response.result.length",response?.result?.length)
-          if(response?.result?.length!==0)
-           {
-            if(response?.result[response?.result?.length-1]?.evidencesStatus[0]?.status==="draft")
-                setFirstEntityStatus("draft")
-              else if(response?.result[response?.result?.length-1]?.evidencesStatus[0]?.status==="completed")
-              setFirstEntityStatus("completed")
-            else if(response?.result[response?.result?.length-1]?.evidencesStatus[0]?.status==="notstarted")
-            setFirstEntityStatus("notstarted")
-        
-           }
-           else
-           {
-            setFirstEntityStatus("notstarted")
-          }
-
-          }
-          
-        }
-      } catch (error) {
-
-        console.error('Error fetching cohort list:', error);
-      } finally {
-      }
-    };
-    entityStatus();
-  }, [myCohortListForCenter, Id, Data]);
+  
 
   useEffect(() => {
     const handleCohortChange = async () => {
@@ -454,11 +444,11 @@ const ObservationDetails = () => {
       <Entity
         key={item.cohortId || index} // Use a unique key here
         entityMemberValue={toPascalCase(item?.name)}
-        status={index === 0 ? firstEntityStatus : "notstarted"}
+        status={item?.status===ObservationStatus?.Started?ObservationStatus.NOT_STARTED:item?.status}
         onClick={() =>
           entityType !== ObservationEntityType.CENTER
-            ? onStartObservation(item?.userId)
-            : onStartObservation(item?.cohortId)
+            ? onStartObservation(item?._id)
+            : onStartObservation(item?._id)
         }
       />
     ));
@@ -471,19 +461,19 @@ const ObservationDetails = () => {
         if(myCohortListForCenter.length!==0)
         {
           return renderEntityData(
-            myCohortListForCenter,
+            entityData,
             ObservationEntityType.CENTER
           );
         }
         
       case ObservationEntityType.LEARNER:
-        return renderEntityData(Data, ObservationEntityType.LEARNER);
+        return renderEntityData(entityData, ObservationEntityType.LEARNER);
       case ObservationEntityType.FACILITATOR:
-        return renderEntityData(Data, ObservationEntityType.FACILITATOR);
+        return renderEntityData(entityData, ObservationEntityType.FACILITATOR);
       default:
         return null;
     }
-  }, [entity, myCohortListForCenter, Data, firstEntityStatus]);
+  }, [entity, myCohortListForCenter, Data, entityData]);
 
   const handlePaginationChange = (
     event: React.ChangeEvent<unknown>,
