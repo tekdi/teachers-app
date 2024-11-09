@@ -160,7 +160,7 @@ const LoginPage = () => {
       },
     };
     telemetryFactory.interact(telemetryInteract);
-  }
+  };
 
   const getAcademicYearList = async () => {
     const academicYearList: AcademicYear[] = await getAcademicYear();
@@ -178,25 +178,19 @@ const LoginPage = () => {
       const activeSessionId = activeSession ? activeSession.id : '';
       localStorage.setItem('academicYearId', activeSessionId);
       setIsActiveYearSelected(true);
-      if (activeSessionId) {
-        setLoading(false);
-        router.push('/dashboard');
-      }
+
+      return activeSessionId;
     }
   };
-  
 
   const handleInvalidUsernameOrPassword = () => {
-    showToastMessage(
-      t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
-      'error'
-    );
+    showToastMessage(t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'), 'error');
     logEvent({
       action: 'login-fail',
       category: 'Login Page',
       label: 'Login Fail',
     });
-  }
+  };
 
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -224,7 +218,7 @@ const LoginPage = () => {
               : localStorage.removeItem('refreshToken');
 
             const userResponse = await getUserId();
-            await getAcademicYearList();
+            const activeSessionId = await getAcademicYearList();
             localStorage.setItem('userId', userResponse?.userId);
             setUserId(userResponse?.userId);
             logEvent({
@@ -283,18 +277,22 @@ const LoginPage = () => {
                 }
               }
 
+              if (activeSessionId) {
+                router.push('/dashboard');
+              }
               console.log('userDetails', userDetails);
             }
+            setLoading(false);
           }
         } else if (response?.responseCode === 404) {
           handleInvalidUsernameOrPassword();
           setLoading(false);
         }
-        telemetryOnSubmit();  
+        telemetryOnSubmit();
       } catch (error: any) {
         setLoading(false);
         if (error?.response?.status === 404) {
-          handleInvalidUsernameOrPassword()
+          handleInvalidUsernameOrPassword();
         } else {
           console.error('Error:', error);
           showToastMessage(
@@ -550,7 +548,7 @@ const LoginPage = () => {
                       const resetAppUrl =
                         process.env.NEXT_PUBLIC_RESET_PASSWORD_URL;
                       window.open(
-                        `${resetAppUrl}?redirectUrl=${window.location.origin}/login`, 
+                        `${resetAppUrl}?redirectUrl=${window.location.origin}/login`,
                         '_self'
                       );
                     }}
