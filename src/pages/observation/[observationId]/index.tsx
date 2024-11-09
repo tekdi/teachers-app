@@ -444,7 +444,7 @@ setEntityData(result)
       <Entity
         key={item.cohortId || index} // Use a unique key here
         entityMemberValue={toPascalCase(item?.name)}
-        status={item?.status===ObservationStatus?.Started?ObservationStatus.NOT_STARTED:item?.status}
+        status={item?.status===ObservationStatus?.STARTED?ObservationStatus.NOT_STARTED:item?.status}
         onClick={() =>
           entityType !== ObservationEntityType.CENTER
             ? onStartObservation(item?._id)
