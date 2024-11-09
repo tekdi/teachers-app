@@ -40,7 +40,6 @@ const ObservationQuestions: React.FC = () => {
             solution: response.solution,
             assessment: {
               ...response.assessment, // Spread all properties from assessment
-              endDate: "2026-07-13T23:59:59.000Z",
 
             }
           };

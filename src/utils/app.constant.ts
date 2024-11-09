@@ -90,6 +90,7 @@ export enum ObservationStatus {
   DRAFT = 'draft',
   COMPLETED = 'completed',
   NOT_STARTED = 'notstarted',
+  Started="started"
 }
 
 export enum CenterType {
