@@ -507,6 +507,13 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             // style={{ borderRadius: '4px' }}
 
                             inputProps={{ 'aria-label': 'Without label' }}
+                            MenuProps={{
+                              PaperProps: {
+                                style: {
+                                  maxHeight: 250,
+                                },
+                              },
+                            }}
                             className={
                               showFloatingLabel
                                 ? ''

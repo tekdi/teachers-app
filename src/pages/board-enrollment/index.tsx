@@ -58,11 +58,14 @@ const BoardEnrollment = () => {
       localStorage.setItem('cohortId', classId);
       setLoading(false);
       if (token) {
-        router.push('/board-enrollment');
+        if (isActiveYear) {
+          router.push('/board-enrollment');
+        } else {
+          router.push('/centers');      
+        }
       } else {
         router.push('/login', undefined, { locale: 'en' });
       }
-      !isActiveYear && router.push('/centers');
     }
   }, []);
 
