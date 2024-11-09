@@ -30,13 +30,15 @@ import {
 } from '@/services/CoursePlannerService';
 import useCourseStore from '@/store/coursePlannerStore';
 import dayjs from 'dayjs';
-import { AssessmentStatus, Role } from '@/utils/app.constant';
+import { AssessmentStatus, Role, TelemetryEventType } from '@/utils/app.constant';
 import Loader from '@/components/Loader';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { accessControl } from '../../app.config';
 import taxonomyStore from '@/store/taxonomyStore';
 import useDeterminePathColor from '@/hooks/useDeterminePathColor';
 import { useDirection } from '../hooks/useDirection';
+import { Telemetry } from 'next/dist/telemetry/storage';
+import { telemetryFactory } from '@/utils/telemetry';
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
@@ -200,6 +202,28 @@ const CoursePlannerDetail = () => {
       {} as { [key: string]: boolean }
     );
     setExpandedPanels(newState);
+    const windowUrl = window.location.pathname;
+
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const env = cleanedUrl.split("/")[0];
+
+    const telemetryInteract = {
+      context: {
+        env: env,
+        cdata: [],
+      },
+      edata: {
+        id: 'change-filter:',
+
+        type: TelemetryEventType.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+    
+
+
   };
 
   const toggleDrawer =

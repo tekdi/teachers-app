@@ -158,13 +158,16 @@ const UserAttendanceHistory = () => {
       localStorage.setItem('cohortId', classId);
       setLoading(false);
       if (token) {
-        push('/attendance-history');
+        if (isActiveYear) {
+          push('/attendance-history');
+        } else {
+          push('/centers');
+        }
       } else {
         push('/login', undefined, { locale: 'en' });
       }
-      !isActiveYear && push('/centers');
     }
-  }, []);
+  }, [isActiveYear]);
 
   useEffect(() => {
     const getAttendanceStats = async () => {
