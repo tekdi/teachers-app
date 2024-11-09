@@ -1,19 +1,17 @@
-import dynamic from 'next/dynamic';
+import FilterSelect from '@/components/FilterSelect';
 import Header from '@/components/Header';
 import ObservationCard from '@/components/ObservationCard';
-import React, { useEffect, useState } from 'react';
-import { targetSolution } from '@/services/ObservationServices';
-import { Box, Tab, Tabs, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter } from 'next/router';
-import { FormContext, FormContextType, Role, Status, Telemetry } from '@/utils/app.constant';
-import { entityList } from '../../../app.config';
-import { useTranslation } from 'react-i18next';
 import SearchBar from '@/components/Searchbar';
+import { targetSolution } from '@/services/ObservationServices';
+import { Role, Telemetry } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
 import { telemetryFactory } from '@/utils/telemetry';
-import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import FilterSelect from '@/components/FilterSelect';
+import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Tab, Tabs, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { entityList } from '../../../app.config';
 
 const ObservationForms: React.FC = () => {
   const [entityNames, setEntityNames] = useState<String[]>();
