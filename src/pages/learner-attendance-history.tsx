@@ -52,11 +52,14 @@ const LearnerAttendanceHistory = () => {
       const token = localStorage.getItem('token');
       setLoading(false);
       if (token) {
-        push('/learner-attendance-history');
+        if (isActiveYear) {
+          push('/learner-attendance-history');
+        } else {
+          push('/centers');
+        }
       } else {
         push('/login', undefined, { locale: 'en' });
-      }
-      !isActiveYear && push('/centers');
+      }      
     }
   }, []);
 

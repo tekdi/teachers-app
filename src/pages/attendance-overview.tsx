@@ -119,11 +119,14 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
       setLoading(false);
       if (token) {
-        push('/attendance-overview');
+        if (isActiveYear) {
+          push('/attendance-overview');
+        } else {
+          push('/centers');
+        }        
       } else {
         push('/login', undefined, { locale: 'en' });
       }
-      !isActiveYear && push('/centers');
     }
   }, []);
 
