@@ -3,7 +3,7 @@ import { getCohortSearch } from '@/services/CohortServices';
 import coursePlannerStore from '@/store/coursePlannerStore';
 import useStore from '@/store/store';
 import taxonomyStore from '@/store/taxonomyStore';
-import { CoursePlannerConstants } from '@/utils/app.constant';
+import { CoursePlannerConstants, Telemetry } from '@/utils/app.constant';
 import {
   filterAndMapAssociationsNew,
   findCommonAssociations,
@@ -31,6 +31,7 @@ import React, { useEffect, useState } from 'react';
 import { accessControl, frameworkId } from '../../app.config';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
 import { useDirection } from '../hooks/useDirection';
+import { telemetryFactory } from '@/utils/telemetry';
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState('');
@@ -76,6 +77,24 @@ const CoursePlanner = () => {
   const handleChange = (event: any) => {
     setValue(event.target.value);
     setType(event.target.value);
+    const windowUrl = window.location.pathname;
+        const cleanedUrl = windowUrl.replace(/^\//, '');
+        const env = cleanedUrl.split("/")[0];
+
+        const telemetryInteract = {
+          context: {
+            env: env,
+            cdata: [],
+          },
+          edata: {
+            id: 'change-filter:'+event.target.value,
+
+            type: Telemetry.CLICK,
+            subtype: '',
+            pageid: cleanedUrl,
+          },
+        };
+        telemetryFactory.interact(telemetryInteract);
   };
 
   const addQueryParams = (newParams: any) => {

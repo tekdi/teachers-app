@@ -117,7 +117,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
               </Typography>
             )}
 
-{endDate &&(<Box
+{endDate && remainingDays !== 0 &&(<Box
               sx={{
                 alignItems: 'center',
              
