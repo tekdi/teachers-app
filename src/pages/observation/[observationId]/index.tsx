@@ -271,9 +271,22 @@ setEntityData(result)
           const observationId = Id;
           if (entity === ObservationEntityType.CENTER && unmatchedCohortIds.length !== 0) {
             await addEntities({ data, observationId });
+            const urlPath = window.location.pathname;
+
+          const solutionId = urlPath.split('/observation/')[1];
+
+          const response = await fetchEntities({ solutionId });
+            setFetchEntityResponse(response?.result?.entities)
           } else if (unmatchedUserIds.length !== 0) {
             await addEntities({ data, observationId });
+            const urlPath = window.location.pathname;
+
+          const solutionId = urlPath.split('/observation/')[1];
+
+          const response = await fetchEntities({ solutionId });
+            setFetchEntityResponse(response?.result?.entities)
           }
+          
         }
       };
   
@@ -444,7 +457,7 @@ setEntityData(result)
       <Entity
         key={item.cohortId || index} // Use a unique key here
         entityMemberValue={toPascalCase(item?.name)}
-        status={item?.status===ObservationStatus?.Started?ObservationStatus.NOT_STARTED:item?.status}
+        status={item?.status===ObservationStatus?.STARTED?ObservationStatus.NOT_STARTED:item?.status}
         onClick={() =>
           entityType !== ObservationEntityType.CENTER
             ? onStartObservation(item?._id)

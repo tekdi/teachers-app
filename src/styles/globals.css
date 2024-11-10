@@ -1168,3 +1168,25 @@ mat-radio-group.mat-mdc-radio-group {
 #overlay-button[aria-label='Player Menu Open'] {
   margin-top: 4rem !important;
 }
+
+
+/* Observation Component Overrides */
+
+.custom-font {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.activeCard {
+  padding: 1rem !important;
+  margin: 1rem !important;
+}
+
+.wc-primary-color {
+  font-size: 1rem !important;
+}
+
+mat-radio-group.mat-mdc-radio-group {
+  gap: 16px;
+  flex-wrap: wrap;
+}
+/* End of Observation component overrides */
