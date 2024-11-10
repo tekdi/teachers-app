@@ -342,7 +342,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
             onClick={navigateToObservation}
           >
-            {t('COMMON.OBSERVATIONS_FORMS')}
+            {t('OBSERVATION.SURVEY_FORMS')}
           </Button>
         </Box>
         {isActiveYear && (
