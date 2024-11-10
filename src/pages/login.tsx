@@ -221,6 +221,11 @@ const LoginPage = () => {
             const activeSessionId = await getAcademicYearList();
             localStorage.setItem('userId', userResponse?.userId);
             setUserId(userResponse?.userId);
+
+            if (token && userResponse?.userId) {
+              document.cookie = `authToken=${token}; path=/; secure; SameSite=Strict`;
+              document.cookie = `userId=${userResponse.userId}; path=/; secure; SameSite=Strict`;
+            }
             logEvent({
               action: 'login-success',
               category: 'Login Page',
