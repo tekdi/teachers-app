@@ -971,7 +971,8 @@ main {
   height: 180px;
   padding: 15px;
   object-fit: cover;
-  background-image: url('./../assets/images/decorationBg.png');
+  /* background-color: #4a4640; */
+  /* background-image: url('./../assets/images/decorationBg.png'); */
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -1160,6 +1161,7 @@ mat-radio-group.mat-mdc-radio-group {
 
 .player-grid {
   height: 100vh !important;
+  border: solid 1px #ccc;
 }
 .wrapper[_ngcontent-ng-c2640644362] {
   min-height: 0 !important;

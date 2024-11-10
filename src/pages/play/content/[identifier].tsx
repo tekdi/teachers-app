@@ -7,15 +7,20 @@ import {
   getHierarchy,
   getQumlData,
 } from '@/services/PlayerService';
-import { Box } from '@mui/material';
+import { Box, IconButton, Typography } from "@mui/material";
 import Header from '@/components/Header';
+import Loader from '@/components/Loader';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useTranslation } from 'next-i18next';
+import { PlayerConfig } from '@/utils/Interfaces';
+
 
 // @ts-ignore
 const SunbirdPlayers = dynamic(() => import('editor/SunbirdPlayers'), {
   ssr: false,
 });
 
-const playerConfig = {
+const playerConfig: PlayerConfig = {
   context: {
     mode: 'play',
     partner: [],
@@ -65,19 +70,18 @@ const playerConfig = {
       showReplay: true,
     },
   },
-  metadata: {},
-  data: {},
 };
 
 interface SunbirdPlayerProps {
-  playerConfig: any;
+  playerConfig: PlayerConfig;
 }
 
 const players: React.FC<SunbirdPlayerProps> = () => {
   const router = useRouter();
   const { identifier } = router.query;
   const [loading, setLoading] = useState(true);
-  // playerConfig.metadata = pdfMetadata;
+  const { t } = useTranslation();
+
 
   useEffect(() => {
     const loadContent = async () => {
@@ -108,11 +112,34 @@ const players: React.FC<SunbirdPlayerProps> = () => {
   }, [identifier]);
 
   return (
-    <Box>
+    <Box pl={2}>
       <Box>
         <Header />
+        <Box sx={{ display: "flex", alignItems: "center", mb: 2, mt: 2 }} onClick={() => router.back()}>
+          <IconButton>
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography
+            variant="h4"
+          >
+            {t("COMMON.BACK")}
+          </Typography>
+        </Box>
+        {loading && (
+          <Box
+            width={"100%"}
+            id="check"
+            display={"flex"}
+            flexDirection={"column"}
+            alignItems={"center"}
+            mt={"5rem"}
+          >
+            <Loader showBackdrop={false} />
+          </Box>
+        )}
       </Box>
-      <Box>
+      <Box marginTop={'1rem'}>
+      <Typography color={'#024f9d'} sx={{ padding: '0 0 4px 4px', fontWeight: 'bold' }}>{playerConfig?.metadata?.name}</Typography>
         {!loading ? <SunbirdPlayers player-config={playerConfig} /> : null}
       </Box>
     </Box>
