@@ -271,9 +271,22 @@ setEntityData(result)
           const observationId = Id;
           if (entity === ObservationEntityType.CENTER && unmatchedCohortIds.length !== 0) {
             await addEntities({ data, observationId });
+            const urlPath = window.location.pathname;
+
+          const solutionId = urlPath.split('/observation/')[1];
+
+          const response = await fetchEntities({ solutionId });
+            setFetchEntityResponse(response?.result?.entities)
           } else if (unmatchedUserIds.length !== 0) {
             await addEntities({ data, observationId });
+            const urlPath = window.location.pathname;
+
+          const solutionId = urlPath.split('/observation/')[1];
+
+          const response = await fetchEntities({ solutionId });
+            setFetchEntityResponse(response?.result?.entities)
           }
+          
         }
       };
   
