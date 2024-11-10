@@ -1,5 +1,5 @@
 import { SendCredentialsRequest } from '@/utils/Interfaces';
-import { post,get } from './RestClient';
+import { post, get } from './RestClient';
 import { toPascalCase } from '@/utils/Helper';
 import axios from 'axios';
 
@@ -87,7 +87,7 @@ export const sendEmailOnLearnerCreation = async (
 
 
 export const UpdateDeviceNotification = async (
-  userData: { deviceId: string }[],
+  userData: { deviceId: string },
   userId: string,
   headers: { tenantId: string; Authorization: string }
 ): Promise<any> => {
@@ -131,7 +131,7 @@ export const sendNotification = async ({
       isQueue,
       context,
       key,
-     push
+      push
     });
     return response?.data?.result;
   } catch (error) {
