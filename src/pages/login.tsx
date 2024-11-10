@@ -37,6 +37,9 @@ import loginImg from './../assets/images/login-image.jpg';
 
 const LoginPage = () => {
   const { t, i18n } = useTranslation();
+  const setIsActiveYearSelected = useStore(
+    (state: { setIsActiveYearSelected: any }) => state.setIsActiveYearSelected
+  );
   const setUserId = manageUserStore((state) => state.setUserId);
   const setUserRole = useStore(
     (state: { setUserRole: any }) => state.setUserRole
@@ -143,6 +146,52 @@ const LoginPage = () => {
     event.preventDefault();
   };
 
+  const telemetryOnSubmit = () => {
+    const telemetryInteract = {
+      context: {
+        env: 'sign-in',
+        cdata: [],
+      },
+      edata: {
+        id: 'login-success',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'sign-in',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+  };
+
+  const getAcademicYearList = async () => {
+    const academicYearList: AcademicYear[] = await getAcademicYear();
+    if (academicYearList) {
+      localStorage.setItem(
+        'academicYearList',
+        JSON.stringify(academicYearList)
+      );
+      const extractedAcademicYears = academicYearList?.map(
+        ({ id, session, isActive }) => ({ id, session, isActive })
+      );
+      const activeSession = extractedAcademicYears?.find(
+        (item) => item.isActive
+      );
+      const activeSessionId = activeSession ? activeSession.id : '';
+      localStorage.setItem('academicYearId', activeSessionId);
+      setIsActiveYearSelected(true);
+
+      return activeSessionId;
+    }
+  };
+
+  const handleInvalidUsernameOrPassword = () => {
+    showToastMessage(t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'), 'error');
+    logEvent({
+      action: 'login-fail',
+      category: 'Login Page',
+      label: 'Login Fail',
+    });
+  };
+
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     logEvent({
@@ -157,9 +206,9 @@ const LoginPage = () => {
           username: username,
           password: password,
         });
-        if (response) {
+        if (response?.result?.access_token) {
           if (typeof window !== 'undefined' && window.localStorage) {
-            const token = response?.result?.access_token;
+            const token = response.result.access_token;
             const refreshToken = response?.result?.refresh_token;
             if (token) {
               localStorage.setItem('token', token);
@@ -169,6 +218,7 @@ const LoginPage = () => {
               : localStorage.removeItem('refreshToken');
 
             const userResponse = await getUserId();
+            const activeSessionId = await getAcademicYearList();
             localStorage.setItem('userId', userResponse?.userId);
             setUserId(userResponse?.userId);
             logEvent({
@@ -227,59 +277,22 @@ const LoginPage = () => {
                 }
               }
 
+              if (activeSessionId) {
+                router.push('/dashboard');
+              }
               console.log('userDetails', userDetails);
             }
+            setLoading(false);
           }
+        } else if (response?.responseCode === 404) {
+          handleInvalidUsernameOrPassword();
+          setLoading(false);
         }
-        // setLoading(false);
-        const telemetryInteract = {
-          context: {
-            env: 'sign-in',
-            cdata: [],
-          },
-          edata: {
-            id: 'login-success',
-            type: Telemetry.CLICK,
-            subtype: '',
-            pageid: 'sign-in',
-          },
-        };
-        telemetryFactory.interact(telemetryInteract);
-        const getAcademicYearList = async () => {
-          const academicYearList: AcademicYear[] = await getAcademicYear();
-          if (academicYearList) {
-            localStorage.setItem(
-              'academicYearList',
-              JSON.stringify(academicYearList)
-            );
-            const extractedAcademicYears = academicYearList?.map(
-              ({ id, session, isActive }) => ({ id, session, isActive })
-            );
-            const activeSession = extractedAcademicYears?.find(
-              (item) => item.isActive
-            );
-            const activeSessionId = activeSession ? activeSession.id : '';
-            localStorage.setItem('academicYearId', activeSessionId);
-            if (activeSessionId) {
-              setLoading(false);
-              router.push('/dashboard');
-            }
-          }
-        };
-        getAcademicYearList();
+        telemetryOnSubmit();
       } catch (error: any) {
         setLoading(false);
-        if (error.response && error.response.status === 404) {
-          showToastMessage(
-            t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
-            'error'
-          );
-          logEvent({
-            action: 'login-fail',
-            category: 'Login Page',
-            label: 'Login Fail',
-            value: error.response,
-          });
+        if (error?.response?.status === 404) {
+          handleInvalidUsernameOrPassword();
         } else {
           console.error('Error:', error);
           showToastMessage(
@@ -535,7 +548,8 @@ const LoginPage = () => {
                       const resetAppUrl =
                         process.env.NEXT_PUBLIC_RESET_PASSWORD_URL;
                       window.open(
-                        `${resetAppUrl}?redirectUrl=${window.location.origin}/login`
+                        `${resetAppUrl}?redirectUrl=${window.location.origin}/login`,
+                        '_self'
                       );
                     }}
                   >

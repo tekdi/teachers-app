@@ -20,12 +20,15 @@ import { useDirection } from '../../hooks/useDirection';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import useStore from '@/store/store';
 
 const BoardEnrollment = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const router = useRouter();
+  const store = useStore();
+  const isActiveYear = store.isActiveYearSelected;
   const [boardEnrollmentList, setBoardEnrollmentList] = useState<any>([]);
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const [classId, setClassId] = React.useState('');
@@ -55,7 +58,11 @@ const BoardEnrollment = () => {
       localStorage.setItem('cohortId', classId);
       setLoading(false);
       if (token) {
-        router.push('/board-enrollment');
+        if (isActiveYear) {
+          router.push('/board-enrollment');
+        } else {
+          router.push('/centers');      
+        }
       } else {
         router.push('/login', undefined, { locale: 'en' });
       }

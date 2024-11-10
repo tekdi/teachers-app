@@ -13,7 +13,7 @@ import {
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { toPascalCase } from '@/utils/Helper';
 import { ICohort } from '@/utils/Interfaces';
-import { AssessmentStatus, Role, Status } from '@/utils/app.constant';
+import { AssessmentStatus, Role, Status, Telemetry } from '@/utils/app.constant';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import {
@@ -34,6 +34,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { accessControl, AssessmentType, AttendanceAPILimit, Program } from '../../../app.config';
 import { useDirection } from '../../hooks/useDirection';
+import { telemetryFactory } from '@/utils/telemetry';
 
 const DEFAULT_STATUS_ORDER = {
   [AssessmentStatus.NOT_STARTED]: 0,
@@ -399,7 +400,27 @@ const Assessments = () => {
                 style={{
                   borderRadius: '4px',
                 }}
-                onChange={(e) => setAssessmentType(e.target.value)}
+                onChange={(e) => 
+                  {setAssessmentType(e.target.value)
+                    const windowUrl = window.location.pathname;
+                    const cleanedUrl = windowUrl.replace(/^\//, '');
+              
+        
+                    const telemetryInteract = {
+                      context: {
+                        env: 'assessments',
+                        cdata: [],
+                      },
+                      edata: {
+                        id: 'filter-by-assessment-type:'+e.target.value,
+                        type: Telemetry.CLICK,
+                        subtype: '',
+                        pageid: cleanedUrl
+                      },
+                    };
+                    telemetryFactory.interact(telemetryInteract);
+                  
+                  }}
                 defaultValue={'pre'}
                 value={assessmentType}
               >

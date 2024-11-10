@@ -83,6 +83,7 @@ import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 import AllowNotification from '@/components/AllowNotification';
 import GetButtonNotification from '@/components/GetButtonNotification';
+import useStore from '@/store/store';
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
   SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
@@ -101,6 +102,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { dir, isRTL } = useDirection();
+  const store = useStore();
+  const isActiveYear = store.isActiveYearSelected;
 
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
@@ -243,10 +246,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setClassId(localStorage.getItem('classId') ?? '');
       if (token) {
         setIsAuthenticated(true);
+        setUserId(storedUserId);
+      
+        if (!isActiveYear) {
+          router.push('/centers');
+        }
       } else {
         router.push('/login');
       }
-      setUserId(storedUserId);
     }
   }, [cohortsData]);
 

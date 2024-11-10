@@ -21,7 +21,8 @@ const reassignLearnerStore = create(
     }),
     {
       name: 'teacherApp',
-      storage: typeof window !== 'undefined' ? localStorage : undefined,
+      getStorage: () => localStorage
+      // storage: typeof window !== 'undefined' ? localStorage : undefined,
     }
   )
 );

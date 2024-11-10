@@ -56,12 +56,15 @@ import { telemetryFactory } from '@/utils/telemetry';
 import NoDataFound from '@/components/common/NoDataFound';
 import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 import { useDirection } from '../hooks/useDirection';
+import useStore from '@/store/store';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const { push } = useRouter();
+  const store = useStore();
+  const isActiveYear = store.isActiveYearSelected;
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [classId, setClassId] = React.useState('');
   const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
@@ -155,12 +158,16 @@ const UserAttendanceHistory = () => {
       localStorage.setItem('cohortId', classId);
       setLoading(false);
       if (token) {
-        push('/attendance-history');
+        if (isActiveYear) {
+          push('/attendance-history');
+        } else {
+          push('/centers');
+        }
       } else {
         push('/login', undefined, { locale: 'en' });
       }
     }
-  }, []);
+  }, [isActiveYear]);
 
   useEffect(() => {
     const getAttendanceStats = async () => {

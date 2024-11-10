@@ -37,7 +37,8 @@ const manageUserStore = create(
     }),
     {
       name: 'fieldData',
-      storage: typeof window !== 'undefined' ? localStorage : undefined,
+      getStorage: () => localStorage
+      // getStorage: () => typeof window !== 'undefined' ? localStorage : undefined,
     }
   )
 );
