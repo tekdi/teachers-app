@@ -149,7 +149,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
         ).values()
       );
       const cohortData = await createCohort(cohortDetails);
-      if (cohortData) {
+      if (cohortData.hasOwnProperty('cohortId')) {
         showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
         const telemetryInteract = {
           context: {
@@ -157,7 +157,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
             cdata: [],
           },
           edata: {
-            id:'create-center-successfully',
+            id: 'create-center-successfully',
             type: Telemetry.CLICK,
             subtype: '',
             pageid: 'centers',
@@ -168,6 +168,9 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
         onCenterAdded();
         handleClose();
         localStorage.removeItem('BMGSData');
+      } else {
+        showToastMessage(t('CENTERS.DUPLICATE_CENTER'), 'error');
+        handleClose();
       }
     }
   };
