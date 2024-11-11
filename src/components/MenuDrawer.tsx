@@ -48,6 +48,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [isOpen, setIsOpen] = useState(open);
   const [academicYearList, setAcademicYearList] = useState<AcademicYear[]>([]);
+  const [modifiedAcademicYearList, setModifiedAcademicYearList] = useState<AcademicYear[]>([]);
   const [selectedSessionId, setSelectedSessionId] = useState<string>('');
 
   const { i18n, t } = useTranslation();
@@ -66,10 +67,21 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     if (typeof window !== 'undefined' && window.localStorage) {
       const storedList = localStorage.getItem('academicYearList');
       try {
-        setAcademicYearList(storedList ? JSON.parse(storedList) : []);
+        const parsedList = storedList ? JSON.parse(storedList) : [];
+        setAcademicYearList(parsedList);
+        
+        const modifiedList = parsedList?.map((item: { isActive: any; session: any; }) => {
+          if (item.isActive) {
+            return { ...item, session: `${item.session} (${t('COMMON.ACTIVE')})` };
+          }
+          return item;
+        });
+  
+        setModifiedAcademicYearList(modifiedList);
+  
         const selectedAcademicYearId = localStorage.getItem('academicYearId');
-        setSelectedSessionId(selectedAcademicYearId ?? '');
-        console.log('Retrieved academicYearList:', academicYearList);
+        setSelectedSessionId(selectedAcademicYearId ?? '');  
+        console.log('Retrieved academicYearList:', parsedList);
       } catch (error) {
         console.error('Error parsing stored academic year list:', error);
         setAcademicYearList([]);
@@ -237,7 +249,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   },
                 }}
               >
-                {academicYearList.map(({ id, session }) => (
+                {modifiedAcademicYearList?.map(({ id, session }) => (
                   <MenuItem key={id} value={id}>
                     {session}
                   </MenuItem>
