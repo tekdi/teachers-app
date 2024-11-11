@@ -138,7 +138,8 @@
     "RETURN_TO_LOGIN": "Return to Login",
     "NO_CENTER_FOUND": "No Center found",
     "FILTER_BY": "Filter By",
-    "ALL": "All"
+    "ALL": "All",
+    "ACTIVE": "Active"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
