@@ -53,8 +53,8 @@ const nextConfig = {
         destination: `${process.env.WORKSPACE_BASE_URL}/assets/:path*`, // Serve the assets from the public folder
       },
       {
-        source: '/action/v1/telemetry', // Match any URL starting with /workspace/content/assets/
-        destination: `${process.env.NEXT_PUBLIC_TELEMETRY_URL}/v1/telemetry`, // Serve the assets from the public folder
+        source: '/action/v1/telemetry',
+        destination: `${process.env.NEXT_PUBLIC_TELEMETRY_URL}/v1/telemetry`,
       },
       {
         source: '/action/asset/:path*', // Match other /action/asset routes
