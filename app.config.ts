@@ -87,3 +87,8 @@ export const entityList={
   TEAM_LEADER: ['center', 'facilitator', 'learner'],
   TEACHER: ['learner']
 }
+
+export const MIME_TYPE  = {
+  "QUESTION_SET_MIME_TYPE": "application/vnd.sunbird.questionset",
+  "INTERACTIVE_MIME_TYPE": ["application/vnd.ekstep.h5p-archive", "application/vnd.ekstep.html-archive"]
+}
