@@ -70,7 +70,7 @@ const nextConfig = {
       },
       {
         source: '/assets/public/:path*', // Match any URL starting with /assets/public/
-        destination: `${process.env.WORKSPACE_BASE_URL}/assets/public/:path*`, // Forward to workspace proxy
+        destination: `${process.env.CLOUD_STORAGE_URL}/:path*`, // Forward to workspace proxy
       },
 
       {
