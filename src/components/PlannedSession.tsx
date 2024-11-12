@@ -880,22 +880,21 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 'success'
               );
 
-
               const windowUrl = window.location.pathname;
-  const cleanedUrl = windowUrl.replace(/^\//, '');
-  const telemetryInteract = {
-    context: {
-      env: 'teaching-center',
-      cdata: [],
-    },
-    edata: {
-      id: 'event-created-successfully',
-      type: Telemetry.CLICK,
-      subtype: '',
-      pageid: cleanedUrl,
-    },
-  };
-  telemetryFactory.interact(telemetryInteract);
+              const cleanedUrl = windowUrl.replace(/^\//, '');
+              const telemetryInteract = {
+                context: {
+                  env: 'teaching-center',
+                  cdata: [],
+                },
+                edata: {
+                  id: 'event-created-successfully',
+                  type: Telemetry.CLICK,
+                  subtype: '',
+                  pageid: cleanedUrl,
+                },
+              };
+              telemetryFactory.interact(telemetryInteract);
 
               ReactGA.event('event-created-successfully', {
                 creatorId: userId,
@@ -1244,7 +1243,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     handleCourseTypeChange(block?.id, event)
                   }
                   value={
-                    block?.courseType === undefined ? '' : selectedCourseType
+                    block?.courseType === undefined || block?.courseType === ''
+                      ? selectedCourseType
+                      : eventData?.metadata?.courseType
                   }
                   disabled={!StateName || !medium || !grade || !board}
                 >
@@ -1277,7 +1278,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       onChange={(event: any) =>
                         handleSubjectChange(block?.id, event)
                       }
-                      value={block?.subject ?? selectedSubject}
+                      value={
+                        block?.subject === undefined || block?.subject === ''
+                          ? selectedSubject
+                          : eventData?.metadata?.subject
+                      }
                       disabled={!(StateName && medium && grade && board)}
                     >
                       {subjects?.map((subject: string) => (
@@ -1468,7 +1473,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   useAbbreviation={true}
                   selectedDays={
                     selectedDays?.length
-                      ? editSession?.daysOfWeek
+                      ? editSession?.recurrencePattern?.daysOfWeek
                       : block?.selectedWeekDays
                   }
                   onSelectionChange={(newSelectedDays) => {
