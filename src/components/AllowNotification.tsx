@@ -11,6 +11,12 @@ const AllowNotification = () => {
   useEffect(() => {
     const handlePermissionChange = () => {
       setPermissionStatus(Notification.permission);
+
+      // Automatically remove deviceID if permission is reset to default
+      if (Notification.permission === 'default') {
+        localStorage.removeItem('deviceID');
+        console.log('Notification permission reset and deviceID removed');
+      }
     };
 
     navigator.permissions
@@ -71,26 +77,6 @@ const AllowNotification = () => {
 
     fetchToken();
   }, [permissionStatus]);
-
-  useEffect(() => {
-    const handlePermissionChange = () => {
-      setPermissionStatus(Notification.permission);
-    };
-
-    navigator.permissions
-      .query({ name: 'notifications' })
-      .then((permission) => {
-        permission.addEventListener('change', handlePermissionChange);
-      });
-
-    return () => {
-      navigator.permissions
-        .query({ name: 'notifications' })
-        .then((permission) => {
-          permission.removeEventListener('change', handlePermissionChange);
-        });
-    };
-  }, []);
 
   return null;
 };

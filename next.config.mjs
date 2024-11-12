@@ -11,15 +11,15 @@ const remotes = (isServer) => {
   };
 };
 
-const PORTAL_BASE_URL = "https://sunbird-editor.tekdinext.com";
+const PORTAL_BASE_URL = 'https://sunbird-editor.tekdinext.com';
 
 const routes = {
   API: {
     GENERAL: {
-      CONTENT_PREVIEW: "/content/preview/:path*",
-      CONTENT_PLUGINS: "/content-plugins/:path*"
-    }
-  }
+      CONTENT_PREVIEW: '/content/preview/:path*',
+      CONTENT_PLUGINS: '/content-plugins/:path*',
+    },
+  },
 };
 
 const nextConfig = {
@@ -53,6 +53,10 @@ const nextConfig = {
         destination: `${process.env.WORKSPACE_BASE_URL}/assets/:path*`, // Serve the assets from the public folder
       },
       {
+        source: '/action/v1/telemetry',
+        destination: `${process.env.NEXT_PUBLIC_TELEMETRY_URL}/v1/telemetry`,
+      },
+      {
         source: '/action/asset/:path*', // Match other /action/asset routes
         destination: `${process.env.WORKSPACE_BASE_URL}/api/proxy?path=/action/asset/:path*`, // Forward other /action/asset requests to proxy.js
       },
@@ -70,7 +74,7 @@ const nextConfig = {
       },
       {
         source: '/assets/public/:path*', // Match any URL starting with /assets/public/
-        destination: `${process.env.WORKSPACE_BASE_URL}/assets/public/:path*`, // Forward to workspace proxy
+        destination: `${process.env.CLOUD_STORAGE_URL}/:path*`, // Forward to workspace proxy
       },
 
       {
@@ -84,7 +88,7 @@ const nextConfig = {
       {
         source: routes.API.GENERAL.CONTENT_PLUGINS,
         destination: `${PORTAL_BASE_URL}${routes.API.GENERAL.CONTENT_PLUGINS}`, // Proxy to portal
-      }
+      },
     ];
   },
   webpack: (config, { isServer }) => {

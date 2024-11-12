@@ -137,8 +137,9 @@
     "AND_COUNT_MORE": "and {{count}} more",
     "RETURN_TO_LOGIN": "Return to Login",
     "NO_CENTER_FOUND": "No Center found",
-    "FILTER_BY":"Filter By",
-    "ALL":"All"
+    "FILTER_BY": "Filter By",
+    "ALL": "All",
+    "ACTIVE": "Active"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -359,6 +360,7 @@
     "UNIT_NAME": "Unit Name",
     "NOTE": "Note: This will be the center name",
     "CENTER_CREATED": "Center created successfully!",
+    "DUPLICATE_CENTER": "Cohort already exists",
     "RENAME_CENTER": "Rename Center",
     "REQUEST_TO_DELETE": "Request to Delete",
     "RENAME": "Rename",

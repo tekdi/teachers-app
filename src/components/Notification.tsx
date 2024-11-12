@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { onMessageListener } from './../../firebase.js';
+import { onMessageListener } from './../../firebase';
+import { useRouter } from 'next/router';
 import { Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-interface NotificationPayload {
+type NotificationData = {
   title: string;
   body: string;
   icon: string;
   navigate_to?: string;
-}
+};
 
-const Notification: React.FC = () => {
-  const [notification, setNotification] = useState<NotificationPayload>({
+const Notification = () => {
+  const [notification, setNotification] = useState<NotificationData>({
     title: '',
     body: '',
     icon: '',
-    navigate_to: '',
   });
+
+  const router = useRouter();
 
   const notify = () =>
     toast(<ToastDisplay />, {
@@ -26,8 +28,21 @@ const Notification: React.FC = () => {
 
   const closeNotification = () => toast.dismiss();
 
-  const ToastDisplay: React.FC = () => (
-    <Box
+  const handleNotificationClick = () => {
+    if (notification.navigate_to) {
+      try {
+        const url = new URL(notification.navigate_to);
+        const pathname = url.pathname;
+        router.push(pathname);
+      } catch (error) {
+        console.error("Invalid URL:", notification.navigate_to);
+      }
+    }
+  };
+
+  function ToastDisplay() {
+    return (
+      <Box
       className="notification-container"
       sx={{ display: 'flex', gap: '8px' }}
       onClick={handleNotificationClick}
@@ -67,15 +82,8 @@ const Notification: React.FC = () => {
         />
       </Box>
     </Box>
-  );
-
-  const handleNotificationClick = () => {
-    if (notification.navigate_to) {
-      const url = notification.navigate_to;
-      const pathname = new URL(url).pathname;
-      window.location.href = pathname;
-    }
-  };
+    );
+  }
 
   useEffect(() => {
     if (notification.title) {
@@ -83,20 +91,18 @@ const Notification: React.FC = () => {
     }
   }, [notification]);
 
-  useEffect(() => {
-    onMessageListener()
-      .then((payload) => {
-        if (payload?.notification?.title) {
-          setNotification({
-            title: payload.notification.title,
-            body: payload.notification.body,
-            icon: payload.notification.icon,
-            navigate_to: payload.notification.navigate_to,
-          });
-        }
-      })
-      .catch((err) => console.error('Failed to receive notification:', err));
-  }, []);
+  onMessageListener()
+    .then((payload) => {
+      if (payload.notification?.title) {
+        setNotification({
+          title: payload.notification.title,
+          body: payload.notification.body,
+          icon: payload.notification.icon,
+          navigate_to: payload.notification.navigate_to,
+        });
+      }
+    })
+    .catch((err) => console.log('failed: ', err));
 
   return <Toaster />;
 };
