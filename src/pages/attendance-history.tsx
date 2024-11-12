@@ -114,11 +114,12 @@ const UserAttendanceHistory = () => {
     const attendanceInfo = {
       present_students: data.presentCount,
       totalcount: data.numberOfCohortMembers,
-      present_percentage: (
-        (data.presentCount / data.numberOfCohortMembers) *
-        100
-      ).toFixed(2),
+      present_percentage:
+        data.numberOfCohortMembers === 0
+          ? "0"
+          : `${((data.presentCount / data.numberOfCohortMembers) * 100).toFixed(2)}`,
     };
+    
 
     setAttendanceProgressBarData({
       [shortDateFormat(selectedDate)]: attendanceInfo,
