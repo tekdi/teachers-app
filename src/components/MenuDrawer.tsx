@@ -48,7 +48,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [isOpen, setIsOpen] = useState(open);
   const [academicYearList, setAcademicYearList] = useState<AcademicYear[]>([]);
-  const [modifiedAcademicYearList, setModifiedAcademicYearList] = useState<AcademicYear[]>([]);
+  const [modifiedAcademicYearList, setModifiedAcademicYearList] = useState<
+    AcademicYear[]
+  >([]);
   const [selectedSessionId, setSelectedSessionId] = useState<string>('');
 
   const { i18n, t } = useTranslation();
@@ -69,18 +71,28 @@ const MenuDrawer: React.FC<DrawerProps> = ({
       try {
         const parsedList = storedList ? JSON.parse(storedList) : [];
         setAcademicYearList(parsedList);
-        
-        const modifiedList = parsedList?.map((item: { isActive: any; session: any; }) => {
-          if (item.isActive) {
-            return { ...item, session: `${item.session} (${t('COMMON.ACTIVE')})` };
+
+        const modifiedList = parsedList?.map(
+          (item: { isActive: any; session: any }) => {
+            if (item.isActive) {
+              return {
+                ...item,
+                session: (
+                  <>
+                    {item.session} &nbsp;
+                    <span style={{ color: 'green', fontWeight: '500' }}>
+                      ({t('COMMON.NOW')})
+                    </span>
+                  </>
+                ),
+              };
+            }
+            return item;
           }
-          return item;
-        });
-  
+        );
         setModifiedAcademicYearList(modifiedList);
-  
         const selectedAcademicYearId = localStorage.getItem('academicYearId');
-        setSelectedSessionId(selectedAcademicYearId ?? '');  
+        setSelectedSessionId(selectedAcademicYearId ?? '');
         console.log('Retrieved academicYearList:', parsedList);
       } catch (error) {
         console.error('Error parsing stored academic year list:', error);
