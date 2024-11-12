@@ -143,7 +143,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           {
             tenantId: tenantId,
             roleId: RoleId.STUDENT,
-            cohortId: [cohortId],
+            cohortIds: [cohortId],
           },
         ],
         customFields: [],

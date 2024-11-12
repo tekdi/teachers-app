@@ -200,7 +200,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           {
             tenantId: tenantId,
             roleId: RoleId.TEACHER,
-            cohortId: formData?.assignCenters,
+            cohortIds: formData?.assignCenters,
           },
         ],
         customFields: [],
