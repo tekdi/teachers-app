@@ -66,6 +66,8 @@ const ObservationDetails = () => {
   const [entityIds, setEntityIds] = useState<any[]>([]);
   const [fetchEntityResponse, setFetchEntityResponse] = useState<any[]>([]);
   const [entityData, setEntityData] = useState<any[]>([]);
+  const [filteredEntityData, setFilteredEntityData] = useState<any[]>([]);
+
 
 
 
@@ -93,7 +95,7 @@ const ObservationDetails = () => {
   const [observationDescription, setObservationDescription] = useState<any>();
   const [observationEndDate, setObservationEndDate] = useState<any>("");
 
-
+  const [status, setStatus] = useState(t('COMMON.ALL'));
 
   const theme = useTheme<any>();
 
@@ -223,6 +225,7 @@ if( entity!==ObservationEntityType.CENTER)
     };
 });
 setEntityData(result)
+setFilteredEntityData(result)
 
 }
 else{
@@ -237,6 +240,7 @@ else{
     };
 });
 setEntityData(result)
+setFilteredEntityData(result)
 }
     
   
@@ -378,6 +382,8 @@ setEntityData(result)
     }
   };
   const handleCohortChange = async (event: any) => {
+    setStatus(t('COMMON.ALL'));
+
     setCurrentPage(0);
     setPage(0);
     setSelectedCohort(event.target.value);
@@ -474,19 +480,19 @@ setEntityData(result)
         if(myCohortListForCenter.length!==0)
         {
           return renderEntityData(
-            entityData,
+            filteredEntityData,
             ObservationEntityType.CENTER
           );
         }
         
       case ObservationEntityType.LEARNER:
-        return renderEntityData(entityData, ObservationEntityType.LEARNER);
+        return renderEntityData(filteredEntityData, ObservationEntityType.LEARNER);
       case ObservationEntityType.FACILITATOR:
-        return renderEntityData(entityData, ObservationEntityType.FACILITATOR);
+        return renderEntityData(filteredEntityData, ObservationEntityType.FACILITATOR);
       default:
         return null;
     }
-  }, [entity, myCohortListForCenter, Data, entityData]);
+  }, [entity, myCohortListForCenter, Data, filteredEntityData]);
 
   const handlePaginationChange = (
     event: React.ChangeEvent<unknown>,
@@ -507,7 +513,31 @@ setEntityData(result)
 
     
   };
- 
+  const handleStatusChange = (event: any) => {
+    setStatus(event.target.value);
+
+    if(event.target.value===t('COMMON.ALL'))
+    {
+      setFilteredEntityData(entityData);
+
+    }
+   else if(event.target.value===ObservationStatus.NOT_STARTED)
+    {
+      const filteredData = entityData.filter(item => item.status === event.target.value || item.status === ObservationStatus.STARTED);
+      setFilteredEntityData(filteredData);
+
+    }
+    else
+    {
+      console.log(entityData)
+      console.log(event.target.value)
+      const filteredData = entityData.filter(item => item.status === event.target.value);
+        setFilteredEntityData(filteredData);
+    }
+   
+
+
+  };
   return (
     <>
       <Header />
@@ -601,9 +631,30 @@ setEntityData(result)
             fullWidth={true}
                    ></SearchBar>
                 </Box>
-                 
-              </Box>
+                { (
+                  <FormControl  sx={{ m: 3, minWidth: 200 }}>
+                  <InputLabel>{t('OBSERVATION.OBSERVATION_STATUS')} </InputLabel>
+                  <Select
+                    value={status}
+                    onChange={handleStatusChange}
+                    label={t('OBSERVATION.OBSERVATION_STATUS')}
+                    defaultValue={t('COMMON.ALL')} 
+                    sx={{
+                      backgroundColor:"white"
 
+                    }}
+                  >
+                    <MenuItem value={ObservationStatus.ALL}>  {t('COMMON.ALL')}  </MenuItem>
+                    <MenuItem value={ObservationStatus.NOT_STARTED}> {t('OBSERVATION.NOT_STARTED')}</MenuItem>
+                    <MenuItem value={ObservationStatus.DRAFT}>{t('OBSERVATION.INPROGRESS')}</MenuItem>
+                    <MenuItem value={ObservationStatus.COMPLETED}>{t('OBSERVATION.COMPLETED')}</MenuItem>
+                  </Select>
+                </FormControl>
+                )}
+
+
+              </Box>
+            
               <Box sx={{ marginTop: '20px' , display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap:"20px"}}>{entityContent}</Box>
               {/* {totalCountForCenter > 6 &&
                 entity === ObservationEntityType.CENTER && (
