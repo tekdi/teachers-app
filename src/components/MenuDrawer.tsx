@@ -28,6 +28,7 @@ import { getAcademicYear } from '../services/AcademicYearService';
 import { AcademicYear } from '@/utils/Interfaces';
 import { telemetryFactory } from '@/utils/telemetry';
 import { Telemetry } from '@/utils/app.constant';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
@@ -50,7 +51,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const [academicYearList, setAcademicYearList] = useState<AcademicYear[]>([]);
   const [modifiedAcademicYearList, setModifiedAcademicYearList] = useState<AcademicYear[]>([]);
   const [selectedSessionId, setSelectedSessionId] = useState<string>('');
-
+  const queryClient = useQueryClient();
   const { i18n, t } = useTranslation();
   const router = useRouter();
   const store = useStore();
@@ -111,6 +112,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     const isActive = selectedYear ? selectedYear.isActive : false;
     // localStorage.setItem('isActiveYearSelected', JSON.stringify(isActive));
     setIsActiveYearSelected(isActive);
+    queryClient.clear();
+
     if (isActive) {
       window.location.reload();
     } else {
