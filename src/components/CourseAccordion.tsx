@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useTheme } from '@mui/material/styles';
@@ -8,14 +8,20 @@ interface CourseAccordionProps {
   title: any;
   type: string;
   resources: any; 
+  expanded: boolean;
+  onChange?: (event: React.SyntheticEvent, expanded: boolean) => void;
 }
 
-const CourseAccordion: React.FC<CourseAccordionProps> = ({ title, type, resources }) => {
+const CourseAccordion: React.FC<CourseAccordionProps> = ({ title, type, resources, expanded, onChange }) => {
   const theme = useTheme<any>();
+
+  useEffect(() => {
+    console.log("resources", type, resources);
+  }, []);
 
   return (
     <Box sx={{ mt: 2, mb: 1.5 }}>
-      <Accordion
+      <Accordion expanded={expanded} onChange={onChange}
         sx={{
           boxShadow: 'none !important',
           border: 'none !important',
@@ -58,6 +64,10 @@ const CourseAccordion: React.FC<CourseAccordionProps> = ({ title, type, resource
           }}
         >
           <CoursePlannerCards resources={resources} type={type} />
+
+          {
+            resources?.length === 0 && <Typography sx={{ p: '10px', mt:2, fontSize: '12px'}}>No resources found</Typography>
+          }
         </AccordionDetails>
       </Accordion>
     </Box>

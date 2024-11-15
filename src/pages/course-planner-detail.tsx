@@ -39,6 +39,16 @@ import useDeterminePathColor from '@/hooks/useDeterminePathColor';
 import { useDirection } from '../hooks/useDirection';
 import { Telemetry } from 'next/dist/telemetry/storage';
 import { telemetryFactory } from '@/utils/telemetry';
+import { fetchBulkContents } from '@/services/PlayerService';
+
+
+export interface IResource {
+  name: string;
+  link: string;
+  app: string;
+  type: string;
+  id?: string;
+}
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
@@ -221,26 +231,26 @@ const CoursePlannerDetail = () => {
       },
     };
     telemetryFactory.interact(telemetryInteract);
-    
+
 
 
   };
 
   const toggleDrawer =
     (open: boolean, selectedCount: number = 0) =>
-    (event?: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event &&
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
-      setDrawerState({ ...drawerState, bottom: open });
-      setIsDrawerOpen(open);
-      setSelectedCount(selectedCount);
-    };
+      (event?: React.KeyboardEvent | React.MouseEvent) => {
+        if (
+          event &&
+          event.type === 'keydown' &&
+          ((event as React.KeyboardEvent).key === 'Tab' ||
+            (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+          return;
+        }
+        setDrawerState({ ...drawerState, bottom: open });
+        setIsDrawerOpen(open);
+        setSelectedCount(selectedCount);
+      };
 
   const handleCloseModel = () => {
     setModalOpen(false);
@@ -328,6 +338,25 @@ const CoursePlannerDetail = () => {
     }
 
     return false;
+  };
+
+  const fetchLearningResources = async (resources: IResource[]) => {
+    try {
+      const identifiers = resources.map((resource: IResource) => resource?.link);
+      const response = await fetchBulkContents(identifiers);
+
+      resources = resources.map((resource: IResource) => {
+        const content = response?.find(
+          (content: any) => content?.identifier === resource?.link
+        );
+        return { ...resource, ...content };
+      });
+
+      setResources(resources);
+      console.log('response===>', resources);
+    } catch (error) {
+      console.error("error", error);
+    }
   };
 
   return (
@@ -581,7 +610,8 @@ const CoursePlannerDetail = () => {
                                     cursor: 'pointer',
                                   }}
                                   onClick={() => {
-                                    setResources(subTopic);
+                                    fetchLearningResources(subTopic?.learningResources);
+                                    // setResources(subTopic);
                                     router.push(`/topic-detail-view`);
                                   }}
                                 >
@@ -674,14 +704,15 @@ const CoursePlannerDetail = () => {
                                   mt: 0.8,
                                   cursor: 'pointer',
                                 }}
-                                onClick={() => {
-                                  router.push(`/topic-detail-view`);
-                                }}
+                                // onClick={() => {
+                                //   // router.push(`/topic-detail-view`);
+                                // }}
                               >
                                 <Box
                                   sx={{ fontSize: '12px', fontWeight: '500' }}
                                   onClick={() => {
-                                    setResources(subTopic);
+                                    // setResources(subTopic);
+                                    fetchLearningResources(subTopic?.learningResources);
                                     router.push(`/topic-detail-view`);
                                   }}
                                 >
@@ -710,23 +741,23 @@ const CoursePlannerDetail = () => {
         )}
       </div>
       <FacilitatorDrawer
-  secondary= {t('COMMON.CANCEL')}
-  primary={`${t('COURSE_PLANNER.MARK_AS_COMPLETED')} (${selectedCount})`}
-  toggleDrawer={toggleDrawer}
-  drawerState={drawerState}
-  onPrimaryClick={() => {
-    if (selectedSubtopics.length > 0) {
-      // Mark all selected subtopics as complete
-      markMultipleStatuses(userProjectDetails, selectedSubtopics);
-      toggleDrawer(false)();
-    }
-  }}
-  onSecondaryClick={() => {
-    setSelectedSubtopics([]);
-    toggleDrawer(false)(); 
-  }}
-  selectedCount={selectedCount} 
-/>
+        secondary={t('COMMON.CANCEL')}
+        primary={`${t('COURSE_PLANNER.MARK_AS_COMPLETED')} (${selectedCount})`}
+        toggleDrawer={toggleDrawer}
+        drawerState={drawerState}
+        onPrimaryClick={() => {
+          if (selectedSubtopics.length > 0) {
+            // Mark all selected subtopics as complete
+            markMultipleStatuses(userProjectDetails, selectedSubtopics);
+            toggleDrawer(false)();
+          }
+        }}
+        onSecondaryClick={() => {
+          setSelectedSubtopics([]);
+          toggleDrawer(false)();
+        }}
+        selectedCount={selectedCount}
+      />
 
 
       {/* <ConfirmationModal

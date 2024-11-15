@@ -478,8 +478,8 @@
     "TOPIC_SUBTOPIC_REMOVED_SUCCESSFULLY": "موضوع اور ذیلی موضوع کامیابی سے ہٹا دیے گئے!",
     "COURSE_PLANNER_NOT_AVAILABLE": "{{subject}} کے لیے کورس پلانر دستیاب نہیں ہے!",
     "FACILITATOR_REQUISITES": "فسیلیٹیٹر کی ضروریات",
-    "LEARNER_PREREQUISITES": "سیکھنے والے کی ضروریات",
-    "LEARNER_POSTREQUISITES": "سیکھنے والے کے بعد کی ضروریات",
+    "PREREQUISITES": "سیکھنے والے کی ضروریات",
+    "POST_REQUISITES": "سیکھنے والے کے بعد کی ضروریات",
     "CANT_SELECT_AS_EVENT_PASSED_LIVE": "موضوع اور ذیلی موضوع کو منتخب نہیں کیا جا سکتا کیونکہ ایونٹ گزر چکا ہے!",
     "SELECT_LECTURER": "لیکچرر کو منتخب کریں"
   },

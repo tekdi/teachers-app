@@ -1,3 +1,4 @@
+import { identifier } from 'stylis';
 import { URL_CONFIG } from '../utils/url.config';
 import axios from 'axios';
 
@@ -17,6 +18,45 @@ export const fetchContent = async (identifier: any) => {
     throw error;
   }
 };
+
+export const fetchBulkContents = async (identifiers: string[]) => {
+  try {
+    const API_URL = `${URL_CONFIG.API.COMPOSITE_SEARCH}`;
+    const options = {
+      request: {
+        filters: {
+          identifier: identifiers,
+        },
+        fields: [
+            "name",
+            "appIcon",
+            "medium",
+            "subject",
+            "resourceType",
+            "contentType",
+            "organisation",
+            "topic",
+            "mimeType",
+            "trackable",
+            "gradeLevel"
+        ],
+      }
+    }
+    const response = await axios.post(URL_CONFIG.API.COMPOSITE_SEARCH, options);
+    console.log('response =====>', response);
+    const result = response?.data?.result;
+    if (response?.data?.result?.QuestionSet?.length) {
+      result.content = [...result.content, ...result.QuestionSet];
+    }
+
+    return result.content;
+  } catch (error) {
+    console.error('Error fetching content:', error);
+    throw error;
+  }
+};
+
+
 
 export const getHierarchy = async (identifier: any) => {
   try {

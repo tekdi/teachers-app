@@ -252,7 +252,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
               fontSize="14px"
               sx={{ color: theme?.palette?.warning['300'] }}
             >
-              {t('CENTER_SESSION.LEARNER_PREREQUISITES')}
+              {t('CENTER_SESSION.PREREQUISITES')}
             </Typography>
           </AccordionSummary>
           <AccordionDetails
@@ -324,7 +324,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
               fontSize="14px"
               sx={{ color: theme?.palette?.warning['300'] }}
             >
-              {t('CENTER_SESSION.LEARNER_POSTREQUISITES')}
+              {t('CENTER_SESSION.POST_REQUISITES')}
             </Typography>
           </AccordionSummary>
           <AccordionDetails
