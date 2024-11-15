@@ -1054,6 +1054,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           ) {
             metadata.subject = sessionSubject;
             apiBody['metadata'] = metadata;
+            const erMetaData = {
+              topic: null,
+              subTopic: [],
+            };
+            apiBody['erMetaData'] = erMetaData;
           }
 
           const sessionTitle = sessionBlocks?.[0]?.subjectTitle;
