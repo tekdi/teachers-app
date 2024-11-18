@@ -21,7 +21,7 @@ const ObservationComponent = dynamic(
 const ObservationQuestions: React.FC = () => {
   const router = useRouter();
   const { Id } = router.query;
-  const { cohortId } = router.query;
+  const { entityId } = router.query;
   const { observationName } = router.query;
 
   const [questionResponse, setQuestionResponseResponse] =
@@ -32,7 +32,7 @@ const ObservationQuestions: React.FC = () => {
     const fetchQuestionsList = async () => {
       try {
        const observationId=Id;
-        const entityId=cohortId;  
+        //const entityId=entityId;  
         if(observationId && Id)
         {
           const response=await fetchQuestion({observationId,entityId})
@@ -54,42 +54,12 @@ const ObservationQuestions: React.FC = () => {
       }
     };
     fetchQuestionsList();
-  }, [Id, cohortId]);
-  const handleBackEvent = () => {
-  window.history.back();
-  // router.push(
-  //   `${localStorage.getItem('observationPath')}`
-  // );
-  };
+  }, [Id, entityId]);
+  
   return (
     <Box>
       <Header />
-      <Box
-          sx={{
-            display: 'flex',
-            direction: 'row',
-            gap: '24px',
-            mt:"15px",
-            marginLeft:"10px"
-            
-          }}
-          width={'100%'}
-          onClick={handleBackEvent}
-
-        >
-          <KeyboardBackspaceOutlinedIcon
-            cursor={'pointer'}
-            sx={{
-              color: theme.palette.warning['A200'],
-            }}
-          />
-          <Typography variant='h2'>
-          {observationName}
-
-          </Typography>
-
-        </Box>
-      <ObservationComponent observationQuestions={questionResponse} />
+      <ObservationComponent observationName={observationName} observationQuestions={questionResponse} />
     </Box>
   );
 };
