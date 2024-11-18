@@ -35,7 +35,7 @@ const EventMonthView: React.FC<any> = () => {
   const { t, i18n } = useTranslation();
   const { dir, isRTL } = useDirection();
   const router = useRouter();
-  const { date }: any = router.query;
+  const { cohortId, date }: any = router.query;
   const { showAll } = router.query;
 
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -311,6 +311,7 @@ const EventMonthView: React.FC<any> = () => {
                     board={board}
                     medium={medium}
                     grade={grade}
+                    cohortId={cohortId}
                   />
                 </SessionsCard>
               </Grid>
@@ -363,6 +364,7 @@ const EventMonthView: React.FC<any> = () => {
                     board={board}
                     medium={medium}
                     grade={grade}
+                    cohortId={cohortId}
                   />
                 </SessionsCard>
               </Grid>

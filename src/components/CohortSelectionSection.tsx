@@ -455,7 +455,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     textTransform: 'capitalize',
                                   }}
                                 >
-                                  {cohort.name}{' '}
+                                  {toPascalCase(cohort.name)}{' '}
                                   {cohort?.typeOfCohort ===
                                     CenterType.REGULAR ||
                                     (CenterType.UNKNOWN &&
@@ -561,7 +561,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     textTransform: 'capitalize',
                                   }}
                                 >
-                                  {cohort?.name}
+                                  {toPascalCase(cohort?.name)}
                                 </MenuItem>
                               ))
                             ) : (

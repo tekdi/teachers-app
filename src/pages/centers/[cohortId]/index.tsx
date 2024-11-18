@@ -817,6 +817,7 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
                                     board={board}
                                     medium={medium}
                                     grade={grade}
+                                    cohortId={cohortId}
                                   />
                                 )}
                               </SessionCard>
@@ -916,6 +917,7 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
                                 board={board}
                                 medium={medium}
                                 grade={grade}
+                                cohortId={cohortId}
                               />
                             )}
                           </SessionCard>

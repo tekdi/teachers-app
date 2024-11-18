@@ -401,6 +401,7 @@ export interface CoursePlanner {
 export interface SessionCardFooterProps {
   item: any;
   cohortName?: string;
+  cohortId?: string;
   isTopicSubTopicAdded?: any;
   state?: string;
   board?: string;
@@ -654,6 +655,7 @@ export interface GetTargetedSolutionsParams {
   class: any;
   board: any;
   type: string;
+  entityId?: string;
 }
 
 export interface GetUserProjectDetailsParams {
@@ -701,6 +703,7 @@ export interface GetUserProjectTemplateParams {
   templateId: string;
   solutionId: string;
   role: string;
+  cohortId?: string;
 }
 
 export interface HorizontalLinearStepperProps {

@@ -1476,6 +1476,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                       board={board}
                                       medium={medium}
                                       grade={grade}
+                                      cohortId={classId}
                                     />
                                   )}
                                 </SessionCard>
@@ -1530,6 +1531,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                         board={board}
                                         medium={medium}
                                         grade={grade}
+                                        cohortId={classId}
                                       />
                                     )}
                                   </SessionCard>

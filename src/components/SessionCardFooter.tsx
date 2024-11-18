@@ -24,10 +24,12 @@ import { showToastMessage } from './Toastify';
 import { convertUTCToIST, getDayMonthYearFormat } from '@/utils/Helper';
 import { EventStatus } from '@/utils/app.constant';
 import { useDirection } from '../hooks/useDirection';
+import { useRouter } from 'next/router';
 
 const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   item,
   cohortName,
+  cohortId,
   isTopicSubTopicAdded,
   state,
   board,
@@ -37,6 +39,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const theme = useTheme<any>();
   const { t, i18n } = useTranslation();
   const { dir, isRTL } = useDirection();
+  const router = useRouter();
 
   const [open, setOpen] = React.useState(false);
   const [editTopic, setEditTopic] = React.useState(false);
@@ -73,6 +76,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
             board: board,
             type: item?.metadata?.courseType,
             subject: item?.metadata?.subject,
+            entityId: cohortId,
           });
 
           const courseData = response?.result?.data
