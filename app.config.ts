@@ -7,7 +7,6 @@ export const dashboardDaysLimit: number = 30;
 export const modifyAttendanceLimit: number = 6;
 export const eventDaysLimit: number = 7;
 export const toastAutoHideDuration: number = 5000; // 5 seconds
-export const tenantId: string = 'ef99949b-7f3a-4a5f-806a-e67e683e38f3';
 export const idealTimeForSession: string = '120';
 export const timeZone: string = 'Asia/Kolkata';
 export const dropoutReasons = [
@@ -72,7 +71,15 @@ export const DaysOfWeek = {
 
 export const Program = 'Second chance';
 
-export const frameworkId = 'gujaratboardfw';
+export const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || "";
+if (!tenantId) {
+  console.warn('NEXT_PUBLIC_TENANT_ID is not set in the environment variables.');
+}
+
+export const frameworkId = process.env.NEXT_PUBLIC_FRAMEWORK_ID || "";
+if (!frameworkId) {
+  console.warn('NEXT_PUBLIC_FRAMEWORK_ID is not set in the environment variables.');
+}
 
 export enum AssessmentType {
   PRE_TEST = 'Pre Test',

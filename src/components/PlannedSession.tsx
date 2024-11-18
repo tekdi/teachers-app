@@ -171,7 +171,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     const handleBMGS = async () => {
       try {
         if (StateName && medium && grade && board) {
-          const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/api/framework/v1/read/${frameworkId}`;
+          const url = `/api/framework/v1/read/${frameworkId}`;
           const boardData = await fetch(url).then((res) => res.json());
           const frameworks = boardData?.result?.framework;
 
