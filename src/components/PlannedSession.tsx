@@ -74,8 +74,9 @@ interface Session {
   startDatetime?: string;
   endDatetime?: string;
   endDateValue?: string;
-  courseType?: string;
-  subject?: string;
+  courseType?: string | null;
+  subjectDropdown?: string[] | null;
+  subject?: string | null;
   subjectTitle?: string;
   isRecurring?: boolean;
   meetingLink?: string;
@@ -132,11 +133,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [shortDescription, setShortDescription] = useState<string>('');
   const [meetingPasscode, setMeetingPasscode] = useState<string>();
   const [selectedDays, setSelectedDays] = useState<number[]>();
-  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
-  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
-  const [startTime, setStartTime] = useState<Dayjs | null>(dayjs());
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const [startTime, setStartTime] = useState<Dayjs | null>(null);
   dayjs.extend(utc);
-  const [endTime, setEndTime] = useState<Dayjs | null>(dayjs());
+  const [endTime, setEndTime] = useState<Dayjs | null>(null);
   const [startTimeError, setStartTimeError] = useState<string | null>(null);
   const [endTimeError, setEndTimeError] = useState<string | null>(null);
   const [startDateError, setStartDateError] = useState<string | null>(null);
@@ -152,8 +153,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       startDatetime: '',
       endDatetime: '',
       endDateValue: '',
-      subject: '',
-      courseType: '',
+      subject: null,
+      courseType: null,
       subjectTitle: '',
       isRecurring: false,
       meetingLink: '',
@@ -402,6 +403,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           ? {
               ...block,
               courseType: newCourseType,
+              subjectDropdown: courseSubjects?.subjects,
             }
           : block
       )
@@ -730,7 +732,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         // sessionType: '',
         startDatetime: '',
         endDatetime: '',
-        subject: '',
+        subject: null,
         subjectTitle: '',
         meetingLink: '',
         meetingPasscode: '',
@@ -830,7 +832,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           registrationEndDate: '',
           metaData: {
             category: title,
-            courseType: block?.courseType,
+            courseType: block?.courseType || '',
             subject: block?.subject || '',
             teacherName: userName,
             cohortId: cohortId || '',
@@ -1248,9 +1250,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     handleCourseTypeChange(block?.id, event)
                   }
                   value={
-                    block?.courseType === undefined || block?.courseType === ''
-                      ? selectedCourseType
-                      : eventData?.metadata?.courseType
+                    block?.courseType === selectedCourseType
+                      ? block?.courseType
+                      : null || editSession?.metadata?.courseType
                   }
                   disabled={!StateName || !medium || !grade || !board}
                 >
@@ -1284,13 +1286,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                         handleSubjectChange(block?.id, event)
                       }
                       value={
-                        block?.subject === undefined || block?.subject === ''
-                          ? selectedSubject
-                          : eventData?.metadata?.subject
+                        block?.subject === selectedSubject
+                          ? block?.subject
+                          : null || editSession?.metadata?.subject
                       }
                       disabled={!(StateName && medium && grade && board)}
                     >
-                      {subjects?.map((subject: string) => (
+                      {(block?.subjectDropdown &&
+                      block.subjectDropdown.length > 0
+                        ? block.subjectDropdown
+                        : subjects
+                      )?.map((subject: string) => (
                         <MenuItem key={subject} value={subject}>
                           {subject}
                         </MenuItem>
@@ -1371,10 +1377,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       onChange={(event: any) =>
                         handleSubjectChange(block?.id, event)
                       }
-                      value={selectedSubject}
+                      value={
+                        block?.subject || editSession?.metadata?.subject || ''
+                      }
                       disabled={!(StateName && medium && grade && board)}
                     >
-                      {subjects?.map((subject: string) => (
+                      {(block?.subjectDropdown &&
+                      block.subjectDropdown.length > 0
+                        ? block.subjectDropdown
+                        : subjects
+                      )?.map((subject: string) => (
                         <MenuItem key={subject} value={subject}>
                           {subject}
                         </MenuItem>
@@ -1407,23 +1419,32 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <Stack spacing={3}>
                       <MobileDatePicker
                         label="Date"
-                        value={block?.sessionStartDate || startDate}
-                        onChange={(newValue) =>
-                          handleChange(block?.id, newValue, 'start', 'date')
+                        value={
+                          block?.sessionStartDate === null ? null : startDate
                         }
+                        onChange={(newValue) => {
+                          console.log(
+                            'Date',
+                            block?.sessionStartDate === null ? null : startDate
+                          );
+                          handleChange(block?.id, newValue, 'start', 'date');
+                        }}
                         format="DD MMM, YYYY"
                         sx={{ borderRadius: '4px' }}
                       />
                     </Stack>
                   </LocalizationProvider>
-
                   <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
                     <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
                       <Box sx={{ mt: 3 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <MobileTimePicker
                             label={t('CENTER_SESSION.START_TIME')}
-                            value={block?.sessionStartTime || startTime}
+                            value={
+                              block?.sessionStartTime === null
+                                ? null
+                                : startTime
+                            }
                             onChange={(newValue) =>
                               handleChange(block?.id, newValue, 'start', 'time')
                             }
@@ -1442,7 +1463,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <MobileTimePicker
                             label={t('CENTER_SESSION.END_TIME')}
-                            value={block?.sessionEndTime || endTime}
+                            value={
+                              block?.sessionEndTime === null ? null : endTime
+                            }
                             onChange={(newValue) =>
                               handleChange(block?.id, newValue, 'end', 'time')
                             }
@@ -1497,7 +1520,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <MobileTimePicker
                         label={t('CENTER_SESSION.START_TIME')}
-                        value={block?.sessionStartTime || startTime}
+                        value={
+                          block?.sessionStartTime === null ? null : startTime
+                        }
                         onChange={(newValue) =>
                           handleChange(block?.id, newValue, 'start', 'time')
                         }
@@ -1520,7 +1545,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <MobileTimePicker
                         label={t('CENTER_SESSION.END_TIME')}
-                        value={block?.sessionEndTime || endTime}
+                        value={block?.sessionEndTime === null ? null : endTime}
                         onChange={(newValue) =>
                           handleChange(block?.id, newValue, 'end', 'time')
                         }
@@ -1547,7 +1572,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       <Stack spacing={3}>
                         <MobileDatePicker
                           label={t('CENTER_SESSION.START_DATE')}
-                          value={block?.sessionStartDate || startDate}
+                          value={
+                            block?.sessionStartDate == null ? null : startDate
+                          }
                           onChange={(newValue) =>
                             handleChange(block?.id, newValue, 'start', 'date')
                           }
@@ -1574,7 +1601,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       <Stack spacing={3}>
                         <MobileDatePicker
                           label={t('CENTER_SESSION.END_DATE')}
-                          value={block?.sessionEndDate || endDate}
+                          value={
+                            block?.sessionEndDate === null ? null : endDate
+                          }
                           onChange={(newValue) =>
                             handleChange(block?.id, newValue, 'end', 'date')
                           }
@@ -1677,7 +1706,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           )}
         </Box>
       ))}
-
       {editSession && (
         <ConfirmationModal
           message={
