@@ -355,7 +355,7 @@ setFilteredEntityData(result)
     };
     if(selectedCohort && selectedCohort!=='')
     handleCohortChange();
-  }, [page, selectedCohort, searchInput]);
+  }, [page, selectedCohort, searchInput, entity]);
 
   const onPreviousClick = () => {
     if (entity === ObservationEntityType?.CENTER) {
