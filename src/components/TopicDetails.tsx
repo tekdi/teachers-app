@@ -198,7 +198,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                     <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
                       <Box
                         className="facilitator-bg"
-                        onClick={() => handlePlayers(item?.link)}
+                        onClick={() => handlePlayers(item?.identifier)}
                       >
                         <Box
                           sx={{
@@ -270,7 +270,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                     <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
                       <Box
                         className="facilitator-bg"
-                        onClick={() => handlePlayers(item?.link)}
+                        onClick={() => handlePlayers(item?.identifier)}
                       >
                         <Box
                           sx={{
@@ -342,7 +342,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                     <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
                       <Box
                         className="facilitator-bg"
-                        onClick={() => handlePlayers(item?.link)}
+                        onClick={() => handlePlayers(item?.identifier)}
                       >
                         <Box
                           sx={{

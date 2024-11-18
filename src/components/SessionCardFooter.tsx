@@ -100,6 +100,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
                       name: resource?.name,
                       link: resource?.link,
                       type: resource?.type || '',
+                      identifier: resource?.identifier || '',
                     })
                   );
                   return subAcc;

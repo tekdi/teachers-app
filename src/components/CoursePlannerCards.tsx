@@ -31,6 +31,7 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
               link: string;
               name?: string;
               appIcon?: string;
+              identifier?: string;
             },
             index: number
           ) => (
@@ -38,7 +39,7 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
               <Box
                 className="facilitator-bg"
                 sx={{ backgroundImage: `url(${resource?.appIcon ? resource.appIcon : '/decorationBg.png'})`, position: 'relative', }}
-                onClick={() => router.push(`/play/content/${resource?.link}`)}
+                onClick={() => router.push(`/play/content/${resource?.identifier}`)}
               >
                 <div
                   style={{

@@ -47,7 +47,7 @@ export interface IResource {
   link: string;
   app: string;
   type: string;
-  id?: string;
+  id: string;
 }
 
 const CoursePlannerDetail = () => {
@@ -342,12 +342,12 @@ const CoursePlannerDetail = () => {
 
   const fetchLearningResources = async (resources: IResource[]) => {
     try {
-      const identifiers = resources.map((resource: IResource) => resource?.link);
+      const identifiers = resources.map((resource: IResource) => resource?.id);
       const response = await fetchBulkContents(identifiers);
 
       resources = resources.map((resource: IResource) => {
         const content = response?.find(
-          (content: any) => content?.identifier === resource?.link
+          (content: any) => content?.identifier === resource?.id
         );
         return { ...resource, ...content };
       });
