@@ -721,7 +721,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
   const handleAddSession = () => {
     const newSessionId = sessionBlocks.length;
-
+    setStartDate(null);
+    setEndDate(null);
+    setStartTime(null);
+    setEndTime(null);
     setSessionBlocks([
       ...sessionBlocks,
       {
@@ -1420,13 +1423,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       <MobileDatePicker
                         label="Date"
                         value={
-                          block?.sessionStartDate === null ? null : startDate
+                          editSession ? startDate : block?.sessionStartDate
                         }
                         onChange={(newValue) => {
-                          console.log(
-                            'Date',
-                            block?.sessionStartDate === null ? null : startDate
-                          );
                           handleChange(block?.id, newValue, 'start', 'date');
                         }}
                         format="DD MMM, YYYY"
@@ -1441,9 +1440,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           <MobileTimePicker
                             label={t('CENTER_SESSION.START_TIME')}
                             value={
-                              block?.sessionStartTime === null
-                                ? null
-                                : startTime
+                              editSession ? startTime : block?.sessionStartTime
                             }
                             onChange={(newValue) =>
                               handleChange(block?.id, newValue, 'start', 'time')
@@ -1464,7 +1461,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           <MobileTimePicker
                             label={t('CENTER_SESSION.END_TIME')}
                             value={
-                              block?.sessionEndTime === null ? null : endTime
+                              editSession ? endTime : block?.sessionEndTime
                             }
                             onChange={(newValue) =>
                               handleChange(block?.id, newValue, 'end', 'time')
@@ -1521,7 +1518,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       <MobileTimePicker
                         label={t('CENTER_SESSION.START_TIME')}
                         value={
-                          block?.sessionStartTime === null ? null : startTime
+                          editSession ? startTime : block?.sessionStartTime
                         }
                         onChange={(newValue) =>
                           handleChange(block?.id, newValue, 'start', 'time')
@@ -1545,7 +1542,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <MobileTimePicker
                         label={t('CENTER_SESSION.END_TIME')}
-                        value={block?.sessionEndTime === null ? null : endTime}
+                        value={editSession ? endTime : block?.sessionEndTime}
                         onChange={(newValue) =>
                           handleChange(block?.id, newValue, 'end', 'time')
                         }
@@ -1573,7 +1570,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                         <MobileDatePicker
                           label={t('CENTER_SESSION.START_DATE')}
                           value={
-                            block?.sessionStartDate == null ? null : startDate
+                            editSession ? startDate : block?.sessionStartDate
                           }
                           onChange={(newValue) =>
                             handleChange(block?.id, newValue, 'start', 'date')
@@ -1601,9 +1598,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       <Stack spacing={3}>
                         <MobileDatePicker
                           label={t('CENTER_SESSION.END_DATE')}
-                          value={
-                            block?.sessionEndDate === null ? null : endDate
-                          }
+                          value={editSession ? endDate : block?.sessionEndDate}
                           onChange={(newValue) =>
                             handleChange(block?.id, newValue, 'end', 'date')
                           }
