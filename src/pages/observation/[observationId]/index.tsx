@@ -122,7 +122,7 @@ const ObservationDetails = () => {
             if (selectedCohort === '')
             {
               const data= typeof window !== 'undefined'
-              ? localStorage.getItem("selectedCohort") || response[0]?.childData[0]?.cohortId
+              ? localStorage.getItem("selectedCohort") || localStorage.getItem('role') === Role.TEAM_LEADER? response[0]?.childData[0]?.cohortId:response[0]?.cohortId
               : response[0]?.childData[0]?.cohortId;
               
               setSelectedCohort(data)
@@ -134,7 +134,7 @@ const ObservationDetails = () => {
             if (selectedCohort === '')
             {
               const data= typeof window !== 'undefined'
-              ? localStorage.getItem("selectedCohort") || response[0]?.childData[0]?.cohortId
+              ? localStorage.getItem("selectedCohort") || localStorage.getItem('role') === Role.TEAM_LEADER? response[0]?.childData[0]?.cohortId:response[0]?.cohortId
               : response[0]?.cohortId;
               
               setSelectedCohort(data)
@@ -414,7 +414,7 @@ setFilteredEntityData(result)
     const { Id } = router.query;
 
 
-    const queryParams = { cohortId: cohortId, Id: Id , observationName: observationName };
+    const queryParams = { entityId: cohortId, Id: Id , observationName: observationName };
     router.push({
       pathname: newFullPath,
       query: queryParams,
@@ -509,7 +509,9 @@ setFilteredEntityData(result)
   };
 
   const handleBackEvent = () => {
-    router.push('/observation');
+     router.push(
+        `${localStorage.getItem('observationPath')}`
+      );
 
     
   };
