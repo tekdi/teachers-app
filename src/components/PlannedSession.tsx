@@ -721,7 +721,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
   const handleAddSession = () => {
     const newSessionId = sessionBlocks.length;
-
+    setStartDate(null);
+    setEndDate(null);
+    setStartTime(null);
+    setEndTime(null);
     setSessionBlocks([
       ...sessionBlocks,
       {
