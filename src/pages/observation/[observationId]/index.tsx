@@ -37,7 +37,7 @@ import {
   fetchEntities,
   targetSolution,
 } from '@/services/ObservationServices';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
 import Entity from '@/components/observations/Entity';
 import SearchBar from '@/components/Searchbar';
@@ -121,9 +121,10 @@ const ObservationDetails = () => {
             }
             if (selectedCohort === '')
             {
-              const data= typeof window !== 'undefined'
-              ? localStorage.getItem("selectedCohort") || localStorage.getItem('role') === Role.TEAM_LEADER? response[0]?.childData[0]?.cohortId:response[0]?.cohortId
-              : response[0]?.childData[0]?.cohortId;
+              // const data= typeof window !== 'undefined'
+              // ? localStorage.getItem("selectedCohort") || localStorage.getItem('role') === Role.TEAM_LEADER? response[0]?.childData[0]?.cohortId:response[0]?.cohortId
+              // : response[0]?.childData[0]?.cohortId;
+              const data=localStorage.getItem("selectedCohort")?localStorage.getItem("selectedCohort"):localStorage.getItem('role') === Role.TEAM_LEADER?response[0]?.childData[0]?.cohortId:response[0]?.cohortId
               
               setSelectedCohort(data)
             }
@@ -133,9 +134,8 @@ const ObservationDetails = () => {
             setMyCohortList(response);
             if (selectedCohort === '')
             {
-              const data= typeof window !== 'undefined'
-              ? localStorage.getItem("selectedCohort") || localStorage.getItem('role') === Role.TEAM_LEADER? response[0]?.childData[0]?.cohortId:response[0]?.cohortId
-              : response[0]?.cohortId;
+              const data=localStorage.getItem("selectedCohort")?localStorage.getItem("selectedCohort"):localStorage.getItem('role') === Role.TEAM_LEADER?response[0]?.childData[0]?.cohortId:response[0]?.cohortId
+
               
               setSelectedCohort(data)
             } ;
@@ -509,10 +509,10 @@ setFilteredEntityData(result)
   };
 
   const handleBackEvent = () => {
-     router.push(
-        `${localStorage.getItem('observationPath')}`
-      );
-
+    //  router.push(
+    //     `${localStorage.getItem('observationPath')}`
+    //   );
+    router.push('/observation');
     
   };
   const handleStatusChange = (event: any) => {
