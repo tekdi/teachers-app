@@ -587,73 +587,101 @@ setFilteredEntityData(result)
                 sx={{
                   display: 'flex',
                   direction: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  '@media (max-width: 908px)': {
+                    flexDirection: 'column',
+                    
+                  }
                 }}
               >
-                {entity !== ObservationEntityType?.CENTER && (
-                  <FormControl sx={{ m: 3, width: 300, backgroundColor:"white"}}>
-                    <InputLabel  id="demo-single-name-label">
-                      <Typography variant="h2"color={"black"}>
-                      {t('ATTENDANCE.CENTER_NAME')}                </Typography>
-                    </InputLabel>
-                    <Select
-                      labelId="demo-single-name-label"
-                      id="demo-single-name"
-                      value={selectedCohort}
-                      onChange={handleCohortChange}
-                      input={<OutlinedInput label="Cohort Name" />}
-                      MenuProps={{
-                        PaperProps: {
-                          sx: {
-                            maxHeight: '200px',
-                            overflowY: 'auto',
-                          },
-                        },
-                      }}
-                    >
-                      {myCohortList?.map((cohort: any) => (
-                        <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                          {localStorage.getItem('role') === Role.TEAM_LEADER
-                            ? cohort.name
-                            : cohort.cohortName}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
 
+               
+                <Box sx={{
+                  marginTop: '25px',
+                  display: 'flex', alignItems: 'center', px:"10px", gap: '15px', '@media (max-width: 908px)': {
+                    flexDirection: 'column',
+                    marginTop: '25px',
+                    width: '100%',
+                  }
+}}>
+                  {entity !== ObservationEntityType?.CENTER && (
+                    <FormControl sx={{
+                      width: 300, backgroundColor: "white" , '@media (max-width: 908px)': {
+                        width: '100%',
+                      } }}>
+                      <InputLabel id="demo-single-name-label">
+                        <Typography variant="h2" color={"black"}>
+                          {t('ATTENDANCE.CENTER_NAME')}                </Typography>
+                      </InputLabel>
+                      <Select
+                        labelId="demo-single-name-label"
+                        id="demo-single-name"
+                        value={selectedCohort}
+                        onChange={handleCohortChange}
+                        input={<OutlinedInput label="Cohort Name" />}
+                        MenuProps={{
+                          PaperProps: {
+                            sx: {
+                              maxHeight: '200px',
+                              overflowY: 'auto',
+                            },
+                          },
+                        }}
+                      >
+                        {myCohortList?.map((cohort: any) => (
+                          <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
+                            {localStorage.getItem('role') === Role.TEAM_LEADER
+                              ? cohort.name
+                              : cohort.cohortName}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+
+
+                  {(
+                    <FormControl sx={{
+                      minWidth: 300, '@media (max-width: 908px)': {
+                        width: '100%',
+                      } }}>
+                      <InputLabel>{t('OBSERVATION.OBSERVATION_STATUS')} </InputLabel>
+                      <Select
+                        value={status}
+                        onChange={handleStatusChange}
+                        label={t('OBSERVATION.OBSERVATION_STATUS')}
+                        defaultValue={t('COMMON.ALL')}
+                        sx={{
+                          backgroundColor: "white"
+
+                        }}
+                      >
+                        <MenuItem value={ObservationStatus.ALL}>  {t('COMMON.ALL')}  </MenuItem>
+                        <MenuItem value={ObservationStatus.NOT_STARTED}> {t('OBSERVATION.NOT_STARTED')}</MenuItem>
+                        <MenuItem value={ObservationStatus.DRAFT}>{t('OBSERVATION.INPROGRESS')}</MenuItem>
+                        <MenuItem value={ObservationStatus.COMPLETED}>{t('OBSERVATION.COMPLETED')}</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+
+                </Box>
+                
                 <Box
-                mt="10px"
+                  mt="10px"
+                  sx={{
+                    width: '100%',
+                  }}
                 >
 
-<SearchBar
-            onSearch={setSearchInput}
-            value={searchInput}
-            placeholder="Search..."   
-            backgroundColor={"white"}
-            fullWidth={true}
-                   ></SearchBar>
+                  <SearchBar
+                    onSearch={setSearchInput}
+                    value={searchInput}
+                    placeholder="Search..."
+                    backgroundColor={"white"}
+                    fullWidth={true}
+                  ></SearchBar>
                 </Box>
-                { (
-                  <FormControl  sx={{ m: 3, minWidth: 200 }}>
-                  <InputLabel>{t('OBSERVATION.OBSERVATION_STATUS')} </InputLabel>
-                  <Select
-                    value={status}
-                    onChange={handleStatusChange}
-                    label={t('OBSERVATION.OBSERVATION_STATUS')}
-                    defaultValue={t('COMMON.ALL')} 
-                    sx={{
-                      backgroundColor:"white"
-
-                    }}
-                  >
-                    <MenuItem value={ObservationStatus.ALL}>  {t('COMMON.ALL')}  </MenuItem>
-                    <MenuItem value={ObservationStatus.NOT_STARTED}> {t('OBSERVATION.NOT_STARTED')}</MenuItem>
-                    <MenuItem value={ObservationStatus.DRAFT}>{t('OBSERVATION.INPROGRESS')}</MenuItem>
-                    <MenuItem value={ObservationStatus.COMPLETED}>{t('OBSERVATION.COMPLETED')}</MenuItem>
-                  </Select>
-                </FormControl>
-                )}
-
 
               </Box>
             
