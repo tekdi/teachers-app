@@ -45,7 +45,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   return (
     <Modal
       open={modalOpen}
-      onClose={handleCloseModal}
+      onClose={(event, reason) => {
+        if (reason !== 'backdropClick') {
+          handleCloseModal();
+        }
+      }}
       aria-labelledby="confirmation-modal-title"
       aria-describedby="confirmation-modal-description"
     >

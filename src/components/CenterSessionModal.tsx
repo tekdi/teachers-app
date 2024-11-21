@@ -44,7 +44,11 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={(event, reason) => {
+        if (reason !== 'backdropClick') {
+          handleClose();
+        }
+      }}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
