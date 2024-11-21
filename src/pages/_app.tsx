@@ -33,6 +33,8 @@ import nextI18NextConfig from '../../next-i18next.config.js';
 import { useDirection } from '../hooks/useDirection';
 import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
+import AllowNotification from '@/components/AllowNotification';
+
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -152,6 +154,7 @@ function App({ Component, pageProps }: AppProps) {
   const ltrCache = createCache({
     key: 'mui',
   });
+  const login = router.pathname === '/login';
 
   return (
     <>
@@ -194,6 +197,8 @@ function App({ Component, pageProps }: AppProps) {
               stacked={false}
             />
             <Notification />
+            {!login && <AllowNotification />}
+
           </Box>
         </CssVarsProvider>
       </CacheProvider>
