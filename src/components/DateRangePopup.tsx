@@ -271,7 +271,11 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
 
       <Modal
         open={isModalOpen}
-        onClose={handleModalClose}
+        onClose={(event, reason) => {
+          if (reason !== 'backdropClick') {
+            handleModalClose();
+          }
+        }}
         aria-labelledby="edit-profile-modal"
         aria-describedby="edit-profile-description"
       >
