@@ -403,24 +403,26 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const handleSearchClear = () => {
     setSearchWord('');
+    debouncedSearch.cancel();
     setDisplayStudentList(learnerData);
   };
 
   // debounce use for searching time period is 2 sec
-  const debouncedSearch = debounce((value: string) => {
+  const debouncedSearch = React.useRef(debounce((value: string) => {
     const filteredList = learnerData?.filter((user: any) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
-    setDisplayStudentList(filteredList);
-  }, 2);
+    setDisplayStudentList(filteredList || []);
+  }, 2)).current;
 
   // handle search student data
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchWord(event.target.value);
-    if (event.target.value.length >= 1) {
-      debouncedSearch(event.target.value);
+    const trimmedValue = event.target.value.replace(/\s{2,}/g, " ").trimStart();
+    setSearchWord(trimmedValue);
+    if (trimmedValue.length >= 1) {
+      debouncedSearch(trimmedValue);
       ReactGA.event('search-by-keyword-attendance-overview-page', {
-        keyword: event.target.value,
+        keyword: trimmedValue,
       });
 
       const telemetryInteract = {
@@ -436,6 +438,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         },
       };
       telemetryFactory.interact(telemetryInteract);
+    }else if (trimmedValue === '') {
+      debouncedSearch.cancel();
+      setDisplayStudentList(learnerData); 
     } else {
       setDisplayStudentList(learnerData);
     }

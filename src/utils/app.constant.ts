@@ -73,6 +73,7 @@ export enum cohortPrivileges {
 export enum FormContext {
   USERS = 'USERS',
   COHORTS = 'COHORTS',
+  COHORT_MEMBER = 'COHORTMEMBER'
 }
 
 export enum FormContextType {
@@ -80,6 +81,7 @@ export enum FormContextType {
   TEACHER = 'TEACHER',
   TEAM_LEADER = 'TEAM LEADER',
   COHORT = 'COHORT',
+  COHORT_MEMBER = 'COHORTMEMBER'
 }
 export enum ObservationEntityType {
   LEARNER = 'learner',

@@ -418,25 +418,30 @@ const UserAttendanceHistory = () => {
 
   const handleSearchClear = () => {
     setSearchWord('');
+    debouncedSearch.cancel();
     setDisplayStudentList(cohortMemberList);
   };
 
   // debounce use for searching time period is 2 sec
-  const debouncedSearch = debounce((value: string) => {
+  const debouncedSearch = React.useRef(debounce((value: string) => {
     const filteredList = cohortMemberList?.filter((user: any) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
-    setDisplayStudentList(filteredList);
-  }, 200);
+    setDisplayStudentList(filteredList || []);
+  }, 2)).current;
 
   // handle search student data
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchWord(event.target.value);
+    const trimmedValue = event.target.value.replace(/\s{2,}/g, " ").trimStart();
+    setSearchWord(trimmedValue);
     ReactGA.event('search-by-keyword-attendance-history-age', {
-      keyword: event.target.value,
+      keyword: trimmedValue,
     });
-    if (event.target.value.length >= 3) {
-      debouncedSearch(event.target.value);
+    if (trimmedValue.length >= 3) {
+      debouncedSearch(trimmedValue);
+    }else if (trimmedValue === '') {
+      debouncedSearch.cancel();
+      setDisplayStudentList(cohortMemberList); 
     } else {
       setDisplayStudentList(cohortMemberList);
     }

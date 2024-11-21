@@ -20,7 +20,8 @@ interface sortCardProps {
     sortByName: string,
     sortByAttendance: string,
     sortByClassesMissed: string,
-    sortByAttendanceNumber: string
+    sortByAttendanceNumber: string,
+    sortByStages: string
   ) => void;
   handleCloseModal: () => void;
   isModalOpen: boolean;
@@ -38,8 +39,17 @@ const SortingModal: React.FC<sortCardProps> = ({
   const [sortByClassesMissed, setSortByClassesMissed] = React.useState('');
   const [sortByAttendanceNumber, setSortByAttendanceNumber] =
     React.useState('');
+    const [sortByStages, setSortByStages] = React.useState('');
   const { t } = useTranslation();
   const theme = useTheme<any>();
+
+  const boardStages = [
+    { key: 'BOARD_SELECTION', value: 'board' },
+    { key: 'SUBJECTS_SELECTION', value: 'subjects' },
+    { key: 'REGISTRATION_NUMBER', value: 'registration' },
+    { key: 'FEE_PAYMENT', value: 'fee' },
+    { key: 'COMPLETED', value: 'completed' },
+  ];
 
   // handle changes names from sorting
   const handleSortByName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,6 +57,7 @@ const SortingModal: React.FC<sortCardProps> = ({
     setSortByClassesMissed('');
     setSortByAttendanceNumber('');
     setSortByName(event.target.value);
+    setSortByStages('');
   };
 
   const handleSortByAttendance = (
@@ -56,6 +67,7 @@ const SortingModal: React.FC<sortCardProps> = ({
     setSortByName('');
     setSortByClassesMissed('');
     setSortByAttendanceNumber('');
+    setSortByStages('');
   };
 
   const handleSortByAttendanceNumber = (
@@ -65,6 +77,7 @@ const SortingModal: React.FC<sortCardProps> = ({
     setSortByName('');
     setSortByClassesMissed('');
     setSortByAttendance('');
+    setSortByStages('');
   };
 
   const handleSortByClassesMissed = (
@@ -74,6 +87,18 @@ const SortingModal: React.FC<sortCardProps> = ({
     setSortByAttendance('');
     setSortByName('');
     setSortByAttendanceNumber('');
+    setSortByStages('');
+  };
+
+  const handleSortByStages = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSortByAttendanceNumber('');
+    setSortByName('');
+    setSortByClassesMissed('');
+    setSortByAttendance('');
+    setSortByName('');
+    setSortByStages(event.target.value);
   };
 
   const handleApplySort = () => {
@@ -82,7 +107,8 @@ const SortingModal: React.FC<sortCardProps> = ({
         sortByName,
         sortByAttendance,
         sortByClassesMissed,
-        sortByAttendanceNumber
+        sortByAttendanceNumber,
+        sortByStages
       );
       ReactGA.event('sort-by-applied', {
         sortingBasis: [
@@ -90,6 +116,7 @@ const SortingModal: React.FC<sortCardProps> = ({
           sortByAttendance,
           sortByClassesMissed,
           sortByAttendanceNumber,
+          sortByStages
         ],
       });
     }
@@ -110,7 +137,7 @@ const SortingModal: React.FC<sortCardProps> = ({
         }}
       />
       <Grid container sx={{ padding: '10px 20px 0' }} spacing={2}>
-        {routeName == '/attendance-overview' ? (
+        {routeName === '/attendance-overview' ? (
           <>
             <Grid item xs={12}>
               <FormControl component="fieldset" sx={{ width: '100%' }}>
@@ -183,7 +210,9 @@ const SortingModal: React.FC<sortCardProps> = ({
               </FormControl>
             </Grid>{' '}
           </>
-        ) : (
+        ) : null}
+
+        {routeName === '/attendance-history' ? (
           <Grid item xs={12} mt={1}>
             <FormControl component="fieldset" style={{ width: '100%' }}>
               <FormLabel
@@ -219,7 +248,7 @@ const SortingModal: React.FC<sortCardProps> = ({
               </RadioGroup>
             </FormControl>
           </Grid>
-        )}
+        ) : null}
         <Grid item xs={12} mt={1}>
           <FormControl component="fieldset" style={{ width: '100%' }}>
             <FormLabel
@@ -256,6 +285,39 @@ const SortingModal: React.FC<sortCardProps> = ({
             </RadioGroup>
           </FormControl>
         </Grid>
+
+        {routeName === '/board-enrollment' ? (
+          <Grid item xs={12} mt={1}>
+            <FormControl component="fieldset" style={{ width: '100%' }}>
+              <FormLabel
+                style={{ color: theme.palette.warning['400'] }}
+                component="legend"
+                className="fs-12 fw-500"
+              >
+                {t('BOARD_ENROLMENT.BY_CURRENT_STAGES')}
+              </FormLabel>
+              <RadioGroup
+                aria-labelledby="demo-controlled-radio-buttons-group"
+                aria-label="sortByStages"
+                name="sortByStages"
+                value={sortByStages}
+                onChange={handleSortByStages}
+              >
+                {boardStages.map((option) => (
+                  <FormControlLabel
+                    key={option.key}
+                    labelPlacement="start"
+                    sx={{ justifyContent: 'space-between' }}
+                    value={option.value}
+                    control={<Radio sx={{ ml: '80px' }} />}
+                    label={t(`BOARD_ENROLMENT.${option.key}`)}
+                    className="modal_label"
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+        ) : null}
       </Grid>
       <Divider
         style={{
