@@ -1,14 +1,23 @@
 import Header from '@/components/Header';
 import { Box, Button, Divider, Typography } from '@mui/material';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+// import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React from 'react';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { useDirection } from '../../../../hooks/useDirection';
+import { useDirection } from '../hooks/useDirection';
 import { logEvent } from '@/utils/googleAnalytics';
+import { BoardEnrollmentProfileProps } from '@/utils/Interfaces';
 
-const ProfileEnrolment = () => {
+const BoardEnrollmentProfile: React.FC<BoardEnrollmentProfileProps> = ({
+  learnerName,
+  centerName,
+  board,
+  subjects,
+  registrationNum,
+  feesPaidStatus,
+  setActiveStep = () => {},
+}) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
@@ -20,6 +29,10 @@ const ProfileEnrolment = () => {
       category: 'Board enrolment page',
       label: 'Back Button Clicked',
     });
+  };
+
+    const handleEditClick = () => {
+    setActiveStep(0);
   };
   return (
     <>
@@ -49,7 +62,7 @@ const ProfileEnrolment = () => {
             fontSize={'22px'}
             fontWeight={400}
           >
-            Student Name {/*will come from Api */}
+            {learnerName}
           </Typography>
           <Typography
             color={theme.palette.warning['A200']}
@@ -57,7 +70,7 @@ const ProfileEnrolment = () => {
             fontSize={'11px'}
             fontWeight={500}
           >
-            Khapari Dharmu (Chimur, Chandrapur) {/*will come from Api */}
+            {centerName}
           </Typography>
         </Box>
       </Box>
@@ -69,74 +82,44 @@ const ProfileEnrolment = () => {
           p: '16px',
           borderRadius: '16px',
           maxWidth: '60%',
+          '@media (max-width: 900px)': {
+            maxWidth: '100%',
+          },
         }}
       >
-        <Box sx={{ color: '#969088', fontSize: '16px', fontWeight: '600' }}>
-          Board
+        <Box sx={{ color: '#969088', fontSize: '12px', fontWeight: '600' }}>
+          {t('BOARD_ENROLMENT.BOARD')}
         </Box>
         <Box
           sx={{ color: '#4D4639', fontWeight: '400', fontSize: '16px', mt: 1 }}
         >
-          ICSE
+          {board}
         </Box>
         <Box mt={2}>
           <Box sx={{ color: '#969088', fontSize: '12px', fontWeight: '600' }}>
-            Subjects Enrolled
+            {t('BOARD_ENROLMENT.SUBJECTS_ENROLLED')}
           </Box>
           <Box sx={{ display: 'flex', gap: '12px', flexWrap: 'wrap', mt: 1 }}>
-            <Box
-              sx={{
-                padding: '6px 12px',
-                borderRadius: '8px',
-                border: '1px solid #DADADA',
-                color: '#4D4639',
-                fontSize: '14px',
-                fontWeight: '500',
-              }}
-            >
-              Hindi
-            </Box>
-            <Box
-              sx={{
-                padding: '6px 12px',
-                borderRadius: '8px',
-                border: '1px solid #DADADA',
-                color: '#4D4639',
-                fontSize: '14px',
-                fontWeight: '500',
-              }}
-            >
-              Science
-            </Box>
-            <Box
-              sx={{
-                padding: '6px 12px',
-                borderRadius: '8px',
-                border: '1px solid #DADADA',
-                color: '#4D4639',
-                fontSize: '14px',
-                fontWeight: '500',
-              }}
-            >
-              Social Science
-            </Box>
-            <Box
-              sx={{
-                padding: '6px 12px',
-                borderRadius: '8px',
-                border: '1px solid #DADADA',
-                color: '#4D4639',
-                fontSize: '14px',
-                fontWeight: '500',
-              }}
-            >
-              Life Skills
-            </Box>
+            {subjects.map((subject) => (
+              <Box
+                key={subject?.identifier}
+                sx={{
+                  padding: '6px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid #DADADA',
+                  color: '#4D4639',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                }}
+              >
+                {subject.name}
+              </Box>
+            ))}
           </Box>
         </Box>
         <Box mt={2}>
-          <Box sx={{ color: '#969088', fontSize: '16px', fontWeight: '600' }}>
-            Board Enrolment Number
+          <Box sx={{ color: '#969088', fontSize: '12px', fontWeight: '600' }}>
+            {t('BOARD_ENROLMENT.BOARD_ENROLLMENT_NUMBER')}
           </Box>
           <Box
             sx={{
@@ -146,12 +129,12 @@ const ProfileEnrolment = () => {
               mt: 1,
             }}
           >
-            100245673
+            {registrationNum}
           </Box>
         </Box>
         <Box mt={2}>
-          <Box sx={{ color: '#969088', fontSize: '16px', fontWeight: '600' }}>
-            Date of Registration
+          <Box sx={{ color: '#969088', fontSize: '12px', fontWeight: '600' }}>
+            {t('BOARD_ENROLMENT.EXAM_REGISTRATION_FEES_PAID')}
           </Box>
           <Box
             sx={{
@@ -161,7 +144,7 @@ const ProfileEnrolment = () => {
               mt: 1,
             }}
           >
-            24 Aug, 2024
+            {feesPaidStatus.toLocaleUpperCase()}
           </Box>
         </Box>
         <Box mt={2}>
@@ -179,20 +162,21 @@ const ProfileEnrolment = () => {
             }}
             variant="contained"
             color="primary"
+            onClick={handleEditClick}
           >
-            Edit
+            {t('BOARD_ENROLMENT.EDIT')}
           </Button>
         </Box>
       </Box>
     </>
   );
 };
-export async function getStaticProps({ locale }: any) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  };
-}
+// export async function getStaticProps({ locale }: any) {
+//   return {
+//     props: {
+//       ...(await serverSideTranslations(locale, ['common'])),
+//     },
+//   };
+// }
 
-export default ProfileEnrolment;
+export default BoardEnrollmentProfile;

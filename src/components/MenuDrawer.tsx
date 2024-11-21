@@ -81,8 +81,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 session: (
                   <>
                     {item.session} &nbsp;
-                    <span style={{ color: 'green', fontWeight: '500' }}>
-                      ({t('COMMON.NOW')})
+                    <span style={{ color: 'green', fontWeight: '500', fontSize:'12px' }}>
+                      ({t('COMMON.ACTIVE')})
                     </span>
                   </>
                 ),
@@ -452,7 +452,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           </Box>
         )}
 
-        {/* <Box sx={{ marginTop: '18px' }}>
+        <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-8"
             sx={{
@@ -480,7 +480,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           >
             {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
           </Button>
-        </Box> */}
+        </Box>
         {isActiveYear && (
           <Box sx={{ marginTop: '18px' }}>
             <Button

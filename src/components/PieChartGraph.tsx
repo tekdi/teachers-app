@@ -9,15 +9,26 @@ interface DataItem {
   value: number;
 }
 
-const PieChartGraph = () => {
+interface PieChartGraphProps {
+  stagesCount: {
+    board: number;
+    subjects: number;
+    registration: number;
+    fees: number;
+    completed: number; //completedCount = TotalCount - (board+subject+registration+fees) count
+  };
+}
+
+const PieChartGraph: React.FC<PieChartGraphProps> = ({ stagesCount }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+
   const data: DataItem[] = [
-    { name: t('BOARD_ENROLMENT.BOARD_SELECTION'), value: 5 },
-    { name: t('BOARD_ENROLMENT.SUBJECTS_SELECTION'), value: 10 },
-    { name: t('BOARD_ENROLMENT.REGISTRATION_COMPLETED'), value: 5 },
-    { name: t('BOARD_ENROLMENT.FEE_PAYMENT'), value: 2 },
-    { name: t('BOARD_ENROLMENT.COMPLETED'), value: 2 },
+    { name: t('BOARD_ENROLMENT.BOARD_SELECTION'), value: stagesCount.board },
+    { name: t('BOARD_ENROLMENT.SUBJECTS_SELECTION'), value: stagesCount.subjects },
+    { name: t('BOARD_ENROLMENT.REGISTRATION_NUMBER'), value: stagesCount.registration },
+    { name: t('BOARD_ENROLMENT.FEE_PAYMENT'), value: stagesCount.fees },
+    { name: t('BOARD_ENROLMENT.COMPLETED'), value: stagesCount.completed },
   ];
 
   const COLORS = ['#8000FE', '#FF8042', '#FFBB28', '#78590C', '#30CA2D']; //colors not in custom theme
@@ -49,8 +60,8 @@ const PieChartGraph = () => {
       </span>
     );
   };
+
   return (
-    <>
       <Box
         sx={{
           background: '#FFF8F2',
@@ -126,7 +137,6 @@ const PieChartGraph = () => {
           </ResponsiveContainer>
         </Box>
       </Box>
-    </>
   );
 };
 

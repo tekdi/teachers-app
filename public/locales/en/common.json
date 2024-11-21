@@ -139,7 +139,8 @@
     "NO_CENTER_FOUND": "No Center found",
     "FILTER_BY": "Filter By",
     "ALL": "All",
-    "NOW": "Now"
+    "ACTIVE": "Active",
+    "NA": "N.A."
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -579,16 +580,24 @@
     "BOARD_ENROLLMENT": "Board Enrollment",
     "BOARD_SELECTION": "Board Selection",
     "SUBJECTS_SELECTION": "Subjects Selection",
-    "REGISTRATION_COMPLETED": "Registration Completed",
     "DROPPED_OUT": " Dropped Out",
     "FEE_PAYMENT": "Fee Payment",
-    "BOARD_ENROLLMENT_NUMBER": "Board Enrolment Number",
-    "EXAM_FEES_PAID": "  Exam Fees Paid? (optional)",
+    "BOARD_ENROLLMENT_NUMBER": "Board Enrollment Number",
+    "EXAM_FEES_PAID": "Exam Fees Paid?",
     "SAVE_AND_NEXT": "Save and Next",
     "TO_SAVE_YOUR_PROGRESS": "“Save & Next” to save your progress. You can come back and change it anytime.",
     "MANDATORY": "Mandatory for {{FeesStepBoards}} only. For other Boards, this step is automatically marked completed. Please click on Save to submit the data.",
     "COMPLETED": "Completed",
-    "MARK_AS_COMPLETE": "Mark as Complete"
+    "MARK_AS_COMPLETE": "Mark as Complete",
+    "BY_CURRENT_STAGES": "By Current Stages",
+    "REGISTRATION_NUMBER": "Registration Number",
+    "TOTAL_LEARNERS": "Total Learners",
+    "BOARD": "Board",
+    "CHOOSE_BOARD": "Choose which Board the Learner is going to be enrolled in",
+    "CHOOSE_SUBJECT": "Choose which subjects the learner is enrolling for",
+    "SUBJECTS_ENROLLED":"Subjects Enrolled",
+    "EXAM_REGISTRATION_FEES_PAID":"Exam Registration Fees Paid?",
+    "EDIT": "Edit"
   },
   "OBSERVATION": {
     "OBSERVATION_START": "Start Observation",
