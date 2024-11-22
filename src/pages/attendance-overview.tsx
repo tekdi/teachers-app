@@ -408,12 +408,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   };
 
   // debounce use for searching time period is 2 sec
-  const debouncedSearch = React.useRef(debounce((value: string) => {
+  const debouncedSearch = debounce((value: string) => {
     const filteredList = learnerData?.filter((user: any) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
     setDisplayStudentList(filteredList || []);
-  }, 2)).current;
+  }, 200);
 
   // handle search student data
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -127,7 +127,7 @@ const SortingModal: React.FC<sortCardProps> = ({
     <ModalComponent
       open={isModalOpen}
       onClose={handleCloseModal}
-      heading={t('COMMON.SORT_BY')}
+      heading={routeName === '/board-enrollment' ? t('COMMON.FILTERS') : t('COMMON.SORT_BY')}
       handleApplySort={handleApplySort}
       btnText={t('COMMON.APPLY')}
     >
@@ -256,7 +256,7 @@ const SortingModal: React.FC<sortCardProps> = ({
               component="legend"
               className="fs-12 fw-500"
             >
-              {t('COMMON.NAMES')}
+               {routeName === '/board-enrollment' ? t('COMMON.SORT_BY_NAMES') : t('COMMON.NAMES')}
             </FormLabel>
             <RadioGroup
               aria-labelledby="demo-controlled-radio-buttons-group"
@@ -294,7 +294,7 @@ const SortingModal: React.FC<sortCardProps> = ({
                 component="legend"
                 className="fs-12 fw-500"
               >
-                {t('BOARD_ENROLMENT.BY_CURRENT_STAGES')}
+                {t('BOARD_ENROLMENT.FILTER_BY_CURRENT_STAGES')}
               </FormLabel>
               <RadioGroup
                 aria-labelledby="demo-controlled-radio-buttons-group"
@@ -303,7 +303,7 @@ const SortingModal: React.FC<sortCardProps> = ({
                 value={sortByStages}
                 onChange={handleSortByStages}
               >
-                {boardStages.map((option) => (
+                {boardStages?.map((option) => (
                   <FormControlLabel
                     key={option.key}
                     labelPlacement="start"

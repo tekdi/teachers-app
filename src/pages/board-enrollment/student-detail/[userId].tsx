@@ -689,7 +689,6 @@ const BoardEnrollmentDetail = () => {
                           />
                         )}
                       </RadioGroup>
-                      ;
                     </FormControl>
                   </Box>
                 )}
