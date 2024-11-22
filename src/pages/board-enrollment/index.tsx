@@ -173,8 +173,8 @@ const BoardEnrollment = () => {
         };
 
         const resultData = extractFieldData(formData);
-        console.log('memberdata!!', formattedMembers)
-        console.log(`formData!!`, resultData);
+        console.log('memberdata', formattedMembers);
+        console.log(`formData`, resultData);
         const updatedMemberData = updateFormattedMember(
           formattedMembers,
           resultData
@@ -263,23 +263,23 @@ const BoardEnrollment = () => {
         )
         .map((formField) => formField.fieldId)
     );
-  
+
     const formDataFieldMap = new Map<string, Field>(
       formData.map((field) => [field.fieldId, field])
     );
-  
+
     // Update each member's customField array
     formattedMember.forEach((member) => {
       // Convert customField array to a Map for easy fieldId access
       const customFieldMap = new Map<string, CustomField>(
         member.customField.map((field) => [field.fieldId, field])
       );
-  
+
       // Ensure all fields from formData are in customField
       member.customField = Array.from(formDataFieldMap.values()).map(
         (formField) => {
           const existingField = customFieldMap.get(formField.fieldId);
-  
+
           const field: CustomField = {
             fieldId: formField.fieldId,
             label: formField.label,
@@ -288,7 +288,7 @@ const BoardEnrollment = () => {
             sourceDetails: formField.sourceDetails || null,
             order: formField.order || null,
           };
-  
+
           // Parse JSON if the fieldId is in parseFields
           if (parseFields.has(field.fieldId)) {
             try {
@@ -304,10 +304,9 @@ const BoardEnrollment = () => {
         }
       );
     });
-  
+
     return formattedMember;
   };
-  
 
   const handleOpen = (reason: string | null) => {
     setStatusReason(reason);
@@ -319,7 +318,7 @@ const BoardEnrollment = () => {
     setStatusReason(null);
   };
   const handleOpenModal = () => {
-    setModalOpen(true);   
+    setModalOpen(true);
   };
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -340,7 +339,6 @@ const BoardEnrollment = () => {
     );
     setDisplayStudentList(filteredList || []);
   }, 200);
-    
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const trimmedValue = event.target.value.replace(/\s{2,}/g, ' ').trimStart();
@@ -381,7 +379,7 @@ const BoardEnrollment = () => {
   ) => {
     handleCloseModal();
     let filteredData = [...boardEnrollmentList];
-  
+
     // Sorting by name
     switch (sortByName) {
       case 'asc':
@@ -393,7 +391,7 @@ const BoardEnrollment = () => {
       default:
         break;
     }
-  
+
     // Filtering by stages
     switch (sortByStages) {
       case 'board':
@@ -414,7 +412,7 @@ const BoardEnrollment = () => {
       default:
         break;
     }
-  
+
     setDisplayStudentList(filteredData);
   };
 
@@ -687,18 +685,20 @@ const BoardEnrollment = () => {
                 </Box>
               </Box>
             </CenterSessionModal>
-
-            <SortingModal
-              isModalOpen={modalOpen}
-              handleCloseModal={handleCloseModal}
-              handleSorting={handleSorting}
-              routeName={pathname}
-            />
           </>
         ) : (
           <NoDataFound />
         )}
       </Grid>
+
+      {modalOpen && (
+        <SortingModal
+          isModalOpen={modalOpen}
+          handleCloseModal={handleCloseModal}
+          handleSorting={handleSorting}
+          routeName={pathname}
+        />
+      )}
     </>
   );
 };
