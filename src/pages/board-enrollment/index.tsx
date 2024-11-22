@@ -157,6 +157,9 @@ const BoardEnrollment = () => {
       console.log('centerDetails', formattedMembers);
       // setDisplayStudentList(formattedMembers);
       setTotalLearners(formattedMembers.length);
+      if (formattedMembers.length === 0){
+        setDisplayStudentList([])
+      }
 
       if (formattedMembers.length > 0) {
         const formData = await fetchFormData();
@@ -544,7 +547,7 @@ const BoardEnrollment = () => {
         </Grid>
       </Box>
 
-      <PieChartGraph stagesCount={stagesCount} />
+      {totalLearners !== 0 ? <PieChartGraph stagesCount={stagesCount} /> : null}
 
       <Box
         color={theme.colorSchemes.dark.palette.warning.A400}
@@ -556,6 +559,7 @@ const BoardEnrollment = () => {
         {t('BOARD_ENROLMENT.TOTAL_LEARNERS')}: {totalLearners}
       </Box>
       <Grid container sx={{ my: 4, px: '16px' }} spacing={2}>
+          
         {displayStudentList.length >= 1 ? (
           <>
             {displayStudentList?.map((item: any, index: any) => {
