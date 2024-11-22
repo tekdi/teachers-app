@@ -319,7 +319,7 @@ const BoardEnrollment = () => {
     setStatusReason(null);
   };
   const handleOpenModal = () => {
-    setModalOpen(true);
+    setModalOpen(true);   
   };
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -334,14 +334,13 @@ const BoardEnrollment = () => {
     setDisplayStudentList(filteredList);
   };
 
-  const debouncedSearch = React.useRef(
-    debounce((value: string) => {
-      const filteredList = boardEnrollmentList?.filter((user: any) =>
-        user.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setDisplayStudentList(filteredList || []);
-    }, 2)
-  ).current;
+  const debouncedSearch = debounce((value: string) => {
+    const filteredList = boardEnrollmentList?.filter((user: any) =>
+      user.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setDisplayStudentList(filteredList || []);
+  }, 200);
+    
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const trimmedValue = event.target.value.replace(/\s{2,}/g, ' ').trimStart();
@@ -381,95 +380,42 @@ const BoardEnrollment = () => {
     sortByStages: string
   ) => {
     handleCloseModal();
-    let sortedData = [...boardEnrollmentList];
-
+    let filteredData = [...boardEnrollmentList];
+  
     // Sorting by name
     switch (sortByName) {
       case 'asc':
-        sortedData.sort((a, b) => a.name.localeCompare(b.name));
+        filteredData.sort((a, b) => a.name.localeCompare(b.name));
         break;
       case 'desc':
-        sortedData.sort((a, b) => b.name.localeCompare(a.name));
+        filteredData.sort((a, b) => b.name.localeCompare(a.name));
         break;
-    }
-
-    // Sorting by stages
-    switch (sortByStages) {
-      case 'completed':
-        sortedData.sort((a, b) => {
-          if (
-            a.completedStep === 'completed' &&
-            b.completedStep !== 'completed'
-          ) {
-            return -1;
-          }
-          if (
-            b.completedStep === 'completed' &&
-            a.completedStep !== 'completed'
-          ) {
-            return 1;
-          }
-          return 0;
-        });
-        break;
-
-      case 'board':
-        // All records with completedStep === 0 should come at the top
-        sortedData.sort((a, b) => {
-          if (a.completedStep === 0 && b.completedStep !== 0) {
-            return -1;
-          }
-          if (b.completedStep === 0 && a.completedStep !== 0) {
-            return 1;
-          }
-          return 0;
-        });
-        break;
-
-      case 'subjects':
-        // All records with completedStep === 1 should come at the top
-        sortedData.sort((a, b) => {
-          if (a.completedStep === 1 && b.completedStep !== 1) {
-            return -1;
-          }
-          if (b.completedStep === 1 && a.completedStep !== 1) {
-            return 1;
-          }
-          return 0;
-        });
-        break;
-
-      case 'registration':
-        // All records with completedStep === 2 should come at the top
-        sortedData.sort((a, b) => {
-          if (a.completedStep === 2 && b.completedStep !== 2) {
-            return -1;
-          }
-          if (b.completedStep === 2 && a.completedStep !== 2) {
-            return 1;
-          }
-          return 0;
-        });
-        break;
-
-      case 'fee':
-        // All records with completedStep === 3 should come at the top
-        sortedData.sort((a, b) => {
-          if (a.completedStep === 3 && b.completedStep !== 3) {
-            return -1;
-          }
-          if (b.completedStep === 3 && a.completedStep !== 3) {
-            return 1;
-          }
-          return 0;
-        });
-        break;
-
       default:
         break;
     }
-
-    setDisplayStudentList(sortedData);
+  
+    // Filtering by stages
+    switch (sortByStages) {
+      case 'board':
+        filteredData = filteredData.filter((item) => item.completedStep === 0);
+        break;
+      case 'subjects':
+        filteredData = filteredData.filter((item) => item.completedStep === 1);
+        break;
+      case 'registration':
+        filteredData = filteredData.filter((item) => item.completedStep === 2);
+        break;
+      case 'fee':
+        filteredData = filteredData.filter((item) => item.completedStep === 3);
+        break;
+      case 'completed':
+        filteredData = filteredData.filter((item) => item.completedStep === 4);
+        break;
+      default:
+        break;
+    }
+  
+    setDisplayStudentList(filteredData);
   };
 
   return (

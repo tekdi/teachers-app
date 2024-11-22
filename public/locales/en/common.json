@@ -140,7 +140,8 @@
     "FILTER_BY": "Filter By",
     "ALL": "All",
     "ACTIVE": "Active",
-    "NA": "N.A."
+    "NA": "N.A.",
+    "SORT_BY_NAMES": "Sort by Names"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -589,7 +590,7 @@
     "MANDATORY": "Mandatory for {{FeesStepBoards}} only. For other Boards, this step is automatically marked completed. Please click on Save to submit the data.",
     "COMPLETED": "Completed",
     "MARK_AS_COMPLETE": "Mark as Complete",
-    "BY_CURRENT_STAGES": "By Current Stages",
+    "FILTER_BY_CURRENT_STAGES": "Filter by Current Stages",
     "REGISTRATION_NUMBER": "Registration Number",
     "TOTAL_LEARNERS": "Total Learners",
     "BOARD": "Board",
