@@ -98,7 +98,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
       console.log('Form data submitted:', formData);
       const parentId = localStorage.getItem('blockParentId');
       const cohortDetails: CohortDetails = {
-        name: formData.name,
+        name: (formData.name).toLowerCase(),
         type: 'COHORT',
         parentId: parentId,
         customFields: [],
@@ -149,7 +149,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
         ).values()
       );
       const cohortData = await createCohort(cohortDetails);
-      if (cohortData.hasOwnProperty('cohortId')) {
+      if (cohortData?.hasOwnProperty('cohortId')) {
         showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
         const telemetryInteract = {
           context: {

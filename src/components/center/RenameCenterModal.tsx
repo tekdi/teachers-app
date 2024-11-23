@@ -18,6 +18,7 @@ import React, { useState } from 'react';
 import { showToastMessage } from '../Toastify';
 import { telemetryFactory } from '@/utils/telemetry';
 import { Telemetry } from '@/utils/app.constant';
+import axios from 'axios';
 
 interface CreateBlockModalProps {
   open: boolean;
@@ -66,30 +67,40 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
 
   const handleCreateButtonClick = async () => {
     if (error) return;
+    try {
+      console.log('Entered Rename Name:', centerName);
+      const name = centerName.trim();
+      await renameFacilitator(cohortId, name);
+      setReloadState(true);
+      showToastMessage(t('CENTERS.CENTER_RENAMED'), 'success');
 
-    console.log('Entered Rename Name:', centerName);
-    const name = centerName.trim();
-    await renameFacilitator(cohortId, name);
-    setReloadState(true);
-    showToastMessage(t('CENTERS.CENTER_RENAMED'), 'success');
+      const windowUrl = window.location.pathname;
+      const cleanedUrl = windowUrl.replace(/^\//, '');
+      const telemetryInteract = {
+        context: {
+          env: 'teaching-center',
+          cdata: [],
+        },
+        edata: {
+          id: 'rename-center-successfully',
+          type: Telemetry.CLICK,
+          subtype: '',
+          pageid: cleanedUrl,
+        },
+      };
+      telemetryFactory.interact(telemetryInteract);
+      handleClose(name);
+    } catch (error) {
+      const name = centerName.trim();
 
-    const windowUrl = window.location.pathname;
-    const cleanedUrl = windowUrl.replace(/^\//, '');
-    const telemetryInteract = {
-      context: {
-        env: 'teaching-center',
-        cdata: [],
-      },
-      edata: {
-        id: 'rename-center-successfully',
-        type: Telemetry.CLICK,
-        subtype: '',
-        pageid: cleanedUrl,
-      },
-    };
-    telemetryFactory.interact(telemetryInteract);
-    handleClose(name);
-  };
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 409) {
+          showToastMessage(t('CENTERS.DUPLICATE_CENTER'), 'info');
+        }
+      }
+      handleClose(name);
+    }
+  }
 
   return (
     <Modal open={open} onClose={() => handleClose('')} closeAfterTransition>
