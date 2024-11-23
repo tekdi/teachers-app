@@ -1548,7 +1548,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               marginBottom: '12px',
                             }}
                           >
-                            {t('COMMON.NO_SESSIONS_SCHEDULED')}asass
+                            {t('COMMON.NO_SESSIONS_SCHEDULED')}
                           </Box>
                         )}
                       </Box>
