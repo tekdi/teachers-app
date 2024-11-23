@@ -56,6 +56,15 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   };
 
   React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const classData: string | null = localStorage.getItem('className');
+      if (classData) {
+        setSelectedValue(classData);
+      }
+    }
+  }, []);
+
+  React.useEffect(() => {
     if (centers) {
       setCheckedCenters(centers?.map((center) => center?.name));
     }

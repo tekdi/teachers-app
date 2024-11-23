@@ -9,7 +9,7 @@ import {
   filterAndMapAssociationsNew,
   findCommonAssociations,
   getAssociationsByCodeNew,
-  getOptionsByCategory
+  getOptionsByCategory,
 } from '@/utils/Helper';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { CoursePlannerData, ICohort } from '@/utils/Interfaces';
@@ -22,6 +22,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -73,12 +74,15 @@ const CoursePlanner = () => {
   const [manipulatedCohortData, setManipulatedCohortData] =
     useState<Array<ICohort>>(cohortsData);
 
-  const handleChange = (event: any) => {
-    setValue(event.target.value);
-    setType(event.target.value);
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    const newValue = event.target.value as string;
+    if (newValue !== value) {
+      setValue(newValue);
+      setType(newValue);
+    }
     const windowUrl = window.location.pathname;
     const cleanedUrl = windowUrl.replace(/^\//, '');
-    const env = cleanedUrl.split("/")[0];
+    const env = cleanedUrl.split('/')[0];
 
     const telemetryInteract = {
       context: {
@@ -109,11 +113,6 @@ const CoursePlanner = () => {
       undefined,
       { shallow: true }
     );
-  };
-
-  const handleCohortChange = (event: any) => {
-    setSelectedValue(event.target.value);
-    addQueryParams({ center: event.target.value });
   };
 
   useEffect(() => {
@@ -507,7 +506,7 @@ const CoursePlanner = () => {
     };
 
     fetchTaxonomyResults();
-  }, [value, selectedValue]);
+  }, [value, subjects]);
 
   const isStateEmpty = !tStore.state;
   const isBoardEmpty = !tStore.board;
@@ -658,8 +657,7 @@ const CoursePlanner = () => {
                                 position: 'relative',
                                 display: 'inline-flex',
                               }}
-                            >
-                            </Box>
+                            ></Box>
 
                             <Box
                               sx={{
