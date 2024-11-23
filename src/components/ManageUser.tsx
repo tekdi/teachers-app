@@ -878,7 +878,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               <Box mt={1.5} mb={1.5}>
                 <Typography>
                   {t('CENTERS.THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT')}{' '}
-                  <strong>{removeCohortNames}</strong>
+                  <strong>{toPascalCase(removeCohortNames)}</strong>
                   <br />
                   {t('CENTERS.PLEASE_REMOVE_THE_USER_FROM_COHORT')}
                 </Typography>
