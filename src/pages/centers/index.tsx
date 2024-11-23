@@ -119,6 +119,7 @@ const CentersPage = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
+      localStorage.removeItem('overallCommonSubjects');
       setType('');
       if (role === Role.TEAM_LEADER) {
         setIsTeamLeader(true);
