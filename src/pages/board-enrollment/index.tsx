@@ -159,6 +159,7 @@ const BoardEnrollment = () => {
       setTotalLearners(formattedMembers.length);
       if (formattedMembers.length === 0) {
         setDisplayStudentList([]);
+        setBoardEnrollmentList([]);
       }
 
       if (formattedMembers.length > 0) {
