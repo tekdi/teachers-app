@@ -235,6 +235,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     if (cohortsData[0]?.cohortId) {
       localStorage.setItem('classId', cohortsData[0]?.cohortId);
+      localStorage.removeItem('overallCommonSubjects');
     } else {
       localStorage.setItem('classId', '');
     }
@@ -247,7 +248,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       if (token) {
         setIsAuthenticated(true);
         setUserId(storedUserId);
-      
+
         if (!isActiveYear) {
           router.push('/centers');
         }

@@ -6,7 +6,12 @@ import ManageUser from '@/components/ManageUser';
 import { showToastMessage } from '@/components/Toastify';
 import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
-import { CenterType, Role, Telemetry , TelemetryEventType} from '@/utils/app.constant';
+import {
+  CenterType,
+  Role,
+  Telemetry,
+  TelemetryEventType,
+} from '@/utils/app.constant';
 import { accessGranted, toPascalCase } from '@/utils/Helper';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { ArrowDropDown, Clear, Search } from '@mui/icons-material';
@@ -55,7 +60,7 @@ const CentersPage = () => {
   const [centerType, setCenterType] = useState<'regular' | 'remote' | ''>('');
   const [appliedFilters, setAppliedFilters] = useState({
     centerType: '',
-    sortOrder: ''
+    sortOrder: '',
   });
   const [openCreateCenterModal, setOpenCreateCenterModal] =
     React.useState(false);
@@ -75,7 +80,8 @@ const CentersPage = () => {
         cdata: [],
       },
       edata: {
-        id:newValue===2? 'change-tab-to-facilitator':'change-tab-to-center',
+        id:
+          newValue === 2 ? 'change-tab-to-facilitator' : 'change-tab-to-center',
         type: Telemetry.CLICK,
         subtype: '',
         pageid: 'centers',
@@ -113,6 +119,7 @@ const CentersPage = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
+      localStorage.removeItem('overallCommonSubjects');
       setType('');
       if (role === Role.TEAM_LEADER) {
         setIsTeamLeader(true);
@@ -134,7 +141,7 @@ const CentersPage = () => {
         cdata: [],
       },
       edata: {
-        id:'search-centers',
+        id: 'search-centers',
         type: Telemetry.SEARCH,
         subtype: '',
         pageid: 'centers',
@@ -236,14 +243,14 @@ const CentersPage = () => {
 
   const getFilteredCenters = useMemo(() => {
     let filteredCenters = centerData;
-  
+
     // Apply search filter
     if (searchInput) {
       filteredCenters = filteredCenters.filter((center) =>
         center.cohortName.toLowerCase().includes(searchInput.toLowerCase())
       );
     }
-  
+
     // Apply center type filter
     if (centerType) {
       filteredCenters = filteredCenters.filter(
@@ -252,21 +259,21 @@ const CentersPage = () => {
           center.centerType.toLowerCase() === centerType.toLowerCase()
       );
     }
-  
+
     // Apply sorting
     if (sortOrder === 'asc') {
       filteredCenters.sort((a, b) => a.cohortName.localeCompare(b.cohortName));
     } else if (sortOrder === 'desc') {
       filteredCenters.sort((a, b) => b.cohortName.localeCompare(a.cohortName));
     }
-  
+
     return filteredCenters;
   }, [centerData, searchInput, appliedFilters]);
-  
+
   useEffect(() => {
     setFilteredCenters(getFilteredCenters);
   }, [getFilteredCenters]);
-  
+
   const handleFilterApply = () => {
     setAppliedFilters({ centerType, sortOrder });
     setFilteredCenters(getFilteredCenters);
@@ -278,13 +285,14 @@ const CentersPage = () => {
         cdata: [],
       },
       edata: {
-        id:'apply-filter',
+        id: 'apply-filter',
         type: TelemetryEventType.RADIO,
         subtype: '',
         pageid: 'centers',
       },
     };
-    telemetryFactory.interact(telemetryInteract);  };
+    telemetryFactory.interact(telemetryInteract);
+  };
 
   const handleCreateCenterClose = () => {
     setOpenCreateCenterModal(false);
@@ -471,46 +479,48 @@ const CentersPage = () => {
                   'showCreateCenterButton',
                   accessControl,
                   userRole
-                ) && isActiveYear && (
-                  <Box mt={'18px'} px={'18px'}>
-                    <Button
-                      sx={{
-                        border: '1px solid #1E1B16',
-                        borderRadius: '100px',
-                        height: '40px',
-                        px: '20px',
-                        color: theme.palette.error.contrastText,
-                        '& .MuiButton-endIcon': {
-                          marginLeft: isRTL
-                            ? '0px !important'
-                            : '8px !important',
-                          marginRight: isRTL
-                            ? '8px !important'
-                            : '-2px !important',
-                        },
-                      }}
-                      className="text-1E"
-                      endIcon={<AddIcon />}
-                      onClick={() => {setOpenCreateCenterModal(true)
-                        const telemetryInteract = {
-                          context: {
-                            env: 'teaching-center',
-                            cdata: [],
+                ) &&
+                  isActiveYear && (
+                    <Box mt={'18px'} px={'18px'}>
+                      <Button
+                        sx={{
+                          border: '1px solid #1E1B16',
+                          borderRadius: '100px',
+                          height: '40px',
+                          px: '20px',
+                          color: theme.palette.error.contrastText,
+                          '& .MuiButton-endIcon': {
+                            marginLeft: isRTL
+                              ? '0px !important'
+                              : '8px !important',
+                            marginRight: isRTL
+                              ? '8px !important'
+                              : '-2px !important',
                           },
-                          edata: {
-                            id:'click-on-create-center',
-                            type: Telemetry.CLICK,
-                            subtype: '',
-                            pageid: 'centers',
-                          },
-                        };
-                        telemetryFactory.interact(telemetryInteract);
-                      }}
-                    >
-                      {t('BLOCKS.CREATE_NEW')}
-                    </Button>
-                  </Box>
-                )}
+                        }}
+                        className="text-1E"
+                        endIcon={<AddIcon />}
+                        onClick={() => {
+                          setOpenCreateCenterModal(true);
+                          const telemetryInteract = {
+                            context: {
+                              env: 'teaching-center',
+                              cdata: [],
+                            },
+                            edata: {
+                              id: 'click-on-create-center',
+                              type: Telemetry.CLICK,
+                              subtype: '',
+                              pageid: 'centers',
+                            },
+                          };
+                          telemetryFactory.interact(telemetryInteract);
+                        }}
+                      >
+                        {t('BLOCKS.CREATE_NEW')}
+                      </Button>
+                    </Box>
+                  )}
               </Grid>
 
               {openCreateCenterModal && (
