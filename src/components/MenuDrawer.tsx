@@ -81,7 +81,13 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 session: (
                   <>
                     {item.session} &nbsp;
-                    <span style={{ color: 'green', fontWeight: '500', fontSize:'12px' }}>
+                    <span
+                      style={{
+                        color: 'green',
+                        fontWeight: '500',
+                        fontSize: '12px',
+                      }}
+                    >
                       ({t('COMMON.ACTIVE')})
                     </span>
                   </>
@@ -452,35 +458,41 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           </Box>
         )}
 
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14 joyride-step-8"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isBoard ? theme.palette.primary.main : 'transparent',
-              gap: '10px',
-              padding: isBoard ? '16px 18px !important' : '0px 18px !important',
-              color: isBoard ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isBoard ? '600' : 500,
-              '&:hover': {
+        {isActiveYear && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14 joyride-step-8"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isBoard
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-              marginTop: '15px',
-            }}
-            startIcon={
-              <Image src={board} alt="badge Icon" width={24} height={24} />
-            }
-            onClick={() => {
-              router.push(`/board-enrollment`);
-            }}
-          >
-            {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
-          </Button>
-        </Box>
+                gap: '10px',
+                padding: isBoard
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isBoard ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isBoard ? '600' : 500,
+                '&:hover': {
+                  background: isBoard
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              startIcon={
+                <Image src={board} alt="badge Icon" width={24} height={24} />
+              }
+              onClick={() => {
+                router.push(`/board-enrollment`);
+              }}
+            >
+              {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
+            </Button>
+          </Box>
+        )}
         {isActiveYear && (
           <Box sx={{ marginTop: '18px' }}>
             <Button
