@@ -29,12 +29,14 @@ import {
   findCommon,
   getCohortNameById,
   getOptionsByCategory,
+  toPascalCase,
 } from '@/utils/Helper';
 import boardEnrollmentStore from '@/store/boardEnrollmentStore';
 import { BoardEnrollmentData } from '@/utils/Interfaces';
 import manageUserStore from '@/store/manageUserStore';
 import useStore from '@/store/store';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+import ConfirmationModal from '@/components/ConfirmationModal';
 
 interface BoardEnrollment {
   boardEnrollmentData: {
@@ -60,13 +62,14 @@ const BoardEnrollmentDetail = () => {
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const [cohortId, setCohortId] = React.useState('');
   const [subjectOptions, setSubjectOptions] = React.useState<any[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const [names, setNames] = useState({
     cohortName: '',
     blockName: '',
     districtName: '',
   });
-  const cohortDetails = `${names?.cohortName} ${names?.blockName} ${names?.districtName}`;
+  const cohortDetails = `${names?.cohortName} (${names?.blockName}, ${names?.districtName})`;
   const labelMapping: { [key: number]: string } = {
     0: 'BOARD',
     1: 'SUBJECTS',
@@ -75,6 +78,7 @@ const BoardEnrollmentDetail = () => {
   };
 
   const [formData, setFormData] = React.useState<Record<string, any>>({});
+  const [formDataUpdated, setFormDataUpdated] = useState(false);
 
   const updateFormData = (userData: any) => {
     if (!userData?.customField) return;
@@ -118,7 +122,7 @@ const BoardEnrollmentDetail = () => {
     if (formData.BOARD !== 'NIOS') {
       setFormData((prev) => ({ ...prev, FEES: 'na' }));
     }
-  }, [formData.BOARD, formData.FEES, activeStep===3]);
+  }, [formData.BOARD, formData.FEES, activeStep === 3]);
 
   useEffect(() => {
     if (boardData && typeof userId === 'string') {
@@ -142,9 +146,9 @@ const BoardEnrollmentDetail = () => {
         const cohortName = getCohortNameById(cohortData, cohortId);
         setCohortId(cohortId);
         setNames({
-          cohortName: cohortName || '',
-          blockName: blockName,
-          districtName: districtName,
+          cohortName: toPascalCase(cohortName) || '',
+          blockName: toPascalCase(blockName) || '',
+          districtName: toPascalCase(districtName),
         });
       }
 
@@ -244,6 +248,20 @@ const BoardEnrollmentDetail = () => {
     handleBMGS();
   }, []);
 
+  const getMessage = () => {
+    if (modalOpen) return t('BOARD_ENROLMENT.SURE_GO_BACK');
+    return '';
+  };
+
+  const handleCloseModel = () => {
+    setModalOpen(false);
+  };
+
+  const confirmBack = () => {
+    setModalOpen(false);
+    handleBack();
+  };
+
   const handleBackEvent = () => {
     window.history.back();
     logEvent({
@@ -254,6 +272,7 @@ const BoardEnrollmentDetail = () => {
   };
 
   const handleNext = () => {
+    setFormDataUpdated(false);
     setActiveStep((prevActiveStep) => {
       const nextStep = prevActiveStep < 4 ? prevActiveStep + 1 : prevActiveStep;
       if (nextStep > stageCount) {
@@ -345,6 +364,14 @@ const BoardEnrollmentDetail = () => {
         return !formData.FEES;
       default:
         return false;
+    }
+  };
+
+  const handleOpenModal = () => {
+    if (formDataUpdated) {
+      setModalOpen(true);
+    } else {
+      handleBack();
     }
   };
 
@@ -477,6 +504,7 @@ const BoardEnrollmentDetail = () => {
                                     'Updated formData:',
                                     updatedFormData
                                   );
+                                  setFormDataUpdated(true);
                                   return updatedFormData;
                                 });
                               }}
@@ -536,6 +564,7 @@ const BoardEnrollmentDetail = () => {
                                     ? [...subjectOptions]
                                     : [],
                                 });
+                                setFormDataUpdated(true);
                               }}
                               sx={{
                                 color: theme.palette.warning['300'],
@@ -583,6 +612,7 @@ const BoardEnrollmentDetail = () => {
                                         (sub: { name: any }) =>
                                           sub.name !== subject.name
                                       );
+                                  setFormDataUpdated(true);
 
                                   setFormData({
                                     ...formData,
@@ -614,6 +644,7 @@ const BoardEnrollmentDetail = () => {
                       value={formData.REGISTRATION}
                       onChange={(e) => {
                         let value = e.target.value;
+                        setFormDataUpdated(true);
                         // Remove multiple spaces and allow only one space at the end
                         value = value
                           .replace(/\s+/g, ' ')
@@ -661,9 +692,10 @@ const BoardEnrollmentDetail = () => {
                         aria-labelledby="demo-row-radio-buttons-group-label"
                         name="row-radio-buttons-group"
                         value={formData.FEES}
-                        onChange={(e) =>
-                          setFormData({ ...formData, FEES: e.target.value })
-                        }
+                        onChange={(e) => {
+                          setFormData({ ...formData, FEES: e.target.value });
+                          setFormDataUpdated(true);
+                        }}
                       >
                         {formData.BOARD === 'NIOS' ? (
                           <>
@@ -721,7 +753,7 @@ const BoardEnrollmentDetail = () => {
                     }}
                     className="one-line-text"
                     variant="outlined"
-                    onClick={handleBack}
+                    onClick={handleOpenModal}
                     disabled={activeStep === 0}
                   >
                     {t('GUIDE_TOUR.PREVIOUS')}
@@ -748,6 +780,17 @@ const BoardEnrollmentDetail = () => {
                   </Button>
                 </Box>
                 {/* Button end here  */}
+
+                <ConfirmationModal
+                  message={getMessage()}
+                  handleAction={confirmBack}
+                  buttonNames={{
+                    primary: t('COMMON.YES'),
+                    secondary: t('COMMON.CANCEL'),
+                  }}
+                  handleCloseModal={handleCloseModel}
+                  modalOpen={modalOpen}
+                />
               </Box>
             </Box>
           </Box>

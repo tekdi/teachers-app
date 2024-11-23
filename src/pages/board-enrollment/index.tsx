@@ -157,8 +157,8 @@ const BoardEnrollment = () => {
       console.log('centerDetails', formattedMembers);
       // setDisplayStudentList(formattedMembers);
       setTotalLearners(formattedMembers.length);
-      if (formattedMembers.length === 0){
-        setDisplayStudentList([])
+      if (formattedMembers.length === 0) {
+        setDisplayStudentList([]);
       }
 
       if (formattedMembers.length > 0) {
@@ -434,66 +434,6 @@ const BoardEnrollment = () => {
         {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
       </Box>
 
-      <Grid container>
-        <Grid item xs={12} md={8} lg={6} ref={searchRef}>
-          <Box sx={{ px: '16px', mt: 2 }}>
-            <Paper
-              component="form"
-              onSubmit={(event) => {
-                event.preventDefault();
-                handleSearchSubmit();
-              }}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                borderRadius: '100px',
-                background: theme.palette.warning.A700,
-                boxShadow: 'none',
-              }}
-            >
-              <InputBase
-                ref={inputRef}
-                value={searchWord}
-                sx={{
-                  ml: isRTL ? 0 : 3,
-                  mr: isRTL ? 3 : 0,
-                  flex: 1,
-                  mb: '0',
-                  fontSize: '14px',
-                }}
-                placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
-                inputProps={{ 'aria-label': t('ASSESSMENTS.SEARCH_STUDENT') }}
-                onChange={handleSearch}
-                onClick={handleScrollDown}
-                onKeyDown={handleKeyDown}
-              />
-              <IconButton
-                type="button"
-                sx={{ p: '10px' }}
-                aria-label="search"
-                onClick={handleSearchSubmit}
-              >
-                <SearchIcon />
-              </IconButton>
-
-              {searchWord?.length > 0 && (
-                <IconButton
-                  type="button"
-                  aria-label="Clear"
-                  onClick={handleSearchClear}
-                >
-                  <ClearIcon
-                    sx={{
-                      color: theme.palette.warning['A200'],
-                    }}
-                  />
-                </IconButton>
-              )}
-            </Paper>
-          </Box>
-        </Grid>
-      </Grid>
-
       <Box sx={{ px: '16px' }}>
         <Grid container sx={{ mt: '20px', alignItems: 'flex-end' }}>
           <Grid item xs={8}>
@@ -518,6 +458,80 @@ const BoardEnrollment = () => {
                 showFloatingLabel={true}
                 showDisabledDropDown={true}
               />
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+
+      {totalLearners !== 0 ? <PieChartGraph stagesCount={stagesCount} /> : null}
+
+      <Box
+        color={theme.colorSchemes.dark.palette.warning.A400}
+        fontWeight={500}
+        fontSize={'12px'}
+        mt={2}
+        pl={'16px'}
+      >
+        {t('BOARD_ENROLMENT.TOTAL_LEARNERS')}: {totalLearners}
+      </Box>
+
+      <Box>
+        <Grid container alignItems={'end'}>
+          <Grid item xs={8} ref={searchRef}>
+            <Box sx={{ px: '16px', mt: 2 }}>
+              <Paper
+                component="form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  handleSearchSubmit();
+                }}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  borderRadius: '100px',
+                  background: theme.palette.warning.A700,
+                  boxShadow: 'none',
+                }}
+              >
+                <InputBase
+                  ref={inputRef}
+                  value={searchWord}
+                  sx={{
+                    ml: isRTL ? 0 : 3,
+                    mr: isRTL ? 3 : 0,
+                    flex: 1,
+                    mb: '0',
+                    fontSize: '14px',
+                  }}
+                  placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
+                  inputProps={{ 'aria-label': t('ASSESSMENTS.SEARCH_STUDENT') }}
+                  onChange={handleSearch}
+                  onClick={handleScrollDown}
+                  onKeyDown={handleKeyDown}
+                />
+                <IconButton
+                  type="button"
+                  sx={{ p: '10px' }}
+                  aria-label="search"
+                  onClick={handleSearchSubmit}
+                >
+                  <SearchIcon />
+                </IconButton>
+
+                {searchWord?.length > 0 && (
+                  <IconButton
+                    type="button"
+                    aria-label="Clear"
+                    onClick={handleSearchClear}
+                  >
+                    <ClearIcon
+                      sx={{
+                        color: theme.palette.warning['A200'],
+                      }}
+                    />
+                  </IconButton>
+                )}
+              </Paper>
             </Box>
           </Grid>
           <Grid
@@ -546,20 +560,7 @@ const BoardEnrollment = () => {
           </Grid>
         </Grid>
       </Box>
-
-      {totalLearners !== 0 ? <PieChartGraph stagesCount={stagesCount} /> : null}
-
-      <Box
-        color={theme.colorSchemes.dark.palette.warning.A400}
-        fontWeight={500}
-        fontSize={'12px'}
-        mt={2}
-        pl={'16px'}
-      >
-        {t('BOARD_ENROLMENT.TOTAL_LEARNERS')}: {totalLearners}
-      </Box>
       <Grid container sx={{ my: 4, px: '16px' }} spacing={2}>
-          
         {displayStudentList.length >= 1 ? (
           <>
             {displayStudentList?.map((item: any, index: any) => {
