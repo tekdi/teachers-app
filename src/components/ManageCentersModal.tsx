@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
+import { toPascalCase } from '@/utils/Helper';
 
 interface ManageUsersModalProps {
   open: boolean;
@@ -185,7 +186,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                         pb: '20px',
                       }}
                     >
-                      {center?.name}
+                      {toPascalCase(center?.name)}
                     </Box>
                     <Box>
                       {isForLearner ? (
