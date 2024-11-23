@@ -231,6 +231,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                 }))
                 ?.filter(Boolean);
               setCohortsData(filteredData);
+              setCohorts(filteredData);
               if (filteredData.length > 0) {
                 if (typeof window !== 'undefined' && window.localStorage) {
                   const cohort = localStorage.getItem('classId') || '';

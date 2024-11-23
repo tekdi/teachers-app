@@ -598,7 +598,8 @@
     "CHOOSE_SUBJECT": "Choose which subjects the learner is enrolling for",
     "SUBJECTS_ENROLLED":"Subjects Enrolled",
     "EXAM_REGISTRATION_FEES_PAID":"Exam Registration Fees Paid?",
-    "EDIT": "Edit"
+    "EDIT": "Edit",
+    "SURE_GO_BACK": "Are you sure you want to go back? Your progress might be lost."
   },
   "OBSERVATION": {
     "OBSERVATION_START": "Start Observation",
