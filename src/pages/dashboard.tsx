@@ -763,7 +763,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
           const sessionArray: any[] = [];
           const extraSessionArray: any[] = [];
-          if (response?.events.length > 0) {
+          if (response?.events?.length > 0) {
             response?.events.forEach((event: any) => {
               // console.log('myCohortList', myCohortList);
               // let cohortList;
@@ -1548,7 +1548,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               marginBottom: '12px',
                             }}
                           >
-                            {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                            {t('COMMON.NO_SESSIONS_SCHEDULED')}asass
                           </Box>
                         )}
                       </Box>

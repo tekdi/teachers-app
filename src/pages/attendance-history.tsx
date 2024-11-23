@@ -17,26 +17,29 @@ import {
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  AttendanceParams,
   AttendancePercentageProps,
   AttendanceStatusListProps,
-  ICohort,
   CohortMemberList,
-  user,
+  ICohort,
+  user
 } from '../utils/Interfaces';
 
+import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 import AttendanceStatus from '@/components/AttendanceStatus';
 import AttendanceStatusListView from '@/components/AttendanceStatusListView';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
+import NoDataFound from '@/components/common/NoDataFound';
 import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import MonthCalender from '@/components/MonthCalender';
 import { showToastMessage } from '@/components/Toastify';
 import UpDownButton from '@/components/UpDownButton';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import useStore from '@/store/store';
 import { Status, Telemetry } from '@/utils/app.constant';
 import { calculatePercentage } from '@/utils/attendanceStats';
 import { logEvent } from '@/utils/googleAnalytics';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import { telemetryFactory } from '@/utils/telemetry';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import ClearIcon from '@mui/icons-material/Clear';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
@@ -51,12 +54,8 @@ import { accessControl } from '../../app.config';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import SortingModal from '../components/SortingModal';
-import { attendanceStatusList } from '../services/AttendanceService';
-import { telemetryFactory } from '@/utils/telemetry';
-import NoDataFound from '@/components/common/NoDataFound';
-import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 import { useDirection } from '../hooks/useDirection';
-import useStore from '@/store/store';
+import { attendanceStatusList } from '../services/AttendanceService';
 
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
@@ -119,11 +118,14 @@ const UserAttendanceHistory = () => {
           ? "0"
           : `${((data.presentCount / data.numberOfCohortMembers) * 100).toFixed(2)}`,
     };
-    
 
-    setAttendanceProgressBarData({
-      [shortDateFormat(selectedDate)]: attendanceInfo,
-    });
+    if (shortDateFormat(selectedDate) > shortDateFormat(new Date())) {
+      setAttendanceProgressBarData({});
+    } else {
+      setAttendanceProgressBarData({
+        [shortDateFormat(selectedDate)]: attendanceInfo,
+      });
+    }
   };
 
   const handleOpen = () => {
@@ -439,9 +441,9 @@ const UserAttendanceHistory = () => {
     });
     if (trimmedValue.length >= 3) {
       debouncedSearch(trimmedValue);
-    }else if (trimmedValue === '') {
+    } else if (trimmedValue === '') {
       debouncedSearch.cancel();
-      setDisplayStudentList(cohortMemberList); 
+      setDisplayStudentList(cohortMemberList);
     } else {
       setDisplayStudentList(cohortMemberList);
     }
