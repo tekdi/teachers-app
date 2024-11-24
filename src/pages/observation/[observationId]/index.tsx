@@ -70,6 +70,8 @@ const ObservationDetails = () => {
   const [entityData, setEntityData] = useState<any[]>([]);
   const [filteredEntityData, setFilteredEntityData] = useState<any[]>([]);
   const [loading, setLoading] = React.useState(false);
+  const [observationId, setObservationId] = React.useState("");
+
 
 
 
@@ -193,6 +195,7 @@ const ObservationDetails = () => {
           {
             console.log("entityIds?.length", entities?.length);
             const response = await fetchEntities({ solutionId });
+            setObservationId(response?.result?._id)
             setFetchEntityResponse(response?.result?.entities)
             entities = response?.result?.entities?.map(
               (item: any) => item?._id
@@ -274,8 +277,6 @@ setFilteredEntityData(result)
       };
   
       const executeAddEntities = async () => {
-        if (Id) {
-          const observationId = Id;
           if (entity === ObservationEntityType.CENTER && unmatchedCohortIds.length !== 0) {
             await addEntities({ data, observationId });
             const urlPath = window.location.pathname;
@@ -283,6 +284,8 @@ setFilteredEntityData(result)
           const solutionId = urlPath.split('/observation/')[1];
 
           const response = await fetchEntities({ solutionId });
+          setObservationId(response?.result?._id)
+
             setFetchEntityResponse(response?.result?.entities)
           } else if (unmatchedUserIds.length !== 0) {
             await addEntities({ data, observationId });
@@ -291,15 +294,17 @@ setFilteredEntityData(result)
           const solutionId = urlPath.split('/observation/')[1];
 
           const response = await fetchEntities({ solutionId });
+          setObservationId(response?.result?._id)
+
             setFetchEntityResponse(response?.result?.entities)
           }
           
-        }
+        
       };
   
       executeAddEntities();
     }
-  }, [entityIds, Data]);
+  }, [entityIds, Data,observationId]);
   
   
 
@@ -420,7 +425,7 @@ setFilteredEntityData(result)
     const { Id } = router.query;
 
 
-    const queryParams = { entityId: cohortId, Id: Id , observationName: observationName };
+    const queryParams = { entityId: cohortId, Id: observationId , observationName: observationName };
     router.push({
       pathname: newFullPath,
       query: queryParams,
