@@ -63,6 +63,7 @@ const BoardEnrollmentDetail = () => {
   const [cohortId, setCohortId] = React.useState('');
   const [subjectOptions, setSubjectOptions] = React.useState<any[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [backButtonClicked, setBackButtonClicked] = useState<boolean>(false);
 
   const [names, setNames] = useState({
     cohortName: '',
@@ -263,10 +264,11 @@ const BoardEnrollmentDetail = () => {
   };
 
   const handleBackEvent = () => {
+    setBackButtonClicked(true);
     window.history.back();
     logEvent({
-      action: 'back-button-clicked-attendance-overview',
-      category: 'Board enrolment page',
+      action: 'back-button-clicked-board-enrollment',
+      category: 'Board enrollment page',
       label: 'Back Button Clicked',
     });
   };
@@ -375,6 +377,16 @@ const BoardEnrollmentDetail = () => {
     }
   };
 
+  const handleConfirmationOnBack = () => {
+    setBackButtonClicked(true);
+    const checkDisableStatus = isNextDisabled();
+    if (formDataUpdated || !checkDisableStatus) {
+      setModalOpen(true);
+    } else {
+      handleBackEvent();
+    }
+  };
+
   return (
     <>
       {activeStep > 3 ? (
@@ -401,7 +413,7 @@ const BoardEnrollmentDetail = () => {
               width={'100%'}
             >
               <KeyboardBackspaceOutlinedIcon
-                onClick={handleBackEvent}
+                onClick={handleConfirmationOnBack}
                 cursor={'pointer'}
                 sx={{
                   color: theme.palette.warning['A200'],
@@ -783,7 +795,7 @@ const BoardEnrollmentDetail = () => {
 
                 <ConfirmationModal
                   message={getMessage()}
-                  handleAction={confirmBack}
+                  handleAction={backButtonClicked ? handleBackEvent : confirmBack}
                   buttonNames={{
                     primary: t('COMMON.YES'),
                     secondary: t('COMMON.CANCEL'),
