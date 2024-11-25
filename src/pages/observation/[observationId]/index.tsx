@@ -685,7 +685,7 @@ setFilteredEntityData(result)
 
               </Box>
             
-              <Box sx={{ marginTop: '20px' , display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap:"20px"}}>{entityContent}</Box>
+              <Box sx={{ marginTop: '20px' , display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap:"20px", mx:"10px"}}>{entityContent}</Box>
               {/* {totalCountForCenter > 6 &&
                 entity === ObservationEntityType.CENTER && (
                   <Box

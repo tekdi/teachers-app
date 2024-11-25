@@ -62,81 +62,84 @@ const PieChartGraph: React.FC<PieChartGraphProps> = ({ stagesCount }) => {
   };
 
   return (
+    <Box
+      sx={{
+        background: '#FFF8F2',
+        p: '16px',
+        mt: 2,
+        boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
+        borderRadius: '8px', // Optional: to make the corners rounded
+        '@media (max-width: 700px)': {
+          p: '16px 16px 0px',
+        },
+      }}
+    >
       <Box
         sx={{
-          background: '#FFF8F2',
-          p: '16px',
-          mt: 2,
-          '@media (max-width: 700px)': {
-            p: '16px 16px 0px',
+          color: theme.palette.warning['400'],
+          fontSize: '14px',
+          fontWeight: '600',
+        }}
+      >
+        Stages and Number of Students
+      </Box>
+
+      <Box
+        sx={{
+          height: 150,
+          '@media (min-width: 400px)': {
+            height: 200,
+          },
+          '@media (min-width: 500px)': {
+            height: 300,
+          },
+          '@media (min-width: 700px)': {
+            height: 400,
           },
         }}
       >
-        <Box
-          sx={{
-            color: theme.palette.warning['400'],
-            fontSize: '14px',
-            fontWeight: '600',
-          }}
-        >
-          Stages and Number of Students
-        </Box>
-
-        <Box
-          sx={{
-            height: 150,
-            '@media (min-width: 400px)': {
-              height: 200,
-            },
-            '@media (min-width: 500px)': {
-              height: 300,
-            },
-            '@media (min-width: 700px)': {
-              height: 400,
-            },
-          }}
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={false}
-                outerRadius="80%"
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-
-              {isMobile ? (
-                <Legend
-                  layout="vertical"
-                  align="right"
-                  verticalAlign="middle"
-                  formatter={renderLegendText}
-                  iconType="circle"
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={false}
+              outerRadius="80%"
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
                 />
-              ) : (
-                <Legend
-                  layout="horizontal"
-                  align="center"
-                  verticalAlign="bottom"
-                  formatter={renderLegendText}
-                  iconType="circle"
-                />
-              )}
-            </PieChart>
-          </ResponsiveContainer>
-        </Box>
+              ))}
+            </Pie>
+
+            {isMobile ? (
+              <Legend
+                layout="vertical"
+                align="right"
+                verticalAlign="middle"
+                formatter={renderLegendText}
+                iconType="circle"
+              />
+            ) : (
+              <Legend
+                layout="horizontal"
+                align="center"
+                verticalAlign="bottom"
+                formatter={renderLegendText}
+                iconType="circle"
+              />
+            )}
+          </PieChart>
+        </ResponsiveContainer>
       </Box>
+    </Box>
+
   );
 };
 
