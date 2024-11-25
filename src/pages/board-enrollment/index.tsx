@@ -157,6 +157,10 @@ const BoardEnrollment = () => {
       console.log('centerDetails', formattedMembers);
       // setDisplayStudentList(formattedMembers);
       setTotalLearners(formattedMembers.length);
+      if (formattedMembers.length === 0) {
+        setDisplayStudentList([]);
+        setBoardEnrollmentList([]);
+      }
 
       if (formattedMembers.length > 0) {
         const formData = await fetchFormData();
@@ -173,8 +177,8 @@ const BoardEnrollment = () => {
         };
 
         const resultData = extractFieldData(formData);
-        console.log('memberdata!!', formattedMembers)
-        console.log(`formData!!`, resultData);
+        console.log('memberdata', formattedMembers);
+        console.log(`formData`, resultData);
         const updatedMemberData = updateFormattedMember(
           formattedMembers,
           resultData
@@ -263,23 +267,23 @@ const BoardEnrollment = () => {
         )
         .map((formField) => formField.fieldId)
     );
-  
+
     const formDataFieldMap = new Map<string, Field>(
       formData.map((field) => [field.fieldId, field])
     );
-  
+
     // Update each member's customField array
     formattedMember.forEach((member) => {
       // Convert customField array to a Map for easy fieldId access
       const customFieldMap = new Map<string, CustomField>(
         member.customField.map((field) => [field.fieldId, field])
       );
-  
+
       // Ensure all fields from formData are in customField
       member.customField = Array.from(formDataFieldMap.values()).map(
         (formField) => {
           const existingField = customFieldMap.get(formField.fieldId);
-  
+
           const field: CustomField = {
             fieldId: formField.fieldId,
             label: formField.label,
@@ -288,7 +292,7 @@ const BoardEnrollment = () => {
             sourceDetails: formField.sourceDetails || null,
             order: formField.order || null,
           };
-  
+
           // Parse JSON if the fieldId is in parseFields
           if (parseFields.has(field.fieldId)) {
             try {
@@ -304,10 +308,9 @@ const BoardEnrollment = () => {
         }
       );
     });
-  
+
     return formattedMember;
   };
-  
 
   const handleOpen = (reason: string | null) => {
     setStatusReason(reason);
@@ -319,7 +322,7 @@ const BoardEnrollment = () => {
     setStatusReason(null);
   };
   const handleOpenModal = () => {
-    setModalOpen(true);   
+    setModalOpen(true);
   };
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -340,7 +343,6 @@ const BoardEnrollment = () => {
     );
     setDisplayStudentList(filteredList || []);
   }, 200);
-    
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const trimmedValue = event.target.value.replace(/\s{2,}/g, ' ').trimStart();
@@ -381,7 +383,7 @@ const BoardEnrollment = () => {
   ) => {
     handleCloseModal();
     let filteredData = [...boardEnrollmentList];
-  
+
     // Sorting by name
     switch (sortByName) {
       case 'asc':
@@ -393,7 +395,7 @@ const BoardEnrollment = () => {
       default:
         break;
     }
-  
+
     // Filtering by stages
     switch (sortByStages) {
       case 'board':
@@ -414,7 +416,7 @@ const BoardEnrollment = () => {
       default:
         break;
     }
-  
+
     setDisplayStudentList(filteredData);
   };
 
@@ -432,66 +434,6 @@ const BoardEnrollment = () => {
       >
         {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
       </Box>
-
-      <Grid container>
-        <Grid item xs={12} md={8} lg={6} ref={searchRef}>
-          <Box sx={{ px: '16px', mt: 2 }}>
-            <Paper
-              component="form"
-              onSubmit={(event) => {
-                event.preventDefault();
-                handleSearchSubmit();
-              }}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                borderRadius: '100px',
-                background: theme.palette.warning.A700,
-                boxShadow: 'none',
-              }}
-            >
-              <InputBase
-                ref={inputRef}
-                value={searchWord}
-                sx={{
-                  ml: isRTL ? 0 : 3,
-                  mr: isRTL ? 3 : 0,
-                  flex: 1,
-                  mb: '0',
-                  fontSize: '14px',
-                }}
-                placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
-                inputProps={{ 'aria-label': t('ASSESSMENTS.SEARCH_STUDENT') }}
-                onChange={handleSearch}
-                onClick={handleScrollDown}
-                onKeyDown={handleKeyDown}
-              />
-              <IconButton
-                type="button"
-                sx={{ p: '10px' }}
-                aria-label="search"
-                onClick={handleSearchSubmit}
-              >
-                <SearchIcon />
-              </IconButton>
-
-              {searchWord?.length > 0 && (
-                <IconButton
-                  type="button"
-                  aria-label="Clear"
-                  onClick={handleSearchClear}
-                >
-                  <ClearIcon
-                    sx={{
-                      color: theme.palette.warning['A200'],
-                    }}
-                  />
-                </IconButton>
-              )}
-            </Paper>
-          </Box>
-        </Grid>
-      </Grid>
 
       <Box sx={{ px: '16px' }}>
         <Grid container sx={{ mt: '20px', alignItems: 'flex-end' }}>
@@ -519,6 +461,80 @@ const BoardEnrollment = () => {
               />
             </Box>
           </Grid>
+        </Grid>
+      </Box>
+
+      {totalLearners !== 0 ? <PieChartGraph stagesCount={stagesCount} /> : null}
+
+      <Box
+        color={theme.colorSchemes.dark.palette.warning.A400}
+        fontWeight={500}
+        fontSize={'12px'}
+        mt={2}
+        pl={'16px'}
+      >
+        {t('BOARD_ENROLMENT.TOTAL_LEARNERS')}: {totalLearners}
+      </Box>
+
+      <Box>
+        <Grid container alignItems={'end'}>
+          <Grid item xs={8} ref={searchRef}>
+            <Box sx={{ px: '16px', mt: 2 }}>
+              <Paper
+                component="form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  handleSearchSubmit();
+                }}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  borderRadius: '100px',
+                  background: theme.palette.warning.A700,
+                  boxShadow: 'none',
+                }}
+              >
+                <InputBase
+                  ref={inputRef}
+                  value={searchWord}
+                  sx={{
+                    ml: isRTL ? 0 : 3,
+                    mr: isRTL ? 3 : 0,
+                    flex: 1,
+                    mb: '0',
+                    fontSize: '14px',
+                  }}
+                  placeholder={t('COMMON.SEARCH_STUDENT') + '..'}
+                  inputProps={{ 'aria-label': t('ASSESSMENTS.SEARCH_STUDENT') }}
+                  onChange={handleSearch}
+                  onClick={handleScrollDown}
+                  onKeyDown={handleKeyDown}
+                />
+                <IconButton
+                  type="button"
+                  sx={{ p: '10px' }}
+                  aria-label="search"
+                  onClick={handleSearchSubmit}
+                >
+                  <SearchIcon />
+                </IconButton>
+
+                {searchWord?.length > 0 && (
+                  <IconButton
+                    type="button"
+                    aria-label="Clear"
+                    onClick={handleSearchClear}
+                  >
+                    <ClearIcon
+                      sx={{
+                        color: theme.palette.warning['A200'],
+                      }}
+                    />
+                  </IconButton>
+                )}
+              </Paper>
+            </Box>
+          </Grid>
           <Grid
             sx={{ display: 'flex', justifyContent: 'flex-end' }}
             xs={4}
@@ -544,18 +560,6 @@ const BoardEnrollment = () => {
             </Button>
           </Grid>
         </Grid>
-      </Box>
-
-      <PieChartGraph stagesCount={stagesCount} />
-
-      <Box
-        color={theme.colorSchemes.dark.palette.warning.A400}
-        fontWeight={500}
-        fontSize={'12px'}
-        mt={2}
-        pl={'16px'}
-      >
-        {t('BOARD_ENROLMENT.TOTAL_LEARNERS')}: {totalLearners}
       </Box>
       <Grid container sx={{ my: 4, px: '16px' }} spacing={2}>
         {displayStudentList.length >= 1 ? (
@@ -687,18 +691,20 @@ const BoardEnrollment = () => {
                 </Box>
               </Box>
             </CenterSessionModal>
-
-            <SortingModal
-              isModalOpen={modalOpen}
-              handleCloseModal={handleCloseModal}
-              handleSorting={handleSorting}
-              routeName={pathname}
-            />
           </>
         ) : (
           <NoDataFound />
         )}
       </Grid>
+
+      {modalOpen && (
+        <SortingModal
+          isModalOpen={modalOpen}
+          handleCloseModal={handleCloseModal}
+          handleSorting={handleSorting}
+          routeName={pathname}
+        />
+      )}
     </>
   );
 };

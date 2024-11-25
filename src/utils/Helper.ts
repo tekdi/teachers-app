@@ -435,7 +435,7 @@ export const getUserDetailsById = (data: any[], userId: any) => {
 };
 
 export const getEmailPattern = (): string => {
-  return '^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$';
+  return '^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$';
 };
 
 export const translateString = (t: any, label: string) => {

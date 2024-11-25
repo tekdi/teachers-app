@@ -30,7 +30,11 @@ import {
 } from '@/services/CoursePlannerService';
 import useCourseStore from '@/store/coursePlannerStore';
 import dayjs from 'dayjs';
-import { AssessmentStatus, Role, TelemetryEventType } from '@/utils/app.constant';
+import {
+  AssessmentStatus,
+  Role,
+  TelemetryEventType,
+} from '@/utils/app.constant';
 import Loader from '@/components/Loader';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 // import { accessControl } from '../../app.config';
@@ -56,6 +60,9 @@ const CoursePlannerDetail = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const { isRTL } = useDirection();
+  const setSelectedResource = useCourseStore(
+    (state) => state.setSelectedResource
+  );
   const setResources = useCourseStore((state) => state.setResources);
   const store = useCourseStore();
   const tStore = taxonomyStore();
@@ -98,7 +105,7 @@ const CoursePlannerDetail = () => {
         board: tStore?.board,
         type: tStore?.type,
         medium: tStore?.medium,
-        entityId: cohortId
+        entityId: cohortId,
       });
 
       if (response?.result?.data == '') {
@@ -161,7 +168,7 @@ const CoursePlannerDetail = () => {
         templateId: externalId,
         solutionId,
         role: Role.TEACHER,
-        cohortId
+        cohortId,
       });
 
       const updatedResponse = await getTargetedSolutions({
@@ -171,7 +178,7 @@ const CoursePlannerDetail = () => {
         board: tStore?.board,
         type: tStore?.type,
         medium: tStore?.medium,
-        entityId: cohortId
+        entityId: cohortId,
       });
       setLoading(false);
 
@@ -221,7 +228,7 @@ const CoursePlannerDetail = () => {
     const windowUrl = window.location.pathname;
 
     const cleanedUrl = windowUrl.replace(/^\//, '');
-    const env = cleanedUrl.split("/")[0];
+    const env = cleanedUrl.split('/')[0];
 
     const telemetryInteract = {
       context: {
@@ -241,19 +248,19 @@ const CoursePlannerDetail = () => {
 
   const toggleDrawer =
     (open: boolean, selectedCount: number = 0) =>
-      (event?: React.KeyboardEvent | React.MouseEvent) => {
-        if (
-          event &&
-          event.type === 'keydown' &&
-          ((event as React.KeyboardEvent).key === 'Tab' ||
-            (event as React.KeyboardEvent).key === 'Shift')
-        ) {
-          return;
-        }
-        setDrawerState({ ...drawerState, bottom: open });
-        setIsDrawerOpen(open);
-        setSelectedCount(selectedCount);
-      };
+    (event?: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
+      setDrawerState({ ...drawerState, bottom: open });
+      setIsDrawerOpen(open);
+      setSelectedCount(selectedCount);
+    };
 
   const handleCloseModel = () => {
     setModalOpen(false);
@@ -343,7 +350,12 @@ const CoursePlannerDetail = () => {
     return false;
   };
 
-  const fetchLearningResources = async (resources: IResource[]) => {
+  const fetchLearningResources = async (
+    subtopic: any,
+    resources: IResource[]
+  ) => {
+    console.log(resources);
+
     try {
       const identifiers = resources.map((resource: IResource) => resource?.id);
       const response = await fetchBulkContents(identifiers);
@@ -354,11 +366,11 @@ const CoursePlannerDetail = () => {
         );
         return { ...resource, ...content };
       });
-
+      setSelectedResource(subtopic?.name);
       setResources(resources);
       console.log('response===>', resources);
     } catch (error) {
-      console.error("error", error);
+      console.error('error', error);
     }
   };
 
@@ -613,8 +625,11 @@ const CoursePlannerDetail = () => {
                                     cursor: 'pointer',
                                   }}
                                   onClick={() => {
-                                    fetchLearningResources(subTopic?.learningResources);
-                                    // setResources(subTopic);
+                                    fetchLearningResources(
+                                      subTopic,
+                                      subTopic?.learningResources
+                                    );
+
                                     router.push(`/topic-detail-view`);
                                   }}
                                 >
@@ -715,7 +730,10 @@ const CoursePlannerDetail = () => {
                                   sx={{ fontSize: '12px', fontWeight: '500' }}
                                   onClick={() => {
                                     // setResources(subTopic);
-                                    fetchLearningResources(subTopic?.learningResources);
+                                    fetchLearningResources(
+                                      subTopic,
+                                      subTopic?.learningResources
+                                    );
                                     router.push(`/topic-detail-view`);
                                   }}
                                 >
@@ -761,7 +779,6 @@ const CoursePlannerDetail = () => {
         }}
         selectedCount={selectedCount}
       />
-
 
       {/* <ConfirmationModal
         message={

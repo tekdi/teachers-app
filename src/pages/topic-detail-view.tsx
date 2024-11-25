@@ -4,11 +4,7 @@ import useCourseStore from '@/store/coursePlannerStore';
 import { ResourcesType } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import {
-  Box,
-  Tab,
-  Tabs
-} from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -24,34 +20,36 @@ const TopicDetailView = () => {
   const { isRTL } = useDirection();
   const store = useCourseStore();
 
-
   useEffect(() => {
-    console.log("store", store.resources);
+    console.log('store', store.resources);
     const type = ResourcesType.POSTREQUSITE;
     const filteredResources = getLearningResources(type);
-    console.log("filteredResources", filteredResources);
+    console.log('filteredResources', filteredResources);
   }, []);
-
 
   const getLearningResources = (type: string) => {
     if (store?.resources?.length) {
       return store?.resources?.filter((resource: any) => {
-        return (type === ResourcesType.NONE && !resource.type) || resource.type === type
+        return (
+          (type === ResourcesType.NONE && !resource.type) ||
+          resource.type === type
+        );
       });
     }
-  }
-
-  const toggleAccordion = (panel: string) => (event: React.SyntheticEvent, expanded: boolean) => {
-    // Toggle between the selected panel and 'panel1' to keep the first panel open by default
-    setExpanded(expanded ? panel : 'panel1');
   };
+
+  const toggleAccordion =
+    (panel: string) => (event: React.SyntheticEvent, expanded: boolean) => {
+      // Toggle between the selected panel and 'panel1' to keep the first panel open by default
+      setExpanded(expanded ? panel : 'panel1');
+    };
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   const handleBackEvent = () => {
     // window.history.back();
-    router.push(`/course-planner-detail`);
+    router.back();
     logEvent({
       action: 'back-button-clicked-attendance-overview',
       category: 'Attendance Overview Page',
@@ -102,7 +100,7 @@ const TopicDetailView = () => {
                   color: theme.palette.warning['300'],
                 }}
               >
-                {store.resources.name}
+                {store?.selectedResource}
               </Box>
             </Box>
           </Box>
@@ -161,12 +159,16 @@ const TopicDetailView = () => {
 
         {value === 2 && (
           <Box onClick={handlePlayers}>
-            <CourseAccordion expanded={expanded === 'panel1'} onChange={toggleAccordion('panel1')}
+            <CourseAccordion
+              expanded={expanded === 'panel1'}
+              onChange={toggleAccordion('panel1')}
               title={t('CENTER_SESSION.PREREQUISITES')}
               type={ResourcesType.PREREQUSITE}
               resources={getLearningResources(ResourcesType.PREREQUSITE)}
             />
-            <CourseAccordion expanded={expanded === 'panel2'} onChange={toggleAccordion('panel2')}
+            <CourseAccordion
+              expanded={expanded === 'panel2'}
+              onChange={toggleAccordion('panel2')}
               title={t('CENTER_SESSION.POST_REQUISITES')}
               type={ResourcesType.POSTREQUSITE}
               resources={getLearningResources(ResourcesType.POSTREQUSITE)}

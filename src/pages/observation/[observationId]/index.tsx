@@ -43,6 +43,8 @@ import Entity from '@/components/observations/Entity';
 import SearchBar from '@/components/Searchbar';
 import { telemetryFactory } from '@/utils/telemetry';
 import centers from '@/pages/centers';
+import Loader from '@/components/Loader';
+
 interface EntityData {
   cohortId?: string;
   name?: string;
@@ -67,6 +69,9 @@ const ObservationDetails = () => {
   const [fetchEntityResponse, setFetchEntityResponse] = useState<any[]>([]);
   const [entityData, setEntityData] = useState<any[]>([]);
   const [filteredEntityData, setFilteredEntityData] = useState<any[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const [observationId, setObservationId] = React.useState("");
+
 
 
 
@@ -190,6 +195,7 @@ const ObservationDetails = () => {
           {
             console.log("entityIds?.length", entities?.length);
             const response = await fetchEntities({ solutionId });
+            setObservationId(response?.result?._id)
             setFetchEntityResponse(response?.result?.entities)
             entities = response?.result?.entities?.map(
               (item: any) => item?._id
@@ -271,8 +277,6 @@ setFilteredEntityData(result)
       };
   
       const executeAddEntities = async () => {
-        if (Id) {
-          const observationId = Id;
           if (entity === ObservationEntityType.CENTER && unmatchedCohortIds.length !== 0) {
             await addEntities({ data, observationId });
             const urlPath = window.location.pathname;
@@ -280,6 +284,8 @@ setFilteredEntityData(result)
           const solutionId = urlPath.split('/observation/')[1];
 
           const response = await fetchEntities({ solutionId });
+          setObservationId(response?.result?._id)
+
             setFetchEntityResponse(response?.result?.entities)
           } else if (unmatchedUserIds.length !== 0) {
             await addEntities({ data, observationId });
@@ -288,21 +294,24 @@ setFilteredEntityData(result)
           const solutionId = urlPath.split('/observation/')[1];
 
           const response = await fetchEntities({ solutionId });
+          setObservationId(response?.result?._id)
+
             setFetchEntityResponse(response?.result?.entities)
           }
           
-        }
+        
       };
   
       executeAddEntities();
     }
-  }, [entityIds, Data]);
+  }, [entityIds, Data,observationId]);
   
   
 
   useEffect(() => {
     const handleCohortChange = async () => {
       try {
+        setLoading(true)
         console.log('handlecohortChange');
         let filters = {
           cohortId: selectedCohort,
@@ -351,6 +360,8 @@ setFilteredEntityData(result)
 
         console.error('Error fetching cohort list:', error);
       } finally {
+        setLoading(false)
+
       }
     };
     if(selectedCohort && selectedCohort!=='')
@@ -414,41 +425,12 @@ setFilteredEntityData(result)
     const { Id } = router.query;
 
 
-    const queryParams = { entityId: cohortId, Id: Id , observationName: observationName };
+    const queryParams = { entityId: cohortId, Id: observationId , observationName: observationName };
     router.push({
       pathname: newFullPath,
       query: queryParams,
     });
   };
-
-  // const renderEntityData = (data: EntityData[], entityType: string) =>
-  //   data?.map((item, index) => (
-  //     // <Box
-  //     //   key={item.cohortId}
-  //     //   sx={{
-  //     //     margin: '10px',
-  //     //     background: 'white',
-  //     //     display: 'flex',
-  //     //     alignItems: 'center',
-  //     //   }}
-  //     // >
-  //     //   <Typography margin="10px">{toPascalCase(item?.name) }</Typography>
-  //     //   <Button
-  //     //     sx={{ width: '160px', height: '40px', marginLeft: 'auto' }}
-  //     //     onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
-  //     //   >
-
-  //     //    {index === 0 && firstEntityStatus==="draft"
-  //     //   ? t('OBSERVATION_SURVEYS.CONTINUE') 
-  //     //   : (index === 0 && firstEntityStatus==="submit")?t('OBSERVATION_SURVEYS.SUBMITTED'):t('OBSERVATION_SURVEYS.OBSERVATION_START')}
-  //     //   </Button>
-  //     // </Box>
-  //     <Entity
-  //     entityMemberValue={toPascalCase(item?.name)}
-  //     status={index === 0?firstEntityStatus:"notstarted"}
-  //     onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
-  //     />
-  //   ));
 
 
   const renderEntityData = (data: EntityData[], entityType: string) => {
@@ -685,7 +667,27 @@ setFilteredEntityData(result)
 
               </Box>
             
-              <Box sx={{ marginTop: '20px' , display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap:"20px", mx:"10px"}}>{entityContent}</Box>
+              <Box
+  sx={{
+    marginTop: '20px',
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    gap: '20px',
+                  mx: "10px"
+  }}
+>
+  {loading ? (
+    <Loader showBackdrop={false} loadingText={t('COMMON.LOADING')} />
+  ) : Data.length === 0 ? (
+    <Typography ml="40%">{t('OBSERVATION.NO_DATA_FOUND',{
+      entity:entity,
+    })}</Typography>
+  ) : (
+    entityContent
+  )}
+</Box>
+
               {/* {totalCountForCenter > 6 &&
                 entity === ObservationEntityType.CENTER && (
                   <Box
