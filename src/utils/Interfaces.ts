@@ -335,9 +335,10 @@ export interface AllCenterAttendancePercentParam {
 }
 
 export interface UpdateCohortMemberStatusParams {
-  memberStatus: string;
+  memberStatus?: string;
   statusReason?: string;
   membershipId: string | number;
+  dynamicBody?: Record<string, any>;
 }
 
 export interface LearnerListProps {
@@ -401,6 +402,7 @@ export interface CoursePlanner {
 export interface SessionCardFooterProps {
   item: any;
   cohortName?: string;
+  cohortId?: string;
   isTopicSubTopicAdded?: any;
   state?: string;
   board?: string;
@@ -546,12 +548,6 @@ export interface Assessment {
   progress: string;
   score?: number;
 }
-export interface BoardEnrollment {
-  userId: number;
-  studentName: string;
-  center: string;
-  isDropout: boolean;
-}
 
 export interface AssessmentSubject {
   userId: number;
@@ -654,6 +650,7 @@ export interface GetTargetedSolutionsParams {
   class: any;
   board: any;
   type: string;
+  entityId?: string;
 }
 
 export interface GetUserProjectDetailsParams {
@@ -701,6 +698,7 @@ export interface GetUserProjectTemplateParams {
   templateId: string;
   solutionId: string;
   role: string;
+  cohortId?: string;
 }
 
 export interface HorizontalLinearStepperProps {
@@ -837,4 +835,49 @@ export interface PlayerConfig {
   config?: Config;
   metadata?: Metadata;
   data?: any;
+}
+
+export interface BoardEnrollmentStageCounts {
+  board: number;
+  subjects: number;
+  registration: number;
+  fees: number;
+  completed: number;
+};
+
+// export interface BoardEnrollmentFieldsType {
+//   BOARD?: string;
+//   SUBJECTS?: string;
+//   REGISTRATION?: string;
+//   FEES?: string;
+// };
+
+export interface BoardEnrollmentData {
+  userId: string;
+  cohortMembershipId: string;
+  name: string;
+  memberStatus: string;
+  statusReason: string | null;
+  customField: {
+    fieldId: string;
+    label: string;
+    value: string;
+  }[];
+  completedStep: number;
+};
+
+interface Subject {
+  name: string;
+  code?: string;
+  identifier?: string;
+}
+
+export interface BoardEnrollmentProfileProps {
+  learnerName: string | undefined;
+  centerName: string;
+  board: string;
+  subjects: Subject[];
+  registrationNum: string;
+  feesPaidStatus: string;
+  setActiveStep?: React.Dispatch<React.SetStateAction<number>>
 }

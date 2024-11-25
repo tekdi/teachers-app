@@ -1,14 +1,13 @@
 import 'react-calendar/dist/Calendar.css';
 
-import Calendar, { CalendarProps } from 'react-calendar';
 import {
   CancelOutlined,
   CheckCircleOutlineOutlined,
 } from '@mui/icons-material';
+import React, { useEffect, useState } from 'react';
+import Calendar from 'react-calendar';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import React, { useEffect, useRef, useState } from 'react';
 
-import Value from 'react-calendar';
 import { shortDateFormat } from '@/utils/Helper';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import useStore from '../store/store';

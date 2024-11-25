@@ -6,13 +6,16 @@ const useCourseStore = create(
   persist(
     (set) => ({
       resources: '',
+      selectedResource: '',
       subject: '',
       setResources: (newResources) => set(() => ({ resources: newResources })),
+      setSelectedResource: (newSelectedResource) =>
+        set(() => ({ selectedResource: newSelectedResource })),
       setSubject: (newSubject) => set(() => ({ subject: newSubject })),
     }),
     {
       name: 'resources',
-      getStorage: () => localStorage
+      getStorage: () => localStorage,
       // storage: typeof window !== 'undefined' ? localStorage : undefined,
     }
   )

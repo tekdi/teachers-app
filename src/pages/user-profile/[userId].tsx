@@ -120,8 +120,8 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
             }
             return null;
           } else if (item?.type === 'checkbox') {
-            if (field?.value) {
-              return String(field.value).split(',');
+            if (field?.code) {
+              return String(field.code).split(',');
             }
             return null;
           } else {

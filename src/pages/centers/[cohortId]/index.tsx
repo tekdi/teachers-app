@@ -588,7 +588,7 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
               </ListItemIcon>
               {t('CENTERS.RENAME_CENTER')}
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               onClick={() => {
                 setOpenDeleteCenterModal(true);
                 handleMenuClose();
@@ -615,7 +615,7 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
                 <DeleteOutlineOutlinedIcon fontSize="small" />
               </ListItemIcon>
               {t('CENTERS.REQUEST_TO_DELETE')}
-            </MenuItem>
+            </MenuItem> */}
           </Menu>
 
           {openRenameCenterModal && (
@@ -817,6 +817,7 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
                                     board={board}
                                     medium={medium}
                                     grade={grade}
+                                    cohortId={cohortId}
                                   />
                                 )}
                               </SessionCard>
@@ -916,6 +917,7 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
                                 board={board}
                                 medium={medium}
                                 grade={grade}
+                                cohortId={cohortId}
                               />
                             )}
                           </SessionCard>

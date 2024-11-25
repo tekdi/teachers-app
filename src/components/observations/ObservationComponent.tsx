@@ -11,6 +11,9 @@ import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
 import { Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
+import ConfirmationModal from '../ConfirmationModal';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import { Box, useTheme , Typography} from '@mui/material';
 
 
 
@@ -24,6 +27,7 @@ interface FileUploadEvent {
 }
 interface QuestionnaireAppProps {
   observationQuestions: any; // Define the correct type here based on your data structure
+  observationName: any
 }
 interface PresignedUrlResponse {
   url: string;
@@ -44,7 +48,7 @@ interface FileUploadData {
   [key: string]: any;
 }
 
-const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQuestions }) => {
+const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQuestions,observationName }) => {
   const questionairePlayerMainRef = useRef<HTMLElement | null>(null);
   console.log('questionairePlayerMainRef',  observationQuestions);
 
@@ -53,6 +57,11 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
   const assessment = mockData;
   const { t } = useTranslation();
   const router = useRouter();
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isBackConfirmationOpen, setIsBackConfirmationOpen] = useState(false);
+
+  const [currentEvent, setCurrentEvent] = useState<CustomEvent | null>(null); 
+  const theme = useTheme<any>();
 
   const uploadFileToPresignedUrl = async (event: FileUploadEvent) => {
     const payload: any = {
@@ -136,80 +145,24 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
       const playerElement = questionairePlayerMainRef.current;
 
       if (playerElement) {
-        const handlePlayerSubmitOrSaveEvent = async(event: Event) => {
-          
-
-          console.log(
-            'Event Data Logged from the react app',
-            (event as CustomEvent).detail
-          );
-
-          const submissionData = {
-            evidence: {
-              status: (event as CustomEvent).detail.status, 
-              ...((event as CustomEvent).detail.data) 
-            }
-          };
-          
-          const submissionId=observationQuestions?.assessment?.submissionId
-           const response= await updateSubmission({submissionId, submissionData})
-          if((event as CustomEvent).detail.status==="draft")
-          {
-            showToastMessage( t('OBSERVATION.FORM_SAVED_SUCCESSFULLY'), 'success');
-
-            t('OBSERVATION.FORM_SAVED_SUCCESSFULLY')
-           // window.history.back();
-          //  router.push(
-          //   `${localStorage.getItem('observationPath')}`
-          // );
-          const windowUrl = window.location.pathname;
-          const cleanedUrl = windowUrl.replace(/^\//, '');
-          const telemetryInteract = {
-            context: {
-              env: 'observation',
-              cdata: [],
-            },
-            edata: {
-              id: 'save-observation-successfully',
-              type: Telemetry.CLICK,
-              subtype: '',
-              pageid: cleanedUrl,
-            },
-          };
-          telemetryFactory.interact(telemetryInteract);
-
-          }
-          else if((event as CustomEvent).detail.status==="submit")
-          {
-            showToastMessage( t('OBSERVATION.FORM_SUBMIT_SUCCESSFULLY'), 'success');
-
-          //  window.history.back();
-
-           router.push(
-            `${localStorage.getItem('observationPath')}`
-          );
-
-
-          const windowUrl = window.location.pathname;
-          const cleanedUrl = windowUrl.replace(/^\//, '');
-          const telemetryInteract = {
-            context: {
-              env: 'observation',
-              cdata: [],
-            },
-            edata: {
-              id: 'submit-observation-successfully',
-              type: Telemetry.CLICK,
-              subtype: '',
-              pageid: cleanedUrl,
-            },
-          };
-          telemetryFactory.interact(telemetryInteract);
-
-
-          
+               const handlePlayerSubmitOrSaveEvent = async (event: Event) => {
+          if ((event as CustomEvent).detail.status === "submit") {
+            setCurrentEvent(event as CustomEvent);
+            setIsConfirmationOpen(true);
+          } else {
+            await handleSaveSubmit(event);
           }
         };
+      
+        const handleSaveSubmit = async (event: Event) => {
+          const submissionData = { evidence: { status: (event as CustomEvent).detail.status, ...(event as CustomEvent).detail.data } };
+          const submissionId = observationQuestions?.assessment?.submissionId;
+          const response = await updateSubmission({ submissionId, submissionData });
+          showToastMessage(t('OBSERVATION.FORM_SAVED_SUCCESSFULLY'), 'success');
+        };
+      
+     
+      
 
         playerElement.addEventListener(
           'submitOrSaveEvent',
@@ -225,6 +178,20 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
       }
     }
   }, [observationQuestions]);
+  const handleConfirmSubmit = async () => {
+    if (currentEvent) {
+      const submissionData = { evidence: { status: currentEvent.detail.status, ...(currentEvent.detail.data) } };
+      const submissionId = observationQuestions?.assessment?.submissionId;
+      const response = await updateSubmission({ submissionId, submissionData });
+      if (currentEvent.detail.status === "draft") {
+        showToastMessage(t('OBSERVATION.FORM_SAVED_SUCCESSFULLY'), 'success');
+      } else if (currentEvent.detail.status === "submit") {
+        showToastMessage(t('OBSERVATION.FORM_SUBMIT_SUCCESSFULLY'), 'success');
+        router.push(`${localStorage.getItem('observationPath')}`);
+      }
+    }
+    setIsConfirmationOpen(false);
+  };
   useEffect(() => {
     if (questionairePlayerMainRef.current) {
       console.log('Web component ref set correctly');
@@ -232,17 +199,91 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
       console.log('Web component ref not set');
     }
   }, [questionairePlayerMainRef]);
+  const handleBackEvent = () => {
+   // setIsBackConfirmationOpen(true);
+  //  router.back();
+  //  const shouldGoBack = window.confirm("Do you want to go back?");
 
+  // // If "OK" is clicked, go back
+  // if (shouldGoBack) {
+  //   window.history.back();
+  // } else {
+  //   // Do nothing if "Cancel" is clicked
+  //   console.log("User chose not to go back");
+  // }
+  router.push(
+    `${localStorage.getItem('observationPath')}`
+  );
+  };
+  
+  // const handleCancelBack = () => {
+  //   setIsBackConfirmationOpen(false);
+  // };
+ 
+  // const handleConfirmBack = () => {
+  //   setIsBackConfirmationOpen(false);
+  //   router.back();
+  // };
+   
   return (
     <>
+     <Box
+          sx={{
+            display: 'flex',
+            direction: 'row',
+            gap: '24px',
+            mt:"15px",
+            marginLeft:"10px"
+            
+          }}
+          width={'100%'}
+          onClick={handleBackEvent}
+
+        >
+          <KeyboardBackspaceOutlinedIcon
+            cursor={'pointer'}
+            sx={{
+              color: theme.palette.warning['A200'],
+            }}
+          />
+          <Typography variant='h2'>
+          {observationName}
+
+          </Typography>
+
+        </Box>
     {
       observationQuestions && 
-      <questionnaire-player-main
+     
+          <questionnaire-player-main
       assessment={JSON.stringify(observationQuestions)}
       fileuploadresponse={JSON.stringify(fileUploadResponse)}
       ref={questionairePlayerMainRef}
       ></questionnaire-player-main>
+    
     }
+
+<ConfirmationModal
+        message={"Are you sure to submit the form?"}
+        handleAction={handleConfirmSubmit}
+        buttonNames={{
+          primary: t('submit'),
+          secondary: t('COMMON.CANCEL'),
+        }}
+        handleCloseModal={() => setIsConfirmationOpen(false)}
+        modalOpen={isConfirmationOpen}
+      />
+
+{/* <ConfirmationModal
+  message={"Are you sure you want to go back?"}
+  handleAction={handleConfirmBack}
+  buttonNames={{
+    primary: t('COMMON.YES'),
+    secondary: t('NO'),
+  }}
+  handleCloseModal={handleCancelBack}
+  modalOpen={isBackConfirmationOpen}
+/> */}
     </>
   );
 };

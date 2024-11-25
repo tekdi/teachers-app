@@ -44,7 +44,11 @@ const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
     <div>
       <Modal
         open={open}
-        onClose={onClose}
+        onClose={(event, reason) => {
+          if (reason !== 'backdropClick') {
+            onClose();
+          }
+        }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >

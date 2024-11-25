@@ -81,7 +81,7 @@ import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 
 import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
-import AllowNotification from '@/components/AllowNotification';
+// import AllowNotification from '@/components/AllowNotification';
 import GetButtonNotification from '@/components/GetButtonNotification';
 import useStore from '@/store/store';
 let SessionCardFooter: ComponentType<any> | null = null;
@@ -235,6 +235,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     if (cohortsData[0]?.cohortId) {
       localStorage.setItem('classId', cohortsData[0]?.cohortId);
+      localStorage.removeItem('overallCommonSubjects');
     } else {
       localStorage.setItem('classId', '');
     }
@@ -247,7 +248,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       if (token) {
         setIsAuthenticated(true);
         setUserId(storedUserId);
-      
+
         if (!isActiveYear) {
           router.push('/centers');
         }
@@ -763,7 +764,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
           const sessionArray: any[] = [];
           const extraSessionArray: any[] = [];
-          if (response?.events.length > 0) {
+          if (response?.events?.length > 0) {
             response?.events.forEach((event: any) => {
               // console.log('myCohortList', myCohortList);
               // let cohortList;
@@ -920,7 +921,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       {isClient && (
         <>
           <GuideTour toggleDrawer={toggleDrawer} />
-          <AllowNotification />
+          {/* <AllowNotification /> */}
           <>
             {!isAuthenticated && (
               <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -1476,6 +1477,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                       board={board}
                                       medium={medium}
                                       grade={grade}
+                                      cohortId={classId}
                                     />
                                   )}
                                 </SessionCard>
@@ -1530,6 +1532,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                         board={board}
                                         medium={medium}
                                         grade={grade}
+                                        cohortId={classId}
                                       />
                                     )}
                                   </SessionCard>

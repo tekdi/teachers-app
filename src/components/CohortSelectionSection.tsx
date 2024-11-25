@@ -231,6 +231,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                 }))
                 ?.filter(Boolean);
               setCohortsData(filteredData);
+              setCohorts(filteredData);
               if (filteredData.length > 0) {
                 if (typeof window !== 'undefined' && window.localStorage) {
                   const cohort = localStorage.getItem('classId') || '';
@@ -455,7 +456,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     textTransform: 'capitalize',
                                   }}
                                 >
-                                  {cohort.name}{' '}
+                                  {toPascalCase(cohort.name)}{' '}
                                   {cohort?.typeOfCohort ===
                                     CenterType.REGULAR ||
                                     (CenterType.UNKNOWN &&
@@ -561,7 +562,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     textTransform: 'capitalize',
                                   }}
                                 >
-                                  {cohort?.name}
+                                  {toPascalCase(cohort?.name)}
                                 </MenuItem>
                               ))
                             ) : (

@@ -31,13 +31,11 @@ export const getTargetedSolutions = async ({
   class: className,
   board,
   type,
+  entityId
 }: GetTargetedSolutionsParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/solutions/targetedSolutions?type=improvementProject&currentScopeOnly=true`
-
-
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
-    
   };
 
   const data = {
@@ -47,6 +45,7 @@ export const getTargetedSolutions = async ({
     class: className,
     board,
     type,
+    // entityId
   };
 
   try {
@@ -64,7 +63,7 @@ interface GetUserProjectDetailsParams {
 
 export const getUserProjectDetails = async ({ id }: GetUserProjectDetailsParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/userProjects/details/${id}`;
-  
+
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
   };
@@ -81,10 +80,8 @@ export const getUserProjectDetails = async ({ id }: GetUserProjectDetailsParams)
 export const getSolutionDetails = async ({ id, role }: GetSolutionDetailsParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/solutions/details/${id}`;
 
-
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
-    
   };
 
   const data = {
@@ -104,16 +101,23 @@ export const getUserProjectTemplate = async ({
   templateId,
   solutionId,
   role,
+  cohortId
 }: GetUserProjectTemplateParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/userProjects/details?templateId=${templateId}&solutionId=${solutionId}`;
 
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
-    
+
   };
 
   const data = {
     role,
+    // acl: {
+    //   visibility: "ALL",
+    //   users: [],
+    //   scope: {}
+    // },
+    // entityId: cohortId
   };
 
   try {
@@ -125,9 +129,9 @@ export const getUserProjectTemplate = async ({
   }
 };
 
-export const UserStatusDetails = async ({ data , id, lastDownloadedAt }: GetUserProjectStatusParams): Promise<any> => {
+export const UserStatusDetails = async ({ data, id, lastDownloadedAt }: GetUserProjectStatusParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/userProjects/sync/${id}?lastDownloadedAt=${encodeURIComponent(lastDownloadedAt)}`;
-  
+
   const headers = {
     'x-auth-token': localStorage.getItem('token'),
   };

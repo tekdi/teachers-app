@@ -37,12 +37,14 @@ import {
   fetchEntities,
   targetSolution,
 } from '@/services/ObservationServices';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
 import Entity from '@/components/observations/Entity';
 import SearchBar from '@/components/Searchbar';
 import { telemetryFactory } from '@/utils/telemetry';
 import centers from '@/pages/centers';
+import Loader from '@/components/Loader';
+
 interface EntityData {
   cohortId?: string;
   name?: string;
@@ -67,6 +69,9 @@ const ObservationDetails = () => {
   const [fetchEntityResponse, setFetchEntityResponse] = useState<any[]>([]);
   const [entityData, setEntityData] = useState<any[]>([]);
   const [filteredEntityData, setFilteredEntityData] = useState<any[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const [observationId, setObservationId] = React.useState("");
+
 
 
 
@@ -121,9 +126,10 @@ const ObservationDetails = () => {
             }
             if (selectedCohort === '')
             {
-              const data= typeof window !== 'undefined'
-              ? localStorage.getItem("selectedCohort") || response[0]?.childData[0]?.cohortId
-              : response[0]?.childData[0]?.cohortId;
+              // const data= typeof window !== 'undefined'
+              // ? localStorage.getItem("selectedCohort") || localStorage.getItem('role') === Role.TEAM_LEADER? response[0]?.childData[0]?.cohortId:response[0]?.cohortId
+              // : response[0]?.childData[0]?.cohortId;
+              const data=localStorage.getItem("selectedCohort")?localStorage.getItem("selectedCohort"):localStorage.getItem('role') === Role.TEAM_LEADER?response[0]?.childData[0]?.cohortId:response[0]?.cohortId
               
               setSelectedCohort(data)
             }
@@ -133,9 +139,8 @@ const ObservationDetails = () => {
             setMyCohortList(response);
             if (selectedCohort === '')
             {
-              const data= typeof window !== 'undefined'
-              ? localStorage.getItem("selectedCohort") || response[0]?.childData[0]?.cohortId
-              : response[0]?.cohortId;
+              const data=localStorage.getItem("selectedCohort")?localStorage.getItem("selectedCohort"):localStorage.getItem('role') === Role.TEAM_LEADER?response[0]?.childData[0]?.cohortId:response[0]?.cohortId
+
               
               setSelectedCohort(data)
             } ;
@@ -190,6 +195,7 @@ const ObservationDetails = () => {
           {
             console.log("entityIds?.length", entities?.length);
             const response = await fetchEntities({ solutionId });
+            setObservationId(response?.result?._id)
             setFetchEntityResponse(response?.result?.entities)
             entities = response?.result?.entities?.map(
               (item: any) => item?._id
@@ -271,8 +277,6 @@ setFilteredEntityData(result)
       };
   
       const executeAddEntities = async () => {
-        if (Id) {
-          const observationId = Id;
           if (entity === ObservationEntityType.CENTER && unmatchedCohortIds.length !== 0) {
             await addEntities({ data, observationId });
             const urlPath = window.location.pathname;
@@ -280,6 +284,8 @@ setFilteredEntityData(result)
           const solutionId = urlPath.split('/observation/')[1];
 
           const response = await fetchEntities({ solutionId });
+          setObservationId(response?.result?._id)
+
             setFetchEntityResponse(response?.result?.entities)
           } else if (unmatchedUserIds.length !== 0) {
             await addEntities({ data, observationId });
@@ -288,21 +294,24 @@ setFilteredEntityData(result)
           const solutionId = urlPath.split('/observation/')[1];
 
           const response = await fetchEntities({ solutionId });
+          setObservationId(response?.result?._id)
+
             setFetchEntityResponse(response?.result?.entities)
           }
           
-        }
+        
       };
   
       executeAddEntities();
     }
-  }, [entityIds, Data]);
+  }, [entityIds, Data,observationId]);
   
   
 
   useEffect(() => {
     const handleCohortChange = async () => {
       try {
+        setLoading(true)
         console.log('handlecohortChange');
         let filters = {
           cohortId: selectedCohort,
@@ -351,11 +360,13 @@ setFilteredEntityData(result)
 
         console.error('Error fetching cohort list:', error);
       } finally {
+        setLoading(false)
+
       }
     };
     if(selectedCohort && selectedCohort!=='')
     handleCohortChange();
-  }, [page, selectedCohort, searchInput]);
+  }, [page, selectedCohort, searchInput, entity]);
 
   const onPreviousClick = () => {
     if (entity === ObservationEntityType?.CENTER) {
@@ -414,41 +425,12 @@ setFilteredEntityData(result)
     const { Id } = router.query;
 
 
-    const queryParams = { cohortId: cohortId, Id: Id , observationName: observationName };
+    const queryParams = { entityId: cohortId, Id: observationId , observationName: observationName };
     router.push({
       pathname: newFullPath,
       query: queryParams,
     });
   };
-
-  // const renderEntityData = (data: EntityData[], entityType: string) =>
-  //   data?.map((item, index) => (
-  //     // <Box
-  //     //   key={item.cohortId}
-  //     //   sx={{
-  //     //     margin: '10px',
-  //     //     background: 'white',
-  //     //     display: 'flex',
-  //     //     alignItems: 'center',
-  //     //   }}
-  //     // >
-  //     //   <Typography margin="10px">{toPascalCase(item?.name) }</Typography>
-  //     //   <Button
-  //     //     sx={{ width: '160px', height: '40px', marginLeft: 'auto' }}
-  //     //     onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
-  //     //   >
-
-  //     //    {index === 0 && firstEntityStatus==="draft"
-  //     //   ? t('OBSERVATION_SURVEYS.CONTINUE') 
-  //     //   : (index === 0 && firstEntityStatus==="submit")?t('OBSERVATION_SURVEYS.SUBMITTED'):t('OBSERVATION_SURVEYS.OBSERVATION_START')}
-  //     //   </Button>
-  //     // </Box>
-  //     <Entity
-  //     entityMemberValue={toPascalCase(item?.name)}
-  //     status={index === 0?firstEntityStatus:"notstarted"}
-  //     onClick={() => entityType!==ObservationEntityType.CENTER?onStartObservation(item?.userId):onStartObservation(item?.cohortId)}
-  //     />
-  //   ));
 
 
   const renderEntityData = (data: EntityData[], entityType: string) => {
@@ -509,8 +491,10 @@ setFilteredEntityData(result)
   };
 
   const handleBackEvent = () => {
+    //  router.push(
+    //     `${localStorage.getItem('observationPath')}`
+    //   );
     router.push('/observation');
-
     
   };
   const handleStatusChange = (event: any) => {
@@ -585,77 +569,124 @@ setFilteredEntityData(result)
                 sx={{
                   display: 'flex',
                   direction: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  '@media (max-width: 908px)': {
+                    flexDirection: 'column',
+                    
+                  }
                 }}
               >
-                {entity !== ObservationEntityType?.CENTER && (
-                  <FormControl sx={{ m: 3, width: 300, backgroundColor:"white"}}>
-                    <InputLabel  id="demo-single-name-label">
-                      <Typography variant="h2"color={"black"}>
-                      {t('ATTENDANCE.CENTER_NAME')}                </Typography>
-                    </InputLabel>
-                    <Select
-                      labelId="demo-single-name-label"
-                      id="demo-single-name"
-                      value={selectedCohort}
-                      onChange={handleCohortChange}
-                      input={<OutlinedInput label="Cohort Name" />}
-                      MenuProps={{
-                        PaperProps: {
-                          sx: {
-                            maxHeight: '200px',
-                            overflowY: 'auto',
-                          },
-                        },
-                      }}
-                    >
-                      {myCohortList?.map((cohort: any) => (
-                        <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                          {localStorage.getItem('role') === Role.TEAM_LEADER
-                            ? cohort.name
-                            : cohort.cohortName}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
 
+               
+                <Box sx={{
+                  marginTop: '25px',
+                  display: 'flex', alignItems: 'center', px:"10px", gap: '15px', '@media (max-width: 908px)': {
+                    flexDirection: 'column',
+                    marginTop: '25px',
+                    width: '100%',
+                  }
+}}>
+                  {entity !== ObservationEntityType?.CENTER && (
+                    <FormControl sx={{
+                      width: 300, backgroundColor: "white" , '@media (max-width: 908px)': {
+                        width: '100%',
+                      } }}>
+                      <InputLabel id="demo-single-name-label">
+                        <Typography variant="h2" color={"black"}>
+                          {t('ATTENDANCE.CENTER_NAME')}                </Typography>
+                      </InputLabel>
+                      <Select
+                        labelId="demo-single-name-label"
+                        id="demo-single-name"
+                        value={selectedCohort}
+                        onChange={handleCohortChange}
+                        input={<OutlinedInput label="Cohort Name" />}
+                        MenuProps={{
+                          PaperProps: {
+                            sx: {
+                              maxHeight: '200px',
+                              overflowY: 'auto',
+                            },
+                          },
+                        }}
+                      >
+                        {myCohortList?.map((cohort: any) => (
+                          <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
+                            {localStorage.getItem('role') === Role.TEAM_LEADER
+                              ? cohort.name
+                              : cohort.cohortName}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+
+
+                  {(
+                    <FormControl sx={{
+                      minWidth: 300, '@media (max-width: 908px)': {
+                        width: '100%',
+                      } }}>
+                      <InputLabel>{t('OBSERVATION.OBSERVATION_STATUS')} </InputLabel>
+                      <Select
+                        value={status}
+                        onChange={handleStatusChange}
+                        label={t('OBSERVATION.OBSERVATION_STATUS')}
+                        defaultValue={t('COMMON.ALL')}
+                        sx={{
+                          backgroundColor: "white"
+
+                        }}
+                      >
+                        <MenuItem value={ObservationStatus.ALL}>  {t('COMMON.ALL')}  </MenuItem>
+                        <MenuItem value={ObservationStatus.NOT_STARTED}> {t('OBSERVATION.NOT_STARTED')}</MenuItem>
+                        <MenuItem value={ObservationStatus.DRAFT}>{t('OBSERVATION.INPROGRESS')}</MenuItem>
+                        <MenuItem value={ObservationStatus.COMPLETED}>{t('OBSERVATION.COMPLETED')}</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+
+                </Box>
+                
                 <Box
-                mt="10px"
+                  mt="10px"
+                  sx={{
+                    width: '100%',
+                  }}
                 >
 
-<SearchBar
-            onSearch={setSearchInput}
-            value={searchInput}
-            placeholder="Search..."   
-            backgroundColor={"white"}
-            fullWidth={true}
-                   ></SearchBar>
+                  <SearchBar
+                    onSearch={setSearchInput}
+                    value={searchInput}
+                    placeholder="Search..."
+                    backgroundColor={"white"}
+                    fullWidth={true}
+                  ></SearchBar>
                 </Box>
-                { (
-                  <FormControl  sx={{ m: 3, minWidth: 200 }}>
-                  <InputLabel>{t('OBSERVATION.OBSERVATION_STATUS')} </InputLabel>
-                  <Select
-                    value={status}
-                    onChange={handleStatusChange}
-                    label={t('OBSERVATION.OBSERVATION_STATUS')}
-                    defaultValue={t('COMMON.ALL')} 
-                    sx={{
-                      backgroundColor:"white"
-
-                    }}
-                  >
-                    <MenuItem value={ObservationStatus.ALL}>  {t('COMMON.ALL')}  </MenuItem>
-                    <MenuItem value={ObservationStatus.NOT_STARTED}> {t('OBSERVATION.NOT_STARTED')}</MenuItem>
-                    <MenuItem value={ObservationStatus.DRAFT}>{t('OBSERVATION.INPROGRESS')}</MenuItem>
-                    <MenuItem value={ObservationStatus.COMPLETED}>{t('OBSERVATION.COMPLETED')}</MenuItem>
-                  </Select>
-                </FormControl>
-                )}
-
 
               </Box>
             
-              <Box sx={{ marginTop: '20px' , display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap:"20px"}}>{entityContent}</Box>
+              <Box
+  sx={{
+    marginTop: '20px',
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    gap: '20px',
+  }}
+>
+  {loading ? (
+    <Loader showBackdrop={false} loadingText={t('COMMON.LOADING')} />
+  ) : Data.length === 0 ? (
+    <Typography ml="40%">{t('OBSERVATION.NO_DATA_FOUND',{
+      entity:entity,
+    })}</Typography>
+  ) : (
+    entityContent
+  )}
+</Box>
+
               {/* {totalCountForCenter > 6 &&
                 entity === ObservationEntityType.CENTER && (
                   <Box
