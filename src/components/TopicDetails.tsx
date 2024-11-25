@@ -16,6 +16,7 @@ import { EventStatus } from '@/utils/app.constant';
 import { RequisiteType } from '../../app.config';
 import NoDataFound from './common/NoDataFound';
 import router from 'next/router';
+import { showToastMessage } from './Toastify';
 interface TopicDetailsProps {
   topic: string;
   subTopic: [];
@@ -60,7 +61,11 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
 
   const handlePlayers = (identifier: string) => {
     sessionStorage.setItem('previousPage', window.location.href);
-    router.push(`/play/content/${identifier}`);
+    if (identifier !== undefined && identifier !== '') {
+      router.push(`/play/content/${identifier}`);
+    } else {
+      showToastMessage(t('CENTER_SESSION.IDENTIFIER_NOT_FOUND'), 'error');
+    }
   };
 
   return (
@@ -198,6 +203,10 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                     <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
                       <Box
                         className="facilitator-bg"
+                        sx={{
+                          backgroundImage: `url(${item?.appIcon ? item.appIcon : '/decorationBg.png'})`,
+                          position: 'relative',
+                        }}
                         onClick={() => handlePlayers(item?.identifier)}
                       >
                         <Box
@@ -270,6 +279,10 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                     <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
                       <Box
                         className="facilitator-bg"
+                        sx={{
+                          backgroundImage: `url(${item?.appIcon ? item.appIcon : '/decorationBg.png'})`,
+                          position: 'relative',
+                        }}
                         onClick={() => handlePlayers(item?.identifier)}
                       >
                         <Box
@@ -342,6 +355,10 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
                     <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
                       <Box
                         className="facilitator-bg"
+                        sx={{
+                          backgroundImage: `url(${item?.appIcon ? item.appIcon : '/decorationBg.png'})`,
+                          position: 'relative',
+                        }}
                         onClick={() => handlePlayers(item?.identifier)}
                       >
                         <Box
