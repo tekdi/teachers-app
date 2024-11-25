@@ -125,6 +125,11 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     fetchTopicSubtopic();
   }, [item]);
 
+  const handleComponentOpen = () => {
+    setSelectedTopic('');
+    setSelectedSubtopics([]);
+  };
+
   const handleTopicSelection = (topic: string) => {
     setSelectedTopic(topic);
     console.log(topic);
@@ -221,6 +226,15 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     // setRemoveTopic(true);
     removeTopic = true;
     updateTopicSubtopic();
+  };
+
+  const handleClick = () => {
+    handleComponentOpen();
+    if (topicList && transformedTasks && eventStatus === EventStatus.UPCOMING) {
+      handleOpen();
+    } else {
+      handleError();
+    }
   };
 
   useEffect(() => {
@@ -336,13 +350,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
             cursor: 'pointer',
             alignItems: 'center',
           }}
-          onClick={
-            topicList &&
-            transformedTasks &&
-            eventStatus === EventStatus.UPCOMING
-              ? handleOpen
-              : handleError
-          }
+          onClick={handleClick}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <PriorityHighIcon
