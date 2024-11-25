@@ -26,9 +26,9 @@ export const getAssessmentList = async ({
 export const getDoIdForAssessmentDetails = async ({
   filters,
 }: GetDoIdServiceParam): Promise<any> => {
-  const apiUrl: string = `${URL_CONFIG.API.COMPOSITE_SEARCH}`;
-  // const apiUrl: string =
-  //   'https://sunbirdsaas.com/api/content/v1/search?orgdetails=orgName%2Cemail&licenseDetails=name%2Cdescription%2Curl';
+  // const apiUrl: string = `${URL_CONFIG.API.COMPOSITE_SEARCH}`;
+  const apiUrl: string =
+    'https://sunbirdsaas.com/api/content/v1/search?orgdetails=orgName%2Cemail&licenseDetails=name%2Cdescription%2Curl';
   const data = {
     request: {
       filters: {
