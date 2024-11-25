@@ -70,6 +70,7 @@ const CoursePlanner = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [stateName, setStateName] = useState(true);
   const [cohortsData, setCohortsData] = useState<Array<ICohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
     useState<Array<ICohort>>(cohortsData);
@@ -499,12 +500,13 @@ const CoursePlanner = () => {
             );
             setSubjects(overallCommonSubjects);
           }
+        } else {
+          setStateName(false);
         }
       } catch (error) {
         console.error('Failed to fetch cohort search results:', error);
       }
     };
-
     fetchTaxonomyResults();
   }, [value, subjects]);
 
@@ -591,7 +593,8 @@ const CoursePlanner = () => {
                   !tStore.state ||
                   !tStore.board ||
                   !tStore.medium ||
-                  !tStore.grade
+                  !tStore.grade ||
+                  stateName == false
                 } // Disable if any field is empty
               >
                 <MenuItem value={'Foundation Course'}>
