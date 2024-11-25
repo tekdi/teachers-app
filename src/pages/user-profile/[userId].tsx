@@ -543,8 +543,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                             flexWrap: 'wrap',
                           }}
                         >
-                          {orderedSubjects &&
-                            orderedSubjects.length > 0 &&
+                          {orderedSubjects && orderedSubjects.length > 0 ? (
                             orderedSubjects.map((subject: any) => {
                               const isMutualSubject =
                                 mutualSubjects?.includes(subject);
@@ -570,7 +569,18 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                                   {getLabelForSubject(subject)}
                                 </Button>
                               );
-                            })}
+                            })
+                          ) : (
+                            <Typography
+                              sx={{
+                                fontSize: '14px',
+                                fontWeight: '500',
+                                color: theme.palette.warning.A200,
+                              }}
+                            >
+                             -
+                            </Typography>
+                          )}
                         </Box>
                       </Grid>
                     );
