@@ -21,7 +21,6 @@ export const fetchContent = async (identifier: any) => {
 
 export const fetchBulkContents = async (identifiers: string[]) => {
   try {
-    const API_URL = `${URL_CONFIG.API.COMPOSITE_SEARCH}`;
     const options = {
       request: {
         filters: {
@@ -55,8 +54,6 @@ export const fetchBulkContents = async (identifiers: string[]) => {
     throw error;
   }
 };
-
-
 
 export const getHierarchy = async (identifier: any) => {
   try {

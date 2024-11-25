@@ -6,23 +6,8 @@ import {
   GetUserProjectTemplateParams,
 } from '../utils/Interfaces';
 import axios from 'axios';
-import { post } from './RestClient';
+import { Role } from '@/utils/app.constant';
 
-export const getCoursePlanner = (): CoursePlanner[] => {
-  // TODO: Add API call here
-
-  const CoursePlannerService: CoursePlanner[] = [
-    // { id: 1, subject: 'Mathematics', circular: 10 },
-    // { id: 2, subject: 'Science', circular: 50 },
-    // { id: 3, subject: 'History', circular: 30 },
-    // { id: 4, subject: 'Geography', circular: 60 },
-    // { id: 5, subject: 'Marathi', circular: 90 },
-    { id: 6, subject: 'English', circular: 0 },
-    // { id: 7, subject: 'Social Science', circular: 80 },
-  ];
-
-  return CoursePlannerService;
-};
 
 export const getTargetedSolutions = async ({
   subject,
@@ -142,5 +127,29 @@ export const UserStatusDetails = async ({ data, id, lastDownloadedAt }: GetUserP
   } catch (error) {
     console.error('Error in getting User Project Details', error);
     return error;
+  }
+};
+
+export const fetchCourseIdFromSolution = async (
+  solutionId: string, cohortId: string
+): Promise<boolean> => {
+  try {
+    const solutionResponse = await getSolutionDetails({
+      id: solutionId,
+      role: Role.TEACHER,
+    });
+
+    const externalId = solutionResponse?.result?.externalId;
+    await getUserProjectTemplate({
+      templateId: externalId,
+      solutionId,
+      role: Role.TEACHER,
+      cohortId,
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Error fetching solution details:', error);
+    throw error;
   }
 };
