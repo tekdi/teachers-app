@@ -904,17 +904,34 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               ReactGA.event('event-created-successfully', {
                 creatorId: userId,
               });
+              if (onCloseModal) {
+                console.log('list api got called');
+                onCloseModal();
+              }
             } else {
-              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+              if (response?.response?.data?.params?.errmsg) {
+                const errMsg = response?.response?.data?.params?.errmsg;
+                let errorMessage;
+                if (typeof errMsg === 'string') {
+                  console.log(errMsg);
+                  errorMessage = errMsg;
+                } else {
+                  errorMessage = errMsg[0] + ' and ' + errMsg[1];
+                }
+                showToastMessage(errorMessage, 'error');
+              } else {
+                showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+              }
             }
-            if (onCloseModal) {
-              onCloseModal();
-            }
+            // if (onCloseModal) {
+            //   console.log('list api got called');
+            //   onCloseModal();
+            // }
           } catch (error) {
             console.error('Error creating event:', error);
-            if (onCloseModal) {
-              onCloseModal();
-            }
+            // if (onCloseModal) {
+            //   onCloseModal();
+            // }
           }
         })
       );
@@ -1291,7 +1308,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       value={
                         block?.subject === selectedSubject
                           ? block?.subject
-                          : null || editSession?.metadata?.subject
+                          : null ||
+                            editSession?.metadata?.subject ||
+                            editSession?.subject
                       }
                       disabled={!(StateName && medium && grade && board)}
                     >

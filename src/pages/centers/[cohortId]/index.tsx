@@ -189,7 +189,10 @@ const CohortPage = () => {
 
   const handleSchedule = () => {
     console.log('handleSchedule called');
-    setCreateEvent(true);
+    setCreateEvent(false);
+    setTimeout(() => {
+      setCreateEvent(true);
+    }, 0);
   };
 
   const handleCloseSchedule = () => {
@@ -204,25 +207,24 @@ const CohortPage = () => {
     }
   }, [eventCreated, createEvent]);
 
-  const handleOpen = () => 
-  {
-  setOpen(true);
-  const windowUrl = window.location.pathname;
-  const cleanedUrl = windowUrl.replace(/^\//, '');
-  const telemetryInteract = {
-    context: {
-      env: 'teaching-center',
-      cdata: [],
-    },
-    edata: {
-      id: 'click-on-schedule-sessions',
-      type: Telemetry.CLICK,
-      subtype: '',
-      pageid: cleanedUrl,
-    },
+  const handleOpen = () => {
+    setOpen(true);
+    const windowUrl = window.location.pathname;
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id: 'click-on-schedule-sessions',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
-  telemetryFactory.interact(telemetryInteract);
-  }
 
   const handleClose = () => {
     setOpen(false);
@@ -400,16 +402,21 @@ const CohortPage = () => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-console.log(newValue)
-const windowUrl = window.location.pathname;
-const cleanedUrl = windowUrl.replace(/^\//, '');
+    console.log(newValue);
+    const windowUrl = window.location.pathname;
+    const cleanedUrl = windowUrl.replace(/^\//, '');
     const telemetryInteract = {
       context: {
         env: 'teaching-center',
         cdata: [],
       },
       edata: {
-        id:newValue===1? 'change-tab-to-center-session':newValue===2?'change-tab-to-learners-list':'change-tab-to-facilitators-list',
+        id:
+          newValue === 1
+            ? 'change-tab-to-center-session'
+            : newValue === 2
+              ? 'change-tab-to-learners-list'
+              : 'change-tab-to-facilitators-list',
         type: Telemetry.CLICK,
         subtype: '',
         pageid: cleanedUrl,
@@ -469,7 +476,7 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
       },
     };
     telemetryFactory.interact(telemetryInteract);
-    };
+  };
 
   const handleCloseAddLearnerModal = () => {
     setOpenAddLearnerModal(false);
@@ -567,20 +574,20 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
                 handleMenuClose();
 
                 const windowUrl = window.location.pathname;
-  const cleanedUrl = windowUrl.replace(/^\//, '');
-  const telemetryInteract = {
-    context: {
-      env: 'teaching-center',
-      cdata: [],
-    },
-    edata: {
-      id: 'click-on-rename-center',
-      type: Telemetry.CLICK,
-      subtype: '',
-      pageid: cleanedUrl,
-    },
-  };
-  telemetryFactory.interact(telemetryInteract);
+                const cleanedUrl = windowUrl.replace(/^\//, '');
+                const telemetryInteract = {
+                  context: {
+                    env: 'teaching-center',
+                    cdata: [],
+                  },
+                  edata: {
+                    id: 'click-on-rename-center',
+                    type: Telemetry.CLICK,
+                    subtype: '',
+                    pageid: cleanedUrl,
+                  },
+                };
+                telemetryFactory.interact(telemetryInteract);
               }}
             >
               <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>
@@ -608,7 +615,6 @@ const cleanedUrl = windowUrl.replace(/^\//, '');
                   },
                 };
                 telemetryFactory.interact(telemetryInteract);
-              
               }}
             >
               <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>
