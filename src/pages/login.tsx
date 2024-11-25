@@ -359,10 +359,16 @@ const LoginPage = () => {
       : null;
   return (
     <Box sx={{ overflowY: 'auto', background: theme.palette.warning['A400'] }}>
+
       <Box
         display="flex"
         flexDirection="column"
         bgcolor={theme.palette.warning.A200}
+        borderRadius={'10px'}
+        sx={{
+          '@media (min-width: 900px)': {
+           display: 'none',
+        }}}
       >
         {loading && (
           <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -373,9 +379,13 @@ const LoginPage = () => {
           alignItems={'center'}
           justifyContent={'center'}
           zIndex={99}
-          sx={{ margin: '32px 0 65px' }}
+        sx={{ margin: '5px 10px 25px', }}
         >
-          <Image src={appLogo} alt="App Logo" height={100} />{' '}
+          <Box sx={{ width: '55%', '@media (max-width: 400px)': { width: '95%' } }}>
+            <Image src={appLogo} alt="App Logo" height={80}
+              layout='responsive'
+            />
+          </Box>
         </Box>
       </Box>
 
@@ -406,18 +416,19 @@ const LoginPage = () => {
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
+          
           <form onSubmit={handleFormSubmit}>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Box
                 flexGrow={1}
-                display={'flex'}
+                // display={'flex'}
                 bgcolor={theme.palette.warning['A400']}
                 height="auto"
                 zIndex={99}
                 justifyContent={'center'}
                 p={'2rem'}
                 borderRadius={'2rem 2rem 0 0'}
-                marginTop={'-25px'}
+                
                 sx={{
                   '@media (min-width: 900px)': {
                     width: '100%',
@@ -426,9 +437,44 @@ const LoginPage = () => {
                       darkMode === 'dark'
                         ? 'rgba(0, 0, 0, 0.9) 0px 2px 8px 0px'
                         : 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
+                    marginTop: '50px',
                   },
+                  '@media (max-width: 900px)': {
+                    marginTop: '-25px',
+                  }
+                  
                 }}
               >
+
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  bgcolor={theme.palette.warning.A200}
+                  borderRadius={'10px'}
+                  sx={{
+                    '@media (max-width: 900px)': {
+                      display: 'none',
+                    }
+                  }}
+                >
+                  {loading && (
+                    <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+                  )}
+                  <Box
+                    display={'flex'}
+                    overflow="auto"
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                    zIndex={99}
+                    // sx={{ margin: '5px 10px 25px', }}
+                  >
+                    <Box sx={{ width: '60%' , '@media (max-width: 700px)': {width: '95%'}}}>
+                      <Image src={appLogo} alt="App Logo" height={80}
+                        layout='responsive'
+                      />
+                    </Box>
+                  </Box>
+                </Box>
                 <Box
                   sx={{
                     width: '100%',

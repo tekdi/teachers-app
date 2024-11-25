@@ -674,6 +674,7 @@ setFilteredEntityData(result)
     flexWrap: 'wrap',
     flexDirection: 'row',
     gap: '20px',
+                  mx: "10px"
   }}
 >
   {loading ? (
