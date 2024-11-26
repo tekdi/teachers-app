@@ -11,6 +11,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import router from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useDirection } from '../hooks/useDirection';
+import { RequisiteType } from '../../app.config';
 
 const TopicDetailView = () => {
   const [value, setValue] = React.useState(1);
@@ -146,8 +147,10 @@ const TopicDetailView = () => {
             <CourseAccordion
               expanded={true}
               title={t('CENTER_SESSION.PREREQUISITES')}
-              type={ResourcesType.NONE}
-              resources={getLearningResources(ResourcesType.NONE)}
+              type={RequisiteType.FACILITATOR_REQUISITE}
+              resources={getLearningResources(
+                RequisiteType.FACILITATOR_REQUISITE
+              )}
             />
             {/* <CoursePlannerCards
               title={t('CENTER_SESSION.PREREQUISITES')}
