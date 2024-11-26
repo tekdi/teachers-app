@@ -173,7 +173,8 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       >
         <Box>
           <Box display={'flex'} gap={1.5}>
-            {data?.isRecurring === false ? getStatusIcon() : ''}
+            {/* {data?.isRecurring === false ? getStatusIcon() : ''} */}
+            {getStatusIcon()}
             <Typography
               color={theme.palette.warning['300']}
               fontWeight={'400'}
