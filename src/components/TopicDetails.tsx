@@ -191,9 +191,14 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
             sx={{ padding: '0px', background: theme?.palette?.warning['A400'] }}
           >
             <Grid container spacing={2} sx={{ px: '16px !important' }}>
-              {content.filter((item: any) => item.type === '').length > 0 ? (
+              {content.filter(
+                (item: any) => item.type === RequisiteType.FACILITATOR_REQUISITE
+              ).length > 0 ? (
                 content
-                  .filter((item: any) => item.type === '')
+                  .filter(
+                    (item: any) =>
+                      item.type === RequisiteType.FACILITATOR_REQUISITE
+                  )
                   .map((item: any) => (
                     <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
                       <Box

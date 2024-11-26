@@ -71,14 +71,18 @@ export const DaysOfWeek = {
 
 export const Program = 'Second chance';
 
-export const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || "";
+export const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || '';
 if (!tenantId) {
-  console.warn('NEXT_PUBLIC_TENANT_ID is not set in the environment variables.');
+  console.warn(
+    'NEXT_PUBLIC_TENANT_ID is not set in the environment variables.'
+  );
 }
 
-export const frameworkId = process.env.NEXT_PUBLIC_FRAMEWORK_ID || "";
+export const frameworkId = process.env.NEXT_PUBLIC_FRAMEWORK_ID || '';
 if (!frameworkId) {
-  console.warn('NEXT_PUBLIC_FRAMEWORK_ID is not set in the environment variables.');
+  console.warn(
+    'NEXT_PUBLIC_FRAMEWORK_ID is not set in the environment variables.'
+  );
 }
 
 export enum AssessmentType {
@@ -89,13 +93,17 @@ export enum AssessmentType {
 export const RequisiteType = {
   PRE_REQUISITES: 'prerequisite',
   POST_REQUISITES: 'postrequisite',
+  FACILITATOR_REQUISITE: 'facilitator-requisite',
 };
-export const entityList={
+export const entityList = {
   TEAM_LEADER: ['center', 'facilitator', 'learner'],
-  TEACHER: ['learner']
-}
+  TEACHER: ['learner'],
+};
 
-export const MIME_TYPE  = {
-  "QUESTION_SET_MIME_TYPE": "application/vnd.sunbird.questionset",
-  "INTERACTIVE_MIME_TYPE": ["application/vnd.ekstep.h5p-archive", "application/vnd.ekstep.html-archive"]
-}
+export const MIME_TYPE = {
+  QUESTION_SET_MIME_TYPE: 'application/vnd.sunbird.questionset',
+  INTERACTIVE_MIME_TYPE: [
+    'application/vnd.ekstep.h5p-archive',
+    'application/vnd.ekstep.html-archive',
+  ],
+};
