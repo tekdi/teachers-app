@@ -1,24 +1,23 @@
 'use client';
 
-import { Box, Stack } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import ConfirmationModal from './ConfirmationModal';
-import Image from 'next/image';
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import MenuItem from '@mui/material/MenuItem';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import accountIcon from './../assets/images/account.svg';
-import dynamic from 'next/dynamic';
 import { logEvent } from '@/utils/googleAnalytics';
-import logoLight from '../../public/images/logo-light.png';
-import menuIcon from '../assets/images/menuIcon.svg';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import { Box, Stack } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import StyledMenu from './StyledMenu';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import logoLight from '../../public/images/logo-light.png';
+import menuIcon from '../assets/images/menuIcon.svg';
 import { useDirection } from '../hooks/useDirection';
 import useStore from '../store/store';
+import ConfirmationModal from './ConfirmationModal';
+import StyledMenu from './StyledMenu';
 
 interface HeaderProps {
   toggleDrawer?: (newOpen: boolean) => () => void;
@@ -174,7 +173,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
             src={logoLight}
             alt="logo"
             onClick={() => isActiveYear && router.push('/dashboard')}
-            style={{ marginRight: isRTL ? '20px' : '0px' }}
+            style={{ marginRight: isRTL ? '20px' : '0px', cursor: 'pointer' }}
           />
 
           <Box

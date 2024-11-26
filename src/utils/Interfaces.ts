@@ -335,9 +335,10 @@ export interface AllCenterAttendancePercentParam {
 }
 
 export interface UpdateCohortMemberStatusParams {
-  memberStatus: string;
+  memberStatus?: string;
   statusReason?: string;
   membershipId: string | number;
+  dynamicBody?: Record<string, any>;
 }
 
 export interface LearnerListProps {
@@ -546,12 +547,6 @@ export interface Assessment {
   studentName: string;
   progress: string;
   score?: number;
-}
-export interface BoardEnrollment {
-  userId: number;
-  studentName: string;
-  center: string;
-  isDropout: boolean;
 }
 
 export interface AssessmentSubject {
@@ -840,4 +835,49 @@ export interface PlayerConfig {
   config?: Config;
   metadata?: Metadata;
   data?: any;
+}
+
+export interface BoardEnrollmentStageCounts {
+  board: number;
+  subjects: number;
+  registration: number;
+  fees: number;
+  completed: number;
+};
+
+// export interface BoardEnrollmentFieldsType {
+//   BOARD?: string;
+//   SUBJECTS?: string;
+//   REGISTRATION?: string;
+//   FEES?: string;
+// };
+
+export interface BoardEnrollmentData {
+  userId: string;
+  cohortMembershipId: string;
+  name: string;
+  memberStatus: string;
+  statusReason: string | null;
+  customField: {
+    fieldId: string;
+    label: string;
+    value: string;
+  }[];
+  completedStep: number;
+};
+
+interface Subject {
+  name: string;
+  code?: string;
+  identifier?: string;
+}
+
+export interface BoardEnrollmentProfileProps {
+  learnerName: string | undefined;
+  centerName: string;
+  board: string;
+  subjects: Subject[];
+  registrationNum: string;
+  feesPaidStatus: string;
+  setActiveStep?: React.Dispatch<React.SetStateAction<number>>
 }

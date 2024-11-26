@@ -17,6 +17,7 @@ import { RequisiteType } from '../../app.config';
 import NoDataFound from './common/NoDataFound';
 import router from 'next/router';
 import RequisitesAccordion from './RequisitesAccordion';
+import { showToastMessage } from './Toastify';
 interface TopicDetailsProps {
   topic: string;
   subTopic: [];
@@ -61,7 +62,11 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
 
   const handlePlayers = (identifier: string) => {
     sessionStorage.setItem('previousPage', window.location.href);
-    router.push(`/play/content/${identifier}`);
+    if (identifier !== undefined && identifier !== '') {
+      router.push(`/play/content/${identifier}`);
+    } else {
+      showToastMessage(t('CENTER_SESSION.IDENTIFIER_NOT_FOUND'), 'error');
+    }
   };
 
   return (
@@ -151,6 +156,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
       </Box>
 
       <Box sx={{ mb: 1.5 }}>
+
         <RequisitesAccordion
           title={t('CENTER_SESSION.FACILITATOR_REQUISITES')}
           type={RequisiteType.FACILITATOR_REQUISITE}

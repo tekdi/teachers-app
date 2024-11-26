@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import {
+  fetchCourseIdFromSolution,
   getTargetedSolutions,
   getUserProjectDetails,
 } from '@/services/CoursePlannerService';
@@ -69,21 +70,20 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
           item?.metadata?.courseType &&
           item?.metadata?.subject
         ) {
-          const response = await getTargetedSolutions({
-            state: state,
-            medium: medium,
-            class: grade,
-            board: board,
-            type: item?.metadata?.courseType,
-            subject: item?.metadata?.subject,
-            entityId: cohortId,
-          });
+          const response = await fetchTargetedSolutions();
 
-          const courseData = response?.result?.data
-            ?.filter((data: any) => data._id !== '')
-            .reduce((data: any) => data?._id);
-          let courseId = courseData?._id;
+          if (response?.result?.data == '') {
+            return;
+          }
+    
+          let courseData = response?.result?.data[0];
+          let courseId = courseData._id;
 
+          if (!courseId) {
+            courseId = await fetchCourseIdFromSolution(courseData?.solutionId, cohortId as string);
+            courseData = response?.result?.data[0];
+          }
+    
           const res = await getUserProjectDetails({
             id: courseId,
           });
@@ -124,6 +124,25 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
 
     fetchTopicSubtopic();
   }, [item]);
+
+  const handleComponentOpen = () => {
+    setSelectedTopic('');
+    setSelectedSubtopics([]);
+  };
+
+  const fetchTargetedSolutions = async () => {
+      const response = await getTargetedSolutions({
+        state: state,
+        medium: medium,
+        class: grade,
+        board: board,
+        type: item?.metadata?.courseType,
+        subject: item?.metadata?.subject,
+        entityId: cohortId,
+      });
+      return response;
+    
+  }
 
   const handleTopicSelection = (topic: string) => {
     setSelectedTopic(topic);
@@ -221,6 +240,15 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     // setRemoveTopic(true);
     removeTopic = true;
     updateTopicSubtopic();
+  };
+
+  const handleClick = () => {
+    handleComponentOpen();
+    if (topicList && transformedTasks && eventStatus === EventStatus.UPCOMING) {
+      handleOpen();
+    } else {
+      handleError();
+    }
   };
 
   useEffect(() => {
@@ -336,13 +364,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
             cursor: 'pointer',
             alignItems: 'center',
           }}
-          onClick={
-            topicList &&
-            transformedTasks &&
-            eventStatus === EventStatus.UPCOMING
-              ? handleOpen
-              : handleError
-          }
+          onClick={handleClick}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <PriorityHighIcon

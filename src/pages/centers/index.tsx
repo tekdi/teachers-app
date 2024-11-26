@@ -575,15 +575,19 @@ const CentersPage = () => {
             </>
           )}
         </Box>
-        <Box>
-          {value === 2 && blockData?.length > 0 && (
-            <ManageUser
-              reloadState={reloadState}
-              setReloadState={setReloadState}
-              cohortData={blockData}
-            />
-          )}
-        </Box>
+        {value === 2 ? (
+          <Box>
+            {blockData?.length > 0 ? (
+              <ManageUser
+                reloadState={reloadState}
+                setReloadState={setReloadState}
+                cohortData={blockData}
+              />
+            ) : (
+              <NoDataFound />
+            )}
+          </Box>
+        ) : null}
       </Box>
       <FilterModalCenter
         open={filterModalOpen}

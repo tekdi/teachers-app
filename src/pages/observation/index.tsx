@@ -81,7 +81,16 @@ const ObservationForms: React.FC = () => {
     const [basePath, queryString] = fullPath.split('?');
     const newRoute = `/${observationId}`;
     let newFullPath = `${basePath}${newRoute}`;
-    const queryParams = { entity: entity, observationName: observationName, Id: id };
+    let queryParams;
+    if(id==="")
+    {
+     queryParams = { entity: entity, observationName: observationName };
+ 
+    }
+    else{
+      queryParams = { entity: entity, observationName: observationName, Id: id };
+
+    }
     localStorage.setItem("observationDescription", description)
     localStorage.setItem("endDateForSelectedObservation", endDate.toString())
 

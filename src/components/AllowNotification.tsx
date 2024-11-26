@@ -5,10 +5,17 @@ import { tenantId } from '../../app.config';
 
 const AllowNotification = () => {
   const [permissionStatus, setPermissionStatus] = useState(
-    Notification.permission
+    typeof window !== 'undefined' && 'Notification' in window
+      ? Notification.permission
+      : 'default'
   );
 
   useEffect(() => {
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      console.warn('Notification API is not available in this environment.');
+      return;
+    }
+
     const handlePermissionChange = () => {
       setPermissionStatus(Notification.permission);
 
@@ -45,6 +52,10 @@ const AllowNotification = () => {
 
   useEffect(() => {
     const fetchToken = async () => {
+      if (typeof window === 'undefined' || !('Notification' in window)) {
+        return;
+      }
+
       const deviceID = localStorage.getItem('deviceID');
       const authToken = localStorage.getItem('token');
       const userId = localStorage.getItem('userId');

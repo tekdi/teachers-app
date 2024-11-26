@@ -2,7 +2,7 @@ import { Role, Status, labelsToExtractForMiniProfile } from './app.constant';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import FingerprintJS from 'fingerprintjs2';
-import { CustomField, UpdateCustomField } from './Interfaces';
+import { BoardEnrollmentStageCounts, CustomField, UpdateCustomField } from './Interfaces';
 dayjs.extend(utc);
 import { format, parseISO } from 'date-fns';
 import manageUserStore from '@/store/manageUserStore';
@@ -118,16 +118,28 @@ export const debounce = <T extends (...args: any[]) => any>(
   immediate?: boolean
 ) => {
   let timeout: ReturnType<typeof setTimeout> | undefined;
-  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+
+  const debounced = function (this: ThisParameterType<T>, ...args: Parameters<T>) {
     const context = this;
     clearTimeout(timeout);
+
     if (immediate && !timeout) func.apply(context, args);
+
     timeout = setTimeout(() => {
       timeout = undefined;
       if (!immediate) func.apply(context, args);
     }, wait);
   };
+
+  // Add a cancel method to clear any pending timeout
+  debounced.cancel = () => {
+    if (timeout) clearTimeout(timeout);
+    timeout = undefined;
+  };
+
+  return debounced;
 };
+
 
 //Function to convert names in capitalize case
 export const toPascalCase = (name: string | any) => {
@@ -423,7 +435,7 @@ export const getUserDetailsById = (data: any[], userId: any) => {
 };
 
 export const getEmailPattern = (): string => {
-  return '^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$';
+  return '^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$';
 };
 
 export const translateString = (t: any, label: string) => {
@@ -574,6 +586,34 @@ export const filterAndMapAssociationsNew = (
     }));
 };
 
+export const extractCategory = (data: any[] | any, category: string) => {
+  const items = Array.isArray(data) ? data : [data];
+  return items.flatMap((item) =>
+  item.associations
+      .filter((association: { category: string; }) => association.category === category)
+      .map(
+        ({
+          name,
+          code,
+          identifier,
+        }: {
+          name: string;
+          code: string;
+          identifier: string;
+        }) => ({
+          name,
+          code,
+          identifier,
+        })
+      )
+  );
+};
+
+export const findCommon = (data1: any[], data2: any[]) => {
+  const data1Codes = new Set(data1.map((item) => item.code));
+  return data2.filter((item) => data1Codes.has(item.code));
+};
+
 export function deepClone<T>(obj: T): T {
   // Check if structuredClone is available
   if (typeof structuredClone === 'function') {
@@ -649,3 +689,49 @@ export function formatEndDate({diffDays}: any) {
       
 }
 
+//TODO: Modify Helper with correct logic
+export const calculateStageCounts = (data: { completedStep: any; }[]): BoardEnrollmentStageCounts => {
+  const stagesCount: BoardEnrollmentStageCounts = {
+    board: 0,
+    subjects: 0,
+    registration: 0,
+    fees: 0,
+    completed: 0,
+  };
+
+  const stageKeys: Record<number, keyof BoardEnrollmentStageCounts> = {
+    0: "board",
+    1: "subjects",
+    2: "registration",
+    3: "fees",
+    4: "completed",
+  };
+
+  data.forEach(({ completedStep }) => {
+    const key = stageKeys[completedStep];
+    if (key) stagesCount[key] += 1;
+  });
+
+  return stagesCount;
+};
+
+
+export function getCohortNameById(
+  cohorts: { cohortId: string; name: string }[],
+  cohortId: string
+): string | null {
+  const cohort = cohorts.find(c => c.cohortId === cohortId);
+  return cohort ? cohort.name : null;
+}
+// const isFieldFilled = (key: string, value: any): boolean => {
+//   if (key === "SUBJECTS") {
+//     return Array.isArray(value) && value.length > 0;
+//   }
+//   return value && value !== ""; // General check for other fields
+// };
+
+//  export const calculateStageCount = (formData: Record<string, any>): number =>
+//  Object.entries(formData).reduce(
+//    (count, [key, value]) => count + (isFieldFilled(key, value) ? 1 : 0),
+//    0
+//  );
