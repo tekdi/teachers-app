@@ -56,7 +56,7 @@ import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
 import { getOptionsByCategory } from '@/utils/Helper';
-import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
+// import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { telemetryFactory } from '@/utils/telemetry';
 
 dayjs.extend(utc);
@@ -1456,7 +1456,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
                       <Box sx={{ mt: 3 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <MobileTimePicker
+                          <TimePicker
                             label={t('CENTER_SESSION.START_TIME')}
                             value={
                               editSession ? startTime : block?.sessionStartTime
@@ -1477,7 +1477,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
                       <Box sx={{ mt: 3 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <MobileTimePicker
+                          <TimePicker
                             label={t('CENTER_SESSION.END_TIME')}
                             value={
                               editSession ? endTime : block?.sessionEndTime
@@ -1535,7 +1535,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <MobileTimePicker
+                      <TimePicker
                         label={t('CENTER_SESSION.START_TIME')}
                         value={
                           editSession ? startTime : block?.sessionStartTime
@@ -1560,7 +1560,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <MobileTimePicker
+                      <TimePicker
                         label={t('CENTER_SESSION.END_TIME')}
                         value={editSession ? endTime : block?.sessionEndTime}
                         onChange={(newValue) =>
