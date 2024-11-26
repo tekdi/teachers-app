@@ -8,12 +8,14 @@ interface WeekDaysProps {
   useAbbreviation?: boolean;
   onSelectionChange?: (selectedDays: string[]) => void;
   selectedDays?: any[];
+  multiselect?: boolean;
 }
 
 const WeekDays: React.FC<WeekDaysProps> = ({
   useAbbreviation,
   onSelectionChange,
   selectedDays = [],
+  multiselect,
 }) => {
   const theme = useTheme<any>();
   const [localSelectedDays, setLocalSelectedDays] = useState<number[]>([]);
@@ -105,14 +107,14 @@ const WeekDays: React.FC<WeekDaysProps> = ({
           key={`${day}-${index}`}
           ref={index === currentDayIndex ? selectedItemRef : null}
           style={{
-            backgroundColor: useAbbreviation
+            backgroundColor: multiselect
               ? localSelectedDays.includes(index)
                 ? theme.palette.primary.main
                 : 'inherit'
               : index === currentDayIndex
                 ? theme.palette.primary.main
                 : 'inherit',
-            cursor: useAbbreviation ? 'pointer' : 'default',
+            cursor: multiselect ? 'pointer' : 'default',
             border: `1px solid ${theme?.palette?.warning['A100']}`,
             borderRadius: '4px',
             justifyContent: 'center',
@@ -122,7 +124,7 @@ const WeekDays: React.FC<WeekDaysProps> = ({
         >
           <Box
             className="card flex-center"
-            sx={{ width: 'auto', height: '50px' }}
+            sx={{ width: '2.6rem', height: '50px' }}
           >
             <CardContent align-item="center">
               <Typography

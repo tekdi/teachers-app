@@ -1514,7 +1514,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 </Typography>
 
                 <WeekDays
-                  useAbbreviation={true}
+                  // useAbbreviation={true}
+                  multiselect={true}
                   selectedDays={
                     selectedDays?.length
                       ? editSession?.recurrencePattern?.daysOfWeek
