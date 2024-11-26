@@ -16,6 +16,7 @@ import { EventStatus } from '@/utils/app.constant';
 import { RequisiteType } from '../../app.config';
 import NoDataFound from './common/NoDataFound';
 import router from 'next/router';
+import RequisitesAccordion from './RequisitesAccordion';
 interface TopicDetailsProps {
   topic: string;
   subTopic: [];
@@ -150,223 +151,30 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
       </Box>
 
       <Box sx={{ mb: 1.5 }}>
-        {/* Facilitator's Requisite */}
-        <Accordion
-          defaultExpanded
-          sx={{
-            boxShadow: 'none !important',
-            border: 'none !important',
-            mt: 1.5,
-            background: theme?.palette?.action?.selected,
-          }}
-        >
-          <AccordionSummary
-            expandIcon={
-              <ArrowDropDownIcon
-                sx={{ color: theme?.palette?.warning['300'] }}
-              />
-            }
-            aria-controls="facilitator-content"
-            id="facilitator-header"
-            className="accordion-summary"
-            sx={{
-              m: 0,
-              background: theme?.palette?.action?.selected,
-              px: '16px',
-              height: '10px !important',
-              '&.Mui-expanded': {
-                minHeight: '48px',
-              },
-            }}
-          >
-            <Typography
-              fontWeight="500"
-              fontSize="14px"
-              sx={{ color: theme?.palette?.warning['300'] }}
-            >
-              {t('CENTER_SESSION.FACILITATOR_REQUISITES')}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails
-            sx={{ padding: '0px', background: theme?.palette?.warning['A400'] }}
-          >
-            <Grid container spacing={2} sx={{ px: '16px !important' }}>
-              {content.filter(
-                (item: any) => item.type === RequisiteType.FACILITATOR_REQUISITE
-              ).length > 0 ? (
-                content
-                  .filter(
-                    (item: any) =>
-                      item.type === RequisiteType.FACILITATOR_REQUISITE
-                  )
-                  .map((item: any) => (
-                    <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
-                      <Box
-                        className="facilitator-bg"
-                        onClick={() => handlePlayers(item?.identifier)}
-                      >
-                        <Box
-                          sx={{
-                            fontSize: '16px',
-                            fontWeight: '500',
-                            color: theme?.palette?.warning['A400'],
-                          }}
-                        >
-                          {item?.name || subTopic.join(', ')}
-                        </Box>
-                      </Box>
-                    </Grid>
-                  ))
-              ) : (
-                <NoDataFound />
-              )}
-            </Grid>
-          </AccordionDetails>
-        </Accordion>
-
-        {/* Learner Prerequisites */}
-        <Accordion
-          sx={{
-            boxShadow: 'none !important',
-            border: 'none !important',
-            mt: 1.5,
-            background: theme?.palette?.action?.selected,
-          }}
-        >
-          <AccordionSummary
-            expandIcon={
-              <ArrowDropDownIcon
-                sx={{ color: theme?.palette?.warning['300'] }}
-              />
-            }
-            aria-controls="prerequisite-content"
-            id="prerequisite-header"
-            className="accordion-summary"
-            sx={{
-              m: 0,
-              background: theme?.palette?.action?.selected,
-              px: '16px',
-              height: '10px !important',
-              '&.Mui-expanded': {
-                minHeight: '48px',
-              },
-            }}
-          >
-            <Typography
-              fontWeight="500"
-              fontSize="14px"
-              sx={{ color: theme?.palette?.warning['300'] }}
-            >
-              {t('CENTER_SESSION.PREREQUISITES')}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails
-            sx={{ padding: '0px', background: theme?.palette?.warning['A400'] }}
-          >
-            <Grid container spacing={2} sx={{ px: '16px !important' }}>
-              {content.filter(
-                (item: any) => item.type === RequisiteType.PRE_REQUISITES
-              ).length > 0 ? (
-                content
-                  .filter(
-                    (item: any) => item.type === RequisiteType.PRE_REQUISITES
-                  )
-                  .map((item: any) => (
-                    <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
-                      <Box
-                        className="facilitator-bg"
-                        onClick={() => handlePlayers(item?.identifier)}
-                      >
-                        <Box
-                          sx={{
-                            fontSize: '16px',
-                            fontWeight: '500',
-                            color: theme?.palette?.warning['A400'],
-                          }}
-                        >
-                          {item?.name || subTopic.join(', ')}
-                        </Box>
-                      </Box>
-                    </Grid>
-                  ))
-              ) : (
-                <NoDataFound />
-              )}
-            </Grid>
-          </AccordionDetails>
-        </Accordion>
-
-        {/* Learner Postrequisites */}
-        <Accordion
-          sx={{
-            boxShadow: 'none !important',
-            border: 'none !important',
-            mt: 1.5,
-            background: theme?.palette?.action?.selected,
-          }}
-        >
-          <AccordionSummary
-            expandIcon={
-              <ArrowDropDownIcon
-                sx={{ color: theme?.palette?.warning['300'] }}
-              />
-            }
-            aria-controls="postrequisite-content"
-            id="postrequisite-header"
-            className="accordion-summary"
-            sx={{
-              m: 0,
-              background: theme?.palette?.action?.selected,
-              px: '16px',
-              height: '10px !important',
-              '&.Mui-expanded': {
-                minHeight: '48px',
-              },
-            }}
-          >
-            <Typography
-              fontWeight="500"
-              fontSize="14px"
-              sx={{ color: theme?.palette?.warning['300'] }}
-            >
-              {t('CENTER_SESSION.POST_REQUISITES')}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails
-            sx={{ padding: '0px', background: theme?.palette?.warning['A400'] }}
-          >
-            <Grid container spacing={2} sx={{ px: '16px !important' }}>
-              {content.filter(
-                (item: any) => item.type === RequisiteType.POST_REQUISITES
-              ).length > 0 ? (
-                content
-                  .filter(
-                    (item: any) => item.type === RequisiteType.POST_REQUISITES
-                  )
-                  .map((item: any) => (
-                    <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
-                      <Box
-                        className="facilitator-bg"
-                        onClick={() => handlePlayers(item?.identifier)}
-                      >
-                        <Box
-                          sx={{
-                            fontSize: '16px',
-                            fontWeight: '500',
-                            color: theme?.palette?.warning['A400'],
-                          }}
-                        >
-                          {item?.name || subTopic.join(', ')}
-                        </Box>
-                      </Box>
-                    </Grid>
-                  ))
-              ) : (
-                <NoDataFound />
-              )}
-            </Grid>
-          </AccordionDetails>
-        </Accordion>
+        <RequisitesAccordion
+          title={t('CENTER_SESSION.FACILITATOR_REQUISITES')}
+          type={RequisiteType.FACILITATOR_REQUISITE}
+          content={content}
+          handlePlayers={handlePlayers}
+          theme={theme}
+          subTopic={subTopic}
+        />
+        <RequisitesAccordion
+          title={t('CENTER_SESSION.PREREQUISITES')}
+          type={RequisiteType.PRE_REQUISITES}
+          content={content}
+          handlePlayers={handlePlayers}
+          theme={theme}
+          subTopic={subTopic}
+        />
+        <RequisitesAccordion
+          title={t('CENTER_SESSION.POST_REQUISITES')}
+          type={RequisiteType.POST_REQUISITES}
+          content={content}
+          handlePlayers={handlePlayers}
+          theme={theme}
+          subTopic={subTopic}
+        />
       </Box>
     </>
   );
