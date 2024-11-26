@@ -221,9 +221,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         case 'minItems': {
           const property = error.property.substring(1);
           if (schema.properties?.[property]?.type === 'array' && schema.required?.includes(property)) {
-            error.message = t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD', {
+            error.message = submittedButtonStatus ? t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD', {
               minLength: schema.properties?.[property]?.minLength,
-            });
+            }):""
           }
           break;
         }
