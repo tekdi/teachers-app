@@ -531,9 +531,9 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             <Box mt={1.5}>
               <Divider />
             </Box>
-            <Box p={'18px'} display={'flex'} gap={'1rem'}>
+            <Box p={'18px'} display={'flex'} justifyContent={'center'} gap={'10px'} width={'100%'}>
               <Button
-                className="w-100 one-line-text"
+                className="one-line-text w-100"
                 sx={{ boxShadow: 'none' }}
                 variant="outlined"
                 onClick={() => handleBackAction()}
@@ -541,7 +541,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 {t('COMMON.BACK')}
               </Button>
               <Button
-                className="w-100 one-line-text"
+                className="one-line-text w-100"
                 sx={{ boxShadow: 'none' }}
                 variant="contained"
                 onClick={() => handleAction()}
