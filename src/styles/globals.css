@@ -673,7 +673,7 @@ main {
   text-overflow: ellipsis;
 }
 .one-line-text {
-  display: -webkit-box;
+  display: -webkit-box !important;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
