@@ -476,8 +476,8 @@ const BoardEnrollment = () => {
         {t('BOARD_ENROLMENT.TOTAL_LEARNERS')}: {totalLearners}
       </Box>
 
-      <Box>
-        <Grid container alignItems={'end'}>
+      <Box sx={{mr:'20px'}}>
+        <Grid container alignItems={'end'} spacing={2}>
           <Grid item xs={8} ref={searchRef}>
             <Box sx={{ px: '16px', mt: 2 }}>
               <Paper
@@ -536,7 +536,7 @@ const BoardEnrollment = () => {
             </Box>
           </Grid>
           <Grid
-            sx={{ display: 'flex', justifyContent: 'flex-end' }}
+            sx={{ display: 'flex', justifyContent: 'flex-end', }}
             xs={4}
             item
           >

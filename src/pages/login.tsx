@@ -394,6 +394,7 @@ const LoginPage = () => {
         spacing={2}
         justifyContent={'center'}
         px={'30px'}
+        marginBottom={'10px'}
         alignItems={'center'}
         width={'100% !important'}
       >
