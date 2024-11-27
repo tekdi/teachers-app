@@ -1512,14 +1512,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     // days:
                     //   block?.selectedWeekDays?.join(', ') ||
                     //   editSession?.recurrencePattern?.daysOfWeek,
-                    days: (editSession?.recurrencePattern?.daysOfWeek || [])
-                      .map(
-                        (dayIndex: any) =>
-                          ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][
-                            dayIndex
-                          ]
-                      )
-                      .join(', '),
+                    days:
+                      block?.selectedWeekDays?.join(', ') ||
+                      (editSession?.recurrencePattern?.daysOfWeek || [])
+                        .map(
+                          (dayIndex: any) =>
+                            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][
+                              dayIndex
+                            ]
+                        )
+                        .join(', '),
                   })}
                 </Typography>
 
