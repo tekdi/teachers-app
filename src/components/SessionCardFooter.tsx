@@ -27,7 +27,7 @@ import { EventStatus } from '@/utils/app.constant';
 import { useDirection } from '../hooks/useDirection';
 import { useRouter } from 'next/router';
 import { fetchBulkContents } from '@/services/PlayerService';
-import { IResource } from '@/pages/course-planner-detail-old';
+import { IResource } from '@/pages/course-planner/center/[cohortId]';
 
 const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   item,
