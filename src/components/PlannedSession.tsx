@@ -1014,7 +1014,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
           if (editSelection === t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS')) {
             console.log('sessionBlocks edit call', sessionBlocks);
-            const DaysOfWeek = sessionBlocks?.[0]?.DaysOfWeek;
+            const DaysOfWeek =
+              sessionBlocks?.[0]?.DaysOfWeek ||
+              eventData?.recurrencePattern?.daysOfWeek;
             const RecurringEndDate = sessionBlocks?.[0]?.endDateValue;
             const RecurringstartDate =
               sessionBlocks?.[0]?.recurringStartDate ??
