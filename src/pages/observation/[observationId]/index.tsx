@@ -116,13 +116,17 @@ const ObservationDetails = () => {
             if (searchInput !== '' && entity === ObservationEntityType.CENTER) {
               const filteredData = response[0]?.childData?.filter(
                 (cohort: any) =>
-                  cohort?.name
-                    ?.toLowerCase()
-                    .includes(searchInput?.toLowerCase())
+                  cohort?.name?.toLowerCase()?.includes(searchInput?.toLowerCase()) &&
+                  cohort?.status?.toLowerCase() === "active"
               );
+
               setMyCohortList(filteredData);
             } else {
-              setMyCohortList(response[0]?.childData);
+              const filteredData = response[0]?.childData?.filter(
+                (cohort: any) => cohort?.status?.toLowerCase() === "active"
+              );
+
+              setMyCohortList(filteredData);
             }
             if (selectedCohort === '')
             {
