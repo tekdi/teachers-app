@@ -140,7 +140,11 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
                   fontWeight: '400',
                 }}
               >
-                {cardTitle}
+                {cardTitle === 'pre-test'
+                  ? t('PROFILE.PRE_TEST')
+                  : cardTitle === 'post-test'
+                    ? t('PROFILE.POST_TEST')
+                    : cardTitle}
               </Box>
               <Box
                 sx={{

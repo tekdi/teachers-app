@@ -1024,7 +1024,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
               }}
             >
               <CardContent>
-                <AssessmentReport classId={classId} userId={userId} />
+                <AssessmentReport classId={cohortId} userId={userId} />
               </CardContent>
             </Card>
           </Box>
