@@ -196,7 +196,7 @@ const CohortPage = () => {
   };
 
   const handleCloseSchedule = () => {
-    setEventCreated(true);
+    setEventCreated((prev) => !prev);
     handleClose();
   };
 
