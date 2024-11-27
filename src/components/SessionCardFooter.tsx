@@ -26,6 +26,8 @@ import { convertUTCToIST, getDayMonthYearFormat } from '@/utils/Helper';
 import { EventStatus } from '@/utils/app.constant';
 import { useDirection } from '../hooks/useDirection';
 import { useRouter } from 'next/router';
+import { fetchBulkContents } from '@/services/PlayerService';
+import { IResource } from '@/pages/course-planner/center/[cohortId]';
 
 const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   item,
@@ -108,7 +110,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
                       name: resource?.name,
                       link: resource?.link,
                       type: resource?.type || '',
-                      identifier: resource?.identifier || '',
+                      id: resource?.id || '',
                     })
                   );
                   return subAcc;
@@ -118,7 +120,9 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
               return acc;
             }, {});
             console.log(learningResources);
-            setLearningResources(learningResources);
+            const resources: IResource[] = extractResources(learningResources);
+            const enrichedContent = await fetchLearningResources(resources);
+            setLearningResources(enrichedContent);
           }
         }
       } catch (error) {
@@ -128,6 +132,40 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
 
     fetchTopicSubtopic();
   }, [item]);
+
+  const extractResources = (learningResources: any): IResource[] => {
+    const resources: IResource[] = [];
+
+    Object.values(learningResources).forEach((childTasks: any) => {
+      Object.values(childTasks).forEach((resourceArray: any) => {
+        if (Array.isArray(resourceArray)) {
+          resources.push(...resourceArray);
+        }
+      });
+    });
+
+    return resources;
+  };
+
+  const fetchLearningResources = async (resources: IResource[]) => {
+    try {
+      const identifiers = resources?.map((resource: IResource) => resource?.id);
+      const response = await fetchBulkContents(identifiers);
+
+      resources = resources.map((resource: IResource) => {
+        const content = response?.find(
+          (content: any) => content?.identifier === resource?.id
+        );
+        return { ...resource, ...content, name: resource.name };
+      });
+
+      // setResources(resources);
+      console.log('response===>', resources);
+      return resources;
+    } catch (error) {
+      console.error('error', error);
+    }
+  };
 
   const handleComponentOpen = () => {
     setSelectedTopic('');

@@ -111,147 +111,151 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
   };
 
   return (
-    <Box
-      sx={{
-        height: '64px',
-      }}
-    >
+    <>
       <Box
-        className="w-md-100 ps-md-relative"
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          '@media (max-width: 500px)': {
-            position: hasSeenTutorial ? 'fixed' : 'relative',
-          },
-          top: '0px',
-          zIndex: '999',
-          width: '100%',
-          bgcolor: theme.palette.warning['A400'],
+          height: '64px',
         }}
       >
-        <Stack
-          width={'100%'}
-          direction="row"
-          justifyContent={'space-between'}
-          alignItems={'center'}
-          height="64px"
-          boxShadow={
-            darkMode === 'dark'
-              ? '0px 1px 3px 0px #ffffff1a'
-              : '0px 1px 3px 0px #0000004D'
-          }
-          className={isRTL ? '' : 'pl-md-20'}
+        <Box
+          className="w-md-100 ps-md-relative"
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            '@media (max-width: 500px)': {
+              position: hasSeenTutorial ? 'fixed' : 'relative',
+            },
+            top: '0px',
+            zIndex: '999',
+            width: '100%',
+            bgcolor: theme.palette.warning['A400'],
+          }}
         >
-          <Box
-            onClick={() => {
-              if (openDrawer) {
-                if (toggleDrawer) {
-                  toggleDrawer(true)();
-                }
-              } else {
-                handleToggleDrawer(true)();
-              }
-            }}
-            mt={'0.5rem'}
-            className="display-md-none"
-            paddingLeft={'20px'}
-            sx={{ marginRight: isRTL ? '20px' : '0px' }}
-          >
-            <Image
-              height={12}
-              width={18}
-              src={menuIcon}
-              alt="menu"
-              style={{ cursor: 'pointer' }}
-            />
-          </Box>
-
-          <Image
-            height={40}
-            width={44}
-            src={logoLight}
-            alt="logo"
-            onClick={() => isActiveYear && router.push('/dashboard')}
-            style={{ marginRight: isRTL ? '20px' : '0px', cursor: 'pointer' }}
-          />
-
-          <Box
-            onClick={handleClick}
-            sx={{
-              cursor: 'pointer',
-              position: 'relative',
-              marginLeft: isRTL ? '16px' : '0px',
-            }}
-            aria-controls={open ? 'account-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : 'false'}
-            paddingRight={'20px'}
-            display={'flex'}
-            justifyContent={'center'}
+          <Stack
+            width={'100%'}
+            direction="row"
+            justifyContent={'space-between'}
             alignItems={'center'}
-            flexDirection={'column'}
-            mt={'0.5rem'}
+            height="64px"
+            boxShadow={
+              darkMode === 'dark'
+                ? '0px 1px 3px 0px #ffffff1a'
+                : '0px 1px 3px 0px #0000004D'
+            }
+            className={isRTL ? '' : 'pl-md-20'}
           >
-            <AccountCircleOutlinedIcon
-              sx={{ color: theme.palette.warning['A200'] }}
-            />
-          </Box>
-
-          <StyledMenu
-            id="profile-menu"
-            MenuListProps={{
-              'aria-labelledby': 'profile-button',
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-          >
-            {pathname !== `/user-profile/${userId}` && (
-              <MenuItem
-                onClick={handleProfileClick}
-                disableRipple
-                sx={{ 'letter-spacing': 'normal' }}
-              >
-                <PersonOutlineOutlinedIcon />
-                {t('PROFILE.MY_PROFILE')}
-              </MenuItem>
-            )}
-            <MenuItem
-              onClick={logoutOpen}
-              disableRipple
-              sx={{
-                'letter-spacing': 'normal',
-                color: theme.palette.warning['300'],
+            <Box
+              onClick={() => {
+                if (openDrawer) {
+                  if (toggleDrawer) {
+                    toggleDrawer(true)();
+                  }
+                } else {
+                  handleToggleDrawer(true)();
+                }
               }}
+              mt={'0.5rem'}
+              className="display-md-none"
+              paddingLeft={'20px'}
+              sx={{ marginRight: isRTL ? '20px' : '0px' }}
             >
-              <LogoutOutlinedIcon
-                sx={{ color: theme.palette.warning['300'] }}
+              <Image
+                height={12}
+                width={18}
+                src={menuIcon}
+                alt="menu"
+                style={{ cursor: 'pointer' }}
               />
-              {t('COMMON.LOGOUT')}
-            </MenuItem>
-          </StyledMenu>
-        </Stack>
+            </Box>
+
+            <Image
+              height={40}
+              width={44}
+              src={logoLight}
+              alt="logo"
+              onClick={() => isActiveYear && router.push('/dashboard')}
+              style={{ marginRight: isRTL ? '20px' : '0px', cursor: 'pointer' }}
+            />
+
+            <Box
+              onClick={handleClick}
+              sx={{
+                cursor: 'pointer',
+                position: 'relative',
+                marginLeft: isRTL ? '16px' : '0px',
+              }}
+              aria-controls={open ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : 'false'}
+              paddingRight={'20px'}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              flexDirection={'column'}
+              mt={'0.5rem'}
+            >
+              <AccountCircleOutlinedIcon
+                sx={{ color: theme.palette.warning['A200'] }}
+              />
+            </Box>
+
+            <StyledMenu
+              id="profile-menu"
+              MenuListProps={{
+                'aria-labelledby': 'profile-button',
+              }}
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+            >
+              {pathname !== `/user-profile/${userId}` && (
+                <MenuItem
+                  onClick={handleProfileClick}
+                  disableRipple
+                  sx={{ 'letter-spacing': 'normal' }}
+                >
+                  <PersonOutlineOutlinedIcon />
+                  {t('PROFILE.MY_PROFILE')}
+                </MenuItem>
+              )}
+              <MenuItem
+                onClick={logoutOpen}
+                disableRipple
+                sx={{
+                  'letter-spacing': 'normal',
+                  color: theme.palette.warning['300'],
+                }}
+              >
+                <LogoutOutlinedIcon
+                  sx={{ color: theme.palette.warning['300'] }}
+                />
+                {t('COMMON.LOGOUT')}
+              </MenuItem>
+            </StyledMenu>
+          </Stack>
+        </Box>
+
+        <ConfirmationModal
+          message={getMessage()}
+          handleAction={handleLogoutClick}
+          buttonNames={{
+            primary: t('COMMON.LOGOUT'),
+            secondary: t('COMMON.CANCEL'),
+          }}
+          handleCloseModal={handleCloseModel}
+          modalOpen={modalOpen}
+        />
+
+        <MenuDrawer
+          toggleDrawer={openDrawer ? toggleDrawer : handleToggleDrawer}
+          open={openDrawer ? openDrawer : openMenu}
+          language={language}
+          setLanguage={setLanguage}
+        />
       </Box>
-
-      <ConfirmationModal
-        message={getMessage()}
-        handleAction={handleLogoutClick}
-        buttonNames={{
-          primary: t('COMMON.LOGOUT'),
-          secondary: t('COMMON.CANCEL'),
-        }}
-        handleCloseModal={handleCloseModel}
-        modalOpen={modalOpen}
-      />
-
-      <MenuDrawer
-        toggleDrawer={openDrawer ? toggleDrawer : handleToggleDrawer}
-        open={openDrawer ? openDrawer : openMenu}
-        language={language}
-        setLanguage={setLanguage}
-      />
-    </Box>
+      <Box sx={{marginTop:'10px'}}></Box>
+    </>
+    
   );
 };
 
