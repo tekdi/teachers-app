@@ -300,9 +300,9 @@ export interface CohortAttendancePercentParam {
 export interface GetDoIdServiceParam {
   filters: {
     program?: string | string[];
-    se_boards?: (string | null)[];
+    boards?: (string | null)[];
     subject?: string | string[];
-    assessment1?: string | string[];
+    assessmentType?: string | string[];
   };
 }
 

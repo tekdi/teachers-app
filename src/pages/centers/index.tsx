@@ -163,7 +163,7 @@ const CentersPage = () => {
             });
 
             if (
-              accessGranted('showBlockLevelCohort', accessControl, userRole)
+              accessGranted('showBlockLevelCohort', accessControl, userRole) && response
             ) {
               const blockData = response.map((block: any) => {
                 const blockName = block.cohortName;
@@ -186,7 +186,7 @@ const CentersPage = () => {
             }
 
             if (
-              accessGranted('showBlockLevelCohort', accessControl, userRole)
+              accessGranted('showBlockLevelCohort', accessControl, userRole) && response
             ) {
               response.map((res: any) => {
                 const centerData = res?.childData.map((child: any) => {
@@ -207,7 +207,7 @@ const CentersPage = () => {
               });
             }
 
-            if (accessGranted('showTeacherCohorts', accessControl, userRole)) {
+            if (accessGranted('showTeacherCohorts', accessControl, userRole) && response) {
               const cohortData = response.map((center: any) => {
                 const cohortName = center.cohortName;
                 const cohortId = center.cohortId;
@@ -231,6 +231,7 @@ const CentersPage = () => {
           }
         }
       } catch (error) {
+        console.log("error", error);
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       }
     };
@@ -539,35 +540,35 @@ const CentersPage = () => {
                       center.centerType?.toUpperCase() === CenterType.REGULAR ||
                       center.centerType === ''
                   ) && (
-                    <CenterList
-                      title="CENTERS.REGULAR_CENTERS"
-                      centers={filteredCenters.filter(
-                        (center) =>
-                          center.centerType?.toUpperCase() ===
+                      <CenterList
+                        title="CENTERS.REGULAR_CENTERS"
+                        centers={filteredCenters.filter(
+                          (center) =>
+                            center.centerType?.toUpperCase() ===
                             CenterType.REGULAR || center.centerType === ''
-                      )}
-                      router={router}
-                      theme={theme}
-                      t={t}
-                    />
-                  )}
+                        )}
+                        router={router}
+                        theme={theme}
+                        t={t}
+                      />
+                    )}
 
                   {/* Remote Centers */}
                   {filteredCenters.some(
                     (center) =>
                       center.centerType?.toUpperCase() === CenterType.REMOTE
                   ) && (
-                    <CenterList
-                      title="CENTERS.REMOTE_CENTERS"
-                      centers={filteredCenters.filter(
-                        (center) =>
-                          center.centerType?.toUpperCase() === CenterType.REMOTE
-                      )}
-                      router={router}
-                      theme={theme}
-                      t={t}
-                    />
-                  )}
+                      <CenterList
+                        title="CENTERS.REMOTE_CENTERS"
+                        centers={filteredCenters.filter(
+                          (center) =>
+                            center.centerType?.toUpperCase() === CenterType.REMOTE
+                        )}
+                        router={router}
+                        theme={theme}
+                        t={t}
+                      />
+                    )}
                 </>
               ) : (
                 <NoDataFound />
