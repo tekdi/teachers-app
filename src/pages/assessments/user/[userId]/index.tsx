@@ -89,9 +89,9 @@ function AssessmentsDetails() {
 
       const filters = {
         program: [Program],
-        se_boards: [stateName],
+        boards: [stateName],
         // subject: [subjects || subject],
-        assessment1:
+        assessmentType:
           assessmentType === 'pre'
             ? AssessmentType.PRE_TEST
             : AssessmentType.POST_TEST,
