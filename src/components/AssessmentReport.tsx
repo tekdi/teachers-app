@@ -38,7 +38,7 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
     const filters = {
       program: [Program],
       se_boards: [stateName],
-      assessment1: type,
+      assessmentType: type,
     };
 
     try {
