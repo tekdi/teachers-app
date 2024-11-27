@@ -15,6 +15,7 @@ import {
   getBeforeDate,
   getTodayDate,
   shortDateFormat,
+  sortSessions,
   toPascalCase,
 } from '../utils/Helper';
 import {
@@ -787,8 +788,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
               }
             });
           }
-          setSessions(sessionArray);
-          setExtraSessions(extraSessionArray);
+          const eventList = sortSessions(sessionArray);
+          setSessions(eventList);
+          const ExtraEventList = sortSessions(extraSessionArray);
+          setExtraSessions(ExtraEventList);
         }
         setEventUpdated(false);
         setEventDeleted(false);
