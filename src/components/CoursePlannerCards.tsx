@@ -37,42 +37,46 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
             index: number
           ) => (
             <Grid item xs={6} md={4} lg={2} sx={{ mt: 2 }} key={index}>
-              <Box
-                className="facilitator-bg"
-                sx={{ backgroundImage: `url(${resource?.appIcon ? resource.appIcon : '/decorationBg.png'})`, position: 'relative', }}
-                onClick={() => router.push(`/play/content/${resource?.identifier || resource?.id}`)}
-              >
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust opacity as needed
-                    zIndex: 1,
-                  }}
-                />
+
+
+              <Box className="facilitator-bg">
                 <Box
-                  sx={{
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    color: theme?.palette?.warning['A400'],
-                    position: 'relative', zIndex: 2,
-                  }}
+                  sx={{ backgroundImage: `url(${resource?.appIcon ? resource.appIcon : '/decorationBg.png'})`, position: 'relative', }}
+                  onClick={() => router.push(`/play/content/${resource?.identifier || resource?.id}`)}
                 >
-                  {resource?.name || 'Untitled Resource'}
-                </Box>
-                <Box
-                  sx={{
-                    fontSize: '11px',
-                    fontWeight: '500',
-                    color: theme?.palette?.warning['A400'],
-                  }}
-                >
-                  Subtitle
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust opacity as needed
+                      zIndex: 1,
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      fontSize: '16px',
+                      fontWeight: '500',
+                      color: theme?.palette?.warning['A400'],
+                      position: 'relative', zIndex: 2,
+                    }}
+                  >
+                    {resource?.name || 'Untitled Resource'}
+                  </Box>
+                  <Box
+                    sx={{
+                      fontSize: '11px',
+                      fontWeight: '500',
+                      color: theme?.palette?.warning['A400'],
+                    }}
+                  >
+                    Subtitle
+                  </Box>
                 </Box>
               </Box>
+              
             </Grid>
           )
         )}

@@ -964,19 +964,9 @@ main {
 
 .facilitator-bg {
   display: flex;
-  flex-direction: column;
-  justify-content: end;
-
-  /* width: 140px; */
-  height: 180px;
-  padding: 15px;
-  object-fit: cover;
-  /* background-color: #4a4640; */
-  /* background-image: url('./../assets/images/decorationBg.png'); */
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  border-radius: 28px;
+  height: 244px;
+  background-color: #ECE6F0;
+  border-radius: 16px;
 }
 
 /* To Hide the caret icon on input type number */
