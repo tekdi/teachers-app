@@ -242,12 +242,13 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
           }
           if (response && response.length > 0) {
             if (response[0].type === cohortHierarchy.COHORT) {
+
               const filteredData = response
                 ?.map((item: any) => ({
                   cohortId: item?.cohortId,
                   parentId: item?.parentId,
                   name: item?.cohortName || item?.name,
-                  status: item?.status,
+                  status: item?.cohortStatus,
                 }))
                 ?.filter(Boolean);
               setCohortsData(filteredData);
@@ -572,7 +573,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             }
                           >
                             {filteredCohortData?.length !== 0 ? (
-                              manipulatedCohortData?.map((cohort) => (
+                              filteredManipulatedCohortData?.map((cohort: any) => (
                                 <MenuItem
                                   key={cohort.cohortId}
                                   value={cohort.cohortId}
