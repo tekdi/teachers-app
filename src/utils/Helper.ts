@@ -2,7 +2,11 @@ import { Role, Status, labelsToExtractForMiniProfile } from './app.constant';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import FingerprintJS from 'fingerprintjs2';
-import { BoardEnrollmentStageCounts, CustomField, UpdateCustomField } from './Interfaces';
+import {
+  BoardEnrollmentStageCounts,
+  CustomField,
+  UpdateCustomField,
+} from './Interfaces';
 dayjs.extend(utc);
 import { format, parseISO } from 'date-fns';
 import manageUserStore from '@/store/manageUserStore';
@@ -31,16 +35,14 @@ export const MONTHS = [
 ];
 
 export const formatDate = (dateString: string) => {
-  if(dateString)
-  {
+  if (dateString) {
     const dateOnly = dateString?.split('T')[0];
-  
+
     const [year, monthIndex, day] = dateOnly.split('-');
     const month = MONTHS[parseInt(monthIndex, 10) - 1];
-    
+
     return `${day} ${month}, ${year}`;
   }
-  
 };
 
 export const formatToShowDateMonth = (date: Date) => {
@@ -119,7 +121,10 @@ export const debounce = <T extends (...args: any[]) => any>(
 ) => {
   let timeout: ReturnType<typeof setTimeout> | undefined;
 
-  const debounced = function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+  const debounced = function (
+    this: ThisParameterType<T>,
+    ...args: Parameters<T>
+  ) {
     const context = this;
     clearTimeout(timeout);
 
@@ -139,7 +144,6 @@ export const debounce = <T extends (...args: any[]) => any>(
 
   return debounced;
 };
-
 
 //Function to convert names in capitalize case
 export const toPascalCase = (name: string | any) => {
@@ -323,10 +327,13 @@ export const generateUsernameAndPassword = (
 export const mapFieldIdToValue = (
   fields: CustomField[]
 ): { [key: string]: string } => {
-  return fields?.reduce((acc: { [key: string]: string }, field: CustomField) => {
-    acc[field.fieldId] = field.value;
-    return acc;
-  }, {});
+  return fields?.reduce(
+    (acc: { [key: string]: string }, field: CustomField) => {
+      acc[field.fieldId] = field.value;
+      return acc;
+    },
+    {}
+  );
 };
 
 export const convertUTCToIST = (utcDateTime: string) => {
@@ -370,13 +377,13 @@ export const convertLocalToUTC = (localDateTime: any) => {
 
 export const getCurrentYearPattern = () => {
   const currentYear = new Date().getFullYear();
-  
+
   // Build the dynamic part for the current century
   let regexPart = '';
   if (currentYear >= 2000 && currentYear < 2100) {
     const lastDigit = currentYear % 10;
     const middleDigit = Math.floor((currentYear % 100) / 10);
-    
+
     regexPart = `20[0-${middleDigit - 1}][0-9]|20${middleDigit}[0-${lastDigit}]`;
   }
 
@@ -489,15 +496,15 @@ export const sortSessionsByTime = (sessionsArray: any) => {
 // Helper function to get options by category
 export const getOptionsByCategory = (frameworks: any, categoryCode: string) => {
   // Find the category by code
-  const category = frameworks.categories.find(
-    (category: any) => category.code === categoryCode
+  const category = frameworks?.categories?.find(
+    (category: any) => category?.code === categoryCode
   );
 
   // Return the mapped terms
-  return category.terms.map((term: any) => ({
-    name: term.name,
-    code: term.code,
-    associations: term.associations
+  return category?.terms?.map((term: any) => ({
+    name: term?.name,
+    code: term?.code,
+    associations: term?.associations,
   }));
 };
 
@@ -515,55 +522,64 @@ interface DataItem {
   code: string;
   associations: Association[];
 }
-export const getAssociationsByName = (data: DataItem[], name: string): Association[] | [] => {
-  const foundItem = data.find(item => item.name === name);
+export const getAssociationsByName = (
+  data: DataItem[],
+  name: string
+): Association[] | [] => {
+  const foundItem = data.find((item) => item.name === name);
   return foundItem ? foundItem.associations : [];
 };
 
-
-export const getAssociationsByCodeNew = (data: DataItem[], code: string): Association[] | [] => {
-  const foundItem = data.find(item => item.name === code);
-  return foundItem ? foundItem.associations : [];
+export const getAssociationsByCodeNew = (
+  data: DataItem[],
+  code: string
+): Association[] | [] => {
+  const foundItem = data?.find((item) => item?.name === code);
+  return foundItem ? foundItem?.associations : [];
 };
 
-
-
-export const getAssociationsByCode = (data: DataItem[], code: string): Association[] | [] => {
-  const foundItem = data.find(item => item.code === code);
+export const getAssociationsByCode = (
+  data: DataItem[],
+  code: string
+): Association[] | [] => {
+  const foundItem = data.find((item) => item.code === code);
   return foundItem ? foundItem.associations : [];
 };
 
 export const findCommonAssociations = (data1: any[], data2: any[]) => {
+  if (!data1?.length) return data2;
+  if (!data2?.length) return data1;
 
-  if (!data1.length) return data2;
-  if (!data2.length) return data1;
-
-  return data1.map((item1) => {
-    const item2 = data2.find((item) => item.code === item1.code);
-    if (item2) {
-      const commonAssociations = item1.associations.filter((assoc1: any) =>
-        item2.associations.some((assoc2: any) => assoc1.identifier === assoc2.identifier)
-      );
-      if (commonAssociations.length > 0) {
-        return {
-          name: item1.name,
-          code: item1.code,
-          associations: commonAssociations,
-        };
+  return data1
+    ?.map((item1) => {
+      const item2 = data2?.find((item) => item?.code === item1?.code);
+      if (item2) {
+        const commonAssociations = item1?.associations?.filter((assoc1: any) =>
+          item2?.associations?.some(
+            (assoc2: any) => assoc1?.identifier === assoc2?.identifier
+          )
+        );
+        if (commonAssociations?.length > 0) {
+          return {
+            name: item1?.name,
+            code: item1?.code,
+            associations: commonAssociations,
+          };
+        }
       }
-    }
-    return null;
-  }).filter(Boolean);
+      return null;
+    })
+    .filter(Boolean);
 };
 
 export const filterAndMapAssociationsNew = (
   category: string,
   options: any[],
   associationsList?: any[],
-  codeKey: string = "code"
+  codeKey: string = 'code'
 ) => {
   if (!Array.isArray(options)) {
-    console.error("Options is not an array:", options);
+    console.error('Options is not an array:', options);
     return [];
   }
 
@@ -589,8 +605,10 @@ export const filterAndMapAssociationsNew = (
 export const extractCategory = (data: any[] | any, category: string) => {
   const items = Array.isArray(data) ? data : [data];
   return items.flatMap((item) =>
-  item.associations
-      .filter((association: { category: string; }) => association.category === category)
+    item.associations
+      .filter(
+        (association: { category: string }) => association.category === category
+      )
       .map(
         ({
           name,
@@ -624,7 +642,10 @@ export function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => {
+export const updateStoreFromCohorts = (
+  activeCohorts: any,
+  blockObject: any
+) => {
   const setDistrictCode = manageUserStore.getState().setDistrictCode;
   const setDistrictId = manageUserStore.getState().setDistrictId;
   const setStateCode = manageUserStore.getState().setStateCode;
@@ -635,14 +656,13 @@ export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => 
   const setDistrictName = manageUserStore.getState().setDistrictName;
   const setStateName = manageUserStore.getState().setStateName;
 
-
   const district = activeCohorts?.[0]?.customField?.find(
     (item: any) => item?.label === 'DISTRICTS'
   );
   if (district) {
     setDistrictCode(district?.code);
     setDistrictId(district?.fieldId);
-    setDistrictName(district?.value)
+    setDistrictName(district?.value);
   }
 
   const state = activeCohorts?.[0]?.customField?.find(
@@ -662,35 +682,35 @@ export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => 
   }
 };
 
-export function formatEndDate({diffDays}: any) {
+export function formatEndDate({ diffDays }: any) {
   // Check if structuredClone is available
-  if(diffDays)
-    {
-      let remainingTime = '';
+  if (diffDays) {
+    let remainingTime = '';
     if (diffDays >= 365) {
       const years = Math.floor(diffDays / 365);
       const remainingDays = diffDays % 365;
-      
-      const months = Math.floor(remainingDays / 30.44); 
+
+      const months = Math.floor(remainingDays / 30.44);
       const days = Math.round(remainingDays % 30.44);
-      
+
       remainingTime = `${years} year(s)${months > 0 ? `, ${months} month(s)` : ''}${days > 0 ? `,  ${days} day(s)` : ''}`;
     } else if (diffDays > 31) {
-      const months = Math.floor(diffDays / 30.44); 
+      const months = Math.floor(diffDays / 30.44);
       const days = Math.round(diffDays % 30.44);
-      
+
       remainingTime = `${months} month(s) ${days > 0 ? ` , ${days} day(s)` : ''}`;
     } else {
       remainingTime = `${diffDays} day(s)`;
     }
     return remainingTime;
   }
-  return "";
-      
+  return '';
 }
 
 //TODO: Modify Helper with correct logic
-export const calculateStageCounts = (data: { completedStep: any; }[]): BoardEnrollmentStageCounts => {
+export const calculateStageCounts = (
+  data: { completedStep: any }[]
+): BoardEnrollmentStageCounts => {
   const stagesCount: BoardEnrollmentStageCounts = {
     board: 0,
     subjects: 0,
@@ -700,11 +720,11 @@ export const calculateStageCounts = (data: { completedStep: any; }[]): BoardEnro
   };
 
   const stageKeys: Record<number, keyof BoardEnrollmentStageCounts> = {
-    0: "board",
-    1: "subjects",
-    2: "registration",
-    3: "fees",
-    4: "completed",
+    0: 'board',
+    1: 'subjects',
+    2: 'registration',
+    3: 'fees',
+    4: 'completed',
   };
 
   data.forEach(({ completedStep }) => {
@@ -715,12 +735,11 @@ export const calculateStageCounts = (data: { completedStep: any; }[]): BoardEnro
   return stagesCount;
 };
 
-
 export function getCohortNameById(
   cohorts: { cohortId: string; name: string }[],
   cohortId: string
 ): string | null {
-  const cohort = cohorts.find(c => c.cohortId === cohortId);
+  const cohort = cohorts.find((c) => c.cohortId === cohortId);
   return cohort ? cohort.name : null;
 }
 // const isFieldFilled = (key: string, value: any): boolean => {
