@@ -72,7 +72,11 @@ const RequisitesAccordion: React.FC<RequisitesAccordionProps> = ({
                 <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
                   <Box
                     className="facilitator-bg"
-                    onClick={() => handlePlayers(item?.identifier)}
+                    sx={{
+                      backgroundImage: `url(${item?.appIcon ? item.appIcon : '/decorationBg.png'})`,
+                      position: 'relative',
+                    }}
+                    onClick={() => handlePlayers(item?.id)}
                   >
                     <Box
                       sx={{

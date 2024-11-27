@@ -94,12 +94,15 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       if (typeof window !== 'undefined' && window.localStorage) {
         const CenterList = localStorage.getItem('CenterList');
         const centerOptions = CenterList ? JSON.parse(CenterList) : [];
-        centerOptionsList = centerOptions.map(
-          (center: { cohortId: string; cohortName: string }) => ({
-            value: center.cohortId,
-            label: center.cohortName,
-          })
-        );
+        console.log("centerOptions",centerOptions);
+        
+        centerOptionsList = centerOptions
+  .filter((center: { cohortStatus: string }) => center.cohortStatus === 'active')
+  .map((center: { cohortId: string; cohortName: string }) => ({
+    value: center.cohortId,
+    label: center.cohortName,
+  }));
+
         console.log(centerOptionsList);
       }
       const assignCentersField: Field = {

@@ -69,7 +69,7 @@ export const DaysOfWeek = {
   Sat: 6,
 };
 
-export const Program = 'Second chance';
+export const Program = 'secondchance';
 
 export const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || '';
 if (!tenantId) {
@@ -86,8 +86,8 @@ if (!frameworkId) {
 }
 
 export enum AssessmentType {
-  PRE_TEST = 'Pre Test',
-  POST_TEST = 'Post Test',
+  PRE_TEST = 'pre-test',
+  POST_TEST = 'post-test',
 }
 
 export const RequisiteType = {

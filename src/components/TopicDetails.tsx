@@ -38,18 +38,18 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
-  const content: any = [];
-  if (learningResources?.[topic]) {
-    const subTopics = learningResources[topic];
-    subTopic?.forEach((currentSubTopic: string) => {
-      if (subTopics[currentSubTopic]) {
-        const resources = subTopics[currentSubTopic];
-        resources?.forEach((resource: any) => {
-          content.push(resource);
-        });
-      }
-    });
-  }
+  // const content: any = [];
+  // if (learningResources?.[topic]) {
+  //   const subTopics = learningResources[topic];
+  //   subTopic?.forEach((currentSubTopic: string) => {
+  //     if (subTopics[currentSubTopic]) {
+  //       const resources = subTopics[currentSubTopic];
+  //       resources?.forEach((resource: any) => {
+  //         content.push(resource);
+  //       });
+  //     }
+  //   });
+  // }
 
   const openTopicModal = () => {
     handleOpen();
@@ -154,13 +154,11 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
           />
         </Box>
       </Box>
-
       <Box sx={{ mb: 1.5 }}>
-
         <RequisitesAccordion
           title={t('CENTER_SESSION.FACILITATOR_REQUISITES')}
           type={RequisiteType.FACILITATOR_REQUISITE}
-          content={content}
+          content={learningResources}
           handlePlayers={handlePlayers}
           theme={theme}
           subTopic={subTopic}
@@ -168,7 +166,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
         <RequisitesAccordion
           title={t('CENTER_SESSION.PREREQUISITES')}
           type={RequisiteType.PRE_REQUISITES}
-          content={content}
+          content={learningResources}
           handlePlayers={handlePlayers}
           theme={theme}
           subTopic={subTopic}
@@ -176,7 +174,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
         <RequisitesAccordion
           title={t('CENTER_SESSION.POST_REQUISITES')}
           type={RequisiteType.POST_REQUISITES}
-          content={content}
+          content={learningResources}
           handlePlayers={handlePlayers}
           theme={theme}
           subTopic={subTopic}
