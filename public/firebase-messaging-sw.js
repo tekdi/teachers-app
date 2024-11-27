@@ -1,17 +1,11 @@
 // Scripts for firebase and firebase messaging
 importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js');
+import firebaseConfig from '../firebaseConfig';
 
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCmhNz-HMkkf42QNmnf7pnZm49FP5g4INw",
-  authDomain: "backend-e99c8.firebaseapp.com",
-  projectId: "backend-e99c8",
-  storageBucket: "backend-e99c8.appspot.com",
-  messagingSenderId: "839139131975",
-  appId: "1:839139131975:web:90af50d01e2eb0f510e762",
-  measurementId: "G-5237RSF3TC"
-};
+
+const firebaseConfig = firebaseConfig
 // Initialize the Firebase app in the service worker by passing the generated config
 firebase.initializeApp(firebaseConfig);
 // Retrieve firebase messaging
