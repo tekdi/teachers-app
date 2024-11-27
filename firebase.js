@@ -16,7 +16,7 @@ export const requestPermission = async () => {
 
   if (permission === 'granted') {
     const token = await getToken(messaging, {
-      vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
+      vapidKey: process.env.NEXT_PUBLIC_FCM_VAPID_KEY,
     });
     console.log('Notification token:', token);
     return token;
