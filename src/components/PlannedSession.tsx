@@ -1509,7 +1509,21 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               <Box sx={{ overflow: 'none' }}>
                 <Typography variant="h2" component="h2">
                   {t('COMMON.HELD_EVERY_WEEK_ON', {
-                    days: block?.selectedWeekDays?.join(', '),
+                    // days:
+                    //   block?.selectedWeekDays?.join(', ') ||
+                    //   editSession?.recurrencePattern?.daysOfWeek,
+                    days: (
+                      block?.selectedWeekDays ||
+                      editSession?.recurrencePattern?.daysOfWeek ||
+                      []
+                    )
+                      .map(
+                        (dayIndex: any) =>
+                          ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][
+                            dayIndex
+                          ]
+                      )
+                      .join(', '),
                   })}
                 </Typography>
 
