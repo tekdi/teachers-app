@@ -360,7 +360,7 @@ const CoursePlannerDetail = () => {
       const identifiers = resources.map((resource: IResource) => resource?.id);
       const response = await fetchBulkContents(identifiers);
 
-      resources = response.map((resource: IResource) => {
+      resources = resources.map((resource: IResource) => {
         const content = response?.find(
           (content: any) => content?.identifier === resource?.id
         );

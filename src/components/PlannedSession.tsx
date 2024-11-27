@@ -1014,7 +1014,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
           if (editSelection === t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS')) {
             console.log('sessionBlocks edit call', sessionBlocks);
-            const DaysOfWeek = sessionBlocks?.[0]?.DaysOfWeek;
+            const DaysOfWeek =
+              sessionBlocks?.[0]?.DaysOfWeek ||
+              eventData?.recurrencePattern?.daysOfWeek;
             const RecurringEndDate = sessionBlocks?.[0]?.endDateValue;
             const RecurringstartDate =
               sessionBlocks?.[0]?.recurringStartDate ??
@@ -1132,7 +1134,19 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               'success'
             );
           } else {
-            showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            if (response?.response?.data?.params?.errmsg) {
+              const errMsg = response?.response?.data?.params?.errmsg;
+              let errorMessage;
+              if (typeof errMsg === 'string') {
+                console.log(errMsg);
+                errorMessage = errMsg;
+              } else {
+                errorMessage = errMsg[0] + ' and ' + errMsg[1];
+              }
+              showToastMessage(errorMessage, 'error');
+            } else {
+              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            }
           }
           if (onEventUpdated) {
             onEventUpdated();
@@ -1512,14 +1526,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     // days:
                     //   block?.selectedWeekDays?.join(', ') ||
                     //   editSession?.recurrencePattern?.daysOfWeek,
-                    days: (editSession?.recurrencePattern?.daysOfWeek || [])
-                      .map(
-                        (dayIndex: any) =>
-                          ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][
-                            dayIndex
-                          ]
-                      )
-                      .join(', '),
+                    days:
+                      block?.selectedWeekDays?.join(', ') ??
+                      (editSession?.recurrencePattern?.daysOfWeek)
+                        .map(
+                          (dayIndex: any) =>
+                            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][
+                              dayIndex
+                            ]
+                        )
+                        .join(', '),
                   })}
                 </Typography>
 
