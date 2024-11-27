@@ -92,7 +92,7 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
         const getStates = getOptionsByCategory(frameworks, 'state');
 
         const matchingState = getStates.find(
-          (state: any) => state.name === userStateName
+          (state: any) => state.name.toLowerCase() === userStateName?.toLowerCase()
         );
         if (matchingState) {
           setStateOption([matchingState]);
