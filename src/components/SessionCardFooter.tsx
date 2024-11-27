@@ -73,17 +73,21 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
           const response = await fetchTargetedSolutions();
 
           if (response?.result?.data == '') {
+            setTopicList([]);
             return;
           }
-    
+
           let courseData = response?.result?.data[0];
           let courseId = courseData._id;
 
           if (!courseId) {
-            courseId = await fetchCourseIdFromSolution(courseData?.solutionId, cohortId as string);
+            courseId = await fetchCourseIdFromSolution(
+              courseData?.solutionId,
+              cohortId as string
+            );
             courseData = response?.result?.data[0];
           }
-    
+
           const res = await getUserProjectDetails({
             id: courseId,
           });
@@ -131,18 +135,17 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   };
 
   const fetchTargetedSolutions = async () => {
-      const response = await getTargetedSolutions({
-        state: state,
-        medium: medium,
-        class: grade,
-        board: board,
-        type: item?.metadata?.courseType,
-        subject: item?.metadata?.subject,
-        entityId: cohortId,
-      });
-      return response;
-    
-  }
+    const response = await getTargetedSolutions({
+      state: state,
+      medium: medium,
+      class: grade,
+      board: board,
+      type: item?.metadata?.courseType,
+      subject: item?.metadata?.subject,
+      entityId: cohortId,
+    });
+    return response;
+  };
 
   const handleTopicSelection = (topic: string) => {
     setSelectedTopic(topic);
@@ -244,7 +247,11 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
 
   const handleClick = () => {
     handleComponentOpen();
-    if (topicList && transformedTasks && eventStatus === EventStatus.UPCOMING) {
+    if (
+      topicList.length >= 1 &&
+      transformedTasks &&
+      eventStatus === EventStatus.UPCOMING
+    ) {
       handleOpen();
     } else {
       handleError();
