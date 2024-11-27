@@ -93,11 +93,11 @@ const CoursePlannerDetail = () => {
       setLoading(true);
       const response = await getTargetedSolutions({
         subject: tStore?.taxonomySubject,
-        class: tStore?.grade || 'Class 10',
-        state: tStore?.state || 'Maharashtra',
-        board: tStore?.board || 'Maharashtra',
+        class: tStore?.grade,
+        state: tStore?.state,
+        board: tStore?.board,
         type: tStore?.type,
-        medium: tStore?.medium || 'Marathi',
+        medium: tStore?.medium,
       });
 
       if (response?.result?.data == '') {
