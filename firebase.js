@@ -1,8 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage, getToken } from "firebase/messaging";
-import config from './config.json';
+// import config from './config.json';
+import firebaseConfig from './firebaseConfig';
 
-const firebaseApp = initializeApp(config.firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 let messaging;
 
 if (typeof window !== 'undefined') {
@@ -15,15 +16,15 @@ export const requestPermission = async () => {
 
   if (permission === 'granted') {
     const token = await getToken(messaging, {
-      vapidKey: "BOZ_JkC62vr767LoC7APU26ZdGYW5htBkfqIEtsVX6zmE3Fi-XgcN_TggSaXKh5rGKcaa4vuQxaYiRPU2B955GI",
+      vapidKey: process.env.NEXT_PUBLIC_FCM_VAPID_KEY,
     });
     console.log('Notification token:', token);
     return token;
   } else {
-    console.warn("Notification permission denied");
+  console.warn("Notification permission denied");
     return null;
   }
-};
+}; 
 
 export const onMessageListener = () =>
   new Promise((resolve) => {

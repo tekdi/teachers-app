@@ -5,6 +5,7 @@ import {
   getMonthName,
   getTodayDate,
   shortDateFormat,
+  sortSessions,
   sortSessionsByTime,
   toPascalCase,
 } from '@/utils/Helper';
@@ -196,7 +197,7 @@ const CohortPage = () => {
   };
 
   const handleCloseSchedule = () => {
-    setEventCreated(true);
+    setEventCreated((prev) => !prev);
     handleClose();
   };
 
@@ -326,7 +327,8 @@ const CohortPage = () => {
             }
           });
         }
-        setSessions(sessionArray);
+        const eventList = sortSessions(sessionArray);
+        setSessions(eventList);
         setEventUpdated(false);
         setEventDeleted(false);
       } catch (error) {
@@ -382,7 +384,8 @@ const CohortPage = () => {
   useEffect(() => {
     if (extraSessions) {
       const { sessionList, index } = sortSessionsByTime(extraSessions);
-      setSortedSessions(sessionList);
+      const eventList = sortSessions(sessionList);
+      setSortedSessions(eventList);
 
       if (index > 0) {
         setInitialSlideIndex(index);

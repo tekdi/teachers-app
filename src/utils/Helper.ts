@@ -471,6 +471,16 @@ export const format2DigitDate = (dateStr: any) => {
   return format(dateObj, 'd MMM, yyyy');
 };
 
+export const sortSessions = (sessionArray: any[]) => {
+  if (!Array.isArray(sessionArray)) return [];
+
+  return sessionArray.sort((a: any, b: any) => {
+    const timeA = new Date(a?.startDateTime).getTime();
+    const timeB = new Date(b?.startDateTime).getTime();
+    return timeA - timeB; // Ascending order (earliest first)
+  });
+};
+
 export const sortSessionsByTime = (sessionsArray: any) => {
   const passed: any = [];
   const live: any = [];
@@ -505,6 +515,7 @@ export const getOptionsByCategory = (frameworks: any, categoryCode: string) => {
     name: term?.name,
     code: term?.code,
     associations: term?.associations,
+
   }));
 };
 
@@ -534,8 +545,10 @@ export const getAssociationsByCodeNew = (
   data: DataItem[],
   code: string
 ): Association[] | [] => {
+
   const foundItem = data?.find((item) => item?.name === code);
   return foundItem ? foundItem?.associations : [];
+
 };
 
 export const getAssociationsByCode = (
@@ -547,6 +560,7 @@ export const getAssociationsByCode = (
 };
 
 export const findCommonAssociations = (data1: any[], data2: any[]) => {
+
   if (!data1?.length) return data2;
   if (!data2?.length) return data1;
 
@@ -563,6 +577,7 @@ export const findCommonAssociations = (data1: any[], data2: any[]) => {
           return {
             name: item1?.name,
             code: item1?.code,
+
             associations: commonAssociations,
           };
         }

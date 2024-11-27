@@ -104,6 +104,9 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   const { t } = useTranslation();
   const setCohorts = useStore((state) => state.setCohorts);
   const setBlock = useStore((state) => state.setBlock);
+  const [filteredCohortData, setFilteredCohortData] = React.useState<any>();
+  const [filteredManipulatedCohortData, setFilteredManipulatedCohortData] = React.useState<any>();
+
 
   const store = manageUserStore();
 
@@ -139,6 +142,22 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
       setUserId(storedUserId);
     }
   }, [router, setClassId, setIsAuthenticated, setUserId]);
+
+  useEffect(() => {
+    const filteredData = cohortsData?.filter(
+      (cohort: any) =>
+       
+        cohort?.status?.toLowerCase() === "active"
+    );
+    setFilteredCohortData(filteredData);
+    const filteredManipulatedData = manipulatedCohortData?.filter(
+      (cohort: any) =>
+       
+        cohort?.status?.toLowerCase() === "active"
+    );
+    setFilteredManipulatedCohortData(filteredManipulatedData);
+    console.log(filteredData)
+  }, [manipulatedCohortData, cohortsData]);
 
   useEffect(() => {
     if (userId) {
@@ -223,11 +242,13 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
           }
           if (response && response.length > 0) {
             if (response[0].type === cohortHierarchy.COHORT) {
+
               const filteredData = response
                 ?.map((item: any) => ({
                   cohortId: item?.cohortId,
                   parentId: item?.parentId,
                   name: item?.cohortName || item?.name,
+                  status: item?.cohortStatus,
                 }))
                 ?.filter(Boolean);
               setCohortsData(filteredData);
@@ -274,6 +295,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                     parentId: item?.parentId,
                     name: item?.cohortName || item?.name,
                     typeOfCohort: typeOfCohort || t('ATTENDANCE.UNKNOWN'),
+                    status: item?.status,
                   };
                 })
                 ?.filter(Boolean);
@@ -368,7 +390,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
       {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )}
-      {!loading && cohortsData && (
+      {!loading && filteredCohortData && (
         <Box
           sx={{
             '@media (min-width: 900px)': {
@@ -381,7 +403,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             },
           }}
         >
-          {!loading && cohortsData && (
+          {!loading && filteredCohortData && (
             <Box>
               {blockName ? (
                 <Box>
@@ -394,7 +416,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                   </Typography>
                   <Box className="mt-md-16">
                     <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
-                      {cohortsData?.length > 1 ? (
+                      {filteredCohortData?.length > 1 ? (
                         <FormControl
                           className="drawer-select"
                           sx={{
@@ -444,8 +466,8 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                               />
                             )}
                           >
-                            {cohortsData?.length !== 0 ? (
-                              manipulatedCohortData?.map((cohort) => (
+                            {filteredCohortData?.length !== 0 ? (
+                              filteredManipulatedCohortData?.map((cohort: any) => (
                                 <MenuItem
                                   key={cohort.cohortId}
                                   value={cohort.cohortId}
@@ -479,7 +501,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                         </FormControl>
                       ) : (
                         <Typography color={theme.palette.warning['300']}>
-                          {toPascalCase(cohortsData[0]?.name)}
+                          {toPascalCase(filteredCohortData[0]?.name)}
                         </Typography>
                       )}
                     </Box>
@@ -489,7 +511,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                 <Box>
                   <Box className="mt-md-16">
                     <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>
-                      {cohortsData?.length > 1 ? (
+                      {filteredCohortData?.length > 1 ? (
                         <FormControl
                           className={showFloatingLabel ? '' : 'drawer-select'}
                           sx={{ m: 0, width: '100%' }}
@@ -502,7 +524,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                           <Select
                             labelId="center-select-label"
                             label={showFloatingLabel ? t('COMMON.CENTER') : ''}
-                            value={classId ? classId : cohortsData[0]?.cohortId}
+                            value={classId ? classId : filteredCohortData[0]?.cohortId}
                             onChange={handleCohortSelection}
                             // displayEmpty
                             // style={{ borderRadius: '4px' }}
@@ -550,8 +572,8 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                   }
                             }
                           >
-                            {cohortsData?.length !== 0 ? (
-                              manipulatedCohortData?.map((cohort) => (
+                            {filteredCohortData?.length !== 0 ? (
+                              filteredManipulatedCohortData?.map((cohort: any) => (
                                 <MenuItem
                                   key={cohort.cohortId}
                                   value={cohort.cohortId}
@@ -581,7 +603,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                         </FormControl>
                       ) : (
                         <>
-                          {showDisabledDropDown && cohortsData?.length === 1 ? (
+                          {showDisabledDropDown && filteredCohortData?.length === 1 ? (
                             <FormControl
                               disabled={true}
                               className={
@@ -599,11 +621,11 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                 label={
                                   showFloatingLabel ? t('COMMON.CENTER') : ''
                                 }
-                                value={cohortsData[0]?.cohortId}
+                                value={filteredCohortData[0]?.cohortId}
                               >
                                 <MenuItem
-                                  key={cohortsData[0]?.cohortId}
-                                  value={cohortsData[0]?.cohortId}
+                                  key={filteredCohortData[0]?.cohortId}
+                                  value={filteredCohortData[0]?.cohortId}
                                   style={{
                                     fontWeight: '500',
                                     fontSize: '14px',
@@ -611,13 +633,13 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                                     textTransform: 'capitalize',
                                   }}
                                 >
-                                  {cohortsData[0]?.name}
+                                  {filteredCohortData[0]?.name}
                                 </MenuItem>
                               </Select>
                             </FormControl>
                           ) : (
                             <Typography color={theme.palette.warning['300']}>
-                              {cohortsData[0]?.name}
+                              {filteredCohortData[0]?.name}
                             </Typography>
                           )}
                         </>
