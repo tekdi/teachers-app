@@ -18,6 +18,7 @@ import NoDataFound from './common/NoDataFound';
 import router from 'next/router';
 import RequisitesAccordion from './RequisitesAccordion';
 import { showToastMessage } from './Toastify';
+import { useEffect, useState } from 'react';
 interface TopicDetailsProps {
   topic: string;
   subTopic: [];
@@ -37,14 +38,20 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+  const [contentData, setContentData] = useState([]);
 
-  const content = learningResources.filter((resource: any) => {
-    return (
-      resource.topic === topic &&
-      subTopic.some((sub) => sub === resource.subtopic)
-    );
-  });
-  console.log(content);
+  useEffect(()=>{
+    const content = learningResources.filter((resource: any) => {
+      return (
+        resource.topic === topic &&
+        subTopic.some((sub) => sub === resource.subtopic)
+      );
+    });
+    if(content){
+      setContentData(content);
+      // console.log(`content`,content);
+    }
+  },[learningResources]) 
 
   const openTopicModal = () => {
     handleOpen();
@@ -55,10 +62,23 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
     handleRemove();
   };
 
+  const filterByIdentifier = (contentData: any[], identifier: string) => {
+    return contentData.filter(item => item.identifier === identifier);
+  };
+
   const handlePlayers = (identifier: string) => {
     sessionStorage.setItem('previousPage', window.location.href);
     if (identifier !== undefined && identifier !== '') {
-      router.push(`/play/content/${identifier}`);
+      const filteredData = filterByIdentifier(contentData, identifier);
+      if (filteredData && filteredData.length > 0) {
+        if (filteredData[0].resourceType === 'Course') {
+          router.push(`/course-hierarchy/${filteredData[0].identifier}`);
+        } else {
+          router.push(`/play/content/${filteredData[0].identifier}`);
+        }
+      } else {
+        showToastMessage(t('CENTER_SESSION.IDENTIFIER_NOT_FOUND'), 'error');
+      }
     } else {
       showToastMessage(t('CENTER_SESSION.IDENTIFIER_NOT_FOUND'), 'error');
     }
@@ -153,7 +173,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
         <RequisitesAccordion
           title={t('CENTER_SESSION.FACILITATOR_REQUISITES')}
           type={RequisiteType.FACILITATOR_REQUISITE}
-          content={content}
+          content={contentData}
           handlePlayers={handlePlayers}
           theme={theme}
           subTopic={subTopic}
@@ -161,7 +181,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
         <RequisitesAccordion
           title={t('CENTER_SESSION.PREREQUISITES')}
           type={RequisiteType.PRE_REQUISITES}
-          content={content}
+          content={contentData}
           handlePlayers={handlePlayers}
           theme={theme}
           subTopic={subTopic}
@@ -169,7 +189,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
         <RequisitesAccordion
           title={t('CENTER_SESSION.POST_REQUISITES')}
           type={RequisiteType.POST_REQUISITES}
-          content={content}
+          content={contentData}
           handlePlayers={handlePlayers}
           theme={theme}
           subTopic={subTopic}
