@@ -589,7 +589,7 @@ export const findCommonAssociations = (data1: any[], data2: any[]) => {
 
 export const filterAndMapAssociationsNew = (
   category: string,
-  options: any[],
+  options?: any[],
   associationsList?: any[],
   codeKey: string = 'code'
 ) => {
@@ -598,7 +598,7 @@ export const filterAndMapAssociationsNew = (
     return [];
   }
 
-  if (!associationsList || associationsList.length === 0) {
+  if (!associationsList || associationsList?.length === 0) {
     return [];
   }
 
@@ -606,14 +606,14 @@ export const filterAndMapAssociationsNew = (
     .filter((option) => {
       const optionCode = option[codeKey];
 
-      return associationsList.some(
-        (assoc) => assoc[codeKey] === optionCode && assoc.category === category
+      return associationsList?.some(
+        (assoc) => assoc[codeKey] === optionCode && assoc?.category === category
       );
     })
     .map((option) => ({
-      name: option.name,
-      code: option.code,
-      associations: option.associations || [],
+      name: option?.name,
+      code: option?.code,
+      associations: option?.associations || [],
     }));
 };
 
