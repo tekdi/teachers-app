@@ -122,7 +122,7 @@ const players: React.FC<SunbirdPlayerProps> = () => {
   }, [identifier]);
 
   return (
-    <Box pl={2}>
+    <Box>
       <Box>
         <Header />
         <Box sx={{ display: "flex", alignItems: "center", mb: 2, mt: 2 }} onClick={() => router.back()}>
@@ -148,7 +148,7 @@ const players: React.FC<SunbirdPlayerProps> = () => {
           </Box>
         )}
       </Box>
-      <Box marginTop={'1rem'}>
+      <Box marginTop={'1rem'} px={"14px"}>
       <Typography color={'#024f9d'} sx={{ padding: '0 0 4px 4px', fontWeight: 'bold' }}>{playerConfig?.metadata?.name}</Typography>
         {!loading ? <SunbirdPlayers player-config={playerConfig} /> : null}
       </Box>

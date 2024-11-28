@@ -1,5 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { TFunction } from 'i18next';
+import pdf from "./../assets/images/PDF.png";
+import epub from "../assets/images/Epub.png";
+import html from "../assets/images/HTML.png";
+import mp4 from "../assets/images/MP4.png";
+import qml from "../assets/images/Qml.png";
+import youtube from "../assets/images/youtube.png";
 
 export const limit: number = 300;
 export const refetchInterval: number = 5 * 60 * 1000; // 5 min
@@ -175,3 +181,41 @@ export enum ResourcesType {
   NONE = 'none',
 }
 export const FeesStepBoards = ["NIOS"]
+
+import { StaticImageData } from "next/image"; // Import StaticImageData for type safety with images
+
+// Define the enum for content types
+export enum ContentType {
+  PDF = "application/pdf",
+  EPUB = "application/epub",
+  HTML = "application/html",
+  VIDEO_MP4 = "video/mp4",
+  QUESTION_SET = "application/vnd.sunbird.questionset",
+  H5P = "application/vnd.ekstep.h5p-archive",
+  YOUTUBE_VIDEO = "video/youtube",
+  YOUTUBE_X_VIDEO = "video/x-youtube",
+  WEBM_VIDEO = "video/webm",
+  VND ="application/vnd.ekstep.content-collection"
+}
+
+// Define the type for the content type mapping
+export type FileType = {
+  [key in ContentType]: {
+    name: string;
+    imgPath: StaticImageData;
+  };
+};
+
+// Create the mapping object with enum keys
+export const ContentCardsTypes: FileType = {
+  [ContentType.PDF]: { name: "PDF", imgPath: pdf },
+  [ContentType.EPUB]: { name: "EPUB", imgPath: epub },
+  [ContentType.HTML]: { name: "HTML", imgPath: html },
+  [ContentType.VIDEO_MP4]: { name: "Video", imgPath: mp4 },
+  [ContentType.QUESTION_SET]: { name: "Question Set", imgPath: qml },
+  [ContentType.H5P]: { name: "H5P", imgPath: html },
+  [ContentType.YOUTUBE_X_VIDEO]: { name: "YouTube", imgPath: youtube },
+  [ContentType.YOUTUBE_VIDEO]: { name: "YouTube", imgPath: youtube },
+  [ContentType.WEBM_VIDEO]: { name: "WEBM", imgPath: mp4 },
+  [ContentType.VND]: { name: "WEBM", imgPath: html },
+};
