@@ -444,6 +444,7 @@
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center requested successfully",
+    "CENTERS_REASSIGNED_SUCCESSFULLY": "Center reassigned successfully",
     "CENTERS_REQUEST_FAILED": "Center Request Failed"
   },
   "FORM": {

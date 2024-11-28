@@ -30,7 +30,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { accessControl, frameworkId } from '../../../app.config';
+import { accessControl, COURSE_TYPE, frameworkId } from '../../../app.config';
 import { useDirection } from '../../hooks/useDirection';
 import { types } from 'node:util';
 import axios from 'axios';
@@ -51,6 +51,7 @@ const CoursePlanner = () => {
   const [framework, setFramework] = useState<any[]>([]);
   const setState = taxonomyStore((state) => state.setState);
   const setBoard = taxonomyStore((state) => state.setBoard);
+
   const [boardOptions, setBoardOptions] = useState<any[]>([]);
   const [boardAssociations, setBoardAssociations] = useState<any[]>([]);
   const setMedium = taxonomyStore((state) => state.setMedium);
@@ -69,6 +70,7 @@ const CoursePlanner = () => {
   const [stateAssociations, setStateAssociations] = useState<any[]>([]);
   const setTaxonomySubject = taxonomyStore((state) => state.setTaxonomySubject);
   const [classId, setClassId] = useState('');
+  const [boardNew, setBoardNew] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -92,6 +94,78 @@ const CoursePlanner = () => {
       setSubjects([]);
     }
   }, []);
+
+  useEffect(() => {
+    const fetchCohortSearchResults = async () => {
+      setLoading(true);
+      setState('');
+      setBoard('');
+      setMedium('');
+      setGrade('');
+
+      try {
+        const data = await getCohortSearch({
+          cohortId: selectedValue,
+          limit: 20,
+          offset: 0,
+        });
+
+        const cohortDetails = data?.result?.results?.cohortDetails?.[0];
+
+        if (cohortDetails) {
+          // const arrayFields = [
+          //   { label: CoursePlannerConstants.SUBJECT, setter: setSubject },
+          // ];
+
+          const boardField = cohortDetails?.customFields?.find(
+            (field: any) => field?.label === 'BOARD'
+          );
+          console.log(boardField?.value);
+          setBoardNew(boardField?.value);
+
+          const stringFields = [
+            { label: CoursePlannerConstants.STATES, setter: setState },
+            { label: CoursePlannerConstants.BOARD, setter: setBoard },
+            { label: CoursePlannerConstants.MEDIUM, setter: setMedium },
+            { label: CoursePlannerConstants.GRADE, setter: setGrade },
+          ];
+
+          // arrayFields.forEach(({ label, setter }) => {
+          //   const field = cohortDetails.customFields.find(
+          //     (field: any) => field.label === label
+          //   );
+
+          //   if (field && field.value) {
+          //     const valuesArray = field.value
+          //       .split(',')
+          //       .map((item: string) => item.trim());
+          //     setter(valuesArray);
+          //   } else if (label === CoursePlannerConstants.SUBJECT) {
+          //     setter([]);
+          //   }
+          // });
+
+          stringFields.forEach(({ label, setter }) => {
+            const field = cohortDetails.customFields.find(
+              (field: any) => field.label === label
+            );
+
+            if (field && field.value) {
+              setter(field.value.trim());
+            }
+          });
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to fetch cohort search results:', error);
+      }
+    };
+
+    if (selectedValue.length) {
+      fetchCohortSearchResults();
+    }
+  }, [selectedValue, subjects]);
 
   useEffect(() => {
     const fetchTaxonomyResultsOne = async () => {
@@ -156,10 +230,10 @@ const CoursePlanner = () => {
               }));
 
             console.log('FIRST TIME API', commonBoards);
-
+            console.log(boardNew);
             const boardAssociations =
-              commonBoards?.find((item: any) => item?.name === tStore?.board)
-                ?.associations || [];
+              (await commonBoards?.find((item: any) => item?.name === boardNew)
+                ?.associations) || [];
             setBoardAssociations(boardAssociations);
             console.log('FIRST TIME API', boardAssociations);
 
@@ -311,30 +385,31 @@ const CoursePlanner = () => {
               }));
             console.log(type);
 
-            const commonTypeInState = filterAndMapAssociationsNew(
-              'courseType',
-              type,
-              stateAssociations,
-              'code'
+            const associationsMap = {
+              state: stateAssociations,
+              board: boardAssociations,
+              medium: mediumAssociations,
+              grade: gradeAssociations,
+            };
+
+            const commonTypes = Object.entries(associationsMap).reduce(
+              (result, [key, associations]) => {
+                result[key] = filterAndMapAssociationsNew(
+                  'courseType',
+                  type,
+                  associations,
+                  'code'
+                );
+                return result;
+              },
+              {} as Record<string, any[]>
             );
-            const commonTypeInBoard = filterAndMapAssociationsNew(
-              'courseType',
-              type,
-              boardAssociations,
-              'code'
-            );
-            const commonTypeInMedium = filterAndMapAssociationsNew(
-              'courseType',
-              type,
-              mediumAssociations,
-              'code'
-            );
-            const commonTypeInGrade = filterAndMapAssociationsNew(
-              'courseType',
-              type,
-              gradeAssociations,
-              'code'
-            );
+
+            // Access individual results
+            const commonTypeInState = commonTypes.state;
+            const commonTypeInBoard = commonTypes.board;
+            const commonTypeInMedium = commonTypes.medium;
+            const commonTypeInGrade = commonTypes.grade;
 
             const commonTypeData = findCommonAssociations(
               commonTypeInState,
@@ -361,7 +436,7 @@ const CoursePlanner = () => {
     };
 
     fetchTaxonomyResultsOne();
-  }, []);
+  }, [boardNew]);
 
   const addQueryParams = (newParams: any) => {
     // Merge existing query params with new ones
@@ -393,74 +468,9 @@ const CoursePlanner = () => {
 
       addQueryParams({ center: cohortId });
       setSelectedValue(cohortId);
+      setType(tStore.type || COURSE_TYPE.FOUNDATION_COURSE);
     }
   }, [store.cohorts]);
-
-  useEffect(() => {
-    const fetchCohortSearchResults = async () => {
-      setLoading(true);
-      setState('');
-      setBoard('');
-      setMedium('');
-      setGrade('');
-
-      try {
-        const data = await getCohortSearch({
-          cohortId: selectedValue,
-          limit: 20,
-          offset: 0,
-        });
-
-        const cohortDetails = data?.result?.results?.cohortDetails?.[0];
-
-        if (cohortDetails) {
-          // const arrayFields = [
-          //   { label: CoursePlannerConstants.SUBJECT, setter: setSubject },
-          // ];
-
-          const stringFields = [
-            { label: CoursePlannerConstants.STATES, setter: setState },
-            { label: CoursePlannerConstants.BOARD, setter: setBoard },
-            { label: CoursePlannerConstants.MEDIUM, setter: setMedium },
-            { label: CoursePlannerConstants.GRADE, setter: setGrade },
-          ];
-
-          // arrayFields.forEach(({ label, setter }) => {
-          //   const field = cohortDetails.customFields.find(
-          //     (field: any) => field.label === label
-          //   );
-
-          //   if (field && field.value) {
-          //     const valuesArray = field.value
-          //       .split(',')
-          //       .map((item: string) => item.trim());
-          //     setter(valuesArray);
-          //   } else if (label === CoursePlannerConstants.SUBJECT) {
-          //     setter([]);
-          //   }
-          // });
-
-          stringFields.forEach(({ label, setter }) => {
-            const field = cohortDetails.customFields.find(
-              (field: any) => field.label === label
-            );
-
-            if (field && field.value) {
-              setter(field.value.trim());
-            }
-          });
-        }
-
-        setLoading(false);
-      } catch (error) {
-        console.error('Failed to fetch cohort search results:', error);
-      }
-    };
-
-    if (selectedValue.length) {
-      fetchCohortSearchResults();
-    }
-  }, [selectedValue]);
 
   useEffect(() => {
     const fetchTaxonomyResults = async () => {
@@ -553,14 +563,14 @@ const CoursePlanner = () => {
       }
     };
     fetchTaxonomyResults();
-  }, [value, typeOptions]);
+  }, [value, typeOptions, selectedValue]);
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const newValue = event.target.value as string;
-    if (newValue !== value) {
-      setValue(newValue);
-      setType(newValue);
-    }
+
+    setValue(newValue);
+    setType(newValue);
+
     const windowUrl = window.location.pathname;
     const cleanedUrl = windowUrl.replace(/^\//, '');
     const env = cleanedUrl.split('/')[0];
@@ -668,9 +678,6 @@ const CoursePlanner = () => {
                   stateName == false
                 } // Disable if any field is empty
               >
-                <MenuItem value="">
-                  <Typography>Select Type</Typography>
-                </MenuItem>
                 {typeOptions?.map((item: any) => (
                   <MenuItem key={item?.name} value={item?.name}>
                     {item?.name}

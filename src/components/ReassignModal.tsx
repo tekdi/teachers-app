@@ -33,6 +33,7 @@ interface Cohort {
   id: any;
   cohortId: string;
   name: string;
+  status: any
 }
 
 const ReassignModal: React.FC<ReassignModalProps> = ({
@@ -50,9 +51,10 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   const store = useStore();
   const reStore = reassignLearnerStore();
   const cohorts: Cohort[] = store.cohorts.map(
-    (cohort: { cohortId: any; name: string }) => ({
+    (cohort: { cohortId: any; name: string;status: any }) => ({
       name: cohort.name,
       id: cohort.cohortId,
+      status:cohort?.status
     })
   );
 
@@ -86,9 +88,9 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
 
   const filteredCenters = React.useMemo(() => {
     return cohorts
-      .map(({ cohortId, name }) => ({ id: cohortId, name }))
-      .filter(({ name }) =>
-        name.toLowerCase().includes(searchInput.toLowerCase())
+      .map(({ cohortId, name, status }) => ({ id: cohortId, name,status }))
+      .filter(({ name, status }) =>
+        name.toLowerCase().includes(searchInput.toLowerCase()) && status === Status.ACTIVE
       )
       .sort((a, b) =>
         checkedCenters.includes(a.name) === checkedCenters.includes(b.name)

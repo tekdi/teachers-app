@@ -95,9 +95,14 @@ export const RequisiteType = {
   POST_REQUISITES: 'postrequisite',
   FACILITATOR_REQUISITE: 'facilitator-requisite',
 };
+
+export const COURSE_TYPE = {
+  FOUNDATION_COURSE: 'Foundation Course',
+};
+
 export const entityList = {
   TEAM_LEADER: ['center', 'facilitator', 'learner'],
-  TEACHER: ['learner'],
+  TEACHER: ['center','learner' ],
 };
 
 export const MIME_TYPE = {

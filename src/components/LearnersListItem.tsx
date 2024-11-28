@@ -109,12 +109,12 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       // window.location.reload();
     }
     const cohorts = userStore.cohorts;
-    const centers = cohorts.map(
-      (cohort: { name: string; cohortId: string }) => ({
-        name: cohort?.name,
-        cohortId: cohort?.cohortId,
-      })
-    );
+    const centers = cohorts
+  .filter((cohort: { status: any }) => cohort.status !== "archived")
+  .map((cohort: { name: string; cohortId: string; status: any }) => ({
+    name: cohort?.name,
+    cohortId: cohort?.cohortId,
+  }));
     const centersName = centers?.map((center: { name: any }) => center?.name);
 
     setCenters(centers);
@@ -363,7 +363,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         console.log('Cohort members created successfully', response);
 
         showToastMessage(
-          t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'),
+          t('MANAGE_USERS.CENTERS_REASSIGNED_SUCCESSFULLY'),
           'success'
         );
         setReloadState(true);
@@ -626,18 +626,20 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                   )}
                 </Box>
               </Box>
-              {isActiveYear && <MoreVertIcon
-                onClick={(event) => {
-                  isMobile
-                    ? toggleDrawer('bottom', true)(event)
-                    : handleMenuOpen(event);
-                }}
-                sx={{
-                  fontSize: '24px',
-                  color: theme.palette.warning['300'],
-                  cursor: 'pointer',
-                }}
-              />}
+              {isActiveYear && (
+                <MoreVertIcon
+                  onClick={(event) => {
+                    isMobile
+                      ? toggleDrawer('bottom', true)(event)
+                      : handleMenuOpen(event);
+                  }}
+                  sx={{
+                    fontSize: '24px',
+                    color: theme.palette.warning['300'],
+                    cursor: 'pointer',
+                  }}
+                />
+              )}
             </Box>
           </Box>
         </Box>
