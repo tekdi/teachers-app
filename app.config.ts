@@ -97,7 +97,7 @@ export const RequisiteType = {
 };
 export const entityList = {
   TEAM_LEADER: ['center', 'facilitator', 'learner'],
-  TEACHER: ['learner'],
+  TEACHER: ['center','learner' ],
 };
 
 export const MIME_TYPE = {
