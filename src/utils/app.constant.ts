@@ -194,7 +194,8 @@ export enum ContentType {
   H5P = "application/vnd.ekstep.h5p-archive",
   YOUTUBE_VIDEO = "video/youtube",
   YOUTUBE_X_VIDEO = "video/x-youtube",
-  WEBM_VIDEO = "video/webm"
+  WEBM_VIDEO = "video/webm",
+  VND ="application/vnd.ekstep.content-collection"
 }
 
 // Define the type for the content type mapping
@@ -216,4 +217,5 @@ export const myContentTypes: FileType = {
   [ContentType.YOUTUBE_X_VIDEO]: { name: "YouTube", imgPath: youtube },
   [ContentType.YOUTUBE_VIDEO]: { name: "YouTube", imgPath: youtube },
   [ContentType.WEBM_VIDEO]: { name: "WEBM", imgPath: mp4 },
+  [ContentType.VND]: { name: "WEBM", imgPath: html },
 };

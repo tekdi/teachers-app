@@ -122,7 +122,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [selectedCourseType, setSelectedCourseType] = useState<string>();
-  const [selectedBlockId, setSelectedBlockId] = useState(0);
+  const [selectedBlockId, setSelectedBlockId] = useState<number>(0);
   const [editSelection, setEditSelection] = React.useState(
     t('CENTER_SESSION.EDIT_THIS_SESSION')
   );
@@ -133,11 +133,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [shortDescription, setShortDescription] = useState<string>('');
   const [meetingPasscode, setMeetingPasscode] = useState<string>();
   const [selectedDays, setSelectedDays] = useState<number[]>();
-  const [startDate, setStartDate] = useState<Dayjs | null>(null);
-  const [endDate, setEndDate] = useState<Dayjs | null>(null);
-  const [startTime, setStartTime] = useState<Dayjs | null>(null);
   dayjs.extend(utc);
-  const [endTime, setEndTime] = useState<Dayjs | null>(null);
+  const [startDates, setStartDates] = useState<Dayjs[]>([]);
+  const [endDates, setEndDates] = useState<Dayjs[]>([]);
+  const [startTimes, setStartTimes] = useState<Dayjs[]>([]);
+  const [endTimes, setEndTimes] = useState<Dayjs[]>([]);
   const [startTimeError, setStartTimeError] = useState<string | null>(null);
   const [endTimeError, setEndTimeError] = useState<string | null>(null);
   const [startDateError, setStartDateError] = useState<string | null>(null);
@@ -160,10 +160,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       meetingLink: '',
       meetingPasscode: '',
       onlineProvider: '',
-      sessionStartDate: startDate,
-      sessionEndDate: endDate,
-      sessionStartTime: startTime,
-      sessionEndTime: endTime,
+      sessionStartDate: startDates[0],
+      sessionEndDate: endDates[0],
+      sessionStartTime: startTimes[0],
+      sessionEndTime: endTimes[0],
     },
   ]);
 
@@ -177,7 +177,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
           const getStates = getOptionsByCategory(frameworks, 'state');
           const matchState = getStates.find(
-            (item: any) => item?.name?.toLowerCase() === StateName?.toLocaleLowerCase()
+            (item: any) =>
+              item?.name?.toLowerCase() === StateName?.toLocaleLowerCase()
           );
 
           const getBoards = getOptionsByCategory(frameworks, 'board');
@@ -286,16 +287,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         .utc(recurringStartDate)
         .tz(timeZone);
 
-      setStartTime(localStartDateTime);
+      setStartTimes([localStartDateTime]);
       if (editSelection === t('CENTER_SESSION.EDIT_THIS_SESSION')) {
-        setEndDate(localEndDateTime.startOf('day'));
-        setStartDate(localStartDateTime.startOf('day'));
+        setEndDates([localEndDateTime.startOf('day')]);
+        setStartDates([localStartDateTime.startOf('day')]);
       } else {
-        setEndDate(localEndDateValue.startOf('day'));
-        setStartDate(recurringStartDateValue.startOf('day'));
+        setEndDates([localEndDateValue.startOf('day')]);
+        setStartDates([recurringStartDateValue.startOf('day')]);
       }
 
-      setEndTime(localEndDateTime);
+      setEndTimes([localEndDateTime]);
 
       const recurrencePattern = eventData?.recurrencePattern?.daysOfWeek;
       setSelectedDays(recurrencePattern);
@@ -324,9 +325,18 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   };
 
   useEffect(() => {
-    const initialStartDateTime = combineDateAndTime(startDate, startTime);
-    const initialEndDateTime = combineDateAndTime(startDate, endTime);
-    const sessionEndDate = combineDateAndTime(endDate, endTime);
+    const initialStartDateTime = combineDateAndTime(
+      startDates[selectedBlockId],
+      startTimes[selectedBlockId]
+    );
+    const initialEndDateTime = combineDateAndTime(
+      startDates[selectedBlockId],
+      endTimes[selectedBlockId]
+    );
+    const sessionEndDate = combineDateAndTime(
+      endDates[selectedBlockId],
+      endTimes[selectedBlockId]
+    );
 
     const startDatetime = convertToUTC(initialStartDateTime);
     const endDatetime = convertToUTC(initialEndDateTime);
@@ -340,15 +350,15 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               startDatetime: startDatetime || '',
               endDatetime: endDatetime || '',
               endDateValue: endDateValue || '',
-              sessionStartDate: startDate,
-              sessionEndDate: endDate,
-              sessionStartTime: startTime,
-              sessionEndTime: endTime,
+              sessionStartDate: startDates[selectedBlockId],
+              sessionEndDate: endDates[selectedBlockId],
+              sessionStartTime: startTimes[selectedBlockId],
+              sessionEndTime: endTimes[selectedBlockId],
             }
           : block
       )
     );
-  }, [startDate, startTime, endDate, endTime, selectedBlockId]);
+  }, [startDates, startTimes, endDates, endTimes, selectedBlockId]);
 
   const handleSessionModeChange = (
     event: ChangeEvent<HTMLInputElement>,
@@ -430,11 +440,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   };
 
   const handleChange = (
-    id: string | number | undefined,
+    id: number,
     newValue: Dayjs | null,
     type: 'start' | 'end',
     field: 'date' | 'time'
   ) => {
+    setSelectedBlockId(id);
+    console.log(sessionBlocks);
     if (newValue) {
       let isValid = true;
 
@@ -443,91 +455,149 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       setStartDateError(null);
       setEndDateError(null);
 
+      const sessionBlock = sessionBlocks?.find((block) => block.id === id);
+      if (!sessionBlock) return;
+
       if (type === 'start' && field === 'date') {
-        if (newValue.isAfter(endDate)) {
+        if (newValue.isAfter(sessionBlock.sessionEndDate)) {
           setEventValid(false);
           setStartDateError(t('CENTER_SESSION.START_DATE_ERROR'));
         }
-        setStartDate((prev) => {
-          const combinedStartDateTime = combineDateAndTime(newValue, startTime);
-          const combinedEndDateTime = combineDateAndTime(newValue, endTime);
+        setStartDates((prev) => {
+          const updated = [...prev];
+          const combinedStartDateTime = combineDateAndTime(
+            newValue,
+            sessionBlock.sessionStartTime ?? null
+          );
+          const combinedEndDateTime = combineDateAndTime(
+            newValue,
+            sessionBlock.sessionEndTime ?? null
+          );
+          updated[id] = newValue;
           updateSessionBlock(
             id,
             combinedStartDateTime,
             combinedEndDateTime,
-            endDate,
+            sessionBlock.sessionEndDate ?? null,
             type
           );
-          return newValue;
+          return updated;
         });
       } else if (type === 'start' && field === 'time') {
-        const combinedStartDateTime = combineDateAndTime(startDate, newValue);
+        const combinedStartDateTime = combineDateAndTime(
+          sessionBlock.sessionStartDate ?? null,
+          newValue
+        );
         if (
-          combinedStartDateTime?.isAfter(combineDateAndTime(startDate, endTime))
+          combinedStartDateTime?.isAfter(
+            combineDateAndTime(
+              sessionBlock.sessionStartDate ?? null,
+              sessionBlock.sessionEndTime ?? null
+            )
+          )
         ) {
           setEventValid(false);
           setStartTimeError(t('CENTER_SESSION.START_TIME_ERROR'));
         }
-        setStartTime((prev) => {
-          const combinedStartDateTime = combineDateAndTime(startDate, newValue);
-          updateSessionBlock(id, combinedStartDateTime, endTime, endDate, type);
-          return newValue;
+        setStartTimes((prev) => {
+          const updated = [...prev];
+          const combinedStartDateTime = combineDateAndTime(
+            sessionBlock.sessionStartDate ?? null,
+            newValue
+          );
+          updated[id] = newValue;
+          updateSessionBlock(
+            id,
+            combinedStartDateTime,
+            sessionBlock.sessionEndTime ?? null,
+            sessionBlock.sessionEndDate ?? null,
+            type
+          );
+          return updated;
         });
       } else if (type === 'end' && field === 'date') {
-        if (newValue.isBefore(startDate)) {
+        if (newValue.isBefore(sessionBlock.sessionStartDate)) {
           setEventValid(false);
           setEndDateError(t('CENTER_SESSION.END_DATE_ERROR'));
         }
-        setEndDate((prev) => {
-          const combinedEndDateTime = combineDateAndTime(newValue, endTime);
-          updateSessionBlock(id, startDate, endTime, combinedEndDateTime, type);
-          return newValue;
+        setEndDates((prev) => {
+          const updated = [...prev];
+          const combinedEndDateTime = combineDateAndTime(
+            newValue,
+            sessionBlock.sessionEndTime ?? null
+          );
+          updated[id] = newValue;
+          updateSessionBlock(
+            id,
+            sessionBlock.sessionStartDate ?? null,
+            sessionBlock.sessionEndTime ?? null,
+            combinedEndDateTime,
+            type
+          );
+          return updated;
         });
       } else if (type === 'end' && field === 'time') {
-        const combinedEndDateTime = combineDateAndTime(startDate, newValue);
+        const combinedEndDateTime = combineDateAndTime(
+          sessionBlock.sessionStartDate ?? null,
+          newValue
+        );
         if (
           combinedEndDateTime?.isBefore(
-            combineDateAndTime(startDate, startTime)
+            combineDateAndTime(
+              sessionBlock.sessionStartDate ?? null,
+              sessionBlock.sessionStartTime ?? null
+            )
           )
         ) {
           setEventValid(false);
           setEndTimeError(t('CENTER_SESSION.END_TIME_ERROR'));
         }
-        setEndTime((prev) => {
-          const combinedEndDateTime = combineDateAndTime(startDate, newValue);
-          const combinedEndDateValue = combineDateAndTime(endDate, newValue);
+        setEndTimes((prev) => {
+          const updated = [...prev];
+          const combinedEndDateTime = combineDateAndTime(
+            sessionBlock.sessionStartDate ?? null,
+            newValue
+          );
+          updated[id] = newValue;
+          const combinedEndDateValue = combineDateAndTime(
+            sessionBlock.sessionEndDate ?? null,
+            newValue
+          );
           updateSessionBlock(
             id,
-            startDate,
+            sessionBlock.sessionStartDate ?? null,
             combinedEndDateTime,
             combinedEndDateValue,
             type
           );
-          return newValue;
+          return updated;
         });
       }
     }
   };
 
   const updateSessionBlock = (
-    id: string | number | undefined,
+    id: number,
     combinedStartDateTime: Dayjs | null,
     combinedEndDateTime: Dayjs | null,
     combinedEndDateValue: Dayjs | null,
     type: 'start' | 'end'
   ) => {
-    // const EndDateTime = combineDateAndTime(startDate, endTime);
+    setSelectedBlockId(id);
+    const sessionBlock = sessionBlocks?.find((block) => block.id === id);
+    if (!sessionBlock) return;
+
     let endDatetime: any;
     let startDatetime: any;
     let recurringStartDate: any;
     let endDateValue: any;
     if (type === 'start') {
       const combinedStartDate = combineDateAndTime(
-        startDate,
+        sessionBlock.sessionStartDate ?? null,
         combinedStartDateTime
       );
       const combinedEndDate = combineDateAndTime(
-        startDate,
+        sessionBlock.sessionStartDate ?? null,
         combinedEndDateTime
       );
       endDatetime = convertToUTC(combinedEndDate);
@@ -543,15 +613,18 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     } else if (type === 'end') {
       const startDatetimeValue = combineDateAndTime(
         combinedEndDateTime,
-        startTime
+        sessionBlock.sessionStartTime ?? null
       );
-      startDatetime = convertToUTC(startTime);
+      startDatetime = convertToUTC(sessionBlock.sessionStartTime ?? null);
       const endDatetimeValue = combineDateAndTime(
-        startTime,
+        sessionBlock.sessionStartTime ?? null,
         combinedEndDateTime
       );
       endDatetime = convertToUTC(endDatetimeValue);
-      const combinedStartDate = combineDateAndTime(startDate, startTime);
+      const combinedStartDate = combineDateAndTime(
+        sessionBlock.sessionStartDate ?? null,
+        sessionBlock.sessionStartTime ?? null
+      );
       recurringStartDate = convertToUTC(combinedStartDate);
       endDateValue =
         clickedBox === 'EXTRA_SESSION'
@@ -571,10 +644,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 endDatetime: endDatetime,
                 endDateValue: endDateValue,
                 isRecurring: isRecurringEvent,
-                sessionStartDate: startDate,
-                sessionEndDate: endDate,
-                sessionStartTime: startTime,
-                sessionEndTime: endTime,
+                sessionStartDate: startDates[id],
+                sessionEndDate: endDates[id],
+                sessionStartTime: startTimes[id],
+                sessionEndTime: endTimes[id],
               }
             : block
         )
@@ -584,9 +657,18 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   };
 
   useEffect(() => {
-    const combinedStartDateTime = combineDateAndTime(startDate, startTime);
-    const combinedEndDateTime = combineDateAndTime(startDate, endTime);
-    const combinedEndDateValue = combineDateAndTime(endDate, endTime);
+    const combinedStartDateTime = combineDateAndTime(
+      startDates[selectedBlockId],
+      startTimes[selectedBlockId]
+    );
+    const combinedEndDateTime = combineDateAndTime(
+      startDates[selectedBlockId],
+      endTimes[selectedBlockId]
+    );
+    const combinedEndDateValue = combineDateAndTime(
+      endDates[selectedBlockId],
+      endTimes[selectedBlockId]
+    );
 
     const startDatetime = convertToUTC(combinedStartDateTime);
     const endDatetime = convertToUTC(combinedEndDateTime);
@@ -606,17 +688,17 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 endDatetime: endDatetime,
                 endDateValue: endDateValue,
                 isRecurring: isRecurringEvent,
-                sessionStartDate: startDate,
-                sessionEndDate: endDate,
-                sessionStartTime: startTime,
-                sessionEndTime: endTime,
+                sessionStartDate: startDates[selectedBlockId],
+                sessionEndDate: endDates[selectedBlockId],
+                sessionStartTime: startTimes[selectedBlockId],
+                sessionEndTime: endTimes[selectedBlockId],
               }
             : block
         )
       );
       console.log('sessionBlocks initially', sessionBlocks);
     }
-  }, [startDate, endDate, startTime, endTime, selectedBlockId]);
+  }, [startDates, endDates, startTimes, endTimes, selectedBlockId]);
 
   const CustomTimePicker = styled(TimePicker)(({ theme }) => ({
     '& .MuiInputAdornment-root': {
@@ -721,10 +803,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
   const handleAddSession = () => {
     const newSessionId = sessionBlocks.length;
-    setStartDate(null);
-    setEndDate(null);
-    setStartTime(null);
-    setEndTime(null);
     setSessionBlocks([
       ...sessionBlocks,
       {
@@ -1456,10 +1534,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       <MobileDatePicker
                         label="Date"
                         value={
-                          editSession ? startDate : block?.sessionStartDate
+                          editSession
+                            ? startDates[index]
+                            : block?.sessionStartDate
                         }
                         onChange={(newValue) => {
-                          handleChange(block?.id, newValue, 'start', 'date');
+                          handleChange(index, newValue, 'start', 'date');
                         }}
                         format="DD MMM, YYYY"
                         sx={{ borderRadius: '4px' }}
@@ -1473,10 +1553,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           <TimePicker
                             label={t('CENTER_SESSION.START_TIME')}
                             value={
-                              editSession ? startTime : block?.sessionStartTime
+                              editSession
+                                ? startTimes[index]
+                                : block?.sessionStartTime
                             }
                             onChange={(newValue) =>
-                              handleChange(block?.id, newValue, 'start', 'time')
+                              handleChange(index, newValue, 'start', 'time')
                             }
                             sx={{ borderRadius: '4px', fontSize: '2px' }}
                           />
@@ -1494,10 +1576,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           <TimePicker
                             label={t('CENTER_SESSION.END_TIME')}
                             value={
-                              editSession ? endTime : block?.sessionEndTime
+                              editSession
+                                ? endTimes[index]
+                                : block?.sessionEndTime
                             }
                             onChange={(newValue) =>
-                              handleChange(block?.id, newValue, 'end', 'time')
+                              handleChange(index, newValue, 'end', 'time')
                             }
                             sx={{ borderRadius: '4px' }}
                           />
@@ -1564,10 +1648,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       <TimePicker
                         label={t('CENTER_SESSION.START_TIME')}
                         value={
-                          editSession ? startTime : block?.sessionStartTime
+                          editSession
+                            ? startTimes[index]
+                            : block?.sessionStartTime
                         }
                         onChange={(newValue) =>
-                          handleChange(block?.id, newValue, 'start', 'time')
+                          handleChange(index, newValue, 'start', 'time')
                         }
                         sx={{ borderRadius: '4px', fontSize: '2px' }}
                       />
@@ -1588,9 +1674,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <TimePicker
                         label={t('CENTER_SESSION.END_TIME')}
-                        value={editSession ? endTime : block?.sessionEndTime}
+                        value={
+                          editSession ? endTimes[index] : block?.sessionEndTime
+                        }
                         onChange={(newValue) =>
-                          handleChange(block?.id, newValue, 'end', 'time')
+                          handleChange(index, newValue, 'end', 'time')
                         }
                         sx={{ borderRadius: '4px' }}
                       />
@@ -1616,14 +1704,19 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                         <MobileDatePicker
                           label={t('CENTER_SESSION.START_DATE')}
                           value={
-                            editSession ? startDate : block?.sessionStartDate
+                            editSession
+                              ? startDates[index]
+                              : block?.sessionStartDate
                           }
                           onChange={(newValue) =>
-                            handleChange(block?.id, newValue, 'start', 'date')
+                            handleChange(index, newValue, 'start', 'date')
                           }
                           format="DD MMM, YYYY"
                           sx={{ borderRadius: '4px' }}
-                          disabled={dayjs(startDate).isBefore(dayjs(), 'day')}
+                          disabled={dayjs(startDates[index]).isBefore(
+                            dayjs(),
+                            'day'
+                          )}
                         />
                       </Stack>
                     </LocalizationProvider>
@@ -1644,9 +1737,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       <Stack spacing={3}>
                         <MobileDatePicker
                           label={t('CENTER_SESSION.END_DATE')}
-                          value={editSession ? endDate : block?.sessionEndDate}
+                          value={
+                            editSession
+                              ? endDates[index]
+                              : block?.sessionEndDate
+                          }
                           onChange={(newValue) =>
-                            handleChange(block?.id, newValue, 'end', 'date')
+                            handleChange(index, newValue, 'end', 'date')
                           }
                           format="DD MMM, YYYY"
                           sx={{ borderRadius: '4px' }}

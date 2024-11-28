@@ -245,7 +245,7 @@ const ObservationForms: React.FC = () => {
         placeholder={t('OBSERVATION.SEARCH_OBSERVATIONS')}
         fullWidth
       />
-       {value===0 &&(<FormControl sx={{ minWidth: 200 ,  marginLeft:"20px",backgroundColor:"#F0F0F0"}} variant="outlined" margin="normal">
+       {value===0 &&(<FormControl   sx={{  minWidth: 200 }}variant="outlined" margin="normal">
         <InputLabel id="days-sort-label">
         <Typography variant="h3" >
         {t('OBSERVATION.DAYS_LEFT')}              </Typography>

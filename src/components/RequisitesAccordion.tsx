@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NoDataFound from './common/NoDataFound';
+import ContentCard from './ContentCard';
 
 interface RequisitesAccordionProps {
   title: string;
@@ -70,7 +71,7 @@ const RequisitesAccordion: React.FC<RequisitesAccordionProps> = ({
               .filter((item) => item.type === type)
               .map((item) => (
                 <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
-                  <Box
+                  {/* <Box
                     className="facilitator-bg"
                     sx={{
                       backgroundImage: `url(${item?.appIcon ? item.appIcon : '/decorationBg.png'})`,
@@ -91,7 +92,9 @@ const RequisitesAccordion: React.FC<RequisitesAccordionProps> = ({
                     >
                       {item?.name || subTopic.join(', ')}
                     </Box>
-                  </Box>
+                  </Box> */}
+
+                  <ContentCard name={item?.name} subTopic={subTopic}/>
                 </Grid>
               ))
           ) : (

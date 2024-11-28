@@ -7,10 +7,11 @@ import router from 'next/router';
 
 interface ContentCardProps {
     name: string;
-    mimeType: string;
-    appIcon: string;
-    identifier: string;
-    resourceType: string;
+    mimeType?: string;
+    appIcon?: string;
+    identifier?: string;
+    resourceType?: string;
+    subTopic?:string[];
 }
 
 const ContentCard: React.FC<ContentCardProps> = ({
@@ -18,7 +19,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
     mimeType,
     appIcon,
     identifier,
-    resourceType
+    resourceType,
+    subTopic
 }) => {
 
 
@@ -81,11 +83,10 @@ const ContentCard: React.FC<ContentCardProps> = ({
                         textOverflow: 'ellipsis',
                     }}
                 >
-                    {name}
+                    {name} || {subTopic?.join(', ')}
                 </Box>
             </Box>
 
-            {/* Footer Section */}
             <Box
                 sx={{
                     height: '40px',
