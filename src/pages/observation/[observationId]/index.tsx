@@ -111,10 +111,10 @@ const ObservationDetails = () => {
 
         if (userId) {
           const response = await getCohortList(userId, { customField: 'true' });
-
+            let filteredData;
           if (localStorage.getItem('role') === Role.TEAM_LEADER) {
             if (searchInput !== '' && entity === ObservationEntityType.CENTER) {
-              const filteredData = response[0]?.childData?.filter(
+               filteredData = response[0]?.childData?.filter(
                 (cohort: any) =>
                   cohort?.name?.toLowerCase()?.includes(searchInput?.toLowerCase()) &&
                   cohort?.status?.toLowerCase() === "active"
@@ -122,7 +122,7 @@ const ObservationDetails = () => {
 
               setMyCohortList(filteredData);
             } else {
-              const filteredData = response[0]?.childData?.filter(
+               filteredData = response[0]?.childData?.filter(
                 (cohort: any) => cohort?.status?.toLowerCase() === "active"
               );
 
@@ -133,7 +133,7 @@ const ObservationDetails = () => {
               // const data= typeof window !== 'undefined'
               // ? localStorage.getItem("selectedCohort") || localStorage.getItem('role') === Role.TEAM_LEADER? response[0]?.childData[0]?.cohortId:response[0]?.cohortId
               // : response[0]?.childData[0]?.cohortId;
-              const data=localStorage.getItem("selectedCohort")?localStorage.getItem("selectedCohort"):localStorage.getItem('role') === Role.TEAM_LEADER?response[0]?.childData[0]?.cohortId:response[0]?.cohortId
+              const data=localStorage.getItem("selectedCohort")?localStorage.getItem("selectedCohort"):localStorage.getItem('role') === Role.TEAM_LEADER?filteredData[0]?.cohortId:filteredData[0]?.cohortId
               
               setSelectedCohort(data)
             }
@@ -438,12 +438,12 @@ setFilteredEntityData(result)
 
 
   const renderEntityData = (data: EntityData[], entityType: string) => {
-    if (!data || data.length === 0) {
-      return <Typography ml="40%"> {t('OBSERVATION.NO_DATA_FOUND',{
-        entity:entity,
-      })}
-      </Typography>;
-    }
+    // if (!data || data.length === 0) {
+    //   return <Typography ml="40%"> {t('OBSERVATION.NO_DATA_FOUND',{
+    //     entity:entity,
+    //   })}
+    //   </Typography>;
+    // }
   
     return data.map((item, index) => (
       <Entity
@@ -632,7 +632,10 @@ setFilteredEntityData(result)
                       minWidth: 300, '@media (max-width: 908px)': {
                         width: '100%',
                       } }}>
-                      <InputLabel>{t('OBSERVATION.OBSERVATION_STATUS')} </InputLabel>
+                      <InputLabel>                        <Typography variant="h2" color={"black"}>
+{t('OBSERVATION.OBSERVATION_STATUS')}
+</Typography>
+ </InputLabel>
                       <Select
                         value={status}
                         onChange={handleStatusChange}
@@ -682,8 +685,18 @@ setFilteredEntityData(result)
   }}
 >
   {loading ? (
+    <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginLeft: '50%',
+    }}
+  >
     <Loader showBackdrop={false} loadingText={t('COMMON.LOADING')} />
-  ) : Data.length === 0 ? (
+    </Box>
+  ) : Data.length === 0 ? entity &&(
     <Typography ml="40%">{t('OBSERVATION.NO_DATA_FOUND',{
       entity:entity,
     })}</Typography>

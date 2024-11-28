@@ -246,10 +246,8 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
               color: theme.palette.warning['A200'],
             }}
           />
-          <Typography variant='h2'>
-          {observationName}
+                    <Typography variant="h3" color={"black"}>{observationName}</Typography>
 
-          </Typography>
 
         </Box>
     {
