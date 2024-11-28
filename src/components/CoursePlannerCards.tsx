@@ -40,12 +40,19 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
             <Grid item xs={6} md={4} lg={2} sx={{ mt: 2 }} key={index}>
               <Box
                 className="facilitator-bg"
-                sx={{ backgroundImage: `url(${resource?.appIcon ? resource.appIcon : '/decorationBg.png'})`, position: 'relative', }}
+                sx={{
+                  backgroundImage: `url(${resource?.appIcon ? resource.appIcon : '/decorationBg.png'})`,
+                  position: 'relative',
+                }}
                 onClick={() =>
-                  resource?.resourceType === "Course"
-                      ? router.push(`/course-hierarchy/${resource?.identifier || resource?.id}`)
-                      : router.push(`/play/content/${resource?.identifier || resource?.id}`)
-              }
+                  resource?.resourceType === 'Course'
+                    ? router.push(
+                        `/course-hierarchy/${resource?.identifier || resource?.id}`
+                      )
+                    : router.push(
+                        `/play/content/${resource?.identifier || resource?.id}`
+                      )
+                }
               >
                 <div
                   style={{
@@ -63,14 +70,26 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
                     fontSize: '16px',
                     fontWeight: '500',
                     color: theme?.palette?.warning['A400'],
-                    position: 'relative', zIndex: 2,
+                    position: 'relative',
+                    zIndex: 2,
                   }}
                 >
                   {resource?.name || 'Untitled Resource'}
                 </Box>
                 <Box
-                  sx={{ backgroundImage: `url(${resource?.appIcon ? resource.appIcon : '/decorationBg.png'})`, position: 'relative', }}
-                  onClick={() => router.push(`/play/content/${resource?.identifier || resource?.id}`)}
+                  sx={{
+                    backgroundImage: `url(${resource?.appIcon ? resource.appIcon : '/decorationBg.png'})`,
+                    position: 'relative',
+                  }}
+                  onClick={() =>
+                    resource?.resourceType === 'Course'
+                      ? router.push(
+                          `/course-hierarchy/${resource?.identifier || resource?.id}`
+                        )
+                      : router.push(
+                          `/play/content/${resource?.identifier || resource?.id}`
+                        )
+                  }
                 >
                   <div
                     style={{
@@ -88,7 +107,8 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
                       fontSize: '16px',
                       fontWeight: '500',
                       color: theme?.palette?.warning['A400'],
-                      position: 'relative', zIndex: 2,
+                      position: 'relative',
+                      zIndex: 2,
                     }}
                   >
                     {resource?.name || 'Untitled Resource'}
@@ -104,7 +124,6 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
                   </Box>
                 </Box>
               </Box>
-              
             </Grid>
           )
         )}
