@@ -11,6 +11,7 @@ import {
   MenuItem,
   TextField,
   InputAdornment,
+  useMediaQuery,
 } from '@mui/material';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
@@ -71,6 +72,7 @@ const ObservationDetails = () => {
   const [loading, setLoading] = React.useState(false);
   const [observationId, setObservationId] = React.useState("");
 
+  const isSmallScreen = useMediaQuery('(max-width:938px)');
 
 
 
@@ -584,84 +586,87 @@ setFilteredEntityData(result)
               >
 
                
-                <Box sx={{
-                  marginTop: '25px',
-                  display: 'flex', alignItems: 'center', px:"10px", gap: '15px', '@media (max-width: 908px)': {
+<Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '15px',
+                  width: '100%',
+                  '@media (max-width: 908px)': {
                     flexDirection: 'column',
-                    marginTop: '25px',
-                    width: '100%',
-                  }
-}}>
-                  {entity !== ObservationEntityType?.CENTER && (
-                    <FormControl sx={{
-                      width: 300, backgroundColor: "white" , '@media (max-width: 908px)': {
-                        width: '100%',
-                      } }}>
-                      <InputLabel id="demo-single-name-label">
-                        <Typography variant="h2" color={"black"}>
-                          {t('ATTENDANCE.CENTER_NAME')}                </Typography>
-                      </InputLabel>
-                      <Select
-                        labelId="demo-single-name-label"
-                        id="demo-single-name"
-                        value={selectedCohort}
-                        onChange={handleCohortChange}
-                        input={<OutlinedInput label="Cohort Name" />}
-                        MenuProps={{
-                          PaperProps: {
-                            sx: {
-                              maxHeight: '200px',
-                              overflowY: 'auto',
-                            },
+                  },
+                  marginTop: '25px',
+                }}
+              >
+                {entity !== ObservationEntityType?.CENTER && (
+                  <FormControl
+                    sx={{
+                      width: { xs: '100%', sm: '100%', md: 300 },
+                      backgroundColor: 'white',
+                    }}
+                  >
+                    <InputLabel id="center-name-label">
+                      <Typography variant="h2" color="black">
+                        {t('ATTENDANCE.CENTER_NAME')}
+                      </Typography>
+                    </InputLabel>
+                    <Select
+                      labelId="center-name-label"
+                      value={selectedCohort}
+                      onChange={handleCohortChange}
+                      input={<OutlinedInput label="Cohort Name" />}
+                      MenuProps={{
+                        PaperProps: {
+                          sx: {
+                            maxHeight: '200px',
+                            overflowY: 'auto',
                           },
-                        }}
-                      >
-                        {myCohortList?.map((cohort: any) => (
-                          <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                            {localStorage.getItem('role') === Role.TEAM_LEADER
-                              ? toPascalCase(cohort.name)
-                              :toPascalCase(cohort.cohortName)}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-
-
-                  {(
-                    <FormControl sx={{
-                      minWidth: 300, '@media (max-width: 908px)': {
-                        width: '100%',
-                      } }}>
-                      <InputLabel>                        <Typography variant="h2" color={"black"}>
-{t('OBSERVATION.OBSERVATION_STATUS')}
-</Typography>
- </InputLabel>
-                      <Select
-                        value={status}
-                        onChange={handleStatusChange}
-                        label={t('OBSERVATION.OBSERVATION_STATUS')}
-                        defaultValue={t('COMMON.ALL')}
-                        sx={{
-                          backgroundColor: "white"
-
-                        }}
-                      >
-                        <MenuItem value={ObservationStatus.ALL}>  {t('COMMON.ALL')}  </MenuItem>
-                        <MenuItem value={ObservationStatus.NOT_STARTED}> {t('OBSERVATION.NOT_STARTED')}</MenuItem>
-                        <MenuItem value={ObservationStatus.DRAFT}>{t('OBSERVATION.INPROGRESS')}</MenuItem>
-                        <MenuItem value={ObservationStatus.COMPLETED}>{t('OBSERVATION.COMPLETED')}</MenuItem>
-                      </Select>
-                    </FormControl>
-                  )}
-
-                </Box>
+                        },
+                      }}
+                    >
+                      {myCohortList?.map((cohort: any) => (
+                        <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
+                          {localStorage.getItem('role') === Role.TEAM_LEADER
+                            ? toPascalCase(cohort.name)
+                            : toPascalCase(cohort.cohortName)}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
+  
+                <FormControl
+                  sx={{
+                    minWidth: { xs: '100%', sm: '100%', md: 300 },
+                    backgroundColor: 'white',
+                  }}
+                >
+                  <InputLabel>
+                    <Typography variant="h2" color="black">
+                      {t('OBSERVATION.OBSERVATION_STATUS')}
+                    </Typography>
+                  </InputLabel>
+                  <Select
+                    value={status}
+                    onChange={handleStatusChange}
+                    label={t('OBSERVATION.OBSERVATION_STATUS')}
+                    defaultValue={t('COMMON.ALL')}
+                  >
+                    <MenuItem value={ObservationStatus.ALL}>{t('COMMON.ALL')}</MenuItem>
+                    <MenuItem value={ObservationStatus.NOT_STARTED}>{t('OBSERVATION.NOT_STARTED')}</MenuItem>
+                    <MenuItem value={ObservationStatus.DRAFT}>{t('OBSERVATION.INPROGRESS')}</MenuItem>
+                    <MenuItem value={ObservationStatus.COMPLETED}>{t('OBSERVATION.COMPLETED')}</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
                 
                 <Box
                   mt="10px"
                   sx={{
                     width: '100%',
+                   
                   }}
+                  
                 >
 
                   <SearchBar

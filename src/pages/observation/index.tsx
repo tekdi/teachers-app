@@ -221,9 +221,42 @@ const ObservationForms: React.FC = () => {
     <div>
       <Header />
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs value={value} onChange={handleChange} aria-label="icon tabs example">
-          <Tab label="Active" />
-          <Tab label="Expired" />
+        <Tabs value={value} onChange={handleChange} aria-label="icon tabs example"
+        
+        >
+          <Tab 
+          label={
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                color:
+                  value === 0
+                    ? "black"
+                    : "inherit",
+              }}
+            >
+              {t("COMMON.ACTIVE")}
+            </Box>
+          }
+          
+          />
+          <Tab 
+           label={
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                color:
+                  value === 1
+                    ? "black"
+                    : "inherit",
+              }}
+            >
+              {t("OBSERVATION.EXPIRED")}
+            </Box>
+          }
+          />
         </Tabs>
       </Box>
     
@@ -245,7 +278,22 @@ const ObservationForms: React.FC = () => {
         placeholder={t('OBSERVATION.SEARCH_OBSERVATIONS')}
         fullWidth
       />
-       {value===0 &&(<FormControl   sx={{  minWidth: 200 }}variant="outlined" margin="normal">
+      <Box
+               sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '15px',
+               width: '90%',
+                '@media (max-width: 908px)': {
+                  flexDirection: 'column',
+                },
+                marginTop: '15px',
+                 marginLeft: isSmallScreen ? '20px' : '0',
+
+              }}
+              >
+                  {value===0 &&(<FormControl   sx={{   width: { xs: '100%', sm: '100%', md: 300 },
+}}variant="outlined" margin="normal">
         <InputLabel id="days-sort-label">
         <Typography variant="h3" >
         {t('OBSERVATION.DAYS_LEFT')}              </Typography>
@@ -270,6 +318,8 @@ const ObservationForms: React.FC = () => {
         handleFilterChange={handleFilterChange}
         label={t('COMMON.FILTER_BY')}
       />)}
+     
+              </Box>
      
 
     </Box>
