@@ -7,6 +7,16 @@ import mp4 from "../assets/images/MP4.png";
 import qml from "../assets/images/Qml.png";
 import youtube from "../assets/images/youtube.png";
 
+// background image 
+
+import bgpdf from "./../assets/images/bgPDF.png";
+import bgepub from "../assets/images/bgEpub.png";
+import bghtml from "../assets/images/bgHtml.png";
+import bgmp4 from "../assets/images/bgMP4 .png";
+import bgqml from "../assets/images/bgQml.png";
+import bgyoutube from "../assets/images/bgYouTube.png";
+
+
 export const limit: number = 300;
 export const refetchInterval: number = 5 * 60 * 1000; // 5 min
 export const gcTime: number = 10 * 60 * 1000; // 10 Min
@@ -203,19 +213,20 @@ export type FileType = {
   [key in ContentType]: {
     name: string;
     imgPath: StaticImageData;
+    BgImgPath?: StaticImageData;
   };
 };
 
 // Create the mapping object with enum keys
 export const ContentCardsTypes: FileType = {
-  [ContentType.PDF]: { name: "PDF", imgPath: pdf },
-  [ContentType.EPUB]: { name: "EPUB", imgPath: epub },
-  [ContentType.HTML]: { name: "HTML", imgPath: html },
-  [ContentType.VIDEO_MP4]: { name: "Video", imgPath: mp4 },
-  [ContentType.QUESTION_SET]: { name: "Question Set", imgPath: qml },
-  [ContentType.H5P]: { name: "H5P", imgPath: html },
-  [ContentType.YOUTUBE_X_VIDEO]: { name: "YouTube", imgPath: youtube },
-  [ContentType.YOUTUBE_VIDEO]: { name: "YouTube", imgPath: youtube },
-  [ContentType.WEBM_VIDEO]: { name: "WEBM", imgPath: mp4 },
-  [ContentType.VND]: { name: "WEBM", imgPath: html },
+  [ContentType.PDF]: { name: "PDF", imgPath: pdf, BgImgPath: bgpdf },
+  [ContentType.EPUB]: { name: "EPUB", imgPath: epub, BgImgPath: bgepub },
+  [ContentType.HTML]: { name: "HTML", imgPath: html, BgImgPath: bghtml },
+  [ContentType.VIDEO_MP4]: { name: "Video", imgPath: mp4, BgImgPath: bgmp4 },
+  [ContentType.QUESTION_SET]: { name: "Question Set", imgPath: qml, BgImgPath: bgqml },
+  [ContentType.H5P]: { name: "H5P", imgPath: html, BgImgPath: bghtml },
+  [ContentType.YOUTUBE_X_VIDEO]: { name: "YouTube", imgPath: youtube, BgImgPath: bgyoutube },
+  [ContentType.YOUTUBE_VIDEO]: { name: "YouTube", imgPath: youtube, BgImgPath: bgyoutube },
+  [ContentType.WEBM_VIDEO]: { name: "WEBM", imgPath: mp4, BgImgPath: bgmp4 },
+  [ContentType.VND]: { name: "WEBM", imgPath: html, BgImgPath: bghtml },
 };

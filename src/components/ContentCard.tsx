@@ -27,8 +27,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
     const getBackgroundImage = () => {
         if (appIcon) {
             return appIcon;
-        } else if (ContentCardsTypes[mimeType as keyof FileType]?.imgPath?.src) {
-            return ContentCardsTypes[mimeType as keyof FileType]?.imgPath?.src;
+        } else if (ContentCardsTypes[mimeType as keyof FileType]?.BgImgPath?.src) {
+            return ContentCardsTypes[mimeType as keyof FileType]?.BgImgPath?.src;
         } else {
             return placeholderImage.src;
         }
