@@ -117,10 +117,10 @@ const CoursePlanner = () => {
           //   { label: CoursePlannerConstants.SUBJECT, setter: setSubject },
           // ];
 
-          const boardField = cohortDetails.customFields.find(
-            (field: any) => field.label === 'BOARD'
+          const boardField = cohortDetails?.customFields?.find(
+            (field: any) => field?.label === 'BOARD'
           );
-          console.log(boardField.value);
+          console.log(boardField?.value);
           setBoardNew(boardField?.value);
 
           const stringFields = [
@@ -678,9 +678,6 @@ const CoursePlanner = () => {
                   stateName == false
                 } // Disable if any field is empty
               >
-                <MenuItem value="">
-                  <Typography>Select Type</Typography>
-                </MenuItem>
                 {typeOptions?.map((item: any) => (
                   <MenuItem key={item?.name} value={item?.name}>
                     {item?.name}
