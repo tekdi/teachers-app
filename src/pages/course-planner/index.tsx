@@ -350,7 +350,7 @@ const CoursePlanner = () => {
             setTypeOptions(commonType3Data);
           }
         } else {
-          setStateName(false);
+          // setStateName(false);
         }
       } catch (error) {
         console.error('Failed to fetch cohort search results:', error);
@@ -358,7 +358,7 @@ const CoursePlanner = () => {
     };
 
     fetchTaxonomyResultsOne();
-  }, []);
+  }, [value]);
 
   const addQueryParams = (newParams: any) => {
     // Merge existing query params with new ones
@@ -382,16 +382,16 @@ const CoursePlanner = () => {
     }
   }, [classId]);
 
-  // useEffect(() => {
-  //   if (store.cohorts.length > 0) {
-  //     const cohortId = router.query.center
-  //       ? router.query.center
-  //       : store.cohorts[0].cohortId;
+  useEffect(() => {
+    if (store.cohorts.length > 0) {
+      const cohortId = router.query.center
+        ? router.query.center
+        : store.cohorts[0].cohortId;
 
-  //     addQueryParams({ center: cohortId });
-  //     setSelectedValue(cohortId);
-  //   }
-  // }, [store.cohorts]);
+      addQueryParams({ center: cohortId });
+      setSelectedValue(cohortId);
+    }
+  }, [store.cohorts]);
 
   useEffect(() => {
     const fetchCohortSearchResults = async () => {
@@ -650,7 +650,7 @@ const CoursePlanner = () => {
               <Select
                 labelId="course-type-select-label"
                 id="course-type-select"
-                value={value}
+                value={tStore?.type}
                 onChange={handleChange}
                 label="Course Type"
                 sx={{
