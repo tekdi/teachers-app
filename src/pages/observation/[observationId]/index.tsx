@@ -419,7 +419,9 @@ setFilteredEntityData(result)
     telemetryFactory.interact(telemetryInteract);
   };
 
-  const onStartObservation = (cohortId: any) => {
+  const onStartObservation = (cohortId: any, name?:any) => {
+    localStorage.setItem("observationName",  name)
+
     console.log('cohortId', cohortId);
     localStorage.setItem("observationPath",  router.asPath)
     const basePath = router.asPath.split('?')[0];
@@ -451,8 +453,8 @@ setFilteredEntityData(result)
         status={item?.status===ObservationStatus?.STARTED?ObservationStatus.NOT_STARTED:item?.status}
         onClick={() =>
           entityType !== ObservationEntityType.CENTER
-            ? onStartObservation(item?._id)
-            : onStartObservation(item?._id)
+            ? onStartObservation(item?._id, item?.name)
+            : onStartObservation(item?._id, item?.name)
         }
       />
     ));
@@ -563,9 +565,9 @@ setFilteredEntityData(result)
                 <Typography variant="h2"color={"black"} mt="20px">
                   {observationDescription}
                 </Typography>
-                <Typography variant="body1" color={"black"}>
-                {t('OBSERVATION.DUE_DATE')}: {formatDate(observationEndDate?.toString()) || "N/A"}
-      </Typography>
+              {observationEndDate!=="" && (<Typography variant="body1" color={"black"}>
+                {t('OBSERVATION.DUE_DATE')}: {observationEndDate!=="" ?formatDate(observationEndDate?.toString()) : "N/A"}
+      </Typography>)}
               </Box>
 
               <Box
