@@ -53,6 +53,8 @@ export interface IResource {
   app: string;
   type: string;
   id: string;
+  topic?: string;
+  subtopic?: string;
 }
 
 const CoursePlannerDetail = () => {

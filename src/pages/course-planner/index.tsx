@@ -42,6 +42,7 @@ const CoursePlanner = () => {
   const setStateassociations = coursePlannerStore(
     (state) => state.setStateassociations
   );
+  const setArray = taxonomyStore((state) => state.setArray);
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
@@ -90,7 +91,9 @@ const CoursePlanner = () => {
       console.log('No subjects found in localStorage.');
       setSubjects([]);
     }
+  }, []);
 
+  useEffect(() => {
     const fetchTaxonomyResultsOne = async () => {
       try {
         // Define the URL for the API
@@ -358,7 +361,7 @@ const CoursePlanner = () => {
     };
 
     fetchTaxonomyResultsOne();
-  }, [value]);
+  }, []);
 
   const addQueryParams = (newParams: any) => {
     // Merge existing query params with new ones
@@ -544,12 +547,13 @@ const CoursePlanner = () => {
           JSON.stringify(overallCommonSubjects)
         );
         setSubjects(overallCommonSubjects);
+        setArray(overallCommonSubjects);
       } catch (error) {
         console.error('Failed to fetch cohort search results:', error);
       }
     };
     fetchTaxonomyResults();
-  }, [value]);
+  }, [value, typeOptions]);
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const newValue = event.target.value as string;
