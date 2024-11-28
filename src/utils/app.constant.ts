@@ -207,7 +207,7 @@ export type FileType = {
 };
 
 // Create the mapping object with enum keys
-export const myContentCardsTypes: FileType = {
+export const ContentCardsTypes: FileType = {
   [ContentType.PDF]: { name: "PDF", imgPath: pdf },
   [ContentType.EPUB]: { name: "EPUB", imgPath: epub },
   [ContentType.HTML]: { name: "HTML", imgPath: html },

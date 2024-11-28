@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import Image from 'next/image';
 import placeholderImage from '../assets/images/decorationBg.png';
-import { FileType, myContentCardsTypes } from '@/utils/app.constant';
+import { FileType, ContentCardsTypes } from '@/utils/app.constant';
 import router from 'next/router';
 
 
@@ -27,8 +27,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
     const getBackgroundImage = () => {
         if (appIcon) {
             return appIcon;
-        } else if (myContentCardsTypes[mimeType as keyof FileType]?.imgPath?.src) {
-            return myContentCardsTypes[mimeType as keyof FileType]?.imgPath?.src;
+        } else if (ContentCardsTypes[mimeType as keyof FileType]?.imgPath?.src) {
+            return ContentCardsTypes[mimeType as keyof FileType]?.imgPath?.src;
         } else {
             return placeholderImage.src;
         }
@@ -100,14 +100,14 @@ const ContentCard: React.FC<ContentCardProps> = ({
             >
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Image
-                        src={myContentCardsTypes[mimeType as keyof FileType]?.imgPath}
+                        src={ContentCardsTypes[mimeType as keyof FileType]?.imgPath}
                         alt="Content Thumbnail"
                         width={20}
                         height={20}
                         style={{ marginRight: '8px' }}
                     />
                     <span style={{ fontSize: '12px', color: '#1F1B13', fontWeight: 400 }}>
-                        {myContentCardsTypes[mimeType as keyof FileType]?.name}
+                        {ContentCardsTypes[mimeType as keyof FileType]?.name}
                     </span>
                 </Box>
             </Box>
