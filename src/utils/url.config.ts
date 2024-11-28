@@ -10,5 +10,6 @@ export const URL_CONFIG = {
     HIERARCHY_API: '/action/questionset/v2/hierarchy/',
     QUESTIONSET_READ: '/action/questionset/v2/read/',
     COMPOSITE_SEARCH: '/action/composite/v3/search',
+    CONTENT_HIERARCHY: '/action/content/v3/hierarchy',
   },
 };
