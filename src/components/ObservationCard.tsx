@@ -128,7 +128,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
               <Typography variant="h5" color="black"  sx={{ mr: 1 }}>
                 {t('OBSERVATION.DUE_DATE')}:
               </Typography>
-              <Typography variant="h5" color= '#555' >
+              <Typography variant="h5" color= '#555' sx={{mt:"3px"}} >
                 {endDate ? formatDate(endDate) : 'N/A'}
               </Typography>
             </Box>)}
