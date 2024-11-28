@@ -625,6 +625,8 @@
     "DUE_DATE": "Due date",
     "SURVEY_FORMS": "Survey Forms",
     "OBSERVATION_STATUS": "Observation Status",
-    "OBSERVATION_SURVEY_FOR":"Survey for {{entityValue}}"
+    "OBSERVATION_SURVEY_FOR":"Survey for {{entityValue}}",
+    "OBSERVATION_NOT_STARTED_YET": "Observation not started yet",
+    "EXPIRED": "Expired"
   }
 }
