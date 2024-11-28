@@ -105,8 +105,8 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   const setCohorts = useStore((state) => state.setCohorts);
   const setBlock = useStore((state) => state.setBlock);
   const [filteredCohortData, setFilteredCohortData] = React.useState<any>();
-  const [filteredManipulatedCohortData, setFilteredManipulatedCohortData] = React.useState<any>();
-
+  const [filteredManipulatedCohortData, setFilteredManipulatedCohortData] =
+    React.useState<any>();
 
   const store = manageUserStore();
 
@@ -144,18 +144,15 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   }, [router, setClassId, setIsAuthenticated, setUserId]);
   useEffect(() => {
     const filteredData = cohortsData?.filter(
-      (cohort: any) =>
-       
-        cohort?.status?.toLowerCase() === "active"
+      (cohort: any) => cohort?.status?.toLowerCase() === 'active'
     );
     setFilteredCohortData(filteredData);
     const filteredManipulatedData = manipulatedCohortData?.filter(
-      (cohort: any) =>
-       
-        cohort?.status?.toLowerCase() === "active"
+      (cohort: any) => cohort?.status?.toLowerCase() === 'active'
     );
     setFilteredManipulatedCohortData(filteredManipulatedData);
-    console.log(filteredData)
+
+    console.log(filteredData);
   }, [manipulatedCohortData, cohortsData]);
 
   useEffect(() => {
@@ -241,7 +238,6 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
           }
           if (response && response.length > 0) {
             if (response[0].type === cohortHierarchy.COHORT) {
-
               const filteredData = response
                 ?.map((item: any) => ({
                   cohortId: item?.cohortId,
@@ -284,7 +280,8 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
               }
               setBlock(response[0].name || response[0].cohortName);
               const filteredData = response[0].childData
-                ?.map((item: any) => {
+                ?.filter((item: any) => item?.status !== 'archived')
+                .map((item: any) => {
                   const typeOfCohort = item?.customField?.find(
                     (field: any) => field?.label === 'TYPE_OF_COHORT'
                   )?.value;
@@ -377,7 +374,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   const isCoursePlanner = pathname === '/course-planner';
 
   const { dir, isRTL } = useDirection();
-
+  console.log('classId', classId);
   return (
     <Box
       className={
@@ -402,7 +399,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             },
           }}
         >
-          {!loading && filteredCohortData && (
+          {!loading && classId && filteredCohortData && (
             <Box>
               {blockName ? (
                 <Box>
@@ -432,7 +429,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             </InputLabel>
                           )}
                           <Select
-                            value={ filteredCohortData?.[0]?.cohortId||classId}
+                            value={classId || filteredCohortData?.[0]?.cohortId}
                             labelId="center-select-label"
                             onChange={handleCohortSelection}
                             displayEmpty
@@ -466,24 +463,26 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             )}
                           >
                             {filteredCohortData?.length !== 0 ? (
-                              filteredManipulatedCohortData?.map((cohort: any) => (
-                                <MenuItem
-                                  key={cohort.cohortId}
-                                  value={cohort.cohortId}
-                                  style={{
-                                    fontWeight: '500',
-                                    fontSize: '14px',
-                                    color: theme.palette.warning['A200'],
-                                    textTransform: 'capitalize',
-                                  }}
-                                >
-                                  {toPascalCase(cohort.name)}{' '}
-                                  {cohort?.typeOfCohort ===
-                                    CenterType.REGULAR ||
-                                    (CenterType.UNKNOWN &&
-                                      `(${cohort?.typeOfCohort?.toLowerCase()})`)}
-                                </MenuItem>
-                              ))
+                              filteredManipulatedCohortData?.map(
+                                (cohort: any) => (
+                                  <MenuItem
+                                    key={cohort.cohortId}
+                                    value={cohort.cohortId}
+                                    style={{
+                                      fontWeight: '500',
+                                      fontSize: '14px',
+                                      color: theme.palette.warning['A200'],
+                                      textTransform: 'capitalize',
+                                    }}
+                                  >
+                                    {toPascalCase(cohort.name)}{' '}
+                                    {cohort?.typeOfCohort ===
+                                      CenterType.REGULAR ||
+                                      (CenterType.UNKNOWN &&
+                                        `(${cohort?.typeOfCohort?.toLowerCase()})`)}
+                                  </MenuItem>
+                                )
+                              )
                             ) : (
                               <Typography
                                 style={{
@@ -523,7 +522,11 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                           <Select
                             labelId="center-select-label"
                             label={showFloatingLabel ? t('COMMON.CENTER') : ''}
-                            value={classId ? classId : filteredCohortData[0]?.cohortId}
+                            value={
+                              classId
+                                ? classId
+                                : filteredCohortData[0]?.cohortId
+                            }
                             onChange={handleCohortSelection}
                             // displayEmpty
                             // style={{ borderRadius: '4px' }}
@@ -572,20 +575,22 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             }
                           >
                             {filteredCohortData?.length !== 0 ? (
-                              filteredManipulatedCohortData?.map((cohort: any) => (
-                                <MenuItem
-                                  key={cohort.cohortId}
-                                  value={cohort.cohortId}
-                                  style={{
-                                    fontWeight: '500',
-                                    fontSize: '14px',
-                                    color: theme.palette.warning['A200'],
-                                    textTransform: 'capitalize',
-                                  }}
-                                >
-                                  {toPascalCase(cohort?.name)}
-                                </MenuItem>
-                              ))
+                              filteredManipulatedCohortData?.map(
+                                (cohort: any) => (
+                                  <MenuItem
+                                    key={cohort.cohortId}
+                                    value={cohort.cohortId}
+                                    style={{
+                                      fontWeight: '500',
+                                      fontSize: '14px',
+                                      color: theme.palette.warning['A200'],
+                                      textTransform: 'capitalize',
+                                    }}
+                                  >
+                                    {toPascalCase(cohort?.name)}
+                                  </MenuItem>
+                                )
+                              )
                             ) : (
                               <Typography
                                 style={{
@@ -602,7 +607,8 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                         </FormControl>
                       ) : (
                         <>
-                          {showDisabledDropDown && filteredCohortData?.length === 1 ? (
+                          {showDisabledDropDown &&
+                          filteredCohortData?.length === 1 ? (
                             <FormControl
                               disabled={true}
                               className={
