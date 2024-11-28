@@ -678,9 +678,6 @@ const CoursePlanner = () => {
                   stateName == false
                 } // Disable if any field is empty
               >
-                <MenuItem value="">
-                  <Typography>Select Type</Typography>
-                </MenuItem>
                 {typeOptions?.map((item: any) => (
                   <MenuItem key={item?.name} value={item?.name}>
                     {item?.name}
