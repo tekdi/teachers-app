@@ -142,7 +142,6 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
       setUserId(storedUserId);
     }
   }, [router, setClassId, setIsAuthenticated, setUserId]);
-
   useEffect(() => {
     const filteredData = cohortsData?.filter(
       (cohort: any) =>
@@ -433,7 +432,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             </InputLabel>
                           )}
                           <Select
-                            value={classId}
+                            value={ filteredCohortData?.[0]?.cohortId||classId}
                             labelId="center-select-label"
                             onChange={handleCohortSelection}
                             displayEmpty
