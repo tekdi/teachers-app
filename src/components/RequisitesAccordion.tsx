@@ -71,30 +71,7 @@ const RequisitesAccordion: React.FC<RequisitesAccordionProps> = ({
               .filter((item) => item.type === type)
               .map((item) => (
                 <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
-                  {/* <Box
-                    className="facilitator-bg"
-                    sx={{
-                      backgroundImage: `url(${item?.appIcon ? item.appIcon : '/decorationBg.png'})`,
-                      position: 'relative',
-                      backgroundRepeat: 'no-repeat',
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      // backgroundSize: 'contain',
-                    }}
-                    onClick={() => handlePlayers(item?.id)}
-                  >
-                    <Box
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: '500',
-                        // color: theme?.palette?.warning['A400'],
-                      }}
-                    >
-                      {item?.name || subTopic.join(', ')}
-                    </Box>
-                  </Box> */}
-
-                  <ContentCard name={item?.name} subTopic={subTopic}/>
+                  <ContentCard name={item?.name} subTopic={subTopic} appIcon={item.appIcon} identifier={item?.id} mimeType={item?.mimeType}/>
                 </Grid>
               ))
           ) : (
