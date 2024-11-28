@@ -17,7 +17,8 @@ const FilterSelect: React.FC<FilterSelectProps> = ({
   sx = {}
 }) => {
   return (
-    <FormControl sx={{  minWidth: 200 }} variant="outlined" margin="normal">
+    <FormControl sx={{   width: { xs: '100%', sm: '100%', md: 300 },
+  }} variant="outlined" margin="normal">
       <InputLabel id="filter-label">{label}</InputLabel>
       <Select
         labelId="filter-label"
