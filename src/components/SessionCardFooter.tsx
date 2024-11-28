@@ -111,6 +111,8 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
                       link: resource?.link,
                       type: resource?.type || '',
                       id: resource?.id || '',
+                      topic: task.name,
+                      subtopic: child?.name,
                     })
                   );
                   return subAcc;
@@ -156,7 +158,13 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
         const content = response?.find(
           (content: any) => content?.identifier === resource?.id
         );
-        return { ...resource, ...content, name: resource.name };
+        return {
+          ...resource,
+          ...content,
+          name: resource.name,
+          topic: resource.topic,
+          subtopic: resource.subtopic,
+        };
       });
 
       // setResources(resources);
