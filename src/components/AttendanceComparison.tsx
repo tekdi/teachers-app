@@ -38,6 +38,7 @@ interface Cohort {
   cohortId: string;
   cohortType: string;
   name: string;
+  status?:string
 }
 
 interface AttendanceResult {
@@ -138,12 +139,22 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
   }, [store?.cohorts, scope, centerType]);
 
   const data =
-    store?.cohorts
-      ?.filter((pair: Cohort) => pair?.cohortType === centerType)
-      .map((pair: Cohort) => ({
-        name: toPascalCase(pair?.name),
-        Attendance: Number(attendanceData[pair?.cohortId]) || 0,
-      })) || [];
+  store?.cohorts
+    ?.filter(
+      (pair: Cohort) =>
+        pair?.cohortType === centerType && pair?.status === "active"
+    )
+    .map((pair: Cohort) => ({
+      name: toPascalCase(pair?.name),
+      Attendance: Number(attendanceData[pair?.cohortId]) || 0,
+    })) || [];
+    // const data =
+    // store?.cohorts
+    //   ?.filter((pair: Cohort) => pair?.cohortType === centerType)
+    //   .map((pair: Cohort) => ({
+    //     name: toPascalCase(pair?.name),
+    //     Attendance: Number(attendanceData[pair?.cohortId]) || 0,
+    //   })) || [];
 
   const YAxisLabel = (value: any) => {
     let maxLength = 25;
