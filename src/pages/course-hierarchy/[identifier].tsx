@@ -41,7 +41,7 @@ const RecursiveAccordion = ({ data }: { data: any[] }) => {
           {level === 0 ? (
             <>
               {/* Render level 0 name as heading */}
-              <Box sx={{p:'12px', display:'flex', gap:'10px'}}>
+              <Box sx={{p:'12px', display:'flex', alignItems:'center', gap:'10px'}}>
                 <KeyboardBackspaceOutlinedIcon
                   onClick={handleBackEvent}
                   cursor={'pointer'}
