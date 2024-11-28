@@ -697,14 +697,12 @@ const BoardEnrollment = () => {
         )}
       </Grid>
 
-      {modalOpen && (
         <SortingModal
           isModalOpen={modalOpen}
           handleCloseModal={handleCloseModal}
           handleSorting={handleSorting}
           routeName={pathname}
         />
-      )}
     </>
   );
 };

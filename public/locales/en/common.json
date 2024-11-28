@@ -429,7 +429,7 @@
     "SESSION_EDITED_SUCCESSFULLY": "Session updated successfully",
     "TOPIC_SUBTOPIC_ADDED_SUCCESSFULLY": "Topic and Subtopic added successfully!",
     "TOPIC_SUBTOPIC_REMOVED_SUCCESSFULLY": "Topic and Subtopic removed successfully!",
-    "COURSE_PLANNER_NOT_AVAILABLE": "Course Planner is not available for {{subject}}!",
+    "COURSE_PLANNER_NOT_AVAILABLE": "Course Planner has not yet been uploaded for {{subject}}!",
     "FACILITATOR_REQUISITES": "Facilitator's Requisites",
     "PREREQUISITES": "Pre-requisites",
     "POST_REQUISITES": "Post-requisites",
