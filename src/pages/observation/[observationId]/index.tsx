@@ -44,7 +44,6 @@ import SearchBar from '@/components/Searchbar';
 import { telemetryFactory } from '@/utils/telemetry';
 import centers from '@/pages/centers';
 import Loader from '@/components/Loader';
-
 interface EntityData {
   cohortId?: string;
   name?: string;
@@ -618,8 +617,8 @@ setFilteredEntityData(result)
                         {myCohortList?.map((cohort: any) => (
                           <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
                             {localStorage.getItem('role') === Role.TEAM_LEADER
-                              ? cohort.name
-                              : cohort.cohortName}
+                              ? toPascalCase(cohort.name)
+                              :toPascalCase(cohort.cohortName)}
                           </MenuItem>
                         ))}
                       </Select>
