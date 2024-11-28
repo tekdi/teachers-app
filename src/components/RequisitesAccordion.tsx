@@ -75,6 +75,10 @@ const RequisitesAccordion: React.FC<RequisitesAccordionProps> = ({
                     sx={{
                       backgroundImage: `url(${item?.appIcon ? item.appIcon : '/decorationBg.png'})`,
                       position: 'relative',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      // backgroundSize: 'contain',
                     }}
                     onClick={() => handlePlayers(item?.id)}
                   >
@@ -82,7 +86,7 @@ const RequisitesAccordion: React.FC<RequisitesAccordionProps> = ({
                       sx={{
                         fontSize: '16px',
                         fontWeight: '500',
-                        color: theme?.palette?.warning['A400'],
+                        // color: theme?.palette?.warning['A400'],
                       }}
                     >
                       {item?.name || subTopic.join(', ')}

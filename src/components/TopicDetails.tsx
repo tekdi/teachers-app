@@ -38,18 +38,13 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
-  // const content: any = [];
-  // if (learningResources?.[topic]) {
-  //   const subTopics = learningResources[topic];
-  //   subTopic?.forEach((currentSubTopic: string) => {
-  //     if (subTopics[currentSubTopic]) {
-  //       const resources = subTopics[currentSubTopic];
-  //       resources?.forEach((resource: any) => {
-  //         content.push(resource);
-  //       });
-  //     }
-  //   });
-  // }
+  const content = learningResources.filter((resource: any) => {
+    return (
+      resource.topic === topic &&
+      subTopic.some((sub) => sub === resource.subtopic)
+    );
+  });
+  console.log(content);
 
   const openTopicModal = () => {
     handleOpen();
@@ -158,7 +153,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
         <RequisitesAccordion
           title={t('CENTER_SESSION.FACILITATOR_REQUISITES')}
           type={RequisiteType.FACILITATOR_REQUISITE}
-          content={learningResources}
+          content={content}
           handlePlayers={handlePlayers}
           theme={theme}
           subTopic={subTopic}
@@ -166,7 +161,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
         <RequisitesAccordion
           title={t('CENTER_SESSION.PREREQUISITES')}
           type={RequisiteType.PRE_REQUISITES}
-          content={learningResources}
+          content={content}
           handlePlayers={handlePlayers}
           theme={theme}
           subTopic={subTopic}
@@ -174,7 +169,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
         <RequisitesAccordion
           title={t('CENTER_SESSION.POST_REQUISITES')}
           type={RequisiteType.POST_REQUISITES}
-          content={learningResources}
+          content={content}
           handlePlayers={handlePlayers}
           theme={theme}
           subTopic={subTopic}

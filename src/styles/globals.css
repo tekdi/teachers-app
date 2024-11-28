@@ -963,7 +963,7 @@ main {
 }
 
 .facilitator-bg {
-  display: flex;
+  /* display: flex; */
   height: 244px;
   background-color: #ECE6F0;
   border-radius: 16px;

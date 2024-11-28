@@ -53,7 +53,7 @@ const nextConfig = {
         destination: `${process.env.WORKSPACE_BASE_URL}/assets/:path*`, // Serve the assets from the public folder
       },
       {
-        source: '/action/v1/telemetry',
+        source: `/action/v1/telemetry`,
         destination: `${process.env.NEXT_PUBLIC_TELEMETRY_URL}/v1/telemetry`,
       },
       {

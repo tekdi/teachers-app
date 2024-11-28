@@ -7,6 +7,8 @@ import {
 } from '../utils/Interfaces';
 import axios from 'axios';
 import { Role } from '@/utils/app.constant';
+import { URL_CONFIG } from '@/utils/url.config';
+import { get } from './RestClient';
 
 
 export const getTargetedSolutions = async ({
@@ -150,6 +152,24 @@ export const fetchCourseIdFromSolution = async (
     return true;
   } catch (error) {
     console.error('Error fetching solution details:', error);
+    throw error;
+  }
+};
+
+export const getContentHierarchy = async ({
+  doId,
+}: {
+  doId: string;
+}): Promise<any> => {
+  const apiUrl: string = `${URL_CONFIG.API.CONTENT_HIERARCHY}/${doId}`;
+
+  try {
+    console.log('Request data', apiUrl);
+    const response = await get(apiUrl);
+    // console.log('response', response);
+    return response;
+  } catch (error) {
+    console.error('Error in getContentHierarchy Service', error);
     throw error;
   }
 };
