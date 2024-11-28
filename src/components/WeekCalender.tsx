@@ -60,7 +60,7 @@ const Calendar: React.FC<any> = ({
   };
 
   const renderDays = () => {
-    const dateFormat = 'EEEEE';
+    const dateFormat = showFromToday ? 'EEE' : 'EEEEE';
     const days = [];
     const today = new Date();
     const daysLimit = showFromToday ? eventDaysLimit : dashboardDaysLimit;
@@ -84,10 +84,7 @@ const Calendar: React.FC<any> = ({
     }
 
     return (
-      <div
-        className="days row"
-        style={{ width: '100%' }}
-      >
+      <div className="days row" style={{ width: '100%' }}>
         {days}
       </div>
     );
