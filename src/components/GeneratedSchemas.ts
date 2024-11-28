@@ -67,7 +67,6 @@ export const GenerateSchemaAndUiSchema = (
         break;
       case 'numeric':
         fieldSchema.type = 'number';
-
         if (field?.maxLength) {
           fieldSchema.maximum = Number(field.maxLength);
         }
@@ -75,8 +74,8 @@ export const GenerateSchemaAndUiSchema = (
         if (field?.minLength !== undefined && field?.minLength !== null) {
           fieldSchema.minimum = Number(field.minLength);
         }
+        fieldUiSchema['ui:widget'] = 'CustomNumberWidget';
 
-        // fieldUiSchema['ui:field'] = 'NumberInputField';
         break;
       case 'drop_down':
         fieldSchema.type = 'string';
@@ -209,7 +208,6 @@ export const GenerateSchemaAndUiSchema = (
       fieldSchema.uniqueItems = true;
       fieldUiSchema['ui:widget'] = 'checkboxes';
       //       fieldUiSchema['ui:widget'] = 'MultiSelectCheckboxes';
-
 
       if (isRequired) {
         fieldSchema.minItems = 1;
