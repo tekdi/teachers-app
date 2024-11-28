@@ -109,12 +109,12 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       // window.location.reload();
     }
     const cohorts = userStore.cohorts;
-    const centers = cohorts.map(
-      (cohort: { name: string; cohortId: string }) => ({
-        name: cohort?.name,
-        cohortId: cohort?.cohortId,
-      })
-    );
+    const centers = cohorts
+  .filter((cohort: { status: any }) => cohort.status !== "archived")
+  .map((cohort: { name: string; cohortId: string; status: any }) => ({
+    name: cohort?.name,
+    cohortId: cohort?.cohortId,
+  }));
     const centersName = centers?.map((center: { name: any }) => center?.name);
 
     setCenters(centers);

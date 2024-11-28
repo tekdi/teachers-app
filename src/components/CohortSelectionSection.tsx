@@ -66,11 +66,13 @@ interface ChildData {
   type: string;
   customField: any[];
   childData: ChildData[];
+  status?: string;
 }
 interface NameTypePair {
   cohortId: string;
   name: string;
   cohortType: string;
+  status?: string;
 }
 
 const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
@@ -219,6 +221,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                     nameTypePairs.push({
                       cohortId: item?.cohortId,
                       name: item?.name,
+                      status: item?.status,
                       cohortType,
                     });
                   }
