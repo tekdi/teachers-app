@@ -117,10 +117,10 @@ const CoursePlanner = () => {
           //   { label: CoursePlannerConstants.SUBJECT, setter: setSubject },
           // ];
 
-          const boardField = cohortDetails.customFields.find(
-            (field: any) => field.label === 'BOARD'
+          const boardField = cohortDetails?.customFields?.find(
+            (field: any) => field?.label === 'BOARD'
           );
-          console.log(boardField.value);
+          console.log(boardField?.value);
           setBoardNew(boardField?.value);
 
           const stringFields = [
