@@ -16,6 +16,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { toPascalCase } from '@/utils/Helper';
+import NoDataFound from './common/NoDataFound';
 
 interface ManageUsersModalProps {
   open: boolean;
@@ -75,7 +76,6 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
     setCheckedCenters((prevCheckedCenters) => {
       const currentIndex = prevCheckedCenters.indexOf(name);
       const isCurrentlyChecked = currentIndex !== -1;
-
       const newChecked = [...prevCheckedCenters];
 
       if (isCurrentlyChecked) {
@@ -210,6 +210,10 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                   </Box>
                 </React.Fragment>
               ))}
+
+              {filteredCenters.length === 0 && (
+                <NoDataFound title={t('COMMON.NO_CENTER_FOUND')} />
+              )}
             </Box>
           </Box>
           <Divider />
