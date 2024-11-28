@@ -275,7 +275,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
         t('CENTER_SESSION.CANT_SELECT_AS_EVENT_PASSED_LIVE'),
         'error'
       );
-    } else if (!topicList || topicList.length === 0) {
+    } else if (!topicList || topicList?.length === 0) {
       showToastMessage(
         t('CENTER_SESSION.COURSE_PLANNER_NOT_AVAILABLE', {
           subject: item?.metadata?.subject,
@@ -294,7 +294,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const handleClick = () => {
     handleComponentOpen();
     if (
-      topicList.length >= 1 &&
+      topicList?.length >= 1 &&
       transformedTasks &&
       eventStatus === EventStatus.UPCOMING
     ) {

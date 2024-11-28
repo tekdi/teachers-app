@@ -506,15 +506,16 @@ export const sortSessionsByTime = (sessionsArray: any) => {
 // Helper function to get options by category
 export const getOptionsByCategory = (frameworks: any, categoryCode: string) => {
   // Find the category by code
-  const category = frameworks.categories.find(
-    (category: any) => category.code === categoryCode
+  const category = frameworks?.categories?.find(
+    (category: any) => category?.code === categoryCode
   );
 
   // Return the mapped terms
-  return category.terms.map((term: any) => ({
-    name: term.name,
-    code: term.code,
-    associations: term.associations,
+  return category?.terms?.map((term: any) => ({
+    name: term?.name,
+    code: term?.code,
+    associations: term?.associations,
+
   }));
 };
 
@@ -544,8 +545,10 @@ export const getAssociationsByCodeNew = (
   data: DataItem[],
   code: string
 ): Association[] | [] => {
-  const foundItem = data.find((item) => item.name === code);
-  return foundItem ? foundItem.associations : [];
+
+  const foundItem = data?.find((item) => item?.name === code);
+  return foundItem ? foundItem?.associations : [];
+
 };
 
 export const getAssociationsByCode = (
@@ -557,22 +560,24 @@ export const getAssociationsByCode = (
 };
 
 export const findCommonAssociations = (data1: any[], data2: any[]) => {
-  if (!data1.length) return data2;
-  if (!data2.length) return data1;
+
+  if (!data1?.length) return data2;
+  if (!data2?.length) return data1;
 
   return data1
-    .map((item1) => {
-      const item2 = data2.find((item) => item.code === item1.code);
+    ?.map((item1) => {
+      const item2 = data2?.find((item) => item?.code === item1?.code);
       if (item2) {
-        const commonAssociations = item1.associations.filter((assoc1: any) =>
-          item2.associations.some(
-            (assoc2: any) => assoc1.identifier === assoc2.identifier
+        const commonAssociations = item1?.associations?.filter((assoc1: any) =>
+          item2?.associations?.some(
+            (assoc2: any) => assoc1?.identifier === assoc2?.identifier
           )
         );
-        if (commonAssociations.length > 0) {
+        if (commonAssociations?.length > 0) {
           return {
-            name: item1.name,
-            code: item1.code,
+            name: item1?.name,
+            code: item1?.code,
+
             associations: commonAssociations,
           };
         }
@@ -584,7 +589,7 @@ export const findCommonAssociations = (data1: any[], data2: any[]) => {
 
 export const filterAndMapAssociationsNew = (
   category: string,
-  options: any[],
+  options?: any[],
   associationsList?: any[],
   codeKey: string = 'code'
 ) => {
@@ -593,7 +598,7 @@ export const filterAndMapAssociationsNew = (
     return [];
   }
 
-  if (!associationsList || associationsList.length === 0) {
+  if (!associationsList || associationsList?.length === 0) {
     return [];
   }
 
@@ -601,14 +606,14 @@ export const filterAndMapAssociationsNew = (
     .filter((option) => {
       const optionCode = option[codeKey];
 
-      return associationsList.some(
-        (assoc) => assoc[codeKey] === optionCode && assoc.category === category
+      return associationsList?.some(
+        (assoc) => assoc[codeKey] === optionCode && assoc?.category === category
       );
     })
     .map((option) => ({
-      name: option.name,
-      code: option.code,
-      associations: option.associations || [],
+      name: option?.name,
+      code: option?.code,
+      associations: option?.associations || [],
     }));
 };
 

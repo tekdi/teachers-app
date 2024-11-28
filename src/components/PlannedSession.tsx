@@ -177,7 +177,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
           const getStates = getOptionsByCategory(frameworks, 'state');
           const matchState = getStates.find(
-            (item: any) => item.name === StateName
+            (item: any) => item?.name?.toLowerCase() === StateName?.toLocaleLowerCase()
           );
 
           const getBoards = getOptionsByCategory(frameworks, 'board');

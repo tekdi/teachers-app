@@ -19,7 +19,7 @@ export const V2PlayerConfig: PlayerConfig = {
     contextRollup: { l1: "test-k12-channel" },
     objectRollup: {},
     userData: { firstName: "Guest", lastName: "User" },
-    host: "https://telemetry.prathamdigital.org",
+    host: '',
     endpoint: "/v1/telemetry",
   },
   config: {
