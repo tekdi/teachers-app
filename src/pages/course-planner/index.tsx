@@ -30,7 +30,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { accessControl, frameworkId } from '../../../app.config';
+import { accessControl, COURSE_TYPE, frameworkId } from '../../../app.config';
 import { useDirection } from '../../hooks/useDirection';
 import { types } from 'node:util';
 import axios from 'axios';
@@ -468,6 +468,7 @@ const CoursePlanner = () => {
 
       addQueryParams({ center: cohortId });
       setSelectedValue(cohortId);
+      setType(tStore.type || COURSE_TYPE.FOUNDATION_COURSE);
     }
   }, [store.cohorts]);
 
@@ -562,14 +563,14 @@ const CoursePlanner = () => {
       }
     };
     fetchTaxonomyResults();
-  }, [value, typeOptions]);
+  }, [value, typeOptions, selectedValue]);
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const newValue = event.target.value as string;
-    if (newValue !== value) {
-      setValue(newValue);
-      setType(newValue);
-    }
+
+    setValue(newValue);
+    setType(newValue);
+
     const windowUrl = window.location.pathname;
     const cleanedUrl = windowUrl.replace(/^\//, '');
     const env = cleanedUrl.split('/')[0];
