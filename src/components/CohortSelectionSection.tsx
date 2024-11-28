@@ -411,7 +411,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                     textAlign={'left'}
                     sx={{ fontSize: '12px', color: '#777' }}
                   >
-                    {blockName} {t('DASHBOARD.BLOCK')}
+                    {toPascalCase(blockName)} {t('DASHBOARD.BLOCK')}
                   </Typography>
                   <Box className="mt-md-16">
                     <Box sx={{ minWidth: 120, gap: '15px' }} display={'flex'}>

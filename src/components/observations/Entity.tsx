@@ -102,7 +102,15 @@ const Entity: React.FC<MemberProps> = ({
                 color: theme.palette.warning['300'],
               }}
             >
-              <Typography>{entityMemberValue}</Typography>
+              <Typography
+             sx={{
+              display: '-webkit-box',
+              WebkitLineClamp: 1,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+              >{entityMemberValue}</Typography>
               <Typography variant="h5" color={'#4D4639'}>
                 {observationStatus}
               </Typography>

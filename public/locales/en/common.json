@@ -624,6 +624,7 @@
     "THIS_OBSERVATION_EXPIRED": "This observation is expired",
     "DUE_DATE": "Due date",
     "SURVEY_FORMS": "Survey Forms",
-    "OBSERVATION_STATUS": "Observation Status"
+    "OBSERVATION_STATUS": "Observation Status",
+    "OBSERVATION_SURVEY_FOR":"Survey for {{entityValue}}"
   }
 }

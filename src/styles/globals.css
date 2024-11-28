@@ -963,10 +963,26 @@ main {
 }
 
 .facilitator-bg {
-  display: flex;
+  /* display: flex; */
   height: 244px;
   background-color: #ECE6F0;
   border-radius: 16px;
+}
+
+.facilitator-card {
+  display: flex;
+  flex-direction: column;
+  height: 244px;
+  background-color: #ECE6F0;
+  border-radius: 16px;
+  overflow: hidden;
+  /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.facilitator-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* To Hide the caret icon on input type number */
