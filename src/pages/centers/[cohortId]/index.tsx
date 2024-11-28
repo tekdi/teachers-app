@@ -190,10 +190,7 @@ const CohortPage = () => {
 
   const handleSchedule = () => {
     console.log('handleSchedule called');
-    setCreateEvent(false);
-    setTimeout(() => {
-      setCreateEvent(true);
-    }, 0);
+    setCreateEvent(true);
   };
 
   const handleCloseSchedule = () => {
