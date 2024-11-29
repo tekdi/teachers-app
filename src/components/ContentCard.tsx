@@ -68,6 +68,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
                         background:
                             'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.5) 100%)',
                         zIndex: 1,
+                        borderTopLeftRadius: '16px',
+                        borderTopRightRadius: '16px'
                     }}
                 />
                 <Box
