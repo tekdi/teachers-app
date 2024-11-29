@@ -58,7 +58,8 @@ const RecursiveAccordion = ({ data }: { data: any[] }) => {
                     fontWeight: '400',
                     paddingLeft: '4px',
                     fontSize: '22px',
-                    color: '#4D4639'
+                    color: '#4D4639',
+                    marginBottom:'0px !important'
                   }}
                 >
                   {node.name}
@@ -94,7 +95,8 @@ const RecursiveAccordion = ({ data }: { data: any[] }) => {
             </Grid>
             </>
           ) : (
-                <Accordion sx={{ marginLeft: `${(level - 1) * 2}px`, boxShadow: level !== 1 ? '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)' : 'unset',  }}>
+                <Accordion defaultExpanded sx={{ marginLeft: `${(level - 1) * 2}px`, boxShadow: level !== 1 ? '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)' : 'unset',  }}>
+                  
               <AccordionSummary
                 sx={{
                   '&.MuiAccordionSummary-root': {
