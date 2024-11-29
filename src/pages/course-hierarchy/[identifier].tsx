@@ -6,6 +6,7 @@ import {
   Typography,
   Link,
   Box,
+  Grid,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getContentHierarchy } from '@/services/CoursePlannerService';
@@ -19,6 +20,7 @@ import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspace
 import { logEvent } from '@/utils/googleAnalytics';
 import { useTheme } from '@mui/material/styles';
 import { useDirection } from '../../hooks/useDirection';
+import ContentCard from '@/components/ContentCard';
 
 const RecursiveAccordion = ({ data }: { data: any[] }) => {
   let router = useRouter(); 
@@ -53,12 +55,11 @@ const RecursiveAccordion = ({ data }: { data: any[] }) => {
                 <Typography
                   variant="h1"
                   sx={{
-                    marginBottom: '0.75rem',
                     fontWeight: '400',
-                    paddingBottom: '4px',
                     paddingLeft: '4px',
                     fontSize: '22px',
-                    color: '#4D4639'
+                    color: '#4D4639',
+                    marginBottom:'0px !important'
                   }}
                 >
                   {node.name}
@@ -68,24 +69,18 @@ const RecursiveAccordion = ({ data }: { data: any[] }) => {
               {node.children && renderAccordion(node.children, level + 1)}
             </>
           ) : node.contentType === 'Resource' ? (
-            <Box
-              className="facilitator-bg"
-              sx={{
-                backgroundImage: `url(${node?.appIcon ? node.appIcon : '/decorationBg.png'})`,
-                position: 'relative',
-                marginLeft: `${(level - 1) * 2}px`, // Indentation for resources
-                cursor: 'pointer',
-                height: '50px',
-                width: '50px',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
-              onClick={() =>
-                router.push(`/play/content/${node?.identifier || node?.id}`)
-              }
-            ></Box>
+        
+            <Grid container>
+                  <Grid item xs={6} md={4} lg={3} sx={{ mt: 2 }}>
+
+                     <ContentCard name={node?.name} identifier={node?.identifier || node?.id} mimeType={node?.mimeType} appIcon={node?.appIcon} resourceType={node?.resourceType} />
+
+                  </Grid>
+            </Grid>
+     
           ) : (
-                <Accordion sx={{ marginLeft: `${(level - 1) * 2}px`, boxShadow: level !== 1 ? '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)' : 'unset', }}>
+                <Accordion defaultExpanded sx={{ marginLeft: `${(level - 1) * 0.2}px`, boxShadow: level !== 1 ? '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)' : 'unset',  }}>
+                  
               <AccordionSummary
                 sx={{
                   '&.MuiAccordionSummary-root': {
@@ -93,8 +88,8 @@ const RecursiveAccordion = ({ data }: { data: any[] }) => {
                     borderBottom:'1px solid #D0C5B4'
                   },
                 }}
-                expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="body1" fontWeight={600}>
+                    expandIcon={<ExpandMoreIcon sx={{ color: '#1F1B13' }} />}>
+                    <Typography variant="body1" fontWeight={500} sx={{ color: '#1F1B13', fontWeight: 500, fontSize: '14px' }}>
                   {node?.name}
                 </Typography>
               </AccordionSummary>
