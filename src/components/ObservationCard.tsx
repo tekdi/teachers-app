@@ -64,7 +64,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
         background: "#f8efda",
                  borderRadius: '16px',
           border: '1px solid #E0E0E0',
-         // height: '220px',
+          height: '160px',
           display: 'flex',
           flexDirection: 'column',
         }}
