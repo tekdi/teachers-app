@@ -1,4 +1,4 @@
-import LearnersList from '@/components/LearnersListItem';
+import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortFacilitatorList } from '@/services/MyClassDetailsService';
 import { Status, limit } from '@/utils/app.constant';
 import {
@@ -106,7 +106,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             {userData?.map((data: any) => {
               return (
                 <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
-                  <LearnersList
+                  <LearnersListItem
                     userId={data.userId}
                     learnerName={data.name}
                     enrollmentId={data.enrollmentNumber}

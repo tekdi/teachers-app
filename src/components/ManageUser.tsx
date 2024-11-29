@@ -151,7 +151,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
           // const resp = await getMyUserList({ limit, page, filters, fields });
           const resp = await queryClient.fetchQuery({
-            queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR, filters],
+            // queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR, filters],
+            queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
             queryFn: () => getMyUserList({ limit, page, filters, fields }),
           });
           console.log('facilitator');
@@ -481,8 +482,16 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const handleFacilitatorAdded = () => {
     setIsFacilitatorAdded((prev) => !prev);
   };
-  const handleMenuOpen = (event: any) => {
+  const handleMenuOpen = (event: any, user?: any) => {
     setAnchorEl(event.currentTarget);
+
+    if (user) {
+      setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
+
+      if (!isFromFLProfile) {
+        setSelectedUser(user);
+      }
+    }
   };
 
   const getCohortNames = (cohortNames: string) => {
@@ -546,7 +555,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                   onClick={(event) => {
                     isMobile
                       ? toggleDrawer('bottom', true, teacherUserId)(event)
-                      : handleMenuOpen(event);
+                      : handleMenuOpen(event, teacherUserId);
                   }}
                   sx={{
                     fontSize: '24px',
@@ -681,7 +690,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                                 true,
                                                 user
                                               )(event)
-                                            : handleMenuOpen(event);
+                                            : handleMenuOpen(event, user);
                                         }}
                                         sx={{
                                           fontSize: '24px',

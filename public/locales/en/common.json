@@ -73,7 +73,7 @@
     "SURE_UPDATE": "Are you sure you want to update this attendance?",
     "SURE_MARK": "Are you sure you want to mark this attendance?",
     "SURE_REMOVE": "Are you sure you want to remove this learner?",
-    "SURE_REASSIGN_CENTER": "Are you sure you want to re-assign center to this user?",
+    "SURE_REASSIGN_CENTER": "Are you sure you want to re-assign center of this user?",
     "SURE_CLOSE": "Are you sure you want to close without saving?",
     "LEARNER_LIST": "Learners List",
     "FACILITATOR_LIST": "Facilitators List",
@@ -429,7 +429,7 @@
     "SESSION_EDITED_SUCCESSFULLY": "Session updated successfully",
     "TOPIC_SUBTOPIC_ADDED_SUCCESSFULLY": "Topic and Subtopic added successfully!",
     "TOPIC_SUBTOPIC_REMOVED_SUCCESSFULLY": "Topic and Subtopic removed successfully!",
-    "COURSE_PLANNER_NOT_AVAILABLE": "Course Planner is not available for {{subject}}!",
+    "COURSE_PLANNER_NOT_AVAILABLE": "Course Planner has not yet been uploaded for {{subject}}!",
     "FACILITATOR_REQUISITES": "Facilitator's Requisites",
     "PREREQUISITES": "Pre-requisites",
     "POST_REQUISITES": "Post-requisites",
@@ -624,6 +624,9 @@
     "THIS_OBSERVATION_EXPIRED": "This observation is expired",
     "DUE_DATE": "Due date",
     "SURVEY_FORMS": "Survey Forms",
-    "OBSERVATION_STATUS": "Observation Status"
+    "OBSERVATION_STATUS": "Observation Status",
+    "OBSERVATION_SURVEY_FOR":"Survey for {{entityValue}}",
+    "OBSERVATION_NOT_STARTED_YET": "Observation not started yet",
+    "EXPIRED": "Expired"
   }
 }

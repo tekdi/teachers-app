@@ -98,7 +98,7 @@ function DropOutModal({
           membershipId,
         });
 
-        if (response?.responseCode !== 200 || response?.params?.err) {
+        if (response?.params?.err) {
           ReactGA.event('dropout-student-error', {
             cohortMembershipId: membershipId,
           });

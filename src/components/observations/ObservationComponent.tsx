@@ -250,6 +250,14 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
 
 
         </Box>
+       
+     {localStorage.getItem('observationName') &&(<Typography variant="h3" ml="60px" color={"black"}
+            
+
+      > {t('OBSERVATION.OBSERVATION_SURVEY_FOR', {
+        entityValue: localStorage.getItem('observationName'),
+      })}  </Typography>)}
+
     {
       observationQuestions && 
      

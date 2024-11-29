@@ -96,9 +96,11 @@ const PieChartGraph: React.FC<PieChartGraphProps> = ({ stagesCount }) => {
           '@media (min-width: 700px)': {
             height: 400,
           },
+          display: "flex",
+          justifyContent: "center"
         }}
       >
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" style={{ maxWidth: '500px' }} height="100%">
           <PieChart>
             <Pie
               data={data}
@@ -114,27 +116,19 @@ const PieChartGraph: React.FC<PieChartGraphProps> = ({ stagesCount }) => {
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
+                  style={{outline: 'none'}}
                 />
               ))}
             </Pie>
 
-            {isMobile ? (
-              <Legend
-                layout="vertical"
-                align="right"
-                verticalAlign="middle"
-                formatter={renderLegendText}
-                iconType="circle"
-              />
-            ) : (
-              <Legend
-                layout="horizontal"
-                align="center"
-                verticalAlign="bottom"
-                formatter={renderLegendText}
-                iconType="circle"
-              />
-            )}
+            <Legend
+              layout="vertical"
+              align="right"
+              verticalAlign="middle"
+              formatter={renderLegendText}
+              iconType="circle"
+            />
+
           </PieChart>
         </ResponsiveContainer>
       </Box>
