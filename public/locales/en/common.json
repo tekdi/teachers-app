@@ -603,12 +603,12 @@
     "SURE_GO_BACK": "Are you sure you want to go back? Your progress might be lost."
   },
   "OBSERVATION": {
-    "OBSERVATION_START": "Start Observation",
-    "OBSERVATION_DETAILS": "Observation Details",
-    "ADD_ENTITY": "Add {{entityType}} in observation list",
+    "OBSERVATION_START": "Start Survey",
+    "OBSERVATION_DETAILS": "Survey Details",
+    "ADD_ENTITY": "Add {{entityType}} in Survey list",
     "SEARCH_ENTITY": "Search {{entityType}} name",
-    "OBSERVATIONS": "{{name}} Observations",
-    "SEARCH_OBSERVATIONS": "Search Observations",
+    "OBSERVATIONS": "{{name}} Survey",
+    "SEARCH_OBSERVATIONS": "Search Surveys",
     "CONTINUE": "Continue",
     "SUBMITTED": "Submitted",
     "FORM_SAVED_SUCCESSFULLY": "Form changes saved successfully",
@@ -617,15 +617,15 @@
     "COMPLETED": "Completed",
     "INPROGRESS": "In-Progress",
     "NO_DATA_FOUND": "No {{entity}} found",
-    "NO_RESULT_FOUND": "No Observations found for {{entity}}",
-    "NO_OBSERVATION_EXPIRED": "No observation expired for {{entity}}",
+    "NO_RESULT_FOUND": "No Survey found for {{entity}}",
+    "NO_OBSERVATION_EXPIRED": "No Survey expired for {{entity}}",
     "DAYS_LEFT": "Days left",
-    "THIS_OBSERVATION_EXPIRED": "This observation is expired",
+    "THIS_OBSERVATION_EXPIRED": "This Survey is expired",
     "DUE_DATE": "Due date",
     "SURVEY_FORMS": "Survey Forms",
-    "OBSERVATION_STATUS": "Observation Status",
+    "OBSERVATION_STATUS": "Survey Status",
     "OBSERVATION_SURVEY_FOR":"Survey for {{entityValue}}",
-    "OBSERVATION_NOT_STARTED_YET": "Observation not started yet",
+    "OBSERVATION_NOT_STARTED_YET": "Survey not started yet",
     "EXPIRED": "Expired"
   }
 }

@@ -99,7 +99,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
               {name}
             </Typography>
 
-            {description && (
+            {description ? (
               <Typography
                 variant="body2"
                 sx={{
@@ -115,7 +115,11 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
               >
                 {description}
               </Typography>
-            )}
+            ):<Box
+            sx={{
+              
+              height: '3.5em',
+            }}            ></Box>}
 
 {endDate && remainingDays !== 0 &&(<Box
               sx={{

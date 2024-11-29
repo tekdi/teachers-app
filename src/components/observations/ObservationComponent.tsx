@@ -153,7 +153,7 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
             await handleSaveSubmit(event);
           }
         };
-      
+
         const handleSaveSubmit = async (event: Event) => {
           const submissionData = { evidence: { status: (event as CustomEvent).detail.status, ...(event as CustomEvent).detail.data } };
           const submissionId = observationQuestions?.assessment?.submissionId;
@@ -227,47 +227,44 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
    
   return (
     <>
-     <Box
+      <Box
+        sx={{
+          display: 'flex',
+          direction: 'row',
+          gap: '24px',
+          mt: '15px',
+          marginLeft: '10px',
+        }}
+        width={'100%'}
+        onClick={handleBackEvent}
+      >
+        <KeyboardBackspaceOutlinedIcon
+          cursor={'pointer'}
           sx={{
-            display: 'flex',
-            direction: 'row',
-            gap: '24px',
-            mt:"15px",
-            marginLeft:"10px"
-            
+            color: theme.palette.warning['A200'],
           }}
-          width={'100%'}
-          onClick={handleBackEvent}
+        />
+        {localStorage.getItem('observationName') && (
+        <Typography variant="h3"                   fontSize={'22px'}
+         color={'black'}>
+          {localStorage.getItem('observationName')}
+          
+        </Typography>
+      )}
+      </Box>
 
-        >
-          <KeyboardBackspaceOutlinedIcon
-            cursor={'pointer'}
-            sx={{
-              color: theme.palette.warning['A200'],
-            }}
-          />
-                    <Typography variant="h3" color={"black"}>{observationName}</Typography>
-
-
-        </Box>
-       
-     {localStorage.getItem('observationName') &&(<Typography variant="h3" ml="60px" color={"black"}
-            
-
-      > {t('OBSERVATION.OBSERVATION_SURVEY_FOR', {
-        entityValue: localStorage.getItem('observationName'),
-      })}  </Typography>)}
-
-    {
-      observationQuestions && 
      
-          <questionnaire-player-main
-      assessment={JSON.stringify(observationQuestions)}
-      fileuploadresponse={JSON.stringify(fileUploadResponse)}
-      ref={questionairePlayerMainRef}
-      ></questionnaire-player-main>
-    
-    }
+       <Typography variant="h3"    ml="60px" color={'black'}>
+          {observationName}
+        </Typography>
+
+      {observationQuestions && (
+        <questionnaire-player-main
+          assessment={JSON.stringify(observationQuestions)}
+          fileuploadresponse={JSON.stringify(fileUploadResponse)}
+          ref={questionairePlayerMainRef}
+        ></questionnaire-player-main>
+      )}
 
 <ConfirmationModal
         message={"Are you sure to submit the form?"}
