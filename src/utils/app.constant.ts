@@ -9,12 +9,12 @@ import youtube from "../assets/images/youtube.svg";
 
 // background image 
 
-import bgpdf from "./../assets/images/bgPDF.png";
-import bgepub from "../assets/images/bgEpub.png";
-import bghtml from "../assets/images/bgHtml.png";
-import bgmp4 from "../assets/images/bgMP4 .png";
-import bgqml from "../assets/images/bgQml.png";
-import bgyoutube from "../assets/images/bgYouTube.png";
+import bgpdf from "./../assets/images/bgPDF.svg";
+import bgepub from "../assets/images/bgEpub.svg";
+import bghtml from "../assets/images/bgHtml.svg";
+import bgmp4 from "../assets/images/bgMP4 .svg";
+import bgqml from "../assets/images/bgQml.svg";
+import bgyoutube from "../assets/images/bgYouTube.svg";
 
 
 export const limit: number = 300;
