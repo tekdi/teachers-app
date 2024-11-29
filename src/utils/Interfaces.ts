@@ -537,7 +537,7 @@ export interface SendCredentialsRequest {
   email?: {
     receipients: any[];
   };
-    push?: {
+  push?: {
     receipients: any[];
   };
 }
@@ -773,12 +773,11 @@ export interface ObjectRollup {
   l4?: string;
 }
 
-
 export interface Context {
   mode?: string;
   authToken?: string;
   sid?: string;
-  did?: string;
+  did?: any;
   uid?: string;
   channel: string;
   pdata: Pdata;
@@ -791,7 +790,7 @@ export interface Context {
   endpoint?: string;
   dispatcher?: object;
   partner?: any[];
-  contentId: string;
+  contentId?: any;
   dims?: any[];
   app?: string[];
   userData?: {
@@ -831,7 +830,7 @@ export interface Metadata {
   baseDir?: string;
 }
 export interface PlayerConfig {
-  context?: Context;
+  context: Context;
   config?: Config;
   metadata?: Metadata;
   data?: any;
@@ -843,7 +842,7 @@ export interface BoardEnrollmentStageCounts {
   registration: number;
   fees: number;
   completed: number;
-};
+}
 
 // export interface BoardEnrollmentFieldsType {
 //   BOARD?: string;
@@ -864,7 +863,7 @@ export interface BoardEnrollmentData {
     value: string;
   }[];
   completedStep: number;
-};
+}
 
 interface Subject {
   name: string;
@@ -879,5 +878,5 @@ export interface BoardEnrollmentProfileProps {
   subjects: Subject[];
   registrationNum: string;
   feesPaidStatus: string;
-  setActiveStep?: React.Dispatch<React.SetStateAction<number>>
+  setActiveStep?: React.Dispatch<React.SetStateAction<number>>;
 }
