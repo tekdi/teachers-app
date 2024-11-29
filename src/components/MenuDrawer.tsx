@@ -1,34 +1,31 @@
 'use client';
 
-import { Button, FormControl, IconButton, MenuItem } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Box from '@mui/material/Box';
-import ClearIcon from '@mui/icons-material/Clear';
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import Drawer from '@mui/material/Drawer';
-import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
-import config from '../../config.json';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useRouter } from 'next/router';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import useStore from '@/store/store';
 import { accessGranted } from '@/utils/Helper';
-import { accessControl } from '../../app.config';
-import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
-import checkBook from '../assets/images/checkbook.svg';
-import board from '../assets/images/Board.svg';
-import Image from 'next/image';
-import { useDirection } from '../hooks/useDirection';
-import { isEliminatedFromBuild } from '../../featureEliminationUtil';
-import { getAcademicYear } from '../services/AcademicYearService';
 import { AcademicYear } from '@/utils/Interfaces';
-import { telemetryFactory } from '@/utils/telemetry';
-import { Telemetry } from '@/utils/app.constant';
+import ClearIcon from '@mui/icons-material/Clear';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
+import { Button, FormControl, IconButton, MenuItem } from '@mui/material';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { accessControl } from '../../app.config';
+import config from '../../config.json';
+import { isEliminatedFromBuild } from '../../featureEliminationUtil';
+import board from '../assets/images/Board.svg';
+import checkBook from '../assets/images/checkbook.svg';
+import { useDirection } from '../hooks/useDirection';
 
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
@@ -159,9 +156,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     router.push('/observation');
   };
 
-  const isDashboard = router.pathname === '/dashboard';
+  const isDashboard =  ["/dashboard", "/attendance-history", "/attendance-overview"].includes(router.pathname);
   const isTeacherCenter = router.pathname.includes('/centers');
-  const isCoursePlanner = router.pathname.includes('/course-planner');
+  const isCoursePlanner = ["/course-planner", "/topic-detail-view", "/course-planner/center/[cohortId]", "/play/content/[identifier]"].includes(router.pathname);
   const isObservation = router.pathname.includes('/observation');
 
   const isAssessments = router.pathname.includes('/assessments');
