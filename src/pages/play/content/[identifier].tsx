@@ -7,16 +7,15 @@ import {
   getHierarchy,
   getQumlData,
 } from '@/services/PlayerService';
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from '@mui/material';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useTranslation } from 'next-i18next';
 import { PlayerConfig } from '@/utils/Interfaces';
 import { MIME_TYPE } from '../../../../app.config';
 import { V1PlayerConfig, V2PlayerConfig } from '@/data/player-config';
 import { MIMEType } from 'util';
-
 
 // @ts-ignore
 const SunbirdPlayers = dynamic(() => import('editor/SunbirdPlayers'), {
@@ -87,7 +86,6 @@ const players: React.FC<SunbirdPlayerProps> = () => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
 
-
   useEffect(() => {
     const loadContent = async () => {
       try {
@@ -107,9 +105,11 @@ const players: React.FC<SunbirdPlayerProps> = () => {
           } else if (MIME_TYPE.INTERACTIVE_MIME_TYPE.includes(data?.mimeType)) {
             playerConfig = V1PlayerConfig;
             playerConfig.metadata = data;
+            playerConfig.context['contentId'] = identifier;
           } else {
             playerConfig = V2PlayerConfig;
             playerConfig.metadata = data;
+            playerConfig.context['contentId'] = identifier;
           }
           setLoading(false);
         }
@@ -125,31 +125,35 @@ const players: React.FC<SunbirdPlayerProps> = () => {
     <Box>
       <Box>
         <Header />
-        <Box sx={{ display: "flex", alignItems: "center", mb: 2, mt: 2 }} onClick={() => router.back()}>
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 2 }}
+          onClick={() => router.back()}
+        >
           <IconButton>
             <ArrowBackIcon />
           </IconButton>
-          <Typography
-            variant="h4"
-          >
-            {t("COMMON.BACK")}
-          </Typography>
+          <Typography variant="h4">{t('COMMON.BACK')}</Typography>
         </Box>
         {loading && (
           <Box
-            width={"100%"}
+            width={'100%'}
             id="check"
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={"center"}
-            mt={"5rem"}
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
+            mt={'5rem'}
           >
             <Loader showBackdrop={false} />
           </Box>
         )}
       </Box>
-      <Box marginTop={'1rem'} px={"14px"}>
-      <Typography color={'#024f9d'} sx={{ padding: '0 0 4px 4px', fontWeight: 'bold' }}>{playerConfig?.metadata?.name}</Typography>
+      <Box marginTop={'1rem'} px={'14px'}>
+        <Typography
+          color={'#024f9d'}
+          sx={{ padding: '0 0 4px 4px', fontWeight: 'bold' }}
+        >
+          {playerConfig?.metadata?.name}
+        </Typography>
         {!loading ? <SunbirdPlayers player-config={playerConfig} /> : null}
       </Box>
     </Box>

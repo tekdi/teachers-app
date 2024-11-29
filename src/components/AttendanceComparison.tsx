@@ -206,7 +206,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
         {t('DASHBOARD.ATTENDANCE_COMPARISON')}
       </Typography>
       <Typography fontSize={'14px'}>
-        {blockName} {t('DASHBOARD.BLOCK')}
+        {toPascalCase(blockName)} {t('DASHBOARD.BLOCK')}
       </Typography>
       <FormControl component="fieldset">
         <Typography fontSize={'14px'} mt={2}>

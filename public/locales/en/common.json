@@ -141,7 +141,9 @@
     "ALL": "All",
     "ACTIVE": "Active",
     "NA": "N.A.",
-    "SORT_BY_NAMES": "Sort by Names"
+    "SORT_BY_NAMES": "Sort by Names",
+    "INCORRECT_DATA_ENTRY": "Incorrect Data Entry",
+    "DUPLICATED_USER": "Duplicated User"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
