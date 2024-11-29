@@ -69,33 +69,17 @@ const RecursiveAccordion = ({ data }: { data: any[] }) => {
               {node.children && renderAccordion(node.children, level + 1)}
             </>
           ) : node.contentType === 'Resource' ? (
-            // <Box
-            //   className="facilitator-bg"
-            //   sx={{
-            //     backgroundImage: `url(${node?.appIcon ? node.appIcon : '/decorationBg.png'})`,
-            //     position: 'relative',
-            //     marginLeft: `${(level - 1) * 2}px`, // Indentation for resources
-            //     cursor: 'pointer',
-            //     height: '50px',
-            //     width: '50px',
-            //     backgroundSize: 'cover',
-            //     backgroundPosition: 'center',
-            //   }}
-            //   onClick={() =>
-            //     router.push(`/play/content/${node?.identifier || node?.id}`)
-            //   }
-            // ></Box>
-            <>
+        
             <Grid container>
-                  <Grid item xs={6} md={4} lg={2} sx={{ mt: 2 }}>
+                  <Grid item xs={6} md={4} lg={3} sx={{ mt: 2 }}>
 
                      <ContentCard name={node?.name} identifier={node?.identifier || node?.id} mimeType={node?.mimeType} appIcon={node?.appIcon} resourceType={node?.resourceType} />
 
                   </Grid>
             </Grid>
-            </>
+     
           ) : (
-                <Accordion defaultExpanded sx={{ marginLeft: `${(level - 1) * 2}px`, boxShadow: level !== 1 ? '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)' : 'unset',  }}>
+                <Accordion defaultExpanded sx={{ marginLeft: `${(level - 1) * 0.2}px`, boxShadow: level !== 1 ? '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)' : 'unset',  }}>
                   
               <AccordionSummary
                 sx={{

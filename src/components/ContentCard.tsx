@@ -41,13 +41,15 @@ const ContentCard: React.FC<ContentCardProps> = ({
                 resourceType === "Course"
                     ? router.push(`/course-hierarchy/${identifier}`)
                     : router.push(`/play/content/${identifier}`)
-            } sx={{
+            }
+            sx={{
                 backgroundImage: `url(${getBackgroundImage()})`,
                 backgroundPosition: 'center',
                 backgroundSize: 'cover',
                 borderRadius: '16px',
                 overflow: 'hidden',
                 cursor: 'pointer',
+                backgroundRepeat:'no-repeat'
             }}
         >
             <Box
