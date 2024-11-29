@@ -1,44 +1,47 @@
-import { PlayerConfig } from "@/utils/Interfaces";
-
+import { PlayerConfig } from '@/utils/Interfaces';
+let userName = '';
+if (typeof window !== 'undefined' && window.localStorage) {
+  userName = localStorage.getItem('userName') || '';
+}
 export const V2PlayerConfig: PlayerConfig = {
   context: {
-    mode: "play",
+    mode: 'play',
     partner: [],
     pdata: {
-      id: "pratham.admin.portal",
-      ver: "1.0.0",
-      pid: "admin-portal",
+      id: 'pratham.admin.portal',
+      ver: '1.0.0',
+      pid: 'admin-portal',
     },
-    contentId: "do_12345",
-    sid: "",
-    uid: "",
+    contentId: 'do_12345',
+    sid: '',
+    uid: '',
     timeDiff: -0.089,
-    channel: "test-k12-channel",
-    tags: ["test-k12-channel"],
-    did: "",
-    contextRollup: { l1: "test-k12-channel" },
+    channel: 'test-k12-channel',
+    tags: ['test-k12-channel'],
+    did: '',
+    contextRollup: { l1: 'test-k12-channel' },
     objectRollup: {},
-    userData: { firstName: "Guest", lastName: "User" },
+    userData: { firstName: userName, lastName: '' },
     host: '',
-    endpoint: "/v1/telemetry",
+    endpoint: '/v1/telemetry',
   },
   config: {
     showEndPage: false,
-    endPage: [{ template: "assessment", contentType: ["SelfAssess"] }],
+    endPage: [{ template: 'assessment', contentType: ['SelfAssess'] }],
     showStartPage: true,
-    host: "",
+    host: '',
     overlay: { showUser: false },
     splash: {
-      text: "",
-      icon: "",
-      bgImage: "assets/icons/splacebackground_1.png",
-      webLink: "",
+      text: '',
+      icon: '',
+      bgImage: 'assets/icons/splacebackground_1.png',
+      webLink: '',
     },
-    apislug: "",
-    repos: ["/sunbird-plugins/renderer"],
+    apislug: '',
+    repos: ['/sunbird-plugins/renderer'],
     plugins: [
-      { id: "org.sunbird.iframeEvent", ver: 1, type: "plugin" },
-      { id: "org.sunbird.player.endpage", ver: 1.1, type: "plugin" },
+      { id: 'org.sunbird.iframeEvent', ver: 1, type: 'plugin' },
+      { id: 'org.sunbird.player.endpage', ver: 1.1, type: 'plugin' },
     ],
     sideMenu: {
       showShare: false,
@@ -50,18 +53,19 @@ export const V2PlayerConfig: PlayerConfig = {
   },
   data: {},
 };
+
 export const V1PlayerConfig: PlayerConfig = {
   config: {
     whiteListUrl: [],
     showEndPage: true,
     endPage: [
       {
-        template: "assessment",
-        contentType: ["SelfAssess"],
+        template: 'assessment',
+        contentType: ['SelfAssess'],
       },
     ],
     showStartPage: true,
-    host: "",
+    host: '',
     overlay: {
       enableUserSwitcher: true,
       showOverlay: true,
@@ -76,23 +80,23 @@ export const V1PlayerConfig: PlayerConfig = {
       },
     },
     splash: {
-      text: "",
-      icon: "",
-      bgImage: "assets/icons/splacebackground_1.png",
-      webLink: "",
+      text: '',
+      icon: '',
+      bgImage: 'assets/icons/splacebackground_1.png',
+      webLink: '',
     },
-    apislug: "",
-    repos: ["/sunbird-plugins/renderer"],
+    apislug: '',
+    repos: ['/sunbird-plugins/renderer'],
     plugins: [
       {
-        id: "org.sunbird.iframeEvent",
+        id: 'org.sunbird.iframeEvent',
         ver: 1,
-        type: "plugin",
+        type: 'plugin',
       },
       {
-        id: "org.sunbird.player.endpage",
+        id: 'org.sunbird.player.endpage',
         ver: 1.1,
-        type: "plugin",
+        type: 'plugin',
       },
     ],
     sideMenu: {
@@ -103,28 +107,28 @@ export const V1PlayerConfig: PlayerConfig = {
     enableTelemetryValidation: false,
   },
   context: {
-    mode: "play",
+    mode: 'play',
     // partner: [],
     pdata: {
-      id: "pratham.admin.portal",
-      ver: "1.0.0",
-      pid: "admin-portal",
+      id: 'pratham.admin.portal',
+      ver: '1.0.0',
+      pid: 'admin-portal',
     },
-    contentId: "do_12345",
-    sid: "",
-    uid: "",
+    contentId: 'do_12345',
+    sid: '',
+    uid: '',
     timeDiff: -1.129,
     contextRollup: {},
-    channel: "test-k12-channel",
-    did: "",
+    channel: 'test-k12-channel',
+    did: '',
     dims: [],
-    tags: ["test-k12-channel"],
-    app: ["test-k12-channel"],
+    tags: ['test-k12-channel'],
+    app: ['test-k12-channel'],
     cdata: [],
     userData: {
-      firstName: "Guest",
-      lastName: "User",
+      firstName: userName,
+      lastName: '',
     },
   },
-  data: {}
+  data: {},
 };
