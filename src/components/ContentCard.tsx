@@ -102,7 +102,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
                     <Image
                         src={ContentCardsTypes[mimeType as keyof FileType]?.imgPath}
                         alt="Content Thumbnail"
-                        style={{ marginRight: '8px', height:'20px', width:'20px' }}
+                        style={{ marginRight: '8px', height:'25px', width:'23px' }}
                     />
                     <span style={{ fontSize: '12px', color: '#1F1B13', fontWeight: 400 }}>
                         {ContentCardsTypes[mimeType as keyof FileType]?.name}
