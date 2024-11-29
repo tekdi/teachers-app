@@ -41,13 +41,15 @@ const ContentCard: React.FC<ContentCardProps> = ({
                 resourceType === "Course"
                     ? router.push(`/course-hierarchy/${identifier}`)
                     : router.push(`/play/content/${identifier}`)
-            } sx={{
+            }
+            sx={{
                 backgroundImage: `url(${getBackgroundImage()})`,
                 backgroundPosition: 'center',
                 backgroundSize: 'cover',
                 borderRadius: '16px',
                 overflow: 'hidden',
                 cursor: 'pointer',
+                backgroundRepeat:'no-repeat'
             }}
         >
             <Box
@@ -102,9 +104,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
                     <Image
                         src={ContentCardsTypes[mimeType as keyof FileType]?.imgPath}
                         alt="Content Thumbnail"
-                        width={20}
-                        height={20}
-                        style={{ marginRight: '8px' }}
+                        style={{ marginRight: '8px', height:'25px', width:'23px' }}
                     />
                     <span style={{ fontSize: '12px', color: '#1F1B13', fontWeight: 400 }}>
                         {ContentCardsTypes[mimeType as keyof FileType]?.name}

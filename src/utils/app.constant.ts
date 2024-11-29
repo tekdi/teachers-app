@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { TFunction } from 'i18next';
-import pdf from "./../assets/images/PDF.png";
-import epub from "../assets/images/Epub.png";
-import html from "../assets/images/HTML.png";
-import mp4 from "../assets/images/MP4.png";
-import qml from "../assets/images/Qml.png";
-import youtube from "../assets/images/youtube.png";
+import pdf from "./../assets/images/PDF.svg";
+import epub from "../assets/images/Epub.svg";
+import html from "../assets/images/HTML.svg";
+import mp4 from "../assets/images/MP4.svg";
+import qml from "../assets/images/Qml.svg";
+import youtube from "../assets/images/youtube.svg";
 
 // background image 
 
