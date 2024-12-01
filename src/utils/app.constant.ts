@@ -198,7 +198,7 @@ import { StaticImageData } from "next/image"; // Import StaticImageData for type
 export enum ContentType {
   PDF = "application/pdf",
   EPUB = "application/epub",
-  HTML = "application/html",
+  HTML = "application/vnd.ekstep.html-archive",
   VIDEO_MP4 = "video/mp4",
   QUESTION_SET = "application/vnd.sunbird.questionset",
   H5P = "application/vnd.ekstep.h5p-archive",
