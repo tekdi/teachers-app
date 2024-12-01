@@ -245,7 +245,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               </Select>
             </FormControl>
           </Box>
-          <Box sx={{ flexBasis: '70%' }}>
+          <Box sx={{ flexBasis: '70%' }} className="joyride-step-6">
             <FormControl className="drawer-select" sx={{ width: '100%' }}>
               <Select
                 onChange={handleSelectChange}
@@ -312,7 +312,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
         )}
         <Box sx={{ marginTop: '18px' }}>
           <Button
-            className="fs-14 joyride-step-6"
+            className="fs-14 joyride-step-7"
             sx={{
               width: '100%',
               display: 'flex',
@@ -346,7 +346,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               : t('DASHBOARD.MY_TEACHING_CENTERS')}
           </Button>
         </Box>
-        <Box sx={{ marginTop: '18px' }}>
+        <Box sx={{ marginTop: '18px' }} className="joyride-step-8">
           <Button
             className="fs-14"
             sx={{
@@ -378,7 +378,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
         {isActiveYear && (
           <Box sx={{ marginTop: '18px' }}>
             <Button
-              className="fs-14 joyride-step-7"
+              className="fs-14 joyride-step-9"
               sx={{
                 width: '100%',
                 display: 'flex',
@@ -419,7 +419,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
         {!isEliminatedFromBuild('Assessments', 'feature') && isActiveYear && (
           <Box sx={{ marginTop: '18px' }}>
             <Button
-              className="fs-14 joyride-step-8"
+              className="fs-14 joyride-step-10"
               sx={{
                 width: '100%',
                 display: 'flex',
@@ -456,7 +456,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
         )}
 
         {isActiveYear && (
-          <Box sx={{ marginTop: '18px' }}>
+          <Box sx={{ marginTop: '18px' }} className="joyride-step-11">
             <Button
               className="fs-14 joyride-step-8"
               sx={{
