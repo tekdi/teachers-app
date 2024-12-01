@@ -558,7 +558,7 @@ const CohortPage = () => {
               onClick={handleMenuOpen}
               sx={{ color: theme.palette.warning['A200'] }}
             >
-              <MoreVertIcon />
+              <MoreVertIcon sx={{cursor:'pointer'}} />
             </IconButton>
           )}
           <Menu
@@ -856,6 +856,7 @@ const CohortPage = () => {
                         fontSize: '14px',
                         fontWeight: '500',
                         color: theme?.palette?.warning['300'],
+                        marginBottom:'15px'
                       }}
                     >
                       {t('CENTER_SESSION.PLANNED_SESSIONS')}
@@ -978,12 +979,11 @@ const CohortPage = () => {
                   sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}
                 >
                   <Box
-                    sx={{ color: theme.palette.secondary.main ,  cursor:"pointer"}}
+                    sx={{ color: theme.palette.secondary.main, cursor:'pointer' }}
                     className="fs-14 fw-500"
                     onClick={() => {
                       router.push('/attendance-overview');
                     }}
-                   
                   >
                     {t('COMMON.REVIEW_ATTENDANCE')}
                   </Box>
