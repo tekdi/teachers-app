@@ -139,6 +139,7 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
                   fontSize: '16px',
                   fontWeight: '400',
                 }}
+                className="one-line-text"
               >
                 {cardTitle === 'pre-test'
                   ? t('PROFILE.PRE_TEST')
@@ -147,7 +148,7 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
                     : cardTitle}
               </Box>
               <Box
-                sx={{
+                sx={{ 
                   gap: '4px',
                   display: 'flex',
                   alignItems: 'center',

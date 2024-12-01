@@ -561,6 +561,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                     fontSize: '24px',
                     marginTop: '1rem',
                     color: theme.palette.warning['300'],
+                    cursor:'pointer'
                   }}
                 />
               ) : (
@@ -696,6 +697,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                           fontSize: '24px',
                                           marginTop: '1rem',
                                           color: theme.palette.warning['300'],
+                                          cursor:'pointer'
                                         }}
                                       />
                                     </Box>
