@@ -40,7 +40,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
             onClick={() =>
                 resourceType === "Course"
                     ? router.push(`/course-hierarchy/${identifier}`)
-                    : router.push(`/play/content/${identifier}`)
+                    : router.push(`/play/content/${identifier?.toLowerCase()}`)
             }
             sx={{
                 backgroundImage: `url(${getBackgroundImage()})`,
