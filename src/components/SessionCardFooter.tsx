@@ -151,6 +151,12 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
 
   const fetchLearningResources = async (resources: IResource[]) => {
     try {
+      resources = resources.map((resource: IResource) => {
+        return {
+          ...resource,
+          id: resource.id.toLowerCase(),
+        }
+      })
       const identifiers = resources?.map((resource: IResource) => resource?.id?.toLowerCase());
       const response = await fetchBulkContents(identifiers);
 

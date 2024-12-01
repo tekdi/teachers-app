@@ -11,7 +11,7 @@ interface ContentCardProps {
     appIcon?: string;
     identifier?: any;
     resourceType?: string;
-    subTopic?:string[];
+    subTopic?: string[];
 }
 
 const ContentCard: React.FC<ContentCardProps> = ({
@@ -49,7 +49,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
                 borderRadius: '16px',
                 overflow: 'hidden',
                 cursor: 'pointer',
-                backgroundRepeat:'no-repeat'
+                backgroundRepeat: 'no-repeat'
             }}
         >
             <Box
@@ -106,7 +106,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
                     <Image
                         src={ContentCardsTypes[mimeType as keyof FileType]?.imgPath}
                         alt="Content Thumbnail"
-                        style={{ marginRight: '8px', height:'25px', width:'23px' }}
+                        style={{ marginRight: '8px', height: '25px', width: '23px' }}
                     />
                     <span style={{ fontSize: '12px', color: '#1F1B13', fontWeight: 400 }}>
                         {ContentCardsTypes[mimeType as keyof FileType]?.name}
