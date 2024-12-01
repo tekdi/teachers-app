@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 const options = {
   position: 'bottom-center',
   hideProgressBar: true,
-  closeButton: false,
+  closeButton: true,
   autoClose: 3000,
 };
 
