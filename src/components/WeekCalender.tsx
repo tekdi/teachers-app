@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import { dashboardDaysLimit, eventDaysLimit } from '../../app.config';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/router';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 const Calendar: React.FC<any> = ({
   showDetailsHandle,
@@ -42,10 +44,23 @@ const Calendar: React.FC<any> = ({
     setColor(false);
     setSelectedDate(day);
     showDetailsHandle(dayStr);
+    const telemetryInteract = {
+      context: {
+        env: 'dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'datewise-tracking',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'dashboard',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   const renderDays = () => {
-    const dateFormat = 'EEEEE';
+    const dateFormat = showFromToday ? 'EEE' : 'EEEEE';
     const days = [];
     const today = new Date();
     const daysLimit = showFromToday ? eventDaysLimit : dashboardDaysLimit;
@@ -69,10 +84,7 @@ const Calendar: React.FC<any> = ({
     }
 
     return (
-      <div
-        className="days row"
-        style={{ width: '100%' }}
-      >
+      <div className="days row" style={{ width: '100%' }}>
         {days}
       </div>
     );

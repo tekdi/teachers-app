@@ -113,7 +113,28 @@
     "NEW_LEARNER": "नया Learner",
     "NEW_FACILITATOR": "नया Facilitator",
     "SUBMIT": "सubmit करें",
-    "LEARNER_CREATED_SUCCESSFULLY": "Learner सफलतापूर्वक बनाया गया!"
+    "LEARNER_CREATED_SUCCESSFULLY": "Learner सफलतापूर्वक बनाया गया!",
+    "ASSESSMENT_REPORT": "मूल्यांकन रिपोर्ट",
+    "MARK_ALL_AS": "सभी को चिह्नित करें",
+    "REASSIGN_BLOCKS": "केंद्र जोड़ें या पुनः असाइन करें",
+    "CANNOT_DELETE_TODAY_ATTENDANCE_MARKED": "आज के लिए उपस्थिति पहले ही दर्ज हो चुकी है, इसलिए छात्र को हटाया नहीं जा सकता",
+    "CANNOT_DROPOUT_TODAY_ATTENDANCE_MARKED": "आज के लिए उपस्थिति पहले ही दर्ज हो चुकी है, इसलिए छात्र को ड्रॉपआउट के रूप में चिह्नित नहीं किया जा सकता",
+    "CREDENTIALS_EMAILED_OF_LEARNER": "लॉगिन क्रेडेंशियल्स आपके ईमेल पर भेज दिए गए हैं",
+    "USER_CREDENTIAL_SEND_FAILED": "उपयोगकर्ता क्रेडेंशियल्स भेजने में विफल!",
+    "EDIT_LEARNER": "छात्र संपादित करें",
+    "EDIT_FACILITATOR": "सुविधा प्रदाता संपादित करें",
+    "FACILITATOR_ADDED_SUCCESSFULLY": "सुविधा प्रदाता सफलतापूर्वक जोड़ा गया!",
+    "LEARNER_UPDATED_SUCCESSFULLY": "छात्र प्रोफ़ाइल सफलतापूर्वक अपडेट किया गया!",
+    "FACILITATOR_UPDATED_SUCCESSFULLY": "सुविधा प्रदाता प्रोफ़ाइल सफलतापूर्वक अपडेट किया गया!",
+    "PLEASE_SELECT_THE_CENTER": "कृपया केंद्र का चयन करें।",
+    "CREATE": "बनाएं",
+    "OKAY": "ठीक है",
+    "HELD_EVERY_WEEK_ON": "हर हफ्ते {{days}} पर आयोजित होता है",
+    "SESSION_SCHEDULED_SUCCESSFULLY": "सत्र सफलतापूर्वक निर्धारित कर दिया गया है!",
+    "CENTER": "केंद्र",
+    "AND_COUNT_MORE": "और {{count}} अधिक",
+    "RETURN_TO_LOGIN": "लॉगिन पर वापस जाएं",
+    "NO_CENTER_FOUND": "कोई केंद्र नहीं मिला"
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",
@@ -123,7 +144,35 @@
     "PASSWORD_PLACEHOLDER": "पासवर्ड दर्ज करें",
     "USERNAME_PASSWORD_NOT_CORRECT": "आपका यूजरनेम या पासवर्ड गलत है",
     "FORGOT_PASSWORD": "पासवर्ड भूल गए?",
-    "REMEMBER_ME": "मुझे याद रखें"
+    "REMEMBER_ME": "मुझे याद रखें",
+    "CONFIRM_PASSWORD": "पासवर्ड की पुष्टि करें",
+    "RESET_PASSWORD": "पासवर्ड रीसेट करें",
+    "CREATE_NEW": "एक नया, मजबूत पासवर्ड बनाएं जिसे आप अन्य वेबसाइटों पर उपयोग न करें",
+    "NOT_MATCH": "पासवर्ड मेल नहीं खा रहे हैं",
+    "CHARACTERS_LONG": "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए",
+    "OLD_PASSWORD": "पुराना पासवर्ड",
+    "NEW_PASSWORD": "नया पासवर्ड",
+    "CONFIRM_NEW_PASSWORD": "नया पासवर्ड पुष्टि करें",
+    "TROUBLE_LOGIN": "लॉगिन में समस्या हो रही है?",
+    "ENTER_USERNAME_TO_GET_LINK": "अपना उपयोगकर्ता नाम दर्ज करें, हम आपको आपके खाते में वापस जाने के लिए एक लिंक भेजेंगे",
+    "ENTER_USERNAME": "उपयोगकर्ता नाम दर्ज करें",
+    "BACK_TO_LOGIN": "लॉगिन पर वापस जाएं",
+    "CREATE_STRONG_PASSWORD": "एक मजबूत पासवर्ड बनाएं",
+    "YOUR_PASSWORD_NEED": "आपका पासवर्ड होना चाहिए:",
+    "INCLUDE_BOTH": "बड़े और छोटे अक्षर शामिल करें",
+    "INCLUDE_NUMBER": "कम से कम एक संख्या शामिल करें",
+    "INCLUDE_SPECIAL": "कम से कम एक विशेष अक्षर शामिल करें",
+    "MUST_BE_AT": "कम से कम 8 अक्षरों का होना चाहिए",
+    "OTHER_SETTING": "अन्य सेटिंग्स",
+    "WELCOME": "स्वागत है!",
+    "PLEASE_RESET_YOUR_PASSWORD": "कृपया अपने खाते की सुरक्षा सुनिश्चित करने के लिए अपना पासवर्ड रीसेट करें",
+    "DO_IT_LATER": "मैं बाद में करूंगा",
+    "SUCCESSFULLY_RESET": "आपका पासवर्ड सफलतापूर्वक रीसेट कर दिया गया है",
+    "LINK_EXPIRED": "लिंक की अवधि समाप्त हो गई ",
+    "WE_SEND_AN_EMAIL": "हमने {{maskEmail}} पर आपके पासवर्ड को रीसेट करने के लिए एक लिंक भेजा है| जिससे आप अपना पासवर्ड रिसेट कर सकते है |",
+    "learningResources2-app": "वर्तमान पासवर्ड मेल नहीं खाया",
+    "NO_USERNAME": "उपयोगकर्ता नाम नहीं मिला",
+    "PASSWORD_SAME_AS_OLD": "पासवर्ड पुराना पासवर्ड जैसा ही है"
   },
   "DASHBOARD": {
     "DASHBOARD": "डैशबोर्ड",
@@ -153,7 +202,11 @@
     "LEARNER": "शिक्षार्थियों",
     "ATTENDANCE_COMPARISON": "उपस्थिति तुलना",
     "CENTER_TYPE": "केंद्र प्रकार",
-    "BLOCK_AVERAGE_ATTENDANCE": "ब्लॉक औसत उपस्थिति"
+    "BLOCK_AVERAGE_ATTENDANCE": "ब्लॉक औसत उपस्थिति",
+    "REMOTE_AVERAGE_ATTENDANCE": "दूरस्थ ( दूरसंचार)  औसत उपस्थिति",
+    "REGULAR_AVERAGE_ATTENDANCE": "नियमित औसत उपस्थिति",
+    "BLOCK": "ब्लॉक",
+    "ATTENDANCE": "उपस्थिति (%)"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "कुल छात्रों की संख्या: {{count}}",
@@ -183,7 +236,10 @@
     "CENTER_NAME": "केंद्र का नाम",
     "ALL_CENTERS": "सभी केंद्र",
     "NO_LEARNER_WITH_LOW_ATTENDANCE": "कम उपस्थिति वाले कोई शिक्षार्थी नहीं",
-    "ATTENDANCE_MARKED_OUT_OF_DAYS": "उपस्थिति चिह्नित: पिछले 7 दिनों में से {{count}} दिन"
+    "ATTENDANCE_MARKED_OUT_OF_DAYS": "उपस्थिति चिह्नित: पिछले 7 दिनों में से {{count}} दिन",
+    "NO_CENTERS_ASSIGNED": "कोई केंद्र असाइन नहीं किया गया",
+    "NO_ATTENDANCE": "0 %",
+    "UNKNOWN": "अज्ञात"
   },
   "PROFILE": {
     "EDIT_PROFILE": "प्रोफ़ाइल संपादित करें",
@@ -219,7 +275,10 @@
     "ENTER_NUMBER": "कृपया एक नंबर दर्ज करें",
     "ENTER_CHARACTER": "कृपया कम से कम एक अक्षर दर्ज करें",
     "CONTACT_NUMBER": "संपर्क नंबर",
-    "SELECT_OPTION": "विकल्प चुनें"
+    "SELECT_OPTION": "विकल्प चुनें",
+    "ENROLLMENT_NUMBER": "पंजीकरण संख्या"
+
+
   },
   "FIELDS": {
     "DESIGNATION": "पद",
@@ -245,7 +304,9 @@
     "PRIMARY_WORK": "शिक्षार्थी का प्राथमिक कार्य",
     "MOBILISATION_METHOD": "शिक्षार्थी को कैसे जोड़ा गया?",
     "MONTH_MOBILISATION": "जोड़ने का महीना",
-    "DROP_OUT_REASON": "स्कूल छोड़ने का कारण"
+    "DROP_OUT_REASON": "स्कूल छोड़ने का कारण",
+    "NUMBER_OF_CLUSTERS_I_TEACH": "जिन क्लस्टरों को मैं पढ़ाता हूं उनकी संख्या",
+    "SUBJECTS_I_TEACH": "मैं जिन विषयों को पढ़ाता हूं"
   },
   "DROPOUT_REASONS": {
     "UNABLE_TO_COPE_WITH_STUDIES": "पढ़ाई में असमर्थता",
@@ -303,7 +364,10 @@
     "REQUEST_TO_DELETE_HAS_BEEN_SENT": "हटाने का अनुरोध भेजा गया है",
     "YOU_ARE_SENDING_REQUEST_TO_THE_STATE_ADMIN": "आप राज्य प्रशासन को इस केंद्र को हटाने का अनुरोध भेज रहे हैं",
     "THE_USER_BELONGS_TO_THE_FOLLOWING_COHORT": "उपयोगकर्ता निम्नलिखित समूह का सदस्य है:",
-    "PLEASE_REMOVE_THE_USER_FROM_COHORT": "कृपया हटाने से पहले उपयोगकर्ता को इन समूहों से हटा दें।"
+    "PLEASE_REMOVE_THE_USER_FROM_COHORT": "कृपया हटाने से पहले उपयोगकर्ता को इन समूहों से हटा दें।",
+    "SEARCH_CENTERS": "केंद्र खोजें",
+    "ERROR_EMPTY": "केंद्र का नाम खाली नहीं हो सकता",
+    "ERROR_NUMBER": "केंद्र का नाम संख्या नहीं हो सकता"
   },
   "CENTER_SESSION": {
     "THIS_SESSION": "यह सत्र",
@@ -335,10 +399,44 @@
     "SESSION_TITLE": "सत्र का शीर्षक",
     "TYPE_OF_SESSION": "सत्र का प्रकार",
     "REPEATING": "पुनरावृत्ति",
-    "JUST_ONCE": "केवल एक बार"
+    "JUST_ONCE": "केवल एक बार",
+    "REMOVE_TOPIC_SUBTOPIC": "विषय और उपविषय हटाएँ",
+    "LEARNERS": "छात्रों की पूर्व - आवश्यकताएँ",
+    "SESSION_TITLE_OPTIONAL": "सत्र का शीर्षक (वैकल्पिक)",
+    "SUBJECT_OPTIONAL": "विषय (वैकल्पिक)",
+    "RECURRING_ONLINE": "बार-बार ऑनलाइन",
+    "RECURRING_OFFLINE": "बार-बार ऑफलाइन",
+    "EXTRA_ONLINE": "अतिरिक्त ऑनलाइन",
+    "EXTRA_OFFLINE": "अतिरिक्त ऑफलाइन",
+    "ENTER_VALID_MEETING_LINK": "कृपया एक वैध Zoom या Google Meet लिंक दर्ज करें।",
+    "ZOOM": "जूम",
+    "GOOGLEMEET": "गूगल मीट",
+    "SET_UP": "सेट-अप",
+    "EDIT_THIS_SESSION": "इस सत्र को संपादित करें",
+    "EDIT_FOLLOWING_SESSIONS": "इस और अगले सत्रों को संपादित करें",
+    "DELETE_SESSION_MSG": "क्या आप वाकई इस सत्र को हटाना चाहते हैं?",
+    "DELETE_ALL_SESSION_MSG": "क्या आप वाकई इस शृंखला के सभी सत्रों को हटाना चाहते हैं?",
+    "DELETE_THIS_SESSION": "इस सत्र को हटाएं",
+    "DELETE_FOLLOWING_SESSION": "इस और अगले सत्रों को हटाएं",
+    "UPDATE_CHANGES": "क्या आप वाकई परिवर्तनों को अपडेट करना चाहते हैं?",
+    "SESSION_DELETED_SUCCESSFULLY": "सत्र सफलतापूर्वक हटाया गया",
+    "SESSION_EDITED_SUCCESSFULLY": "सत्र सफलतापूर्वक अपडेट किया गया",
+    "TOPIC_SUBTOPIC_ADDED_SUCCESSFULLY": "विषय और उपविषय सफलतापूर्वक जोड़े गए!",
+    "TOPIC_SUBTOPIC_REMOVED_SUCCESSFULLY": "विषय और उपविषय सफलतापूर्वक हटाए गए!",
+    "FACILITATOR_REQUISITES": "सुविधा प्रदाता की आवश्यकताएँ",
+    "LEARNER_PREREQUISITES": "छात्र की पूर्व आवश्यकताएँ",
+    "LEARNER_POSTREQUISITES": "छात्र की बाद की आवश्यकताएँ",
+    "CANT_SELECT_AS_EVENT_PASSED_LIVE": "विषय और उपविषय का चयन नहीं कर सकते क्योंकि कार्यक्रम पहले ही समाप्त हो चुका है या लाइव है।",
+    "COURSE_TYPE": "पाठ्यक्रम प्रकार",
+    "BOARD_MEDIUM_GRADE_NOT_ASSIGNED": "केंद्र को बोर्ड, माध्यम, कक्षा असाइन नहीं की गई है।",
+    "START_TIME_ERROR": "प्रारंभ समय समाप्ति समय से बाद का नहीं हो सकता।",
+    "END_TIME_ERROR": "समाप्ति समय प्रारंभ समय से पहले का नहीं हो सकता",
+    "START_DATE_ERROR": "प्रारंभ तिथि समाप्ति तिथि से बाद की नहीं हो सकती",
+    "END_DATE_ERROR": "समाप्ति तिथि प्रारंभ तिथि से पहले की नहीं हो सकती",
+    "COURSE_PLANNER_NOT_AVAILABLE": "{{subject}} के लिए पाठ्यक्रम नियोजक उपलब्ध नहीं है!"
   },
   "MANAGE_USERS": {
-    "CENTERS_REQUESTED_SUCCESSFULLY": "केंद्र का अनुरोध सफलतापूर्वक किया गया"
+    "CENTERS_REQUEST_FAILED": "केंद्र अनुरोध विफल रहा"
   },
   "FORM": {
     "FULL_NAME": "पूरा नाम",
@@ -413,7 +511,18 @@
     "DROP_OUT_REASON": "स्कूल से ड्रॉपआउट का कारण",
     "ASSIGN_CENTERS": "केंद्र असाइन करें",
     "TYPE_OF_COHORT": "कोहोर्ट का प्रकार",
-    "NOTE_THIS_WILL_BE_CENTER_NAME": "नोट: यह केंद्र का नाम होगा"
+    "NOTE_THIS_WILL_BE_CENTER_NAME": "नोट: यह केंद्र का नाम होगा",
+    "MY_MAIN_SUBJECTS": "मेरे मुख्य विषय",
+    "SUBJECTS_I_TEACH": "मैं जिन विषयों को पढ़ाता हूं",
+    "REGULAR": "नियमित",
+    "REMOTE": "दूरस्थ",
+    "ENGLISH": "अंग्रेज़ी",
+    "HOME_SCIENCE": "गृह विज्ञान",
+    "MATH": "गणित",
+    "LANGUAGE": "भाषा",
+    "SCIENCE": "विज्ञान",
+    "SOCIAL_SCIENCE": "सामाजिक विज्ञान",
+    "LIFE_SKILLS": "जीवन कौशल"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "अवैध इनपुट।",
@@ -424,6 +533,56 @@
     "MAX_LENGTH_DIGITS_ERROR": "अधिकतम {{maxLength}} अंक अनुमत हैं",
     "MIN_LENGTH_CHARACTERS_ERROR": "न्यूनतम {{minLength}} वर्ण आवश्यक हैं",
     "MAX_LENGTH_CHARACTERS_ERROR": "अधिकतम {{maxLength}} वर्ण अनुमत हैं",
-    "NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "संख्याएँ और विशेष वर्ण अनुमति नहीं हैं"
+    "NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "संख्याएँ और विशेष वर्ण अनुमति नहीं हैं",
+    "ENTER_VALID_MOBILE_NUMBER": "वैध मोबाइल नंबर दर्ज करें",
+    "ENTER_VALID_EMAIL": "वैध ईमेल दर्ज करें",
+    "ENTER_VALID_YEAR": "वैध वर्ष दर्ज करें",
+    "MUST_BE_LESS_THAN": "{{fieldname}} {{maxLength}} से कम होना चाहिए",
+    "MUST_BE_GREATER_THAN": "{{fieldname}} {{minLength}} से अधिक होना चाहिए",
+    "ENTER_VALID_CENTER_NAME": "वैध केंद्र नाम दर्ज करें"
+  },
+  "COURSE_PLANNER": {
+    "COURSE_PLANNER": "पाठ्यक्रम योजना",
+    "FOUNDATION_COURSE": "आधार पाठ्यक्रम",
+    "MAIN_COURSE": "मुख्य पाठ्यक्रम",
+    "COLLAPSE_ALL": "सभी को संक्षिप्त करें",
+    "EXPAND_ALL": "सभी को विस्तृत करें",
+    "RESOURCES": "संसाधन"
+  },
+  "ASSESSMENTS": {
+    "ASSESSMENTS": "मूल्यांकन",
+    "CENTER": "केंद्र",
+    "ASSESSMENT_TYPE": "मूल्यांकन प्रकार",
+    "COMPLETED_THE_ASSESSMENT": "मूल्यांकन पूरा कर लिया है",
+    "SUBMITTED_ON": "जमा किया गया",
+    "CORRECT_ANSWER": "सही उत्तर",
+    "NO_DATA_FOUND": "कोई डेटा नहीं मिला",
+    "SEARCH_STUDENT": "छात्र खोजें",
+    "NO_ASSESSMENTS_FOUND": "कोई मूल्यांकन नहीं मिला",
+    "ASSESSMENT_STATUS": "मूल्यांकन स्थिति",
+    "NOT_STARTED": "शुरू नहीं हुआ",
+    "IN_PROGRESS": "प्रगति पर है",
+    "COMPLETED": "पूर्ण हुआ",
+    "MARKS_OBTAINED": "प्राप्त अंक",
+    "OVERALL_SCORE": "कुल स्कोर",
+    "ASSESSMENT_NOT_STARTED_YET": "मूल्यांकन अभी शुरू नहीं हुआ",
+    "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} में से {{totalCount}} पूरा हुआ",
+    "NO_SUBTOPIC_SELECTED": "कोई उपविषय चयनित नहीं किया गया",
+    "NO_SUBJECT_FOUND": "कोई विषय नहीं मिला",
+    "NO_ASSIGNED": "कोई असाइन नहीं किया गया"
+  },
+  "BOARD_ENROLMENT": {
+    "BOARD_ENROLLMENT": "बोर्ड नामांकन",
+    "BOARD_SELECTION": "बोर्ड चयन",
+    "SUBJECTS_SELECTION": "विषय चयन",
+    "REGISTRATION_COMPLETED": "पंजीकरण पूरा हुआ",
+    "DROPPED_OUT": "ड्रॉपआउट हुआ",
+    "FEE_PAYMENT": "शुल्क भुगतान",
+    "BOARD_ENROLLMENT_NUMBER": "बोर्ड पंजीकरण संख्या",
+    "EXAM_FEES_PAID": "परीक्षा शुल्क का भुगतान किया? (वैकल्पिक)",
+    "SAVE_AND_NEXT": "सहेजें और आगे बढ़ें",
+    "TO_SAVE_YOUR_PROGRESS": "“सहेजें और आगे बढ़ें” पर क्लिक करके अपनी प्रगति सहेजें। आप इसे कभी भी बदल सकते हैं।",
+    "MANDATORY": "{{FeesStepBoards}} के लिए अनिवार्य। अन्य बोर्डों के लिए, यह चरण स्वचालित रूप से पूर्ण हो जाता है। कृपया डेटा सबमिट करने के लिए सहेजें पर क्लिक करें।",
+    "COMPLETED": "पूर्ण"
   }
 }

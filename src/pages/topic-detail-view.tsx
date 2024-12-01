@@ -1,44 +1,65 @@
-import CoursePlannerCards from '@/components/CoursePlannerCards';
+import CourseAccordion from '@/components/CourseAccordion';
 import Header from '@/components/Header';
+import useCourseStore from '@/store/coursePlannerStore';
+import { ResourcesType } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Grid,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React from 'react';
-import useCourseStore from '@/store/coursePlannerStore';
-import CourseAccordion from '@/components/CourseAccordion';
+import router from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { useDirection } from '../hooks/useDirection';
-import { ResourcesType } from '@/utils/app.constant';
+import { RequisiteType } from '../../app.config';
 
 const TopicDetailView = () => {
   const [value, setValue] = React.useState(1);
+  const [expanded, setExpanded] = useState('panel1'); // Start with the first panel open
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
+  const store = useCourseStore();
+
+  useEffect(() => {
+    console.log('store', store.resources);
+    const type = ResourcesType.POSTREQUSITE;
+    const filteredResources = getLearningResources(type);
+    console.log('filteredResources', filteredResources);
+  }, []);
+
+  const getLearningResources = (type: string) => {
+    if (store?.resources?.length) {
+      return store?.resources?.filter((resource: any) => {
+        return (
+          (type === ResourcesType.NONE && !resource.type) ||
+          resource.type === type
+        );
+      });
+    }
+  };
+
+  const toggleAccordion =
+    (panel: string) => (event: React.SyntheticEvent, expanded: boolean) => {
+      // Toggle between the selected panel and 'panel1' to keep the first panel open by default
+      setExpanded(expanded ? panel : 'panel1');
+    };
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  const store = useCourseStore();
 
   const handleBackEvent = () => {
-    window.history.back();
+    // window.history.back();
+    router.back();
     logEvent({
       action: 'back-button-clicked-attendance-overview',
       category: 'Attendance Overview Page',
       label: 'Back Button Clicked',
     });
+  };
+
+  const handlePlayers = () => {
+    sessionStorage.setItem('previousPage', window.location.href);
   };
 
   return (
@@ -80,7 +101,7 @@ const TopicDetailView = () => {
                   color: theme.palette.warning['300'],
                 }}
               >
-                {store.resources.name}
+                {store?.selectedResource}
               </Box>
             </Box>
           </Box>
@@ -116,31 +137,44 @@ const TopicDetailView = () => {
               },
             }}
           >
-            <Tab value={1} label={t('COMMON.LEARNERS')} />
-            <Tab value={2} label={t('COMMON.FACILITATORS')} />
+            <Tab value={1} label={t('COMMON.FACILITATORS')} />
+            <Tab value={2} label={t('COMMON.LEARNERS')} />
           </Tabs>
         </Box>
 
         {value === 1 && (
           <Box>
             <CourseAccordion
-              title={t('CENTER_SESSION.LEARNER_PREREQUISITES')}
-              type={ResourcesType.PREREQUSITE}
-              resources={store.resources.learningResources}
+              expanded={true}
+              title={t('CENTER_SESSION.PREREQUISITES')}
+              type={RequisiteType.FACILITATOR_REQUISITE}
+              resources={getLearningResources(
+                RequisiteType.FACILITATOR_REQUISITE
+              )}
             />
-            <CourseAccordion
-              title={t('CENTER_SESSION.LEARNER_POSTREQUISITES')}
-              type={ResourcesType.POSTREQUSITE}
+            {/* <CoursePlannerCards
+              title={t('CENTER_SESSION.PREREQUISITES')}
               resources={store.resources.learningResources}
-            />
+              type={ResourcesType.NONE}
+            /> */}
           </Box>
         )}
 
         {value === 2 && (
-          <Box>
-            <CoursePlannerCards
-              resources={store.resources.learningResources}
-              type={ResourcesType.NONE}
+          <Box onClick={handlePlayers}>
+            <CourseAccordion
+              expanded={expanded === 'panel1'}
+              onChange={toggleAccordion('panel1')}
+              title={t('CENTER_SESSION.PREREQUISITES')}
+              type={ResourcesType.PREREQUSITE}
+              resources={getLearningResources(ResourcesType.PREREQUSITE)}
+            />
+            <CourseAccordion
+              expanded={expanded === 'panel2'}
+              onChange={toggleAccordion('panel2')}
+              title={t('CENTER_SESSION.POST_REQUISITES')}
+              type={ResourcesType.POSTREQUSITE}
+              resources={getLearningResources(ResourcesType.POSTREQUSITE)}
             />
           </Box>
         )}

@@ -30,24 +30,48 @@ import {
 } from '@/services/CoursePlannerService';
 import useCourseStore from '@/store/coursePlannerStore';
 import dayjs from 'dayjs';
-import { AssessmentStatus, Role } from '@/utils/app.constant';
+import {
+  AssessmentStatus,
+  Role,
+  TelemetryEventType,
+} from '@/utils/app.constant';
 import Loader from '@/components/Loader';
 import withAccessControl from '@/utils/hoc/withAccessControl';
-import { accessControl } from '../../app.config';
+// import { accessControl } from '../../app.config';
 import taxonomyStore from '@/store/taxonomyStore';
 import useDeterminePathColor from '@/hooks/useDeterminePathColor';
-import { useDirection } from '../hooks/useDirection';
+import { useDirection } from '../../../hooks/useDirection';
+import { Telemetry } from 'next/dist/telemetry/storage';
+import { telemetryFactory } from '@/utils/telemetry';
+import { fetchBulkContents } from '@/services/PlayerService';
+import { accessControl } from '../../../../app.config';
+import { GetStaticPaths } from 'next';
+
+export interface IResource {
+  name: string;
+  link: string;
+  app: string;
+  type: string;
+  id: string;
+  topic?: string;
+  subtopic?: string;
+}
 
 const CoursePlannerDetail = () => {
   const theme = useTheme<any>();
   const router = useRouter();
   const { t } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
+  const setSelectedResource = useCourseStore(
+    (state) => state.setSelectedResource
+  );
   const setResources = useCourseStore((state) => state.setResources);
   const store = useCourseStore();
   const tStore = taxonomyStore();
   const [loading, setLoading] = useState(false);
   const determinePathColor = useDeterminePathColor();
+  const { cohortId }: any = router.query;
+
   // Initialize the panels' state, assuming you have a known set of panel IDs
   const [expandedPanels, setExpandedPanels] = useState<{
     [key: string]: boolean;
@@ -83,6 +107,7 @@ const CoursePlannerDetail = () => {
         board: tStore?.board,
         type: tStore?.type,
         medium: tStore?.medium,
+        entityId: cohortId,
       });
 
       if (response?.result?.data == '') {
@@ -145,6 +170,7 @@ const CoursePlannerDetail = () => {
         templateId: externalId,
         solutionId,
         role: Role.TEACHER,
+        cohortId,
       });
 
       const updatedResponse = await getTargetedSolutions({
@@ -154,6 +180,7 @@ const CoursePlannerDetail = () => {
         board: tStore?.board,
         type: tStore?.type,
         medium: tStore?.medium,
+        entityId: cohortId,
       });
       setLoading(false);
 
@@ -200,6 +227,25 @@ const CoursePlannerDetail = () => {
       {} as { [key: string]: boolean }
     );
     setExpandedPanels(newState);
+    const windowUrl = window.location.pathname;
+
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const env = cleanedUrl.split('/')[0];
+
+    const telemetryInteract = {
+      context: {
+        env: env,
+        cdata: [],
+      },
+      edata: {
+        id: 'change-filter:',
+
+        type: TelemetryEventType.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   const toggleDrawer =
@@ -304,6 +350,30 @@ const CoursePlannerDetail = () => {
     }
 
     return false;
+  };
+
+  const fetchLearningResources = async (
+    subtopic: any,
+    resources: IResource[]
+  ) => {
+    console.log(resources);
+
+    try {
+      const identifiers = resources.map((resource: IResource) => resource?.id);
+      const response = await fetchBulkContents(identifiers);
+
+      resources = resources.map((resource: IResource) => {
+        const content = response?.find(
+          (content: any) => content?.identifier === resource?.id
+        );
+        return { ...resource, ...content };
+      });
+      setSelectedResource(subtopic?.name);
+      setResources(resources);
+      console.log('response===>', resources);
+    } catch (error) {
+      console.error('error', error);
+    }
   };
 
   return (
@@ -557,7 +627,11 @@ const CoursePlannerDetail = () => {
                                     cursor: 'pointer',
                                   }}
                                   onClick={() => {
-                                    setResources(subTopic);
+                                    fetchLearningResources(
+                                      subTopic,
+                                      subTopic?.learningResources
+                                    );
+
                                     router.push(`/topic-detail-view`);
                                   }}
                                 >
@@ -650,14 +724,18 @@ const CoursePlannerDetail = () => {
                                   mt: 0.8,
                                   cursor: 'pointer',
                                 }}
-                                onClick={() => {
-                                  router.push(`/topic-detail-view`);
-                                }}
+                                // onClick={() => {
+                                //   // router.push(`/topic-detail-view`);
+                                // }}
                               >
                                 <Box
                                   sx={{ fontSize: '12px', fontWeight: '500' }}
                                   onClick={() => {
-                                    setResources(subTopic);
+                                    // setResources(subTopic);
+                                    fetchLearningResources(
+                                      subTopic,
+                                      subTopic?.learningResources
+                                    );
                                     router.push(`/topic-detail-view`);
                                   }}
                                 >
@@ -686,24 +764,23 @@ const CoursePlannerDetail = () => {
         )}
       </div>
       <FacilitatorDrawer
-  secondary= {t('COMMON.CANCEL')}
-  primary={`${t('COURSE_PLANNER.MARK_AS_COMPLETED')} (${selectedCount})`}
-  toggleDrawer={toggleDrawer}
-  drawerState={drawerState}
-  onPrimaryClick={() => {
-    if (selectedSubtopics.length > 0) {
-      // Mark all selected subtopics as complete
-      markMultipleStatuses(userProjectDetails, selectedSubtopics);
-      toggleDrawer(false)();
-    }
-  }}
-  onSecondaryClick={() => {
-    setSelectedSubtopics([]);
-    toggleDrawer(false)(); 
-  }}
-  selectedCount={selectedCount} 
-/>
-
+        secondary={t('COMMON.CANCEL')}
+        primary={`${t('COURSE_PLANNER.MARK_AS_COMPLETED')} (${selectedCount})`}
+        toggleDrawer={toggleDrawer}
+        drawerState={drawerState}
+        onPrimaryClick={() => {
+          if (selectedSubtopics.length > 0) {
+            // Mark all selected subtopics as complete
+            markMultipleStatuses(userProjectDetails, selectedSubtopics);
+            toggleDrawer(false)();
+          }
+        }}
+        onSecondaryClick={() => {
+          setSelectedSubtopics([]);
+          toggleDrawer(false)();
+        }}
+        selectedCount={selectedCount}
+      />
 
       {/* <ConfirmationModal
         message={
@@ -728,6 +805,13 @@ export async function getStaticProps({ locale }: any) {
     },
   };
 }
+
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+  return {
+    paths: [], //indicates that no page needs be created at build time
+    fallback: 'blocking', //indicates the type of fallback
+  };
+};
 
 export default withAccessControl(
   'accessCoursePlannerDetails',

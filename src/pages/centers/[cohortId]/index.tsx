@@ -5,6 +5,7 @@ import {
   getMonthName,
   getTodayDate,
   shortDateFormat,
+  sortSessions,
   sortSessionsByTime,
   toPascalCase,
 } from '@/utils/Helper';
@@ -35,7 +36,7 @@ import { getCohortDetails } from '@/services/CohortServices';
 import { getEventList } from '@/services/EventService';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { CustomField } from '@/utils/Interfaces';
-import { Role } from '@/utils/app.constant';
+import { Role, Telemetry } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -71,6 +72,8 @@ import { useDirection } from '../../../hooks/useDirection';
 
 import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../../../featureEliminationUtil';
+import { telemetryFactory } from '@/utils/telemetry';
+import useStore from '@/store/store';
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
   SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
@@ -106,8 +109,10 @@ if (!isEliminatedFromBuild('Schedule', 'component')) {
 }
 
 const CohortPage = () => {
+  const userStore = useStore();
+  const isActiveYear = userStore.isActiveYearSelected;
   const [value, setValue] = React.useState(() => {
-    return isEliminatedFromBuild('Events', 'feature') ? 2 : 1;
+    return isEliminatedFromBuild('Events', 'feature') || !isActiveYear ? 2 : 1;
   });
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
@@ -117,7 +122,7 @@ const CohortPage = () => {
   const { dir, isRTL } = useDirection();
   const [role, setRole] = React.useState<any>('');
 
-  const store = manageUserStore();
+  // const store = manageUserStore();
   const setDistrictCode = manageUserStore(
     (state: { setDistrictCode: any }) => state.setDistrictCode
   );
@@ -189,7 +194,7 @@ const CohortPage = () => {
   };
 
   const handleCloseSchedule = () => {
-    setEventCreated(true);
+    setEventCreated((prev) => !prev);
     handleClose();
   };
 
@@ -200,7 +205,24 @@ const CohortPage = () => {
     }
   }, [eventCreated, createEvent]);
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setOpen(true);
+    const windowUrl = window.location.pathname;
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id: 'click-on-schedule-sessions',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -272,8 +294,11 @@ const CohortPage = () => {
         setCohortName(cohortData?.name);
       }
     };
-    getCohortData();
-  }, []);
+
+    if (cohortId) {
+      getCohortData();
+    }
+  }, [cohortId]);
 
   useEffect(() => {
     const getSessionsData = async () => {
@@ -299,7 +324,8 @@ const CohortPage = () => {
             }
           });
         }
-        setSessions(sessionArray);
+        const eventList = sortSessions(sessionArray);
+        setSessions(eventList);
         setEventUpdated(false);
         setEventDeleted(false);
       } catch (error) {
@@ -355,7 +381,8 @@ const CohortPage = () => {
   useEffect(() => {
     if (extraSessions) {
       const { sessionList, index } = sortSessionsByTime(extraSessions);
-      setSortedSessions(sessionList);
+      const eventList = sortSessions(sessionList);
+      setSortedSessions(eventList);
 
       if (index > 0) {
         setInitialSlideIndex(index);
@@ -375,6 +402,27 @@ const CohortPage = () => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    console.log(newValue);
+    const windowUrl = window.location.pathname;
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id:
+          newValue === 1
+            ? 'change-tab-to-center-session'
+            : newValue === 2
+              ? 'change-tab-to-learners-list'
+              : 'change-tab-to-facilitators-list',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   const handleBackEvent = () => {
@@ -412,6 +460,22 @@ const CohortPage = () => {
 
   const handleOpenAddLearnerModal = () => {
     setOpenAddLearnerModal(true);
+
+    const windowUrl = window.location.pathname;
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id: 'click-on-add-new-learner',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   const handleCloseAddLearnerModal = () => {
@@ -432,6 +496,11 @@ const CohortPage = () => {
   const handleEditEvent = () => {
     setOnEditEvent(true);
   };
+  const [swiperKey, setSwiperKey] = useState(0);
+
+  useEffect(() => {
+    setSwiperKey((prevKey) => prevKey + 1);
+  }, [i18n.language]);
 
   return (
     <>
@@ -481,7 +550,7 @@ const CohortPage = () => {
               </Box>
             </Box>
           </Box>
-          {role === Role.TEAM_LEADER && (
+          {role === Role.TEAM_LEADER && isActiveYear && (
             <IconButton
               aria-label="more"
               aria-controls="long-menu"
@@ -503,6 +572,22 @@ const CohortPage = () => {
               onClick={() => {
                 setOpenRenameCenterModal(true);
                 handleMenuClose();
+
+                const windowUrl = window.location.pathname;
+                const cleanedUrl = windowUrl.replace(/^\//, '');
+                const telemetryInteract = {
+                  context: {
+                    env: 'teaching-center',
+                    cdata: [],
+                  },
+                  edata: {
+                    id: 'click-on-rename-center',
+                    type: Telemetry.CLICK,
+                    subtype: '',
+                    pageid: cleanedUrl,
+                  },
+                };
+                telemetryFactory.interact(telemetryInteract);
               }}
             >
               <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>
@@ -510,17 +595,33 @@ const CohortPage = () => {
               </ListItemIcon>
               {t('CENTERS.RENAME_CENTER')}
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               onClick={() => {
                 setOpenDeleteCenterModal(true);
                 handleMenuClose();
+
+                const windowUrl = window.location.pathname;
+                const cleanedUrl = windowUrl.replace(/^\//, '');
+                const telemetryInteract = {
+                  context: {
+                    env: 'teaching-center',
+                    cdata: [],
+                  },
+                  edata: {
+                    id: 'click-on-delete-center-option',
+                    type: Telemetry.CLICK,
+                    subtype: '',
+                    pageid: cleanedUrl,
+                  },
+                };
+                telemetryFactory.interact(telemetryInteract);
               }}
             >
               <ListItemIcon sx={{ color: theme.palette.warning['A200'] }}>
                 <DeleteOutlineOutlinedIcon fontSize="small" />
               </ListItemIcon>
               {t('CENTERS.REQUEST_TO_DELETE')}
-            </MenuItem>
+            </MenuItem> */}
           </Menu>
 
           {openRenameCenterModal && (
@@ -567,7 +668,7 @@ const CohortPage = () => {
             },
           }}
         >
-          {!isEliminatedFromBuild('Events', 'feature') && (
+          {!isEliminatedFromBuild('Events', 'feature') && isActiveYear && (
             <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
           )}
 
@@ -671,6 +772,7 @@ const CohortPage = () => {
                   <Box mt={3} sx={{ position: 'relative' }}>
                     {initialSlideIndex >= 0 && (
                       <Swiper
+                        key={swiperKey} // This will force Swiper to remount when the key changes
                         initialSlide={initialSlideIndex}
                         pagination={{
                           type: 'fraction',
@@ -721,6 +823,7 @@ const CohortPage = () => {
                                     board={board}
                                     medium={medium}
                                     grade={grade}
+                                    cohortId={cohortId}
                                   />
                                 )}
                               </SessionCard>
@@ -820,6 +923,7 @@ const CohortPage = () => {
                                 board={board}
                                 medium={medium}
                                 grade={grade}
+                                cohortId={cohortId}
                               />
                             )}
                           </SessionCard>
@@ -844,48 +948,54 @@ const CohortPage = () => {
       <Box>
         {value === 2 && (
           <>
-            <Box mt={3} px={'18px'}>
-              <Button
-                sx={{
-                  border: '1px solid #1E1B16',
-                  borderRadius: '100px',
-                  height: '40px',
-                  px: '16px',
-                  color: theme.palette.error.contrastText,
-                  '& .MuiButton-endIcon': {
-                    marginLeft: isRTL ? '0px !important' : '8px !important',
-                    marginRight: isRTL ? '8px !important' : '-2px !important',
-                  },
-                }}
-                className="text-1E"
-                endIcon={<AddIcon />}
-                onClick={handleOpenAddLearnerModal}
-              >
-                {t('COMMON.ADD_NEW')}
-              </Button>
-            </Box>
-            <Box
-              px={'18px'}
-              mt={2}
-              sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}
-            >
-              <Box
-                sx={{ color: theme.palette.secondary.main }}
-                className="fs-14 fw-500"
-                onClick={() => {
-                  router.push('/attendance-overview');
-                }}
-              >
-                {t('COMMON.REVIEW_ATTENDANCE')}
+            {isActiveYear && (
+              <Box>
+                <Box mt={3} px={'18px'}>
+                  <Button
+                    sx={{
+                      border: '1px solid #1E1B16',
+                      borderRadius: '100px',
+                      height: '40px',
+                      px: '16px',
+                      color: theme.palette.error.contrastText,
+                      '& .MuiButton-endIcon': {
+                        marginLeft: isRTL ? '0px !important' : '8px !important',
+                        marginRight: isRTL
+                          ? '8px !important'
+                          : '-2px !important',
+                      },
+                    }}
+                    className="text-1E"
+                    endIcon={<AddIcon />}
+                    onClick={handleOpenAddLearnerModal}
+                  >
+                    {t('COMMON.ADD_NEW')}
+                  </Button>
+                </Box>
+                <Box
+                  px={'18px'}
+                  mt={2}
+                  sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}
+                >
+                  <Box
+                    sx={{ color: theme.palette.secondary.main }}
+                    className="fs-14 fw-500"
+                    onClick={() => {
+                      router.push('/attendance-overview');
+                    }}
+                  >
+                    {t('COMMON.REVIEW_ATTENDANCE')}
+                  </Box>
+                  <ArrowForwardIcon
+                    sx={{
+                      fontSize: '18px',
+                      color: theme.palette.secondary.main,
+                      transform: isRTL ? ' rotate(180deg)' : 'unset',
+                    }}
+                  />
+                </Box>
               </Box>
-              <ArrowForwardIcon
-                sx={{
-                  fontSize: '18px',
-                  color: theme.palette.secondary.main,
-                  transform: isRTL ? ' rotate(180deg)' : 'unset',
-                }}
-              />
-            </Box>
+            )}
             <Box>
               <CohortLearnerList
                 cohortId={cohortId}

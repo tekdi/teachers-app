@@ -10,6 +10,8 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { debounce } from '@/utils/Helper';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 export interface SearchBarProps {
   onSearch: (value: string) => void;
@@ -17,6 +19,7 @@ export interface SearchBarProps {
   onClear?: () => void;
   placeholder: string;
   fullWidth?: boolean;
+  backgroundColor?:any
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -24,6 +27,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   value = '',
   placeholder = 'Search...',
   fullWidth = false,
+  backgroundColor="#EDEDED"
 }) => {
   const theme = useTheme<any>();
   const [searchTerm, setSearchTerm] = useState(value);
@@ -43,7 +47,32 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
     setSearchTerm(searchTerm);
-    handleSearch(searchTerm);
+
+    if(searchTerm.length>=3|| searchTerm==="")
+    {
+
+      handleSearch(searchTerm);
+
+
+      const windowUrl = window.location.pathname;
+      const cleanedUrl = windowUrl.replace(/^\//, '');
+      const env = cleanedUrl.split("/")[0];
+console.log(env)
+      const telemetryInteract = {
+        context: {
+          env: env,
+          cdata: [],
+        },
+        edata: {
+          id: 'search-value:'+searchTerm,
+          type: Telemetry.SEARCH,
+          subtype: '',
+          pageid: cleanedUrl,
+        },
+      };
+      telemetryFactory.interact(telemetryInteract);
+    }
+  
   };
 
   return (
@@ -56,7 +85,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
               display: 'flex',
               alignItems: 'center',
               borderRadius: '50px',
-              background: theme.palette.warning.A700,
+              background: backgroundColor,
               boxShadow: 'none',
             }}
           >

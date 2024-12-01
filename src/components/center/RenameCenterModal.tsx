@@ -16,6 +16,9 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { showToastMessage } from '../Toastify';
+import { telemetryFactory } from '@/utils/telemetry';
+import { Telemetry } from '@/utils/app.constant';
+import axios from 'axios';
 
 interface CreateBlockModalProps {
   open: boolean;
@@ -38,6 +41,8 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
   const { cohortId }: any = router.query;
   const [centerName, setCenterName] = useState<string>(name ?? '');
   const [error, setError] = useState<boolean>(false);
+  const [enableRenameButton, setEnableRenameButton] = useState<boolean>();
+
 
   const pattern = /^[a-zA-Z ]*$/;
 
@@ -60,18 +65,45 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
       setError(false);
     }
     setCenterName(value);
+    setEnableRenameButton(true)
   };
 
   const handleCreateButtonClick = async () => {
     if (error) return;
+    try {
+      console.log('Entered Rename Name:', centerName);
+      const name = centerName.toLowerCase().trim();
+      await renameFacilitator(cohortId, name);
+      setReloadState(true);
+      showToastMessage(t('CENTERS.CENTER_RENAMED'), 'success');
 
-    console.log('Entered Rename Name:', centerName);
-    const name = centerName.trim();
-    await renameFacilitator(cohortId, name);
-    setReloadState(true);
-    showToastMessage(t('CENTERS.CENTER_RENAMED'), 'success');
-    handleClose(name);
-  };
+      const windowUrl = window.location.pathname;
+      const cleanedUrl = windowUrl.replace(/^\//, '');
+      const telemetryInteract = {
+        context: {
+          env: 'teaching-center',
+          cdata: [],
+        },
+        edata: {
+          id: 'rename-center-successfully',
+          type: Telemetry.CLICK,
+          subtype: '',
+          pageid: cleanedUrl,
+        },
+      };
+      telemetryFactory.interact(telemetryInteract);
+      handleClose(name);
+    } catch (error) {
+      const name = centerName.trim();
+
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 409) {
+          showToastMessage(t('CENTERS.DUPLICATE_CENTER'), 'info');
+        }
+      }
+      handleClose(name);
+    }
+  }
 
   return (
     <Modal open={open} onClose={() => handleClose('')} closeAfterTransition>
@@ -137,18 +169,19 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
           )}
           <Divider sx={{ mb: 2, mx: -2 }} />
           <Button
-            variant="outlined"
-            onClick={handleCreateButtonClick}
-            sx={{
-              width: '100%',
-              border: 'none',
-              backgroundColor: theme?.palette?.primary?.main,
-              mb: 2,
-            }}
-            disabled={!!error || !centerName.trim()}
-          >
-            {t('CENTERS.RENAME')}
-          </Button>
+  variant="outlined"
+  onClick={handleCreateButtonClick}
+  sx={{
+    width: '100%',
+    border: 'none',
+    backgroundColor: (!!error || !centerName.trim() || !enableRenameButton)? "#EDEDED" :theme?.palette?.primary?.main,
+    mb: 2,
+  }}
+  disabled={!!error || !centerName.trim() || !enableRenameButton}
+>
+  {t('CENTERS.RENAME')}
+</Button>
+
         </Box>
       </Fade>
     </Modal>

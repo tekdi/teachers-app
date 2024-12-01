@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
+import { Close } from '@mui/icons-material';
 import {
   Box,
-  Typography,
-  TextField,
+  Button,
+  Divider,
+  Fade,
+  FormControlLabel,
   IconButton,
+  Modal,
   Radio,
   RadioGroup,
-  FormControlLabel,
-  Button,
-  Modal,
-  Fade,
-  Divider,
-  InputAdornment,
+  Typography
 } from '@mui/material';
-import { Search, Close } from '@mui/icons-material';
-import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
+import React, { useState } from 'react';
 
 type CenterType = '' | 'regular' | 'remote';
 
@@ -63,6 +61,12 @@ const FilterModalCenter: React.FC<FilterModalProps> = ({
   const filteredCenters = centers?.filter((center) =>
     center?.toLowerCase().includes(searchInput?.toLowerCase())
   );
+
+  const clearFilters = () => {
+    setSortOrder('');
+    setCenterType('');
+    onApply();
+  };
 
   const handleApplyClick = () => {
     onApply();
@@ -185,15 +189,24 @@ const FilterModalCenter: React.FC<FilterModalProps> = ({
             />
           </RadioGroup>
           <Divider sx={{ mt: 2, mx: -2 }} />
+          <Box
+            sx={{
+            display: 'flex',
+            gap: 1,
+          }}>
+          <Button variant='outlined' fullWidth sx={{ mt: 2, mb: 2 }} onClick={clearFilters}>
+            {t('COMMON.CLEAR_ALL')}
+          </Button>
           <Button
             variant="contained"
-            color="primary"
             fullWidth
+            color="primary"
             onClick={handleApplyClick}
             sx={{ mt: 2, mb: 2 }}
           >
             {t('COMMON.APPLY')}
           </Button>
+          </Box>
         </Box>
       </Fade>
     </Modal>

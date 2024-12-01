@@ -13,7 +13,7 @@ import {
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { toPascalCase } from '@/utils/Helper';
 import { ICohort } from '@/utils/Interfaces';
-import { AssessmentStatus, Role, Status } from '@/utils/app.constant';
+import { AssessmentStatus, Role, Status, Telemetry } from '@/utils/app.constant';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import {
@@ -32,8 +32,9 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { accessControl, AssessmentType, Program } from '../../../app.config';
+import { accessControl, AssessmentType, AttendanceAPILimit, Program } from '../../../app.config';
 import { useDirection } from '../../hooks/useDirection';
+import { telemetryFactory } from '@/utils/telemetry';
 
 const DEFAULT_STATUS_ORDER = {
   [AssessmentStatus.NOT_STARTED]: 0,
@@ -92,7 +93,7 @@ const Assessments = () => {
           status: [Status.ACTIVE],
         };
         const response = await getMyCohortMemberList({
-          limit: 0,
+          limit: AttendanceAPILimit,
           page: 0,
           filters,
         });
@@ -128,9 +129,9 @@ const Assessments = () => {
 
       const filters = {
         program: [Program],
-        se_boards: [stateName],
+        boards: [stateName],
         // subject: [subjects || subject],
-        assessment1:
+        assessmentType:
           assessmentType === 'pre'
             ? AssessmentType.PRE_TEST
             : AssessmentType.POST_TEST,
@@ -198,7 +199,7 @@ const Assessments = () => {
           courseId: assessmentList, // temporary added here assessmentList(contentId)... if assessment is done then need to pass actual course id and unit id here
           unitId: assessmentList,
           contentId: assessmentList,
-          batchId: classId,
+          // batchId: classId,
         };
         const assessmentStatus = await getAssessmentStatus(options);
         console.log('assessmentStatus', assessmentStatus);
@@ -379,7 +380,7 @@ const Assessments = () => {
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box sx={{ mt: 2, px: '20px', width: '100%', direction: 'rtl' }}>
+          <Box sx={{ mt: 2, px: '20px', width: '100%' }}>
             <FormControl fullWidth>
               <InputLabel
                 style={{
@@ -387,7 +388,6 @@ const Assessments = () => {
                   background: theme?.palette?.warning['A400'],
                   paddingLeft: '2px',
                   paddingRight: '2px',
-                  textAlign: 'right', // Align the label text to the right
                 }}
                 id="demo-simple-select-label"
               >
@@ -399,9 +399,28 @@ const Assessments = () => {
                 label={t('ASSESSMENTS.ASSESSMENT_TYPE')}
                 style={{
                   borderRadius: '4px',
-                  textAlign: 'right', // Align the dropdown text to the right
                 }}
-                onChange={(e) => setAssessmentType(e.target.value)}
+                onChange={(e) => 
+                  {setAssessmentType(e.target.value)
+                    const windowUrl = window.location.pathname;
+                    const cleanedUrl = windowUrl.replace(/^\//, '');
+              
+        
+                    const telemetryInteract = {
+                      context: {
+                        env: 'assessments',
+                        cdata: [],
+                      },
+                      edata: {
+                        id: 'filter-by-assessment-type:'+e.target.value,
+                        type: Telemetry.CLICK,
+                        subtype: '',
+                        pageid: cleanedUrl
+                      },
+                    };
+                    telemetryFactory.interact(telemetryInteract);
+                  
+                  }}
                 defaultValue={'pre'}
                 value={assessmentType}
               >
@@ -477,6 +496,7 @@ const Assessments = () => {
                 endIcon={<ArrowDropDownSharpIcon />}
                 size="small"
                 variant="outlined"
+                className="one-line-text"
               >
                 {t('COMMON.SORT_BY')}
               </Button>

@@ -94,12 +94,15 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       if (typeof window !== 'undefined' && window.localStorage) {
         const CenterList = localStorage.getItem('CenterList');
         const centerOptions = CenterList ? JSON.parse(CenterList) : [];
-        centerOptionsList = centerOptions.map(
-          (center: { cohortId: string; cohortName: string }) => ({
-            value: center.cohortId,
-            label: center.cohortName,
-          })
-        );
+        console.log("centerOptions",centerOptions);
+        
+        centerOptionsList = centerOptions
+  .filter((center: { cohortStatus: string }) => center.cohortStatus === 'active')
+  .map((center: { cohortId: string; cohortName: string }) => ({
+    value: center.cohortId,
+    label: center.cohortName,
+  }));
+
         console.log(centerOptionsList);
       }
       const assignCentersField: Field = {
@@ -200,7 +203,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           {
             tenantId: tenantId,
             roleId: RoleId.TEACHER,
-            cohortId: formData?.assignCenters,
+            cohortIds: formData?.assignCenters,
           },
         ],
         customFields: [],
@@ -292,6 +295,23 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             queryClient.invalidateQueries({
               queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
             });
+            const windowUrl = window.location.pathname;
+            const cleanedUrl = windowUrl.replace(/^\//, '');
+      
+
+            const telemetryInteract = {
+              context: {
+                env: 'teaching-center',
+                cdata: [],
+              },
+              edata: {
+                id: 'facilitator-updated-success',
+                type: Telemetry.CLICK,
+                subtype: '',
+                pageid: cleanedUrl
+              },
+            };
+            telemetryFactory.interact(telemetryInteract);
           }
           onClose();
         } else {
@@ -514,9 +534,9 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             <Box mt={1.5}>
               <Divider />
             </Box>
-            <Box p={'18px'} display={'flex'} gap={'1rem'}>
+            <Box p={'18px'} display={'flex'} justifyContent={'center'} gap={'10px'} width={'100%'}>
               <Button
-                className="w-100 one-line-text"
+                className="one-line-text w-100"
                 sx={{ boxShadow: 'none' }}
                 variant="outlined"
                 onClick={() => handleBackAction()}
@@ -524,7 +544,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 {t('COMMON.BACK')}
               </Button>
               <Button
-                className="w-100 one-line-text"
+                className="one-line-text w-100"
                 sx={{ boxShadow: 'none' }}
                 variant="contained"
                 onClick={() => handleAction()}

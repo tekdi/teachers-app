@@ -2,7 +2,11 @@ import { Role, Status, labelsToExtractForMiniProfile } from './app.constant';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import FingerprintJS from 'fingerprintjs2';
-import { CustomField, UpdateCustomField } from './Interfaces';
+import {
+  BoardEnrollmentStageCounts,
+  CustomField,
+  UpdateCustomField,
+} from './Interfaces';
 dayjs.extend(utc);
 import { format, parseISO } from 'date-fns';
 import manageUserStore from '@/store/manageUserStore';
@@ -31,9 +35,14 @@ export const MONTHS = [
 ];
 
 export const formatDate = (dateString: string) => {
-  const [year, monthIndex, day] = dateString.split('-');
-  const month = MONTHS[parseInt(monthIndex, 10) - 1];
-  return `${day} ${month}, ${year}`;
+  if (dateString) {
+    const dateOnly = dateString?.split('T')[0];
+
+    const [year, monthIndex, day] = dateOnly.split('-');
+    const month = MONTHS[parseInt(monthIndex, 10) - 1];
+
+    return `${day} ${month}, ${year}`;
+  }
 };
 
 export const formatToShowDateMonth = (date: Date) => {
@@ -111,15 +120,29 @@ export const debounce = <T extends (...args: any[]) => any>(
   immediate?: boolean
 ) => {
   let timeout: ReturnType<typeof setTimeout> | undefined;
-  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+
+  const debounced = function (
+    this: ThisParameterType<T>,
+    ...args: Parameters<T>
+  ) {
     const context = this;
     clearTimeout(timeout);
+
     if (immediate && !timeout) func.apply(context, args);
+
     timeout = setTimeout(() => {
       timeout = undefined;
       if (!immediate) func.apply(context, args);
     }, wait);
   };
+
+  // Add a cancel method to clear any pending timeout
+  debounced.cancel = () => {
+    if (timeout) clearTimeout(timeout);
+    timeout = undefined;
+  };
+
+  return debounced;
 };
 
 //Function to convert names in capitalize case
@@ -304,10 +327,13 @@ export const generateUsernameAndPassword = (
 export const mapFieldIdToValue = (
   fields: CustomField[]
 ): { [key: string]: string } => {
-  return fields.reduce((acc: { [key: string]: string }, field: CustomField) => {
-    acc[field.fieldId] = field.value;
-    return acc;
-  }, {});
+  return fields?.reduce(
+    (acc: { [key: string]: string }, field: CustomField) => {
+      acc[field.fieldId] = field.value;
+      return acc;
+    },
+    {}
+  );
 };
 
 export const convertUTCToIST = (utcDateTime: string) => {
@@ -351,13 +377,13 @@ export const convertLocalToUTC = (localDateTime: any) => {
 
 export const getCurrentYearPattern = () => {
   const currentYear = new Date().getFullYear();
-  
+
   // Build the dynamic part for the current century
   let regexPart = '';
   if (currentYear >= 2000 && currentYear < 2100) {
     const lastDigit = currentYear % 10;
     const middleDigit = Math.floor((currentYear % 100) / 10);
-    
+
     regexPart = `20[0-${middleDigit - 1}][0-9]|20${middleDigit}[0-${lastDigit}]`;
   }
 
@@ -416,7 +442,7 @@ export const getUserDetailsById = (data: any[], userId: any) => {
 };
 
 export const getEmailPattern = (): string => {
-  return '^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$';
+  return '^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$';
 };
 
 export const translateString = (t: any, label: string) => {
@@ -445,6 +471,16 @@ export const format2DigitDate = (dateStr: any) => {
   return format(dateObj, 'd MMM, yyyy');
 };
 
+export const sortSessions = (sessionArray: any[]) => {
+  if (!Array.isArray(sessionArray)) return [];
+
+  return sessionArray.sort((a: any, b: any) => {
+    const timeA = new Date(a?.startDateTime).getTime();
+    const timeB = new Date(b?.startDateTime).getTime();
+    return timeA - timeB; // Ascending order (earliest first)
+  });
+};
+
 export const sortSessionsByTime = (sessionsArray: any) => {
   const passed: any = [];
   const live: any = [];
@@ -470,15 +506,16 @@ export const sortSessionsByTime = (sessionsArray: any) => {
 // Helper function to get options by category
 export const getOptionsByCategory = (frameworks: any, categoryCode: string) => {
   // Find the category by code
-  const category = frameworks.categories.find(
-    (category: any) => category.code === categoryCode
+  const category = frameworks?.categories?.find(
+    (category: any) => category?.code === categoryCode
   );
 
   // Return the mapped terms
-  return category.terms.map((term: any) => ({
-    name: term.name,
-    code: term.code,
-    associations: term.associations
+  return category?.terms?.map((term: any) => ({
+    name: term?.name,
+    code: term?.code,
+    associations: term?.associations,
+
   }));
 };
 
@@ -496,59 +533,72 @@ interface DataItem {
   code: string;
   associations: Association[];
 }
-export const getAssociationsByName = (data: DataItem[], name: string): Association[] | [] => {
-  const foundItem = data.find(item => item.name === name);
+export const getAssociationsByName = (
+  data: DataItem[],
+  name: string
+): Association[] | [] => {
+  const foundItem = data.find((item) => item.name === name);
   return foundItem ? foundItem.associations : [];
 };
 
+export const getAssociationsByCodeNew = (
+  data: DataItem[],
+  code: string
+): Association[] | [] => {
 
-export const getAssociationsByCodeNew = (data: DataItem[], code: string): Association[] | [] => {
-  const foundItem = data.find(item => item.name === code);
-  return foundItem ? foundItem.associations : [];
+  const foundItem = data?.find((item) => item?.name === code);
+  return foundItem ? foundItem?.associations : [];
+
 };
 
-
-
-export const getAssociationsByCode = (data: DataItem[], code: string): Association[] | [] => {
-  const foundItem = data.find(item => item.code === code);
+export const getAssociationsByCode = (
+  data: DataItem[],
+  code: string
+): Association[] | [] => {
+  const foundItem = data.find((item) => item.code === code);
   return foundItem ? foundItem.associations : [];
 };
 
 export const findCommonAssociations = (data1: any[], data2: any[]) => {
 
-  if (!data1.length) return data2;
-  if (!data2.length) return data1;
+  if (!data1?.length) return data2;
+  if (!data2?.length) return data1;
 
-  return data1.map((item1) => {
-    const item2 = data2.find((item) => item.code === item1.code);
-    if (item2) {
-      const commonAssociations = item1.associations.filter((assoc1: any) =>
-        item2.associations.some((assoc2: any) => assoc1.identifier === assoc2.identifier)
-      );
-      if (commonAssociations.length > 0) {
-        return {
-          name: item1.name,
-          code: item1.code,
-          associations: commonAssociations,
-        };
+  return data1
+    ?.map((item1) => {
+      const item2 = data2?.find((item) => item?.code === item1?.code);
+      if (item2) {
+        const commonAssociations = item1?.associations?.filter((assoc1: any) =>
+          item2?.associations?.some(
+            (assoc2: any) => assoc1?.identifier === assoc2?.identifier
+          )
+        );
+        if (commonAssociations?.length > 0) {
+          return {
+            name: item1?.name,
+            code: item1?.code,
+
+            associations: commonAssociations,
+          };
+        }
       }
-    }
-    return null;
-  }).filter(Boolean);
+      return null;
+    })
+    .filter(Boolean);
 };
 
 export const filterAndMapAssociationsNew = (
   category: string,
-  options: any[],
+  options?: any[],
   associationsList?: any[],
-  codeKey: string = "code"
+  codeKey: string = 'code'
 ) => {
   if (!Array.isArray(options)) {
-    console.error("Options is not an array:", options);
+    console.error('Options is not an array:', options);
     return [];
   }
 
-  if (!associationsList || associationsList.length === 0) {
+  if (!associationsList || associationsList?.length === 0) {
     return [];
   }
 
@@ -556,15 +606,45 @@ export const filterAndMapAssociationsNew = (
     .filter((option) => {
       const optionCode = option[codeKey];
 
-      return associationsList.some(
-        (assoc) => assoc[codeKey] === optionCode && assoc.category === category
+      return associationsList?.some(
+        (assoc) => assoc[codeKey] === optionCode && assoc?.category === category
       );
     })
     .map((option) => ({
-      name: option.name,
-      code: option.code,
-      associations: option.associations || [],
+      name: option?.name,
+      code: option?.code,
+      associations: option?.associations || [],
     }));
+};
+
+export const extractCategory = (data: any[] | any, category: string) => {
+  const items = Array.isArray(data) ? data : [data];
+  return items.flatMap((item) =>
+    item.associations
+      .filter(
+        (association: { category: string }) => association.category === category
+      )
+      .map(
+        ({
+          name,
+          code,
+          identifier,
+        }: {
+          name: string;
+          code: string;
+          identifier: string;
+        }) => ({
+          name,
+          code,
+          identifier,
+        })
+      )
+  );
+};
+
+export const findCommon = (data1: any[], data2: any[]) => {
+  const data1Codes = new Set(data1.map((item) => item.code));
+  return data2.filter((item) => data1Codes.has(item.code));
 };
 
 export function deepClone<T>(obj: T): T {
@@ -577,7 +657,10 @@ export function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => {
+export const updateStoreFromCohorts = (
+  activeCohorts: any,
+  blockObject: any
+) => {
   const setDistrictCode = manageUserStore.getState().setDistrictCode;
   const setDistrictId = manageUserStore.getState().setDistrictId;
   const setStateCode = manageUserStore.getState().setStateCode;
@@ -588,17 +671,16 @@ export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => 
   const setDistrictName = manageUserStore.getState().setDistrictName;
   const setStateName = manageUserStore.getState().setStateName;
 
-
-  const district = activeCohorts[0]?.customField?.find(
+  const district = activeCohorts?.[0]?.customField?.find(
     (item: any) => item?.label === 'DISTRICTS'
   );
   if (district) {
     setDistrictCode(district?.code);
     setDistrictId(district?.fieldId);
-    setDistrictName(district?.value)
+    setDistrictName(district?.value);
   }
 
-  const state = activeCohorts[0]?.customField?.find(
+  const state = activeCohorts?.[0]?.customField?.find(
     (item: any) => item?.label === 'STATES'
   );
 
@@ -614,3 +696,76 @@ export const updateStoreFromCohorts = (activeCohorts: any, blockObject: any) => 
     setBlockName(blockObject?.value);
   }
 };
+
+export function formatEndDate({ diffDays }: any) {
+  // Check if structuredClone is available
+  if (diffDays) {
+    let remainingTime = '';
+    if (diffDays >= 365) {
+      const years = Math.floor(diffDays / 365);
+      const remainingDays = diffDays % 365;
+
+      const months = Math.floor(remainingDays / 30.44);
+      const days = Math.round(remainingDays % 30.44);
+
+      remainingTime = `${years} year(s)${months > 0 ? `, ${months} month(s)` : ''}${days > 0 ? `,  ${days} day(s)` : ''}`;
+    } else if (diffDays > 31) {
+      const months = Math.floor(diffDays / 30.44);
+      const days = Math.round(diffDays % 30.44);
+
+      remainingTime = `${months} month(s) ${days > 0 ? ` , ${days} day(s)` : ''}`;
+    } else {
+      remainingTime = `${diffDays} day(s)`;
+    }
+    return remainingTime;
+  }
+  return '';
+}
+
+//TODO: Modify Helper with correct logic
+export const calculateStageCounts = (
+  data: { completedStep: any }[]
+): BoardEnrollmentStageCounts => {
+  const stagesCount: BoardEnrollmentStageCounts = {
+    board: 0,
+    subjects: 0,
+    registration: 0,
+    fees: 0,
+    completed: 0,
+  };
+
+  const stageKeys: Record<number, keyof BoardEnrollmentStageCounts> = {
+    0: 'board',
+    1: 'subjects',
+    2: 'registration',
+    3: 'fees',
+    4: 'completed',
+  };
+
+  data.forEach(({ completedStep }) => {
+    const key = stageKeys[completedStep];
+    if (key) stagesCount[key] += 1;
+  });
+
+  return stagesCount;
+};
+
+export function getCohortNameById(
+  cohorts: { cohortId: string; name: string }[],
+  cohortId: string
+): string | null {
+  const cohort = cohorts.find((c) => c.cohortId === cohortId);
+  return cohort ? cohort.name : null;
+}
+// const isFieldFilled = (key: string, value: any): boolean => {
+//   if (key === "SUBJECTS") {
+//     return Array.isArray(value) && value.length > 0;
+//   }
+//   return value && value !== ""; // General check for other fields
+// };
+
+//  export const calculateStageCount = (formData: Record<string, any>): number =>
+//  Object.entries(formData).reduce(
+//    (count, [key, value]) => count + (isFieldFilled(key, value) ? 1 : 0),
+//    0
+//  );

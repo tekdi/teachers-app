@@ -1,7 +1,7 @@
 import { useFormRead } from '@/hooks/useFormRead';
 import { createCohort } from '@/services/CreateUserService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
-import { FormContext, FormContextType } from '@/utils/app.constant';
+import { FormContext, FormContextType, Telemetry } from '@/utils/app.constant';
 import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { IChangeEvent } from '@rjsf/core';
@@ -15,6 +15,7 @@ import Loader from '../Loader';
 import SimpleModal from '../SimpleModal';
 import { showToastMessage } from '../Toastify';
 import FrameworkCategories from './FrameworkCategories';
+import { telemetryFactory } from '@/utils/telemetry';
 interface CreateBlockModalProps {
   open: boolean;
   handleClose: () => void;
@@ -97,7 +98,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
       console.log('Form data submitted:', formData);
       const parentId = localStorage.getItem('blockParentId');
       const cohortDetails: CohortDetails = {
-        name: formData.name,
+        name: (formData.name).toLowerCase(),
         type: 'COHORT',
         parentId: parentId,
         customFields: [],
@@ -148,11 +149,28 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
         ).values()
       );
       const cohortData = await createCohort(cohortDetails);
-      if (cohortData) {
+      if (cohortData?.hasOwnProperty('cohortId')) {
         showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
+        const telemetryInteract = {
+          context: {
+            env: 'teaching-center',
+            cdata: [],
+          },
+          edata: {
+            id: 'create-center-successfully',
+            type: Telemetry.CLICK,
+            subtype: '',
+            pageid: 'centers',
+          },
+        };
+        telemetryFactory.interact(telemetryInteract);
+
         onCenterAdded();
         handleClose();
         localStorage.removeItem('BMGSData');
+      } else {
+        showToastMessage(t('CENTERS.DUPLICATE_CENTER'), 'error');
+        handleClose();
       }
     }
   };

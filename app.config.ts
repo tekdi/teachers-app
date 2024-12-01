@@ -1,12 +1,12 @@
 import { Role } from '@/utils/app.constant';
 
+export const AttendanceAPILimit: number = 300;
 export const lowLearnerAttendanceLimit: number = 32;
 export const avgLearnerAttendanceLimit: number = 66;
 export const dashboardDaysLimit: number = 30;
 export const modifyAttendanceLimit: number = 6;
 export const eventDaysLimit: number = 7;
 export const toastAutoHideDuration: number = 5000; // 5 seconds
-export const tenantId: string = 'ef99949b-7f3a-4a5f-806a-e67e683e38f3';
 export const idealTimeForSession: string = '120';
 export const timeZone: string = 'Asia/Kolkata';
 export const dropoutReasons = [
@@ -69,16 +69,46 @@ export const DaysOfWeek = {
   Sat: 6,
 };
 
-export const Program = 'Second chance';
+export const Program = 'secondchance';
 
-export const frameworkId = 'gujaratboardfw';
+export const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || '';
+if (!tenantId) {
+  console.warn(
+    'NEXT_PUBLIC_TENANT_ID is not set in the environment variables.'
+  );
+}
+
+export const frameworkId = process.env.NEXT_PUBLIC_FRAMEWORK_ID || '';
+if (!frameworkId) {
+  console.warn(
+    'NEXT_PUBLIC_FRAMEWORK_ID is not set in the environment variables.'
+  );
+}
 
 export enum AssessmentType {
-  PRE_TEST = 'Pre Test',
-  POST_TEST = 'Post Test',
+  PRE_TEST = 'pre-test',
+  POST_TEST = 'post-test',
 }
 
 export const RequisiteType = {
   PRE_REQUISITES: 'prerequisite',
   POST_REQUISITES: 'postrequisite',
+  FACILITATOR_REQUISITE: 'facilitator-requisite',
+};
+
+export const COURSE_TYPE = {
+  FOUNDATION_COURSE: 'Foundation Course',
+};
+
+export const entityList = {
+  TEAM_LEADER: ['center', 'facilitator', 'learner'],
+  TEACHER: ['center','learner' ],
+};
+
+export const MIME_TYPE = {
+  QUESTION_SET_MIME_TYPE: 'application/vnd.sunbird.questionset',
+  INTERACTIVE_MIME_TYPE: [
+    'application/vnd.ekstep.h5p-archive',
+    'application/vnd.ekstep.html-archive',
+  ],
 };

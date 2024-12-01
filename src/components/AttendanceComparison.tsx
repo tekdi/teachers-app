@@ -23,10 +23,12 @@ import { useTranslation } from 'next-i18next';
 import useStore from '../store/store';
 import { useTheme } from '@mui/material/styles';
 import { overallAttendanceInPercentageStatusList } from '@/services/AttendanceService';
-import { CenterType, cohortPrivileges } from '@/utils/app.constant';
+import { CenterType, Telemetry, cohortPrivileges } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
 import NoDataFound from './common/NoDataFound';
 import { useDirection } from '../hooks/useDirection';
+import { AttendanceAPILimit } from '../../app.config';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface AttendanceComparisonProps {
   blockName: string;
@@ -36,6 +38,7 @@ interface Cohort {
   cohortId: string;
   cohortType: string;
   name: string;
+  status?:string
 }
 
 interface AttendanceResult {
@@ -46,7 +49,8 @@ interface AttendanceResult {
 }
 
 interface AttendanceResponse {
-  statusCode: number;
+  responseCode?: number;
+  // statusCode?: number;
   message: string;
   data: {
     result: {
@@ -76,6 +80,20 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setCenterType(event.target.value);
+
+    const telemetryInteract = {
+      context: {
+        env: 'dashboard',
+        cdata: [],
+      },
+      edata: {
+        id: 'center-type-selection: '+event.target.value,
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'dashboard',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   useEffect(() => {
@@ -87,7 +105,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
     const fetchData = async () => {
       const promises = cohortIds?.map((cohortId: string) =>
         overallAttendanceInPercentageStatusList({
-          limit: 0,
+          limit: AttendanceAPILimit,
           page: 0,
           filters: { contextId: cohortId, scope },
           facets: ['contextId'],
@@ -98,10 +116,10 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
       const dataMap: Record<string, string> = {};
 
       results.forEach((result) => {
-        if (result?.statusCode === 200 && result?.data?.result?.contextId) {
+        if (result?.responseCode === 200 && result?.data?.result?.contextId) {
           Object.keys(result?.data?.result?.contextId).forEach((id) => {
             dataMap[id] =
-              result?.data?.result?.contextId[id]?.present_percentage ?? '0';
+              result.data.result.contextId[id]?.present_percentage ?? '0';
           });
         }
       });
@@ -121,12 +139,22 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
   }, [store?.cohorts, scope, centerType]);
 
   const data =
-    store?.cohorts
-      ?.filter((pair: Cohort) => pair?.cohortType === centerType)
-      .map((pair: Cohort) => ({
-        name: toPascalCase(pair?.name),
-        Attendance: Number(attendanceData[pair?.cohortId]) || 0,
-      })) || [];
+  store?.cohorts
+    ?.filter(
+      (pair: Cohort) =>
+        pair?.cohortType === centerType && pair?.status === "active"
+    )
+    .map((pair: Cohort) => ({
+      name: toPascalCase(pair?.name),
+      Attendance: Number(attendanceData[pair?.cohortId]) || 0,
+    })) || [];
+    // const data =
+    // store?.cohorts
+    //   ?.filter((pair: Cohort) => pair?.cohortType === centerType)
+    //   .map((pair: Cohort) => ({
+    //     name: toPascalCase(pair?.name),
+    //     Attendance: Number(attendanceData[pair?.cohortId]) || 0,
+    //   })) || [];
 
   const YAxisLabel = (value: any) => {
     let maxLength = 25;
@@ -178,7 +206,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
         {t('DASHBOARD.ATTENDANCE_COMPARISON')}
       </Typography>
       <Typography fontSize={'14px'}>
-        {blockName} {t('DASHBOARD.BLOCK')}
+        {toPascalCase(blockName)} {t('DASHBOARD.BLOCK')}
       </Typography>
       <FormControl component="fieldset">
         <Typography fontSize={'14px'} mt={2}>

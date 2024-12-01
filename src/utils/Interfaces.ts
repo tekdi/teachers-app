@@ -90,6 +90,7 @@ export interface CohortMemberList {
     cohortId: string;
     role?: string;
     status?: string[];
+    name?: string | undefined;
   };
 }
 
@@ -299,9 +300,9 @@ export interface CohortAttendancePercentParam {
 export interface GetDoIdServiceParam {
   filters: {
     program?: string | string[];
-    se_boards?: (string | null)[];
+    boards?: (string | null)[];
     subject?: string | string[];
-    assessment1?: string | string[];
+    assessmentType?: string | string[];
   };
 }
 
@@ -334,9 +335,10 @@ export interface AllCenterAttendancePercentParam {
 }
 
 export interface UpdateCohortMemberStatusParams {
-  memberStatus: string;
+  memberStatus?: string;
   statusReason?: string;
   membershipId: string | number;
+  dynamicBody?: Record<string, any>;
 }
 
 export interface LearnerListProps {
@@ -400,6 +402,7 @@ export interface CoursePlanner {
 export interface SessionCardFooterProps {
   item: any;
   cohortName?: string;
+  cohortId?: string;
   isTopicSubTopicAdded?: any;
   state?: string;
   board?: string;
@@ -530,8 +533,11 @@ export interface SendCredentialsRequest {
   isQueue: boolean;
   context: string;
   key: string;
-  replacements: any;
-  email: {
+  replacements?: any;
+  email?: {
+    receipients: any[];
+  };
+  push?: {
     receipients: any[];
   };
 }
@@ -541,12 +547,6 @@ export interface Assessment {
   studentName: string;
   progress: string;
   score?: number;
-}
-export interface BoardEnrollment {
-  userId: number;
-  studentName: string;
-  center: string;
-  isDropout: boolean;
 }
 
 export interface AssessmentSubject {
@@ -637,11 +637,10 @@ export interface BottomDrawerProps {
 
 export interface IAssessmentStatusOptions {
   userId: string[];
-  courseId?:string[];
-  unitId?:string[];
+  courseId?: string[];
+  unitId?: string[];
   contentId: string[];
-  batchId: string;
- 
+  // batchId: string;
 }
 
 export interface GetTargetedSolutionsParams {
@@ -651,6 +650,7 @@ export interface GetTargetedSolutionsParams {
   class: any;
   board: any;
   type: string;
+  entityId?: string;
 }
 
 export interface GetUserProjectDetailsParams {
@@ -667,10 +667,10 @@ export interface EditEvent {
 
 export interface ISearchAssessment {
   userId: string;
-  courseId?:string;
-  unitId?:string;
+  courseId?: string;
+  unitId?: string;
   contentId: string;
-  batchId: string;
+  // batchId: string;
 }
 
 export interface AssessmentReportProp {
@@ -698,6 +698,7 @@ export interface GetUserProjectTemplateParams {
   templateId: string;
   solutionId: string;
   role: string;
+  cohortId?: string;
 }
 
 export interface HorizontalLinearStepperProps {
@@ -730,4 +731,152 @@ export interface GetUserProjectStatusParams {
 export interface PasswordCreateProps {
   handleResetPassword: (password: string) => void;
   editPassword?: boolean;
+}
+
+export interface AcademicYear {
+  id: string;
+  session: string;
+  isActive: string;
+}
+
+export enum ObservationEntityType {
+  LEARNER = 'learner',
+  FACILITATOR = 'facilitator',
+  CENTER = 'center',
+}
+export interface observationInterface {
+  role?: string;
+}
+
+export interface Pdata {
+  id: string;
+  pid?: string;
+  ver?: string;
+}
+
+export interface ContextRollup {
+  l1?: string;
+  l2?: string;
+  l3?: string;
+  l4?: string;
+}
+
+export interface Cdata {
+  type: string;
+  id: string;
+}
+
+export interface ObjectRollup {
+  l1?: string;
+  l2?: string;
+  l3?: string;
+  l4?: string;
+}
+
+export interface Context {
+  mode?: string;
+  authToken?: string;
+  sid?: string;
+  did?: any;
+  uid?: string;
+  channel: string;
+  pdata: Pdata;
+  contextRollup?: ContextRollup;
+  tags?: string[];
+  cdata?: Cdata[];
+  timeDiff?: number;
+  objectRollup?: ObjectRollup;
+  host?: string;
+  endpoint?: string;
+  dispatcher?: object;
+  partner?: any[];
+  contentId?: any;
+  dims?: any[];
+  app?: string[];
+  userData?: {
+    firstName: string;
+    lastName: string;
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Config {
+  toolBar?: {
+    showZoomButtons?: boolean;
+    showPagesButton?: boolean;
+    showPagingButtons?: boolean;
+    showSearchButton?: boolean;
+    showRotateButton?: boolean;
+  };
+  sideMenu?: {
+    showShare?: boolean;
+    showDownload?: boolean;
+    showReplay?: boolean;
+    showExit?: boolean;
+    showPrint?: boolean;
+  };
+  [propName: string]: any;
+}
+
+export interface Metadata {
+  identifier: string;
+  name: string;
+  artifactUrl: string;
+  streamingUrl?: string;
+  compatibilityLevel?: number;
+  pkgVersion?: number;
+  isAvailableLocally?: boolean;
+  basePath?: string;
+  baseDir?: string;
+}
+export interface PlayerConfig {
+  context: Context;
+  config?: Config;
+  metadata?: Metadata;
+  data?: any;
+}
+
+export interface BoardEnrollmentStageCounts {
+  board: number;
+  subjects: number;
+  registration: number;
+  fees: number;
+  completed: number;
+}
+
+// export interface BoardEnrollmentFieldsType {
+//   BOARD?: string;
+//   SUBJECTS?: string;
+//   REGISTRATION?: string;
+//   FEES?: string;
+// };
+
+export interface BoardEnrollmentData {
+  userId: string;
+  cohortMembershipId: string;
+  name: string;
+  memberStatus: string;
+  statusReason: string | null;
+  customField: {
+    fieldId: string;
+    label: string;
+    value: string;
+  }[];
+  completedStep: number;
+}
+
+interface Subject {
+  name: string;
+  code?: string;
+  identifier?: string;
+}
+
+export interface BoardEnrollmentProfileProps {
+  learnerName: string | undefined;
+  centerName: string;
+  board: string;
+  subjects: Subject[];
+  registrationNum: string;
+  feesPaidStatus: string;
+  setActiveStep?: React.Dispatch<React.SetStateAction<number>>;
 }

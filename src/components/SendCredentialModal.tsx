@@ -3,6 +3,7 @@ import { Box, Button, Divider, Modal, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface SendCredentialModalProps {
   open: boolean;
@@ -18,19 +19,6 @@ const SendCredentialModal: React.FC<SendCredentialModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '65%',
-    boxShadow: 24,
-    bgcolor: '#fff',
-    borderRadius: '16px',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
   const handleAction = async () => {
     onClose();
   };
@@ -41,7 +29,7 @@ const SendCredentialModal: React.FC<SendCredentialModalProps> = ({
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
     >
-      <Box sx={{ ...style }}>
+      <Box sx={modalStyles}>
         <Box
           display={'flex'}
           justifyContent={'space-between'}

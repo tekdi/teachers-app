@@ -26,7 +26,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { accessControl, lowLearnerAttendanceLimit } from './../../app.config';
+import { accessControl, AttendanceAPILimit, lowLearnerAttendanceLimit } from './../../app.config';
 
 import CohortAttendanceListView from '@/components/CohortAttendanceListView';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
@@ -56,6 +56,7 @@ import { getMenuItems, Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import NoDataFound from '@/components/common/NoDataFound';
 import { useDirection } from '../hooks/useDirection';
+import useStore from '@/store/store';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -100,6 +101,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const theme = useTheme<any>();
   const pathname = usePathname();
+  const store = useStore();
+  const isActiveYear = store.isActiveYearSelected;
 
   const menuItems = getMenuItems(t, dateRange, currentDayMonth);
 
@@ -116,7 +119,11 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
       setLoading(false);
       if (token) {
-        push('/attendance-overview');
+        if (isActiveYear) {
+          push('/attendance-overview');
+        } else {
+          push('/centers');
+        }        
       } else {
         push('/login', undefined, { locale: 'en' });
       }
@@ -146,7 +153,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         setDateRange(`(${startDay} ${startDayMonth}-${endDay} ${endDayMonth})`);
       }
       const cohortAttendanceData: CohortAttendancePercentParam = {
-        limit: 0,
+        limit: AttendanceAPILimit,
         page: 0,
         filters: {
           scope: 'student',
@@ -286,7 +293,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               filters.toDate = isToDate;
             }
             const cohortAttendanceData: CohortAttendancePercentParam = {
-              limit: 0,
+              limit: AttendanceAPILimit,
               page: 0,
               filters,
               facets: ['contextId'],
@@ -396,6 +403,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
   const handleSearchClear = () => {
     setSearchWord('');
+    debouncedSearch.cancel();
     setDisplayStudentList(learnerData);
   };
 
@@ -404,16 +412,17 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     const filteredList = learnerData?.filter((user: any) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
-    setDisplayStudentList(filteredList);
-  }, 2);
+    setDisplayStudentList(filteredList || []);
+  }, 200);
 
   // handle search student data
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchWord(event.target.value);
-    if (event.target.value.length >= 1) {
-      debouncedSearch(event.target.value);
+    const trimmedValue = event.target.value.replace(/\s{2,}/g, " ").trimStart();
+    setSearchWord(trimmedValue);
+    if (trimmedValue.length >= 1) {
+      debouncedSearch(trimmedValue);
       ReactGA.event('search-by-keyword-attendance-overview-page', {
-        keyword: event.target.value,
+        keyword: trimmedValue,
       });
 
       const telemetryInteract = {
@@ -429,6 +438,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         },
       };
       telemetryFactory.interact(telemetryInteract);
+    }else if (trimmedValue === '') {
+      debouncedSearch.cancel();
+      setDisplayStudentList(learnerData); 
     } else {
       setDisplayStudentList(learnerData);
     }

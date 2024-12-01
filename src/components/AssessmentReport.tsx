@@ -37,8 +37,8 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
 
     const filters = {
       program: [Program],
-      se_boards: [stateName],
-      assessment1: type,
+      boards: [stateName],
+      assessmentType: type,
     };
 
     try {
@@ -85,7 +85,7 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
           courseId:assessmentList, // temporary added here assessmentList(contentId)... if assessment is done then need to pass actual course id and unit id here
           unitId:assessmentList,
           contentId: assessmentList,
-           batchId: classId,
+          //  batchId: classId,
         };
         const assessmentStatus = await getAssessmentStatus(options);
         if (assessmentStatus?.length) {

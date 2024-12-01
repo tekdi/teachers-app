@@ -15,6 +15,8 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
+import { toPascalCase } from '@/utils/Helper';
+import NoDataFound from './common/NoDataFound';
 
 interface ManageUsersModalProps {
   open: boolean;
@@ -56,6 +58,15 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   };
 
   React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const classData: string | null = localStorage.getItem('className');
+      if (classData) {
+        setSelectedValue(classData);
+      }
+    }
+  }, []);
+
+  React.useEffect(() => {
     if (centers) {
       setCheckedCenters(centers?.map((center) => center?.name));
     }
@@ -65,7 +76,6 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
     setCheckedCenters((prevCheckedCenters) => {
       const currentIndex = prevCheckedCenters.indexOf(name);
       const isCurrentlyChecked = currentIndex !== -1;
-
       const newChecked = [...prevCheckedCenters];
 
       if (isCurrentlyChecked) {
@@ -100,7 +110,11 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
     <div>
       <Modal
         open={open}
-        onClose={onClose}
+        onClose={(event, reason) => {
+          if (reason !== 'backdropClick') {
+            onClose();
+          }
+        }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -172,7 +186,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                         pb: '20px',
                       }}
                     >
-                      {center?.name}
+                      {toPascalCase(center?.name)}
                     </Box>
                     <Box>
                       {isForLearner ? (
@@ -196,6 +210,10 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                   </Box>
                 </React.Fragment>
               ))}
+
+              {filteredCenters.length === 0 && (
+                <NoDataFound title={t('COMMON.NO_CENTER_FOUND')} />
+              )}
             </Box>
           </Box>
           <Divider />

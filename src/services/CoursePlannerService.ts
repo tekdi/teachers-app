@@ -6,23 +6,10 @@ import {
   GetUserProjectTemplateParams,
 } from '../utils/Interfaces';
 import axios from 'axios';
-import { post } from './RestClient';
+import { Role } from '@/utils/app.constant';
+import { URL_CONFIG } from '@/utils/url.config';
+import { get } from './RestClient';
 
-export const getCoursePlanner = (): CoursePlanner[] => {
-  // TODO: Add API call here
-
-  const CoursePlannerService: CoursePlanner[] = [
-    // { id: 1, subject: 'Mathematics', circular: 10 },
-    // { id: 2, subject: 'Science', circular: 50 },
-    // { id: 3, subject: 'History', circular: 30 },
-    // { id: 4, subject: 'Geography', circular: 60 },
-    // { id: 5, subject: 'Marathi', circular: 90 },
-    { id: 6, subject: 'English', circular: 0 },
-    // { id: 7, subject: 'Social Science', circular: 80 },
-  ];
-
-  return CoursePlannerService;
-};
 
 export const getTargetedSolutions = async ({
   subject,
@@ -31,13 +18,11 @@ export const getTargetedSolutions = async ({
   class: className,
   board,
   type,
+  entityId
 }: GetTargetedSolutionsParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/solutions/targetedSolutions?type=improvementProject&currentScopeOnly=true`
-
-
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
-    
   };
 
   const data = {
@@ -47,6 +32,7 @@ export const getTargetedSolutions = async ({
     class: className,
     board,
     type,
+    // entityId
   };
 
   try {
@@ -64,7 +50,7 @@ interface GetUserProjectDetailsParams {
 
 export const getUserProjectDetails = async ({ id }: GetUserProjectDetailsParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/userProjects/details/${id}`;
-  
+
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
   };
@@ -81,10 +67,8 @@ export const getUserProjectDetails = async ({ id }: GetUserProjectDetailsParams)
 export const getSolutionDetails = async ({ id, role }: GetSolutionDetailsParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/solutions/details/${id}`;
 
-
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
-    
   };
 
   const data = {
@@ -104,16 +88,23 @@ export const getUserProjectTemplate = async ({
   templateId,
   solutionId,
   role,
+  cohortId
 }: GetUserProjectTemplateParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/userProjects/details?templateId=${templateId}&solutionId=${solutionId}`;
 
   const headers = {
     'X-auth-token': localStorage.getItem('token'),
-    
+
   };
 
   const data = {
     role,
+    // acl: {
+    //   visibility: "ALL",
+    //   users: [],
+    //   scope: {}
+    // },
+    // entityId: cohortId
   };
 
   try {
@@ -125,9 +116,9 @@ export const getUserProjectTemplate = async ({
   }
 };
 
-export const UserStatusDetails = async ({ data , id, lastDownloadedAt }: GetUserProjectStatusParams): Promise<any> => {
+export const UserStatusDetails = async ({ data, id, lastDownloadedAt }: GetUserProjectStatusParams): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_COURSE_PLANNER_API_URL}/userProjects/sync/${id}?lastDownloadedAt=${encodeURIComponent(lastDownloadedAt)}`;
-  
+
   const headers = {
     'x-auth-token': localStorage.getItem('token'),
   };
@@ -138,5 +129,47 @@ export const UserStatusDetails = async ({ data , id, lastDownloadedAt }: GetUser
   } catch (error) {
     console.error('Error in getting User Project Details', error);
     return error;
+  }
+};
+
+export const fetchCourseIdFromSolution = async (
+  solutionId: string, cohortId: string
+): Promise<boolean> => {
+  try {
+    const solutionResponse = await getSolutionDetails({
+      id: solutionId,
+      role: Role.TEACHER,
+    });
+
+    const externalId = solutionResponse?.result?.externalId;
+    await getUserProjectTemplate({
+      templateId: externalId,
+      solutionId,
+      role: Role.TEACHER,
+      cohortId,
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Error fetching solution details:', error);
+    throw error;
+  }
+};
+
+export const getContentHierarchy = async ({
+  doId,
+}: {
+  doId: string;
+}): Promise<any> => {
+  const apiUrl: string = `${URL_CONFIG.API.CONTENT_HIERARCHY}/${doId}`;
+
+  try {
+    console.log('Request data', apiUrl);
+    const response = await get(apiUrl);
+    // console.log('response', response);
+    return response;
+  } catch (error) {
+    console.error('Error in getContentHierarchy Service', error);
+    throw error;
   }
 };

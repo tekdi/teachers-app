@@ -13,10 +13,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactGA from 'react-ga4';
 
 import { showToastMessage } from '@/components/Toastify';
+import { getAcademicYear } from '@/services/AcademicYearService';
 import manageUserStore from '@/store/manageUserStore';
 import useStore from '@/store/store';
 import { Telemetry } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
+import { AcademicYear } from '@/utils/Interfaces';
 import { telemetryFactory } from '@/utils/telemetry';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
@@ -28,19 +30,22 @@ import { useRouter } from 'next/router';
 import config from '../../config.json';
 import appLogo from '../../public/images/appLogo.png';
 import Loader from '../components/Loader';
+import { useDirection } from '../hooks/useDirection';
 import { login } from '../services/LoginService';
 import { getUserDetails, getUserId } from '../services/ProfileService';
 import loginImg from './../assets/images/login-image.jpg';
-import { useDirection } from '../hooks/useDirection';
 
 const LoginPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const setIsActiveYearSelected = useStore(
+    (state: { setIsActiveYearSelected: any }) => state.setIsActiveYearSelected
+  );
   const setUserId = manageUserStore((state) => state.setUserId);
   const setUserRole = useStore(
     (state: { setUserRole: any }) => state.setUserRole
   );
 
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
 
   const setAccessToken = useStore(
     (state: { setAccessToken: any }) => state.setAccessToken
@@ -141,6 +146,52 @@ const LoginPage = () => {
     event.preventDefault();
   };
 
+  const telemetryOnSubmit = () => {
+    const telemetryInteract = {
+      context: {
+        env: 'sign-in',
+        cdata: [],
+      },
+      edata: {
+        id: 'login-success',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'sign-in',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
+  };
+
+  const getAcademicYearList = async () => {
+    const academicYearList: AcademicYear[] = await getAcademicYear();
+    if (academicYearList) {
+      localStorage.setItem(
+        'academicYearList',
+        JSON.stringify(academicYearList)
+      );
+      const extractedAcademicYears = academicYearList?.map(
+        ({ id, session, isActive }) => ({ id, session, isActive })
+      );
+      const activeSession = extractedAcademicYears?.find(
+        (item) => item.isActive
+      );
+      const activeSessionId = activeSession ? activeSession.id : '';
+      localStorage.setItem('academicYearId', activeSessionId);
+      setIsActiveYearSelected(true);
+
+      return activeSessionId;
+    }
+  };
+
+  const handleInvalidUsernameOrPassword = () => {
+    showToastMessage(t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'), 'error');
+    logEvent({
+      action: 'login-fail',
+      category: 'Login Page',
+      label: 'Login Fail',
+    });
+  };
+
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     logEvent({
@@ -155,18 +206,26 @@ const LoginPage = () => {
           username: username,
           password: password,
         });
-        if (response) {
+        if (response?.result?.access_token) {
           if (typeof window !== 'undefined' && window.localStorage) {
-            const token = response?.result?.access_token;
+            const token = response.result.access_token;
             const refreshToken = response?.result?.refresh_token;
-            localStorage.setItem('token', token);
+            if (token) {
+              localStorage.setItem('token', token);
+            }
             rememberMe
               ? localStorage.setItem('refreshToken', refreshToken)
               : localStorage.removeItem('refreshToken');
 
             const userResponse = await getUserId();
+            const activeSessionId = await getAcademicYearList();
             localStorage.setItem('userId', userResponse?.userId);
             setUserId(userResponse?.userId);
+
+            if (token && userResponse?.userId) {
+              document.cookie = `authToken=${token}; path=/; secure; SameSite=Strict`;
+              document.cookie = `userId=${userResponse.userId}; path=/; secure; SameSite=Strict`;
+            }
             logEvent({
               action: 'login-success',
               category: 'Login Page',
@@ -223,38 +282,22 @@ const LoginPage = () => {
                 }
               }
 
+              if (activeSessionId) {
+                router.push('/dashboard');
+              }
               console.log('userDetails', userDetails);
             }
+            setLoading(false);
           }
+        } else if (response?.responseCode === 404) {
+          handleInvalidUsernameOrPassword();
+          setLoading(false);
         }
-        setLoading(false);
-        const telemetryInteract = {
-          context: {
-            env: 'sign-in',
-            cdata: [],
-          },
-          edata: {
-            id: 'login-success',
-            type: Telemetry.CLICK,
-            subtype: '',
-            pageid: 'sign-in',
-          },
-        };
-        telemetryFactory.interact(telemetryInteract);
-        router.push('/dashboard');
+        telemetryOnSubmit();
       } catch (error: any) {
         setLoading(false);
-        if (error.response && error.response.status === 404) {
-          showToastMessage(
-            t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
-            'error'
-          );
-          logEvent({
-            action: 'login-fail',
-            category: 'Login Page',
-            label: 'Login Fail',
-            value: error.response,
-          });
+        if (error?.response?.status === 404) {
+          handleInvalidUsernameOrPassword();
         } else {
           console.error('Error:', error);
           showToastMessage(
@@ -316,10 +359,16 @@ const LoginPage = () => {
       : null;
   return (
     <Box sx={{ overflowY: 'auto', background: theme.palette.warning['A400'] }}>
+
       <Box
         display="flex"
         flexDirection="column"
         bgcolor={theme.palette.warning.A200}
+        borderRadius={'10px'}
+        sx={{
+          '@media (min-width: 900px)': {
+           display: 'none',
+        }}}
       >
         {loading && (
           <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -330,9 +379,13 @@ const LoginPage = () => {
           alignItems={'center'}
           justifyContent={'center'}
           zIndex={99}
-          sx={{ margin: '32px 0 65px' }}
+        sx={{ margin: '5px 10px 25px', }}
         >
-          <Image src={appLogo} alt="App Logo" height={100} />{' '}
+          <Box sx={{ width: '55%', '@media (max-width: 400px)': { width: '95%' } }}>
+            <Image src={appLogo} alt="App Logo" height={80}
+              layout='responsive'
+            />
+          </Box>
         </Box>
       </Box>
 
@@ -341,6 +394,7 @@ const LoginPage = () => {
         spacing={2}
         justifyContent={'center'}
         px={'30px'}
+        marginBottom={'10px'}
         alignItems={'center'}
         width={'100% !important'}
       >
@@ -363,18 +417,19 @@ const LoginPage = () => {
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
+          
           <form onSubmit={handleFormSubmit}>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Box
                 flexGrow={1}
-                display={'flex'}
+                // display={'flex'}
                 bgcolor={theme.palette.warning['A400']}
                 height="auto"
                 zIndex={99}
                 justifyContent={'center'}
                 p={'2rem'}
                 borderRadius={'2rem 2rem 0 0'}
-                marginTop={'-25px'}
+                
                 sx={{
                   '@media (min-width: 900px)': {
                     width: '100%',
@@ -383,9 +438,44 @@ const LoginPage = () => {
                       darkMode === 'dark'
                         ? 'rgba(0, 0, 0, 0.9) 0px 2px 8px 0px'
                         : 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
+                    marginTop: '50px',
                   },
+                  '@media (max-width: 900px)': {
+                    marginTop: '-25px',
+                  }
+                  
                 }}
               >
+
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  bgcolor={theme.palette.warning.A200}
+                  borderRadius={'10px'}
+                  sx={{
+                    '@media (max-width: 900px)': {
+                      display: 'none',
+                    }
+                  }}
+                >
+                  {loading && (
+                    <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+                  )}
+                  <Box
+                    display={'flex'}
+                    overflow="auto"
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                    zIndex={99}
+                    // sx={{ margin: '5px 10px 25px', }}
+                  >
+                    <Box sx={{ width: '60%' , '@media (max-width: 700px)': {width: '95%'}}}>
+                      <Image src={appLogo} alt="App Logo" height={80}
+                        layout='responsive'
+                      />
+                    </Box>
+                  </Box>
+                </Box>
                 <Box
                   sx={{
                     width: '100%',
@@ -401,7 +491,7 @@ const LoginPage = () => {
                           'aria-label': 'Select Language',
                         }}
                         className="select-languages"
-                        value={language}
+                        value={i18n.language}
                         onChange={handleChange}
                         displayEmpty
                         sx={{
@@ -506,7 +596,13 @@ const LoginPage = () => {
                     }}
                     onClick={() => {
                       handleForgotPasswordClick();
-                      router.push('/forgot-password');
+                      // router.push('/forgot-password');
+                      const resetAppUrl =
+                        process.env.NEXT_PUBLIC_RESET_PASSWORD_URL;
+                      window.open(
+                        `${resetAppUrl}?redirectUrl=${window.location.origin}/login`,
+                        '_self'
+                      );
                     }}
                   >
                     {t('LOGIN_PAGE.FORGOT_PASSWORD')}

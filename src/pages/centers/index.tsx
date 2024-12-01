@@ -6,7 +6,12 @@ import ManageUser from '@/components/ManageUser';
 import { showToastMessage } from '@/components/Toastify';
 import { getCohortList } from '@/services/CohortServices';
 import useStore from '@/store/store';
-import { CenterType, Role } from '@/utils/app.constant';
+import {
+  CenterType,
+  Role,
+  Telemetry,
+  TelemetryEventType,
+} from '@/utils/app.constant';
 import { accessGranted, toPascalCase } from '@/utils/Helper';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { ArrowDropDown, Clear, Search } from '@mui/icons-material';
@@ -27,14 +32,14 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
 import FilterModalCenter from '../blocks/components/FilterModalCenter';
 import taxonomyStore from '@/store/taxonomyStore';
+import { telemetryFactory } from '@/utils/telemetry';
 
 const CentersPage = () => {
-  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
@@ -53,6 +58,10 @@ const CentersPage = () => {
   const [selectedCenters, setSelectedCenters] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState('');
   const [centerType, setCenterType] = useState<'regular' | 'remote' | ''>('');
+  const [appliedFilters, setAppliedFilters] = useState({
+    centerType: '',
+    sortOrder: '',
+  });
   const [openCreateCenterModal, setOpenCreateCenterModal] =
     React.useState(false);
   const handleFilterModalOpen = () => setFilterModalOpen(true);
@@ -61,9 +70,24 @@ const CentersPage = () => {
   const setType = taxonomyStore((state) => state.setType);
   const store = useStore();
   const userRole = store.userRole;
+  const isActiveYear = store.isActiveYearSelected;
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id:
+          newValue === 2 ? 'change-tab-to-facilitator' : 'change-tab-to-center',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: 'centers',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   useEffect(() => {
@@ -95,6 +119,7 @@ const CentersPage = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
+      localStorage.removeItem('overallCommonSubjects');
       setType('');
       if (role === Role.TEAM_LEADER) {
         setIsTeamLeader(true);
@@ -110,9 +135,22 @@ const CentersPage = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(event.target.value);
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id: 'search-centers',
+        type: Telemetry.SEARCH,
+        subtype: '',
+        pageid: 'centers',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
 
   useEffect(() => {
     const getCohortListForTL = async () => {
@@ -125,7 +163,7 @@ const CentersPage = () => {
             });
 
             if (
-              accessGranted('showBlockLevelCohort', accessControl, userRole)
+              accessGranted('showBlockLevelCohort', accessControl, userRole) && response
             ) {
               const blockData = response.map((block: any) => {
                 const blockName = block.cohortName;
@@ -148,7 +186,7 @@ const CentersPage = () => {
             }
 
             if (
-              accessGranted('showBlockLevelCohort', accessControl, userRole)
+              accessGranted('showBlockLevelCohort', accessControl, userRole) && response
             ) {
               response.map((res: any) => {
                 const centerData = res?.childData.map((child: any) => {
@@ -169,7 +207,7 @@ const CentersPage = () => {
               });
             }
 
-            if (accessGranted('showTeacherCohorts', accessControl, userRole)) {
+            if (accessGranted('showTeacherCohorts', accessControl, userRole) && response) {
               const cohortData = response.map((center: any) => {
                 const cohortName = center.cohortName;
                 const cohortId = center.cohortId;
@@ -193,6 +231,7 @@ const CentersPage = () => {
           }
         }
       } catch (error) {
+        console.log("error", error);
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       }
     };
@@ -203,31 +242,57 @@ const CentersPage = () => {
     setIsCenterAdded((prev) => !prev);
   };
 
-  useEffect(() => {
-    const filtered = centerData.filter((center) =>
-      center.cohortName.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    setFilteredCenters(filtered);
-  }, [searchInput, centerData]);
+  const getFilteredCenters = useMemo(() => {
+    let filteredCenters = centerData;
 
-  const handleFilterApply = () => {
-    let filtered = [...centerData];
+    // Apply search filter
+    if (searchInput) {
+      filteredCenters = filteredCenters.filter((center) =>
+        center.cohortName.toLowerCase().includes(searchInput.toLowerCase())
+      );
+    }
 
+    // Apply center type filter
     if (centerType) {
-      filtered = filtered.filter(
+      filteredCenters = filteredCenters.filter(
         (center) =>
           center.centerType &&
           center.centerType.toLowerCase() === centerType.toLowerCase()
       );
     }
 
+    // Apply sorting
     if (sortOrder === 'asc') {
-      filtered.sort((a, b) => a.cohortName.localeCompare(b.cohortName));
+      filteredCenters.sort((a, b) => a.cohortName.localeCompare(b.cohortName));
     } else if (sortOrder === 'desc') {
-      filtered.sort((a, b) => b.cohortName.localeCompare(a.cohortName));
+      filteredCenters.sort((a, b) => b.cohortName.localeCompare(a.cohortName));
     }
-    setFilteredCenters(filtered);
+
+    return filteredCenters;
+  }, [centerData, searchInput, appliedFilters]);
+
+  useEffect(() => {
+    setFilteredCenters(getFilteredCenters);
+  }, [getFilteredCenters]);
+
+  const handleFilterApply = () => {
+    setAppliedFilters({ centerType, sortOrder });
+    setFilteredCenters(getFilteredCenters);
     handleFilterModalClose();
+
+    const telemetryInteract = {
+      context: {
+        env: 'teaching-center',
+        cdata: [],
+      },
+      edata: {
+        id: 'apply-filter',
+        type: TelemetryEventType.RADIO,
+        subtype: '',
+        pageid: 'centers',
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
   };
 
   const handleCreateCenterClose = () => {
@@ -391,7 +456,7 @@ const CentersPage = () => {
                       <Button
                         variant="outlined"
                         onClick={() => {
-                          setSearchInput('');
+                          // setSearchInput('');
                           handleFilterModalOpen();
                         }}
                         size="medium"
@@ -404,6 +469,7 @@ const CentersPage = () => {
                           fontSize: '13px',
                           fontWeight: '500',
                         }}
+                        className="one-line-text"
                       >
                         {t('COMMON.FILTERS')}
                       </Button>
@@ -414,32 +480,48 @@ const CentersPage = () => {
                   'showCreateCenterButton',
                   accessControl,
                   userRole
-                ) && (
-                  <Box mt={'18px'} px={'18px'}>
-                    <Button
-                      sx={{
-                        border: '1px solid #1E1B16',
-                        borderRadius: '100px',
-                        height: '40px',
-                        px: '20px',
-                        color: theme.palette.error.contrastText,
-                        '& .MuiButton-endIcon': {
-                          marginLeft: isRTL
-                            ? '0px !important'
-                            : '8px !important',
-                          marginRight: isRTL
-                            ? '8px !important'
-                            : '-2px !important',
-                        },
-                      }}
-                      className="text-1E"
-                      endIcon={<AddIcon />}
-                      onClick={() => setOpenCreateCenterModal(true)}
-                    >
-                      {t('BLOCKS.CREATE_NEW')}
-                    </Button>
-                  </Box>
-                )}
+                ) &&
+                  isActiveYear && (
+                    <Box mt={'18px'} px={'18px'}>
+                      <Button
+                        sx={{
+                          border: '1px solid #1E1B16',
+                          borderRadius: '100px',
+                          height: '40px',
+                          px: '20px',
+                          color: theme.palette.error.contrastText,
+                          '& .MuiButton-endIcon': {
+                            marginLeft: isRTL
+                              ? '0px !important'
+                              : '8px !important',
+                            marginRight: isRTL
+                              ? '8px !important'
+                              : '-2px !important',
+                          },
+                        }}
+                        className="text-1E"
+                        endIcon={<AddIcon />}
+                        onClick={() => {
+                          setOpenCreateCenterModal(true);
+                          const telemetryInteract = {
+                            context: {
+                              env: 'teaching-center',
+                              cdata: [],
+                            },
+                            edata: {
+                              id: 'click-on-create-center',
+                              type: Telemetry.CLICK,
+                              subtype: '',
+                              pageid: 'centers',
+                            },
+                          };
+                          telemetryFactory.interact(telemetryInteract);
+                        }}
+                      >
+                        {t('BLOCKS.CREATE_NEW')}
+                      </Button>
+                    </Box>
+                  )}
               </Grid>
 
               {openCreateCenterModal && (
@@ -458,35 +540,35 @@ const CentersPage = () => {
                       center.centerType?.toUpperCase() === CenterType.REGULAR ||
                       center.centerType === ''
                   ) && (
-                    <CenterList
-                      title="CENTERS.REGULAR_CENTERS"
-                      centers={filteredCenters.filter(
-                        (center) =>
-                          center.centerType?.toUpperCase() ===
+                      <CenterList
+                        title="CENTERS.REGULAR_CENTERS"
+                        centers={filteredCenters.filter(
+                          (center) =>
+                            center.centerType?.toUpperCase() ===
                             CenterType.REGULAR || center.centerType === ''
-                      )}
-                      router={router}
-                      theme={theme}
-                      t={t}
-                    />
-                  )}
+                        )}
+                        router={router}
+                        theme={theme}
+                        t={t}
+                      />
+                    )}
 
                   {/* Remote Centers */}
                   {filteredCenters.some(
                     (center) =>
                       center.centerType?.toUpperCase() === CenterType.REMOTE
                   ) && (
-                    <CenterList
-                      title="CENTERS.REMOTE_CENTERS"
-                      centers={filteredCenters.filter(
-                        (center) =>
-                          center.centerType?.toUpperCase() === CenterType.REMOTE
-                      )}
-                      router={router}
-                      theme={theme}
-                      t={t}
-                    />
-                  )}
+                      <CenterList
+                        title="CENTERS.REMOTE_CENTERS"
+                        centers={filteredCenters.filter(
+                          (center) =>
+                            center.centerType?.toUpperCase() === CenterType.REMOTE
+                        )}
+                        router={router}
+                        theme={theme}
+                        t={t}
+                      />
+                    )}
                 </>
               ) : (
                 <NoDataFound />
@@ -494,15 +576,19 @@ const CentersPage = () => {
             </>
           )}
         </Box>
-        <Box>
-          {value === 2 && blockData?.length > 0 && (
-            <ManageUser
-              reloadState={reloadState}
-              setReloadState={setReloadState}
-              cohortData={blockData}
-            />
-          )}
-        </Box>
+        {value === 2 ? (
+          <Box>
+            {blockData?.length > 0 ? (
+              <ManageUser
+                reloadState={reloadState}
+                setReloadState={setReloadState}
+                cohortData={blockData}
+              />
+            ) : (
+              <NoDataFound />
+            )}
+          </Box>
+        ) : null}
       </Box>
       <FilterModalCenter
         open={filterModalOpen}

@@ -11,7 +11,7 @@ const fetchCohortMemberList = async ({
   page,
   filters,
 }: CohortMemberList): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/cohortmember/list`;
   try {
     const response = await post(apiUrl, {
       limit,
@@ -32,7 +32,7 @@ export const getMyUserList = async ({
   filters,
   fields,
 }: UserList): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/list`;
   try {
     const response = await post(apiUrl, {
       limit,
@@ -86,13 +86,42 @@ export const updateCohortMemberStatus = async ({
   memberStatus,
   statusReason,
   membershipId,
+  dynamicBody = {},
 }: UpdateCohortMemberStatusParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohortmember/update/${membershipId}`;
-  try {
-    const response = await put(apiUrl, {
-      status: memberStatus,
-      statusReason,
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/cohortmember/update/${membershipId}`;
+
+  // Utility to stringify only the values of the customFields
+  const prepareCustomFields = (customFields: any[]): any[] => {
+    return customFields.map((field) => {
+      if (field && field.value !== undefined) {
+        return {
+          ...field,
+          value: typeof field.value === 'object' ? JSON.stringify(field.value) : field.value,
+        };
+      }
+      return field;
     });
+  };
+
+  // Build the request body dynamically
+  const requestBody = {
+    ...(memberStatus && { status: memberStatus }),
+    ...(statusReason && { statusReason }),
+    ...Object.entries(dynamicBody).reduce(
+      (acc, [key, value]) => {
+        acc[key] = typeof value === 'object' && value !== null ? JSON.stringify(value) : value;
+        return acc;
+      },
+      {} as Record<string, any>
+    ),
+    // Only stringify the `value` field of customFields if needed
+    ...(dynamicBody?.customFields && {
+      customFields: prepareCustomFields(dynamicBody.customFields),
+    }),
+  };
+
+  try {
+    const response = await put(apiUrl, requestBody);
     console.log('data', response?.data);
     return response?.data;
   } catch (error) {
@@ -100,3 +129,4 @@ export const updateCohortMemberStatus = async ({
     // throw error;
   }
 };
+

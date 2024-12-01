@@ -27,8 +27,12 @@ instance.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
-      if (token) {
+      if (token && config.url && !config.url.endsWith("user/v1/auth/login")) {
         config.headers.Authorization = `Bearer ${token}`;
+      }
+      const academicYearId = localStorage.getItem('academicYearId')
+      if (academicYearId) {
+        config.headers.academicyearid = academicYearId;
       }
     }
     // config.headers.tenantid = '4783a636-1191-487a-8b09-55eca51b5036';

@@ -1,8 +1,12 @@
-import React from 'react';
+import { ResourcesType } from '@/utils/app.constant';
+import { CoursePlannerCardsProps } from '@/utils/Interfaces';
 import { Box, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { CoursePlannerCardsProps } from '@/utils/Interfaces';
-import { ResourcesType } from '@/utils/app.constant';
+import React from 'react';
+import ContentCard from './ContentCard';
+
+
+
 
 const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
   resources,
@@ -10,11 +14,12 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
 }) => {
   const theme = useTheme<any>();
 
-  // Filter the resources based on the type
+
   const filteredResources = resources?.filter(
     (resource: { type?: string }) =>
       (type === ResourcesType.NONE && !resource.type) || resource.type === type
   );
+
 
   return (
     <Box>
@@ -26,35 +31,23 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
         {filteredResources?.map(
           (
             resource: {
+              resourceType: string;
               link: string;
-              name?: string;
+              name: string;
+              appIcon: string;
+              identifier: string;
+              id: string;
+              mimeType: string; // Add this property
             },
             index: number
+
           ) => (
             <Grid item xs={6} md={4} lg={2} sx={{ mt: 2 }} key={index}>
-              <Box
-                className="facilitator-bg"
-                onClick={() => window.open(resource?.link, '_blank')}
-              >
-                <Box
-                  sx={{
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    color: theme?.palette?.warning['A400'],
-                  }}
-                >
-                  {resource?.name || 'Untitled Resource'}
-                </Box>
-                <Box
-                  sx={{
-                    fontSize: '11px',
-                    fontWeight: '500',
-                    color: theme?.palette?.warning['A400'],
-                  }}
-                >
-                  Subtitle
-                </Box>
-              </Box>
+              
+
+              <ContentCard name={resource?.name} identifier={resource?.identifier || resource?.id} mimeType={resource?.mimeType} appIcon={resource?.appIcon} resourceType={resource?.resourceType} />
+
+
             </Grid>
           )
         )}

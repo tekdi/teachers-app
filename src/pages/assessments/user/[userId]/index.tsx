@@ -89,9 +89,9 @@ function AssessmentsDetails() {
 
       const filters = {
         program: [Program],
-        se_boards: [stateName],
+        boards: [stateName],
         // subject: [subjects || subject],
-        assessment1:
+        assessmentType:
           assessmentType === 'pre'
             ? AssessmentType.PRE_TEST
             : AssessmentType.POST_TEST,
@@ -166,7 +166,7 @@ function AssessmentsDetails() {
           contentId: assessmentList.map(
             (item: any) => item.identifier
           ) as string[],
-          batchId: centerId as string,
+          // batchId: centerId as string,
         };
         const assessmentStatus = await getAssessmentStatus(options);
         console.log('assessmentStatus', assessmentStatus);

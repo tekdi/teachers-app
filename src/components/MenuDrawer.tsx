@@ -1,31 +1,31 @@
 'use client';
 
-import { Button, FormControl, IconButton, MenuItem } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Box from '@mui/material/Box';
-import ClearIcon from '@mui/icons-material/Clear';
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import Drawer from '@mui/material/Drawer';
-import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
-import config from '../../config.json';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useRouter } from 'next/router';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { Role } from '@/utils/app.constant';
 import useStore from '@/store/store';
 import { accessGranted } from '@/utils/Helper';
-import { accessControl } from '../../app.config';
+import { AcademicYear } from '@/utils/Interfaces';
+import ClearIcon from '@mui/icons-material/Clear';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
-import checkBook from '../assets/images/checkbook.svg';
-import board from '../assets/images/Board.svg';
+import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
+import { Button, FormControl, IconButton, MenuItem } from '@mui/material';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
-import { useDirection } from '../hooks/useDirection';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { accessControl } from '../../app.config';
+import config from '../../config.json';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
+import board from '../assets/images/Board.svg';
+import checkBook from '../assets/images/checkbook.svg';
+import { useDirection } from '../hooks/useDirection';
 
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
@@ -45,14 +45,66 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const theme = useTheme<any>();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [isOpen, setIsOpen] = useState(open);
-  const [isTeamLeader, setIsTeamLeader] = useState(false);
-  const { t } = useTranslation();
+  const [academicYearList, setAcademicYearList] = useState<AcademicYear[]>([]);
+  const [modifiedAcademicYearList, setModifiedAcademicYearList] = useState<
+    AcademicYear[]
+  >([]);
+  const [selectedSessionId, setSelectedSessionId] = useState<string>('');
+  const queryClient = useQueryClient();
+  const { i18n, t } = useTranslation();
   const router = useRouter();
   const store = useStore();
   const userRole = store.userRole;
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
+  const setIsActiveYearSelected = useStore(
+    (state: { setIsActiveYearSelected: any }) => state.setIsActiveYearSelected
+  );
+  const isActiveYear = store.isActiveYearSelected;
 
   useEffect(() => setIsOpen(open), [open]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedList = localStorage.getItem('academicYearList');
+      try {
+        const parsedList = storedList ? JSON.parse(storedList) : [];
+        setAcademicYearList(parsedList);
+
+        const modifiedList = parsedList?.map(
+          (item: { isActive: any; session: any }) => {
+            if (item.isActive) {
+              return {
+                ...item,
+                session: (
+                  <>
+                    {item.session} &nbsp;
+                    <span
+                      style={{
+                        color: 'green',
+                        fontWeight: '500',
+                        fontSize: '12px',
+                      }}
+                    >
+                      ({t('COMMON.ACTIVE')})
+                    </span>
+                  </>
+                ),
+              };
+            }
+            return item;
+          }
+        );
+        setModifiedAcademicYearList(modifiedList);
+        const selectedAcademicYearId = localStorage.getItem('academicYearId');
+        setSelectedSessionId(selectedAcademicYearId ?? '');
+        console.log('Retrieved academicYearList:', parsedList);
+      } catch (error) {
+        console.error('Error parsing stored academic year list:', error);
+        setAcademicYearList([]);
+        setSelectedSessionId('');
+      }
+    }
+  }, []);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newLocale = event.target.value;
@@ -60,6 +112,29 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem('preferredLanguage', newLocale);
       router.replace(router.pathname, router.asPath, { locale: newLocale });
+    }
+  };
+
+  const handleSelectChange = (event: SelectChangeEvent) => {
+    setSelectedSessionId(event.target.value);
+    console.log('selected academic year id', event.target.value);
+    localStorage.setItem('academicYearId', event.target.value);
+
+    // Check if the selected academic year is active
+    const selectedYear = academicYearList?.find(
+      (year) => year.id === event.target.value
+    );
+    const isActive = selectedYear ? selectedYear.isActive : false;
+    // localStorage.setItem('isActiveYearSelected', JSON.stringify(isActive));
+    setIsActiveYearSelected(isActive);
+    queryClient.clear();
+
+    if (isActive) {
+      window.location.reload();
+    } else {
+      router.push('/centers').then(() => {
+        window.location.reload();
+      });
     }
   };
 
@@ -76,14 +151,16 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     router.push('/dashboard');
   };
 
-  const navigateToManageUser = () => {
+  const navigateToObservation = () => {
     closeDrawer();
-    router.push('/manageUser');
+    router.push('/observation');
   };
 
-  const isDashboard = router.pathname === '/dashboard';
+  const isDashboard =  ["/dashboard", "/attendance-history", "/attendance-overview"].includes(router.pathname);
   const isTeacherCenter = router.pathname.includes('/centers');
-  const isCoursePlanner = router.pathname.includes('/course-planner');
+  const isCoursePlanner = ["/course-planner", "/topic-detail-view", "/course-planner/center/[cohortId]", "/play/content/[identifier]"].includes(router.pathname);
+  const isObservation = router.pathname.includes('/observation');
+
   const isAssessments = router.pathname.includes('/assessments');
   const isBoard = router.pathname.includes('/board-enrollment');
 
@@ -92,14 +169,16 @@ const MenuDrawer: React.FC<DrawerProps> = ({
       open={isDesktop || isOpen}
       onClose={closeDrawer}
       transitionDuration={{ enter: 500, exit: 500 }}
-      // anchor={isRTL ? 'right' : 'left'} // Set anchor based on direction
-      anchor="left"
+      anchor={isRTL ? 'right' : 'left'}
       className="backgroundFaded"
       variant={isDesktop ? 'persistent' : 'temporary'}
       sx={{
         '& .MuiPaper-root': {
-          borderRight: `1px solid theme.palette.warning['A100']`,
+          borderRight: `1px solid ${theme.palette.warning['A100']}`,
           zIndex: '998 !important',
+          left: isRTL ? '0px !important' : '0px !important',
+
+          width: isRTL ? '350px !important' : 'unset !important',
         },
       }}
     >
@@ -141,21 +220,19 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           <Box sx={{ flexBasis: '30%' }} className="joyride-step-5">
             <FormControl className="drawer-select" sx={{ width: '100%' }}>
               <Select
-                value={language}
+                value={i18n.language} // Directly use the language from i18n
                 onChange={handleChange}
                 displayEmpty
-                className="select-languages fs-14 fw-500"
                 sx={{
                   borderRadius: '0.5rem',
                   color: theme.palette.warning['200'],
                   width: '100%',
-                  marginBottom: '0rem',
                   '& .MuiSelect-icon': {
                     right: isRTL ? 'unset' : '7px',
                     left: isRTL ? '7px' : 'unset',
                   },
                   '& .MuiSelect-select': {
-                    paddingRight: isRTL ? '10px !important' : '32px !important',
+                    paddingRight: isRTL ? '10px' : '32px',
                     paddingLeft: isRTL ? '32px' : '12px',
                   },
                 }}
@@ -171,6 +248,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           <Box sx={{ flexBasis: '70%' }}>
             <FormControl className="drawer-select" sx={{ width: '100%' }}>
               <Select
+                onChange={handleSelectChange}
+                value={selectedSessionId}
                 className="select-languages"
                 displayEmpty
                 sx={{
@@ -188,43 +267,49 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   },
                 }}
               >
-                <MenuItem>Program 2024-25</MenuItem>
+                {modifiedAcademicYearList?.map(({ id, session }) => (
+                  <MenuItem key={id} value={id}>
+                    {session}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>
         </Box>
 
-        <Box>
-          <Button
-            className="fs-14"
-            sx={{
-              gap: '10px',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isDashboard
-                ? theme.palette.primary.main
-                : 'transparent',
-              padding: isDashboard
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              marginTop: '25px',
-              color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isDashboard ? '600' : 500,
-              '&:hover': {
+        {isActiveYear && (
+          <Box>
+            <Button
+              className="fs-14"
+              sx={{
+                gap: '10px',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isDashboard
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-            }}
-            startIcon={
-              <DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />
-            }
-            onClick={navigateToDashboard}
-          >
-            {t('DASHBOARD.DASHBOARD')}
-          </Button>
-        </Box>
+                padding: isDashboard
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                marginTop: '25px',
+                color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isDashboard ? '600' : 500,
+                '&:hover': {
+                  background: isDashboard
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+              }}
+              startIcon={
+                <DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />
+              }
+              onClick={navigateToDashboard}
+            >
+              {t('DASHBOARD.DASHBOARD')}
+            </Button>
+          </Box>
+        )}
         <Box sx={{ marginTop: '18px' }}>
           <Button
             className="fs-14 joyride-step-6"
@@ -268,22 +353,29 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               width: '100%',
               display: 'flex',
               justifyContent: 'flex-start',
-              background: 'transparent',
-              padding: '0px 18px !important',
-              color: theme.palette.warning.A200,
-              fontWeight: 500,
+              background: isObservation
+                ? theme.palette.primary.main
+                : 'transparent',
+              gap: '10px',
+              padding: isObservation
+                ? '16px 18px !important'
+                : '0px 18px !important',
+              color: isObservation ? '#2E1500' : theme.palette.warning.A200,
+              fontWeight: isObservation ? '600' : 500,
               '&:hover': {
-                background: 'transparent',
+                background: isObservation
+                  ? theme.palette.primary.main
+                  : 'transparent',
               },
               marginTop: '15px',
-              gap: '10px',
             }}
             startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
-            // onClick={navigateToManageUser}
+            onClick={navigateToObservation}
           >
-            {t('COMMON.OBSERVATIONS_FORMS')}
+            {t('OBSERVATION.SURVEY_FORMS')}
           </Button>
-
+        </Box>
+        {isActiveYear && (
           <Box sx={{ marginTop: '18px' }}>
             <Button
               className="fs-14 joyride-step-7"
@@ -317,109 +409,120 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 />
               }
               onClick={() => {
-                router.push(`/course-planner`); // Check route
+                router.push(`/course-planner`);
               }}
             >
               {t('COURSE_PLANNER.COURSE_PLANNER')}
             </Button>
           </Box>
-        </Box>
-        {!isEliminatedFromBuild('Assessments', 'feature') && 
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14 joyride-step-8"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isAssessments
-                ? theme.palette.primary.main
-                : 'transparent',
-
-              padding: isAssessments
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isAssessments ? '600' : 500,
-              '&:hover': {
+        )}
+        {!isEliminatedFromBuild('Assessments', 'feature') && isActiveYear && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14 joyride-step-8"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isAssessments
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-              marginTop: '15px',
-              gap: '10px',
-            }}
-            startIcon={
-              <EventAvailableOutlinedIcon
-                sx={{ fontSize: '24px !important' }}
-              />
-            }
-            onClick={() => {
-              router.push(`/assessments`);
-            }}
-          >
-            {t('ASSESSMENTS.ASSESSMENTS')}
-          </Button>
-        </Box>
-        }
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14 joyride-step-8"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isBoard ? theme.palette.primary.main : 'transparent',
-              gap: '10px',
-              padding: isBoard ? '16px 18px !important' : '0px 18px !important',
-              color: isBoard ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isBoard ? '600' : 500,
-              '&:hover': {
+
+                padding: isAssessments
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isAssessments ? '600' : 500,
+                '&:hover': {
+                  background: isAssessments
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+                gap: '10px',
+              }}
+              startIcon={
+                <EventAvailableOutlinedIcon
+                  sx={{ fontSize: '24px !important' }}
+                />
+              }
+              onClick={() => {
+                router.push(`/assessments`);
+              }}
+            >
+              {t('ASSESSMENTS.ASSESSMENTS')}
+            </Button>
+          </Box>
+        )}
+
+        {isActiveYear && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14 joyride-step-8"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isBoard
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-              marginTop: '15px',
-            }}
-            startIcon={
-              <Image src={board} alt="badge Icon" width={24} height={24} />
-            }
-            onClick={() => {
-              router.push(`/board-enrollment`);
-            }}
-          >
-            {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
-          </Button>
-        </Box>
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: 'transparent',
-              padding: '0px 18px !important',
-              gap: '10px',
-              color: theme.palette.secondary.main,
-              fontWeight: 500,
-              '&:hover': {
+                gap: '10px',
+                padding: isBoard
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isBoard ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isBoard ? '600' : 500,
+                '&:hover': {
+                  background: isBoard
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              startIcon={
+                <Image src={board} alt="badge Icon" width={24} height={24} />
+              }
+              onClick={() => {
+                router.push(`/board-enrollment`);
+              }}
+            >
+              {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
+            </Button>
+          </Box>
+        )}
+        {isActiveYear && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: 'transparent',
-              },
-              marginTop: '15px',
-            }}
-            endIcon={<ErrorOutlineIcon sx={{ fontSize: '18px !important' }} />}
-            onClick={() => {
-              localStorage.removeItem('hasSeenTutorial');
-              setTimeout(() => {
-                closeDrawer();
-                router.push(`/`);
-              }, 0);
-            }}
-          >
-            {t('GUIDE_TOUR.LEARN_HOW_TO_USE')}
-          </Button>
-        </Box>
+                padding: '0px 18px !important',
+                gap: '10px',
+                color: theme.palette.secondary.main,
+                fontWeight: 500,
+                '&:hover': {
+                  background: 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              endIcon={
+                <ErrorOutlineIcon sx={{ fontSize: '18px !important' }} />
+              }
+              onClick={() => {
+                localStorage.removeItem('hasSeenTutorial');
+                setTimeout(() => {
+                  closeDrawer();
+                  router.push(`/`);
+                }, 0);
+              }}
+            >
+              {t('GUIDE_TOUR.LEARN_HOW_TO_USE')}
+            </Button>
+          </Box>
+        )}
       </Box>
     </Drawer>
   );

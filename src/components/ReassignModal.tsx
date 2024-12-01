@@ -1,7 +1,7 @@
 import { bulkCreateCohortMembers } from '@/services/CohortServices';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import useStore from '@/store/store';
-import { Status } from '@/utils/app.constant';
+import { QueryKeys, Status } from '@/utils/app.constant';
 import { Box, Checkbox, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -12,6 +12,8 @@ import SimpleModal from './SimpleModal';
 import { showToastMessage } from './Toastify';
 import { toPascalCase } from '@/utils/Helper';
 import NoDataFound from './common/NoDataFound';
+import { useQueryClient } from '@tanstack/react-query';
+
 
 interface ReassignModalProps {
   cohortNames?: any;
@@ -33,6 +35,7 @@ interface Cohort {
   id: any;
   cohortId: string;
   name: string;
+  status: any
 }
 
 const ReassignModal: React.FC<ReassignModalProps> = ({
@@ -49,10 +52,13 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   const { t } = useTranslation();
   const store = useStore();
   const reStore = reassignLearnerStore();
+  const queryClient = useQueryClient();
+
   const cohorts: Cohort[] = store.cohorts.map(
-    (cohort: { cohortId: any; name: string }) => ({
+    (cohort: { cohortId: any; name: string; status: any }) => ({
       name: cohort.name,
       id: cohort.cohortId,
+      status: cohort?.status
     })
   );
 
@@ -86,9 +92,9 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
 
   const filteredCenters = React.useMemo(() => {
     return cohorts
-      .map(({ cohortId, name }) => ({ id: cohortId, name }))
-      .filter(({ name }) =>
-        name.toLowerCase().includes(searchInput.toLowerCase())
+      .map(({ cohortId, name, status }) => ({ id: cohortId, name, status }))
+      .filter(({ name, status }) =>
+        name.toLowerCase().includes(searchInput.toLowerCase()) && status === Status.ACTIVE
       )
       .sort((a, b) =>
         checkedCenters.includes(a.name) === checkedCenters.includes(b.name)
@@ -119,6 +125,9 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
         t('MANAGE_USERS.CENTERS_REQUESTED_SUCCESSFULLY'),
         'success'
       );
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
+      });
       setReloadState(true);
     } catch (error) {
       showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');

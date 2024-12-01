@@ -9,6 +9,7 @@ import React, { ReactNode, useEffect } from 'react';
 import CustomRadioWidget from './CustomRadioWidget';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
+import CustomNumberWidget from './CustomNumberWidget';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -47,6 +48,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
     MultiSelectDropdown: MultiSelectDropdown,
+    CustomNumberWidget: CustomNumberWidget,
   };
   const { t } = useTranslation();
 
@@ -211,19 +213,25 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         case 'format': {
           const format = error?.params?.format;
           switch (format) {
-            case 'email': {
-              error.message = t('FORM_ERROR_MESSAGES.ENTER_VALID_EMAIL');
-            }
-            break;
+            case 'email':
+              {
+                error.message = t('FORM_ERROR_MESSAGES.ENTER_VALID_EMAIL');
+              }
+              break;
           }
           break;
         }
         case 'minItems': {
           const property = error.property.substring(1);
-          if (schema.properties?.[property]?.type === 'array' && schema.required?.includes(property)) {
-            error.message = t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD', {
-              minLength: schema.properties?.[property]?.minLength,
-            });
+          if (
+            schema.properties?.[property]?.type === 'array' &&
+            schema.required?.includes(property)
+          ) {
+            error.message = submittedButtonStatus
+              ? t('FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD', {
+                  minLength: schema.properties?.[property]?.minLength,
+                })
+              : '';
           }
           break;
         }

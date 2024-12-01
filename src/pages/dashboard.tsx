@@ -15,6 +15,7 @@ import {
   getBeforeDate,
   getTodayDate,
   shortDateFormat,
+  sortSessions,
   toPascalCase,
 } from '../utils/Helper';
 import {
@@ -27,6 +28,7 @@ import {
 } from '../utils/Interfaces';
 import {
   accessControl,
+  AttendanceAPILimit,
   dashboardDaysLimit,
   eventDaysLimit,
   lowLearnerAttendanceLimit,
@@ -80,6 +82,9 @@ import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 
 import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
+// import AllowNotification from '@/components/AllowNotification';
+import GetButtonNotification from '@/components/GetButtonNotification';
+import useStore from '@/store/store';
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
   SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
@@ -98,6 +103,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { dir, isRTL } = useDirection();
+  const store = useStore();
+  const isActiveYear = store.isActiveYearSelected;
 
   const [open, setOpen] = React.useState(false);
   const [cohortsData, setCohortsData] = React.useState<Array<ICohort>>([]);
@@ -229,6 +236,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     if (cohortsData[0]?.cohortId) {
       localStorage.setItem('classId', cohortsData[0]?.cohortId);
+      localStorage.removeItem('overallCommonSubjects');
     } else {
       localStorage.setItem('classId', '');
     }
@@ -240,10 +248,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
       setClassId(localStorage.getItem('classId') ?? '');
       if (token) {
         setIsAuthenticated(true);
+        setUserId(storedUserId);
+
+        if (!isActiveYear) {
+          router.push('/centers');
+        }
       } else {
         router.push('/login');
       }
-      setUserId(storedUserId);
     }
   }, [cohortsData]);
 
@@ -396,7 +408,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           if (classId) {
             const cohortAttendancePercent = async () => {
               const cohortAttendanceData: CohortAttendancePercentParam = {
-                limit: 0,
+                limit: AttendanceAPILimit,
                 page: 0,
                 filters: {
                   scope: 'student',
@@ -718,7 +730,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
         // setCohortName(cohortData?.name);
       }
     };
-    getCohortData();
+
+    if (classId) {
+      getCohortData();
+    }
   }, [classId]);
 
   useEffect(() => {
@@ -750,7 +765,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
           const sessionArray: any[] = [];
           const extraSessionArray: any[] = [];
-          if (response?.events.length > 0) {
+          if (response?.events?.length > 0) {
             response?.events.forEach((event: any) => {
               // console.log('myCohortList', myCohortList);
               // let cohortList;
@@ -773,8 +788,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
               }
             });
           }
-          setSessions(sessionArray);
-          setExtraSessions(extraSessionArray);
+          const eventList = sortSessions(sessionArray);
+          setSessions(eventList);
+          const ExtraEventList = sortSessions(extraSessionArray);
+          setExtraSessions(ExtraEventList);
         }
         setEventUpdated(false);
         setEventDeleted(false);
@@ -907,6 +924,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       {isClient && (
         <>
           <GuideTour toggleDrawer={toggleDrawer} />
+          {/* <AllowNotification /> */}
           <>
             {!isAuthenticated && (
               <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -917,6 +935,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 <Box>
                   <Header toggleDrawer={toggleDrawer} openDrawer={openDrawer} />
                 </Box>
+                <Box>{/* <GetButtonNotification /> */}</Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Box
                     display={'flex'}
@@ -1009,8 +1028,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               '@media (max-width: 900px)': {
                                 top:
                                   role === Role.TEAM_LEADER ? '210px' : '185px',
-                                right: isRTL ? 'unset' : '20px',
-                                left: isRTL ? '20px' : 'unset',
+                                right: '20px',
                               },
                             }}
                             onClick={viewAttendanceHistory}
@@ -1462,6 +1480,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                       board={board}
                                       medium={medium}
                                       grade={grade}
+                                      cohortId={classId}
                                     />
                                   )}
                                 </SessionCard>
@@ -1516,6 +1535,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                         board={board}
                                         medium={medium}
                                         grade={grade}
+                                        cohortId={classId}
                                       />
                                     )}
                                   </SessionCard>

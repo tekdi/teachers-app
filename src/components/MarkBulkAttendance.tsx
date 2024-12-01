@@ -18,6 +18,8 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import ReactGA from 'react-ga4';
 import NoDataFound from './common/NoDataFound';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface MarkBulkAttendanceProps {
   open: boolean;
@@ -172,7 +174,19 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
               ReactGA.event('attendance-marked/update-success', {
                 teacherId: teacherUserId,
               });
-
+              const telemetryInteract = {
+                context: {
+                  env: 'dashboard',
+                  cdata: [],
+                },
+                edata: {
+                  id: 'bulk-attendance-marked',
+                  type: Telemetry.CLICK,
+                  subtype: '',
+                  pageid: 'dashboard',
+                },
+              };
+              telemetryFactory.interact(telemetryInteract);
               onClose();
             }
           } else {
@@ -201,7 +215,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   // };
 
   const getMessage = () => {
-    if (updateAttendance) return t('COMMON.SURE_UPDATE');
+    if (updateAttendance) return presentCount == 0 && absentCount == 0 ?  t('COMMON.SURE_MARK') : t('COMMON.SURE_UPDATE');
     if (confirmation) return t('COMMON.SURE_CLOSE');
     return '';
   };

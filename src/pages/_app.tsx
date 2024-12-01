@@ -3,38 +3,38 @@
 import '@/styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import * as React from 'react';
-import { Button } from '@mui/material';
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
-  useColorScheme,
   useTheme,
 } from '@mui/material/styles';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import * as React from 'react';
 import { initGA, logPageView } from '../utils/googleAnalytics';
 
+import Notification from '@/components/Notification';
+import { metaTags, Telemetry } from '@/utils/app.constant';
+import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import { UserConfig, appWithTranslation } from 'next-i18next';
+import { appWithTranslation, UserConfig, useTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import { Poppins } from 'next/font/google';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
+import { prefixer } from 'stylis';
+import rtlPlugin from 'stylis-plugin-rtl';
 import { fullWidthPages } from '../../app.config';
 import nextI18NextConfig from '../../next-i18next.config.js';
+import { useDirection } from '../hooks/useDirection';
 import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
-import { metaTags, Telemetry } from '@/utils/app.constant';
-import { useTranslation } from 'next-i18next';
-import { useDirection } from '../hooks/useDirection';
-import rtlPlugin from 'stylis-plugin-rtl';
-import { prefixer } from 'stylis';
-import { CacheProvider } from '@emotion/react';
-import createCache from '@emotion/cache';
+import AllowNotification from '@/components/AllowNotification';
+
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({
@@ -154,6 +154,7 @@ function App({ Component, pageProps }: AppProps) {
   const ltrCache = createCache({
     key: 'mui',
   });
+  const login = router.pathname === '/login';
 
   return (
     <>
@@ -165,6 +166,10 @@ function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>{metaTags?.title}</title>
         <meta name="description" content={metaTags?.description} />
+        <link
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"
+        />
       </Head>
       <CacheProvider value={isRTL ? rtlCache : ltrCache}>
         <CssVarsProvider theme={customTheme}>
@@ -191,6 +196,9 @@ function App({ Component, pageProps }: AppProps) {
               autoClose={3000}
               stacked={false}
             />
+            <Notification />
+            {!login && <AllowNotification />}
+
           </Box>
         </CssVarsProvider>
       </CacheProvider>

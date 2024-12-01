@@ -1,16 +1,20 @@
-import { Backdrop, CircularProgress, Typography } from '@mui/material';
-import React from 'react';
+import { Backdrop, CircularProgress, Typography } from "@mui/material";
+import React from "react";
+import { useTranslation } from "next-i18next";
 
-const Loader: React.FC<{ showBackdrop: boolean; loadingText: string }> = ({
+
+const Loader: React.FC<{ showBackdrop: boolean; loadingText?: string }> = ({
   showBackdrop,
-  loadingText = '',
+  loadingText
 }) => {
+  const { t } = useTranslation();
+
   const Spinner = () => {
     return (
       <>
         <CircularProgress color="inherit" />
         <br />
-        <Typography variant="h2">{loadingText}...</Typography>
+        <Typography variant="h2">{t(loadingText ?? "COMMON.LOADING")}...</Typography>
       </>
     );
   };
@@ -19,9 +23,9 @@ const Loader: React.FC<{ showBackdrop: boolean; loadingText: string }> = ({
     <>
       <Backdrop
         sx={{
-          color: '#fff',
+          color: "#fff",
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          flexDirection: 'column',
+          flexDirection: "column",
         }}
         open={showBackdrop}
       >

@@ -5,13 +5,14 @@ import {
   ISearchAssessment,
 } from '@/utils/Interfaces';
 import { post } from './RestClient';
+import { URL_CONFIG } from '@/utils/url.config';
 
 export const getAssessmentList = async ({
   sort,
   pagination,
   filters,
 }: AssessmentListParam): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/tracking/v1/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/v1/tracking/assessment/list`;
   try {
     const response = await post(apiUrl, { pagination, filters, sort });
     return response?.data;
@@ -25,16 +26,18 @@ export const getAssessmentList = async ({
 export const getDoIdForAssessmentDetails = async ({
   filters,
 }: GetDoIdServiceParam): Promise<any> => {
-  const apiUrl: string =
-    'https://sunbirdsaas.com/api/content/v1/search?orgdetails=orgName%2Cemail&licenseDetails=name%2Cdescription%2Curl';
-
+  const apiUrl: string = `${URL_CONFIG.API.COMPOSITE_SEARCH}`;
+  // const apiUrl: string =
+  //   'https://sunbirdsaas.com/api/content/v1/search?orgdetails=orgName%2Cemail&licenseDetails=name%2Cdescription%2Curl';
   const data = {
     request: {
       filters: {
         program: filters.program,
-        se_boards: filters.se_boards,
+        board: filters.boards,
         // subject: filters.subject,
-        assessment1: filters.assessment1,
+        assessmentType: filters.assessmentType,
+        status: ['Live'],
+        primaryCategory: ['Practice Question Set'],
       },
     },
   };
@@ -50,7 +53,7 @@ export const getDoIdForAssessmentDetails = async ({
 };
 
 export const getAssessmentStatus = async (body: IAssessmentStatusOptions) => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/v1/tracking/assessment/search/status`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/v1/tracking/assessment/search/status`;
   try {
     const response = await post(apiUrl, body);
     return response?.data?.data;
@@ -62,7 +65,7 @@ export const getAssessmentStatus = async (body: IAssessmentStatusOptions) => {
 };
 
 export const searchAssessment = async (body: ISearchAssessment) => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_TRACKING_API_URL}/v1/tracking/assessment/search`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/v1/tracking/assessment/search`;
   try {
     const response = await post(apiUrl, body);
     return response?.data?.data;

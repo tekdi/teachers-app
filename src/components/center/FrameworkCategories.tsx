@@ -85,14 +85,14 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
   useEffect(() => {
     const handleBMGS = async () => {
       try {
-        const url = `${process.env.NEXT_PUBLIC_SUNBIRDSAAS_API_URL}/api/framework/v1/read/${frameworkId}`;
+        const url = `/api/framework/v1/read/${frameworkId}`;
         const boardData = await fetch(url).then((res) => res.json());
         const frameworks = boardData?.result?.framework;
         setFramework(frameworks);
         const getStates = getOptionsByCategory(frameworks, 'state');
 
         const matchingState = getStates.find(
-          (state: any) => state.name === userStateName
+          (state: any) => state.name.toLowerCase() === userStateName?.toLowerCase()
         );
         if (matchingState) {
           setStateOption([matchingState]);

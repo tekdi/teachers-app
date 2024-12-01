@@ -704,7 +704,7 @@ main {
 }
 
 .password label {
-  color: var(--mui-palette-warning-300)!important;
+  color: var(--mui-palette-warning-300) !important;
 }
 
 .fs-24 {
@@ -941,7 +941,7 @@ main {
     right: 20px;
   }
 
-  .top-md-185{
+  .top-md-185 {
     top: 185px;
   }
 
@@ -963,19 +963,26 @@ main {
 }
 
 .facilitator-bg {
+  /* display: flex; */
+  height: 244px;
+  background-color: #ECE6F0;
+  border-radius: 16px;
+}
+
+.facilitator-card {
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  height: 244px;
+  background-color: #ECE6F0;
+  border-radius: 16px;
+  overflow: hidden;
+  /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-  /* width: 140px; */
-  height: 180px;
-  padding: 15px;
-  object-fit: cover;
-  background-image: url('./../assets/images/decorationBg.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  border-radius: 28px;
+.facilitator-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* To Hide the caret icon on input type number */
@@ -1013,7 +1020,7 @@ legend.Mui-focused {
 
 .login-img {
   /* height: 500px !important; */
-  width: 90% !important;
+  width: 100% !important;
 }
 
 .capitalize {
@@ -1042,8 +1049,7 @@ legend.Mui-focused {
   color: var(--mui-palette-warning-300) !important;
 }
 
-.swiper-button-prev,
-.swiper-rtl .swiper-button-next {
+html[dir='ltr'] .swiper-button-prev {
   right: 50px !important;
   left: unset !important;
   width: 32px !important;
@@ -1051,13 +1057,30 @@ legend.Mui-focused {
   border: 1px solid var(--mui-palette-warning-A100);
   border-radius: 4px !important;
 }
-
-.swiper-button-next {
-  left: unset !important;
+html[dir='rtl'] .swiper-button-prev {
+  right: unset !important;
+  left: 50px !important;
   width: 32px !important;
   height: 32px !important;
   border: 1px solid var(--mui-palette-warning-A100);
   border-radius: 4px !important;
+}
+
+html[dir='ltr'] .swiper-button-next {
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid var(--mui-palette-warning-A100);
+  border-radius: 4px !important;
+  right: 0px !important;
+  left: unset !important;
+}
+html[dir='rtl'] .swiper-button-next {
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid var(--mui-palette-warning-A100);
+  border-radius: 4px !important;
+  right: unset !important;
+  left: 0px !important;
 }
 
 .swiper-button-prev,
@@ -1084,10 +1107,17 @@ legend.Mui-focused {
   position: unset !important;
 }
 
-.swiper-pagination-fraction {
+html[dir='ltr'] .swiper-pagination-fraction {
   position: absolute;
-  bottom: 13px !important;
+  bottom: 0px !important;
   width: fit-content !important;
+}
+html[dir='rtl'] .swiper-pagination-fraction {
+  position: absolute;
+  bottom: 0px !important;
+  width: fit-content !important;
+  right: 0px !important;
+  left: unset !important;
 }
 
 .css-1i1js26-MuiSvgIcon-root-MuiSelect-icon {
@@ -1098,3 +1128,96 @@ legend.Mui-focused {
 *{
   border: 1px solid red !important;
 } */
+/* questionnaire-player-main .custom-font{
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif !important;
+}
+:root{
+  --primary-color:#663399;
+  --btn-outline:#663399;
+  --error-color:rgb(150, 4, 4);
+  --question-tip:gray;
+  --general-btn-text-color:white;
+  --general-btn-hover-bg:white;
+  --secondary-btn-bg:white;
+  --secondary-btn-hover-bg:whitesmoke;
+  --card-bg:white;
+  --disabled-btn-bg:gainsboro;
+  --disabled-btn-text:gray;  
+} */
+:root {
+  --background: #ffffff;
+  --foreground: #f7be36;
+  --primary-color: black;
+  --btn-outline: #f7be36;
+  --error-color: rgb(150, 4, 4);
+  --question-tip: gray;
+  --general-btn-text-color: white;
+  --general-btn-hover-bg: #f7be36;
+  --secondary-btn-bg: #f7be36;
+  --secondary-btn-hover-bg: #f7be36;
+  /* --card-bg: #FBF4E5; */
+  --disabled-btn-bg: gainsboro;
+  --disabled-btn-text: #f7be36;
+}
+
+mat-radio-group.mat-mdc-radio-group {
+  display: flex;
+  gap: 50px;
+}
+
+.player-grid {
+  height: 100vh !important;
+  border: solid 1px #ccc;
+}
+.wrapper[_ngcontent-ng-c2640644362] {
+  min-height: 0 !important;
+}
+
+#overlay-button[aria-label='Player Menu Open'] {
+  margin-top: 4rem !important;
+}
+
+
+/* Observation Component Overrides */
+
+.custom-font {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.activeCard {
+  padding: 1rem !important;
+  margin: 1rem !important;
+}
+
+.wc-primary-color {
+  font-size: 1rem !important;
+}
+
+mat-radio-group.mat-mdc-radio-group {
+  gap: 16px;
+  flex-wrap: wrap;
+}
+/* End of Observation component overrides */
+
+
+.btn-outline-secondary{
+  background: transparent !important;
+    border-radius: 100px !important;
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+      0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 5px 0px rgba(0, 0, 0, 0.12) !important;
+    color: #1E1B16 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.btn-primary{
+  background: #FDBE16 !important;
+    border-radius: 100px !important;
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+      0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 5px 0px rgba(0, 0, 0, 0.12) !important;
+    color: #1E1B16 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}

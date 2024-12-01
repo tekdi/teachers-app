@@ -66,19 +66,27 @@ import {
   getMenuItems,
   limit,
 } from '@/utils/app.constant';
-import { accessControl, Program } from '../../../app.config';
+import {
+  accessControl,
+  AttendanceAPILimit,
+  Program,
+} from '../../../app.config';
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { getFormRead } from '@/hooks/useFormRead';
 import { useDirection } from '../../hooks/useDirection';
 import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../../featureEliminationUtil';
+import useStore from '@/store/store';
 let AssessmentReport: ComponentType<AssessmentReportProp> | null = null;
 
-if (!isEliminatedFromBuild("AssessmentReport", "component")) {
-  AssessmentReport = dynamic(() => import("../../components/AssessmentReport"), {
-    ssr: false,
-  });
+if (!isEliminatedFromBuild('AssessmentReport', 'component')) {
+  AssessmentReport = dynamic(
+    () => import('../../components/AssessmentReport'),
+    {
+      ssr: false,
+    }
+  );
 }
 
 interface LearnerProfileProp {
@@ -96,6 +104,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   const today = new Date();
   const router = useRouter();
   const { userId }: any = router.query;
+  const store = useStore();
+  const isActiveYear = store.isActiveYearSelected;
 
   const [assesmentData, setAssesmentData] = useState<any>(null);
   const [test, setTest] = React.useState('Pre Test');
@@ -285,7 +295,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
       filters,
       facets: ['userId'],
     });
-    if (response?.statusCode === 200) {
+    if (response?.responseCode === 200) {
       const userData = response?.data?.result?.userId[userId];
       setOverallAttendance(userData);
     }
@@ -443,165 +453,165 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
 
   //------ Test Report API Integration------
 
-  const handleChangeTest = (event: SelectChangeEvent) => {
-    const test = event?.target?.value;
-    setTest(test);
-    ReactGA.event('pre-post-test-selected', { testTypeSelected: test });
-    getDoIdForAssessmentReport(test, subject);
-  };
+  // const handleChangeTest = (event: SelectChangeEvent) => {
+  //   const test = event?.target?.value;
+  //   setTest(test);
+  //   ReactGA.event('pre-post-test-selected', { testTypeSelected: test });
+  //   getDoIdForAssessmentReport(test, subject);
+  // };
 
-  const handleChangeSubject = (event: SelectChangeEvent) => {
-    const subject = event?.target?.value;
-    setSubject(event?.target?.value);
-    ReactGA.event('select-subject-learner-details-page', {
-      subjectSelected: subject,
-    });
-    getDoIdForAssessmentReport(test, subject);
-  };
+  // const handleChangeSubject = (event: SelectChangeEvent) => {
+  //   const subject = event?.target?.value;
+  //   setSubject(event?.target?.value);
+  //   ReactGA.event('select-subject-learner-details-page', {
+  //     subjectSelected: subject,
+  //   });
+  //   getDoIdForAssessmentReport(test, subject);
+  // };
 
-  const getDoIdForAssessmentReport = async (
-    tests: string,
-    subjects: string
-  ) => {
-    // const stateName = localStorage.getItem('stateName');
+  // const getDoIdForAssessmentReport = async (
+  //   tests: string,
+  //   subjects: string
+  // ) => {
+  //   // const stateName = localStorage.getItem('stateName');
 
-    const stateName: any = address?.split(',')[0];
-    const filters = {
-      program: [Program],
-      se_boards: [stateName ?? ''],
-      subject: [subjects || subject],
-      assessment1: tests || test,
-    };
-    try {
-      if (stateName) {
-        if (filters) {
-          setLoading(true);
-          const searchResults = await getDoIdForAssessmentDetails({ filters });
+  //   const stateName: any = address?.split(',')[0];
+  //   const filters = {
+  //     program: [Program],
+  //     se_boards: [stateName ?? ''],
+  //     subject: [subjects || subject],
+  //     assessment1: tests || test,
+  //   };
+  //   try {
+  //     if (stateName) {
+  //       if (filters) {
+  //         setLoading(true);
+  //         const searchResults = await getDoIdForAssessmentDetails({ filters });
 
-          if (searchResults?.responseCode === 'OK') {
-            const result = searchResults?.result;
-            if (result) {
-              const QuestionSet = result?.QuestionSet?.[0];
-              const getUniqueDoId = QuestionSet?.IL_UNIQUE_ID;
-              setUniqueDoId(getUniqueDoId);
-              testReportDetails(getUniqueDoId);
-            } else {
-              console.log('NO Result found from getDoIdForAssessmentDetails ');
-            }
-          }
-        } else {
-          console.log('NO Data found from getDoIdForAssessmentDetails ');
-        }
-      } else {
-        console.log('NO State Found');
-      }
-      setIsError(false);
-    } catch (error) {
-      setIsError(true);
-      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-      console.error(
-        'Error fetching getDoIdForAssessmentDetails results:',
-        error
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  //         if (searchResults?.responseCode === 'OK') {
+  //           const result = searchResults?.result;
+  //           if (result) {
+  //             const QuestionSet = result?.QuestionSet?.[0];
+  //             const getUniqueDoId = QuestionSet?.IL_UNIQUE_ID;
+  //             setUniqueDoId(getUniqueDoId);
+  //             testReportDetails(getUniqueDoId);
+  //           } else {
+  //             console.log('NO Result found from getDoIdForAssessmentDetails ');
+  //           }
+  //         }
+  //       } else {
+  //         console.log('NO Data found from getDoIdForAssessmentDetails ');
+  //       }
+  //     } else {
+  //       console.log('NO State Found');
+  //     }
+  //     setIsError(false);
+  //   } catch (error) {
+  //     setIsError(true);
+  //     showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+  //     console.error(
+  //       'Error fetching getDoIdForAssessmentDetails results:',
+  //       error
+  //     );
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  const testReportDetails = async (do_Id: string) => {
-    const cohortId = localStorage.getItem('classId');
-    const filters = {
-      userId: userId,
-      courseId: do_Id,
-      batchId: cohortId, // user cohort id
-      contentId: do_Id, // do_Id
-    };
-    const pagination = {
-      pageSize: 1,
-      page: 1,
-    };
-    const sort = {
-      field: 'userId',
-      order: 'asc',
-    };
+  // const testReportDetails = async (do_Id: string) => {
+  //   const cohortId = localStorage.getItem('classId');
+  //   const filters = {
+  //     userId: userId,
+  //     courseId: do_Id,
+  //     // batchId: cohortId, // user cohort id
+  //     contentId: do_Id, // do_Id
+  //   };
+  //   const pagination = {
+  //     pageSize: 1,
+  //     page: 1,
+  //   };
+  //   const sort = {
+  //     field: 'userId',
+  //     order: 'asc',
+  //   };
 
-    if (do_Id) {
-      const response = await getAssessmentList({
-        sort,
-        pagination,
-        filters,
-      });
+  //   if (do_Id) {
+  //     const response = await getAssessmentList({
+  //       sort,
+  //       pagination,
+  //       filters,
+  //     });
 
-      if (response?.responseCode === 200) {
-        setLoading(true);
-        const result = response.result;
-        if (result) {
-          setSubmittedOn(result[0]?.createdOn);
-          setTotalMaxScore(result[0]?.totalMaxScore);
-          setTotalScore(result[0]?.totalScore);
-          const questionValues = getQuestionValues(result);
-          setAssesmentData(questionValues?.questions); // Use the parsed questions
-          setLoading(false);
-        } else {
-          setUniqueDoId('');
-          console.log('No Data Found');
-        }
-      } else {
-        setUniqueDoId('');
-        console.log('getAssessmentList data', response?.response?.statusText);
-      }
-    } else {
-      console.log('No Do Id Found');
-    }
-  };
+  //     if (response?.responseCode === 200) {
+  //       setLoading(true);
+  //       const result = response.result;
+  //       if (result) {
+  //         setSubmittedOn(result[0]?.createdOn);
+  //         setTotalMaxScore(result[0]?.totalMaxScore);
+  //         setTotalScore(result[0]?.totalScore);
+  //         const questionValues = getQuestionValues(result);
+  //         setAssesmentData(questionValues?.questions); // Use the parsed questions
+  //         setLoading(false);
+  //       } else {
+  //         setUniqueDoId('');
+  //         console.log('No Data Found');
+  //       }
+  //     } else {
+  //       setUniqueDoId('');
+  //       console.log('getAssessmentList data', response?.response?.statusText);
+  //     }
+  //   } else {
+  //     console.log('No Do Id Found');
+  //   }
+  // };
 
-  function getQuestionValues(response: any) {
-    const questionValues: any = {
-      totalMaxScore: 0,
-      totalScore: 0,
-      length: response.length,
-      questions: [],
-      totalQuestions: 0,
-    };
+  // function getQuestionValues(response: any) {
+  //   const questionValues: any = {
+  //     totalMaxScore: 0,
+  //     totalScore: 0,
+  //     length: response.length,
+  //     questions: [],
+  //     totalQuestions: 0,
+  //   };
 
-    response.forEach((assessment: any) => {
-      const assessmentSummary = JSON.parse(assessment.assessmentSummary);
-      let questionNumber = 1;
-      assessmentSummary?.forEach((section: any) => {
-        section?.data?.forEach((question: any, index: number) => {
-          const questionValue: any = {
-            question: `Q${questionNumber}`,
-            mark_obtained: question.score,
-            totalMarks: question.item.maxscore,
-          };
-          questionValues.totalMaxScore += question.item.maxscore;
-          questionValues.totalScore += question.score;
-          questionValues.questions.push(questionValue);
-          questionNumber++;
-        });
-      });
-    });
+  //   response.forEach((assessment: any) => {
+  //     const assessmentSummary = JSON.parse(assessment.assessmentSummary);
+  //     let questionNumber = 1;
+  //     assessmentSummary?.forEach((section: any) => {
+  //       section?.data?.forEach((question: any, index: number) => {
+  //         const questionValue: any = {
+  //           question: `Q${questionNumber}`,
+  //           mark_obtained: question.score,
+  //           totalMarks: question.item.maxscore,
+  //         };
+  //         questionValues.totalMaxScore += question.item.maxscore;
+  //         questionValues.totalScore += question.score;
+  //         questionValues.questions.push(questionValue);
+  //         questionNumber++;
+  //       });
+  //     });
+  //   });
 
-    questionValues.totalQuestions = questionValues.questions.length;
-    return questionValues;
-  }
+  //   questionValues.totalQuestions = questionValues.questions.length;
+  //   return questionValues;
+  // }
   // questionValues
   // const questionValues = getQuestionValues(assesmentData);
 
   // all function call when page render
-  useEffect(() => {
-    const class_Id = localStorage.getItem('classId') || '';
-    setClassId(class_Id);
+  // useEffect(() => {
+  //   const class_Id = localStorage.getItem('classId') || '';
+  //   setClassId(class_Id);
 
-    // const today = new Date();
-    const formatDate = (date: Date) => date.toISOString().split('T')[0];
-    const toDay = formatDate(today);
+  //   // const today = new Date();
+  //   const formatDate = (date: Date) => date.toISOString().split('T')[0];
+  //   const toDay = formatDate(today);
 
-    getAttendanceData(isFromDate, toDay);
-    fetchUserDetails();
-    // testReportDetails();
-    getDoIdForAssessmentReport(test, subject);
-  }, [address]);
+  //   getAttendanceData(isFromDate, toDay);
+  //   fetchUserDetails();
+  //   // testReportDetails();
+  //   getDoIdForAssessmentReport(test, subject);
+  // }, [address]);
 
   const getLearnerAttendance = () => {
     router.push('/learner-attendance-history');
@@ -635,7 +645,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
       }
 
       const cohortAttendanceData: CohortAttendancePercentParam = {
-        limit: 0,
+        limit: AttendanceAPILimit,
         page: 0,
         filters: {
           scope: 'student',
@@ -725,7 +735,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         </Grid>
         <Grid item>
           <Box>
-            {userDetails && (
+            {userDetails && isActiveYear && (
               <LearnersListItem
                 type={Role.STUDENT}
                 key={userId}
@@ -744,112 +754,120 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         </Grid>
       </Grid>
 
-      <Box padding={'22px 18px'} className="linerGradient br-md-8">
-        <Box
-          sx={{ display: 'flex', justifyContent: 'space-between', gap: '5px' }}
-        >
-          <Typography
-            sx={{
-              color: theme.palette.warning['300'],
-              fontWeight: 500,
-              fontSize: '14px',
-            }}
-            variant="h6"
-            gutterBottom
-          >
-            {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Typography
-              sx={{
-                color: theme.palette.secondary.main,
-                marginRight: '4px',
-                fontSize: '14px',
-                cursor: 'pointer',
-              }}
-              variant="h6"
-              gutterBottom
-              onClick={getLearnerAttendance}
-            >
-              {t('PROFILE.VIEW_DAY_WISE')}
-            </Typography>
-            <EastIcon
-              fontSize="inherit"
-              sx={{
-                color: theme.palette.secondary.main,
-                marginBottom: '5px',
-                transform: isRTL ? ' rotate(180deg)' : 'unset',
-                marginTop: '5px',
-              }}
-            />
-          </Box>
-        </Box>
-
-        <Box sx={{ mt: '10px' }}>
-          <Box>
-            <DateRangePopup
-              menuItems={menuItems}
-              selectedValue={selectedValue}
-              setSelectedValue={setSelectedValue}
-              onDateRangeSelected={handleDateRangeSelected}
-              dateRange={dateRange}
-            />
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            // background: 'linear-gradient(180deg, #FFFDF7 0%, #F8EFDA 100%)',
-            borderRadius: theme.spacing(3),
-            boxShadow: 'none',
-          }}
-        >
-          <Box sx={{ mt: 2 }}>
-            {selectedValue ===
-              t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-                date_range: dateRange,
-              }) || selectedValue === '' ? (
-              <Typography
-                color={theme.palette.warning['400']}
-                fontSize={'0.75rem'}
-                fontWeight={'500'}
-                // pt={'1rem'}
-              >
-                {t('ATTENDANCE.ATTENDANCE_MARKED_OUT_OF_DAYS', {
-                  count: numberOfDaysAttendanceMarked,
-                })}
-              </Typography>
-            ) : null}
+      {isActiveYear && (
+        <Box>
+          <Box padding={'22px 18px'} className="linerGradient br-md-8">
             <Box
-              gap={1}
               sx={{
-                bgcolor: 'transparent',
-                justifyContent: 'center',
                 display: 'flex',
-                marginTop: 2,
+                justifyContent: 'space-between',
+                gap: '5px',
               }}
             >
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <StudentStatsCard
-                    label1={t('COMMON.ATTENDANCE') + ' (%)'}
-                    value1={`${Math.round(overallAttendance?.present_percentage || 0)}%`}
-                    label2={false}
-                    value2=""
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <StudentStatsCard
-                    label1={t('COMMON.CLASS_MISSED')}
-                    value1={overallAttendance?.absent || 0}
-                    label2={false}
-                    value2=""
-                  />
-                </Grid>
-              </Grid>
+              <Typography
+                sx={{
+                  color: theme.palette.warning['300'],
+                  fontWeight: 500,
+                  fontSize: '14px',
+                }}
+                variant="h6"
+                gutterBottom
+              >
+                {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Typography
+                  sx={{
+                    color: theme.palette.secondary.main,
+                    marginRight: '4px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                  }}
+                  variant="h6"
+                  gutterBottom
+                  onClick={getLearnerAttendance}
+                >
+                  {t('PROFILE.VIEW_DAY_WISE')}
+                </Typography>
+                <EastIcon
+                  fontSize="inherit"
+                  sx={{
+                    color: theme.palette.secondary.main,
+                    marginBottom: '5px',
+                    transform: isRTL ? ' rotate(180deg)' : 'unset',
+                    marginTop: '5px',
+                  }}
+                />
+              </Box>
+            </Box>
+
+            <Box sx={{ mt: '10px' }}>
+              <Box>
+                <DateRangePopup
+                  menuItems={menuItems}
+                  selectedValue={selectedValue}
+                  setSelectedValue={setSelectedValue}
+                  onDateRangeSelected={handleDateRangeSelected}
+                  dateRange={dateRange}
+                />
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                // background: 'linear-gradient(180deg, #FFFDF7 0%, #F8EFDA 100%)',
+                borderRadius: theme.spacing(3),
+                boxShadow: 'none',
+              }}
+            >
+              <Box sx={{ mt: 2 }}>
+                {selectedValue ===
+                  t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+                    date_range: dateRange,
+                  }) || selectedValue === '' ? (
+                  <Typography
+                    color={theme.palette.warning['400']}
+                    fontSize={'0.75rem'}
+                    fontWeight={'500'}
+                    // pt={'1rem'}
+                  >
+                    {t('ATTENDANCE.ATTENDANCE_MARKED_OUT_OF_DAYS', {
+                      count: numberOfDaysAttendanceMarked,
+                    })}
+                  </Typography>
+                ) : null}
+                <Box
+                  gap={1}
+                  sx={{
+                    bgcolor: 'transparent',
+                    justifyContent: 'center',
+                    display: 'flex',
+                    marginTop: 2,
+                  }}
+                >
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <StudentStatsCard
+                        label1={t('COMMON.ATTENDANCE') + ' (%)'}
+                        value1={`${Math.round(overallAttendance?.present_percentage || 0)}%`}
+                        label2={false}
+                        value2=""
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <StudentStatsCard
+                        label1={t('COMMON.CLASS_MISSED')}
+                        value1={overallAttendance?.absent || 0}
+                        label2={false}
+                        value2=""
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Box>
             </Box>
           </Box>
         </Box>
-      </Box>
+      )}
 
       <Box
         boxShadow={'none'}
@@ -878,39 +896,41 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         //   },
         // }}
         >
-          <Button
-            sx={{
-              fontSize: '14px',
-              lineHeight: '20px',
-              minWidth: 'fit-content',
-              padding: '10px 24px 10px 16px',
-              gap: '8px',
-              borderRadius: '100px',
-              marginTop: '10px',
-              flex: '1',
-              textAlign: 'center',
-              color: theme.palette.warning.A200,
-              border: `1px solid #4D4639`,
-            }}
-            onClick={handleOpenAddLearnerModal}
-          >
-            <Typography
-              variant="h3"
-              style={{
-                letterSpacing: '0.1px',
-                textAlign: 'left',
-                marginBottom: '2px',
+          {isActiveYear && (
+            <Button
+              sx={{
+                fontSize: '14px',
+                lineHeight: '20px',
+                minWidth: 'fit-content',
+                padding: '10px 24px 10px 16px',
+                gap: '8px',
+                borderRadius: '100px',
+                marginTop: '10px',
+                flex: '1',
+                textAlign: 'center',
+                color: theme.palette.warning.A200,
+                border: `1px solid #4D4639`,
               }}
-              fontSize={'14px'}
-              fontWeight={'500'}
-              lineHeight={'20px'}
+              onClick={handleOpenAddLearnerModal}
             >
-              {t('PROFILE.EDIT_PROFILE')}
-            </Typography>
-            <Box>
-              <CreateOutlinedIcon sx={{ fontSize: '14px' }} />
-            </Box>
-          </Button>
+              <Typography
+                variant="h3"
+                style={{
+                  letterSpacing: '0.1px',
+                  textAlign: 'left',
+                  marginBottom: '2px',
+                }}
+                fontSize={'14px'}
+                fontWeight={'500'}
+                lineHeight={'20px'}
+              >
+                {t('PROFILE.EDIT_PROFILE')}
+              </Typography>
+              <Box>
+                <CreateOutlinedIcon sx={{ fontSize: '14px' }} />
+              </Box>
+            </Button>
+          )}
 
           {openAddLearnerModal && (
             <div>
@@ -993,21 +1013,22 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           </Box>
         </Box>
       </Box>
-      {(!isEliminatedFromBuild("AssessmentReport", "component") && AssessmentReport) && 
-      <Box padding={2}>
-        <Card
-          sx={{
-            borderRadius: theme.spacing(3),
-            boxShadow: 'none',
-            border: '1px solid #D0C5B4',
-          }}
-        >
-          <CardContent>
-            <AssessmentReport classId={classId} userId={userId} />
-          </CardContent>
-        </Card>
-      </Box>
-      }
+      {!isEliminatedFromBuild('AssessmentReport', 'component') &&
+        AssessmentReport && isActiveYear && (
+          <Box padding={2}>
+            <Card
+              sx={{
+                borderRadius: theme.spacing(3),
+                boxShadow: 'none',
+                border: '1px solid #D0C5B4',
+              }}
+            >
+              <CardContent>
+                <AssessmentReport classId={cohortId} userId={userId} />
+              </CardContent>
+            </Card>
+          </Box>
+        )}
     </>
   );
 };

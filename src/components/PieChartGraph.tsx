@@ -9,15 +9,26 @@ interface DataItem {
   value: number;
 }
 
-const PieChartGraph = () => {
+interface PieChartGraphProps {
+  stagesCount: {
+    board: number;
+    subjects: number;
+    registration: number;
+    fees: number;
+    completed: number; //completedCount = TotalCount - (board+subject+registration+fees) count
+  };
+}
+
+const PieChartGraph: React.FC<PieChartGraphProps> = ({ stagesCount }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+
   const data: DataItem[] = [
-    { name: t('BOARD_ENROLMENT.BOARD_SELECTION'), value: 5 },
-    { name: t('BOARD_ENROLMENT.SUBJECTS_SELECTION'), value: 10 },
-    { name: t('BOARD_ENROLMENT.REGISTRATION_COMPLETED'), value: 5 },
-    { name: t('BOARD_ENROLMENT.FEE_PAYMENT'), value: 2 },
-    { name: t('BOARD_ENROLMENT.COMPLETED'), value: 2 },
+    { name: t('BOARD_ENROLMENT.BOARD_SELECTION'), value: stagesCount.board },
+    { name: t('BOARD_ENROLMENT.SUBJECTS_SELECTION'), value: stagesCount.subjects },
+    { name: t('BOARD_ENROLMENT.REGISTRATION_NUMBER'), value: stagesCount.registration },
+    { name: t('BOARD_ENROLMENT.FEE_PAYMENT'), value: stagesCount.fees },
+    { name: t('BOARD_ENROLMENT.COMPLETED'), value: stagesCount.completed },
   ];
 
   const COLORS = ['#8000FE', '#FF8042', '#FFBB28', '#78590C', '#30CA2D']; //colors not in custom theme
@@ -49,84 +60,80 @@ const PieChartGraph = () => {
       </span>
     );
   };
+
   return (
-    <>
+    <Box
+      sx={{
+        background: '#FFF8F2',
+        p: '16px',
+        mt: 2,
+        boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
+        borderRadius: '8px', // Optional: to make the corners rounded
+        '@media (max-width: 700px)': {
+          p: '16px 16px 0px',
+        },
+      }}
+    >
       <Box
         sx={{
-          background: '#FFF8F2',
-          p: '16px',
-          mt: 2,
-          '@media (max-width: 700px)': {
-            p: '16px 16px 0px',
-          },
+          color: theme.palette.warning['400'],
+          fontSize: '14px',
+          fontWeight: '600',
         }}
       >
-        <Box
-          sx={{
-            color: theme.palette.warning['400'],
-            fontSize: '14px',
-            fontWeight: '600',
-          }}
-        >
-          Stages and Number of Students
-        </Box>
-
-        <Box
-          sx={{
-            height: 150,
-            '@media (min-width: 400px)': {
-              height: 200,
-            },
-            '@media (min-width: 500px)': {
-              height: 300,
-            },
-            '@media (min-width: 700px)': {
-              height: 400,
-            },
-          }}
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={false}
-                outerRadius="80%"
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-
-              {isMobile ? (
-                <Legend
-                  layout="vertical"
-                  align="right"
-                  verticalAlign="middle"
-                  formatter={renderLegendText}
-                  iconType="circle"
-                />
-              ) : (
-                <Legend
-                  layout="horizontal"
-                  align="center"
-                  verticalAlign="bottom"
-                  formatter={renderLegendText}
-                  iconType="circle"
-                />
-              )}
-            </PieChart>
-          </ResponsiveContainer>
-        </Box>
+        Stages and Number of Students
       </Box>
-    </>
+
+      <Box
+        sx={{
+          height: 150,
+          '@media (min-width: 400px)': {
+            height: 200,
+          },
+          '@media (min-width: 500px)': {
+            height: 300,
+          },
+          '@media (min-width: 700px)': {
+            height: 400,
+          },
+          display: "flex",
+          justifyContent: "center"
+        }}
+      >
+        <ResponsiveContainer width="100%" style={{ maxWidth: '500px' }} height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={false}
+              outerRadius="80%"
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                  style={{outline: 'none'}}
+                />
+              ))}
+            </Pie>
+
+            <Legend
+              layout="vertical"
+              align="right"
+              verticalAlign="middle"
+              formatter={renderLegendText}
+              iconType="circle"
+            />
+
+          </PieChart>
+        </ResponsiveContainer>
+      </Box>
+    </Box>
+
   );
 };
 

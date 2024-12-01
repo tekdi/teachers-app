@@ -11,15 +11,18 @@ const useStore = create(
       cohorts: [],
       userRole: '',
       pairs: [],
+      isActiveYearSelected: '',
       setValue: (newValue) => set((state) => ({ value: newValue })),
       setBlock: (newBlock) => set((state) => ({ block: newBlock })),
       setUserRole: (newRole) => set((state) => ({ userRole: newRole })),
       setCohorts: (newCohorts) => set(() => ({ cohorts: newCohorts })),
-      setAccessToken: (newAccessToken) => set((state) => ({accessToken: newAccessToken}))
+      setAccessToken: (newAccessToken) => set((state) => ({accessToken: newAccessToken})),
+      setIsActiveYearSelected: (newYear) => set(() => ({ isActiveYearSelected: newYear })),
     }),
     {
       name: 'teacherApp',
-      getStorage: () => localStorage,
+      getStorage: () => localStorage
+      // storage: typeof window !== 'undefined' ? localStorage : undefined,
     }
   )
 );
