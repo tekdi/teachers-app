@@ -3,7 +3,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -140,11 +140,22 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
                   fontWeight: '400',
                 }}
               >
-                {cardTitle === 'pre-test'
+                 <Typography
+             sx={{
+              display: '-webkit-box',
+              WebkitLineClamp: 1,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+            >
+               {cardTitle === 'pre-test'
                   ? t('PROFILE.PRE_TEST')
                   : cardTitle === 'post-test'
                     ? t('PROFILE.POST_TEST')
                     : cardTitle}
+            </Typography>
+               
               </Box>
               <Box
                 sx={{

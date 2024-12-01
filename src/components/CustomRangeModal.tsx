@@ -89,8 +89,9 @@ const CustomRangeModal: React.FC = () => {
               justifyContent: 'end',
             }}
           >
-            <Box className="text-0D fs-14 fw-500">{t('COMMON.CANCEL')}</Box>
-            <Box className="text-0D fs-14 fw-500">{t('COMMON.OK')}</Box>
+            <Box className="text-0D fs-14 fw-500" sx={{   cursor:"pointer"}}
+>{t('COMMON.CANCEL')}</Box>
+            <Box className="text-0D fs-14 fw-500" sx={{   cursor:"pointer"}}>{t('COMMON.OK')}</Box>
           </Box>
         </Box>
       </Modal>
