@@ -34,7 +34,7 @@ export const getDoIdForAssessmentDetails = async ({
       filters: {
         program: filters.program,
         board: filters.boards,
-        // subject: filters.subject,
+        state: filters.state,
         assessmentType: filters.assessmentType,
         status: ['Live'],
         primaryCategory: ['Practice Question Set'],

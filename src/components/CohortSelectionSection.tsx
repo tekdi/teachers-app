@@ -295,6 +295,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                     name: item?.cohortName || item?.name,
                     typeOfCohort: typeOfCohort || t('ATTENDANCE.UNKNOWN'),
                     status: item?.status,
+                    customField: item?.customField,
                   };
                 })
                 ?.filter(Boolean);
