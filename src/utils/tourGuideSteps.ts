@@ -38,4 +38,16 @@ export const getSteps = (t: TFunction) => [
     target: '.joyride-step-8',
     content: t('GUIDE_TOUR.STEP_8'),
   },
+  {
+    target: '.joyride-step-9',
+    content: t('GUIDE_TOUR.STEP_9'),
+  },
+  {
+    target: '.joyride-step-10',
+    content: t('GUIDE_TOUR.STEP_10'),
+  },
+  {
+    target: '.joyride-step-11',
+    content: t('GUIDE_TOUR.STEP_11'),
+  },
 ];
