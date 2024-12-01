@@ -69,7 +69,8 @@ const fieldValueStyles = (theme: any) => ({
 const buttonContainerStyles = {
   padding: '20px',
   display: 'flex',
-  justifyContent: 'space-between',
+  gap:'20px',
+  justifyContent: 'flex-end',
 };
 
 const closeButtonStyles = (theme: any) => ({
@@ -162,7 +163,7 @@ const LearnerModal = ({
                         {t('PROFILE.FULL_NAME')}
                       </Typography>
                       <Box display="flex">
-                        <Typography sx={fieldValueStyles(theme)}>
+                        <Typography className='two-line-text' sx={fieldValueStyles(theme)}>
                           {userName ? toPascalCase(userName) : ''}
                         </Typography>
                       </Box>

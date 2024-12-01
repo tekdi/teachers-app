@@ -377,6 +377,7 @@ const CoursePlannerDetail = () => {
   };
 
   return (
+    <>
     <Box
       sx={{
         height: '100vh',
@@ -401,97 +402,112 @@ const CoursePlannerDetail = () => {
           sx={{
             color: theme.palette.warning['A200'],
             transform: isRTL ? ' rotate(180deg)' : 'unset',
+
           }}
         />
-        <Box>
-          <Box
-            sx={{
-              display: 'flex',
-              gap: '10px',
-              alignItems: 'center',
-            }}
-          >
-            <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-              <Box sx={{ width: '40px', height: '40px' }}>
-                <CircularProgressbar
-                  value={completionPercentage}
-                  strokeWidth={10}
-                  styles={buildStyles({
-                    pathColor: determinePathColor(completionPercentage),
-                    trailColor: '#E6E6E6',
-                    strokeLinecap: 'round',
-                  })}
-                />
-              </Box>
+        {
+             userProjectDetails?.tasks?.length > 0 && (
+              <>
+                <Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '10px',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                      <Box sx={{ width: '40px', height: '40px' }}>
+                        <CircularProgressbar
+                          value={completionPercentage}
+                          strokeWidth={10}
+                          styles={buildStyles({
+                            pathColor: determinePathColor(completionPercentage),
+                            trailColor: '#E6E6E6',
+                            strokeLinecap: 'round',
+                          })}
+                        />
+                      </Box>
 
-              <Box
-                sx={{
-                  top: 0,
-                  left: 0,
-                  bottom: 0,
-                  right: 0,
-                  position: 'absolute',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Typography
-                  variant="caption"
-                  component="div"
-                  sx={{
-                    fontSize: '11px',
-                    color: theme.palette.warning['300'],
-                    fontWeight: '500',
-                  }}
-                >
-                  {completionPercentage}%
-                </Typography>
-              </Box>
-            </Box>
+                      <Box
+                        sx={{
+                          top: 0,
+                          left: 0,
+                          bottom: 0,
+                          right: 0,
+                          position: 'absolute',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <Typography
+                          variant="caption"
+                          component="div"
+                          sx={{
+                            fontSize: '11px',
+                            color: theme.palette.warning['300'],
+                            fontWeight: '500',
+                          }}
+                        >
+                          {completionPercentage}%
+                        </Typography>
+                      </Box>
+                    </Box>
 
+                    <Box
+                      sx={{
+                        fontSize: '16px',
+                        color: theme.palette.warning['300'],
+                      }}
+                    >
+                      {tStore?.taxonomySubject}
+                    </Box>
+                  </Box>
+                </Box>
+              
+              </>
+             ) 
+        }
+      
+      </Box>
+      
+      {
+          userProjectDetails?.tasks?.length > 0 && (
             <Box
               sx={{
-                fontSize: '16px',
-                color: theme.palette.warning['300'],
+                display: 'flex',
+                justifyContent: 'end',
+                pr: '16px',
+                alignItems: 'center',
               }}
+              mt={2}
             >
-              {tStore?.taxonomySubject}
+              <Box
+                sx={{
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  color: theme.palette.warning['300'],
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+                onClick={handleToggleAll}
+              >
+                {Object.values(expandedPanels).every(Boolean)
+                  ? t('COURSE_PLANNER.COLLAPSE_ALL')
+                  : t('COURSE_PLANNER.EXPAND_ALL')}
+                {Object.values(expandedPanels).every(Boolean) ? (
+                  <ArrowDropUpIcon sx={{ color: theme.palette.warning['300'] }} />
+                ) : (
+                  <ArrowDropDownIcon sx={{ color: theme.palette.warning['300'] }} />
+                )}
+              </Box>
             </Box>
-          </Box>
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'end',
-          pr: '16px',
-          alignItems: 'center',
-        }}
-        mt={2}
-      >
-        <Box
-          sx={{
-            fontSize: '12px',
-            fontWeight: '500',
-            color: theme.palette.warning['300'],
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-          }}
-          onClick={handleToggleAll}
-        >
-          {Object.values(expandedPanels).every(Boolean)
-            ? t('COURSE_PLANNER.COLLAPSE_ALL')
-            : t('COURSE_PLANNER.EXPAND_ALL')}
-          {Object.values(expandedPanels).every(Boolean) ? (
-            <ArrowDropUpIcon sx={{ color: theme.palette.warning['300'] }} />
-          ) : (
-            <ArrowDropDownIcon sx={{ color: theme.palette.warning['300'] }} />
-          )}
-        </Box>
-      </Box>
+          )
+      }
+      
 
       <div
         style={{
@@ -794,6 +810,7 @@ const CoursePlannerDetail = () => {
         modalOpen={modalOpen}
       /> */}
     </Box>
+    </>
   );
 };
 
