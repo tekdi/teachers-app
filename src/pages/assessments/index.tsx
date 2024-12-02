@@ -128,13 +128,13 @@ const Assessments = () => {
   }, [classId]);
 
   useEffect(() => {
-    const getDoIdForAssessmentReport = async () => {
+    const getDoIdForAssessmentReport = async (selectedState: string, selectedBoard: string) => {
       const stateName = localStorage.getItem('stateName');
 
       const filters = {
         program: Program,
-        board: centerData?.board,
-        state: centerData?.state,
+        board: selectedBoard || centerData?.board,
+        state: selectedState || centerData?.state,
         status: ['Live'],
         assessmentType:
           assessmentType === 'pre'
@@ -196,12 +196,15 @@ const Assessments = () => {
       }
     };
 
-    if (assessmentType && cohortsData.length > 0) {
+    if (assessmentType && cohortsData?.length > 0) {
+      console.log('call API',cohortsData);
+      const selectedState = cohortsData?.[0]?.customField.filter((item: any) => item.label === "STATES")?.[0]?.value;
+      const selectedBoard = cohortsData?.[0]?.customField.filter((item: any) => item.label === "BOARD")?.[0]?.value; 
       setCenterData({
-        state: cohortsData?.[0]?.customField.filter((item: any) => item.label === "STATE")?.[0]?.value,
-        board: cohortsData?.[0]?.customField.filter((item: any) => item.label === "BOARD")?.[0]?.value
+        state: selectedState,
+        board: selectedBoard
       });
-      getDoIdForAssessmentReport();
+      getDoIdForAssessmentReport(selectedState, selectedBoard);
     }
     console.log("===vivek", cohortsData, manipulatedCohortData);
     console.log('call API', classId, assessmentType);
