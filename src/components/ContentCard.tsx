@@ -87,7 +87,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
                         textOverflow: 'ellipsis',
                     }}
                 >
-                    {name} || {subTopic?.join(', ')}
+                    {name || subTopic?.join(', ')}
                 </Box>
             </Box>
 
