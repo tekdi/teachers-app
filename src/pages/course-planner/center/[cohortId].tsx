@@ -746,20 +746,21 @@ const CoursePlannerDetail = () => {
                                     mt: 0.8,
                                     cursor: 'pointer',
                                   }}
+                                  onClick={() => {
+                                    // setResources(subTopic);
+                                    fetchLearningResources(
+                                      subTopic,
+                                      subTopic?.learningResources
+                                    );
+                                    router.push(`/topic-detail-view`);
+                                  }}
                                 // onClick={() => {
                                 //   // router.push(`/topic-detail-view`);
                                 // }}
                                 >
                                   <Box
                                     sx={{ fontSize: '12px', fontWeight: '500' }}
-                                    onClick={() => {
-                                      // setResources(subTopic);
-                                      fetchLearningResources(
-                                        subTopic,
-                                        subTopic?.learningResources
-                                      );
-                                      router.push(`/topic-detail-view`);
-                                    }}
+                                    
                                   >
                                     {`${subTopic?.learningResources?.length} ${t(
                                       'COURSE_PLANNER.RESOURCES'

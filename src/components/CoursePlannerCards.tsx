@@ -11,10 +11,19 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
 }) => {
   const theme = useTheme<any>();
 
+  // Filter by type
   const filteredResources = resources?.filter(
     (resource: { type?: string }) =>
       (type === ResourcesType.NONE && !resource.type) || resource.type === type
   );
+
+  // Remove duplicates by identifier
+  const uniqueResources = filteredResources?.reduce((acc : any, resource :any) => {
+    if (!acc.some((item : any) => item.identifier === resource.identifier)) {
+      acc.push(resource);
+    }
+    return acc;
+  }, [] as typeof resources);
 
   return (
     <Box>
@@ -23,7 +32,7 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
         spacing={2}
         sx={{ px: '16px !important', cursor: 'pointer' }}
       >
-        {filteredResources?.map(
+        {uniqueResources?.map(
           (
             resource: {
               resourceType: string;
@@ -35,10 +44,15 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
               mimeType: string; // Add this property
             },
             index: number
-
           ) => (
             <Grid item xs={6} md={4} lg={2} sx={{ mt: 2 }} key={index}>
-              <ContentCard name={resource?.name} identifier={resource?.identifier || resource?.id} mimeType={resource?.mimeType} appIcon={resource?.appIcon} resourceType={resource?.resourceType} />
+              <ContentCard
+                name={resource?.name}
+                identifier={resource?.identifier || resource?.id}
+                mimeType={resource?.mimeType}
+                appIcon={resource?.appIcon}
+                resourceType={resource?.resourceType}
+              />
             </Grid>
           )
         )}
