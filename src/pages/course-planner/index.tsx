@@ -475,91 +475,97 @@ const CoursePlanner = () => {
   useEffect(() => {
     const fetchTaxonomyResults = async () => {
       try {
-        const typeAssociations = getAssociationsByCodeNew(
-          typeOptions,
-          tStore?.type
-        );
-        setTypeAssociations(typeAssociations);
-        const subject = await getOptionsByCategory(framework, 'subject');
+        const StateName = tStore?.state;
+        const medium = tStore?.medium;
+        const grade = tStore?.grade;
+        const board = tStore?.board;
 
-        console.log(subject);
+        if (StateName && medium && grade && board) {
+          console.log(StateName, medium, grade, board);
 
-        const commonSubjectInState = filterAndMapAssociationsNew(
-          'subject',
-          subject,
-          stateAssociations,
-          'code'
-        );
-        const commonSubjectInBoard = filterAndMapAssociationsNew(
-          'subject',
-          typeOptions,
-          boardAssociations,
-          'code'
-        );
-        const commonSubjectInMedium = filterAndMapAssociationsNew(
-          'subject',
-          subject,
-          mediumAssociations,
-          'code'
-        );
-        const commonSubjectInGrade = filterAndMapAssociationsNew(
-          'subject',
-          subject,
-          gradeAssociations,
-          'code'
-        );
-        const commonSubjectInType = filterAndMapAssociationsNew(
-          'subject',
-          subject,
-          typeAssociations,
-          'code'
-        );
+          const url = `/api/framework/v1/read/${frameworkId}`;
+          const boardData = await fetch(url).then((res) => res.json());
+          const frameworks = boardData?.result?.framework;
 
-        const findCommonAssociationsNew = (array1: any[], array2: any[]) => {
-          return array1.filter((item1: { code: any }) =>
-            array2.some((item2: { code: any }) => item1.code === item2.code)
-          );
-        };
-
-        const findOverallCommonSubjects = (arrays: any[]) => {
-          const nonEmptyArrays = arrays.filter(
-            (array: string | any[]) => array && array.length > 0
+          const getStates = getOptionsByCategory(frameworks, 'state');
+          const matchState = getStates.find(
+            (item: any) =>
+              item?.name?.toLowerCase() === StateName?.toLocaleLowerCase()
           );
 
-          if (nonEmptyArrays.length === 0) return [];
+          const getBoards = getOptionsByCategory(frameworks, 'board');
+          console.log('getBoards', getBoards);
+          const matchBoard = getBoards.find((item: any) => item.name === board);
+          console.log('matchBoard', matchBoard);
+          const getMedium = getOptionsByCategory(frameworks, 'medium');
+          const matchMedium = getMedium.find(
+            (item: any) => item.name === medium
+          );
 
-          let commonSubjects = nonEmptyArrays[0];
+          const getGrades = getOptionsByCategory(frameworks, 'gradeLevel');
+          const matchGrade = getGrades.find((item: any) => item.name === grade);
 
-          for (let i = 1; i < nonEmptyArrays.length; i++) {
-            commonSubjects = findCommonAssociationsNew(
-              commonSubjects,
-              nonEmptyArrays[i]
-            );
+          const getCourseTypes = getOptionsByCategory(frameworks, 'courseType');
+          const courseTypes = getCourseTypes?.map((type: any) => type.name);
+          // setCourseTypes(courseTypes);
 
-            if (commonSubjects.length === 0) return [];
-          }
+          const courseTypesAssociations = getCourseTypes?.map((type: any) => {
+            return {
+              code: type.code,
+              name: type.name,
+              associations: type.associations,
+            };
+          });
 
-          return commonSubjects;
-        };
+          const courseSubjectLists = courseTypesAssociations.map(
+            (courseType: any) => {
+              const commonAssociations = courseType?.associations.filter(
+                (assoc: any) =>
+                  matchState?.associations.filter(
+                    (item: any) => item.code === assoc.code
+                  )?.length &&
+                  matchBoard?.associations.filter(
+                    (item: any) => item.code === assoc.code
+                  )?.length &&
+                  matchMedium?.associations.filter(
+                    (item: any) => item.code === assoc.code
+                  )?.length &&
+                  matchGrade?.associations.filter(
+                    (item: any) => item.code === assoc.code
+                  )?.length
+              );
+              console.log(commonAssociations);
+              const getSubjects = getOptionsByCategory(frameworks, 'subject');
+              const subjectAssociations = commonAssociations?.filter(
+                (assoc: any) =>
+                  getSubjects.map((item: any) => assoc.code === item?.code)
+              );
+              console.log(subjectAssociations);
+              return {
+                courseTypeName: courseType?.name,
+                courseType: courseType?.code,
+                subjects: subjectAssociations?.map(
+                  (subject: any) => subject?.name
+                ),
+              };
+            }
+          );
+          const matchedCourse = courseSubjectLists.find(
+            (course: any) => course.courseTypeName === tStore.type
+          );
 
-        const arrays = [
-          commonSubjectInState,
-          commonSubjectInBoard,
-          commonSubjectInMedium,
-          commonSubjectInGrade,
-          commonSubjectInType,
-        ];
+          const matchingSubjects = matchedCourse ? matchedCourse.subjects : [];
 
-        const overallCommonSubjects = await findOverallCommonSubjects(arrays);
-
-        localStorage.setItem(
-          'overallCommonSubjects',
-          JSON.stringify(overallCommonSubjects)
-        );
-        setSubjects(overallCommonSubjects);
-        setArray(overallCommonSubjects);
+          console.log(matchingSubjects);
+          setSubjects(matchingSubjects);
+          localStorage.setItem(
+            'overallCommonSubjects',
+            JSON.stringify(matchingSubjects)
+          );
+          // setSubjectLists(courseSubjectLists);
+        }
       } catch (error) {
-        console.error('Failed to fetch cohort search results:', error);
+        console.error('Error fetching board data:', error);
       }
     };
     fetchTaxonomyResults();
@@ -748,7 +754,7 @@ const CoursePlanner = () => {
                                 color: theme.palette.warning['300'],
                               }}
                             >
-                              {item.name}
+                              {item}
                             </Box>
                           </Box>
                         </Box>
