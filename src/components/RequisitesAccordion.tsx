@@ -28,6 +28,14 @@ const RequisitesAccordion: React.FC<RequisitesAccordionProps> = ({
   theme,
   subTopic,
 }) => {
+
+  
+  const uniqueContent = content.filter(
+    (item, index, self) =>
+      item.type === type &&
+      index === self.findIndex((t) => t.id === item.id)
+  );
+
   return (
     <Accordion
       sx={{
@@ -66,14 +74,18 @@ const RequisitesAccordion: React.FC<RequisitesAccordionProps> = ({
         sx={{ padding: '0px', background: theme?.palette?.warning['A400'] }}
       >
         <Grid container spacing={2} sx={{ px: '16px !important' }}>
-          {content.filter((item) => item.type === type).length > 0 ? (
-            content
-              .filter((item) => item.type === type)
-              .map((item) => (
-                <Grid item xs={6} sx={{ mt: 2 }} key={item.name}>
-                  <ContentCard name={item?.name} subTopic={subTopic} appIcon={item.appIcon} identifier={item?.id} mimeType={item?.mimeType}/>
-                </Grid>
-              ))
+          {uniqueContent.length > 0 ? (
+            uniqueContent.map((item) => (
+              <Grid item xs={6} sx={{ mt: 2 }} key={item.id}>
+                <ContentCard
+                  name={item?.name}
+                  subTopic={subTopic}
+                  appIcon={item.appIcon}
+                  identifier={item?.id}
+                  mimeType={item?.mimeType}
+                />
+              </Grid>
+            ))
           ) : (
             <NoDataFound />
           )}
