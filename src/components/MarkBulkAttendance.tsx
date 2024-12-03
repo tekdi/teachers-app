@@ -55,6 +55,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
 
   const [updateAttendance, setUpdateAttendance] = React.useState(false);
   const [confirmation, setConfirmation] = React.useState(false);
+  const [isConfirmation, setIsConfirmation] = React.useState(false);
+
   const [modalOpen, setModalOpen] = React.useState(false);
   const attendanceUpdate = () => {
     setUpdateAttendance(true);
@@ -91,6 +93,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   };
 
   const updateBulkAttendanceStatus = (arr: any[]) => {
+    setIsConfirmation(true);
     const isAllPresent = arr.every(
       (user: any) => user.attendance === 'present'
     );
@@ -105,6 +108,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     status: string,
     id?: string | undefined
   ) => {
+    setIsConfirmation(true);
+
     const updatedAttendanceList = cohortMemberList?.map((user: any) => {
       if (isBulkAction) {
         user.attendance = status;
@@ -215,7 +220,10 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   // };
 
   const getMessage = () => {
-    if (updateAttendance) return presentCount == 0 && absentCount == 0 ?  t('COMMON.SURE_MARK') : t('COMMON.SURE_UPDATE');
+    if (updateAttendance)
+      return presentCount == 0 && absentCount == 0
+        ? t('COMMON.SURE_MARK')
+        : t('COMMON.SURE_UPDATE');
     if (confirmation) return t('COMMON.SURE_CLOSE');
     return '';
   };
@@ -306,7 +314,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       cursor: 'pointer',
                       color: theme.palette.warning['A200'],
                     }}
-                    onClick={confirmationOpen}
+                    onClick={isConfirmation ? confirmationOpen : onClose}
                   />
                 </Box>
               </Box>

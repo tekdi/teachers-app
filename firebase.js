@@ -1,13 +1,15 @@
-import { initializeApp } from "firebase/app";
-import { getMessaging, onMessage, getToken } from "firebase/messaging";
+import { initializeApp } from 'firebase/app';
+import { getMessaging, onMessage, getToken } from 'firebase/messaging';
 // import config from './config.json';
 import firebaseConfig from './firebaseConfig';
 
 const firebaseApp = initializeApp(firebaseConfig);
 let messaging;
 
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
   messaging = getMessaging();
+} else {
+  console.warn('Service workers are not supported in this environment.');
 }
 
 export const requestPermission = async () => {
@@ -21,17 +23,17 @@ export const requestPermission = async () => {
     console.log('Notification token:', token);
     return token;
   } else {
-  console.warn("Notification permission denied");
+    console.warn('Notification permission denied');
     return null;
   }
-}; 
+};
 
 export const onMessageListener = () =>
   new Promise((resolve) => {
     if (messaging) {
       onMessage(messaging, (payload) => {
-        console.log("Received foreground message:", payload);
+        console.log('Received foreground message:', payload);
         resolve(payload);
       });
     }
-  });         
+  });

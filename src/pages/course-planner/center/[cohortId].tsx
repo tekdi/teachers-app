@@ -250,19 +250,19 @@ const CoursePlannerDetail = () => {
 
   const toggleDrawer =
     (open: boolean, selectedCount: number = 0) =>
-    (event?: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event &&
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
-      setDrawerState({ ...drawerState, bottom: open });
-      setIsDrawerOpen(open);
-      setSelectedCount(selectedCount);
-    };
+      (event?: React.KeyboardEvent | React.MouseEvent) => {
+        if (
+          event &&
+          event.type === 'keydown' &&
+          ((event as React.KeyboardEvent).key === 'Tab' ||
+            (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+          return;
+        }
+        setDrawerState({ ...drawerState, bottom: open });
+        setIsDrawerOpen(open);
+        setSelectedCount(selectedCount);
+      };
 
   const handleCloseModel = () => {
     setModalOpen(false);
@@ -359,12 +359,18 @@ const CoursePlannerDetail = () => {
     console.log(resources);
 
     try {
-      const identifiers = resources.map((resource: IResource) => resource?.id);
+      resources = resources.map((resource: IResource) => {
+        return {
+          ...resource,
+          id: resource.id.toLowerCase(),
+        }
+      });
+      const identifiers = resources.map((resource: IResource) => resource?.id?.toLowerCase());
       const response = await fetchBulkContents(identifiers);
 
       resources = resources.map((resource: IResource) => {
         const content = response?.find(
-          (content: any) => content?.identifier === resource?.id
+          (content: any) => content?.identifier?.toLowerCase() === resource?.id?.toLowerCase()
         );
         return { ...resource, ...content };
       });
@@ -377,359 +383,369 @@ const CoursePlannerDetail = () => {
   };
 
   return (
-    <Box
-      sx={{
-        height: '100vh',
-        overflowY: 'auto',
-      }}
-    >
-      <Header />
+    <>
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'left',
-          alignItems: 'center',
-          color: theme.palette.warning['A200'],
-          padding: '15px 16px 5px',
-          gap: '15px',
+          height: '100vh',
+          overflowY: 'auto',
         }}
-        width={'100%'}
       >
-        <KeyboardBackspaceOutlinedIcon
-          onClick={handleBackEvent}
-          cursor={'pointer'}
-          sx={{
-            color: theme.palette.warning['A200'],
-            transform: isRTL ? ' rotate(180deg)' : 'unset',
-          }}
-        />
-        <Box>
-          <Box
-            sx={{
-              display: 'flex',
-              gap: '10px',
-              alignItems: 'center',
-            }}
-          >
-            <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-              <Box sx={{ width: '40px', height: '40px' }}>
-                <CircularProgressbar
-                  value={completionPercentage}
-                  strokeWidth={10}
-                  styles={buildStyles({
-                    pathColor: determinePathColor(completionPercentage),
-                    trailColor: '#E6E6E6',
-                    strokeLinecap: 'round',
-                  })}
-                />
-              </Box>
-
-              <Box
-                sx={{
-                  top: 0,
-                  left: 0,
-                  bottom: 0,
-                  right: 0,
-                  position: 'absolute',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Typography
-                  variant="caption"
-                  component="div"
-                  sx={{
-                    fontSize: '11px',
-                    color: theme.palette.warning['300'],
-                    fontWeight: '500',
-                  }}
-                >
-                  {completionPercentage}%
-                </Typography>
-              </Box>
-            </Box>
-
-            <Box
-              sx={{
-                fontSize: '16px',
-                color: theme.palette.warning['300'],
-              }}
-            >
-              {tStore?.taxonomySubject}
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'end',
-          pr: '16px',
-          alignItems: 'center',
-        }}
-        mt={2}
-      >
+        <Header />
         <Box
           sx={{
-            fontSize: '12px',
-            fontWeight: '500',
-            color: theme.palette.warning['300'],
-            cursor: 'pointer',
             display: 'flex',
+            justifyContent: 'left',
             alignItems: 'center',
-            gap: '4px',
+            color: theme.palette.warning['A200'],
+            padding: '15px 16px 5px',
+            gap: '15px',
           }}
-          onClick={handleToggleAll}
+          width={'100%'}
         >
-          {Object.values(expandedPanels).every(Boolean)
-            ? t('COURSE_PLANNER.COLLAPSE_ALL')
-            : t('COURSE_PLANNER.EXPAND_ALL')}
-          {Object.values(expandedPanels).every(Boolean) ? (
-            <ArrowDropUpIcon sx={{ color: theme.palette.warning['300'] }} />
-          ) : (
-            <ArrowDropDownIcon sx={{ color: theme.palette.warning['300'] }} />
-          )}
-        </Box>
-      </Box>
+          <KeyboardBackspaceOutlinedIcon
+            onClick={handleBackEvent}
+            cursor={'pointer'}
+            sx={{
+              color: theme.palette.warning['A200'],
+              transform: isRTL ? ' rotate(180deg)' : 'unset',
 
-      <div
-        style={{
-          marginBottom: drawerState.bottom ? '115px' : '0px',
-          transition: 'padding-bottom 0.3s ease',
-        }}
-      >
-        {loading ? (
-          <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-        ) : (
-          <>
-            <Box mt={2}>
-              {userProjectDetails?.tasks?.length > 0 ? (
-                userProjectDetails.tasks.map((topic: any, index: number) => (
-                  <Box key={topic._id} sx={{ borderRadius: '8px', mb: 2 }}>
-                    <Accordion
-                      expanded={expandedPanels[`panel${index}-header`] || false}
-                      onChange={() =>
-                        setExpandedPanels((prev) => ({
-                          ...prev,
-                          [`panel${index}-header`]:
-                            !prev[`panel${index}-header`],
-                        }))
-                      }
-                      sx={{
-                        boxShadow: 'none',
-                        background: '#F1E7D9',
-                        border: 'none',
-                        transition: '0.3s',
-                      }}
-                    >
-                      <AccordionSummary
-                        expandIcon={
-                          <ArrowDropDownIcon
-                            sx={{ color: theme.palette.warning['300'] }}
-                          />
-                        }
-                        aria-controls={`panel${index}-content`}
-                        id={`panel${index}-header`}
-                        className="accordion-summary"
+            }}
+          />
+          {
+            userProjectDetails?.tasks?.length > 0 && (
+              <>
+                <Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '10px',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                      <Box sx={{ width: '40px', height: '40px' }}>
+                        <CircularProgressbar
+                          value={completionPercentage}
+                          strokeWidth={10}
+                          styles={buildStyles({
+                            pathColor: determinePathColor(completionPercentage),
+                            trailColor: '#E6E6E6',
+                            strokeLinecap: 'round',
+                          })}
+                        />
+                      </Box>
+
+                      <Box
                         sx={{
-                          px: '16px',
-                          m: 0,
-                          '&.Mui-expanded': {
-                            minHeight: '48px',
-                          },
+                          top: 0,
+                          left: 0,
+                          bottom: 0,
+                          right: 0,
+                          position: 'absolute',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                         }}
                       >
-                        <Box
+                        <Typography
+                          variant="caption"
+                          component="div"
                           sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            width: '100%',
-                            pr: '5px',
-                            alignItems: 'center',
+                            fontSize: '11px',
+                            color: theme.palette.warning['300'],
+                            fontWeight: '500',
+                          }}
+                        >
+                          {completionPercentage}%
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        fontSize: '16px',
+                        color: theme.palette.warning['300'],
+                      }}
+                    >
+                      {tStore?.taxonomySubject}
+                    </Box>
+                  </Box>
+                </Box>
+
+              </>
+            )
+          }
+
+        </Box>
+
+        {
+          userProjectDetails?.tasks?.length > 0 && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'end',
+                pr: '16px',
+                alignItems: 'center',
+              }}
+              mt={2}
+            >
+              <Box
+                sx={{
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  color: theme.palette.warning['300'],
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+                onClick={handleToggleAll}
+              >
+                {Object.values(expandedPanels).every(Boolean)
+                  ? t('COURSE_PLANNER.COLLAPSE_ALL')
+                  : t('COURSE_PLANNER.EXPAND_ALL')}
+                {Object.values(expandedPanels).every(Boolean) ? (
+                  <ArrowDropUpIcon sx={{ color: theme.palette.warning['300'] }} />
+                ) : (
+                  <ArrowDropDownIcon sx={{ color: theme.palette.warning['300'] }} />
+                )}
+              </Box>
+            </Box>
+          )
+        }
+
+
+        <div
+          style={{
+            marginBottom: drawerState.bottom ? '115px' : '0px',
+            transition: 'padding-bottom 0.3s ease',
+          }}
+        >
+          {loading ? (
+            <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+          ) : (
+            <>
+              <Box mt={2}>
+                {userProjectDetails?.tasks?.length > 0 ? (
+                  userProjectDetails.tasks.map((topic: any, index: number) => (
+                    <Box key={topic._id} sx={{ borderRadius: '8px', mb: 2 }}>
+                      <Accordion
+                        expanded={expandedPanels[`panel${index}-header`] || false}
+                        onChange={() =>
+                          setExpandedPanels((prev) => ({
+                            ...prev,
+                            [`panel${index}-header`]:
+                              !prev[`panel${index}-header`],
+                          }))
+                        }
+                        sx={{
+                          boxShadow: 'none',
+                          background: '#F1E7D9',
+                          border: 'none',
+                          transition: '0.3s',
+                        }}
+                      >
+                        <AccordionSummary
+                          expandIcon={
+                            <ArrowDropDownIcon
+                              sx={{ color: theme.palette.warning['300'] }}
+                            />
+                          }
+                          aria-controls={`panel${index}-content`}
+                          id={`panel${index}-header`}
+                          className="accordion-summary"
+                          sx={{
+                            px: '16px',
+                            m: 0,
+                            '&.Mui-expanded': {
+                              minHeight: '48px',
+                            },
                           }}
                         >
                           <Box
                             sx={{
                               display: 'flex',
                               justifyContent: 'space-between',
+                              width: '100%',
+                              pr: '5px',
                               alignItems: 'center',
-                              gap: '5px',
-                            }}
-                          >
-                            {/* Check if the parent task is completed and show a black tick */}
-                            {isStatusCompleted(topic._id, false) ? (
-                              <CheckCircleIcon
-                                sx={{ fontSize: '15px', color: 'black' }}
-                              />
-                            ) : (
-                              <RadioButtonUncheckedIcon
-                                sx={{ fontSize: '15px' }}
-                              />
-                            )}
-                            <Typography
-                              fontWeight="500"
-                              fontSize="14px"
-                              color={theme.palette.warning['300']}
-                            >
-                              {`Topic ${index + 1} - ${topic.name}`}
-                            </Typography>
-                          </Box>
-
-                          <Typography
-                            fontWeight="600"
-                            fontSize="12px"
-                            color="#7C766F"
-                          >
-                            {getAbbreviatedMonth(
-                              topic?.metaInformation?.startDate
-                            )}
-                            ,{' '}
-                            {getAbbreviatedMonth(
-                              topic?.metaInformation?.endDate
-                            )}
-                          </Typography>
-                        </Box>
-                      </AccordionSummary>
-                      <AccordionDetails
-                        sx={{
-                          padding: '0',
-                          transition: 'max-height 0.3s ease-out',
-                        }}
-                      >
-                        {topic.children.map((subTopic: any) => (
-                          <Box
-                            key={subTopic._id}
-                            sx={{
-                              borderBottom: `1px solid ${theme.palette.warning['A100']}`,
                             }}
                           >
                             <Box
                               sx={{
-                                py: '10px',
-                                px: '16px',
-                                background: theme.palette.warning['A400'],
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                gap: '5px',
+                              }}
+                            >
+                              {/* Check if the parent task is completed and show a black tick */}
+                              {isStatusCompleted(topic._id, false) ? (
+                                <CheckCircleIcon
+                                  sx={{ fontSize: '15px', color: 'black' }}
+                                />
+                              ) : (
+                                <RadioButtonUncheckedIcon
+                                  sx={{ fontSize: '15px' }}
+                                />
+                              )}
+                              <Typography
+                                fontWeight="500"
+                                fontSize="14px"
+                                color={theme.palette.warning['300']}
+                              >
+                                {`Topic ${index + 1} - ${topic.name}`}
+                              </Typography>
+                            </Box>
+
+                            <Typography
+                              fontWeight="600"
+                              fontSize="12px"
+                              color="#7C766F"
+                            >
+                              {getAbbreviatedMonth(
+                                topic?.metaInformation?.startDate
+                              )}
+                              ,{' '}
+                              {getAbbreviatedMonth(
+                                topic?.metaInformation?.endDate
+                              )}
+                            </Typography>
+                          </Box>
+                        </AccordionSummary>
+                        <AccordionDetails
+                          sx={{
+                            padding: '0',
+                            transition: 'max-height 0.3s ease-out',
+                          }}
+                        >
+                          {topic.children.map((subTopic: any) => (
+                            <Box
+                              key={subTopic._id}
+                              sx={{
+                                borderBottom: `1px solid ${theme.palette.warning['A100']}`,
                               }}
                             >
                               <Box
                                 sx={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'center',
-                                  gap: '20px',
+                                  py: '10px',
+                                  px: '16px',
+                                  background: theme.palette.warning['A400'],
                                 }}
                               >
-                                <Box
-                                  sx={{
-                                    fontSize: '16px',
-                                    fontWeight: '400',
-                                    color: theme.palette.warning['300'],
-                                    cursor: 'pointer',
-                                  }}
-                                  onClick={() => {
-                                    fetchLearningResources(
-                                      subTopic,
-                                      subTopic?.learningResources
-                                    );
-
-                                    router.push(`/topic-detail-view`);
-                                  }}
-                                >
-                                  {subTopic.name}
-                                </Box>
                                 <Box
                                   sx={{
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
-                                    gap: '6px',
+                                    gap: '20px',
                                   }}
                                 >
                                   <Box
                                     sx={{
-                                      padding: '5px',
-                                      background: '  #C1D6FF',
-                                      fontSize: '12px',
-                                      fontWeight: '500',
-                                      color: '#4D4639',
-                                      borderRadius: '8px',
+                                      fontSize: '16px',
+                                      fontWeight: '400',
+                                      color: theme.palette.warning['300'],
+                                      cursor: 'pointer',
+                                    }}
+                                    onClick={() => {
+                                      fetchLearningResources(
+                                        subTopic,
+                                        subTopic?.learningResources
+                                      );
+
+                                      router.push(`/topic-detail-view`);
                                     }}
                                   >
-                                    {getAbbreviatedMonth(
-                                      subTopic?.metaInformation?.startDate
-                                    )}
+                                    {subTopic.name}
                                   </Box>
-                                  <CheckCircleIcon
-                                    onClick={() => {
-                                      if (!isStatusCompleted(subTopic._id)) {
-                                        const alreadySelected =
-                                          selectedSubtopics.find(
-                                            (s) => s.subid === subTopic._id
-                                          );
-
-                                        if (alreadySelected) {
-                                          setSelectedSubtopics(
-                                            selectedSubtopics.filter(
-                                              (s) => s.subid !== subTopic._id
-                                            )
-                                          );
-
-                                          toggleDrawer(
-                                            true,
-                                            selectedSubtopics.length - 1
-                                          )();
-                                        } else {
-                                          setSelectedSubtopics([
-                                            ...selectedSubtopics,
-                                            {
-                                              topid: topic._id,
-                                              subid: subTopic._id,
-                                            },
-                                          ]);
-
-                                          toggleDrawer(
-                                            true,
-                                            selectedSubtopics.length + 1
-                                          )();
-                                        }
-                                      }
-                                    }}
+                                  <Box
                                     sx={{
-                                      fontSize: '20px',
-                                      color: selectedSubtopics.find(
-                                        (s) => s.subid === subTopic._id
-                                      )
-                                        ? '#FF9800'
-                                        : isStatusCompleted(subTopic._id)
-                                          ? '#4CAF50'
-                                          : '#7C766e',
-                                      cursor: isStatusCompleted(subTopic._id)
-                                        ? 'default'
-                                        : 'pointer',
-                                      pointerEvents: isStatusCompleted(
-                                        subTopic._id
-                                      )
-                                        ? 'none'
-                                        : 'auto',
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                      alignItems: 'center',
+                                      gap: '6px',
                                     }}
-                                  />
+                                  >
+                                    <Box
+                                      sx={{
+                                        padding: '5px',
+                                        background: '  #C1D6FF',
+                                        fontSize: '12px',
+                                        fontWeight: '500',
+                                        color: '#4D4639',
+                                        borderRadius: '8px',
+                                      }}
+                                    >
+                                      {getAbbreviatedMonth(
+                                        subTopic?.metaInformation?.startDate
+                                      )}
+                                    </Box>
+                                    <CheckCircleIcon
+                                      onClick={() => {
+                                        if (!isStatusCompleted(subTopic._id)) {
+                                          const alreadySelected =
+                                            selectedSubtopics.find(
+                                              (s) => s.subid === subTopic._id
+                                            );
+
+                                          if (alreadySelected) {
+                                            setSelectedSubtopics(
+                                              selectedSubtopics.filter(
+                                                (s) => s.subid !== subTopic._id
+                                              )
+                                            );
+
+                                            toggleDrawer(
+                                              true,
+                                              selectedSubtopics.length - 1
+                                            )();
+                                          } else {
+                                            setSelectedSubtopics([
+                                              ...selectedSubtopics,
+                                              {
+                                                topid: topic._id,
+                                                subid: subTopic._id,
+                                              },
+                                            ]);
+
+                                            toggleDrawer(
+                                              true,
+                                              selectedSubtopics.length + 1
+                                            )();
+                                          }
+                                        }
+                                      }}
+                                      sx={{
+                                        fontSize: '20px',
+                                        color: selectedSubtopics.find(
+                                          (s) => s.subid === subTopic._id
+                                        )
+                                          ? '#FF9800'
+                                          : isStatusCompleted(subTopic._id)
+                                            ? '#4CAF50'
+                                            : '#7C766e',
+                                        cursor: isStatusCompleted(subTopic._id)
+                                          ? 'default'
+                                          : 'pointer',
+                                        pointerEvents: isStatusCompleted(
+                                          subTopic._id
+                                        )
+                                          ? 'none'
+                                          : 'auto',
+                                      }}
+                                    />
+                                  </Box>
                                 </Box>
-                              </Box>
-                              <Box
-                                sx={{
-                                  color: theme.palette.secondary.main,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '4px',
-                                  mt: 0.8,
-                                  cursor: 'pointer',
-                                }}
-                                // onClick={() => {
-                                //   // router.push(`/topic-detail-view`);
-                                // }}
-                              >
                                 <Box
-                                  sx={{ fontSize: '12px', fontWeight: '500' }}
+                                  sx={{
+                                    color: theme.palette.secondary.main,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    mt: 0.8,
+                                    cursor: 'pointer',
+                                  }}
                                   onClick={() => {
                                     // setResources(subTopic);
                                     fetchLearningResources(
@@ -738,51 +754,58 @@ const CoursePlannerDetail = () => {
                                     );
                                     router.push(`/topic-detail-view`);
                                   }}
+                                // onClick={() => {
+                                //   // router.push(`/topic-detail-view`);
+                                // }}
                                 >
-                                  {`${subTopic?.learningResources?.length} ${t(
-                                    'COURSE_PLANNER.RESOURCES'
-                                  )}`}
+                                  <Box
+                                    sx={{ fontSize: '12px', fontWeight: '500' }}
+                                    
+                                  >
+                                    {`${subTopic?.learningResources?.length} ${t(
+                                      'COURSE_PLANNER.RESOURCES'
+                                    )}`}
+                                  </Box>
+                                  <ArrowForwardIcon sx={{ fontSize: '16px' }} />
                                 </Box>
-                                <ArrowForwardIcon sx={{ fontSize: '16px' }} />
                               </Box>
                             </Box>
-                          </Box>
-                        ))}
-                      </AccordionDetails>
-                    </Accordion>
-                  </Box>
-                ))
-              ) : (
-                <Typography
-                  sx={{ mt: 2, textAlign: 'center', color: '#7C766F' }}
-                >
-                  {t('ASSESSMENTS.NO_DATA_FOUND')}
-                </Typography>
-              )}
-            </Box>
-          </>
-        )}
-      </div>
-      <FacilitatorDrawer
-        secondary={t('COMMON.CANCEL')}
-        primary={`${t('COURSE_PLANNER.MARK_AS_COMPLETED')} (${selectedCount})`}
-        toggleDrawer={toggleDrawer}
-        drawerState={drawerState}
-        onPrimaryClick={() => {
-          if (selectedSubtopics.length > 0) {
-            // Mark all selected subtopics as complete
-            markMultipleStatuses(userProjectDetails, selectedSubtopics);
+                          ))}
+                        </AccordionDetails>
+                      </Accordion>
+                    </Box>
+                  ))
+                ) : (
+                  <Typography
+                    sx={{ mt: 2, textAlign: 'center', color: '#7C766F' }}
+                  >
+                    {t('ASSESSMENTS.NO_DATA_FOUND')}
+                  </Typography>
+                )}
+              </Box>
+            </>
+          )}
+        </div>
+        <FacilitatorDrawer
+          secondary={t('COMMON.CANCEL')}
+          primary={`${t('COURSE_PLANNER.MARK_AS_COMPLETED')} (${selectedCount})`}
+          toggleDrawer={toggleDrawer}
+          drawerState={drawerState}
+          onPrimaryClick={() => {
+            if (selectedSubtopics.length > 0) {
+              // Mark all selected subtopics as complete
+              markMultipleStatuses(userProjectDetails, selectedSubtopics);
+              toggleDrawer(false)();
+            }
+          }}
+          onSecondaryClick={() => {
+            setSelectedSubtopics([]);
             toggleDrawer(false)();
-          }
-        }}
-        onSecondaryClick={() => {
-          setSelectedSubtopics([]);
-          toggleDrawer(false)();
-        }}
-        selectedCount={selectedCount}
-      />
+          }}
+          selectedCount={selectedCount}
+        />
 
-      {/* <ConfirmationModal
+        {/* <ConfirmationModal
         message={
           'You are unchecking this topic as complete. Are you sure you want to save this change?'
         }
@@ -793,7 +816,8 @@ const CoursePlannerDetail = () => {
         handleCloseModal={handleCloseModel}
         modalOpen={modalOpen}
       /> */}
-    </Box>
+      </Box>
+    </>
   );
 };
 

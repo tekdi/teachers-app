@@ -74,6 +74,7 @@ import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../../../featureEliminationUtil';
 import { telemetryFactory } from '@/utils/telemetry';
 import useStore from '@/store/store';
+import { setTimeout } from 'timers';
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
   SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
@@ -189,8 +190,12 @@ const CohortPage = () => {
   };
 
   const handleSchedule = () => {
-    console.log('handleSchedule called');
-    setCreateEvent(true);
+    console.log('handleSchedule calle');
+    setCreateEvent((prev) => !prev);
+
+    setTimeout(() => {
+      setCreateEvent((prev) => !prev);
+    });
   };
 
   const handleCloseSchedule = () => {
@@ -558,7 +563,7 @@ const CohortPage = () => {
               onClick={handleMenuOpen}
               sx={{ color: theme.palette.warning['A200'] }}
             >
-              <MoreVertIcon />
+              <MoreVertIcon sx={{ cursor: 'pointer' }} />
             </IconButton>
           )}
           <Menu
@@ -856,6 +861,7 @@ const CohortPage = () => {
                         fontSize: '14px',
                         fontWeight: '500',
                         color: theme?.palette?.warning['300'],
+                        marginBottom: '15px',
                       }}
                     >
                       {t('CENTER_SESSION.PLANNED_SESSIONS')}
@@ -978,7 +984,10 @@ const CohortPage = () => {
                   sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}
                 >
                   <Box
-                    sx={{ color: theme.palette.secondary.main }}
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      cursor: 'pointer',
+                    }}
                     className="fs-14 fw-500"
                     onClick={() => {
                       router.push('/attendance-overview');

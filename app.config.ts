@@ -69,7 +69,7 @@ export const DaysOfWeek = {
   Sat: 6,
 };
 
-export const Program = 'secondchance';
+export const Program = ['Second Chance','secondchance'];
 
 export const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || '';
 if (!tenantId) {

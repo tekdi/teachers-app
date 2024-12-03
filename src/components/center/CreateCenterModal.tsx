@@ -1,7 +1,7 @@
 import { useFormRead } from '@/hooks/useFormRead';
 import { createCohort } from '@/services/CreateUserService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
-import { FormContext, FormContextType, Telemetry } from '@/utils/app.constant';
+import { FormContext, FormContextType, QueryKeys, Telemetry } from '@/utils/app.constant';
 import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { IChangeEvent } from '@rjsf/core';
@@ -16,6 +16,7 @@ import SimpleModal from '../SimpleModal';
 import { showToastMessage } from '../Toastify';
 import FrameworkCategories from './FrameworkCategories';
 import { telemetryFactory } from '@/utils/telemetry';
+import { useQueryClient } from '@tanstack/react-query';
 interface CreateBlockModalProps {
   open: boolean;
   handleClose: () => void;
@@ -43,6 +44,8 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   const [formData, setFormData] = useState<any>();
   const [showForm, setShowForm] = useState(false);
   const [isHiddenFieldPresent, setIsHiddenFieldPresent] = useState(false);
+  const queryClient = useQueryClient();
+
   const { data: formResponse, isPending } = useFormRead(
     FormContext.COHORTS,
     FormContextType.COHORT
@@ -151,6 +154,12 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
       const cohortData = await createCohort(cohortDetails);
       if (cohortData?.hasOwnProperty('cohortId')) {
         showToastMessage(t('CENTERS.CENTER_CREATED'), 'success');
+        const storedUserId = localStorage.getItem('userId');
+        const userId = storedUserId ? storedUserId : '';
+
+        queryClient.invalidateQueries({
+          queryKey: [QueryKeys.MY_COHORTS, userId],
+        });
         const telemetryInteract = {
           context: {
             env: 'teaching-center',

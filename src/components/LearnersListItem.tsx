@@ -437,7 +437,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 ? toggleDrawer('bottom', true)(event)
                 : handleMenuOpen(event);
             }}
-            sx={{ fontSize: '32px', color: theme.palette.warning['300'] }}
+            sx={{ fontSize: '32px', color: theme.palette.warning['300'], cursor:'pointer' }}
           />
         </Box>
       ) : (

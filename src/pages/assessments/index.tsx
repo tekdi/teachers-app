@@ -15,6 +15,7 @@ import { toPascalCase } from '@/utils/Helper';
 import { ICohort } from '@/utils/Interfaces';
 import { AssessmentStatus, Role, Status, Telemetry } from '@/utils/app.constant';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import { telemetryFactory } from '@/utils/telemetry';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import {
   Box,
@@ -34,7 +35,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { accessControl, AssessmentType, AttendanceAPILimit, Program } from '../../../app.config';
 import { useDirection } from '../../hooks/useDirection';
-import { telemetryFactory } from '@/utils/telemetry';
 
 const DEFAULT_STATUS_ORDER = {
   [AssessmentStatus.NOT_STARTED]: 0,
@@ -58,6 +58,10 @@ const Assessments = () => {
   const [cohortsData, setCohortsData] = useState<Array<ICohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
     useState<Array<ICohort>>(cohortsData);
+  const [centerData, setCenterData] = useState<{ board: string, state: string }>({
+    board: '',
+    state: '',
+  });
 
   const [assessmentType, setAssessmentType] = useState<string>('pre');
   const [cohortMembers, setCohortMembers] = useState<any>([]);
@@ -124,17 +128,21 @@ const Assessments = () => {
   }, [classId]);
 
   useEffect(() => {
-    const getDoIdForAssessmentReport = async () => {
+    const getDoIdForAssessmentReport = async (selectedState: string, selectedBoard: string) => {
       const stateName = localStorage.getItem('stateName');
 
       const filters = {
-        program: [Program],
-        boards: [stateName],
-        // subject: [subjects || subject],
+        program: Program,
+        board: selectedBoard || centerData?.board,
+        state: selectedState || centerData?.state,
+        status: ['Live'],
         assessmentType:
           assessmentType === 'pre'
             ? AssessmentType.PRE_TEST
             : AssessmentType.POST_TEST,
+        primaryCategory: [
+          "Practice Question Set"
+        ]
       };
       try {
         if (stateName) {
@@ -187,9 +195,20 @@ const Assessments = () => {
         setIsLoading(false);
       }
     };
-    getDoIdForAssessmentReport();
+
+    if (assessmentType && cohortsData?.length > 0) {
+      console.log('call API',cohortsData);
+      const selectedState = cohortsData?.[0]?.customField.filter((item: any) => item.label === "STATES")?.[0]?.value;
+      const selectedBoard = cohortsData?.[0]?.customField.filter((item: any) => item.label === "BOARD")?.[0]?.value; 
+      setCenterData({
+        state: selectedState,
+        board: selectedBoard
+      });
+      getDoIdForAssessmentReport(selectedState, selectedBoard);
+    }
+    console.log("===vivek", cohortsData, manipulatedCohortData);
     console.log('call API', classId, assessmentType);
-  }, [assessmentType]);
+  }, [assessmentType, cohortsData]);
 
   useEffect(() => {
     const getAssessmentsForLearners = async () => {
@@ -400,27 +419,27 @@ const Assessments = () => {
                 style={{
                   borderRadius: '4px',
                 }}
-                onChange={(e) => 
-                  {setAssessmentType(e.target.value)
-                    const windowUrl = window.location.pathname;
-                    const cleanedUrl = windowUrl.replace(/^\//, '');
-              
-        
-                    const telemetryInteract = {
-                      context: {
-                        env: 'assessments',
-                        cdata: [],
-                      },
-                      edata: {
-                        id: 'filter-by-assessment-type:'+e.target.value,
-                        type: Telemetry.CLICK,
-                        subtype: '',
-                        pageid: cleanedUrl
-                      },
-                    };
-                    telemetryFactory.interact(telemetryInteract);
-                  
-                  }}
+                onChange={(e) => {
+                  setAssessmentType(e.target.value)
+                  const windowUrl = window.location.pathname;
+                  const cleanedUrl = windowUrl.replace(/^\//, '');
+
+
+                  const telemetryInteract = {
+                    context: {
+                      env: 'assessments',
+                      cdata: [],
+                    },
+                    edata: {
+                      id: 'filter-by-assessment-type:' + e.target.value,
+                      type: Telemetry.CLICK,
+                      subtype: '',
+                      pageid: cleanedUrl
+                    },
+                  };
+                  telemetryFactory.interact(telemetryInteract);
+
+                }}
                 defaultValue={'pre'}
                 value={assessmentType}
               >
@@ -515,6 +534,7 @@ const Assessments = () => {
                 userId={member.userId}
                 classId={classId}
                 assessmentType={assessmentType}
+                board={centerData?.board}
               />
             ))}
           </Grid>
