@@ -651,7 +651,7 @@ export interface GetTargetedSolutionsParams {
   medium: any;
   class: any;
   board: any;
-  type: string;
+  courseType: string;
   entityId?: string;
 }
 
