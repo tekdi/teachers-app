@@ -56,8 +56,8 @@ import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
 import { getOptionsByCategory } from '@/utils/Helper';
-// import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { telemetryFactory } from '@/utils/telemetry';
+import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -1237,10 +1237,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           const sessionSubject = sessionBlocks?.[0]?.subject || '';
 
           if (
-            sessionSubject &&
-            eventData?.metadata?.subject !== sessionSubject
+            (sessionSubject &&
+              eventData?.metadata?.subject !== sessionSubject) ||
+            (selectedCourseType &&
+              eventData?.metadata?.courseType !== selectedCourseType)
           ) {
             metadata.subject = sessionSubject;
+            metadata.courseType = selectedCourseType;
             apiBody['metadata'] = metadata;
             const erMetaData = {
               topic: null,
@@ -1638,7 +1641,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
                       <Box sx={{ mt: 3 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <TimePicker
+                          <DesktopTimePicker
                             label={t('CENTER_SESSION.START_TIME')}
                             value={
                               editSession
@@ -1661,7 +1664,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
                       <Box sx={{ mt: 3 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <TimePicker
+                          <DesktopTimePicker
                             label={t('CENTER_SESSION.END_TIME')}
                             value={
                               editSession
@@ -1733,7 +1736,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <TimePicker
+                      <DesktopTimePicker
                         label={t('CENTER_SESSION.START_TIME')}
                         value={
                           editSession
@@ -1760,7 +1763,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <TimePicker
+                      <DesktopTimePicker
                         label={t('CENTER_SESSION.END_TIME')}
                         value={
                           editSession ? endTimes[index] : block?.sessionEndTime
