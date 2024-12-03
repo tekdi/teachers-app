@@ -134,7 +134,15 @@
     "CENTER": "केंद्र",
     "AND_COUNT_MORE": "और {{count}} अधिक",
     "RETURN_TO_LOGIN": "लॉगिन पर वापस जाएं",
-    "NO_CENTER_FOUND": "कोई केंद्र नहीं मिला"
+    "NO_CENTER_FOUND": "कोई केंद्र नहीं मिला",
+   
+      "FILTER_BY": "फ़िल्टर करें",
+      "ALL": "सभी",
+      "ACTIVE": "सक्रिय",
+      "NA": "लागू नहीं (N.A.)",
+      "SORT_BY_NAMES": "नामों के अनुसार क्रमबद्ध करें",
+      "DELETE_USER_FROM_CENTER": "केंद्र से उपयोगकर्ता को हटाएं",
+      "ADD_OR_REASSIGN_CENTERS": "केंद्र जोड़ें या पुनः असाइन करें"
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",
@@ -172,7 +180,10 @@
     "WE_SEND_AN_EMAIL": "हमने {{maskEmail}} पर आपके पासवर्ड को रीसेट करने के लिए एक लिंक भेजा है| जिससे आप अपना पासवर्ड रिसेट कर सकते है |",
     "learningResources2-app": "वर्तमान पासवर्ड मेल नहीं खाया",
     "NO_USERNAME": "उपयोगकर्ता नाम नहीं मिला",
-    "PASSWORD_SAME_AS_OLD": "पासवर्ड पुराना पासवर्ड जैसा ही है"
+    "PASSWORD_SAME_AS_OLD": "पासवर्ड पुराना पासवर्ड जैसा ही है",
+    "CURRENT_PASSWORD_NOT": "वर्तमान पासवर्ड मेल नहीं खाता"
+
+
   },
   "DASHBOARD": {
     "DASHBOARD": "डैशबोर्ड",
@@ -206,7 +217,9 @@
     "REMOTE_AVERAGE_ATTENDANCE": "दूरस्थ ( दूरसंचार)  औसत उपस्थिति",
     "REGULAR_AVERAGE_ATTENDANCE": "नियमित औसत उपस्थिति",
     "BLOCK": "ब्लॉक",
-    "ATTENDANCE": "उपस्थिति (%)"
+    "ATTENDANCE": "उपस्थिति (%)",
+    "WORKSPACE": "कार्यस्थान"
+
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "कुल छात्रों की संख्या: {{count}}",
@@ -367,7 +380,9 @@
     "PLEASE_REMOVE_THE_USER_FROM_COHORT": "कृपया हटाने से पहले उपयोगकर्ता को इन समूहों से हटा दें।",
     "SEARCH_CENTERS": "केंद्र खोजें",
     "ERROR_EMPTY": "केंद्र का नाम खाली नहीं हो सकता",
-    "ERROR_NUMBER": "केंद्र का नाम संख्या नहीं हो सकता"
+    "ERROR_NUMBER": "केंद्र का नाम संख्या नहीं हो सकता",
+    "DUPLICATE_CENTER": "केंद्र पहले से ही मौजूद है"
+
   },
   "CENTER_SESSION": {
     "THIS_SESSION": "यह सत्र",
@@ -433,10 +448,15 @@
     "END_TIME_ERROR": "समाप्ति समय प्रारंभ समय से पहले का नहीं हो सकता",
     "START_DATE_ERROR": "प्रारंभ तिथि समाप्ति तिथि से बाद की नहीं हो सकती",
     "END_DATE_ERROR": "समाप्ति तिथि प्रारंभ तिथि से पहले की नहीं हो सकती",
-    "COURSE_PLANNER_NOT_AVAILABLE": "{{subject}} के लिए पाठ्यक्रम नियोजक उपलब्ध नहीं है!"
+    "COURSE_PLANNER_NOT_AVAILABLE": "{{subject}} के लिए पाठ्यक्रम नियोजक उपलब्ध नहीं है!",
+    "IDENTIFIER_NOT_FOUND": "पहचानकर्ता नहीं मिला! सामग्री नहीं खोल सकते!",
+    "PREREQUISITES": "पूर्व-आवश्यकताएँ",
+    "POST_REQUISITES": "पश्च-आवश्यकताएँ"
   },
   "MANAGE_USERS": {
-    "CENTERS_REQUEST_FAILED": "केंद्र अनुरोध विफल रहा"
+    "CENTERS_REQUEST_FAILED": "केंद्र अनुरोध विफल रहा",
+    "CENTERS_REQUESTED_SUCCESSFULLY": "केंद्र ने सफलतापूर्वक अनुरोध किया"
+
   },
   "FORM": {
     "FULL_NAME": "पूरा नाम",
@@ -522,7 +542,9 @@
     "LANGUAGE": "भाषा",
     "SCIENCE": "विज्ञान",
     "SOCIAL_SCIENCE": "सामाजिक विज्ञान",
-    "LIFE_SKILLS": "जीवन कौशल"
+    "LIFE_SKILLS": "जीवन कौशल",
+    "NUMBER_OF_CLUSTERS_I_TEACH": "क्लस्टर की संख्या जो मैं पढ़ाता हूँ"
+
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "अवैध इनपुट।",
@@ -547,7 +569,9 @@
     "MAIN_COURSE": "मुख्य पाठ्यक्रम",
     "COLLAPSE_ALL": "सभी को संक्षिप्त करें",
     "EXPAND_ALL": "सभी को विस्तृत करें",
-    "RESOURCES": "संसाधन"
+    "RESOURCES": "संसाधन",
+   
+      "MARK_AS_COMPLETED": "पूर्ण के रूप में चिह्नित करें"
   },
   "ASSESSMENTS": {
     "ASSESSMENTS": "मूल्यांकन",
@@ -583,6 +607,47 @@
     "SAVE_AND_NEXT": "सहेजें और आगे बढ़ें",
     "TO_SAVE_YOUR_PROGRESS": "“सहेजें और आगे बढ़ें” पर क्लिक करके अपनी प्रगति सहेजें। आप इसे कभी भी बदल सकते हैं।",
     "MANDATORY": "{{FeesStepBoards}} के लिए अनिवार्य। अन्य बोर्डों के लिए, यह चरण स्वचालित रूप से पूर्ण हो जाता है। कृपया डेटा सबमिट करने के लिए सहेजें पर क्लिक करें।",
-    "COMPLETED": "पूर्ण"
+    "COMPLETED": "पूर्ण",
+    "MARK_AS_COMPLETE": "समाप्त के रूप में चिह्नित करें",
+    "FILTER_BY_CURRENT_STAGES": "वर्तमान स्थिति के अनुसार चुनकर सही चीजें रखें",
+    "REGISTRATION_NUMBER": "पंजीकरण संख्या",
+    "TOTAL_LEARNERS": "कुल छात्र",
+    "BOARD": "परीक्षा बोर्ड",
+    "CHOOSE_BOARD": "चुनें कि विद्यार्थी किस बोर्ड में नामांकित होने वाला है।",
+    "CHOOSE_SUBJECT": "छात्र ने कौन से विशिष्ट विषय चुने हैं, यह चुनें।",
+    "SUBJECTS_ENROLLED": "पंजीकृत विषय",
+    "EXAM_REGISTRATION_FEES_PAID": "क्या परीक्षा पंजीकरण शुल्क का भुगतान किया गया है?",
+    "EDIT": "संपादित करें",
+    "SURE_GO_BACK": "क्या आप वापस जाना चाहते हैं? आपकी प्रगति खो सकती है।"
+  },
+  "OBSERVATION": {
+    "OBSERVATION_START": "सर्वेक्षण शुरू करें",
+    "OBSERVATION_DETAILS": "सर्वेक्षण के बारे में जानकारी",
+    "ADD_ENTITY": "सर्वेक्षण सूची में {{entityType}} जोड़ें।",
+    "SEARCH_ENTITY": "{entityType}} का नाम खोजें।",
+    "OBSERVATIONS": "{{name}} सर्वेक्षण",
+    "SEARCH_OBSERVATIONS": "सर्वेक्षण खोजें",
+    "CONTINUE": "जारी रखें या मत रोकें।",
+    "SUBMITTED": "प्रस्तुत किया गया",
+    "FORM_SAVED_SUCCESSFULLY": "फॉर्म में किए गए सुधार सुरक्षित रूप से सहेजे गए हैं",
+    "FORM_SUBMIT_SUCCESSFULLY": "फॉर्म सफलतापूर्वक सादर किया गया.",
+    "NOT_STARTED": "शुरू नहीं किया गया",
+    "COMPLETED": "पूरा हो गया",
+    "INPROGRESS": "प्रगति पर है",
+    "NO_DATA_FOUND": "कोई {{entity}} नहीं मिला।",
+    "NO_RESULT_FOUND": "{{entity}} के लिए कोई सर्वेक्षण नहीं है",
+    "NO_OBSERVATION_EXPIRED": "{{entity}} ऐसी किसी भी सर्वेक्षण की अवधि समाप्त नहीं हुई है",
+    "DAYS_LEFT": "कितने दिन बाकी हैं",
+    "THIS_OBSERVATION_EXPIRED": "यह सर्वेक्षण पूरा हो चुका है",
+    "DUE_DATE": "निर्धारित तारीख",
+    "SURVEY_FORMS": "सर्वेक्षण फॉर्म",
+    "OBSERVATION_STATUS": "निरीक्षण की वर्तमान स्थिति"
   }
+ 
 }
+  
+ 
+ 
+  
+  
+  
