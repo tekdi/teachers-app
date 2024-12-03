@@ -612,7 +612,7 @@ const CoursePlanner = () => {
 
   const redirectTODetailsPage = (item: any) => {
     if (tStore.type) {
-      setTaxonomySubject(item.name);
+      setTaxonomySubject(item);
       router.push({
         pathname: `/course-planner/center/${selectedValue}`,
       });
