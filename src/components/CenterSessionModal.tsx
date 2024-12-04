@@ -21,6 +21,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
   secondary,
   handlePrimaryModel,
   handleEditModal,
+  disable=false
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -166,9 +167,9 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
                   color="primary"
                   className="one-line-text"
                   sx={{
-                    '&.Mui-disabled': {
-                      backgroundColor: theme?.palette?.primary?.main,
-                    },
+                    // '&.Mui-disabled': {
+                    //   backgroundColor: theme?.palette?.primary?.main,
+                    // },
                     minWidth: '84px',
                     padding: theme.spacing(1),
                     fontWeight: '500',
@@ -179,6 +180,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
                     },
                   }}
                   onClick={handlePrimaryModel || handleEditModal}
+                  disabled={disable}
                 >
                   {primary}
                 </Button>

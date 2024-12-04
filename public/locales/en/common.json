@@ -446,6 +446,7 @@
     "START_DATE_ERROR": "Start date cannot be later than end date.",
     "END_DATE_ERROR": "End date cannot be earlier than start date.",
     "IDENTIFIER_NOT_FOUND": "Identifier not found! Cannot Open Content!",
+    "SELECT_SESSION":"Please click on any session to schedule a session",
     "MEETING_LINK_REQUIRED": "Please Enter Meeting Link!",
     "WEEKDAY_ERROR": "Please select at least one weekday for the recurring event.",
     "MULTIDAY_EVENT_ERROR": "Recurring events cannot span multiple days.",
@@ -573,6 +574,7 @@
     "EXPAND_ALL": "Expand All",
     "RESOURCES": "Resources",
     "MARK_AS_COMPLETED": "Mark As Complete"
+
   },
   "ASSESSMENTS": {
     "ASSESSMENTS": "Assessments",
