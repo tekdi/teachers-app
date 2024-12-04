@@ -573,8 +573,10 @@
     "COLLAPSE_ALL": "Collapse All",
     "EXPAND_ALL": "Expand All",
     "RESOURCES": "Resources",
-    "MARK_AS_COMPLETED": "Mark As Complete"
-
+    "MARK_AS_COMPLETED": "Mark As Complete",
+    "COURSE_TYPE": "Course Type",
+    "SUBTOPICS_SELECTED": "subtopics selected",
+    "NO_RESOURCES_FOUND": "No resources found"
   },
   "ASSESSMENTS": {
     "ASSESSMENTS": "Assessments",
