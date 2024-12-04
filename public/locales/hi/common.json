@@ -600,7 +600,8 @@
   "MARK_AS_COMPLETED": "पूर्ण के रूप में चिह्नित करें",
   "COURSE_TYPE": "कोर्स प्रकार",
   "SUBTOPICS_SELECTED": "उपविषयों का चयन किया गया",
-  "NO_RESOURCES_FOUND": "कोई संसाधन नहीं मिला"
+  "NO_RESOURCES_FOUND": "कोई संसाधन नहीं मिला",
+   "INVALID_RESOURCE": "अमान्य संसाधन"
 },
   "ASSESSMENTS": {
     "ASSESSMENTS": "मूल्यांकन",

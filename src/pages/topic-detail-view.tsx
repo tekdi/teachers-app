@@ -21,13 +21,6 @@ const TopicDetailView = () => {
   const { isRTL } = useDirection();
   const store = useCourseStore();
 
-  useEffect(() => {
-    console.log('store', store.resources);
-    const type = ResourcesType.POSTREQUSITE;
-    const filteredResources = getLearningResources(type);
-    console.log('filteredResources', filteredResources);
-  }, []);
-
   const getLearningResources = (type: string) => {
     if (store?.resources?.length) {
       return store?.resources?.filter((resource: any) => {
@@ -152,11 +145,6 @@ const TopicDetailView = () => {
                 RequisiteType.FACILITATOR_REQUISITE
               )}
             />
-            {/* <CoursePlannerCards
-              title={t('CENTER_SESSION.PREREQUISITES')}
-              resources={store.resources.learningResources}
-              type={ResourcesType.NONE}
-            /> */}
           </Box>
         )}
 
