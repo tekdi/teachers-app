@@ -160,6 +160,8 @@ const CohortPage = () => {
     React.useState(false);
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
+  const [disableNextButton, setDisableNextButton] = React.useState(true);
+
   const [eventDeleted, setEventDeleted] = React.useState(false);
   const [eventUpdated, setEventUpdated] = React.useState(false);
   const [deleteModal, setDeleteModal] = React.useState(false);
@@ -178,6 +180,7 @@ const CohortPage = () => {
   const [initialSlideIndex, setInitialSlideIndex] = useState<any>();
 
   const handleClick = (selection: string) => {
+    setDisableNextButton(false);
     setClickedBox(selection);
   };
 
@@ -186,6 +189,7 @@ const CohortPage = () => {
   };
 
   const handleCentermodel = () => {
+
     setOpenSchedule(true);
   };
 
@@ -738,6 +742,7 @@ const CohortPage = () => {
                           : handleCentermodel
                   }
                   handleEditModal={handleEditEvent}
+                  disable={onEditEvent?false: disableNextButton}
                 >
                   {deleteModal
                     ? DeleteSession && <DeleteSession />
@@ -758,10 +763,16 @@ const CohortPage = () => {
                           />
                         )
                       : Schedule && (
+                        <>
+                        {!clickedBox &&(<Typography sx={{m:2}}>
+                          {t('CENTER_SESSION.SELECT_SESSION')}
+                        </Typography>)}
                           <Schedule
                             clickedBox={clickedBox}
                             handleClick={handleClick}
                           />
+                        </>
+                        
                         )}
                 </CenterSessionModal>
 
