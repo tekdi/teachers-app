@@ -157,6 +157,7 @@ export interface SessionsModalProps {
   handlePrimaryModel?: () => void;
   secondary?: string;
   handleEditModal?: () => void;
+  disable?:boolean
 }
 
 export interface PlannedModalProps {

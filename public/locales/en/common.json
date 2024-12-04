@@ -442,7 +442,8 @@
     "END_TIME_ERROR": "End time cannot be earlier than start time.",
     "START_DATE_ERROR": "Start date cannot be later than end date.",
     "END_DATE_ERROR": "End date cannot be earlier than start date.",
-    "IDENTIFIER_NOT_FOUND": "Identifier not found! Cannot Open Content!"
+    "IDENTIFIER_NOT_FOUND": "Identifier not found! Cannot Open Content!",
+    "SELECT_SESSION":"Please click on any session to schedule a session"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center requested successfully",
@@ -558,6 +559,7 @@
     "EXPAND_ALL": "Expand All",
     "RESOURCES": "Resources",
     "MARK_AS_COMPLETED": "Mark As Complete"
+
   },
   "ASSESSMENTS": {
     "ASSESSMENTS": "Assessments",
