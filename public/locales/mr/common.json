@@ -571,7 +571,8 @@
   "MARK_AS_COMPLETED": "पूर्ण म्हणून चिन्हांकित करा",
   "COURSE_TYPE": "कोर्स प्रकार",
   "SUBTOPICS_SELECTED": "उपविषय निवडलेले आहेत",
-  "NO_RESOURCES_FOUND": "कोणतीही साधने सापडली नाही"
+  "NO_RESOURCES_FOUND": "कोणतीही साधने सापडली नाही",
+  "INVALID_RESOURCE": "अवैध संसाधन"
 },
 
   "ASSESSMENTS": {
