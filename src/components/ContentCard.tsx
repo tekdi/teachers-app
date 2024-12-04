@@ -23,7 +23,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
   resourceType,
   subTopic,
 }) => {
-  const isInvalidContent = !appIcon || !mimeType;
+  const isInvalidContent = !mimeType;
   const { t } = useTranslation();
 
   const getBackgroundImage = () => {
