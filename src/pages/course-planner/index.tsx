@@ -91,7 +91,6 @@ const CoursePlanner = () => {
       }
     } else {
       console.log('No subjects found in localStorage.');
-      setSubjects([]);
     }
   }, []);
 
@@ -130,21 +129,6 @@ const CoursePlanner = () => {
             { label: CoursePlannerConstants.GRADE, setter: setGrade },
           ];
 
-          // arrayFields.forEach(({ label, setter }) => {
-          //   const field = cohortDetails.customFields.find(
-          //     (field: any) => field.label === label
-          //   );
-
-          //   if (field && field.value) {
-          //     const valuesArray = field.value
-          //       .split(',')
-          //       .map((item: string) => item.trim());
-          //     setter(valuesArray);
-          //   } else if (label === CoursePlannerConstants.SUBJECT) {
-          //     setter([]);
-          //   }
-          // });
-
           stringFields.forEach(({ label, setter }) => {
             const field = cohortDetails.customFields.find(
               (field: any) => field.label === label
@@ -165,7 +149,7 @@ const CoursePlanner = () => {
     if (selectedValue.length) {
       fetchCohortSearchResults();
     }
-  }, [selectedValue, subjects]);
+  }, [selectedValue]);
 
   useEffect(() => {
     const fetchTaxonomyResultsOne = async () => {
@@ -482,30 +466,25 @@ const CoursePlanner = () => {
 
         if (StateName && medium && grade && board) {
           console.log(StateName, medium, grade, board);
-
-          const url = `/api/framework/v1/read/${frameworkId}`;
-          const boardData = await fetch(url).then((res) => res.json());
-          const frameworks = boardData?.result?.framework;
-
-          const getStates = getOptionsByCategory(frameworks, 'state');
+          const getStates = getOptionsByCategory(framework, 'state');
           const matchState = getStates.find(
             (item: any) =>
               item?.name?.toLowerCase() === StateName?.toLocaleLowerCase()
           );
 
-          const getBoards = getOptionsByCategory(frameworks, 'board');
+          const getBoards = getOptionsByCategory(framework, 'board');
           console.log('getBoards', getBoards);
           const matchBoard = getBoards.find((item: any) => item.name === board);
           console.log('matchBoard', matchBoard);
-          const getMedium = getOptionsByCategory(frameworks, 'medium');
+          const getMedium = getOptionsByCategory(framework, 'medium');
           const matchMedium = getMedium.find(
             (item: any) => item.name === medium
           );
 
-          const getGrades = getOptionsByCategory(frameworks, 'gradeLevel');
+          const getGrades = getOptionsByCategory(framework, 'gradeLevel');
           const matchGrade = getGrades.find((item: any) => item.name === grade);
 
-          const getCourseTypes = getOptionsByCategory(frameworks, 'courseType');
+          const getCourseTypes = getOptionsByCategory(framework, 'courseType');
           const courseTypes = getCourseTypes?.map((type: any) => type.name);
           // setCourseTypes(courseTypes);
 
@@ -535,7 +514,7 @@ const CoursePlanner = () => {
                   )?.length
               );
               console.log(commonAssociations);
-              const getSubjects = getOptionsByCategory(frameworks, 'subject');
+              const getSubjects = getOptionsByCategory(framework, 'subject');
               const subjectAssociations = commonAssociations?.filter(
                 (assoc: any) =>
                   getSubjects.map((item: any) => assoc.code === item?.code)
