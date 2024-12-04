@@ -575,7 +575,8 @@
     "MARK_AS_COMPLETED": "Mark As Complete",
     "COURSE_TYPE": "Course Type",
     "SUBTOPICS_SELECTED": "subtopics selected",
-    "NO_RESOURCES_FOUND": "No resources found"
+    "NO_RESOURCES_FOUND": "No resources found",
+    "INVALID_RESOURCE": "Invalid Resource"
   },
   "ASSESSMENTS": {
     "ASSESSMENTS": "Assessments",
