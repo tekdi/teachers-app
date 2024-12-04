@@ -648,7 +648,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                             </FormControl>
                           ) : (
                             <Typography color={theme.palette.warning['300']}>
-                              {filteredCohortData[0]?.name}
+                              {toPascalCase(filteredCohortData[0]?.name)}
                             </Typography>
                           )}
                         </>
