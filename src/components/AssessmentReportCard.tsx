@@ -17,6 +17,7 @@ interface AssessmentReportCardProp {
   userId: string;
   classId: string;
   assessmentType?: string;
+  board?: string;
 }
 
 const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
@@ -26,6 +27,7 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
   userId,
   classId,
   assessmentType,
+  board
 }) => {
   const theme = useTheme<any>();
   const router = useRouter();
@@ -35,12 +37,12 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
   const handleAssessmentDetails = (userId: string) => {
     if (router.pathname === '/assessments') {
       router.push(
-        `${router.pathname}/user/${userId}?assessmentType=${assessmentType}&center=${classId}`
+        `${router.pathname}/user/${userId}?assessmentType=${assessmentType}&center=${classId}&board=${board}`
       );
     } else {
       const type = assessmentType === AssessmentType.PRE_TEST ? 'pre' : 'post';
       router.push(
-        `/assessments/user/${userId}?assessmentType=${type}&center=${classId}`
+        `/assessments/user/${userId}?assessmentType=${type}&center=${classId}&board=${board}`
       );
     }
   };
@@ -139,6 +141,7 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
                   fontSize: '16px',
                   fontWeight: '400',
                 }}
+                className="one-line-text"
               >
                  <Typography
              sx={{
@@ -158,7 +161,7 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
                
               </Box>
               <Box
-                sx={{
+                sx={{ 
                   gap: '4px',
                   display: 'flex',
                   alignItems: 'center',

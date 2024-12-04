@@ -6,10 +6,10 @@ import {
 } from '../utils/Interfaces';
 
 const getTotalStudentCount = async (
-  cohortMemberRequest: CohortMemberList,
+  response: any,
   fromDate: Date
 ): Promise<number> => {
-  const response = await getMyCohortMemberList(cohortMemberRequest);
+  // const response = await getMyCohortMemberList(cohortMemberRequest);
   const filteredFields = response?.result?.userDetails;
   console.log('totalStudentsCount', filteredFields);
 
@@ -21,6 +21,7 @@ const getTotalStudentCount = async (
   console.log('totalStudentsCount', totalStudentsCount);
   return totalStudentsCount;
 };
+
 
 const getPresentStudentCount = async (
   attendanceRequest: AttendancePercentageProps
@@ -63,13 +64,15 @@ export const calculatePercentage = async (
   selectedDate?: any
 ): Promise<Result> => {
   const fromDate = new Date(selectedDate);
-  const totalStudentsCount = await getTotalStudentCount(
-    cohortMemberRequest,
-    fromDate
-  );
+  const response = await getMyCohortMemberList(cohortMemberRequest);
+
   const presentStudents = await getPresentStudentCount(attendanceRequest);
   const result: Result = {};
   for (const date of Object.keys(presentStudents)) {
+    const totalStudentsCount = await getTotalStudentCount(
+      response,
+      new Date(date)
+    );
     const presentCount = presentStudents[date].present_students;
     const presentPercentage = parseFloat(
       ((presentCount / totalStudentsCount) * 100).toFixed(2)

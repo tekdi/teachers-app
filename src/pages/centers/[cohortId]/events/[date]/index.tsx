@@ -320,7 +320,7 @@ const EventMonthView: React.FC<any> = () => {
           {sessions && sessions?.length === 0 && (
             <Box
               className="fs-12 fw-400 italic"
-              sx={{ color: theme.palette.warning['300'] }}
+              sx={{ color: theme.palette.warning['300'], marginTop:'15px' }}
             >
               {t('COMMON.NO_SESSIONS_SCHEDULED')}
             </Box>
@@ -373,7 +373,7 @@ const EventMonthView: React.FC<any> = () => {
           {extraSessions && extraSessions?.length === 0 && (
             <Box
               className="fs-12 fw-400 italic"
-              sx={{ color: theme.palette.warning['300'] }}
+              sx={{ color: "#1F1B13", marginTop: '15px' }}
             >
               {t('COMMON.NO_SESSIONS_SCHEDULED')}
             </Box>

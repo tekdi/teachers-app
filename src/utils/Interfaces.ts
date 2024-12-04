@@ -260,6 +260,7 @@ export interface ICohort {
   name: string;
   value: string;
   state: string;
+  customField?: any;
 }
 
 export interface LearListHeaderProps {
@@ -304,6 +305,7 @@ export interface GetDoIdServiceParam {
     boards?: (string | null)[];
     subject?: string | string[];
     assessmentType?: string | string[];
+    state: string;
   };
 }
 
@@ -650,7 +652,7 @@ export interface GetTargetedSolutionsParams {
   medium: any;
   class: any;
   board: any;
-  type: string;
+  courseType: string;
   entityId?: string;
 }
 

@@ -433,6 +433,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
               display: 'flex',
               gap: '30px',
               justifyContent: 'end',
+              cursor: 'pointer'
             }}
           >
             <Box
@@ -441,7 +442,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
             >
               {t('COMMON.CANCEL')}
             </Box>
-            <Box className="text-0D fs-14 fw-500" onClick={toggleCalendarModal}>
+            <Box className="text-0D fs-14 fw-500" sx={{cursor:'pointer'}} onClick={toggleCalendarModal}>
               {t('COMMON.OK')}
             </Box>
           </Box>

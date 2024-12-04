@@ -56,8 +56,8 @@ import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
 import { getOptionsByCategory } from '@/utils/Helper';
-// import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { telemetryFactory } from '@/utils/telemetry';
+import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -114,6 +114,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   // const [eventType, setEventType] = useState<type>(sessionType.JUST);
   const [link, setLink] = useState('');
   const [linkError, setLinkError] = useState('');
+  const [linkTouched, setLinkTouched] = useState(false);
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>();
   const [editEventData, setEditEventData] = useState(eventData);
 
@@ -712,7 +713,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   ) => {
     const value = event?.target?.value;
     setLink(value);
-
+    if (linkTouched) {
+      setLinkError(!value ? t('CENTER_SESSION.MEETING_LINK_REQUIRED') : '');
+    }
     // const zoomLinkPattern =
     //   /^https?:\/\/[\w-]*\.?zoom\.(com|us)\/(j|my)\/[\w-]+(\?[\w=&-]*)?$/;
 
@@ -741,6 +744,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           : block
       )
     );
+  };
+
+  const handleLinkBlur = () => {
+    setLinkTouched(true);
+    if (!link) {
+      setLinkError(t('CENTER_SESSION.MEETING_LINK_REQUIRED'));
+    }
   };
 
   const handlePasscodeChange = (
@@ -955,56 +965,61 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       await Promise.all(
         apiBodies.map(async (apiBody) => {
           try {
-            const response = await createEvent(apiBody);
-            console.log(response);
-            if (response?.responseCode === 'Created') {
-              showToastMessage(
-                t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
-                'success'
-              );
+            const isEventValid = validateEventBody(apiBody);
+            if (isEventValid) {
+              const response = await createEvent(apiBody);
 
-              const windowUrl = window.location.pathname;
-              const cleanedUrl = windowUrl.replace(/^\//, '');
-              const telemetryInteract = {
-                context: {
-                  env: 'teaching-center',
-                  cdata: [],
-                },
-                edata: {
-                  id: 'event-created-successfully',
-                  type: Telemetry.CLICK,
-                  subtype: '',
-                  pageid: cleanedUrl,
-                },
-              };
-              telemetryFactory.interact(telemetryInteract);
+              console.log(response);
+              if (response?.responseCode === 'Created') {
+                showToastMessage(
+                  t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
+                  'success'
+                );
 
-              ReactGA.event('event-created-successfully', {
-                creatorId: userId,
-              });
-              if (onCloseModal) {
-                console.log('list api got called');
-                onCloseModal();
-              }
-            } else {
-              if (response?.response?.data?.params?.errmsg) {
-                const errMsg = response?.response?.data?.params?.errmsg;
-                let errorMessage;
-                if (typeof errMsg === 'string') {
-                  console.log(errMsg);
-                  errorMessage = errMsg;
-                } else {
-                  errorMessage = errMsg[0] + ' and ' + errMsg[1];
+                const windowUrl = window.location.pathname;
+                const cleanedUrl = windowUrl.replace(/^\//, '');
+                const telemetryInteract = {
+                  context: {
+                    env: 'teaching-center',
+                    cdata: [],
+                  },
+                  edata: {
+                    id: 'event-created-successfully',
+                    type: Telemetry.CLICK,
+                    subtype: '',
+                    pageid: cleanedUrl,
+                  },
+                };
+                telemetryFactory.interact(telemetryInteract);
+
+                ReactGA.event('event-created-successfully', {
+                  creatorId: userId,
+                });
+                if (onCloseModal) {
+                  console.log('list api got called');
+                  onCloseModal();
                 }
-                showToastMessage(errorMessage, 'error');
               } else {
-                showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+                if (response?.response?.data?.params?.errmsg) {
+                  const errMsg = response?.response?.data?.params?.errmsg;
+                  let errorMessage;
+                  if (typeof errMsg === 'string') {
+                    console.log(errMsg);
+                    errorMessage = errMsg;
+                  } else {
+                    errorMessage =
+                      errMsg[0] + (errMsg[1] ? ' and ' + errMsg[1] : '');
+                  }
+                  showToastMessage(errorMessage, 'error');
+                } else {
+                  showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+                }
               }
+              // if (onCloseModal) {
+              //   console.log('list api got called');
+              //   onCloseModal();
+              // }
             }
-            // if (onCloseModal) {
-            //   console.log('list api got called');
-            //   onCloseModal();
-            // }
           } catch (error) {
             console.error('Error creating event:', error);
             // if (onCloseModal) {
@@ -1020,6 +1035,77 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         error: error,
       });
     }
+  };
+
+  const validateEventBody = (eventBody: any) => {
+    const showError = (message: string) => {
+      showToastMessage(message, 'error');
+      return false;
+    };
+
+    if (eventBody?.meetingDetails && eventBody?.meetingDetails?.url === '') {
+      return showError(t('CENTER_SESSION.MEETING_URL_ERROR'));
+    }
+    if (eventBody.isRecurring) {
+      if (
+        !eventBody?.recurrencePattern?.daysOfWeek ||
+        eventBody.recurrencePattern.daysOfWeek.length === 0
+      ) {
+        return showError(t('CENTER_SESSION.WEEKDAY_ERROR'));
+      }
+      if (
+        eventBody.startDatetime.slice(0, 10) !==
+        eventBody.endDatetime.slice(0, 10)
+      ) {
+        return showError(t('CENTER_SESSION.MULTIDAY_EVENT_ERROR'));
+      }
+      return true;
+    }
+    const boxType = clickedBox ?? '';
+
+    if (['PLANNED_SESSION', 'EXTRA_SESSION']?.includes(boxType)) {
+      // if (
+      //   boxType === 'PLANNED_SESSION' &&
+      //   !eventBody?.recurrencePattern?.daysOfWeek
+      // ) {
+      //   return showError(t('CENTER_SESSION.WEEKDAY_ERROR'));
+      // }
+      if (!eventBody?.startDatetime || !eventBody?.endDatetime) {
+        const message =
+          boxType === 'EXTRA_SESSION'
+            ? t('CENTER_SESSION.EXTRA_SESSION_DATE_TIME_REQUIRED_ERROR')
+            : t('CENTER_SESSION.PLANNED_SESSION_DATE_TIME_REQUIRED_ERROR');
+        return showError(message);
+      }
+
+      if (
+        eventBody.startDatetime === '' ||
+        eventBody.startDatetime === t('CENTER_SESSION.INVALID_DATE')
+      ) {
+        const message =
+          boxType === 'EXTRA_SESSION'
+            ? t('CENTER_SESSION.EXTRA_SESSION_VALID_DATE_TIME_REQUIRED_ERROR')
+            : t(
+                'CENTER_SESSION.PLANNED_SESSION_START_DATE_TIME_REQUIRED_ERROR'
+              );
+        return showError(message);
+      }
+
+      if (
+        eventBody.endDatetime === '' ||
+        eventBody.endDatetime === t('CENTER_SESSION.INVALID_DATE')
+      ) {
+        const message =
+          boxType === 'EXTRA_SESSION'
+            ? t('CENTER_SESSION.EXTRA_SESSION_END_DATE_TIME_REQUIRED_ERROR')
+            : t('CENTER_SESSION.PLANNED_SESSION_END_DATE_TIME_REQUIRED_ERROR');
+        return showError(message);
+      }
+
+      return true;
+    }
+
+    return showError(t('CENTER_SESSION.INVALID_EVENT_CONFIGURATION'));
   };
 
   useEffect(() => {
@@ -1151,10 +1237,13 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           const sessionSubject = sessionBlocks?.[0]?.subject || '';
 
           if (
-            sessionSubject &&
-            eventData?.metadata?.subject !== sessionSubject
+            (sessionSubject &&
+              eventData?.metadata?.subject !== sessionSubject) ||
+            (selectedCourseType &&
+              eventData?.metadata?.courseType !== selectedCourseType)
           ) {
             metadata.subject = sessionSubject;
+            metadata.courseType = selectedCourseType;
             apiBody['metadata'] = metadata;
             const erMetaData = {
               topic: null,
@@ -1447,13 +1536,15 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     label={t('CENTER_SESSION.MEETING_LINK')}
                     variant="outlined"
                     error={!!linkError}
-                    helperText={linkError}
+                    helperText={linkTouched && linkError ? linkError : ''}
                     onChange={(e) =>
                       handleLinkChange(
                         e as React.ChangeEvent<HTMLInputElement>,
                         block?.id
                       )
                     }
+                    onBlur={handleLinkBlur}
+                    required
                   />
                 </Box>
                 <Box sx={{ mt: 2 }}>
@@ -1550,7 +1641,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
                       <Box sx={{ mt: 3 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <TimePicker
+                          <DesktopTimePicker
                             label={t('CENTER_SESSION.START_TIME')}
                             value={
                               editSession
@@ -1573,7 +1664,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
                       <Box sx={{ mt: 3 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <TimePicker
+                          <DesktopTimePicker
                             label={t('CENTER_SESSION.END_TIME')}
                             value={
                               editSession
@@ -1645,7 +1736,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <TimePicker
+                      <DesktopTimePicker
                         label={t('CENTER_SESSION.START_TIME')}
                         value={
                           editSession
@@ -1672,7 +1763,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 >
                   <Box sx={{ mt: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <TimePicker
+                      <DesktopTimePicker
                         label={t('CENTER_SESSION.END_TIME')}
                         value={
                           editSession ? endTimes[index] : block?.sessionEndTime

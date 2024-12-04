@@ -55,6 +55,7 @@ function AssessmentsDetails() {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const assessmentTypeParam = searchParams.get('assessmentType');
+  const board = searchParams.get('board');
   const centerId = searchParams.get('center');
   const params = useParams<{ userId: string }>();
   const [assessmentType, setAssessmentType] = useState<string>(
@@ -88,13 +89,17 @@ function AssessmentsDetails() {
       const stateName = localStorage.getItem('stateName');
 
       const filters = {
-        program: [Program],
-        boards: [stateName],
-        // subject: [subjects || subject],
+        program: Program,
+        state: stateName as string,
+        board: board,
+        status: ['Live'],
         assessmentType:
           assessmentType === 'pre'
             ? AssessmentType.PRE_TEST
             : AssessmentType.POST_TEST,
+        primaryCategory: [
+          "Practice Question Set"
+        ]
       };
       try {
         if (stateName) {

@@ -10,6 +10,7 @@ import { showToastMessage } from './Toastify';
 import AssessmentReportCard from './AssessmentReportCard';
 import { AssessmentType, Program } from '../../app.config';
 import { useQueryClient } from '@tanstack/react-query';
+import { getCohortDetails } from '@/services/CohortServices';
 
 interface AssessmentReportProp {
   classId: string;
@@ -28,6 +29,7 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
   const [postAssessmentList, setPostAssessmentList] = useState<string[]>([]);
   const [assessmentData, setAssessmentData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [board, setBoard] = useState('');
 
   const fetchAssessmentData = async (
     type: AssessmentType,
@@ -36,8 +38,13 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
     const stateName = localStorage.getItem('stateName');
 
     const filters = {
-      program: [Program],
-      boards: [stateName],
+      program: Program,
+      state: stateName as string,
+      board: board,
+      status: ['Live'],
+      primaryCategory: [
+        "Practice Question Set"
+      ],
       assessmentType: type,
     };
 
@@ -82,8 +89,8 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
       try {
         const options = {
           userId: [userId],
-          courseId:assessmentList, // temporary added here assessmentList(contentId)... if assessment is done then need to pass actual course id and unit id here
-          unitId:assessmentList,
+          courseId: assessmentList, // temporary added here assessmentList(contentId)... if assessment is done then need to pass actual course id and unit id here
+          unitId: assessmentList,
           contentId: assessmentList,
           //  batchId: classId,
         };
@@ -99,8 +106,8 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
           setAssessmentData((prevData) =>
             prevData.some((data) => data.type === type)
               ? prevData.map((data) =>
-                  data.type === type ? newAssessmentData : data
-                )
+                data.type === type ? newAssessmentData : data
+              )
               : [...prevData, newAssessmentData]
           );
         }
@@ -110,10 +117,32 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
     }
   };
 
+  const fetchCohortDetails = async (classId: string) => {
+    try {
+
+      const { cohortData } = await getCohortDetails(classId);
+      const board = cohortData?.[0]?.customField.filter((item: any) => item.label === "BOARD")?.[0]?.value;
+      setBoard(board);
+    }
+    catch (error) {
+      console.error('Error fetching cohort details:', error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    }
+  }
+
   useEffect(() => {
-    fetchAssessmentData(AssessmentType.PRE_TEST, setPreAssessmentList);
-    fetchAssessmentData(AssessmentType.POST_TEST, setPostAssessmentList);
+    if (classId) {
+      const cohortDetails = fetchCohortDetails(classId);
+    }
+
   }, [classId]);
+
+  useEffect(() => {
+    if (board) {
+      fetchAssessmentData(AssessmentType.PRE_TEST, setPreAssessmentList);
+      fetchAssessmentData(AssessmentType.POST_TEST, setPostAssessmentList);
+    }
+  }, [board]);
 
   useEffect(() => {
     if (preAssessmentList.length) {
@@ -157,6 +186,7 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
               userId={assessment.userId}
               classId={classId}
               assessmentType={assessment.type}
+              board={board}
             />
           ))}
         </Grid>

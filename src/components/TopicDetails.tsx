@@ -74,7 +74,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
         if (filteredData[0].resourceType === 'Course') {
           router.push(`/course-hierarchy/${filteredData[0].identifier}`);
         } else {
-          router.push(`/play/content/${filteredData[0].identifier}`);
+          router.push(`/play/content/${filteredData?.[0]?.identifier?.toLowerCase()}`);
         }
       } else {
         showToastMessage(t('CENTER_SESSION.IDENTIFIER_NOT_FOUND'), 'error');
