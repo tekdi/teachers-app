@@ -1,7 +1,7 @@
 import { Box, LinearProgress, Tooltip } from '@mui/material';
 import Image from 'next/image';
 import placeholderImage from '../assets/images/decorationBg.png';
-import { FileType, ContentCardsTypes } from '@/utils/app.constant';
+import { FileType, ContentCardsTypes, ContentType } from '@/utils/app.constant';
 import router from 'next/router';
 import { COURSE_TYPE } from '../../app.config';
 import { useTranslation } from 'next-i18next';
@@ -115,15 +115,16 @@ const ContentCard: React.FC<ContentCardProps> = ({
       const contentWithTelemetryData = async () => {
         if (userId !== undefined || userId !== '') {
           const mimeTypesToContentTypes: { [key: string]: string } = {
-            'application/vnd.sunbird.questionset': 'quml',
-            'application/vnd.ekstep.ecml-archive': 'ecml',
-            'application/vnd.ekstep.h5p-archive': 'h5p',
-            'application/vnd.ekstep.html-archive': 'html',
-            'video/x-youtube': 'youtube',
-            'application/pdf': 'pdf',
-            'application/epub': 'epub',
-            'video/mp4': 'mp4',
-            'video/webm': 'webm',
+            [ContentType.ECML]: 'ecml',
+            [ContentType.QUESTION_SET]: 'quml',
+            [ContentType.HTML]: 'html',
+            [ContentType.H5P]: 'h5p',
+            [ContentType.YOUTUBE_X_VIDEO]: 'x-youtube',
+            [ContentType.YOUTUBE_VIDEO]: 'youtube',
+            [ContentType.PDF]: 'pdf',
+            [ContentType.EPUB]: 'epub',
+            [ContentType.VIDEO_MP4]: 'mp4',
+            [ContentType.WEBM_VIDEO]: 'webm',
           };
           const reqBody: ContentCreate = {
             userId: userId,
