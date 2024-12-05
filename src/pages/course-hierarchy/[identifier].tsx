@@ -37,81 +37,89 @@ const RecursiveAccordion = ({ data }: { data: any[] }) => {
 
   const renderAccordion = (nodes: any[], level = 0) => {
     return (
-
-      <Grid container spacing={2}>
-        {nodes.map((node, index) => (
-          <Grid item xs={12} md={level === 0 ? 12 : 6} lg={level === 0 ? 12 : 4} key={`${node.name}-${index}`}>
-            {level === 0 ? (
-              <Box sx={{ p: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <KeyboardBackspaceOutlinedIcon
-                  onClick={handleBackEvent}
-                  cursor="pointer"
-                  sx={{
-                    color: theme.palette.warning['A200'],
-                    transform: isRTL ? 'rotate(180deg)' : 'unset',
-                  }}
-                />
-                <Typography
-                  variant="h1"
-                  sx={{
-                    fontWeight: '400',
-                    paddingLeft: '4px',
-                    fontSize: '22px',
-                    color: '#4D4639',
-                    marginBottom: '0px !important',
-                  }}
-                >
-                  {node.name}
-                </Typography>
-              </Box>
-            ) : node.contentType === 'Resource' ? (
-              <ContentCard
-                name={node?.name}
-                identifier={node?.identifier || node?.id}
-                mimeType={node?.mimeType}
-                appIcon={node?.appIcon}
-                resourceType={node?.resourceType}
-              />
-            ) : (
-              <Accordion
-                defaultExpanded
+      <Box>
+        {level === 0 && (
+          <>
+            <Box sx={{ p: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <KeyboardBackspaceOutlinedIcon
+                onClick={handleBackEvent}
+                cursor={'pointer'}
                 sx={{
-                  marginLeft: `${(level - 1) * 0.2}px`,
-                  boxShadow:
-                    level !== 1
-                      ? '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)'
-                      : 'unset',
+                  color: theme.palette.warning['A200'],
+                  transform: isRTL ? 'rotate(180deg)' : 'unset',
+                }}
+              />
+              <Typography
+                variant="h1"
+                sx={{
+                  fontWeight: '400',
+                  paddingLeft: '4px',
+                  fontSize: '22px',
+                  color: '#4D4639',
+                  marginBottom: '0px !important',
                 }}
               >
-                <AccordionSummary
-                  sx={{
-                    '&.MuiAccordionSummary-root': {
-                      backgroundColor: level === 1 ? '#F1E7D9' : '#fff',
-                      borderBottom: '1px solid #D0C5B4',
-                    },
-                  }}
-                  expandIcon={<ExpandMoreIcon sx={{ color: '#1F1B13' }} />}
-                >
-                  <Typography
-                    variant="body1"
-                    fontWeight={500}
-                    sx={{ color: '#1F1B13', fontWeight: 500, fontSize: '14px' }}
+                {nodes[0]?.name}
+              </Typography>
+            </Box>
+          </>
+        )}
+        <Grid container spacing={2}>
+          {nodes.map((node, index) => (
+            <React.Fragment key={`${node.name}-${index}`}>
+              {node.contentType === 'Resource' ? (
+                <Grid item xs={6} md={4} lg={3}>
+                  <ContentCard
+                    name={node?.name}
+                    identifier={node?.identifier || node?.id}
+                    mimeType={node?.mimeType}
+                    appIcon={node?.appIcon}
+                    resourceType={node?.resourceType}
+                  />
+                </Grid>
+              ) : (
+                <Grid item xs={12}>
+                  <Accordion
+                    defaultExpanded
+                    sx={{
+                      marginLeft: `${(level - 1) * 0.2}px`,
+                      boxShadow:
+                        level !== 1
+                          ? '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)'
+                          : 'unset',
+                    }}
                   >
-                    {node?.name}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {/* Recursively render children */}
-                  {node?.children && renderAccordion(node?.children, level + 1)}
-                </AccordionDetails>
-              </Accordion>
-            )}
-          </Grid>
-        ))}
-      </Grid>
-
-    )
+                    <AccordionSummary
+                      sx={{
+                        '&.MuiAccordionSummary-root': {
+                          backgroundColor: level === 1 ? '#F1E7D9' : '#fff',
+                          borderBottom: '1px solid #D0C5B4',
+                        },
+                      }}
+                      expandIcon={<ExpandMoreIcon sx={{ color: '#1F1B13' }} />}
+                    >
+                      <Typography
+                        variant="body1"
+                        fontWeight={500}
+                        sx={{ color: '#1F1B13', fontWeight: 500, fontSize: '14px' }}
+                      >
+                        {node?.name}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      {/* Recursively render children */}
+                      {node?.children && renderAccordion(node?.children, level + 1)}
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+              )}
+            </React.Fragment>
+          ))}
+        </Grid>
+      </Box>
+    );
   };
+
 
   return <Box> <Box><Header /></Box> {renderAccordion(data)}</Box>;
 };
