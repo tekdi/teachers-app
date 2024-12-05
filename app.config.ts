@@ -69,7 +69,7 @@ export const DaysOfWeek = {
   Sat: 6,
 };
 
-export const Program = ['Second Chance','secondchance'];
+export const Program = ['Second Chance', 'secondchance'];
 
 export const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || '';
 if (!tenantId) {
@@ -97,12 +97,13 @@ export const RequisiteType = {
 };
 
 export const COURSE_TYPE = {
+  COURSE: 'Course',
   FOUNDATION_COURSE: 'Foundation Course',
 };
 
 export const entityList = {
   TEAM_LEADER: ['center', 'facilitator', 'learner'],
-  TEACHER: ['center','learner' ],
+  TEACHER: ['center', 'learner'],
 };
 
 export const MIME_TYPE = {

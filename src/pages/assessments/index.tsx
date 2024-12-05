@@ -13,7 +13,12 @@ import {
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { toPascalCase } from '@/utils/Helper';
 import { ICohort } from '@/utils/Interfaces';
-import { AssessmentStatus, Role, Status, Telemetry } from '@/utils/app.constant';
+import {
+  AssessmentStatus,
+  Role,
+  Status,
+  Telemetry,
+} from '@/utils/app.constant';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import { telemetryFactory } from '@/utils/telemetry';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
@@ -33,7 +38,12 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { accessControl, AssessmentType, AttendanceAPILimit, Program } from '../../../app.config';
+import {
+  accessControl,
+  AssessmentType,
+  AttendanceAPILimit,
+  Program,
+} from '../../../app.config';
 import { useDirection } from '../../hooks/useDirection';
 
 const DEFAULT_STATUS_ORDER = {
@@ -58,7 +68,10 @@ const Assessments = () => {
   const [cohortsData, setCohortsData] = useState<Array<ICohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =
     useState<Array<ICohort>>(cohortsData);
-  const [centerData, setCenterData] = useState<{ board: string, state: string }>({
+  const [centerData, setCenterData] = useState<{
+    board: string;
+    state: string;
+  }>({
     board: '',
     state: '',
   });
@@ -128,7 +141,10 @@ const Assessments = () => {
   }, [classId]);
 
   useEffect(() => {
-    const getDoIdForAssessmentReport = async (selectedState: string, selectedBoard: string) => {
+    const getDoIdForAssessmentReport = async (
+      selectedState: string,
+      selectedBoard: string
+    ) => {
       const stateName = localStorage.getItem('stateName');
 
       const filters = {
@@ -140,9 +156,7 @@ const Assessments = () => {
           assessmentType === 'pre'
             ? AssessmentType.PRE_TEST
             : AssessmentType.POST_TEST,
-        primaryCategory: [
-          "Practice Question Set"
-        ]
+        primaryCategory: ['Practice Question Set'],
       };
       try {
         if (stateName) {
@@ -197,16 +211,20 @@ const Assessments = () => {
     };
 
     if (assessmentType && cohortsData?.length > 0) {
-      console.log('call API',cohortsData);
-      const selectedState = cohortsData?.[0]?.customField.filter((item: any) => item.label === "STATES")?.[0]?.value;
-      const selectedBoard = cohortsData?.[0]?.customField.filter((item: any) => item.label === "BOARD")?.[0]?.value; 
+      console.log('call API', cohortsData);
+      const selectedState = cohortsData?.[0]?.customField?.filter(
+        (item: any) => item.label === 'STATES'
+      )?.[0]?.value;
+      const selectedBoard = cohortsData?.[0]?.customField?.filter(
+        (item: any) => item.label === 'BOARD'
+      )?.[0]?.value;
       setCenterData({
         state: selectedState,
-        board: selectedBoard
+        board: selectedBoard,
       });
       getDoIdForAssessmentReport(selectedState, selectedBoard);
     }
-    console.log("===vivek", cohortsData, manipulatedCohortData);
+    console.log('===vivek', cohortsData, manipulatedCohortData);
     console.log('call API', classId, assessmentType);
   }, [assessmentType, cohortsData]);
 
@@ -420,10 +438,9 @@ const Assessments = () => {
                   borderRadius: '4px',
                 }}
                 onChange={(e) => {
-                  setAssessmentType(e.target.value)
+                  setAssessmentType(e.target.value);
                   const windowUrl = window.location.pathname;
                   const cleanedUrl = windowUrl.replace(/^\//, '');
-
 
                   const telemetryInteract = {
                     context: {
@@ -434,11 +451,10 @@ const Assessments = () => {
                       id: 'filter-by-assessment-type:' + e.target.value,
                       type: Telemetry.CLICK,
                       subtype: '',
-                      pageid: cleanedUrl
+                      pageid: cleanedUrl,
                     },
                   };
                   telemetryFactory.interact(telemetryInteract);
-
                 }}
                 defaultValue={'pre'}
                 value={assessmentType}

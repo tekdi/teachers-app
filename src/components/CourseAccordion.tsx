@@ -1,27 +1,42 @@
 import React, { useEffect } from 'react';
-import { Box, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
+import {
+  Box,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+} from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useTheme } from '@mui/material/styles';
 import CoursePlannerCards from './CoursePlannerCards';
+import { useTranslation } from 'next-i18next';
 
 interface CourseAccordionProps {
   title: any;
   type: string;
-  resources: any; 
+  resources: any;
   expanded: boolean;
   onChange?: (event: React.SyntheticEvent, expanded: boolean) => void;
 }
 
-const CourseAccordion: React.FC<CourseAccordionProps> = ({ title, type, resources, expanded, onChange }) => {
+const CourseAccordion: React.FC<CourseAccordionProps> = ({
+  title,
+  type,
+  resources,
+  expanded,
+  onChange,
+}) => {
   const theme = useTheme<any>();
-
+  const { t } = useTranslation();
   useEffect(() => {
-    console.log("resources", type, resources);
+    console.log('resources', type, resources);
   }, []);
 
   return (
     <Box sx={{ mt: 2, mb: 1.5 }}>
-      <Accordion expanded={expanded} onChange={onChange}
+      <Accordion
+        expanded={expanded}
+        onChange={onChange}
         sx={{
           boxShadow: 'none !important',
           border: 'none !important',
@@ -65,9 +80,11 @@ const CourseAccordion: React.FC<CourseAccordionProps> = ({ title, type, resource
         >
           <CoursePlannerCards resources={resources} type={type} />
 
-          {
-            resources?.length === 0 && <Typography sx={{ p: '10px', mt:2, fontSize: '12px'}}>No resources found</Typography>
-          }
+          {resources?.length === 0 && (
+            <Typography sx={{ p: '10px', mt: 2, fontSize: '12px' }}>
+              {t('COURSE_PLANNER.NO_RESOURCES_FOUND')}
+            </Typography>
+          )}
         </AccordionDetails>
       </Accordion>
     </Box>

@@ -105,7 +105,7 @@ const CoursePlannerDetail = () => {
         class: tStore?.grade,
         state: tStore?.state,
         board: tStore?.board,
-        type: tStore?.type,
+        courseType: tStore?.type,
         medium: tStore?.medium,
         entityId: cohortId,
       });
@@ -178,7 +178,7 @@ const CoursePlannerDetail = () => {
         class: tStore?.grade,
         state: tStore?.state,
         board: tStore?.board,
-        type: tStore?.type,
+        courseType: tStore?.type,
         medium: tStore?.medium,
         entityId: cohortId,
       });
@@ -250,19 +250,19 @@ const CoursePlannerDetail = () => {
 
   const toggleDrawer =
     (open: boolean, selectedCount: number = 0) =>
-      (event?: React.KeyboardEvent | React.MouseEvent) => {
-        if (
-          event &&
-          event.type === 'keydown' &&
-          ((event as React.KeyboardEvent).key === 'Tab' ||
-            (event as React.KeyboardEvent).key === 'Shift')
-        ) {
-          return;
-        }
-        setDrawerState({ ...drawerState, bottom: open });
-        setIsDrawerOpen(open);
-        setSelectedCount(selectedCount);
-      };
+    (event?: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
+      setDrawerState({ ...drawerState, bottom: open });
+      setIsDrawerOpen(open);
+      setSelectedCount(selectedCount);
+    };
 
   const handleCloseModel = () => {
     setModalOpen(false);
@@ -356,21 +356,22 @@ const CoursePlannerDetail = () => {
     subtopic: any,
     resources: IResource[]
   ) => {
-    console.log(resources);
-
     try {
       resources = resources.map((resource: IResource) => {
         return {
           ...resource,
-          id: resource.id.toLowerCase(),
-        }
+          id: resource.id ? resource.id.toLowerCase() : resource.id,
+        };
       });
-      const identifiers = resources.map((resource: IResource) => resource?.id?.toLowerCase());
+      const identifiers = resources.map((resource: IResource) =>
+        resource?.id?.toLowerCase()
+      );
       const response = await fetchBulkContents(identifiers);
 
       resources = resources.map((resource: IResource) => {
         const content = response?.find(
-          (content: any) => content?.identifier?.toLowerCase() === resource?.id?.toLowerCase()
+          (content: any) =>
+            content?.identifier?.toLowerCase() === resource?.id?.toLowerCase()
         );
         return { ...resource, ...content };
       });
@@ -408,112 +409,115 @@ const CoursePlannerDetail = () => {
             sx={{
               color: theme.palette.warning['A200'],
               transform: isRTL ? ' rotate(180deg)' : 'unset',
-
             }}
           />
-          {
-            userProjectDetails?.tasks?.length > 0 && (
-              <>
-                <Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '10px',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                      <Box sx={{ width: '40px', height: '40px' }}>
-                        <CircularProgressbar
-                          value={completionPercentage}
-                          strokeWidth={10}
-                          styles={buildStyles({
-                            pathColor: determinePathColor(completionPercentage),
-                            trailColor: '#E6E6E6',
-                            strokeLinecap: 'round',
-                          })}
-                        />
-                      </Box>
-
-                      <Box
-                        sx={{
-                          top: 0,
-                          left: 0,
-                          bottom: 0,
-                          right: 0,
-                          position: 'absolute',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <Typography
-                          variant="caption"
-                          component="div"
-                          sx={{
-                            fontSize: '11px',
-                            color: theme.palette.warning['300'],
-                            fontWeight: '500',
-                          }}
-                        >
-                          {completionPercentage}%
-                        </Typography>
-                      </Box>
+          {!userProjectDetails?.tasks?.length && (
+            <Box
+              sx={{
+                fontSize: '16px',
+                color: theme.palette.warning['300'],
+              }}
+            >
+              {tStore?.taxonomySubject}
+            </Box>
+          )}
+          {userProjectDetails?.tasks?.length > 0 && (
+            <>
+              <Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '10px',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                    <Box sx={{ width: '40px', height: '40px' }}>
+                      <CircularProgressbar
+                        value={completionPercentage}
+                        strokeWidth={10}
+                        styles={buildStyles({
+                          pathColor: determinePathColor(completionPercentage),
+                          trailColor: '#E6E6E6',
+                          strokeLinecap: 'round',
+                        })}
+                      />
                     </Box>
 
                     <Box
                       sx={{
-                        fontSize: '16px',
-                        color: theme.palette.warning['300'],
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        position: 'absolute',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                     >
-                      {tStore?.taxonomySubject}
+                      <Typography
+                        variant="caption"
+                        component="div"
+                        sx={{
+                          fontSize: '11px',
+                          color: theme.palette.warning['300'],
+                          fontWeight: '500',
+                        }}
+                      >
+                        {completionPercentage}%
+                      </Typography>
                     </Box>
                   </Box>
+                  <Box
+                    sx={{
+                      fontSize: '16px',
+                      color: theme.palette.warning['300'],
+                    }}
+                  >
+                    {tStore?.taxonomySubject}
+                  </Box>
                 </Box>
-
-              </>
-            )
-          }
-
+              </Box>
+            </>
+          )}
         </Box>
 
-        {
-          userProjectDetails?.tasks?.length > 0 && (
+        {userProjectDetails?.tasks?.length > 0 && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'end',
+              pr: '16px',
+              alignItems: 'center',
+            }}
+            mt={2}
+          >
             <Box
               sx={{
+                fontSize: '12px',
+                fontWeight: '500',
+                color: theme.palette.warning['300'],
+                cursor: 'pointer',
                 display: 'flex',
-                justifyContent: 'end',
-                pr: '16px',
                 alignItems: 'center',
+                gap: '4px',
               }}
-              mt={2}
+              onClick={handleToggleAll}
             >
-              <Box
-                sx={{
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  color: theme.palette.warning['300'],
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                }}
-                onClick={handleToggleAll}
-              >
-                {Object.values(expandedPanels).every(Boolean)
-                  ? t('COURSE_PLANNER.COLLAPSE_ALL')
-                  : t('COURSE_PLANNER.EXPAND_ALL')}
-                {Object.values(expandedPanels).every(Boolean) ? (
-                  <ArrowDropUpIcon sx={{ color: theme.palette.warning['300'] }} />
-                ) : (
-                  <ArrowDropDownIcon sx={{ color: theme.palette.warning['300'] }} />
-                )}
-              </Box>
+              {Object.values(expandedPanels).every(Boolean)
+                ? t('COURSE_PLANNER.COLLAPSE_ALL')
+                : t('COURSE_PLANNER.EXPAND_ALL')}
+              {Object.values(expandedPanels).every(Boolean) ? (
+                <ArrowDropUpIcon sx={{ color: theme.palette.warning['300'] }} />
+              ) : (
+                <ArrowDropDownIcon
+                  sx={{ color: theme.palette.warning['300'] }}
+                />
+              )}
             </Box>
-          )
-        }
-
+          </Box>
+        )}
 
         <div
           style={{
@@ -530,7 +534,9 @@ const CoursePlannerDetail = () => {
                   userProjectDetails.tasks.map((topic: any, index: number) => (
                     <Box key={topic._id} sx={{ borderRadius: '8px', mb: 2 }}>
                       <Accordion
-                        expanded={expandedPanels[`panel${index}-header`] || false}
+                        expanded={
+                          expandedPanels[`panel${index}-header`] || false
+                        }
                         onChange={() =>
                           setExpandedPanels((prev) => ({
                             ...prev,
@@ -754,13 +760,12 @@ const CoursePlannerDetail = () => {
                                     );
                                     router.push(`/topic-detail-view`);
                                   }}
-                                // onClick={() => {
-                                //   // router.push(`/topic-detail-view`);
-                                // }}
+                                  // onClick={() => {
+                                  //   // router.push(`/topic-detail-view`);
+                                  // }}
                                 >
                                   <Box
                                     sx={{ fontSize: '12px', fontWeight: '500' }}
-                                    
                                   >
                                     {`${subTopic?.learningResources?.length} ${t(
                                       'COURSE_PLANNER.RESOURCES'
@@ -777,7 +782,7 @@ const CoursePlannerDetail = () => {
                   ))
                 ) : (
                   <Typography
-                    sx={{ mt: 2, textAlign: 'center', color: '#7C766F' }}
+                    sx={{ mt: 5, textAlign: 'center', color: '#7C766F' }}
                   >
                     {t('ASSESSMENTS.NO_DATA_FOUND')}
                   </Typography>

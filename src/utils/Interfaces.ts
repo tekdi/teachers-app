@@ -157,6 +157,7 @@ export interface SessionsModalProps {
   handlePrimaryModel?: () => void;
   secondary?: string;
   handleEditModal?: () => void;
+  disable?:boolean
 }
 
 export interface PlannedModalProps {
@@ -651,7 +652,7 @@ export interface GetTargetedSolutionsParams {
   medium: any;
   class: any;
   board: any;
-  type: string;
+  courseType: string;
   entityId?: string;
 }
 
