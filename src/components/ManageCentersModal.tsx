@@ -88,7 +88,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   };
 
   const handleRadioChange = (name: string, cohortId: string) => {
-    setSelectedValue(name);
+    setSelectedValue(name.toLowerCase());
     setCohortId(cohortId);
   };
 
