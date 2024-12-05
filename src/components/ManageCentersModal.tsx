@@ -192,7 +192,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
                       {isForLearner ? (
                         <Radio
                           sx={{ pb: '20px' }}
-                          checked={selectedValue === center?.name}
+                          checked={selectedValue === center?.name?.toLowerCase()}
                           onChange={() =>
                             handleRadioChange(center?.name, center?.cohortId)
                           }

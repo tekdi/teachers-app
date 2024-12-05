@@ -64,7 +64,7 @@ const CenterList: React.FC<CenterListProps> = ({
                 onClick={() => {
                   router.push(`/centers/${center?.cohortId}`);
                   localStorage.setItem('classId', center?.cohortId);
-                  localStorage.setItem('className', center?.cohortName);
+                  localStorage.setItem('className', center?.cohortName?.toLowerCase());
                 }}
                 sx={{
                   cursor: 'pointer',
