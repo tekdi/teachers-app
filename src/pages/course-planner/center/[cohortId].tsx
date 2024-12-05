@@ -356,13 +356,11 @@ const CoursePlannerDetail = () => {
     subtopic: any,
     resources: IResource[]
   ) => {
-    console.log(resources);
-
     try {
       resources = resources.map((resource: IResource) => {
         return {
           ...resource,
-          id: resource.id.toLowerCase(),
+          id: resource.id ? resource.id.toLowerCase() : resource.id,
         };
       });
       const identifiers = resources.map((resource: IResource) =>
