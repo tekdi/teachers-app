@@ -119,7 +119,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
 
     setCenters(centers);
     setCentersName(centersName);
-  }, [reloadState, setReloadState]);
+  }, [reloadState, setReloadState, userStore.cohorts]);
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
@@ -366,7 +366,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           t('MANAGE_USERS.CENTERS_REASSIGNED_SUCCESSFULLY'),
           'success'
         );
-        setReloadState(true);
+        setReloadState(!reloadState);
       } catch (error) {
         console.error('Error creating cohort members', error);
         showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');
