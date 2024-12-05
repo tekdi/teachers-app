@@ -1,14 +1,20 @@
-import { Box, Tooltip } from '@mui/material';
+import { Box, LinearProgress, Tooltip } from '@mui/material';
 import Image from 'next/image';
 import placeholderImage from '../assets/images/decorationBg.png';
 import { FileType, ContentCardsTypes } from '@/utils/app.constant';
 import router from 'next/router';
 import { COURSE_TYPE } from '../../app.config';
 import { useTranslation } from 'next-i18next';
-
+import {
+  ContentCreate,
+  ContentStatus,
+  createContent,
+  getStatus,
+} from '@/services/TrackingService';
+import React, { useEffect, useState } from 'react';
 interface ContentCardProps {
   name: string;
-  mimeType?: string;
+  mimeType: string;
   appIcon?: string;
   identifier?: any;
   resourceType?: string;
@@ -25,6 +31,9 @@ const ContentCard: React.FC<ContentCardProps> = ({
 }) => {
   const isInvalidContent = !mimeType;
   const { t } = useTranslation();
+  const [CallStatus, setCallStatus] = useState(false);
+  const [status, setStatus] = useState<number>(0);
+  const lastAccessOn = new Date().toISOString();
 
   const getBackgroundImage = () => {
     if (appIcon) {
@@ -45,6 +54,101 @@ const ContentCard: React.FC<ContentCardProps> = ({
       }
     }
   };
+
+  let userId = '';
+  if (typeof window !== 'undefined' && window.localStorage) {
+    userId = localStorage.getItem('userId') || '';
+  }
+  useEffect(() => {
+    try {
+      const getTrackingStatus = async () => {
+        if (userId !== undefined || userId !== '') {
+          const reqBody: ContentStatus = {
+            userId: [userId],
+            contentId: [identifier],
+            courseId: [identifier],
+            unitId: [identifier],
+          };
+          const response = await getStatus(reqBody);
+
+          console.log('response', response);
+          let status = 0;
+          response.data?.some((item: any) =>
+            item.contents?.some((content: any) => {
+              if (content.contentId === identifier) {
+                // status = content.status;
+                status = parseInt(content.percentage, 10);
+                return true;
+              }
+            })
+          );
+          console.log('response tracking status', status);
+          setStatus(status);
+        }
+      };
+      getTrackingStatus();
+    } catch (error) {
+      console.log(error);
+    }
+  }, [CallStatus]);
+
+  useEffect(() => {
+    let detailsObject: any[] = [];
+
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const keys = Object.keys(localStorage);
+
+      // Filter keys for relevant telemetry events based on identifier
+      const relevantKeys = keys.filter((key) => key.includes(identifier));
+
+      relevantKeys.forEach((key) => {
+        const telemetryEvent = localStorage.getItem(key);
+        if (telemetryEvent) {
+          detailsObject.push(JSON.parse(telemetryEvent));
+        }
+      });
+    }
+
+    console.log('Details Object:', detailsObject);
+
+    try {
+      const contentWithTelemetryData = async () => {
+        if (userId !== undefined || userId !== '') {
+          const mimeTypesToContentTypes: { [key: string]: string } = {
+            'application/vnd.sunbird.questionset': 'quml',
+            'application/vnd.ekstep.ecml-archive': 'ecml',
+            'application/vnd.ekstep.h5p-archive': 'h5p',
+            'application/vnd.ekstep.html-archive': 'html',
+            'video/x-youtube': 'youtube',
+            'application/pdf': 'pdf',
+            'application/epub': 'epub',
+            'video/mp4': 'mp4',
+            'video/webm': 'webm',
+          };
+          const reqBody: ContentCreate = {
+            userId: userId,
+            contentId: identifier,
+            courseId: identifier,
+            unitId: identifier,
+            contentType: mimeTypesToContentTypes[mimeType] || '',
+            contentMime: mimeType,
+            lastAccessOn: lastAccessOn,
+            detailsObject: detailsObject,
+          };
+          if (detailsObject.length > 0) {
+            const response = await createContent(reqBody);
+            if (response) {
+              setCallStatus(true);
+            }
+            console.log(response);
+          }
+        }
+      };
+      contentWithTelemetryData();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   return (
     <Tooltip title={isInvalidContent ? name || subTopic?.join(', ') : ''} arrow>
@@ -102,7 +206,10 @@ const ContentCard: React.FC<ContentCardProps> = ({
               : name || subTopic?.join(', ')}
           </Box>
         </Box>
-
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress variant="determinate" value={status} />
+          {/* <Typography>{status}</Typography> */}
+        </Box>
         {!isInvalidContent && (
           <Box
             sx={{

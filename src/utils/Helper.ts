@@ -515,7 +515,6 @@ export const getOptionsByCategory = (frameworks: any, categoryCode: string) => {
     name: term?.name,
     code: term?.code,
     associations: term?.associations,
-
   }));
 };
 
@@ -545,10 +544,8 @@ export const getAssociationsByCodeNew = (
   data: DataItem[],
   code: string
 ): Association[] | [] => {
-
   const foundItem = data?.find((item) => item?.name === code);
   return foundItem ? foundItem?.associations : [];
-
 };
 
 export const getAssociationsByCode = (
@@ -560,7 +557,6 @@ export const getAssociationsByCode = (
 };
 
 export const findCommonAssociations = (data1: any[], data2: any[]) => {
-
   if (!data1?.length) return data2;
   if (!data2?.length) return data1;
 
@@ -769,3 +765,15 @@ export function getCohortNameById(
 //    (count, [key, value]) => count + (isFieldFilled(key, value) ? 1 : 0),
 //    0
 //  );
+
+export const getTelemetryForContent = (
+  contentType: string,
+  identifier: string
+) => {
+  const keys = Object.keys(localStorage);
+  const telemetryEvents = keys
+    .filter((key) => key.startsWith(`${contentType}_${identifier}`))
+    .map((key) => JSON.parse(localStorage.getItem(key) || '{}'));
+
+  return telemetryEvents;
+};
