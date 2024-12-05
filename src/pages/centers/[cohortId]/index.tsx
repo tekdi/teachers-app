@@ -238,6 +238,8 @@ const CohortPage = () => {
     setOpen(false);
     setOpenSchedule(false);
     setDeleteModal(false);
+    setClickedBox(null);
+    setDisableNextButton(true)
   };
   const setRemoveCohortId = reassignLearnerStore(
     (state) => state.setRemoveCohortId
