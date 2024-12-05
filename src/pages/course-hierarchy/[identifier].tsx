@@ -38,18 +38,17 @@ const RecursiveAccordion = ({ data }: { data: any[] }) => {
   const renderAccordion = (nodes: any[], level = 0) => {
     return (
 
-      nodes.map((node, index) => (
-        <Box key={`${node.name}-${index}`} sx={{ marginBottom: '16px' }}>
-          {level === 0 ? (
-            <>
-              {/* Render level 0 name as heading */}
-              <Box sx={{p:'12px', display:'flex', alignItems:'center', gap:'10px'}}>
+      <Grid container spacing={2}>
+        {nodes.map((node, index) => (
+          <Grid item xs={12} md={level === 0 ? 12 : 6} lg={level === 0 ? 12 : 4} key={`${node.name}-${index}`}>
+            {level === 0 ? (
+              <Box sx={{ p: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <KeyboardBackspaceOutlinedIcon
                   onClick={handleBackEvent}
-                  cursor={'pointer'}
+                  cursor="pointer"
                   sx={{
                     color: theme.palette.warning['A200'],
-                    transform: isRTL ? ' rotate(180deg)' : 'unset',
+                    transform: isRTL ? 'rotate(180deg)' : 'unset',
                   }}
                 />
                 <Typography
@@ -59,48 +58,58 @@ const RecursiveAccordion = ({ data }: { data: any[] }) => {
                     paddingLeft: '4px',
                     fontSize: '22px',
                     color: '#4D4639',
-                    marginBottom:'0px !important'
+                    marginBottom: '0px !important',
                   }}
                 >
                   {node.name}
                 </Typography>
               </Box>
-              {/* Render children as accordions */}
-              {node.children && renderAccordion(node.children, level + 1)}
-            </>
-          ) : node.contentType === 'Resource' ? (
-        
-            <Grid container>
-                  <Grid item xs={6} md={4} lg={3} sx={{ mt: 2 }}>
-
-                     <ContentCard name={node?.name} identifier={node?.identifier || node?.id} mimeType={node?.mimeType} appIcon={node?.appIcon} resourceType={node?.resourceType} />
-
-                  </Grid>
-            </Grid>
-     
-          ) : (
-                <Accordion defaultExpanded sx={{ marginLeft: `${(level - 1) * 0.2}px`, boxShadow: level !== 1 ? '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)' : 'unset',  }}>
-                  
-              <AccordionSummary
+            ) : node.contentType === 'Resource' ? (
+              <ContentCard
+                name={node?.name}
+                identifier={node?.identifier || node?.id}
+                mimeType={node?.mimeType}
+                appIcon={node?.appIcon}
+                resourceType={node?.resourceType}
+              />
+            ) : (
+              <Accordion
+                defaultExpanded
                 sx={{
-                  '&.MuiAccordionSummary-root': {
-                    backgroundColor: level === 1 ? '#F1E7D9' :'#fff',
-                    borderBottom:'1px solid #D0C5B4'
-                  },
+                  marginLeft: `${(level - 1) * 0.2}px`,
+                  boxShadow:
+                    level !== 1
+                      ? '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)'
+                      : 'unset',
                 }}
-                    expandIcon={<ExpandMoreIcon sx={{ color: '#1F1B13' }} />}>
-                    <Typography variant="body1" fontWeight={500} sx={{ color: '#1F1B13', fontWeight: 500, fontSize: '14px' }}>
-                  {node?.name}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {/* Recursively render children */}
-                {node?.children && renderAccordion(node?.children, level + 1)}
-              </AccordionDetails>
-            </Accordion>
-          )}
-        </Box>
-      ))
+              >
+                <AccordionSummary
+                  sx={{
+                    '&.MuiAccordionSummary-root': {
+                      backgroundColor: level === 1 ? '#F1E7D9' : '#fff',
+                      borderBottom: '1px solid #D0C5B4',
+                    },
+                  }}
+                  expandIcon={<ExpandMoreIcon sx={{ color: '#1F1B13' }} />}
+                >
+                  <Typography
+                    variant="body1"
+                    fontWeight={500}
+                    sx={{ color: '#1F1B13', fontWeight: 500, fontSize: '14px' }}
+                  >
+                    {node?.name}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {/* Recursively render children */}
+                  {node?.children && renderAccordion(node?.children, level + 1)}
+                </AccordionDetails>
+              </Accordion>
+            )}
+          </Grid>
+        ))}
+      </Grid>
+
     )
   };
 
