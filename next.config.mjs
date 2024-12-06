@@ -27,6 +27,9 @@ const nextConfig = {
     // Disabling on production builds because we're running checks on PRs via GitHub Actions.
     ignoreDuringBuilds: true,
   },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
   trailingSlash: false,
   reactStrictMode: true,
   i18n: nextI18nextConfig.i18n,
