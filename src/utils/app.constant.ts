@@ -1,21 +1,20 @@
 /* eslint-disable no-unused-vars */
 import { TFunction } from 'i18next';
-import pdf from "./../assets/images/PDF.svg";
-import epub from "../assets/images/Epub.svg";
-import html from "../assets/images/HTML.svg";
-import mp4 from "../assets/images/MP4.svg";
-import qml from "../assets/images/Qml.svg";
-import youtube from "../assets/images/youtube.svg";
+import pdf from './../assets/images/PDF.svg';
+import epub from '../assets/images/Epub.svg';
+import html from '../assets/images/HTML.svg';
+import mp4 from '../assets/images/MP4.svg';
+import qml from '../assets/images/Qml.svg';
+import youtube from '../assets/images/youtube.svg';
 
-// background image 
+// background image
 
-import bgpdf from "./../assets/images/bgPDF.svg";
-import bgepub from "../assets/images/bgEpub.svg";
-import bghtml from "../assets/images/bgHtml.svg";
-import bgmp4 from "../assets/images/bgMP4 .svg";
-import bgqml from "../assets/images/bgQml.svg";
-import bgyoutube from "../assets/images/bgYouTube.svg";
-
+import bgpdf from './../assets/images/bgPDF.svg';
+import bgepub from '../assets/images/bgEpub.svg';
+import bghtml from '../assets/images/bgHtml.svg';
+import bgmp4 from '../assets/images/bgMP4 .svg';
+import bgqml from '../assets/images/bgQml.svg';
+import bgyoutube from '../assets/images/bgYouTube.svg';
 
 export const limit: number = 300;
 export const refetchInterval: number = 5 * 60 * 1000; // 5 min
@@ -89,7 +88,7 @@ export enum cohortPrivileges {
 export enum FormContext {
   USERS = 'USERS',
   COHORTS = 'COHORTS',
-  COHORT_MEMBER = 'COHORTMEMBER'
+  COHORT_MEMBER = 'COHORTMEMBER',
 }
 
 export enum FormContextType {
@@ -97,7 +96,7 @@ export enum FormContextType {
   TEACHER = 'TEACHER',
   TEAM_LEADER = 'TEAM LEADER',
   COHORT = 'COHORT',
-  COHORT_MEMBER = 'COHORTMEMBER'
+  COHORT_MEMBER = 'COHORTMEMBER',
 }
 export enum ObservationEntityType {
   LEARNER = 'learner',
@@ -108,8 +107,8 @@ export enum ObservationStatus {
   DRAFT = 'draft',
   COMPLETED = 'completed',
   NOT_STARTED = 'notstarted',
-  STARTED="started",
-  ALL="All"
+  STARTED = 'started',
+  ALL = 'All',
 }
 
 export enum CenterType {
@@ -130,21 +129,19 @@ export enum Pagination {
   MAX_ITEMS = 50,
 }
 export enum LeftDays {
-  ONE_DAY_IN_MILLISECONDS=1000 * 60 * 60 * 24
+  ONE_DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24,
 }
 
 export enum Telemetry {
   CLICK = 'CLICK',
   SEARCH = 'SEARCH',
   VIEW = 'VIEW',
-
 }
 export enum TelemetryEventType {
   CLICK = 'CLICK',
   SEARCH = 'SEARCH',
   VIEW = 'VIEW',
-  RADIO="RADIO"
-
+  RADIO = 'RADIO',
 }
 export enum AssessmentStatus {
   NOT_STARTED = 'Not_Started',
@@ -190,22 +187,23 @@ export enum ResourcesType {
   POSTREQUSITE = 'postrequisite',
   NONE = 'none',
 }
-export const FeesStepBoards = ["NIOS"]
+export const FeesStepBoards = ['NIOS'];
 
-import { StaticImageData } from "next/image"; // Import StaticImageData for type safety with images
+import { StaticImageData } from 'next/image'; // Import StaticImageData for type safety with images
 
 // Define the enum for content types
+
 export enum ContentType {
-  PDF = "application/pdf",
-  EPUB = "application/epub",
-  HTML = "application/vnd.ekstep.html-archive",
-  VIDEO_MP4 = "video/mp4",
-  QUESTION_SET = "application/vnd.sunbird.questionset",
-  H5P = "application/vnd.ekstep.h5p-archive",
-  YOUTUBE_VIDEO = "video/youtube",
-  YOUTUBE_X_VIDEO = "video/x-youtube",
-  WEBM_VIDEO = "video/webm",
-  COLLECTION ="application/vnd.ekstep.content-collection"
+  PDF = 'application/pdf',
+  EPUB = 'application/epub',
+  HTML = 'application/vnd.ekstep.html-archive',
+  VIDEO_MP4 = 'video/mp4',
+  QUESTION_SET = 'application/vnd.sunbird.questionset',
+  H5P = 'application/vnd.ekstep.h5p-archive',
+  YOUTUBE_VIDEO = 'video/youtube',
+  YOUTUBE_X_VIDEO = 'video/x-youtube',
+  WEBM_VIDEO = 'video/webm',
+  COLLECTION = 'application/vnd.ekstep.content-collection',
 }
 
 // Define the type for the content type mapping
@@ -219,14 +217,36 @@ export type FileType = {
 
 // Create the mapping object with enum keys
 export const ContentCardsTypes: FileType = {
-  [ContentType.PDF]: { name: "PDF", imgPath: pdf, BgImgPath: bgpdf },
-  [ContentType.EPUB]: { name: "EPUB", imgPath: epub, BgImgPath: bgepub },
-  [ContentType.HTML]: { name: "HTML", imgPath: html, BgImgPath: bghtml },
-  [ContentType.VIDEO_MP4]: { name: "Video", imgPath: mp4, BgImgPath: bgmp4 },
-  [ContentType.QUESTION_SET]: { name: "Question Set", imgPath: qml, BgImgPath: bgqml },
-  [ContentType.H5P]: { name: "H5P", imgPath: html, BgImgPath: bghtml },
-  [ContentType.YOUTUBE_X_VIDEO]: { name: "YouTube", imgPath: youtube, BgImgPath: bgyoutube },
-  [ContentType.YOUTUBE_VIDEO]: { name: "YouTube", imgPath: youtube, BgImgPath: bgyoutube },
-  [ContentType.WEBM_VIDEO]: { name: "WEBM", imgPath: mp4, BgImgPath: bgmp4 },
-  [ContentType.COLLECTION]: { name: "Course", imgPath: html, BgImgPath: bghtml },
+  [ContentType.PDF]: { name: 'PDF', imgPath: pdf, BgImgPath: bgpdf },
+  [ContentType.EPUB]: { name: 'EPUB', imgPath: epub, BgImgPath: bgepub },
+  [ContentType.HTML]: { name: 'HTML', imgPath: html, BgImgPath: bghtml },
+  [ContentType.VIDEO_MP4]: { name: 'Video', imgPath: mp4, BgImgPath: bgmp4 },
+  [ContentType.QUESTION_SET]: {
+    name: 'Question Set',
+    imgPath: qml,
+    BgImgPath: bgqml,
+  },
+  [ContentType.H5P]: { name: 'H5P', imgPath: html, BgImgPath: bghtml },
+  [ContentType.YOUTUBE_X_VIDEO]: {
+    name: 'YouTube',
+    imgPath: youtube,
+    BgImgPath: bgyoutube,
+  },
+  [ContentType.YOUTUBE_VIDEO]: {
+    name: 'YouTube',
+    imgPath: youtube,
+    BgImgPath: bgyoutube,
+  },
+  [ContentType.WEBM_VIDEO]: { name: 'WEBM', imgPath: mp4, BgImgPath: bgmp4 },
+  [ContentType.COLLECTION]: {
+    name: 'Course',
+    imgPath: html,
+    BgImgPath: bghtml,
+  },
 };
+
+export enum contentStatus {
+  COMPLETED = 'Completed',
+  IN_PROGRESS = 'In_Progress',
+  NOT_STARTED = 'Not_Started',
+}

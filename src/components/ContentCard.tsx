@@ -1,14 +1,25 @@
-import { Box, Tooltip } from '@mui/material';
+import { Box, LinearProgress, Tooltip, Typography } from '@mui/material';
 import Image from 'next/image';
 import placeholderImage from '../assets/images/decorationBg.png';
-import { FileType, ContentCardsTypes } from '@/utils/app.constant';
+import {
+  FileType,
+  ContentCardsTypes,
+  ContentType,
+  contentStatus,
+} from '@/utils/app.constant';
 import router from 'next/router';
 import { COURSE_TYPE } from '../../app.config';
 import { useTranslation } from 'next-i18next';
-
+import {
+  ContentCreate,
+  ContentStatus,
+  createContentTracking,
+  getContentTrackingStatus,
+} from '@/services/TrackingService';
+import React, { useEffect, useState } from 'react';
 interface ContentCardProps {
   name: string;
-  mimeType?: string;
+  mimeType: string;
   appIcon?: string;
   identifier?: any;
   resourceType?: string;
@@ -25,6 +36,11 @@ const ContentCard: React.FC<ContentCardProps> = ({
 }) => {
   const isInvalidContent = !mimeType;
   const { t } = useTranslation();
+  const [CallStatus, setCallStatus] = useState(false);
+  const [status, setStatus] = useState<string>();
+  const [statusMsg, setStatusMsg] = useState<string>();
+  const [progress, setProgress] = useState<number>(0);
+  const lastAccessOn = new Date().toISOString();
 
   const getBackgroundImage = () => {
     if (appIcon) {
@@ -45,6 +61,113 @@ const ContentCard: React.FC<ContentCardProps> = ({
       }
     }
   };
+
+  let userId = '';
+  if (typeof window !== 'undefined' && window.localStorage) {
+    userId = localStorage.getItem('userId') || '';
+  }
+  useEffect(() => {
+    try {
+      const getTrackingStatus = async () => {
+        if (userId !== undefined || userId !== '') {
+          const reqBody: ContentStatus = {
+            userId: [userId],
+            contentId: [identifier],
+            courseId: [identifier],
+            unitId: [identifier],
+          };
+          const response = await getContentTrackingStatus(reqBody);
+
+          console.log('response', response);
+          let status = '';
+          response.data?.some((item: any) =>
+            item.contents?.some((content: any) => {
+              if (content.contentId === identifier) {
+                status = content.status || '';
+                // status = parseInt(content.percentage, 10);
+                return true;
+              }
+            })
+          );
+          switch (status) {
+            case contentStatus.COMPLETED:
+              setProgress(100);
+              setStatusMsg(t('CENTER_SESSION.COMPLETED'));
+              break;
+            case contentStatus.IN_PROGRESS:
+              setProgress(100);
+              setStatusMsg(t('CENTER_SESSION.INPROGRESS'));
+              break;
+            case contentStatus.NOT_STARTED:
+              setProgress(0);
+              setStatusMsg(t('CENTER_SESSION.NOTSTARTED'));
+              break;
+            default:
+              setProgress(0);
+              setStatusMsg('');
+              break;
+          }
+          console.log('response tracking status', status);
+          setStatus(status);
+        }
+      };
+      getTrackingStatus();
+    } catch (error) {
+      console.log(error);
+    }
+  }, [CallStatus]);
+
+  useEffect(() => {
+    let detailsObject: any[] = [];
+
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const keys = Object.keys(localStorage);
+
+      // Filter keys for relevant telemetry events based on identifier
+      const relevantKeys = keys.filter((key) => key.includes(identifier));
+
+      relevantKeys.forEach((key) => {
+        const telemetryEvent = localStorage.getItem(key);
+        if (telemetryEvent) {
+          detailsObject.push(JSON.parse(telemetryEvent));
+        }
+      });
+    }
+
+    console.log('Details Object:', detailsObject);
+
+    try {
+      const contentWithTelemetryData = async () => {
+        if (userId !== undefined || userId !== '') {
+          const ContentTypeReverseMap = Object.fromEntries(
+            Object.entries(ContentType).map(([key, value]) => [value, key])
+          );
+          console.log(ContentTypeReverseMap);
+
+          const reqBody: ContentCreate = {
+            userId: userId,
+            contentId: identifier,
+            courseId: identifier,
+            unitId: identifier,
+            contentType: ContentTypeReverseMap[mimeType] || '',
+            contentMime: mimeType,
+            lastAccessOn: lastAccessOn,
+            detailsObject: detailsObject,
+          };
+          if (detailsObject.length > 0) {
+            const response = await createContentTracking(reqBody);
+            if (response) {
+              setCallStatus(true);
+            }
+            console.log(response);
+          }
+        }
+      };
+      contentWithTelemetryData();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   return (
     <Tooltip title={isInvalidContent ? name || subTopic?.join(', ') : ''} arrow>
@@ -85,24 +208,75 @@ const ContentCard: React.FC<ContentCardProps> = ({
           <Box
             sx={{
               position: 'absolute',
-              bottom: '16px',
-              left: '16px',
+              bottom: '5px',
+              left: '0px',
               right: '16px',
               zIndex: 2,
-              color: isInvalidContent ? '#ECE6F0' : '#FFFFFF',
-              fontSize: '14px',
-              fontWeight: 500,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
             }}
           >
-            {isInvalidContent
-              ? t('COURSE_PLANNER.INVALID_RESOURCE')
-              : name || subTopic?.join(', ')}
+            <Box
+              sx={{
+                color: isInvalidContent ? '#ECE6F0' : '#FFFFFF',
+                fontSize: '14px',
+                fontWeight: 500,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+
+                marginLeft: '16px',
+              }}
+            >
+              {isInvalidContent
+                ? t('COURSE_PLANNER.INVALID_RESOURCE')
+                : name || subTopic?.join(', ')}
+            </Box>
+
+            {status !== 'Completed' && (
+              <Box
+                sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
+              >
+                <Box sx={{ flexGrow: 1 }}>
+                  <LinearProgress variant="determinate" value={progress} />
+                </Box>
+                <Typography
+                  sx={{
+                    marginLeft: 1,
+                    color: '#FFFFFF',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                  }}
+                >
+                  {statusMsg}
+                </Typography>
+              </Box>
+            )}
           </Box>
         </Box>
-
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+            background: 'transperant',
+          }}
+        >
+          {status === 'Completed' && (
+            <>
+              <Box sx={{ flexGrow: 1 }}>
+                <LinearProgress variant="determinate" value={progress} />
+              </Box>
+              {/* <Typography sx={{ marginLeft: 2 }}>{statusMsg}</Typography> */}
+            </>
+          )}
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+            background: 'transperant',
+          }}
+        ></Box>
         {!isInvalidContent && (
           <Box
             sx={{

@@ -446,7 +446,7 @@
     "START_DATE_ERROR": "Start date cannot be later than end date.",
     "END_DATE_ERROR": "End date cannot be earlier than start date.",
     "IDENTIFIER_NOT_FOUND": "Identifier not found! Cannot Open Content!",
-    "SELECT_SESSION":"Please select type of session",
+    "SELECT_SESSION": "Please select type of session",
     "MEETING_LINK_REQUIRED": "Please Enter Meeting Link!",
     "WEEKDAY_ERROR": "Please select at least one weekday for the recurring event.",
     "MULTIDAY_EVENT_ERROR": "Recurring events cannot span multiple days.",
@@ -458,7 +458,10 @@
     "PLANNED_SESSION_END_DATE_TIME_REQUIRED_ERROR": "Please provide a valid end time for the planned session.",
     "INVALID_DATE": "Invalid Date",
     "INVALID_EVENT_CONFIGURATION": "Invalid event configuration. Please check your inputs.",
-    "MEETING_URL_ERROR": "Please provide a valid meeting URL."
+    "MEETING_URL_ERROR": "Please provide a valid meeting URL.",
+    "COMPLETED": "Completed",
+    "INPROGRESS": "In Progress",
+    "NOTSTARTED": "Not Started"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center requested successfully",
