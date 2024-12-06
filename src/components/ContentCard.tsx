@@ -1,15 +1,20 @@
 import { Box, LinearProgress, Tooltip, Typography } from '@mui/material';
 import Image from 'next/image';
 import placeholderImage from '../assets/images/decorationBg.png';
-import { FileType, ContentCardsTypes, ContentType } from '@/utils/app.constant';
+import {
+  FileType,
+  ContentCardsTypes,
+  ContentType,
+  contentStatus,
+} from '@/utils/app.constant';
 import router from 'next/router';
 import { COURSE_TYPE } from '../../app.config';
 import { useTranslation } from 'next-i18next';
 import {
   ContentCreate,
   ContentStatus,
-  createContent,
-  getStatus,
+  createContentTracking,
+  getContentTrackingStatus,
 } from '@/services/TrackingService';
 import React, { useEffect, useState } from 'react';
 interface ContentCardProps {
@@ -71,7 +76,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
             courseId: [identifier],
             unitId: [identifier],
           };
-          const response = await getStatus(reqBody);
+          const response = await getContentTrackingStatus(reqBody);
 
           console.log('response', response);
           let status = '';
@@ -84,15 +89,23 @@ const ContentCard: React.FC<ContentCardProps> = ({
               }
             })
           );
-          if (status === t('CENTER_SESSION.COMPLETED')) {
-            setProgress(100);
-            setStatusMsg(t('CENTER_SESSION.COMPLETED'));
-          } else if (status === t('CENTER_SESSION.IN_PROGRESS')) {
-            setProgress(100);
-            setStatusMsg(t('CENTER_SESSION.INPROGRESS'));
-          } else if (status === t('CENTER_SESSION.NOT_STARTED')) {
-            setProgress(0);
-            setStatusMsg(t('CENTER_SESSION.NOTSTARTED'));
+          switch (status) {
+            case contentStatus.COMPLETED:
+              setProgress(100);
+              setStatusMsg(t('CENTER_SESSION.COMPLETED'));
+              break;
+            case contentStatus.IN_PROGRESS:
+              setProgress(100);
+              setStatusMsg(t('CENTER_SESSION.INPROGRESS'));
+              break;
+            case contentStatus.NOT_STARTED:
+              setProgress(0);
+              setStatusMsg(t('CENTER_SESSION.NOTSTARTED'));
+              break;
+            default:
+              setProgress(0);
+              setStatusMsg('');
+              break;
           }
           console.log('response tracking status', status);
           setStatus(status);
@@ -142,7 +155,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
             detailsObject: detailsObject,
           };
           if (detailsObject.length > 0) {
-            const response = await createContent(reqBody);
+            const response = await createContentTracking(reqBody);
             if (response) {
               setCallStatus(true);
             }

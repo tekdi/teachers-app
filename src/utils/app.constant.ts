@@ -244,3 +244,9 @@ export const ContentCardsTypes: FileType = {
     BgImgPath: bghtml,
   },
 };
+
+export enum contentStatus {
+  COMPLETED = 'Completed',
+  IN_PROGRESS = 'In_Progress',
+  NOT_STARTED = 'Not_Started',
+}

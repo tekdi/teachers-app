@@ -460,9 +460,7 @@
     "INVALID_EVENT_CONFIGURATION": "Invalid event configuration. Please check your inputs.",
     "MEETING_URL_ERROR": "Please provide a valid meeting URL.",
     "COMPLETED": "Completed",
-    "IN_PROGRESS": "In_Progress",
     "INPROGRESS": "In Progress",
-    "NOT_STARTED": "Not_Started",
     "NOTSTARTED": "Not Started"
   },
   "MANAGE_USERS": {
