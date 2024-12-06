@@ -96,12 +96,12 @@ const ObservationDetails = () => {
 
   const [searchInput, setSearchInput] = useState('');
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [observationData, setObservationData] = useState<any>([]);
   const [observationDescription, setObservationDescription] = useState<any>();
   const [observationEndDate, setObservationEndDate] = useState<any>("");
 
-  const [status, setStatus] = useState(t('COMMON.ALL'));
+  const [status, setStatus] = useState(ObservationStatus.ALL);
 
   const theme = useTheme<any>();
 
@@ -371,7 +371,7 @@ setFilteredEntityData(result)
     };
     if(selectedCohort && selectedCohort!=='')
     handleCohortChange();
-  }, [page, selectedCohort, searchInput, entity]);
+  }, [page, selectedCohort, searchInput, entity, i18n?.language]);
 
   const onPreviousClick = () => {
     if (entity === ObservationEntityType?.CENTER) {
@@ -398,7 +398,7 @@ setFilteredEntityData(result)
     }
   };
   const handleCohortChange = async (event: any) => {
-    setStatus(t('COMMON.ALL'));
+    setStatus(ObservationStatus.ALL);
 
     setCurrentPage(0);
     setPage(0);
@@ -481,7 +481,7 @@ setFilteredEntityData(result)
       default:
         return null;
     }
-  }, [entity, myCohortListForCenter, Data, filteredEntityData]);
+  }, [entity, myCohortListForCenter, Data, filteredEntityData, i18n?.language ]);
 
   const handlePaginationChange = (
     event: React.ChangeEvent<unknown>,
@@ -507,7 +507,7 @@ setFilteredEntityData(result)
   const handleStatusChange = (event: any) => {
     setStatus(event.target.value);
 
-    if(event.target.value===t('COMMON.ALL'))
+    if(event.target.value===ObservationStatus.ALL)
     {
       setFilteredEntityData(entityData);
 
@@ -650,7 +650,7 @@ setFilteredEntityData(result)
                     value={status}
                     onChange={handleStatusChange}
                     label={t('OBSERVATION.OBSERVATION_STATUS')}
-                    defaultValue={t('COMMON.ALL')}
+                    defaultValue={ObservationStatus.ALL}
                   >
                     <MenuItem value={ObservationStatus.ALL}>{t('COMMON.ALL')}</MenuItem>
                     <MenuItem value={ObservationStatus.NOT_STARTED}>{t('OBSERVATION.NOT_STARTED')}</MenuItem>
