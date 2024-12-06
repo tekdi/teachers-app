@@ -1,4 +1,4 @@
-import { Box, LinearProgress, Tooltip } from '@mui/material';
+import { Box, LinearProgress, Tooltip, Typography } from '@mui/material';
 import Image from 'next/image';
 import placeholderImage from '../assets/images/decorationBg.png';
 import { FileType, ContentCardsTypes, ContentType } from '@/utils/app.constant';
@@ -32,7 +32,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
   const isInvalidContent = !mimeType;
   const { t } = useTranslation();
   const [CallStatus, setCallStatus] = useState(false);
-  const [status, setStatus] = useState<number>(0);
+  const [status, setStatus] = useState<string>();
+  const [progress, setProgress] = useState<number>(0);
   const lastAccessOn = new Date().toISOString();
 
   const getBackgroundImage = () => {
@@ -72,16 +73,24 @@ const ContentCard: React.FC<ContentCardProps> = ({
           const response = await getStatus(reqBody);
 
           console.log('response', response);
-          let status = 0;
+          let status = '';
           response.data?.some((item: any) =>
             item.contents?.some((content: any) => {
               if (content.contentId === identifier) {
-                // status = content.status;
-                status = parseInt(content.percentage, 10);
+                status = content.status || '';
+                // status = parseInt(content.percentage, 10);
                 return true;
               }
             })
           );
+          if (
+            status === t('CENTER_SESSION.COMPLETED') ||
+            status === t('CENTER_SESSION.IN_PROGRESS')
+          ) {
+            setProgress(100);
+          } else if (status === t('CENTER_SESSION.NOT_STARTED')) {
+            setProgress(0);
+          }
           console.log('response tracking status', status);
           setStatus(status);
         }
@@ -114,24 +123,17 @@ const ContentCard: React.FC<ContentCardProps> = ({
     try {
       const contentWithTelemetryData = async () => {
         if (userId !== undefined || userId !== '') {
-          const mimeTypesToContentTypes: { [key: string]: string } = {
-            [ContentType.ECML]: 'ecml',
-            [ContentType.QUESTION_SET]: 'quml',
-            [ContentType.HTML]: 'html',
-            [ContentType.H5P]: 'h5p',
-            [ContentType.YOUTUBE_X_VIDEO]: 'x-youtube',
-            [ContentType.YOUTUBE_VIDEO]: 'youtube',
-            [ContentType.PDF]: 'pdf',
-            [ContentType.EPUB]: 'epub',
-            [ContentType.VIDEO_MP4]: 'mp4',
-            [ContentType.WEBM_VIDEO]: 'webm',
-          };
+          const ContentTypeReverseMap = Object.fromEntries(
+            Object.entries(ContentType).map(([key, value]) => [value, key])
+          );
+          console.log(ContentTypeReverseMap);
+
           const reqBody: ContentCreate = {
             userId: userId,
             contentId: identifier,
             courseId: identifier,
             unitId: identifier,
-            contentType: mimeTypesToContentTypes[mimeType] || '',
+            contentType: ContentTypeReverseMap[mimeType] || '',
             contentMime: mimeType,
             lastAccessOn: lastAccessOn,
             detailsObject: detailsObject,
@@ -207,9 +209,13 @@ const ContentCard: React.FC<ContentCardProps> = ({
               : name || subTopic?.join(', ')}
           </Box>
         </Box>
-        <Box sx={{ width: '100%' }}>
-          <LinearProgress variant="determinate" value={status} />
-          {/* <Typography>{status}</Typography> */}
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          <Box sx={{ flexGrow: 1 }}>
+            <LinearProgress variant="determinate" value={progress} />
+          </Box>
+          {status !== t('CENTER_SESSION.COMPLETED') && (
+            <Typography sx={{ marginLeft: 2 }}>{status}</Typography>
+          )}
         </Box>
         {!isInvalidContent && (
           <Box
