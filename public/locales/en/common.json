@@ -446,6 +446,7 @@
     "START_DATE_ERROR": "Start date cannot be later than end date.",
     "END_DATE_ERROR": "End date cannot be earlier than start date.",
     "IDENTIFIER_NOT_FOUND": "Identifier not found! Cannot Open Content!",
+    "SELECT_SESSION":"Please select type of session",
     "MEETING_LINK_REQUIRED": "Please Enter Meeting Link!",
     "WEEKDAY_ERROR": "Please select at least one weekday for the recurring event.",
     "MULTIDAY_EVENT_ERROR": "Recurring events cannot span multiple days.",
@@ -572,7 +573,11 @@
     "COLLAPSE_ALL": "Collapse All",
     "EXPAND_ALL": "Expand All",
     "RESOURCES": "Resources",
-    "MARK_AS_COMPLETED": "Mark As Complete"
+    "MARK_AS_COMPLETED": "Mark As Complete",
+    "COURSE_TYPE": "Course Type",
+    "SUBTOPICS_SELECTED": "subtopics selected",
+    "NO_RESOURCES_FOUND": "No resources found",
+    "INVALID_RESOURCE": "Invalid Resource"
   },
   "ASSESSMENTS": {
     "ASSESSMENTS": "Assessments",
@@ -642,7 +647,6 @@
     "DUE_DATE": "Due date",
     "SURVEY_FORMS": "Survey Forms",
     "OBSERVATION_STATUS": "Survey Status",
-    "OBSERVATION_SURVEY_FOR": "Survey for {{entityValue}}",
     "OBSERVATION_NOT_STARTED_YET": "Survey not started yet",
     "EXPIRED": "Expired"
   }

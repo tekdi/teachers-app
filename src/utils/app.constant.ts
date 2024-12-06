@@ -205,7 +205,7 @@ export enum ContentType {
   YOUTUBE_VIDEO = "video/youtube",
   YOUTUBE_X_VIDEO = "video/x-youtube",
   WEBM_VIDEO = "video/webm",
-  VND ="application/vnd.ekstep.content-collection"
+  COLLECTION ="application/vnd.ekstep.content-collection"
 }
 
 // Define the type for the content type mapping
@@ -228,5 +228,5 @@ export const ContentCardsTypes: FileType = {
   [ContentType.YOUTUBE_X_VIDEO]: { name: "YouTube", imgPath: youtube, BgImgPath: bgyoutube },
   [ContentType.YOUTUBE_VIDEO]: { name: "YouTube", imgPath: youtube, BgImgPath: bgyoutube },
   [ContentType.WEBM_VIDEO]: { name: "WEBM", imgPath: mp4, BgImgPath: bgmp4 },
-  [ContentType.VND]: { name: "WEBM", imgPath: html, BgImgPath: bghtml },
+  [ContentType.COLLECTION]: { name: "Course", imgPath: html, BgImgPath: bghtml },
 };

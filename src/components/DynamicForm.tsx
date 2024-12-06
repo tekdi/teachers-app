@@ -81,7 +81,19 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     }
     onError(errors);
   };
+  const sanitizeFormData = (data: any): any => {
+    if (Array.isArray(data)) {
+      return data.map(item => (typeof item === "undefined" ? '' : sanitizeFormData(item)));
+    }
+    if (data !== null && typeof data === 'object') {
+      return Object.fromEntries(
+       
+        Object.entries(data)?.map(([key, value]) => [key, value === "undefined" ? "" : sanitizeFormData(value)])
 
+      );
+    }
+    return data;
+  };
   function transformErrors(errors: any) {
     console.log('errors', errors);
     console.log('schema', schema);
@@ -242,8 +254,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   }
 
   function handleChange(event: any) {
-    console.log('Form data changed:', event.formData);
-    onChange(event);
+    const sanitizedData = sanitizeFormData(event.formData);
+    console.log('Form data changed:', sanitizedData);
+    onChange({ ...event, formData: sanitizedData });
   }
 
   return (
@@ -251,7 +264,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       <FormWithMaterialUI
         schema={schema}
         uiSchema={uiSchema}
-        formData={formData}
+        formData={sanitizeFormData(formData)}
         onChange={handleChange}
         onSubmit={onSubmit}
         validator={validator}

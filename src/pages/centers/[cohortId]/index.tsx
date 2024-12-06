@@ -112,12 +112,13 @@ if (!isEliminatedFromBuild('Schedule', 'component')) {
 const CohortPage = () => {
   const userStore = useStore();
   const isActiveYear = userStore.isActiveYearSelected;
+  const router = useRouter();
+
   const [value, setValue] = React.useState(() => {
-    return isEliminatedFromBuild('Events', 'feature') || !isActiveYear ? 2 : 1;
+    return isEliminatedFromBuild('Events', 'feature') || !isActiveYear ? 2 : router.query.tab ? Number(router.query.tab) : 1;
   });
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
-  const router = useRouter();
   const { cohortId }: any = router.query;
   const { t, i18n } = useTranslation();
   const { dir, isRTL } = useDirection();
@@ -160,6 +161,8 @@ const CohortPage = () => {
     React.useState(false);
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
+  const [disableNextButton, setDisableNextButton] = React.useState(true);
+
   const [eventDeleted, setEventDeleted] = React.useState(false);
   const [eventUpdated, setEventUpdated] = React.useState(false);
   const [deleteModal, setDeleteModal] = React.useState(false);
@@ -178,6 +181,7 @@ const CohortPage = () => {
   const [initialSlideIndex, setInitialSlideIndex] = useState<any>();
 
   const handleClick = (selection: string) => {
+    setDisableNextButton(false);
     setClickedBox(selection);
   };
 
@@ -186,6 +190,7 @@ const CohortPage = () => {
   };
 
   const handleCentermodel = () => {
+
     setOpenSchedule(true);
   };
 
@@ -233,6 +238,8 @@ const CohortPage = () => {
     setOpen(false);
     setOpenSchedule(false);
     setDeleteModal(false);
+    setClickedBox(null);
+    setDisableNextButton(true)
   };
   const setRemoveCohortId = reassignLearnerStore(
     (state) => state.setRemoveCohortId
@@ -396,7 +403,30 @@ const CohortPage = () => {
       }
     }
   }, [extraSessions]);
+  useEffect(() => {
+    if (router.isReady) {
+      const queryParamValue = router.query.tab ? Number(router.query.tab) : 1;
 
+      if ([1, 2, 3].includes(queryParamValue))
+      setValue(queryParamValue);
+      else 
+      setValue(1);
+    }
+  }, [router.isReady, router.query.tab]);
+  useEffect(() => {
+    if (router.isReady) {
+      const updatedQuery = { ...router.query, tab: value };
+
+      router.push(
+        {
+          pathname: router.pathname,
+          query: updatedQuery,
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [value]);
   const handleEventDeleted = () => {
     setEventDeleted(true);
   };
@@ -431,7 +461,8 @@ const CohortPage = () => {
   };
 
   const handleBackEvent = () => {
-    window.history.back();
+    router.push('/centers');
+ //   window.history.back();
   };
 
   const showDetailsHandle = (dayStr: string) => {
@@ -738,6 +769,7 @@ const CohortPage = () => {
                           : handleCentermodel
                   }
                   handleEditModal={handleEditEvent}
+                  disable={onEditEvent?false: disableNextButton}
                 >
                   {deleteModal
                     ? DeleteSession && <DeleteSession />
@@ -758,10 +790,16 @@ const CohortPage = () => {
                           />
                         )
                       : Schedule && (
+                        <>
+                        {!clickedBox &&(<Typography sx={{m:2}}>
+                          {t('CENTER_SESSION.SELECT_SESSION')}
+                        </Typography>)}
                           <Schedule
                             clickedBox={clickedBox}
                             handleClick={handleClick}
                           />
+                        </>
+                        
                         )}
                 </CenterSessionModal>
 

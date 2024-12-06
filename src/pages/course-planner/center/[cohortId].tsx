@@ -356,13 +356,11 @@ const CoursePlannerDetail = () => {
     subtopic: any,
     resources: IResource[]
   ) => {
-    console.log(resources);
-
     try {
       resources = resources.map((resource: IResource) => {
         return {
           ...resource,
-          id: resource.id.toLowerCase(),
+          id: resource.id ? resource.id.toLowerCase() : resource.id,
         };
       });
       const identifiers = resources.map((resource: IResource) =>
@@ -413,6 +411,16 @@ const CoursePlannerDetail = () => {
               transform: isRTL ? ' rotate(180deg)' : 'unset',
             }}
           />
+          {!userProjectDetails?.tasks?.length && (
+            <Box
+              sx={{
+                fontSize: '16px',
+                color: theme.palette.warning['300'],
+              }}
+            >
+              {tStore?.taxonomySubject}
+            </Box>
+          )}
           {userProjectDetails?.tasks?.length > 0 && (
             <>
               <Box>
@@ -461,7 +469,6 @@ const CoursePlannerDetail = () => {
                       </Typography>
                     </Box>
                   </Box>
-
                   <Box
                     sx={{
                       fontSize: '16px',
@@ -775,7 +782,7 @@ const CoursePlannerDetail = () => {
                   ))
                 ) : (
                   <Typography
-                    sx={{ mt: 2, textAlign: 'center', color: '#7C766F' }}
+                    sx={{ mt: 5, textAlign: 'center', color: '#7C766F' }}
                   >
                     {t('ASSESSMENTS.NO_DATA_FOUND')}
                   </Typography>

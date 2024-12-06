@@ -17,6 +17,8 @@ import { showToastMessage } from '../Toastify';
 import FrameworkCategories from './FrameworkCategories';
 import { telemetryFactory } from '@/utils/telemetry';
 import { useQueryClient } from '@tanstack/react-query';
+import { getCohortList } from '@/services/CohortServices';
+import useStore from '@/store/store';
 interface CreateBlockModalProps {
   open: boolean;
   handleClose: () => void;
@@ -32,6 +34,21 @@ interface CohortDetails {
   parentId: string | null;
   customFields: CustomField[];
 }
+interface ChildData {
+  cohortId: string;
+  name: string;
+  parentId: string;
+  type: string;
+  customField: any[];
+  childData: ChildData[];
+  status?: string;
+}
+interface NameTypePair {
+  cohortId: string;
+  name: string;
+  cohortType: string;
+  status?: string;
+}
 const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   open,
   handleClose,
@@ -45,6 +62,7 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   const [showForm, setShowForm] = useState(false);
   const [isHiddenFieldPresent, setIsHiddenFieldPresent] = useState(false);
   const queryClient = useQueryClient();
+  const setCohorts = useStore((state) => state.setCohorts);
 
   const { data: formResponse, isPending } = useFormRead(
     FormContext.COHORTS,
@@ -89,6 +107,33 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
       setFormData(data.formData);
     });
   };
+  const extractNamesAndCohortTypes = (
+    data: ChildData[]
+  ): NameTypePair[] => {
+    const nameTypePairs: NameTypePair[] = [];
+    const recursiveExtract = (items: ChildData[]) => {
+      items.forEach((item) => {
+        const cohortType =
+          item?.customField?.find(
+            (field) => field?.label === 'TYPE_OF_COHORT'
+          )?.value || 'Unknown';
+        if (item?.cohortId && item?.name) {
+          nameTypePairs.push({
+            cohortId: item?.cohortId,
+            name: item?.name,
+            status: item?.status,
+            cohortType,
+          });
+        }
+        if (item?.childData && item?.childData?.length > 0) {
+          recursiveExtract(item?.childData);
+        }
+      });
+    };
+    recursiveExtract(data);
+    return nameTypePairs;
+  };
+
   useEffect(() => {
     if (formData) {
       handleButtonClick();
@@ -160,6 +205,14 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
         queryClient.invalidateQueries({
           queryKey: [QueryKeys.MY_COHORTS, userId],
         });
+        const myCohortList = await queryClient.fetchQuery({
+          queryKey: [QueryKeys.MY_COHORTS, userId],
+          queryFn: () => getCohortList(userId as string, { customField: 'true' }),
+        });
+        if (myCohortList?.length > 0) {
+          const nameTypePairs = extractNamesAndCohortTypes(myCohortList);
+          setCohorts(nameTypePairs);
+        }
         const telemetryInteract = {
           context: {
             env: 'teaching-center',

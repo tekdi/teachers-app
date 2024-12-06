@@ -72,7 +72,7 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
             }}
           >
             {selectedCount > 0
-              ? `${selectedCount} subtopics selected`
+              ? `${selectedCount} ${t('COURSE_PLANNER.SUBTOPICS_SELECTED')}`
               : `${t('ASSESSMENTS.NO_SUBTOPIC_SELECTED')}`}
           </Box>
           <Box
@@ -87,7 +87,7 @@ const FacilitatorDrawer: React.FC<FacilitatorDrawerProps> = ({
             }}
           >
             {secondary && (
-              <Box onClick={onSecondaryClick}> 
+              <Box onClick={onSecondaryClick}>
                 <Button
                   sx={{
                     border: `1px solid ${theme?.palette?.warning['A400']}`,
