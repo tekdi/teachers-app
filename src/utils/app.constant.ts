@@ -192,6 +192,7 @@ export const FeesStepBoards = ['NIOS'];
 import { StaticImageData } from 'next/image'; // Import StaticImageData for type safety with images
 
 // Define the enum for content types
+
 export enum ContentType {
   PDF = 'application/pdf',
   EPUB = 'application/epub',
