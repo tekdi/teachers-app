@@ -33,6 +33,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
   const { t } = useTranslation();
   const [CallStatus, setCallStatus] = useState(false);
   const [status, setStatus] = useState<string>();
+  const [statusMsg, setStatusMsg] = useState<string>();
   const [progress, setProgress] = useState<number>(0);
   const lastAccessOn = new Date().toISOString();
 
@@ -83,13 +84,15 @@ const ContentCard: React.FC<ContentCardProps> = ({
               }
             })
           );
-          if (
-            status === t('CENTER_SESSION.COMPLETED') ||
-            status === t('CENTER_SESSION.IN_PROGRESS')
-          ) {
+          if (status === t('CENTER_SESSION.COMPLETED')) {
             setProgress(100);
+            setStatusMsg(t('CENTER_SESSION.COMPLETED'));
+          } else if (status === t('CENTER_SESSION.IN_PROGRESS')) {
+            setProgress(100);
+            setStatusMsg(t('CENTER_SESSION.INPROGRESS'));
           } else if (status === t('CENTER_SESSION.NOT_STARTED')) {
             setProgress(0);
+            setStatusMsg(t('CENTER_SESSION.NOTSTARTED'));
           }
           console.log('response tracking status', status);
           setStatus(status);
@@ -192,31 +195,75 @@ const ContentCard: React.FC<ContentCardProps> = ({
           <Box
             sx={{
               position: 'absolute',
-              bottom: '16px',
-              left: '16px',
+              bottom: '5px',
+              left: '0px',
               right: '16px',
               zIndex: 2,
-              color: isInvalidContent ? '#ECE6F0' : '#FFFFFF',
-              fontSize: '14px',
-              fontWeight: 500,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
             }}
           >
-            {isInvalidContent
-              ? t('COURSE_PLANNER.INVALID_RESOURCE')
-              : name || subTopic?.join(', ')}
+            <Box
+              sx={{
+                color: isInvalidContent ? '#ECE6F0' : '#FFFFFF',
+                fontSize: '14px',
+                fontWeight: 500,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+
+                marginLeft: '16px',
+              }}
+            >
+              {isInvalidContent
+                ? t('COURSE_PLANNER.INVALID_RESOURCE')
+                : name || subTopic?.join(', ')}
+            </Box>
+
+            {status !== 'Completed' && (
+              <Box
+                sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
+              >
+                <Box sx={{ flexGrow: 1 }}>
+                  <LinearProgress variant="determinate" value={progress} />
+                </Box>
+                <Typography
+                  sx={{
+                    marginLeft: 1,
+                    color: '#FFFFFF',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                  }}
+                >
+                  {statusMsg}
+                </Typography>
+              </Box>
+            )}
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-          <Box sx={{ flexGrow: 1 }}>
-            <LinearProgress variant="determinate" value={progress} />
-          </Box>
-          {status !== t('CENTER_SESSION.COMPLETED') && (
-            <Typography sx={{ marginLeft: 2 }}>{status}</Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+            background: 'transperant',
+          }}
+        >
+          {status === 'Completed' && (
+            <>
+              <Box sx={{ flexGrow: 1 }}>
+                <LinearProgress variant="determinate" value={progress} />
+              </Box>
+              {/* <Typography sx={{ marginLeft: 2 }}>{statusMsg}</Typography> */}
+            </>
           )}
         </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+            background: 'transperant',
+          }}
+        ></Box>
         {!isInvalidContent && (
           <Box
             sx={{

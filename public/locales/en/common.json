@@ -461,7 +461,9 @@
     "MEETING_URL_ERROR": "Please provide a valid meeting URL.",
     "COMPLETED": "Completed",
     "IN_PROGRESS": "In_Progress",
-    "NOT_STARTED": "Not_Started"
+    "INPROGRESS": "In Progress",
+    "NOT_STARTED": "Not_Started",
+    "NOTSTARTED": "Not Started"
   },
   "MANAGE_USERS": {
     "CENTERS_REQUESTED_SUCCESSFULLY": "Center requested successfully",
