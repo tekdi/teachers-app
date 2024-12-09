@@ -6,6 +6,9 @@ import html from '../assets/images/HTML.svg';
 import mp4 from '../assets/images/MP4.svg';
 import qml from '../assets/images/Qml.svg';
 import youtube from '../assets/images/youtube.svg';
+import h5p from '../assets/images/h5p.png'
+import unit from '../assets/images/Unit.png'
+
 
 // background image
 
@@ -15,6 +18,9 @@ import bghtml from '../assets/images/bgHtml.svg';
 import bgmp4 from '../assets/images/bgMP4 .svg';
 import bgqml from '../assets/images/bgQml.svg';
 import bgyoutube from '../assets/images/bgYouTube.svg';
+import bgh5p from '../assets/images/bgh5p.png'
+import bgunit from '../assets/images/bgUnit.png'
+
 
 export const limit: number = 300;
 export const refetchInterval: number = 5 * 60 * 1000; // 5 min
@@ -226,7 +232,7 @@ export const ContentCardsTypes: FileType = {
     imgPath: qml,
     BgImgPath: bgqml,
   },
-  [ContentType.H5P]: { name: 'H5P', imgPath: html, BgImgPath: bghtml },
+  [ContentType.H5P]: { name: 'H5P', imgPath: h5p, BgImgPath: bgh5p },
   [ContentType.YOUTUBE_X_VIDEO]: {
     name: 'YouTube',
     imgPath: youtube,
@@ -240,8 +246,8 @@ export const ContentCardsTypes: FileType = {
   [ContentType.WEBM_VIDEO]: { name: 'WEBM', imgPath: mp4, BgImgPath: bgmp4 },
   [ContentType.COLLECTION]: {
     name: 'Course',
-    imgPath: html,
-    BgImgPath: bghtml,
+    imgPath: unit,
+    BgImgPath: bgunit,
   },
 };
 
