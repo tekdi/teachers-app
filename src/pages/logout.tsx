@@ -17,7 +17,7 @@ function Logout() {
         'mui-color-scheme-dark',
         'mui-color-scheme-light',
         'hasSeenTutorial',
-        'deviceID',
+        // 'deviceID',
       ];
       // Retrieve the values of the keys to keep
       const valuesToKeep: { [key: string]: any } = {};
