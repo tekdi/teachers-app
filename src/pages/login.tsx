@@ -34,6 +34,7 @@ import { useDirection } from '../hooks/useDirection';
 import { login } from '../services/LoginService';
 import { getUserDetails, getUserId } from '../services/ProfileService';
 import loginImg from './../assets/images/login-image.jpg';
+import { UpdateDeviceNotification } from '@/services/NotificationService';
 
 const LoginPage = () => {
   const { t, i18n } = useTranslation();
@@ -194,73 +195,95 @@ const LoginPage = () => {
 
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
     logEvent({
       action: 'login-button-clicked',
       category: 'Login Page',
       label: 'Login Button Clicked',
     });
+
     if (!usernameError && !passwordError) {
       setLoading(true);
+
       try {
-        const response = await login({
-          username: username,
-          password: password,
-        });
+        const response = await login({ username, password });
+
         if (response?.result?.access_token) {
           if (typeof window !== 'undefined' && window.localStorage) {
             const token = response.result.access_token;
             const refreshToken = response?.result?.refresh_token;
+
             if (token) {
               localStorage.setItem('token', token);
             }
-            rememberMe
-              ? localStorage.setItem('refreshToken', refreshToken)
-              : localStorage.removeItem('refreshToken');
+
+            if (rememberMe) {
+              localStorage.setItem('refreshToken', refreshToken);
+            } else {
+              localStorage.removeItem('refreshToken');
+            }
 
             const userResponse = await getUserId();
             const activeSessionId = await getAcademicYearList();
-            localStorage.setItem('userId', userResponse?.userId);
-            setUserId(userResponse?.userId);
+            const userId = userResponse?.userId;
 
-            if (token && userResponse?.userId) {
+            localStorage.setItem('userId', userId);
+            setUserId(userId);
+
+            if (token && userId) {
               document.cookie = `authToken=${token}; path=/; secure; SameSite=Strict`;
-              document.cookie = `userId=${userResponse.userId}; path=/; secure; SameSite=Strict`;
+              document.cookie = `userId=${userId}; path=/; secure; SameSite=Strict`;
+
+              // Retrieve deviceID from local storage
+              const deviceID = localStorage.getItem('deviceID');
+
+              if (deviceID) {
+                try {
+                  // Update device notification
+                  const headers = {
+                    tenantId: userResponse?.tenantData[0]?.tenantId,
+                    Authorization: `Bearer ${token}`,
+                  };
+
+                  const updateResponse = await UpdateDeviceNotification(
+                    { deviceId: deviceID },
+                    userId,
+                    headers
+                  );
+
+                  console.log('Device notification updated successfully:', updateResponse);
+                } catch (updateError) {
+                  console.error('Error updating device notification:', updateError);
+                }
+              }
             }
+
             logEvent({
               action: 'login-success',
               category: 'Login Page',
               label: 'Login Success',
-              value: userResponse?.userId,
+              value: userId,
             });
 
             localStorage.setItem('role', userResponse?.tenantData[0]?.roleName);
             localStorage.setItem('userEmail', userResponse?.email);
             localStorage.setItem('userName', userResponse?.name);
-            localStorage.setItem('userId', userResponse?.userId);
             localStorage.setItem('userIdName', userResponse?.username);
             localStorage.setItem(
               'temporaryPassword',
               userResponse?.temporaryPassword ?? 'false'
             );
+
             setUserRole(userResponse?.tenantData[0]?.roleName);
             setAccessToken(token);
 
-            const userDetails = await getUserDetails(
-              userResponse?.userId,
-              true
-            );
+            const userDetails = await getUserDetails(userId, true);
             if (userDetails?.result?.userData) {
               const customFields = userDetails?.result?.userData?.customFields;
               if (customFields?.length) {
-                const state = customFields.find(
-                  (field: any) => field?.label === 'STATES'
-                );
-                const district = customFields.find(
-                  (field: any) => field?.label === 'DISTRICTS'
-                );
-                const block = customFields.find(
-                  (field: any) => field?.label === 'BLOCKS'
-                );
+                const state = customFields.find((field: any) => field?.label === 'STATES');
+                const district = customFields.find((field: any) => field?.label === 'DISTRICTS');
+                const block = customFields.find((field: any) => field?.label === 'BLOCKS');
 
                 if (state) {
                   localStorage.setItem('stateName', state?.value);
@@ -287,8 +310,8 @@ const LoginPage = () => {
               }
               console.log('userDetails', userDetails);
             }
-            setLoading(false);
           }
+          setLoading(false);
         } else if (response?.responseCode === 404) {
           handleInvalidUsernameOrPassword();
           setLoading(false);
@@ -300,14 +323,12 @@ const LoginPage = () => {
           handleInvalidUsernameOrPassword();
         } else {
           console.error('Error:', error);
-          showToastMessage(
-            t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
-            'error'
-          );
+          showToastMessage(t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'), 'error');
         }
       }
     }
   };
+
 
   const isButtonDisabled =
     !username || !password || usernameError || passwordError;
