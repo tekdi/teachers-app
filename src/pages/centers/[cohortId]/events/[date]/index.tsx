@@ -135,14 +135,18 @@ const EventMonthView: React.FC<any> = () => {
       userId,
       'userId',
       modifyAttendanceLimit,
-      selectedDate
+      selectedDate,
+      eventUpdated,
+      eventDeleted
     );
   } else {
     eventDates = useEventDates(
       cohortId,
       'cohortId',
       modifyAttendanceLimit,
-      selectedDate
+      selectedDate,
+      eventUpdated,
+      eventDeleted
     );
   }
   useEffect(() => {

@@ -357,7 +357,10 @@ const CohortPage = () => {
     cohortId,
     'cohortId',
     modifyAttendanceLimit,
-    selectedDate
+    selectedDate,
+    eventUpdated,
+    eventDeleted,
+    eventCreated
   );
   useEffect(() => {
     console.log(eventDates);
