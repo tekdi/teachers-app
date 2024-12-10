@@ -7,7 +7,10 @@ const useEventDates = (
   idValue,
   idType,
   modifyAttendanceLimit,
-  timeTableDate
+  timeTableDate,
+  eventUpdated,
+  eventDeleted,
+  eventCreated
 ) => {
   const [eventDates, setEventDates] = useState({});
 
@@ -77,7 +80,15 @@ const useEventDates = (
     };
 
     fetchEventDates();
-  }, [idValue, idType, modifyAttendanceLimit, timeTableDate]);
+  }, [
+    idValue,
+    idType,
+    modifyAttendanceLimit,
+    timeTableDate,
+    eventUpdated,
+    eventDeleted,
+    eventCreated,
+  ]);
 
   return eventDates;
 };

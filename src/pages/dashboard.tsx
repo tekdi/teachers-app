@@ -817,7 +817,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
     userId,
     'userId',
     modifyAttendanceLimit,
-    timeTableDate
+    timeTableDate,
+    eventUpdated,
+    eventDeleted
   );
   useEffect(() => {
     console.log(eventDates);
