@@ -85,6 +85,8 @@ import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 // import AllowNotification from '@/components/AllowNotification';
 import GetButtonNotification from '@/components/GetButtonNotification';
 import useStore from '@/store/store';
+import useEventDates from './../hooks/useEventDates';
+
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
   SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
@@ -762,7 +764,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
           //   queryKey: [QueryKeys.MY_COHORTS, userId],
           //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
           // });
-
           const sessionArray: any[] = [];
           const extraSessionArray: any[] = [];
           if (response?.events?.length > 0) {
@@ -811,6 +812,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
     eventUpdated,
     eventDeleted,
   ]);
+
+  const eventDates = useEventDates(
+    userId,
+    'userId',
+    modifyAttendanceLimit,
+    timeTableDate
+  );
+  useEffect(() => {
+    console.log(eventDates);
+  }, [eventDates]);
 
   // useEffect(() => {
   //   const getExtraSessionsData = async () => {
@@ -1454,6 +1465,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                           classId={classId}
                           showFromToday={true}
                           newWidth={'100%'}
+                          eventData={eventDates}
                         />
                       </Box>
 

@@ -7,10 +7,11 @@ import {
 import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-
 import { shortDateFormat } from '@/utils/Helper';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import useStore from '../store/store';
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import { format } from 'date-fns';
 
 interface CalendarWithAttendanceProps {
   formattedAttendanceData?: FormattedAttendanceData;
@@ -19,6 +20,7 @@ interface CalendarWithAttendanceProps {
   onDateChange: (date: Date | Date[] | null) => void;
   selectionType?: 'single' | 'range';
   selectedRangeRetention?: Date | null | undefined | [Date | null, Date | null];
+  eventData?: any;
 }
 
 type AttendanceData = {
@@ -41,6 +43,7 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
   onDateChange,
   selectionType,
   selectedRangeRetention,
+  eventData,
 }) => {
   const store = useStore();
   const setValue = useStore((state) => state.setValue);
@@ -171,6 +174,8 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
     formattedAttendanceData?: FormattedAttendanceData;
     learnerAttendanceDate?: learnerAttendanceDate;
   }) {
+    const eventScheduled = eventData?.[format(date, 'yyyy-MM-dd')];
+
     if (formattedAttendanceData) {
       if (view !== 'month') return null;
       const dateString = shortDateFormat(date);
@@ -221,6 +226,15 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
         default:
           return null;
       }
+    } else if (eventScheduled) {
+      return (
+        <div className="calender-icon">
+          <CalendarMonthRoundedIcon
+            className="custom-calendar-icon"
+            sx={{ fontSize: '15px' }}
+          />
+        </div>
+      );
     }
   }
 

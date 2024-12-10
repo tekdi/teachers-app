@@ -546,6 +546,21 @@ main {
   text-decoration: none;
 }
 
+.react-calendar .custom-calendar-icon path {
+  color: var(--mui-palette-warning-A700) !important;
+}
+
+.calender-icon {
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 25px !important;
+  height: 25px !important;
+  border-radius: 50% !important;
+  background-color: var(--mui-palette-customTextColors-custom7);
+  margin-top: 5px !important;
+}
+
 .react-calendar__navigation button {
   border: unset !important;
 }

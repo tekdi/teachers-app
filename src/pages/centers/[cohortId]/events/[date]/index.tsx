@@ -20,7 +20,10 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { accessControl } from '../../../../../../app.config';
+import {
+  accessControl,
+  dashboardDaysLimit,
+} from '../../../../../../app.config';
 import { useDirection } from '../../../../../hooks/useDirection';
 
 import {
@@ -29,6 +32,7 @@ import {
   eventFilters,
 } from '../../../../../utils/Interfaces';
 import { getCohortDetails } from '@/services/CohortServices';
+import useEventDates from '@/hooks/useEventDates';
 
 const EventMonthView: React.FC<any> = () => {
   const theme = useTheme<any>();
@@ -122,6 +126,28 @@ const EventMonthView: React.FC<any> = () => {
 
     getSessionsData();
   }, [selectedDate, eventUpdated, eventDeleted]);
+
+  const modifyAttendanceLimit = dashboardDaysLimit;
+
+  let eventDates: any;
+  if (showAll === '1') {
+    eventDates = useEventDates(
+      userId,
+      'userId',
+      modifyAttendanceLimit,
+      selectedDate
+    );
+  } else {
+    eventDates = useEventDates(
+      cohortId,
+      'cohortId',
+      modifyAttendanceLimit,
+      selectedDate
+    );
+  }
+  useEffect(() => {
+    console.log(eventDates);
+  }, []);
 
   const handleActiveStartDateChange = (date: Date) => {
     setSelectedDate(date);
@@ -270,6 +296,7 @@ const EventMonthView: React.FC<any> = () => {
                 formattedAttendanceData={percentageAttendance}
                 onChange={handleActiveStartDateChange}
                 onDateChange={handleSelectedDateChange}
+                eventData={eventDates}
               />
             </Box>
           </Box>
@@ -320,7 +347,7 @@ const EventMonthView: React.FC<any> = () => {
           {sessions && sessions?.length === 0 && (
             <Box
               className="fs-12 fw-400 italic"
-              sx={{ color: theme.palette.warning['300'], marginTop:'15px' }}
+              sx={{ color: theme.palette.warning['300'], marginTop: '15px' }}
             >
               {t('COMMON.NO_SESSIONS_SCHEDULED')}
             </Box>
@@ -373,7 +400,7 @@ const EventMonthView: React.FC<any> = () => {
           {extraSessions && extraSessions?.length === 0 && (
             <Box
               className="fs-12 fw-400 italic"
-              sx={{ color: "#1F1B13", marginTop: '15px' }}
+              sx={{ color: '#1F1B13', marginTop: '15px' }}
             >
               {t('COMMON.NO_SESSIONS_SCHEDULED')}
             </Box>

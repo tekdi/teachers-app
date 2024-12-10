@@ -47,8 +47,8 @@ const commonComponents = {
         return {
           width: '100%',
           '& .MuiInputBase-input:-webkit-autofill': {
-            'WebkitBoxShadow': `0 0 0 100px ${theme.palette?.warning?.A400 || '#000'} inset`,
-            'WebkitTextFillColor':
+            WebkitBoxShadow: `0 0 0 100px ${theme.palette?.warning?.A400 || '#000'} inset`,
+            WebkitTextFillColor:
               theme.palette.mode === 'dark' ? lightA400 : darkA400,
           },
         };
@@ -152,6 +152,7 @@ const customTheme = extendTheme({
           custom4: '#FF4500', // OrangeRed
           custom5: '#32CD32', // LimeGreen
           custom6: '#9370DB', // MediumPurple
+          custom7: '#2ac300', //parrotGreen
         },
       },
     },

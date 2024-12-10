@@ -19,6 +19,7 @@ declare module '@mui/material/styles' {
       custom4?: string;
       custom5?: string;
       custom6?: string;
+      custom7?: string;
     };
   }
 }
