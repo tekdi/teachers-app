@@ -75,6 +75,8 @@ import { isEliminatedFromBuild } from '../../../../featureEliminationUtil';
 import { telemetryFactory } from '@/utils/telemetry';
 import useStore from '@/store/store';
 import { setTimeout } from 'timers';
+import useEventDates from '@/hooks/useEventDates';
+
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
   SessionCardFooter = dynamic(() => import('@/components/SessionCardFooter'), {
@@ -115,7 +117,11 @@ const CohortPage = () => {
   const router = useRouter();
 
   const [value, setValue] = React.useState(() => {
-    return isEliminatedFromBuild('Events', 'feature') || !isActiveYear ? 2 : router.query.tab ? Number(router.query.tab) : 1;
+    return isEliminatedFromBuild('Events', 'feature') || !isActiveYear
+      ? 2
+      : router.query.tab
+        ? Number(router.query.tab)
+        : 1;
   });
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
@@ -190,7 +196,6 @@ const CohortPage = () => {
   };
 
   const handleCentermodel = () => {
-
     setOpenSchedule(true);
   };
 
@@ -239,7 +244,7 @@ const CohortPage = () => {
     setOpenSchedule(false);
     setDeleteModal(false);
     setClickedBox(null);
-    setDisableNextButton(true)
+    setDisableNextButton(true);
   };
   const setRemoveCohortId = reassignLearnerStore(
     (state) => state.setRemoveCohortId
@@ -348,6 +353,16 @@ const CohortPage = () => {
     getSessionsData();
   }, [selectedDate, eventCreated, eventDeleted, eventUpdated]);
 
+  const eventDates = useEventDates(
+    cohortId,
+    'cohortId',
+    modifyAttendanceLimit,
+    selectedDate
+  );
+  useEffect(() => {
+    console.log(eventDates);
+  }, [eventDates]);
+
   useEffect(() => {
     const getExtraSessionsData = async () => {
       try {
@@ -407,10 +422,8 @@ const CohortPage = () => {
     if (router.isReady) {
       const queryParamValue = router.query.tab ? Number(router.query.tab) : 1;
 
-      if ([1, 2, 3].includes(queryParamValue))
-      setValue(queryParamValue);
-      else 
-      setValue(1);
+      if ([1, 2, 3].includes(queryParamValue)) setValue(queryParamValue);
+      else setValue(1);
     }
   }, [router.isReady, router.query.tab]);
   useEffect(() => {
@@ -462,7 +475,7 @@ const CohortPage = () => {
 
   const handleBackEvent = () => {
     router.push('/centers');
- //   window.history.back();
+    //   window.history.back();
   };
 
   const showDetailsHandle = (dayStr: string) => {
@@ -520,7 +533,7 @@ const CohortPage = () => {
 
   const viewAttendanceHistory = () => {
     if (classId !== 'all') {
-      router.push(`${router.asPath}/events/${getMonthName()?.toLowerCase()}`);
+      router.push(`${cohortId}/events/${getMonthName()?.toLowerCase()}`);
       ReactGA.event('month-name-clicked', { selectedCohortID: classId });
     }
   };
@@ -769,7 +782,7 @@ const CohortPage = () => {
                           : handleCentermodel
                   }
                   handleEditModal={handleEditEvent}
-                  disable={onEditEvent?false: disableNextButton}
+                  disable={onEditEvent ? false : disableNextButton}
                 >
                   {deleteModal
                     ? DeleteSession && <DeleteSession />
@@ -790,16 +803,17 @@ const CohortPage = () => {
                           />
                         )
                       : Schedule && (
-                        <>
-                        {!clickedBox &&(<Typography sx={{m:2}}>
-                          {t('CENTER_SESSION.SELECT_SESSION')}
-                        </Typography>)}
-                          <Schedule
-                            clickedBox={clickedBox}
-                            handleClick={handleClick}
-                          />
-                        </>
-                        
+                          <>
+                            {!clickedBox && (
+                              <Typography sx={{ m: 2 }}>
+                                {t('CENTER_SESSION.SELECT_SESSION')}
+                              </Typography>
+                            )}
+                            <Schedule
+                              clickedBox={clickedBox}
+                              handleClick={handleClick}
+                            />
+                          </>
                         )}
                 </CenterSessionModal>
 
@@ -933,6 +947,7 @@ const CohortPage = () => {
                     classId={classId}
                     showFromToday={true}
                     newWidth={'100%'}
+                    eventData={eventDates}
                   />
                 </Box>
 

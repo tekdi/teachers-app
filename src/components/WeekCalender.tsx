@@ -1,13 +1,13 @@
 import { addDays, format, getWeek, isSameDay, subDays } from 'date-fns';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { dashboardDaysLimit, eventDaysLimit } from '../../app.config';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import { useRouter } from 'next/router';
 import { Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
-
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 const Calendar: React.FC<any> = ({
   showDetailsHandle,
   data,
@@ -15,7 +15,10 @@ const Calendar: React.FC<any> = ({
   classId,
   showFromToday,
   newWidth,
+  eventData,
 }) => {
+  const theme = useTheme<any>();
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -96,6 +99,7 @@ const Calendar: React.FC<any> = ({
     let percentage = 0;
     let pathColor;
     let showCircularProgress = false;
+    const eventScheduled = eventData?.[format(day, 'yyyy-MM-dd')];
 
     if (data !== null) {
       const dayData = data?.[format(day, 'yyyy-MM-dd')] || {};
@@ -141,6 +145,16 @@ const Calendar: React.FC<any> = ({
             alignItems={'center'}
             justifyContent={'center'}
           >
+            {eventScheduled && (
+              <div className="calender-icon">
+                <CalendarMonthRoundedIcon
+                  style={{
+                    color: theme.palette.warning['A400'],
+                    fontSize: '15px',
+                  }}
+                />
+              </div>
+            )}
             {showCircularProgress && (
               <Box
                 width={'25px'}
