@@ -5,9 +5,13 @@ import { telemetryFactory } from '@/utils/telemetry';
 import ReactGA from 'react-ga4';
 import { Telemetry } from '@/utils/app.constant';
 import { useQueryClient } from '@tanstack/react-query';
+import useStore from '@/store/store';
+
 function Logout() {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const setCohorts = useStore((state) => state.setCohorts);
+
   const clearLocalStorage = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       // Specify the keys you want to keep
@@ -28,6 +32,7 @@ function Logout() {
       // Clear all local storage
       localStorage.clear();
       queryClient.clear();
+      setCohorts([]);
       // Re-add the keys to keep with their values
       keysToKeep.forEach((key: string) => {
         if (valuesToKeep[key] !== null) {
