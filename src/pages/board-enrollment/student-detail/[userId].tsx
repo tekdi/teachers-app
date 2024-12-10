@@ -39,6 +39,7 @@ import manageUserStore from '@/store/manageUserStore';
 import useStore from '@/store/store';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { showToastMessage } from '../../../components/Toastify';
 
 interface BoardEnrollment {
   boardEnrollmentData: {
@@ -366,76 +367,89 @@ const BoardEnrollmentDetail = () => {
     });
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     setFormDataUpdated(false);
-    setActiveStep((prevActiveStep) => {
-      const nextStep = prevActiveStep < 4 ? prevActiveStep + 1 : prevActiveStep;
-      if (nextStep > stageCount) {
-        setStageCount(stageCount + 1);
+  
+    // Calculate the next step value first
+    let nextStep = activeStep;
+    nextStep = nextStep < 4 ? nextStep + 1 : nextStep;
+    if (nextStep > stageCount) {
+      setStageCount(stageCount + 1);
+    }
+  
+    const currentLabel = labelMapping[nextStep - 1];
+    const field = userData?.customField?.find(
+      (item) => item.label === currentLabel
+    );
+  
+    if (!field) {
+      console.error(`Field with label "${currentLabel}" not found.`);
+      return;
+    }
+  
+    const fieldId = field.fieldId;
+  
+    let value;
+    switch (nextStep - 1) {
+      case 0:
+        value = formData?.BOARD;
+        break;
+      case 1:
+        value = formData?.SUBJECTS;
+        break;
+      case 2:
+        value = formData?.REGISTRATION;
+        break;
+      case 3:
+        value = formData?.FEES;
+        break;
+      default:
+        console.error('Invalid step');
+        return;
+    }
+  
+    if (!userData?.cohortMembershipId) {
+      throw new Error('Membership ID is required.');
+    }
+  
+    const requestBody = {
+      membershipId: userData?.cohortMembershipId,
+      dynamicBody: {
+        cohortId,
+        userId,
+        createdBy: userId,
+        updatedBy: userId,
+        customFields: [
+          {
+            fieldId,
+            value,
+          },
+        ],
+      },
+    };
+  
+    console.log('API Request Body:', requestBody);
+  
+    try {
+      const response = await updateCohortMemberStatus(requestBody);
+      console.log('API Response:', response);
+  
+      if (response && response.params.status === 'successful' && response.responseCode === 201) {
+        // API successful, update step state to nextStep
+        setActiveStep(nextStep);
+      } else {
+        console.error('API response is invalid or failed.');
+        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       }
-      const currentLabel = labelMapping[nextStep - 1];
-      const field = userData?.customField?.find(
-        (item) => item.label === currentLabel
-      );
-
-      if (!field) {
-        console.error(`Field with label "${currentLabel}" not found.`);
-        return prevActiveStep;
-      }
-
-      const fieldId = field.fieldId;
-
-      let value;
-      switch (nextStep - 1) {
-        case 0:
-          value = formData?.BOARD;
-          break;
-        case 1:
-          value = formData?.SUBJECTS;
-          break;
-        case 2:
-          value = formData?.REGISTRATION;
-          break;
-        case 3:
-          value = formData?.FEES;
-          break;
-        default:
-          console.error('Invalid step');
-          return prevActiveStep;
-      }
-
-      if (!userData?.cohortMembershipId) {
-        throw new Error('Membership ID is required.');
-      }
-
-      const requestBody = {
-        membershipId: userData?.cohortMembershipId,
-        dynamicBody: {
-          cohortId,
-          userId,
-          createdBy: userId,
-          updatedBy: userId,
-          customFields: [
-            {
-              fieldId,
-              value,
-            },
-          ],
-        },
-      };
-
-      console.log('API Request Body:', requestBody);
-      updateCohortMemberStatus(requestBody)
-        .then((response) => {
-          console.log('API Response:', response);
-        })
-        .catch((error) => {
-          console.error('Error updating:', error);
-        });
-
-      return nextStep;
-    });
+    } catch (error) {
+      console.error('Error updating:', error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    }
   };
+  
+  
+  
+  
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => {
