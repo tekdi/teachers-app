@@ -209,7 +209,11 @@ const CoursePlannerDetail = () => {
   }, [fetchCourseDetails]);
 
   const handleBackEvent = () => {
-    window.history.back();
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const classId = localStorage.getItem('classId');
+      router.push(`/course-planner?center=${classId}`);
+    }
+    // window.history.back();
     logEvent({
       action: 'back-button-clicked-attendance-overview',
       category: 'Attendance Overview Page',
