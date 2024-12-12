@@ -206,6 +206,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
           setTimeout(() => {
             console.log('extractedData', extractedData);
+
             setUsers(extractedData);
             setLoading(false);
           });
@@ -249,6 +250,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
         ) || [t('ATTENDANCE.NO_CENTERS_ASSIGNED')];
         setCenters(centerNames);
         setSelectedUser(user);
+        console.log(user);
       }
 
       if (
@@ -295,14 +297,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             cdata: [],
           },
           edata: {
-            id:'click-on-delete-user:'+userId,
+            id: 'click-on-delete-user:' + userId,
             type: Telemetry.CLICK,
             subtype: '',
             pageid: 'centers',
           },
         };
         telemetryFactory.interact(telemetryInteract);
-
       } else {
         console.log(
           'User does not belong to any cohorts, proceed with deletion'
@@ -357,7 +358,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           cdata: [],
         },
         edata: {
-          id:'click-on-reassign-centers:'+userId,
+          id: 'click-on-reassign-centers:' + userId,
           type: Telemetry.CLICK,
           subtype: '',
           pageid: 'centers',
@@ -450,9 +451,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const handleRequestBlockAction = () => {
     showToastMessage(t('BLOCKS.REASSIGN_BLOCK_REQUESTED'), 'success');
 
-
     setState({ ...state, bottom: false });
-
 
     const telemetryInteract = {
       context: {
@@ -460,7 +459,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
         cdata: [],
       },
       edata: {
-        id:'reassign-block-request-success',
+        id: 'reassign-block-request-success',
         type: Telemetry.CLICK,
         subtype: '',
         pageid: 'centers',
@@ -561,7 +560,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                     fontSize: '24px',
                     marginTop: '1rem',
                     color: theme.palette.warning['300'],
-                    cursor:'pointer'
+                    cursor: 'pointer',
                   }}
                 />
               ) : (
@@ -697,7 +696,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                           fontSize: '24px',
                                           marginTop: '1rem',
                                           color: theme.palette.warning['300'],
-                                          cursor:'pointer'
+                                          cursor: 'pointer',
                                         }}
                                       />
                                     </Box>
@@ -867,6 +866,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               reloadState={reloadState}
               setReloadState={setReloadState}
               buttonNames={{ primary: t('COMMON.SAVE') }}
+              selectedUser={selectedUser}
             />
 
             <DeleteUserModal
