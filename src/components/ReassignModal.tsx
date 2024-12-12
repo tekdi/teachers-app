@@ -14,7 +14,6 @@ import { toPascalCase } from '@/utils/Helper';
 import NoDataFound from './common/NoDataFound';
 import { useQueryClient } from '@tanstack/react-query';
 
-
 interface ReassignModalProps {
   cohortNames?: any;
   message: string;
@@ -24,6 +23,7 @@ interface ReassignModalProps {
   modalOpen: boolean;
   reloadState: boolean;
   setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedUser: any;
 }
 
 interface ButtonNames {
@@ -35,7 +35,7 @@ interface Cohort {
   id: any;
   cohortId: string;
   name: string;
-  status: any
+  status: any;
 }
 
 const ReassignModal: React.FC<ReassignModalProps> = ({
@@ -47,8 +47,9 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   handleCloseReassignModal,
   reloadState,
   setReloadState,
+  selectedUser,
 }) => {
-  console.log("ReassignModal")
+  console.log('ReassignModal');
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const store = useStore();
@@ -59,7 +60,7 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
     (cohort: { cohortId: any; name: string; status: any }) => ({
       name: cohort.name,
       id: cohort.cohortId,
-      status: cohort?.status
+      status: cohort?.status,
     })
   );
 
@@ -94,8 +95,10 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   const filteredCenters = React.useMemo(() => {
     return cohorts
       .map(({ cohortId, name, status }) => ({ id: cohortId, name, status }))
-      .filter(({ name, status }) =>
-        name.toLowerCase().includes(searchInput.toLowerCase()) && status === Status.ACTIVE
+      .filter(
+        ({ name, status }) =>
+          name.toLowerCase().includes(searchInput.toLowerCase()) &&
+          status === Status.ACTIVE
       )
       .sort((a, b) =>
         checkedCenters.includes(a.name) === checkedCenters.includes(b.name)
@@ -129,6 +132,10 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.MY_COHORTS, selectedUser.userId],
+      });
+
       setReloadState(true);
     } catch (error) {
       showToastMessage(t('MANAGE_USERS.CENTERS_REQUEST_FAILED'), 'error');

@@ -43,7 +43,11 @@ const TopicDetailView = () => {
 
   const handleBackEvent = () => {
     // window.history.back();
-    router.back();
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const classId = localStorage.getItem('classId');
+      router.push(`course-planner/center/${classId}`);
+    }
+    // router.back();
     logEvent({
       action: 'back-button-clicked-attendance-overview',
       category: 'Attendance Overview Page',

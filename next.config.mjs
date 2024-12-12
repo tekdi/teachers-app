@@ -92,6 +92,10 @@ const nextConfig = {
         source: routes.API.GENERAL.CONTENT_PLUGINS,
         destination: `${PORTAL_BASE_URL}${routes.API.GENERAL.CONTENT_PLUGINS}`, // Proxy to portal
       },
+      {
+        source: '/sunbird-plugins/renderer/:path*',
+        destination: `${process.env.WORKSPACE_BASE_URL}/sunbird-plugins/renderer/:path*`,
+      },
     ];
   },
   webpack: (config, { isServer }) => {

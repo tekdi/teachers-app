@@ -82,10 +82,19 @@ const ContentCard: React.FC<ContentCardProps> = ({
           let status = '';
           response.data?.some((item: any) =>
             item.contents?.some((content: any) => {
-              if (content.contentId === identifier) {
-                status = content.status || '';
-                // status = parseInt(content.percentage, 10);
-                return true;
+              if (
+                content.contentId === identifier &&
+                (content.contentMime === ContentType.HTML ||
+                  content.contentMime === ContentType.H5P) &&
+                content.status === contentStatus.IN_PROGRESS
+              ) {
+                status = contentStatus.COMPLETED;
+              } else {
+                if (content.contentId === identifier) {
+                  status = content.status || '';
+                  // status = parseInt(content.percentage, 10);
+                  return true;
+                }
               }
             })
           );
@@ -99,6 +108,10 @@ const ContentCard: React.FC<ContentCardProps> = ({
               setStatusMsg(t('CENTER_SESSION.INPROGRESS'));
               break;
             case contentStatus.NOT_STARTED:
+              setProgress(0);
+              setStatusMsg(t('CENTER_SESSION.NOTSTARTED'));
+              break;
+            case '':
               setProgress(0);
               setStatusMsg(t('CENTER_SESSION.NOTSTARTED'));
               break;
@@ -129,7 +142,79 @@ const ContentCard: React.FC<ContentCardProps> = ({
       relevantKeys.forEach((key) => {
         const telemetryEvent = localStorage.getItem(key);
         if (telemetryEvent) {
-          detailsObject.push(JSON.parse(telemetryEvent));
+          const parsedTelemetryEvent = JSON.parse(telemetryEvent);
+          let progressFromSummary = null;
+          let progressFromExtra = null;
+          const mimeType = parsedTelemetryEvent?.mimeType;
+
+          // Check `summary` for progress
+          if (parsedTelemetryEvent?.edata?.summary?.length > 0) {
+            progressFromSummary =
+              parsedTelemetryEvent.edata.summary[0]?.progress;
+          }
+
+          // Check `extra` for progress
+          if (parsedTelemetryEvent?.edata?.extra?.length > 0) {
+            const progressEntry = parsedTelemetryEvent.edata.extra.find(
+              (entry: any) => entry.id === 'progress'
+            );
+            if (progressEntry) {
+              progressFromExtra = parseInt(progressEntry.value, 10);
+            }
+          }
+
+          // Skip event if `eid === 'END'` and progress is not 100 in either `summary` or `extra`
+          if (
+            parsedTelemetryEvent?.eid === 'END' &&
+            ((progressFromSummary !== 100 && progressFromSummary !== null) ||
+              (progressFromExtra !== 100 && progressFromExtra !== null))
+          ) {
+            return;
+          }
+
+          // Push parsed telemetry event
+          detailsObject.push(parsedTelemetryEvent);
+        }
+      });
+
+      // After processing all keys, check if an END event exists in detailsObject for html or h5p
+      const requiredMimeTypes = [ContentType.H5P, ContentType.HTML];
+      requiredMimeTypes.forEach((type) => {
+        const hasEndEvent = detailsObject.some(
+          (event) => event?.eid === 'END' && mimeType === type
+        );
+
+        if (!hasEndEvent) {
+          // Push the default END event for missing types
+          detailsObject.push({
+            eid: 'END',
+            edata: {
+              duration: 0,
+              mode: 'play',
+              pageid: 'sunbird-player-Endpage',
+              summary: [
+                {
+                  progress: 100,
+                },
+                {
+                  totallength: '',
+                },
+                {
+                  visitedlength: '',
+                },
+                {
+                  visitedcontentend: '',
+                },
+                {
+                  totalseekedlength: '',
+                },
+                {
+                  endpageseen: false,
+                },
+              ],
+              type: 'content',
+            },
+          });
         }
       });
     }
@@ -142,7 +227,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
           const ContentTypeReverseMap = Object.fromEntries(
             Object.entries(ContentType).map(([key, value]) => [value, key])
           );
-          console.log(ContentTypeReverseMap);
 
           const reqBody: ContentCreate = {
             userId: userId,
@@ -154,6 +238,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
             lastAccessOn: lastAccessOn,
             detailsObject: detailsObject,
           };
+          console.log('reqBody', reqBody);
           if (detailsObject.length > 0) {
             const response = await createContentTracking(reqBody);
             if (response) {
