@@ -228,18 +228,25 @@ const CohortPage = () => {
         });
 
         if (response) {
-          const userId = response.result.userDetails.map((user: any) => user.userId);
+          const deviceId = response.result.userDetails.map((device: any) => device?.deviceId).filter((id:any) => id !== null); 
 
-          console.log(userId , "shreyas");
+
+          alert(deviceId)
+          // console.log(deviceId);
           
-         
-          getNotification(userId, "TL_PROFILE_UPDATE");
+
+          if (deviceId.length > 0) {
+            getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT");
+          } else {
+            console.warn("No valid device IDs found. Skipping notification API call.");
+          }
+          
          
         }
       } catch (error) {
         console.error("Error fetching cohort member list:", error);
       }
-    }
+    }   
   };
 
   const handleCloseSchedule = () => {

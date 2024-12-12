@@ -10,6 +10,7 @@ export const sendCredentialService = async ({
   key,
   replacements,
   email,
+  push
 }: SendCredentialsRequest): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/notification/send`;
   try {
@@ -18,7 +19,8 @@ export const sendCredentialService = async ({
       context,
       key,
       replacements,
-      email
+      email,
+      push
     });
     return response?.data?.result;
   } catch (error) {
