@@ -212,7 +212,7 @@ const CohortPage = () => {
       setCreateEvent((prev) => !prev);
     });
 
-    console.log("shreyas shinde");
+ 
     if (cohortId) {
       const filters = {
         cohortId,
