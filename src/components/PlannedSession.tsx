@@ -1114,6 +1114,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
   const handleEditSession = (event: any) => {
     setEditSelection(event.target.value);
+
+    console.log("session updated");
+    
   };
 
   const handelDeleteEvent = async (eventData: any, deleteSelection: string) => {

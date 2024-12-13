@@ -84,8 +84,8 @@ export interface CohortListParam {
 }
 
 export interface CohortMemberList {
-  limit: number;
-  page: number;
+  limit?: number;
+  page?: number;
   filters: {
     cohortId: string;
     role?: string;
