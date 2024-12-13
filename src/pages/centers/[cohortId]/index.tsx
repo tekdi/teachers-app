@@ -228,20 +228,12 @@ const CohortPage = () => {
         });
 
         if (response) {
-          const deviceId = response.result.userDetails.map((device: any) => device?.deviceId).filter((id:any) => id !== null); 
-
-
-          alert(deviceId)
-          // console.log(deviceId);
-          
-
-          if (deviceId.length > 0) {
+          const deviceId = response?.result?.userDetails.map((device: any) => device?.deviceId).filter((id:any) => id !== null); 
+          if (deviceId?.length > 0) {
             getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT");
           } else {
             console.warn("No valid device IDs found. Skipping notification API call.");
           }
-          
-         
         }
       } catch (error) {
         console.error("Error fetching cohort member list:", error);
