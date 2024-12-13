@@ -227,7 +227,7 @@ const CohortPage = () => {
           filters,
         });
 
-        if (response) {
+        if (response?.result?.userDetails) {
           const deviceId = response?.result?.userDetails.map((device: any) => device?.deviceId).filter((id:any) => id !== null); 
           if (deviceId?.length > 0) {
             getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT");
