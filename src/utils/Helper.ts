@@ -369,6 +369,19 @@ export const convertUTCToIST = (utcDateTime: string) => {
   return { date: formattedDate, time: formattedTime };
 };
 
+export const convertToIST = (utcDate: string | number | Date) => {
+  const date = new Date(utcDate);
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  };
+  const istDate = date.toLocaleString('en-GB', options);
+  const [day, month, year] = istDate.split('/');
+  return `${year}-${month}-${day}`;
+};
+
 export const convertLocalToUTC = (localDateTime: any) => {
   const localDate = new Date(localDateTime);
   const utcDateTime = localDate.toISOString();
