@@ -375,6 +375,21 @@ export const convertLocalToUTC = (localDateTime: any) => {
   return utcDateTime;
 };
 
+export const convertToIST = (utcDate: string | number | Date) => {
+  const date = new Date(utcDate);
+
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  };
+  const istDate = date.toLocaleString('en-GB', options);
+
+  const [day, month, year] = istDate.split('/');
+  return `${year}-${month}-${day}`;
+};
+
 export const getCurrentYearPattern = () => {
   const currentYear = new Date().getFullYear();
 
