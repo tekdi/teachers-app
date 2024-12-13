@@ -14,6 +14,11 @@ import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import SensorsTwoToneIcon from '@mui/icons-material/SensorsTwoTone';
 import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
 import { EventStatus } from '@/utils/app.constant';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import useNotification from '@/hooks/useNotification';
+import { useRouter } from 'next/router';
+import { Role } from '@/utils/app.constant';
+
 
 const SessionsCard: React.FC<SessionsCardProps> = ({
   data,
@@ -41,6 +46,10 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const [showEdit, setShowEdit] = React.useState(false);
   const [editSession, setEditSession] = React.useState();
   const [eventStatus, setEventStatus] = React.useState('');
+  const router = useRouter();
+  const { cohortId }: any = router.query;
+
+  const { getNotification } = useNotification();
 
   const handleEditSelection = (selection: string) => {
     setEditSelection(selection);
@@ -144,12 +153,44 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
     setModalOpen(true);
   };
 
-  const onUpdateClick = () => {
+  const onUpdateClick = async() => {
     console.log('update the event');
     setUpdateEvent(true);
     // if (isEventUpdated) {
     //   isEventUpdated();
     // }
+    if (cohortId) {
+      const filters = {
+        cohortId,
+        // role: Role.STUDENT,
+        // status: [Status.ACTIVE],
+      };
+
+      try {
+        const response = await getMyCohortMemberList({
+          // limit: 20,
+          // page: 0,
+          filters,
+        });
+        const replacements = {
+          "{sessionName}": "Home Science"
+        }
+
+        if (response?.result?.userDetails) {
+          const deviceId = response?.result?.userDetails
+            .filter((user: any) => user.role === Role.TEACHER || user.role === Role.STUDENT) 
+            .map((user: any) => user.deviceId) 
+            .filter((id: any) => id !== null);
+          if (deviceId?.length > 0) {
+            getNotification(deviceId, "SESSION_UPDATE_NOTIFICATION", replacements);
+          } else {
+            console.warn("No valid device IDs found. Skipping notification API call.");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching cohort member list:", error);
+      }
+    }  
   };
 
   const subject = data?.metadata?.subject;
