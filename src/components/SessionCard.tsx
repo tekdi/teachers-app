@@ -62,12 +62,46 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
 
   const handleClose = () => setOpen(false);
 
-  const onEventDeleted = () => {
+  const onEventDeleted = async () => {
     setOpen(false);
     setEventDeleted(true);
     if (isEventDeleted) {
       isEventDeleted();
     }
+
+    if (cohortId) {
+      const filters = {
+        cohortId,
+        // role: Role.STUDENT,
+        // status: [Status.ACTIVE],
+      };
+
+      try {
+        const response = await getMyCohortMemberList({
+          // limit: 20,
+          // page: 0,
+          filters,
+        });
+        const replacements = {
+          "{sessionName}": "Home Science"
+        }
+
+        if (response?.result?.userDetails) {
+          const deviceId = response?.result?.userDetails
+            .filter((user: any) => user.role === Role.TEACHER || user.role === Role.STUDENT)
+            .map((user: any) => user.deviceId)
+            .filter((id: any) => id !== null);
+          if (deviceId?.length > 0) {
+            getNotification(deviceId, "SESSION_DELETION_NOTIFICATION", replacements);
+          } else {
+            console.warn("No valid device IDs found. Skipping notification API call.");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching cohort member list:", error);
+      }
+    } 
+
   };
 
   const onEventUpdated = () => {
