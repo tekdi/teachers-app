@@ -62,14 +62,6 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
 
   const handleClose = () => setOpen(false);
 
-
-
-
-
-
-
-
-
   const handleCohortNotification = async (
     cohortId: string,
     notificationType: string,
@@ -96,15 +88,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       console.error(`Error fetching cohort member list for ${notificationType}:`, error);
     }
   };
-
-
-
-
-
-
-
-
-
+  
   const onEventDeleted = async () => {
     setOpen(false);
     setEventDeleted(true);
