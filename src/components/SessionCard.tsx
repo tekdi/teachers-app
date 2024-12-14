@@ -62,6 +62,49 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
 
   const handleClose = () => setOpen(false);
 
+
+
+
+
+
+
+
+
+  const handleCohortNotification = async (
+    cohortId: string,
+    notificationType: string,
+    replacements: Record<string, string>
+  ) => {
+    const filters = { cohortId };
+
+    try {
+      const response = await getMyCohortMemberList({ filters });
+
+      if (response?.result?.userDetails) {
+        const deviceIds = response.result.userDetails
+          .filter((user: any) => user.role === Role.TEACHER || user.role === Role.STUDENT)
+          .map((user: any) => user.deviceId)
+          .filter((id: any) => id !== null);
+
+        if (deviceIds.length > 0) {
+          getNotification(deviceIds, notificationType, replacements);
+        } else {
+          console.warn("No valid device IDs found. Skipping notification API call.");
+        }
+      }
+    } catch (error) {
+      console.error(`Error fetching cohort member list for ${notificationType}:`, error);
+    }
+  };
+
+
+
+
+
+
+
+
+
   const onEventDeleted = async () => {
     setOpen(false);
     setEventDeleted(true);
@@ -70,38 +113,15 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
     }
 
     if (cohortId) {
-      const filters = {
-        cohortId,
-        // role: Role.STUDENT,
-        // status: [Status.ACTIVE],
+      const replacements = {
+        "{sessionName}": subject && sessionTitle
+          ? `${toPascalCase(subject)} - ${sessionTitle}`
+          : subject
+            ? toPascalCase(subject)
+            : toPascalCase(sessionTitle)
       };
-
-      try {
-        const response = await getMyCohortMemberList({
-          // limit: 20,
-          // page: 0,
-          filters,
-        });
-        const replacements = {
-          "{sessionName}": "Home Science"
-        }
-
-        if (response?.result?.userDetails) {
-          const deviceId = response?.result?.userDetails
-            .filter((user: any) => user.role === Role.TEACHER || user.role === Role.STUDENT)
-            .map((user: any) => user.deviceId)
-            .filter((id: any) => id !== null);
-          if (deviceId?.length > 0) {
-            getNotification(deviceId, "SESSION_DELETION_NOTIFICATION", replacements);
-          } else {
-            console.warn("No valid device IDs found. Skipping notification API call.");
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching cohort member list:", error);
-      }
-    } 
-
+      await handleCohortNotification(cohortId, "SESSION_DELETION_NOTIFICATION", replacements);
+    }
   };
 
   const onEventUpdated = () => {
@@ -187,44 +207,19 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
     setModalOpen(true);
   };
 
-  const onUpdateClick = async() => {
-    console.log('update the event');
+  const onUpdateClick = async () => {
+    console.log("update the event");
     setUpdateEvent(true);
-    // if (isEventUpdated) {
-    //   isEventUpdated();
-    // }
     if (cohortId) {
-      const filters = {
-        cohortId,
-        // role: Role.STUDENT,
-        // status: [Status.ACTIVE],
+      const replacements = {
+        "{sessionName}": subject && sessionTitle
+          ? `${toPascalCase(subject)} - ${sessionTitle}`
+          : subject
+            ? toPascalCase(subject)
+            : toPascalCase(sessionTitle)
       };
-
-      try {
-        const response = await getMyCohortMemberList({
-          // limit: 20,
-          // page: 0,
-          filters,
-        });
-        const replacements = {
-          "{sessionName}": "Home Science"
-        }
-
-        if (response?.result?.userDetails) {
-          const deviceId = response?.result?.userDetails
-            .filter((user: any) => user.role === Role.TEACHER || user.role === Role.STUDENT) 
-            .map((user: any) => user.deviceId) 
-            .filter((id: any) => id !== null);
-          if (deviceId?.length > 0) {
-            getNotification(deviceId, "SESSION_UPDATE_NOTIFICATION", replacements);
-          } else {
-            console.warn("No valid device IDs found. Skipping notification API call.");
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching cohort member list:", error);
-      }
-    }  
+      await handleCohortNotification(cohortId, "SESSION_UPDATE_NOTIFICATION", replacements);
+    }
   };
 
   const subject = data?.metadata?.subject;
@@ -261,7 +256,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
                 ? `${toPascalCase(subject)} - ${sessionTitle}`
                 : subject
                   ? toPascalCase(subject)
-                  : toPascalCase(sessionTitle)}{' '}
+                  : toPascalCase(sessionTitle)}
             </Typography>
           </Box>
           <Typography
@@ -349,7 +344,11 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       <CenterSessionModal
         open={open}
         handleClose={handleClose}
-        title={'Home Science'}
+        title={subject && sessionTitle
+          ? `${toPascalCase(subject)} - ${sessionTitle}`
+          : subject
+            ? toPascalCase(subject)
+            : toPascalCase(sessionTitle)}
         primary={eventEdited ? 'Update' : 'Schedule'}
         handleEditModal={handleEditModal}
       >
