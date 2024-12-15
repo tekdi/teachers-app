@@ -39,6 +39,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   const { t } = useTranslation();
   const [checkedCenters, setCheckedCenters] = React.useState<string[]>([]);
   const [selectedValue, setSelectedValue] = React.useState('');
+  const [userClass, setUserClass] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
   const setCohortId = reassignLearnerStore((state) => state.setCohortId);
 
@@ -62,6 +63,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
       const classData: string | null = localStorage.getItem('className');
       if (classData) {
         setSelectedValue(classData);
+        setUserClass(classData);
       }
     }
   }, []);
@@ -225,6 +227,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
               sx={{ boxShadow: 'none' }}
               variant="contained"
               onClick={handleAssign}
+              disabled={selectedValue === userClass}
             >
               {t('COMMON.ASSIGN')}
             </Button>
