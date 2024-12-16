@@ -45,7 +45,9 @@ export const fetchBulkContents = async (identifiers: string[]) => {
     console.log('response =====>', response);
     const result = response?.data?.result;
     if (response?.data?.result?.QuestionSet?.length) {
-      result.content = [...result.content, ...result.QuestionSet];
+      // result.content = [...result.content, ...result.QuestionSet];
+      const contents = result?.content ? [...result.content, ...result.QuestionSet] : [...result.QuestionSet]
+      result.content = contents;
     }
 
     return result.content;
