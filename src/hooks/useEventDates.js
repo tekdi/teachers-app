@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { getEventList } from '@/services/EventService';
-import { shortDateFormat, getAfterDate, getBeforeDate } from '../utils/Helper';
+import {
+  shortDateFormat,
+  getAfterDate,
+  getBeforeDate,
+  convertToIST,
+} from '../utils/Helper';
 import { dashboardDaysLimit } from '../../app.config';
 
 const useEventDates = (
@@ -67,7 +72,7 @@ const useEventDates = (
           if (response?.events?.length > 0) {
             response.events.forEach((event) => {
               if (event.startDateTime) {
-                const eventDate = event.startDateTime.slice(0, 10);
+                const eventDate = convertToIST(event.startDateTime);
                 newEventDates[eventDate] = { event: true };
               }
             });
