@@ -21,6 +21,7 @@ export interface MarkAttendanceProps {
   currentStatus: string;
   handleClose: () => void;
   onAttendanceUpdate: () => void;
+  attendanceDates?: any[]
 }
 
 export interface AttendanceStatusListViewProps {
@@ -37,6 +38,7 @@ export interface AttendanceStatusListViewProps {
   bulkAttendanceStatus?: string;
   presentCount?: number;
   absentCount?: number;
+  attendanceDate?: Date;
 }
 
 export interface UserAttendanceObj {
@@ -45,6 +47,7 @@ export interface UserAttendanceObj {
   name?: string;
   attendanceDate?: Date | string;
   memberStatus?: string;
+  updatedAt?: string | number | Date;
 }
 
 export interface user {
@@ -234,7 +237,7 @@ export interface LearnerAttendanceProps {
   limit?: number;
   page?: number;
   filters: {
-    contextId: string;
+    contextId?: string;
     scope: string;
     toDate: string | Date;
     fromDate: string | Date;
