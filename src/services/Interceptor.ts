@@ -27,10 +27,10 @@ instance.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
-      if (token && config.url && !config.url.endsWith("user/v1/auth/login")) {
+      if (token && config.url && !config.url.endsWith('user/v1/auth/login')) {
         config.headers.Authorization = `Bearer ${token}`;
       }
-      const academicYearId = localStorage.getItem('academicYearId')
+      const academicYearId = localStorage.getItem('academicYearId');
       if (academicYearId) {
         config.headers.academicyearid = academicYearId;
       }
