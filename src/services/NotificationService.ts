@@ -91,7 +91,7 @@ export const sendEmailOnLearnerCreation = async (
 export const UpdateDeviceNotification = async (
   userData: { deviceId: string },
   userId: string,
-  headers: { tenantId: string; Authorization: string }
+  headers: { tenantId: any; Authorization: string }
 ): Promise<any> => {
   const apiUrl = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/update/${userId}`;
 

@@ -886,3 +886,14 @@ export interface BoardEnrollmentProfileProps {
   feesPaidStatus: string;
   setActiveStep?: React.Dispatch<React.SetStateAction<number>>;
 }
+
+export interface RegistrationStatisticsProps {
+    title?: string;
+    cardTitle?: string;
+    statistic?: string | number;
+    avatar?: boolean;
+    subtile?: string;
+}
+export interface VillageNewRegistrationProps {
+    locations: string | React.ReactNode; 
+}
