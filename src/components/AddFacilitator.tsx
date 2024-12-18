@@ -94,14 +94,17 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       if (typeof window !== 'undefined' && window.localStorage) {
         const CenterList = localStorage.getItem('CenterList');
         const centerOptions = CenterList ? JSON.parse(CenterList) : [];
-        console.log("centerOptions",centerOptions);
-        
+        console.log('centerOptions', centerOptions);
+
         centerOptionsList = centerOptions
-  .filter((center: { cohortStatus: string }) => center.cohortStatus === 'active')
-  .map((center: { cohortId: string; cohortName: string }) => ({
-    value: center.cohortId,
-    label: center.cohortName,
-  }));
+          .filter(
+            (center: { cohortStatus: string }) =>
+              center.cohortStatus === 'active'
+          )
+          .map((center: { cohortId: string; cohortName: string }) => ({
+            value: center.cohortId,
+            label: center.cohortName,
+          }));
 
         console.log(centerOptionsList);
       }
@@ -194,10 +197,10 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         'F',
         yearOfJoining
       );
-      setUsername(username);
+      setUsername(formData?.email);
       setPassword(password);
       const apiBody: any = {
-        username: username,
+        username: formData?.email,
         password: password,
         tenantCohortRoleMapping: [
           {
@@ -297,7 +300,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             });
             const windowUrl = window.location.pathname;
             const cleanedUrl = windowUrl.replace(/^\//, '');
-      
 
             const telemetryInteract = {
               context: {
@@ -308,7 +310,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                 id: 'facilitator-updated-success',
                 type: Telemetry.CLICK,
                 subtype: '',
-                pageid: cleanedUrl
+                pageid: cleanedUrl,
               },
             };
             telemetryFactory.interact(telemetryInteract);
@@ -335,7 +337,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                     'success'
                   );
                   ReactGA.event('facilitator-created-successfully', {
-                    userName: username,
+                    userName: formData?.email,
                   });
 
                   const telemetryInteract = {
@@ -354,16 +356,23 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
 
                   await sendEmail(
                     apiBody['name'],
-                    username,
+                    formData?.email,
                     password,
                     formData?.email
                   );
                 } else {
                   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
                 }
-              } catch (error) {
+              } catch (error: any) {
                 console.error(error);
                 showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+                if (
+                  error?.response?.data?.params?.err === 'User already exist.'
+                ) {
+                  showToastMessage(error?.response?.data?.params?.err, 'error');
+                } else {
+                  showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+                }
                 ReactGA.event('facilitator-creation-fail', {
                   error: error,
                 });
@@ -534,7 +543,13 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             <Box mt={1.5}>
               <Divider />
             </Box>
-            <Box p={'18px'} display={'flex'} justifyContent={'center'} gap={'10px'} width={'100%'}>
+            <Box
+              p={'18px'}
+              display={'flex'}
+              justifyContent={'center'}
+              gap={'10px'}
+              width={'100%'}
+            >
               <Button
                 className="one-line-text w-100"
                 sx={{ boxShadow: 'none' }}
