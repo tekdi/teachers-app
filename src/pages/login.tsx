@@ -35,6 +35,7 @@ import { login } from '../services/LoginService';
 import { getUserDetails, getUserId } from '../services/ProfileService';
 import loginImg from './../assets/images/login-image.jpg';
 import { UpdateDeviceNotification } from '@/services/NotificationService';
+import { TENANT_DATA } from '../../app.config';
 
 const LoginPage = () => {
   const { t, i18n } = useTranslation();
@@ -113,8 +114,11 @@ const LoginPage = () => {
       setLanguage(lang);
       setLang(lang);
       const token = localStorage.getItem('token');
-      if (token) {
+      const tenant = localStorage.getItem('tenantName');
+      if (token && tenant == TENANT_DATA.SECOND_CHANCE_PROGRAM) {
         router.push('/dashboard');
+      } else if (token && tenant == TENANT_DATA.YOUTHNET) {
+        router.push('/youthboard');
       }
     }
   }, []);
@@ -224,9 +228,18 @@ const LoginPage = () => {
             }
 
             const userResponse = await getUserId();
-            const activeSessionId = await getAcademicYearList();
-            const userId = userResponse?.userId;
 
+            console.log(userResponse);
+
+            const userId = userResponse?.userId;
+            if (userResponse.tenantData && userResponse.tenantData.length > 0) {
+              const tenantName = userResponse.tenantData[0].tenantName;
+              const tenantId = userResponse.tenantData[0].tenantId;
+              localStorage.setItem('tenantName', tenantName);
+              localStorage.setItem('tenantId', tenantId);
+            } else {
+              console.error('Tenant data not found in user response.');
+            }
             localStorage.setItem('userId', userId);
             setUserId(userId);
 
@@ -251,9 +264,15 @@ const LoginPage = () => {
                     headers
                   );
 
-                  console.log('Device notification updated successfully:', updateResponse);
+                  console.log(
+                    'Device notification updated successfully:',
+                    updateResponse
+                  );
                 } catch (updateError) {
-                  console.error('Error updating device notification:', updateError);
+                  console.error(
+                    'Error updating device notification:',
+                    updateError
+                  );
                 }
               }
             }
@@ -277,38 +296,51 @@ const LoginPage = () => {
             setUserRole(userResponse?.tenantData[0]?.roleName);
             setAccessToken(token);
 
-            const userDetails = await getUserDetails(userId, true);
-            if (userDetails?.result?.userData) {
-              const customFields = userDetails?.result?.userData?.customFields;
-              if (customFields?.length) {
-                const state = customFields.find((field: any) => field?.label === 'STATES');
-                const district = customFields.find((field: any) => field?.label === 'DISTRICTS');
-                const block = customFields.find((field: any) => field?.label === 'BLOCKS');
+            const tenant = localStorage.getItem('tenantName');
+            if (tenant == TENANT_DATA.SECOND_CHANCE_PROGRAM) {
+              const userDetails = await getUserDetails(userId, true);
+              if (userDetails?.result?.userData) {
+                const activeSessionId = await getAcademicYearList();
+                const customFields =
+                  userDetails?.result?.userData?.customFields;
+                if (customFields?.length) {
+                  const state = customFields.find(
+                    (field: any) => field?.label === 'STATES'
+                  );
+                  const district = customFields.find(
+                    (field: any) => field?.label === 'DISTRICTS'
+                  );
+                  const block = customFields.find(
+                    (field: any) => field?.label === 'BLOCKS'
+                  );
 
-                if (state) {
-                  localStorage.setItem('stateName', state?.value);
-                  setStateName(state?.value);
-                  setStateCode(state?.code);
-                  setStateId(state?.fieldId);
+                  if (state) {
+                    localStorage.setItem('stateName', state?.value);
+                    setStateName(state?.value);
+                    setStateCode(state?.code);
+                    setStateId(state?.fieldId);
+                  }
+
+                  if (district) {
+                    setDistrictName(district?.value);
+                    setDistrictCode(district?.code);
+                    setDistrictId(district?.fieldId);
+                  }
+
+                  if (block) {
+                    setBlockName(block?.value);
+                    setBlockCode(block?.code);
+                    setBlockId(block?.fieldId);
+                  }
                 }
 
-                if (district) {
-                  setDistrictName(district?.value);
-                  setDistrictCode(district?.code);
-                  setDistrictId(district?.fieldId);
+                if (activeSessionId) {
+                  router.push('/dashboard');
                 }
-
-                if (block) {
-                  setBlockName(block?.value);
-                  setBlockCode(block?.code);
-                  setBlockId(block?.fieldId);
-                }
+                console.log('userDetails', userDetails);
               }
-
-              if (activeSessionId) {
-                router.push('/dashboard');
-              }
-              console.log('userDetails', userDetails);
+            } else if (token && tenant == TENANT_DATA.YOUTHNET) {
+              router.push('/youthboard');
             }
           }
           setLoading(false);
@@ -323,12 +355,14 @@ const LoginPage = () => {
           handleInvalidUsernameOrPassword();
         } else {
           console.error('Error:', error);
-          showToastMessage(t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'), 'error');
+          showToastMessage(
+            t('LOGIN_PAGE.USERNAME_PASSWORD_NOT_CORRECT'),
+            'error'
+          );
         }
       }
     }
   };
-
 
   const isButtonDisabled =
     !username || !password || usernameError || passwordError;
@@ -380,7 +414,6 @@ const LoginPage = () => {
       : null;
   return (
     <Box sx={{ overflowY: 'auto', background: theme.palette.warning['A400'] }}>
-
       <Box
         display="flex"
         flexDirection="column"
@@ -388,8 +421,9 @@ const LoginPage = () => {
         borderRadius={'10px'}
         sx={{
           '@media (min-width: 900px)': {
-           display: 'none',
-        }}}
+            display: 'none',
+          },
+        }}
       >
         {loading && (
           <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -400,11 +434,16 @@ const LoginPage = () => {
           alignItems={'center'}
           justifyContent={'center'}
           zIndex={99}
-        sx={{ margin: '5px 10px 25px', }}
+          sx={{ margin: '5px 10px 25px' }}
         >
-          <Box sx={{ width: '55%', '@media (max-width: 400px)': { width: '95%' } }}>
-            <Image src={appLogo} alt="App Logo" height={80}
-              layout='responsive'
+          <Box
+            sx={{ width: '55%', '@media (max-width: 400px)': { width: '95%' } }}
+          >
+            <Image
+              src={appLogo}
+              alt="App Logo"
+              height={80}
+              layout="responsive"
             />
           </Box>
         </Box>
@@ -438,7 +477,6 @@ const LoginPage = () => {
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-          
           <form onSubmit={handleFormSubmit}>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Box
@@ -450,7 +488,6 @@ const LoginPage = () => {
                 justifyContent={'center'}
                 p={'2rem'}
                 borderRadius={'2rem 2rem 0 0'}
-                
                 sx={{
                   '@media (min-width: 900px)': {
                     width: '100%',
@@ -463,11 +500,9 @@ const LoginPage = () => {
                   },
                   '@media (max-width: 900px)': {
                     marginTop: '-25px',
-                  }
-                  
+                  },
                 }}
               >
-
                 <Box
                   display="flex"
                   flexDirection="column"
@@ -476,11 +511,14 @@ const LoginPage = () => {
                   sx={{
                     '@media (max-width: 900px)': {
                       display: 'none',
-                    }
+                    },
                   }}
                 >
                   {loading && (
-                    <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+                    <Loader
+                      showBackdrop={true}
+                      loadingText={t('COMMON.LOADING')}
+                    />
                   )}
                   <Box
                     display={'flex'}
@@ -490,9 +528,17 @@ const LoginPage = () => {
                     zIndex={99}
                     // sx={{ margin: '5px 10px 25px', }}
                   >
-                    <Box sx={{ width: '60%' , '@media (max-width: 700px)': {width: '95%'}}}>
-                      <Image src={appLogo} alt="App Logo" height={80}
-                        layout='responsive'
+                    <Box
+                      sx={{
+                        width: '60%',
+                        '@media (max-width: 700px)': { width: '95%' },
+                      }}
+                    >
+                      <Image
+                        src={appLogo}
+                        alt="App Logo"
+                        height={80}
+                        layout="responsive"
                       />
                     </Box>
                   </Box>
