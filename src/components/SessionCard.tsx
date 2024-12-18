@@ -14,6 +14,11 @@ import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import SensorsTwoToneIcon from '@mui/icons-material/SensorsTwoTone';
 import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
 import { EventStatus } from '@/utils/app.constant';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import useNotification from '@/hooks/useNotification';
+import { useRouter } from 'next/router';
+import { Role } from '@/utils/app.constant';
+
 
 const SessionsCard: React.FC<SessionsCardProps> = ({
   data,
@@ -41,6 +46,10 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const [showEdit, setShowEdit] = React.useState(false);
   const [editSession, setEditSession] = React.useState();
   const [eventStatus, setEventStatus] = React.useState('');
+  const router = useRouter();
+  const { cohortId }: any = router.query;
+
+  const { getNotification } = useNotification();
 
   const handleEditSelection = (selection: string) => {
     setEditSelection(selection);
@@ -53,11 +62,49 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
 
   const handleClose = () => setOpen(false);
 
-  const onEventDeleted = () => {
+  const handleCohortNotification = async (
+    cohortId: string,
+    notificationType: string,
+    replacements: Record<string, string>
+  ) => {
+    const filters = { cohortId };
+
+    try {
+      const response = await getMyCohortMemberList({ filters });
+
+      if (response?.result?.userDetails) {
+        const deviceIds = response.result.userDetails
+          .filter((user: any) => user.role === Role.TEACHER || user.role === Role.STUDENT)
+          .map((user: any) => user.deviceId)
+          .filter((id: any) => id !== null);
+
+        if (deviceIds.length > 0) {
+          getNotification(deviceIds, notificationType, replacements);
+        } else {
+          console.warn("No valid device IDs found. Skipping notification API call.");
+        }
+      }
+    } catch (error) {
+      console.error(`Error fetching cohort member list for ${notificationType}:`, error);
+    }
+  };
+  
+  const onEventDeleted = async () => {
     setOpen(false);
     setEventDeleted(true);
     if (isEventDeleted) {
       isEventDeleted();
+    }
+
+    if (cohortId) {
+      const replacements = {
+        "{sessionName}": subject && sessionTitle
+          ? `${toPascalCase(subject)} - ${sessionTitle}`
+          : subject
+            ? toPascalCase(subject)
+            : toPascalCase(sessionTitle)
+      };
+      await handleCohortNotification(cohortId, "SESSION_DELETION_NOTIFICATION", replacements);
     }
   };
 
@@ -144,12 +191,19 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
     setModalOpen(true);
   };
 
-  const onUpdateClick = () => {
-    console.log('update the event');
+  const onUpdateClick = async () => {
+    console.log("update the event");
     setUpdateEvent(true);
-    // if (isEventUpdated) {
-    //   isEventUpdated();
-    // }
+    if (cohortId) {
+      const replacements = {
+        "{sessionName}": subject && sessionTitle
+          ? `${toPascalCase(subject)} - ${sessionTitle}`
+          : subject
+            ? toPascalCase(subject)
+            : toPascalCase(sessionTitle)
+      };
+      await handleCohortNotification(cohortId, "SESSION_UPDATE_NOTIFICATION", replacements);
+    }
   };
 
   const subject = data?.metadata?.subject;
@@ -186,7 +240,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
                 ? `${toPascalCase(subject)} - ${sessionTitle}`
                 : subject
                   ? toPascalCase(subject)
-                  : toPascalCase(sessionTitle)}{' '}
+                  : toPascalCase(sessionTitle)}
             </Typography>
           </Box>
           <Typography
@@ -274,7 +328,11 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       <CenterSessionModal
         open={open}
         handleClose={handleClose}
-        title={'Home Science'}
+        title={subject && sessionTitle
+          ? `${toPascalCase(subject)} - ${sessionTitle}`
+          : subject
+            ? toPascalCase(subject)
+            : toPascalCase(sessionTitle)}
         primary={eventEdited ? 'Update' : 'Schedule'}
         handleEditModal={handleEditModal}
       >
