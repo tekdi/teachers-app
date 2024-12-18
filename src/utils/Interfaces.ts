@@ -894,3 +894,6 @@ export interface RegistrationStatisticsProps {
     avatar?: boolean;
     subtile?: string;
 }
+export interface VillageNewRegistrationProps {
+    locations: string | React.ReactNode; 
+}
