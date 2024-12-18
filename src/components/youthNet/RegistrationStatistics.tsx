@@ -1,14 +1,9 @@
 import { Avatar, Box } from '@mui/material';
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
+import { RegistrationStatisticsProps } from '@/utils/Interfaces';
 
-interface RegistrationStatisticsProps {
-    title?: string;
-    cardTitle?: string;
-    statistic?: string | number;
-    avatar?: boolean;
-    subtile?: string;
-}
+
 
 const RegistrationStatistics: React.FC<RegistrationStatisticsProps> = ({
     title,
