@@ -9,7 +9,13 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
-import { Button, FormControl, IconButton, MenuItem } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  IconButton,
+  MenuItem,
+  Typography,
+} from '@mui/material';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -20,7 +26,7 @@ import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { accessControl } from '../../app.config';
+import { accessControl, TENANT_DATA } from '../../app.config';
 import config from '../../config.json';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 import board from '../assets/images/Board.svg';
@@ -50,6 +56,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     AcademicYear[]
   >([]);
   const [selectedSessionId, setSelectedSessionId] = useState<string>('');
+  const [tenantName, setTenantName] = useState<string>('');
   const queryClient = useQueryClient();
   const { i18n, t } = useTranslation();
   const router = useRouter();
@@ -60,6 +67,17 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     (state: { setIsActiveYearSelected: any }) => state.setIsActiveYearSelected
   );
   const isActiveYear = store.isActiveYearSelected;
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const isYouthUser = localStorage.getItem('tenantName');
+      if (isYouthUser == TENANT_DATA.YOUTHNET) {
+        setTenantName(isYouthUser);
+      } else {
+        setTenantName('');
+      }
+    }
+  }, []);
 
   useEffect(() => setIsOpen(open), [open]);
 
@@ -146,6 +164,11 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     }
   };
 
+  const navigateToYouthBoard = () => {
+    closeDrawer();
+    router.push('/youthboard');
+  };
+
   const navigateToDashboard = () => {
     closeDrawer();
     router.push('/dashboard');
@@ -156,9 +179,19 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     router.push('/observation');
   };
 
-  const isDashboard =  ["/dashboard", "/attendance-history", "/attendance-overview"].includes(router.pathname);
+  const isDashboard = [
+    '/dashboard',
+    '/youthboard',
+    '/attendance-history',
+    '/attendance-overview',
+  ].includes(router.pathname);
   const isTeacherCenter = router.pathname.includes('/centers');
-  const isCoursePlanner = ["/course-planner", "/topic-detail-view", "/course-planner/center/[cohortId]", "/play/content/[identifier]"].includes(router.pathname);
+  const isCoursePlanner = [
+    '/course-planner',
+    '/topic-detail-view',
+    '/course-planner/center/[cohortId]',
+    '/play/content/[identifier]',
+  ].includes(router.pathname);
   const isObservation = router.pathname.includes('/observation');
 
   const isAssessments = router.pathname.includes('/assessments');
@@ -245,39 +278,50 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               </Select>
             </FormControl>
           </Box>
-          <Box sx={{ flexBasis: '70%' }} className="joyride-step-6">
-            <FormControl className="drawer-select" sx={{ width: '100%' }}>
-              <Select
-                onChange={handleSelectChange}
-                value={selectedSessionId}
-                className="select-languages"
-                displayEmpty
-                sx={{
-                  borderRadius: '0.5rem',
-                  color: theme.palette.warning['200'],
-                  width: '100%',
-                  marginBottom: '0rem',
-                  '& .MuiSelect-icon': {
-                    right: isRTL ? 'unset' : '7px',
-                    left: isRTL ? '7px' : 'unset',
-                  },
-                  '& .MuiSelect-select': {
-                    paddingRight: isRTL ? '10px !important' : '32px !important',
-                    paddingLeft: isRTL ? '32px' : '12px',
-                  },
-                }}
-              >
-                {modifiedAcademicYearList?.map(({ id, session }) => (
-                  <MenuItem key={id} value={id}>
-                    {session}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
+          {!tenantName && (
+            <Box sx={{ flexBasis: '70%' }} className="joyride-step-6">
+              <FormControl className="drawer-select" sx={{ width: '100%' }}>
+                <Select
+                  onChange={handleSelectChange}
+                  value={selectedSessionId}
+                  className="select-languages"
+                  displayEmpty
+                  sx={{
+                    borderRadius: '0.5rem',
+                    color: theme.palette.warning['200'],
+                    width: '100%',
+                    marginBottom: '0rem',
+                    '& .MuiSelect-icon': {
+                      right: isRTL ? 'unset' : '7px',
+                      left: isRTL ? '7px' : 'unset',
+                    },
+                    '& .MuiSelect-select': {
+                      paddingRight: isRTL
+                        ? '10px !important'
+                        : '32px !important',
+                      paddingLeft: isRTL ? '32px' : '12px',
+                    },
+                  }}
+                >
+                  {modifiedAcademicYearList?.map(({ id, session }) => (
+                    <MenuItem key={id} value={id}>
+                      {session}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          )}
+          {tenantName && (
+            <Box>
+              <Typography sx={{ fontSize: '12px' }}>
+                (Development in progress)
+              </Typography>
+            </Box>
+          )}
         </Box>
 
-        {isActiveYear && (
+        {isActiveYear && !tenantName && (
           <Box>
             <Button
               className="fs-14"
@@ -310,72 +354,113 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             </Button>
           </Box>
         )}
-        <Box sx={{ marginTop: '18px' }}>
-          <Button
-            className="fs-14 joyride-step-7"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isTeacherCenter
-                ? theme.palette.primary.main
-                : 'transparent',
 
-              padding: isTeacherCenter
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isTeacherCenter ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isTeacherCenter ? '600' : 500,
-              '&:hover': {
+        {tenantName && (
+          <Box>
+            <Button
+              className="fs-14"
+              sx={{
+                gap: '10px',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                background: isDashboard
+                  ? theme.palette.primary.main
+                  : 'transparent',
+                padding: isDashboard
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                marginTop: '25px',
+                color: isDashboard ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isDashboard ? '600' : 500,
+                '&:hover': {
+                  background: isDashboard
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+              }}
+              startIcon={
+                <DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />
+              }
+              onClick={navigateToYouthBoard}
+            >
+              {t('DASHBOARD.DASHBOARD')}
+            </Button>
+          </Box>
+        )}
+        {!tenantName && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14 joyride-step-7"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isTeacherCenter
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-              marginTop: '15px',
-              gap: '10px',
-            }}
-            startIcon={
-              <LocalLibraryOutlinedIcon sx={{ fontSize: '24px !important' }} />
-            }
-            onClick={() => {
-              router.push(`/centers`); // Check route
-            }}
-          >
-            {accessGranted('showTeachingCenter', accessControl, userRole)
-              ? t('DASHBOARD.TEACHING_CENTERS')
-              : t('DASHBOARD.MY_TEACHING_CENTERS')}
-          </Button>
-        </Box>
-        <Box sx={{ marginTop: '18px' }} className="joyride-step-8">
-          <Button
-            className="fs-14"
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              background: isObservation
-                ? theme.palette.primary.main
-                : 'transparent',
-              gap: '10px',
-              padding: isObservation
-                ? '16px 18px !important'
-                : '0px 18px !important',
-              color: isObservation ? '#2E1500' : theme.palette.warning.A200,
-              fontWeight: isObservation ? '600' : 500,
-              '&:hover': {
+
+                padding: isTeacherCenter
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isTeacherCenter ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isTeacherCenter ? '600' : 500,
+                '&:hover': {
+                  background: isTeacherCenter
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+                gap: '10px',
+              }}
+              startIcon={
+                <LocalLibraryOutlinedIcon
+                  sx={{ fontSize: '24px !important' }}
+                />
+              }
+              onClick={() => {
+                router.push(`/centers`); // Check route
+              }}
+            >
+              {accessGranted('showTeachingCenter', accessControl, userRole)
+                ? t('DASHBOARD.TEACHING_CENTERS')
+                : t('DASHBOARD.MY_TEACHING_CENTERS')}
+            </Button>
+          </Box>
+        )}
+
+        {!tenantName && (
+          <Box sx={{ marginTop: '18px' }} className="joyride-step-8">
+            <Button
+              className="fs-14"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 background: isObservation
                   ? theme.palette.primary.main
                   : 'transparent',
-              },
-              marginTop: '15px',
-            }}
-            startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
-            onClick={navigateToObservation}
-          >
-            {t('OBSERVATION.SURVEY_FORMS')}
-          </Button>
-        </Box>
-        {isActiveYear && (
+                gap: '10px',
+                padding: isObservation
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isObservation ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isObservation ? '600' : 500,
+                '&:hover': {
+                  background: isObservation
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
+              onClick={navigateToObservation}
+            >
+              {t('OBSERVATION.SURVEY_FORMS')}
+            </Button>
+          </Box>
+        )}
+        {isActiveYear && !tenantName && (
           <Box sx={{ marginTop: '18px' }}>
             <Button
               className="fs-14 joyride-step-9"
@@ -416,46 +501,48 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             </Button>
           </Box>
         )}
-        {!isEliminatedFromBuild('Assessments', 'feature') && isActiveYear && (
-          <Box sx={{ marginTop: '18px' }}>
-            <Button
-              className="fs-14 joyride-step-10"
-              sx={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'flex-start',
-                background: isAssessments
-                  ? theme.palette.primary.main
-                  : 'transparent',
-
-                padding: isAssessments
-                  ? '16px 18px !important'
-                  : '0px 18px !important',
-                color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
-                fontWeight: isAssessments ? '600' : 500,
-                '&:hover': {
+        {!isEliminatedFromBuild('Assessments', 'feature') &&
+          isActiveYear &&
+          !tenantName && (
+            <Box sx={{ marginTop: '18px' }}>
+              <Button
+                className="fs-14 joyride-step-10"
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
                   background: isAssessments
                     ? theme.palette.primary.main
                     : 'transparent',
-                },
-                marginTop: '15px',
-                gap: '10px',
-              }}
-              startIcon={
-                <EventAvailableOutlinedIcon
-                  sx={{ fontSize: '24px !important' }}
-                />
-              }
-              onClick={() => {
-                router.push(`/assessments`);
-              }}
-            >
-              {t('ASSESSMENTS.ASSESSMENTS')}
-            </Button>
-          </Box>
-        )}
 
-        {isActiveYear && (
+                  padding: isAssessments
+                    ? '16px 18px !important'
+                    : '0px 18px !important',
+                  color: isAssessments ? '#2E1500' : theme.palette.warning.A200,
+                  fontWeight: isAssessments ? '600' : 500,
+                  '&:hover': {
+                    background: isAssessments
+                      ? theme.palette.primary.main
+                      : 'transparent',
+                  },
+                  marginTop: '15px',
+                  gap: '10px',
+                }}
+                startIcon={
+                  <EventAvailableOutlinedIcon
+                    sx={{ fontSize: '24px !important' }}
+                  />
+                }
+                onClick={() => {
+                  router.push(`/assessments`);
+                }}
+              >
+                {t('ASSESSMENTS.ASSESSMENTS')}
+              </Button>
+            </Box>
+          )}
+
+        {isActiveYear && !tenantName && (
           <Box sx={{ marginTop: '18px' }} className="joyride-step-11">
             <Button
               className="fs-14 joyride-step-8"
@@ -490,7 +577,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             </Button>
           </Box>
         )}
-        {isActiveYear && (
+        {isActiveYear && !tenantName && (
           <Box sx={{ marginTop: '18px' }}>
             <Button
               className="fs-14"
