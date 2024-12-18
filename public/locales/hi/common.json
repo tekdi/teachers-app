@@ -135,19 +135,18 @@
     "AND_COUNT_MORE": "और {{count}} अधिक",
     "RETURN_TO_LOGIN": "लॉगिन पर वापस जाएं",
     "NO_CENTER_FOUND": "कोई केंद्र नहीं मिला",
-   
-      "FILTER_BY": "फ़िल्टर करें",
-      "ALL": "सभी",
-      "ACTIVE": "सक्रिय",
-      "NA": "लागू नहीं (N.A.)",
-      "SORT_BY_NAMES": "नामों के अनुसार क्रमबद्ध करें",
-      "DELETE_USER_FROM_CENTER": "केंद्र से उपयोगकर्ता को हटाएं",
-      "ADD_OR_REASSIGN_CENTERS": "केंद्र जोड़ें या पुनः असाइन करें",
-      "SURE_MARK": "क्या आप सुनिश्चित हैं कि आप इस उपस्थिति को चिह्नित करना चाहते हैं?",
+
+    "FILTER_BY": "फ़िल्टर करें",
+    "ALL": "सभी",
+    "ACTIVE": "सक्रिय",
+    "NA": "लागू नहीं (N.A.)",
+    "SORT_BY_NAMES": "नामों के अनुसार क्रमबद्ध करें",
+    "DELETE_USER_FROM_CENTER": "केंद्र से उपयोगकर्ता को हटाएं",
+    "ADD_OR_REASSIGN_CENTERS": "केंद्र जोड़ें या पुनः असाइन करें",
+    "SURE_MARK": "क्या आप सुनिश्चित हैं कि आप इस उपस्थिति को चिह्नित करना चाहते हैं?",
     "CANNOT_REASSIGN_TODAY_ATTENDANCE_MARKED": "आज की उपस्थिति पहले ही चिह्नित की जा चुकी है, इसलिए शिक्षार्थी को पुनः आवंटित नहीं किया जा सकता",
     "INCORRECT_DATA_ENTRY": "गलत डेटा प्रविष्टि",
     "DUPLICATED_USER": "डुप्लिकेट उपयोगकर्ता"
-
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",
@@ -187,8 +186,6 @@
     "NO_USERNAME": "उपयोगकर्ता नाम नहीं मिला",
     "PASSWORD_SAME_AS_OLD": "पासवर्ड पुराना पासवर्ड जैसा ही है",
     "CURRENT_PASSWORD_NOT": "वर्तमान पासवर्ड मेल नहीं खाता"
-
-
   },
   "DASHBOARD": {
     "DASHBOARD": "डैशबोर्ड",
@@ -224,7 +221,6 @@
     "BLOCK": "ब्लॉक",
     "ATTENDANCE": "उपस्थिति (%)",
     "WORKSPACE": "कार्यस्थान"
-
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "कुल छात्रों की संख्या: {{count}}",
@@ -295,8 +291,6 @@
     "CONTACT_NUMBER": "संपर्क नंबर",
     "SELECT_OPTION": "विकल्प चुनें",
     "ENROLLMENT_NUMBER": "पंजीकरण संख्या"
-
-
   },
   "FIELDS": {
     "DESIGNATION": "पद",
@@ -393,7 +387,6 @@
     "ERROR_EMPTY": "केंद्र का नाम खाली नहीं हो सकता",
     "ERROR_NUMBER": "केंद्र का नाम संख्या नहीं हो सकता",
     "DUPLICATE_CENTER": "केंद्र पहले से ही मौजूद है"
-
   },
   "CENTER_SESSION": {
     "THIS_SESSION": "यह सत्र",
@@ -463,7 +456,7 @@
     "IDENTIFIER_NOT_FOUND": "पहचानकर्ता नहीं मिला! सामग्री नहीं खोल सकते!",
     "PREREQUISITES": "पूर्व-आवश्यकताएँ",
     "POST_REQUISITES": "पश्च-आवश्यकताएँ",
-    
+
     "SELECT_SESSION": "कृपया सत्र का प्रकार चुनें",
     "MEETING_LINK_REQUIRED": "कृपया बैठक लिंक दर्ज करें!",
     "WEEKDAY_ERROR": "कृपया आवर्ती कार्यक्रम के लिए कम से कम एक सप्ताह का दिन चुनें।",
@@ -477,14 +470,11 @@
     "INVALID_DATE": "अमान्य तिथि।",
     "INVALID_EVENT_CONFIGURATION": "अमान्य कार्यक्रम विन्यास। कृपया अपनी इनपुट जांचें।",
     "MEETING_URL_ERROR": "कृपया एक मान्य बैठक URL प्रदान करें।"
-
   },
   "MANAGE_USERS": {
     "CENTERS_REQUEST_FAILED": "केंद्र अनुरोध विफल रहा",
     "CENTERS_REQUESTED_SUCCESSFULLY": "केंद्र ने सफलतापूर्वक अनुरोध किया",
     "CENTERS_REASSIGNED_SUCCESSFULLY": "केंद्र को सफलतापूर्वक पुनः आवंटित किया गया है।"
-
-
   },
   "FORM": {
     "FULL_NAME": "पूरा नाम",
@@ -572,7 +562,6 @@
     "SOCIAL_SCIENCE": "सामाजिक विज्ञान",
     "LIFE_SKILLS": "जीवन कौशल",
     "NUMBER_OF_CLUSTERS_I_TEACH": "क्लस्टर की संख्या जो मैं पढ़ाता हूँ"
-
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "अवैध इनपुट।",
@@ -592,18 +581,18 @@
     "ENTER_VALID_CENTER_NAME": "वैध केंद्र नाम दर्ज करें"
   },
   "COURSE_PLANNER": {
-  "COURSE_PLANNER": "कोर्स योजना",
-  "FOUNDATION_COURSE": "फाउंडेशन कोर्स",
-  "MAIN_COURSE": "मुख्य कोर्स",
-  "COLLAPSE_ALL": "सभी को संकुचित करें",
-  "EXPAND_ALL": "सभी को विस्तारित करें",
-  "RESOURCES": "संसाधन",
-  "MARK_AS_COMPLETED": "पूर्ण के रूप में चिह्नित करें",
-  "COURSE_TYPE": "कोर्स प्रकार",
-  "SUBTOPICS_SELECTED": "उपविषयों का चयन किया गया",
-  "NO_RESOURCES_FOUND": "कोई संसाधन नहीं मिला",
-   "INVALID_RESOURCE": "अमान्य संसाधन"
-},
+    "COURSE_PLANNER": "कोर्स योजना",
+    "FOUNDATION_COURSE": "फाउंडेशन कोर्स",
+    "MAIN_COURSE": "मुख्य कोर्स",
+    "COLLAPSE_ALL": "सभी को संकुचित करें",
+    "EXPAND_ALL": "सभी को विस्तारित करें",
+    "RESOURCES": "संसाधन",
+    "MARK_AS_COMPLETED": "पूर्ण के रूप में चिह्नित करें",
+    "COURSE_TYPE": "कोर्स प्रकार",
+    "SUBTOPICS_SELECTED": "उपविषयों का चयन किया गया",
+    "NO_RESOURCES_FOUND": "कोई संसाधन नहीं मिला",
+    "INVALID_RESOURCE": "अमान्य संसाधन"
+  },
   "ASSESSMENTS": {
     "ASSESSMENTS": "मूल्यांकन",
     "CENTER": "केंद्र",
@@ -675,12 +664,18 @@
     "OBSERVATION_STATUS": "निरीक्षण की वर्तमान स्थिति",
     "OBSERVATION_NOT_STARTED_YET": "सर्वेक्षण अभी शुरू नहीं हुआ है।",
     "EXPIRED": "समाप्त हो गया।"
+  },
+
+  "YOUTHNET": {
+    "SURVEY": {
+      "NEW_SURVEY": "नया सर्वेक्षण",
+      "ASSIGN_VOLUNTEERS_NOW": "स्वयंसेवकों को अभी असाइन करें",
+      "REMIND_ME_LATER": "मुझे बाद में याद दिलाएं",
+      "NEW_SURVEY_HAS_BEEN_ADDED": "एक नया सर्वेक्षण '{{surveyName}}' जोड़ा गया है और {{villageCount}} गांवों को असाइन किया गया है",
+      "ASSIGN_VOLUNTEERS_TO_ENSURE": "यह सुनिश्चित करने के लिए स्वयंसेवकों को असाइन करें कि वे सर्वेक्षण तक पहुंच सकें"
+    },
+    "DASHBOARD": {
+      "VILLAGES_MANAGED_BY_YOU": "आपके द्वारा प्रबंधित गांव : {{totalVillageCount}}"
+    }
   }
- 
 }
-  
- 
- 
-  
-  
-  
