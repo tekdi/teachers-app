@@ -897,3 +897,13 @@ export interface RegistrationStatisticsProps {
 export interface VillageNewRegistrationProps {
     locations: string | React.ReactNode; 
 }
+export interface RegistrationModalProps {
+  avatar?: string; 
+  title?: string;  
+  age?: number;  
+  village?: string;
+}
+export interface SurveysProps {
+    title: string; 
+    date: string;  
+}
