@@ -39,6 +39,7 @@ const LearnerAttendanceHistory = () => {
   const { push } = useRouter();
   const store = useStore();
   const isActiveYear = store.isActiveYearSelected;
+  const userCohorts = store.cohorts;
   const [loading, setLoading] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [open, setOpen] = useState(false);
@@ -46,6 +47,7 @@ const LearnerAttendanceHistory = () => {
   const [learnerAttendance, setLearnerAttendance] = useState<
     LearnerAttendanceData | undefined
   >(undefined);
+  const [extractedAttendanceDates, setExtractedAttendanceDates] = useState([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -59,7 +61,7 @@ const LearnerAttendanceHistory = () => {
         }
       } else {
         push('/login', undefined, { locale: 'en' });
-      }      
+      }
     }
   }, []);
 
@@ -124,7 +126,7 @@ const LearnerAttendanceHistory = () => {
             limit: 300,
             page: 0,
             filters: {
-              contextId: classId,
+              // contextId: classId,
               fromDate: fromDateFormatted,
               toDate: toDateFormatted,
               scope: 'student',
@@ -133,16 +135,32 @@ const LearnerAttendanceHistory = () => {
           };
           const response = await getLearnerAttendanceStatus(attendanceRequest);
           const attendanceStats = response?.data?.attendanceList;
-          const attendanceData = attendanceStats?.reduce(
-            (acc: LearnerAttendanceData, record: AttendanceRecord) => {
-              acc[record.attendanceDate] = {
-                attendanceStatus: record.attendance,
-              };
-              return acc;
-            },
-            {}
-          );
-          setLearnerAttendance(attendanceData);
+          if (userCohorts && attendanceStats) {
+            const filteredAttendanceStats = attendanceStats.filter(
+              (stat: { contextId: any }) =>
+                userCohorts.some(
+                  (cohort: { cohortId: any }) =>
+                    cohort.cohortId === stat.contextId
+                )
+            );
+            if (filteredAttendanceStats) {
+              const attendanceData = filteredAttendanceStats?.reduce(
+                (acc: LearnerAttendanceData, record: AttendanceRecord) => {
+                  acc[record.attendanceDate] = {
+                    attendanceStatus: record.attendance,
+                  };
+                  return acc;
+                },
+                {}
+              );
+              setLearnerAttendance(attendanceData);
+              const extractedData = filteredAttendanceStats.map((item: { attendanceDate: any; contextId: any; }) => ({
+                attendanceDate: item.attendanceDate,
+                contextId: item.contextId
+              }));
+              setExtractedAttendanceDates(extractedData)
+            }
+          }
           setLoading(false);
         }
       } catch (err) {
@@ -244,6 +262,7 @@ const LearnerAttendanceHistory = () => {
         }
         handleClose={handleModalClose}
         onAttendanceUpdate={() => setAttendanceUpdated(!attendanceUpdated)}
+        attendanceDates = {extractedAttendanceDates}
       />
     </Box>
   );
