@@ -2,7 +2,7 @@ import {  readUserId, sendCredentialService } from "@/services/NotificationServi
 import { useCallback } from "react";
 
 const useNotification = () => {
-  const getNotification = useCallback(async ( deviceId: any, key: any, ) => {
+  const getNotification = useCallback(async (deviceId: any, key: any, replacements?: any ) => {
     try {
 
      
@@ -10,7 +10,7 @@ const useNotification = () => {
           isQueue: false,
           context: "USER",
           key: key,
-        // replacements: replacements,
+        replacements: replacements,
           push: {
             receipients: deviceId,
           },
