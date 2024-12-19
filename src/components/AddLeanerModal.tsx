@@ -137,7 +137,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         ''
       );
       const apiBody: any = {
-        username: username,
+        username: learnerFormData?.username,
         password: password,
         tenantCohortRoleMapping: [
           {
@@ -204,6 +204,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             name: apiBody.name,
             mobile: apiBody.mobile,
             father_name: apiBody.father_name,
+            username: apiBody.username,
           };
           const customFields = apiBody.customFields;
           console.log(customFields);
@@ -231,7 +232,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             onLearnerAdded?.();
             onClose();
             ReactGA.event('learner-creation-success', {
-              username: username,
+              username: learnerFormData.username,
             });
 
             const telemetryInteract = {
@@ -255,7 +256,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             if (creatorName && userEmail) {
               sendEmail(
                 creatorName,
-                username,
+                learnerFormData.username,
                 password,
                 userEmail,
                 apiBody['name']
@@ -265,8 +266,12 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             }
           }
         }
-      } catch (error) {
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+      } catch (error: any) {
+        if (error?.response?.data?.params?.err === 'User already exist.') {
+          showToastMessage(error?.response?.data?.params?.err, 'error');
+        } else {
+          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        }
         setReloadProfile(true);
         ReactGA.event('learner-creation-fail', {
           error: error,
