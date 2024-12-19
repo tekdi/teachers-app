@@ -663,6 +663,10 @@
     },
     "DASHBOARD": {
       "VILLAGES_MANAGED_BY_YOU": "Villages Managed by you : {{totalVillageCount}}"
+    },
+    "VOLUNTEERLIST": {
+      "ENTRIES": "Entries",
+      "VOLUNTEERS_ASSIGNED": "Volunteers assigned"
     }
   }
 }

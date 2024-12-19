@@ -676,6 +676,10 @@
     },
     "DASHBOARD": {
       "VILLAGES_MANAGED_BY_YOU": "आपके द्वारा प्रबंधित गांव : {{totalVillageCount}}"
+    },
+    "VOLUNTEERLIST": {
+      "ENTRIES": "प्रविष्टियाँ",
+      "VOLUNTEERS_ASSIGNED": "स्वयंसेवक सौंपे गए"
     }
   }
 }
