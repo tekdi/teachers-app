@@ -12,7 +12,7 @@ export const fetchSurveyData = async (): Promise<boolean> => {
 
   try {
     const response = await axios.get(`${API_BASE_URL}/survey`);
-    return response.data.surveyAvailable || false;
+    return response?.data?.surveyAvailable || false;
   } catch (error) {
     console.error('Error fetching survey data:', error);
     return false;

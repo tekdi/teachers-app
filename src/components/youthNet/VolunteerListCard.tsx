@@ -2,6 +2,8 @@ import React from 'react';
 import { Box, Typography, Card, CardContent, Link } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useTranslation } from 'next-i18next';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 
 interface CardProps {
   title: string;
@@ -18,6 +20,7 @@ const VolunteerListCard: React.FC<CardProps> = ({
   actionLabel,
   onActionClick,
 }) => {
+  const { t } = useTranslation();
   return (
     <Card
       variant="outlined"
@@ -43,7 +46,7 @@ const VolunteerListCard: React.FC<CardProps> = ({
         <Box>
           <Typography variant="subtitle1">{title}</Typography>
           <Typography variant="body2" color="text.secondary">
-            {entries} entries
+            {entries} {t('YOUTHNET.VOLUNTEERLIST.ENTRIES')}
           </Typography>
         </Box>
         <ArrowForwardIosIcon fontSize="small" color="action" />
@@ -65,9 +68,9 @@ const VolunteerListCard: React.FC<CardProps> = ({
           }}
         >
           <Box component="span" sx={{ color: 'red' }}>
-            ❗
+            <PriorityHighIcon />
           </Box>
-          {volunteerCount} Volunteers assigned
+          {volunteerCount} {t('YOUTHNET.VOLUNTEERLIST.VOLUNTEERS_ASSIGNED')}
         </Typography>
         <Box
           sx={{

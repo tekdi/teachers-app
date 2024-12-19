@@ -9,6 +9,7 @@ import { SURVEY_DATA } from '@/components/youthNet/tempConfigs';
 import { useRouter } from 'next/router';
 import { volunteerData } from '@/components/youthNet/tempConfigs';
 import VolunteerListCard from '@/components/youthNet/VolunteerListCard';
+import NoDataFound from '@/components/common/NoDataFound';
 
 const volunteerList = () => {
   const router = useRouter();
@@ -33,16 +34,20 @@ const volunteerList = () => {
         onBackClick={handleBack}
       />
       <Box sx={{ mt: 4, p: 2, background: '#FBF4E4' }}>
-        {volunteerData.map((data) => (
-          <VolunteerListCard
-            key={data.id}
-            title={data.title}
-            entries={data.entries}
-            volunteerCount={data.volunteerCount}
-            actionLabel={data.actionLabel}
-            onActionClick={() => handleCardAction(data.title)}
-          />
-        ))}
+        {volunteerData?.length > 0 ? (
+          volunteerData?.map((data) => (
+            <VolunteerListCard
+              key={data?.id}
+              title={data?.title}
+              entries={data?.entries}
+              volunteerCount={data?.volunteerCount}
+              actionLabel={data?.actionLabel}
+              onActionClick={() => handleCardAction(data?.title)}
+            />
+          ))
+        ) : (
+          <NoDataFound />
+        )}
       </Box>
     </Box>
   );

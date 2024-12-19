@@ -675,6 +675,10 @@
     },
     "DASHBOARD": {
       "VILLAGES_MANAGED_BY_YOU": "तुमच्याकडून व्यवस्थापित गाव : {{totalVillageCount}}"
+    },
+    "VOLUNTEERLIST": {
+      "ENTRIES": "नोंदी",
+      "VOLUNTEERS_ASSIGNED": "स्वयंसेवक नियुक्त"
     }
   }
 }
