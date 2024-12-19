@@ -679,7 +679,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         : convertToUTC(combinedEndDateValue);
 
     if (startDatetime && endDatetime && endDateValue) {
-      const isRecurringEvent = endDatetime !== endDateValue ? true : false;
+      const isRecurringEvent = clickedBox === 'PLANNED_SESSION' ? true : false;
       setSessionBlocks(
         sessionBlocks.map((block) =>
           block?.id === selectedBlockId
@@ -1115,8 +1115,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const handleEditSession = (event: any) => {
     setEditSelection(event.target.value);
 
-    console.log("session updated");
-    
+    console.log('session updated');
   };
 
   const handelDeleteEvent = async (eventData: any, deleteSelection: string) => {
