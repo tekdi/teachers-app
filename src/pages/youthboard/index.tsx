@@ -10,6 +10,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { SURVEY_DATA } from '@/components/youthNet/tempConfigs';
 import BackHeader from '@/components/youthNet/BackHeader';
+import MonthlyRegistrationsChart from '@/components/youthNet/MonthlyRegistrationsChart';
 
 const index = () => {
   const { t } = useTranslation();
@@ -49,6 +50,9 @@ const index = () => {
             totalVillageCount: SURVEY_DATA.FIFTY_TWO,
           })}
         </Typography>
+      </Box>
+      <Box>
+        <MonthlyRegistrationsChart />
       </Box>
       <SimpleModal
         modalTitle={t('YOUTHNET.SURVEY.NEW_SURVEY')}
