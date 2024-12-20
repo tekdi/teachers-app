@@ -551,7 +551,7 @@
     "SCIENCE": "Science",
     "SOCIAL_SCIENCE": "Social Science",
     "LIFE_SKILLS": "Life Skills",
-    "CREATE_USERNAME": "Create Username"
+    "USERNAME": "Username"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
