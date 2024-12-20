@@ -115,7 +115,10 @@ const LoginPage = () => {
       setLang(lang);
       const token = localStorage.getItem('token');
       const tenant = localStorage.getItem('tenantName');
-      if (token && tenant == TENANT_DATA.SECOND_CHANCE_PROGRAM) {
+      if (
+        (token && tenant == TENANT_DATA.SECOND_CHANCE_PROGRAM) ||
+        TENANT_DATA.PRATHAM_SCP
+      ) {
         router.push('/dashboard');
       } else if (token && tenant == TENANT_DATA.YOUTHNET) {
         router.push('/youthboard');
