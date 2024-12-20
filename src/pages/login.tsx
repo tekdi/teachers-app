@@ -115,9 +115,9 @@ const LoginPage = () => {
       setLang(lang);
       const token = localStorage.getItem('token');
       const tenant = localStorage.getItem('tenantName');
-      if (token && tenant == TENANT_DATA.SECOND_CHANCE_PROGRAM) {
+      if (token && (tenant?.toLocaleLowerCase() === TENANT_DATA?.SECOND_CHANCE_PROGRAM?.toLowerCase() || tenant?.toLocaleLowerCase() === TENANT_DATA?.PRATHAM_SCP?.toLowerCase())) {
         router.push('/dashboard');
-      } else if (token && tenant == TENANT_DATA.YOUTHNET) {
+      } else if (token && tenant?.toLowerCase() == TENANT_DATA?.YOUTHNET?.toLowerCase()) {
         router.push('/youthboard');
       }
     }
@@ -297,7 +297,7 @@ const LoginPage = () => {
             setAccessToken(token);
 
             const tenant = localStorage.getItem('tenantName');
-            if (tenant == TENANT_DATA.SECOND_CHANCE_PROGRAM) {
+            if (tenant?.toLocaleLowerCase() === TENANT_DATA?.SECOND_CHANCE_PROGRAM?.toLowerCase() || tenant?.toLocaleLowerCase() === TENANT_DATA?.PRATHAM_SCP?.toLowerCase()) {
               const userDetails = await getUserDetails(userId, true);
               if (userDetails?.result?.userData) {
                 const activeSessionId = await getAcademicYearList();
@@ -339,7 +339,7 @@ const LoginPage = () => {
                 }
                 console.log('userDetails', userDetails);
               }
-            } else if (token && tenant == TENANT_DATA.YOUTHNET) {
+            } else if (token && tenant?.toLowerCase() === TENANT_DATA.YOUTHNET?.toLowerCase()) {
               router.push('/youthboard');
             }
           }
@@ -526,7 +526,7 @@ const LoginPage = () => {
                     alignItems={'center'}
                     justifyContent={'center'}
                     zIndex={99}
-                    // sx={{ margin: '5px 10px 25px', }}
+                  // sx={{ margin: '5px 10px 25px', }}
                   >
                     <Box
                       sx={{

@@ -120,5 +120,6 @@ export const MIME_TYPE = {
 export const TENANT_DATA = {
   TENANT_NAME: 'tenantName',
   SECOND_CHANCE_PROGRAM: 'Second Chance Program',
+  PRATHAM_SCP: 'pratham SCP',
   YOUTHNET: 'YouthNet',
 };
