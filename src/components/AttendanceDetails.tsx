@@ -78,7 +78,7 @@ export const fetchAttendanceDetails = async (
       const userAttendanceArray = getUserAttendanceStatus(nameUserIdArray, response);
 
       const mergeArrays = (
-        nameUserIdArray: { userId: string; name: string; memberStatus: string }[],
+        nameUserIdArray: { userId: string; name: string; memberStatus: string, updatedAt: string | number | Date  }[],
         userAttendanceArray: { userId: string; attendance: string }[]
       ) => {
         const newArray = nameUserIdArray.map((user) => {
@@ -90,6 +90,7 @@ export const fetchAttendanceDetails = async (
             name: user.name,
             memberStatus: user.memberStatus,
             attendance: attendanceEntry?.attendance || '',
+            updatedAt: user.updatedAt,
           };
         });
 
@@ -101,13 +102,17 @@ export const fetchAttendanceDetails = async (
 
           const hasDropout = newArray.some((user) => user.memberStatus === Status.DROPOUT);
           if (hasDropout) {
-            cohortMemberList = newArray.filter((user) => user.memberStatus === Status.ACTIVE);
-            dropoutMemberList = newArray.filter((user) => user.memberStatus === Status.DROPOUT);
+            cohortMemberList = newArray.filter((user) => user.memberStatus === Status.ACTIVE ||
+            (user.memberStatus === Status.DROPOUT && shortDateFormat(new Date(user.updatedAt)) > shortDateFormat(new Date(selectedDate)))||
+            (user.memberStatus === Status.ARCHIVED && shortDateFormat(new Date(user.updatedAt)) > shortDateFormat(new Date(selectedDate))));
+            dropoutMemberList = newArray.filter((user) => user.memberStatus === Status.DROPOUT && shortDateFormat(new Date(user.updatedAt)) <= shortDateFormat(new Date(selectedDate)));
             dropoutCount = dropoutMemberList.length;
           }
         } else {
-          cohortMemberList = nameUserIdArray.filter((user) => user.memberStatus === Status.ACTIVE);
-          dropoutMemberList = nameUserIdArray.filter((user) => user.memberStatus === Status.DROPOUT);
+          cohortMemberList = nameUserIdArray.filter((user) => user.memberStatus === Status.ACTIVE||
+          (user.memberStatus === Status.DROPOUT && shortDateFormat(new Date(user.updatedAt)) > shortDateFormat(new Date(selectedDate)))||
+          (user.memberStatus === Status.ARCHIVED && shortDateFormat(new Date(user.updatedAt)) > shortDateFormat(new Date(selectedDate))));
+          dropoutMemberList = nameUserIdArray.filter((user) => user.memberStatus === Status.DROPOUT && shortDateFormat(new Date(user.updatedAt)) <= shortDateFormat(new Date(selectedDate)));
           numberOfCohortMembers = nameUserIdArray.length;
         }
 

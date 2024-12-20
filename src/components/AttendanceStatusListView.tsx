@@ -18,6 +18,7 @@ import {
   ATTENDANCE_ENUM,
   capitalizeEachWord,
   filterMiniProfileFields,
+  shortDateFormat,
 } from '../utils/Helper';
 import DropoutLabel from './DropoutLabel';
 import LearnerModal from './LearnerModal';
@@ -34,10 +35,21 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   bulkAttendanceStatus = '',
   presentCount,
   absentCount,
+  attendanceDate,
 }) => {
   const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const theme = useTheme<any>();
+  let updatedAtDate: string | undefined;
+  let attendanceDateFormatted: string | undefined;
+
+  if (userData?.updatedAt) {
+    updatedAtDate = shortDateFormat(new Date(userData.updatedAt));
+  }
+
+  if (attendanceDate) {
+    attendanceDateFormatted = shortDateFormat(new Date(attendanceDate));
+  }
 
   const boxStyling = {
     display: 'flex',
@@ -162,7 +174,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           )}
         </Typography>
         <Box sx={{ display: 'flex', gap: '10px' }}>
-          {userData?.memberStatus === Status.DROPOUT ? (
+          {(userData?.memberStatus === Status.DROPOUT && updatedAtDate && attendanceDateFormatted && updatedAtDate <= attendanceDateFormatted) ? (
             <Box display="column">
               {presentCount === 0 && absentCount === 0 ? (
                 <DropoutLabel />
@@ -236,7 +248,9 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
                       </Typography>
                     </Box>
                   </Box>
-                  <DropoutLabel />
+                  {/* <DropoutLabel /> */}
+                  { updatedAtDate && attendanceDateFormatted && updatedAtDate <= attendanceDateFormatted &&
+                    userData.memberStatus === 'dropout' && <DropoutLabel />}
                 </>
               )}
             </Box>

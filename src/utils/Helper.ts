@@ -790,3 +790,37 @@ export const getTelemetryForContent = (
 
   return telemetryEvents;
 };
+
+export interface UserEntry {
+    userId: string;
+    name: string;
+    memberStatus: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export function getLatestEntries(
+    nameUserIdArray: UserEntry[],
+    selectedDate: string
+): UserEntry[] {
+    const filteredEntries: Record<string, UserEntry> = {};
+
+    nameUserIdArray.forEach(entry => {
+        const { userId, updatedAt, createdAt } = entry;
+        const updatedDate = new Date(updatedAt);
+        const selectDate = new Date(selectedDate);
+        const createdDate = new Date(createdAt);
+
+        // Only consider entries with updatedAt < selectedDate or createdDate <= selectDate
+        if (updatedDate < selectDate || createdDate <= selectDate) {
+            if (
+                !filteredEntries[userId] || 
+                new Date(filteredEntries[userId].updatedAt) < updatedDate
+            ) {
+                // Update the entry if it is newer
+                filteredEntries[userId] = entry;
+            }
+        }
+    });
+    return Object.values(filteredEntries);
+}

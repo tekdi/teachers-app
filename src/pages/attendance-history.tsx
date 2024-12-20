@@ -1,5 +1,6 @@
 import {
   debounce,
+  getLatestEntries,
   getTodayDate,
   handleKeyDown,
   shortDateFormat,
@@ -183,6 +184,7 @@ const UserAttendanceHistory = () => {
             cohortId: classId,
             role: 'Student',
           },
+          includeArchived: true,
         };
         const currentDate = selectedDate || new Date();
         const firstDayOfMonth = new Date(
@@ -232,25 +234,44 @@ const UserAttendanceHistory = () => {
           limit,
           page,
           filters,
+          includeArchived: true,
         });
         const resp = response?.result?.userDetails || [];
 
         if (resp) {
-          const selectedDateStart = new Date(selectedDate);
-          selectedDateStart.setHours(0, 0, 0, 0);
           const nameUserIdArray = resp
-            .filter((entry: any) => {
-              const createdAtDate = new Date(entry.createdAt);
-              createdAtDate.setHours(0, 0, 0, 0);
-              return createdAtDate <= selectedDateStart;
-            })
-            .map((entry: any) => ({
-              userId: entry.userId,
-              name: toPascalCase(entry.name),
-              memberStatus: entry.status,
-              createdAt: entry.createdAt,
-            }));
-          if (nameUserIdArray && (selectedDate || currentDate)) {
+              ?.map((entry: any) => ({
+                userId: entry.userId,
+                name: toPascalCase(entry.name),
+                memberStatus: entry.status,
+                createdAt: entry.createdAt,
+                updatedAt: entry.updatedAt,
+              }))
+              .filter(
+                (member: {
+                  createdAt: string | number | Date;
+                  updatedAt: string | number | Date;
+                  memberStatus: string;
+                }) => {
+                  const createdAt = new Date(member.createdAt);
+                  createdAt.setHours(0, 0, 0, 0);
+                  const updatedAt = new Date(member.updatedAt);
+                  updatedAt.setHours(0, 0, 0, 0);
+                  const currentDate = new Date(selectedDate);
+                  currentDate.setHours(0, 0, 0, 0);
+                  if (
+                    member.memberStatus === 'archived' &&
+                    updatedAt <= currentDate
+                  ) {
+                    return false;
+                  }
+                  return createdAt <= new Date(selectedDate);
+                }
+              );
+
+          // Filter latest entries
+          const filteredEntries = getLatestEntries(nameUserIdArray, shortDateFormat(selectedDate));
+          if (filteredEntries && (selectedDate || currentDate)) {
             const userAttendanceStatusList = async () => {
               const attendanceStatusData: AttendanceStatusListProps = {
                 limit: 300,
@@ -266,7 +287,7 @@ const UserAttendanceHistory = () => {
               const response = res?.data?.attendanceList;
               if (response) {
                 const getUserAttendanceStatus = (
-                  nameUserIdArray: any[],
+                  filteredEntries: any[],
                   response: any[]
                 ) => {
                   const userAttendanceArray: {
@@ -274,7 +295,7 @@ const UserAttendanceHistory = () => {
                     attendance: any;
                   }[] = [];
 
-                  nameUserIdArray.forEach((user) => {
+                  filteredEntries.forEach((user) => {
                     const userId = user.userId;
                     const attendance = response.find(
                       (status) => status.userId === userId
@@ -289,16 +310,17 @@ const UserAttendanceHistory = () => {
                   return userAttendanceArray;
                 };
                 const userAttendanceArray = getUserAttendanceStatus(
-                  nameUserIdArray,
+                  filteredEntries,
                   response
                 );
 
                 if (userAttendanceArray) {
                   const mergeArrays = (
-                    nameUserIdArray: {
+                    filteredEntries: {
                       userId: string;
                       name: string;
                       memberStatus: string;
+                      updatedAt: string;
                     }[],
                     userAttendanceArray: {
                       userId: string;
@@ -309,14 +331,16 @@ const UserAttendanceHistory = () => {
                     name: string;
                     memberStatus: string;
                     attendance: string;
+                    updatedAt: string;
                   }[] => {
                     const newArray: {
                       userId: string;
                       name: string;
                       memberStatus: string;
                       attendance: string;
+                      updatedAt: string;
                     }[] = [];
-                    nameUserIdArray.forEach((user) => {
+                    filteredEntries.forEach((user) => {
                       const userId = user.userId;
                       const attendanceEntry = userAttendanceArray.find(
                         (entry) => entry.userId === userId
@@ -327,6 +351,7 @@ const UserAttendanceHistory = () => {
                           name: user.name,
                           memberStatus: user.memberStatus,
                           attendance: attendanceEntry.attendance,
+                          updatedAt: user.updatedAt,
                         });
                       }
                     });
@@ -334,21 +359,21 @@ const UserAttendanceHistory = () => {
                       setCohortMemberList(newArray);
                       setDisplayStudentList(newArray);
                     } else {
-                      setCohortMemberList(nameUserIdArray);
-                      setDisplayStudentList(nameUserIdArray);
+                      setCohortMemberList(filteredEntries);
+                      setDisplayStudentList(filteredEntries);
                     }
                     return newArray;
                   };
-                  mergeArrays(nameUserIdArray, userAttendanceArray);
+                  mergeArrays(filteredEntries, userAttendanceArray);
                 }
               }
               setLoading(false);
             };
             userAttendanceStatusList();
           }
-          if (nameUserIdArray && (selectedDate || currentDate)) {
+          if (filteredEntries && (selectedDate || currentDate)) {
             fetchAttendanceDetails(
-              nameUserIdArray,
+              filteredEntries,
               selectedDate,
               classId,
               handleAttendanceDataUpdate
@@ -856,6 +881,7 @@ const UserAttendanceHistory = () => {
                       isEdit={false}
                       bulkAttendanceStatus={bulkAttendanceStatus}
                       handleBulkAction={submitBulkAttendanceAction}
+                      attendanceDate={selectedDate}
                     />
                   ))
                 ) : (

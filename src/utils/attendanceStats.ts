@@ -4,23 +4,56 @@ import {
   AttendancePercentageProps,
   CohortMemberList,
 } from '../utils/Interfaces';
+import { getLatestEntries, shortDateFormat } from './Helper';
 
 const getTotalStudentCount = async (
   response: any,
   fromDate: Date
 ): Promise<number> => {
-  // const response = await getMyCohortMemberList(cohortMemberRequest);
-  const filteredFields = response?.result?.userDetails;
-  console.log('totalStudentsCount', filteredFields);
+  try {
+    const filteredFields = response?.result?.userDetails || [];
+    // console.log('Filtered User Details:', filteredFields);
 
-  const totalStudentsCount = filteredFields?.filter((entry: any) => {
-    const createdAtDate = new Date(entry.createdAt);
-    createdAtDate.setHours(0, 0, 0, 0);
-    return createdAtDate <= fromDate;
-  }).length;
-  console.log('totalStudentsCount', totalStudentsCount);
-  return totalStudentsCount;
+    const nameUserIdArray = filteredFields
+      .map((entry: any) => ({
+        userId: entry.userId,
+        memberStatus: entry.status,
+        createdAt: entry.createdAt,
+        updatedAt: entry.updatedAt,
+      }))
+      .filter(
+        (member: {
+          createdAt: string | number | Date;
+          updatedAt: string | number | Date;
+          memberStatus: string;
+        }) => {
+          const createdAt = new Date(member.createdAt).setHours(0, 0, 0, 0);
+          const updatedAt = new Date(member.updatedAt).setHours(0, 0, 0, 0);
+          const currentDate = new Date(fromDate).setHours(0, 0, 0, 0);
+
+          if (member.memberStatus === 'archived' && updatedAt <= currentDate) {
+            return false;
+          }
+          return createdAt <= currentDate;
+        }
+      );
+
+    // Get the latest entries
+    const filteredEntries = getLatestEntries(
+      nameUserIdArray,
+      shortDateFormat(fromDate)
+    );
+
+    const totalStudentsCount = filteredEntries.length;
+    // console.log('Total Students Count:', totalStudentsCount);
+
+    return totalStudentsCount;
+  } catch (error) {
+    // console.error('Error in getTotalStudentCount:', error);
+    return 0;
+  }
 };
+
 
 
 const getPresentStudentCount = async (
