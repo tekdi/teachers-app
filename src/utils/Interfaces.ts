@@ -907,3 +907,10 @@ export interface SurveysProps {
     title: string; 
     date: string;  
 }
+
+
+export interface VillageDetailProps {
+    title?: string; 
+    icon?: React.ReactNode; 
+    subtitle?: string; 
+}

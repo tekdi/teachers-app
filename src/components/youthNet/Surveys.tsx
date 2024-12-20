@@ -3,16 +3,18 @@ import React from 'react';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { SurveysProps } from '@/utils/Interfaces';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
 
 function Surveys({ title, date }: SurveysProps) {
     const theme = useTheme<any>();
+    const { t } = useTranslation();
     return (
         <Box
             sx={{
-                border: '1px solid #D0C5B4',
+                border: `1px solid ${theme.palette.warning['A100']}`,
                 borderRadius: '8px',
                 padding: '12px',
-                cursor: 'pointer',
+                cursor: 'pointer', 
             }}
             display="flex"
             justifyContent="space-between"
@@ -23,7 +25,7 @@ function Surveys({ title, date }: SurveysProps) {
                     sx={{
                         fontSize: '16px',
                         fontWeight: '400',
-                        color: '#1F1B13',
+                        color: theme.palette.warning['300'],
                     }}
                     className="one-line-text"
                 >
@@ -34,11 +36,11 @@ function Surveys({ title, date }: SurveysProps) {
                         fontSize: '14px',
                         fontWeight: 500,
                         lineHeight: '20px',
-                        color: '#7C766F',
+                        color: theme.palette.warning['400'],
                     }}
                     className="one-line-text"
                 >
-                    Closed on {date}
+                    {t('YOUTHNET.DASHBOARD.CLOSED_ON')} {date}
                 </Typography>
             </Box>
             <Box>
