@@ -17,6 +17,7 @@ import {
   getContentTrackingStatus,
 } from '@/services/TrackingService';
 import React, { useEffect, useState } from 'react';
+import { fetchBulkContents } from '@/services/PlayerService';
 interface ContentCardProps {
   name: string;
   mimeType: string;
@@ -179,7 +180,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
 
       // After processing all keys, check if an END event exists in detailsObject for html or h5p
       let hasEndEvent = true;
-      const requiredMimeTypes = [ContentType.H5P, ContentType.HTML];
 
       if (mimeType === ContentType.H5P || mimeType === ContentType.HTML) {
         detailsObject.forEach((event) => {
@@ -188,7 +188,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
           }
         });
         if (!hasEndEvent) {
-          // Push the default END event for missing types
           detailsObject.push({
             eid: 'END',
             edata: {
@@ -226,28 +225,43 @@ const ContentCard: React.FC<ContentCardProps> = ({
 
     try {
       const contentWithTelemetryData = async () => {
-        if (userId !== undefined || userId !== '') {
-          const ContentTypeReverseMap = Object.fromEntries(
-            Object.entries(ContentType).map(([key, value]) => [value, key])
-          );
+        try {
+          let resolvedMimeType = mimeType;
 
-          const reqBody: ContentCreate = {
-            userId: userId,
-            contentId: identifier,
-            courseId: identifier,
-            unitId: identifier,
-            contentType: ContentTypeReverseMap[mimeType] || '',
-            contentMime: mimeType,
-            lastAccessOn: lastAccessOn,
-            detailsObject: detailsObject,
-          };
-          console.log('reqBody', reqBody);
-          // if (detailsObject.length > 0) {
-          const response = await createContentTracking(reqBody);
-          if (response) {
-            setCallStatus(true);
+          if (!resolvedMimeType) {
+            const response = await fetchBulkContents([identifier]);
+            resolvedMimeType = response[0]?.mimeType || '';
+            if (!resolvedMimeType) {
+              console.error('Failed to fetch mimeType.');
+              return;
+            }
           }
-          console.log(response);
+
+          if (userId !== undefined || userId !== '') {
+            const ContentTypeReverseMap = Object.fromEntries(
+              Object.entries(ContentType).map(([key, value]) => [value, key])
+            );
+
+            const reqBody: ContentCreate = {
+              userId: userId,
+              contentId: identifier,
+              courseId: identifier,
+              unitId: identifier,
+              contentType: ContentTypeReverseMap[resolvedMimeType] || '',
+              contentMime: resolvedMimeType,
+              lastAccessOn: lastAccessOn,
+              detailsObject: detailsObject,
+            };
+            console.log('reqBody', reqBody);
+            // if (detailsObject.length > 0) {
+            const response = await createContentTracking(reqBody);
+            if (response) {
+              setCallStatus(true);
+            }
+            console.log(response);
+          }
+        } catch (error) {
+          console.error('Error in contentWithTelemetryData:', error);
         }
         // }
       };
