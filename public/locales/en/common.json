@@ -664,11 +664,8 @@
     },
     "DASHBOARD": {
       "VILLAGES_MANAGED_BY_YOU": "Villages Managed by you : {{totalVillageCount}}",
-
-      "MONTHLY_REGISTRATIONS_OVERVIEW": "Monthly Registrations Overview"
-
-      "CLOSED_ON":"Closed on"
-
+      "MONTHLY_REGISTRATIONS_OVERVIEW": "Monthly Registrations Overview",
+      "CLOSED_ON": "Closed on"
     },
     "VOLUNTEERLIST": {
       "ENTRIES": "Entries",
