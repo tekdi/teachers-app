@@ -663,7 +663,8 @@
       "ASSIGN_VOLUNTEERS_TO_ENSURE": "Assign Volunteers to ensure they can access the survey"
     },
     "DASHBOARD": {
-      "VILLAGES_MANAGED_BY_YOU": "Villages Managed by you : {{totalVillageCount}}"
+      "VILLAGES_MANAGED_BY_YOU": "Villages Managed by you : {{totalVillageCount}}",
+      "MONTHLY_REGISTRATIONS_OVERVIEW": "Monthly Registrations Overview"
     },
     "VOLUNTEERLIST": {
       "ENTRIES": "Entries",
