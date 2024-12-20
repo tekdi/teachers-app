@@ -888,3 +888,31 @@ export interface BoardEnrollmentProfileProps {
   feesPaidStatus: string;
   setActiveStep?: React.Dispatch<React.SetStateAction<number>>;
 }
+
+export interface RegistrationStatisticsProps {
+    title?: string;
+    cardTitle?: string;
+    statistic?: string | number;
+    avatar?: boolean;
+    subtile?: string;
+}
+export interface VillageNewRegistrationProps {
+    locations: string | React.ReactNode; 
+}
+export interface RegistrationModalProps {
+  avatar?: string; 
+  title?: string;  
+  age?: number;  
+  village?: string;
+}
+export interface SurveysProps {
+    title: string; 
+    date: string;  
+}
+
+
+export interface VillageDetailProps {
+    title?: string; 
+    icon?: React.ReactNode; 
+    subtitle?: string; 
+}

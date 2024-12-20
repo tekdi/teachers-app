@@ -550,7 +550,8 @@
     "LANGUAGE": "Language",
     "SCIENCE": "Science",
     "SOCIAL_SCIENCE": "Social Science",
-    "LIFE_SKILLS": "Life Skills"
+    "LIFE_SKILLS": "Life Skills",
+    "USERNAME": "Username"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
@@ -652,5 +653,23 @@
     "OBSERVATION_STATUS": "Survey Status",
     "OBSERVATION_NOT_STARTED_YET": "Survey not started yet",
     "EXPIRED": "Expired"
+  },
+  "YOUTHNET": {
+    "SURVEY": {
+      "NEW_SURVEY": "New Survey",
+      "ASSIGN_VOLUNTEERS_NOW": "Assign Volunteers Now",
+      "REMIND_ME_LATER": "Remind Me Later",
+      "NEW_SURVEY_HAS_BEEN_ADDED": "A new survey '{{surveyName}}' has been added and has been assigned to {{villageCount}} villages",
+      "ASSIGN_VOLUNTEERS_TO_ENSURE": "Assign Volunteers to ensure they can access the survey"
+    },
+    "DASHBOARD": {
+      "VILLAGES_MANAGED_BY_YOU": "Villages Managed by you : {{totalVillageCount}}",
+      "MONTHLY_REGISTRATIONS_OVERVIEW": "Monthly Registrations Overview",
+      "CLOSED_ON": "Closed on"
+    },
+    "VOLUNTEERLIST": {
+      "ENTRIES": "Entries",
+      "VOLUNTEERS_ASSIGNED": "Volunteers assigned"
+    }
   }
 }
