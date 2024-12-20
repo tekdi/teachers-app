@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import withRole from '@/components/withRole';
-import { Box, Modal, Typography } from '@mui/material';
+import { Box, Grid, Modal, Typography } from '@mui/material';
 import Header from '@/components/Header';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { TENANT_DATA } from '../../../app.config';
@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { SURVEY_DATA } from '@/components/youthNet/tempConfigs';
 import BackHeader from '@/components/youthNet/BackHeader';
 import MonthlyRegistrationsChart from '@/components/youthNet/MonthlyRegistrationsChart';
+import RegistrationStatistics from '@/components/youthNet/RegistrationStatistics';
 
 const index = () => {
   const { t } = useTranslation();
@@ -51,8 +52,42 @@ const index = () => {
           })}
         </Typography>
       </Box>
+      <Box p={2}>
+        <RegistrationStatistics title={'7 New Registrations Today'} />
+      </Box>
+      <Box p={2}>
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <RegistrationStatistics cardTitle={'Above 18 y/o'} statistic={4} />
+          </Grid>
+          <Grid item xs={4}>
+            <RegistrationStatistics cardTitle={'Below 18 y/o'} statistic={3} />
+          </Grid>
+          <Grid item xs={4}>
+            <RegistrationStatistics cardTitle={'From'} statistic={12} />
+          </Grid>
+        </Grid>
+      </Box>
       <Box>
         <MonthlyRegistrationsChart />
+      </Box>
+      <Box p={2}>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <RegistrationStatistics
+              avatar={true}
+              statistic={4}
+              subtile={'Youth'}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <RegistrationStatistics
+              avatar={true}
+              statistic={4}
+              subtile={'Volunteer'}
+            />
+          </Grid>
+        </Grid>
       </Box>
       <SimpleModal
         modalTitle={t('YOUTHNET.SURVEY.NEW_SURVEY')}
