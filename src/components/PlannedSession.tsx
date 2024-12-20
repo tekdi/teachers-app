@@ -679,7 +679,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         : convertToUTC(combinedEndDateValue);
 
     if (startDatetime && endDatetime && endDateValue) {
-      const isRecurringEvent = clickedBox === 'PLANNED_SESSION' ? true : false;
+      const isRecurringEvent = endDatetime !== endDateValue ? true : false;
       setSessionBlocks(
         sessionBlocks.map((block) =>
           block?.id === selectedBlockId
