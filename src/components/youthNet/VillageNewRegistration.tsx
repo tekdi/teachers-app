@@ -18,6 +18,7 @@ const VillageNewRegistration: React.FC<VillageNewRegistrationProps> = ({ locatio
                     padding: '4px 6px',
                     borderRadius: '8px',
                 }}
+                className="one-line-text"
             >
                 {locations}
             </Box>
