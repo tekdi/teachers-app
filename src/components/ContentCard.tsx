@@ -178,12 +178,15 @@ const ContentCard: React.FC<ContentCardProps> = ({
       });
 
       // After processing all keys, check if an END event exists in detailsObject for html or h5p
+      let hasEndEvent = true;
       const requiredMimeTypes = [ContentType.H5P, ContentType.HTML];
-      requiredMimeTypes.forEach((type) => {
-        const hasEndEvent = detailsObject.some(
-          (event) => event?.eid === 'END' && mimeType === type
-        );
 
+      if (mimeType === ContentType.H5P || mimeType === ContentType.HTML) {
+        detailsObject.forEach((event) => {
+          if (event.eid === 'END') {
+            hasEndEvent = false;
+          }
+        });
         if (!hasEndEvent) {
           // Push the default END event for missing types
           detailsObject.push({
@@ -216,9 +219,9 @@ const ContentCard: React.FC<ContentCardProps> = ({
             },
           });
         }
-      });
+        // });
+      }
     }
-
     console.log('Details Object:', detailsObject);
 
     try {
@@ -239,14 +242,14 @@ const ContentCard: React.FC<ContentCardProps> = ({
             detailsObject: detailsObject,
           };
           console.log('reqBody', reqBody);
-          if (detailsObject.length > 0) {
-            const response = await createContentTracking(reqBody);
-            if (response) {
-              setCallStatus(true);
-            }
-            console.log(response);
+          // if (detailsObject.length > 0) {
+          const response = await createContentTracking(reqBody);
+          if (response) {
+            setCallStatus(true);
           }
+          console.log(response);
         }
+        // }
       };
       contentWithTelemetryData();
     } catch (error) {
