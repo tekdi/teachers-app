@@ -781,10 +781,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
               // const cohort = cohortList?.find(
               //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
               // );
-              if (event.isRecurring) {
+              if (event?.metadata?.type === 'planned') {
                 sessionArray.push(event);
               }
-              if (!event.isRecurring) {
+              if (event?.metadata?.type === 'extra') {
                 extraSessionArray.push(event);
               }
             });
