@@ -1,12 +1,24 @@
+import axios from 'axios';
 import { get, patch } from './RestClient';
 
 export const getUserId = async (): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/auth`;
+
   try {
-    const response = await get(apiUrl);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Authorization token not found');
+    }
+
+    const response = await axios.get(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
     return response?.data?.result;
   } catch (error) {
-    console.error('error in fetching user details', error);
+    console.error('Error in fetching user details', error);
     throw error;
   }
 };

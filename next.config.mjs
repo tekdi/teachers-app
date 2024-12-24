@@ -117,3 +117,4 @@ const pwaConfig = withPWA({
 });
 
 export default pwaConfig(nextConfig);
+// export default nextConfig;

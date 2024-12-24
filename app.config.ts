@@ -71,8 +71,11 @@ export const DaysOfWeek = {
 
 export const Program = ['Second Chance', 'secondchance'];
 
-export const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || '';
-if (!tenantId) {
+export const tenantId =
+  (typeof window !== 'undefined' && localStorage.getItem('tenantId')) ||
+  process.env.NEXT_PUBLIC_TENANT_ID;
+
+if (!tenantId && typeof window !== 'undefined') {
   console.warn(
     'NEXT_PUBLIC_TENANT_ID is not set in the environment variables.'
   );
@@ -112,4 +115,11 @@ export const MIME_TYPE = {
     'application/vnd.ekstep.h5p-archive',
     'application/vnd.ekstep.html-archive',
   ],
+};
+
+export const TENANT_DATA = {
+  TENANT_NAME: 'tenantName',
+  SECOND_CHANCE_PROGRAM: 'Second Chance Program',
+  PRATHAM_SCP: 'pratham SCP',
+  YOUTHNET: 'YouthNet',
 };

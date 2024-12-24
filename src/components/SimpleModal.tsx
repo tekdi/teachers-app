@@ -1,4 +1,11 @@
-import { Box, Button, Divider, Modal, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Divider,
+  Modal,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import React, { ReactNode } from 'react';
 
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
@@ -28,6 +35,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   modalTitle,
 }) => {
   const theme = useTheme<any>();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const titleStyle = {
     backgroundColor: theme.palette.warning['A400'],
@@ -39,7 +47,8 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   const footerStyle = {
     padding: '8px 16px',
     display: 'flex',
-    justifyContent: 'flex-end',
+    flexDirection: isMobile ? 'column' : 'row',
+    justifyContent: isMobile ? 'center' : 'flex-end',
     zIndex: 1,
     borderRadius: '0 0 12px 12px',
     backgroundColor: theme.palette.warning['A400'],
@@ -49,6 +58,11 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
     flexGrow: 1,
     overflowY: 'auto',
     padding: '0 16px 16px',
+  };
+
+  const buttonStyle = {
+    width: isMobile ? '100%' : '100%',
+    margin: isMobile ? '8px 0' : '10px',
   };
 
   return (
@@ -93,17 +107,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
               <Button
                 variant="outlined"
                 color="secondary"
-                sx={{
-                  '&.Mui-disabled': {
-                    backgroundColor: theme?.palette?.primary?.main,
-                  },
-                  minWidth: '84px',
-                  height: '2.5rem',
-                  padding: theme.spacing(1),
-                  fontWeight: '500',
-                  width: '100%',
-                  margin: '10px',
-                }}
+                sx={buttonStyle}
                 onClick={secondaryActionHandler}
               >
                 {secondaryText}
@@ -113,17 +117,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
               <Button
                 variant="contained"
                 color="primary"
-                sx={{
-                  '&.Mui-disabled': {
-                    backgroundColor: theme?.palette?.primary?.main,
-                  },
-                  minWidth: '84px',
-                  height: '2.5rem',
-                  padding: theme.spacing(1),
-                  fontWeight: '500',
-                  width: '100%',
-                  margin: '10px',
-                }}
+                sx={buttonStyle}
                 onClick={primaryActionHandler}
               >
                 {primaryText}

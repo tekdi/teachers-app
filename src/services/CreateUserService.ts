@@ -1,7 +1,5 @@
 import { post } from './RestClient';
 
-
-
 //     const sortedFields = response?.data?.result.fields?.sort(
 //       (a: { order: string }, b: { order: string }) =>
 //         parseInt(a.order) - parseInt(b.order)
@@ -25,7 +23,7 @@ export const createUser = async (userData: any): Promise<any> => {
     return response?.data?.result;
   } catch (error) {
     console.error('error in getting cohort list', error);
-    // throw error;
+    throw error;
   }
 };
 

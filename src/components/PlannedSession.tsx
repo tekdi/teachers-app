@@ -58,6 +58,7 @@ import WeekDays from './WeekDays';
 import { getOptionsByCategory } from '@/utils/Helper';
 import { telemetryFactory } from '@/utils/telemetry';
 import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker';
+import useNotification from '@/hooks/useNotification';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -810,6 +811,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       )
     );
   };
+  const { getNotification } = useNotification();
 
   const handleAddSession = () => {
     const newSessionId = sessionBlocks.length;
@@ -976,6 +978,34 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
                   'success'
                 );
+
+                if (cohortId) {
+                  const filters = {
+                    cohortId,
+                    role: Role.STUDENT,
+                    // status: [Status.ACTIVE],
+                  };
+
+                  try {
+                    const response = await getMyCohortMemberList({
+                      // limit: 20,
+                      // page: 0,
+                      filters,
+                    });
+
+                    if (response?.result?.userDetails) {
+                      const deviceId = response?.result?.userDetails.map((device: any) => device?.deviceId).filter((id: any) => id !== null);
+                      if (deviceId?.length > 0) {
+                        getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT");
+                      } else {
+                        console.warn("No valid device IDs found. Skipping notification API call.");
+                      }
+                    }
+                  } catch (error) {
+                    console.error("Error fetching cohort member list:", error);
+                  }
+                }   
+
 
                 const windowUrl = window.location.pathname;
                 const cleanedUrl = windowUrl.replace(/^\//, '');
