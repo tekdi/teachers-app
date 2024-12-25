@@ -110,7 +110,7 @@ const ObservationForms: React.FC = () => {
     const cleanedUrl = windowUrl.replace(/^\//, '');
     const telemetryInteract = {
       context: {
-        env: 'teaching-center',
+        env: 'observation',
         cdata: [],
       },
       edata: {
