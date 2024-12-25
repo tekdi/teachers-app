@@ -18,6 +18,8 @@ import { useDirection } from '../hooks/useDirection';
 import useStore from '../store/store';
 import ConfirmationModal from './ConfirmationModal';
 import StyledMenu from './StyledMenu';
+import { UpdateDeviceNotification } from '@/services/NotificationService';
+import {  getUserId } from '../services/ProfileService';
 
 interface HeaderProps {
   toggleDrawer?: (newOpen: boolean) => () => void;
@@ -70,13 +72,42 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     }
   };
 
-  const handleLogoutClick = () => {
+  const handleLogoutClick = async() => {
     router.replace('/logout');
     logEvent({
       action: 'logout-clicked-header',
       category: 'Dashboard',
       label: 'Logout Clicked',
     });
+    const token = localStorage.getItem('token');
+    const userResponse = await getUserId();
+    // Retrieve deviceID from local storage
+    const deviceID = localStorage.getItem('deviceID');
+    if (deviceID) {
+      try {
+        // Update device notification
+        const headers = {
+          tenantId: userResponse?.tenantData[0]?.tenantId,
+          Authorization: `Bearer ${token}`,
+        };
+
+        const updateResponse = await UpdateDeviceNotification(
+          { deviceId: deviceID, action: 'remove' },
+          userId,
+          headers
+        );
+
+        console.log(
+          'Device notification updated successfully:',
+          updateResponse
+        );
+      } catch (updateError) {
+        console.error(
+          'Error updating device notification:',
+          updateError
+        );
+      }
+    }
   };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
