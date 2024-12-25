@@ -107,7 +107,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
    
 
     const filtered = userData?.filter((data) =>
-    data.name.toLowerCase().includes(searchTerm) || data.enrollmentNumber.toLowerCase().includes(searchTerm)
+    data?.name?.toLowerCase()?.includes(searchTerm) || data?.enrollmentNumber?.toLowerCase()?.includes(searchTerm)
   );
   setFilteredData(filtered);
   };

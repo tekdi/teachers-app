@@ -518,8 +518,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     const term =searchTerm
     setSearchTerm(term);
     setFilteredUsers(
-      users.filter((user) =>
-        user.name.toLowerCase().includes(term)
+      users?.filter((user) =>
+        user?.name?.toLowerCase()?.includes(term)
       )
     );
   };
