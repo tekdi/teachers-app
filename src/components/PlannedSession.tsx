@@ -993,7 +993,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     });
 
                     if (response?.result?.userDetails) {
-                      const deviceId = response?.result?.userDetails.map((device: any) => device?.deviceId).filter((id: any) => id !== null);
+                      const deviceId = response?.result?.userDetails
+                        .map((device: any) => device?.deviceId)
+                        .filter((id: any) => id !== null)
+                        .flat();
                       if (deviceId?.length > 0) {
                         getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT");
                       } else {

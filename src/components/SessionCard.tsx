@@ -76,7 +76,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
         const deviceIds = response.result.userDetails
           .filter((user: any) => user.role === Role.TEACHER || user.role === Role.STUDENT)
           .map((user: any) => user.deviceId)
-          .filter((id: any) => id !== null);
+          .filter((id: any) => id !== null).flat();;
 
         if (deviceIds.length > 0) {
           getNotification(deviceIds, notificationType, replacements);
