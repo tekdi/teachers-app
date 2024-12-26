@@ -85,9 +85,11 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     const deviceID = localStorage.getItem('deviceID');
     if (deviceID) {
       try {
-        // Update device notification
+        
+        const tenantId = userResponse?.tenantData[0]?.tenantId;
+        
         const headers = {
-          tenantId: userResponse?.tenantData[0]?.tenantId,
+          tenantId,
           Authorization: `Bearer ${token}`,
         };
 
