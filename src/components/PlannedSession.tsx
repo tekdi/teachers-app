@@ -994,18 +994,21 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     });
 
                     if (response?.result?.userDetails) {
-                      const deviceId = response?.result?.userDetails.map((device: any) => device?.deviceId).filter((id: any) => id !== null);
+                      const deviceId = response?.result?.userDetails
+                        .map((device: any) => device?.deviceId)
+                        .filter((id: any) => id !== null);
                       if (deviceId?.length > 0) {
-                        getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT");
+                        getNotification(deviceId, 'LEARNER_NEW_SESSION_ALERT');
                       } else {
-                        console.warn("No valid device IDs found. Skipping notification API call.");
+                        console.warn(
+                          'No valid device IDs found. Skipping notification API call.'
+                        );
                       }
                     }
                   } catch (error) {
-                    console.error("Error fetching cohort member list:", error);
+                    console.error('Error fetching cohort member list:', error);
                   }
-                }   
-
+                }
 
                 const windowUrl = window.location.pathname;
                 const cleanedUrl = windowUrl.replace(/^\//, '');
@@ -1487,7 +1490,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   value={
                     block?.courseType === selectedCourseType
                       ? block?.courseType
-                      : null || editSession?.metadata?.courseType
+                      : editSession?.metadata?.courseType
                   }
                   disabled={!StateName || !medium || !grade || !board}
                 >
@@ -1523,8 +1526,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       value={
                         block?.subject === selectedSubject
                           ? block?.subject
-                          : null ||
-                            editSession?.metadata?.subject ||
+                          : editSession?.metadata?.subject ||
                             editSession?.subject
                       }
                       disabled={!(StateName && medium && grade && board)}

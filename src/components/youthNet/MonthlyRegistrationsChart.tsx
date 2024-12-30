@@ -63,7 +63,7 @@ const MonthlyRegistrationsChart: React.FC = () => {
             <Tooltip />
             <Bar
               dataKey="count"
-              onClick={(data, index) => handleBarClick(data, index)}
+              onClick={(data: any, index) => handleBarClick(data, index)}
               radius={[4, 4, 0, 0]}
               shape={(props: any) => {
                 const { fill, x, y, width, height, index } = props;
