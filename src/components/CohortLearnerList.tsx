@@ -9,10 +9,11 @@ import {
 import { Box, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Loader from './Loader';
 import { showToastMessage } from './Toastify';
 import NoDataFound from './common/NoDataFound';
+import SearchBar from './Searchbar';
 
 interface UserDataProps {
   name: string;
@@ -35,7 +36,12 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   isLearnerAdded,
 }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
   const [userData, setUserData] = React.useState<UserDataProps[]>();
+  const [filteredData, setFilteredData] = useState(userData);
+
+ 
   const [isLearnerDeleted, setIsLearnerDeleted] =
     React.useState<boolean>(false);
 
@@ -73,13 +79,16 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
             console.log(`userDetails`, userDetails);
             setUserData(userDetails);
+            setFilteredData(userDetails);
           }
           else{
             setUserData([]);
+            setFilteredData([]);
           }
         }
       } catch (error) {
         setUserData([]);
+        setFilteredData([]);
 
         console.error('Error fetching cohort list:', error);
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -94,7 +103,15 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   const handleLearnerDelete = () => {
     setIsLearnerDeleted(true);
   };
+  const handleSearch = (searchTerm: string) => {
+    // const query = event.target.value.toLowerCase();
+    // setSearchQuery(query);
 
+    const filtered = userData?.filter((data) =>
+    data?.name?.toLowerCase()?.includes(searchTerm) || data?.enrollmentNumber?.toLowerCase()?.includes(searchTerm)
+  );
+  setFilteredData(filtered);
+  };
   console.log('userData', userData);
   const theme = useTheme<any>();
 
@@ -103,7 +120,13 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       {loading ? (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       ) : (
-        <Box
+        <>
+         <SearchBar
+        onSearch={handleSearch}
+        value={searchTerm}
+        placeholder={t('COMMON.SEARCH_STUDENT')}
+      />
+         <Box
           sx={{
             '@media (min-width: 900px)': {
               background: theme.palette.action.selected,
@@ -112,8 +135,9 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             },
           }}
         >
+         
           <Grid container>
-            {userData?.map((data: any) => {
+            {filteredData?.map((data: any) => {
               return (
                 <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
                   <LearnersListItem
@@ -133,9 +157,10 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 </Grid>
               );
             })}
-            {!userData?.length && <NoDataFound />}
+            {!filteredData?.length && <NoDataFound />}
           </Grid>
-        </Box>
+        </Box></>
+       
       )}
     </div>
   );
