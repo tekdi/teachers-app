@@ -81,13 +81,12 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     });
     const token = localStorage.getItem('token');
     const userResponse = await getUserId();
-    // Retrieve deviceID from local storage
     const deviceID = localStorage.getItem('deviceID');
     if (deviceID) {
       try {
         
         const tenantId = userResponse?.tenantData[0]?.tenantId;
-        
+
         const headers = {
           tenantId,
           Authorization: `Bearer ${token}`,
