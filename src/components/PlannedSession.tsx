@@ -984,12 +984,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 );
 
                 if (cohortId) {
+                  const replacements = { "{sessionName}" : shortDescription }; 
                   const filters = {
                     cohortId,
                     role: Role.STUDENT,
                     // status: [Status.ACTIVE],
                   };
-
                   try {
                     const response = await getMyCohortMemberList({
                       // limit: 20,
@@ -1002,11 +1002,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                         .map((device: any) => device?.deviceId)
                         .filter((id: any) => id !== null);
                       if (deviceId?.length > 0) {
-                        getNotification(deviceId, 'LEARNER_NEW_SESSION_ALERT');
-                      } else {
-                        console.warn(
-                          'No valid device IDs found. Skipping notification API call.'
-                        );
+                        getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT", replacements);
+                      } else { 
+                        console.warn("No valid device IDs found. Skipping notification API call.");
                       }
                     }
                   } catch (error) {
@@ -1294,6 +1292,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           }
 
           const sessionTitle = sessionBlocks?.[0]?.subjectTitle;
+          
           if (
             eventData?.shortDescription !== sessionTitle &&
             sessionTitle !== ''
