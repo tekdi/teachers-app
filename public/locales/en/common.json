@@ -143,7 +143,10 @@
     "NA": "N.A.",
     "SORT_BY_NAMES": "Sort by Names",
     "INCORRECT_DATA_ENTRY": "Incorrect Data Entry",
-    "DUPLICATED_USER": "Duplicated User"
+    "DUPLICATED_USER": "Duplicated User",
+    "FACILITATOR_COUNT": "Facilitators Total count: {{count}}",
+    "LEARNER_COUNT": "Learners Total count: {{count}}"
+
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",

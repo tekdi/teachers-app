@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import BottomDrawer from '@/components/BottomDrawer';
@@ -34,6 +34,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toPascalCase } from '@/utils/Helper';
 import { useDirection } from '../hooks/useDirection';
 import { telemetryFactory } from '@/utils/telemetry';
+import SearchBar from './Searchbar';
 
 interface Cohort {
   cohortId: string;
@@ -82,7 +83,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       userId: string;
       cohortNames?: string;
     }[]
-  >();
+  >([]);
   const [loading, setLoading] = React.useState(false);
   const [cohortsData, setCohortsData] = useState<CohortsData>();
   const [centersData, setCentersData] = useState<Cohort[]>([]);
@@ -120,7 +121,10 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     (state) => state.setReassignFacilitatorUserId
   );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredUsers, setFilteredUsers] = useState(users || []);
 
+  
   useEffect(() => {
     if (reloadState) {
       setReloadState(false);
@@ -208,6 +212,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             console.log('extractedData', extractedData);
 
             setUsers(extractedData);
+            setFilteredUsers(extractedData);
             setLoading(false);
           });
         }
@@ -509,7 +514,15 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     }
     return cohortNames;
   };
-
+  const handleSearch = (searchTerm: string) => {
+    const term =searchTerm
+    setSearchTerm(term);
+    setFilteredUsers(
+      users?.filter((user) =>
+        user?.name?.toLowerCase()?.includes(term)
+      )
+    );
+  };
   return (
     <div>
       <Box>
@@ -520,10 +533,16 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                 px={'18px'}
                 spacing={2}
                 mt={1}
-                sx={{ display: 'flex', alignItems: 'center' }}
+                sx={{ display: 'flex', alignItems: 'center', direction: 'row' }}
                 container
               >
-                <Box mt={'18px'} px={'18px'}>
+              
+                <SearchBar
+        onSearch={handleSearch}
+        value={searchTerm}
+        placeholder={t('COMMON.SEARCH_FACILITATORS')}
+      />
+        <Box mt={'18px'} px={'18px'} ml={'10px'} >
                   <Button
                     sx={{
                       border: `1px solid ${theme.palette.error.contrastText}`,
@@ -544,6 +563,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                   >
                     {t('COMMON.ADD_NEW')}
                   </Button>
+                 
                 </Box>
               </Grid>
             )}
@@ -601,10 +621,13 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                           />
                         </Box>
                       ) : (
-                        <Grid container spacing={2}>
-                          {users &&
-                            users.length !== 0 &&
-                            [...users]
+                        <>
+                         
+      
+                         <Grid container spacing={2}>
+                          {filteredUsers &&
+                            filteredUsers.length !== 0 &&
+                            [...filteredUsers]
                               .sort((a, b) => a.name.localeCompare(b.name))
                               .map((user) => (
                                 <Grid
@@ -724,7 +747,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                               </Typography>
                             </Box>
                           )}
-                        </Grid>
+                        </Grid></>
+                       
                       )}
                     </Box>
                   </Box>

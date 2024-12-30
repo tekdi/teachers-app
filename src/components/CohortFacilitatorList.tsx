@@ -6,13 +6,14 @@ import {
   getFieldValue,
   toPascalCase,
 } from '@/utils/Helper';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import NoDataFound from './common/NoDataFound';
 import Loader from './Loader';
 import { showToastMessage } from './Toastify';
+import SearchBar from './Searchbar';
 
 interface UserDataProps {
   name: string;
@@ -34,6 +35,10 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userData, setUserData] = React.useState<UserDataProps[]>();
+
+  const [filteredData, setFilteredData] =  React.useState(userData);
+  const [searchTerm, setSearchTerm] =  React.useState('');
+
 
   const { t } = useTranslation();
 
@@ -72,14 +77,20 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
             console.log(`userDetails`, userDetails);
             setUserData(userDetails);
+            setFilteredData(userDetails);
+
           }
           else
           {
             setUserData([]);
+            setFilteredData([]);
+
           }
         }
       } catch (error) {
         setUserData([]);
+        setFilteredData([]);
+
 
         console.error('Error fetching cohort list:', error);
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -92,7 +103,14 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   }, [cohortId, reloadState]);
 
   const onDelete = () => {};
+  const handleSearch = (searchTerm: string) => {
+   
 
+    const filtered = userData?.filter((data) =>
+    data?.name?.toLowerCase()?.includes(searchTerm) || data?.enrollmentNumber?.toLowerCase()?.includes(searchTerm)
+  );
+  setFilteredData(filtered);
+  };
   console.log('userData', userData);
   const theme = useTheme<any>();
   return (
@@ -100,16 +118,36 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       {loading ? (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       ) : (
-        <Box
+        <>
+        <Box mb="25px">
+        <SearchBar
+        onSearch={handleSearch}
+        value={searchTerm}
+        placeholder={t('COMMON.SEARCH_FACILITATORS')}
+      />
+        </Box>
+         
+         <Box
           sx={{
             '@media (min-width: 900px)': {
               background: theme.palette.action.selected,
               paddingBottom: '20px',
+              paddingTop: '10px',
             },
           }}
         >
+         
+          <Typography
+              style={{
+                width: '100%',
+                marginLeft: '20px',
+              }}
+            >
+                    {t('COMMON.FACILITATOR_COUNT',  { count: userData?.length})}
+            </Typography>
+          
           <Grid container>
-            {userData?.map((data: any) => {
+            {filteredData?.map((data: any) => {
               return (
                 <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
                   <LearnersListItem
@@ -128,9 +166,11 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 </Grid>
               );
             })}
-            {!userData?.length && <NoDataFound />}
+            {!filteredData?.length && <NoDataFound />}
           </Grid>
-        </Box>
+
+        </Box></>
+       
       )}
     </div>
   );
