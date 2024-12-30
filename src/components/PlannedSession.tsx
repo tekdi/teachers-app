@@ -1292,7 +1292,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           }
 
           const sessionTitle = sessionBlocks?.[0]?.subjectTitle;
-          console.log("shreyas shinde", sessionTitle);
           
           if (
             eventData?.shortDescription !== sessionTitle &&
