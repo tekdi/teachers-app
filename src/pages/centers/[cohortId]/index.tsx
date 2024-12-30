@@ -36,7 +36,7 @@ import { getCohortDetails } from '@/services/CohortServices';
 import { getEventList } from '@/services/EventService';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { CustomField } from '@/utils/Interfaces';
-import { Role, Telemetry } from '@/utils/app.constant';
+import { Role, Telemetry, sessionType } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -341,7 +341,7 @@ const CohortPage = () => {
         const sessionArray: any[] = [];
         if (response?.events?.length > 0) {
           response.events.forEach((event: any) => {
-            if (event?.metadata?.type === 'planned') {
+            if (event?.metadata?.type === sessionType.PLANNED) {
               sessionArray.push(event);
             }
           });
@@ -398,7 +398,7 @@ const CohortPage = () => {
         const extraSessionArray: any[] = [];
         if (response?.events?.length > 0) {
           response.events.forEach((event: any) => {
-            if (event?.metadata?.type === 'extra') {
+            if (event?.metadata?.type === sessionType.EXTRA) {
               extraSessionArray.push(event);
             }
           });

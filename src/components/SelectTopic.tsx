@@ -24,22 +24,32 @@ const SelectTopic: React.FC<TopicSubtopicProps> = ({
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
-  const [selectedTopic, setSelectedTopic] = useState<string>('');
+  const [selectedTopic, setSelectedTopic] = useState<string[]>([]);
   const [subtopics, setSubtopics] = useState<string[]>([]);
   const [selectedSubValues, setSelectedSubValues] = useState<string[]>([]);
 
   useEffect(() => {
-    if (selectedTopics !== undefined) {
-      setSelectedTopic(selectedTopics);
-      setSelectedSubValues(selectedSubTopics);
-      setSubtopics(subTopicsList[selectedTopics]);
-    }
+    setSelectedTopic(Array.isArray(selectedTopics) ? selectedTopics : []);
+    setSelectedSubValues(
+      Array.isArray(selectedSubTopics) ? selectedSubTopics : []
+    );
+
+    const aggregatedSubtopics = (
+      Array.isArray(selectedTopics) ? selectedTopics : []
+    ).flatMap((topic) => subTopicsList[topic] || []);
+    setSubtopics(aggregatedSubtopics);
   }, []);
 
-  const handleTopicChange = (event: SelectChangeEvent<string>) => {
-    const topic = event.target.value;
+  const handleTopicChange = (event: SelectChangeEvent<string[]>) => {
+    const { value } = event.target;
+    const topic = typeof value === 'string' ? value.split(',') : value;
     setSelectedTopic(topic);
-    setSubtopics(subTopicsList[topic] || []);
+    const aggregatedSubtopics = topic.flatMap((t) =>
+      subTopicsList
+        .filter((item: any) => item[t])
+        .flatMap((item: any) => item[t] || [])
+    );
+    setSubtopics(aggregatedSubtopics);
     setSelectedSubValues([]);
     onTopicSelected(topic);
   };
@@ -68,13 +78,23 @@ const SelectTopic: React.FC<TopicSubtopicProps> = ({
           <Select
             labelId="topic-select-label"
             id="topic-select"
+            multiple
             value={selectedTopic}
             onChange={handleTopicChange}
+            renderValue={(selected) => selected.join(', ')}
             style={{ borderRadius: '4px' }}
             className="topic-select"
           >
             {topics?.map((topic) => (
               <MenuItem key={topic} value={topic}>
+                <Checkbox
+                  checked={selectedTopic.indexOf(topic) > -1}
+                  sx={{
+                    '&.Mui-checked': {
+                      color: theme?.palette?.warning['300'],
+                    },
+                  }}
+                />
                 <ListItemText primary={topic} />
               </MenuItem>
             ))}
