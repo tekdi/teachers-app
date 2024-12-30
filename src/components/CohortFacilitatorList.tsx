@@ -6,7 +6,7 @@ import {
   getFieldValue,
   toPascalCase,
 } from '@/utils/Helper';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
@@ -132,9 +132,20 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             '@media (min-width: 900px)': {
               background: theme.palette.action.selected,
               paddingBottom: '20px',
+              paddingTop: '10px',
             },
           }}
         >
+         
+          <Typography
+              style={{
+                width: '100%',
+                marginLeft: '20px',
+              }}
+            >
+                    {t('COMMON.FACILITATOR_COUNT',  { count: userData?.length})}
+            </Typography>
+          
           <Grid container>
             {filteredData?.map((data: any) => {
               return (

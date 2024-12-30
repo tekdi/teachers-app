@@ -12,6 +12,7 @@ import {
   Status,
   Telemetry,
   sessionMode,
+  sessionType,
 } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -931,7 +932,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             cohortId: cohortId || '',
             cycleId: '',
             tenantId: '',
-            type: clickedBox === 'PLANNED_SESSION' ? 'planned' : 'extra',
+            type:
+              clickedBox === 'PLANNED_SESSION'
+                ? sessionType.PLANNED
+                : sessionType.EXTRA,
           },
         };
 
@@ -994,7 +998,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     });
 
                     if (response?.result?.userDetails) {
-                      const deviceId = response?.result?.userDetails?.flatMap((device: { deviceId?: string | null }) => device.deviceId || []).filter(Boolean)
+                      const deviceId = response?.result?.userDetails
+                        .map((device: any) => device?.deviceId)
+                        .filter((id: any) => id !== null);
                       if (deviceId?.length > 0) {
                         getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT", replacements);
                       } else { 
@@ -1002,10 +1008,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       }
                     }
                   } catch (error) {
-                    console.error("Error fetching cohort member list:", error);
+                    console.error('Error fetching cohort member list:', error);
                   }
-                }   
-
+                }
 
                 const windowUrl = window.location.pathname;
                 const cleanedUrl = windowUrl.replace(/^\//, '');

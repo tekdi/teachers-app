@@ -590,7 +590,7 @@ const CoursePlannerDetail = () => {
                               }}
                             >
                               {/* Check if the parent task is completed and show a black tick */}
-                              {isStatusCompleted(topic._id, false) ? (
+                              {/*isStatusCompleted(topic._id, false) ? (
                                 <CheckCircleIcon
                                   sx={{ fontSize: '15px', color: 'black' }}
                                 />
@@ -598,7 +598,7 @@ const CoursePlannerDetail = () => {
                                 <RadioButtonUncheckedIcon
                                   sx={{ fontSize: '15px' }}
                                 />
-                              )}
+                              )*/}
                               <Typography
                                 fontWeight="500"
                                 fontSize="14px"

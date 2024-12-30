@@ -33,6 +33,7 @@ import {
 } from '../../../../../utils/Interfaces';
 import { getCohortDetails } from '@/services/CohortServices';
 import useEventDates from '@/hooks/useEventDates';
+import { sessionType } from '@/utils/app.constant';
 
 const EventMonthView: React.FC<any> = () => {
   const theme = useTheme<any>();
@@ -97,7 +98,7 @@ const EventMonthView: React.FC<any> = () => {
 
           if (response?.events.length > 0) {
             response?.events.forEach((event: any) => {
-              if (event?.metadata?.type === 'planned') {
+              if (event?.metadata?.type === sessionType.PLANNED) {
                 sessionArray.push(event);
               } else {
                 extraSessionArray.push(event);

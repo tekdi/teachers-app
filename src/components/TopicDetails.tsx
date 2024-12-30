@@ -20,7 +20,7 @@ import RequisitesAccordion from './RequisitesAccordion';
 import { showToastMessage } from './Toastify';
 import { useEffect, useState } from 'react';
 interface TopicDetailsProps {
-  topic: string;
+  topic: [];
   subTopic: [];
   learningResources: any;
   handleOpen: any;
@@ -40,18 +40,18 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
   const theme = useTheme<any>();
   const [contentData, setContentData] = useState([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const content = learningResources.filter((resource: any) => {
       return (
         resource.topic === topic &&
         subTopic.some((sub) => sub === resource.subtopic)
       );
     });
-    if(content){
+    if (content) {
       setContentData(content);
       // console.log(`content`,content);
     }
-  },[learningResources]) 
+  }, [learningResources]);
 
   const openTopicModal = () => {
     handleOpen();
@@ -63,7 +63,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
   };
 
   const filterByIdentifier = (contentData: any[], identifier: string) => {
-    return contentData.filter(item => item.identifier === identifier);
+    return contentData.filter((item) => item.identifier === identifier);
   };
 
   const handlePlayers = (identifier: string) => {
@@ -71,10 +71,17 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
     if (identifier !== undefined && identifier !== '') {
       const filteredData = filterByIdentifier(contentData, identifier);
       if (filteredData && filteredData.length > 0) {
-        if (filteredData[0].resourceType === 'Course') {
-          router.push(`/course-hierarchy/${filteredData[0].identifier}`);
-        } else {
-          router.push(`/play/content/${filteredData?.[0]?.identifier?.toLowerCase()}`);
+        if (
+          filteredData[0]?.identifier !== undefined ||
+          filteredData[0]?.identifier !== ''
+        ) {
+          if (filteredData[0].resourceType === 'Course') {
+            router.push(`/course-hierarchy/${filteredData[0].identifier}`);
+          } else {
+            router.push(
+              `/play/content/${filteredData?.[0].identifier.toLowerCase()}`
+            );
+          }
         }
       } else {
         showToastMessage(t('CENTER_SESSION.IDENTIFIER_NOT_FOUND'), 'error');
@@ -104,7 +111,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
               <Box
                 sx={{ fontSize: '16px', fontWeight: '400', color: '#4D4639' }}
               >
-                {topic}
+                {topic?.join(', ')}
               </Box>
             </Box>
             {eventStatus === EventStatus.UPCOMING && (

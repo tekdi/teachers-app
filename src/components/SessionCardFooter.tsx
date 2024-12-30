@@ -97,10 +97,18 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
             const tasks = res?.result?.tasks;
             const topics = tasks?.map((task: any) => task?.name);
             setTopicList(topics);
-            const subTopics = tasks?.reduce((acc: any, task: any) => {
-              acc[task?.name] = task?.children.map((child: any) => child?.name);
+            // const subTopics = tasks?.reduce((acc: any, task: any) => {
+            //   acc[task?.name] = task?.children.map((child: any) => child?.name);
+            //   return acc;
+            // }, {});
+            const subTopics = tasks?.reduce((acc: any[], task: any) => {
+              const topicName = task?.name;
+              const subtopicNames = task?.children.map(
+                (child: any) => child?.name
+              );
+              acc.push({ [topicName]: subtopicNames });
               return acc;
-            }, {});
+            }, []);
             setTransformedTasks(subTopics);
             const learningResources = tasks?.reduce((acc: any, task: any) => {
               acc[task.name] = task?.children.reduce(
@@ -386,7 +394,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
                   sx={{ color: theme.palette.secondary.main, fontSize: '18px' }}
                 />
                 <Typography color={theme.palette.secondary.main} variant="h5">
-                  {item?.erMetaData?.topic}
+                  {item?.erMetaData?.topic?.join(', ')}
                 </Typography>
               </Box>
               <Box
