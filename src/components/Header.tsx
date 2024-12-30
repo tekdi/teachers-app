@@ -80,12 +80,13 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
       label: 'Logout Clicked',
     });
     const token = localStorage.getItem('token');
-    const userResponse = await getUserId();
+
+    const tenantid = localStorage.getItem('tenantId')
     const deviceID = localStorage.getItem('deviceID');
     if (deviceID) {
       try {
         
-        const tenantId = userResponse?.tenantData[0]?.tenantId;
+        const tenantId = tenantid;
 
         const headers = {
           tenantId,
