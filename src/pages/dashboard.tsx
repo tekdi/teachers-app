@@ -64,6 +64,7 @@ import {
   Role,
   Telemetry,
   cohortHierarchy,
+  sessionType,
 } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import { getEventList } from '@/services/EventService';
@@ -781,10 +782,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
               // const cohort = cohortList?.find(
               //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
               // );
-              if (event?.metadata?.type === 'planned') {
+              if (event?.metadata?.type === sessionType.PLANNED) {
                 sessionArray.push(event);
               }
-              if (event?.metadata?.type === 'extra') {
+              if (event?.metadata?.type === sessionType.EXTRA) {
                 extraSessionArray.push(event);
               }
             });

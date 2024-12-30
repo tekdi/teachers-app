@@ -71,12 +71,17 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
     if (identifier !== undefined && identifier !== '') {
       const filteredData = filterByIdentifier(contentData, identifier);
       if (filteredData && filteredData.length > 0) {
-        if (filteredData[0].resourceType === 'Course') {
-          router.push(`/course-hierarchy/${filteredData[0].identifier}`);
-        } else {
-          router.push(
-            `/play/content/${filteredData?.[0]?.identifier?.toLowerCase()}`
-          );
+        if (
+          filteredData[0]?.identifier !== undefined ||
+          filteredData[0]?.identifier !== ''
+        ) {
+          if (filteredData[0].resourceType === 'Course') {
+            router.push(`/course-hierarchy/${filteredData[0].identifier}`);
+          } else {
+            router.push(
+              `/play/content/${filteredData?.[0].identifier.toLowerCase()}`
+            );
+          }
         }
       } else {
         showToastMessage(t('CENTER_SESSION.IDENTIFIER_NOT_FOUND'), 'error');

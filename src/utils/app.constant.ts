@@ -6,9 +6,8 @@ import html from '../assets/images/HTML.svg';
 import mp4 from '../assets/images/MP4.svg';
 import qml from '../assets/images/Qml.svg';
 import youtube from '../assets/images/youtube.svg';
-import h5p from '../assets/images/h5p.png'
-import unit from '../assets/images/Unit.png'
-
+import h5p from '../assets/images/h5p.png';
+import unit from '../assets/images/Unit.png';
 
 // background image
 
@@ -18,9 +17,8 @@ import bghtml from '../assets/images/bgHtml.svg';
 import bgmp4 from '../assets/images/bgMP4 .svg';
 import bgqml from '../assets/images/bgQml.svg';
 import bgyoutube from '../assets/images/bgYouTube.svg';
-import bgh5p from '../assets/images/bgh5p.png'
-import bgunit from '../assets/images/bgUnit.png'
-
+import bgh5p from '../assets/images/bgh5p.png';
+import bgunit from '../assets/images/bgUnit.png';
 
 export const limit: number = 300;
 export const refetchInterval: number = 5 * 60 * 1000; // 5 min
@@ -255,4 +253,9 @@ export enum contentStatus {
   COMPLETED = 'Completed',
   IN_PROGRESS = 'In_Progress',
   NOT_STARTED = 'Not_Started',
+}
+
+export enum sessionType {
+  PLANNED = 'planned',
+  EXTRA = 'extra',
 }
