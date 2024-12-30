@@ -73,10 +73,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       const response = await getMyCohortMemberList({ filters });
 
       if (response?.result?.userDetails) {
-        const deviceIds = response.result.userDetails
-          .filter((user: any) => user.role === Role.TEACHER || user.role === Role.STUDENT)
-          .map((user: any) => user.deviceId)
-          .filter((id: any) => id !== null);
+        const deviceIds = response.result.userDetails .filter((user: { role: Role; deviceId?: string | null }) => [Role.TEACHER, Role.STUDENT].includes(user.role) ) .flatMap((user : any) => user.deviceId || []);
 
         if (deviceIds.length > 0) {
           getNotification(deviceIds, notificationType, replacements);

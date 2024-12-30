@@ -931,6 +931,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             cohortId: cohortId || '',
             cycleId: '',
             tenantId: '',
+            type: clickedBox === 'PLANNED_SESSION' ? 'planned' : 'extra',
           },
         };
 
@@ -993,7 +994,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     });
 
                     if (response?.result?.userDetails) {
-                      const deviceId = response?.result?.userDetails.map((device: any) => device?.deviceId).filter((id: any) => id !== null);
+                      const deviceId = response?.result?.userDetails?.flatMap((device: { deviceId?: string | null }) => device.deviceId || []).filter(Boolean)
                       if (deviceId?.length > 0) {
                         getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT");
                       } else {
@@ -1264,6 +1265,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             cohortId: eventData?.metadata?.cohortId || '',
             cycleId: eventData?.metadata?.cycleId || '',
             tenantId: eventData?.metadata?.tenantId || '',
+            type: eventData?.metadata?.type || '',
           };
 
           const sessionSubject = sessionBlocks?.[0]?.subject || '';

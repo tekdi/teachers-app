@@ -259,7 +259,7 @@ const LoginPage = () => {
                   };
 
                   const updateResponse = await UpdateDeviceNotification(
-                    { deviceId: deviceID },
+                    { deviceId: deviceID, action: 'add' },
                     userId,
                     headers
                   );

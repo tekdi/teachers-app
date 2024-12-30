@@ -70,7 +70,7 @@ const AllowNotification = () => {
         try {
           const token = await requestPermission();
           if (token && userId && authToken) {
-            await UpdateDeviceNotification({ deviceId: token }, userId, {
+            await UpdateDeviceNotification({ deviceId: token, action: 'add' }, userId, {
               tenantId,
               Authorization: `Bearer ${authToken}`,
             });

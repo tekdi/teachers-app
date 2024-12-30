@@ -211,9 +211,6 @@ const CohortPage = () => {
     setTimeout(() => {
       setCreateEvent((prev) => !prev);
     });
-
- 
-
   };
 
   const handleCloseSchedule = () => {
@@ -344,7 +341,7 @@ const CohortPage = () => {
         const sessionArray: any[] = [];
         if (response?.events?.length > 0) {
           response.events.forEach((event: any) => {
-            if (event?.isRecurring) {
+            if (event?.metadata?.type === 'planned') {
               sessionArray.push(event);
             }
           });
@@ -401,7 +398,7 @@ const CohortPage = () => {
         const extraSessionArray: any[] = [];
         if (response?.events?.length > 0) {
           response.events.forEach((event: any) => {
-            if (!event.isRecurring) {
+            if (event?.metadata?.type === 'extra') {
               extraSessionArray.push(event);
             }
           });
