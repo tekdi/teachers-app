@@ -83,11 +83,13 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
           let courseId = courseData._id;
 
           if (!courseId) {
-            courseId = await fetchCourseIdFromSolution(
+            await fetchCourseIdFromSolution(
               courseData?.solutionId,
               cohortId as string
             );
+            const response = await fetchTargetedSolutions();
             courseData = response?.result?.data[0];
+            courseId = courseData._id;
           }
 
           const res = await getUserProjectDetails({
