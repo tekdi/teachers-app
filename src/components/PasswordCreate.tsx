@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
 import CheckIcon from '@mui/icons-material/Check';
 import { login } from '../services/LoginService';
 import { showToastMessage } from '@/components/Toastify';
 import { PasswordCreateProps } from '@/utils/Interfaces';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useRouter } from 'next/router';
 
 const PasswordCreate: React.FC<PasswordCreateProps> = ({
@@ -23,6 +25,11 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
   const [oldPasswordError, setOldPasswordError] = useState(false);
   const [samePasswordError, setSamePasswordError] = useState(false);
   const [showValidationMessages, setShowValidationMessages] = useState(false);
+  const [visibility, setVisibility] = useState({
+    oldPassword: false,
+    password: false,
+    confirmPassword: false,
+  });
   const [loading, setLoading] = useState(false);
   const isEditPassword = router.pathname === '/edit-password';
 
@@ -115,6 +122,9 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
       handleResetPassword(password);
     }
   };
+  const handleToggleVisibility = (field: keyof typeof visibility) => {
+    setVisibility((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
 
   return (
     <form autoComplete="off" onSubmit={handleFormSubmit}>
@@ -131,7 +141,19 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
             InputLabelProps={{
               shrink: true,
             }}
-            type={'password'}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => handleToggleVisibility('oldPassword')}
+                    edge="end"
+                  >
+                    {visibility.oldPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            type={visibility.oldPassword ? 'text' : 'password'}
             value={oldPassword}
             onChange={(e) => {
               setOldPassword(e.target.value);
@@ -143,6 +165,7 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
             helperText={
               oldPasswordError && t('LOGIN_PAGE.CURRENT_PASSWORD_NOT')
             }
+            
             label={t('LOGIN_PAGE.OLD_PASSWORD')}
             fullWidth
             sx={{
@@ -167,7 +190,19 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
           InputLabelProps={{
             shrink: true,
           }}
-          type={'password'}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => handleToggleVisibility('password')}
+                  edge="end"
+                >
+                  {visibility.password ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          type={visibility.password ? 'text' : 'password'}
           value={password}
           onChange={handlePasswordChange}
           error={passwordError || samePasswordError}
@@ -291,7 +326,19 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
           InputLabelProps={{
             shrink: true,
           }}
-          type={'password'}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => handleToggleVisibility('confirmPassword')}
+                  edge="end"
+                >
+                  {visibility.confirmPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          type={visibility.confirmPassword ? 'text' : 'password'}
           value={confirmPassword}
           onChange={handleConfirmPasswordChange}
           error={confirmPasswordError}
