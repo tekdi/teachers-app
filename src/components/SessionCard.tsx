@@ -206,14 +206,6 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const subject = data?.metadata?.subject;
   const sessionTitle = data?.shortDescription;
 
-  console.log(
-    
-    subject && sessionTitle
-      ? `${toPascalCase(subject)} - ${sessionTitle}` :""
-
-
-    
-    , "shreyas" );
 
   const getSessionTitle = (subject: string, sessionTitle : string ) => {
       return subject && sessionTitle
