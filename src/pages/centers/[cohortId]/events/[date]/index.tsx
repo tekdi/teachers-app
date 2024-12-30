@@ -97,7 +97,7 @@ const EventMonthView: React.FC<any> = () => {
 
           if (response?.events.length > 0) {
             response?.events.forEach((event: any) => {
-              if (event.isRecurring) {
+              if (event?.metadata?.type === 'planned') {
                 sessionArray.push(event);
               } else {
                 extraSessionArray.push(event);

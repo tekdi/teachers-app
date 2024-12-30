@@ -931,6 +931,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             cohortId: cohortId || '',
             cycleId: '',
             tenantId: '',
+            type: clickedBox === 'PLANNED_SESSION' ? 'planned' : 'extra',
           },
         };
 
@@ -1267,6 +1268,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             cohortId: eventData?.metadata?.cohortId || '',
             cycleId: eventData?.metadata?.cycleId || '',
             tenantId: eventData?.metadata?.tenantId || '',
+            type: eventData?.metadata?.type || '',
           };
 
           const sessionSubject = sessionBlocks?.[0]?.subject || '';

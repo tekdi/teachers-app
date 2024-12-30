@@ -212,8 +212,36 @@ const CohortPage = () => {
       setCreateEvent((prev) => !prev);
     });
 
- 
+    if (cohortId) {
+      const filters = {
+        cohortId,
+        role: Role.STUDENT,
+        // status: [Status.ACTIVE],
+      };
 
+      try {
+        const response = await getMyCohortMemberList({
+          // limit: 20,
+          // page: 0,
+          filters,
+        });
+
+        if (response?.result?.userDetails) {
+          const deviceId = response?.result?.userDetails
+            .map((device: any) => device?.deviceId)
+            .filter((id: any) => id !== null);
+          if (deviceId?.length > 0) {
+            getNotification(deviceId, 'LEARNER_NEW_SESSION_ALERT');
+          } else {
+            console.warn(
+              'No valid device IDs found. Skipping notification API call.'
+            );
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching cohort member list:', error);
+      }
+    }
   };
 
   const handleCloseSchedule = () => {
@@ -344,7 +372,7 @@ const CohortPage = () => {
         const sessionArray: any[] = [];
         if (response?.events?.length > 0) {
           response.events.forEach((event: any) => {
-            if (event?.isRecurring) {
+            if (event?.metadata?.type === 'planned') {
               sessionArray.push(event);
             }
           });
@@ -401,7 +429,7 @@ const CohortPage = () => {
         const extraSessionArray: any[] = [];
         if (response?.events?.length > 0) {
           response.events.forEach((event: any) => {
-            if (!event.isRecurring) {
+            if (event?.metadata?.type === 'extra') {
               extraSessionArray.push(event);
             }
           });
