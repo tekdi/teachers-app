@@ -206,6 +206,24 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const subject = data?.metadata?.subject;
   const sessionTitle = data?.shortDescription;
 
+  console.log(
+    
+    subject && sessionTitle
+      ? `${toPascalCase(subject)} - ${sessionTitle}` :""
+
+
+    
+    , "shreyas" );
+
+  const getSessionTitle = (subject: string, sessionTitle : string ) => {
+      return subject && sessionTitle
+        ? `${toPascalCase(subject)} - ${sessionTitle}`
+        : subject
+          ? toPascalCase(subject)
+          : toPascalCase(sessionTitle)
+    }
+  
+
   return (
     <Box
       sx={{
@@ -233,11 +251,9 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
               fontSize={'16px'}
               className="one-line-text"
             >
-              {subject && sessionTitle
-                ? `${toPascalCase(subject)} - ${sessionTitle}`
-                : subject
-                  ? toPascalCase(subject)
-                  : toPascalCase(sessionTitle)}
+              {
+                getSessionTitle(subject , sessionTitle)
+              }
             </Typography>
           </Box>
           <Typography
@@ -345,6 +361,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           board={board}
           medium={medium}
           grade={grade}
+       
         />
       </CenterSessionModal>
 
