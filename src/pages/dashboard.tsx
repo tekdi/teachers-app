@@ -330,6 +330,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 memberStatus: entry.status,
                 createdAt: entry.createdAt,
                 updatedAt: entry.updatedAt,
+                userName: entry.username,
               }))
               .filter(
                 (member: {

@@ -44,7 +44,7 @@ const getTotalStudentCount = async (
       shortDateFormat(fromDate)
     );
 
-    const totalStudentsCount = filteredEntries.length;
+    const totalStudentsCount = filteredEntries.filter(member => member.memberStatus === 'active').length;
     // console.log('Total Students Count:', totalStudentsCount);
 
     return totalStudentsCount;

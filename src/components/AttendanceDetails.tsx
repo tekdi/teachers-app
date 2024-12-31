@@ -78,7 +78,9 @@ export const fetchAttendanceDetails = async (
       const userAttendanceArray = getUserAttendanceStatus(nameUserIdArray, response);
 
       const mergeArrays = (
-        nameUserIdArray: { userId: string; name: string; memberStatus: string, updatedAt: string | number | Date  }[],
+        nameUserIdArray: {
+          userName: any; userId: string; name: string; memberStatus: string, updatedAt: string | number | Date  
+}[],
         userAttendanceArray: { userId: string; attendance: string }[]
       ) => {
         const newArray = nameUserIdArray.map((user) => {
@@ -91,11 +93,12 @@ export const fetchAttendanceDetails = async (
             memberStatus: user.memberStatus,
             attendance: attendanceEntry?.attendance || '',
             updatedAt: user.updatedAt,
+            userName: user.userName,
           };
         });
 
         if (newArray.length !== 0) {
-          numberOfCohortMembers = newArray.length;
+          numberOfCohortMembers = newArray.filter(member => member.memberStatus === 'active').length;
           cohortMemberList = newArray;
           presentCount = getPresentCount(newArray);
           absentCount = getAbsentCount(newArray);
@@ -113,7 +116,7 @@ export const fetchAttendanceDetails = async (
           (user.memberStatus === Status.DROPOUT && shortDateFormat(new Date(user.updatedAt)) > shortDateFormat(new Date(selectedDate)))||
           (user.memberStatus === Status.ARCHIVED && shortDateFormat(new Date(user.updatedAt)) > shortDateFormat(new Date(selectedDate))));
           dropoutMemberList = nameUserIdArray.filter((user) => user.memberStatus === Status.DROPOUT && shortDateFormat(new Date(user.updatedAt)) <= shortDateFormat(new Date(selectedDate)));
-          numberOfCohortMembers = nameUserIdArray.length;
+          numberOfCohortMembers = nameUserIdArray.filter(member => member.memberStatus === 'active').length;
         }
 
         updateBulkAttendanceStatus(newArray);
