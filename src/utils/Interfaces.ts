@@ -49,6 +49,7 @@ export interface UserAttendanceObj {
   memberStatus?: string;
   updatedAt?: string | number | Date;
   createdAt?: string;
+  userName?: string;
 }
 
 export interface user {
