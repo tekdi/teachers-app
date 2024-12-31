@@ -14,6 +14,8 @@ import NoDataFound from './common/NoDataFound';
 import Loader from './Loader';
 import { showToastMessage } from './Toastify';
 import SearchBar from './Searchbar';
+import { useRouter } from 'next/router';
+import useStore from '@/store/store';
 
 interface UserDataProps {
   name: string;
@@ -38,6 +40,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
   const [filteredData, setFilteredData] =  React.useState(userData);
   const [searchTerm, setSearchTerm] =  React.useState('');
+  const setCohortFacilitatorsCount = useStore((state) => state.setCohortFacilitatorsCount);
+
 
 
   const { t } = useTranslation();
@@ -77,6 +81,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
             console.log(`userDetails`, userDetails);
             setUserData(userDetails);
+            setCohortFacilitatorsCount(userDetails.length)
             setFilteredData(userDetails);
 
           }
@@ -137,14 +142,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
           }}
         >
          
-          <Typography
-              style={{
-                width: '100%',
-                marginLeft: '20px',
-              }}
-            >
-                    {t('COMMON.FACILITATOR_COUNT',  { count: userData?.length})}
-            </Typography>
+          
           
           <Grid container>
             {filteredData?.map((data: any) => {

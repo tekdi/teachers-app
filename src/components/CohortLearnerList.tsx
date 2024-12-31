@@ -14,6 +14,7 @@ import Loader from './Loader';
 import { showToastMessage } from './Toastify';
 import NoDataFound from './common/NoDataFound';
 import SearchBar from './Searchbar';
+import useStore from '@/store/store';
 
 interface UserDataProps {
   name: string;
@@ -41,7 +42,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   const [userData, setUserData] = React.useState<UserDataProps[]>();
   const [filteredData, setFilteredData] = useState(userData);
 
- 
+  const setCohortLearnerCount = useStore((state) => state.setCohortLearnerCount);
+
   const [isLearnerDeleted, setIsLearnerDeleted] =
     React.useState<boolean>(false);
 
@@ -78,6 +80,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             });
 
             console.log(`userDetails`, userDetails);
+            setCohortLearnerCount(userDetails.length);
             setUserData(userDetails);
             setFilteredData(userDetails);
           }
@@ -138,14 +141,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             },
           }}
         >
-                    <Typography
-              style={{
-                width: '100%',
-                marginLeft: '20px',
-              }}
-            >
-                    {t('COMMON.LEARNER_COUNT',  { count: userData?.length})}
-            </Typography>
+                  
           <Grid container>
 
             {filteredData?.map((data: any) => {
