@@ -12,6 +12,7 @@ import {
   Status,
   Telemetry,
   sessionMode,
+  sessionType,
 } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -931,6 +932,10 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             cohortId: cohortId || '',
             cycleId: '',
             tenantId: '',
+            type:
+              clickedBox === 'PLANNED_SESSION'
+                ? sessionType.PLANNED
+                : sessionType.EXTRA,
           },
         };
 
@@ -979,12 +984,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 );
 
                 if (cohortId) {
+                  const replacements = { "{sessionName}" : shortDescription }; 
                   const filters = {
                     cohortId,
                     role: Role.STUDENT,
                     // status: [Status.ACTIVE],
                   };
-
                   try {
                     const response = await getMyCohortMemberList({
                       // limit: 20,
@@ -993,18 +998,19 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     });
 
                     if (response?.result?.userDetails) {
-                      const deviceId = response?.result?.userDetails.map((device: any) => device?.deviceId).filter((id: any) => id !== null);
+                      const deviceId = response?.result?.userDetails
+                        .map((device: any) => device?.deviceId)
+                        .filter((id: any) => id !== null);
                       if (deviceId?.length > 0) {
-                        getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT");
-                      } else {
+                        getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT", replacements);
+                      } else { 
                         console.warn("No valid device IDs found. Skipping notification API call.");
                       }
                     }
                   } catch (error) {
-                    console.error("Error fetching cohort member list:", error);
+                    console.error('Error fetching cohort member list:', error);
                   }
-                }   
-
+                }
 
                 const windowUrl = window.location.pathname;
                 const cleanedUrl = windowUrl.replace(/^\//, '');
@@ -1264,6 +1270,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             cohortId: eventData?.metadata?.cohortId || '',
             cycleId: eventData?.metadata?.cycleId || '',
             tenantId: eventData?.metadata?.tenantId || '',
+            type: eventData?.metadata?.type || '',
           };
 
           const sessionSubject = sessionBlocks?.[0]?.subject || '';
@@ -1285,6 +1292,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           }
 
           const sessionTitle = sessionBlocks?.[0]?.subjectTitle;
+          
           if (
             eventData?.shortDescription !== sessionTitle &&
             sessionTitle !== ''

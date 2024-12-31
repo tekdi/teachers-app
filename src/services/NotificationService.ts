@@ -89,7 +89,7 @@ export const sendEmailOnLearnerCreation = async (
 
 
 export const UpdateDeviceNotification = async (
-  userData: { deviceId: string },
+  userData: { deviceId: string , action: string },
   userId: string,
   headers: { tenantId: any; Authorization: string }
 ): Promise<any> => {

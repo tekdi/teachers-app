@@ -21,7 +21,7 @@ export interface MarkAttendanceProps {
   currentStatus: string;
   handleClose: () => void;
   onAttendanceUpdate: () => void;
-  attendanceDates?: any[]
+  attendanceDates?: any[];
 }
 
 export interface AttendanceStatusListViewProps {
@@ -162,7 +162,7 @@ export interface SessionsModalProps {
   handlePrimaryModel?: () => void;
   secondary?: string;
   handleEditModal?: () => void;
-  disable?:boolean
+  disable?: boolean;
 }
 
 export interface PlannedModalProps {
@@ -621,6 +621,7 @@ export interface MetaData {
   cohortId?: string;
   cycleId?: string;
   tenantId?: string;
+  type?: string;
 }
 type Anchor = 'bottom';
 export interface BottomDrawerProps {

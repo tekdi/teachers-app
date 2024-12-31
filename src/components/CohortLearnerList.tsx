@@ -126,17 +126,28 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
         value={searchTerm}
         placeholder={t('COMMON.SEARCH_STUDENT')}
       />
+
          <Box
           sx={{
             '@media (min-width: 900px)': {
               background: theme.palette.action.selected,
               marginTop: '12px',
               paddingBottom: '20px',
+              paddingTop: '10px',
+
             },
           }}
         >
-         
+                    <Typography
+              style={{
+                width: '100%',
+                marginLeft: '20px',
+              }}
+            >
+                    {t('COMMON.LEARNER_COUNT',  { count: userData?.length})}
+            </Typography>
           <Grid container>
+
             {filteredData?.map((data: any) => {
               return (
                 <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
