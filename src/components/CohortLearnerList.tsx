@@ -86,6 +86,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
           }
           else{
             setUserData([]);
+            setCohortLearnerCount(0)
             setFilteredData([]);
           }
         }
