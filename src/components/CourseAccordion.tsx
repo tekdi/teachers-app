@@ -32,12 +32,7 @@ const CourseAccordion: React.FC<CourseAccordionProps> = ({
     console.log('resources', type, resources);
   }, []);
 
-  console.log(
-    "shreyas" , resources.length
-
-  );
   
-
   return (
     <Box sx={{ mt: 2, mb: 1.5 }}>
       <Accordion
