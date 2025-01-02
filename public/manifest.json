@@ -4,9 +4,9 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "Pratham Teacher App",
-  "short_name": "Teacher app",
-  "description": "Teacher App for Pratham",
+  "name": "Pratham Learning Management App",
+  "short_name": "Learning Management app",
+  "description": "Learning Management app for Pratham",
   "icons": [
     {
       "src": "/icon-192x192.png",
