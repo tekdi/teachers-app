@@ -110,7 +110,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     }
     const cohorts = userStore.cohorts;
     const centers = cohorts
-      .filter((cohort: { status: any }) => cohort.status !== "archived")
+      .filter((cohort: { status: any }) => cohort.status !== Status.ARCHIVED)
       .map((cohort: { name: string; cohortId: string; status: any }) => ({
         name: cohort?.name,
         cohortId: cohort?.cohortId,

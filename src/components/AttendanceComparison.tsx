@@ -23,7 +23,7 @@ import { useTranslation } from 'next-i18next';
 import useStore from '../store/store';
 import { useTheme } from '@mui/material/styles';
 import { overallAttendanceInPercentageStatusList } from '@/services/AttendanceService';
-import { CenterType, Telemetry, cohortPrivileges } from '@/utils/app.constant';
+import { CenterType, Status, Telemetry, cohortPrivileges } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
 import NoDataFound from './common/NoDataFound';
 import { useDirection } from '../hooks/useDirection';
@@ -142,7 +142,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
   store?.cohorts
     ?.filter(
       (pair: Cohort) =>
-        pair?.cohortType === centerType && pair?.status === "active"
+        pair?.cohortType === centerType && pair?.status === Status.ACTIVE
     )
     .map((pair: Cohort) => ({
       name: toPascalCase(pair?.name),

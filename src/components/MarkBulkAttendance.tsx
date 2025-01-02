@@ -428,10 +428,12 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             attendanceDate: selectedDate,
                             name: user.name,
                             memberStatus: user.memberStatus,
+                            updatedAt : user.updatedAt,
                           }}
                           isEdit={true}
                           bulkAttendanceStatus={bulkAttendanceStatus}
                           handleBulkAction={submitBulkAttendanceAction}
+                          attendanceDate={selectedDate}
                         />
                       )
                     )}
@@ -448,9 +450,11 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             attendanceDate: selectedDate,
                             name: user.name,
                             memberStatus: user.memberStatus,
+                            updatedAt : user.updatedAt,
                           }}
                           presentCount={presentCount}
                           absentCount={absentCount}
+                          attendanceDate={selectedDate}
                           // isEdit={true}
                           // bulkAttendanceStatus={bulkAttendanceStatus}
                           // handleBulkAction={submitBulkAttendanceAction}

@@ -46,6 +46,7 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
   currentStatus,
   onAttendanceUpdate,
   handleClose,
+  attendanceDates,
 }) => {
   const { t } = useTranslation();
 
@@ -76,7 +77,16 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
   const submitUpdateAttendance = async () => {
     try {
       const learnerId = localStorage.getItem('learnerId');
-      const classId = localStorage.getItem('classId');
+
+      const matchingContextId = attendanceDates?.length
+        ? attendanceDates.find((item) => item.attendanceDate === date)
+            ?.contextId || ''
+        : '';
+
+      const classId = matchingContextId
+        ? matchingContextId
+        : localStorage.getItem('classId');
+
       if (classId && learnerId) {
         const markAttendanceRequest: MarkAttendanceParams = {
           userId: learnerId,
@@ -243,7 +253,9 @@ const MarkAttendance: React.FC<MarkAttendanceProps> = ({
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-update-dialog-title">
           <Typography variant="h2" sx={{ marginBottom: 0 }}>
-            {currentStatus === ATTENDANCE_ENUM.NOT_MARKED ? t('COMMON.SURE_MARK') : t('COMMON.SURE_UPDATE')}
+            {currentStatus === ATTENDANCE_ENUM.NOT_MARKED
+              ? t('COMMON.SURE_MARK')
+              : t('COMMON.SURE_UPDATE')}
           </Typography>
         </DialogTitle>
         {/* <Typography variant="h2">Mark Attendance</Typography> */}
