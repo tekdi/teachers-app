@@ -98,7 +98,7 @@ export const fetchAttendanceDetails = async (
         });
 
         if (newArray.length !== 0) {
-          numberOfCohortMembers = newArray.filter(member => member.memberStatus === 'active').length;
+          numberOfCohortMembers = newArray.filter(member => member.memberStatus === 'active' || member.attendance != '').length;
           cohortMemberList = newArray;
           presentCount = getPresentCount(newArray);
           absentCount = getAbsentCount(newArray);
