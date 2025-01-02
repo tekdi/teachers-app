@@ -264,7 +264,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
                   {updatedAtDate &&
                     attendanceDateFormatted &&
                     updatedAtDate <= attendanceDateFormatted &&
-                    userData.memberStatus === 'dropout' && <DropoutLabel />}
+                    userData.memberStatus === Status.DROPOUT && <DropoutLabel />}
                 </>
               )}
             </Box>

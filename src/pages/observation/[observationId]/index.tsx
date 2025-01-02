@@ -17,7 +17,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/Header';
 // import AddEntityModal from '@/components/observations/AddEntityModal';
-import { ObservationEntityType, Role , ObservationStatus, Telemetry} from '@/utils/app.constant';
+import { ObservationEntityType, Role , ObservationStatus, Telemetry, Status} from '@/utils/app.constant';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticPaths } from 'next';
 import { toPascalCase } from '@/utils/Helper';
@@ -118,13 +118,13 @@ const ObservationDetails = () => {
                filteredData = response[0]?.childData?.filter(
                 (cohort: any) =>
                   cohort?.name?.toLowerCase()?.includes(searchInput?.toLowerCase()) &&
-                  cohort?.status?.toLowerCase() === "active"
+                  cohort?.status?.toLowerCase() === Status.ACTIVE
               );
 
               setMyCohortList(filteredData);
             } else {
                filteredData = response[0]?.childData?.filter(
-                (cohort: any) => cohort?.status?.toLowerCase() === "active"
+                (cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE
               );
 
               setMyCohortList(filteredData);

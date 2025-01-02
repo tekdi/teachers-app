@@ -98,7 +98,7 @@ export const fetchAttendanceDetails = async (
         });
 
         if (newArray.length !== 0) {
-          numberOfCohortMembers = newArray.filter(member => member.memberStatus === 'active' || member.attendance != '').length;
+          numberOfCohortMembers = newArray.filter(member => member.memberStatus === Status.ACTIVE || member.attendance !== '').length;
           cohortMemberList = newArray;
           presentCount = getPresentCount(newArray);
           absentCount = getAbsentCount(newArray);
@@ -116,7 +116,7 @@ export const fetchAttendanceDetails = async (
           (user.memberStatus === Status.DROPOUT && shortDateFormat(new Date(user.updatedAt)) > shortDateFormat(new Date(selectedDate)))||
           (user.memberStatus === Status.ARCHIVED && shortDateFormat(new Date(user.updatedAt)) > shortDateFormat(new Date(selectedDate))));
           dropoutMemberList = nameUserIdArray.filter((user) => user.memberStatus === Status.DROPOUT && shortDateFormat(new Date(user.updatedAt)) <= shortDateFormat(new Date(selectedDate)));
-          numberOfCohortMembers = nameUserIdArray.filter(member => member.memberStatus === 'active').length;
+          numberOfCohortMembers = nameUserIdArray.filter(member => member.memberStatus === Status.ACTIVE).length;
         }
 
         updateBulkAttendanceStatus(newArray);

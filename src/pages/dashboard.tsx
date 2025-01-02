@@ -63,6 +63,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import {
   QueryKeys,
   Role,
+  Status,
   Telemetry,
   cohortHierarchy,
   sessionType,
@@ -295,7 +296,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         isCustomFields
       );
       const activeCohorts = result?.filter(
-        (cohort: any) => cohort.cohortMemberStatus === 'active'
+        (cohort: any) => cohort.cohortMemberStatus === Status.ACTIVE
       );
       updateStoreFromCohorts(activeCohorts, blockObject);
 
@@ -345,7 +346,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   const currentDate = new Date(selectedDate);
                   currentDate.setHours(0, 0, 0, 0);
                   if (
-                    member.memberStatus === 'archived' &&
+                    member.memberStatus === Status.ARCHIVED &&
                     updatedAt <= currentDate
                   ) {
                     return false;

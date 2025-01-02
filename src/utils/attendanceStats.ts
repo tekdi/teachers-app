@@ -5,6 +5,7 @@ import {
   CohortMemberList,
 } from '../utils/Interfaces';
 import { getLatestEntries, shortDateFormat } from './Helper';
+import { Status } from './app.constant';
 
 const getTotalStudentCount = async (
   response: any,
@@ -31,7 +32,7 @@ const getTotalStudentCount = async (
           const updatedAt = new Date(member.updatedAt).setHours(0, 0, 0, 0);
           const currentDate = new Date(fromDate).setHours(0, 0, 0, 0);
 
-          if (member.memberStatus === 'archived' && updatedAt <= currentDate) {
+          if (member.memberStatus === Status.ARCHIVED && updatedAt <= currentDate) {
             return false;
           }
           return createdAt <= currentDate;
@@ -44,7 +45,7 @@ const getTotalStudentCount = async (
       shortDateFormat(fromDate)
     );
 
-    const totalStudentsCount = filteredEntries.filter(member => member.memberStatus === 'active').length;
+    const totalStudentsCount = filteredEntries.filter(member => member.memberStatus === Status.ACTIVE).length;
     // console.log('Total Students Count:', totalStudentsCount);
 
     return totalStudentsCount;
