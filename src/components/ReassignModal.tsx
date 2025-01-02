@@ -100,13 +100,13 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
           name.toLowerCase().includes(searchInput.toLowerCase()) &&
           status === Status.ACTIVE
       )
-      .sort((a, b) =>
-        checkedCenters.includes(a.name) === checkedCenters.includes(b.name)
-          ? 0
-          : checkedCenters.includes(a.name)
-            ? -1
-            : 1
-      );
+      // .sort((a, b) =>
+      //   checkedCenters.includes(a.name) === checkedCenters.includes(b.name)
+      //     ? 0
+      //     : checkedCenters.includes(a.name)
+      //       ? -1
+      //       : 1
+      // );
   }, [cohorts, searchInput, checkedCenters]);
 
   const handleReassign = async () => {

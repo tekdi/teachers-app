@@ -524,11 +524,16 @@ export const getOptionsByCategory = (frameworks: any, categoryCode: string) => {
   );
 
   // Return the mapped terms
-  return category?.terms?.map((term: any) => ({
-    name: term?.name,
-    code: term?.code,
-    associations: term?.associations,
-  }));
+  return category?.terms?.filter((term: any) => {
+
+    if (term.status === 'Live') {
+      return {
+        name: term?.name,
+        code: term?.code,
+        associations: term?.associations
+      }
+    }
+  });
 };
 
 interface Association {

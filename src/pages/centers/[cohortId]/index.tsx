@@ -153,6 +153,7 @@ const CohortPage = () => {
     (state: { setBlockId: any }) => state.setBlockId
   );
 
+   const { tab} = router.query;
   const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
   const [selectedDate, setSelectedDate] =
@@ -188,7 +189,14 @@ const CohortPage = () => {
   const [onEditEvent, setOnEditEvent] = useState(false);
   const [sortedSessions, setSortedSessions] = useState<any>([]);
   const [initialSlideIndex, setInitialSlideIndex] = useState<any>();
-
+  const [cohortFacilitatorListCount, setCohortFacilitatorListCount] = useState<any>();
+  const cohortFacilitatorsCount = useStore(
+    (state: { cohortFacilitatorsCount: any }) => state.cohortFacilitatorsCount
+  );
+  const [cohortLearnerListCount, setCohortLearnerListCount] = useState<any>();
+  const cohortLearnerCount = useStore(
+    (state: { cohortLearnerCount: any }) => state.cohortLearnerCount
+  );
   const handleClick = (selection: string) => {
     setDisableNextButton(false);
     setClickedBox(selection);
@@ -224,6 +232,11 @@ const CohortPage = () => {
       setCreateEvent(false);
     }
   }, [eventCreated, createEvent]);
+ 
+  useEffect(() => {
+    setCohortFacilitatorListCount(cohortFacilitatorsCount);
+    setCohortLearnerListCount(cohortLearnerCount)
+  },[cohortFacilitatorsCount, cohortLearnerCount]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -729,9 +742,16 @@ const CohortPage = () => {
             <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
           )}
 
-          <Tab value={2} label={t('COMMON.LEARNER_LIST')} />
+          <Tab value={2} label={t('COMMON.LEARNER_LIST')+ 
+    (tab === "2" ?"("+ cohortLearnerListCount+")": "")} />
           {role === Role.TEAM_LEADER && (
-            <Tab value={3} label={t('COMMON.FACILITATOR_LIST')} />
+            <Tab 
+  value={3} 
+  label={
+    t('COMMON.FACILITATOR_LIST') + 
+    (tab === "3" ? "("+cohortFacilitatorListCount+")": "")
+  } 
+/>
           )}
         </Tabs>
       </Box>

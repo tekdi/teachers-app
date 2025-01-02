@@ -162,7 +162,8 @@ const TopicDetailView = () => {
               resources={getLearningResources(ResourcesType.PREREQUSITE)}
             />
             <CourseAccordion
-              expanded={expanded === 'panel2'}
+              expanded={
+                expanded === 'panel2'}
               onChange={toggleAccordion('panel2')}
               title={t('CENTER_SESSION.POST_REQUISITES')}
               type={ResourcesType.POSTREQUSITE}

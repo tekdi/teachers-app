@@ -28,7 +28,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NEXT_PUBLIC_PRODUCTION === 'true',
   },
   trailingSlash: false,
   reactStrictMode: true,
