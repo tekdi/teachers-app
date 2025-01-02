@@ -472,7 +472,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 gap: '20px',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '15px 0',
+                margin: '15px 0',
                 '@media (min-width: 900px)': {
                   border: `1px solid ${theme.palette.warning['A100']}`,
                   padding: '10px',
@@ -481,7 +481,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 },
               }}
             >
-              <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center',  }}>
                 <Box className="box_shadow_center">
                   <Box>
                     <Avatar
@@ -572,7 +572,10 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                                 fontSize: '14px',
                                 fontWeight: '400',
                                 color: theme.palette.warning['400'],
+                                // marginRight:'4px',
+                                whiteSpace:'nowrap'
                               }}
+                                // className="one-line-text"
                             >
                               {age + ' y/o'}
                             </Box>
