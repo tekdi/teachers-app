@@ -10,6 +10,7 @@ import {
 dayjs.extend(utc);
 import { format, parseISO } from 'date-fns';
 import manageUserStore from '@/store/manageUserStore';
+import { avgLearnerAttendanceLimit, lowLearnerAttendanceLimit } from '../../app.config';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -293,6 +294,28 @@ export const sortClassesMissed = (data: any[], order: string) => {
         : aClassMissed - bClassMissed;
     }
   );
+};
+
+export const filterAttendancePercentage = (
+  data: any[],
+  category: "more" | "between" | "less"
+) => {
+  return data.filter(({ present_percent }: { present_percent: string }) => {
+    const attendance = parseFloat(present_percent);
+
+    if (isNaN(attendance)) return false; // Exclude invalid or missing values
+
+    switch (category) {
+      case "more":
+        return attendance > avgLearnerAttendanceLimit;
+      case "between":
+        return attendance >= lowLearnerAttendanceLimit && attendance <= avgLearnerAttendanceLimit; // Medium attendance
+      case "less":
+        return attendance < lowLearnerAttendanceLimit;
+      default:
+        return false;
+    }
+  });
 };
 
 export const accessGranted = (

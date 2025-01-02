@@ -126,24 +126,37 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
             p={2}
           >
             <Grid item xs={6} textAlign={'left'}>
-              <Link className="word-break" href={''}>
-                <Typography
-                  onClick={() => {
-                    handleOpenModalLearner(userId!);
-                    ReactGA.event('learner-details-link-clicked', {
-                      userId: userId,
-                    });
-                  }}
-                  sx={{
-                    textAlign: 'left',
-                    fontSize: '14px',
-                    fontWeight: '400',
-                    color: theme.palette.secondary.main,
-                  }}
-                >
-                  {name}
-                </Typography>
-              </Link>
+                {memberStatus === Status.ARCHIVED ? (
+                  <Typography
+                    sx={{
+                      textAlign: 'left',
+                      fontSize: '14px',
+                      fontWeight: '400',
+                      color: theme.palette.text.disabled, // Use disabled color
+                    }}
+                  >
+                    {name}
+                  </Typography>
+                ) : (
+                  <Link className="word-break" href={''}>
+                    <Typography
+                      onClick={() => {
+                        handleOpenModalLearner(userId!);
+                        ReactGA.event('learner-details-link-clicked', {
+                          userId: userId,
+                        });
+                      }}
+                      sx={{
+                        textAlign: 'left',
+                        fontSize: '14px',
+                        fontWeight: '400',
+                        color: theme.palette.secondary.main,
+                      }}
+                    >
+                      {name}
+                    </Typography>
+                  </Link>
+                )}
             </Grid>
             {memberStatus === Status.DROPOUT ? (
               <Grid item xs={6}>
