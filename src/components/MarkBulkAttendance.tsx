@@ -71,6 +71,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
   const [cohortMemberList, setCohortMemberList] = React.useState<Array<{}>>(
     deepClone(memberList)
   );
+  const [dynamicPresentCount, setDynamicPresentCount] = React.useState(presentCount);
+  const [dynamicAbsentCount, setDynamicAbsentCount] = React.useState(absentCount);
   const [bulkAttendanceStatus, setBulkAttendanceStatus] =
     React.useState(bulkStatus);
   const [isAllAttendanceMarked, setIsAllAttendanceMarked] =
@@ -130,6 +132,8 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
       );
       if (updatedAttendanceList?.length) {
         setIsAllAttendanceMarked(!allAttendance);
+        setDynamicPresentCount(updatedAttendanceList.filter(member=> member.attendance === "present").length);
+        setDynamicAbsentCount(updatedAttendanceList.filter(member=> member.attendance === "absent").length);
       }
       if (!allAttendance) {
         setShowUpdateButton(true);
@@ -336,7 +340,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       }}
                     >
                       {t('ATTENDANCE.ACTIVE_STUDENTS', {
-                        count: numberOfCohortMembers - dropoutCount,
+                        count: numberOfCohortMembers,
                       })}
                     </Typography>
                     <Typography
@@ -381,7 +385,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   }}
                 >
                   {t('ATTENDANCE.PRESENT_STUDENTS', {
-                    count: presentCount,
+                    count: dynamicPresentCount,
                   })}
                 </Typography>
                 <Typography
@@ -395,7 +399,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                   }}
                 >
                   {t('ATTENDANCE.ABSENT_STUDENTS', {
-                    count: absentCount,
+                    count: dynamicAbsentCount,
                   })}
                 </Typography>
               </Box>
@@ -429,6 +433,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             name: user.name,
                             memberStatus: user.memberStatus,
                             updatedAt : user.updatedAt,
+                            userName : user.userName
                           }}
                           isEdit={true}
                           bulkAttendanceStatus={bulkAttendanceStatus}
@@ -451,6 +456,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                             name: user.name,
                             memberStatus: user.memberStatus,
                             updatedAt : user.updatedAt,
+                            userName : user.userName
                           }}
                           presentCount={presentCount}
                           absentCount={absentCount}
