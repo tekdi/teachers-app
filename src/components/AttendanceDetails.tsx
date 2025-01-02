@@ -98,7 +98,9 @@ export const fetchAttendanceDetails = async (
         });
 
         if (newArray.length !== 0) {
-          numberOfCohortMembers = newArray.filter(member => member.memberStatus === Status.ACTIVE || member.attendance !== '').length;
+          numberOfCohortMembers = newArray.filter(member => member.memberStatus === Status.ACTIVE || member.attendance !== '' ||
+            (member.memberStatus === Status.DROPOUT && shortDateFormat(new Date(member.updatedAt)) > shortDateFormat(new Date(selectedDate)))||
+            (member.memberStatus === Status.ARCHIVED && shortDateFormat(new Date(member.updatedAt)) > shortDateFormat(new Date(selectedDate)))).length;
           cohortMemberList = newArray;
           presentCount = getPresentCount(newArray);
           absentCount = getAbsentCount(newArray);
@@ -112,11 +114,12 @@ export const fetchAttendanceDetails = async (
             dropoutCount = dropoutMemberList.length;
           }
         } else {
-          cohortMemberList = nameUserIdArray.filter((user) => user.memberStatus === Status.ACTIVE||
+          cohortMemberList = nameUserIdArray.filter((user) => user.memberStatus === Status.ACTIVE ||
           (user.memberStatus === Status.DROPOUT && shortDateFormat(new Date(user.updatedAt)) > shortDateFormat(new Date(selectedDate)))||
           (user.memberStatus === Status.ARCHIVED && shortDateFormat(new Date(user.updatedAt)) > shortDateFormat(new Date(selectedDate))));
           dropoutMemberList = nameUserIdArray.filter((user) => user.memberStatus === Status.DROPOUT && shortDateFormat(new Date(user.updatedAt)) <= shortDateFormat(new Date(selectedDate)));
-          numberOfCohortMembers = nameUserIdArray.filter(member => member.memberStatus === Status.ACTIVE).length;
+          numberOfCohortMembers = nameUserIdArray.filter(member => member.memberStatus === Status.ACTIVE || (member.memberStatus === Status.DROPOUT && shortDateFormat(new Date(member.updatedAt)) > shortDateFormat(new Date(selectedDate)))||
+          (member.memberStatus === Status.ARCHIVED && shortDateFormat(new Date(member.updatedAt)) > shortDateFormat(new Date(selectedDate)))).length;
         }
 
         updateBulkAttendanceStatus(newArray);
