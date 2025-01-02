@@ -286,6 +286,25 @@ function AssessmentsDetails() {
     return '';
   };
 
+  const handleAssessmentTypeChange = (newType: string) => {
+    setAssessmentType(newType);
+
+    // Create a new query object based on the current query
+    const queryParams = { ...router.query };
+
+    // Add or remove the 'type' query parameter based on the selected value
+    if (newType === 'post') queryParams.type = 'post';
+    else delete queryParams.type;
+
+    // Update the URL with the new query parameters without a full page reload
+    router.push({ pathname: router.pathname, query: queryParams }, undefined, { shallow: true });
+  };
+
+  // Sync the initial state with the query parameter
+  useEffect(() => {
+    setAssessmentType(router.query.type === 'post' ? 'post' : 'pre');
+  }, [router.query.type]);
+
   return (
     <>
       <Header />
@@ -331,9 +350,8 @@ function AssessmentsDetails() {
                 id="demo-simple-select"
                 label={t('ASSESSMENTS.ASSESSMENT_TYPE')}
                 style={{ borderRadius: '4px' }}
-                onChange={(e) => setAssessmentType(e.target.value)}
-                defaultValue={'pre'}
-                value={assessmentType}
+                onChange={(e) => handleAssessmentTypeChange(e.target.value)}
+                value={assessmentType} // Bind the select value to the state
               >
                 <MenuItem value={'pre'}>{t('PROFILE.PRE_TEST')}</MenuItem>
                 <MenuItem value={'post'}>{t('PROFILE.POST_TEST')}</MenuItem>
