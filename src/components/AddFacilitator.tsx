@@ -7,6 +7,7 @@ import {
   FormContextType,
   QueryKeys,
   RoleId,
+  Status,
   Telemetry,
 } from '@/utils/app.constant';
 import React, { useEffect } from 'react';
@@ -99,7 +100,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         centerOptionsList = centerOptions
           .filter(
             (center: { cohortStatus: string }) =>
-              center.cohortStatus === 'active'
+              center.cohortStatus === Status.ACTIVE
           )
           .map((center: { cohortId: string; cohortName: string }) => ({
             value: center.cohortId,
