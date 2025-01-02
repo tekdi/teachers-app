@@ -148,7 +148,7 @@ const SortingModal: React.FC<sortCardProps> = ({
     <ModalComponent
       open={isModalOpen}
       onClose={handleCloseModal}
-      heading={routeName === '/board-enrollment' ? t('COMMON.FILTERS') : t('COMMON.SORT_BY')}
+      heading={routeName === '/board-enrollment' || '/attendance-overview' ? t('COMMON.FILTERS') : t('COMMON.SORT_BY')}
       handleApplySort={handleApplySort}
       btnText={t('COMMON.APPLY')}
     >
@@ -160,7 +160,7 @@ const SortingModal: React.FC<sortCardProps> = ({
       <Grid container sx={{ padding: '10px 20px 0' }} spacing={2}>
         {routeName === '/attendance-overview' ? (
           <>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <FormControl component="fieldset" sx={{ width: '100%' }}>
                 <FormLabel
                   style={{
@@ -195,7 +195,7 @@ const SortingModal: React.FC<sortCardProps> = ({
                   />
                 </RadioGroup>
               </FormControl>
-            </Grid>
+            </Grid> */}
             {/* <Grid item xs={12} mt={1}>
               <FormControl component="fieldset" sx={{ width: '100%' }}>
                 <FormLabel
@@ -315,7 +315,8 @@ const SortingModal: React.FC<sortCardProps> = ({
             </FormControl>
           </Grid>
         ) : null}
-        <Grid item xs={12} mt={1}>
+        {routeName !== '/attendance-overview' ?
+        (<Grid item xs={12} mt={1}>
           <FormControl component="fieldset" style={{ width: '100%' }}>
             <FormLabel
               style={{ color: theme.palette.warning['400'] }}
@@ -350,7 +351,7 @@ const SortingModal: React.FC<sortCardProps> = ({
               />
             </RadioGroup>
           </FormControl>
-        </Grid>
+        </Grid>): null}
 
         {routeName === '/board-enrollment' ? (
           <Grid item xs={12} mt={1}>
