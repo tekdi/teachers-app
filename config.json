@@ -12,6 +12,10 @@
     {
       "label": "मराठी",
       "code": "mr"
+    },
+    {
+      "label": "Urdu",
+      "code": "ur"
     }
   ]
 }

@@ -15,7 +15,7 @@ import { RequisiteType } from '../../app.config';
 
 const TopicDetailView = () => {
   const [value, setValue] = React.useState(1);
-  const [expanded, setExpanded] = useState('panel1'); // Start with the first panel open
+  const [expanded, setExpanded] = useState<string[]>(['panel1', 'panel2']); // Default both panels expanded
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const { isRTL } = useDirection();
@@ -30,24 +30,26 @@ const TopicDetailView = () => {
         );
       });
     }
+    return [];
   };
 
-  const toggleAccordion =
-    (panel: string) => (event: React.SyntheticEvent, expanded: boolean) => {
-      // Toggle between the selected panel and 'panel1' to keep the first panel open by default
-      setExpanded(expanded ? panel : 'panel1');
-    };
+  const toggleAccordion = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
+    setExpanded((prevExpanded) =>
+      isExpanded
+        ? [...prevExpanded, panel] // Add panel to expanded list
+        : prevExpanded.filter((item) => item !== panel) // Remove panel from expanded list
+    );
+  };
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   const handleBackEvent = () => {
-    // window.history.back();
     if (typeof window !== 'undefined' && window.localStorage) {
       const classId = localStorage.getItem('classId');
       router.push(`course-planner/center/${classId}`);
     }
-    // router.back();
     logEvent({
       action: 'back-button-clicked-attendance-overview',
       category: 'Attendance Overview Page',
@@ -114,7 +116,6 @@ const TopicDetailView = () => {
             sx={{
               fontSize: '14px',
               borderBottom: `1px solid ${theme.palette.primary.contrastText}`,
-
               '& .MuiTab-root': {
                 color: '#4D4639',
                 padding: '0 20px',
@@ -142,7 +143,8 @@ const TopicDetailView = () => {
         {value === 1 && (
           <Box>
             <CourseAccordion
-              expanded={true}
+              expanded={expanded.includes('panel1')}
+              onChange={toggleAccordion('panel1')}
               title={t('CENTER_SESSION.PREREQUISITES')}
               type={RequisiteType.FACILITATOR_REQUISITE}
               resources={getLearningResources(
@@ -155,15 +157,14 @@ const TopicDetailView = () => {
         {value === 2 && (
           <Box onClick={handlePlayers}>
             <CourseAccordion
-              expanded={expanded === 'panel1'}
+              expanded={expanded.includes('panel1')}
               onChange={toggleAccordion('panel1')}
               title={t('CENTER_SESSION.PREREQUISITES')}
               type={ResourcesType.PREREQUSITE}
               resources={getLearningResources(ResourcesType.PREREQUSITE)}
             />
             <CourseAccordion
-              expanded={
-                expanded === 'panel2'}
+              expanded={expanded.includes('panel2')}
               onChange={toggleAccordion('panel2')}
               title={t('CENTER_SESSION.POST_REQUISITES')}
               type={ResourcesType.POSTREQUSITE}
@@ -180,7 +181,6 @@ export async function getStaticProps({ locale }: any) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
-      // Will be passed to the page component as props
     },
   };
 }

@@ -36,8 +36,7 @@ const CourseAccordion: React.FC<CourseAccordionProps> = ({
   return (
     <Box sx={{ mt: 2, mb: 1.5 }}>
       <Accordion
-        expanded={expanded}
-        onChange={onChange}
+        defaultExpanded
         sx={{
           boxShadow: 'none !important',
           border: 'none !important',
