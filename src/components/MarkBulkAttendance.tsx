@@ -288,7 +288,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                     fontSize={'16px'}
                     sx={{ color: theme.palette.warning['A200'] }}
                   >
-                    {t('COMMON.MARK_CENTER_ATTENDANCE')}
+                    {presentCount == 0 && absentCount == 0 ? t('COMMON.MARK_CENTER_ATTENDANCE'): t('COMMON.MODIFY_CENTER_ATTENDANCE')}
                   </Typography>
                   <Typography
                     variant="h2"

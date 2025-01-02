@@ -149,7 +149,8 @@
     "FILTER_BY_ATTENDANCE_PERCENTAGE": "Filters By Attendance Percentage",
     "MORE_THAN": "More than {{range}} %",
     "BETWEEN": "Between {{lowerLimit}} - {{upperLimit}} %",
-    "LESS_THAN": "Less than {{range}} %"
+    "LESS_THAN": "Less than {{range}} %",
+    "MODIFY_CENTER_ATTENDANCE": "Modify Center Attendance"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
