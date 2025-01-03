@@ -836,8 +836,11 @@ export function getLatestEntries(
     nameUserIdArray.forEach(entry => {
         const { userId, updatedAt, createdAt } = entry;
         const updatedDate = new Date(updatedAt);
+        updatedDate.setHours(0, 0, 0, 0);
         const selectDate = new Date(selectedDate);
+        selectDate.setHours(0, 0, 0, 0);
         const createdDate = new Date(createdAt);
+        createdDate.setHours(0, 0, 0, 0);
 
         // Only consider entries with updatedAt < selectedDate or createdDate <= selectDate
         if (updatedDate < selectDate || createdDate <= selectDate) {
