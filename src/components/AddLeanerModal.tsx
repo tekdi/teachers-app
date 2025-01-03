@@ -107,15 +107,11 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   ) => {
     if(data?.formData?.name)
     {
-      data.formData.name = data?.formData?.name?.trimStart()
-      ?.trimEnd()
-      ?.replace(/\s+/g, ' ');
+      data.formData.name = data?.formData?.name?.trim()
     }
     if(data?.formData?.father_name)
     {
-      data.formData.father_name = data?.formData?.father_name?.trimStart()
-      ?.trimEnd()
-      ?.replace(/\s+/g, ' ');
+      data.formData.father_name = data?.formData?.father_name?.trim()
     }
     setTimeout(() => {
       setLearnerFormData(data.formData);

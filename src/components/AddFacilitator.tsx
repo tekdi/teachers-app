@@ -152,15 +152,11 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     console.log('Form data submitted----:', data.formData);
     if(data?.formData?.name)
     {
-      data.formData.name = data?.formData?.name?.trimStart()
-      ?.trimEnd()
-      ?.replace(/\s+/g, ' ');
+      data.formData.name = data?.formData?.name?.trim()
     }
     if(data?.formData?.father_name)
     {
-      data.formData.father_name = data?.formData?.father_name?.trimStart()
-      ?.trimEnd()
-      ?.replace(/\s+/g, ' ');
+      data.formData.father_name = data?.formData?.father_name?.trim()
     }
    
     setTimeout(() => {
