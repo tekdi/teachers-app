@@ -387,7 +387,9 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
                 {t('COMMON.TO_BE_TAUGHT')}
               </Typography>
             </AccordionSummary>
-            <AccordionDetails sx={{ padding: '0px' }}>
+            <AccordionDetails sx={{
+              padding: '0px', height: "117px",
+              overflowY: "auto" }}>
               <Box
                 onClick={handleOpen}
                 sx={{ display: 'flex', gap: '10px', cursor: 'pointer' }}
