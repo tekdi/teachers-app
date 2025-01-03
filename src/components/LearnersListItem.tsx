@@ -590,7 +590,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                           }}
                           className="one-line-text"
                         >
-                          {enrollmentId?.toUpperCase()}
+                          {enrollmentId}
                         </Box>
                       </>
                     )}
