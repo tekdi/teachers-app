@@ -1,4 +1,4 @@
-import { CenterType } from '@/utils/app.constant';
+import { CenterType, Status } from '@/utils/app.constant';
 import { Box, Grid } from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
@@ -30,7 +30,7 @@ const CenterList: React.FC<CenterListProps> = ({
   t,
 }) => {
   const activeCenters = centers.filter(
-    (center) => center.cohortStatus === 'active'
+    (center) => center.cohortStatus === Status.ACTIVE
   );
   const { i18n } = useTranslation();
   const { dir, isRTL } = useDirection();

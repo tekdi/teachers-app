@@ -48,6 +48,8 @@ export interface UserAttendanceObj {
   attendanceDate?: Date | string;
   memberStatus?: string;
   updatedAt?: string | number | Date;
+  createdAt?: string;
+  userName?: string;
 }
 
 export interface user {
@@ -95,6 +97,7 @@ export interface CohortMemberList {
     status?: string[];
     name?: string | undefined;
   };
+  includeArchived?: boolean,
 }
 
 export interface UserList {

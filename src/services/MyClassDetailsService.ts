@@ -52,10 +52,17 @@ export const getMyCohortMemberList = async ({
   limit,
   page,
   filters,
-}: CohortMemberList): Promise<any> => {
+  includeArchived = false,
+}: CohortMemberList  & { includeArchived?: boolean }): Promise<any> => {
+
+  const statusFilters = [Status.DROPOUT, Status.ACTIVE];
+  if (includeArchived) {
+    statusFilters.push(Status.ARCHIVED);
+  }
+
   const studentFilters = {
     role: Role.STUDENT,
-    status: [Status.DROPOUT, Status.ACTIVE],
+    status: statusFilters,
     ...filters,
   };
   return fetchCohortMemberList({ limit, page, filters: studentFilters });

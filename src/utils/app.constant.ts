@@ -180,7 +180,7 @@ export enum EventStatus {
 }
 
 export const metaTags = {
-  title: 'Pratham SCP Teachers app',
+  title: 'Pratham Learning Management App',
   description:
     "Pratham's Second Chance program focuses on providing school dropouts, especially young girls and women, another chance at education. Second Chance aims to support those who could not complete their secondary education. The program focuses on completion of Grade 10. The academic certificate that they receive opens the door for further opportunities for lifelong learning and growth. The Second Chance program uses innovative teaching methods, to provide accessible learning opportunities very close to where the students live.",
   keywords: 'Second Chance Program',

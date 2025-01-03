@@ -7,6 +7,7 @@ import {
 } from '@/services/AttendanceService';
 import {
   debounce,
+  filterAttendancePercentage,
   formatSelectedDate,
   getTodayDate,
   handleKeyDown,
@@ -201,6 +202,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
           limit,
           page,
           filters,
+          includeArchived: true,
         });
         const resp = response?.result?.userDetails;
         if (resp) {
@@ -467,7 +469,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const handleSorting = (
     sortByName: string,
     sortByAttendance: string,
-    sortByClassesMissed: string,
+    // sortByClassesMissed: string,
+    sortByAttendancePercentage: string,
     sortByAttendanceNumber: string
   ) => {
     handleCloseModal();
@@ -493,15 +496,31 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         break;
     }
 
-    // Sorting by classesMissed
-    switch (sortByClassesMissed) {
-      case 'more':
-        sortedData = sortClassesMissed(sortedData, 'more');
-        break;
-      case 'less':
-        sortedData = sortClassesMissed(sortedData, 'less');
-        break;
-    }
+    // // Sorting by classesMissed
+    // switch (sortByClassesMissed) {
+    //   case 'more':
+    //     sortedData = sortClassesMissed(sortedData, 'more');
+    //     break;
+    //   case 'less':
+    //     sortedData = sortClassesMissed(sortedData, 'less');
+    //     break;
+    // }
+
+      // Sorting by AttendancePercentage
+      switch (sortByAttendancePercentage) {
+        case "more":
+          sortedData = filterAttendancePercentage(sortedData, "more");
+          break;
+        case "between":
+          sortedData = filterAttendancePercentage(sortedData, "between");
+          break;
+        case "less":
+          sortedData = filterAttendancePercentage(sortedData, "less");
+          break;
+        default:
+          // Handle default case if needed
+          break;
+      }  
 
     setDisplayStudentList(sortedData);
   };

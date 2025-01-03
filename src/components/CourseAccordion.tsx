@@ -32,11 +32,11 @@ const CourseAccordion: React.FC<CourseAccordionProps> = ({
     console.log('resources', type, resources);
   }, []);
 
+  
   return (
     <Box sx={{ mt: 2, mb: 1.5 }}>
       <Accordion
-        expanded={expanded}
-        onChange={onChange}
+        defaultExpanded
         sx={{
           boxShadow: 'none !important',
           border: 'none !important',
@@ -64,13 +64,22 @@ const CourseAccordion: React.FC<CourseAccordionProps> = ({
             },
           }}
         >
-          <Typography
-            fontWeight="500"
-            fontSize="14px"
-            sx={{ color: theme?.palette?.warning['300'] }}
-          >
-            {title}
-          </Typography>
+          <Box sx={{display:'flex' , gap:'5px', alignItems:'center'}}>
+            <Typography
+              fontWeight="500"
+              fontSize="14px"
+              sx={{ color: theme?.palette?.warning['300'] }}
+            >
+              {title}
+            </Typography>
+            <Box
+              fontWeight="600"
+              fontSize="14px"
+              sx={{ color: theme?.palette?.success?.main }}
+            >
+              {resources?.length > 0 && `( ${resources?.length} )`}
+            </Box>
+          </Box>
         </AccordionSummary>
         <AccordionDetails
           sx={{

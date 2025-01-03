@@ -85,6 +85,8 @@ const Assessments = () => {
     totalCount: 0,
   });
 
+  const { query } = router;
+
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const token = localStorage.getItem('token');
@@ -373,6 +375,20 @@ const Assessments = () => {
     }
   };
 
+  const handleAssessmentTypeChange = (newType: string) => {
+    setAssessmentType(newType);
+
+    const queryParams = { ...query };
+    if (newType === 'post') queryParams.type = 'post';
+    else delete queryParams.type;
+
+    router.push({ pathname: router.pathname, query: queryParams }, undefined, { shallow: true });
+  };
+
+  useEffect(() => {
+    setAssessmentType(query.type === 'post' ? 'post' : 'pre');
+  }, [query.type]);
+
   return (
     <>
       <Box>
@@ -437,26 +453,7 @@ const Assessments = () => {
                 style={{
                   borderRadius: '4px',
                 }}
-                onChange={(e) => {
-                  setAssessmentType(e.target.value);
-                  const windowUrl = window.location.pathname;
-                  const cleanedUrl = windowUrl.replace(/^\//, '');
-
-                  const telemetryInteract = {
-                    context: {
-                      env: 'assessments',
-                      cdata: [],
-                    },
-                    edata: {
-                      id: 'filter-by-assessment-type:' + e.target.value,
-                      type: Telemetry.CLICK,
-                      subtype: '',
-                      pageid: cleanedUrl,
-                    },
-                  };
-                  telemetryFactory.interact(telemetryInteract);
-                }}
-                defaultValue={'pre'}
+                onChange={(e) => handleAssessmentTypeChange(e.target.value)}
                 value={assessmentType}
               >
                 <MenuItem value={'pre'} style={{ textAlign: 'right' }}>

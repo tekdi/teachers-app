@@ -13,6 +13,7 @@ import {
   formatSelectedDate,
   getAfterDate,
   getBeforeDate,
+  getLatestEntries,
   getTodayDate,
   shortDateFormat,
   sortSessions,
@@ -62,6 +63,7 @@ import useDeterminePathColor from '../hooks/useDeterminePathColor';
 import {
   QueryKeys,
   Role,
+  Status,
   Telemetry,
   cohortHierarchy,
   sessionType,
@@ -294,7 +296,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         isCustomFields
       );
       const activeCohorts = result?.filter(
-        (cohort: any) => cohort.cohortMemberStatus === 'active'
+        (cohort: any) => cohort.cohortMemberStatus === Status.ACTIVE
       );
       updateStoreFromCohorts(activeCohorts, blockObject);
 
@@ -318,6 +320,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             limit,
             page,
             filters,
+            includeArchived: true,
           });
           const resp = response?.result?.userDetails;
           if (resp) {
@@ -327,14 +330,34 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 name: toPascalCase(entry.name),
                 memberStatus: entry.status,
                 createdAt: entry.createdAt,
+                updatedAt: entry.updatedAt,
+                userName: entry.username,
               }))
-              .filter((member: { createdAt: string | number | Date }) => {
-                const createdAt = new Date(member.createdAt);
-                createdAt.setHours(0, 0, 0, 0);
-                return createdAt <= new Date(selectedDate);
-              });
-            if (nameUserIdArray) {
-              //Logic to call class missed api
+              .filter(
+                (member: {
+                  createdAt: string | number | Date;
+                  updatedAt: string | number | Date;
+                  memberStatus: string;
+                }) => {
+                  const createdAt = new Date(member.createdAt);
+                  createdAt.setHours(0, 0, 0, 0);
+                  const updatedAt = new Date(member.updatedAt);
+                  updatedAt.setHours(0, 0, 0, 0);
+                  const currentDate = new Date(selectedDate);
+                  currentDate.setHours(0, 0, 0, 0);
+                  if (
+                    member.memberStatus === Status.ARCHIVED &&
+                    updatedAt <= currentDate
+                  ) {
+                    return false;
+                  }
+                  return createdAt <= new Date(selectedDate);
+                }
+              );
+  
+            // Filter latest entries
+            const filteredEntries = getLatestEntries(nameUserIdArray, selectedDate);
+            if (filteredEntries) {
               const fromDate = startDateRange;
               const toDate = endDateRange;
               const filters = {
@@ -357,7 +380,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 }));
                 if (filteredData) {
                   let mergedArray = filteredData.map((attendance) => {
-                    const user = nameUserIdArray.find(
+                    const user = filteredEntries.find(
                       (user: { userId: string }) =>
                         user.userId === attendance.userId
                     );
@@ -389,9 +412,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
               }
             }
 
-            if (nameUserIdArray && selectedDate && classId) {
+            if (filteredEntries && selectedDate && classId) {
               fetchAttendanceDetails(
-                nameUserIdArray,
+                filteredEntries,
                 selectedDate,
                 classId,
                 handleAttendanceDataUpdate
@@ -574,6 +597,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             cohortId: classId,
             role: 'Student',
           },
+          includeArchived: true,
         };
         const currentDate = new Date();
         const dayOfWeek = currentDate.getDay();
@@ -663,6 +687,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   }
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
+  // const percent_students =
+  //   attendanceData?.numberOfCohortMembers &&
+  //   attendanceData.numberOfCohortMembers !== 0
+  //     ? (
+  //         (attendanceData.presentCount / attendanceData.numberOfCohortMembers) *
+  //         100
+  //       ).toFixed(2)
+  //     : '0';
+  // const presentPercentage = (attendanceData.presentCount/ attendanceData.numberOfCohortMembers) * 100;
+
   const pathColor = determinePathColor(presentPercentage);
 
   const handleMoreDetailsClicked = () => {

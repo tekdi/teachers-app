@@ -10,6 +10,7 @@ import {
 dayjs.extend(utc);
 import { format, parseISO } from 'date-fns';
 import manageUserStore from '@/store/manageUserStore';
+import { avgLearnerAttendanceLimit, lowLearnerAttendanceLimit } from '../../app.config';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -293,6 +294,28 @@ export const sortClassesMissed = (data: any[], order: string) => {
         : aClassMissed - bClassMissed;
     }
   );
+};
+
+export const filterAttendancePercentage = (
+  data: any[],
+  category: "more" | "between" | "less"
+) => {
+  return data.filter(({ present_percent }: { present_percent: string }) => {
+    const attendance = parseFloat(present_percent);
+
+    if (isNaN(attendance)) return false; // Exclude invalid or missing values
+
+    switch (category) {
+      case "more":
+        return attendance > avgLearnerAttendanceLimit;
+      case "between":
+        return attendance >= lowLearnerAttendanceLimit && attendance <= avgLearnerAttendanceLimit; // Medium attendance
+      case "less":
+        return attendance < lowLearnerAttendanceLimit;
+      default:
+        return false;
+    }
+  });
 };
 
 export const accessGranted = (
@@ -795,3 +818,37 @@ export const getTelemetryForContent = (
 
   return telemetryEvents;
 };
+
+export interface UserEntry {
+    userId: string;
+    name: string;
+    memberStatus: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export function getLatestEntries(
+    nameUserIdArray: UserEntry[],
+    selectedDate: string
+): UserEntry[] {
+    const filteredEntries: Record<string, UserEntry> = {};
+
+    nameUserIdArray.forEach(entry => {
+        const { userId, updatedAt, createdAt } = entry;
+        const updatedDate = new Date(updatedAt);
+        const selectDate = new Date(selectedDate);
+        const createdDate = new Date(createdAt);
+
+        // Only consider entries with updatedAt < selectedDate or createdDate <= selectDate
+        if (updatedDate < selectDate || createdDate <= selectDate) {
+            if (
+                !filteredEntries[userId] || 
+                new Date(filteredEntries[userId].updatedAt) < updatedDate
+            ) {
+                // Update the entry if it is newer
+                filteredEntries[userId] = entry;
+            }
+        }
+    });
+    return Object.values(filteredEntries);
+}

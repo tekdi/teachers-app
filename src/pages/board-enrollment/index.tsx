@@ -26,7 +26,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import useStore from '@/store/store';
-import { FormContext, FormContextType, limit } from '@/utils/app.constant';
+import { FormContext, FormContextType, limit, Status } from '@/utils/app.constant';
 import { useQueryClient } from '@tanstack/react-query';
 import { getFormRead } from '@/hooks/useFormRead';
 import boardEnrollmentStore from '@/store/boardEnrollmentStore';
@@ -576,7 +576,7 @@ const BoardEnrollment = () => {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
-                      if (item?.memberStatus === 'dropout') {
+                      if (item?.memberStatus === Status.DROPOUT) {
                         handleOpen(item?.statusReason);
                       } else {
                         router.push(
@@ -599,7 +599,7 @@ const BoardEnrollment = () => {
                           fontSize: '16px',
                           fontWeight: '400',
                           color:
-                            item?.memberStatus === 'dropout'
+                            item?.memberStatus === Status.DROPOUT
                               ? theme.palette.warning['400']
                               : theme.palette.warning['300'],
                         }}
@@ -609,7 +609,7 @@ const BoardEnrollment = () => {
                       <EastIcon
                         sx={{
                           color:
-                            item.memberStatus === 'dropout'
+                            item.memberStatus === Status.DROPOUT
                               ? theme.palette.warning['400']
                               : theme.palette.warning['300'],
                           transform: isRTL ? ' rotate(180deg)' : 'unset',
@@ -627,7 +627,7 @@ const BoardEnrollment = () => {
                 >
                   {item.center}
                 </Box> */}
-                    {item?.memberStatus === 'dropout' ? (
+                    {item?.memberStatus === Status.DROPOUT ? (
                       <Box
                         mt={2}
                         sx={{

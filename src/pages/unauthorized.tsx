@@ -4,21 +4,12 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+
 
 const Unauthorized = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const router = useRouter();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.push('/login');
-    }, 5000); 
-
-    return () => clearTimeout(timer);
-  }, [router]);
+  
 
   return (
     <Box

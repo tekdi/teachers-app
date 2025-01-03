@@ -146,11 +146,11 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   }, [router, setClassId, setIsAuthenticated, setUserId]);
   useEffect(() => {
     const filteredData = cohortsData?.filter(
-      (cohort: any) => cohort?.status?.toLowerCase() === 'active'
+      (cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE
     );
     setFilteredCohortData(filteredData);
     const filteredManipulatedData = manipulatedCohortData?.filter(
-      (cohort: any) => cohort?.status?.toLowerCase() === 'active'
+      (cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE
     );
     setFilteredManipulatedCohortData(filteredManipulatedData);
 
@@ -283,7 +283,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
               }
               setBlock(response[0].name || response[0].cohortName);
               const filteredData = response[0].childData
-                ?.filter((item: any) => item?.status !== 'archived')
+                ?.filter((item: any) => item?.status !== Status.ARCHIVED)
                 .map((item: any) => {
                   const typeOfCohort = item?.customField?.find(
                     (field: any) => field?.label === 'TYPE_OF_COHORT'

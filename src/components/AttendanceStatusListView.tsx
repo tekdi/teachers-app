@@ -18,6 +18,7 @@ import {
   ATTENDANCE_ENUM,
   capitalizeEachWord,
   filterMiniProfileFields,
+  shortDateFormat,
 } from '../utils/Helper';
 import DropoutLabel from './DropoutLabel';
 import LearnerModal from './LearnerModal';
@@ -34,10 +35,21 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   bulkAttendanceStatus = '',
   presentCount,
   absentCount,
+  attendanceDate,
 }) => {
   const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const theme = useTheme<any>();
+  let updatedAtDate: string | undefined;
+  let attendanceDateFormatted: string | undefined;
+
+  if (userData?.updatedAt) {
+    updatedAtDate = shortDateFormat(new Date(userData.updatedAt));
+  }
+
+  if (attendanceDate) {
+    attendanceDateFormatted = shortDateFormat(new Date(attendanceDate));
+  }
 
   const boxStyling = {
     display: 'flex',
@@ -136,33 +148,45 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
       )}
 
       <Box sx={boxStyling}>
-        <Typography
-          variant="body1"
-          marginY="auto"
+        <Box
           sx={{
-            textAlign: 'left',
-            alignItems: 'center',
-            fontSize: '14px',
-            fontWeight: '400',
-            color: isDisabled
-              ? theme.palette.warning['400']
-              : theme.palette.warning['300'],
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
           }}
-          onClick={() => handleOpenModalLearner(userData?.userId!)}
-          className="two-line-text"
         >
-          {isBulkAction ? (
-            t('COMMON.MARK_ALL_AS')
-          ) : showLink ? (
-            <Link style={{ color: theme.palette.secondary.main }} href={''}>
-              {userData?.name}
-            </Link>
-          ) : (
-            userData?.name
-          )}
-        </Typography>
+          <Typography
+            variant="body1"
+            marginY="auto"
+            sx={{
+              textAlign: 'left',
+              alignItems: 'center',
+              fontSize: '14px',
+              fontWeight: '400',
+              color: isDisabled
+                ? theme.palette.warning['400']
+                : theme.palette.warning['300'],
+            }}
+            onClick={() => handleOpenModalLearner(userData?.userId!)}
+            className="two-line-text"
+          >
+            {isBulkAction ? (
+              t('COMMON.MARK_ALL_AS')
+            ) : showLink ? (
+              <Link style={{ color: theme.palette.secondary.main }} href={''}>
+                {userData?.name}
+              </Link>
+            ) : (
+              userData?.name
+            )}
+          </Typography>
+          <Typography variant='h6'>{(userData?.userName)?.toUpperCase()}</Typography>
+        </Box>
         <Box sx={{ display: 'flex', gap: '10px' }}>
-          {userData?.memberStatus === Status.DROPOUT ? (
+          {userData?.memberStatus === Status.DROPOUT &&
+          updatedAtDate &&
+          attendanceDateFormatted &&
+          updatedAtDate <= attendanceDateFormatted ? (
             <Box display="column">
               {presentCount === 0 && absentCount === 0 ? (
                 <DropoutLabel />
@@ -236,7 +260,11 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
                       </Typography>
                     </Box>
                   </Box>
-                  <DropoutLabel />
+                  {/* <DropoutLabel /> */}
+                  {updatedAtDate &&
+                    attendanceDateFormatted &&
+                    updatedAtDate <= attendanceDateFormatted &&
+                    userData.memberStatus === Status.DROPOUT && <DropoutLabel />}
                 </>
               )}
             </Box>
