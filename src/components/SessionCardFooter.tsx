@@ -51,7 +51,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const [transformedTasks, setTransformedTasks] = React.useState();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<any | null>(null);
   const [selectedSubtopics, setSelectedSubtopics] = useState<string[]>([]);
   const [learningResources, setLearningResources] = useState<any>();
   const [startTime, setStartTime] = React.useState('');
@@ -97,20 +97,28 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
           });
           if (res?.result || res?.result.length > 0) {
             const tasks = res?.result?.tasks;
-            const topics = tasks?.map((task: any) => task?.name);
+            const topics = tasks?.map((task: any) => ({
+              id: task._id,
+              name: task.name,
+            }));
             setTopicList(topics);
-            // const subTopics = tasks?.reduce((acc: any, task: any) => {
-            //   acc[task?.name] = task?.children.map((child: any) => child?.name);
-            //   return acc;
-            // }, {});
+
             const subTopics = tasks?.reduce((acc: any[], task: any) => {
               const topicName = task?.name;
+              const topicId = task?._id;
               const subtopicNames = task?.children.map(
                 (child: any) => child?.name
               );
-              acc.push({ [topicName]: subtopicNames });
+
+              acc.push({
+                topicName: topicName,
+                id: topicId,
+                subtopics: subtopicNames,
+              });
+
               return acc;
             }, []);
+
             setTransformedTasks(subTopics);
             const learningResources = tasks?.reduce((acc: any, task: any) => {
               acc[task.name] = task?.children.reduce(
@@ -194,7 +202,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   };
 
   const handleComponentOpen = () => {
-    setSelectedTopic('');
+    setSelectedTopic(null);
     setSelectedSubtopics([]);
   };
 
@@ -211,7 +219,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     return response;
   };
 
-  const handleTopicSelection = (topic: string) => {
+  const handleTopicSelection = (topic: any) => {
     setSelectedTopic(topic);
     console.log(topic);
   };
@@ -229,8 +237,11 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
           subTopic: [],
         };
       } else {
+        const selectedTopicNames = selectedTopic?.map(
+          (topic: any) => topic.name
+        );
         erMetaData = {
-          topic: selectedTopic,
+          topic: selectedTopicNames,
           subTopic: selectedSubtopics,
         };
       }

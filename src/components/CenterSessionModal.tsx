@@ -9,6 +9,7 @@ import { SessionsModalProps } from '@/utils/Interfaces';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import { toPascalCase } from '@/utils/Helper';
 
 const CenterSessionModal: React.FC<SessionsModalProps> = ({
   children,
@@ -21,7 +22,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
   secondary,
   handlePrimaryModel,
   handleEditModal,
-  disable=false
+  disable = false,
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
@@ -81,7 +82,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
                 }}
                 component="h2"
               >
-                {center}
+                {toPascalCase(center)}
               </Typography>
               <CircleIcon
                 sx={{

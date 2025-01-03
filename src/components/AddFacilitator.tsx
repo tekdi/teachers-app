@@ -58,6 +58,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   onReload,
   onFacilitatorAdded,
 }) => {
+  console.log("userFormData", userFormData);
   const [schema, setSchema] = React.useState<any>();
   const [openSendCredModal, setOpenSendCredModal] = React.useState(false);
   const [createFacilitator, setCreateFacilitator] = React.useState(false);
@@ -82,7 +83,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     FormContext.USERS,
     FormContextType.TEACHER
   );
-
+ 
   useEffect(() => {
     if (formResponse) {
       const teacherReadResponse = deepClone(formResponse);
@@ -149,6 +150,16 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
+    console.log('Form data submitted----:', data.formData);
+    if(data?.formData?.name)
+    {
+      data.formData.name = data?.formData?.name?.trim()
+    }
+    if(data?.formData?.father_name)
+    {
+      data.formData.father_name = data?.formData?.father_name?.trim()
+    }
+   
     setTimeout(() => {
       setFormData(data.formData);
     });

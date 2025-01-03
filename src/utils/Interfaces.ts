@@ -420,7 +420,7 @@ export interface SessionCardFooterProps {
 }
 
 export interface TopicSubtopicProps {
-  topics?: string[];
+  topics?: any;
   subTopicsList?: any;
   onTopicSelected: any;
   onSubtopicSelected: any;
@@ -892,29 +892,28 @@ export interface BoardEnrollmentProfileProps {
 }
 
 export interface RegistrationStatisticsProps {
-    title?: string;
-    cardTitle?: string;
-    statistic?: string | number;
-    avatar?: boolean;
-    subtile?: string;
+  title?: string;
+  cardTitle?: string;
+  statistic?: string | number;
+  avatar?: boolean;
+  subtile?: string;
 }
 export interface VillageNewRegistrationProps {
-    locations: string | React.ReactNode; 
+  locations: string | React.ReactNode;
 }
 export interface RegistrationModalProps {
-  avatar?: string; 
-  title?: string;  
-  age?: number;  
+  avatar?: string;
+  title?: string;
+  age?: number;
   village?: string;
 }
 export interface SurveysProps {
-    title: string; 
-    date: string;  
+  title: string;
+  date: string;
 }
 
-
 export interface VillageDetailProps {
-    title?: string; 
-    icon?: React.ReactNode; 
-    subtitle?: string; 
+  title?: string;
+  icon?: React.ReactNode;
+  subtitle?: string;
 }
