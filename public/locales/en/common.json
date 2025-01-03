@@ -143,9 +143,14 @@
     "NA": "N.A.",
     "SORT_BY_NAMES": "Sort by Names",
     "INCORRECT_DATA_ENTRY": "Incorrect Data Entry",
-    "DUPLICATED_USER": "Duplicated User"
-   
-
+    "DUPLICATED_USER": "Duplicated User",
+    "FACILITATOR_COUNT": "Facilitators Total count: {{count}}",
+    "LEARNER_COUNT": "Learners Total count: {{count}}",
+    "FILTER_BY_ATTENDANCE_PERCENTAGE": "Filters By Attendance Percentage",
+    "MORE_THAN": "More than {{range}} %",
+    "BETWEEN": "Between {{lowerLimit}} - {{upperLimit}} %",
+    "LESS_THAN": "Less than {{range}} %",
+    "MODIFY_CENTER_ATTENDANCE": "Modify Center Attendance"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",

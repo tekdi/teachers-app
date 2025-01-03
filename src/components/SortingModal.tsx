@@ -14,12 +14,14 @@ import Divider from '@mui/material/Divider';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import ModalComponent from './Modal';
+import { avgLearnerAttendanceLimit, lowLearnerAttendanceLimit } from '../../app.config';
 
 interface sortCardProps {
   handleSorting?: (
     sortByName: string,
     sortByAttendance: string,
-    sortByClassesMissed: string,
+    // sortByClassesMissed: string,
+    sortByAttendancePercentage: string,
     sortByAttendanceNumber: string,
     sortByStages: string
   ) => void;
@@ -37,6 +39,7 @@ const SortingModal: React.FC<sortCardProps> = ({
   const [sortByName, setSortByName] = React.useState('');
   const [sortByAttendance, setSortByAttendance] = React.useState('');
   const [sortByClassesMissed, setSortByClassesMissed] = React.useState('');
+  const [sortByAttendancePercentage, setSortByAttendancePercentage] = React.useState('');
   const [sortByAttendanceNumber, setSortByAttendanceNumber] =
     React.useState('');
     const [sortByStages, setSortByStages] = React.useState('');
@@ -55,6 +58,7 @@ const SortingModal: React.FC<sortCardProps> = ({
   const handleSortByName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSortByAttendance('');
     setSortByClassesMissed('');
+    setSortByAttendancePercentage('')
     setSortByAttendanceNumber('');
     setSortByName(event.target.value);
     setSortByStages('');
@@ -66,6 +70,7 @@ const SortingModal: React.FC<sortCardProps> = ({
     setSortByAttendance(event.target.value);
     setSortByName('');
     setSortByClassesMissed('');
+    setSortByAttendancePercentage('');
     setSortByAttendanceNumber('');
     setSortByStages('');
   };
@@ -76,14 +81,27 @@ const SortingModal: React.FC<sortCardProps> = ({
     setSortByAttendanceNumber(event.target.value);
     setSortByName('');
     setSortByClassesMissed('');
+    setSortByAttendancePercentage('');
     setSortByAttendance('');
     setSortByStages('');
   };
 
-  const handleSortByClassesMissed = (
+  // const handleSortByClassesMissed = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setSortByClassesMissed(event.target.value);
+  //   setSortByAttendancePercentage('');
+  //   setSortByAttendance('');
+  //   setSortByName('');
+  //   setSortByAttendanceNumber('');
+  //   setSortByStages('');
+  // };
+
+  const handleSortByAttendancePercentage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setSortByClassesMissed(event.target.value);
+    setSortByClassesMissed('');
+    setSortByAttendancePercentage(event.target.value);
     setSortByAttendance('');
     setSortByName('');
     setSortByAttendanceNumber('');
@@ -96,6 +114,7 @@ const SortingModal: React.FC<sortCardProps> = ({
     setSortByAttendanceNumber('');
     setSortByName('');
     setSortByClassesMissed('');
+    setSortByAttendancePercentage('');
     setSortByAttendance('');
     setSortByName('');
     setSortByStages(event.target.value);
@@ -106,7 +125,8 @@ const SortingModal: React.FC<sortCardProps> = ({
       handleSorting(
         sortByName,
         sortByAttendance,
-        sortByClassesMissed,
+        // sortByClassesMissed,
+        sortByAttendancePercentage,
         sortByAttendanceNumber,
         sortByStages
       );
@@ -114,7 +134,8 @@ const SortingModal: React.FC<sortCardProps> = ({
         sortingBasis: [
           sortByName,
           sortByAttendance,
-          sortByClassesMissed,
+          // sortByClassesMissed,
+          sortByAttendancePercentage,
           sortByAttendanceNumber,
           sortByStages
         ],
@@ -127,7 +148,7 @@ const SortingModal: React.FC<sortCardProps> = ({
     <ModalComponent
       open={isModalOpen}
       onClose={handleCloseModal}
-      heading={routeName === '/board-enrollment' ? t('COMMON.FILTERS') : t('COMMON.SORT_BY')}
+      heading={routeName === '/board-enrollment' || '/attendance-overview' ? t('COMMON.FILTERS') : t('COMMON.SORT_BY')}
       handleApplySort={handleApplySort}
       btnText={t('COMMON.APPLY')}
     >
@@ -139,7 +160,7 @@ const SortingModal: React.FC<sortCardProps> = ({
       <Grid container sx={{ padding: '10px 20px 0' }} spacing={2}>
         {routeName === '/attendance-overview' ? (
           <>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <FormControl component="fieldset" sx={{ width: '100%' }}>
                 <FormLabel
                   style={{
@@ -174,8 +195,8 @@ const SortingModal: React.FC<sortCardProps> = ({
                   />
                 </RadioGroup>
               </FormControl>
-            </Grid>
-            <Grid item xs={12} mt={1}>
+            </Grid> */}
+            {/* <Grid item xs={12} mt={1}>
               <FormControl component="fieldset" sx={{ width: '100%' }}>
                 <FormLabel
                   style={{ color: theme.palette.warning['400'] }}
@@ -204,6 +225,51 @@ const SortingModal: React.FC<sortCardProps> = ({
                     value="less"
                     control={<Radio sx={{ ml: '80px' }} />}
                     label={t('COMMON.LOW_TO_HIGH')}
+                    className="modal_label"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Grid>{' '} */}
+             <Grid item xs={12} mt={1}>
+              <FormControl component="fieldset" sx={{ width: '100%' }}>
+                <FormLabel
+                  style={{ color: theme.palette.warning['400'] }}
+                  component="legend"
+                  className="fs-12 fw-500"
+                >
+                  {t('COMMON.FILTER_BY_ATTENDANCE_PERCENTAGE')}
+                </FormLabel>
+                <RadioGroup
+                  aria-label="sortByAttendancePercentage"
+                  name="sortByAttendancePercentage"
+                  value={sortByAttendancePercentage}
+                  onChange={handleSortByAttendancePercentage}
+                >
+                  <FormControlLabel
+                    labelPlacement="start"
+                    sx={{ justifyContent: 'space-between' }}
+                    value="more"
+                    control={<Radio sx={{ ml: '80px' }} />}
+                    label={t('COMMON.MORE_THAN', { range: avgLearnerAttendanceLimit })}
+                    className="modal_label"
+                  />
+                  <FormControlLabel
+                    sx={{ justifyContent: 'space-between' }}
+                    labelPlacement="start"
+                    value="between"
+                    control={<Radio sx={{ ml: '80px' }} />}
+                    label={t('COMMON.BETWEEN', { 
+                      lowerLimit: lowLearnerAttendanceLimit, 
+                      upperLimit: avgLearnerAttendanceLimit 
+                    })}
+                    className="modal_label"
+                  />
+                  <FormControlLabel
+                    sx={{ justifyContent: 'space-between' }}
+                    labelPlacement="start"
+                    value="less"
+                    control={<Radio sx={{ ml: '80px' }} />}
+                    label={t('COMMON.LESS_THAN', { range: lowLearnerAttendanceLimit })}
                     className="modal_label"
                   />
                 </RadioGroup>
@@ -249,7 +315,8 @@ const SortingModal: React.FC<sortCardProps> = ({
             </FormControl>
           </Grid>
         ) : null}
-        <Grid item xs={12} mt={1}>
+        {routeName !== '/attendance-overview' ?
+        (<Grid item xs={12} mt={1}>
           <FormControl component="fieldset" style={{ width: '100%' }}>
             <FormLabel
               style={{ color: theme.palette.warning['400'] }}
@@ -284,7 +351,7 @@ const SortingModal: React.FC<sortCardProps> = ({
               />
             </RadioGroup>
           </FormControl>
-        </Grid>
+        </Grid>): null}
 
         {routeName === '/board-enrollment' ? (
           <Grid item xs={12} mt={1}>
