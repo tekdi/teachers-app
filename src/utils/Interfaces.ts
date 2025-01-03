@@ -547,7 +547,7 @@ export interface SendCredentialsRequest {
     receipients: any[];
   };
   push?: {
-    receipients: any[];
+    receipients: any;
   };
 }
 

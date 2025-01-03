@@ -1000,7 +1000,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     if (response?.result?.userDetails) {
                       const deviceId = response?.result?.userDetails
                         .map((device: any) => device?.deviceId)
-                        .filter((id: any) => id !== null);
+                        .filter((id: any) => id !== null)
+                        .join(',') || '';
                       if (deviceId?.length > 0) {
                         getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT", replacements);
                       } else { 
