@@ -24,34 +24,54 @@ const SelectTopic: React.FC<TopicSubtopicProps> = ({
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
-  const [selectedTopic, setSelectedTopic] = useState<string[]>([]);
+  const [selectedTopicIds, setSelectedTopicIds] = useState<string[]>([]);
   const [subtopics, setSubtopics] = useState<string[]>([]);
   const [selectedSubValues, setSelectedSubValues] = useState<string[]>([]);
 
   useEffect(() => {
-    setSelectedTopic(Array.isArray(selectedTopics) ? selectedTopics : []);
+    const selectedTopicIds = Array.isArray(selectedTopics)
+      ? selectedTopics
+          .map((topic: any) => {
+            return topic?.id || null;
+          })
+          .filter((id) => id !== null)
+      : [];
+
+    setSelectedTopicIds(selectedTopicIds);
     setSelectedSubValues(
       Array.isArray(selectedSubTopics) ? selectedSubTopics : []
     );
 
     const aggregatedSubtopics = (
       Array.isArray(selectedTopics) ? selectedTopics : []
-    ).flatMap((topic) => subTopicsList[topic] || []);
+    ).flatMap((topicId) => {
+      const topicData = subTopicsList.find((t: any) => t.id === topicId);
+      return topicData ? topicData.subtopics : [];
+    });
     setSubtopics(aggregatedSubtopics);
   }, []);
 
   const handleTopicChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
-    const topic = typeof value === 'string' ? value.split(',') : value;
-    setSelectedTopic(topic);
-    const aggregatedSubtopics = topic.flatMap((t) =>
-      subTopicsList
-        .filter((item: any) => item[t])
-        .flatMap((item: any) => item[t] || [])
-    );
+    const selectedTopicIds =
+      typeof value === 'string' ? value.split(',') : value;
+    setSelectedTopicIds(selectedTopicIds);
+
+    const selectedTopicNames = selectedTopicIds
+      .map((id) => {
+        const topic = topics.find((t: any) => t.id === id);
+        return topic ? { name: topic?.name || '', id: id } : null;
+      })
+      .filter((topic) => topic !== null);
+
+    const aggregatedSubtopics = selectedTopicIds.flatMap((topicId) => {
+      const topicData = subTopicsList.find((t: any) => t.id === topicId);
+      return topicData ? topicData.subtopics : [];
+    });
+
     setSubtopics(aggregatedSubtopics);
     setSelectedSubValues([]);
-    onTopicSelected(topic);
+    onTopicSelected(selectedTopicNames);
   };
 
   const handleSubtopicChange = (event: SelectChangeEvent<string[]>) => {
@@ -79,23 +99,30 @@ const SelectTopic: React.FC<TopicSubtopicProps> = ({
             labelId="topic-select-label"
             id="topic-select"
             multiple
-            value={selectedTopic}
+            value={selectedTopicIds}
             onChange={handleTopicChange}
-            renderValue={(selected) => selected.join(', ')}
+            renderValue={(selected) =>
+              selected
+                .map((id) => {
+                  const topic = topics.find((t: any) => t.id === id);
+                  return topic?.name || '';
+                })
+                .join(', ')
+            }
             style={{ borderRadius: '4px' }}
             className="topic-select"
           >
-            {topics?.map((topic) => (
-              <MenuItem key={topic} value={topic}>
+            {topics?.map((topic: any) => (
+              <MenuItem key={topic.id} value={topic.id}>
                 <Checkbox
-                  checked={selectedTopic.indexOf(topic) > -1}
+                  checked={selectedTopicIds.includes(topic.id)}
                   sx={{
                     '&.Mui-checked': {
                       color: theme?.palette?.warning['300'],
                     },
                   }}
                 />
-                <ListItemText primary={topic} />
+                <ListItemText primary={topic.name} />
               </MenuItem>
             ))}
           </Select>
@@ -126,7 +153,7 @@ const SelectTopic: React.FC<TopicSubtopicProps> = ({
             {subtopics?.map((subTopic) => (
               <MenuItem key={subTopic} value={subTopic}>
                 <Checkbox
-                  checked={selectedSubValues.indexOf(subTopic) > -1}
+                  checked={selectedSubValues.includes(subTopic)}
                   sx={{
                     '&.Mui-checked': {
                       color: theme?.palette?.warning['300'],
