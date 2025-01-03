@@ -105,6 +105,14 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
+    if(data?.formData?.name)
+    {
+      data.formData.name = data?.formData?.name?.trim()
+    }
+    if(data?.formData?.father_name)
+    {
+      data.formData.father_name = data?.formData?.father_name?.trim()
+    }
     setTimeout(() => {
       setLearnerFormData(data.formData);
     });
