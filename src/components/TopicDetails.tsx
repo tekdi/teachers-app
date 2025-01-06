@@ -19,10 +19,16 @@ import router from 'next/router';
 import RequisitesAccordion from './RequisitesAccordion';
 import { showToastMessage } from './Toastify';
 import { useEffect, useState } from 'react';
+
+interface LearningResource {
+  topic: string;
+  subtopic: string;
+  [key: string]: any;
+}
 interface TopicDetailsProps {
-  topic: [];
-  subTopic: [];
-  learningResources: any;
+  topic: string[];
+  subTopic: string[];
+  learningResources: LearningResource[];
   handleOpen: any;
   handleRemove: any;
   eventStatus?: string;
@@ -38,13 +44,12 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const [contentData, setContentData] = useState([]);
+  const [contentData, setContentData] = useState<LearningResource[]>([]);
 
   useEffect(() => {
     const content = learningResources.filter((resource: any) => {
       return (
-        resource.topic === topic &&
-        subTopic.some((sub) => sub === resource.subtopic)
+        topic.includes(resource.topic) && subTopic.includes(resource.subtopic)
       );
     });
     if (content) {
