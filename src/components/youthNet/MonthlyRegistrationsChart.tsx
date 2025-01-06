@@ -31,7 +31,7 @@ const MonthlyRegistrationsChart: React.FC = () => {
       style={{ padding: '20px', background: '#ffffff', borderRadius: '8px' }}
     >
       <h3 style={{ fontWeight: 'bold', marginBottom: '10px' }}>
-        {t('YOUTHNET.DASHBOARD.MONTHLY_REGISTRATIONS_OVERVIEW')}
+        {t('YOUTHNET_DASHBOARD.MONTHLY_REGISTRATIONS_OVERVIEW')}
       </h3>
       <FormControl fullWidth style={{ marginBottom: '10px' }}>
         <Select

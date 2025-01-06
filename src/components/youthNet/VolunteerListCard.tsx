@@ -46,7 +46,7 @@ const VolunteerListCard: React.FC<CardProps> = ({
         <Box>
           <Typography variant="subtitle1">{title}</Typography>
           <Typography variant="body2" color="text.secondary">
-            {entries} {t('YOUTHNET.VOLUNTEERLIST.ENTRIES')}
+            {entries} {t('YOUTHNET_VOLUNTEERLIST.ENTRIES')}
           </Typography>
         </Box>
         <ArrowForwardIosIcon fontSize="small" color="action" />
@@ -70,7 +70,7 @@ const VolunteerListCard: React.FC<CardProps> = ({
           <Box component="span" sx={{ color: 'red' }}>
             <PriorityHighIcon />
           </Box>
-          {volunteerCount} {t('YOUTHNET.VOLUNTEERLIST.VOLUNTEERS_ASSIGNED')}
+          {volunteerCount} {t('YOUTHNET_VOLUNTEERLIST.VOLUNTEERS_ASSIGNED')}
         </Typography>
         <Box
           sx={{
