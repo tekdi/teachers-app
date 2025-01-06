@@ -661,22 +661,20 @@
     "OBSERVATION_NOT_STARTED_YET": "Survey not started yet",
     "EXPIRED": "Expired"
   },
-  "YOUTHNET": {
-    "SURVEY": {
+    "YOUTHNET_SURVEY": {
       "NEW_SURVEY": "New Survey",
       "ASSIGN_VOLUNTEERS_NOW": "Assign Volunteers Now",
       "REMIND_ME_LATER": "Remind Me Later",
       "NEW_SURVEY_HAS_BEEN_ADDED": "A new survey '{{surveyName}}' has been added and has been assigned to {{villageCount}} villages",
       "ASSIGN_VOLUNTEERS_TO_ENSURE": "Assign Volunteers to ensure they can access the survey"
     },
-    "DASHBOARD": {
+    "YOUTHNET_DASHBOARD": {
       "VILLAGES_MANAGED_BY_YOU": "Villages Managed by you : {{totalVillageCount}}",
       "MONTHLY_REGISTRATIONS_OVERVIEW": "Monthly Registrations Overview",
       "CLOSED_ON": "Closed on"
     },
-    "VOLUNTEERLIST": {
+    "YOUTHNET_VOLUNTEERLIST": {
       "ENTRIES": "Entries",
       "VOLUNTEERS_ASSIGNED": "Volunteers assigned"
     }
-  }
 }

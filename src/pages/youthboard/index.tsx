@@ -47,7 +47,7 @@ const index = () => {
       </Box>
       <Box ml={2}>
         <Typography>
-          {t('YOUTHNET.DASHBOARD.VILLAGES_MANAGED_BY_YOU', {
+          {t('YOUTHNET_DASHBOARD.VILLAGES_MANAGED_BY_YOU', {
             totalVillageCount: SURVEY_DATA.FIFTY_TWO,
           })}
         </Typography>
@@ -90,9 +90,9 @@ const index = () => {
         </Grid>
       </Box>
       <SimpleModal
-        modalTitle={t('YOUTHNET.SURVEY.NEW_SURVEY')}
-        primaryText={t('YOUTHNET.SURVEY.ASSIGN_VOLUNTEERS_NOW')}
-        secondaryText={t('YOUTHNET.SURVEY.REMIND_ME_LATER')}
+        modalTitle={t('YOUTHNET_SURVEY.NEW_SURVEY')}
+        primaryText={t('YOUTHNET_SURVEY.ASSIGN_VOLUNTEERS_NOW')}
+        secondaryText={t('YOUTHNET_SURVEY.REMIND_ME_LATER')}
         secondaryActionHandler={handleModalClose}
         primaryActionHandler={handleAddVolunteers}
         open={modalOpen}
@@ -114,7 +114,7 @@ const index = () => {
               mb: 1,
             }}
           >
-            {t('YOUTHNET.SURVEY.NEW_SURVEY_HAS_BEEN_ADDED', {
+            {t('YOUTHNET_SURVEY.NEW_SURVEY_HAS_BEEN_ADDED', {
               surveyName: SURVEY_DATA.CREATIVITY_MAHOTSAV,
               villageCount: SURVEY_DATA.TWELVE,
             })}
@@ -125,7 +125,7 @@ const index = () => {
               textAlign: 'center',
             }}
           >
-            {t('YOUTHNET.SURVEY.ASSIGN_VOLUNTEERS_TO_ENSURE')}
+            {t('YOUTHNET_SURVEY.ASSIGN_VOLUNTEERS_TO_ENSURE')}
           </Typography>
         </Box>
       </SimpleModal>

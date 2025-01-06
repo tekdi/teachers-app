@@ -666,20 +666,18 @@
     "EXPIRED": "समाप्त हो गया।"
   },
 
-  "YOUTHNET": {
-    "SURVEY": {
+    "YOUTHNET_SURVEY": {
       "NEW_SURVEY": "नया सर्वेक्षण",
       "ASSIGN_VOLUNTEERS_NOW": "स्वयंसेवकों को अभी असाइन करें",
       "REMIND_ME_LATER": "मुझे बाद में याद दिलाएं",
       "NEW_SURVEY_HAS_BEEN_ADDED": "एक नया सर्वेक्षण '{{surveyName}}' जोड़ा गया है और {{villageCount}} गांवों को असाइन किया गया है",
       "ASSIGN_VOLUNTEERS_TO_ENSURE": "यह सुनिश्चित करने के लिए स्वयंसेवकों को असाइन करें कि वे सर्वेक्षण तक पहुंच सकें"
     },
-    "DASHBOARD": {
+    "YOUTHNET_DASHBOARD": {
       "VILLAGES_MANAGED_BY_YOU": "आपके द्वारा प्रबंधित गांव : {{totalVillageCount}}"
     },
-    "VOLUNTEERLIST": {
+    "YOUTHNET_VOLUNTEERLIST": {
       "ENTRIES": "प्रविष्टियाँ",
       "VOLUNTEERS_ASSIGNED": "स्वयंसेवक सौंपे गए"
     }
-  }
 }

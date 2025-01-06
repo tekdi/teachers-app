@@ -40,7 +40,7 @@ function Surveys({ title, date }: SurveysProps) {
                     }}
                     className="one-line-text"
                 >
-                    {t('YOUTHNET.DASHBOARD.CLOSED_ON')} {date}
+                    {t('YOUTHNET_DASHBOARD.CLOSED_ON')} {date}
                 </Typography>
             </Box>
             <Box>
