@@ -122,7 +122,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
         setSelectedSessionId('');
       }
     }
-  }, []);
+  }, [t]);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newLocale = event.target.value;
