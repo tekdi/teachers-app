@@ -542,11 +542,10 @@ const CentersPage = () => {
                   ) && (
                       <CenterList
                         title="CENTERS.REGULAR_CENTERS"
-                        centers={filteredCenters.filter(
-                          (center) =>
-                            center.centerType?.toUpperCase() ===
-                            CenterType.REGULAR || center.centerType === ''
-                        )}
+                        
+                        centers={filteredCenters
+                          .filter((center) => center.centerType?.toUpperCase() === CenterType.REGULAR || center.centerType === '')
+                          .sort((a, b) => (a.cohortName || "").localeCompare(b.cohortName || ""))}
                         router={router}
                         theme={theme}
                         t={t}
@@ -560,10 +559,9 @@ const CentersPage = () => {
                   ) && (
                       <CenterList
                         title="CENTERS.REMOTE_CENTERS"
-                        centers={filteredCenters.filter(
-                          (center) =>
-                            center.centerType?.toUpperCase() === CenterType.REMOTE
-                        )}
+                        centers={filteredCenters
+                          .filter((center) => center.centerType?.toUpperCase() === CenterType.REMOTE)
+                          .sort((a, b) => (a.cohortName || "").localeCompare(b.cohortName || ""))}
                         router={router}
                         theme={theme}
                         t={t}

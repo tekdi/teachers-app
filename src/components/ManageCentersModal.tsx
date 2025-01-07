@@ -104,9 +104,12 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
     setSearchQuery(event.target.value);
   };
 
-  const filteredCenters = centers?.filter((center) =>
-    center?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
-  );
+  const filteredCenters = centers
+  ?.filter((center) =>
+    center?.name?.toLowerCase().includes(searchQuery?.toLowerCase())
+  )
+  ?.sort((a, b) => a.name.localeCompare(b.name));
+
 
   return (
     <div>

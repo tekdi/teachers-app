@@ -145,13 +145,16 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     }
   }, [router, setClassId, setIsAuthenticated, setUserId]);
   useEffect(() => {
-    const filteredData = cohortsData?.filter(
-      (cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE
-    );
+    const filteredData = cohortsData
+  ?.filter((cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE)
+  ?.sort((a: any, b: any) => a.name.localeCompare(b.name));
+
+const filteredManipulatedData = manipulatedCohortData
+  ?.filter((cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE)
+  ?.sort((a: any, b: any) => a.name.localeCompare(b.name));
+
     setFilteredCohortData(filteredData);
-    const filteredManipulatedData = manipulatedCohortData?.filter(
-      (cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE
-    );
+    
     setFilteredManipulatedCohortData(filteredManipulatedData);
 
     console.log(filteredData);

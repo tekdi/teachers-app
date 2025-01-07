@@ -55,7 +55,13 @@ const ObservationForms: React.FC = () => {
       try {
         const response = await targetSolution();
         setObservationData(response?.result?.data || []);
-        setFilteredObservationData(response?.result?.data || []);
+        const sortedData = [...response?.result?.data].sort((a, b) => {
+          const dateA = new Date(a.endDate);
+          const dateB = new Date(b.endDate);
+          return  dateA.getTime() - dateB.getTime() 
+        });
+    
+        setFilteredObservationData(sortedData|| []);
         // const data=response?.result?.data;
         // data[1].endDate = "2027-11-15T14:26:18.803Z";
         // setObservationData(data || []);
