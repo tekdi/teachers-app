@@ -115,17 +115,20 @@ const ObservationDetails = () => {
             let filteredData;
           if (localStorage.getItem('role') === Role.TEAM_LEADER) {
             if (searchInput !== '' && entity === ObservationEntityType.CENTER) {
-               filteredData = response[0]?.childData?.filter(
+               filteredData = response[0]?.childData
+              ?.filter(
                 (cohort: any) =>
                   cohort?.name?.toLowerCase()?.includes(searchInput?.toLowerCase()) &&
                   cohort?.status?.toLowerCase() === Status.ACTIVE
-              );
+              )
+              ?.sort((a: any, b: any) => a.name.localeCompare(b.name));
+            
 
               setMyCohortList(filteredData);
             } else {
                filteredData = response[0]?.childData?.filter(
                 (cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE
-              );
+              )?.sort((a: any, b: any) => a.name.localeCompare(b.name));;
 
               setMyCohortList(filteredData);
             }
@@ -154,7 +157,9 @@ const ObservationDetails = () => {
           if (searchInput !== '' || entity===ObservationEntityType.CENTER) {
             const filteredData = response[0]?.childData?.filter((cohort: any) =>
               cohort?.name?.toLowerCase().includes(searchInput?.toLowerCase())
-            );
+            )?.sort((a: any, b: any) => 
+            a?.name?.localeCompare(b?.name)
+          );
 
             setmyCohortListForCenter(filteredData);
           } else 

@@ -99,7 +99,7 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
         ({ name, status }) =>
           name.toLowerCase().includes(searchInput.toLowerCase()) &&
           status === Status.ACTIVE
-      )
+      ).sort((a, b) => a.name.localeCompare(b.name));
       // .sort((a, b) =>
       //   checkedCenters.includes(a.name) === checkedCenters.includes(b.name)
       //     ? 0

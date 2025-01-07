@@ -726,7 +726,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                   </Box>
                                 </Grid>
                               ))}
-                          {!users?.length && (
+                          {!filteredUsers?.length && (
                             <Box
                               sx={{
                                 m: '1.125rem',
@@ -738,7 +738,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                             >
                               <Typography
                                 style={{
-                                  fontWeight: 'bold',
                                   width: '100%',
                                   textAlign: 'center',
                                 }}

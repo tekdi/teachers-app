@@ -84,7 +84,8 @@ const CoursePlanner = () => {
     const subjects = localStorage.getItem('overallCommonSubjects');
     if (subjects) {
       try {
-        const parsedData = JSON.parse(subjects);
+        const parsedData = JSON.parse(subjects)?.sort();
+        console.log('parsedData',  typeof parsedData);
         setSubjects(parsedData);
       } catch (error) {
         console.error('Failed to parse subjects from localStorage:', error);
@@ -533,7 +534,7 @@ const CoursePlanner = () => {
             (course: any) => course.courseTypeName === tStore.type
           );
 
-          const matchingSubjects = matchedCourse ? matchedCourse.subjects : [];
+          const matchingSubjects = matchedCourse ? matchedCourse.subjects?.sort() : [];
 
           console.log(matchingSubjects);
           setSubjects(matchingSubjects);
