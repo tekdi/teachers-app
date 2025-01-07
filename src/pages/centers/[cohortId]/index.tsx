@@ -76,7 +76,10 @@ import { telemetryFactory } from '@/utils/telemetry';
 import useStore from '@/store/store';
 import { setTimeout } from 'timers';
 import useEventDates from '@/hooks/useEventDates';
-import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import {
+  getMyCohortFacilitatorList,
+  getMyCohortMemberList,
+} from '@/services/MyClassDetailsService';
 import useNotification from '@/hooks/useNotification';
 import UserId from '@/pages/learner/[userId]';
 
@@ -232,11 +235,11 @@ const CohortPage = () => {
       setCreateEvent(false);
     }
   }, [eventCreated, createEvent]);
- 
-  useEffect(() => {
-    setCohortFacilitatorListCount(cohortFacilitatorsCount);
-    setCohortLearnerListCount(cohortLearnerCount)
-  },[cohortFacilitatorsCount, cohortLearnerCount]);
+
+  // useEffect(() => {
+  //   setCohortFacilitatorListCount(cohortFacilitatorsCount);
+  //   setCohortLearnerListCount(cohortLearnerCount);
+  // }, [cohortFacilitatorsCount, cohortLearnerCount]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -335,6 +338,43 @@ const CohortPage = () => {
     }
   }, [cohortId]);
 
+  useEffect(() => {
+    const getCohortMemberList = async () => {
+      if (cohortId) {
+        try {
+          const page = 0;
+          const filters = { cohortId: cohortId };
+          const facilitatorResponse = await getMyCohortFacilitatorList({
+            filters,
+          });
+          if (facilitatorResponse?.result?.userDetails) {
+            setCohortFacilitatorListCount(
+              facilitatorResponse?.result?.userDetails.length
+            );
+          } else setCohortFacilitatorListCount(0);
+        } catch (error) {
+          setCohortFacilitatorListCount(0);
+        }
+        try {
+          const filters = { cohortId: cohortId };
+
+          const learnerResponse = await getMyCohortMemberList({
+            filters,
+          });
+          if (learnerResponse?.result?.userDetails) {
+            setCohortLearnerListCount(
+              learnerResponse?.result?.userDetails.length
+            );
+          } else {
+            setCohortLearnerListCount(0);
+          }
+        } catch (error) {
+          setCohortLearnerListCount(0);
+        }
+      }
+    };
+    getCohortMemberList();
+  }, [cohortId, reloadState]);
   useEffect(() => {
     const getSessionsData = async () => {
       try {
@@ -561,6 +601,7 @@ const CohortPage = () => {
 
   const handleLearnerAdded = () => {
     setIsLearnerAdded(true);
+    setReloadState(!reloadState);
   };
 
   const handleEditEvent = () => {
@@ -743,13 +784,13 @@ const CohortPage = () => {
           )}
 
           <Tab value={2} label={t('COMMON.LEARNER_LIST')+ 
-    (tab === "2" ?"("+ cohortLearnerListCount+")": "")} />
+    (cohortLearnerListCount!==undefined ?"("+ cohortLearnerListCount+")": "")} />
           {role === Role.TEAM_LEADER && (
             <Tab 
   value={3} 
   label={
     t('COMMON.FACILITATOR_LIST') + 
-    (tab === "3" ? "("+cohortFacilitatorListCount+")": "")
+    (cohortFacilitatorListCount!==undefined ? "("+cohortFacilitatorListCount+")": "")
   } 
 />
           )}

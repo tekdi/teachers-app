@@ -564,7 +564,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                       </Box>
                     ) : (
                       <>
-                        {
+                        {/* {
                           age &&
                           <>
                             <Box
@@ -583,7 +583,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                               style={{ fontSize: '8px', color: '#CDC5BD' }}
                             />
                           </>
-                        }
+                        } */}
                         <Box
                           sx={{
                             fontSize: '14px',

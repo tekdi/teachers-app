@@ -17,7 +17,10 @@ const fetchCohortMemberList = async ({
       limit,
       offset: page,
       filters,
-    });
+      "sort": [
+        "name",
+        "asc"
+    ],    });
     console.log('data', response?.data);
     return response?.data;
   } catch (error) {
