@@ -8,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   LabelList,
+  Legend,
 } from 'recharts';
 import {
   Radio,
@@ -242,7 +243,9 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                 <XAxis
                   type="number"
                   tickFormatter={(value: any) => `${value}%`}
-                  reversed={isRTL}
+                  height={0}
+                  reversed={isRTL ? true : false}
+                  domain={[0, 100]}
                   
                 />
                 <YAxis
@@ -267,6 +270,23 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
               </BarChart>
             </ResponsiveContainer>
           </Box>
+          <ResponsiveContainer width="100%" height={32}>
+            <BarChart
+              layout="vertical"
+              data={[{ name: '', Attendance: 0 }]}
+              margin={{ left: isMobile ? 60 : 130, right: isMobile ? 0 : 5 }}
+              style={{ direction: isRTL ? 'rtl' : 'ltr' }}
+            >
+              <XAxis
+                type="number"
+                // tickFormatter={(value: any) => `${value}`}
+                domain={[0, 100]}
+              />
+              <Tooltip formatter={(value: number) => `${value}%`} />
+              <LabelList dataKey="Attendance" content={renderCustomLabel} />
+              <Legend />
+            </BarChart>
+          </ResponsiveContainer>
         </>
       )}
 
