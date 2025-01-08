@@ -1,9 +1,11 @@
+import Header from '@/components/Header';
 import JotFormEmbed from '@/components/JotFormEmbed';
+import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-const PageNotFound = () => {
+const Feedback = () => {
     const { t } = useTranslation();
     const queryParams = {
         username: "JohnDoe",
@@ -13,16 +15,23 @@ const PageNotFound = () => {
 
     return (
         <>
+          <Header />
+          <Box ml={'1rem'}>
             <Typography
                 mt={4}
                 variant="h2"
-                fontSize="20px"
-                lineHeight="30px"
-                fontWeight="600"
-                color="black"
+                color= 'black'
             >
-                {t('COMMON.PAGE_NOT_FOUND')}
+                {t('COMMON.WE_VALUE_FEEDBACK')}
             </Typography>
+            <Typography
+                mt={4}
+                variant="h5"
+                marginY={'0.2rem'}
+            >
+                {t('COMMON.SHARE_THOUGHTS')}
+            </Typography>
+            </Box>
             <JotFormEmbed formId="250065095006449" queryParams={queryParams} />
 
         </>
@@ -38,4 +47,4 @@ export async function getStaticProps({ locale }: any) {
     };
 }
 
-export default PageNotFound;
+export default Feedback;

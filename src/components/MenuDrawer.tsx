@@ -196,6 +196,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 
   const isAssessments = router.pathname.includes('/assessments');
   const isBoard = router.pathname.includes('/board-enrollment');
+  const isFeeback = router.pathname.includes('/feedback');
 
   return (
     <Drawer
@@ -574,6 +575,41 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               }}
             >
               {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
+            </Button>
+          </Box>
+        )}
+        {isActiveYear && !tenantName && (
+          <Box sx={{ marginTop: '18px' }}> 
+            <Button
+              className="fs-14"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                background: isFeeback
+                  ? theme.palette.primary.main
+                  : 'transparent',
+                gap: '10px',
+                padding: isFeeback
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isFeeback ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isFeeback ? '600' : 500,
+                '&:hover': {
+                  background: isFeeback
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+              }}
+              startIcon={
+                <Image src={board} alt="feedback-icon" width={24} height={24} />
+              }
+              onClick={() => {
+                router.push(`/feedback`);
+              }}
+            >
+              {t('COMMON.FEEBACK')}
             </Button>
           </Box>
         )}

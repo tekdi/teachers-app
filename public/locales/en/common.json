@@ -150,7 +150,10 @@
     "MORE_THAN": "More than {{range}} %",
     "BETWEEN": "Between {{lowerLimit}} - {{upperLimit}} %",
     "LESS_THAN": "Less than {{range}} %",
-    "MODIFY_CENTER_ATTENDANCE": "Modify Center Attendance"
+    "MODIFY_CENTER_ATTENDANCE": "Modify Center Attendance",
+    "FEEBACK":"Feeback",
+    "WE_VALUE_FEEDBACK":"We Value Your Feedback",
+    "SHARE_THOUGHTS": "Share your thoughts and help us improve our services"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
