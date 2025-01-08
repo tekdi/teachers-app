@@ -196,7 +196,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 
   const isAssessments = router.pathname.includes('/assessments');
   const isBoard = router.pathname.includes('/board-enrollment');
-  const isFeeback = router.pathname.includes('/feedback');
+  const isSupportRequest = router.pathname.includes('/support-request');
 
   return (
     <Drawer
@@ -586,17 +586,17 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 width: '100%',
                 display: 'flex',
                 justifyContent: 'flex-start',
-                background: isFeeback
+                background: isSupportRequest
                   ? theme.palette.primary.main
                   : 'transparent',
                 gap: '10px',
-                padding: isFeeback
+                padding: isSupportRequest
                   ? '16px 18px !important'
                   : '0px 18px !important',
-                color: isFeeback ? '#2E1500' : theme.palette.warning.A200,
-                fontWeight: isFeeback ? '600' : 500,
+                color: isSupportRequest ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isSupportRequest ? '600' : 500,
                 '&:hover': {
-                  background: isFeeback
+                  background: isSupportRequest
                     ? theme.palette.primary.main
                     : 'transparent',
                 },
@@ -606,10 +606,10 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 <Image src={board} alt="feedback-icon" width={24} height={24} />
               }
               onClick={() => {
-                router.push(`/feedback`);
+                router.push(`/support-request`);
               }}
             >
-              {t('COMMON.FEEBACK')}
+              {t('COMMON.SUPPORT_REQUEST')}
             </Button>
           </Box>
         )}
