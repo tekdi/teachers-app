@@ -1,7 +1,7 @@
 import CourseAccordion from '@/components/CourseAccordion';
 import Header from '@/components/Header';
 import useCourseStore from '@/store/coursePlannerStore';
-import { ResourcesType } from '@/utils/app.constant';
+import { ResourcesType, Telemetry } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import { Box, Tab, Tabs } from '@mui/material';
@@ -12,6 +12,7 @@ import router from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useDirection } from '../hooks/useDirection';
 import { RequisiteType } from '../../app.config';
+import { telemetryFactory } from '@/utils/telemetry';
 
 const TopicDetailView = () => {
   const [value, setValue] = React.useState(1);
@@ -42,6 +43,23 @@ const TopicDetailView = () => {
   };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    const windowUrl = window.location.pathname;
+      const cleanedUrl = windowUrl.replace(/^\//, '');
+      const env = cleanedUrl.split("/")[0];
+    const telemetryInteract = {
+      context: {
+        env: env,
+        cdata: [],
+      },
+      edata: {
+        id:
+          newValue === 1 ? 'change-tab-to-facilitator' : 'change-tab-to-learner',
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
     setValue(newValue);
   };
 

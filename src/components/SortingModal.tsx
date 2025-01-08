@@ -15,6 +15,8 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import ModalComponent from './Modal';
 import { avgLearnerAttendanceLimit, lowLearnerAttendanceLimit } from '../../app.config';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '../utils/telemetry';
 
 interface sortCardProps {
   handleSorting?: (
@@ -140,6 +142,23 @@ const SortingModal: React.FC<sortCardProps> = ({
           sortByStages
         ],
       });
+      const windowUrl = window.location.pathname;
+      const cleanedUrl = windowUrl.replace(/^\//, '');
+      const env = cleanedUrl.split("/")[0];
+      const telemetryInteract = {
+        context: {
+          env: env,
+          cdata: [],
+        },
+        edata: {
+          id: 'sort-by-applied',
+
+          type: Telemetry.CLICK,
+          subtype: '',
+          pageid: cleanedUrl,
+        },
+      };
+      telemetryFactory.interact(telemetryInteract);
     }
     handleCloseModal();
   };
