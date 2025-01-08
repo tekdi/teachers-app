@@ -20,6 +20,8 @@ import ConfirmationModal from './ConfirmationModal';
 import StyledMenu from './StyledMenu';
 import { UpdateDeviceNotification } from '@/services/NotificationService';
 import {  getUserId } from '../services/ProfileService';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface HeaderProps {
   toggleDrawer?: (newOpen: boolean) => () => void;
@@ -83,6 +85,23 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
 
     const tenantid = localStorage.getItem('tenantId')
     const deviceID = localStorage.getItem('deviceID');
+    const windowUrl = window.location.pathname;
+    const cleanedUrl = windowUrl.replace(/^\//, '');
+    const env = cleanedUrl.split("/")[0];
+    const telemetryInteract = {
+      context: {
+        env: env,
+        cdata: [],
+      },
+      edata: {
+        id: 'logout-user',
+
+        type: Telemetry.CLICK,
+        subtype: '',
+        pageid: cleanedUrl,
+      },
+    };
+    telemetryFactory.interact(telemetryInteract);
     if (deviceID) {
       try {
         
