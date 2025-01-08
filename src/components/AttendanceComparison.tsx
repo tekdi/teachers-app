@@ -297,6 +297,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                   tickFormatter={(value: any) => `${value}%`}
                   height={0}
                   reversed={isRTL ? true : false}
+                  domain={[0, 100]}
                 />
                 <YAxis
                   type="category"
