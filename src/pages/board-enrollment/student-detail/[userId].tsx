@@ -18,7 +18,7 @@ import { logEvent } from '@/utils/googleAnalytics';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import HorizontalLinearStepper from '@/components/HorizontalLinearStepper';
-import { FeesStepBoards } from '@/utils/app.constant';
+import { FeesStepBoards, Telemetry } from '@/utils/app.constant';
 import { useDirection } from '../../../hooks/useDirection';
 import BoardEnrollmentProfile from '@/components/BoardEnrollmentProfile';
 import { GetStaticPaths } from 'next';
@@ -40,6 +40,7 @@ import useStore from '@/store/store';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { showToastMessage } from '../../../components/Toastify';
+import { telemetryFactory } from '@/utils/telemetry';
 
 interface BoardEnrollment {
   boardEnrollmentData: {
@@ -435,6 +436,23 @@ const BoardEnrollmentDetail = () => {
       console.log('API Response:', response);
   
       if (response && response.params.status === 'successful' && response.responseCode === 201) {
+        const windowUrl = window.location.pathname;
+        const cleanedUrl = windowUrl.replace(/^\//, '');
+        const env = cleanedUrl.split("/")[0];
+        const telemetryInteract = {
+          context: {
+            env: env,
+            cdata: [],
+          },
+          edata: {
+            id: `endrolled-student(${userId})-to step ` + nextStep,
+  
+            type: Telemetry.CLICK,
+            subtype: '',
+            pageid: cleanedUrl,
+          },
+        };
+        telemetryFactory.interact(telemetryInteract);
         // API successful, update step state to nextStep
         setActiveStep(nextStep);
       } else {
