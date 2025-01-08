@@ -29,6 +29,7 @@ import NoDataFound from './common/NoDataFound';
 import { useDirection } from '../hooks/useDirection';
 import { AttendanceAPILimit } from '../../app.config';
 import { telemetryFactory } from '@/utils/telemetry';
+import { Rtt } from '@mui/icons-material';
 
 interface AttendanceComparisonProps {
   blockName: string;
@@ -179,10 +180,11 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
         x={x + offsetX}
         y={y + height / 2}
         fill={theme.palette.warning['300']}
-        textAnchor={width < 40 ? 'start' : 'middle'} // Adjust anchor based on bar width
+        textAnchor={width < 100 ? 'start' : 'middle'} // Adjust anchor based on bar width
         dominantBaseline="middle"
         fontSize={15}
         fontWeight="bold" // Make the font bold
+        direction={isRTL ? 'rtl' :'ltr'}
       >
         {value}%
       </text>
@@ -324,15 +326,19 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
             <BarChart
               layout="vertical"
               data={[{ name: '', Attendance: 0 }]}
-              margin={{ left: isMobile ? 60 : 130, right: isMobile ? 0 : 5 }}
+              margin={{
+                left: isMobile ? (isRTL ? 0 : 60) : (isRTL ? 60 : 130),
+                right: isMobile ? (isRTL ? 60 : 0) : (isRTL ? 130 : 60),
+              }}
               style={{ direction: isRTL ? 'rtl' : 'ltr' }}
             >
               <XAxis
                 type="number"
                 // tickFormatter={(value: any) => `${value}`}
                 domain={[0, 100]}
+                reversed={isRTL ? true : false}
               />
-              <Tooltip formatter={(value: number) => `${value}%`} />
+              <Tooltip formatter={(value: number) => `${value}%`}  />
               <LabelList dataKey="Attendance" content={renderCustomLabel} />
               <Legend />
             </BarChart>
