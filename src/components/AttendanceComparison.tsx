@@ -227,13 +227,12 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
               : {averageAttendance.toFixed(2)}%
             </Typography>
           </Box>
-          <Box sx={{ maxHeight: '400px', overflowY: 'scroll' }}>
+          <Box sx={{ maxHeight: '400px', overflowY: 'scroll', overflowX:'hidden' }}>
             <ResponsiveContainer width="100%" height={data.length * 70}>
               <BarChart
                 layout="vertical"
                 data={data}
                 margin={{
-                  top: 5,
                   left: isMobile ? 0 : isRTL ? 0 : 70,
                   right: isMobile ? 0 : isRTL ? 70 : 5,
                 }}
@@ -274,13 +273,17 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
             <BarChart
               layout="vertical"
               data={[{ name: '', Attendance: 0 }]}
-              margin={{ left: isMobile ? 60 : 130, right: isMobile ? 0 : 5 }}
+              margin={{
+                left: isMobile ? (isRTL ? 0 : 60) : (isRTL ? 60 : 130),
+                right: isMobile ? (isRTL ? 60 : 0) : (isRTL ? 130 : 60),
+              }}
               style={{ direction: isRTL ? 'rtl' : 'ltr' }}
             >
               <XAxis
                 type="number"
                 // tickFormatter={(value: any) => `${value}`}
                 domain={[0, 100]}
+                reversed={isRTL ? true : false}
               />
               <Tooltip formatter={(value: number) => `${value}%`} />
               <LabelList dataKey="Attendance" content={renderCustomLabel} />
