@@ -73,7 +73,6 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
   ];
 
   const handleRadioChange = (value: string) => {
-    console.log(value);
     setSelectedValue(value);
   };
 

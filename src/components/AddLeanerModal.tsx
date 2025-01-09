@@ -70,7 +70,6 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
   useEffect(() => {
     if (formResponse) {
-      console.log('formResponse', formResponse);
       const { schema, uiSchema } = GenerateSchemaAndUiSchema(formResponse, t);
       setSchema(schema);
       setUiSchema(uiSchema);
@@ -117,10 +116,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       setLearnerFormData(data.formData);
     });
 
-    console.log('Form data submitted:', data.formData);
 
     const formData = data.formData;
-    console.log('Form data submitted:', formData);
+    
   };
 
   useEffect(() => {
@@ -130,7 +128,6 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   }, [learnerFormData]);
 
   const handleButtonClick = async () => {
-    console.log('Form data:', formData);
     setSubmittedButtonStatus(true);
     if (learnerFormData) {
       const schemaProperties = schema.properties;
@@ -160,10 +157,6 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       Object.entries(learnerFormData).forEach(([fieldKey, fieldValue]) => {
         const fieldSchema = schemaProperties[fieldKey];
         const fieldId = fieldSchema?.fieldId;
-        console.log(
-          `FieldID: ${fieldId}, FieldValue: ${fieldValue}, type: ${typeof fieldValue}`
-        );
-
         if (fieldId === null || fieldId === 'null') {
           if (typeof fieldValue !== 'object') {
             apiBody[fieldKey] = fieldValue;
@@ -202,12 +195,11 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           fieldId: fieldData?.state?.districtId,
           value: [fieldData?.state?.districtCode],
         });
-        console.log(apiBody);
+        
       }
 
       try {
         if (isEditModal && userId && cohortId) {
-          console.log('apiBody', apiBody);
           const userData = {
             name: apiBody.name,
             mobile: apiBody.mobile,
@@ -215,7 +207,6 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             username: apiBody.username,
           };
           const customFields = apiBody.customFields;
-          console.log(customFields);
           const object = {
             userData: userData,
             customFields: customFields,

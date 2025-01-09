@@ -148,7 +148,6 @@ const CoursePlannerDetail = () => {
           });
         }
       });
-      console.log('completionPercentage:', completionPercentage);
       setCompletionPercentage(completionPercentage);
     };
     if (userProjectDetails?.tasks?.length) {
@@ -327,7 +326,6 @@ const CoursePlannerDetail = () => {
       setSelectedSubtopics([]);
       toggleDrawer(false)();
 
-      console.log(response);
     } catch (err) {
       console.log(err);
     }
@@ -381,7 +379,6 @@ const CoursePlannerDetail = () => {
       });
       setSelectedResource(subtopic?.name);
       setResources(resources);
-      console.log('response===>', resources);
     } catch (error) {
       console.error('error', error);
     }

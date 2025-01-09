@@ -127,7 +127,6 @@ function AssessmentsDetails() {
                       identifier: item?.IL_UNIQUE_ID,
                     };
                   });
-                  console.log('assessmentIds', assessmentIds);
                   setAssessmentList(assessmentIds);
                 } else {
                   setAssessmentList([]);
@@ -174,7 +173,6 @@ function AssessmentsDetails() {
           // batchId: centerId as string,
         };
         const assessmentStatus = await getAssessmentStatus(options);
-        console.log('assessmentStatus', assessmentStatus);
         if (assessmentStatus?.length) {
           const info = assessmentStatus[0];
 
@@ -210,7 +208,6 @@ function AssessmentsDetails() {
             setSubject(assessmentList);
           }
           setAssessmentInfo(assessmentStatus[0]);
-          console.log('userList', assessmentStatus);
         }
         setIsLoading(false);
       } catch (e: any) {
@@ -230,7 +227,6 @@ function AssessmentsDetails() {
           queryKey: ['userRead', params.userId],
           queryFn: () => getUserDetails(params.userId),
         });
-        console.log('response', response);
         if (response?.result?.userData) {
           setUserDetails(response?.result?.userData);
         }

@@ -127,7 +127,6 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       setSelectedValue('');
       setCancelClicked(false);
     } else {
-      // console.log('applied', selectedIndex, selectedValue);
       setAppliedOption(selectedValue);
       setAppliedIndex(selectedIndex);
       ReactGA.event('date-range-pop-up-clicked', {
@@ -148,7 +147,6 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
       telemetryFactory.interact(telemetryInteract);
       const values = getDateRange(selectedIndex);
       const { toDate, fromDate } = values;
-      // console.log(toDate, fromDate);
       onDateRangeSelected({ fromDate, toDate });
       toggleModal();
     }

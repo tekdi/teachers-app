@@ -171,9 +171,7 @@ export const getContentHierarchy = async ({
   const apiUrl: string = `${URL_CONFIG.API.CONTENT_HIERARCHY}/${doId}`;
 
   try {
-    console.log('Request data', apiUrl);
     const response = await get(apiUrl);
-    // console.log('response', response);
     return response;
   } catch (error) {
     console.error('Error in getContentHierarchy Service', error);

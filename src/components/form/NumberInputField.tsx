@@ -5,7 +5,6 @@ const NumberInputField = (props: any) => {
   const { onChange, ...rest } = props;
   const [error, setError] = useState('');
 
-  console.log('NumberInputField', props);
   const handleChange = (event: any) => {
     const value = event.target.value;
 

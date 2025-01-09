@@ -55,7 +55,6 @@ const WeekDays: React.FC<WeekDaysProps> = ({
     //     ? prev.filter((day) => day !== index)
     //     : [...prev, index]
     // );
-    console.log(index);
     const newSelectedDays = localSelectedDays.includes(index)
       ? localSelectedDays.filter((day) => day !== index)
       : [...localSelectedDays, index];
@@ -76,7 +75,6 @@ const WeekDays: React.FC<WeekDaysProps> = ({
   // const selectedWeekDays = selectedDays.map(
   //   (dayIndex) => fullDays[dayIndex]
   // );
-  // console.log('Selected days:', selectedWeekDays);
 
   // if (onSelectionChange) {
   //   onSelectionChange(selectedWeekDays);

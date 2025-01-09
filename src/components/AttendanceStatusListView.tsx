@@ -102,7 +102,6 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
       if (userId) {
         setLoading(true);
         const response = await getUserDetails(userId, true);
-        console.log('response for popup', response?.result);
         if (response?.responseCode === 200) {
           const data = response?.result;
           if (data) {

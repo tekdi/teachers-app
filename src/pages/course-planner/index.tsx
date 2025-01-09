@@ -85,7 +85,6 @@ const CoursePlanner = () => {
     if (subjects) {
       try {
         const parsedData = JSON.parse(subjects)?.sort();
-        console.log('parsedData',  typeof parsedData);
         setSubjects(parsedData);
       } catch (error) {
         console.error('Failed to parse subjects from localStorage:', error);
@@ -120,7 +119,6 @@ const CoursePlanner = () => {
           const boardField = cohortDetails?.customFields?.find(
             (field: any) => field?.label === 'BOARD'
           );
-          console.log(boardField?.value);
           setBoardNew(boardField?.value);
 
           const stringFields = [
@@ -162,13 +160,12 @@ const CoursePlanner = () => {
         const response = await axios.get(url);
         const boardData = response.data;
 
-        console.log(boardData?.result?.framework);
         const frameworks = boardData?.result?.framework;
 
         // Get states options
         const getStates = getOptionsByCategory(frameworks, 'state');
 
-        console.log(getStates);
+     
 
         // Set the frameworks state
         setFramework(frameworks);
@@ -178,16 +175,13 @@ const CoursePlanner = () => {
         );
 
         if (matchingState) {
-          console.log(matchingState);
 
           setStateOption([matchingState]);
           setStateAssociations(matchingState?.associations);
-          console.log('FIRST TIME API', matchingState);
 
           // Get boards options
           const getBoards = await getOptionsByCategory(frameworks, 'board');
           if (getBoards && matchingState) {
-            console.log('FIRST TIME API', getBoards);
 
             const commonBoards = await getBoards
               .filter((item1: { code: any }) =>
@@ -202,7 +196,6 @@ const CoursePlanner = () => {
                 associations: item1.associations,
               }));
 
-            console.log('FIRST TIME API', commonBoards);
             setBoardOptions(commonBoards);
 
             // Fetch medium options
@@ -214,13 +207,10 @@ const CoursePlanner = () => {
                 associations: term?.associations,
               }));
 
-            console.log('FIRST TIME API', commonBoards);
-            console.log(boardNew);
             const boardAssociations =
               (await commonBoards?.find((item: any) => item?.name === boardNew)
                 ?.associations) || [];
             setBoardAssociations(boardAssociations);
-            console.log('FIRST TIME API', boardAssociations);
 
             // Filter medium based on state
             const commonMediumInState = await getMedium
@@ -255,15 +245,12 @@ const CoursePlanner = () => {
                 associations: item1?.associations,
               }));
 
-            console.log(`commonMediumInState`, commonMediumInState);
-            console.log(`commonMediumInBoard`, commonMediumInBoard);
 
             const commonMediumData = findCommonAssociations(
               commonMediumInState,
               commonMediumInBoard
             );
 
-            console.log(commonMediumData);
 
             setMediumOptions(commonMediumData);
 
@@ -276,7 +263,6 @@ const CoursePlanner = () => {
                 associations: term?.associations,
               }));
 
-            console.log(getGrades);
 
             const mediumAssociations = frameworks?.categories
               ?.find((category: any) => category?.code === 'medium')
@@ -285,7 +271,6 @@ const CoursePlanner = () => {
                 code: term?.code,
                 associations: term?.associations,
               }));
-            console.log('boardAssociations', mediumAssociations);
             setMediumAssociations(mediumAssociations);
 
             const commonGradeInState = await getGrades
@@ -335,9 +320,7 @@ const CoursePlanner = () => {
                 code: item1?.code,
                 associations: item1?.associations,
               }));
-            console.log(`commonGradeInBoards`, commonGradeInBoard);
-            console.log(`commonGradeInState`, commonGradeInState);
-            console.log(`commonGradeInMedium`, commonGradeInMedium);
+
 
             const commonGradeInStateBoard = findCommonAssociations(
               commonGradeInState,
@@ -347,7 +330,6 @@ const CoursePlanner = () => {
               commonGradeInStateBoard,
               commonGradeInMedium
             );
-            console.log(overAllCommonGrade);
 
             setGradeOptions(overAllCommonGrade);
 
@@ -356,7 +338,6 @@ const CoursePlanner = () => {
               tStore?.grade
             );
 
-            console.log(gradeAssociations);
 
             setGradeAssociations(gradeAssociations);
 
@@ -368,7 +349,6 @@ const CoursePlanner = () => {
                 code: term?.code,
                 associations: term?.associations,
               }));
-            console.log(type);
 
             const associationsMap = {
               state: stateAssociations,
@@ -409,7 +389,6 @@ const CoursePlanner = () => {
               commonType2Data
             );
 
-            console.log(`commonTypeOverall`, commonType3Data);
             setTypeOptions(commonType3Data);
           }
         } else {
@@ -466,7 +445,6 @@ const CoursePlanner = () => {
         const board = tStore?.board;
 
         if (StateName && medium && grade && board) {
-          console.log(StateName, medium, grade, board);
           const getStates = getOptionsByCategory(framework, 'state');
           const matchState = getStates.find(
             (item: any) =>
@@ -474,9 +452,7 @@ const CoursePlanner = () => {
           );
 
           const getBoards = getOptionsByCategory(framework, 'board');
-          console.log('getBoards', getBoards);
           const matchBoard = getBoards.find((item: any) => item.name === board);
-          console.log('matchBoard', matchBoard);
           const getMedium = getOptionsByCategory(framework, 'medium');
           const matchMedium = getMedium.find(
             (item: any) => item.name === medium
@@ -514,13 +490,11 @@ const CoursePlanner = () => {
                     (item: any) => item.code === assoc.code
                   )?.length
               );
-              console.log(commonAssociations);
               const getSubjects = getOptionsByCategory(framework, 'subject');
               const subjectAssociations = commonAssociations?.filter(
                 (assoc: any) =>
                   getSubjects.map((item: any) => assoc.code === item?.code)
               );
-              console.log(subjectAssociations);
               return {
                 courseTypeName: courseType?.name,
                 courseType: courseType?.code,
@@ -536,7 +510,6 @@ const CoursePlanner = () => {
 
           const matchingSubjects = matchedCourse ? matchedCourse.subjects?.sort() : [];
 
-          console.log(matchingSubjects);
           setSubjects(matchingSubjects);
           localStorage.setItem(
             'overallCommonSubjects',

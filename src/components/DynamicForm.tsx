@@ -96,7 +96,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
   function transformErrors(errors: any) {
     console.log('errors', errors);
-    console.log('schema', schema);
     const currentYearPattern = new RegExp(getCurrentYearPattern());
     const emailPattern = new RegExp(getEmailPattern());
 
@@ -255,7 +254,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
   function handleChange(event: any) {
     const sanitizedData = sanitizeFormData(event.formData);
-    console.log('Form data changed:', sanitizedData);
     onChange({ ...event, formData: sanitizedData });
   }
 

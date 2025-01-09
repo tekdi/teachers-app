@@ -30,8 +30,6 @@ const FormButtons: React.FC<IFormButtons> = ({
       ? t('COMMON.CREATE')
       : t('GUIDE_TOUR.NEXT');
 
-  console.log(isCreateCentered);
-
   return (
     <>
       <Divider />

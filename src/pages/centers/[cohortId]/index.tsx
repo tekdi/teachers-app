@@ -216,7 +216,6 @@ const CohortPage = () => {
   const { getNotification } = useNotification();
 
   const handleSchedule = async () => {
-    console.log('handleSchedule called');
     setCreateEvent((prev) => !prev);
 
     setTimeout(() => {
@@ -511,7 +510,6 @@ const CohortPage = () => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-    console.log(newValue);
     const windowUrl = window.location.pathname;
     const cleanedUrl = windowUrl.replace(/^\//, '');
     const telemetryInteract = {

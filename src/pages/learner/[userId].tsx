@@ -213,12 +213,10 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
             initialFormData[item.name] = userData[item.name];
           }
         } else if (item?.type === 'numeric') {
-          console.log(item?.name);
           initialFormData[item.name] = Number(userData[item.name]);
         } else if (item?.type === 'text' && userData[item.name]) {
           initialFormData[item.name] = String(userData[item.name]);
         } else {
-          // console.log(item.name);
           if (userData[item.name]) {
             initialFormData[item.name] = userData[item.name];
           }
@@ -231,7 +229,6 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         }
       }
     });
-    console.log('initialFormData', initialFormData);
     return initialFormData;
   };
 
@@ -242,8 +239,6 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         FormContext.USERS,
         FormContextType.STUDENT
       );
-      console.log('response', response);
-      console.log('formFields', formFields);
       setFormData(mapFields(formFields, response?.result));
     } catch (error) {
       console.error('Error fetching data or initializing form:', error);
@@ -333,7 +328,6 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
               }
               const fieldIdToValueMap: { [key: string]: string } =
                 mapFieldIdToValue(fields);
-              console.log(`coreFieldData`, coreFieldData);
 
               const fetchFormData = async () => {
                 try {
@@ -341,7 +335,6 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                     FormContext.USERS,
                     FormContextType.STUDENT
                   );
-                  console.log('response', response);
                   if (response) {
                     const mergeData = (
                       fieldIdToValueMap: { [key: string]: string },
@@ -374,7 +367,6 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                       fieldIdToValueMap,
                       response
                     );
-                    console.log(`mergedProfileData`, mergedProfileData);
                     if (mergedProfileData) {
                       // const nameField = mergedProfileData.fields.find(
                       //   (field: { name: string }) => field.name === 'name'

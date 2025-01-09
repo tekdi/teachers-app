@@ -6,7 +6,6 @@ const USE_MOCK = MOCK_SURVEY_CONFIG.surveyAvailable;
 
 export const fetchSurveyData = async (): Promise<boolean> => {
   if (USE_MOCK) {
-    console.log('Using mock survey data.');
     return MOCK_SURVEY_CONFIG.surveyAvailable;
   }
 

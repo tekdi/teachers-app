@@ -37,7 +37,6 @@ const EditForgotPassword = () => {
     
     try {
       const response = await resetPassword(newPassword);
-      console.log(response);
       setForgotPassword(true);
       const telemetryInteract = {
         context: {

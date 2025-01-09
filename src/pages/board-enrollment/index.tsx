@@ -137,7 +137,6 @@ const BoardEnrollment = () => {
         queryFn: () =>
           getFormRead(FormContext.COHORT_MEMBER, FormContextType.COHORT_MEMBER),
       });
-      console.log('response', response);
       return response;
     } catch (error) {
       console.error('Error fetching form data:', error);
@@ -154,7 +153,6 @@ const BoardEnrollment = () => {
       const members = await fetchMemberList(classId);
       const filteredMembers = filterMembersByDate(members);
       const formattedMembers = formatMemberData(filteredMembers);
-      console.log('centerDetails', formattedMembers);
       // setDisplayStudentList(formattedMembers);
       setTotalLearners(formattedMembers.length);
       if (formattedMembers.length === 0) {
@@ -177,8 +175,6 @@ const BoardEnrollment = () => {
         };
 
         const resultData = extractFieldData(formData);
-        console.log('memberdata', formattedMembers);
-        console.log(`formData`, resultData);
         const updatedMemberData = updateFormattedMember(
           formattedMembers,
           resultData
@@ -206,7 +202,6 @@ const BoardEnrollment = () => {
         const processedData = checkStageCompletion(updatedMemberData);
         setBoardEnrollmentList(processedData);
         setDisplayStudentList(processedData);
-        console.log('processedData!!', processedData);
         setBoardEnrollmentData(processedData);
         const stageCounts = calculateStageCounts(processedData);
         setStagesCount(stageCounts);

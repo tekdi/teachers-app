@@ -159,7 +159,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
             queryFn: () => getMyUserList({ limit, page, filters, fields }),
           });
-          console.log('facilitator');
           const facilitatorList = resp.result?.getUserDetails;
 
           if (!facilitatorList || facilitatorList?.length === 0) {
@@ -209,7 +208,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           );
 
           setTimeout(() => {
-            console.log('extractedData', extractedData);
 
             setUsers(extractedData);
             setFilteredUsers(extractedData);
@@ -255,7 +253,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
         ) || [t('ATTENDANCE.NO_CENTERS_ASSIGNED')];
         setCenters(centerNames);
         setSelectedUser(user);
-        console.log(user);
       }
 
       if (
@@ -275,7 +272,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       setUserId(userId);
 
       const cohortList = await getCohortList(userId);
-      console.log('Cohort List:', cohortList);
 
       const hasActiveCohorts =
         cohortList &&
@@ -335,7 +331,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           const cohortList = await getCohortList(
             isFromFLProfile ? teacherUserId ?? '' : selectedUser.userId
           );
-          console.log('Cohort List:', cohortList);
           if (cohortList && cohortList?.length > 0) {
             const cohortDetails = cohortList?.map(
               (cohort: {
@@ -419,7 +414,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   };
 
   const handleAssignCenters = async (selectedCenters: any) => {
-    console.log('selectedUser', selectedUser);
     handleCloseCentersModal();
     showToastMessage(
       t('MANAGE_USERS.CENTERS_ASSIGNED_SUCCESSFULLY'),

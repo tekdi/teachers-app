@@ -229,8 +229,6 @@ const LoginPage = () => {
 
             const userResponse = await getUserId();
 
-            console.log(userResponse);
-
             const userId = userResponse?.userId;
             if (userResponse.tenantData && userResponse.tenantData.length > 0) {
               const tenantName = userResponse.tenantData[0].tenantName;
@@ -264,10 +262,6 @@ const LoginPage = () => {
                     headers
                   );
 
-                  console.log(
-                    'Device notification updated successfully:',
-                    updateResponse
-                  );
                 } catch (updateError) {
                   console.error(
                     'Error updating device notification:',
@@ -337,7 +331,6 @@ const LoginPage = () => {
                 if (activeSessionId) {
                   router.push('/dashboard');
                 }
-                console.log('userDetails', userDetails);
               }
             } else if (token && tenant?.toLowerCase() === TENANT_DATA.YOUTHNET?.toLowerCase()) {
               router.push('/youthboard');

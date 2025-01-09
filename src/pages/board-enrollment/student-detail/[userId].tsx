@@ -92,7 +92,6 @@ const BoardEnrollmentDetail = () => {
 
   const updateFormData = (userData: any) => {
     if (!userData?.customField) return;
-    // console.log('userData', userData);
 
     function isStringifiedObject(str: any): boolean {
       if (typeof str !== 'string' || str.trim() === '') return false;
@@ -124,8 +123,7 @@ const BoardEnrollmentDetail = () => {
       },
       {}
     );
-    setFormData(fields); // Update formData dynamically
-    console.log('fields!!!', fields);
+    setFormData(fields); 
   };
 
   useEffect(() => {
@@ -164,7 +162,6 @@ const BoardEnrollmentDetail = () => {
 
       const data = getUserDataById(boardData, userId);
       setUserData(data);
-      console.log('data', data);
 
       if (data) {
         updateFormData(data); // Dynamically update formData after fetching userData
@@ -214,14 +211,13 @@ const BoardEnrollmentDetail = () => {
           const boards = await fetch(url).then((res) => res.json());
           const frameworks = boards?.result?.framework;
           const getStates: any = getOptionsByCategory(frameworks, 'state');
-          console.log('frameworks', frameworks);
+         
 
           const matchingState = getStates.find(
             (state: any) => state.name === userStateName
           );
           if (matchingState) {
             setStateAssociations(matchingState.associations);
-            // console.log('!!!!!', matchingState.associations);
           }
 
           const getBoards = getOptionsByCategory(frameworks, 'board');
@@ -259,7 +255,6 @@ const BoardEnrollmentDetail = () => {
               setMainCourseAssociations(mainCourse?.associations);
 
               const getSubjects = getOptionsByCategory(frameworks, 'subject');
-              // console.log('getCourseType$$', getSubjects);
               const boardSubjects = extractCategory(commonBoards, 'subject');
               // const courseTypeSubjects = extractCategory(getCourseType, 'subject');
 
@@ -282,7 +277,6 @@ const BoardEnrollmentDetail = () => {
                   associations: item1.associations,
                 })
               );
-              // console.log('&&&&', commonSubjectInState);
 
               const commonSubjectInBoard = getSubjects
                 .filter((item1: { code: any }) =>
@@ -325,14 +319,6 @@ const BoardEnrollmentDetail = () => {
                       subjectInMainCourse.code === subjectInStateBoard.code
                   )
               );
-              // console.log(
-              //   'commonSubjectInStateBoard',
-              //   commonSubjectInStateBoard
-              // );
-              // console.log(
-              //   'commonSubjectInMainCourse',
-              //   commonSubjectInMainCourse
-              // );
               setSubjectOptions(overAllCommonSubjects);
             }
           }
@@ -429,11 +415,8 @@ const BoardEnrollmentDetail = () => {
       },
     };
   
-    console.log('API Request Body:', requestBody);
-  
     try {
       const response = await updateCohortMemberStatus(requestBody);
-      console.log('API Response:', response);
   
       if (response && response.params.status === 'successful' && response.responseCode === 201) {
         const windowUrl = window.location.pathname;
@@ -637,10 +620,7 @@ const BoardEnrollmentDetail = () => {
                                     ...prevFormData,
                                     BOARD: selectedBoard,
                                   };
-                                  console.log(
-                                    'Updated formData:',
-                                    updatedFormData
-                                  );
+                                 
                                   setFormDataUpdated(true);
                                   return updatedFormData;
                                 });

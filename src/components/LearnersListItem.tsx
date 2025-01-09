@@ -286,7 +286,6 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   };
 
   const handleDroppedOutLabelClick = () => {
-    console.log('handleDroppedOutLabelClick');
     setShowModal(true);
   };
 
@@ -308,7 +307,6 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       if (userId) {
         setLoading(true);
         const response = await getUserDetails(userId, true);
-        console.log('response for popup', response?.result);
         if (response?.responseCode === 200) {
           const data = response?.result;
           if (data) {
