@@ -49,7 +49,6 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
   setReloadState,
   selectedUser,
 }) => {
-  console.log('ReassignModal');
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const store = useStore();

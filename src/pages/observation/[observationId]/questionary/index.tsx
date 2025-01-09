@@ -47,7 +47,6 @@ const ObservationQuestions: React.FC = () => {
           setQuestionResponseResponse(
             combinedData
           )
-          console.log("setQuestionResponseResponse", combinedData)
         }
       } catch (error) {
         console.error('Error fetching cohort list', error);

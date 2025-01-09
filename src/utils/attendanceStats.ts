@@ -13,7 +13,6 @@ const getTotalStudentCount = async (
 ): Promise<number> => {
   try {
     const filteredFields = response?.result?.userDetails || [];
-    // console.log('Filtered User Details:', filteredFields);
 
     const nameUserIdArray = filteredFields
       .map((entry: any) => ({
@@ -47,8 +46,7 @@ const getTotalStudentCount = async (
 
     const totalStudentsCount = filteredEntries.filter(member => member.memberStatus === Status.ACTIVE || (member.memberStatus === Status.DROPOUT && shortDateFormat(new Date(member.updatedAt)) > shortDateFormat(new Date(fromDate)))||
     (member.memberStatus === Status.ARCHIVED && shortDateFormat(new Date(member.updatedAt)) > shortDateFormat(new Date(fromDate)))).length;
-    // console.log('Total Students Count:', totalStudentsCount);
-
+  
     return totalStudentsCount;
   } catch (error) {
     // console.error('Error in getTotalStudentCount:', error);
@@ -75,7 +73,6 @@ const getPresentStudentCount = async (
       present_students: present,
     };
   }
-  console.log('presentStudents', presentStudents);
   return presentStudents;
 };
 

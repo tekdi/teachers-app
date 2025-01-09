@@ -221,7 +221,6 @@ const CoursePlanner = () => {
       try {
         const url = `/api/framework/v1/read/${frameworkId}`;
         const boardData = await fetch(url).then((res) => res.json());
-        console.log(boardData?.result?.framework);
         const frameworks = boardData?.result?.framework;
         const getStates = getOptionsByCategory(frameworks, 'state');
 
@@ -287,8 +286,6 @@ const CoursePlanner = () => {
                 code: item1.code,
                 associations: item1.associations,
               }));
-            console.log(`commonMediumInState`, commonMediumInState);
-            console.log(`commonMediumInBoard`, commonMediumInBoard);
 
             const commonMediumData = findCommonAssociations(
               commonMediumInState,
@@ -304,7 +301,6 @@ const CoursePlanner = () => {
               mediumOptions,
               tStore?.medium
             );
-            console.log('boardAssociations', stateAssociations);
             setMediumAssociations(mediumAssociations);
 
             const commonGradeInState = await getGrades
@@ -351,8 +347,6 @@ const CoursePlanner = () => {
                 code: item1.code,
                 associations: item1.associations,
               }));
-            console.log(`commonGradeInState`, commonGradeInState);
-            console.log(`commonGradeInMedium`, commonGradeInMedium);
 
             const commonGradeInStateBoard = findCommonAssociations(
               commonGradeInState,
@@ -370,7 +364,7 @@ const CoursePlanner = () => {
             );
             setGradeAssociations(gradeAssociations);
             const type = await getOptionsByCategory(framework, 'courseType');
-            console.log(type);
+            
 
             const commonTypeInState = filterAndMapAssociationsNew(
               'courseType',
@@ -410,7 +404,6 @@ const CoursePlanner = () => {
               commonType2Data
             );
 
-            console.log(`commonTypeOverall`, commonType3Data);
             setTypeOptions(commonType3Data);
             // setType(commonType3Data);
 
@@ -421,7 +414,6 @@ const CoursePlanner = () => {
             setTypeAssociations(typeAssociations);
             const subject = await getOptionsByCategory(framework, 'subject');
 
-            console.log(subject);
 
             const commonSubjectInState = filterAndMapAssociationsNew(
               'subject',

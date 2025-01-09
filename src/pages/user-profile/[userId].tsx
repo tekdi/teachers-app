@@ -167,7 +167,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
         }
       }
     });
-    console.log('initialFormData', initialFormData);
     return initialFormData;
   };
 
@@ -212,7 +211,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
       }
       const fieldIdToValueMap: { [key: string]: string } =
         mapFieldIdToValue(fields);
-      console.log(`coreFieldData`, coreFieldData);
 
       const fetchFormData = async () => {
         try {
@@ -224,7 +222,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
             queryKey: ['formRead', FormContext.USERS, formContextType],
             queryFn: () => getFormRead(FormContext.USERS, formContextType),
           });
-          console.log('response', response);
           if (response) {
             const mergeData = (
               fieldIdToValueMap: { [key: string]: string },
@@ -250,7 +247,6 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
             };
 
             const mergedProfileData = mergeData(fieldIdToValueMap, response);
-            console.log(`mergedProfileData`, mergedProfileData);
             if (mergedProfileData) {
               setUserData(mergedProfileData?.fields);
               const customDataFields = mergedProfileData?.fields;

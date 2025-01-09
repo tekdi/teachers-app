@@ -13,7 +13,6 @@ const withAccessControl =
       const router = useRouter();
 
       useEffect(() => {
-        console.log('userRole', userRole, store);
         if (!accessToken?.length || userRole === '') {
           router.replace('/logout');
           return;

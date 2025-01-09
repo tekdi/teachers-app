@@ -25,7 +25,6 @@ export const GenerateSchemaAndUiSchema = (
   const uiSchema: UiSchema = {}; //form ui schema
   const formValues: any = {};
 
-  // console.log('FormData', formData)
   formData?.fields?.forEach((field: Field) => {
     const {
       label,

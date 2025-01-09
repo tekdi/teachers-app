@@ -57,7 +57,7 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
   ) => {
     const value = event.target.value;
 
-    console.log('value', event);
+
     // Validate against the pattern
     if (!pattern.test(value.trim())) {
       setError(true);
@@ -71,7 +71,6 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
   const handleCreateButtonClick = async () => {
     if (error) return;
     try {
-      console.log('Entered Rename Name:', centerName);
       const name = centerName.toLowerCase().trim();
       await renameFacilitator(cohortId, name);
       setReloadState(true);

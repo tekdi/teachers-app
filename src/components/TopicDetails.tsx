@@ -54,7 +54,6 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
     });
     if (content) {
       setContentData(content);
-      // console.log(`content`,content);
     }
   }, [learningResources]);
 
@@ -63,7 +62,6 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
   };
 
   const onRemoveTopicSubtopic = () => {
-    console.log('remove');
     handleRemove();
   };
 

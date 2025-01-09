@@ -140,10 +140,8 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
     }
   }, [formData]);
   const handleButtonClick = async () => {
-    console.log('Form data:', formData);
     setSubmittedButtonStatus(true);
     if (formData) {
-      console.log('Form data submitted:', formData);
       const parentId = localStorage.getItem('blockParentId');
       const cohortDetails: CohortDetails = {
         name: (formData.name).toLowerCase(),

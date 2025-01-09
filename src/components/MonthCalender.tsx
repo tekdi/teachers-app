@@ -77,7 +77,6 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
         setDate(null);
         const touch = event.touches[0];
         const startDate = getDateFromTouch(touch);
-        console.log('startDate', startDate);
         if (startDate) {
           setSelectedDates([startDate, startDate]);
           onDateChange([startDate, startDate]);
@@ -89,7 +88,6 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
       if (selectionType === 'range') {
         const touch = event.touches[0];
         const moveDate = getDateFromTouch(touch);
-        console.log('moveDate', moveDate);
 
         if (moveDate && selectedDates) {
           const [startDate] = selectedDates;
@@ -105,7 +103,6 @@ const MonthCalender: React.FC<CalendarWithAttendanceProps> = ({
       if (selectionType === 'range') {
         const touch = event.changedTouches[0];
         const endDate = getDateFromTouch(touch);
-        console.log('endDate', endDate);
         if (endDate && selectedDates) {
           const [startDate] = selectedDates;
           setSelectedDates([startDate, endDate]);

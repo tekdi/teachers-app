@@ -117,11 +117,6 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
           userId,
           headers
         );
-
-        console.log(
-          'Device notification updated successfully:',
-          updateResponse
-        );
       } catch (updateError) {
         console.error(
           'Error updating device notification:',

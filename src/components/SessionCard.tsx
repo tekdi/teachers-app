@@ -156,7 +156,6 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
     } else if (currentTime > eventEnd) {
       setEventStatus(EventStatus.PASSED);
     }
-    console.log(startDate, startTime, endDate, endTime);
   }, [data]);
 
   const getStatusIcon = () => {
@@ -194,7 +193,6 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   };
 
   const onUpdateClick = async () => {
-    console.log("update the event");
     setUpdateEvent(true);
     if (cohortId) {
       const replacements = {

@@ -85,8 +85,6 @@ import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 
 import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
-// import AllowNotification from '@/components/AllowNotification';
-import GetButtonNotification from '@/components/GetButtonNotification';
 import useStore from '@/store/store';
 import useEventDates from './../hooks/useEventDates';
 
@@ -473,7 +471,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 scope: 'student',
                 contextId: cohortId,
               };
-              // console.log('Filters:', filters);
 
               try {
                 const response = await getAllCenterAttendance({
@@ -495,8 +492,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
             try {
               const results = await Promise.all(fetchPromises);
-              console.log('Fetched data:', results);
-
               const nameIDAttendanceArray = results
                 .filter((result) => !result?.error && result?.data?.contextId)
                 .map((result) => {
@@ -521,7 +516,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 })
                 .filter((item) => item.presentPercentage !== null); // Filter out items with no valid percentage
 
-              // console.log('Filtered and merged data:', nameIDAttendanceArray);
               setAllCenterAttendanceData(nameIDAttendanceArray);
             } catch (error) {
               console.error('Error fetching attendance data:', error);
@@ -631,7 +625,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
         );
         setPercentageAttendanceData(attendanceStats);
         setAttendanceStats(attendanceStats);
-        console.log('attendanceStats', attendanceStats);
       }
     };
     getAttendanceStats();
@@ -803,7 +796,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
           const extraSessionArray: any[] = [];
           if (response?.events?.length > 0) {
             response?.events.forEach((event: any) => {
-              // console.log('myCohortList', myCohortList);
               // let cohortList;
               // if (myCohortList.length > 0) {
               //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
@@ -896,7 +888,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   //       const extraSessionArray: any[] = [];
   //       if (response?.events.length > 0) {
   //         response?.events.forEach((event: any) => {
-  //           console.log('myCohortList', myCohortList);
 
   //           // let cohortList;
   //           // if (myCohortList.length > 0) {
@@ -972,7 +963,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
       {isClient && (
         <>
           <GuideTour toggleDrawer={toggleDrawer} />
-          {/* <AllowNotification /> */}
           <>
             {!isAuthenticated && (
               <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
@@ -983,7 +973,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 <Box>
                   <Header toggleDrawer={toggleDrawer} openDrawer={openDrawer} />
                 </Box>
-                <Box>{/* <GetButtonNotification /> */}</Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Box
                     display={'flex'}

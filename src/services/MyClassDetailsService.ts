@@ -21,7 +21,6 @@ const fetchCohortMemberList = async ({
         "name",
         "asc"
     ],    });
-    console.log('data', response?.data);
     return response?.data;
   } catch (error) {
     console.error('error in cohort member list API ', error);
@@ -43,7 +42,6 @@ export const getMyUserList = async ({
       filters,
       fields,
     });
-    console.log('data', response?.data);
     return response?.data;
   } catch (error) {
     console.error('error in cohort member list API ', error);
@@ -132,7 +130,6 @@ export const updateCohortMemberStatus = async ({
 
   try {
     const response = await put(apiUrl, requestBody);
-    console.log('data', response?.data);
     return response?.data;
   } catch (error) {
     console.error('error in attendance report api ', error);

@@ -181,7 +181,6 @@ const CentersPage = () => {
                 const district = districtField ? districtField.value : '';
                 return { blockName, blockId, state, district };
               });
-              console.log(blockData);
               setBlockData(blockData);
             }
 
@@ -202,7 +201,6 @@ const CentersPage = () => {
                   return { cohortName, cohortId, centerType, cohortStatus };
                 });
                 setCenterData(centerData);
-                console.log(centerData);
                 localStorage.setItem('CenterList', JSON.stringify(centerData));
               });
             }
@@ -222,7 +220,6 @@ const CentersPage = () => {
                   cohortStatus: center?.cohortStatus,
                 };
               });
-              console.log(cohortData);
 
               setTimeout(() => {
                 setCenterData(cohortData);

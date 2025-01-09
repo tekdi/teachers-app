@@ -28,9 +28,8 @@ const CourseAccordion: React.FC<CourseAccordionProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  useEffect(() => {
-    console.log('resources', type, resources);
-  }, []);
+
+
 
   
   return (

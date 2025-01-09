@@ -50,7 +50,6 @@ interface FileUploadData {
 
 const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQuestions,observationName }) => {
   const questionairePlayerMainRef = useRef<HTMLElement | null>(null);
-  console.log('questionairePlayerMainRef',  observationQuestions);
 
   const [fileUploadResponse, setFileUploadResponse] =
     useState<FileUploadResponse | null>(null);
@@ -99,7 +98,6 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
       for (const key of Object.keys(presignedUrlData.payload)) {
         obj[key] = presignedUrlData.payload[key];
       }
-      console.log('obj', obj);
       setFileUploadResponse({
         status: 200,
         data: obj,
@@ -116,18 +114,14 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
   };
 
   const receiveUploadData = (event: any) => {
-    console.log('event', event);
+ 
 
     if (event.data && event.data.file) {
-      console.log('hello');
+     
       uploadFileToPresignedUrl(event as FileUploadEvent);
     }
   };
 
-
-  useEffect(() => {
-    console.log('questionairePlayerMainRef', assessment);
-  });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

@@ -142,7 +142,6 @@ const ObservationDetails = () => {
               setSelectedCohort(data)
             }
              
-            console.log('myCohortList', response[0]?.childData);
           } else {
             setMyCohortList(response);
             if (selectedCohort === '')
@@ -203,7 +202,6 @@ const ObservationDetails = () => {
   
         //  if (entities?.length === 0) 
           {
-            console.log("entityIds?.length", entities?.length);
             const response = await fetchEntities({ solutionId });
             setObservationId(response?.result?._id)
             setFetchEntityResponse(response?.result?.entities)
@@ -212,7 +210,6 @@ const ObservationDetails = () => {
             );
   
             setEntityIds(entities);
-            console.log("setEntityIds", entities.length);
           }
         }
       } catch (error) {
@@ -322,7 +319,6 @@ setFilteredEntityData(result)
     const handleCohortChange = async () => {
       try {
         setLoading(true)
-        console.log('handlecohortChange');
         let filters = {
           cohortId: selectedCohort,
         } as CohortMemberList['filters'];
@@ -429,7 +425,6 @@ setFilteredEntityData(result)
   const onStartObservation = (cohortId: any, name?:any) => {
     localStorage.setItem("observationName",  name)
 
-    console.log('cohortId', cohortId);
     localStorage.setItem("observationPath",  router.asPath)
     const basePath = router.asPath.split('?')[0];
     const newFullPath = `${basePath}/questionary`;
@@ -492,7 +487,6 @@ setFilteredEntityData(result)
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
-    console.log(value);
     setCurrentPage(value - 1);
     if (entity === ObservationEntityType.CENTER)
       setPageForCenter((value - 1) * limit);
@@ -525,8 +519,6 @@ setFilteredEntityData(result)
     }
     else
     {
-      console.log(entityData)
-      console.log(event.target.value)
       const filteredData = entityData.filter(item => item.status === event.target.value);
         setFilteredEntityData(filteredData);
     }

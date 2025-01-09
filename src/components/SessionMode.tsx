@@ -22,7 +22,6 @@ const SessionMode: React.FC<SessionModeProps> = ({
 }) => {
   const theme = useTheme<any>();
 
-  console.log('SessionMode Rendered with mode:', mode);
 
   return (
     <FormControl>

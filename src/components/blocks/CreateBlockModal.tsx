@@ -35,7 +35,6 @@ const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
 
   const handleCreateButtonClick = () => {
     // Log the value entered in TextField
-    console.log('Entered Block Name:', blockName);
 
     handleClose();
   };
