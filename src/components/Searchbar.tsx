@@ -57,7 +57,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
       const windowUrl = window.location.pathname;
       const cleanedUrl = windowUrl.replace(/^\//, '');
       const env = cleanedUrl.split("/")[0];
-console.log(env)
       const telemetryInteract = {
         context: {
           env: env,

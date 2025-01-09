@@ -59,8 +59,6 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             filters,
           });
 
-          console.log(response);
-
           const resp = response?.result?.userDetails;
 
           if (resp) {
@@ -78,8 +76,6 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 age: ageField ? ageField.value : null, // Extract age for the specific user
               };
             });
-
-            console.log(`userDetails`, userDetails);
             setUserData(userDetails);
             setCohortFacilitatorsCount(userDetails.length)
             setFilteredData(userDetails);
@@ -118,7 +114,6 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   );
   setFilteredData(filtered);
   };
-  console.log('userData', userData);
   const theme = useTheme<any>();
   return (
     <div>

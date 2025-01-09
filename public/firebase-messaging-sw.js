@@ -23,7 +23,6 @@ self.addEventListener('install', async () => {
     // Retrieve firebase messaging
     const messaging = firebase.messaging();
     // messaging.onBackgroundMessage((payload) => {
-    //   console.log('[firebase-messaging-sw.js] Received background message ', payload);
     //   const notificationTitle = payload.notification.title;
     //   const notificationOptions = {
     //     body: payload.notification.body,
@@ -34,7 +33,6 @@ self.addEventListener('install', async () => {
     //   self.registration.showNotification(notificationTitle, notificationOptions);
     // });
     messaging.onBackgroundMessage(function (payload) {
-      console.log('Received background message ', payload);
 
 
       // const notificationTitle = payload.data.title;

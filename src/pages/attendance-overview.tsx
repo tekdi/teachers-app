@@ -185,7 +185,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   ]);
 
   const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
-    console.log('Date Range Selected:', { fromDate, toDate });
     setIsFromDate(fromDate);
     setIsToDate(toDate);
     // Handle the date range values as needed
@@ -211,7 +210,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
             name: toPascalCase(entry.name),
             memberStatus: entry.status,
           }));
-          // console.log('name..........', nameUserIdArray);
           if (nameUserIdArray) {
             //Write logic to call class missed api
             const filters: any = {
@@ -329,7 +327,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               scope: 'student',
               contextId: cohortId,
             };
-            console.log('Filters:', filters);
 
             try {
               const response = await getAllCenterAttendance({
@@ -338,7 +335,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 filters,
                 facets,
               });
-              console.log(`Response for cohortId ${cohortId}:`, response);
               return { cohortId, data: response?.data?.result };
             } catch (error) {
               console.error(
@@ -351,7 +347,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
           try {
             const results = await Promise.all(fetchPromises);
-            console.log('Fetched data:', results);
+           
 
             const nameIDAttendanceArray = results
               .filter((result) => !result.error && result?.data?.contextId)
@@ -377,7 +373,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               })
               .filter((item) => item.presentPercentage !== null); // Filter out items with no valid percentage
 
-            console.log('Filtered and merged data:', nameIDAttendanceArray);
+           
             setAllCenterAttendanceData(nameIDAttendanceArray);
           } catch (error) {
             console.error('Error fetching attendance data:', error);

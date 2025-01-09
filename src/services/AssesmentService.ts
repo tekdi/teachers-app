@@ -43,7 +43,6 @@ export const getDoIdForAssessmentDetails = async ({
   };
 
   try {
-    console.log('Request data', apiUrl, data);
     const response = await post(apiUrl, data);
     return response?.data;
   } catch (error) {

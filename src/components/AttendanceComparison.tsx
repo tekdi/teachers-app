@@ -6,9 +6,9 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   LabelList,
+  Legend,
 } from 'recharts';
 import {
   Radio,
@@ -29,7 +29,6 @@ import NoDataFound from './common/NoDataFound';
 import { useDirection } from '../hooks/useDirection';
 import { AttendanceAPILimit } from '../../app.config';
 import { telemetryFactory } from '@/utils/telemetry';
-import { Rtt } from '@mui/icons-material';
 
 interface AttendanceComparisonProps {
   blockName: string;
@@ -39,7 +38,7 @@ interface Cohort {
   cohortId: string;
   cohortType: string;
   name: string;
-  status?:string
+  status?: string;
 }
 
 interface AttendanceResult {
@@ -51,7 +50,6 @@ interface AttendanceResult {
 
 interface AttendanceResponse {
   responseCode?: number;
-  // statusCode?: number;
   message: string;
   data: {
     result: {
@@ -88,7 +86,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
         cdata: [],
       },
       edata: {
-        id: 'center-type-selection: '+event.target.value,
+        id: 'center-type-selection: ' + event.target.value,
         type: Telemetry.CLICK,
         subtype: '',
         pageid: 'dashboard',
@@ -140,54 +138,40 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
   }, [store?.cohorts, scope, centerType]);
 
   const data =
-  store?.cohorts
-    ?.filter(
-      (pair: Cohort) =>
-        pair?.cohortType === centerType && pair?.status === Status.ACTIVE
-    )
-    .map((pair: Cohort) => ({
-      name: toPascalCase(pair?.name),
-      Attendance: Number(attendanceData[pair?.cohortId]) || 0,
-    })) || [];
-    // const data =
-    // store?.cohorts
-    //   ?.filter((pair: Cohort) => pair?.cohortType === centerType)
-    //   .map((pair: Cohort) => ({
-    //     name: toPascalCase(pair?.name),
-    //     Attendance: Number(attendanceData[pair?.cohortId]) || 0,
-    //   })) || [];
-
-  const YAxisLabel = (value: any) => {
-    let maxLength = 25;
-    value = toPascalCase(value);
-
-    if (isMobile) {
-      maxLength = 6;
-    }
-
-    const formattedValue =
-      value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
-
-    // Return a plain string, not a React element
-    return formattedValue;
-  };
+    store?.cohorts
+      ?.filter(
+        (pair: Cohort) =>
+          pair?.cohortType === centerType && pair?.status === Status.ACTIVE
+      )
+      .map((pair: Cohort) => ({
+        name: toPascalCase(pair?.name),
+        Attendance: Number(attendanceData[pair?.cohortId]) || 0,
+      })) || [];
 
   const renderCustomLabel = (props: any) => {
     const { x, y, width, height, value } = props;
-    const offsetX = width < 40 ? width + 5 : width / 2; // Adjust position based on bar width
     return (
-      <text
-        x={x + offsetX}
-        y={y + height / 2}
-        fill={theme.palette.warning['300']}
-        textAnchor={width < 100 ? 'start' : 'middle'} // Adjust anchor based on bar width
-        dominantBaseline="middle"
-        fontSize={15}
-        fontWeight="bold" // Make the font bold
-        direction={isRTL ? 'rtl' :'ltr'}
-      >
-        {value}%
-      </text>
+      <g>
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          fill="#DAA200"
+          rx={4}
+        />
+        <text
+          x={isRTL ? x + width / 2 - 15 : x + width / 2 + 15}
+          y={y + height / 2}
+          fill="black"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={15}
+          fontWeight="bold"
+        >
+          {value}%
+        </text>
+      </g>
     );
   };
 
@@ -222,95 +206,53 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
           onChange={handleCenterTypeChange}
         >
           <FormControlLabel
-            color={theme.palette.warning['300']}
             value="REGULAR"
-            control={
-              <Radio
-                sx={{
-                  '&.Mui-checked': {
-                    color: theme.palette.warning['300'],
-                  },
-                }}
-              />
-            }
+            control={<Radio />}
             label={t('CENTERS.REGULAR')}
-            sx={{
-              '& .MuiFormControlLabel-label': {
-                color: theme.palette.warning['300'],
-                fontSize: '18px',
-              },
-            }}
           />
           <FormControlLabel
             value="REMOTE"
-            control={
-              <Radio
-                sx={{
-                  '&.Mui-checked': {
-                    color: theme.palette.warning['300'],
-                  },
-                }}
-              />
-            }
+            control={<Radio />}
             label={t('CENTERS.REMOTE')}
-            sx={{
-              '& .MuiFormControlLabel-label': {
-                color: theme.palette.warning['300'],
-                fontSize: '18px',
-              },
-            }}
           />
         </RadioGroup>
       </FormControl>
       {data?.length > 0 && (
         <>
           <Box sx={{ mt: 2 }}>
-            <Typography
-              align="left"
-              sx={{ marginBottom: '16px', fontSize: '15px' }}
-            >
+            <Typography align="left" sx={{ marginBottom: '16px' }}>
               {centerType === CenterType.REMOTE
                 ? t('DASHBOARD.REMOTE_AVERAGE_ATTENDANCE')
                 : t('DASHBOARD.REGULAR_AVERAGE_ATTENDANCE')}
               : {averageAttendance.toFixed(2)}%
             </Typography>
           </Box>
-          <Box sx={{ maxHeight: '400px', overflowY: 'scroll' }}>
+          <Box sx={{ maxHeight: '400px', overflowY: 'scroll', overflowX:'hidden' }}>
             <ResponsiveContainer width="100%" height={data.length * 70}>
               <BarChart
                 layout="vertical"
                 data={data}
                 margin={{
-                  top: 5,
                   left: isMobile ? 0 : isRTL ? 0 : 70,
                   right: isMobile ? 0 : isRTL ? 70 : 5,
-                  // right: isMobile ? 0 : 5,
                 }}
                 style={{ direction: isRTL ? 'rtl' : 'ltr' }}
               >
-                <CartesianGrid
-                  stroke={theme.palette.warning.A700}
-                  horizontal={false}
-                />
+                <CartesianGrid stroke="#ccc" horizontal={false} />
                 <XAxis
                   type="number"
                   tickFormatter={(value: any) => `${value}%`}
                   height={0}
                   reversed={isRTL ? true : false}
                   domain={[0, 100]}
+
                 />
                 <YAxis
                   type="category"
                   dataKey="name"
-                  tickFormatter={YAxisLabel}
-                  tick={{
-                    fontSize: 12,
-                    width: isMobile ? 50 : 100,
-                    ...(isRTL ? { textAnchor: 'end' } : {}),
-                  }}
                   orientation={isRTL ? 'right' : 'left'}
+                  style={{ textAnchor: isRTL ? 'end' : "revert-layer", }}
                 />
-
                 <Tooltip formatter={(value: number) => `${value}%`} />
                 <Bar
                   dataKey="Attendance"
@@ -318,7 +260,11 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                   barSize={40}
                   radius={2}
                 >
-                  <LabelList dataKey="Attendance" content={renderCustomLabel} />
+                  <LabelList
+                    dataKey="Attendance"
+                    content={renderCustomLabel}
+                    style={{ marginLeft: '500px' }}
+                  />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -339,16 +285,11 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
                 domain={[0, 100]}
                 reversed={isRTL ? true : false}
               />
-              <Tooltip formatter={(value: number) => `${value}%`}  />
+              <Tooltip formatter={(value: number) => `${value}%`} />
               <LabelList dataKey="Attendance" content={renderCustomLabel} />
               <Legend />
             </BarChart>
           </ResponsiveContainer>
-          <Box display="flex" justifyContent="center" alignItems="center">
-            <Typography color={theme.palette.warning['300']} mt={1}>
-              {t('DASHBOARD.ATTENDANCE')}
-            </Typography>
-          </Box>
         </>
       )}
 

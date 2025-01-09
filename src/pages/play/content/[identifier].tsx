@@ -90,18 +90,13 @@ const players: React.FC<SunbirdPlayerProps> = () => {
     const loadContent = async () => {
       try {
         if (identifier) {
-          console.log('identifier on players page:', identifier);
           const data = await fetchContent(identifier);
-          console.log('data', data);
           if (data.mimeType === MIME_TYPE.QUESTION_SET_MIME_TYPE) {
             playerConfig = V2PlayerConfig;
             const Q1 = await getHierarchy(identifier);
-            console.log('Q1', Q1?.questionset);
             const Q2 = await getQumlData(identifier);
-            console.log('Q2', Q2?.questionset);
             const metadata = { ...Q1?.questionset, ...Q2?.questionset };
             playerConfig.metadata = metadata;
-            console.log('playerConfig', playerConfig);
           } else if (MIME_TYPE.INTERACTIVE_MIME_TYPE.includes(data?.mimeType)) {
             playerConfig = V1PlayerConfig;
             playerConfig.metadata = data;

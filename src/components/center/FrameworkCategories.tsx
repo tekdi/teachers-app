@@ -57,7 +57,6 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
     return fieldIds;
   }
   const fieldIds = extractFieldIds(res);
-  console.log(`fieldIds`, fieldIds);
 
   useEffect(() => {
     if (fieldIds) {
@@ -75,7 +74,6 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
           gradeName: selectedGrade,
         },
       };
-      // console.log(`arrangedData`, arrangedData)
       if (selectedBoard && selectedMedium && selectedGrade && arrangedData) {
         localStorage.setItem('BMGSData', JSON.stringify(arrangedData));
       }
@@ -98,10 +96,8 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
           setStateOption([matchingState]);
           setSelectedState(matchingState.name);
           setStateAssociations(matchingState.associations);
-          console.log('matchingStateAssociations', matchingState.associations);
         }
         const getBoards = getOptionsByCategory(frameworks, 'board');
-        // console.log('getBoards', getBoards);
 
         //filter common board by mapping boards with stateAssociation
         if (getBoards && matchingState) {
@@ -129,7 +125,6 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
   const handleBoardChange = (event: SelectChangeEvent<string>) => {
     const board = event.target.value;
     setSelectedBoard(board);
-    // console.log('board', board);
     setSelectedMedium('');
     setMediumOptions([]);
     setGradeOptions([]);
@@ -166,8 +161,6 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
           code: item1.code,
           associations: item1.associations,
         }));
-      // console.log(`commonMediumInState`, commonMediumInState);
-      // console.log(`commonMediumInBoard`, commonMediumInBoard);
 
       const commonMediumData = findCommonAssociations(
         commonMediumInState,
@@ -183,11 +176,9 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
     setSelectedGrade('');
     setGradeOptions([]);
     setShowForm(false);
-    console.log('medium', medium);
     if (medium) {
       const getGrades = getOptionsByCategory(framework, 'gradeLevel');
       const mediumAssociations = getAssociationsByName(mediumOptions, medium);
-      console.log('boardAssociations', stateAssociations);
       setMediumAssociations(mediumAssociations);
 
       const commonGradeInState = getGrades
@@ -228,8 +219,6 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
           code: item1.code,
           associations: item1.associations,
         }));
-      console.log(`commonGradeInState`, commonGradeInState);
-      console.log(`commonGradeInMedium`, commonGradeInMedium);
 
       const commonGradeInStateBoard = findCommonAssociations(
         commonGradeInState,
@@ -246,7 +235,6 @@ const FrameworkCategories: React.FC<FrameworkCategoriesProps> = ({
   const handleGradeChange = (event: SelectChangeEvent<string>) => {
     const grade = event.target.value;
     setSelectedGrade(grade);
-    console.log('grade', grade);
 
     if (selectedBoard && selectedMedium && grade) {
       setShowForm(true);

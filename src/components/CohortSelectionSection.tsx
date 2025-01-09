@@ -97,7 +97,6 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   showFloatingLabel = false,
   showDisabledDropDown = false,
 }) => {
-  console.log('cohortsData', classId, cohortsData[0]?.cohortId);
   const router = useRouter();
   const theme = useTheme<any>();
   const queryClient = useQueryClient();
@@ -157,7 +156,6 @@ const filteredManipulatedData = manipulatedCohortData
     
     setFilteredManipulatedCohortData(filteredManipulatedData);
 
-    console.log(filteredData);
   }, [manipulatedCohortData, cohortsData]);
 
   useEffect(() => {
@@ -303,7 +301,6 @@ const filteredManipulatedData = manipulatedCohortData
                 })
                 ?.filter(Boolean);
 
-              console.log(filteredData);
 
               setCohortsData(filteredData);
 
@@ -381,7 +378,6 @@ const filteredManipulatedData = manipulatedCohortData
   const isCoursePlanner = pathname === '/course-planner';
 
   const { dir, isRTL } = useDirection();
-  console.log('classId', classId);
   return (
     <Box
       className={

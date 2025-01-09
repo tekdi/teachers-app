@@ -36,7 +36,6 @@ function SubjectDetail() {
     const getUserInfo = async () => {
       try {
         const response = await getUserDetails(params.userId);
-        console.log('response', response);
         if (response?.result?.userData) {
           setUserDetails(response?.result?.userData);
         }
@@ -62,7 +61,6 @@ function SubjectDetail() {
           // batchId: centerId as string,
         };
         const assessmentRes = await searchAssessment(body);
-        console.log('response===>', assessmentRes);
 
         if (assessmentRes.length) {
           setAssessmentDetails(assessmentRes[0]);
@@ -110,8 +108,6 @@ function SubjectDetail() {
       (activePage - 1) * Pagination.ITEMS_PER_PAGE,
       activePage * Pagination.ITEMS_PER_PAGE
     );
-
-    console.log('paginatedQuestions', paginatedQuestions);
     setPaginatedQuestions(paginatedQuestions);
   };
 

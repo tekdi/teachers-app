@@ -224,13 +224,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                     (item: any) => item.code === assoc.code
                   )?.length
               );
-              console.log(commonAssociations);
               const getSubjects = getOptionsByCategory(frameworks, 'subject');
               const subjectAssociations = commonAssociations?.filter(
                 (assoc: any) =>
                   getSubjects.map((item: any) => assoc.code === item?.code)
               );
-              console.log(subjectAssociations);
               return {
                 courseTypeName: courseType?.name,
                 courseType: courseType?.code,
@@ -240,8 +238,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               };
             }
           );
-
-          console.log(courseSubjectLists);
           setSubjectLists(courseSubjectLists);
         }
       } catch (error) {
@@ -252,7 +248,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   }, []);
 
   useEffect(() => {
-    console.log(eventData);
     if (eventData) {
       setInitialEventData(eventData);
       const mode =
@@ -324,7 +319,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
   const handleEditSelection = (selection: string, eventData: any) => {
     setEditSelection(selection);
-    console.log(eventData);
   };
 
   useEffect(() => {
@@ -405,7 +399,8 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       (item: any) => item.courseTypeName === newCourseType
     );
 
-    console.log(courseSubjects);
+    
+
 
     if (courseSubjects) {
       setSubjects(courseSubjects.subjects);
@@ -432,7 +427,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         .hour(time.hour())
         .minute(time.minute())
         .second(time.second());
-      console.log('dateTime', dateTime);
       return dateTime;
     }
     return null;
@@ -449,7 +443,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     field: 'date' | 'time'
   ) => {
     setSelectedBlockId(id);
-    console.log(sessionBlocks);
     if (newValue) {
       let isValid = true;
 
@@ -655,7 +648,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             : block
         )
       );
-      console.log('sessionBlocks updated', sessionBlocks);
     }
   };
 
@@ -699,7 +691,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             : block
         )
       );
-      console.log('sessionBlocks initially', sessionBlocks);
     }
   }, [startDates, endDates, startTimes, endTimes, selectedBlockId]);
 
@@ -838,14 +829,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       },
     ]);
     setSelectedBlockId(newSessionId);
-    console.log(sessionBlocks);
   };
 
   const handleRemoveSession = (id: any) => {
     setSessionBlocks(sessionBlocks.filter((block) => block?.id !== id));
   };
 
-  console.log(sessionBlocks);
 
   const scheduleNewEvent = async () => {
     if (!scheduleEvent) return;
@@ -976,7 +965,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             if (isEventValid) {
               const response = await createEvent(apiBody);
 
-              console.log(response);
               if (response?.responseCode === 'Created') {
                 showToastMessage(
                   t('COMMON.SESSION_SCHEDULED_SUCCESSFULLY'),
@@ -1032,7 +1020,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   creatorId: userId,
                 });
                 if (onCloseModal) {
-                  console.log('list api got called');
                   onCloseModal();
                 }
               } else {
@@ -1151,7 +1138,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const handleEditSession = (event: any) => {
     setEditSelection(event.target.value);
 
-    console.log('session updated');
   };
 
   const handelDeleteEvent = async (eventData: any, deleteSelection: string) => {
@@ -1190,7 +1176,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   useEffect(() => {
     const onUpdateEvent = async () => {
       if (updateEvent && eventData) {
-        console.log('eventData', eventData);
         try {
           const userId =
             typeof window !== 'undefined'
@@ -1215,7 +1200,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           };
 
           if (editSelection === t('CENTER_SESSION.EDIT_FOLLOWING_SESSIONS')) {
-            console.log('sessionBlocks edit call', sessionBlocks);
             const DaysOfWeek =
               sessionBlocks?.[0]?.DaysOfWeek ||
               eventData?.recurrencePattern?.daysOfWeek;
@@ -1332,7 +1316,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             apiBody['meetingDetails'] = null;
           }
 
-          console.log('apiBody', apiBody);
+          
 
           const response = await editEvent(eventRepetitionId, apiBody);
           if (response?.responseCode === 'OK') {

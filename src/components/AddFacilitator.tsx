@@ -58,7 +58,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   onReload,
   onFacilitatorAdded,
 }) => {
-  console.log("userFormData", userFormData);
   const [schema, setSchema] = React.useState<any>();
   const [openSendCredModal, setOpenSendCredModal] = React.useState(false);
   const [createFacilitator, setCreateFacilitator] = React.useState(false);
@@ -96,7 +95,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       if (typeof window !== 'undefined' && window.localStorage) {
         const CenterList = localStorage.getItem('CenterList');
         const centerOptions = CenterList ? JSON.parse(CenterList) : [];
-        console.log('centerOptions', centerOptions);
 
         centerOptionsList = centerOptions
           .filter(
@@ -107,8 +105,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             value: center.cohortId,
             label: center.cohortName,
           }));
-
-        console.log(centerOptionsList);
       }
       const assignCentersField: Field = {
         name: 'assignCenters',
@@ -132,7 +128,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       };
       if (!isEditModal) {
         teacherReadResponse?.fields.push(assignCentersField);
-        console.log(teacherReadResponse);
       }
 
       if (teacherReadResponse) {
@@ -150,7 +145,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
-    console.log('Form data submitted----:', data.formData);
     if(data?.formData?.name)
     {
       data.formData.name = data?.formData?.name?.trim()
@@ -194,7 +188,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   };
 
   const handleButtonClick = async () => {
-    console.log('Form data:', formData);
     setSubmittedButtonStatus(true);
     if (formData) {
       const schemaProperties = schema.properties;
@@ -227,9 +220,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
       Object.entries(formData).forEach(([fieldKey, fieldValue]) => {
         const fieldSchema = schemaProperties[fieldKey];
         const fieldId = fieldSchema?.fieldId;
-        console.log(
-          `FieldID: ${fieldId}, FieldValue: ${fieldValue}, type: ${typeof fieldValue}`
-        );
 
         if (fieldId === null || fieldId === 'null') {
           if (typeof fieldValue !== 'object') {
@@ -286,7 +276,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         }
       }
 
-      console.log(apiBody);
       try {
         if (isEditModal && userId) {
           const userData: Record<string, any> = {};
@@ -294,7 +283,6 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             userData[fieldName] = apiBody[fieldName];
           });
           const customFields = apiBody?.customFields;
-          console.log(customFields);
           const object = {
             userData: userData,
             customFields: customFields,

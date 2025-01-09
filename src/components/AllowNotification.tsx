@@ -19,7 +19,6 @@ const AllowNotification = () => {
     const handlePermissionChange = () => {
       setPermissionStatus(Notification.permission);
 
-      // Automatically remove deviceID if permission is reset to default
       if (Notification.permission === 'default') {
         localStorage.removeItem('deviceID');
         console.log('Notification permission reset and deviceID removed');
@@ -61,7 +60,6 @@ const AllowNotification = () => {
       const userId = localStorage.getItem('userId');
 
       if (permissionStatus === 'default') {
-        // Request permission from the user
         const permission = await Notification.requestPermission();
         setPermissionStatus(permission);
       }
@@ -75,7 +73,6 @@ const AllowNotification = () => {
               Authorization: `Bearer ${authToken}`,
             });
             localStorage.setItem('deviceID', token);
-            console.log('Notification token saved to the database');
           }
         } catch (error) {
           console.error('Failed to save notification token:', error);

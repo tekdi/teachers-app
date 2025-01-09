@@ -124,7 +124,6 @@ const Assessments = () => {
             name: toPascalCase(user.name),
             userId: user.userId,
           }));
-          console.log(`userDetails`, userDetails);
           setCohortMembers(userDetails);
         }
       } catch (error) {
@@ -138,7 +137,6 @@ const Assessments = () => {
 
     if (classId) {
       getCohortMemberList();
-      console.log('call API', classId);
     }
   }, [classId]);
 
@@ -184,7 +182,6 @@ const Assessments = () => {
                   const assessmentIds = result.QuestionSet.map((item: any) => {
                     return item?.IL_UNIQUE_ID;
                   });
-                  console.log('assessmentIds', assessmentIds);
                   setAssessmentList(assessmentIds);
                 } else {
                   setAssessmentList([]);
@@ -213,7 +210,6 @@ const Assessments = () => {
     };
 
     if (assessmentType && cohortsData?.length > 0) {
-      console.log('call API', cohortsData);
       const selectedState = cohortsData?.[0]?.customField?.filter(
         (item: any) => item.label === 'STATES'
       )?.[0]?.value;
@@ -226,8 +222,7 @@ const Assessments = () => {
       });
       getDoIdForAssessmentReport(selectedState, selectedBoard);
     }
-    console.log('===vivek', cohortsData, manipulatedCohortData);
-    console.log('call API', classId, assessmentType);
+
   }, [assessmentType, cohortsData]);
 
   useEffect(() => {
@@ -241,7 +236,6 @@ const Assessments = () => {
           // batchId: classId,
         };
         const assessmentStatus = await getAssessmentStatus(options);
-        console.log('assessmentStatus', assessmentStatus);
         let completionCount = 0;
         if (assessmentStatus) {
           const userList = cohortMembers.map((user: any) => {
@@ -262,7 +256,6 @@ const Assessments = () => {
             }
             return user;
           });
-          console.log('userList', userList);
           setLearnerList(userList);
           setFilteredLearnerList(userList);
         }
@@ -273,10 +266,8 @@ const Assessments = () => {
         });
 
         setIsLoading(false);
-        console.log('assessmentStatus', learnerList);
       } catch (e: any) {
         setIsLoading(false);
-        console.log('Error in getAssessmentStatus', e);
       }
     };
     if (assessmentList?.length && cohortMembers?.length) {
@@ -360,7 +351,6 @@ const Assessments = () => {
     sortByValue: string;
   }) => {
     setModalOpen(false);
-    console.log('selectedValues', selectedValue);
 
     switch (selectedValue.sortByKey) {
       case 'attendanceStatus':

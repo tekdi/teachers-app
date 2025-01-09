@@ -11,7 +11,6 @@ export const fetchContent = async (identifier: any) => {
     const response = await axios.get(
       `${API_URL}?fields=${FIELDS}&mode=${MODE}&licenseDetails=${LICENSE_DETAILS}`
     );
-    console.log('response =====>', response);
     return response?.data?.result?.content;
   } catch (error) {
     console.error('Error fetching content:', error);
@@ -42,7 +41,6 @@ export const fetchBulkContents = async (identifiers: string[]) => {
       }
     }
     const response = await axios.post(URL_CONFIG.API.COMPOSITE_SEARCH, options);
-    console.log('response =====>', response);
     const result = response?.data?.result;
     if (response?.data?.result?.QuestionSet?.length) {
       // result.content = [...result.content, ...result.QuestionSet];
@@ -61,7 +59,6 @@ export const getHierarchy = async (identifier: any) => {
   try {
     const API_URL = `${URL_CONFIG.API.HIERARCHY_API}${identifier}`;
     const response = await axios.get(API_URL);
-    console.log('response =====>', response);
     return response?.data?.result?.content || response?.data?.result;
   } catch (error) {
     console.error('Error fetching content:', error);
@@ -74,7 +71,6 @@ export const getQumlData = async (identifier: any) => {
     const API_URL = `${URL_CONFIG.API.QUESTIONSET_READ}${identifier}`;
     const FIELDS = URL_CONFIG.PARAMS.HIERARCHY_FEILDS;
     const response = await axios.get(`${API_URL}?fields=${FIELDS}`);
-    console.log('response =====>', response);
     return response?.data?.result?.content || response?.data?.result;
   } catch (error) {
     console.error('Error fetching content:', error);

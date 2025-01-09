@@ -116,7 +116,6 @@ const MenuDrawer: React.FC<DrawerProps> = ({
         setModifiedAcademicYearList(modifiedList);
         const selectedAcademicYearId = localStorage.getItem('academicYearId');
         setSelectedSessionId(selectedAcademicYearId ?? '');
-        console.log('Retrieved academicYearList:', parsedList);
       } catch (error) {
         console.error('Error parsing stored academic year list:', error);
         setAcademicYearList([]);
@@ -136,7 +135,6 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 
   const handleSelectChange = (event: SelectChangeEvent) => {
     setSelectedSessionId(event.target.value);
-    console.log('selected academic year id', event.target.value);
     localStorage.setItem('academicYearId', event.target.value);
 
     // Check if the selected academic year is active

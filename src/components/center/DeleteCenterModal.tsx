@@ -17,7 +17,6 @@ const DeleteCenterModal: React.FC<CreateBlockModalProps> = ({
   const { t } = useTranslation();
 
   const handleDeleteButtonClick = () => {
-    console.log('Delete request sent');
     showToastMessage(t('CENTERS.REQUEST_TO_DELETE_HAS_BEEN_SENT'), 'success');
 
     const windowUrl = window.location.pathname;

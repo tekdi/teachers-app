@@ -150,9 +150,7 @@ const EventMonthView: React.FC<any> = () => {
       eventDeleted
     );
   }
-  useEffect(() => {
-    console.log(eventDates);
-  }, []);
+ 
 
   const handleActiveStartDateChange = (date: Date) => {
     setSelectedDate(date);

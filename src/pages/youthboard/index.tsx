@@ -23,7 +23,6 @@ const index = () => {
   useEffect(() => {
     const getSurveyData = async () => {
       const surveyAvailable = await fetchSurveyData();
-      console.log(surveyAvailable);
       setIsSurveyAvailable(surveyAvailable);
       setModalOpen(surveyAvailable);
     };

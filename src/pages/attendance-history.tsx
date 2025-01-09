@@ -176,7 +176,6 @@ const UserAttendanceHistory = () => {
   useEffect(() => {
     const getAttendanceStats = async () => {
       if (classId !== '' && classId !== undefined) {
-        console.log('classId', classId);
         const cohortMemberRequest: CohortMemberList = {
           limit: 300,
           page: 0,

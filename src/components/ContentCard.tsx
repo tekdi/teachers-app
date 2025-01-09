@@ -78,8 +78,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
             unitId: [identifier],
           };
           const response = await getContentTrackingStatus(reqBody);
-
-          console.log('response', response);
           let status = '';
           response.data?.some((item: any) =>
             item.contents?.some((content: any) => {
@@ -121,7 +119,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
               setStatusMsg('');
               break;
           }
-          console.log('response tracking status', status);
           setStatus(status);
         }
       };
@@ -221,7 +218,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
         // });
       }
     }
-    console.log('Details Object:', detailsObject);
 
     try {
       const contentWithTelemetryData = async () => {
@@ -252,13 +248,11 @@ const ContentCard: React.FC<ContentCardProps> = ({
               lastAccessOn: lastAccessOn,
               detailsObject: detailsObject,
             };
-            console.log('reqBody', reqBody);
             // if (detailsObject.length > 0) {
             const response = await createContentTracking(reqBody);
             if (response) {
               setCallStatus(true);
             }
-            console.log(response);
           }
         } catch (error) {
           console.error('Error in contentWithTelemetryData:', error);

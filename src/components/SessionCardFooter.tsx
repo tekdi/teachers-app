@@ -139,7 +139,6 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
               );
               return acc;
             }, {});
-            console.log(learningResources);
             const resources: IResource[] = extractResources(learningResources);
             const enrichedContent = await fetchLearningResources(resources);
             setLearningResources(enrichedContent);
@@ -194,7 +193,6 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
       });
 
       // setResources(resources);
-      console.log('response===>', resources);
       return resources;
     } catch (error) {
       console.error('error', error);
@@ -221,7 +219,6 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
 
   const handleTopicSelection = (topic: any) => {
     setSelectedTopic(topic);
-    console.log(topic);
   };
 
   const handleSubtopicSelection = (subtopics: string[]) => {
@@ -245,7 +242,6 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
           subTopic: selectedSubtopics,
         };
       }
-      console.log(erMetaData);
 
       let isMainEvent;
       if (item?.isRecurring === false && !item?.recurrencePattern['interval']) {
@@ -356,7 +352,6 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
     } else if (currentTime > eventEnd) {
       setEventStatus(EventStatus.PASSED);
     }
-    console.log(startDate, startTime, endDate, endTime);
   }, [item]);
 
   return (
