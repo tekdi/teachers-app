@@ -68,7 +68,6 @@ const configFeatures = {
     // }
   },
   includes: function (componentName) {
-    console.log(componentName);
   }
 };
 
