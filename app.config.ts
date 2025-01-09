@@ -9,6 +9,8 @@ export const eventDaysLimit: number = 7;
 export const toastAutoHideDuration: number = 5000; // 5 seconds
 export const idealTimeForSession: string = '120';
 export const timeZone: string = 'Asia/Kolkata';
+export const jotFormId = '250065095006449';
+
 export const dropoutReasons = [
   {
     label: 'UNABLE_TO_COPE_WITH_STUDIES',
