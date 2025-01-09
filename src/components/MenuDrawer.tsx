@@ -30,6 +30,7 @@ import { accessControl, TENANT_DATA } from '../../app.config';
 import config from '../../config.json';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 import board from '../assets/images/Board.svg';
+import support from '../assets/images/Support.svg';
 import checkBook from '../assets/images/checkbook.svg';
 import { useDirection } from '../hooks/useDirection';
 
@@ -603,7 +604,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 marginTop: '15px',
               }}
               startIcon={
-                <Image src={board} alt="feedback-icon" width={24} height={24} />
+                <Image src={support} alt="support-icon" width={24} height={24} />
               }
               onClick={() => {
                 router.push(`/support-request`);
