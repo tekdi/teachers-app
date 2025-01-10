@@ -17,6 +17,7 @@ import { useTranslation } from 'next-i18next';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { toPascalCase } from '@/utils/Helper';
 import NoDataFound from './common/NoDataFound';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface ManageUsersModalProps {
   open: boolean;
@@ -43,20 +44,6 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
   const [searchQuery, setSearchQuery] = React.useState('');
   const setCohortId = reassignLearnerStore((state) => state.setCohortId);
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '85%',
-    bgcolor: theme.palette.warning['A400'],
-    boxShadow: 24,
-    borderRadius: '16px',
-    height: 'auto',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -123,7 +110,7 @@ const ManageCentersModal: React.FC<ManageUsersModalProps> = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={modalStyles}>
           <Box
             display={'flex'}
             justifyContent={'space-between'}

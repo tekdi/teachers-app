@@ -20,6 +20,7 @@ import ReactGA from 'react-ga4';
 import NoDataFound from './common/NoDataFound';
 import { Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface MarkBulkAttendanceProps {
   open: boolean;
@@ -79,20 +80,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     React.useState(false);
   const [teacherUserId, setTeacherUserId] = React.useState<string>('');
 
-  const modalContainer = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '85%',
-    bgcolor: theme.palette.warning['A400'],
-    boxShadow: 24,
-    p: 4,
-    height: '526px',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
+
 
   const updateBulkAttendanceStatus = (arr: any[]) => {
     setIsConfirmation(true);
@@ -266,7 +254,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
         <Fade in={open}>
           <Box
             sx={{
-              ...modalContainer,
+              ...modalStyles,
               borderColor: theme.palette.warning['A400'],
               padding: '15px 10px 0 10px',
             }}

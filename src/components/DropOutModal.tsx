@@ -23,6 +23,7 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { Status } from '@/utils/app.constant';
 import { fetchAttendanceStats } from '@/utils/helperAttendanceStatApi';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface DropOutModalProps {
   open: boolean;
@@ -58,19 +59,7 @@ function DropOutModal({
     }
   }, [reloadState, setReloadState]);
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '85%',
-    boxShadow: 24,
-    bgcolor: '#fff',
-    borderRadius: '16px',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
+
 
   const handleSelection = (event: SelectChangeEvent) => {
     setSelectedReason(event.target.value);
@@ -126,7 +115,7 @@ function DropOutModal({
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
     >
-      <Box sx={{ ...style }}>
+      <Box sx={modalStyles}>
         <Box
           display={'flex'}
           justifyContent={'space-between'}
