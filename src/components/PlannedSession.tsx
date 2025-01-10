@@ -1676,6 +1676,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                               handleChange(index, newValue, 'start', 'time')
                             }
                             sx={{ borderRadius: '4px', fontSize: '2px' }}
+                            slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
                           />
                         </LocalizationProvider>
                         {startTimeError && (
@@ -1699,6 +1700,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                               handleChange(index, newValue, 'end', 'time')
                             }
                             sx={{ borderRadius: '4px' }}
+                            slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
                           />
                         </LocalizationProvider>
                         {endTimeError && (
@@ -1771,6 +1773,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           handleChange(index, newValue, 'start', 'time')
                         }
                         sx={{ borderRadius: '4px', fontSize: '2px' }}
+                        slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
                       />
                     </LocalizationProvider>
                     {startTimeError && (
@@ -1796,6 +1799,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           handleChange(index, newValue, 'end', 'time')
                         }
                         sx={{ borderRadius: '4px' }}
+                        slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
                       />
                     </LocalizationProvider>
                     {endTimeError && (
