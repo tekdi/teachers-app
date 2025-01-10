@@ -21,6 +21,7 @@ import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
 import { Role, Status } from '@/utils/app.constant';
 import manageUserStore from '@/store/manageUserStore';
 import { fetchAttendanceStats } from '@/utils/helperAttendanceStatApi';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface DeleteUserModalProps {
   type: Role.STUDENT | Role.TEACHER;
@@ -50,19 +51,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
     }
   }, [reloadState, setReloadState]);
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '85%',
-    boxShadow: 24,
-    bgcolor: '#fff',
-    borderRadius: '16px',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
+
 
   const [selectedValue, setSelectedValue] = useState('');
   // const [otherReason, setOtherReason] = useState('');
@@ -124,7 +113,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
     >
-      <Box sx={{ ...style }}>
+      <Box sx={modalStyles}>
         <Box
           display={'flex'}
           justifyContent={'space-between'}

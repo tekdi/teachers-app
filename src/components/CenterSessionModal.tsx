@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { toPascalCase } from '@/utils/Helper';
+import { modalStyles } from '@/styles/modalStyles';
 
 const CenterSessionModal: React.FC<SessionsModalProps> = ({
   children,
@@ -26,22 +27,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '85%',
-    bgcolor: theme?.palette?.warning['A400'],
-    boxShadow: 24,
-    borderRadius: '16px',
-    maxHeight: '626px',
-    minheight: '100%',
-    border: 'none',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
+
 
   return (
     <Modal
@@ -54,7 +40,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={modalStyles}>
         <Box
           display={'flex'}
           justifyContent={'space-between'}
