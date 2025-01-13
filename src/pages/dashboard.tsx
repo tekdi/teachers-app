@@ -287,7 +287,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       );
       setCohortType(typeOfCohort?.value);
 
-      let isCustomFields = true;
+      const isCustomFields = true;
       const result = await getCohortList(
         userId as string,
         { customField: 'true' },

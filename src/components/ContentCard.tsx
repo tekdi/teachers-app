@@ -129,7 +129,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
   }, [CallStatus]);
 
   useEffect(() => {
-    let detailsObject: any[] = [];
+    const detailsObject: any[] = [];
 
     if (typeof window !== 'undefined' && window.localStorage) {
       const keys = Object.keys(localStorage);

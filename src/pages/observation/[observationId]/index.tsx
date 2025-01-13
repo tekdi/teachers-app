@@ -128,7 +128,7 @@ const ObservationDetails = () => {
             } else {
                filteredData = response[0]?.childData?.filter(
                 (cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE
-              )?.sort((a: any, b: any) => a.name.localeCompare(b.name));;
+              )?.sort((a: any, b: any) => a.name.localeCompare(b.name));
 
               setMyCohortList(filteredData);
             }
@@ -150,7 +150,7 @@ const ObservationDetails = () => {
 
               
               setSelectedCohort(data)
-            } ;
+            } 
           }
 
           if (searchInput !== '' || entity===ObservationEntityType.CENTER) {
@@ -262,10 +262,10 @@ setFilteredEntityData(result)
   useEffect(() => {
 
     if (entityIds?.length > 0) {
-      let unmatchedCohorts = myCohortListForCenter?.filter(
+      const unmatchedCohorts = myCohortListForCenter?.filter(
         (child: any) => !entityIds?.includes(child.cohortId)
       );
-      let unmatchedUsers = Data?.filter(
+      const unmatchedUsers = Data?.filter(
         (child: any) => !entityIds?.includes(child.userId)
       );
   
@@ -319,7 +319,7 @@ setFilteredEntityData(result)
     const handleCohortChange = async () => {
       try {
         setLoading(true)
-        let filters = {
+        const filters = {
           cohortId: selectedCohort,
         } as CohortMemberList['filters'];
         if (searchInput !== '') filters.name = searchInput;

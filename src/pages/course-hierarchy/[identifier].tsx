@@ -23,7 +23,7 @@ import { useDirection } from '../../hooks/useDirection';
 import ContentCard from '@/components/ContentCard';
 
 const RecursiveAccordion = ({ data }: { data: any[] }) => {
-  let router = useRouter(); 
+  const router = useRouter(); 
   const handleBackEvent = () => {
     window.history.back();
     logEvent({

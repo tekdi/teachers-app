@@ -110,7 +110,7 @@ export const readUserId = async (
   userId?: string | string[],
   fieldValue?: boolean
 ): Promise<any> => {
-  let apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/read/${userId}?fieldvalue=false`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/read/${userId}?fieldvalue=false`;
   try {
     const response = await get(apiUrl);
     return response?.data;

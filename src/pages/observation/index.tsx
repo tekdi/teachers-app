@@ -86,7 +86,7 @@ const ObservationForms: React.FC = () => {
     const fullPath = router.asPath;
     const [basePath, queryString] = fullPath.split('?');
     const newRoute = `/${observationId}`;
-    let newFullPath = `${basePath}${newRoute}`;
+    const newFullPath = `${basePath}${newRoute}`;
     let queryParams;
     if(id==="")
     {

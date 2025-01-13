@@ -444,7 +444,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   ) => {
     setSelectedBlockId(id);
     if (newValue) {
-      let isValid = true;
+      const isValid = true;
 
       setStartTimeError(null);
       setEndTimeError(null);

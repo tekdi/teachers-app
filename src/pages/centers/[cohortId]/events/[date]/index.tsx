@@ -77,7 +77,7 @@ const EventMonthView: React.FC<any> = () => {
           const beforeDate = getBeforeDate(date);
           const limit = 0;
           const offset = 0;
-          let filters: eventFilters = {
+          const filters: eventFilters = {
             date: {
               after: afterDate,
               before: beforeDate,
