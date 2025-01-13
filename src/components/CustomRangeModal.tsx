@@ -7,13 +7,11 @@ import WestIcon from '@mui/icons-material/West';
 import { useTranslation } from 'next-i18next';
 import { useDirection } from '../hooks/useDirection';
 
-
-
 const CustomRangeModal: React.FC = () => {
   const [isCalendarModalOpen, setIsCalenderModalOpen] = React.useState(false);
   const toggleCalendarModal = () =>
     setIsCalenderModalOpen(!isCalendarModalOpen);
-  const { dir, isRTL } = useDirection();
+  const {  isRTL } = useDirection();
   const { t } = useTranslation();
   const style = {
     width: '300px', // Adjust width as needed

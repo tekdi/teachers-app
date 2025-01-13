@@ -1,16 +1,14 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { toPascalCase } from '@/utils/Helper';
+import { SessionsModalProps } from '@/utils/Interfaces';
 import CircleIcon from '@mui/icons-material/Circle';
 import CloseIcon from '@mui/icons-material/Close';
 import { Divider } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import React from 'react';
-import { SessionsModalProps } from '@/utils/Interfaces';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'react-i18next';
-import { toPascalCase } from '@/utils/Helper';
-import { modalStyles } from '@/styles/modalStyles';
+import React from 'react';
 
 const CenterSessionModal: React.FC<SessionsModalProps> = ({
   children,
@@ -26,7 +24,6 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
   disable = false,
 }) => {
   const theme = useTheme<any>();
-  const { t } = useTranslation();
 
   const style = {
     position: 'absolute',

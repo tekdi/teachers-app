@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {
-  Box,
   Accordion,
-  AccordionSummary,
   AccordionDetails,
+  AccordionSummary,
+  Box,
   Typography,
 } from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useTheme } from '@mui/material/styles';
-import CoursePlannerCards from './CoursePlannerCards';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
+import CoursePlannerCards from './CoursePlannerCards';
 
 interface CourseAccordionProps {
   title: any;

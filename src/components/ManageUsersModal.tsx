@@ -1,14 +1,13 @@
 import * as React from 'react';
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import { Divider } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { modalStyles } from '@/styles/modalStyles';
 
 interface ManageUsersModalProps {
   leanerName: string;

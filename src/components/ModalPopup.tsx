@@ -1,21 +1,14 @@
 import {
   Box,
-  Button,
   Divider,
-  Grid,
-  IconButton,
-  Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from '@mui/material';
 
-import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
-import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import React from 'react';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
-import { modalStyles } from '@/styles/modalStyles';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import React from 'react';
 
 const ModalComponent = () => {
   const { t } = useTranslation();

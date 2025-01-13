@@ -132,7 +132,7 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
 
   useEffect(() => {
     if (classId) {
-      const cohortDetails = fetchCohortDetails(classId);
+      fetchCohortDetails(classId);
     }
 
   }, [classId]);

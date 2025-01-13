@@ -49,7 +49,6 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   const [enrollmentNumber, setEnrollmentNumber] = React.useState('');
   const [isModalOpenLearner, setIsModalOpenLearner] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const userId = '12345'; // Replace with the actual user ID you want to pass
 
   const handleOpenModalLearner = (userId: string) => {
     fetchUserDetails(userId);

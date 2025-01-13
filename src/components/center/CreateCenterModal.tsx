@@ -55,7 +55,6 @@ const CreateCenterModal: React.FC<CreateBlockModalProps> = ({
   onCenterAdded,
 }) => {
   const { t } = useTranslation();
-  const theme = useTheme<any>();
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
   const [formData, setFormData] = useState<any>();

@@ -1,27 +1,24 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import StepConnector from '@mui/material/StepConnector';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import Box from '@mui/material/Box';
+import Step from '@mui/material/Step';
+import StepConnector from '@mui/material/StepConnector';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
 
-import { useTheme } from '@mui/material/styles';
 import { HorizontalLinearStepperProps } from '@/utils/Interfaces';
-import { useTranslation } from 'react-i18next';
+import { useTheme } from '@mui/material/styles';
 
 const steps: string[] = ['Board', 'Subjects', 'Registration', 'Fees'];
 
 export default function HorizontalLinearStepper({
   activeStep,
 }: HorizontalLinearStepperProps) {
-  const { t } = useTranslation();
   const theme = useTheme<any>();
 
   const CustomStepIcon = (props: any) => {
-    const { icon, active, completed } = props;
+    const { active, completed } = props;
 
     if (completed) {
       return <CheckCircleIcon sx={{ color: theme.palette.primary.main }} />;

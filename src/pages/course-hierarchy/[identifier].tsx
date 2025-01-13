@@ -1,26 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import ContentCard from '@/components/ContentCard';
+import Header from '@/components/Header';
+import Loader from '@/components/Loader';
+import { getContentHierarchy } from '@/services/CoursePlannerService';
+import { logEvent } from '@/utils/googleAnalytics';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import {
   Accordion,
-  AccordionSummary,
   AccordionDetails,
-  Typography,
-  Link,
+  AccordionSummary,
   Box,
   Grid,
+  Typography
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { getContentHierarchy } from '@/services/CoursePlannerService';
-import { useRouter } from 'next/router';
-import Loader from '@/components/Loader';
-import Header from '@/components/Header';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { GetStaticPaths } from 'next';
-import withAccessControl from '@/utils/hoc/withAccessControl';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import { logEvent } from '@/utils/googleAnalytics';
 import { useTheme } from '@mui/material/styles';
+import { GetStaticPaths } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { useDirection } from '../../hooks/useDirection';
-import ContentCard from '@/components/ContentCard';
 
 const RecursiveAccordion = ({ data }: { data: any[] }) => {
   const router = useRouter(); 

@@ -1,17 +1,16 @@
+import { FormControl, MenuItem, Select } from '@mui/material';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
 } from 'recharts';
-import { MenuItem, Select, FormControl, InputLabel } from '@mui/material';
-import { sampleData } from './tempConfigs';
-import { DataPoint } from './tempConfigs';
-import { useTranslation } from 'react-i18next';
+import { DataPoint, sampleData } from './tempConfigs';
 
 const MonthlyRegistrationsChart: React.FC = () => {
   const { t } = useTranslation();
@@ -66,7 +65,7 @@ const MonthlyRegistrationsChart: React.FC = () => {
               onClick={(data, index) => handleBarClick(data, index)}
               radius={[4, 4, 0, 0]}
               shape={(props: any) => {
-                const { fill, x, y, width, height, index } = props;
+                const { x, y, width, height, index } = props;
                 const isSelected = selectedBar === index;
                 const barColor = isSelected
                   ? '#008000'

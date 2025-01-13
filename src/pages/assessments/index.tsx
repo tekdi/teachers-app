@@ -16,11 +16,9 @@ import { ICohort } from '@/utils/Interfaces';
 import {
   AssessmentStatus,
   Role,
-  Status,
-  Telemetry,
+  Status
 } from '@/utils/app.constant';
 import withAccessControl from '@/utils/hoc/withAccessControl';
-import { telemetryFactory } from '@/utils/telemetry';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import {
   Box,
@@ -44,7 +42,6 @@ import {
   AttendanceAPILimit,
   Program,
 } from '../../../app.config';
-import { useDirection } from '../../hooks/useDirection';
 
 const DEFAULT_STATUS_ORDER = {
   [AssessmentStatus.NOT_STARTED]: 0,
@@ -58,7 +55,6 @@ const Assessments = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
-  const { dir, isRTL } = useDirection();
   const [assessmentList, setAssessmentList] = useState([]);
   const [classId, setClassId] = useState('');
   const [userId, setUserId] = useState<string | null>(null);

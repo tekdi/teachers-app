@@ -1,4 +1,7 @@
-import * as React from 'react';
+import reassignLearnerStore from '@/store/reassignLearnerStore';
+import { toPascalCase } from '@/utils/Helper';
+import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Checkbox,
   Divider,
@@ -8,16 +11,12 @@ import {
 } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
-import SearchIcon from '@mui/icons-material/Search';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import reassignLearnerStore from '@/store/reassignLearnerStore';
-import { toPascalCase } from '@/utils/Helper';
+import * as React from 'react';
 import NoDataFound from './common/NoDataFound';
-import { modalStyles } from '@/styles/modalStyles';
 
 interface ManageUsersModalProps {
   open: boolean;

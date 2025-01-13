@@ -29,7 +29,6 @@ const RequisitesAccordion: React.FC<RequisitesAccordionProps> = ({
   subTopic,
 }) => {
 
-  
   const uniqueContent = content.filter(
     (item, index, self) =>
       item.type === type &&

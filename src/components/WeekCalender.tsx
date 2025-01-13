@@ -1,13 +1,12 @@
-import { addDays, format, getWeek, isSameDay, subDays } from 'date-fns';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { Box, useTheme } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
-import { dashboardDaysLimit, eventDaysLimit } from '../../app.config';
-import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import { useRouter } from 'next/router';
 import { Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import { Box, useTheme } from '@mui/material';
+import { addDays, format, isSameDay, subDays } from 'date-fns';
+import { useEffect, useRef, useState } from 'react';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { dashboardDaysLimit, eventDaysLimit } from '../../app.config';
+import useDeterminePathColor from '../hooks/useDeterminePathColor';
 const Calendar: React.FC<any> = ({
   showDetailsHandle,
   data,
@@ -19,16 +18,11 @@ const Calendar: React.FC<any> = ({
 }) => {
   const theme = useTheme<any>();
 
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [color, setColor] = useState(true);
-  const [isPrevDisabled, setIsPrevDisabled] = useState(false);
-  const [isNextDisabled, setIsNextDisabled] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const selectedItemRef = useRef<HTMLDivElement>(null);
   const determinePathColor = useDeterminePathColor();
-  const router = useRouter();
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     const selectedItem = selectedItemRef.current;

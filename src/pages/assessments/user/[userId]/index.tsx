@@ -50,7 +50,7 @@ const statusKeyMap: any = {
 function AssessmentsDetails() {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const {  isRTL } = useDirection();
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();

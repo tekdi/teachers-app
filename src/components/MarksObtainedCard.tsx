@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
+import { MarksObtainedCardProps } from '@/utils/Interfaces';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {
   Box,
-  BoxProps,
   Button,
   Card,
-  CardContent,
   Grid,
-  Typography,
+  Typography
 } from '@mui/material';
-import { MarksObtainedCardProps } from '@/utils/Interfaces';
-import { useTheme, Theme } from '@mui/material/styles';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import React, { useState } from 'react';
 interface SmallCardProps {
   item: {
     question: string;

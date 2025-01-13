@@ -1,9 +1,8 @@
-import { Box, Typography, Card, CardContent, Tooltip, Chip } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
-import { formatDate, formatEndDate } from '@/utils/Helper';
-import { useTranslation } from 'react-i18next';
 import { LeftDays } from '@/utils/app.constant';
+import { formatDate, formatEndDate } from '@/utils/Helper';
+import { Box, Card, CardContent, Tooltip, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ObservationCardProp {
   name?: string;

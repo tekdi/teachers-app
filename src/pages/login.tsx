@@ -256,7 +256,7 @@ const LoginPage = () => {
                     Authorization: `Bearer ${token}`,
                   };
 
-                  const updateResponse = await UpdateDeviceNotification(
+                  await UpdateDeviceNotification(
                     { deviceId: deviceID, action: 'add' },
                     userId,
                     headers

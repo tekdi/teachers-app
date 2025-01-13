@@ -1,13 +1,12 @@
+import { Role } from '@/utils/app.constant';
+import { URL_CONFIG } from '@/utils/url.config';
+import axios from 'axios';
 import {
-  CoursePlanner,
   GetSolutionDetailsParams,
   GetTargetedSolutionsParams,
   GetUserProjectStatusParams,
-  GetUserProjectTemplateParams,
+  GetUserProjectTemplateParams
 } from '../utils/Interfaces';
-import axios from 'axios';
-import { Role } from '@/utils/app.constant';
-import { URL_CONFIG } from '@/utils/url.config';
 import { get } from './RestClient';
 
 export const getTargetedSolutions = async ({

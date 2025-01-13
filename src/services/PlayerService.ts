@@ -1,6 +1,5 @@
-import { identifier } from 'stylis';
-import { URL_CONFIG } from '../utils/url.config';
 import axios from 'axios';
+import { URL_CONFIG } from '../utils/url.config';
 
 export const fetchContent = async (identifier: any) => {
   try {

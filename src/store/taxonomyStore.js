@@ -23,7 +23,6 @@ const taxonomyStore = create(
         set(() => ({ taxonomySubject: newTaxonomySubject })),
       setStateassociations: (newStateassociations) =>
         set((state) => ({ stateassociations: newStateassociations })),
-      setCenter: (newCenter) => set(() => ({ center: newCenter })),
       setArray: (newArray) => set((state) => ({ array: newArray })),
       setCenter: (newCenter) => set(() => ({ center: newCenter })),
     }),

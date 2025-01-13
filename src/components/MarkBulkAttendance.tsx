@@ -1,26 +1,25 @@
+import { bulkAttendance } from '@/services/AttendanceService';
 import { Box, Button, Fade, Modal, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
-import { bulkAttendance } from '@/services/AttendanceService';
 import {
   deepClone,
   getDayMonthYearFormat,
   shortDateFormat,
 } from '../utils/Helper';
 
-import { DropoutMember } from '../utils/Interfaces';
-import AttendanceStatusListView from './AttendanceStatusListView';
-import Backdrop from '@mui/material/Backdrop';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 import CloseIcon from '@mui/icons-material/Close';
-import ConfirmationModal from './ConfirmationModal';
-import Loader from './Loader';
-import { showToastMessage } from './Toastify';
+import Backdrop from '@mui/material/Backdrop';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import ReactGA from 'react-ga4';
+import { DropoutMember } from '../utils/Interfaces';
+import AttendanceStatusListView from './AttendanceStatusListView';
 import NoDataFound from './common/NoDataFound';
-import { Telemetry } from '@/utils/app.constant';
-import { telemetryFactory } from '@/utils/telemetry';
-import { modalStyles } from '@/styles/modalStyles';
+import ConfirmationModal from './ConfirmationModal';
+import Loader from './Loader';
+import { showToastMessage } from './Toastify';
 
 interface MarkBulkAttendanceProps {
   open: boolean;

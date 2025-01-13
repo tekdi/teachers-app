@@ -73,7 +73,7 @@ const AttendanceComparison: React.FC<AttendanceComparisonProps> = ({
   const store = useStore();
   const theme = useTheme<any>();
   const scope = cohortPrivileges?.STUDENT;
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
 
   const handleCenterTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>

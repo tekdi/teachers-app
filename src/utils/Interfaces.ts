@@ -398,11 +398,7 @@ export interface Session {
   subtopic?: string;
   url?: string;
 }
-export interface CoursePlanner {
-  id: number;
-  subject?: string;
-  circular?: number;
-}
+
 export interface CoursePlanner {
   id: number;
   subject?: string;

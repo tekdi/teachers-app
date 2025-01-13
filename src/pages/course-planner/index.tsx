@@ -26,14 +26,13 @@ import {
   Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import axios from 'axios';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { accessControl, COURSE_TYPE, frameworkId } from '../../../app.config';
 import { useDirection } from '../../hooks/useDirection';
-import { types } from 'node:util';
-import axios from 'axios';
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState('');
@@ -45,7 +44,7 @@ const CoursePlanner = () => {
   const setArray = taxonomyStore((state) => state.setArray);
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
   const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [framework, setFramework] = useState<any[]>([]);
@@ -62,7 +61,6 @@ const CoursePlanner = () => {
   const [gradeAssociations, setGradeAssociations] = useState<any[]>([]);
   const setType = taxonomyStore((state) => state.setType);
   const [typeOptions, setTypeOptions] = useState<any[]>([]);
-  const [typeAssociations, setTypeAssociations] = useState<any[]>([]);
   const userStateName = localStorage.getItem('stateName');
   const store = useStore();
   const tStore = taxonomyStore();
@@ -74,7 +72,6 @@ const CoursePlanner = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [stateName, setStateName] = useState(true);
   const [cohortsData, setCohortsData] = useState<Array<ICohort>>([]);
   const [manipulatedCohortData, setManipulatedCohortData] =

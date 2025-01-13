@@ -1,13 +1,12 @@
-import React from 'react';
 import {
+  Checkbox,
   FormControl,
-  FormControlLabel,
   FormGroup,
   FormLabel,
-  Checkbox,
-  Grid,
+  Grid
 } from '@mui/material';
 import { WidgetProps } from '@rjsf/utils';
+import React from 'react';
 
 interface CustomMultiselectCheckboxesProps {
   label: string;

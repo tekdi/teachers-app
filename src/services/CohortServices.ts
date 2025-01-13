@@ -1,7 +1,6 @@
 import { CohortListParam, GetCohortSearchParams } from '@/utils/Interfaces';
-import { get, post } from './RestClient';
-import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 import { Status } from '@/utils/app.constant';
+import { get, post } from './RestClient';
 
 export const cohortList = async ({
   limit,

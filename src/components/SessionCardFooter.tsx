@@ -1,33 +1,33 @@
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Box from '@mui/material/Box';
-import CenterSessionModal from './CenterSessionModal';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
-import React, { useEffect, useState } from 'react';
-import SelectTopic from './SelectTopic';
-import { SessionCardFooterProps } from '../utils/Interfaces';
-import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
-import TopicDetails from './TopicDetails';
-import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'react-i18next';
+import { IResource } from '@/pages/course-planner/center/[cohortId]';
 import {
   fetchCourseIdFromSolution,
   getTargetedSolutions,
   getUserProjectDetails,
 } from '@/services/CoursePlannerService';
 import { editEvent } from '@/services/EventService';
-import { showToastMessage } from './Toastify';
+import { fetchBulkContents } from '@/services/PlayerService';
 import { convertUTCToIST, getDayMonthYearFormat } from '@/utils/Helper';
 import { EventStatus } from '@/utils/app.constant';
-import { useDirection } from '../hooks/useDirection';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
-import { fetchBulkContents } from '@/services/PlayerService';
-import { IResource } from '@/pages/course-planner/center/[cohortId]';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDirection } from '../hooks/useDirection';
+import { SessionCardFooterProps } from '../utils/Interfaces';
+import CenterSessionModal from './CenterSessionModal';
+import SelectTopic from './SelectTopic';
+import { showToastMessage } from './Toastify';
+import TopicDetails from './TopicDetails';
 
 const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   item,
@@ -40,9 +40,8 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   grade,
 }) => {
   const theme = useTheme<any>();
-  const { t, i18n } = useTranslation();
-  const { dir, isRTL } = useDirection();
-  const router = useRouter();
+  const { t } = useTranslation();
+  const { isRTL } = useDirection();
 
   const [open, setOpen] = React.useState(false);
   const [editTopic, setEditTopic] = React.useState(false);

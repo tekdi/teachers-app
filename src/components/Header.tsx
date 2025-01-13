@@ -1,6 +1,9 @@
 'use client';
 
+import { UpdateDeviceNotification } from '@/services/NotificationService';
+import { Telemetry } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
+import { telemetryFactory } from '@/utils/telemetry';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
@@ -18,10 +21,6 @@ import { useDirection } from '../hooks/useDirection';
 import useStore from '../store/store';
 import ConfirmationModal from './ConfirmationModal';
 import StyledMenu from './StyledMenu';
-import { UpdateDeviceNotification } from '@/services/NotificationService';
-import {  getUserId } from '../services/ProfileService';
-import { Telemetry } from '@/utils/app.constant';
-import { telemetryFactory } from '@/utils/telemetry';
 
 interface HeaderProps {
   toggleDrawer?: (newOpen: boolean) => () => void;
@@ -49,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
   const [language, setLanguage] = useState<string>(selectedLanguage);
   const [darkMode, setDarkMode] = useState<string | null>(null);
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
 
   // Retrieve stored userId and language
   useEffect(() => {
@@ -112,7 +111,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
           Authorization: `Bearer ${token}`,
         };
 
-        const updateResponse = await UpdateDeviceNotification(
+        await UpdateDeviceNotification(
           { deviceId: deviceID, action: 'remove' },
           userId,
           headers

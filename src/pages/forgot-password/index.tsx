@@ -1,22 +1,21 @@
-import React, { useState } from 'react';
+import CentralizedModal from '@/components/CentralizedModal';
+import { showToastMessage } from '@/components/Toastify';
+import { resetPasswordLink } from '@/services/LoginService';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import {
   Box,
   Button,
   Divider,
   IconButton,
   InputAdornment,
-  TextField,
-  Typography,
+  TextField
 } from '@mui/material';
-import { useTranslation } from 'next-i18next';
 import { useTheme } from '@mui/material/styles';
-import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { resetPasswordLink } from '@/services/LoginService';
-import CentralizedModal from '@/components/CentralizedModal';
-import { showToastMessage } from '@/components/Toastify';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 import Logo from './../../assets/images/Pratham-Logo.png';
 
 const ForgotPassword = () => {

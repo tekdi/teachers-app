@@ -1,4 +1,3 @@
-import * as React from 'react';
 
 import {
   Box,
@@ -6,17 +5,16 @@ import {
   Divider,
   Grid,
   Modal,
-  Typography,
-  useMediaQuery,
+  Typography
 } from '@mui/material';
 
+import { modalStyles } from '@/styles/modalStyles';
+import { toPascalCase, translateString } from '@/utils/Helper';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
-import PropTypes from 'prop-types';
-import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { toPascalCase, translateString } from '@/utils/Helper';
-import { modalStyles } from '@/styles/modalStyles';
+import { useRouter } from 'next/router';
+import PropTypes from 'prop-types';
 
 // CSS variables
 const headerStyles = {

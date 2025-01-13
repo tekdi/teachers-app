@@ -1,10 +1,8 @@
-import React from 'react';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
+import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { WidgetProps } from '@rjsf/utils';
+import React from 'react';
 
 const MultiSelectDropdown: React.FC<WidgetProps> = ({
   options,

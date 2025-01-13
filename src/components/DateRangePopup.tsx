@@ -4,16 +4,17 @@ import {
   Button,
   Divider,
   FormControl,
-  Grid,
   MenuItem,
   MenuList,
   Modal,
   Select,
-  Typography,
+  Typography
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import useStore from '@/store/store';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 import CloseIcon from '@mui/icons-material/Close';
 import WestIcon from '@mui/icons-material/West';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -22,19 +23,8 @@ import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import ReactGA from 'react-ga4';
 import checkMark from '../assets/images/checkMark.svg';
-import MonthCalender from './MonthCalender';
-import { telemetryFactory } from '@/utils/telemetry';
-import { Telemetry } from '@/utils/app.constant';
 import { useDirection } from '../hooks/useDirection';
-import { modalStyles } from '@/styles/modalStyles';
-
-
-
-
-
-const dividerStyle = {
-  my: 2,
-};
+import MonthCalender from './MonthCalender';
 
 interface CustomSelectModalProps {
   menuItems: string[];

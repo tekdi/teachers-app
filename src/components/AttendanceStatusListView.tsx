@@ -23,7 +23,6 @@ import {
 import DropoutLabel from './DropoutLabel';
 import LearnerModal from './LearnerModal';
 import Loader from './Loader';
-import { useDirection } from '../hooks/useDirection';
 
 const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   isDisabled = false,
@@ -38,7 +37,6 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
   attendanceDate,
 }) => {
   const { t } = useTranslation();
-  const { dir, isRTL } = useDirection();
   const theme = useTheme<any>();
   let updatedAtDate: string | undefined;
   let attendanceDateFormatted: string | undefined;

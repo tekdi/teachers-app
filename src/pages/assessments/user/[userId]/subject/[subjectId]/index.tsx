@@ -21,7 +21,7 @@ import { useDirection } from '../../../../../../hooks/useDirection';
 function SubjectDetail() {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
   const searchParams = useSearchParams();
   const centerId = searchParams.get('center');
   const assessmentName = searchParams.get('assessmentName');

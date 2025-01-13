@@ -58,7 +58,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const [selfUserId, setSelfUserId] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
 
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
 
   const { data: formResponse } = useFormRead(
     FormContext.USERS,

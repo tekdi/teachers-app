@@ -1,19 +1,15 @@
-import React, { useRef, useEffect, useState } from 'react';
 import axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react';
 
+import { updateSubmission } from '@/services/ObservationServices';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import { Box, Typography, useTheme } from '@mui/material';
+import { useRouter } from 'next/router';
 import 'questionnaire-webcomponent/questionnaire-player-webcomponent.js';
 import 'questionnaire-webcomponent/styles.css';
-import mockData from "@/pages/data.json";
-import { updateSubmission } from '@/services/ObservationServices';
-import { mock } from 'node:test';
-import { showToastMessage } from '../Toastify';
 import { useTranslation } from 'react-i18next';
-import { useRouter } from 'next/router';
-import { Telemetry } from '@/utils/app.constant';
-import { telemetryFactory } from '@/utils/telemetry';
 import ConfirmationModal from '../ConfirmationModal';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import { Box, useTheme , Typography} from '@mui/material';
+import { showToastMessage } from '../Toastify';
 
 
 
@@ -53,11 +49,9 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
 
   const [fileUploadResponse, setFileUploadResponse] =
     useState<FileUploadResponse | null>(null);
-  const assessment = mockData;
   const { t } = useTranslation();
   const router = useRouter();
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
-  const [isBackConfirmationOpen, setIsBackConfirmationOpen] = useState(false);
 
   const [currentEvent, setCurrentEvent] = useState<CustomEvent | null>(null); 
   const theme = useTheme<any>();

@@ -11,9 +11,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
 import { getCohortList } from '@/services/CohortServices';
+import { getUserDetails } from '@/services/ProfileService';
+import manageUserStore from '@/store/manageUserStore';
 import useStore from '@/store/store';
-import { ICohort } from '@/utils/Interfaces';
-import { CustomField } from '@/utils/Interfaces';
+import { toPascalCase } from '@/utils/Helper';
+import { CustomField, ICohort } from '@/utils/Interfaces';
 import {
   CenterType,
   cohortHierarchy,
@@ -21,18 +23,14 @@ import {
   Status,
   Telemetry,
 } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 import { useTheme } from '@mui/material/styles';
+import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import ReactGA from 'react-ga4';
 import Loader from './Loader';
 import { showToastMessage } from './Toastify';
-import manageUserStore from '@/store/manageUserStore';
-import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
-import { telemetryFactory } from '@/utils/telemetry';
-import { toPascalCase } from '@/utils/Helper';
-import { useQueryClient } from '@tanstack/react-query';
-import { getUserDetails } from '@/services/ProfileService';
-import { useDirection } from '../hooks/useDirection';
 
 interface CohortSelectionSectionProps {
   classId: string;
@@ -377,7 +375,6 @@ const filteredManipulatedData = manipulatedCohortData
   const dashboard = pathname === '/dashboard';
   const isCoursePlanner = pathname === '/course-planner';
 
-  const { dir, isRTL } = useDirection();
   return (
     <Box
       className={

@@ -1,26 +1,6 @@
-import ConfirmationModal from '@/components/ConfirmationModal';
 import FacilitatorDrawer from '@/components/FacilitatorDrawer';
 import Header from '@/components/Header';
-import { logEvent } from '@/utils/googleAnalytics';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import { useRouter } from 'next/router';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Typography,
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
+import Loader from '@/components/Loader';
 import {
   getSolutionDetails,
   getTargetedSolutions,
@@ -29,23 +9,40 @@ import {
   UserStatusDetails,
 } from '@/services/CoursePlannerService';
 import useCourseStore from '@/store/coursePlannerStore';
-import dayjs from 'dayjs';
 import {
   AssessmentStatus,
   Role,
   TelemetryEventType,
 } from '@/utils/app.constant';
-import Loader from '@/components/Loader';
+import { logEvent } from '@/utils/googleAnalytics';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Typography,
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import dayjs from 'dayjs';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react';
+import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 // import { accessControl } from '../../app.config';
-import taxonomyStore from '@/store/taxonomyStore';
 import useDeterminePathColor from '@/hooks/useDeterminePathColor';
-import { useDirection } from '../../../hooks/useDirection';
-import { Telemetry } from 'next/dist/telemetry/storage';
-import { telemetryFactory } from '@/utils/telemetry';
 import { fetchBulkContents } from '@/services/PlayerService';
-import { accessControl } from '../../../../app.config';
+import taxonomyStore from '@/store/taxonomyStore';
+import { telemetryFactory } from '@/utils/telemetry';
 import { GetStaticPaths } from 'next';
+import { accessControl } from '../../../../app.config';
+import { useDirection } from '../../../hooks/useDirection';
 
 export interface IResource {
   name: string;

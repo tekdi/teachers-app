@@ -1,44 +1,41 @@
-import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { Role, Status } from '@/utils/app.constant';
 import {
+  BulkCreateCohortMembersRequest,
   LearnerListProps,
-  UserData,
   UpdateCustomField,
-  LearnerAttendanceProps,
+  UserData
 } from '@/utils/Interfaces';
-import React, { useEffect, useState } from 'react';
-import { Status, Role } from '@/utils/app.constant';
-import { BulkCreateCohortMembersRequest } from '@/utils/Interfaces';
 import ApartmentIcon from '@mui/icons-material/Apartment';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { Avatar, Box, Typography } from '@mui/material';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 import BottomDrawer from './BottomDrawer';
 import ConfirmationModal from './ConfirmationModal';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DeleteUserModal from './DeleteUserModal';
 import DropOutModal from './DropOutModal';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import LearnerModal from './LearnerModal';
-import Link from 'next/link';
 import Loader from './Loader';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import ManageCentersModal from './ManageCentersModal';
 // import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { bulkCreateCohortMembers } from '@/services/CohortServices';
+import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+import { getUserDetails } from '@/services/ProfileService';
+import reassignLearnerStore from '@/store/reassignLearnerStore';
+import useStore from '@/store/store';
+import { capitalizeEachWord, filterMiniProfileFields } from '@/utils/Helper';
+import { fetchAttendanceStats } from '@/utils/helperAttendanceStatApi';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NoAccountsIcon from '@mui/icons-material/NoAccounts';
-import ReactGA from 'react-ga4';
-import { getUserDetails } from '@/services/ProfileService';
-import { showToastMessage } from './Toastify';
-import { styled } from '@mui/system';
-import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { styled } from '@mui/system';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
+import ReactGA from 'react-ga4';
 import manageUserStore from '../store/manageUserStore';
-import useStore from '@/store/store';
-import reassignLearnerStore from '@/store/reassignLearnerStore';
-import { bulkCreateCohortMembers } from '@/services/CohortServices';
-import { capitalizeEachWord, filterMiniProfileFields } from '@/utils/Helper';
-import { useMediaQuery } from '@mui/material';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { fetchAttendanceStats } from '@/utils/helperAttendanceStatApi';
+import { showToastMessage } from './Toastify';
 
 type Anchor = 'bottom';
 
