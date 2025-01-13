@@ -28,6 +28,19 @@ const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
   const theme = useTheme<any>();
   const { t } = useTranslation();
  
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '85%',
+    bgcolor: theme.palette.warning['A400'],
+    boxShadow: 24,
+    borderRadius: '16px',
+    '@media (min-width: 600px)': {
+      width: '450px',
+    },
+  };
 
   return (
     <div>
@@ -41,7 +54,7 @@ const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={modalStyles}>
+        <Box sx={style}>
           <Box
             display={'flex'}
             justifyContent={'space-between'}

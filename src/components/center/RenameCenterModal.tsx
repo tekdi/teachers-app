@@ -109,7 +109,20 @@ const RenameCenterModal: React.FC<CreateBlockModalProps> = ({
     <Modal open={open} onClose={() => handleClose('')} closeAfterTransition>
       <Fade in={open}>
         <Box
-          sx={modalStyles}
+          sx={{
+            backgroundColor: 'white',
+            boxShadow: 24,
+            maxWidth: 400,
+            width: '90%',
+            margin: 'auto',
+            borderRadius: 3,
+            outline: 'none',
+            p: 2,
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}
         >
           <Box
             sx={{

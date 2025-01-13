@@ -106,6 +106,19 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
   // const handleOtherReasonChange = (event: any) => {
   //   setOtherReason(event.target.value);
   // };
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '85%',
+    boxShadow: 24,
+    bgcolor: '#fff',
+    borderRadius: '16px',
+    '@media (min-width: 600px)': {
+      width: '450px',
+    },
+  };
 
   return (
     <Modal
@@ -113,7 +126,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
     >
-      <Box sx={modalStyles}>
+      <Box sx={{ ...style }}>
         <Box
           display={'flex'}
           justifyContent={'space-between'}

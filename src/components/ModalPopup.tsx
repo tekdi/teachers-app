@@ -26,6 +26,17 @@ const ModalComponent = () => {
   const theme = useTheme<any>();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isDesktop ? 500 : 400,
+    bgcolor: 'warning.A400',
+    p: 4,
+    textAlign: 'center',
+    height: 'auto',
+  };
   
   return (
     <div>
@@ -40,7 +51,7 @@ const ModalComponent = () => {
         aria-describedby="edit-profile-description"
       >
         <Box
-          sx={modalStyles}
+          sx={style}
           gap="10px"
           display="flex"
           flexDirection="column"

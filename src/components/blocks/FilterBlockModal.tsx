@@ -44,7 +44,19 @@ const FilterModal: React.FC<FilterModalProps> = ({
     <Modal open={open} onClose={handleClose} closeAfterTransition>
       <Fade in={open}>
         <Box
-          sx={modalStyles}
+          sx={{
+            maxWidth: 400,
+            width: '80%',
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 2,
+            borderRadius: 5,
+            outline: 'none',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}
         >
           <Box display="flex" justifyContent="space-between" mb={2}>
             <Typography
