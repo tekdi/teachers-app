@@ -67,7 +67,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     setIsCalenderModalOpen(!isCalendarModalOpen);
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
 
   const handleMenuItemClick = (index: number, item: string) => {
     setSelectedIndex(index);

@@ -5,16 +5,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import { WidgetProps } from '@rjsf/utils';
 
-interface CustomRadioWidgetProps {
-  value: string;
-  id: string;
-  required: boolean;
-  disabled: boolean;
-  readonly: boolean;
-  label: string;
-  options: any;
-  onChange: any;
-}
 const CustomRadioWidget: React.FC<WidgetProps> = ({
   id,
   value,

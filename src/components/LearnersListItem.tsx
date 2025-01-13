@@ -45,7 +45,6 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   learnerName,
   isDropout,
   enrollmentId,
-  age,
   cohortMembershipId,
   statusReason,
   reloadState,
@@ -81,7 +80,6 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const theme = useTheme<any>();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const router = useRouter();
-  const { learnerId }: any = router.query;
   const { t } = useTranslation();
   const [openCentersModal, setOpenCentersModal] = React.useState(false);
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
@@ -276,10 +274,6 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     setConfirmationModalOpen(false);
     setConfirmationModalReassignCentersOpen(false);
     setOpenDeleteUserModal(false);
-  };
-
-  const handleCloseBottomDrawer = () => {
-    setState({ ...state, bottom: false });
   };
 
   const handleDroppedOutLabelClick = () => {

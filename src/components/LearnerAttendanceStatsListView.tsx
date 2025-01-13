@@ -28,7 +28,6 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   presentPercent,
   classesMissed,
   userId,
-  cohortId,
   memberStatus,
 }) => {
   const theme = useTheme<any>();
