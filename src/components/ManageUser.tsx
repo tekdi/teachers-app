@@ -94,6 +94,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const [selectedUserName, setSelectedUserName] = useState(null);
   const [centers, setCenters] = useState<any>([]);
   const [centerList, setCenterList] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
 
   const [state, setState] = React.useState({
     bottom: false,
@@ -124,6 +125,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState(users || []);
+  const [TotalCount, setTotalCount] = useState<number>(0);
 
   
   useEffect(() => {
@@ -143,8 +145,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           .join('');
 
         if (cohortId) {
-          const limit = 0;
-          const page = 0;
+          const limit = 10;
+          // const page = page;
           const filters = {
             states: store.stateCode,
             districts: store.districtCode,
@@ -154,13 +156,17 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           };
           const fields = ['age'];
 
-          // const resp = await getMyUserList({ limit, page, filters, fields });
-          const resp = await queryClient.fetchQuery({
-            // queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR, filters],
-            queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
-            queryFn: () => getMyUserList({ limit, page, filters, fields }),
-          });
+          const resp = await getMyUserList({ limit, page, filters, fields });
+          // const resp = await queryClient.fetchQuery({
+          //   // queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR, filters],
+          //   queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
+          //   queryFn: () => getMyUserList({ limit, page, filters, fields }),
+          // });
           const facilitatorList = resp.result?.getUserDetails;
+
+          setTotalCount(resp.result?.totalCount)
+
+          
 
           if (!facilitatorList || facilitatorList?.length === 0) {
             console.log('No users found.');
@@ -207,6 +213,11 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               };
             }
           );
+          
+
+          setUsers(extractedData);
+          setFilteredUsers(extractedData);
+          // setLoading(false);
 
           setTimeout(() => {
 
@@ -222,7 +233,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       }
     };
     getFacilitator();
-  }, [isFacilitatorAdded, reloadState]);
+  }, [isFacilitatorAdded, reloadState , page]);
 
   const handleClose = () => {
     setOpen(false);
@@ -518,17 +529,15 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       )
     );
   };
-  const itemsPerPage = 10; // Page size
-  const [page, setPage] = useState(1);
+  const itemsPerPage = 12; // Page size
+
 
   const handlePageChange = (newPage : any) => {
     setPage(newPage);
+    
   };
 
-  const paginatedUsers = users.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
+
   
   return (
     <div>
@@ -629,12 +638,10 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                         </Box>
                       ) : (
                         <>
-                         
-      
                               <Box>
                                 <Grid container spacing={2}>
-                                  {paginatedUsers.length > 0 ? (
-                                    paginatedUsers.map((user) => (
+                                  {filteredUsers.length > 0 ? (
+                                    filteredUsers.map((user) => (
                                       <Grid
                                         item
                                         xs={12}
@@ -738,14 +745,15 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                                   )}
                                 </Grid>
 
-                                {/* Pagination Component */}
+                                
+                              </Box>
+                                <Box sx={{mt:2 , display:'flex', justifyContent:'end'}}>
                                 <CustomPagination
-                                  count={Math.ceil(users.length / itemsPerPage)}
+                                  count={Math.ceil((TotalCount || 0) / itemsPerPage)}
                                   page={page}
                                   onPageChange={handlePageChange}
                                 />
-                              </Box>
-                        
+                                </Box>
                         </>
                        
                       )}
