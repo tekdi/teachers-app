@@ -162,7 +162,7 @@ const ReassignModal: React.FC<ReassignModalProps> = ({
             placeholder={t('CENTERS.SEARCH_CENTERS')}
             fullWidth={true}
           ></SearchBar>
-          <Box sx={{ p: 3, maxHeight: '180px', overflowY: 'auto' }}>
+          <Box sx={{ p: 3, maxHeight: '50vh', overflowY: 'auto' }}>
             {filteredCenters.map((center, index) => (
               <Box key={center.id}>
                 <Box

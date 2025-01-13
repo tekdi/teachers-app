@@ -35,6 +35,7 @@ import { toPascalCase } from '@/utils/Helper';
 import { useDirection } from '../hooks/useDirection';
 import { telemetryFactory } from '@/utils/telemetry';
 import SearchBar from './Searchbar';
+import CustomPagination from './CustomPagination';
 
 interface Cohort {
   cohortId: string;
@@ -517,6 +518,18 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       )
     );
   };
+  const itemsPerPage = 10; // Page size
+  const [page, setPage] = useState(1);
+
+  const handlePageChange = (newPage : any) => {
+    setPage(newPage);
+  };
+
+  const paginatedUsers = users.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+  
   return (
     <div>
       <Box>
@@ -618,129 +631,122 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                         <>
                          
       
-                         <Grid container spacing={2}>
-                          {filteredUsers &&
-                            filteredUsers.length !== 0 &&
-                            [...filteredUsers]
-                              .sort((a, b) => a.name.localeCompare(b.name))
-                              .map((user) => (
-                                <Grid
-                                  item
-                                  xs={12}
-                                  sm={12}
-                                  md={6}
-                                  lg={4}
-                                  key={user.userId}
-                                >
-                                  <Box
-                                    display={'flex'}
-                                    borderBottom={`1px solid ${theme.palette.warning['A100']}`}
-                                    width={'100%'}
-                                    justifyContent={'space-between'}
-                                    sx={{
-                                      cursor: 'pointer',
-                                      '@media (min-width: 600px)': {
-                                        border: `1px solid  ${theme.palette.action.selected}`,
-                                        padding: '4px 10px',
-                                        borderRadius: '8px',
-                                        background:
-                                          theme.palette.warning['A400'],
-                                      },
-                                    }}
-                                  >
-                                    <Box
-                                      display="flex"
-                                      alignItems="center"
-                                      gap="5px"
-                                    >
-                                      <Box>
-                                        <CustomLink
-                                          className="word-break"
-                                          href="#"
-                                          onClick={(e) => e.preventDefault()}
-                                        >
-                                          <Typography
-                                            onClick={() => {
-                                              handleTeacherFullProfile(
-                                                user?.userId
-                                              );
-                                            }}
-                                            sx={{
-                                              textAlign: 'left',
-                                              fontSize: '16px',
-                                              fontWeight: '400',
-                                              marginTop: '5px',
-                                              color:
-                                                theme.palette.secondary.main,
-                                            }}
-                                          >
-                                            {toPascalCase(user.name)}
-                                          </Typography>
-                                        </CustomLink>
+                              <Box>
+                                <Grid container spacing={2}>
+                                  {paginatedUsers.length > 0 ? (
+                                    paginatedUsers.map((user) => (
+                                      <Grid
+                                        item
+                                        xs={12}
+                                        sm={12}
+                                        md={6}
+                                        lg={4}
+                                        key={user.userId}
+                                      >
                                         <Box
+                                          display={'flex'}
+                                          borderBottom={`1px solid ${theme.palette.warning['A100']}`}
+                                          width={'100%'}
+                                          justifyContent={'space-between'}
                                           sx={{
-                                            backgroundColor:
-                                              theme.palette.action.selected,
-                                            padding: '5px',
-                                            width: 'fit-content',
-                                            borderRadius: '5px',
-                                            fontSize: '12px',
-                                            fontWeight: '600',
-                                            color: 'black',
-                                            marginBottom: '10px',
+                                            cursor: 'pointer',
+                                            '@media (min-width: 600px)': {
+                                              border: `1px solid  ${theme.palette.action.selected}`,
+                                              padding: '4px 10px',
+                                              borderRadius: '8px',
+                                              background: theme.palette.warning['A400'],
+                                            },
                                           }}
                                         >
-                                          {user?.cohortNames
-                                            ? getCohortNames(user.cohortNames)
-                                            : t(
-                                                'ATTENDANCE.NO_CENTERS_ASSIGNED'
-                                              )}
+                                          <Box display="flex" alignItems="center" gap="5px">
+                                            <Box>
+                                              <CustomLink
+                                                className="word-break"
+                                                href="#"
+                                                onClick={(e) => e.preventDefault()}
+                                              >
+                                                <Typography
+                                                  onClick={() => {
+                                                    handleTeacherFullProfile(user?.userId);
+                                                  }}
+                                                  sx={{
+                                                    textAlign: 'left',
+                                                    fontSize: '16px',
+                                                    fontWeight: '400',
+                                                    marginTop: '5px',
+                                                    color: theme.palette.secondary.main,
+                                                  }}
+                                                >
+                                                  {toPascalCase(user.name)}
+                                                </Typography>
+                                              </CustomLink>
+                                              <Box
+                                                sx={{
+                                                  backgroundColor: theme.palette.action.selected,
+                                                  padding: '5px',
+                                                  width: 'fit-content',
+                                                  borderRadius: '5px',
+                                                  fontSize: '12px',
+                                                  fontWeight: '600',
+                                                  color: 'black',
+                                                  marginBottom: '10px',
+                                                }}
+                                              >
+                                                {user?.cohortNames
+                                                  ? getCohortNames(user.cohortNames)
+                                                  : t('ATTENDANCE.NO_CENTERS_ASSIGNED')}
+                                              </Box>
+                                            </Box>
+                                          </Box>
+                                          <Box>
+                                            <MoreVertIcon
+                                              onClick={(event) => {
+                                                isMobile
+                                                  ? toggleDrawer('bottom', true, user)(event)
+                                                  : handleMenuOpen(event, user);
+                                              }}
+                                              sx={{
+                                                fontSize: '24px',
+                                                marginTop: '1rem',
+                                                color: theme.palette.warning['300'],
+                                                cursor: 'pointer',
+                                              }}
+                                            />
+                                          </Box>
                                         </Box>
-                                      </Box>
-                                    </Box>
-                                    <Box>
-                                      <MoreVertIcon
-                                        onClick={(event) => {
-                                          isMobile
-                                            ? toggleDrawer(
-                                                'bottom',
-                                                true,
-                                                user
-                                              )(event)
-                                            : handleMenuOpen(event, user);
+                                      </Grid>
+                                    ))
+                                  ) : (
+                                    <Box
+                                      sx={{
+                                        m: '1.125rem',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                      }}
+                                    >
+                                      <Typography
+                                        style={{
+                                          width: '100%',
+                                          textAlign: 'center',
                                         }}
-                                        sx={{
-                                          fontSize: '24px',
-                                          marginTop: '1rem',
-                                          color: theme.palette.warning['300'],
-                                          cursor: 'pointer',
-                                        }}
-                                      />
+                                      >
+                                        {t('COMMON.NO_DATA_FOUND')}
+                                      </Typography>
                                     </Box>
-                                  </Box>
+                                  )}
                                 </Grid>
-                              ))}
-                          {!filteredUsers?.length && (
-                            <Box
-                              sx={{
-                                m: '1.125rem',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: '100%',
-                              }}
-                            >
-                              <Typography
-                                style={{
-                                  width: '100%',
-                                  textAlign: 'center',
-                                }}
-                              >
-                                {t('COMMON.NO_DATA_FOUND')}
-                              </Typography>
-                            </Box>
-                          )}
-                        </Grid></>
+
+                                {/* Pagination Component */}
+                                <CustomPagination
+                                  count={Math.ceil(users.length / itemsPerPage)}
+                                  page={page}
+                                  onPageChange={handlePageChange}
+                                />
+                              </Box>
+                        
+                        </>
                        
                       )}
                     </Box>

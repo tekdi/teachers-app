@@ -6,7 +6,6 @@ import Modal from '@mui/material/Modal';
 import WestIcon from '@mui/icons-material/West';
 import { useTranslation } from 'next-i18next';
 import { useDirection } from '../hooks/useDirection';
-import { modalStyles } from '@/styles/modalStyles';
 
 
 
@@ -16,6 +15,23 @@ const CustomRangeModal: React.FC = () => {
     setIsCalenderModalOpen(!isCalendarModalOpen);
   const { dir, isRTL } = useDirection();
   const { t } = useTranslation();
+  const style = {
+    width: '300px', // Adjust width as needed
+    maxWidth: 300, // Maximum width for responsiveness
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: 'white',
+    padding: '12px 15px 12px 15px',
+    borderRadius: '8px',
+    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+
+    // Responsive styles
+    '@media (min-width: 768px)': {
+      width: '70%', // Adjust width for smaller screens
+    },
+  };
   return (
     <div>
       {/* <Button onClick={handleOpen}>Open modal</Button> */}
@@ -25,7 +41,7 @@ const CustomRangeModal: React.FC = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={modalStyles}>
+        <Box sx={style}>
           <Box
             sx={{
               display: 'flex',

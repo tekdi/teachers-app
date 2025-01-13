@@ -234,6 +234,20 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     setConfirmation(false);
     setModalOpen(false);
   };
+  const modalContainer = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '85%',
+    bgcolor: theme.palette.warning['A400'],
+    boxShadow: 24,
+    p: 4,
+    height: '526px',
+    '@media (min-width: 600px)': {
+      width: '450px',
+    },
+  };
 
   return (
     <Box>
@@ -254,7 +268,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
         <Fade in={open}>
           <Box
             sx={{
-              ...modalStyles,
+              ...modalContainer,
               borderColor: theme.palette.warning['A400'],
               padding: '15px 10px 0 10px',
             }}
@@ -396,7 +410,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 <Box
                   height={'64%'}
                   sx={{
-                    overflowY: 'scroll',
+                    overflowY: 'auto',
                     marginTop: '10px',
                     padding: '0 0 10px',
                   }}

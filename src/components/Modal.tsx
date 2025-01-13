@@ -31,7 +31,17 @@ const ModalComponent: React.FC<ModalProps> = ({
     <Modal open={open} onClose={onClose}>
       <Box
         sx={{
-          ...modalStyles,
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '85%',
+          bgcolor: 'white',
+          boxShadow: 24,
+          // height: '526px',
+          '@media (min-width: 600px)': {
+            width: '450px',
+          },
           borderRadius: '16px',
         }}
       >

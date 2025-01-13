@@ -208,6 +208,37 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
   const handleActiveStartDateChange = (date: Date) => {
     // setActiveStartDate(date);
   };
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '85%',
+    bgcolor: 'background.paper',
+    // border: '2px solid #000',
+    boxShadow: 24,
+    // p: 4,
+    '@media (min-width: 600px)': {
+      width: '450px',
+    },
+  };
+
+  const calenderModalStyle = {
+    width: '85%',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: 'white',
+    padding: '12px 0 12px 0',
+    borderRadius: '8px',
+    // boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+    // height: '526px',
+    // Responsive styles
+    '@media (min-width: 600px)': {
+      width: '450px',
+    },
+  };
 
   return (
     <Box className="mt-md-16" sx={{ px: '2px' }}>
@@ -251,7 +282,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         aria-describedby="edit-profile-description"
       >
         <Box
-          sx={modalStyles}
+          sx={modalStyle}
           gap="10px"
           display="flex"
           flexDirection="column"
@@ -341,7 +372,7 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={modalStyles}>
+        <Box sx={calenderModalStyle}>
           <Box
             sx={{
               padding: ' 0 15px 15px',
