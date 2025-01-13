@@ -8,6 +8,7 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface ManageUsersModalProps {
   leanerName: string;
@@ -26,6 +27,7 @@ const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+ 
   const style = {
     position: 'absolute',
     top: '50%',

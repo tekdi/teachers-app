@@ -19,6 +19,7 @@ import { showToastMessage } from '../Toastify';
 import { telemetryFactory } from '@/utils/telemetry';
 import { Telemetry } from '@/utils/app.constant';
 import axios from 'axios';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface CreateBlockModalProps {
   open: boolean;

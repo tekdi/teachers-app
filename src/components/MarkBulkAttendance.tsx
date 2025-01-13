@@ -20,6 +20,7 @@ import ReactGA from 'react-ga4';
 import NoDataFound from './common/NoDataFound';
 import { Telemetry } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface MarkBulkAttendanceProps {
   open: boolean;
@@ -79,20 +80,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     React.useState(false);
   const [teacherUserId, setTeacherUserId] = React.useState<string>('');
 
-  const modalContainer = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '85%',
-    bgcolor: theme.palette.warning['A400'],
-    boxShadow: 24,
-    p: 4,
-    height: '526px',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
+
 
   const updateBulkAttendanceStatus = (arr: any[]) => {
     setIsConfirmation(true);
@@ -245,6 +233,20 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     setUpdateAttendance(false);
     setConfirmation(false);
     setModalOpen(false);
+  };
+  const modalContainer = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '85%',
+    bgcolor: theme.palette.warning['A400'],
+    boxShadow: 24,
+    p: 4,
+    height: '526px',
+    '@media (min-width: 600px)': {
+      width: '450px',
+    },
   };
 
   return (
@@ -408,7 +410,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 <Box
                   height={'64%'}
                   sx={{
-                    overflowY: 'scroll',
+                    overflowY: 'auto',
                     marginTop: '10px',
                     padding: '0 0 10px',
                   }}

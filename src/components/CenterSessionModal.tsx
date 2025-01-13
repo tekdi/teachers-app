@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { toPascalCase } from '@/utils/Helper';
+import { modalStyles } from '@/styles/modalStyles';
 
 const CenterSessionModal: React.FC<SessionsModalProps> = ({
   children,
@@ -26,6 +27,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -42,6 +44,7 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
       width: '450px',
     },
   };
+
 
   return (
     <Modal

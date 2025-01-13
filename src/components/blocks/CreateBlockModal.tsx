@@ -1,3 +1,4 @@
+import { modalStyles } from '@/styles/modalStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -38,6 +39,8 @@ const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
 
     handleClose();
   };
+
+ 
 
   return (
     <Modal open={open} onClose={handleClose} closeAfterTransition>

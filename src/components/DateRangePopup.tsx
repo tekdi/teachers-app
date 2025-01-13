@@ -26,38 +26,11 @@ import MonthCalender from './MonthCalender';
 import { telemetryFactory } from '@/utils/telemetry';
 import { Telemetry } from '@/utils/app.constant';
 import { useDirection } from '../hooks/useDirection';
+import { modalStyles } from '@/styles/modalStyles';
 
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '85%',
-  bgcolor: 'background.paper',
-  // border: '2px solid #000',
-  boxShadow: 24,
-  // p: 4,
-  '@media (min-width: 600px)': {
-    width: '450px',
-  },
-};
 
-const calenderModalStyle = {
-  width: '85%',
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  backgroundColor: 'white',
-  padding: '12px 0 12px 0',
-  borderRadius: '8px',
-  // boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-  // height: '526px',
-  // Responsive styles
-  '@media (min-width: 600px)': {
-    width: '450px',
-  },
-};
+
+
 
 const dividerStyle = {
   my: 2,
@@ -234,6 +207,37 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
 
   const handleActiveStartDateChange = (date: Date) => {
     // setActiveStartDate(date);
+  };
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '85%',
+    bgcolor: 'background.paper',
+    // border: '2px solid #000',
+    boxShadow: 24,
+    // p: 4,
+    '@media (min-width: 600px)': {
+      width: '450px',
+    },
+  };
+
+  const calenderModalStyle = {
+    width: '85%',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: 'white',
+    padding: '12px 0 12px 0',
+    borderRadius: '8px',
+    // boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+    // height: '526px',
+    // Responsive styles
+    '@media (min-width: 600px)': {
+      width: '450px',
+    },
   };
 
   return (

@@ -15,6 +15,7 @@ import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import React from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
+import { modalStyles } from '@/styles/modalStyles';
 
 const ModalComponent = () => {
   const { t } = useTranslation();
@@ -36,6 +37,7 @@ const ModalComponent = () => {
     textAlign: 'center',
     height: 'auto',
   };
+  
   return (
     <div>
       <Modal

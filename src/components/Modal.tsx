@@ -4,6 +4,7 @@ import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import ButtonFunctional from './ButtonComponent';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface ModalProps {
   open: boolean;
