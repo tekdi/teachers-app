@@ -113,7 +113,9 @@ const nextConfig = {
 
 const pwaConfig = withPWA({
   dest: 'public',
-  reloadOnOnline: false,
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development'
 });
 
 export default pwaConfig(nextConfig);
