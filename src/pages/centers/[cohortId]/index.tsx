@@ -414,7 +414,6 @@ const CohortPage = () => {
     eventCreated
   );
   useEffect(() => {
-    console.log(eventDates);
   }, [eventDates]);
 
   useEffect(() => {
