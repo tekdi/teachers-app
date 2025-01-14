@@ -8,10 +8,17 @@ import { fetchSurveyData } from '@/services/youthNet/SurveyYouthService';
 import SimpleModal from '@/components/SimpleModal';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { SURVEY_DATA } from '@/components/youthNet/tempConfigs';
+import {
+  locations,
+  SURVEY_DATA,
+  users,
+} from '@/components/youthNet/tempConfigs';
 import BackHeader from '@/components/youthNet/BackHeader';
 import MonthlyRegistrationsChart from '@/components/youthNet/MonthlyRegistrationsChart';
 import RegistrationStatistics from '@/components/youthNet/RegistrationStatistics';
+import YouthAndVolunteers from '@/components/youthNet/YouthAndVolunteers';
+import VillageNewRegistration from '@/components/youthNet/VillageNewRegistration';
+import { UserList } from '@/components/youthNet/UserCard';
 
 const index = () => {
   const { t } = useTranslation();
@@ -19,6 +26,9 @@ const index = () => {
   const [isSurveyAvailable, setIsSurveyAvailable] = useState<boolean>(false);
   const [surveymodalOpen, setSurveyModalOpen] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [abvmodalOpen, setAbvModalOpen] = useState<boolean>(false);
+  const [belmodalOpen, setBelModalOpen] = useState<boolean>(false);
+  const [vilmodalOpen, setVilModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const getSurveyData = async () => {
@@ -30,10 +40,31 @@ const index = () => {
     getSurveyData();
   }, []);
 
-  const handleModalClose = () => setModalOpen(false);
+  const handleModalClose = () => {
+    setModalOpen(false),
+      setBelModalOpen(false),
+      setAbvModalOpen(false),
+      setVilModalOpen(false);
+  };
 
   const handleAddVolunteers = () => {
     router.push('youthboard/volunteerList');
+  };
+
+  const handleClick = (type: string) => {
+    switch (type) {
+      case 'above':
+        setAbvModalOpen(true);
+        break;
+      case 'below':
+        setBelModalOpen(true);
+        break;
+      case 'village':
+        setVilModalOpen(true);
+        break;
+      default:
+        console.log('Unknown action');
+    }
   };
 
   return (
@@ -51,42 +82,46 @@ const index = () => {
           })}
         </Typography>
       </Box>
-      <Box p={2}>
+      <Box pl={2} pr={2} mt={2}>
         <RegistrationStatistics title={'7 New Registrations Today'} />
       </Box>
       <Box p={2}>
         <Grid container spacing={2}>
           <Grid item xs={4}>
-            <RegistrationStatistics cardTitle={'Above 18 y/o'} statistic={4} />
+            <RegistrationStatistics
+              onPrimaryClick={() => handleClick('above')}
+              cardTitle={'Above 18 y/o'}
+              statistic={4}
+            />
           </Grid>
           <Grid item xs={4}>
-            <RegistrationStatistics cardTitle={'Below 18 y/o'} statistic={3} />
+            <RegistrationStatistics
+              onPrimaryClick={() => handleClick('below')}
+              cardTitle={'Below 18 y/o'}
+              statistic={3}
+            />
           </Grid>
           <Grid item xs={4}>
-            <RegistrationStatistics cardTitle={'From'} statistic={12} />
+            <RegistrationStatistics
+              onPrimaryClick={() => handleClick('village')}
+              cardTitle={'From'}
+              statistic={12}
+            />
           </Grid>
         </Grid>
       </Box>
       <Box>
         <MonthlyRegistrationsChart />
       </Box>
-      <Box p={2}>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <RegistrationStatistics
-              avatar={true}
-              statistic={4}
-              subtile={'Youth'}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <RegistrationStatistics
-              avatar={true}
-              statistic={4}
-              subtile={'Volunteer'}
-            />
-          </Grid>
-        </Grid>
+      <Box>
+        <YouthAndVolunteers
+          selectOptions={[
+            { label: 'As of today, 5th Sep', value: 'today' },
+            { label: 'As of yesterday, 4th Sep', value: 'yesterday' },
+          ]}
+          data="577 Youth & Volunteers"
+        />
+        ;
       </Box>
       <SimpleModal
         modalTitle={t('YOUTHNET_SURVEY.NEW_SURVEY')}
@@ -126,6 +161,40 @@ const index = () => {
           >
             {t('YOUTHNET_SURVEY.ASSIGN_VOLUNTEERS_TO_ENSURE')}
           </Typography>
+        </Box>
+      </SimpleModal>
+      <SimpleModal
+        modalTitle={t('YOUTHNET_DASHBOARD.ABOVE_18')}
+        open={abvmodalOpen}
+        onClose={handleModalClose}
+      >
+        {' '}
+        <UserList users={users} />
+      </SimpleModal>
+
+      <SimpleModal
+        modalTitle={t('YOUTHNET_DASHBOARD.BELOW_18')}
+        open={belmodalOpen}
+        onClose={handleModalClose}
+      >
+        {' '}
+        <UserList users={users} />
+      </SimpleModal>
+      <SimpleModal
+        modalTitle={t('YOUTHNET_DASHBOARD.VLLAGE_18')}
+        open={vilmodalOpen}
+        onClose={handleModalClose}
+      >
+        {' '}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            mt: 2,
+          }}
+        >
+          <VillageNewRegistration locations={locations} />
         </Box>
       </SimpleModal>
     </Box>

@@ -151,8 +151,8 @@
     "BETWEEN": "Between {{lowerLimit}} - {{upperLimit}} %",
     "LESS_THAN": "Less than {{range}} %",
     "MODIFY_CENTER_ATTENDANCE": "Modify Center Attendance",
-    "SUPPORT_REQUEST":"Support Request",
-    "WE_ARE_HERE_TO_HELP":"We’re Here to Help",
+    "SUPPORT_REQUEST": "Support Request",
+    "WE_ARE_HERE_TO_HELP": "We’re Here to Help",
     "SUBMIT_YOUR_REQUEST_FOR_ISSUES": "Submit your request and let us assist you with any issues or concerns."
   },
   "LOGIN_PAGE": {
@@ -664,20 +664,23 @@
     "OBSERVATION_NOT_STARTED_YET": "Survey not started yet",
     "EXPIRED": "Expired"
   },
-    "YOUTHNET_SURVEY": {
-      "NEW_SURVEY": "New Survey",
-      "ASSIGN_VOLUNTEERS_NOW": "Assign Volunteers Now",
-      "REMIND_ME_LATER": "Remind Me Later",
-      "NEW_SURVEY_HAS_BEEN_ADDED": "A new survey '{{surveyName}}' has been added and has been assigned to {{villageCount}} villages",
-      "ASSIGN_VOLUNTEERS_TO_ENSURE": "Assign Volunteers to ensure they can access the survey"
-    },
-    "YOUTHNET_DASHBOARD": {
-      "VILLAGES_MANAGED_BY_YOU": "Villages Managed by you : {{totalVillageCount}}",
-      "MONTHLY_REGISTRATIONS_OVERVIEW": "Monthly Registrations Overview",
-      "CLOSED_ON": "Closed on"
-    },
-    "YOUTHNET_VOLUNTEERLIST": {
-      "ENTRIES": "Entries",
-      "VOLUNTEERS_ASSIGNED": "Volunteers assigned"
-    }
+  "YOUTHNET_SURVEY": {
+    "NEW_SURVEY": "New Survey",
+    "ASSIGN_VOLUNTEERS_NOW": "Assign Volunteers Now",
+    "REMIND_ME_LATER": "Remind Me Later",
+    "NEW_SURVEY_HAS_BEEN_ADDED": "A new survey '{{surveyName}}' has been added and has been assigned to {{villageCount}} villages",
+    "ASSIGN_VOLUNTEERS_TO_ENSURE": "Assign Volunteers to ensure they can access the survey"
+  },
+  "YOUTHNET_DASHBOARD": {
+    "VILLAGES_MANAGED_BY_YOU": "Villages Managed by you : {{totalVillageCount}}",
+    "MONTHLY_REGISTRATIONS_OVERVIEW": "Monthly Registrations Overview",
+    "CLOSED_ON": "Closed on",
+    "ABOVE_18": "Over 18 Registrations",
+    "BELOW_18": "Under 18 Registrations",
+    "VLLAGE_18": "Today's New Registrations "
+  },
+  "YOUTHNET_VOLUNTEERLIST": {
+    "ENTRIES": "Entries",
+    "VOLUNTEERS_ASSIGNED": "Volunteers assigned"
+  }
 }
