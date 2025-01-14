@@ -6,7 +6,7 @@ import { targetSolution } from '@/services/ObservationServices';
 import { Role, Telemetry } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
 import { telemetryFactory } from '@/utils/telemetry';
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Tab, Tabs, Typography, useMediaQuery } from '@mui/material';
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Tab, Tabs, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
@@ -341,66 +341,69 @@ const ObservationForms: React.FC = () => {
             })}
           </Typography>
 
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row' }}>
-            {filteredObservationData.filter((item: any) => item.entityType === name).length > 0 && value === 0 ? (
-              filteredObservationData
-                .filter((item: any) => item.entityType === name && new Date(item.endDate) > currentDate)
-                .map((item: any) => (
-                  <Box key={item._id} sx={{ margin: 1 }}>
-                    <ObservationCard
-                      name={item.name}
-                      onCardClick={() =>
-                        onCardClick(item?.solutionId, item?.entityType, item?.name, item?._id, item?.description, item?.endDate)
-                      }
-                      description={item?.description}
-                      endDate={item?.endDate}
-                    />
-                  </Box>
-                ))
-            ) : value === 1 ? (
-              filteredObservationData.filter((item: any) => item.entityType === name && new Date(item.endDate) <= currentDate).length > 0 ? (
-                filteredObservationData
-                  .filter((item: any) => item.entityType === name && new Date(item.endDate) <= currentDate)
-                  .map((item: any) => (
-                    <Box key={item._id} sx={{ margin: 1 }}>
-                      <ObservationCard
-                        name={item.name}
-                        // onCardClick={() =>
-                        //   onCardClick(item?.solutionId, item?.entityType, item?.name, item?._id, item?.description)
-                        // }
-                        description={item?.description}
-                        endDate={item?.endDate}
-                      />
-                    </Box>
-                  ))
-              ) : searchInput === "" ? (
-                <Typography variant="h4" color="textSecondary">
-                  {t('OBSERVATION.NO_RESULT_FOUND', {
-                    entity: toPascalCase(name),
-                  })}
-                </Typography>
-              ) : (
-                <Typography variant="h4" color="textSecondary">
-                  {t('OBSERVATION.NO_RESULT_FOUND', {
-                    entity: toPascalCase(name),
-                  })}
-                </Typography>
-              )
-            ) : searchInput === "" && value === 0 ? (
-              <Typography variant="h4" color="textSecondary">
-                {t('OBSERVATION.NO_RESULT_FOUND', {
-                  entity: toPascalCase(name),
-                })}
-              </Typography>
-            ) : (
-              <Typography variant="h4" color="textSecondary">
-                {t('OBSERVATION.NO_RESULT_FOUND', {
-                  entity: toPascalCase(name),
-                })}
-              </Typography>
-            )}
+         <Box>
+  <Grid container spacing={2}>
+    {value === 0 &&
+      filteredObservationData.filter((item: any) => item.entityType === name).length > 0 ? (
+        filteredObservationData
+          .filter(
+            (item: any) =>
+              item.entityType === name && new Date(item.endDate) > currentDate
+          )
+          .map((item: any) => (
+            <Grid item xs={12} sm={12} md={6} lg={4} key={item._id}>
+              <Box sx={{ margin: 1 }}>
+                <ObservationCard
+                  name={item.name}
+                  onCardClick={() =>
+                    onCardClick(
+                      item?.solutionId,
+                      item?.entityType,
+                      item?.name,
+                      item?._id,
+                      item?.description,
+                      item?.endDate
+                    )
+                  }
+                  description={item?.description}
+                  endDate={item?.endDate}
+                />
+              </Box>
+            </Grid>
+          ))
+      ) : value === 1 &&
+        filteredObservationData.filter(
+          (item: any) =>
+            item.entityType === name && new Date(item.endDate) <= currentDate
+        ).length > 0 ? (
+        filteredObservationData
+          .filter(
+            (item: any) =>
+              item.entityType === name && new Date(item.endDate) <= currentDate
+          )
+          .map((item: any) => (
+            <Grid item xs={12} sm={12} md={6} lg={4} key={item._id}>
+              <Box sx={{ margin: 1 }}>
+                <ObservationCard
+                  name={item.name}
+                  description={item?.description}
+                  endDate={item?.endDate}
+                />
+              </Box>
+            </Grid>
+          ))
+      ) : (
+        <Grid item xs={12}>
+          <Typography variant="h4" color="textSecondary">
+            {t('OBSERVATION.NO_RESULT_FOUND', {
+              entity: toPascalCase(name),
+            })}
+          </Typography>
+        </Grid>
+      )}
+  </Grid>
+</Box>
 
-          </Box>
         </Box>
       ))}
     </div>

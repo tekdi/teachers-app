@@ -58,7 +58,7 @@ const ObservationCard: React.FC<ObservationCardProp> = ({
             transform: 'scale(1.05)',
             boxShadow: 10,
           },
-          width: '320px',
+          width: '100%',
          cursor: 'pointer',
         background: "#f8efda",
                  borderRadius: '16px',
