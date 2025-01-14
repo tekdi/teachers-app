@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import React from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { useTranslation } from 'next-i18next';
+
 
 interface CustomPaginationProps {
     count: number;
@@ -26,17 +28,20 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
 }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const { t } = useTranslation();
 
     if (isMobile) {
         return (
             <InfiniteScroll
                 dataLength={items.length}
-                next={fetchMoreData || (() => { })}
+                next={fetchMoreData || (() => { 
+                    console.warn('fetchMoreData callback is required for infinite scroll');
+                })}
                 hasMore={hasMore}
-                loader={<h4>Loading...</h4>}
-                endMessage={
-                    <p style={{ textAlign: 'center' }}>You have seen all data!</p>
-                }
+                loader={<h4>{t('COMMON.LOADING')}...</h4>}
+                // endMessage={
+                //     <p style={{ textAlign: 'center' }}>You have seen all data!</p>
+                // }
             >
                 <></>
             </InfiniteScroll>

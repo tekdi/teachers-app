@@ -35,7 +35,6 @@ import Loader from './Loader';
 import ReassignModal from './ReassignModal';
 import SearchBar from './Searchbar';
 import SimpleModal from './SimpleModal';
-import axios from 'axios'; // डेटा API कडून आणण्यासाठी
 
 interface Cohort {
   cohortId: string;
@@ -537,11 +536,21 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       users?.filter((user) => user?.name?.toLowerCase()?.includes(term))
     );
   };
-  const itemsPerPage = 12;
-  const fetchData = async () => {
-    setInfinitePage((prev) => prev + 10);
+  const PAGINATION_CONFIG = {
+    ITEMS_PER_PAGE: 12,
+    INFINITE_SCROLL_INCREMENT: 10,
   };
 
+  const fetchData = async () => {
+    try {
+      setInfinitePage(
+        (prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT
+      );
+    } catch (error) {
+      console.error('Error fetching more data:', error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    }
+  };
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -785,16 +794,15 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                             }}
                           >
                             <CustomPagination
-                              count={Math.ceil(TotalCount / itemsPerPage)}
+                              count={Math.ceil(
+                                TotalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE
+                              )}
                               page={page}
                               onPageChange={handlePageChange}
                               fetchMoreData={() => fetchData()}
                               hasMore={hasMore}
                               items={infiniteData.map((user) => (
-                                <div key={user.userId}>
-                                  user details
-                                  <p>{user.name}</p>
-                                </div>
+                                <Box key={user.userId}></Box>
                               ))}
                             />
                           </Box>
