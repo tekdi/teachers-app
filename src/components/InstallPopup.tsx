@@ -1,3 +1,4 @@
+import { Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 
 const InstallPopup = () => {
@@ -58,14 +59,25 @@ const InstallPopup = () => {
   return (
     <div style={styles.overlay}>
       <div style={styles.popup}>
-        <h3>Install Our App</h3>
-        <p>For a better experience, install our app on your device.</p>
-        <button style={styles.button} onClick={handleInstall}>
+        <h3>Install Pratham Learning Management App</h3>
+        <p>For a better experience, install PLM app on your device.</p>
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: '#FDBE16',
+            '&:hover': {
+              backgroundColor: '#F0A500',
+            },
+            color: '#FFFFFF',
+          }}
+          onClick={handleInstall}
+          className="one-line-text"
+        >
           Install
-        </button>
-        <button style={styles.closeButton} onClick={() => setIsVisible(false)}>
+        </Button>
+        <Button style={styles.closeButton} onClick={() => setIsVisible(false)}>
           Close
-        </button>
+        </Button>
       </div>
     </div>
   );
