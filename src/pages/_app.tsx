@@ -34,6 +34,7 @@ import { useDirection } from '../hooks/useDirection';
 import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
 import AllowNotification from '@/components/AllowNotification';
+import InstallPopup from '@/components/InstallPopup';
 
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
@@ -171,6 +172,7 @@ function App({ Component, pageProps }: AppProps) {
           rel="stylesheet"
         />
       </Head>
+      <InstallPopup />
       <CacheProvider value={isRTL ? rtlCache : ltrCache}>
         <CssVarsProvider theme={customTheme}>
           <Box
@@ -198,7 +200,7 @@ function App({ Component, pageProps }: AppProps) {
             />
             <Notification />
             {!login && <AllowNotification />}
-
+            
           </Box>
         </CssVarsProvider>
       </CacheProvider>
