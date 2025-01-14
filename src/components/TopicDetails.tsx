@@ -1,24 +1,17 @@
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Grid,
-  Typography,
+  Box
 } from '@mui/material';
 
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { EventStatus } from '@/utils/app.constant';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import { EventStatus } from '@/utils/app.constant';
-import { RequisiteType } from '../../app.config';
-import NoDataFound from './common/NoDataFound';
 import router from 'next/router';
+import { useEffect, useState } from 'react';
+import { RequisiteType } from '../../app.config';
 import RequisitesAccordion from './RequisitesAccordion';
 import { showToastMessage } from './Toastify';
-import { useEffect, useState } from 'react';
 
 interface LearningResource {
   topic: string;

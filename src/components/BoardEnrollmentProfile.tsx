@@ -20,7 +20,7 @@ const BoardEnrollmentProfile: React.FC<BoardEnrollmentProfileProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
 
   const handleBackEvent = () => {
     window.history.back();

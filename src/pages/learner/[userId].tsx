@@ -1,39 +1,27 @@
-import React, { ComponentType, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { GetStaticPaths } from 'next';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ReactGA from 'react-ga4';
-import { format } from 'date-fns';
-import {
-  ArrowBack as ArrowBackIcon,
-  East as EastIcon,
-  CreateOutlined as CreateOutlinedIcon,
-} from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Typography,
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import {
-  getAssessmentList,
-  getDoIdForAssessmentDetails,
-} from '@/services/AssesmentService';
+import AddLearnerModal from '@/components/AddLeanerModal';
+import DateRangePopup from '@/components/DateRangePopup';
+import Header from '@/components/Header';
+import LearnersListItem from '@/components/LearnersListItem';
+import Loader from '@/components/Loader';
+import StudentStatsCard from '@/components/StudentStatsCard';
+import { showToastMessage } from '@/components/Toastify';
+import { getFormRead } from '@/hooks/useFormRead';
 import {
   classesMissedAttendancePercentList,
   getCohortAttendance,
 } from '@/services/AttendanceService';
+import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { getUserDetails } from '@/services/ProfileService';
+import useStore from '@/store/store';
+import {
+  FormContext,
+  FormContextType,
+  getMenuItems,
+  limit,
+  Role,
+  Status,
+} from '@/utils/app.constant';
+import { logEvent } from '@/utils/googleAnalytics';
 import {
   extractAddress,
   formatSelectedDate,
@@ -42,42 +30,40 @@ import {
   toPascalCase,
   translateString,
 } from '@/utils/Helper';
-import { logEvent } from '@/utils/googleAnalytics';
-import {
-  CustomField,
-  CohortAttendancePercentParam,
-  UpdateCustomField,
-  OverallAttendance,
-  AssessmentReportProp,
-} from '@/utils/Interfaces';
-import Header from '@/components/Header';
-import Loader from '@/components/Loader';
-import MarksObtainedCard from '@/components/MarksObtainedCard';
-import StudentStatsCard from '@/components/StudentStatsCard';
-import DateRangePopup from '@/components/DateRangePopup';
-import { showToastMessage } from '@/components/Toastify';
-import AddLearnerModal from '@/components/AddLeanerModal';
 import withAccessControl from '@/utils/hoc/withAccessControl';
 import {
-  FormContext,
-  FormContextType,
-  Role,
-  Status,
-  getMenuItems,
-  limit,
-} from '@/utils/app.constant';
+  AssessmentReportProp,
+  CohortAttendancePercentParam,
+  CustomField,
+  OverallAttendance,
+  UpdateCustomField,
+} from '@/utils/Interfaces';
+import {
+  ArrowBack as ArrowBackIcon,
+  CreateOutlined as CreateOutlinedIcon,
+  East as EastIcon,
+} from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Typography
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { GetStaticPaths } from 'next';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import React, { ComponentType, useEffect, useState } from 'react';
 import {
   accessControl,
-  AttendanceAPILimit,
-  Program,
+  AttendanceAPILimit
 } from '../../../app.config';
-import LearnersListItem from '@/components/LearnersListItem';
-import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { getFormRead } from '@/hooks/useFormRead';
-import { useDirection } from '../../hooks/useDirection';
-import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../../featureEliminationUtil';
-import useStore from '@/store/store';
+import { useDirection } from '../../hooks/useDirection';
 let AssessmentReport: ComponentType<AssessmentReportProp> | null = null;
 
 if (!isEliminatedFromBuild('AssessmentReport', 'component')) {

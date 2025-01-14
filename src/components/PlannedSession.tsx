@@ -1,19 +1,19 @@
 import * as React from 'react';
 
-import { getFormRead } from '@/hooks/useFormRead';
+import useNotification from '@/hooks/useNotification';
 import { createEvent, editEvent } from '@/services/EventService';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import { getOptionsByCategory } from '@/utils/Helper';
 import { CreateEvent, PlannedModalProps } from '@/utils/Interfaces';
 import {
   CenterType,
-  FormContext,
-  FormContextType,
   Role,
   Status,
   Telemetry,
   sessionMode,
-  sessionType,
+  sessionType
 } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import {
@@ -35,6 +35,7 @@ import {
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -56,10 +57,6 @@ import ConfirmationModal from './ConfirmationModal';
 import SessionMode from './SessionMode';
 import { showToastMessage } from './Toastify';
 import WeekDays from './WeekDays';
-import { getOptionsByCategory } from '@/utils/Helper';
-import { telemetryFactory } from '@/utils/telemetry';
-import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker';
-import useNotification from '@/hooks/useNotification';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -444,7 +441,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   ) => {
     setSelectedBlockId(id);
     if (newValue) {
-      let isValid = true;
+      const isValid = true;
 
       setStartTimeError(null);
       setEndTimeError(null);
@@ -1676,6 +1673,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                               handleChange(index, newValue, 'start', 'time')
                             }
                             sx={{ borderRadius: '4px', fontSize: '2px' }}
+                            slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
                           />
                         </LocalizationProvider>
                         {startTimeError && (
@@ -1699,6 +1697,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                               handleChange(index, newValue, 'end', 'time')
                             }
                             sx={{ borderRadius: '4px' }}
+                            slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
                           />
                         </LocalizationProvider>
                         {endTimeError && (
@@ -1771,6 +1770,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           handleChange(index, newValue, 'start', 'time')
                         }
                         sx={{ borderRadius: '4px', fontSize: '2px' }}
+                        slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
                       />
                     </LocalizationProvider>
                     {startTimeError && (
@@ -1796,6 +1796,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           handleChange(index, newValue, 'end', 'time')
                         }
                         sx={{ borderRadius: '4px' }}
+                        slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
                       />
                     </LocalizationProvider>
                     {endTimeError && (

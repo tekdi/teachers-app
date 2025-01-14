@@ -1,20 +1,18 @@
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import useStore from '@/store/store';
 import { Role, Status, limit } from '@/utils/app.constant';
 import {
-  capitalizeEachWord,
-  getFieldValue,
-  toPascalCase,
+  toPascalCase
 } from '@/utils/Helper';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
-import Loader from './Loader';
-import { showToastMessage } from './Toastify';
 import NoDataFound from './common/NoDataFound';
+import Loader from './Loader';
 import SearchBar from './Searchbar';
-import useStore from '@/store/store';
+import { showToastMessage } from './Toastify';
 
 interface UserDataProps {
   name: string;

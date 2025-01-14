@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
-import { useTranslation } from 'next-i18next';
-import { useTheme } from '@mui/material/styles';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Header from '@/components/Header';
-import WestIcon from '@mui/icons-material/West';
-import { useRouter } from 'next/router';
-import CreatePassword from './create-password';
-import { logEvent } from '@/utils/googleAnalytics';
-import PasswordCreate from '@/components/PasswordCreate';
-import { resetPassword } from '@/services/LoginService';
-import { showToastMessage } from '@/components/Toastify';
 import CentralizedModal from '@/components/CentralizedModal';
-import { useDirection } from '../hooks/useDirection';
+import Header from '@/components/Header';
+import PasswordCreate from '@/components/PasswordCreate';
+import { showToastMessage } from '@/components/Toastify';
+import { resetPassword } from '@/services/LoginService';
 import { Telemetry } from '@/utils/app.constant';
+import { logEvent } from '@/utils/googleAnalytics';
 import { telemetryFactory } from '@/utils/telemetry';
+import WestIcon from '@mui/icons-material/West';
+import { Box } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { useDirection } from '../hooks/useDirection';
 
 const EditForgotPassword = () => {
   const { t } = useTranslation();

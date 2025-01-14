@@ -1,23 +1,23 @@
-import { Box, LinearProgress, Tooltip, Typography } from '@mui/material';
-import Image from 'next/image';
-import placeholderImage from '../assets/images/decorationBg.png';
-import {
-  FileType,
-  ContentCardsTypes,
-  ContentType,
-  contentStatus,
-} from '@/utils/app.constant';
-import router from 'next/router';
-import { COURSE_TYPE } from '../../app.config';
-import { useTranslation } from 'next-i18next';
+import { fetchBulkContents } from '@/services/PlayerService';
 import {
   ContentCreate,
   ContentStatus,
   createContentTracking,
   getContentTrackingStatus,
 } from '@/services/TrackingService';
+import {
+  ContentCardsTypes,
+  ContentType,
+  FileType,
+  contentStatus,
+} from '@/utils/app.constant';
+import { Box, LinearProgress, Tooltip, Typography } from '@mui/material';
+import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
+import router from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { fetchBulkContents } from '@/services/PlayerService';
+import { COURSE_TYPE } from '../../app.config';
+import placeholderImage from '../assets/images/decorationBg.png';
 interface ContentCardProps {
   name: string;
   mimeType: string;
@@ -129,7 +129,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
   }, [CallStatus]);
 
   useEffect(() => {
-    let detailsObject: any[] = [];
+    const detailsObject: any[] = [];
 
     if (typeof window !== 'undefined' && window.localStorage) {
       const keys = Object.keys(localStorage);
@@ -143,7 +143,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
           const parsedTelemetryEvent = JSON.parse(telemetryEvent);
           let progressFromSummary = null;
           let progressFromExtra = null;
-          const mimeType = parsedTelemetryEvent?.mimeType;
 
           // Check `summary` for progress
           if (parsedTelemetryEvent?.edata?.summary?.length > 0) {

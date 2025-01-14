@@ -1,5 +1,5 @@
-import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import { attendanceInPercentageStatusList } from '../services/AttendanceService';
+import { getMyCohortMemberList } from '../services/MyClassDetailsService';
 import {
   AttendancePercentageProps,
   CohortMemberList,
@@ -95,7 +95,6 @@ export const calculatePercentage = async (
   attendanceRequest: AttendancePercentageProps,
   selectedDate?: any
 ): Promise<Result> => {
-  const fromDate = new Date(selectedDate);
   const response = await getMyCohortMemberList(cohortMemberRequest);
 
   const presentStudents = await getPresentStudentCount(attendanceRequest);

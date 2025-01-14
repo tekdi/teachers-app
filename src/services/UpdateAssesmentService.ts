@@ -1,7 +1,6 @@
 import {
   Assessment,
   AssessmentQuestion,
-  AssessmentSubject,
 } from '@/utils/Interfaces';
 
 export const updateAssessment = (): Assessment[] => {

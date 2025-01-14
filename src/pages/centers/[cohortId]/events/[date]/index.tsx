@@ -37,10 +37,10 @@ import { sessionType } from '@/utils/app.constant';
 
 const EventMonthView: React.FC<any> = () => {
   const theme = useTheme<any>();
-  const { t, i18n } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const { t } = useTranslation();
+  const { isRTL } = useDirection();
   const router = useRouter();
-  const { cohortId, date }: any = router.query;
+  const { cohortId }: any = router.query;
   const { showAll } = router.query;
 
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -77,7 +77,7 @@ const EventMonthView: React.FC<any> = () => {
           const beforeDate = getBeforeDate(date);
           const limit = 0;
           const offset = 0;
-          let filters: eventFilters = {
+          const filters: eventFilters = {
             date: {
               after: afterDate,
               before: beforeDate,

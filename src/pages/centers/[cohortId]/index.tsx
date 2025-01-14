@@ -24,11 +24,8 @@ import AddLearnerModal from '@/components/AddLeanerModal';
 import CenterSessionModal from '@/components/CenterSessionModal';
 import CohortFacilitatorList from '@/components/CohortFacilitatorList';
 import CohortLearnerList from '@/components/CohortLearnerList';
-// import DeleteSession from '@/components/DeleteSession';
 import Header from '@/components/Header';
-// import PlannedSession from '@/components/PlannedSession';
-// import SessionCard from '@/components/SessionCard';
-// import SessionCardFooter from '@/components/SessionCardFooter';
+
 import WeekCalender from '@/components/WeekCalender';
 import DeleteCenterModal from '@/components/center/DeleteCenterModal';
 import RenameCenterModal from '@/components/center/RenameCenterModal';
@@ -40,7 +37,6 @@ import { Role, Telemetry, sessionType } from '@/utils/app.constant';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -58,30 +54,28 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-// import Schedule from '../../../components/Schedule';
 import { Session } from '../../../utils/Interfaces';
 
 import manageUserStore from '@/store/manageUserStore';
+import withAccessControl from '@/utils/hoc/withAccessControl';
 import {
   accessControl,
   eventDaysLimit,
   modifyAttendanceLimit,
 } from '../../../../app.config';
-import withAccessControl from '@/utils/hoc/withAccessControl';
 import { useDirection } from '../../../hooks/useDirection';
 
-import dynamic from 'next/dynamic';
-import { isEliminatedFromBuild } from '../../../../featureEliminationUtil';
-import { telemetryFactory } from '@/utils/telemetry';
-import useStore from '@/store/store';
-import { setTimeout } from 'timers';
 import useEventDates from '@/hooks/useEventDates';
+import useNotification from '@/hooks/useNotification';
 import {
   getMyCohortFacilitatorList,
   getMyCohortMemberList,
 } from '@/services/MyClassDetailsService';
-import useNotification from '@/hooks/useNotification';
-import UserId from '@/pages/learner/[userId]';
+import useStore from '@/store/store';
+import { telemetryFactory } from '@/utils/telemetry';
+import dynamic from 'next/dynamic';
+import { setTimeout } from 'timers';
+import { isEliminatedFromBuild } from '../../../../featureEliminationUtil';
 
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {

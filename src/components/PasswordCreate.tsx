@@ -103,12 +103,6 @@ const PasswordCreate: React.FC<PasswordCreateProps> = ({
         });
         if (response) {
           handleResetPassword(password);
-          const username = localStorage.getItem('userEmail');
-          // if (username) {
-          //   await successfulNotification(false, 'USER', 'OnPasswordReset', {
-          //     receipients: [username],
-          //   });
-          // }
         } else {
           setOldPasswordError(true);
         }

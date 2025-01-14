@@ -3,7 +3,6 @@ import { post, get } from './RestClient';
 import { toPascalCase } from '@/utils/Helper';
 import axios from 'axios';
 
-
 export const sendCredentialService = async ({
   isQueue,
   context,
@@ -82,14 +81,10 @@ export const sendEmailOnLearnerCreation = async (
   });
 };
 
-
-
 // Push App Notification
 
-
-
 export const UpdateDeviceNotification = async (
-  userData: { deviceId: string , action: string },
+  userData: { deviceId: string, action: string },
   userId: string,
   headers: { tenantId: any; Authorization: string }
 ): Promise<any> => {
@@ -110,7 +105,7 @@ export const readUserId = async (
   userId?: string | string[],
   fieldValue?: boolean
 ): Promise<any> => {
-  let apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/read/${userId}?fieldvalue=false`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/read/${userId}?fieldvalue=false`;
   try {
     const response = await get(apiUrl);
     return response?.data;

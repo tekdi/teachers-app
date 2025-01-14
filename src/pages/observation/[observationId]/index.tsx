@@ -1,50 +1,41 @@
+import Header from '@/components/Header';
 import {
   Box,
-  Typography,
-  Button,
-  Grid,
-  useTheme,
   FormControl,
+  Grid,
   InputLabel,
-  Select,
-  OutlinedInput,
   MenuItem,
-  TextField,
-  InputAdornment,
+  OutlinedInput,
+  Select,
+  Typography,
   useMediaQuery,
+  useTheme
 } from '@mui/material';
-import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import Header from '@/components/Header';
+import React, { useEffect, useMemo, useState } from 'react';
 // import AddEntityModal from '@/components/observations/AddEntityModal';
-import { ObservationEntityType, Role , ObservationStatus, Telemetry, Status} from '@/utils/app.constant';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { GetStaticPaths } from 'next';
-import { toPascalCase } from '@/utils/Helper';
 import { getCohortList } from '@/services/CohortServices';
 import {
   getMyCohortFacilitatorList,
   getMyCohortMemberList,
 } from '@/services/MyClassDetailsService';
+import { ObservationEntityType, ObservationStatus, Role, Status, Telemetry } from '@/utils/app.constant';
+import { formatDate, toPascalCase } from '@/utils/Helper';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import SearchIcon from '@mui/icons-material/Search';
-import { formatDate } from '@/utils/Helper';
+import { GetStaticPaths } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-import Pagination from '@mui/material/Pagination';
-import { CohortMemberList } from '@/utils/Interfaces';
-import {
-  addEntities,
-  checkEntityStatus,
-  fetchEntities,
-  targetSolution,
-} from '@/services/ObservationServices';
-import { useTranslation } from 'next-i18next';
-import { CheckBoxOutlineBlankRounded } from '@mui/icons-material';
+import Loader from '@/components/Loader';
 import Entity from '@/components/observations/Entity';
 import SearchBar from '@/components/Searchbar';
+import {
+  addEntities,
+  fetchEntities,
+  targetSolution
+} from '@/services/ObservationServices';
+import { CohortMemberList } from '@/utils/Interfaces';
 import { telemetryFactory } from '@/utils/telemetry';
-import centers from '@/pages/centers';
-import Loader from '@/components/Loader';
+import { useTranslation } from 'next-i18next';
 interface EntityData {
   cohortId?: string;
   name?: string;
@@ -128,7 +119,7 @@ const ObservationDetails = () => {
             } else {
                filteredData = response[0]?.childData?.filter(
                 (cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE
-              )?.sort((a: any, b: any) => a.name.localeCompare(b.name));;
+              )?.sort((a: any, b: any) => a.name.localeCompare(b.name));
 
               setMyCohortList(filteredData);
             }
@@ -150,7 +141,7 @@ const ObservationDetails = () => {
 
               
               setSelectedCohort(data)
-            } ;
+            } 
           }
 
           if (searchInput !== '' || entity===ObservationEntityType.CENTER) {
@@ -262,10 +253,10 @@ setFilteredEntityData(result)
   useEffect(() => {
 
     if (entityIds?.length > 0) {
-      let unmatchedCohorts = myCohortListForCenter?.filter(
+      const unmatchedCohorts = myCohortListForCenter?.filter(
         (child: any) => !entityIds?.includes(child.cohortId)
       );
-      let unmatchedUsers = Data?.filter(
+      const unmatchedUsers = Data?.filter(
         (child: any) => !entityIds?.includes(child.userId)
       );
   
@@ -319,7 +310,7 @@ setFilteredEntityData(result)
     const handleCohortChange = async () => {
       try {
         setLoading(true)
-        let filters = {
+        const filters = {
           cohortId: selectedCohort,
         } as CohortMemberList['filters'];
         if (searchInput !== '') filters.name = searchInput;

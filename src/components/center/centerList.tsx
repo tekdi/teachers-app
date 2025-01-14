@@ -32,8 +32,7 @@ const CenterList: React.FC<CenterListProps> = ({
   const activeCenters = centers.filter(
     (center) => center.cohortStatus === Status.ACTIVE
   );
-  const { i18n } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const {  isRTL } = useDirection();
 
   return (
     <>

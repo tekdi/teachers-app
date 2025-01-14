@@ -80,10 +80,6 @@ export enum sessionMode {
   ONLINE = 'online',
   OFFLINE = 'offline',
 }
-export enum sessionType {
-  JUST = 'Just Once',
-  REPEATING = 'Repeating',
-}
 
 export enum cohortPrivileges {
   STUDENT = 'student',

@@ -1,4 +1,4 @@
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import BottomDrawer from '@/components/BottomDrawer';
@@ -11,31 +11,30 @@ import { getMyUserList } from '@/services/MyClassDetailsService';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import useStore from '@/store/store';
 import { QueryKeys, Role, Status, Telemetry } from '@/utils/app.constant';
+import { toPascalCase } from '@/utils/Helper';
+import { telemetryFactory } from '@/utils/telemetry';
 import AddIcon from '@mui/icons-material/Add';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useMediaQuery } from '@mui/material';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { setTimeout } from 'timers';
+import { useDirection } from '../hooks/useDirection';
 import manageUserStore from '../store/manageUserStore';
 import AddFacilitatorModal from './AddFacilitator';
+import CustomPagination from './CustomPagination';
 import DeleteUserModal from './DeleteUserModal';
 import Loader from './Loader';
 import ReassignModal from './ReassignModal';
-import SimpleModal from './SimpleModal';
-import { useQueryClient } from '@tanstack/react-query';
-import { toPascalCase } from '@/utils/Helper';
-import { useDirection } from '../hooks/useDirection';
-import { telemetryFactory } from '@/utils/telemetry';
 import SearchBar from './Searchbar';
-import CustomPagination from './CustomPagination';
+import SimpleModal from './SimpleModal';
 import axios from 'axios'; // डेटा API कडून आणण्यासाठी
 
 interface Cohort {
@@ -75,7 +74,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const store = manageUserStore();
   const newStore = useStore();
   const queryClient = useQueryClient();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
   const isActiveYear = newStore.isActiveYearSelected;
 
   const [value, setValue] = React.useState(1);

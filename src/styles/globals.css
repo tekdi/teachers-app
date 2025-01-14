@@ -17,8 +17,8 @@ body {
   box-sizing: border-box;
   margin: 0 !important;
   padding: 0 !important;
-  background-color: white;
   overflow-x: hidden;
+  background-color: white;
 }
 
 .drawer-select div div {
@@ -187,8 +187,8 @@ main {
 }
 
 .col {
-  flex-basis: 0;
   flex-grow: 1;
+  flex-basis: 0;
   max-width: 100%;
 }
 
@@ -348,8 +348,8 @@ main {
 }
 
 .circularProgress {
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 100%;
 }
 
@@ -363,8 +363,8 @@ main {
 
 .flex-center {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .text-decoration {
@@ -480,8 +480,8 @@ main {
 
 .attendance-not-marked abbr {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 25px;
   height: 25px;
   padding: 5px;
@@ -532,6 +532,7 @@ main {
 .calender-body {
   padding: 20px !important;
   background: linear-gradient(180deg, #fffdf7 0%, #f8efda 100%) !important;
+
   /* background: linear-gradient(180deg, #2e2e2e 0%, #1b1b1b 100%) !important; */
   border: unset !important;
 }
@@ -556,9 +557,9 @@ main {
   align-items: center !important;
   width: 25px !important;
   height: 25px !important;
-  border-radius: 50% !important;
-  background-color: var(--mui-palette-customTextColors-custom7);
   margin-top: 5px !important;
+  background-color: var(--mui-palette-customTextColors-custom7);
+  border-radius: 50% !important;
 }
 
 .react-calendar__navigation button {
@@ -577,8 +578,8 @@ main {
   z-index: 999;
   display: flex !important;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   color: #fff;
   text-align: center;
   background: #4a4640;
@@ -619,8 +620,8 @@ main {
 .flex-column-center {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   font-size: 11px;
 }
 
@@ -687,6 +688,7 @@ main {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .one-line-text {
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -694,6 +696,7 @@ main {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .bg-white {
   background-color: var(--mui-palette-warning-A400);
 }
@@ -737,8 +740,8 @@ main {
 
 .flex-center {
   display: flex !important;
-  align-items: center !important;
   justify-content: center !important;
+  align-items: center !important;
 }
 
 .p-10 {
@@ -747,8 +750,8 @@ main {
 
 .box_shadow_center {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 40px;
   height: 40px;
   padding: 8px;
@@ -988,9 +991,10 @@ main {
   display: flex;
   flex-direction: column;
   height: 244px;
+  overflow: hidden;
   background-color: #ece6f0;
   border-radius: 16px;
-  overflow: hidden;
+
   /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
   transition:
     transform 0.3s ease,
@@ -998,8 +1002,8 @@ main {
 }
 
 .facilitator-card:hover {
+  box-shadow: 0 8px 20px rgb(0 0 0 / 20%);
   transform: translateY(-5px);
-  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* To Hide the caret icon on input type number */
@@ -1074,6 +1078,7 @@ html[dir='ltr'] .swiper-button-prev {
   border: 1px solid var(--mui-palette-warning-A100);
   border-radius: 4px !important;
 }
+
 html[dir='rtl'] .swiper-button-prev {
   right: unset !important;
   left: 50px !important;
@@ -1084,20 +1089,21 @@ html[dir='rtl'] .swiper-button-prev {
 }
 
 html[dir='ltr'] .swiper-button-next {
-  width: 32px !important;
-  height: 32px !important;
-  border: 1px solid var(--mui-palette-warning-A100);
-  border-radius: 4px !important;
-  right: 0px !important;
+  right: 0 !important;
   left: unset !important;
-}
-html[dir='rtl'] .swiper-button-next {
   width: 32px !important;
   height: 32px !important;
   border: 1px solid var(--mui-palette-warning-A100);
   border-radius: 4px !important;
+}
+
+html[dir='rtl'] .swiper-button-next {
   right: unset !important;
-  left: 0px !important;
+  left: 0 !important;
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid var(--mui-palette-warning-A100);
+  border-radius: 4px !important;
 }
 
 .swiper-button-prev,
@@ -1126,15 +1132,16 @@ html[dir='rtl'] .swiper-button-next {
 
 html[dir='ltr'] .swiper-pagination-fraction {
   position: absolute;
-  bottom: 0px !important;
+  bottom: 0 !important;
   width: fit-content !important;
 }
+
 html[dir='rtl'] .swiper-pagination-fraction {
   position: absolute;
-  bottom: 0px !important;
-  width: fit-content !important;
-  right: 0px !important;
+  right: 0 !important;
+  bottom: 0 !important;
   left: unset !important;
+  width: fit-content !important;
 }
 
 .css-1i1js26-MuiSvgIcon-root-MuiSelect-icon {
@@ -1145,6 +1152,7 @@ html[dir='rtl'] .swiper-pagination-fraction {
 *{
   border: 1px solid red !important;
 } */
+
 /* questionnaire-player-main .custom-font{
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif !important;
 }
@@ -1162,16 +1170,17 @@ html[dir='rtl'] .swiper-pagination-fraction {
   --disabled-btn-text:gray;  
 } */
 :root {
-  --background: #ffffff;
+  --background: #fff;
   --foreground: #f7be36;
   --primary-color: black;
   --btn-outline: #f7be36;
-  --error-color: rgb(150, 4, 4);
+  --error-color: rgb(150 4 4);
   --question-tip: gray;
   --general-btn-text-color: white;
   --general-btn-hover-bg: #f7be36;
   --secondary-btn-bg: #f7be36;
   --secondary-btn-hover-bg: #f7be36;
+
   /* --card-bg: #FBF4E5; */
   --disabled-btn-bg: gainsboro;
   --disabled-btn-text: #f7be36;
@@ -1186,6 +1195,7 @@ mat-radio-group.mat-mdc-radio-group {
   height: 100vh !important;
   border: solid 1px #ccc;
 }
+
 .wrapper[_ngcontent-ng-c2640644362] {
   min-height: 0 !important;
 }
@@ -1197,12 +1207,12 @@ mat-radio-group.mat-mdc-radio-group {
 /* Observation Component Overrides */
 
 .custom-font {
-  font-family: 'Poppins', sans-serif !important;
+  font-family: Poppins, sans-serif !important;
 }
 
 .activeCard {
-  padding: 1rem !important;
   margin: 1rem !important;
+  padding: 1rem !important;
 }
 
 .wc-primary-color {
@@ -1210,33 +1220,34 @@ mat-radio-group.mat-mdc-radio-group {
 }
 
 mat-radio-group.mat-mdc-radio-group {
-  gap: 16px;
   flex-wrap: wrap;
+  gap: 16px;
 }
+
 /* End of Observation component overrides */
 
 .btn-outline-secondary {
+  color: #1e1b16 !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
   background: transparent !important;
   border-radius: 100px !important;
   box-shadow:
-    0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 5px 0px rgba(0, 0, 0, 0.12) !important;
-  color: #1e1b16 !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
+    0 3px 1px -2px rgb(0 0 0 / 20%),
+    0 2px 2px 0 rgb(0 0 0 / 14%),
+    0 1px 5px 0 rgb(0 0 0 / 12%) !important;
 }
 
 .btn-primary {
+  color: #1e1b16 !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
   background: #fdbe16 !important;
   border-radius: 100px !important;
   box-shadow:
-    0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 5px 0px rgba(0, 0, 0, 0.12) !important;
-  color: #1e1b16 !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
+    0 3px 1px -2px rgb(0 0 0 / 20%),
+    0 2px 2px 0 rgb(0 0 0 / 14%),
+    0 1px 5px 0 rgb(0 0 0 / 12%) !important;
 }
 
 .MuiLinearProgress-root {

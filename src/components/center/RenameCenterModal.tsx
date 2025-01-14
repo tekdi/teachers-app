@@ -1,4 +1,6 @@
 import { renameFacilitator } from '@/services/ManageUser';
+import { Telemetry } from '@/utils/app.constant';
+import { telemetryFactory } from '@/utils/telemetry';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -12,14 +14,11 @@ import {
   Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import axios from 'axios';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { showToastMessage } from '../Toastify';
-import { telemetryFactory } from '@/utils/telemetry';
-import { Telemetry } from '@/utils/app.constant';
-import axios from 'axios';
-import { modalStyles } from '@/styles/modalStyles';
 
 interface CreateBlockModalProps {
   open: boolean;

@@ -1,14 +1,12 @@
 import dynamic from 'next/dynamic';
 
 import Header from '@/components/Header';
-import ObservationCard from '@/components/ObservationCard';
-import { useEffect, useState } from 'react';
-import { Box, useTheme , Typography} from '@mui/material';
+import { fetchQuestion } from '@/services/ObservationServices';
+import { Box, useTheme } from '@mui/material';
+import { GetStaticPaths } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { GetStaticPaths } from 'next';
-import { fetchQuestion } from '@/services/ObservationServices';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
+import { useEffect, useState } from 'react';
 
 const ObservationComponent = dynamic(
   () => import('@/components/observations/ObservationComponent'),

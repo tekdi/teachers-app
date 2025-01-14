@@ -1,16 +1,14 @@
 import { Box, Grid, Stack, Typography } from '@mui/material';
 
-import { CohortAttendanceListViewProps } from '@/utils/Interfaces';
-import React from 'react';
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
 import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
+import { CohortAttendanceListViewProps } from '@/utils/Interfaces';
+import { useTheme } from '@mui/material/styles';
+import React from 'react';
 
 const CohortAttendanceListView: React.FC<CohortAttendanceListViewProps> = ({
   cohortName,
   attendancePercent,
 }) => {
-  const { t } = useTranslation();
   const theme = useTheme<any>();
   const determinePathColor = useAttendanceRangeColor();
   const textColor = determinePathColor(attendancePercent);

@@ -3,16 +3,16 @@ import Header from '@/components/Header';
 import useCourseStore from '@/store/coursePlannerStore';
 import { ResourcesType, Telemetry } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
+import { telemetryFactory } from '@/utils/telemetry';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import { Box, Tab, Tabs } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import router from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { useDirection } from '../hooks/useDirection';
+import React, { useState } from 'react';
 import { RequisiteType } from '../../app.config';
-import { telemetryFactory } from '@/utils/telemetry';
+import { useDirection } from '../hooks/useDirection';
 
 const TopicDetailView = () => {
   const [value, setValue] = React.useState(1);

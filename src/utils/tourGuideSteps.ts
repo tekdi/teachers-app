@@ -1,5 +1,4 @@
 import { TFunction } from 'next-i18next';
-import { modifyAttendanceLimit } from '../../app.config';
 export const getSteps = (t: TFunction) => [
   {
     target: 'joyride-step-0',

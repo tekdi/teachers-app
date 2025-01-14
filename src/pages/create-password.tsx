@@ -21,7 +21,7 @@ const CreatePassword = () => {
 
   const handleResetPassword = async (newPassword: string) => {
     try {
-      const response = await resetPassword(newPassword);
+      await resetPassword(newPassword);
       setForgotPassword(true);
     } catch (error: any) {
       console.error('Error resetting password:', error);

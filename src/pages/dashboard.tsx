@@ -22,14 +22,14 @@ import {
 import {
   AttendancePercentageProps,
   CohortAttendancePercentParam,
-  ICohort,
   CohortMemberList,
-  Session,
   CustomField,
+  ICohort,
+  Session,
 } from '../utils/Interfaces';
 import {
-  accessControl,
   AttendanceAPILimit,
+  accessControl,
   dashboardDaysLimit,
   eventDaysLimit,
   lowLearnerAttendanceLimit,
@@ -42,10 +42,19 @@ import MarkBulkAttendance from '@/components/MarkBulkAttendance';
 import OverviewCard from '@/components/OverviewCard';
 import { showToastMessage } from '@/components/Toastify';
 import WeekCalender from '@/components/WeekCalender';
+import { getEventList } from '@/services/EventService';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import {
+  QueryKeys,
+  Role,
+  Status,
+  Telemetry,
+  sessionType
+} from '@/utils/app.constant';
 import { calculatePercentage } from '@/utils/attendanceStats';
 import { logEvent } from '@/utils/googleAnalytics';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import { telemetryFactory } from '@/utils/telemetry';
 import ArrowForwardSharpIcon from '@mui/icons-material/ArrowForwardSharp';
 import Divider from '@mui/material/Divider';
 import { useTheme } from '@mui/material/styles';
@@ -60,32 +69,20 @@ import calendar from '../assets/images/calendar.svg';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
-import {
-  QueryKeys,
-  Role,
-  Status,
-  Telemetry,
-  cohortHierarchy,
-  sessionType,
-} from '@/utils/app.constant';
-import { telemetryFactory } from '@/utils/telemetry';
-import { getEventList } from '@/services/EventService';
-// import SessionCard from '@/components/SessionCard';
-// import SessionCardFooter from '@/components/SessionCardFooter';
+
+import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
+import CentralizedModal from '@/components/CentralizedModal';
+import { getCohortDetails, getCohortList } from '@/services/CohortServices';
+import { getUserDetails } from '@/services/ProfileService';
+import taxonomyStore from '@/store/taxonomyStore';
+import { updateStoreFromCohorts } from '@/utils/Helper';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useQueryClient } from '@tanstack/react-query';
-import { getCohortDetails, getCohortList } from '@/services/CohortServices';
-import CentralizedModal from '@/components/CentralizedModal';
-import manageUserStore from '@/store/manageUserStore';
-import { getUserDetails } from '@/services/ProfileService';
-import { updateStoreFromCohorts } from '@/utils/Helper';
-import taxonomyStore from '@/store/taxonomyStore';
 import { useDirection } from '../hooks/useDirection';
-import { fetchAttendanceDetails } from '@/components/AttendanceDetails';
 
+import useStore from '@/store/store';
 import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
-import useStore from '@/store/store';
 import useEventDates from './../hooks/useEventDates';
 
 let SessionCardFooter: ComponentType<any> | null = null;
@@ -287,7 +284,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
       );
       setCohortType(typeOfCohort?.value);
 
-      let isCustomFields = true;
+      const isCustomFields = true;
       const result = await getCohortList(
         userId as string,
         { customField: 'true' },

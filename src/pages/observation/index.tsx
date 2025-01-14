@@ -6,7 +6,7 @@ import { targetSolution } from '@/services/ObservationServices';
 import { Role, Telemetry } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
 import { telemetryFactory } from '@/utils/telemetry';
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Tab, Tabs, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Tab, Tabs, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
@@ -18,10 +18,8 @@ const ObservationForms: React.FC = () => {
   const [observationData, setObservationData] = useState<any>([]);
   const [filteredObservationData, setFilteredObservationData] = useState<any>([]);
   const router = useRouter();
-  const theme = useTheme();
-
   const { t } = useTranslation();
-  const [selectedOption, setSelectedOption] = useState('all');  
+  const [selectedOption, setSelectedOption] = useState('all');
   const [sortOrder, setSortOrder] = useState('');
   const currentDate = new Date();
   const menuItems = [
@@ -58,10 +56,10 @@ const ObservationForms: React.FC = () => {
         const sortedData = [...response?.result?.data].sort((a, b) => {
           const dateA = new Date(a.endDate);
           const dateB = new Date(b.endDate);
-          return  dateA.getTime() - dateB.getTime() 
+          return dateA.getTime() - dateB.getTime()
         });
-    
-        setFilteredObservationData(sortedData|| []);
+
+        setFilteredObservationData(sortedData || []);
         // const data=response?.result?.data;
         // data[1].endDate = "2027-11-15T14:26:18.803Z";
         // setObservationData(data || []);
@@ -71,8 +69,8 @@ const ObservationForms: React.FC = () => {
         console.error('Error fetching cohort list:', error);
       }
     };
-    if(entityNames &&entityNames?.length!==0)
-    fetchObservationData();
+    if (entityNames && entityNames?.length !== 0)
+      fetchObservationData();
   }, [entityNames]);
 
   const onCardClick = (
@@ -80,20 +78,19 @@ const ObservationForms: React.FC = () => {
     entity: string,
     observationName: string,
     id: string,
-    description:string,
-    endDate:String
+    description: string,
+    endDate: String
   ) => {
     const fullPath = router.asPath;
-    const [basePath, queryString] = fullPath.split('?');
+    const [basePath] = fullPath.split('?');
     const newRoute = `/${observationId}`;
-    let newFullPath = `${basePath}${newRoute}`;
+    const newFullPath = `${basePath}${newRoute}`;
     let queryParams;
-    if(id==="")
-    {
-     queryParams = { entity: entity, observationName: observationName };
- 
+    if (id === "") {
+      queryParams = { entity: entity, observationName: observationName };
+
     }
-    else{
+    else {
       queryParams = { entity: entity, observationName: observationName, Id: id };
 
     }
@@ -120,7 +117,7 @@ const ObservationForms: React.FC = () => {
         cdata: [],
       },
       edata: {
-        id: newValue==1?'change-tab-to-active-observations':'change-tab-to-expired-observations',
+        id: newValue == 1 ? 'change-tab-to-active-observations' : 'change-tab-to-expired-observations',
         type: Telemetry.CLICK,
         subtype: '',
         pageid: cleanedUrl,
@@ -140,7 +137,7 @@ const ObservationForms: React.FC = () => {
     //   item.name.toLowerCase().includes(searchTerm.toLowerCase())
     // );
     // setFilteredObservationData(filteredData);
-    
+
     setSearchInput(searchTerm);
 
     // Filter observation data based on the search term
@@ -154,20 +151,19 @@ const ObservationForms: React.FC = () => {
         cdata: [],
       },
       edata: {
-        id: 'search-observations-bysearchterm:'+searchTerm,
+        id: 'search-observations-bysearchterm:' + searchTerm,
         type: Telemetry.SEARCH,
         subtype: '',
         pageid: 'observation',
       },
     };
     telemetryFactory.interact(telemetryInteract);
-  
+
 
   };
   const handleFilterChange = (event: SelectChangeEvent) => {
     setSelectedOption(event.target.value as string);
-    if(event.target.value==="all")
-    {
+    if (event.target.value === "all") {
       const role = localStorage.getItem('role');
       if (role) {
         if (role === Role.TEAM_LEADER) {
@@ -177,7 +173,7 @@ const ObservationForms: React.FC = () => {
         }
       }
     }
-    else{
+    else {
       setEntityNames([event.target.value as string])
     }
 
@@ -187,7 +183,7 @@ const ObservationForms: React.FC = () => {
         cdata: [],
       },
       edata: {
-        id: 'apply-entity-filter:'+event.target.value,
+        id: 'apply-entity-filter:' + event.target.value,
         type: Telemetry.CLICK,
         subtype: '',
         pageid: 'observation',
@@ -200,7 +196,7 @@ const ObservationForms: React.FC = () => {
   const handleSortChange = (event: SelectChangeEvent) => {
     const selectedValue = event.target.value as string;
     setSortOrder(selectedValue);
-    
+
     const sortedData = [...filteredObservationData].sort((a, b) => {
       const dateA = new Date(a.endDate);
       const dateB = new Date(b.endDate);
@@ -215,7 +211,7 @@ const ObservationForms: React.FC = () => {
         cdata: [],
       },
       edata: {
-        id: 'apply-datewise-filter:'+selectedValue,
+        id: 'apply-datewise-filter:' + selectedValue,
         type: Telemetry.CLICK,
         subtype: '',
         pageid: 'observation',
@@ -228,107 +224,108 @@ const ObservationForms: React.FC = () => {
       <Header />
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleChange} aria-label="icon tabs example"
-        
+
         >
-          <Tab 
-          label={
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                color:
-                  value === 0
-                    ? "black"
-                    : "inherit",
-              }}
-            >
-              {t("COMMON.ACTIVE")}
-            </Box>
-          }
-          
+          <Tab
+            label={
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color:
+                    value === 0
+                      ? "black"
+                      : "inherit",
+                }}
+              >
+                {t("COMMON.ACTIVE")}
+              </Box>
+            }
+
           />
-          <Tab 
-           label={
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                color:
-                  value === 1
-                    ? "black"
-                    : "inherit",
-              }}
-            >
-              {t("OBSERVATION.EXPIRED")}
-            </Box>
-          }
+          <Tab
+            label={
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color:
+                    value === 1
+                      ? "black"
+                      : "inherit",
+                }}
+              >
+                {t("OBSERVATION.EXPIRED")}
+              </Box>
+            }
           />
         </Tabs>
       </Box>
-    
 
-    <Box
-    // flexDirection={'row'}
-    // display={'flex'}
-    // mr="20px"
-    flexDirection={isSmallScreen ? 'column' : 'row'}
-      display={'flex'}
-      alignItems={isSmallScreen ? 'flex-start' : 'center'}
-      mr={isSmallScreen ? 0 : '20px'}
-      gap={isSmallScreen ? '10px' : '20px'}
-    
-    >
-    <SearchBar
-        onSearch={handleSearch}
-        value={searchInput}
-        placeholder={t('OBSERVATION.SEARCH_OBSERVATIONS')}
-        fullWidth
-      />
+
       <Box
-               sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '15px',
-               width: '90%',
-                '@media (max-width: 908px)': {
-                  flexDirection: 'column',
-                },
-                marginTop: '15px',
-                 marginLeft: isSmallScreen ? '20px' : '0',
+        // flexDirection={'row'}
+        // display={'flex'}
+        // mr="20px"
+        flexDirection={isSmallScreen ? 'column' : 'row'}
+        display={'flex'}
+        alignItems={isSmallScreen ? 'flex-start' : 'center'}
+        mr={isSmallScreen ? 0 : '20px'}
+        gap={isSmallScreen ? '10px' : '20px'}
 
-              }}
-              >
-                  {value===0 &&(<FormControl   sx={{   width: { xs: '100%', sm: '100%', md: 300 },
-}}variant="outlined" margin="normal">
-        <InputLabel id="days-sort-label">
-        <Typography variant="h3" >
-        {t('OBSERVATION.DAYS_LEFT')}              </Typography>
-          
-         </InputLabel>
-        <Select
-          labelId="days-sort-label"
-           value={sortOrder}
-           onChange={handleSortChange}
-          label={t('OBSERVATION.DAYS_LEFT')}
-          sx={{height:"50px"}}
-          
+      >
+        <SearchBar
+          onSearch={handleSearch}
+          value={searchInput}
+          placeholder={t('OBSERVATION.SEARCH_OBSERVATIONS')}
+          fullWidth
+        />
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '15px',
+            width: '90%',
+            '@media (max-width: 908px)': {
+              flexDirection: 'column',
+            },
+            marginTop: '15px',
+            marginLeft: isSmallScreen ? '20px' : '0',
+
+          }}
         >
-          <MenuItem value="lowToHigh">{t('COMMON.LOW_TO_HIGH')}</MenuItem>
-          <MenuItem value="highToLow">{t('COMMON.HIGH_TO_LOW')}</MenuItem>
-        </Select>
-      </FormControl>)}
-     {typeof window !== 'undefined' && window.localStorage&& localStorage.getItem('role')=== Role.TEAM_LEADER &&(
-            <FilterSelect
-        menuItems={menuItems}
-        selectedOption={selectedOption}
-        handleFilterChange={handleFilterChange}
-        label={t('COMMON.FILTER_BY')}
-      />)}
-     
-              </Box>
-     
+          {value === 0 && (<FormControl sx={{
+            width: { xs: '100%', sm: '100%', md: 300 },
+          }} variant="outlined" margin="normal">
+            <InputLabel id="days-sort-label">
+              <Typography variant="h3" >
+                {t('OBSERVATION.DAYS_LEFT')}              </Typography>
 
-    </Box>
+            </InputLabel>
+            <Select
+              labelId="days-sort-label"
+              value={sortOrder}
+              onChange={handleSortChange}
+              label={t('OBSERVATION.DAYS_LEFT')}
+              sx={{ height: "50px" }}
+
+            >
+              <MenuItem value="lowToHigh">{t('COMMON.LOW_TO_HIGH')}</MenuItem>
+              <MenuItem value="highToLow">{t('COMMON.HIGH_TO_LOW')}</MenuItem>
+            </Select>
+          </FormControl>)}
+          {typeof window !== 'undefined' && window.localStorage && localStorage.getItem('role') === Role.TEAM_LEADER && (
+            <FilterSelect
+              menuItems={menuItems}
+              selectedOption={selectedOption}
+              handleFilterChange={handleFilterChange}
+              label={t('COMMON.FILTER_BY')}
+            />)}
+
+        </Box>
+
+
+      </Box>
       {entityNames && entityNames.map((name, index) => (
         <Box
           key={index}
@@ -345,7 +342,7 @@ const ObservationForms: React.FC = () => {
           </Typography>
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row' }}>
-            {filteredObservationData.filter((item: any) => item.entityType === name).length > 0 && value===0? (
+            {filteredObservationData.filter((item: any) => item.entityType === name).length > 0 && value === 0 ? (
               filteredObservationData
                 .filter((item: any) => item.entityType === name && new Date(item.endDate) > currentDate)
                 .map((item: any) => (
@@ -360,7 +357,7 @@ const ObservationForms: React.FC = () => {
                     />
                   </Box>
                 ))
-            ) :value === 1 ? (
+            ) : value === 1 ? (
               filteredObservationData.filter((item: any) => item.entityType === name && new Date(item.endDate) <= currentDate).length > 0 ? (
                 filteredObservationData
                   .filter((item: any) => item.entityType === name && new Date(item.endDate) <= currentDate)
@@ -376,18 +373,18 @@ const ObservationForms: React.FC = () => {
                       />
                     </Box>
                   ))
-              ) : searchInput === "" ?(
+              ) : searchInput === "" ? (
                 <Typography variant="h4" color="textSecondary">
-                {t('OBSERVATION.NO_RESULT_FOUND', {
-                  entity: toPascalCase(name),
-                })}
-              </Typography>
-              ):(
+                  {t('OBSERVATION.NO_RESULT_FOUND', {
+                    entity: toPascalCase(name),
+                  })}
+                </Typography>
+              ) : (
                 <Typography variant="h4" color="textSecondary">
-                {t('OBSERVATION.NO_RESULT_FOUND', {
-                  entity: toPascalCase(name),
-                })}
-              </Typography>
+                  {t('OBSERVATION.NO_RESULT_FOUND', {
+                    entity: toPascalCase(name),
+                  })}
+                </Typography>
               )
             ) : searchInput === "" && value === 0 ? (
               <Typography variant="h4" color="textSecondary">
@@ -397,12 +394,12 @@ const ObservationForms: React.FC = () => {
               </Typography>
             ) : (
               <Typography variant="h4" color="textSecondary">
-              {t('OBSERVATION.NO_RESULT_FOUND', {
-                entity: toPascalCase(name),
-              })}
-            </Typography>
+                {t('OBSERVATION.NO_RESULT_FOUND', {
+                  entity: toPascalCase(name),
+                })}
+              </Typography>
             )}
-           
+
           </Box>
         </Box>
       ))}

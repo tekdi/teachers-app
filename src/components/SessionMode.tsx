@@ -6,12 +6,11 @@ import {
   RadioGroup,
 } from '@mui/material';
 
-import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'next-i18next';
-import React from 'react';
-import { SessionModeProps } from '../utils/Interfaces';
 import { CenterType } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
+import { useTheme } from '@mui/material/styles';
+import React from 'react';
+import { SessionModeProps } from '../utils/Interfaces';
 
 const SessionMode: React.FC<SessionModeProps> = ({
   handleSessionModeChange,

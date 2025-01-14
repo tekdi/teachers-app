@@ -1,15 +1,13 @@
+import { ObservationStatus } from '@/utils/app.constant';
+import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
 import {
- 
   Box,
- 
+
   Typography,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import CheckCircleOutlineSharpIcon from '@mui/icons-material/CheckCircleOutlineSharp';
-import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
-import { useTheme } from '@mui/material/styles';
-import { ObservationStatus } from '@/utils/app.constant';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import PanoramaFishEyeSharpIcon from '@mui/icons-material/PanoramaFishEyeSharp';

@@ -1,8 +1,7 @@
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Box, CardContent, Typography } from '@mui/material';
 
-import React, { useEffect, useRef, useState } from 'react';
-import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface WeekDaysProps {
   useAbbreviation?: boolean;

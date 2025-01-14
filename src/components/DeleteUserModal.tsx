@@ -1,27 +1,21 @@
+import { updateFacilitator } from '@/services/ManageUser';
+import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+import manageUserStore from '@/store/manageUserStore';
+import { Role, Status } from '@/utils/app.constant';
+import { fetchAttendanceStats } from '@/utils/helperAttendanceStatApi';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
   Button,
   Divider,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
   Modal,
   Radio,
-  RadioGroup,
-  TextField,
-  Typography,
+  Typography
 } from '@mui/material';
-import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import CloseIcon from '@mui/icons-material/Close';
+import React, { useState } from 'react';
 import { showToastMessage } from './Toastify';
-import { updateFacilitator } from '@/services/ManageUser';
-import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
-import { Role, Status } from '@/utils/app.constant';
-import manageUserStore from '@/store/manageUserStore';
-import { fetchAttendanceStats } from '@/utils/helperAttendanceStatApi';
-import { modalStyles } from '@/styles/modalStyles';
 
 interface DeleteUserModalProps {
   type: Role.STUDENT | Role.TEACHER;
@@ -72,13 +66,13 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
         reason: selectedValue,
       };
 
-      const studentResponse = await updateFacilitator(userId, studentData);
+      await updateFacilitator(userId, studentData);
       showToastMessage(t('COMMON.USER_DELETED_PERMANENTLY'), 'success');
     } else if (type === Role.STUDENT) {
       //API call to check if today's attendance is marked. If yes, don't allow achieve today
       const attendanceStats = await fetchAttendanceStats(userId);
 
-      if (attendanceStats && attendanceStats.length > 0) {
+      if (attendanceStats?.length > 0) {
         showToastMessage(
           t('COMMON.CANNOT_DELETE_TODAY_ATTENDANCE_MARKED'),
           'error'
@@ -88,7 +82,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
         const statusReason = selectedValue;
         const membershipId = store?.learnerDeleteId;
 
-        const teacherResponse = await updateCohortMemberStatus({
+        await updateCohortMemberStatus({
           memberStatus,
           statusReason,
           membershipId,

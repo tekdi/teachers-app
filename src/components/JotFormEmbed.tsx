@@ -9,7 +9,6 @@ interface JotFormEmbedProps {
 
 const JotFormEmbed: React.FC<JotFormEmbedProps> = ({ formId, queryParams }) => {
   const [loading, setLoading] = useState(true);
-  const jotformAPIKey = "your_api_key"; // Replace with your JotForm API key
   const { t } = useTranslation();
 
   const queryString = new URLSearchParams(

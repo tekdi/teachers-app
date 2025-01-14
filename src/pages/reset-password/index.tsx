@@ -44,7 +44,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await forgotPasswordAPI(newPassword, token as string);
+      await forgotPasswordAPI(newPassword, token as string);
       setForgotPassword(true);
     } catch (error: any) {
       console.error('Error resetting password:', error);

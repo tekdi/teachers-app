@@ -34,7 +34,7 @@ type AttendanceRecord = {
 
 const LearnerAttendanceHistory = () => {
   const { t } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
   const theme = useTheme<any>();
   const { push } = useRouter();
   const store = useStore();

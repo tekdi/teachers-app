@@ -61,7 +61,7 @@ import { attendanceStatusList } from '../services/AttendanceService';
 const UserAttendanceHistory = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
   const { push } = useRouter();
   const store = useStore();
   const isActiveYear = store.isActiveYearSelected;

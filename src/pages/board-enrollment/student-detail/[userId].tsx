@@ -1,4 +1,23 @@
+import BoardEnrollmentProfile from '@/components/BoardEnrollmentProfile';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import Header from '@/components/Header';
+import HorizontalLinearStepper from '@/components/HorizontalLinearStepper';
+import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+import boardEnrollmentStore from '@/store/boardEnrollmentStore';
+import manageUserStore from '@/store/manageUserStore';
+import useStore from '@/store/store';
+import { FeesStepBoards, Telemetry } from '@/utils/app.constant';
+import { logEvent } from '@/utils/googleAnalytics';
+import {
+  extractCategory,
+  getAssociationsByName,
+  getCohortNameById,
+  getOptionsByCategory,
+  toPascalCase
+} from '@/utils/Helper';
+import { BoardEnrollmentData } from '@/utils/Interfaces';
+import { telemetryFactory } from '@/utils/telemetry';
+import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import {
   Box,
   Button,
@@ -11,36 +30,14 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useEffect, useState } from 'react';
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import { logEvent } from '@/utils/googleAnalytics';
 import { useTheme } from '@mui/material/styles';
-import { useTranslation } from 'react-i18next';
-import HorizontalLinearStepper from '@/components/HorizontalLinearStepper';
-import { FeesStepBoards, Telemetry } from '@/utils/app.constant';
-import { useDirection } from '../../../hooks/useDirection';
-import BoardEnrollmentProfile from '@/components/BoardEnrollmentProfile';
 import { GetStaticPaths } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { frameworkId } from '../../../../app.config';
-import {
-  extractCategory,
-  findCommon,
-  findCommonAssociations,
-  getAssociationsByName,
-  getCohortNameById,
-  getOptionsByCategory,
-  toPascalCase,
-} from '@/utils/Helper';
-import boardEnrollmentStore from '@/store/boardEnrollmentStore';
-import { BoardEnrollmentData } from '@/utils/Interfaces';
-import manageUserStore from '@/store/manageUserStore';
-import useStore from '@/store/store';
-import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
-import ConfirmationModal from '@/components/ConfirmationModal';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { showToastMessage } from '../../../components/Toastify';
-import { telemetryFactory } from '@/utils/telemetry';
+import { useDirection } from '../../../hooks/useDirection';
 
 interface BoardEnrollment {
   boardEnrollmentData: {

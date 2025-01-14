@@ -32,7 +32,7 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
   const theme = useTheme<any>();
   const router = useRouter();
   const { t } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
 
   const handleAssessmentDetails = (userId: string) => {
     if (router.pathname === '/assessments') {

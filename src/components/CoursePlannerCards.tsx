@@ -1,7 +1,6 @@
 import { ResourcesType } from '@/utils/app.constant';
 import { CoursePlannerCardsProps } from '@/utils/Interfaces';
 import { Box, Grid } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import React from 'react';
 import ContentCard from './ContentCard';
 
@@ -9,7 +8,6 @@ const CoursePlannerCards: React.FC<CoursePlannerCardsProps> = ({
   resources,
   type,
 }) => {
-  const theme = useTheme<any>();
 
   // Filter by type
   const filteredResources = resources?.filter(

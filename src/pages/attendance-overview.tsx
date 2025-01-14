@@ -65,7 +65,7 @@ interface AttendanceOverviewProps {
 
 const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const { t } = useTranslation();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
   const { push } = useRouter();
   const today = new Date();
   const [classId, setClassId] = React.useState('');

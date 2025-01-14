@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  SelectChangeEvent,
-  Box,
-} from '@mui/material';
-import {
   findCommonAssociations,
   getAssociationsByName,
   getOptionsByCategory,
 } from '@/utils/Helper';
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
 import { frameworkId } from '../../../app.config';
 
 interface FrameworkCategoriesProps {
