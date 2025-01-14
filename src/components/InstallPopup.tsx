@@ -10,21 +10,25 @@ const InstallPopup = () => {
       (navigator.standalone !== undefined && navigator.standalone) ||
       window.matchMedia('(display-mode: standalone)').matches;
 
-    if (!isAppInstalled && !localStorage.getItem('visited')) {
-      localStorage.setItem('visited', 'true');
-      setIsVisible(true);
-    }
-
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       console.log('beforeinstallprompt event fired');
-      setDeferredPrompt(e); // Save the event for later use
+      setDeferredPrompt(e);
+      if (!isAppInstalled && !localStorage.getItem('visited')) {
+        localStorage.setItem('visited', 'true');
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener(
+        'beforeinstallprompt',
+        handleBeforeInstallPrompt
+      );
     };
   }, []);
 
