@@ -53,6 +53,7 @@
     "react-ga4": "^2.1.0",
     "react-hot-toast": "^2.4.1",
     "react-i18next": "^14.1.2",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-joyride": "^2.8.2",
     "react-select": "^5.8.0",
     "react-toastify": "^10.0.5",

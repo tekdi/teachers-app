@@ -93,6 +93,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const [selectedUserName, setSelectedUserName] = useState(null);
   const [centers, setCenters] = useState<any>([]);
   const [centerList, setCenterList] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
+  const [infinitePage, setInfinitePage] = useState(1);
+  const [infiniteData, setInfiniteData] = useState(users || []);
 
   const [state, setState] = React.useState({
     bottom: false,
@@ -123,8 +126,11 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState(users || []);
+  const [TotalCount, setTotalCount] = useState<number>(0);
+  const [data, setData] = useState<any[]>([]); // तुझ्या user data साठी state
 
-  
+  const [hasMore, setHasMore] = useState(true);
+
   useEffect(() => {
     if (reloadState) {
       setReloadState(false);
@@ -133,7 +139,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
   useEffect(() => {
     const getFacilitator = async () => {
-      setLoading(true);
+      if (!isMobile) {
+        setLoading(true);
+      }
       try {
         const cohortId = cohortData
           .map((block: any) => {
@@ -142,8 +150,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           .join('');
 
         if (cohortId) {
-          const limit = 0;
-          const page = 0;
+          const limit = 10;
+          // const page = page;
           const filters = {
             states: store.stateCode,
             districts: store.districtCode,
@@ -152,14 +160,16 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             status: [Status.ACTIVE],
           };
           const fields = ['age'];
-
-          // const resp = await getMyUserList({ limit, page, filters, fields });
-          const resp = await queryClient.fetchQuery({
-            // queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR, filters],
-            queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
-            queryFn: () => getMyUserList({ limit, page, filters, fields }),
-          });
+          // const test = isMobile ? infinitePage : page
+          const resp = await getMyUserList({ limit, page, filters, fields });
+          // const resp = await queryClient.fetchQuery({
+          //   // queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR, filters],
+          //   queryKey: [QueryKeys.GET_ACTIVE_FACILITATOR],
+          //   queryFn: () => getMyUserList({ limit, page, filters, fields }),
+          // });
           const facilitatorList = resp.result?.getUserDetails;
+
+          setTotalCount(resp.result?.totalCount);
 
           if (!facilitatorList || facilitatorList?.length === 0) {
             console.log('No users found.');
@@ -195,7 +205,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
               const cohorts = cohortDetails[index] || [];
 
               const cohortNames = cohorts
-                .filter(({ cohortStatus }: any) => cohortStatus === Status.ACTIVE)
+                .filter(
+                  ({ cohortStatus }: any) => cohortStatus === Status.ACTIVE
+                )
                 .map(({ cohortName }: any) => toPascalCase(cohortName))
                 .join(', ');
 
@@ -207,8 +219,16 @@ const ManageUser: React.FC<ManageUsersProps> = ({
             }
           );
 
-          setTimeout(() => {
+          setUsers(extractedData);
+          // setLoading(false);
+          if (isMobile) {
+            setInfiniteData([...infiniteData, ...extractedData]);
+          } else {
+            setFilteredUsers(extractedData);
+            setInfiniteData(extractedData);
+          }
 
+          setTimeout(() => {
             setUsers(extractedData);
             setFilteredUsers(extractedData);
             setLoading(false);
@@ -221,7 +241,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
       }
     };
     getFacilitator();
-  }, [isFacilitatorAdded, reloadState]);
+  }, [isFacilitatorAdded, reloadState, page, infinitePage]);
 
   const handleClose = () => {
     setOpen(false);
@@ -277,7 +297,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
         cohortList &&
         cohortList.length > 0 &&
         cohortList.some(
-          (cohort: { cohortStatus: string }) => cohort.cohortStatus === Status.ACTIVE
+          (cohort: { cohortStatus: string }) =>
+            cohort.cohortStatus === Status.ACTIVE
         );
 
       if (hasActiveCohorts) {
@@ -509,26 +530,31 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     return cohortNames;
   };
   const handleSearch = (searchTerm: string) => {
-    const term =searchTerm
+    const term = searchTerm;
     setSearchTerm(term);
     setFilteredUsers(
-      users?.filter((user) =>
-        user?.name?.toLowerCase()?.includes(term)
-      )
+      users?.filter((user) => user?.name?.toLowerCase()?.includes(term))
     );
   };
-  const itemsPerPage = 10; // Page size
-  const [page, setPage] = useState(1);
+  const PAGINATION_CONFIG = {
+    ITEMS_PER_PAGE: 12,
+    INFINITE_SCROLL_INCREMENT: 10,
+  };
 
-  const handlePageChange = (newPage : any) => {
+  const fetchData = async () => {
+    try {
+      setInfinitePage(
+        (prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT
+      );
+    } catch (error) {
+      console.error('Error fetching more data:', error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    }
+  };
+  const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
 
-  const paginatedUsers = users.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
-  
   return (
     <div>
       <Box>
@@ -542,13 +568,12 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                 sx={{ display: 'flex', alignItems: 'center', direction: 'row' }}
                 container
               >
-              
                 <SearchBar
-        onSearch={handleSearch}
-        value={searchTerm}
-        placeholder={t('COMMON.SEARCH_FACILITATORS')}
-      />
-        <Box mt={'18px'} px={'18px'} ml={'10px'} >
+                  onSearch={handleSearch}
+                  value={searchTerm}
+                  placeholder={t('COMMON.SEARCH_FACILITATORS')}
+                />
+                <Box mt={'18px'} px={'18px'} ml={'10px'}>
                   <Button
                     sx={{
                       border: `1px solid ${theme.palette.error.contrastText}`,
@@ -569,7 +594,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                   >
                     {t('COMMON.ADD_NEW')}
                   </Button>
-                 
                 </Box>
               </Grid>
             )}
@@ -628,125 +652,161 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                         </Box>
                       ) : (
                         <>
-                         
-      
-                              <Box>
-                                <Grid container spacing={2}>
-                                  {paginatedUsers.length > 0 ? (
-                                    paginatedUsers.map((user) => (
-                                      <Grid
-                                        item
-                                        xs={12}
-                                        sm={12}
-                                        md={6}
-                                        lg={4}
-                                        key={user.userId}
-                                      >
-                                        <Box
-                                          display={'flex'}
-                                          borderBottom={`1px solid ${theme.palette.warning['A100']}`}
-                                          width={'100%'}
-                                          justifyContent={'space-between'}
-                                          sx={{
-                                            cursor: 'pointer',
-                                            '@media (min-width: 600px)': {
-                                              border: `1px solid  ${theme.palette.action.selected}`,
-                                              padding: '4px 10px',
-                                              borderRadius: '8px',
-                                              background: theme.palette.warning['A400'],
-                                            },
-                                          }}
-                                        >
-                                          <Box display="flex" alignItems="center" gap="5px">
-                                            <Box>
-                                              <CustomLink
-                                                className="word-break"
-                                                href="#"
-                                                onClick={(e) => e.preventDefault()}
-                                              >
-                                                <Typography
-                                                  onClick={() => {
-                                                    handleTeacherFullProfile(user?.userId);
-                                                  }}
-                                                  sx={{
-                                                    textAlign: 'left',
-                                                    fontSize: '16px',
-                                                    fontWeight: '400',
-                                                    marginTop: '5px',
-                                                    color: theme.palette.secondary.main,
-                                                  }}
-                                                >
-                                                  {toPascalCase(user.name)}
-                                                </Typography>
-                                              </CustomLink>
-                                              <Box
-                                                sx={{
-                                                  backgroundColor: theme.palette.action.selected,
-                                                  padding: '5px',
-                                                  width: 'fit-content',
-                                                  borderRadius: '5px',
-                                                  fontSize: '12px',
-                                                  fontWeight: '600',
-                                                  color: 'black',
-                                                  marginBottom: '10px',
-                                                }}
-                                              >
-                                                {user?.cohortNames
-                                                  ? getCohortNames(user.cohortNames)
-                                                  : t('ATTENDANCE.NO_CENTERS_ASSIGNED')}
-                                              </Box>
-                                            </Box>
-                                          </Box>
-                                          <Box>
-                                            <MoreVertIcon
-                                              onClick={(event) => {
-                                                isMobile
-                                                  ? toggleDrawer('bottom', true, user)(event)
-                                                  : handleMenuOpen(event, user);
-                                              }}
-                                              sx={{
-                                                fontSize: '24px',
-                                                marginTop: '1rem',
-                                                color: theme.palette.warning['300'],
-                                                cursor: 'pointer',
-                                              }}
-                                            />
-                                          </Box>
-                                        </Box>
-                                      </Grid>
-                                    ))
-                                  ) : (
-                                    <Box
-                                      sx={{
-                                        m: '1.125rem',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        width: '100%',
-                                      }}
+                          <Box>
+                            <Grid container spacing={2}>
+                              {(
+                                isMobile
+                                  ? infiniteData.length > 0
+                                  : filteredUsers.length > 0
+                              ) ? (
+                                (isMobile ? infiniteData : filteredUsers).map(
+                                  (user) => (
+                                    <Grid
+                                      item
+                                      xs={12}
+                                      sm={12}
+                                      md={6}
+                                      lg={4}
+                                      key={user.userId}
                                     >
-                                      <Typography
-                                        style={{
-                                          width: '100%',
-                                          textAlign: 'center',
+                                      <Box
+                                        display={'flex'}
+                                        borderBottom={`1px solid ${theme.palette.warning['A100']}`}
+                                        width={'100%'}
+                                        justifyContent={'space-between'}
+                                        sx={{
+                                          cursor: 'pointer',
+                                          '@media (min-width: 600px)': {
+                                            border: `1px solid  ${theme.palette.action.selected}`,
+                                            padding: '4px 10px',
+                                            borderRadius: '8px',
+                                            background:
+                                              theme.palette.warning['A400'],
+                                          },
                                         }}
                                       >
-                                        {t('COMMON.NO_DATA_FOUND')}
-                                      </Typography>
-                                    </Box>
-                                  )}
-                                </Grid>
-
-                                {/* Pagination Component */}
-                                <CustomPagination
-                                  count={Math.ceil(users.length / itemsPerPage)}
-                                  page={page}
-                                  onPageChange={handlePageChange}
-                                />
-                              </Box>
-                        
+                                        <Box
+                                          display="flex"
+                                          alignItems="center"
+                                          gap="5px"
+                                        >
+                                          <Box>
+                                            <CustomLink
+                                              className="word-break"
+                                              href="#"
+                                              onClick={(e) =>
+                                                e.preventDefault()
+                                              }
+                                            >
+                                              <Typography
+                                                onClick={() => {
+                                                  handleTeacherFullProfile(
+                                                    user?.userId
+                                                  );
+                                                }}
+                                                sx={{
+                                                  textAlign: 'left',
+                                                  fontSize: '16px',
+                                                  fontWeight: '400',
+                                                  marginTop: '5px',
+                                                  color:
+                                                    theme.palette.secondary
+                                                      .main,
+                                                }}
+                                              >
+                                                {toPascalCase(user.name)}
+                                              </Typography>
+                                            </CustomLink>
+                                            <Box
+                                              sx={{
+                                                backgroundColor:
+                                                  theme.palette.action.selected,
+                                                padding: '5px',
+                                                width: 'fit-content',
+                                                borderRadius: '5px',
+                                                fontSize: '12px',
+                                                fontWeight: '600',
+                                                color: 'black',
+                                                marginBottom: '10px',
+                                              }}
+                                            >
+                                              {user?.cohortNames
+                                                ? getCohortNames(
+                                                    user.cohortNames
+                                                  )
+                                                : t(
+                                                    'ATTENDANCE.NO_CENTERS_ASSIGNED'
+                                                  )}
+                                            </Box>
+                                          </Box>
+                                        </Box>
+                                        <Box>
+                                          <MoreVertIcon
+                                            onClick={(event) => {
+                                              isMobile
+                                                ? toggleDrawer(
+                                                    'bottom',
+                                                    true,
+                                                    user
+                                                  )(event)
+                                                : handleMenuOpen(event, user);
+                                            }}
+                                            sx={{
+                                              fontSize: '24px',
+                                              marginTop: '1rem',
+                                              color:
+                                                theme.palette.warning['300'],
+                                              cursor: 'pointer',
+                                            }}
+                                          />
+                                        </Box>
+                                      </Box>
+                                    </Grid>
+                                  )
+                                )
+                              ) : (
+                                <Box
+                                  sx={{
+                                    m: '1.125rem',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                  }}
+                                >
+                                  <Typography
+                                    style={{
+                                      width: '100%',
+                                      textAlign: 'center',
+                                    }}
+                                  >
+                                    {t('COMMON.NO_DATA_FOUND')}
+                                  </Typography>
+                                </Box>
+                              )}
+                            </Grid>
+                          </Box>
+                          <Box
+                            sx={{
+                              mt: 2,
+                              display: 'flex',
+                              justifyContent: 'end',
+                            }}
+                          >
+                            <CustomPagination
+                              count={Math.ceil(
+                                TotalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE
+                              )}
+                              page={page}
+                              onPageChange={handlePageChange}
+                              fetchMoreData={() => fetchData()}
+                              hasMore={hasMore}
+                              items={infiniteData.map((user) => (
+                                <Box key={user.userId}></Box>
+                              ))}
+                            />
+                          </Box>
                         </>
-                       
                       )}
                     </Box>
                   </Box>
