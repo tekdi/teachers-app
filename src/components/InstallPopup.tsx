@@ -34,14 +34,19 @@ const InstallPopup = () => {
 
   const handleInstall = async () => {
     if (deferredPrompt) {
-      deferredPrompt.prompt(); // Show the install prompt
-      const choiceResult = await deferredPrompt.userChoice;
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted the install prompt');
-      } else {
-        console.log('User dismissed the install prompt');
+      try {
+        deferredPrompt.prompt(); // Show the install prompt
+        const choiceResult = await deferredPrompt.userChoice;
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the install prompt');
+        } else {
+          console.log('User dismissed the install prompt');
+        }
+      } catch (error) {
+        console.error('Installation failed:', error);
+      } finally {
+        setDeferredPrompt(null);
       }
-      setDeferredPrompt(null);
     } else {
       console.log('No deferredPrompt available.');
     }
