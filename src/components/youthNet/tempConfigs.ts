@@ -104,3 +104,26 @@ export const sampleData: SampleData = {
     { date: '1 Dec', count: 4 },
   ],
 };
+
+export const locations = [
+  'Katol',
+  'Kondhali',
+  'Metpanjara',
+  'Bhivapur',
+  'Deviyapur',
+  'Kargaon',
+  'Hastinapur',
+  'Jabarbodi',
+  'Sangoli',
+  'Sarvatra',
+  'Khurgaon',
+  'Ganoli',
+];
+
+export const users = [
+  { name: 'Ananya Gupta', age: 14, village: 'Deviyapur', image: '' },
+  { name: 'Aisha Sharma', age: 15, village: 'Kasurdi', image: '' },
+  { name: 'Bharat Kumar', age: 15, village: 'Pande', image: '' },
+  { name: 'Disha Shire', age: 14, village: 'Deviyapur', image: '' },
+  { name: 'Divya Sharma', age: 17, village: 'Khopi', image: '' },
+];
