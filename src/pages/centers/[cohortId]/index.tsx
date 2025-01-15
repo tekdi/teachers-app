@@ -413,9 +413,6 @@ const CohortPage = () => {
     eventDeleted,
     eventCreated
   );
-  useEffect(() => {
-    console.log(eventDates);
-  }, [eventDates]);
 
   useEffect(() => {
     const getExtraSessionsData = async () => {

@@ -537,20 +537,19 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     );
   };
   const PAGINATION_CONFIG = {
-    ITEMS_PER_PAGE: 12,
-    INFINITE_SCROLL_INCREMENT: 10,
+ITEMS_PER_PAGE: 12,
+    INFINITE_SCROLL_INCREMENT: 10
   };
 
+
   const fetchData = async () => {
-    try {
-      setInfinitePage(
-        (prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT
-      );
-    } catch (error) {
-      console.error('Error fetching more data:', error);
-      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-    }
-  };
+      try {
+         setInfinitePage((prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT);
+      } catch (error) {
+          console.error('Error fetching more data:', error);
+          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+         }
+        }
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -794,9 +793,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                             }}
                           >
                             <CustomPagination
-                              count={Math.ceil(
-                                TotalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE
-                              )}
+                                  count={Math.ceil(TotalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE)}
                               page={page}
                               onPageChange={handlePageChange}
                               fetchMoreData={() => fetchData()}
