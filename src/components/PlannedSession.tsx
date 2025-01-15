@@ -11,7 +11,7 @@ import {
   Status,
   Telemetry,
   sessionMode,
-  sessionType
+  sessionType,
 } from '@/utils/app.constant';
 import { telemetryFactory } from '@/utils/telemetry';
 import AddIcon from '@mui/icons-material/Add';
@@ -141,6 +141,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   const [startTimeError, setStartTimeError] = useState<string | null>(null);
   const [endTimeError, setEndTimeError] = useState<string | null>(null);
   const [startDateError, setStartDateError] = useState<string | null>(null);
+  const [dateError, setDateError] = useState<string | null>(null);
   const [endDateError, setEndDateError] = useState<string | null>(null);
   const [eventValid, setEventValid] = useState(true);
   const [sessionBlocks, setSessionBlocks] = useState<Session[]>([
@@ -397,9 +398,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       (item: any) => item.courseTypeName === newCourseType
     );
 
-    
-
-
     if (courseSubjects) {
       setSubjects(courseSubjects.subjects);
     }
@@ -447,6 +445,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       setStartTimeError(null);
       setEndTimeError(null);
       setStartDateError(null);
+      setDateError(null);
       setEndDateError(null);
 
       const sessionBlock = sessionBlocks?.find((block) => block.id === id);
@@ -456,6 +455,15 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
         if (newValue.isAfter(sessionBlock.sessionEndDate)) {
           setEventValid(false);
           setStartDateError(t('CENTER_SESSION.START_DATE_ERROR'));
+        }
+
+        const today = dayjs();
+        if (newValue.isBefore(today, 'day')) {
+          setEventValid(false);
+          setStartDateError(
+            t('CENTER_SESSION.START_DATE_MUST_BE_TODAY_OR_FUTURE_DATE')
+          );
+          setDateError(t('CENTER_SESSION.DATE_MUST_BE_TODAY_OR_FUTURE_DATE'));
         }
         setStartDates((prev) => {
           const updated = [...prev];
@@ -833,7 +841,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
     setSessionBlocks(sessionBlocks.filter((block) => block?.id !== id));
   };
 
-
   const scheduleNewEvent = async () => {
     if (!scheduleEvent) return;
 
@@ -1141,7 +1148,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
   const handleEditSession = (event: any) => {
     setEditSelection(event.target.value);
-
   };
 
   const handelDeleteEvent = async (eventData: any, deleteSelection: string) => {
@@ -1318,8 +1324,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           if (sessionBlocks?.[0]?.sessionMode === 'offline') {
             apiBody['meetingDetails'] = null;
           }
-
-          
 
           const response = await editEvent(eventRepetitionId, apiBody);
           if (response?.responseCode === 'OK') {
@@ -1664,6 +1668,11 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       />
                     </Stack>
                   </LocalizationProvider>
+                  {dateError && (
+                    <Box sx={{ color: 'red', fontSize: '12px', mt: 1 }}>
+                      {dateError}
+                    </Box>
+                  )}
                   <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
                     <Grid sx={{ paddingTop: '0px !important' }} item xs={6}>
                       <Box sx={{ mt: 3 }}>
@@ -1679,7 +1688,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                               handleChange(index, newValue, 'start', 'time')
                             }
                             sx={{ borderRadius: '4px', fontSize: '2px' }}
-                            slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
+                            slotProps={{
+                              textField: { placeholder: 'HH:MM AM/PM' },
+                            }}
                           />
                         </LocalizationProvider>
                         {startTimeError && (
@@ -1703,7 +1714,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                               handleChange(index, newValue, 'end', 'time')
                             }
                             sx={{ borderRadius: '4px' }}
-                            slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
+                            slotProps={{
+                              textField: { placeholder: 'HH:MM AM/PM' },
+                            }}
                           />
                         </LocalizationProvider>
                         {endTimeError && (
@@ -1776,7 +1789,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           handleChange(index, newValue, 'start', 'time')
                         }
                         sx={{ borderRadius: '4px', fontSize: '2px' }}
-                        slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
+                        slotProps={{
+                          textField: { placeholder: 'HH:MM AM/PM' },
+                        }}
                       />
                     </LocalizationProvider>
                     {startTimeError && (
@@ -1802,7 +1817,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           handleChange(index, newValue, 'end', 'time')
                         }
                         sx={{ borderRadius: '4px' }}
-                        slotProps={{ textField: { placeholder: 'HH:MM AM/PM' } }}
+                        slotProps={{
+                          textField: { placeholder: 'HH:MM AM/PM' },
+                        }}
                       />
                     </LocalizationProvider>
                     {endTimeError && (
@@ -1835,10 +1852,14 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           }
                           format="DD MMM, YYYY"
                           sx={{ borderRadius: '4px' }}
-                          disabled={dayjs(startDates[index]).isBefore(
-                            dayjs(),
-                            'day'
-                          )}
+                          disabled={
+                            eventData
+                              ? dayjs(startDates[index]).isBefore(
+                                  dayjs(),
+                                  'day'
+                                )
+                              : false
+                          }
                         />
                       </Stack>
                     </LocalizationProvider>
