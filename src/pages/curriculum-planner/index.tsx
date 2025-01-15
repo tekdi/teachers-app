@@ -564,7 +564,7 @@ const CoursePlanner = () => {
     if (tStore.type) {
       setTaxonomySubject(item);
       router.push({
-        pathname: `/course-planner/center/${selectedValue}`,
+        pathname: `/curriculum-planner/center/${selectedValue}`,
       });
     }
   };

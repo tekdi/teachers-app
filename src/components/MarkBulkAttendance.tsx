@@ -20,6 +20,7 @@ import NoDataFound from './common/NoDataFound';
 import ConfirmationModal from './ConfirmationModal';
 import Loader from './Loader';
 import { showToastMessage } from './Toastify';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface MarkBulkAttendanceProps {
   open: boolean;
@@ -233,21 +234,6 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     setConfirmation(false);
     setModalOpen(false);
   };
-  const modalContainer = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '85%',
-    bgcolor: theme.palette.warning['A400'],
-    boxShadow: 24,
-    p: 4,
-    height: '526px',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
-
   return (
     <Box>
       <Modal
@@ -266,13 +252,10 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
       >
         <Fade in={open}>
           <Box
-            sx={{
-              ...modalContainer,
-              borderColor: theme.palette.warning['A400'],
-              padding: '15px 10px 0 10px',
-            }}
+            sx={modalStyles}
             borderRadius={'1rem'}
             height={'526px'}
+            padding={"15px 10px 0 10px"}
           >
             <Box height={'100%'} width={'100%'}>
               <Box

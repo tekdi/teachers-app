@@ -66,7 +66,7 @@ const TopicDetailView = () => {
   const handleBackEvent = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const classId = localStorage.getItem('classId');
-      router.push(`course-planner/center/${classId}`);
+      router.push(`curriculum-planner/center/${classId}`);
     }
     logEvent({
       action: 'back-button-clicked-attendance-overview',

@@ -1,3 +1,4 @@
+import { modalStyles } from '@/styles/modalStyles';
 import { toPascalCase } from '@/utils/Helper';
 import { SessionsModalProps } from '@/utils/Interfaces';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -54,7 +55,10 @@ const CenterSessionModal: React.FC<SessionsModalProps> = ({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={modalStyles} 
+        maxHeight =  {'626px'}
+         border= {'none'}
+      >
         <Box
           display={'flex'}
           justifyContent={'space-between'}

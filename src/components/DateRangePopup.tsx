@@ -213,23 +213,6 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
     },
   };
 
-  const calenderModalStyle = {
-    width: '85%',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: 'white',
-    padding: '12px 0 12px 0',
-    borderRadius: '8px',
-    // boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-    // height: '526px',
-    // Responsive styles
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
-
   return (
     <Box className="mt-md-16" sx={{ px: '2px' }}>
       <FormControl sx={{ width: '100%' }}>
@@ -362,7 +345,8 @@ const DateRangePopup: React.FC<CustomSelectModalProps> = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={calenderModalStyle}>
+        <Box sx={modalStyle}
+          padding={'12px 0 12px 0'}>
           <Box
             sx={{
               padding: ' 0 15px 15px',
