@@ -26,18 +26,24 @@ const InstallPopup = () => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // Listen for updates in the service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        setIsUpdateAvailable(true);
-      });
-
-      navigator.serviceWorker.ready.then((registration) => {
-        if (registration.waiting) {
-          setIsUpdateAvailable(true);
-        }
-      });
-    }
+    // Listen for service worker updates
+        const checkForUpdates = () => {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then((registration) => {
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                  newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      setIsUpdateAvailable(true);
+                    }
+                  });
+                }
+              });
+            });
+          }
+        };
+        checkForUpdates();
 
     return () => {
       window.removeEventListener(
