@@ -156,7 +156,10 @@
     "SUBMIT_YOUR_REQUEST_FOR_ISSUES": "Submit your request and let us assist you with any issues or concerns.",
     "INSTALL": "Install",
     "INSTALL_APP_MESSAGE": "Install Pratham Learning Management App",
-    "INSTALL_APP_DESCRIPTION": "For a better experience, install PLM app on your device."
+    "INSTALL_APP_DESCRIPTION": "For a better experience, install PLM app on your device.",
+    "RELOAD": "Reload",
+    "UPDATE_AVAILABLE": "Update Available",
+    "RELOAD_TO_UPDATE": "Reload to Update"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
