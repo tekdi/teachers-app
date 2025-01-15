@@ -1,8 +1,11 @@
+import { Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const InstallPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Check if the app is installed (iOS Safari or display-mode: standalone)
@@ -58,14 +61,25 @@ const InstallPopup = () => {
   return (
     <div style={styles.overlay}>
       <div style={styles.popup}>
-        <h3>Install Our App</h3>
-        <p>For a better experience, install our app on your device.</p>
-        <button style={styles.button} onClick={handleInstall}>
-          Install
-        </button>
-        <button style={styles.closeButton} onClick={() => setIsVisible(false)}>
-          Close
-        </button>
+        <h3>{t('COMMON.INSTALL_APP_MESSAGE')}</h3>
+        <p>{t('COMMON.INSTALL_APP_DESCRIPTION')}</p>
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: '#FDBE16',
+            '&:hover': {
+              backgroundColor: '#F0A500',
+            },
+            color: '#FFFFFF',
+          }}
+          onClick={handleInstall}
+          className="one-line-text"
+        >
+          {t('COMMON.INSTALL')}
+        </Button>
+        <Button style={styles.closeButton} onClick={() => setIsVisible(false)}>
+          {t('COMMON.CLOSE')}
+        </Button>
       </div>
     </div>
   );
