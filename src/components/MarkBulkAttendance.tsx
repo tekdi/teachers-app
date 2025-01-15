@@ -464,7 +464,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
               gap={'20px'}
               flexDirection={'row'}
               justifyContent={'space-evenly'}
-              margin={'0px 8px 10px'}
+              margin={'5px 8px 10px'}
               sx={{
                 background: '#fff',
                 // padding: '0px 0 10px 0',
