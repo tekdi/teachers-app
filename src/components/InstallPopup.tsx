@@ -1,9 +1,11 @@
 import { Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const InstallPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Check if the app is installed (iOS Safari or display-mode: standalone)
@@ -59,8 +61,8 @@ const InstallPopup = () => {
   return (
     <div style={styles.overlay}>
       <div style={styles.popup}>
-        <h3>Install Pratham Learning Management App</h3>
-        <p>For a better experience, install PLM app on your device.</p>
+        <h3>{t('COMMON.INSTALL_APP_MESSAGE')}</h3>
+        <p>{t('COMMON.INSTALL_APP_DESCRIPTION')}</p>
         <Button
           variant="contained"
           sx={{
@@ -73,10 +75,10 @@ const InstallPopup = () => {
           onClick={handleInstall}
           className="one-line-text"
         >
-          Install
+          {t('COMMON.INSTALL')}
         </Button>
         <Button style={styles.closeButton} onClick={() => setIsVisible(false)}>
-          Close
+          {t('COMMON.CLOSE')}
         </Button>
       </div>
     </div>
