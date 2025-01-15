@@ -297,6 +297,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       setSelectedDays(recurrencePattern);
       setSessionBlocks([
         {
+          id: 0,
           subject: sub,
           subjectTitle: sessionTitle,
           startDatetime: startDateTime,
@@ -969,7 +970,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                 );
 
                 if (cohortId) {
-                  const replacements = { "{sessionName}" : shortDescription }; 
+                  const replacements = { '{sessionName}': shortDescription };
                   const filters = {
                     cohortId,
                     role: Role.STUDENT,
@@ -984,12 +985,18 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
                     if (response?.result?.userDetails) {
                       const deviceId = response?.result?.userDetails
-                        ?.flatMap((device: any) => device.deviceId || []) 
+                        ?.flatMap((device: any) => device.deviceId || [])
                         .filter((id: any) => id !== null);
                       if (deviceId?.length > 0) {
-                        getNotification(deviceId, "LEARNER_NEW_SESSION_ALERT", replacements);
-                      } else { 
-                        console.warn("No valid device IDs found. Skipping notification API call.");
+                        getNotification(
+                          deviceId,
+                          'LEARNER_NEW_SESSION_ALERT',
+                          replacements
+                        );
+                      } else {
+                        console.warn(
+                          'No valid device IDs found. Skipping notification API call.'
+                        );
                       }
                     }
                   } catch (error) {
@@ -1273,7 +1280,6 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           }
 
           const sessionTitle = sessionBlocks?.[0]?.subjectTitle;
-          
           if (
             eventData?.shortDescription !== sessionTitle &&
             sessionTitle !== ''

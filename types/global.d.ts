@@ -10,3 +10,8 @@ declare namespace JSX {
     };
   }
 }
+
+interface Navigator {
+  standalone?: boolean;
+}
+

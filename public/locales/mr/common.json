@@ -665,18 +665,23 @@
     "OBSERVATION_NOT_STARTED_YET": "सर्वेक्षण अद्याप सुरू झालेले नाही.",
     "EXPIRED": "कालबाह्य झाले."
   },
-    "YOUTHNET_SURVEY": {
-      "NEW_SURVEY": "नवीन सर्वेक्षण",
-      "ASSIGN_VOLUNTEERS_NOW": "स्वयंसेवक आता असाइन करा",
-      "REMIND_ME_LATER": "मला नंतर आठवण करा",
-      "NEW_SURVEY_HAS_BEEN_ADDED": "नवीन सर्वेक्षण '{{surveyName}}' जोडले गेले आहे आणि {{villageCount}} गावांना असाइन केले आहे",
-      "ASSIGN_VOLUNTEERS_TO_ENSURE": "स्वयंसेवकांना असाइन करा जेणेकरून ते सर्वेक्षण प्रवेश करू शकतील"
-    },
-    "YOUTHNET_DASHBOARD": {
-      "VILLAGES_MANAGED_BY_YOU": "तुमच्याकडून व्यवस्थापित गाव : {{totalVillageCount}}"
-    },
-    "YOUTHNET_VOLUNTEERLIST": {
-      "ENTRIES": "नोंदी",
-      "VOLUNTEERS_ASSIGNED": "स्वयंसेवक नियुक्त"
-    }
+  "YOUTHNET_SURVEY": {
+    "NEW_SURVEY": "नवीन सर्वेक्षण",
+    "ASSIGN_VOLUNTEERS_NOW": "स्वयंसेवक आता असाइन करा",
+    "REMIND_ME_LATER": "मला नंतर आठवण करा",
+    "NEW_SURVEY_HAS_BEEN_ADDED": "नवीन सर्वेक्षण '{{surveyName}}' जोडले गेले आहे आणि {{villageCount}} गावांना असाइन केले आहे",
+    "ASSIGN_VOLUNTEERS_TO_ENSURE": "स्वयंसेवकांना असाइन करा जेणेकरून ते सर्वेक्षण प्रवेश करू शकतील"
+  },
+  "YOUTHNET_DASHBOARD": {
+    "VILLAGES_MANAGED_BY_YOU": "तुमच्याकडून व्यवस्थापित गावे: {{totalVillageCount}}",
+    "MONTHLY_REGISTRATIONS_OVERVIEW": "मासिक नोंदणीचे अवलोकन",
+    "CLOSED_ON": "बंद केले",
+    "ABOVE_18": "18 वर्षांवरील नोंदणी",
+    "BELOW_18": "18 वर्षांखालील नोंदणी",
+    "VLLAGE_18": "आजची नवीन नोंदणी"
+  },
+  "YOUTHNET_VOLUNTEERLIST": {
+    "ENTRIES": "नोंदी",
+    "VOLUNTEERS_ASSIGNED": "स्वयंसेवक नियुक्त"
+  }
 }

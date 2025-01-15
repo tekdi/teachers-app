@@ -97,7 +97,7 @@ export interface CohortMemberList {
     status?: string[];
     name?: string | undefined;
   };
-  includeArchived?: boolean,
+  includeArchived?: boolean;
 }
 
 export interface UserList {
@@ -893,9 +893,10 @@ export interface RegistrationStatisticsProps {
   statistic?: string | number;
   avatar?: boolean;
   subtile?: string;
+  onPrimaryClick?: () => void;
 }
 export interface VillageNewRegistrationProps {
-  locations: string | React.ReactNode;
+  locations: any;
 }
 export interface RegistrationModalProps {
   avatar?: string;
