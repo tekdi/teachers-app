@@ -59,7 +59,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
     backgroundColor: isBulkAction ? theme.palette.warning[800] : 'none',
     // position: isBulkAction ? 'fixed' : 'none',
     // width: isBulkAction ? '89%' : '100%',
-    borderBottom: isBulkAction ? 'none' : '1px solid #D0C5B4',
+    borderBottom: isBulkAction ? 'none' : '1px solid #D0C5B4', 
     justifyContent: 'space-between',
   };
 
@@ -144,7 +144,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
         )
       )}
 
-      <Box sx={boxStyling}>
+      <Box sx={boxStyling} className="last-hide-border">
         <Box
           sx={{
             display: 'flex',

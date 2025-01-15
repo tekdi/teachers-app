@@ -4,6 +4,7 @@ import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import ButtonFunctional from './ButtonComponent';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface ModalProps {
   open: boolean;
@@ -29,20 +30,7 @@ const ModalComponent: React.FC<ModalProps> = ({
   return (
     <Modal open={open} onClose={onClose}>
       <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '85%',
-          bgcolor: 'white',
-          boxShadow: 24,
-          // height: '526px',
-          '@media (min-width: 600px)': {
-            width: '450px',
-          },
-          borderRadius: '16px',
-        }}
+        sx={modalStyles}
       >
         <Box
           p={'20px 20px 15px'}

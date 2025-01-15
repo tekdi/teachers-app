@@ -8,6 +8,7 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface ManageUsersModalProps {
   leanerName: string;
@@ -27,19 +28,7 @@ const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
   const theme = useTheme<any>();
   const { t } = useTranslation();
  
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '85%',
-    bgcolor: theme.palette.warning['A400'],
-    boxShadow: 24,
-    borderRadius: '16px',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
+
 
   return (
     <div>
@@ -53,7 +42,7 @@ const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={modalStyles}>
           <Box
             display={'flex'}
             justifyContent={'space-between'}

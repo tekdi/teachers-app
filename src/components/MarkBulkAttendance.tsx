@@ -1,5 +1,5 @@
 import { bulkAttendance } from '@/services/AttendanceService';
-import { Box, Button, Fade, Modal, Typography } from '@mui/material';
+import { Box, Button, Divider, Fade, Modal, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import {
   deepClone,
@@ -20,6 +20,7 @@ import NoDataFound from './common/NoDataFound';
 import ConfirmationModal from './ConfirmationModal';
 import Loader from './Loader';
 import { showToastMessage } from './Toastify';
+import { modalStyles } from '@/styles/modalStyles';
 
 interface MarkBulkAttendanceProps {
   open: boolean;
@@ -233,21 +234,6 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
     setConfirmation(false);
     setModalOpen(false);
   };
-  const modalContainer = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '85%',
-    bgcolor: theme.palette.warning['A400'],
-    boxShadow: 24,
-    p: 4,
-    height: '526px',
-    '@media (min-width: 600px)': {
-      width: '450px',
-    },
-  };
-
   return (
     <Box>
       <Modal
@@ -266,15 +252,11 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
       >
         <Fade in={open}>
           <Box
-            sx={{
-              ...modalContainer,
-              borderColor: theme.palette.warning['A400'],
-              padding: '15px 10px 0 10px',
-            }}
+            sx={modalStyles}
             borderRadius={'1rem'}
-            height={'526px'}
+            padding={"15px 10px 0 10px"}
           >
-            <Box height={'100%'} width={'100%'}>
+            <Box height={'100%'} maxHeight={'526px'} sx={{overflowX:'auto'}} width={'100%'}>
               <Box
                 display={'flex'}
                 justifyContent={'space-between'}
@@ -469,57 +451,58 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                       )
                     )}
                   </Box>
-                  <Box
-                    position={'absolute'}
-                    bottom="15px"
-                    display={'flex'}
-                    gap={'20px'}
-                    flexDirection={'row'}
-                    justifyContent={'space-evenly'}
-                    // marginBottom={'8px'}
-                    sx={{
-                      background: '#fff',
-                      // padding: '0px 0 10px 0',
-                      width: '93%',
-                    }}
-                  >
-                    <Button
-                      variant="outlined"
-                      disabled={!isAllAttendanceMarked}
-                      onClick={() => submitBulkAttendanceAction(true, '', '')}
-                      sx={{
-                        width: '128px',
-                        height: '40px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    >
-                      {' '}
-                      {t('COMMON.CLEAR_ALL')}
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      sx={{
-                        width: '128px',
-                        height: '40px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      disabled={isAllAttendanceMarked ? false : true}
-                      onClick={attendanceUpdate}
-                    >
-                      {presentCount == 0 && absentCount == 0
-                        ? t('COMMON.MARK')
-                        : t('COMMON.MODIFY')}
-                    </Button>
-                  </Box>
                 </Box>
+                
               ) : (
                 <NoDataFound />
               )}
+            </Box>
+            <Box
+              // position={'absolute'}
+              bottom="15px"
+              display={'flex'}
+              gap={'20px'}
+              flexDirection={'row'}
+              justifyContent={'space-evenly'}
+              margin={'5px 8px 10px'}
+              sx={{
+                background: '#fff',
+                // padding: '0px 0 10px 0',
+                width: '93%',
+              }}
+            >
+              <Button
+                variant="outlined"
+                disabled={!isAllAttendanceMarked}
+                onClick={() => submitBulkAttendanceAction(true, '', '')}
+                sx={{
+                  width: '128px',
+                  height: '40px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                {' '}
+                {t('COMMON.CLEAR_ALL')}
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  width: '128px',
+                  height: '40px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                disabled={isAllAttendanceMarked ? false : true}
+                onClick={attendanceUpdate}
+              >
+                {presentCount == 0 && absentCount == 0
+                  ? t('COMMON.MARK')
+                  : t('COMMON.MODIFY')}
+              </Button>
             </Box>
           </Box>
         </Fade>

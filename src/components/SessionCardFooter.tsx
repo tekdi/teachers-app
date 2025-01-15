@@ -1,4 +1,4 @@
-import { IResource } from '@/pages/course-planner/center/[cohortId]';
+import { IResource } from '@/pages/curriculum-planner/center/[cohortId]';
 import {
   fetchCourseIdFromSolution,
   getTargetedSolutions,

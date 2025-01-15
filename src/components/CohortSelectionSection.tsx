@@ -373,7 +373,7 @@ const filteredManipulatedData = manipulatedCohortData
   const isAttendanceOverview = pathname === '/attendance-overview';
   const isAssessment = pathname === '/assessments';
   const dashboard = pathname === '/dashboard';
-  const isCoursePlanner = pathname === '/course-planner';
+  const isCoursePlanner = pathname === '/curriculum-planner';
 
   return (
     <Box
@@ -383,9 +383,9 @@ const filteredManipulatedData = manipulatedCohortData
           : 'w-md-40'
       }
     >
-      {loading && (
+      {/* {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-      )}
+      )} */}
       {!loading && filteredCohortData && (
         <Box
           sx={{

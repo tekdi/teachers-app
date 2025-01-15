@@ -186,9 +186,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   ].includes(router.pathname);
   const isTeacherCenter = router.pathname.includes('/centers');
   const isCoursePlanner = [
-    '/course-planner',
+    '/curriculum-planner',
     '/topic-detail-view',
-    '/course-planner/center/[cohortId]',
+    '/curriculum-planner/center/[cohortId]',
     '/play/content/[identifier]',
   ].includes(router.pathname);
   const isObservation = router.pathname.includes('/observation');
@@ -494,7 +494,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 />
               }
               onClick={() => {
-                router.push(`/course-planner`);
+                router.push(`/curriculum-planner`);
               }}
             >
               {t('COURSE_PLANNER.COURSE_PLANNER')}
