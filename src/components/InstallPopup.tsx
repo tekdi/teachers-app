@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 const InstallPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -20,12 +21,23 @@ const InstallPopup = () => {
       if (!isAppInstalled && !localStorage.getItem('visited')) {
         localStorage.setItem('visited', 'true');
         setIsVisible(true);
-      } else {
-        setIsVisible(false);
       }
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // Listen for updates in the service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        setIsUpdateAvailable(true);
+      });
+
+      navigator.serviceWorker.ready.then((registration) => {
+        if (registration.waiting) {
+          setIsUpdateAvailable(true);
+        }
+      });
+    }
 
     return () => {
       window.removeEventListener(
@@ -56,27 +68,58 @@ const InstallPopup = () => {
     setIsVisible(false);
   };
 
-  if (!isVisible) return null;
+  const handleReload = () => {
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+      window.location.reload();
+    }
+  };
+
+  if (!isVisible && !isUpdateAvailable) return null;
 
   return (
     <div style={styles.overlay}>
       <div style={styles.popup}>
-        <h3>{t('COMMON.INSTALL_APP_MESSAGE')}</h3>
-        <p>{t('COMMON.INSTALL_APP_DESCRIPTION')}</p>
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: '#FDBE16',
-            '&:hover': {
-              backgroundColor: '#F0A500',
-            },
-            color: '#FFFFFF',
-          }}
-          onClick={handleInstall}
-          className="one-line-text"
-        >
-          {t('COMMON.INSTALL')}
-        </Button>
+        {isUpdateAvailable ? (
+          <>
+            <h4>{t('COMMON.UPDATE_AVAILABLE')}</h4>
+            <p>{t('COMMON.RELOAD_TO_UPDATE')}</p>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: '#FDBE16',
+                '&:hover': {
+                  backgroundColor: '#F0A500',
+                },
+                color: '#000000',
+              }}
+              onClick={handleReload}
+              className="one-line-text"
+            >
+              {t('COMMON.RELOAD')}
+            </Button>
+          </>
+        ) : (
+          <>
+            <h4>{t('COMMON.INSTALL_APP_MESSAGE')}</h4>
+            <p>{t('COMMON.INSTALL_APP_DESCRIPTION')}</p>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: '#FDBE16',
+                '&:hover': {
+                  backgroundColor: '#F0A500',
+                },
+                color: '#000000',
+                borderRadius: 5,
+              }}
+              onClick={handleInstall}
+              className="one-line-text"
+            >
+              {t('COMMON.INSTALL')}
+            </Button>
+          </>
+        )}
         <Button style={styles.closeButton} onClick={() => setIsVisible(false)}>
           {t('COMMON.CLOSE')}
         </Button>
@@ -106,21 +149,13 @@ const styles = {
     width: '90%',
     maxWidth: '400px',
   },
-  button: {
-    backgroundColor: '#f69435',
-    color: '#fff',
-    padding: '10px 20px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    marginTop: '10px',
-  },
   closeButton: {
-    marginTop: '10px',
+    marginLeft: '10px',
     background: 'none',
     border: 'none',
     color: '#007BFF',
     cursor: 'pointer',
   },
 };
+
 export default InstallPopup;
