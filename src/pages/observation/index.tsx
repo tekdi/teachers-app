@@ -6,7 +6,19 @@ import { targetSolution } from '@/services/ObservationServices';
 import { Role, Telemetry } from '@/utils/app.constant';
 import { toPascalCase } from '@/utils/Helper';
 import { telemetryFactory } from '@/utils/telemetry';
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Tab, Tabs, Typography, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Tab,
+  Tabs,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
@@ -16,7 +28,9 @@ import { entityList } from '../../../app.config';
 const ObservationForms: React.FC = () => {
   const [entityNames, setEntityNames] = useState<String[]>();
   const [observationData, setObservationData] = useState<any>([]);
-  const [filteredObservationData, setFilteredObservationData] = useState<any>([]);
+  const [filteredObservationData, setFilteredObservationData] = useState<any>(
+    []
+  );
   const router = useRouter();
   const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState('all');
@@ -26,7 +40,7 @@ const ObservationForms: React.FC = () => {
     { value: 'all', label: t('COMMON.ALL') },
     { value: 'center', label: t('CENTERS.CENTERS') },
     { value: 'facilitator', label: t('COMMON.FACILITATORS') },
-    { value: 'learner', label: t('COMMON.LEARNERS') }
+    { value: 'learner', label: t('COMMON.LEARNERS') },
   ];
   const isSmallScreen = useMediaQuery('(max-width:938px)');
 
@@ -56,7 +70,7 @@ const ObservationForms: React.FC = () => {
         const sortedData = [...response?.result?.data].sort((a, b) => {
           const dateA = new Date(a.endDate);
           const dateB = new Date(b.endDate);
-          return dateA.getTime() - dateB.getTime()
+          return dateA.getTime() - dateB.getTime();
         });
 
         setFilteredObservationData(sortedData || []);
@@ -64,13 +78,11 @@ const ObservationForms: React.FC = () => {
         // data[1].endDate = "2027-11-15T14:26:18.803Z";
         // setObservationData(data || []);
         // setFilteredObservationData(data || []);
-
       } catch (error) {
         console.error('Error fetching cohort list:', error);
       }
     };
-    if (entityNames && entityNames?.length !== 0)
-      fetchObservationData();
+    if (entityNames && entityNames?.length !== 0) fetchObservationData();
   }, [entityNames]);
 
   const onCardClick = (
@@ -86,16 +98,17 @@ const ObservationForms: React.FC = () => {
     const newRoute = `/${observationId}`;
     const newFullPath = `${basePath}${newRoute}`;
     let queryParams;
-    if (id === "") {
+    if (id === '') {
       queryParams = { entity: entity, observationName: observationName };
-
+    } else {
+      queryParams = {
+        entity: entity,
+        observationName: observationName,
+        Id: id,
+      };
     }
-    else {
-      queryParams = { entity: entity, observationName: observationName, Id: id };
-
-    }
-    localStorage.setItem("observationDescription", description)
-    localStorage.setItem("endDateForSelectedObservation", endDate.toString())
+    localStorage.setItem('observationDescription', description);
+    localStorage.setItem('endDateForSelectedObservation', endDate.toString());
 
     router.push({
       pathname: newFullPath,
@@ -104,7 +117,7 @@ const ObservationForms: React.FC = () => {
   };
 
   const [value, setValue] = useState(0);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState('');
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -117,7 +130,10 @@ const ObservationForms: React.FC = () => {
         cdata: [],
       },
       edata: {
-        id: newValue == 1 ? 'change-tab-to-active-observations' : 'change-tab-to-expired-observations',
+        id:
+          newValue == 1
+            ? 'change-tab-to-active-observations'
+            : 'change-tab-to-expired-observations',
         type: Telemetry.CLICK,
         subtype: '',
         pageid: cleanedUrl,
@@ -158,12 +174,10 @@ const ObservationForms: React.FC = () => {
       },
     };
     telemetryFactory.interact(telemetryInteract);
-
-
   };
   const handleFilterChange = (event: SelectChangeEvent) => {
     setSelectedOption(event.target.value as string);
-    if (event.target.value === "all") {
+    if (event.target.value === 'all') {
       const role = localStorage.getItem('role');
       if (role) {
         if (role === Role.TEAM_LEADER) {
@@ -172,9 +186,8 @@ const ObservationForms: React.FC = () => {
           setEntityNames(entityList.TEACHER);
         }
       }
-    }
-    else {
-      setEntityNames([event.target.value as string])
+    } else {
+      setEntityNames([event.target.value as string]);
     }
 
     const telemetryInteract = {
@@ -192,7 +205,6 @@ const ObservationForms: React.FC = () => {
     telemetryFactory.interact(telemetryInteract);
   };
 
-
   const handleSortChange = (event: SelectChangeEvent) => {
     const selectedValue = event.target.value as string;
     setSortOrder(selectedValue);
@@ -200,7 +212,9 @@ const ObservationForms: React.FC = () => {
     const sortedData = [...filteredObservationData].sort((a, b) => {
       const dateA = new Date(a.endDate);
       const dateB = new Date(b.endDate);
-      return selectedValue === 'lowToHigh' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
+      return selectedValue === 'lowToHigh'
+        ? dateA.getTime() - dateB.getTime()
+        : dateB.getTime() - dateA.getTime();
     });
 
     setFilteredObservationData(sortedData);
@@ -222,190 +236,181 @@ const ObservationForms: React.FC = () => {
   return (
     <div>
       <Header />
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs value={value} onChange={handleChange} aria-label="icon tabs example"
-
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="icon tabs example"
         >
           <Tab
             label={
               <Box
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  color:
-                    value === 0
-                      ? "black"
-                      : "inherit",
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: value === 0 ? 'black' : 'inherit',
                 }}
               >
-                {t("COMMON.ACTIVE")}
+                {t('COMMON.ACTIVE')}
               </Box>
             }
-
           />
           <Tab
             label={
               <Box
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  color:
-                    value === 1
-                      ? "black"
-                      : "inherit",
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: value === 1 ? 'black' : 'inherit',
                 }}
               >
-                {t("OBSERVATION.EXPIRED")}
+                {t('OBSERVATION.EXPIRED')}
               </Box>
             }
           />
         </Tabs>
       </Box>
 
+      <Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={12} md={6} lg={4}>
+            <SearchBar
+              onSearch={handleSearch}
+              value={searchInput}
+              placeholder={t('OBSERVATION.SEARCH_OBSERVATIONS')}
+              fullWidth
+            />
+          </Grid>
 
-      <Box
-        // flexDirection={'row'}
-        // display={'flex'}
-        // mr="20px"
-        flexDirection={isSmallScreen ? 'column' : 'row'}
-        display={'flex'}
-        alignItems={isSmallScreen ? 'flex-start' : 'center'}
-        mr={isSmallScreen ? 0 : '20px'}
-        gap={isSmallScreen ? '10px' : '20px'}
+          <Grid item xs={12} sm={12} md={6} lg={4}>
+            {value === 0 && (
+              <FormControl
+                sx={{
+                  width: { xs: '100%', sm: '100%', md: "100%"  },
+                }}
+                variant="outlined"
+                margin="normal"
+              >
+                <InputLabel sx=
+                  {{ mx: '20px' }}  id="days-sort-label">
+                  <Typography variant="h3">
+                    {t('OBSERVATION.DAYS_LEFT')}{' '}
+                  </Typography>
+                </InputLabel>
+                <Select
+                  labelId="days-sort-label"
+                  value={sortOrder}
+                  onChange={handleSortChange}
+                  label={t('OBSERVATION.DAYS_LEFT')}
+                  sx={{ height: '50px' , mx:'20px' }}
+                >
+                  <MenuItem value="lowToHigh">{t('COMMON.LOW_TO_HIGH')}</MenuItem>
+                  <MenuItem value="highToLow">{t('COMMON.HIGH_TO_LOW')}</MenuItem>
+                </Select>
+              </FormControl>
+            )}
+          </Grid>
 
-      >
-        <SearchBar
-          onSearch={handleSearch}
-          value={searchInput}
-          placeholder={t('OBSERVATION.SEARCH_OBSERVATIONS')}
-          fullWidth
-        />
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '15px',
-            width: '90%',
-            '@media (max-width: 908px)': {
-              flexDirection: 'column',
-            },
-            marginTop: '15px',
-            marginLeft: isSmallScreen ? '20px' : '0',
-
-          }}
-        >
-          {value === 0 && (<FormControl sx={{
-            width: { xs: '100%', sm: '100%', md: 300 },
-          }} variant="outlined" margin="normal">
-            <InputLabel id="days-sort-label">
-              <Typography variant="h3" >
-                {t('OBSERVATION.DAYS_LEFT')}              </Typography>
-
-            </InputLabel>
-            <Select
-              labelId="days-sort-label"
-              value={sortOrder}
-              onChange={handleSortChange}
-              label={t('OBSERVATION.DAYS_LEFT')}
-              sx={{ height: "50px" }}
-
-            >
-              <MenuItem value="lowToHigh">{t('COMMON.LOW_TO_HIGH')}</MenuItem>
-              <MenuItem value="highToLow">{t('COMMON.HIGH_TO_LOW')}</MenuItem>
-            </Select>
-          </FormControl>)}
-          {typeof window !== 'undefined' && window.localStorage && localStorage.getItem('role') === Role.TEAM_LEADER && (
-            <FilterSelect
-              menuItems={menuItems}
-              selectedOption={selectedOption}
-              handleFilterChange={handleFilterChange}
-              label={t('COMMON.FILTER_BY')}
-            />)}
-
-        </Box>
-
-
-      </Box>
-      {entityNames && entityNames.map((name, index) => (
-        <Box
-          key={index}
-          sx={{
-            padding: 2,
-            marginBottom: 2,
-            borderRadius: 1,
-          }}
-        >
-          <Typography variant="h2" color={"black"}>
-            {t('OBSERVATION.OBSERVATIONS', {
-              name: toPascalCase(name),
-            })}
-          </Typography>
-
-         <Box>
-  <Grid container spacing={2}>
-    {value === 0 &&
-      filteredObservationData.filter((item: any) => item.entityType === name).length > 0 ? (
-        filteredObservationData
-          .filter(
-            (item: any) =>
-              item.entityType === name && new Date(item.endDate) > currentDate
-          )
-          .map((item: any) => (
-            <Grid item xs={12} sm={12} md={6} lg={4} key={item._id}>
-              <Box sx={{ margin: 1 }}>
-                <ObservationCard
-                  name={item.name}
-                  onCardClick={() =>
-                    onCardClick(
-                      item?.solutionId,
-                      item?.entityType,
-                      item?.name,
-                      item?._id,
-                      item?.description,
-                      item?.endDate
-                    )
-                  }
-                  description={item?.description}
-                  endDate={item?.endDate}
+          <Grid item xs={12} sm={12} md={6} lg={4}>
+            {typeof window !== 'undefined' &&
+              window.localStorage &&
+              localStorage.getItem('role') === Role.TEAM_LEADER && (
+                <FilterSelect
+                  px={"20px"}
+                  menuItems={menuItems}
+                  selectedOption={selectedOption}
+                  handleFilterChange={handleFilterChange}
+                  label={t('COMMON.FILTER_BY')}
                 />
-              </Box>
-            </Grid>
-          ))
-      ) : value === 1 &&
-        filteredObservationData.filter(
-          (item: any) =>
-            item.entityType === name && new Date(item.endDate) <= currentDate
-        ).length > 0 ? (
-        filteredObservationData
-          .filter(
-            (item: any) =>
-              item.entityType === name && new Date(item.endDate) <= currentDate
-          )
-          .map((item: any) => (
-            <Grid item xs={12} sm={12} md={6} lg={4} key={item._id}>
-              <Box sx={{ margin: 1 }}>
-                <ObservationCard
-                  name={item.name}
-                  description={item?.description}
-                  endDate={item?.endDate}
-                />
-              </Box>
-            </Grid>
-          ))
-      ) : (
-        <Grid item xs={12}>
-          <Typography variant="h4" color="textSecondary">
-            {t('OBSERVATION.NO_RESULT_FOUND', {
-              entity: toPascalCase(name),
-            })}
-          </Typography>
+              )}
+          </Grid>
         </Grid>
-      )}
-  </Grid>
-</Box>
+      </Box>
+      {entityNames &&
+        entityNames.map((name, index) => (
+          <Box
+            key={index}
+            sx={{
+              padding: 2,
+              marginBottom: 2,
+              borderRadius: 1,
+            }}
+          >
+            <Typography variant="h2" color={'black'}>
+              {t('OBSERVATION.OBSERVATIONS', {
+                name: toPascalCase(name),
+              })}
+            </Typography>
 
-        </Box>
-      ))}
+            <Box>
+              <Grid container spacing={2}>
+                {value === 0 &&
+                  filteredObservationData.filter(
+                    (item: any) => item.entityType === name
+                  ).length > 0 ? (
+                  filteredObservationData
+                    .filter(
+                      (item: any) =>
+                        item.entityType === name &&
+                        new Date(item.endDate) > currentDate
+                    )
+                    .map((item: any) => (
+                      <Grid item xs={12} sm={12} md={6} lg={4} key={item._id}>
+                        <Box sx={{ margin: 1 }}>
+                          <ObservationCard
+                            name={item.name}
+                            onCardClick={() =>
+                              onCardClick(
+                                item?.solutionId,
+                                item?.entityType,
+                                item?.name,
+                                item?._id,
+                                item?.description,
+                                item?.endDate
+                              )
+                            }
+                            description={item?.description}
+                            endDate={item?.endDate}
+                          />
+                        </Box>
+                      </Grid>
+                    ))
+                ) : value === 1 &&
+                  filteredObservationData.filter(
+                    (item: any) =>
+                      item.entityType === name &&
+                      new Date(item.endDate) <= currentDate
+                  ).length > 0 ? (
+                  filteredObservationData
+                    .filter(
+                      (item: any) =>
+                        item.entityType === name &&
+                        new Date(item.endDate) <= currentDate
+                    )
+                    .map((item: any) => (
+                      <Grid item xs={12} sm={12} md={6} lg={4} key={item._id}>
+                        <Box sx={{ margin: 1 }}>
+                          <ObservationCard
+                            name={item.name}
+                            description={item?.description}
+                            endDate={item?.endDate}
+                          />
+                        </Box>
+                      </Grid>
+                    ))
+                ) : (
+                  <Grid item xs={12}>
+                    <Typography variant="h4" color="textSecondary">
+                      {t('OBSERVATION.NO_RESULT_FOUND', {
+                        entity: toPascalCase(name),
+                      })}
+                    </Typography>
+                  </Grid>
+                )}
+              </Grid>
+            </Box>
+          </Box>
+        ))}
     </div>
   );
 };

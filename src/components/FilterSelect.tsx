@@ -7,6 +7,7 @@ interface FilterSelectProps {
   handleFilterChange: (event: SelectChangeEvent) => void;
   label: string;
   sx?: object;
+  px?:string;
 }
 
 const FilterSelect: React.FC<FilterSelectProps> = ({
@@ -14,18 +15,21 @@ const FilterSelect: React.FC<FilterSelectProps> = ({
   selectedOption,
   handleFilterChange,
   label,
+  px,
   sx = {}
 }) => {
   return (
-    <FormControl sx={{   width: { xs: '100%', sm: '100%', md: 300 },
-  }} variant="outlined" margin="normal">
-      <InputLabel id="filter-label">{label}</InputLabel>
+    <FormControl sx={{
+      width: { xs: '100%', sm: '100%',  },
+     
+    }}  variant="outlined" margin="normal">
+      <InputLabel sx={{mx:px}} id="filter-label">{label}</InputLabel>
       <Select
         labelId="filter-label"
         value={selectedOption}
         onChange={handleFilterChange}
         label={label}
-        sx={{height:"50px"}}
+        sx={{height:"50px", mx:px}}
 
       >
         {menuItems.map((item) => (

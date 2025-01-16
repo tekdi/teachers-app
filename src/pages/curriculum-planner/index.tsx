@@ -628,6 +628,7 @@ const CoursePlanner = () => {
                 label="Course Type"
                 sx={{
                   fontSize: '14px',
+                  background:'#fff'
                 }}
                 disabled={
                   !tStore.state ||
