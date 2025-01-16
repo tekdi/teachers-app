@@ -3,7 +3,7 @@ name: Deploy to PRAHTAM-DEV on Tekdi
 on:
   push:
     branches:
-      - release-1.0.0
+      - release-1.1.0
 jobs:
   deploy_DEV:
     runs-on: ubuntu-latest
