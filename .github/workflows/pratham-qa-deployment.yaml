@@ -1,4 +1,4 @@
-]name: Deploy to PRATHAM-QA Server
+name: Deploy to PRATHAM-QA Server
 on:
   workflow_dispatch:
 jobs:
