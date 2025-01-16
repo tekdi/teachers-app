@@ -123,15 +123,20 @@ const Assessments = () => {
           setCohortMembers(userDetails);
         }
       } catch (error) {
+        // setLoading(false);
         console.error('Error fetching cohort list:', error);
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         setIsLoading(false);
       } finally {
+        // setLoading(false);
         setIsLoading(false);
       }
     };
 
     if (classId) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 0);
       getCohortMemberList();
     }
   }, [classId]);
@@ -381,6 +386,10 @@ const Assessments = () => {
         <Header />
       </Box>
 
+      {loading &&
+        <Loader showBackdrop={true} loadingText={t("COMMON.LOADING")} />
+      }
+
       <Box
         sx={{
           display: 'flex',
@@ -392,7 +401,7 @@ const Assessments = () => {
       >
         <Typography fontSize="22px">{t('ASSESSMENTS.ASSESSMENTS')}</Typography>
       </Box>
-      <SearchBar onSearch={handleSearch} placeholder="Search..." />
+      <SearchBar onSearch={handleSearch} placeholder={t('COMMON.SEARCH')} />
       <Grid container>
         <Grid item xs={12} md={6}>
           <Box sx={{ mt: 2, px: '20px', width: '100%' }}>

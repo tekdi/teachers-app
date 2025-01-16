@@ -114,6 +114,7 @@ export interface UserList {
 
 export interface UserData {
   name?: any;
+  username?: string;
   district: string;
   state: string;
   mobile?: string;

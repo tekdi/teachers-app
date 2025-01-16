@@ -35,17 +35,11 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   const determinePathColor = useAttendanceRangeColor();
   const textColor = determinePathColor(presentPercent);
 
-  //   const handleStudentDetails = () => {
-  //     router.push(`/student-details/${cohortId}/${userId}`);
-  //   };
-
   const [userData, setUserData] = React.useState<UserData | null>(null);
   const [customFieldsData, setCustomFieldsData] = React.useState<
     UpdateCustomField[]
   >([]);
-  const [contactNumber, setContactNumber] = useState<any>('');
-  const [userName, setUserName] = React.useState('');
-  const [enrollmentNumber, setEnrollmentNumber] = React.useState('');
+
   const [isModalOpenLearner, setIsModalOpenLearner] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -68,9 +62,6 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           if (data) {
             const userData = data?.userData;
             setUserData(userData);
-            setUserName(userData?.name);
-            setContactNumber(userData?.mobile);
-            setEnrollmentNumber(capitalizeEachWord(userData?.username));
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
@@ -102,18 +93,16 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           open={isModalOpenLearner}
           onClose={handleCloseModalLearner}
           data={filteredFields}
-          userName={userName}
-          contactNumber={contactNumber}
-          enrollmentNumber={enrollmentNumber}
+          userName={userData?.name}
+          contactNumber={userData?.mobile}
+          enrollmentNumber={capitalizeEachWord(userData?.username || '')}
         />
       )}
       <Stack>
         <Box
-          // height="60px"
           borderTop={`1px solid  ${theme.palette.warning['A100']}`}
           margin="0px"
           alignItems={'center'}
-          // padding="1rem"
         >
           <Grid
             container

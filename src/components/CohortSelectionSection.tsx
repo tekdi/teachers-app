@@ -143,22 +143,24 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
   }, [router, setClassId, setIsAuthenticated, setUserId]);
   useEffect(() => {
     const filteredData = cohortsData
-  ?.filter((cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE)
-  ?.sort((a: any, b: any) => a.name.localeCompare(b.name));
+      ?.filter((cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE)
+      ?.sort((a: any, b: any) => a.name.localeCompare(b.name));
 
-const filteredManipulatedData = manipulatedCohortData
-  ?.filter((cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE)
-  ?.sort((a: any, b: any) => a.name.localeCompare(b.name));
+    const filteredManipulatedData = manipulatedCohortData
+      ?.filter((cohort: any) => cohort?.status?.toLowerCase() === Status.ACTIVE)
+      ?.sort((a: any, b: any) => a.name.localeCompare(b.name));
 
     setFilteredCohortData(filteredData);
-    
+
     setFilteredManipulatedCohortData(filteredManipulatedData);
 
   }, [manipulatedCohortData, cohortsData]);
 
   useEffect(() => {
     if (userId) {
-      setLoading(true);
+      if (!loading) {
+        setLoading(true);
+      }
       const fetchCohorts = async () => {
         try {
           const response = await queryClient.fetchQuery({
@@ -319,10 +321,10 @@ const filteredManipulatedData = manipulatedCohortData
               setManipulatedCohortData?.(filteredData);
             }
           }
-          setLoading(false);
+          // setLoading(false);
         } catch (error) {
           console.error('Error fetching cohort list', error);
-          setLoading(false);
+          // setLoading(false);
           showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         }
       };
@@ -386,7 +388,7 @@ const filteredManipulatedData = manipulatedCohortData
       {/* {loading && (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       )} */}
-      {!loading && filteredCohortData && (
+      {filteredCohortData && (
         <Box
           sx={{
             '@media (min-width: 900px)': {
@@ -399,7 +401,7 @@ const filteredManipulatedData = manipulatedCohortData
             },
           }}
         >
-          {!loading && classId && filteredCohortData && (
+          {classId && filteredCohortData && (
             <Box>
               {blockName ? (
                 <Box>
@@ -548,30 +550,22 @@ const filteredManipulatedData = manipulatedCohortData
                               showFloatingLabel
                                 ? { borderRadius: '4px' }
                                 : {
-                                    borderRadius: '0.5rem',
-                                    color: theme.palette.warning['200'],
-                                    width: '100%',
-                                    marginBottom: '0rem',
-                                    marginRight: '10px',
-                                    '@media (max-width: 902px)': {
-                                      width: isAttendanceOverview
-                                        ? '100%'
-                                        : '62%',
-                                    },
-                                    '@media (max-width: 702px)': {
-                                      width: isAttendanceOverview
-                                        ? '100%'
-                                        : '65%',
-                                    },
-                                    // '& .MuiSelect-icon': {
-                                    //   right: isRTL ? 'unset' : '7px',
-                                    //   left: isRTL ? '7px' : 'unset',
-                                    // },
-                                    // ' & .MuiFormLabel-root-MuiInputLabel-root':
-                                    //   {
-                                    //     right: isRTL ? '30px' : 'unset',
-                                    //   },
+                                  borderRadius: '0.5rem',
+                                  color: theme.palette.warning['200'],
+                                  width: '100%',
+                                  marginBottom: '0rem',
+                                  marginRight: '10px',
+                                  '@media (max-width: 902px)': {
+                                    width: isAttendanceOverview
+                                      ? '100%'
+                                      : '62%',
+                                  },
+                                  '@media (max-width: 702px)': {
+                                    width: isAttendanceOverview
+                                      ? '100%'
+                                      : '65%',
                                   }
+                                }
                             }
                           >
                             {filteredCohortData?.length !== 0 ? (
@@ -608,7 +602,7 @@ const filteredManipulatedData = manipulatedCohortData
                       ) : (
                         <>
                           {showDisabledDropDown &&
-                          filteredCohortData?.length === 1 ? (
+                            filteredCohortData?.length === 1 ? (
                             <FormControl
                               disabled={true}
                               className={

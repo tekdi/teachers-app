@@ -4,7 +4,7 @@ import { getCohortSearch } from '@/services/CohortServices';
 import coursePlannerStore from '@/store/coursePlannerStore';
 import useStore from '@/store/store';
 import taxonomyStore from '@/store/taxonomyStore';
-import { CoursePlannerConstants, Telemetry } from '@/utils/app.constant';
+import { CoursePlannerConstants, limit, Telemetry } from '@/utils/app.constant';
 import {
   filterAndMapAssociationsNew,
   findCommonAssociations,
@@ -33,6 +33,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { accessControl, COURSE_TYPE, frameworkId } from '../../../app.config';
 import { useDirection } from '../../hooks/useDirection';
+import Loader from '@/components/Loader';
 
 const CoursePlanner = () => {
   const [value, setValue] = React.useState('');
@@ -102,7 +103,7 @@ const CoursePlanner = () => {
       try {
         const data = await getCohortSearch({
           cohortId: selectedValue,
-          limit: 20,
+          limit: limit,
           offset: 0,
         });
 
@@ -162,7 +163,7 @@ const CoursePlanner = () => {
         // Get states options
         const getStates = getOptionsByCategory(frameworks, 'state');
 
-     
+
 
         // Set the frameworks state
         setFramework(frameworks);
@@ -574,6 +575,10 @@ const CoursePlanner = () => {
       <Box>
         <Header />
       </Box>
+
+      {loading && (
+        <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+      )}
       <Box
         sx={{
           display: 'flex',
