@@ -4,7 +4,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface BackHeaderProps {
   headingOne: string;
-  headingTwo?: any;
+  headingTwo?: string;
+  headingThree?: string;
   onBackClick?: () => void;
   showBackButton?: boolean;
 }
@@ -12,6 +13,7 @@ interface BackHeaderProps {
 const BackHeader: React.FC<BackHeaderProps> = ({
   headingOne,
   headingTwo,
+  headingThree,
   onBackClick,
   showBackButton = false,
 }) => {
@@ -39,10 +41,20 @@ const BackHeader: React.FC<BackHeaderProps> = ({
         <Typography textAlign="left" fontSize="22px">
           {headingOne}
         </Typography>
-        {headingTwo && (
-          <Typography variant="body2" sx={{ color: '#4D4639', margin: 0 }}>
-            {headingTwo}
-          </Typography>
+
+        {(headingTwo || headingThree) && (
+          <Box display="flex" alignItems="center" gap={1}>
+            {headingTwo && (
+              <Typography variant="body2" sx={{ color: '#4D4639', margin: 0 }}>
+                {headingTwo}
+              </Typography>
+            )}
+            {headingThree && (
+              <Typography variant="body2" sx={{ color: '#BA1A1A', margin: 0 }}>
+                ({headingThree})
+              </Typography>
+            )}
+          </Box>
         )}
       </Box>
     </Box>
