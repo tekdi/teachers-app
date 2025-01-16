@@ -1,9 +1,7 @@
 import { Box, Typography } from '@mui/material';
-
-import React from 'react';
 import { useTheme } from '@mui/material/styles';
+import React from 'react';
 
-// import { useTranslation } from "next-i18next";
 
 interface OverviewCardProps {
   label: string;
@@ -19,12 +17,10 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
   valuePartTwo,
 }) => {
   const theme = useTheme<any>();
-  //   const { t } = useTranslation();
 
   return (
     <Box
       gap="5rem"
-      //   border={`1px solid ${theme.palette.warning.A100}`}
       borderRadius="1rem"
       alignItems="left"
       bgcolor={theme.palette.warning['A400']}
@@ -35,7 +31,6 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'start',
-        // minHeight: 'fit-content',
         minHeight: '6.2rem',
         '@media (max-width: 600px)': {
           minHeight: '7.4rem',

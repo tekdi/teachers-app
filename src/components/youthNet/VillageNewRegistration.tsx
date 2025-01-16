@@ -12,7 +12,7 @@ const VillageNewRegistration: React.FC<VillageNewRegistrationProps> = ({
 
   const handleLocationClick = (location: string) => {
     console.log(`Location clicked: ${location}`);
-    router.push('/youthboard/villageDetails');
+    router.push(`/youthboard/villageDetails/${location}`);
   };
 
   return (

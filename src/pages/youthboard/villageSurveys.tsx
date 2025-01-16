@@ -3,8 +3,8 @@ import React from 'react';
 import { TENANT_DATA } from '../../../app.config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-const villageDetails = () => {
-  return <div>villageDetails Page</div>;
+const villageSurveys = () => {
+  return <div>villageSurveys</div>;
 };
 
 export async function getStaticProps({ locale }: any) {
@@ -16,4 +16,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default withRole(TENANT_DATA.YOUTHNET)(villageDetails);
+export default withRole(TENANT_DATA.YOUTHNET)(villageSurveys);

@@ -12,8 +12,7 @@ import {
   getTodayDate,
   handleKeyDown,
   sortAttendanceNumber,
-  sortClassesMissed,
-  toPascalCase,
+  toPascalCase
 } from '@/utils/Helper';
 import { CohortAttendancePercentParam, ICohort } from '@/utils/Interfaces';
 import {
@@ -31,6 +30,7 @@ import { accessControl, AttendanceAPILimit, lowLearnerAttendanceLimit } from './
 
 import CohortAttendanceListView from '@/components/CohortAttendanceListView';
 import CohortSelectionSection from '@/components/CohortSelectionSection';
+import NoDataFound from '@/components/common/NoDataFound';
 import DateRangePopup from '@/components/DateRangePopup';
 import Header from '@/components/Header';
 import StudentsStatsList from '@/components/LearnerAttendanceStatsListView';
@@ -41,8 +41,11 @@ import SortingModal from '@/components/SortingModal';
 import { showToastMessage } from '@/components/Toastify';
 import UpDownButton from '@/components/UpDownButton';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
+import useStore from '@/store/store';
+import { getMenuItems, Telemetry } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
 import withAccessControl from '@/utils/hoc/withAccessControl';
+import { telemetryFactory } from '@/utils/telemetry';
 import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
 import ClearIcon from '@mui/icons-material/Clear';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
@@ -53,11 +56,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
-import { getMenuItems, Telemetry } from '@/utils/app.constant';
-import { telemetryFactory } from '@/utils/telemetry';
-import NoDataFound from '@/components/common/NoDataFound';
 import { useDirection } from '../hooks/useDirection';
-import useStore from '@/store/store';
 
 interface AttendanceOverviewProps {
   //   buttonText: string;
@@ -77,6 +76,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   const [loading, setLoading] = React.useState(false);
+  const [inLineLoading, setInLineLoading] = React.useState(false);
   const [searchWord, setSearchWord] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
   const [learnerData, setLearnerData] = React.useState<Array<any>>([]);
@@ -118,13 +118,13 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
       const class_Id = localStorage.getItem('classId') ?? '';
       localStorage.setItem('cohortId', class_Id);
 
-      setLoading(false);
+      // setLoading(false);
       if (token) {
         if (isActiveYear) {
           push('/attendance-overview');
         } else {
           push('/centers');
-        }        
+        }
       } else {
         push('/login', undefined, { locale: 'en' });
       }
@@ -165,12 +165,17 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         facets: ['attendanceDate'],
         sort: ['present_percentage', 'asc'],
       };
-      const res = await getCohortAttendance(cohortAttendanceData);
-      const response = res?.data?.result?.attendanceDate;
-      if (response) {
-        setNumberOfDaysAttendanceMarked(Object.keys(response)?.length);
-      } else {
-        setNumberOfDaysAttendanceMarked(0);
+      try {
+
+        const res = await getCohortAttendance(cohortAttendanceData);
+        const response = res?.data?.result?.attendanceDate;
+        if (response) {
+          setNumberOfDaysAttendanceMarked(Object.keys(response)?.length);
+        } else {
+          setNumberOfDaysAttendanceMarked(0);
+        }
+      } catch (error) {
+        console.error('Error fetching attendance data:', error);
       }
     };
     if (classId) {
@@ -179,9 +184,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   }, [
     classId,
     selectedValue ===
-      t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-        date_range: dateRange,
-      }),
+    t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+      date_range: dateRange,
+    }),
   ]);
 
   const handleDateRangeSelected = ({ fromDate, toDate }: any) => {
@@ -191,7 +196,8 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   };
   //API for getting student list
   const getCohortMemberList = async () => {
-    setLoading(true);
+    // setLoading(true);
+    setDisplayStudentList([]);
     try {
       if (classId && classId != 'all') {
         const limit = 300;
@@ -255,6 +261,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 setLearnerData(mergedArray);
                 setDisplayStudentList(mergedArray);
 
+
                 const studentsWithLowestAttendance = mergedArray.filter(
                   (user) =>
                     user.absent &&
@@ -270,12 +277,17 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 } else {
                   setLowAttendanceLearnerList([]);
                 }
+
+                // setLoading(false);
+                setInLineLoading(false);
               }
             }
           }
         } else {
           setLearnerData([]);
           setDisplayStudentList([]);
+          // setLoading(false);
+          setInLineLoading(false);
         }
         if (classId) {
           const cohortAttendancePercent = async () => {
@@ -347,8 +359,6 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
 
           try {
             const results = await Promise.all(fetchPromises);
-           
-
             const nameIDAttendanceArray = results
               .filter((result) => !result.error && result?.data?.contextId)
               .map((result) => {
@@ -373,7 +383,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
               })
               .filter((item) => item.presentPercentage !== null); // Filter out items with no valid percentage
 
-           
+
             setAllCenterAttendanceData(nameIDAttendanceArray);
           } catch (error) {
             console.error('Error fetching attendance data:', error);
@@ -392,12 +402,10 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
   };
 
   useEffect(() => {
+    setInLineLoading(true);
     getCohortMemberList();
   }, [classId, isToDate, isFromDate]);
 
-  // useEffect(()=>{
-  //   setDisplayStudentList(learnerData);
-  // },[searchWord == ""])
 
   const handleSearchClear = () => {
     setSearchWord('');
@@ -436,9 +444,9 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
         },
       };
       telemetryFactory.interact(telemetryInteract);
-    }else if (trimmedValue === '') {
+    } else if (trimmedValue === '') {
       debouncedSearch.cancel();
-      setDisplayStudentList(learnerData); 
+      setDisplayStudentList(learnerData);
     } else {
       setDisplayStudentList(learnerData);
     }
@@ -502,21 +510,21 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
     //     break;
     // }
 
-      // Sorting by AttendancePercentage
-      switch (sortByAttendancePercentage) {
-        case "more":
-          sortedData = filterAttendancePercentage(sortedData, "more");
-          break;
-        case "between":
-          sortedData = filterAttendancePercentage(sortedData, "between");
-          break;
-        case "less":
-          sortedData = filterAttendancePercentage(sortedData, "less");
-          break;
-        default:
-          // Handle default case if needed
-          break;
-      }  
+    // Sorting by AttendancePercentage
+    switch (sortByAttendancePercentage) {
+      case "more":
+        sortedData = filterAttendancePercentage(sortedData, "more");
+        break;
+      case "between":
+        sortedData = filterAttendancePercentage(sortedData, "between");
+        break;
+      case "less":
+        sortedData = filterAttendancePercentage(sortedData, "less");
+        break;
+      default:
+        // Handle default case if needed
+        break;
+    }
 
     setDisplayStudentList(sortedData);
   };
@@ -664,7 +672,7 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     }
                     valuePartTwo={
                       Array.isArray(lowAttendanceLearnerList) &&
-                      lowAttendanceLearnerList.length > 2
+                        lowAttendanceLearnerList.length > 2
                         ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
                         : null
                     }
@@ -769,17 +777,16 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                   </Grid>
                 </Grid>
               </Box>
-              <SortingModal
-                isModalOpen={modalOpen}
-                handleCloseModal={handleCloseModal}
-                handleSorting={handleSorting}
-                routeName={pathname}
-              />
+              {
+                modalOpen && <SortingModal
+                  isModalOpen={modalOpen}
+                  handleCloseModal={handleCloseModal}
+                  handleSorting={handleSorting}
+                  routeName={pathname}
+                />
+              }
             </Stack>
           ) : null}
-          {loading && (
-            <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-          )}
           {classId !== 'all' ? (
             <Box>
               <LearnerListHeader
@@ -788,14 +795,24 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                 secondColumnName={t('COMMON.CLASS_MISSED')}
               />
               <Box>
-                {displayStudentList.length >= 1 ? (
-                  displayStudentList?.map((user: any) => (
+                {inLineLoading ? (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: '20px',
+                    }}
+                  >
+                    <Loader showBackdrop={false} loadingText={t('COMMON.LOADING')} />
+                  </Box>
+                ) : displayStudentList?.length > 0 ? (
+                  displayStudentList.map((user: any) => (
                     <StudentsStatsList
                       key={user.userId}
                       name={user.name}
-                      presentPercent={
-                        Math.floor(parseFloat(user.present_percent)) || 0
-                      }
+                      presentPercent={Math.floor(parseFloat(user.present_percent)) || 0}
                       classesMissed={user.absent || 0}
                       userId={user.userId}
                       cohortId={classId}
@@ -803,9 +820,12 @@ const AttendanceOverview: React.FC<AttendanceOverviewProps> = () => {
                     />
                   ))
                 ) : (
-                  <NoDataFound />
+                  <>
+                    <NoDataFound />
+                  </>
                 )}
               </Box>
+
             </Box>
           ) : (
             <Box>

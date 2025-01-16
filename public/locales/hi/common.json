@@ -667,6 +667,7 @@
   },
 
   "YOUTHNET_SURVEY": {
+    "SURVEY": "सर्वेक्षण",
     "NEW_SURVEY": "नया सर्वेक्षण",
     "ASSIGN_VOLUNTEERS_NOW": "स्वयंसेवकों को अभी असाइन करें",
     "REMIND_ME_LATER": "मुझे बाद में याद दिलाएं",

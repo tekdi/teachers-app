@@ -1,23 +1,23 @@
 import { Backdrop, CircularProgress, Typography } from "@mui/material";
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "next-i18next";
-
 
 const Loader: React.FC<{ showBackdrop: boolean; loadingText?: string }> = ({
   showBackdrop,
-  loadingText
+  loadingText,
 }) => {
   const { t } = useTranslation();
 
-  const Spinner = () => {
-    return (
+  const spinnerContent = useMemo(
+    () => (
       <>
         <CircularProgress color="inherit" />
         <br />
         <Typography variant="h2">{t(loadingText ?? "COMMON.LOADING")}...</Typography>
       </>
-    );
-  };
+    ),
+    [loadingText, t] // Dependencies: re-compute only when these change
+  );
 
   return (
     <>
@@ -29,9 +29,9 @@ const Loader: React.FC<{ showBackdrop: boolean; loadingText?: string }> = ({
         }}
         open={showBackdrop}
       >
-        <Spinner />
+        {spinnerContent}
       </Backdrop>
-      {!showBackdrop && <Spinner />}
+      {!showBackdrop && <>{spinnerContent}</>}
     </>
   );
 };

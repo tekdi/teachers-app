@@ -98,11 +98,11 @@ if (!isEliminatedFromBuild('SessionCard', 'component')) {
   });
 }
 
-interface DashboardProps {}
+interface DashboardProps { }
 const Dashboard: React.FC<DashboardProps> = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { dir, isRTL } = useDirection();
+  const { isRTL } = useDirection();
   const store = useStore();
   const isActiveYear = store.isActiveYearSelected;
 
@@ -131,7 +131,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const [dateRange, setDateRange] = React.useState<Date | string>('');
   const [allCenterAttendanceData, setAllCenterAttendanceData] =
     React.useState<any>(cohortsData);
-  const [isClient, setIsClient] = React.useState(false);
   const router = useRouter();
   const theme = useTheme<any>();
   const determinePathColor = useDeterminePathColor();
@@ -170,6 +169,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setAttendanceData(data);
   };
 
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpenDrawer(newOpen);
+    if (showCentralisedModal && !newOpen) {
+      setCentralizedModal(true);
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const skipResetPassword = localStorage.getItem('skipResetPassword');
@@ -180,32 +186,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         setShowCentralisedModal(true);
       }
     }
-  }, []);
 
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpenDrawer(newOpen);
-    //open modal for reset
-    // const skipResetPassword = localStorage.getItem('skipResetPassword');
-    // const temporaryPassword = localStorage.getItem('temporaryPassword');
-
-    if (showCentralisedModal && !newOpen) {
-      setCentralizedModal(true);
-    }
-  };
-  // const [isTourCompleted, setIsTourCompleted] = React.useState(false);
-
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined' && window.localStorage) {
-  //     const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
-
-  //     if (hasSeenTutorial === 'true') {
-  //       setIsTourCompleted(true);
-  //     }
-  //   }
-  // }, []);
-
-  useEffect(() => {
-    setIsClient(true);
     const calculateDateRange = () => {
       const endRangeDate = new Date();
       endRangeDate.setHours(23, 59, 59, 999);
@@ -349,7 +330,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   return createdAt <= new Date(selectedDate);
                 }
               );
-  
+
             // Filter latest entries
             const filteredEntries = getLatestEntries(nameUserIdArray, selectedDate);
             if (filteredEntries) {
@@ -677,16 +658,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   }
   const presentPercentage = parseFloat(currentAttendance?.present_percentage);
-  // const percent_students =
-  //   attendanceData?.numberOfCohortMembers &&
-  //   attendanceData.numberOfCohortMembers !== 0
-  //     ? (
-  //         (attendanceData.presentCount / attendanceData.numberOfCohortMembers) *
-  //         100
-  //       ).toFixed(2)
-  //     : '0';
-  // const presentPercentage = (attendanceData.presentCount/ attendanceData.numberOfCohortMembers) * 100;
-
   const pathColor = determinePathColor(presentPercentage);
 
   const handleMoreDetailsClicked = () => {
@@ -717,18 +688,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
           const district = cohortData.customField.find(
             (item: CustomField) => item.label === 'DISTRICTS'
           );
-          const districtCode = district?.code || '';
-          const districtId = district?.fieldId || '';
           const state = cohortData.customField.find(
             (item: CustomField) => item.label === 'STATES'
           );
           setState(state.value);
-          const stateCode = state?.code || '';
-          const stateId = state?.fieldId || '';
-
-          const blockField = cohortData?.customField.find(
-            (field: any) => field.label === 'BLOCKS'
-          );
 
           const address = `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}`;
           cohortData.address = address || '';
@@ -753,8 +716,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
           );
           setBoard(board?.value);
         }
-        // setCohortDetails(cohortData);
-        // setCohortName(cohortData?.name);
       }
     };
 
@@ -782,29 +743,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
           };
 
           const response = await getEventList({ limit, offset, filters });
-
-          // check if cohort's membership is active
-
-          // const myCohortList = await queryClient.fetchQuery({
-          //   queryKey: [QueryKeys.MY_COHORTS, userId],
-          //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
-          // });
           const sessionArray: any[] = [];
           const extraSessionArray: any[] = [];
           if (response?.events?.length > 0) {
             response?.events.forEach((event: any) => {
-              // let cohortList;
-              // if (myCohortList.length > 0) {
-              //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
-              //     cohortList = myCohortList[0].childData;
-              //   } else {
-              //     cohortList = myCohortList;
-              //   }
-              // }
-
-              // const cohort = cohortList?.find(
-              //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
-              // );
               if (event?.metadata?.type === sessionType.PLANNED) {
                 sessionArray.push(event);
               }
@@ -849,81 +791,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
     console.log(eventDates);
   }, [eventDates]);
 
-  // useEffect(() => {
-  //   const getExtraSessionsData = async () => {
-  //     try {
-  //       const date = new Date();
-  //       const startDate = shortDateFormat(new Date());
-  //       const lastDate = new Date(
-  //         date.setDate(date.getDate() + modifyAttendanceLimit)
-  //       );
-  //       const endDate = shortDateFormat(lastDate);
-  //       const afterDate = getAfterDate(timeTableDate);
-  //       const beforeDate = getBeforeDate(timeTableDate);
-  //       const limit = 0;
-  //       const offset = 0;
-  //       const filters = {
-  //         startDate: {
-  //           after: afterDate,
-  //         },
-  //         endDate: {
-  //           before: beforeDate,
-  //         },
-  //         createdBy: userId,
-  //         // cohortId: classId,
-  //         status: ['live'],
-  //       };
-  //       const response = await getEventList({ limit, offset, filters });
-
-  //       // check if cohort's membership is active
-
-  //       // const myCohortList = await queryClient.fetchQuery({
-  //       //   queryKey: [QueryKeys.MY_COHORTS, userId],
-  //       //   queryFn: () => getCohortList(userId as string, { filter: 'true' }),
-  //       // });
-
-  //       const extraSessionArray: any[] = [];
-  //       if (response?.events.length > 0) {
-  //         response?.events.forEach((event: any) => {
-
-  //           // let cohortList;
-  //           // if (myCohortList.length > 0) {
-  //           //   if (myCohortList[0].type === cohortHierarchy.BLOCK) {
-  //           //     cohortList = myCohortList[0].childData;
-  //           //   } else {
-  //           //     cohortList = myCohortList;
-  //           //   }
-  //           // }
-
-  //           // const cohort = cohortList?.find(
-  //           //   (cohort: any) => cohort?.cohortId === event?.metadata?.cohortId
-  //           // );
-
-  //           if (!event.isRecurring) {
-  //             extraSessionArray.push(event);
-  //           }
-  //         });
-  //       }
-  //       setExtraSessions(extraSessionArray);
-  //       setEventUpdated(false);
-  //       setEventDeleted(false);
-  //     } catch (error) {
-  //       setExtraSessions([]);
-  //     }
-  //   };
-
-  //   if (userId && myCohortList) {
-  //     getExtraSessionsData();
-  //   }  const { t } = useTranslation();
-  // }, [
-  //   timeTableDate,
-  //   userId,
-  //   myCohortList,
-  //   classId,
-  //   eventUpdated,
-  //   eventDeleted,
-  // ]);
-
   const handleEventDeleted = () => {
     setEventDeleted(true);
   };
@@ -931,17 +798,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const handleEventUpdated = () => {
     setEventUpdated(true);
   };
-
-  // useEffect(() => {  const { t } = useTranslation();
-  //   if (typeof window !== 'undefined' && window.localStorage) {
-  //     const skipResetPassword = localStorage.getItem('skipResetPassword');
-  //     const temporaryPassword = localStorage.getItem('temporaryPassword');
-
-  //     if (temporaryPassword === 'true' && skipResetPassword !== 'true') {
-  //       setCentralizedModal(true);
-  //     }
-  //   }
-  // }, []);
 
   const handlePrimaryButton = () => {
     router.push(`/create-password`);
@@ -957,597 +813,542 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   return (
     <>
-      {isClient && (
-        <>
-          <GuideTour toggleDrawer={toggleDrawer} />
+      {
+        (
           <>
-            {!isAuthenticated && (
-              <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
-            )}
+            <GuideTour toggleDrawer={toggleDrawer} />
+            <>
+              {!isAuthenticated && (
+                <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
+              )}
 
-            {isAuthenticated && (
-              <Box minHeight="100vh">
-                <Box>
-                  <Header toggleDrawer={toggleDrawer} openDrawer={openDrawer} />
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Box
-                    display={'flex'}
-                    width={'100%'}
-                    sx={{ backgroundColor: theme.palette.warning['A400'] }}
-                  >
-                    <Typography
-                      textAlign={'left'}
-                      fontSize={'22px'}
-                      m={'1.5rem 1.2rem 0.8rem'}
-                      color={theme?.palette?.warning['300']}
-                      className="joyride-step-1"
-                      // className={!isTourCompleted ? 'joyride-step-1' : ''}
-                    >
-                      {t('DASHBOARD.DASHBOARD')}
-                    </Typography>
+              {isAuthenticated && (
+                <Box minHeight="100vh">
+                  <Box>
+                    <Header toggleDrawer={toggleDrawer} openDrawer={openDrawer} />
                   </Box>
-                </Box>
-                {loading && (
-                  <Loader
-                    showBackdrop={true}
-                    loadingText={t('COMMON.LOADING')}
-                  />
-                )}
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Box
-                    paddingBottom={'25px'}
-                    width={'100%'}
-                    sx={{
-                      background:
-                        darkMode === 'dark'
-                          ? 'linear-gradient(180deg, #2e2e2e 0%, #1b1b1b 100%)'
-                          : 'linear-gradient(180deg, #fffdf7 0%, #f8efda 100%)',
-                    }}
-                    className="br-md-8"
-                  >
-                    <Box className="joyride-step-2">
+                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Box
+                      display={'flex'}
+                      width={'100%'}
+                      sx={{ backgroundColor: theme.palette.warning['A400'] }}
+                    >
+                      <Typography
+                        textAlign={'left'}
+                        fontSize={'22px'}
+                        m={'1.5rem 1.2rem 0.8rem'}
+                        color={theme?.palette?.warning['300']}
+                        className="joyride-step-1"
+                      >
+                        {t('DASHBOARD.DASHBOARD')}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  {loading && (
+                    <Loader
+                      showBackdrop={true}
+                      loadingText={t('COMMON.LOADING')}
+                    />
+                  )}
+                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Box
+                      paddingBottom={'25px'}
+                      width={'100%'}
+                      sx={{
+                        background:
+                          darkMode === 'dark'
+                            ? 'linear-gradient(180deg, #2e2e2e 0%, #1b1b1b 100%)'
+                            : 'linear-gradient(180deg, #fffdf7 0%, #f8efda 100%)',
+                      }}
+                      className="br-md-8"
+                    >
+                      <Box className="joyride-step-2">
+                        <Box
+                          display={'flex'}
+                          flexDirection={'column'}
+                          padding={'1.5rem 1.2rem 1rem'}
+                        >
+                          <Box
+                            display={'flex'}
+                            justifyContent={'space-between'}
+                            alignItems={'center'}
+                          >
+                            <Box className="d-md-flex flex-basis-md-90 min-align-md-center space-md-between w-100">
+                              <Typography
+                                variant="h2"
+                                sx={{ fontSize: '14px' }}
+                                color={theme.palette.warning['300']}
+                                fontWeight={'500'}
+                              >
+                                {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
+                              </Typography>
+
+                              <CohortSelectionSection
+                                classId={classId}
+                                setClassId={setClassId}
+                                userId={userId}
+                                setUserId={setUserId}
+                                isAuthenticated={isAuthenticated}
+                                setIsAuthenticated={setIsAuthenticated}
+                                loading={loading}
+                                setLoading={setLoading}
+                                cohortsData={cohortsData}
+                                setCohortsData={setCohortsData}
+                                manipulatedCohortData={manipulatedCohortData}
+                                setManipulatedCohortData={
+                                  setManipulatedCohortData
+                                }
+                                blockName={blockName}
+                                setBlockName={setBlockName}
+                                handleSaveHasRun={handleSaveHasRun}
+                                setHandleSaveHasRun={setHandleSaveHasRun}
+                                isCustomFieldRequired={false}
+                              />
+                            </Box>
+
+                            <Box
+                              className="calenderTitle flex-center joyride-step-3 ps-md-ab"
+                              display={'flex'}
+                              sx={{
+                                cursor: 'pointer',
+                                color: theme.palette.secondary.main,
+                                gap: '4px',
+                                opacity: classId === 'all' ? 0.5 : 1,
+                                '@media (max-width: 900px)': {
+                                  top:
+                                    role === Role.TEAM_LEADER ? '210px' : '185px',
+                                  right: '20px',
+                                },
+                              }}
+                              onClick={viewAttendanceHistory}
+                            >
+                              <Typography
+                                marginBottom={'0'}
+                                style={{ fontWeight: '500' }}
+                              >
+                                {getMonthName(selectedDate)}
+                              </Typography>
+                              <Image
+                                height={18}
+                                width={18}
+                                src={calendar}
+                                alt="logo"
+                                style={{ cursor: 'pointer' }}
+                              />
+                            </Box>
+                          </Box>
+
+                          {/* Logic to disable this block on all select */}
+                          <Box className="flex-basis-md-10">
+                            <Box sx={{ mt: 1.5, position: 'relative' }}>
+                              <WeekCalender
+                                showDetailsHandle={showDetailsHandle}
+                                data={percentageAttendanceData}
+                                disableDays={classId === 'all'}
+                                classId={classId}
+                                newWidth={'1840px'}
+                              />
+                            </Box>
+                            <Box
+                              height={'auto'}
+                              width={'auto'}
+                              padding={'1rem'}
+                              borderRadius={'1rem'}
+                              bgcolor={'#4A4640'}
+                              textAlign={'left'}
+                              margin={'15px 0 15px 0 '}
+                              sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
+                            >
+                              <Stack
+                                direction="row"
+                                spacing={1}
+                                // marginTop={1}
+                                justifyContent={'space-between'}
+                                alignItems={'center'}
+                              >
+                                <Box
+                                  display={'flex'}
+                                  gap={'5px'}
+                                  alignItems={'center'}
+                                >
+                                  {currentAttendance !== 'notMarked' &&
+                                    currentAttendance !== 'futureDate' && (
+                                      <>
+                                        <CircularProgressbar
+                                          value={
+                                            currentAttendance?.present_percentage
+                                          }
+                                          background
+                                          backgroundPadding={8}
+                                          styles={buildStyles({
+                                            textColor: pathColor,
+                                            pathColor: pathColor,
+                                            trailColor: '#E6E6E6',
+                                            strokeLinecap: 'round',
+                                            backgroundColor:
+                                              theme.palette.warning['A400'],
+                                          })}
+                                          className="fs-24 htw-24"
+                                          strokeWidth={20}
+                                        />
+                                        <Box>
+                                          <Typography
+                                            // sx={{ color: theme.palette.warning['A400'] }}
+                                            sx={{
+                                              fontSize: '12px',
+                                              fontWeight: '600',
+                                              color: '#F4F4F4',
+                                            }}
+                                            variant="h6"
+                                            className="word-break"
+                                          >
+                                            {t('DASHBOARD.PERCENT_ATTENDANCE', {
+                                              percent_students:
+                                                attendanceData?.numberOfCohortMembers &&
+                                                  attendanceData.numberOfCohortMembers !==
+                                                  0
+                                                  ? (
+                                                    (attendanceData.presentCount /
+                                                      attendanceData.numberOfCohortMembers) *
+                                                    100
+                                                  ).toFixed(2)
+                                                  : '0',
+                                            })}
+                                          </Typography>
+                                          <Typography
+                                            // sx={{ color: theme.palette.warning['A400'] }}
+                                            sx={{
+                                              fontSize: '12px',
+                                              fontWeight: '600',
+                                              color: '#F4F4F4',
+                                            }}
+                                            variant="h6"
+                                            className="word-break"
+                                          >
+                                            {t('DASHBOARD.PRESENT_STUDENTS', {
+                                              present_students:
+                                                attendanceData.presentCount,
+                                              total_students:
+                                                attendanceData.numberOfCohortMembers,
+                                            })}
+                                          </Typography>
+                                        </Box>
+                                      </>
+                                    )}
+                                  {currentAttendance === 'notMarked' &&
+                                    currentAttendance !== 'futureDate' && (
+                                      <Typography
+                                        sx={{
+                                          color: theme.palette.warning['A400'],
+                                        }}
+                                        fontSize={'0.8rem'}
+                                      // variant="h6"
+                                      // className="word-break"
+                                      >
+                                        {t('DASHBOARD.NOT_MARKED')}
+                                      </Typography>
+                                    )}
+                                  {currentAttendance === 'futureDate' && (
+                                    <Typography
+                                      sx={{
+                                        color: theme.palette.warning['300'],
+                                      }}
+                                      fontSize={'0.8rem'}
+                                      fontStyle={'italic'}
+                                      fontWeight={'500'}
+                                    >
+                                      {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
+                                    </Typography>
+                                  )}
+                                </Box>
+                                <Button
+                                  className="btn-mark-width"
+                                  variant="contained"
+                                  color="primary"
+                                  sx={{
+                                    '&.Mui-disabled': {
+                                      backgroundColor:
+                                        theme?.palette?.primary?.main, // Custom disabled text color
+                                    },
+                                    minWidth: '84px',
+                                    height: '2.5rem',
+                                    padding: theme.spacing(1),
+                                    fontWeight: '500',
+                                    '@media (min-width: 500px)': {
+                                      width: '20%',
+                                    },
+                                    '@media (min-width: 700px)': {
+                                      width: '15%',
+                                    },
+                                  }}
+                                  onClick={handleModalToggle}
+                                  disabled={
+                                    currentAttendance === 'futureDate' ||
+                                    classId === 'all' ||
+                                    formattedSevenDaysAgo > selectedDate
+                                  }
+                                >
+                                  {currentAttendance === 'notMarked' ||
+                                    currentAttendance === 'futureDate'
+                                    ? t('COMMON.MARK')
+                                    : t('COMMON.MODIFY')}
+                                </Button>
+                              </Stack>
+                            </Box>
+                            {open && (
+                              <MarkBulkAttendance
+                                open={open}
+                                onClose={handleClose}
+                                classId={classId}
+                                selectedDate={new Date(selectedDate)}
+                                onSaveSuccess={(isModified) => {
+                                  if (isModified) {
+                                    showToastMessage(
+                                      t(
+                                        'ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY'
+                                      ),
+                                      'success'
+                                    );
+                                  } else {
+                                    showToastMessage(
+                                      t(
+                                        'ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'
+                                      ),
+                                      'success'
+                                    );
+                                  }
+                                  setHandleSaveHasRun(!handleSaveHasRun);
+                                }}
+                                memberList={attendanceData?.cohortMemberList}
+                                presentCount={attendanceData?.presentCount}
+                                absentCount={attendanceData?.absentCount}
+                                numberOfCohortMembers={
+                                  attendanceData?.numberOfCohortMembers
+                                }
+                                dropoutMemberList={
+                                  attendanceData?.dropoutMemberList
+                                }
+                                dropoutCount={attendanceData?.dropoutCount}
+                                bulkStatus={attendanceData?.bulkAttendanceStatus}
+                              />
+                            )}
+                          </Box>
+                        </Box>
+                        <Box sx={{ padding: '0 20px' }}>
+                          <Divider sx={{ borderBottomWidth: '0.1rem' }} />
+                        </Box>
+                      </Box>
+
+                      {/* Overview Card Section */}
                       <Box
                         display={'flex'}
                         flexDirection={'column'}
-                        padding={'1.5rem 1.2rem 1rem'}
+                        gap={'1rem'}
+                        padding={'1rem 1.2rem'}
                       >
-                        <Box
-                          display={'flex'}
+                        <Stack
+                          direction={'row'}
                           justifyContent={'space-between'}
                           alignItems={'center'}
+                          padding={'2px'}
                         >
-                          <Box className="d-md-flex flex-basis-md-90 min-align-md-center space-md-between w-100">
+                          <Box width="100%">
+                            <Box
+                              display={'flex'}
+                              justifyContent={'space-between'}
+                              alignItems={'center'}
+                              width="100%"
+                            >
+                              <Typography
+                                variant="h2"
+                                sx={{
+                                  color: theme.palette.warning['300'],
+                                  fontSize: '14px',
+                                  fontWeight: '500',
+                                }}
+                              >
+                                {t('DASHBOARD.OVERVIEW')}
+                              </Typography>
+                              <Box
+                                display={'flex'}
+                                justifyContent={'center'}
+                                alignItems={'center'}
+                                sx={{ color: theme.palette.secondary.main }}
+                              >
+                                <Link
+                                  className="flex-center fs-14 text-decoration joyride-step-4"
+                                  href={'/attendance-overview'}
+                                  style={{
+                                    color: theme.palette.secondary.main,
+                                    fontWeight: '500',
+                                  }}
+                                  onClick={handleMoreDetailsClicked}
+                                >
+                                  {t('DASHBOARD.MORE_DETAILS')}
+                                  <ArrowForwardSharpIcon
+                                    sx={{
+                                      height: '18px',
+                                      transform: isRTL
+                                        ? ' rotate(180deg)'
+                                        : 'unset',
+                                    }}
+                                  />
+                                </Link>
+                              </Box>
+                            </Box>
                             <Typography
+                              sx={{
+                                color: theme.palette.warning['400'],
+                                fontSize: '12px !important',
+                                fontWeight: '500',
+                              }}
+                              variant="h2"
+                            >
+                              {t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+                                date_range: dateRange,
+                              })}
+                            </Typography>
+                          </Box>
+                        </Stack>
+                        {/*loading && (
+                        <Loader
+                          showBackdrop={true}
+                          loadingText={t('COMMON.LOADING')}
+                        />
+                      )*/}
+                      </Box>
+                      <Box
+                        display={'flex'}
+                        className="card_overview"
+                        mx={'1.2rem'}
+                      >
+                        {classId &&
+                          classId !== 'all' &&
+                          cohortsData &&
+                          lowAttendanceLearnerList ? (
+                          <Grid container spacing={2}>
+                            <Grid item xs={4}>
+                              <OverviewCard
+                                label={t('ATTENDANCE.CENTER_ATTENDANCE')}
+                                value={
+                                  cohortPresentPercentage ===
+                                    t('ATTENDANCE.NO_ATTENDANCE')
+                                    ? cohortPresentPercentage
+                                    : `${cohortPresentPercentage} %`
+                                }
+                              />
+                            </Grid>
+                            <Grid item xs={8}>
+                              <OverviewCard
+                                label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
+                                {...(loading && (
+                                  <Loader
+                                    loadingText={t('COMMON.LOADING')}
+                                    showBackdrop={false}
+                                  />
+                                ))}
+                                valuePartOne={
+                                  Array.isArray(lowAttendanceLearnerList) &&
+                                    lowAttendanceLearnerList.length > 0
+                                    ? lowAttendanceLearnerList
+                                      .slice(0, 2)
+                                      .join(', ')
+                                    : t(
+                                      'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
+                                    )
+                                }
+                                valuePartTwo={
+                                  Array.isArray(lowAttendanceLearnerList) &&
+                                    lowAttendanceLearnerList.length > 2
+                                    ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
+                                    : null
+                                }
+                              />
+                            </Grid>
+                          </Grid>
+                        ) : (
+                          <Grid container spacing={2}>
+                            {allCenterAttendanceData.map(
+                              (item: {
+                                cohortId: React.Key | null | undefined;
+                                name: string;
+                                presentPercentage: number;
+                              }) => (
+                                <Grid item xs={6} key={item.cohortId}>
+                                  <OverviewCard
+                                    label={item.name}
+                                    value={`${item.presentPercentage} %`}
+                                  />
+                                </Grid>
+                              )
+                            )}
+                          </Grid>
+                        )}
+                      </Box>
+                    </Box>
+                  </Box>
+                  {role === Role.TEAM_LEADER && (
+                    <Box p={2}>
+                      <AttendanceComparison blockName={blockName} />
+                    </Box>
+                  )}
+                  {!isEliminatedFromBuild('SessionCardFooter', 'component') &&
+                    SessionCardFooter &&
+                    SessionCard && (
+                      <>
+                        <Box mt={3} px="18px">
+                          <Box
+                            sx={{
+                              background: theme.palette.warning['A400'],
+                              padding: '5px',
+                            }}
+                            display={'flex'}
+                            justifyContent={'space-between'}
+                          >
+                            <Typography
+                              textAlign={'left'}
+                              fontSize={'0.8rem'}
+                              pt={'1rem'}
                               variant="h2"
                               sx={{ fontSize: '14px' }}
                               color={theme.palette.warning['300']}
                               fontWeight={'500'}
                             >
-                              {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
-                            </Typography>
-
-                            <CohortSelectionSection
-                              classId={classId}
-                              setClassId={setClassId}
-                              userId={userId}
-                              setUserId={setUserId}
-                              isAuthenticated={isAuthenticated}
-                              setIsAuthenticated={setIsAuthenticated}
-                              loading={loading}
-                              setLoading={setLoading}
-                              cohortsData={cohortsData}
-                              setCohortsData={setCohortsData}
-                              manipulatedCohortData={manipulatedCohortData}
-                              setManipulatedCohortData={
-                                setManipulatedCohortData
-                              }
-                              blockName={blockName}
-                              setBlockName={setBlockName}
-                              handleSaveHasRun={handleSaveHasRun}
-                              setHandleSaveHasRun={setHandleSaveHasRun}
-                              isCustomFieldRequired={false}
-                              // showFloatingLabel={true}
-                            />
-                          </Box>
-
-                          <Box
-                            className="calenderTitle flex-center joyride-step-3 ps-md-ab"
-                            display={'flex'}
-                            sx={{
-                              cursor: 'pointer',
-                              color: theme.palette.secondary.main,
-                              gap: '4px',
-                              opacity: classId === 'all' ? 0.5 : 1,
-                              '@media (max-width: 900px)': {
-                                top:
-                                  role === Role.TEAM_LEADER ? '210px' : '185px',
-                                right: '20px',
-                              },
-                            }}
-                            onClick={viewAttendanceHistory}
-                          >
-                            <Typography
-                              marginBottom={'0'}
-                              style={{ fontWeight: '500' }}
-                            >
-                              {getMonthName(selectedDate)}
-                            </Typography>
-                            {/* <CalendarMonthIcon /> */}
-                            <Image
-                              height={18}
-                              width={18}
-                              src={calendar}
-                              alt="logo"
-                              style={{ cursor: 'pointer' }}
-                            />
-                          </Box>
-                        </Box>
-
-                        {/* Logic to disable this block on all select */}
-                        <Box className="flex-basis-md-10">
-                          <Box sx={{ mt: 1.5, position: 'relative' }}>
-                            <WeekCalender
-                              showDetailsHandle={showDetailsHandle}
-                              data={percentageAttendanceData}
-                              disableDays={classId === 'all'}
-                              classId={classId}
-                              newWidth={'1840px'}
-                            />
-                          </Box>
-                          <Box
-                            height={'auto'}
-                            width={'auto'}
-                            padding={'1rem'}
-                            borderRadius={'1rem'}
-                            bgcolor={'#4A4640'}
-                            textAlign={'left'}
-                            margin={'15px 0 15px 0 '}
-                            sx={{ opacity: classId === 'all' ? 0.5 : 1 }}
-                          >
-                            <Stack
-                              direction="row"
-                              spacing={1}
-                              // marginTop={1}
-                              justifyContent={'space-between'}
-                              alignItems={'center'}
-                            >
-                              <Box
-                                display={'flex'}
-                                gap={'5px'}
-                                alignItems={'center'}
-                              >
-                                {currentAttendance !== 'notMarked' &&
-                                  currentAttendance !== 'futureDate' && (
-                                    <>
-                                      <CircularProgressbar
-                                        value={
-                                          currentAttendance?.present_percentage
-                                        }
-                                        background
-                                        backgroundPadding={8}
-                                        styles={buildStyles({
-                                          textColor: pathColor,
-                                          pathColor: pathColor,
-                                          trailColor: '#E6E6E6',
-                                          strokeLinecap: 'round',
-                                          backgroundColor:
-                                            theme.palette.warning['A400'],
-                                        })}
-                                        className="fs-24 htw-24"
-                                        strokeWidth={20}
-                                      />
-                                      <Box>
-                                        <Typography
-                                          // sx={{ color: theme.palette.warning['A400'] }}
-                                          sx={{
-                                            fontSize: '12px',
-                                            fontWeight: '600',
-                                            color: '#F4F4F4',
-                                          }}
-                                          variant="h6"
-                                          className="word-break"
-                                        >
-                                          {t('DASHBOARD.PERCENT_ATTENDANCE', {
-                                            percent_students:
-                                              attendanceData?.numberOfCohortMembers &&
-                                              attendanceData.numberOfCohortMembers !==
-                                                0
-                                                ? (
-                                                    (attendanceData.presentCount /
-                                                      attendanceData.numberOfCohortMembers) *
-                                                    100
-                                                  ).toFixed(2)
-                                                : '0',
-                                          })}
-                                        </Typography>
-                                        <Typography
-                                          // sx={{ color: theme.palette.warning['A400'] }}
-                                          sx={{
-                                            fontSize: '12px',
-                                            fontWeight: '600',
-                                            color: '#F4F4F4',
-                                          }}
-                                          variant="h6"
-                                          className="word-break"
-                                        >
-                                          {t('DASHBOARD.PRESENT_STUDENTS', {
-                                            present_students:
-                                              attendanceData.presentCount,
-                                            total_students:
-                                              attendanceData.numberOfCohortMembers,
-                                          })}
-                                        </Typography>
-                                      </Box>
-                                    </>
-                                  )}
-                                {currentAttendance === 'notMarked' &&
-                                  currentAttendance !== 'futureDate' && (
-                                    <Typography
-                                      sx={{
-                                        color: theme.palette.warning['A400'],
-                                      }}
-                                      fontSize={'0.8rem'}
-                                      // variant="h6"
-                                      // className="word-break"
-                                    >
-                                      {t('DASHBOARD.NOT_MARKED')}
-                                    </Typography>
-                                  )}
-                                {currentAttendance === 'futureDate' && (
-                                  <Typography
-                                    sx={{
-                                      color: theme.palette.warning['300'],
-                                    }}
-                                    fontSize={'0.8rem'}
-                                    fontStyle={'italic'}
-                                    fontWeight={'500'}
-                                  >
-                                    {t('DASHBOARD.FUTURE_DATE_CANT_MARK')}
-                                  </Typography>
-                                )}
-                              </Box>
-                              <Button
-                                className="btn-mark-width"
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                  '&.Mui-disabled': {
-                                    backgroundColor:
-                                      theme?.palette?.primary?.main, // Custom disabled text color
-                                  },
-                                  minWidth: '84px',
-                                  height: '2.5rem',
-                                  padding: theme.spacing(1),
-                                  fontWeight: '500',
-                                  '@media (min-width: 500px)': {
-                                    width: '20%',
-                                  },
-                                  '@media (min-width: 700px)': {
-                                    width: '15%',
-                                  },
-                                }}
-                                onClick={handleModalToggle}
-                                disabled={
-                                  currentAttendance === 'futureDate' ||
-                                  classId === 'all' ||
-                                  formattedSevenDaysAgo > selectedDate
-                                }
-                              >
-                                {currentAttendance === 'notMarked' ||
-                                currentAttendance === 'futureDate'
-                                  ? t('COMMON.MARK')
-                                  : t('COMMON.MODIFY')}
-                              </Button>
-                            </Stack>
-                          </Box>
-                          {open && (
-                            <MarkBulkAttendance
-                              open={open}
-                              onClose={handleClose}
-                              classId={classId}
-                              selectedDate={new Date(selectedDate)}
-                              onSaveSuccess={(isModified) => {
-                                if (isModified) {
-                                  showToastMessage(
-                                    t(
-                                      'ATTENDANCE.ATTENDANCE_MODIFIED_SUCCESSFULLY'
-                                    ),
-                                    'success'
-                                  );
-                                } else {
-                                  showToastMessage(
-                                    t(
-                                      'ATTENDANCE.ATTENDANCE_MARKED_SUCCESSFULLY'
-                                    ),
-                                    'success'
-                                  );
-                                }
-                                setHandleSaveHasRun(!handleSaveHasRun);
-                              }}
-                              memberList={attendanceData?.cohortMemberList}
-                              presentCount={attendanceData?.presentCount}
-                              absentCount={attendanceData?.absentCount}
-                              numberOfCohortMembers={
-                                attendanceData?.numberOfCohortMembers
-                              }
-                              dropoutMemberList={
-                                attendanceData?.dropoutMemberList
-                              }
-                              dropoutCount={attendanceData?.dropoutCount}
-                              bulkStatus={attendanceData?.bulkAttendanceStatus}
-                            />
-                          )}
-                        </Box>
-                      </Box>
-                      <Box sx={{ padding: '0 20px' }}>
-                        <Divider sx={{ borderBottomWidth: '0.1rem' }} />
-                      </Box>
-                    </Box>
-
-                    {/* Overview Card Section */}
-                    <Box
-                      display={'flex'}
-                      flexDirection={'column'}
-                      gap={'1rem'}
-                      padding={'1rem 1.2rem'}
-                    >
-                      <Stack
-                        direction={'row'}
-                        justifyContent={'space-between'}
-                        alignItems={'center'}
-                        padding={'2px'}
-                      >
-                        <Box width="100%">
-                          <Box
-                            display={'flex'}
-                            justifyContent={'space-between'}
-                            alignItems={'center'}
-                            width="100%"
-                          >
-                            <Typography
-                              variant="h2"
-                              sx={{
-                                color: theme.palette.warning['300'],
-                                fontSize: '14px',
-                                fontWeight: '500',
-                              }}
-                            >
-                              {t('DASHBOARD.OVERVIEW')}
+                              {t('DASHBOARD.MY_TIMETABLE')}
                             </Typography>
                             <Box
                               display={'flex'}
-                              justifyContent={'center'}
-                              alignItems={'center'}
-                              sx={{ color: theme.palette.secondary.main }}
-                            >
-                              <Link
-                                className="flex-center fs-14 text-decoration joyride-step-4"
-                                href={'/attendance-overview'}
-                                style={{
-                                  color: theme.palette.secondary.main,
-                                  fontWeight: '500',
-                                }}
-                                onClick={handleMoreDetailsClicked}
-                              >
-                                {t('DASHBOARD.MORE_DETAILS')}
-                                <ArrowForwardSharpIcon
-                                  sx={{
-                                    height: '18px',
-                                    transform: isRTL
-                                      ? ' rotate(180deg)'
-                                      : 'unset',
-                                  }}
-                                />
-                              </Link>
-                            </Box>
-                          </Box>
-                          <Typography
-                            sx={{
-                              color: theme.palette.warning['400'],
-                              fontSize: '12px !important',
-                              fontWeight: '500',
-                            }}
-                            variant="h2"
-                          >
-                            {t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-                              date_range: dateRange,
-                            })}
-                          </Typography>
-                        </Box>
-                      </Stack>
-                      {loading && (
-                        <Loader
-                          showBackdrop={true}
-                          loadingText={t('COMMON.LOADING')}
-                        />
-                      )}
-                    </Box>
-                    <Box
-                      display={'flex'}
-                      className="card_overview"
-                      mx={'1.2rem'}
-                    >
-                      {classId &&
-                      classId !== 'all' &&
-                      cohortsData &&
-                      lowAttendanceLearnerList ? (
-                        <Grid container spacing={2}>
-                          <Grid item xs={4}>
-                            <OverviewCard
-                              label={t('ATTENDANCE.CENTER_ATTENDANCE')}
-                              value={
-                                cohortPresentPercentage ===
-                                t('ATTENDANCE.NO_ATTENDANCE')
-                                  ? cohortPresentPercentage
-                                  : `${cohortPresentPercentage} %`
-                              }
-                            />
-                          </Grid>
-                          <Grid item xs={8}>
-                            <OverviewCard
-                              label={t('ATTENDANCE.LOW_ATTENDANCE_STUDENTS')}
-                              {...(loading && (
-                                <Loader
-                                  loadingText={t('COMMON.LOADING')}
-                                  showBackdrop={false}
-                                />
-                              ))}
-                              valuePartOne={
-                                Array.isArray(lowAttendanceLearnerList) &&
-                                lowAttendanceLearnerList.length > 0
-                                  ? lowAttendanceLearnerList
-                                      .slice(0, 2)
-                                      .join(', ')
-                                  : t(
-                                      'ATTENDANCE.NO_LEARNER_WITH_LOW_ATTENDANCE'
-                                    )
-                              }
-                              valuePartTwo={
-                                Array.isArray(lowAttendanceLearnerList) &&
-                                lowAttendanceLearnerList.length > 2
-                                  ? `${t('COMMON.AND')} ${lowAttendanceLearnerList.length - 2} ${t('COMMON.MORE')}`
-                                  : null
-                              }
-                            />
-                          </Grid>
-                        </Grid>
-                      ) : (
-                        <Grid container spacing={2}>
-                          {allCenterAttendanceData.map(
-                            (item: {
-                              cohortId: React.Key | null | undefined;
-                              name: string;
-                              presentPercentage: number;
-                            }) => (
-                              <Grid item xs={6} key={item.cohortId}>
-                                <OverviewCard
-                                  label={item.name}
-                                  value={`${item.presentPercentage} %`}
-                                />
-                              </Grid>
-                            )
-                          )}
-                        </Grid>
-                      )}
-                    </Box>
-                  </Box>
-                </Box>
-                {role === Role.TEAM_LEADER && (
-                  <Box p={2}>
-                    <AttendanceComparison blockName={blockName} />
-                  </Box>
-                )}
-                {!isEliminatedFromBuild('SessionCardFooter', 'component') &&
-                  SessionCardFooter &&
-                  SessionCard && (
-                    <>
-                      <Box mt={3} px="18px">
-                        <Box
-                          sx={{
-                            background: theme.palette.warning['A400'],
-                            padding: '5px',
-                          }}
-                          display={'flex'}
-                          justifyContent={'space-between'}
-                        >
-                          <Typography
-                            textAlign={'left'}
-                            fontSize={'0.8rem'}
-                            pt={'1rem'}
-                            variant="h2"
-                            sx={{ fontSize: '14px' }}
-                            color={theme.palette.warning['300']}
-                            fontWeight={'500'}
-                          >
-                            {t('DASHBOARD.MY_TIMETABLE')}
-                          </Typography>
-                          <Box
-                            display={'flex'}
-                            sx={{
-                              cursor: 'pointer',
-                              color: theme.palette.secondary.main,
-                              gap: '4px',
-                              opacity: classId === 'all' ? 0.5 : 1,
-                              alignItems: 'center',
-                            }}
-                            onClick={viewTimeTable}
-                          >
-                            <Typography
-                              marginBottom={'0'}
-                              style={{ fontWeight: '500' }}
-                            >
-                              {getMonthName(selectedDate)}
-                            </Typography>
-                            <CalendarMonthIcon sx={{ fontSize: '18px' }} />
-                          </Box>
-                        </Box>
-                        <WeekCalender
-                          showDetailsHandle={showTimeTableDetailsHandle}
-                          disableDays={classId === 'all'}
-                          classId={classId}
-                          showFromToday={true}
-                          newWidth={'100%'}
-                          eventData={eventDates}
-                        />
-                      </Box>
-
-                      <Box mt={2} px="18px">
-                        <Grid container spacing={2}>
-                          {sessions?.map((item) => (
-                            <Grid xs={12} sm={6} md={4} key={item.id} item>
-                              {SessionCard && (
-                                <SessionCard
-                                  data={item}
-                                  showCenterName={true}
-                                  isEventDeleted={handleEventDeleted}
-                                  isEventUpdated={handleEventUpdated}
-                                  StateName={state}
-                                  board={board}
-                                  medium={medium}
-                                  grade={grade}
-                                >
-                                  {SessionCardFooter && (
-                                    <SessionCardFooter
-                                      item={item}
-                                      isTopicSubTopicAdded={handleEventUpdated}
-                                      state={state}
-                                      board={board}
-                                      medium={medium}
-                                      grade={grade}
-                                      cohortId={classId}
-                                    />
-                                  )}
-                                </SessionCard>
-                              )}
-                            </Grid>
-                          ))}
-                          {sessions && sessions?.length === 0 && (
-                            <Box
-                              className="fs-12 fw-400 italic"
                               sx={{
-                                color: theme.palette.warning['300'],
-                                paddingLeft: '18px',
+                                cursor: 'pointer',
+                                color: theme.palette.secondary.main,
+                                gap: '4px',
+                                opacity: classId === 'all' ? 0.5 : 1,
+                                alignItems: 'center',
                               }}
+                              onClick={viewTimeTable}
                             >
-                              {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                              <Typography
+                                marginBottom={'0'}
+                                style={{ fontWeight: '500' }}
+                              >
+                                {getMonthName(selectedDate)}
+                              </Typography>
+                              <CalendarMonthIcon sx={{ fontSize: '18px' }} />
                             </Box>
-                          )}
-                        </Grid>
-                      </Box>
-
-                      <Box mt={3} px="18px" gap={'15px'}>
-                        <Box
-                          className="fs-14 fw-500"
-                          sx={{ color: theme.palette.warning['300'] }}
-                        >
-                          {t('CENTER_SESSION.EXTRA_SESSION', {
-                            days: eventDaysLimit,
-                          })}
+                          </Box>
+                          <WeekCalender
+                            showDetailsHandle={showTimeTableDetailsHandle}
+                            disableDays={classId === 'all'}
+                            classId={classId}
+                            showFromToday={true}
+                            newWidth={'100%'}
+                            eventData={eventDates}
+                          />
                         </Box>
-                        <Box sx={{ mt: 1.5, mb: 2 }}>
+
+                        <Box mt={2} px="18px">
                           <Grid container spacing={2}>
-                            {extraSessions?.map((item) => (
+                            {sessions?.map((item) => (
                               <Grid xs={12} sm={6} md={4} key={item.id} item>
                                 {SessionCard && (
                                   <SessionCard
@@ -1563,9 +1364,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                     {SessionCardFooter && (
                                       <SessionCardFooter
                                         item={item}
-                                        isTopicSubTopicAdded={
-                                          handleEventUpdated
-                                        }
+                                        isTopicSubTopicAdded={handleEventUpdated}
                                         state={state}
                                         board={board}
                                         medium={medium}
@@ -1577,27 +1376,82 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 )}
                               </Grid>
                             ))}
+                            {sessions && sessions?.length === 0 && (
+                              <Box
+                                className="fs-12 fw-400 italic"
+                                sx={{
+                                  color: theme.palette.warning['300'],
+                                  paddingLeft: '18px',
+                                }}
+                              >
+                                {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                              </Box>
+                            )}
                           </Grid>
                         </Box>
-                        {extraSessions && extraSessions?.length === 0 && (
+
+                        <Box mt={3} px="18px" gap={'15px'}>
                           <Box
-                            className="fs-12 fw-400 italic"
-                            sx={{
-                              color: theme.palette.warning['300'],
-                              marginBottom: '12px',
-                            }}
+                            className="fs-14 fw-500"
+                            sx={{ color: theme.palette.warning['300'] }}
                           >
-                            {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                            {t('CENTER_SESSION.EXTRA_SESSION', {
+                              days: eventDaysLimit,
+                            })}
                           </Box>
-                        )}
-                      </Box>
-                    </>
-                  )}
-              </Box>
-            )}
+                          <Box sx={{ mt: 1.5, mb: 2 }}>
+                            <Grid container spacing={2}>
+                              {extraSessions?.map((item) => (
+                                <Grid xs={12} sm={6} md={4} key={item.id} item>
+                                  {SessionCard && (
+                                    <SessionCard
+                                      data={item}
+                                      showCenterName={true}
+                                      isEventDeleted={handleEventDeleted}
+                                      isEventUpdated={handleEventUpdated}
+                                      StateName={state}
+                                      board={board}
+                                      medium={medium}
+                                      grade={grade}
+                                    >
+                                      {SessionCardFooter && (
+                                        <SessionCardFooter
+                                          item={item}
+                                          isTopicSubTopicAdded={
+                                            handleEventUpdated
+                                          }
+                                          state={state}
+                                          board={board}
+                                          medium={medium}
+                                          grade={grade}
+                                          cohortId={classId}
+                                        />
+                                      )}
+                                    </SessionCard>
+                                  )}
+                                </Grid>
+                              ))}
+                            </Grid>
+                          </Box>
+                          {extraSessions && extraSessions?.length === 0 && (
+                            <Box
+                              className="fs-12 fw-400 italic"
+                              sx={{
+                                color: theme.palette.warning['300'],
+                                marginBottom: '12px',
+                              }}
+                            >
+                              {t('COMMON.NO_SESSIONS_SCHEDULED')}
+                            </Box>
+                          )}
+                        </Box>
+                      </>
+                    )}
+                </Box>
+              )}
+            </>
           </>
-        </>
-      )}
+        )}
       <CentralizedModal
         title={t('LOGIN_PAGE.WELCOME')}
         subTitle={t('LOGIN_PAGE.PLEASE_RESET_YOUR_PASSWORD')}
