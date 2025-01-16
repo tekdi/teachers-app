@@ -1,20 +1,23 @@
-name: Deploy to dev-scp on Tekdi
+name: Deploy to PRAHTAM-DEV on Tekdi
+
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - release-1.0.0
 jobs:
-  deploy:
+  deploy_DEV:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Deploy Stack
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST_NAME_PRATHAM_DEV }}
-          username: ${{ secrets.USERNAME_PRATHAM_DEV }}
-          key: ${{ secrets.EC2_SSH_KEY_PRATHAM_DEV }}
-          port: ${{ secrets.PORT_PRATHAM_DEV }}
+          host: ${{ secrets.DEV_HOST_NAME }}
+          username: ${{ secrets.DEV_USERNAME }}
+          key: ${{ secrets.DEV_EC2_SSH_KEY }}
+          port: ${{ secrets.DEV_PORT }}
           script: |
-            cd ${{ secrets.TARGET_DIR_PRATHAM_DEV }}
+            cd ${{ secrets.DEV_TARGET_DIR }}
             if [ -f .env ]; then
             rm .env
             fi
