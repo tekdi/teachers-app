@@ -34,8 +34,9 @@ import { useDirection } from '../hooks/useDirection';
 import customTheme from '../styles/customTheme';
 import { telemetryFactory } from '../utils/telemetry';
 import AllowNotification from '@/components/AllowNotification';
-import InstallPopup from '@/components/InstallPopup';
+import dynamic from 'next/dynamic';
 
+const InstallPopup = dynamic(() => import(`@/components/InstallPopup`), { ssr: false });
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 const poppins = Poppins({

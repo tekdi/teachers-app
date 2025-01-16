@@ -10,7 +10,7 @@ import { jotFormId } from '../../app.config';
 type QueryParams = {
   fullName: string;
   userName: string;
-  userid: string;
+  userId: string;
   email: string;
   deviceInfo?: string;
 };
@@ -20,7 +20,7 @@ const SupportRequest = () => {
   const [queryParams, setQueryParams] = useState<QueryParams>({
     fullName: '',
     userName: '',
-    userid: '',
+    userId: '',
     email: '',
   });
 
@@ -28,7 +28,7 @@ const SupportRequest = () => {
     if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
       const name = localStorage.getItem('userName') || '';
       const loginUserName = localStorage.getItem('userIdName') || '';
-      const userId = localStorage.getItem('userId') || '';
+      const userid = localStorage.getItem('userId') || '';
       const email = localStorage.getItem('userEmail') || '';
   
       const { userAgent, language, platform, cookieEnabled, onLine, hardwareConcurrency } = navigator;
@@ -69,7 +69,7 @@ const SupportRequest = () => {
       setQueryParams({
         fullName: name,
         userName: loginUserName,
-        userid: userId,
+        userId: userid,
         email,
         deviceInfo,
       });
