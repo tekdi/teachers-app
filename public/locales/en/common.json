@@ -688,6 +688,7 @@
     "EXPIRED": "Expired"
   },
   "YOUTHNET_SURVEY": {
+    "SURVEY": "Surveys",
     "NEW_SURVEY": "New Survey",
     "ASSIGN_VOLUNTEERS_NOW": "Assign Volunteers Now",
     "REMIND_ME_LATER": "Remind Me Later",

@@ -911,6 +911,7 @@ export interface SurveysProps {
 
 export interface VillageDetailProps {
   title?: string;
-  icon?: React.ReactNode;
+  imageSrc?: any;
   subtitle?: string;
+  onClick?: () => void;
 }

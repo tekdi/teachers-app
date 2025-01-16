@@ -127,3 +127,19 @@ export const users = [
   { name: 'Disha Shire', age: 14, village: 'Deviyapur', image: '' },
   { name: 'Divya Sharma', age: 17, village: 'Khopi', image: '' },
 ];
+
+export const VILLAGE_DATA = {
+  TWENTY_SIX: '26',
+  ZERO: '+0',
+  VILLAGE_ID: 'Village ID',
+  ID: '939326',
+  YOUTH_VOL: '21 Youth, 6 Volunteers',
+  THREE: '3',
+  SURVEYS_CONDUCTED: 'Surveys conducted so far',
+};
+
+export const surveyData = [
+  { title: 'Reading Camp', date: '16 Jul, 2024' },
+  { title: 'Science Camp', date: '5 May, 2024' },
+  { title: 'Sports Camp', date: '3 Feb, 2024' },
+];
