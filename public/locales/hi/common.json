@@ -686,5 +686,9 @@
   "YOUTHNET_VOLUNTEERLIST": {
     "ENTRIES": "प्रविष्टियाँ",
     "VOLUNTEERS_ASSIGNED": "स्वयंसेवक सौंपे गए"
+  },
+  "YOUTHNET_CAMP_DETAILS": {
+    "SUBMISSION": "प्रस्तुत करना",
+    "SUMMARY": "सारांश"
   }
 }

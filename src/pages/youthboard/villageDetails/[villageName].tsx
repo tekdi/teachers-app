@@ -36,7 +36,7 @@ const VillageDetails = () => {
       <Box>
         <Header />
       </Box>
-      <Box ml={2}>
+      <Box>
         <BackHeader
           headingOne={villageNameString}
           headingTwo={VILLAGE_DATA.TWENTY_SIX}

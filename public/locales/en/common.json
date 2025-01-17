@@ -706,5 +706,9 @@
   "YOUTHNET_VOLUNTEERLIST": {
     "ENTRIES": "Entries",
     "VOLUNTEERS_ASSIGNED": "Volunteers assigned"
+  },
+  "YOUTHNET_CAMP_DETAILS": {
+    "SUBMISSION": "Submission",
+    "SUMMARY": "Summary"
   }
 }

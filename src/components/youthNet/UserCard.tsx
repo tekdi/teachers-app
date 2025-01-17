@@ -10,7 +10,7 @@ import {
 
 type UserCardProps = {
   name: string;
-  age: number;
+  age: number | string;
   village: string;
   image?: string; // Optional prop for the image
 };
@@ -20,6 +20,7 @@ type UserListProps = {
 };
 
 const UserCard: React.FC<UserCardProps> = ({ name, age, village, image }) => {
+  const displayAge = age && age !== '';
   return (
     <ListItem>
       <Avatar
@@ -50,7 +51,7 @@ const UserCard: React.FC<UserCardProps> = ({ name, age, village, image }) => {
           {name}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          {age} y/o • {village}
+          {displayAge && `${age} y/o •`} {village}
         </Typography>
       </Box>
     </ListItem>

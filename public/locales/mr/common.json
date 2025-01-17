@@ -684,5 +684,9 @@
   "YOUTHNET_VOLUNTEERLIST": {
     "ENTRIES": "नोंदी",
     "VOLUNTEERS_ASSIGNED": "स्वयंसेवक नियुक्त"
+  },
+  "YOUTHNET_CAMP_DETAILS": {
+    "SUBMISSION": "सादरीकरण",
+    "SUMMARY": "सारांश"
   }
 }

@@ -26,12 +26,16 @@ const survey = () => {
     router.back();
   };
 
+  const handleCampSurvey = (villageNameStringNew: string, title: string) => {
+    router.push(`/youthboard/campDetails/${villageNameStringNew}${title}`);
+  };
+
   return (
     <Box minHeight="100vh">
       <Box>
         <Header />
       </Box>
-      <Box ml={2}>
+      <Box>
         <BackHeader
           headingOne={t('YOUTHNET_SURVEY.SURVEY')}
           headingTwo={villageNameStringNew}
@@ -41,7 +45,12 @@ const survey = () => {
       </Box>
       <Box>
         {surveyData.map((survey, index) => (
-          <Surveys key={index} title={survey.title} date={survey.date} />
+          <Surveys
+            key={index}
+            title={survey.title}
+            date={survey.date}
+            onClick={() => handleCampSurvey(villageNameStringNew, survey.title)}
+          />
         ))}
       </Box>
     </Box>
