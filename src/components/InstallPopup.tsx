@@ -1,22 +1,38 @@
-import { Button } from '@mui/material';
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+declare global {
+  interface Window {
+    wb: {
+      messageSkipWaiting(): void;
+      register(): void;
+      addEventListener(
+        name: string,
+        callback: () => unknown
+      ): void;
+    };
+  }
+}
+
+import { Button } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const InstallPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
   const { t } = useTranslation();
+  const onConfirmActivate = () => {
+    if (window.wb) {
+      window.wb.messageSkipWaiting();
+    }
+  };
 
   useEffect(() => {
-    // Check if the app is installed (iOS Safari or display-mode: standalone)
     const isAppInstalled =
       (navigator.standalone !== undefined && navigator.standalone) ||
       window.matchMedia('(display-mode: standalone)').matches;
 
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
-      console.log('beforeinstallprompt event fired');
       setDeferredPrompt(e);
       if (!isAppInstalled && !localStorage.getItem('visited')) {
         localStorage.setItem('visited', 'true');
@@ -26,37 +42,23 @@ const InstallPopup = () => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // Listen for service worker updates
-        const checkForUpdates = () => {
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.ready.then((registration) => {
-              registration.addEventListener('updatefound', () => {
-                const newWorker = registration.installing;
-                if (newWorker) {
-                  newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                      setIsUpdateAvailable(true);
-                    }
-                  });
-                }
-              });
-            });
-          }
-        };
-        checkForUpdates();
-
+    if (window.wb) {
+      window.wb.addEventListener('controlling', () => {
+        window.location.reload();
+      });
+      window.wb.addEventListener('waiting', () => setIsUpdateAvailable(true));
+      window.wb.register();
+    }
+    
     return () => {
-      window.removeEventListener(
-        'beforeinstallprompt',
-        handleBeforeInstallPrompt
-      );
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
   }, []);
 
   const handleInstall = async () => {
     if (deferredPrompt) {
       try {
-        deferredPrompt.prompt(); // Show the install prompt
+        deferredPrompt.prompt();
         const choiceResult = await deferredPrompt.userChoice;
         if (choiceResult.outcome === 'accepted') {
           console.log('User accepted the install prompt');
@@ -68,17 +70,8 @@ const InstallPopup = () => {
       } finally {
         setDeferredPrompt(null);
       }
-    } else {
-      console.log('No deferredPrompt available.');
     }
     setIsVisible(false);
-  };
-
-  const handleReload = () => {
-    if (navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
-      window.location.reload();
-    }
   };
 
   if (!isVisible && !isUpdateAvailable) return null;
@@ -92,15 +85,8 @@ const InstallPopup = () => {
             <p>{t('COMMON.RELOAD_TO_UPDATE')}</p>
             <Button
               variant="contained"
-              sx={{
-                backgroundColor: '#FDBE16',
-                '&:hover': {
-                  backgroundColor: '#F0A500',
-                },
-                color: '#000000',
-              }}
-              onClick={handleReload}
-              className="one-line-text"
+              sx={{ backgroundColor: '#FDBE16', color: '#000000', borderRadius: 5 }}
+              onClick={onConfirmActivate}
             >
               {t('COMMON.RELOAD')}
             </Button>
@@ -111,16 +97,8 @@ const InstallPopup = () => {
             <p>{t('COMMON.INSTALL_APP_DESCRIPTION')}</p>
             <Button
               variant="contained"
-              sx={{
-                backgroundColor: '#FDBE16',
-                '&:hover': {
-                  backgroundColor: '#F0A500',
-                },
-                color: '#000000',
-                borderRadius: 5,
-              }}
+              sx={{ backgroundColor: '#FDBE16', color: '#000000', borderRadius: 5 }}
               onClick={handleInstall}
-              className="one-line-text"
             >
               {t('COMMON.INSTALL')}
             </Button>
