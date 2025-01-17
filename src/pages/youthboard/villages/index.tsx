@@ -14,6 +14,7 @@ import {
   youthList,
 } from '@/components/youthNet/tempConfigs';
 import { UserList } from '@/components/youthNet/UserCard';
+import DownloadIcon from '@mui/icons-material/Download';
 const index = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -100,30 +101,67 @@ const index = () => {
                   { label: 'As of today, 5th Sep', value: 'today' },
                   { label: 'As of yesterday, 4th Sep', value: 'yesterday' },
                 ]}
-                // data="577 Youth & Volunteers"
               />
             </Box>
-            <Typography
-              sx={{
-                fontSize: '16px',
-                color: 'black',
-                marginLeft: '1rem',
-                padding: '5px 5px',
-              }}
-            >
-              52 Villages
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '16px',
-                color: 'textSecondary',
-                marginLeft: '2rem',
-                cursor: 'pointer',
-                padding: '5px 5px',
-              }}
-            >
-              Village Name
-            </Typography>
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <Typography
+                sx={{
+                  fontSize: '16px',
+                  color: 'black',
+                  marginLeft: '2rem',
+                  padding: '5px 5px',
+                }}
+              >
+                52 Villages
+              </Typography>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  padding: '5px 5px',
+                  color: '#0D599E',
+                  '&:hover': {
+                    color: '#074d82',
+                  },
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: '16px',
+                  }}
+                >
+                  CSV
+                </Typography>
+                <DownloadIcon />
+              </Box>
+            </Box>
+            <Box display={'flex'}>
+              <Typography
+                sx={{
+                  fontSize: '16px',
+                  color: 'textSecondary',
+                  marginLeft: '2rem',
+                  cursor: 'pointer',
+                  padding: '5px 5px',
+                }}
+              >
+                Village Name
+              </Typography>
+
+              <Typography
+                sx={{
+                  fontSize: '16px',
+                  color: 'textSecondary',
+                  marginLeft: '2rem',
+                  cursor: 'pointer',
+                  padding: '5px 5px',
+                }}
+              >
+                Total Count (+ New Registrations today)
+              </Typography>
+            </Box>
             <UserList users={villageList} />
             {/* </Grid> */}
           </>
