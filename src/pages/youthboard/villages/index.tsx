@@ -85,6 +85,7 @@ const index = () => {
               display={'flex'}
               flexDirection={'row'}
               gap={'2rem'}
+              mr={"20px"}
             // justifyContent={'space-around'}
             >
               <SearchBar
@@ -137,7 +138,7 @@ const index = () => {
                 <DownloadIcon />
               </Box>
             </Box>
-            <Box display={'flex'} justifyContent={'space-between'}>
+            <Box display={'flex'} mt={2} justifyContent={'space-between'}>
               <Typography
                 sx={{
                   fontSize: '16px',
@@ -146,6 +147,7 @@ const index = () => {
                   cursor: 'pointer',
                   padding: '5px 5px',
                 }}
+                className='one-line-text'
               >
                 Village Name
               </Typography>

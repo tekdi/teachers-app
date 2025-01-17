@@ -100,6 +100,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
               onClick={searchTerm ? handleSearchClear : undefined}
               sx={{ p: theme.spacing(1.25) }}
               aria-label={searchTerm ? 'Clear' : 'Search'}
+              className='one-line-text'
             >
               {searchTerm ? <ClearIcon /> : <SearchIcon />}
             </IconButton>

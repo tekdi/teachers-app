@@ -115,22 +115,7 @@ const UserCard: React.FC<UserCardProps> = ({
               )}
             </Box>
 
-            <Box display={'flex'} justifyContent={'flex-end'} ml={'3rem'}>
-              {showMore && (
-                <MoreVertIcon
-                  // onClick={(event) => {
-                  //   isMobile
-                  //     ? toggleDrawer('bottom', true, teacherUserId)(event)
-                  //     : handleMenuOpen(event, teacherUserId);
-                  // }}
-                  sx={{
-                    fontSize: '24px',
-                    color: theme.palette.warning['300'],
-                    cursor: 'pointer',
-                  }}
-                />
-              )}
-
+           
               {totalCount && (
                 <Typography
                   variant="body2"
@@ -154,7 +139,20 @@ const UserCard: React.FC<UserCardProps> = ({
                   )}
                 </Typography>
               )}
-            </Box>
+            {showMore && (
+              <MoreVertIcon
+                // onClick={(event) => {
+                //   isMobile
+                //     ? toggleDrawer('bottom', true, teacherUserId)(event)
+                //     : handleMenuOpen(event, teacherUserId);
+                // }}
+                sx={{
+                  fontSize: '24px',
+                  color: theme.palette.warning['300'],
+                  cursor: 'pointer',
+                }}
+              />
+            )}
           </Box>
         </Box>
       </ListItem>
