@@ -10,7 +10,6 @@ export const toastAutoHideDuration: number = 5000; // 5 seconds
 export const idealTimeForSession: string = '120';
 export const timeZone: string = 'Asia/Kolkata';
 // export const jotFormId = '250065095006449';
-export const jotFormId = '250140441278045'
 
 export const dropoutReasons = [
   {
@@ -126,3 +125,10 @@ export const TENANT_DATA = {
   PRATHAM_SCP: 'pratham SCP',
   YOUTHNET: 'YouthNet',
 };
+
+export const jotFormId = process.env.NEXT_PUBLIC_JOTFORM_ID || '';
+if (!jotFormId) {
+  console.warn(
+    'NEXT_PUBLIC_JOTFORM_ID is not set in the environment variables.'
+  );
+}
