@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import BackHeader from '@/components/youthNet/BackHeader';
-import { Box, Grid, Tab, Tabs, TextField } from '@mui/material';
+import { Box, Grid, Tab, Tabs, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useState } from 'react';
@@ -8,7 +8,11 @@ import { useTheme } from '@mui/material/styles';
 import SearchBar from '@/components/Searchbar';
 import SortBy from '@/components/youthNet/SortBy';
 import YouthAndVolunteers from '@/components/youthNet/YouthAndVolunteers';
-import { users, youthList } from '@/components/youthNet/tempConfigs';
+import {
+  users,
+  villageList,
+  youthList,
+} from '@/components/youthNet/tempConfigs';
 import { UserList } from '@/components/youthNet/UserCard';
 const index = () => {
   const { t } = useTranslation();
@@ -99,6 +103,28 @@ const index = () => {
                 // data="577 Youth & Volunteers"
               />
             </Box>
+            <Typography
+              sx={{
+                fontSize: '16px',
+                color: 'black',
+                marginLeft: '1rem',
+                padding: '5px 5px',
+              }}
+            >
+              52 Villages
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: '16px',
+                color: 'textSecondary',
+                marginLeft: '2rem',
+                cursor: 'pointer',
+                padding: '5px 5px',
+              }}
+            >
+              Village Name
+            </Typography>
+            <UserList users={villageList} />
             {/* </Grid> */}
           </>
         )}

@@ -26,13 +26,15 @@ const YouthAndVolunteers: React.FC<Props> = ({ selectOptions, data }) => {
 
   return (
     <div style={{ padding: '16px' }}>
-      <Typography
-        variant="h2"
-        sx={{ fontSize: '16px', color: 'black' }}
-        gutterBottom
-      >
-        Total Youth and Volunteers
-      </Typography>
+      {data && (
+        <Typography
+          variant="h2"
+          sx={{ fontSize: '16px', color: 'black' }}
+          gutterBottom
+        >
+          Total Youth and Volunteers
+        </Typography>
+      )}
       <FormControl style={{ marginBottom: '8px', width: '100%' }}>
         <Select
           value={selectedValue}

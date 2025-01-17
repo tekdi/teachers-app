@@ -12,12 +12,15 @@ import { useTheme } from '@mui/material/styles';
 
 type UserCardProps = {
   name: string;
-  age: number;
+  showAvtar?: boolean;
+  age?: string | number;
   village?: string;
   image?: string;
   joinOn?: string;
   isNew?: boolean;
   showMore?: boolean;
+  totalCount?: number;
+  newRegistrations?: number;
 };
 
 type UserListProps = {
@@ -32,49 +35,56 @@ const UserCard: React.FC<UserCardProps> = ({
   joinOn,
   isNew,
   showMore,
+  showAvtar,
+  totalCount,
+  newRegistrations,
 }) => {
   // const displayAge = age && age !== '';
   const theme = useTheme<any>();
 
   return (
     <ListItem>
-      <Avatar
-        src={image}
-        alt={name}
-        sx={{
-          width: 48,
-          height: 48,
-          backgroundColor: image ? 'transparent' : '#f5f5f5',
-          fontSize: 18,
-          fontWeight: '400',
-          color: 'black',
-          border: '2px solid #CDC5BD',
-          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        {!image && name[0]}
-      </Avatar>
-      <Box ml={2}>
+      {showAvtar && (
+        <Avatar
+          src={image}
+          alt={name}
+          sx={{
+            width: 48,
+            height: 48,
+            backgroundColor: image ? 'transparent' : '#f5f5f5',
+            fontSize: 18,
+            fontWeight: '400',
+            color: 'black',
+            border: '2px solid #CDC5BD',
+            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          {!image && name[0]}
+        </Avatar>
+      )}
+      <Box ml={2} display={totalCount ? 'flex' : 'block'}>
         <Typography
           sx={{
             fontSize: '16px',
             color: '#0D599E',
             textDecoration: 'underline',
             cursor: 'pointer',
+            padding: '5px 5px',
           }}
         >
           {name}
         </Typography>
         <Box display={'flex'}>
-          <Typography variant="body2" color="textSecondary">
-            {age} y/o • {village || joinOn}
-          </Typography>
-
-          <Box display={'flex'} justifyContent={'flex-end'} ml={'3rem'}>
+          {age && (
+            <Typography variant="body2" color="textSecondary">
+              {age} y/o • {village || joinOn}
+            </Typography>
+          )}
+          <Box display={'flex'} ml={'3rem'}>
             {isNew && (
               <Typography
                 variant="body2"
-                color="#1A8825"
+                color={theme.palette.success.main}
                 ml={5}
                 fontWeight={600}
               >
@@ -95,6 +105,30 @@ const UserCard: React.FC<UserCardProps> = ({
                 }}
               />
             )}
+
+            {totalCount && (
+              <Typography
+                variant="body2"
+                color="black"
+                // ml={5}
+                mt={'1rem'}
+                fontWeight={600}
+              >
+                {totalCount}
+                {newRegistrations && (
+                  <span
+                    style={{
+                      color:
+                        newRegistrations < 5
+                          ? theme.palette.error.main
+                          : theme.palette.success.main,
+                    }}
+                  >
+                    (+{newRegistrations})
+                  </span>
+                )}
+              </Typography>
+            )}
           </Box>
         </Box>
       </Box>
@@ -113,8 +147,11 @@ export const UserList: React.FC<UserListProps> = ({ users }) => {
             village={user.village}
             joinOn={user.joinOn}
             image={user.image}
+            showAvtar={user.showAvtar}
             isNew={user.isNew}
             showMore={user.showMore}
+            totalCount={user.totalCount}
+            newRegistrations={user.newRegistrations}
           />
           {index < users.length - 1 && <Divider />}
         </React.Fragment>
