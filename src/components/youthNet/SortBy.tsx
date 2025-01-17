@@ -60,6 +60,9 @@ const SortBy = () => {
                 pl: 3,
                 fontSize: '13px',
                 fontWeight: '500',
+                whiteSpace:'nowrap',
+                overflow:'hidden',
+                textOverflow:'ellipsis'
               }}
               className="one-line-text"
             >
