@@ -12,7 +12,7 @@ import RegistrationStatistics from './RegistrationStatistics';
 
 interface Props {
   selectOptions: { label: string; value: string }[];
-  data: string;
+  data?: string;
 }
 
 const YouthAndVolunteers: React.FC<Props> = ({ selectOptions, data }) => {
@@ -54,24 +54,26 @@ const YouthAndVolunteers: React.FC<Props> = ({ selectOptions, data }) => {
       <Typography variant="body1" style={{ fontWeight: 300, color: 'black' }}>
         {data}
       </Typography>
-      <Box p={2}>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <RegistrationStatistics
-              avatar={true}
-              statistic={4}
-              subtile={'Youth'}
-            />
+      {data && (
+        <Box p={2}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <RegistrationStatistics
+                avatar={true}
+                statistic={4}
+                subtile={'Youth'}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <RegistrationStatistics
+                avatar={true}
+                statistic={4}
+                subtile={'Volunteer'}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <RegistrationStatistics
-              avatar={true}
-              statistic={4}
-              subtile={'Volunteer'}
-            />
-          </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      )}
     </div>
   );
 };

@@ -33,7 +33,7 @@ import board from '../assets/images/Board.svg';
 import support from '../assets/images/Support.svg';
 import checkBook from '../assets/images/checkbook.svg';
 import { useDirection } from '../hooks/useDirection';
-
+import GroupsIcon from '@mui/icons-material/Groups';
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
   open: boolean;
@@ -196,6 +196,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isAssessments = router.pathname.includes('/assessments');
   const isBoard = router.pathname.includes('/board-enrollment');
   const isSupportRequest = router.pathname.includes('/support-request');
+  const isVillagesAndYouths = router.pathname.includes('/youthboard/villages');
 
   return (
     <Drawer
@@ -385,6 +386,39 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               onClick={navigateToYouthBoard}
             >
               {t('DASHBOARD.DASHBOARD')}
+            </Button>
+
+            {/* villages and youth */}
+            <Button
+              className="fs-14"
+              sx={{
+                gap: '10px',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                background: isVillagesAndYouths
+                  ? theme.palette.primary.main
+                  : 'transparent',
+                padding: isVillagesAndYouths
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                marginTop: '25px',
+                color: isVillagesAndYouths
+                  ? '#2E1500'
+                  : theme.palette.warning.A200,
+                fontWeight: isVillagesAndYouths ? '600' : 500,
+                '&:hover': {
+                  background: isVillagesAndYouths
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+              }}
+              startIcon={<GroupsIcon sx={{ fontSize: '24px !important' }} />}
+              onClick={() => {
+                router.push(`/youthboard/villages`);
+              }}
+            >
+              {t('DASHBOARD.VILLAGES_AND_YOUTH')}
             </Button>
           </Box>
         )}
@@ -578,7 +612,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           </Box>
         )}
         {isActiveYear && !tenantName && (
-          <Box sx={{ marginTop: '18px' }}> 
+          <Box sx={{ marginTop: '18px' }}>
             <Button
               className="fs-14"
               sx={{
@@ -592,7 +626,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 padding: isSupportRequest
                   ? '16px 18px !important'
                   : '0px 18px !important',
-                color: isSupportRequest ? '#2E1500' : theme.palette.warning.A200,
+                color: isSupportRequest
+                  ? '#2E1500'
+                  : theme.palette.warning.A200,
                 fontWeight: isSupportRequest ? '600' : 500,
                 '&:hover': {
                   background: isSupportRequest
@@ -602,7 +638,12 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 marginTop: '15px',
               }}
               startIcon={
-                <Image src={support} alt="support-icon" width={24} height={24} />
+                <Image
+                  src={support}
+                  alt="support-icon"
+                  width={24}
+                  height={24}
+                />
               }
               onClick={() => {
                 router.push(`/support-request`);

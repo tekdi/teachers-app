@@ -5,7 +5,7 @@ import { SurveysProps } from '@/utils/Interfaces';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 
-function Surveys({ title, date }: SurveysProps) {
+function Surveys({ title, date, onClick }: SurveysProps) {
   const theme = useTheme<any>();
   const { t } = useTranslation();
 
@@ -15,6 +15,7 @@ function Surveys({ title, date }: SurveysProps) {
         background: '#FBF4E4',
         padding: '15px',
       }}
+      onClick={onClick}
     >
       <Box
         sx={{
