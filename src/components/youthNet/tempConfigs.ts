@@ -121,7 +121,12 @@ export const locations = [
 ];
 
 export const users = [
-  { name: 'Ananya Gupta', age: 14, village: 'Deviyapur', image: '' },
+  {
+    name: 'Ananya Gupta',
+    age: 14,
+    village: 'Deviyapur',
+    image: '',
+  },
   { name: 'Aisha Sharma', age: 15, village: 'Kasurdi', image: '' },
   { name: 'Bharat Kumar', age: 15, village: 'Pande', image: '' },
   { name: 'Disha Shire', age: 14, village: 'Deviyapur', image: '' },
@@ -149,3 +154,31 @@ export const CAMP_DATA = {
   DATE1: 'Submitted on 10 Sep, 2024 @ 2:35 pm',
   DATE2: 'Submitted on 05 Oct, 2024 @ 6:10 pm',
 };
+export const youthList = [
+  {
+    name: 'Ananya Gupta',
+    age: 14,
+    image: '',
+    joinOn: 'Join on 15 Jan, 2025',
+    isNew: true,
+    showMore: true,
+  },
+  {
+    name: 'Aisha Sharma',
+    age: 15,
+    image: '',
+    joinOn: 'Join on 15 Jan, 2025',
+    isNew: true,
+    showMore: true,
+  },
+  {
+    name: 'Bharat Kumar',
+    age: 15,
+    image: '',
+    joinOn: 'Join on 15 Jan, 2025',
+    isNew: true,
+    showMore: true,
+  },
+  { name: 'Disha Shire', age: 14, joinOn: 'Join on 15 Jan, 2025', image: '' },
+  { name: 'Divya Sharma', age: 17, joinOn: 'Join on 15 Jan, 2025', image: '' },
+];

@@ -7,20 +7,35 @@ import {
   ListItem,
   Divider,
 } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useTheme } from '@mui/material/styles';
 
 type UserCardProps = {
   name: string;
-  age: number | string;
-  village: string;
-  image?: string; // Optional prop for the image
+  age: number;
+  village?: string;
+  image?: string;
+  joinOn?: string;
+  isNew?: boolean;
+  showMore?: boolean;
 };
 
 type UserListProps = {
   users: UserCardProps[];
 };
 
-const UserCard: React.FC<UserCardProps> = ({ name, age, village, image }) => {
-  const displayAge = age && age !== '';
+const UserCard: React.FC<UserCardProps> = ({
+  name,
+  age,
+  village,
+  image,
+  joinOn,
+  isNew,
+  showMore,
+}) => {
+  // const displayAge = age && age !== '';
+  const theme = useTheme<any>();
+
   return (
     <ListItem>
       <Avatar
@@ -50,9 +65,38 @@ const UserCard: React.FC<UserCardProps> = ({ name, age, village, image }) => {
         >
           {name}
         </Typography>
-        <Typography variant="body2" color="textSecondary">
-          {displayAge && `${age} y/o •`} {village}
-        </Typography>
+        <Box display={'flex'}>
+          <Typography variant="body2" color="textSecondary">
+            {age} y/o • {village || joinOn}
+          </Typography>
+
+          <Box display={'flex'} justifyContent={'flex-end'} ml={'3rem'}>
+            {isNew && (
+              <Typography
+                variant="body2"
+                color="#1A8825"
+                ml={5}
+                fontWeight={600}
+              >
+                NEW
+              </Typography>
+            )}
+            {showMore && (
+              <MoreVertIcon
+                // onClick={(event) => {
+                //   isMobile
+                //     ? toggleDrawer('bottom', true, teacherUserId)(event)
+                //     : handleMenuOpen(event, teacherUserId);
+                // }}
+                sx={{
+                  fontSize: '24px',
+                  color: theme.palette.warning['300'],
+                  cursor: 'pointer',
+                }}
+              />
+            )}
+          </Box>
+        </Box>
       </Box>
     </ListItem>
   );
@@ -67,7 +111,10 @@ export const UserList: React.FC<UserListProps> = ({ users }) => {
             name={user.name}
             age={user.age}
             village={user.village}
+            joinOn={user.joinOn}
             image={user.image}
+            isNew={user.isNew}
+            showMore={user.showMore}
           />
           {index < users.length - 1 && <Divider />}
         </React.Fragment>
