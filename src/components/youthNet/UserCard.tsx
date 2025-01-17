@@ -52,15 +52,18 @@ const UserCard: React.FC<UserCardProps> = ({
       
       sx={{
         cursor: 'pointer',
-        '@media (min-width: 600px)': {
-          border: `1px solid  ${theme.palette.action.selected}`,
-          padding: '4px 10px',
-          borderRadius: '8px',
-          background: theme.palette.warning['A400'],
-        },
+        ...(!totalCount && {
+          '@media (min-width: 600px)': {
+            border: `1px solid ${theme.palette.action.selected}`,
+            padding: '4px 10px',
+            borderRadius: '8px',
+            background: theme.palette.warning.A400,
+          },
+        }),
       }}
     >
       <ListItem>
+        {showAvtar && (
         <Avatar
           src={image}
           alt={name}
@@ -77,7 +80,13 @@ const UserCard: React.FC<UserCardProps> = ({
         >
           {!image && name[0]}
         </Avatar>
-        <Box ml={2} width={'100%'}>
+        ) }
+        <Box ml={2} width={'100%'} 
+        sx={{
+         display :  totalCount ? "flex" : "unset",
+          alignItems: totalCount ? "center" :'unset'
+        }}
+        >
           <Typography
             sx={{
               fontSize: '16px',
@@ -91,9 +100,14 @@ const UserCard: React.FC<UserCardProps> = ({
           </Typography>
           <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
             <Box sx={{ display: 'flex', gap: '8px' }}>
-              <Typography variant="body2" color="textSecondary">
-                {age} y/o • {village || joinOn}
-              </Typography>
+              {
+                age && (
+                  <Typography variant="body2" color="textSecondary">
+                    {age} y/o • {village || joinOn}
+                  </Typography>
+                )
+              }
+              
               {isNew && (
                 <Typography variant="body2" color="#1A8825" fontWeight={600}>
                   NEW
@@ -154,7 +168,7 @@ export const UserList: React.FC<UserListProps> = ({ users }) => {
       <Grid container spacing={2}>
         {users.map((user, index) => (
           <React.Fragment key={index}>
-            <Grid item xs={12} sm={12} md={6} lg={4}>
+            <Grid item xs={12} sm={12} md={user.totalCount ? 12 : 6} lg={user.totalCount ? 12 : 4}>
               <UserCard
                 name={user.name}
                 age={user.age}
