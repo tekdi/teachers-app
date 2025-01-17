@@ -73,13 +73,6 @@ const index = () => {
       <Box>
         {value === 1 && (
           <>
-            {/* <Grid
-              px={'18px'}
-              spacing={2}
-              mt={1}
-              sx={{ display: 'flex', alignItems: 'center' }}
-              container
-            > */}
             <Box
               display={'flex'}
               flexDirection={'row'}
@@ -124,23 +117,27 @@ const index = () => {
             >
               Village Name
             </Typography>
+            <Box sx={{
+              px: '20px'
+            }}>
+
+          
             <UserList users={villageList} />
-            {/* </Grid> */}
+            </Box>
+          
           </>
         )}
       </Box>
       <Box>
         {value === 2 && (
           <>
-            {/* <Grid
-              px={'18px'}
-              spacing={2}
-              mt={1}
-              sx={{ display: 'flex', alignItems: 'center' }}
-              container
-            > */}
+          <Box sx={{
+            px:'20px',
+            mt:'15px'
+          }}>
+
             <UserList users={youthList} />
-            {/* </Grid> */}
+          </Box>
           </>
         )}
       </Box>
