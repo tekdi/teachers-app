@@ -907,6 +907,7 @@ export interface RegistrationModalProps {
 export interface SurveysProps {
   title: string;
   date: string;
+  onClick: () => void;
 }
 
 export interface VillageDetailProps {

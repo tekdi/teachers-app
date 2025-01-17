@@ -143,3 +143,9 @@ export const surveyData = [
   { title: 'Science Camp', date: '5 May, 2024' },
   { title: 'Sports Camp', date: '3 Feb, 2024' },
 ];
+
+export const CAMP_DATA = {
+  ASSIGNED: '  Assigned to Ankita Kulkarni, Ananya Sen',
+  DATE1: 'Submitted on 10 Sep, 2024 @ 2:35 pm',
+  DATE2: 'Submitted on 05 Oct, 2024 @ 6:10 pm',
+};
