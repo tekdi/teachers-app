@@ -85,7 +85,7 @@ const index = () => {
               display={'flex'}
               flexDirection={'row'}
               gap={'2rem'}
-              // justifyContent={'space-around'}
+            // justifyContent={'space-around'}
             >
               <SearchBar
                 onSearch={setSearchInput}
@@ -137,7 +137,7 @@ const index = () => {
                 <DownloadIcon />
               </Box>
             </Box>
-            <Box display={'flex'}>
+            <Box display={'flex'} justifyContent={'space-between'}>
               <Typography
                 sx={{
                   fontSize: '16px',
@@ -162,23 +162,26 @@ const index = () => {
                 Total Count (+ New Registrations today)
               </Typography>
             </Box>
+            <Box sx={{
+              px: '20px',
+              mt: '15px'
+            }}>
             <UserList users={villageList} />
-            {/* </Grid> */}
+            </Box>
+         
           </>
         )}
       </Box>
       <Box>
         {value === 2 && (
           <>
-            {/* <Grid
-              px={'18px'}
-              spacing={2}
-              mt={1}
-              sx={{ display: 'flex', alignItems: 'center' }}
-              container
-            > */}
+            <Box sx={{
+              px: '20px',
+              mt: '15px'
+            }}>
             <UserList users={youthList} />
-            {/* </Grid> */}
+           </Box>
+          
           </>
         )}
       </Box>
@@ -194,3 +197,7 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 export default index;
+
+
+
+

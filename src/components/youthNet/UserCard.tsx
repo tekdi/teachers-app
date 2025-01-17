@@ -6,6 +6,7 @@ import {
   List,
   ListItem,
   Divider,
+  Grid,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTheme } from '@mui/material/styles';
@@ -43,8 +44,26 @@ const UserCard: React.FC<UserCardProps> = ({
   const theme = useTheme<any>();
 
   return (
-    <ListItem>
-      {showAvtar && (
+    <Box
+      display={'flex'}
+      borderBottom={`1px solid ${theme.palette.warning['A100']}`}
+      width={'100%'}
+      justifyContent={'space-between'}
+      
+      sx={{
+        cursor: 'pointer',
+        ...(!totalCount && {
+          '@media (min-width: 600px)': {
+            border: `1px solid ${theme.palette.action.selected}`,
+            padding: '4px 10px',
+            borderRadius: '8px',
+            background: theme.palette.warning.A400,
+          },
+        }),
+      }}
+    >
+      <ListItem>
+        {showAvtar && (
         <Avatar
           src={image}
           alt={name}
@@ -61,54 +80,58 @@ const UserCard: React.FC<UserCardProps> = ({
         >
           {!image && name[0]}
         </Avatar>
-      )}
-
-      <Box ml={2} display={totalCount ? 'flex' : 'block'}>
-        <Typography
-          sx={{
-            fontSize: '16px',
-            color: '#0D599E',
-            textDecoration: 'underline',
-            cursor: 'pointer',
-            padding: '5px 5px',
-          }}
+        ) }
+        <Box ml={2} width={'100%'} 
+        sx={{
+         display :  totalCount ? "flex" : "unset",
+          alignItems: totalCount ? "center" :'unset'
+        }}
         >
-          {name}
-        </Typography>
-        <Box display={'flex'}>
-          {age && (
-            <Typography variant="body2" color="textSecondary">
-              {age} y/o • {village || joinOn}
-            </Typography>
-          )}
-          <Box display={'flex'} ml={'3rem'}>
-            {isNew && (
-              <Typography
-                variant="body2"
-                color={theme.palette.success.main}
-                ml={5}
-                fontWeight={600}
-              >
-                NEW
-              </Typography>
-            )}
-            {showMore && (
-              <MoreVertIcon
-                // onClick={(event) => {
-                //   isMobile
-                //     ? toggleDrawer('bottom', true, teacherUserId)(event)
-                //     : handleMenuOpen(event, teacherUserId);
-                // }}
-                sx={{
-                  fontSize: '24px',
-                  color: theme.palette.warning['300'],
-                  cursor: 'pointer',
-                }}
-              />
-            )}
+          <Typography
+            sx={{
+              fontSize: '16px',
+              color: '#0D599E',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              padding: '5px 5px',
+            }}
+          >
+            {name}
+          </Typography>
+          <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
+            <Box sx={{ display: 'flex', gap: '8px' }}>
+              {
+                age && (
+                  <Typography variant="body2" color="textSecondary">
+                    {age} y/o • {village || joinOn}
+                  </Typography>
+                )
+              }
+              
+              {isNew && (
+                <Typography variant="body2" color="#1A8825" fontWeight={600}>
+                  NEW
+                </Typography>
+              )}
+            </Box>
 
-            {totalCount && (
-              <>
+            <Box display={'flex'} justifyContent={'flex-end'} ml={'3rem'}>
+              {showMore && (
+                <MoreVertIcon
+                  // onClick={(event) => {
+                  //   isMobile
+                  //     ? toggleDrawer('bottom', true, teacherUserId)(event)
+                  //     : handleMenuOpen(event, teacherUserId);
+                  // }}
+                  sx={{
+                    fontSize: '24px',
+                    color: theme.palette.warning['300'],
+                    cursor: 'pointer',
+                  }}
+                />
+              )}
+
+              {totalCount && (
                 <Typography
                   variant="body2"
                   color="black"
@@ -130,35 +153,39 @@ const UserCard: React.FC<UserCardProps> = ({
                     </span>
                   )}
                 </Typography>
-              </>
-            )}
+              )}
+            </Box>
           </Box>
         </Box>
-      </Box>
-    </ListItem>
+      </ListItem>
+    </Box>
   );
 };
 
 export const UserList: React.FC<UserListProps> = ({ users }) => {
   return (
     <List>
-      {users.map((user, index) => (
-        <React.Fragment key={index}>
-          <UserCard
-            name={user.name}
-            age={user.age}
-            village={user.village}
-            joinOn={user.joinOn}
-            image={user.image}
-            showAvtar={user.showAvtar}
-            isNew={user.isNew}
-            showMore={user.showMore}
-            totalCount={user.totalCount}
-            newRegistrations={user.newRegistrations}
-          />
-          {index < users.length - 1 && <Divider />}
-        </React.Fragment>
-      ))}
+      <Grid container spacing={2}>
+        {users.map((user, index) => (
+          <React.Fragment key={index}>
+            <Grid item xs={12} sm={12} md={user.totalCount ? 12 : 6} lg={user.totalCount ? 12 : 4}>
+              <UserCard
+                name={user.name}
+                age={user.age}
+                village={user.village}
+                joinOn={user.joinOn}
+                image={user.image}
+                showAvtar={user.showAvtar}
+                isNew={user.isNew}
+                showMore={user.showMore}
+                totalCount={user.totalCount}
+                newRegistrations={user.newRegistrations}
+              />
+            </Grid>
+            {index < users.length - 1 && <Divider />}
+          </React.Fragment>
+        ))}
+      </Grid>
     </List>
   );
 };
