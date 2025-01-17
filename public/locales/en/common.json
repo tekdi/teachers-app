@@ -231,7 +231,11 @@
     "REMOTE_AVERAGE_ATTENDANCE": "Remote Average Attendance",
     "REGULAR_AVERAGE_ATTENDANCE": "Regular Average Attendance",
     "BLOCK": "Block",
-    "ATTENDANCE": "Attendance (%)"
+    "ATTENDANCE": "Attendance (%)",
+    "VILLAGES_AND_YOUTH": "Villages and Youth",
+    "VILLAGES": "Villages",
+    "YOUTH_VOLUNTEERS": "Youth/Volunteers",
+    "SEARCH_VILLAGES": "Search Villages"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total: {{count}}",
