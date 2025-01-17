@@ -137,7 +137,7 @@ const index = () => {
                 <DownloadIcon />
               </Box>
             </Box>
-            <Box display={'flex'}>
+            <Box display={'flex'} justifyContent={'space-between'}>
               <Typography
                 sx={{
                   fontSize: '16px',
