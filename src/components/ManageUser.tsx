@@ -11,7 +11,7 @@ import { getMyUserList } from '@/services/MyClassDetailsService';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import useStore from '@/store/store';
 import { QueryKeys, Role, Status, Telemetry } from '@/utils/app.constant';
-import { toPascalCase } from '@/utils/Helper';
+import { getUserFullName, toPascalCase } from '@/utils/Helper';
 import { telemetryFactory } from '@/utils/telemetry';
 import AddIcon from '@mui/icons-material/Add';
 import ApartmentIcon from '@mui/icons-material/Apartment';
@@ -79,7 +79,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const [value, setValue] = React.useState(1);
   const [users, setUsers] = useState<
     {
-      name: string;
+      name?: string;
+      firstName?: string;
+      lastName?: string;
       userId: string;
       cohortNames?: string;
     }[]
@@ -127,8 +129,6 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState(users || []);
   const [TotalCount, setTotalCount] = useState<number>(0);
-  const [data, setData] = useState<any[]>([]); // तुझ्या user data साठी state
-
   const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
@@ -213,7 +213,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
               return {
                 userId: user?.userId,
-                name: user?.name,
+                name: toPascalCase(getUserFullName({ firstName: user?.firstName, lastName: user?.lastName })),
                 cohortNames: cohortNames || null,
               };
             }
@@ -264,27 +264,27 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean, user?: any, teacherUserId?: string) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
-      setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
-      if (!isFromFLProfile) {
-        const cohortNamesArray = user?.cohortNames?.split(', ');
-        const centerNames = cohortNamesArray?.map((cohortName: string) =>
-          cohortName.trim()
-        ) || [t('ATTENDANCE.NO_CENTERS_ASSIGNED')];
-        setCenters(centerNames);
-        setSelectedUser(user);
-      }
+      (event: React.KeyboardEvent | React.MouseEvent) => {
+        setCohortDeleteId(isFromFLProfile ? teacherUserId : user.userId);
+        if (!isFromFLProfile) {
+          const cohortNamesArray = user?.cohortNames?.split(', ');
+          const centerNames = cohortNamesArray?.map((cohortName: string) =>
+            cohortName.trim()
+          ) || [t('ATTENDANCE.NO_CENTERS_ASSIGNED')];
+          setCenters(centerNames);
+          setSelectedUser(user);
+        }
 
-      if (
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
+        if (
+          event.type === 'keydown' &&
+          ((event as React.KeyboardEvent).key === 'Tab' ||
+            (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+          return;
+        }
 
-      setState({ ...state, bottom: open });
-    };
+        setState({ ...state, bottom: open });
+      };
 
   const listItemClick = async (event: React.MouseEvent, name: string) => {
     if (name === 'delete-User') {
@@ -496,7 +496,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     setOpenFacilitatorModal(false);
   };
 
-  const handleDeleteUser = () => {};
+  const handleDeleteUser = () => { };
 
   const handleFacilitatorAdded = () => {
     setIsFacilitatorAdded((prev) => !prev);
@@ -537,19 +537,19 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     );
   };
   const PAGINATION_CONFIG = {
-ITEMS_PER_PAGE: 12,
+    ITEMS_PER_PAGE: 12,
     INFINITE_SCROLL_INCREMENT: 10
   };
 
 
   const fetchData = async () => {
-      try {
-         setInfinitePage((prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT);
-      } catch (error) {
-          console.error('Error fetching more data:', error);
-          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-         }
-        }
+    try {
+      setInfinitePage((prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT);
+    } catch (error) {
+      console.error('Error fetching more data:', error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    }
+  }
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -713,7 +713,7 @@ ITEMS_PER_PAGE: 12,
                                                       .main,
                                                 }}
                                               >
-                                                {toPascalCase(user.name)}
+                                                {user?.name}
                                               </Typography>
                                             </CustomLink>
                                             <Box
@@ -731,11 +731,11 @@ ITEMS_PER_PAGE: 12,
                                             >
                                               {user?.cohortNames
                                                 ? getCohortNames(
-                                                    user.cohortNames
-                                                  )
+                                                  user.cohortNames
+                                                )
                                                 : t(
-                                                    'ATTENDANCE.NO_CENTERS_ASSIGNED'
-                                                  )}
+                                                  'ATTENDANCE.NO_CENTERS_ASSIGNED'
+                                                )}
                                             </Box>
                                           </Box>
                                         </Box>
@@ -744,10 +744,10 @@ ITEMS_PER_PAGE: 12,
                                             onClick={(event) => {
                                               isMobile
                                                 ? toggleDrawer(
-                                                    'bottom',
-                                                    true,
-                                                    user
-                                                  )(event)
+                                                  'bottom',
+                                                  true,
+                                                  user
+                                                )(event)
                                                 : handleMenuOpen(event, user);
                                             }}
                                             sx={{
@@ -793,7 +793,7 @@ ITEMS_PER_PAGE: 12,
                             }}
                           >
                             <CustomPagination
-                                  count={Math.ceil(TotalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE)}
+                              count={Math.ceil(TotalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE)}
                               page={page}
                               onPageChange={handlePageChange}
                               fetchMoreData={() => fetchData()}
@@ -871,7 +871,7 @@ ITEMS_PER_PAGE: 12,
                 >
                   {selectedUser?.name
                     ? selectedUser.name.charAt(0).toUpperCase() +
-                      selectedUser.name.slice(1)
+                    selectedUser.name.slice(1)
                     : ''}
                 </Box>
                 <Box
@@ -917,38 +917,48 @@ ITEMS_PER_PAGE: 12,
                 </Box>
               </BottomDrawer>
 
-              <ManageCentersModal
-                open={openCentersModal}
-                onClose={handleCloseCentersModal}
-                centersName={centerList}
-                centers={centers}
-                onAssign={handleAssignCenters}
-              />
+              {
+                openCentersModal &&
+
+                <ManageCentersModal
+                  open={openCentersModal}
+                  onClose={handleCloseCentersModal}
+                  centersName={centerList}
+                  centers={centers}
+                  onAssign={handleAssignCenters}
+                />
+              }
             </Box>
 
-            <ConfirmationModal
-              message={t('CENTERS.BLOCK_REQUEST')}
-              handleAction={handleRequestBlockAction}
-              buttonNames={{
-                primary: t('COMMON.SEND_REQUEST'),
-                secondary: t('COMMON.CANCEL'),
-              }}
-              handleCloseModal={handleCloseModal}
-              modalOpen={confirmationModalOpen}
-            />
-            <ReassignModal
-              cohortNames={reassignCohortNames}
-              message={t('COMMON.ADD_OR_REASSIGN_CENTERS')}
-              handleAction={handleRequestBlockAction}
-              handleCloseReassignModal={handleCloseReassignModal}
-              modalOpen={reassignModalOpen}
-              reloadState={reloadState}
-              setReloadState={setReloadState}
-              buttonNames={{ primary: t('COMMON.SAVE') }}
-              selectedUser={selectedUser}
-            />
+            {
+              confirmationModalOpen &&
+              <ConfirmationModal
+                message={t('CENTERS.BLOCK_REQUEST')}
+                handleAction={handleRequestBlockAction}
+                buttonNames={{
+                  primary: t('COMMON.SEND_REQUEST'),
+                  secondary: t('COMMON.CANCEL'),
+                }}
+                handleCloseModal={handleCloseModal}
+                modalOpen={confirmationModalOpen}
+              />
+            }
 
-            <DeleteUserModal
+            {
+              reassignModalOpen && <ReassignModal
+                cohortNames={reassignCohortNames}
+                message={t('COMMON.ADD_OR_REASSIGN_CENTERS')}
+                handleAction={handleRequestBlockAction}
+                handleCloseReassignModal={handleCloseReassignModal}
+                modalOpen={reassignModalOpen}
+                reloadState={reloadState}
+                setReloadState={setReloadState}
+                buttonNames={{ primary: t('COMMON.SAVE') }}
+                selectedUser={selectedUser}
+              />
+            }
+
+            {openDeleteUserModal && <DeleteUserModal
               type={Role.TEACHER}
               userId={userId}
               open={openDeleteUserModal}
@@ -957,7 +967,9 @@ ITEMS_PER_PAGE: 12,
               reloadState={reloadState}
               setReloadState={setReloadState}
             />
-            <SimpleModal
+            }
+
+            {openRemoveUserModal && <SimpleModal
               primaryText={t('COMMON.OK')}
               primaryActionHandler={handleCloseRemoveModal}
               open={openRemoveUserModal}
@@ -974,6 +986,7 @@ ITEMS_PER_PAGE: 12,
                 </Typography>
               </Box>
             </SimpleModal>
+            }
             {openAddFacilitatorModal && (
               <AddFacilitatorModal
                 open={openAddFacilitatorModal}

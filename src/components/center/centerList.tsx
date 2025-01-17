@@ -5,7 +5,6 @@ import SmartDisplayOutlinedIcon from '@mui/icons-material/SmartDisplayOutlined';
 import building from '../../assets/images/apartment.png';
 import Image from 'next/image';
 import { useDirection } from '../../hooks/useDirection';
-import { useTranslation } from 'next-i18next';
 
 interface Center {
   cohortStatus?: string;

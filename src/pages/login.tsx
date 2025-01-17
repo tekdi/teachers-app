@@ -286,6 +286,7 @@ const LoginPage = () => {
               'temporaryPassword',
               userResponse?.temporaryPassword ?? 'false'
             );
+            localStorage.setItem('userData', JSON.stringify(userResponse));
 
             setUserRole(userResponse?.tenantData[0]?.roleName);
             setAccessToken(token);

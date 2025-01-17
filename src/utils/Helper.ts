@@ -855,3 +855,23 @@ export function getLatestEntries(
     });
     return Object.values(filteredEntries);
 }
+
+
+export const getUserFullName = (user?: { firstName?: string, lastName?: string, name?: string }): string => {
+  let userData;
+  if (user) {
+    userData = user;
+  } else {
+    userData = localStorage.getItem('userData');
+    userData = JSON.parse(userData || "{}");
+  }
+
+  if (userData?.firstName) {
+    const lastName = userData?.lastName || "";
+    return `${userData.firstName} ${lastName}`;
+  } else if (userData?.name) {
+    return userData.name;
+  }
+
+  return '';
+}
