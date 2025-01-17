@@ -126,11 +126,36 @@ export const users = [
     age: 14,
     village: 'Deviyapur',
     image: '',
+    showAvtar: true,
   },
-  { name: 'Aisha Sharma', age: 15, village: 'Kasurdi', image: '' },
-  { name: 'Bharat Kumar', age: 15, village: 'Pande', image: '' },
-  { name: 'Disha Shire', age: 14, village: 'Deviyapur', image: '' },
-  { name: 'Divya Sharma', age: 17, village: 'Khopi', image: '' },
+  {
+    name: 'Aisha Sharma',
+    age: 15,
+    village: 'Kasurdi',
+    image: '',
+    showAvtar: true,
+  },
+  {
+    name: 'Bharat Kumar',
+    age: 15,
+    village: 'Pande',
+    image: '',
+    showAvtar: true,
+  },
+  {
+    name: 'Disha Shire',
+    age: 14,
+    village: 'Deviyapur',
+    image: '',
+    showAvtar: true,
+  },
+  {
+    name: 'Divya Sharma',
+    age: 17,
+    village: 'Khopi',
+    image: '',
+    showAvtar: true,
+  },
 ];
 
 export const VILLAGE_DATA = {
@@ -162,6 +187,7 @@ export const youthList = [
     joinOn: 'Join on 15 Jan, 2025',
     isNew: true,
     showMore: true,
+    showAvtar: true,
   },
   {
     name: 'Aisha Sharma',
@@ -170,6 +196,7 @@ export const youthList = [
     joinOn: 'Join on 15 Jan, 2025',
     isNew: true,
     showMore: true,
+    showAvtar: true,
   },
   {
     name: 'Bharat Kumar',
@@ -178,7 +205,43 @@ export const youthList = [
     joinOn: 'Join on 15 Jan, 2025',
     isNew: true,
     showMore: true,
+    showAvtar: true,
   },
-  { name: 'Disha Shire', age: 14, joinOn: 'Join on 15 Jan, 2025', image: '' },
-  { name: 'Divya Sharma', age: 17, joinOn: 'Join on 15 Jan, 2025', image: '' },
+  {
+    name: 'Disha Shire',
+    age: 14,
+    joinOn: 'Join on 15 Jan, 2025',
+    image: '',
+    showAvtar: true,
+  },
+  {
+    name: 'Divya Sharma',
+    age: 17,
+    joinOn: 'Join on 15 Jan, 2025',
+    image: '',
+    showAvtar: true,
+  },
+];
+
+export const villageList = [
+  {
+    name: 'Deviyapur',
+    totalCount: 14,
+    newRegistrations: 6,
+  },
+  {
+    name: 'Kasurdi',
+    totalCount: 20,
+    newRegistrations: 3,
+  },
+  {
+    name: 'Khopi',
+    totalCount: 25,
+    newRegistrations: 2,
+  },
+  {
+    name: 'Shivare',
+    totalCount: 10,
+    newRegistrations: 5,
+  },
 ];
