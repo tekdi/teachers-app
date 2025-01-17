@@ -9,6 +9,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useState } from 'react';
 import { jotFormId } from '../../app.config';
 import { useDirection } from '@/hooks/useDirection';
+import { getUserFullName } from '@/utils/Helper';
 
 type QueryParams = {
   fullName: string;
@@ -31,7 +32,7 @@ const SupportRequest = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
-      const name = localStorage.getItem('userName') || '';
+      const name = getUserFullName() || '';
       const loginUserName = localStorage.getItem('userIdName') || '';
       const userid = localStorage.getItem('userId') || '';
       const email = localStorage.getItem('userEmail') || '';
