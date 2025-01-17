@@ -62,6 +62,7 @@ const UserCard: React.FC<UserCardProps> = ({
           {!image && name[0]}
         </Avatar>
       )}
+
       <Box ml={2} display={totalCount ? 'flex' : 'block'}>
         <Typography
           sx={{
@@ -107,27 +108,29 @@ const UserCard: React.FC<UserCardProps> = ({
             )}
 
             {totalCount && (
-              <Typography
-                variant="body2"
-                color="black"
-                // ml={5}
-                mt={'1rem'}
-                fontWeight={600}
-              >
-                {totalCount}
-                {newRegistrations && (
-                  <span
-                    style={{
-                      color:
-                        newRegistrations < 5
-                          ? theme.palette.error.main
-                          : theme.palette.success.main,
-                    }}
-                  >
-                    (+{newRegistrations})
-                  </span>
-                )}
-              </Typography>
+              <>
+                <Typography
+                  variant="body2"
+                  color="black"
+                  // ml={5}
+                  mt={'1rem'}
+                  fontWeight={600}
+                >
+                  {totalCount}
+                  {newRegistrations && (
+                    <span
+                      style={{
+                        color:
+                          newRegistrations < 5
+                            ? theme.palette.error.main
+                            : theme.palette.success.main,
+                      }}
+                    >
+                      (+{newRegistrations})
+                    </span>
+                  )}
+                </Typography>
+              </>
             )}
           </Box>
         </Box>
