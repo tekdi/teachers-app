@@ -171,7 +171,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   useEffect(() => {
     const handleBMGS = async () => {
       try {
-        if (StateName && medium && grade && board) {
+        if (medium && grade && board) {
           const url = `/api/framework/v1/read/${frameworkId}`;
           const boardData = await fetch(url).then((res) => res.json());
           const frameworks = boardData?.result?.framework;
@@ -1449,7 +1449,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           )}
 
           <Box>
-            {(!StateName || !medium || !grade || !board) && (
+            {(!medium || !grade || !board) && (
               <Box
                 padding="0.5rem"
                 style={{
@@ -1475,7 +1475,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               disabled={editSession}
             />
           </Box>
-          {(StateName || medium || grade || board) && (
+          {(medium || grade || board) && (
             <Box sx={{ mt: 2 }}>
               <FormControl fullWidth>
                 <InputLabel
@@ -1497,7 +1497,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       ? block?.courseType
                       : editSession?.metadata?.courseType
                   }
-                  disabled={!StateName || !medium || !grade || !board}
+                  disabled={!medium || !grade || !board}
                 >
                   {courseTypes?.map((courseType: string) => (
                     <MenuItem key={courseType} value={courseType}>
@@ -1511,7 +1511,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
           {(clickedBox === 'PLANNED_SESSION' || editSession) && (
             <>
-              {(StateName || medium || grade || board) && (
+              {(medium || grade || board) && (
                 <Box sx={{ mt: 2 }}>
                   <FormControl fullWidth>
                     <InputLabel
@@ -1534,7 +1534,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                           : editSession?.metadata?.subject ||
                             editSession?.subject
                       }
-                      disabled={!(StateName && medium && grade && board)}
+                      disabled={!(medium && grade && board)}
                     >
                       {(block?.subjectDropdown &&
                       block.subjectDropdown.length > 0
@@ -1601,7 +1601,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             )}
           {clickedBox === 'EXTRA_SESSION' && (
             <Box sx={{ mt: 2 }}>
-              {(StateName || medium || grade || board) && (
+              {(medium || grade || board) && (
                 <Box>
                   <FormControl fullWidth>
                     <InputLabel
@@ -1626,7 +1626,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       value={
                         block?.subject || editSession?.metadata?.subject || ''
                       }
-                      disabled={!(StateName && medium && grade && board)}
+                      disabled={!(medium && grade && board)}
                     >
                       {(block?.subjectDropdown &&
                       block.subjectDropdown.length > 0
