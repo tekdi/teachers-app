@@ -20,7 +20,7 @@ import bgyoutube from '../assets/images/bgYouTube.svg';
 import bgh5p from '../assets/images/bgh5p.png';
 import bgunit from '../assets/images/bgUnit.png';
 
-export const limit: number = 300;
+export const limit: number = 200;
 export const refetchInterval: number = 5 * 60 * 1000; // 5 min
 export const gcTime: number = 10 * 60 * 1000; // 10 Min
 
