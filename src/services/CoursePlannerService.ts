@@ -5,13 +5,13 @@ import {
   GetSolutionDetailsParams,
   GetTargetedSolutionsParams,
   GetUserProjectStatusParams,
-  GetUserProjectTemplateParams
+  GetUserProjectTemplateParams,
 } from '../utils/Interfaces';
 import { get } from './RestClient';
 
 export const getTargetedSolutions = async ({
   subject,
-  state,
+
   medium,
   class: className,
   board,
@@ -25,7 +25,7 @@ export const getTargetedSolutions = async ({
 
   const data = {
     subject,
-    state,
+
     medium,
     class: className,
     board,
