@@ -205,7 +205,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
 
   const fetchTargetedSolutions = async () => {
     const response = await getTargetedSolutions({
-      state: state,
+      // state: state,
       medium: medium,
       class: grade,
       board: board,

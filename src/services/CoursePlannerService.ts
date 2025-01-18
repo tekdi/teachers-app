@@ -25,7 +25,6 @@ export const getTargetedSolutions = async ({
 
   const data = {
     subject,
-
     medium,
     class: className,
     board,
