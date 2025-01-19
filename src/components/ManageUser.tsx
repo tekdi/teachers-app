@@ -213,7 +213,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
               return {
                 userId: user?.userId,
-                name: toPascalCase(getUserFullName({ firstName: user?.firstName, lastName: user?.lastName })),
+                name: toPascalCase(getUserFullName({ firstName: user?.firstName, lastName: user?.lastName, name: user?.name })),
                 cohortNames: cohortNames || null,
               };
             }
