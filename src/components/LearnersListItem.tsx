@@ -92,7 +92,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const [subProgram, setSubProgramName]=React.useState();
   const[program , setProgram]=React.useState();
   const [grade, setGradeName]=React.useState()
-  const [accesstoWhatsApp, setAccesstoWhatsAppName]=React.useState()
+  const [accessToWhatsApp, setAccessToWhatsAppName]=React.useState()
   const store = manageUserStore();
   const reassignStore = reassignLearnerStore();
   const setReassignId = reassignLearnerStore((state) => state.setReassignId);
@@ -323,7 +323,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                     setGradeName(field.value)
                   }
                   else if(field.label === "ACCESS_TO_WHATSAPP"){
-                    setAccesstoWhatsAppName(field.value)
+                    setAccessToWhatsAppName(field.value)
                   }
                    else if(field.label === "PROGRAM"){
                     setProgram(field.value)
@@ -452,7 +452,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
               motherName={motherName}
               subProgram={subProgram}
               grade={grade}
-              accesstoWhatsApp={accesstoWhatsApp}
+              accessToWhatsApp={accessToWhatsApp}
               program={program}
             />
           )}

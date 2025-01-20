@@ -104,7 +104,7 @@ const LearnerModal = ({
   motherName,
   subProgram,
   grade,
-  accesstoWhatsApp,
+  accessToWhatsApp,
   program,
 }: {
   userId?: string;
@@ -114,12 +114,12 @@ const LearnerModal = ({
   userName?: string;
   contactNumber?: any;
   enrollmentNumber?: any;
-  fatherName?: any;
-  motherName?: any;
-  subProgram?: any;
-  grade?: any;
-  accesstoWhatsApp?: any;
-  program? :any;
+  fatherName?: string;
+  motherName?: string;
+  subProgram?: string;
+  grade?: number;
+  accessToWhatsApp?: string;
+  program? :string;
 }) => {
   const { t } = useTranslation();
 
@@ -255,7 +255,7 @@ const LearnerModal = ({
                       </Typography>
                       <Box display="flex">
                         <Typography sx={fieldValueStyles(theme)}>
-                          {accesstoWhatsApp || '-'}
+                          {accessToWhatsApp || '-'}
                         </Typography>
                       </Box>
                     </Grid>
