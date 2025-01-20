@@ -6,7 +6,7 @@ import {
 } from '@/services/CoursePlannerService';
 import { editEvent } from '@/services/EventService';
 import { fetchBulkContents } from '@/services/PlayerService';
-import { convertUTCToIST, getDayMonthYearFormat } from '@/utils/Helper';
+import { convertUTCToIST, getBMG, getDayMonthYearFormat } from '@/utils/Helper';
 import { EventStatus } from '@/utils/app.constant';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -23,11 +23,13 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDirection } from '../hooks/useDirection';
-import { SessionCardFooterProps } from '../utils/Interfaces';
+import { CustomField, SessionCardFooterProps } from '../utils/Interfaces';
 import CenterSessionModal from './CenterSessionModal';
 import SelectTopic from './SelectTopic';
 import { showToastMessage } from './Toastify';
 import TopicDetails from './TopicDetails';
+import { getCohortDetails } from '@/services/CohortServices';
+import { usePathname } from 'next/navigation';
 
 const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   item,
@@ -42,7 +44,8 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const { isRTL } = useDirection();
-
+  const pathname = usePathname();
+  const dashboard = pathname === '/dashboard';
   const [open, setOpen] = React.useState(false);
   const [editTopic, setEditTopic] = React.useState(false);
   // const [removeTopic, setRemoveTopic] = React.useState(false);
@@ -57,14 +60,38 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const [endTime, setEndTime] = React.useState('');
   const [startDate, setStartDate] = React.useState('');
   const [eventStatus, setEventStatus] = React.useState('');
+  const [CohortBMG, setCohortBMG] = React.useState<any>({});
 
   const EventDate = getDayMonthYearFormat(item?.startDateTime);
   let removeTopic = false;
+
+  useEffect(() => {
+    if (dashboard) {
+      const classId = item?.metadata?.cohortId;
+      const getCohortData = async () => {
+        const response = await getCohortDetails(classId);
+
+        let cohortData = null;
+
+        if (response?.cohortData?.length) {
+          cohortData = response?.cohortData[0];
+
+          const bgm = getBMG(cohortData);
+          if (bgm) {
+            setCohortBMG(bgm);
+          }
+        }
+      };
+      if (classId) {
+        getCohortData();
+      }
+    }
+  }, []);
   useEffect(() => {
     const fetchTopicSubtopic = async () => {
       try {
         if (
-          state &&
+          // state &&
           medium &&
           grade &&
           board &&
@@ -206,9 +233,9 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const fetchTargetedSolutions = async () => {
     const response = await getTargetedSolutions({
       // state: state,
-      medium: medium,
-      class: grade,
-      board: board,
+      medium: dashboard ? CohortBMG?.medium : medium,
+      class: dashboard ? CohortBMG?.grade : grade,
+      board: dashboard ? CohortBMG?.board : board,
       courseType: item?.metadata?.courseType,
       subject: item?.metadata?.subject,
       entityId: cohortId,

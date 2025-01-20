@@ -10,7 +10,10 @@ import {
 dayjs.extend(utc);
 import { format, parseISO } from 'date-fns';
 import manageUserStore from '@/store/manageUserStore';
-import { avgLearnerAttendanceLimit, lowLearnerAttendanceLimit } from '../../app.config';
+import {
+  avgLearnerAttendanceLimit,
+  lowLearnerAttendanceLimit,
+} from '../../app.config';
 
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
@@ -298,7 +301,7 @@ export const sortClassesMissed = (data: any[], order: string) => {
 
 export const filterAttendancePercentage = (
   data: any[],
-  category: "more" | "between" | "less"
+  category: 'more' | 'between' | 'less'
 ) => {
   return data.filter(({ present_percent }: { present_percent: string }) => {
     const attendance = parseFloat(present_percent);
@@ -306,11 +309,14 @@ export const filterAttendancePercentage = (
     if (isNaN(attendance)) return false; // Exclude invalid or missing values
 
     switch (category) {
-      case "more":
+      case 'more':
         return attendance > avgLearnerAttendanceLimit;
-      case "between":
-        return attendance >= lowLearnerAttendanceLimit && attendance <= avgLearnerAttendanceLimit; // Medium attendance
-      case "less":
+      case 'between':
+        return (
+          attendance >= lowLearnerAttendanceLimit &&
+          attendance <= avgLearnerAttendanceLimit
+        ); // Medium attendance
+      case 'less':
         return attendance < lowLearnerAttendanceLimit;
       default:
         return false;
@@ -548,13 +554,12 @@ export const getOptionsByCategory = (frameworks: any, categoryCode: string) => {
 
   // Return the mapped terms
   return category?.terms?.filter((term: any) => {
-
     if (term.status === 'Live') {
       return {
         name: term?.name,
         code: term?.code,
-        associations: term?.associations
-      }
+        associations: term?.associations,
+      };
     }
   });
 };
@@ -820,58 +825,99 @@ export const getTelemetryForContent = (
 };
 
 export interface UserEntry {
-    userId: string;
-    name: string;
-    memberStatus: string;
-    createdAt: string;
-    updatedAt: string;
+  userId: string;
+  name: string;
+  memberStatus: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export function getLatestEntries(
-    nameUserIdArray: UserEntry[],
-    selectedDate: string
+  nameUserIdArray: UserEntry[],
+  selectedDate: string
 ): UserEntry[] {
-    const filteredEntries: Record<string, UserEntry> = {};
+  const filteredEntries: Record<string, UserEntry> = {};
 
-    nameUserIdArray.forEach(entry => {
-        const { userId, updatedAt, createdAt } = entry;
-        const updatedDate = new Date(updatedAt);
-        updatedDate.setHours(0, 0, 0, 0);
-        const selectDate = new Date(selectedDate);
-        selectDate.setHours(0, 0, 0, 0);
-        const createdDate = new Date(createdAt);
-        createdDate.setHours(0, 0, 0, 0);
+  nameUserIdArray.forEach((entry) => {
+    const { userId, updatedAt, createdAt } = entry;
+    const updatedDate = new Date(updatedAt);
+    updatedDate.setHours(0, 0, 0, 0);
+    const selectDate = new Date(selectedDate);
+    selectDate.setHours(0, 0, 0, 0);
+    const createdDate = new Date(createdAt);
+    createdDate.setHours(0, 0, 0, 0);
 
-        // Only consider entries with updatedAt < selectedDate or createdDate <= selectDate
-        if (updatedDate < selectDate || createdDate <= selectDate) {
-            if (
-                !filteredEntries[userId] || 
-                new Date(filteredEntries[userId].updatedAt) < updatedDate
-            ) {
-                // Update the entry if it is newer
-                filteredEntries[userId] = entry;
-            }
-        }
-    });
-    return Object.values(filteredEntries);
+    // Only consider entries with updatedAt < selectedDate or createdDate <= selectDate
+    if (updatedDate < selectDate || createdDate <= selectDate) {
+      if (
+        !filteredEntries[userId] ||
+        new Date(filteredEntries[userId].updatedAt) < updatedDate
+      ) {
+        // Update the entry if it is newer
+        filteredEntries[userId] = entry;
+      }
+    }
+  });
+  return Object.values(filteredEntries);
 }
 
-
-export const getUserFullName = (user?: { firstName?: string, lastName?: string, name?: string }): string => {
+export const getUserFullName = (user?: {
+  firstName?: string;
+  lastName?: string;
+  name?: string;
+}): string => {
   let userData;
   if (user) {
     userData = user;
   } else {
     userData = localStorage.getItem('userData');
-    userData = JSON.parse(userData || "{}");
+    userData = JSON.parse(userData || '{}');
   }
 
   if (userData?.firstName) {
-    const lastName = userData?.lastName || "";
+    const lastName = userData?.lastName || '';
     return `${userData.firstName} ${lastName}`;
   } else if (userData?.name) {
     return userData.name;
   }
 
   return '';
-}
+};
+export const calculateAge = (dob: any) => {
+  const today = new Date();
+  const age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    return age - 1;
+  }
+  return age;
+};
+
+export const getBMG = (cohortData: any) => {
+  if (cohortData) {
+    // cohortData = response?.cohortData[0];
+
+    if (cohortData?.customField?.length) {
+      const medium = cohortData.customField.find(
+        (item: CustomField) => item.label === 'MEDIUM'
+      );
+      // setCohortMedium(medium?.value);
+
+      const grade = cohortData.customField.find(
+        (item: CustomField) => item.label === 'GRADE'
+      );
+      // setCohortGrade(grade?.value);
+
+      const board = cohortData.customField.find(
+        (item: CustomField) => item.label === 'BOARD'
+      );
+      // setCohortBoard(board?.value);
+      const bmg = {
+        board: board?.value,
+        medium: medium?.value,
+        grade: grade?.value,
+      };
+      return bmg;
+    }
+  }
+};
