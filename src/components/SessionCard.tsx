@@ -85,7 +85,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
         getCohortData();
       }
     }
-  }, []);
+  }, [dashboard]);
 
   const handleCohortNotification = async (
     cohortId: string,

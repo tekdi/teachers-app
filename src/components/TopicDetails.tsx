@@ -1,6 +1,4 @@
-import {
-  Box
-} from '@mui/material';
+import { Box } from '@mui/material';
 
 import { EventStatus } from '@/utils/app.constant';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
@@ -40,7 +38,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({
   const [contentData, setContentData] = useState<LearningResource[]>([]);
 
   useEffect(() => {
-    const content = learningResources.filter((resource: any) => {
+    const content = learningResources?.filter((resource: any) => {
       return (
         topic.includes(resource.topic) && subTopic.includes(resource.subtopic)
       );

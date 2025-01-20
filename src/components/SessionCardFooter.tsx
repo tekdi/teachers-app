@@ -86,7 +86,8 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
         getCohortData();
       }
     }
-  }, []);
+  }, [dashboard]);
+
   useEffect(() => {
     const fetchTopicSubtopic = async () => {
       try {
