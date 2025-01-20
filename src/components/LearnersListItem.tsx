@@ -87,6 +87,12 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const [openDeleteUserModal, setOpenDeleteUserModal] = React.useState(false);
   const [centers, setCenters] = React.useState();
   const [centersName, setCentersName] = React.useState();
+  const [fatherName, setFatherName]=React.useState()
+  const [motherName, setMotherName]=React.useState()
+  const [subProgram, setSubProgramName]=React.useState();
+  const[program , setProgram]=React.useState();
+  const [grade, setGradeName]=React.useState()
+  const [accesstoWhatsApp, setAccesstoWhatsAppName]=React.useState()
   const store = manageUserStore();
   const reassignStore = reassignLearnerStore();
   const setReassignId = reassignLearnerStore((state) => state.setReassignId);
@@ -302,6 +308,27 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
             const userData = data?.userData;
             setUserData(userData);
             setUserName(userData?.name);
+            const customFields = userData?.customFields;
+            customFields.forEach((field: any) => {
+                if (field.label === "MOTHER_NAME") {
+                   setMotherName(field.value);
+                  }
+                  else if(field.label === "FATHER_NAME"){
+                    setFatherName(field.value);
+                  }
+                  else if(field.label === "SUB_PROGRAM"){
+                    setSubProgramName(field.value)
+                  }
+                  else if(field.label === "GRADE"){
+                    setGradeName(field.value)
+                  }
+                  else if(field.label === "ACCESS_TO_WHATSAPP"){
+                    setAccesstoWhatsAppName(field.value)
+                  }
+                   else if(field.label === "PROGRAM"){
+                    setProgram(field.value)
+                  }
+              });
             setContactNumber(userData?.mobile);
             setEnrollmentNumber(capitalizeEachWord(userData?.username));
             const customDataFields = userData?.customFields;
@@ -421,6 +448,12 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
               userName={learnerState.userName}
               contactNumber={learnerState.contactNumber}
               enrollmentNumber={learnerState.enrollmentNumber}
+              fatherName={fatherName}
+              motherName={motherName}
+              subProgram={subProgram}
+              grade={grade}
+              accesstoWhatsApp={accesstoWhatsApp}
+              program={program}
             />
           )}
           <Box

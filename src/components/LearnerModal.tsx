@@ -100,6 +100,12 @@ const LearnerModal = ({
   userName,
   contactNumber,
   enrollmentNumber,
+  fatherName,
+  motherName,
+  subProgram,
+  grade,
+  accesstoWhatsApp,
+  program,
 }: {
   userId?: string;
   open: boolean;
@@ -108,6 +114,12 @@ const LearnerModal = ({
   userName?: string;
   contactNumber?: any;
   enrollmentNumber?: any;
+  fatherName?: any;
+  motherName?: any;
+  subProgram?: any;
+  grade?: any;
+  accesstoWhatsApp?: any;
+  program? :any;
 }) => {
   const { t } = useTranslation();
 
@@ -184,6 +196,66 @@ const LearnerModal = ({
                       <Box display="flex">
                         <Typography sx={fieldValueStyles(theme)}>
                           {enrollmentNumber || '-'}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} textAlign="left">
+                      <Typography sx={fieldTitleStyles(theme)}>
+                        {t('FIELDS.FATHER_NAME')}
+                      </Typography>
+                      <Box display="flex">
+                        <Typography sx={fieldValueStyles(theme)}>
+                          {fatherName || '-'}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} textAlign="left">
+                      <Typography sx={fieldTitleStyles(theme)}>
+                        {t('FORM.MOTHER_NAME')}
+                      </Typography>
+                      <Box display="flex">
+                        <Typography sx={fieldValueStyles(theme)}>
+                          {motherName || '-'}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} textAlign="left">
+                      <Typography sx={fieldTitleStyles(theme)}>
+                        {t('FORM.PROGRAM')}
+                      </Typography>
+                      <Box display="flex">
+                        <Typography sx={fieldValueStyles(theme)}>
+                          {program || '-'}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                     <Grid item xs={6} textAlign="left">
+                      <Typography sx={fieldTitleStyles(theme)}>
+                        {t('FORM.SUB_PROGRAM')}
+                      </Typography>
+                      <Box display="flex">
+                        <Typography sx={fieldValueStyles(theme)}>
+                          {subProgram || '-'}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} textAlign="left">
+                      <Typography sx={fieldTitleStyles(theme)}>
+                        {t('FORM.GRADE')}
+                      </Typography>
+                      <Box display="flex">
+                        <Typography sx={fieldValueStyles(theme)}>
+                          {grade   || '-'}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} textAlign="left">
+                      <Typography sx={fieldTitleStyles(theme)}>
+                        {t('FORM.ACCESS_TO_WHATSAPP')}
+                      </Typography>
+                      <Box display="flex">
+                        <Typography sx={fieldValueStyles(theme)}>
+                          {accesstoWhatsApp || '-'}
                         </Typography>
                       </Box>
                     </Grid>
