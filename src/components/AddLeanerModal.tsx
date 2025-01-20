@@ -142,7 +142,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         ''
       );
       const apiBody: any = {
-        username: learnerFormData?.username,
+        username: username,
         password: password,
         tenantCohortRoleMapping: [
           {
@@ -255,7 +255,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             if (creatorName && userEmail) {
               sendEmail(
                 creatorName,
-                learnerFormData.username,
+                username,
                 password,
                 userEmail,
                 apiBody['name']
