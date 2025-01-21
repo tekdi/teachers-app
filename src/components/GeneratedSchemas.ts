@@ -115,6 +115,11 @@ export const GenerateSchemaAndUiSchema = (
         }));
         fieldUiSchema['ui:widget'] = 'CustomRadioWidget';
         break;
+      case 'date':
+        fieldSchema.type = 'string';
+        fieldSchema.format = 'date';
+        fieldUiSchema['ui:widget'] = 'date';
+        break;
       default:
         break;
     }
@@ -122,26 +127,6 @@ export const GenerateSchemaAndUiSchema = (
     if (isEditable === false) {
       fieldUiSchema['ui:disabled'] = true;
     }
-
-    if (dependsOn) {
-      // Handle dependencies logic if needed
-    }
-
-    // if (isMultiSelect && type === 'drop_down') {
-    //   fieldSchema.type = 'array';
-    //   fieldSchema.items = {
-    //     type: 'string',
-    //     oneOf: options.map((opt: FieldOption) => ({
-    //       const: opt.value,
-    //       title:
-    //         t(`FORM.${opt.label}`) === `FORM.${opt.label}`
-    //           ? opt.label
-    //           : t(`FORM.${opt.label}`),
-    //     })),
-    //   };
-    //   fieldSchema.uniqueItems = true;
-    //   fieldUiSchema['ui:widget'] = 'select';
-    // }
 
     if (isMultiSelect && type === 'drop_down' && maxSelections !== 1) {
       fieldSchema.type = 'array';
@@ -244,11 +229,33 @@ export const GenerateSchemaAndUiSchema = (
       fieldSchema.validation = field.validation;
     }
 
-    if (schema !== undefined && schema.properties) {
-      schema.properties[name] = fieldSchema;
-      uiSchema[name] = fieldUiSchema;
+    if (field.dependsOn) {
+      const dependencyField = field.dependsOn;
+
+      schema.dependencies = schema.dependencies || {};
+
+      schema.dependencies[dependencyField] =
+        schema.dependencies[dependencyField] ||
+        ({
+          properties: {},
+        } as JSONSchema7);
+
+      const dependencyObject = schema.dependencies[
+        dependencyField
+      ] as JSONSchema7;
+
+      dependencyObject.properties = {
+        ...dependencyObject.properties,
+        [name]: fieldSchema,
+      };
+
+      schema.dependencies[dependencyField] = dependencyObject;
+    } else {
+      if (schema.properties) {
+        schema.properties[name] = fieldSchema;
+        uiSchema[name] = fieldUiSchema;
+      }
     }
   });
-
   return { schema, uiSchema, customFields, formValues };
 };

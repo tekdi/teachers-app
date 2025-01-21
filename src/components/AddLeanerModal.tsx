@@ -9,7 +9,7 @@ import { createUser } from '@/services/CreateUserService';
 import { sendEmailOnLearnerCreation } from '@/services/NotificationService';
 import { editEditUser } from '@/services/ProfileService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
-import { generateUsernameAndPassword } from '@/utils/Helper';
+import { calculateAge, generateUsernameAndPassword } from '@/utils/Helper';
 import {
   FormContext,
   FormContextType,
@@ -28,12 +28,13 @@ import SendCredentialModal from './SendCredentialModal';
 import { showToastMessage } from './Toastify';
 import Loader from './Loader';
 import { Box } from '@mui/material';
+import { learnerFormMockResponse } from './learnerForm';
 
 interface AddLearnerModalProps {
   open: boolean;
   onClose: () => void;
   onLearnerAdded?: () => void;
-  formData?: object;
+  formData?: any;
   isEditModal?: boolean;
   userId?: string;
   onReload?: (() => void) | undefined;
@@ -42,7 +43,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   open,
   onClose,
   onLearnerAdded,
-  formData,
+  // formData,
   isEditModal = false,
   userId,
   onReload,
@@ -53,12 +54,17 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   const [openModal, setOpenModal] = React.useState(false);
   const [learnerFormData, setLearnerFormData] = React.useState<any>();
   const [fullname, setFullname] = React.useState<any>();
+  const [formData, setFormData] = React.useState({});
+  const [isUsernameEdited, setIsUsernameEdited] = React.useState(false);
+  const [originalSchema, setOriginalSchema] = React.useState(schema);
 
   const { data: formResponse, isPending } = useFormRead(
     FormContext.USERS,
     FormContextType.STUDENT
   );
-
+  const formDataFields = learnerFormMockResponse;
+  console.log('formDataFields', formDataFields);
+  console.log('formResponse', formResponse);
   const { t } = useTranslation();
   const setSubmittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.setSubmittedButtonStatus
@@ -73,6 +79,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       const { schema, uiSchema } = GenerateSchemaAndUiSchema(formResponse, t);
       setSchema(schema);
       setUiSchema(uiSchema);
+      setOriginalSchema({ ...schema });
     }
   }, [formResponse]);
 
@@ -104,21 +111,17 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
-    if(data?.formData?.name)
-    {
-      data.formData.name = data?.formData?.name?.trim()
-    }
-    if(data?.formData?.father_name)
-    {
-      data.formData.father_name = data?.formData?.father_name?.trim()
-    }
+    // if (data?.formData?.name) {
+    //   data.formData.name = data?.formData?.name?.trim();
+    // }
+    // if (data?.formData?.father_name) {
+    //   data.formData.father_name = data?.formData?.father_name?.trim();
+    // }
     setTimeout(() => {
       setLearnerFormData(data.formData);
     });
 
-
     const formData = data.formData;
-    
   };
 
   useEffect(() => {
@@ -136,14 +139,16 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         fieldData = JSON.parse(localStorage.getItem('fieldData') || '');
         cohortId = localStorage.getItem('classId');
       }
-      const { username, password } = generateUsernameAndPassword(
-        fieldData?.state?.stateCode,
-        '',
-        ''
-      );
+      const username = learnerFormData?.username;
+      const password = username;
+      // const { username, password } = generateUsernameAndPassword(
+      //   fieldData?.state?.stateCode,
+      //   '',
+      //   ''
+      // );
       const apiBody: any = {
         username: username,
-        password: password,
+        password: username,
         tenantCohortRoleMapping: [
           {
             tenantId: tenantId,
@@ -195,7 +200,6 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           fieldId: fieldData?.state?.districtId,
           value: [fieldData?.state?.districtCode],
         });
-        
       }
 
       try {
@@ -281,8 +285,89 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
   const handleChange = (event: IChangeEvent<any>) => {
     console.log('Form data changed:', event.formData);
+    const dob = event.formData.dob;
+    const dependencyKeys = Object.keys(schema.dependencies)[0];
+    const dependentFields = schema.dependencies.dob.properties;
+
+    if (!isUsernameEdited) {
+      if (event.formData.firstName && event.formData.lastName) {
+        event.formData.username =
+          event.formData.firstName + event.formData.lastName;
+      } else {
+        event.formData.username = null;
+      }
+    }
+
+    if (dob) {
+      const age = calculateAge(new Date(dob));
+
+      if (age >= 18) {
+        const newSchema = { ...schema };
+        const dependentFieldKeys = Object.keys(dependentFields);
+
+        newSchema.properties = Object.keys(newSchema.properties)
+          .filter((key) => !dependentFieldKeys.includes(key))
+          .reduce((acc: any, key) => {
+            acc[key] = newSchema.properties[key];
+            return acc;
+          }, {});
+
+        // Remove dependent fields from the formData
+        const updatedFormData = { ...event.formData };
+        dependentFieldKeys.forEach((key) => {
+          delete updatedFormData[key];
+        });
+
+        newSchema.dependencies = Object.keys(newSchema.dependencies)
+          .filter((key) => !dependentFieldKeys.includes(key))
+          .reduce((acc: any, key) => {
+            // Remove dependentFieldKeys from properties within dependencies
+            const filteredProperties = Object.keys(
+              newSchema.dependencies[key].properties
+            )
+              .filter((propKey) => !dependentFieldKeys.includes(propKey))
+              .reduce((nestedAcc: any, propKey) => {
+                nestedAcc[propKey] =
+                  newSchema.dependencies[key].properties[propKey];
+                return nestedAcc;
+              }, {});
+
+            // Add filtered dependencies back
+            acc[key] = { properties: filteredProperties };
+            return acc;
+          }, {});
+
+        setSchema(newSchema);
+        setFormData(updatedFormData);
+      } else if (age < 18) {
+        const newSchema = { ...originalSchema };
+        // Add dependent fields and reorder them in the schema
+        const reorderedFields: any[] = [];
+        const filteredFields = Object.keys(newSchema.properties).filter(
+          (key) => !Object.keys(dependentFields).includes(key)
+        );
+
+        filteredFields.forEach((key) => {
+          reorderedFields.push(key);
+          if (key === dependencyKeys) {
+            reorderedFields.push(...Object.keys(dependentFields));
+          }
+        });
+
+        newSchema.properties = reorderedFields.reduce((acc: any, key: any) => {
+          acc[key] = dependentFields[key] || newSchema.properties[key];
+          return acc;
+        }, {});
+
+        setSchema(newSchema);
+        setFormData({ ...event.formData });
+      }
+    } else {
+      setFormData(event.formData);
+    }
   };
 
+  console.log('schema: ', schema);
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
   };

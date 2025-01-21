@@ -64,32 +64,34 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   }, []);
 
   const handleError = (errors: any) => {
-    if (errors.length > 0) {
+    if (errors?.length > 0) {
       const property = errors[0].property?.replace(/^root\./, '');
-      const errorField = document.querySelector(
-        `[name$="${property}"]`
-      ) as HTMLElement;
-
-      if (errorField) {
-        errorField.focus();
-      } else {
-        const fallbackField = document.getElementById(property) as HTMLElement;
-        if (fallbackField) {
-          fallbackField.focus();
-        }
+      // const errorField = document.querySelector(
+      //   `[name$="${property}"]`
+      // ) as HTMLElement;
+      // if (errorField) {
+      //   errorField.focus();
+      // } else {
+      const fallbackField = document.getElementById(property) as HTMLElement;
+      if (fallbackField) {
+        fallbackField.focus();
       }
+      // }
     }
     onError(errors);
   };
   const sanitizeFormData = (data: any): any => {
     if (Array.isArray(data)) {
-      return data.map(item => (typeof item === "undefined" ? '' : sanitizeFormData(item)));
+      return data.map((item) =>
+        typeof item === 'undefined' ? '' : sanitizeFormData(item)
+      );
     }
     if (data !== null && typeof data === 'object') {
       return Object.fromEntries(
-       
-        Object.entries(data)?.map(([key, value]) => [key, value === "undefined" ? "" : sanitizeFormData(value)])
-
+        Object.entries(data)?.map(([key, value]) => [
+          key,
+          value === 'undefined' ? '' : sanitizeFormData(value),
+        ])
       );
     }
     return data;
