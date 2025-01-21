@@ -217,19 +217,29 @@ const CoursePlanner = () => {
 
         if (medium && grade && board) {
           console.log(medium, grade, board);
-          const getBoards = getOptionsByCategory(framework, 'board');
+          const url = `/api/framework/v1/read/${frameworkId}`;
+
+          // Use axios to fetch data from the API
+          const response = await axios.get(url);
+          const boardData = response.data;
+
+          const frameworks = boardData?.result?.framework;
+
+          const getBoards = await getOptionsByCategory(frameworks, 'board');
           console.log(getBoards);
-          const matchBoard = getBoards.find((item: any) => item.name === board);
+          const matchBoard = getBoards?.find(
+            (item: any) => item.name === board
+          );
           console.log(matchBoard);
-          const getMedium = getOptionsByCategory(framework, 'medium');
+          const getMedium = getOptionsByCategory(frameworks, 'medium');
           const matchMedium = getMedium.find(
             (item: any) => item.name === medium
           );
           console.log(matchMedium);
-          const getGrades = getOptionsByCategory(framework, 'gradeLevel');
+          const getGrades = getOptionsByCategory(frameworks, 'gradeLevel');
           const matchGrade = getGrades.find((item: any) => item.name === grade);
           console.log(matchGrade);
-          const getCourseTypes = getOptionsByCategory(framework, 'courseType');
+          const getCourseTypes = getOptionsByCategory(frameworks, 'courseType');
           const courseTypes = getCourseTypes?.map((type: any) => type.name);
           setTypeOptions(courseTypes);
           console.log(courseTypes);
@@ -294,7 +304,7 @@ const CoursePlanner = () => {
       }
     };
     fetchTaxonomyResults();
-  }, [value, selectedValue]);
+  }, [value, selectedValue, classId]);
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const newValue = event.target.value as string;
