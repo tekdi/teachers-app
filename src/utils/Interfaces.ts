@@ -96,6 +96,7 @@ export interface CohortMemberList {
     role?: string;
     status?: string[];
     name?: string | undefined;
+    firstName?:string
   };
   includeArchived?: boolean;
 }

@@ -313,7 +313,7 @@ setFilteredEntityData(result)
         const filters = {
           cohortId: selectedCohort,
         } as CohortMemberList['filters'];
-        if (searchInput !== '') filters.name = searchInput;
+        if (searchInput !== '') filters.firstName = searchInput;
         //const limit=limit;
         let response;
         if (entity === ObservationEntityType?.LEARNER) {
