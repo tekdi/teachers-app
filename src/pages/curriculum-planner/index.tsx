@@ -70,6 +70,8 @@ const CoursePlanner = () => {
   const setTaxonomySubject = taxonomyStore((state) => state.setTaxonomySubject);
   const [classId, setClassId] = useState('');
   const [boardNew, setBoardNew] = useState('');
+  const [mediumNew, setMediumNew] = useState('');
+  const [gradeNew, setGradeNew] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -89,6 +91,7 @@ const CoursePlanner = () => {
       }
     } else {
       console.log('No subjects found in localStorage.');
+      setSelectedValue('');
     }
   }, []);
 
@@ -117,7 +120,17 @@ const CoursePlanner = () => {
           const boardField = cohortDetails?.customFields?.find(
             (field: any) => field?.label === 'BOARD'
           );
+          const mediumField = cohortDetails?.customFields?.find(
+            (field: any) => field?.label === 'MEDIUM'
+          );
+          const gradeField = cohortDetails?.customFields?.find(
+            (field: any) => field?.label === 'GRADE'
+          );
           setBoardNew(boardField?.value);
+          setMediumNew(mediumField?.value);
+          setGradeNew(gradeField?.value);
+
+          console.log(boardField?.value, mediumField.value, gradeField.value);
 
           const stringFields = [
             // { label: CoursePlannerConstants.STATES, setter: setState },
@@ -211,90 +224,98 @@ const CoursePlanner = () => {
     const fetchTaxonomyResults = async () => {
       try {
         // const StateName = tStore?.state;
-        const medium = tStore?.medium;
-        const grade = tStore?.grade;
-        const board = tStore?.board;
 
-        if (medium && grade && board) {
-          console.log(medium, grade, board);
-          const getBoards = getOptionsByCategory(framework, 'board');
-          console.log(getBoards);
-          const matchBoard = getBoards.find((item: any) => item.name === board);
-          console.log(matchBoard);
-          const getMedium = getOptionsByCategory(framework, 'medium');
-          const matchMedium = getMedium.find(
-            (item: any) => item.name === medium
-          );
-          console.log(matchMedium);
-          const getGrades = getOptionsByCategory(framework, 'gradeLevel');
-          const matchGrade = getGrades.find((item: any) => item.name === grade);
-          console.log(matchGrade);
-          const getCourseTypes = getOptionsByCategory(framework, 'courseType');
-          const courseTypes = getCourseTypes?.map((type: any) => type.name);
-          setTypeOptions(courseTypes);
-          console.log(courseTypes);
+        console.log(boardNew, mediumNew, gradeNew);
 
-          const courseTypesAssociations = getCourseTypes?.map((type: any) => {
-            return {
-              code: type.code,
-              name: type.name,
-              associations: type.associations,
-            };
-          });
+        const url = `/api/framework/v1/read/${frameworkId}`;
 
-          console.log(courseTypesAssociations);
+        // Use axios to fetch data from the API
+        const response = await axios.get(url);
+        const boardData = response.data;
 
-          const courseSubjectLists = courseTypesAssociations.map(
-            (courseType: any) => {
-              const commonAssociations =
-                matchBoard?.associations?.filter(
-                  (assoc: any) =>
-                    matchMedium?.associations.some(
-                      (item: any) => item.code === assoc.code
-                    ) &&
-                    matchGrade?.associations.some(
-                      (item: any) => item.code === assoc.code
-                    )
-                ) || [];
+        const frameworks = boardData?.result?.framework;
 
-              const getSubjects = getOptionsByCategory(framework, 'subject');
+        const getBoards = await getOptionsByCategory(frameworks, 'board');
+        console.log(getBoards);
+        const matchBoard = getBoards?.find(
+          (item: any) => item.name === boardNew
+        );
+        console.log(matchBoard);
+        const getMedium = getOptionsByCategory(frameworks, 'medium');
+        const matchMedium = getMedium.find(
+          (item: any) => item.name === mediumNew
+        );
+        console.log(matchMedium);
+        const getGrades = getOptionsByCategory(frameworks, 'gradeLevel');
+        const matchGrade = getGrades.find(
+          (item: any) => item.name === gradeNew
+        );
+        console.log(matchGrade);
+        const getCourseTypes = getOptionsByCategory(frameworks, 'courseType');
+        const courseTypes = getCourseTypes?.map((type: any) => type.name);
+        setTypeOptions(courseTypes);
+        console.log(courseTypes);
 
-              const subjectAssociations = commonAssociations?.filter(
+        const courseTypesAssociations = getCourseTypes?.map((type: any) => {
+          return {
+            code: type.code,
+            name: type.name,
+            associations: type.associations,
+          };
+        });
+
+        console.log(courseTypesAssociations);
+
+        const courseSubjectLists = courseTypesAssociations.map(
+          (courseType: any) => {
+            const commonAssociations =
+              matchBoard?.associations?.filter(
                 (assoc: any) =>
-                  getSubjects.map((item: any) => assoc.code === item?.code)
-              );
-              return {
-                courseTypeName: courseType?.name,
-                courseType: courseType?.code,
-                subjects: subjectAssociations?.map(
-                  (subject: any) => subject?.name
-                ),
-              };
-            }
-          );
-          const matchedCourse = courseSubjectLists.find(
-            (course: any) => course.courseTypeName === tStore.type
-          );
+                  matchMedium?.associations.some(
+                    (item: any) => item.code === assoc.code
+                  ) &&
+                  matchGrade?.associations.some(
+                    (item: any) => item.code === assoc.code
+                  )
+              ) || [];
 
-          const matchingSubjects = matchedCourse
-            ? matchedCourse.subjects?.sort()
-            : [];
+            const getSubjects = getOptionsByCategory(framework, 'subject');
 
-          console.log(matchingSubjects);
+            const subjectAssociations = commonAssociations?.filter(
+              (assoc: any) =>
+                getSubjects.map((item: any) => assoc.code === item?.code)
+            );
+            return {
+              courseTypeName: courseType?.name,
+              courseType: courseType?.code,
+              subjects: subjectAssociations?.map(
+                (subject: any) => subject?.name
+              ),
+            };
+          }
+        );
+        const matchedCourse = courseSubjectLists.find(
+          (course: any) => course.courseTypeName === tStore.type
+        );
 
-          setSubjects(matchingSubjects);
-          localStorage.setItem(
-            'overallCommonSubjects',
-            JSON.stringify(matchingSubjects)
-          );
-          // setSubjectLists(courseSubjectLists);
-        }
+        const matchingSubjects = matchedCourse
+          ? matchedCourse.subjects?.sort()
+          : [];
+
+        console.log(matchingSubjects);
+
+        setSubjects(matchingSubjects);
+        localStorage.setItem(
+          'overallCommonSubjects',
+          JSON.stringify(matchingSubjects)
+        );
+        // setSubjectLists(courseSubjectLists);
       } catch (error) {
         console.error('Error fetching board data:', error);
       }
     };
     fetchTaxonomyResults();
-  }, [value, selectedValue]);
+  }, [value, selectedValue, classId, boardNew, mediumNew, gradeNew]);
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const newValue = event.target.value as string;
@@ -401,7 +422,7 @@ const CoursePlanner = () => {
               <Select
                 labelId="course-type-select-label"
                 id="course-type-select"
-                value={tStore?.type}
+                value={tStore?.type || COURSE_TYPE.FOUNDATION_COURSE}
                 onChange={handleChange}
                 label="Course Type"
                 sx={{

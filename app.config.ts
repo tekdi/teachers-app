@@ -71,7 +71,7 @@ export const DaysOfWeek = {
   Sat: 6,
 };
 
-export const Program = ['Second Chance', 'secondchance'];
+export const Program = ['SCP'];
 
 export const tenantId =
   (typeof window !== 'undefined' && localStorage.getItem('tenantId')) ||
@@ -91,10 +91,9 @@ if (!frameworkId) {
 }
 
 export enum AssessmentType {
-  PRE_TEST = 'pre-test',
-  POST_TEST = 'post-test',
+  PRE_TEST = 'Pre Test',
+  POST_TEST = 'Post Test',
 }
-
 export const RequisiteType = {
   PRE_REQUISITES: 'prerequisite',
   POST_REQUISITES: 'postrequisite',
