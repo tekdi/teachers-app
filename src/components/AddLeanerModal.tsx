@@ -289,14 +289,14 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     const dependencyKeys = Object.keys(schema.dependencies)[0];
     const dependentFields = schema.dependencies.dob.properties;
 
-    if (!isUsernameEdited) {
-      if (event.formData.firstName && event.formData.lastName) {
-        event.formData.username =
-          event.formData.firstName + event.formData.lastName;
-      } else {
-        event.formData.username = null;
-      }
-    }
+    // if (!isUsernameEdited) {
+    //   if (event.formData.firstName && event.formData.lastName) {
+    //     event.formData.username =
+    //       event.formData.firstName + event.formData.lastName;
+    //   } else {
+    //     event.formData.username = null;
+    //   }
+    // }
 
     if (dob) {
       const age = calculateAge(new Date(dob));
