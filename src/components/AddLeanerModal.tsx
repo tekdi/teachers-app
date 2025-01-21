@@ -258,7 +258,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
                 username,
                 password,
                 userEmail,
-                apiBody['name']
+                apiBody['firstName']
               );
             } else {
               showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');

@@ -433,7 +433,7 @@ export interface FieldOption {
 
 export interface Field {
   name: string;
-  type: 'text' | 'numeric' | 'drop_down' | 'checkbox' | 'radio' | 'email';
+  type: 'text' | 'numeric' | 'drop_down' | 'checkbox' | 'radio' | 'email' | 'date';
   label: string;
   order: string;
   coreField: number;
