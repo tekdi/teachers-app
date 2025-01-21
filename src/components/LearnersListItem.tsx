@@ -408,15 +408,15 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const stringAvatar = (name: string) => {
     if (name) {
       const nameParts = name.split(' ');
-
+  
       return {
         children:
           nameParts.length === 1
             ? nameParts[0][0]
-            : `${nameParts[0][0]}${nameParts[1][0]}`,
+            : `${nameParts[0][0]}${nameParts[1]?.[0] || ''}`, 
       };
     }
-
+  
     return '';
   };
 

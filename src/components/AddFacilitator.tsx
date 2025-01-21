@@ -9,6 +9,7 @@ import {
   RoleId,
   Status,
   Telemetry,
+  fieldKeys,
 } from '@/utils/app.constant';
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga4';
@@ -221,7 +222,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         const fieldSchema = schemaProperties[fieldKey];
         const fieldId = fieldSchema?.fieldId;
 
-        if (fieldId === null || fieldId === 'null') {
+        if (fieldId === null || fieldId === 'null' || fieldKey===fieldKeys.GENDER) {
           if (typeof fieldValue !== 'object') {
             apiBody[fieldKey] = fieldValue;
             if (fieldKey === 'name') {
@@ -355,7 +356,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                   telemetryFactory.interact(telemetryInteract);
 
                   await sendEmail(
-                    apiBody['name'],
+                    apiBody['firstName'],
                     formData?.email,
                     password,
                     formData?.email
