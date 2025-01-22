@@ -255,3 +255,6 @@ export enum sessionType {
   PLANNED = 'planned',
   EXTRA = 'extra',
 }
+export enum fieldKeys {
+  GENDER="gender"
+}

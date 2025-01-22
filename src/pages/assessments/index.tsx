@@ -117,8 +117,7 @@ const Assessments = () => {
         if (resp) {
           const userDetails = resp.map((user: any) => ({
             ...user,
-            name: toPascalCase(user.name),
-            userId: user.userId,
+            name: toPascalCase(user?.firstName || '') + ' ' + (user?.lastName ? toPascalCase(user.lastName) : ""),            userId: user.userId,
           }));
           setCohortMembers(userDetails);
         }
