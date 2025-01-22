@@ -222,8 +222,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   const fetchDataAndInitializeForm = async () => {
     try {
       const response = await getUserDetails(userId, true);
-      setSelectedUserUserName(response?.userData?.username);
-      setSelectedUserEmail(response?.userData?.email);
+      setSelectedUserUserName(response?.result?.userData?.username);
+      setSelectedUserEmail(response?.result?.userData?.email);
    
 
 

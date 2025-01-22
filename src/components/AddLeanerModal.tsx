@@ -213,7 +213,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             email: apiBody?.email,
             firstName:apiBody?.firstName,
             middleName:apiBody?.middleName,
-            lastName:apiBody?.lastName
+            lastName:apiBody?.lastName,
+            dob:apiBody?.dob,
+            gender:apiBody?.gender
           };
           const customFields = apiBody.customFields;
           const object = {
