@@ -258,7 +258,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
                 username,
                 password,
                 userEmail,
-                apiBody['name']
+                apiBody['firstName']
               );
             } else {
               showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -266,8 +266,11 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           }
         }
       } catch (error: any) {
-        if (error?.response?.data?.params?.err === 'User already exist.') {
-          showToastMessage(error?.response?.data?.params?.err, 'error');
+        if (error?.response?.data?.params?.err === "User already exist.") {
+          showToastMessage(error?.response?.data?.params?.err, "error");
+        } 
+        else if (error?.response?.data?.params?.errmsg === "Email already exists") {
+          showToastMessage(error?.response?.data?.params?.errmsg, "error");
         } else {
           showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         }
