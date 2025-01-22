@@ -92,7 +92,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   const { userId }: any = router.query;
   const store = useStore();
   const isActiveYear = store.isActiveYearSelected;
-
+  const [selectedUserEmail, setSelectedUserEmail] = useState("");
+  const [selectedUserUserName, setSelectedUserUserName] = useState("");
   const [assesmentData, setAssesmentData] = useState<any>(null);
   const [test, setTest] = React.useState('Pre Test');
   const [subject, setSubject] = React.useState('English');
@@ -221,6 +222,12 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   const fetchDataAndInitializeForm = async () => {
     try {
       const response = await getUserDetails(userId, true);
+      setSelectedUserUserName(response?.result?.userData?.username);
+      setSelectedUserEmail(response?.result?.userData?.email);
+   
+
+
+
       const formFields = await getFormRead(
         FormContext.USERS,
         FormContextType.STUDENT
@@ -919,6 +926,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                 isEditModal={true}
                 userId={userId}
                 onReload={handleReload}
+                learnerEmailId={selectedUserEmail}
+                learnerUserName={selectedUserUserName}
               />
             </div>
           )}

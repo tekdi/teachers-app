@@ -49,6 +49,8 @@ interface AddFacilitatorModalprops {
   userId?: string;
   onReload?: (() => void) | undefined;
   onFacilitatorAdded?: (() => void) | undefined;
+  facilitatorEmailId?: string;
+  facilitatorUserName?: string;
 }
 const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   open,
@@ -58,6 +60,8 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   userId,
   onReload,
   onFacilitatorAdded,
+  facilitatorEmailId,
+  facilitatorUserName
 }) => {
   const [schema, setSchema] = React.useState<any>();
   const [openSendCredModal, setOpenSendCredModal] = React.useState(false);
@@ -284,10 +288,19 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             userData[fieldName] = apiBody[fieldName];
           });
           const customFields = apiBody?.customFields;
+          console.log('userData.email', facilitatorEmailId);
+          if(facilitatorEmailId===userData.email)
+          {
+            delete userData.email;
+
+          }
+          if(facilitatorUserName===userData.username)
+          delete userData.username;
           const object = {
             userData: userData,
             customFields: customFields,
           };
+          
           const response = await editEditUser(userId, object);
           if (response) {
             showToastMessage(
