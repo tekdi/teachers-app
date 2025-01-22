@@ -302,9 +302,15 @@ const CoursePlanner = () => {
           ? matchedCourse.subjects?.sort()
           : [];
 
-        console.log(matchingSubjects);
+        const uniqueSubjects = matchingSubjects.filter(
+          (value: any, index: any, self: string | any[]) => {
+            return self.indexOf(value) === index;
+          }
+        );
 
-        setSubjects(matchingSubjects);
+        setSubjects(uniqueSubjects);
+
+        // setSubjects(matchingSubjects);
         localStorage.setItem(
           'overallCommonSubjects',
           JSON.stringify(matchingSubjects)
