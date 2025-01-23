@@ -85,8 +85,8 @@ const index = () => {
               display={'flex'}
               flexDirection={'row'}
               gap={'2rem'}
-              mr={"20px"}
-            // justifyContent={'space-around'}
+              mr={'20px'}
+              // justifyContent={'space-around'}
             >
               <SearchBar
                 onSearch={setSearchInput}
@@ -147,7 +147,7 @@ const index = () => {
                   cursor: 'pointer',
                   padding: '5px 5px',
                 }}
-                className='one-line-text'
+                className="one-line-text"
               >
                 Village Name
               </Typography>
@@ -164,26 +164,28 @@ const index = () => {
                 Total Count (+ New Registrations today)
               </Typography>
             </Box>
-            <Box sx={{
-              px: '20px',
-              mt: '15px'
-            }}>
-            <UserList users={villageList} />
+            <Box
+              sx={{
+                px: '20px',
+                mt: '15px',
+              }}
+            >
+              <UserList layout="list" users={villageList} />
             </Box>
-         
           </>
         )}
       </Box>
       <Box>
         {value === 2 && (
           <>
-            <Box sx={{
-              px: '20px',
-              mt: '15px'
-            }}>
-            <UserList users={youthList} />
-           </Box>
-          
+            <Box
+              sx={{
+                px: '20px',
+                mt: '15px',
+              }}
+            >
+              <UserList layout="list" users={youthList} />
+            </Box>
           </>
         )}
       </Box>
@@ -199,7 +201,3 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 export default index;
-
-
-
-
