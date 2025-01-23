@@ -591,7 +591,11 @@
     "WHAT_DO_YOU_WANT_TO_BECOME": "What do you want to become?",
     "EDUCATIONAL_INSTITUTE": "Educational Institute",
     "UNEMPLOYED_OR_DOMESTIC_WORK":"Unemployed or Domestic Work",
-    "SELF_PLACED":"Self Placed"
+    "SELF_PLACED":"Self Placed",
+    "TRANSGENDER":"Transgender",
+    "HINDI":"Hindi",
+    "MARATHI":"Marathi",
+    "URDU":"Urdu"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",

@@ -830,6 +830,7 @@ export interface UserEntry {
   memberStatus: string;
   createdAt: string;
   updatedAt: string;
+  firstName?: string
 }
 
 export function getLatestEntries(

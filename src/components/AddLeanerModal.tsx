@@ -207,7 +207,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         if (isEditModal && userId && cohortId) {
           const userData = {
             name: apiBody.name,
-            mobile: apiBody.mobile,
+            mobile: String(apiBody?.phone_number),
             father_name: apiBody.father_name,
             username: apiBody.username,
             email: apiBody?.email,
