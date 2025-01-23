@@ -63,6 +63,8 @@ function AssessmentsDetails() {
   );
   const [assessmentList, setAssessmentList] = useState([]);
   const [subject, setSubject] = useState<any>([]);
+  const [fullName, setFullName] = useState<any>("");
+
   const [assessmentInfo, setAssessmentInfo] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   const [userDetails, setUserDetails] = useState<any>({});
@@ -229,6 +231,20 @@ function AssessmentsDetails() {
         });
         if (response?.result?.userData) {
           setUserDetails(response?.result?.userData);
+          let fullName = "";
+
+              if (response?.result?.userData?.firstName) {
+                fullName += toPascalCase(response?.result?.userData.firstName);
+              }
+              
+              if (response?.result?.userData?.middleName) {
+                fullName += (fullName ? " " : "") + toPascalCase(response?.result?.userData.middleName);
+              }
+              
+              if (response?.result?.userData?.lastName) {
+                fullName += (fullName ? " " : "") + toPascalCase(response?.result?.userData.lastName);
+              }
+              setFullName(fullName);
         }
       } catch (error) {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -316,7 +332,7 @@ function AssessmentsDetails() {
           }}
         />
         <Typography fontSize={'22px'} m={'1rem'}>
-          {toPascalCase(userDetails?.name)}
+          {fullName}
         </Typography>
       </Box>
 
