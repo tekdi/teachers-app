@@ -480,7 +480,7 @@ const CentersPage = () => {
                 ) &&
                   isActiveYear && (
                     <Box mt={'18px'} px={'18px'}>
-                      <Button
+                      {/* <Button
                         sx={{
                           border: '1px solid #1E1B16',
                           borderRadius: '100px',
@@ -516,7 +516,7 @@ const CentersPage = () => {
                         }}
                       >
                         {t('BLOCKS.CREATE_NEW')}
-                      </Button>
+                      </Button> */}
                     </Box>
                   )}
               </Grid>
