@@ -54,6 +54,8 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 }) => {
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
+  const [customFormData, setCustomFormData] = React.useState<any>(formData);
+
   const [reloadProfile, setReloadProfile] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const [learnerFormData, setLearnerFormData] = React.useState<any>();
@@ -305,9 +307,22 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     }
   };
 
+ 
   const handleChange = (event: IChangeEvent<any>) => {
-    console.log('Form data changed:', event.formData);
+    if (!isEditModal) {
+      const { firstName, lastName } = event.formData;
+  
+      if (firstName && lastName) {
+        event.formData.username = firstName + lastName;
+      } else {
+        event.formData.username = "";
+      }
+      setCustomFormData({ ...event.formData });
+
+    }
+  
   };
+  
 
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
@@ -355,7 +370,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             widgets={{}}
             showErrorList={true}
             customFields={customFields}
-            formData={formData ?? undefined}
+            formData={customFormData ?? undefined}
           >
             <FormButtons
               formData={formData ?? learnerFormData}
