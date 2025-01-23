@@ -37,6 +37,9 @@ interface AddLearnerModalProps {
   isEditModal?: boolean;
   userId?: string;
   onReload?: (() => void) | undefined;
+  learnerEmailId?: string;
+  learnerUserName?: string;
+
 }
 const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   open,
@@ -46,6 +49,8 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   isEditModal = false,
   userId,
   onReload,
+  learnerUserName,
+  learnerEmailId
 }) => {
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
@@ -205,12 +210,26 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             mobile: apiBody.mobile,
             father_name: apiBody.father_name,
             username: apiBody.username,
+            email: apiBody?.email,
+            firstName:apiBody?.firstName,
+            middleName:apiBody?.middleName,
+            lastName:apiBody?.lastName,
+            dob:apiBody?.dob,
+            gender:apiBody?.gender
           };
           const customFields = apiBody.customFields;
           const object = {
             userData: userData,
             customFields: customFields,
           };
+
+          if(learnerEmailId===userData.email)
+          {
+            delete userData.email;
+
+          }
+          if(learnerUserName===userData.username)
+          delete userData.username;
           const response = await editEditUser(userId, object);
           if (response) {
             showToastMessage(

@@ -57,7 +57,9 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const [reload, setReload] = React.useState(false);
   const [selfUserId, setSelfUserId] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
-
+  const [selectedUserEmail, setSelectedUserEmail] = useState("");
+  const [selectedUserUserName, setSelectedUserUserName] = useState("");
+  
   const { isRTL } = useDirection();
 
   const { data: formResponse } = useFormRead(
@@ -173,6 +175,9 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const fetchDataAndInitializeForm = async () => {
     try {
       if (formResponse && userDetails) {
+        setSelectedUserUserName(userDetails?.result?.userData?.username);
+      setSelectedUserEmail(userDetails?.result?.userData?.email);
+   
         setUserFormData(mapFields(formResponse, userDetails?.result));
       }
     } catch (error) {
@@ -495,6 +500,8 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                 isEditModal={true}
                 userId={userId}
                 onReload={handleReload}
+                facilitatorEmailId={selectedUserEmail}
+                facilitatorUserName={selectedUserUserName}
               />
             )}
             <Box
