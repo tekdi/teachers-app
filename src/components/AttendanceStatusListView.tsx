@@ -122,7 +122,7 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
             setUserName(fullName);
 
             setContactNumber(userData?.mobile);
-            setEnrollmentNumber(capitalizeEachWord(userData?.username));
+            setEnrollmentNumber(userData?.username);
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);

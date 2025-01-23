@@ -199,7 +199,22 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
 
     if (userDetails) {
       const coreFieldData = userDetails?.result?.userData;
-      setUserName(toPascalCase(coreFieldData?.name));
+      let fullName = "";
+
+      if (coreFieldData?.firstName) {
+        fullName += toPascalCase(coreFieldData.firstName);
+      }
+      
+      if (coreFieldData?.middleName) {
+        fullName += (fullName ? " " : "") + toPascalCase(coreFieldData.middleName);
+      }
+      
+      if (coreFieldData?.lastName) {
+        fullName += (fullName ? " " : "") + toPascalCase(coreFieldData.lastName);
+      }
+      
+      setUserName(fullName);
+      // setUserName(toPascalCase(coreFieldData?.name));
       const fields: CustomField[] = userDetails?.result?.userData?.customFields;
       if (fields?.length > 0) {
         setAddress(
@@ -524,7 +539,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
             >
               <Grid container spacing={4}>
                 {filteredSortedForView?.map((item) => {
-                  if (String(item.order) === '7') {
+                  if (String(item.order) === '9') {
                     return (
                       <Grid item xs={12} key={item?.label}>
                         <Typography
@@ -587,7 +602,9 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                         </Box>
                       </Grid>
                     );
-                  } else if (item.order === 7) {
+                  } 
+                  
+                  else if (item.order === 7) {
                     return (
                       <Grid item xs={12} key={item.label}>
                         <Typography

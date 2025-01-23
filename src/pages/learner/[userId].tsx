@@ -159,6 +159,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   };
 
   const mapFields = (formFields: any, response: any) => {
+    response.userData.phone_number=response.userData.mobile
     const initialFormData: any = {};
     formFields.fields.forEach((item: any) => {
       const userData = response?.userData;
@@ -318,7 +319,6 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
               }
               
               setUserName(fullName);
-              setUserName(toPascalCase(coreFieldData?.firstName)+" "+toPascalCase(coreFieldData?.middleName)+" "+toPascalCase(coreFieldData?.lastName));
               const fields: CustomField[] =
                 data?.result?.userData?.customFields;
               if (fields?.length > 0) {
@@ -343,7 +343,9 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                     FormContext.USERS,
                     FormContextType.STUDENT
                   );
-                  if (response) {
+                  if (response) {    
+
+
                     const mergeData = (
                       fieldIdToValueMap: { [key: string]: string },
                       response: any

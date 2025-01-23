@@ -595,7 +595,9 @@
     "TRANSGENDER":"Transgender",
     "HINDI":"Hindi",
     "MARATHI":"Marathi",
-    "URDU":"Urdu"
+    "URDU":"Urdu",
+    "DIVORCED/WIDOW":"Divorced/Widow"
+
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
