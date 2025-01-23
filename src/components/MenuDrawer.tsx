@@ -5,9 +5,7 @@ import { accessGranted } from '@/utils/Helper';
 import { AcademicYear } from '@/utils/Interfaces';
 import ClearIcon from '@mui/icons-material/Clear';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import EditNoteIcon from '@mui/icons-material/EditNote';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
 import {
   Button,
@@ -32,6 +30,8 @@ import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 import board from '../assets/images/Board.svg';
 import support from '../assets/images/Support.svg';
 import checkBook from '../assets/images/checkbook.svg';
+import assessment from '../assets/images/assessment.svg';
+import surveyForm from '../assets/images/surveyForm.svg';
 import { useDirection } from '../hooks/useDirection';
 import GroupsIcon from '@mui/icons-material/Groups';
 interface DrawerProps {
@@ -487,7 +487,14 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 },
                 marginTop: '15px',
               }}
-              startIcon={<EditNoteIcon sx={{ fontSize: '24px !important' }} />}
+              startIcon={
+                <Image
+                src={surveyForm}
+                alt="SurveyForm-Icon"
+                width={24}
+                height={24}
+              />
+            }
               onClick={navigateToObservation}
             >
               {t('OBSERVATION.SURVEY_FORMS')}
@@ -563,9 +570,12 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   gap: '10px',
                 }}
                 startIcon={
-                  <EventAvailableOutlinedIcon
-                    sx={{ fontSize: '24px !important' }}
-                  />
+                  <Image
+                  src={assessment}
+                  alt="Assessment Icon"
+                  width={24}
+                  height={24}
+                />
                 }
                 onClick={() => {
                   router.push(`/assessments`);

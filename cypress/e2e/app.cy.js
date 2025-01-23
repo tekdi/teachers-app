@@ -5,7 +5,7 @@ context('App', () => {
 
   it('verify the title', () => {
     cy.clearLocalStorage();
-    cy.title().should('eq', 'Pratham Learning Management App');
+    cy.title().should('eq', 'Pratham Learning Management Portal');
   });
 
   it('CSSLocator', () => {
