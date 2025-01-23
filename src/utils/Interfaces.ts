@@ -119,6 +119,7 @@ export interface UserData {
   district: string;
   state: string;
   mobile?: string;
+  firstName?:string
 }
 
 export interface IUserData {
@@ -269,6 +270,7 @@ export interface ICohort {
   value: string;
   state: string;
   customField?: any;
+  firstName?:string
 }
 
 export interface LearListHeaderProps {
