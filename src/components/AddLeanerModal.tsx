@@ -241,6 +241,10 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             onClose();
           }
         } else {
+          if(apiBody?.phone_number)
+          {
+            apiBody.mobile = apiBody?.phone_number;
+          }
           const response = await createUser(apiBody);
           if (response) {
             showToastMessage(

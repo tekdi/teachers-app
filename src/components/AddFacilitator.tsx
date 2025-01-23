@@ -296,6 +296,9 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           }
           if(facilitatorUserName===userData.username)
           delete userData.username;
+        
+          userData.gender=apiBody?.gender
+
           const object = {
             userData: userData,
             customFields: customFields,
@@ -335,7 +338,12 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             setOpenSendCredModal(true);
             if (createFacilitator) {
               try {
-                const response = await createUser(apiBody);
+                if(apiBody?.phone_number)
+                {
+                  apiBody.mobile = apiBody?.phone_number;
+                }
+                
+               const response = await createUser(apiBody);
 
                 if (response) {
                   onFacilitatorAdded?.();

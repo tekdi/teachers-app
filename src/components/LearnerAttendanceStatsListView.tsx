@@ -112,7 +112,7 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           data={filteredFields}
           userName={fullName}
           contactNumber={userData?.mobile}
-          enrollmentNumber={capitalizeEachWord(userData?.username || '')}
+          enrollmentNumber={userData?.username || ''}
         />
       )}
       <Stack>

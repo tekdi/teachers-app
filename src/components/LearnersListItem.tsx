@@ -305,7 +305,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
             setUserData(userData);
             setUserName(userData?.firstName+' '+userData?.middleName+' '+userData?.lastName);
             setContactNumber(userData?.mobile);
-            setEnrollmentNumber(capitalizeEachWord(userData?.username));
+            setEnrollmentNumber(userData?.username);
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
