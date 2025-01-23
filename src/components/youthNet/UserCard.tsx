@@ -19,7 +19,7 @@ type UserCardProps = {
   image?: string;
   joinOn?: string;
   isNew?: boolean;
-  showMore?: bolean;
+  showMore?: boolean;
   totalCount?: number;
   newRegistrations?: number;
 };
@@ -65,11 +65,13 @@ const UserCard: React.FC<UserCardProps> = ({
             sx={{
               width: 48,
               height: 48,
-              backgroundColor: image ? 'transparent' : '#f5f5f5',
+              backgroundColor: image
+                ? 'transparent'
+                : theme.palette.warning['800'],
               fontSize: 18,
               fontWeight: '400',
               color: 'black',
-              border: '2px solid #CDC5BD',
+              border: `2px solid ${theme.palette.warning['800']}`,
               boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
             }}
           >
@@ -87,7 +89,7 @@ const UserCard: React.FC<UserCardProps> = ({
           <Typography
             sx={{
               fontSize: '16px',
-              color: '#0D599E',
+              color: theme.palette.secondary.main,
               textDecoration: 'underline',
               cursor: 'pointer',
               padding: '5px 5px',
@@ -103,7 +105,11 @@ const UserCard: React.FC<UserCardProps> = ({
                 </Typography>
               )}
               {isNew && (
-                <Typography variant="body2" color="#1A8825" fontWeight={600}>
+                <Typography
+                  variant="body2"
+                  color={theme.palette.success.main}
+                  fontWeight={600}
+                >
                   NEW
                 </Typography>
               )}
