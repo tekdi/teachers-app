@@ -610,12 +610,15 @@
     "MIN_LENGTH_CHARACTERS_ERROR": "Minimum {{minLength}} characters required",
     "MAX_LENGTH_CHARACTERS_ERROR": "Maximum {{maxLength}} characters allowed",
     "NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "Numbers and special characters are not allowed",
+
     "ENTER_VALID_MOBILE_NUMBER": "Enter Valid mobile number",
     "ENTER_VALID_EMAIL": "Enter valid Email",
     "ENTER_VALID_YEAR": "Enter valid Year",
     "MUST_BE_LESS_THAN": "{{fieldname}} must be less than {{maxLength}}",
     "MUST_BE_GREATER_THAN": "{{fieldname}} must be greater than {{minLength}}",
-    "ENTER_VALID_CENTER_NAME": "Enter valid center name"
+    "ENTER_VALID_CENTER_NAME": "Enter valid center name",
+    "SPACE_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "Space and special characters are not allowed"
+
   },
   "COURSE_PLANNER": {
     "COURSE_PLANNER": "Curriculum Plan",
