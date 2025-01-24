@@ -186,6 +186,16 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               );
               break;
             }
+            case '^[a-zA-Z0-9.@]+$':
+          
+          {
+            error.message = t(
+              'FORM_ERROR_MESSAGES.SPACE_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
+            );
+            break;
+
+
+          }
             default: {
               if (error?.property === '.email') {
                 const validEmail = emailPattern.test(pattern);
