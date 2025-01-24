@@ -280,7 +280,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             if (creatorName && userEmail) {
               sendEmail(
                 creatorName,
-                username,
+                apiBody['username'],
                 password,
                 userEmail,
                 apiBody['firstName']
@@ -309,17 +309,17 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
  
   const handleChange = (event: IChangeEvent<any>) => {
-    if (!isEditModal) {
-      const { firstName, lastName } = event.formData;
+    // if (!isEditModal) {
+    //   const { firstName, lastName } = event.formData;
   
-      if (firstName && lastName) {
-        event.formData.username = firstName + lastName;
-      } else {
-        event.formData.username = "";
-      }
-      setCustomFormData({ ...event.formData });
+    //   if (firstName && lastName) {
+    //     event.formData.username = firstName + lastName;
+    //   } else {
+    //     event.formData.username = "";
+    //   }
+    //   setCustomFormData({ ...event.formData });
 
-    }
+    // }
   
   };
   
