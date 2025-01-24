@@ -247,8 +247,8 @@ export const GenerateSchemaAndUiSchema = (
         fieldSchema.pattern = getCurrentYearPattern();
       }
       if (field?.validation?.includes('dob')) {
-        fieldSchema.minimum = '1900-01-01';
-        fieldSchema.maximum = getLastDayDate();
+        // fieldSchema.minimum = '1900-01-01';
+        // fieldSchema.maximum = getLastDayDate();
       }
       fieldSchema.validation = field.validation;
     }
