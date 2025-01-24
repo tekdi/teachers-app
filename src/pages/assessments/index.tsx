@@ -503,7 +503,7 @@ const Assessments = () => {
                 color: theme?.palette?.warning['400'],
               }}
             >
-              {testCompletionCount.totalCount > 0 && (
+              {testCompletionCount?.totalCount > 0 && (
                 <span>
                   {`${testCompletionCount.completionCount} ${t('ASSESSMENTS.OUT_OF')} ${testCompletionCount.totalCount}`}{' '}
                   {t('ASSESSMENTS.COMPLETED_THE_ASSESSMENT')}
