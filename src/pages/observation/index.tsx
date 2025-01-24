@@ -24,6 +24,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { entityList } from '../../../app.config';
+import { useTheme } from '@mui/material/styles';
 
 const ObservationForms: React.FC = () => {
   const [entityNames, setEntityNames] = useState<String[]>();
@@ -33,6 +34,7 @@ const ObservationForms: React.FC = () => {
   );
   const router = useRouter();
   const { t } = useTranslation();
+  const theme = useTheme<any>();
   const [selectedOption, setSelectedOption] = useState('all');
   const [sortOrder, setSortOrder] = useState('');
   const currentDate = new Date();
@@ -236,6 +238,21 @@ const ObservationForms: React.FC = () => {
   return (
     <div>
       <Header />
+      <Box
+        display={'flex'}
+        width={'100%'}
+        sx={{ backgroundColor: theme.palette.warning['A400'] }}
+      >
+        <Typography
+          textAlign={'left'}
+          fontSize={'22px'}
+          m={'1.5rem 1.2rem 0.8rem'}
+          color={theme?.palette?.warning['300']}
+          className="joyride-step-1"
+        >
+          {t('YOUTHNET_SURVEY.SURVEY')}
+        </Typography>
+      </Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={value}
@@ -286,13 +303,12 @@ const ObservationForms: React.FC = () => {
             {value === 0 && (
               <FormControl
                 sx={{
-                  width: { xs: '100%', sm: '100%', md: "100%"  },
+                  width: { xs: '100%', sm: '100%', md: '100%' },
                 }}
                 variant="outlined"
                 margin="normal"
               >
-                <InputLabel sx=
-                  {{ mx: '20px' }}  id="days-sort-label">
+                <InputLabel sx={{ mx: '20px' }} id="days-sort-label">
                   <Typography variant="h3">
                     {t('OBSERVATION.DAYS_LEFT')}{' '}
                   </Typography>
@@ -302,10 +318,14 @@ const ObservationForms: React.FC = () => {
                   value={sortOrder}
                   onChange={handleSortChange}
                   label={t('OBSERVATION.DAYS_LEFT')}
-                  sx={{ height: '50px' , mx:'20px' }}
+                  sx={{ height: '50px', mx: '20px' }}
                 >
-                  <MenuItem value="lowToHigh">{t('COMMON.LOW_TO_HIGH')}</MenuItem>
-                  <MenuItem value="highToLow">{t('COMMON.HIGH_TO_LOW')}</MenuItem>
+                  <MenuItem value="lowToHigh">
+                    {t('COMMON.LOW_TO_HIGH')}
+                  </MenuItem>
+                  <MenuItem value="highToLow">
+                    {t('COMMON.HIGH_TO_LOW')}
+                  </MenuItem>
                 </Select>
               </FormControl>
             )}
@@ -316,7 +336,7 @@ const ObservationForms: React.FC = () => {
               window.localStorage &&
               localStorage.getItem('role') === Role.TEAM_LEADER && (
                 <FilterSelect
-                  px={"20px"}
+                  px={'20px'}
                   menuItems={menuItems}
                   selectedOption={selectedOption}
                   handleFilterChange={handleFilterChange}
@@ -345,9 +365,9 @@ const ObservationForms: React.FC = () => {
             <Box>
               <Grid container spacing={2}>
                 {value === 0 &&
-                  filteredObservationData.filter(
-                    (item: any) => item.entityType === name
-                  ).length > 0 ? (
+                filteredObservationData.filter(
+                  (item: any) => item.entityType === name
+                ).length > 0 ? (
                   filteredObservationData
                     .filter(
                       (item: any) =>
