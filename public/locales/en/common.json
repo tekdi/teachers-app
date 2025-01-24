@@ -596,8 +596,9 @@
     "HINDI":"Hindi",
     "MARATHI":"Marathi",
     "URDU":"Urdu",
-    "DIVORCED/WIDOW":"Divorced/Widow"
-
+    "DIVORCED/WIDOW":"Divorced/Widow",
+    "GRADUATE":"Graduate",
+    "POST_GRADUATE":"Post Graduate"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
