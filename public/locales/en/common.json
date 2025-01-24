@@ -633,7 +633,7 @@
     "ASSESSMENTS": "Assessments",
     "CENTER": "Center",
     "ASSESSMENT_TYPE": "Assessment Type",
-    "COMPLETED_THE_ASSESSMENT": "completed the assessment",
+    "COMPLETED_THE_ASSESSMENT": "completed all the assigned assessments",
     "SUBMITTED_ON": "Submitted On",
     "CORRECT_ANSWER": "correct answers",
     "NO_DATA_FOUND": "No data found",
@@ -649,7 +649,8 @@
     "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} out of {{totalCount}} completed",
     "NO_SUBTOPIC_SELECTED": "No Subtopic selected",
     "NO_SUBJECT_FOUND": "No Subject found",
-    "NO_ASSIGNED": "No assigned"
+    "NO_ASSIGNED": "No assigned",
+    "OUT_OF": "Out of"
   },
   "BOARD_ENROLMENT": {
     "BOARD_ENROLLMENT": "Board Enrollment",
