@@ -1,7 +1,7 @@
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortFacilitatorList } from '@/services/MyClassDetailsService';
 import useStore from '@/store/store';
-import { Status, limit } from '@/utils/app.constant';
+import { Status, pagesLimit } from '@/utils/app.constant';
 import {
   toPascalCase
 } from '@/utils/Helper';
@@ -65,7 +65,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       try {
         if (cohortId) {
           const filters = { cohortId: cohortId };
-          const limit = 10
+          const limit = pagesLimit
           const page=offset
           const response = await getMyCohortFacilitatorList({
             limit,
@@ -132,8 +132,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   };
 
   const PAGINATION_CONFIG = {
-    ITEMS_PER_PAGE: 10,
-    INFINITE_SCROLL_INCREMENT: 10,
+    ITEMS_PER_PAGE: pagesLimit,
+    INFINITE_SCROLL_INCREMENT: pagesLimit,
   };
 
   // const fetchData = async () => {
@@ -148,7 +148,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   // };
   const handlePageChange = (newPage: number) => {
     setPage(newPage-1);
-    setOffset((newPage-1)*10)
+    setOffset((newPage - 1) * pagesLimit)
   };
   
   
@@ -208,7 +208,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 }}
               >
                 {
-                  (isMobile ? infiniteData.length > 10 : (filteredData && filteredData?.length > 10)) && (
+                  (isMobile ? infiniteData.length > pagesLimit : (filteredData && filteredData?.length > pagesLimit)) && (
                     <CustomPagination
                       count={Math.ceil(totalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE)}
                       page={page + 1}

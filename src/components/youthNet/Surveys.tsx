@@ -29,7 +29,7 @@ function Surveys({
           padding: '12px',
           cursor: 'pointer',
           background: 'white',
-          minHeight: minHeight
+          minHeight: minHeight || '100%'
         }}
         display="flex"
         justifyContent="space-between"

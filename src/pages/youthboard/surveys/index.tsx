@@ -26,6 +26,10 @@ const surveys = () => {
     router.push(`/youthboard/campDetails/${villageNameStringNew}${title}`);
   };
 
+  const handleAddVolunteers = () => {
+    router.push('/youthboard/volunteerList');
+  };
+
   return (
     <>
         <Box>
@@ -79,37 +83,29 @@ const surveys = () => {
             background: '#FBF4E4',
           }}>
             <Grid container spacing={2}>
-              {surveysData.map((survey, index) => (
-                <Grid item xs={12} sm={12} md={6} lg={4}> 
-                <Surveys
-                  key={index}
-                  title={survey?.title}
-                  date={survey?.date}
-                  villages={survey?.details?.villages}
-                  status={survey?.details?.status}
-                  actionRequired={survey?.details?.actionRequired}
-                  minHeight={'98px'}
-                />
-                </Grid>
-              ))}
+              {surveysData && surveysData.length > 0 ? (
+                surveysData.map((survey , index) => (
+                  <Grid item xs={12} sm={12} md={6} lg={4} key={index}>
+                    <Surveys
+                      title={survey.title}
+                      date={survey.date}
+                      villages={survey.details.villages}
+                      status={survey.details.status}
+                      actionRequired={survey.details.actionRequired}
+                      minHeight="98px"
+                      onClick={handleAddVolunteers}
+                    />
+                  </Grid>
+                ))
+              ) : (
+                  <NoDataFound />
+              )}
             </Grid>
           </Box>
         )}
         {value === 2 && (
           <Box sx={{ mt: 4, p: 2, background: '#FBF4E4' }}>
-            {volunteerData?.length > 0 ? (
-              volunteerData?.map((data) => (
-                <VolunteerListCard
-                  key={data?.id}
-                  title={data?.title}
-                  entries={data?.entries}
-                  volunteerCount={data?.volunteerCount}
-                  actionLabel={data?.actionLabel}
-                />
-              ))
-            ) : (
-              <NoDataFound />
-            )}
+            coming soon
           </Box>
         )}
         </Box>

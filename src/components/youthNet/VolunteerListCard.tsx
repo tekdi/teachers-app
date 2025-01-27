@@ -84,7 +84,7 @@ const VolunteerListCard: React.FC<CardProps> = ({
             component="button"
             variant="body2"
             color="primary"
-            onClick={onActionClick}
+            onClick={onActionClick || (() => { })}
             sx={{
               fontWeight: '500',
               color: '#0D599E',
