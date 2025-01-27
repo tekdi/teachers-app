@@ -141,9 +141,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
   useEffect(() => {
     const getFacilitator = async () => {
-      if (!isMobile) {
-        setLoading(true);
-      }
+      // if (!isMobile) {
+      // }
+      setLoading(true);
       try {
         const cohortId = cohortData
           .map((block: any) => {

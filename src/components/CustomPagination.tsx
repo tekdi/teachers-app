@@ -30,23 +30,23 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const { t } = useTranslation();
 
-    if (isMobile) {
-        return (
-            <InfiniteScroll
-                dataLength={items.length}
-                next={fetchMoreData || (() => { 
-                    console.warn('fetchMoreData callback is required for infinite scroll');
-                })}
-                hasMore={hasMore}
-                loader={<h4>{t('COMMON.LOADING')}...</h4>}
-                // endMessage={
-                //     <p style={{ textAlign: 'center' }}>You have seen all data!</p>
-                // }
-            >
-                <></>
-            </InfiniteScroll>
-        );
-    }
+    // if (isMobile) {
+    //     return (
+    //         <InfiniteScroll
+    //             dataLength={items.length}
+    //             next={fetchMoreData || (() => { 
+    //                 console.warn('fetchMoreData callback is required for infinite scroll');
+    //             })}
+    //             hasMore={hasMore}
+    //             loader={<h4>{t('COMMON.LOADING')}...</h4>}
+    //             // endMessage={
+    //             //     <p style={{ textAlign: 'center' }}>You have seen all data!</p>
+    //             // }
+    //         >
+    //             <></>
+    //         </InfiniteScroll>
+    //     );
+    // }
 
     return (
         <Stack spacing={2} alignItems="center">
