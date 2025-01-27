@@ -97,7 +97,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const [centerList, setCenterList] = useState<string[]>([]);
   const [page, setPage] = useState(1);
 
-  const [offset, setOffSet] = useState(1);
+  const [offset, setOffSet] = useState(0);
   const [infinitePage, setInfinitePage] = useState(1);
   const [infiniteData, setInfiniteData] = useState(users || []);
 
