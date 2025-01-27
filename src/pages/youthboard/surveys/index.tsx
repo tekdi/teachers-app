@@ -1,7 +1,9 @@
+import NoDataFound from '@/components/common/NoDataFound';
 import Header from '@/components/Header';
 import BackHeader from '@/components/youthNet/BackHeader';
 import Surveys from '@/components/youthNet/Surveys';
-import { surveysData } from '@/components/youthNet/tempConfigs';
+import { surveysData, volunteerData } from '@/components/youthNet/tempConfigs';
+import VolunteerListCard from '@/components/youthNet/VolunteerListCard';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -94,9 +96,21 @@ const surveys = () => {
           </Box>
         )}
         {value === 2 && (
-          <>
-            <h1>Sunny shinde</h1>
-          </>
+          <Box sx={{ mt: 4, p: 2, background: '#FBF4E4' }}>
+            {volunteerData?.length > 0 ? (
+              volunteerData?.map((data) => (
+                <VolunteerListCard
+                  key={data?.id}
+                  title={data?.title}
+                  entries={data?.entries}
+                  volunteerCount={data?.volunteerCount}
+                  actionLabel={data?.actionLabel}
+                />
+              ))
+            ) : (
+              <NoDataFound />
+            )}
+          </Box>
         )}
         </Box>
 

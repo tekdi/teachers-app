@@ -10,7 +10,7 @@ interface CardProps {
   entries: number;
   volunteerCount: number;
   actionLabel: string;
-  onActionClick: () => void;
+  onActionClick?: () => void;
 }
 
 const VolunteerListCard: React.FC<CardProps> = ({

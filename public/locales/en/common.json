@@ -728,5 +728,11 @@
   "YOUTHNET_CAMP_DETAILS": {
     "SUBMISSION": "Submission",
     "SUMMARY": "Summary"
+  },
+  "SURVEYS": {
+    "SURVEYS" :"Surveys",
+    "ACTIVE_SURVEYS" :"Active Surveys",
+    "PREVIOUS_SURVEYS" :"Previous Surveys",
+    "VILLAGES":"Villages"
   }
 }
