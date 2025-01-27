@@ -5,11 +5,12 @@ import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { useTranslation } from 'next-i18next';
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import CustomRadioWidget from './CustomRadioWidget';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import CustomNumberWidget from './CustomNumberWidget';
+import UsernameWithSuggestions from './UsernameWithSuggestions';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -49,8 +50,10 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     CustomRadioWidget: CustomRadioWidget,
     MultiSelectDropdown: MultiSelectDropdown,
     CustomNumberWidget: CustomNumberWidget,
+    UsernameWithSuggestions: UsernameWithSuggestions as React.FC<WidgetProps<any, RJSFSchema, any>> // Ensure correct type
   };
   const { t } = useTranslation();
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const submittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.submittedButtonStatus
@@ -266,13 +269,31 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     const sanitizedData = sanitizeFormData(event.formData);
     onChange({ ...event, formData: sanitizedData });
   }
+  const handleUsernameBlur = async (username: string) => {
+    if (username) {
+      try {
+       
+          console.log('Username onblur called');
+         // setSuggestions(["1234"])
 
+          
+      } catch (error) {
+        console.error('Error validating username:', error);
+      }
+    }
+  };
+  const handleSuggestionSelect = (suggestion: string) => {
+    console.log("Selected Suggestion:", suggestion);
+    setSuggestions([]); 
+  };
   return (
     <div className="form-parent">
       <FormWithMaterialUI
         schema={schema}
-        uiSchema={uiSchema}
-        formData={sanitizeFormData(formData)}
+        uiSchema={{
+          username: { "ui:widget": "UsernameWithSuggestions" }, 
+        }}       
+         formData={sanitizeFormData(formData)}
         onChange={handleChange}
         onSubmit={onSubmit}
         validator={validator}
@@ -283,7 +304,19 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         onError={handleError}
         transformErrors={transformErrors}
         fields={customFields}
+        formContext={{
+          suggestions,
+          onSuggestionSelect: handleSuggestionSelect,
+        }}
+        onBlur={(field, value) => {
+          if (field==="username") {
+            
+            handleUsernameBlur(value);
+          }
+        }}
       >
+          
+
         {children}
       </FormWithMaterialUI>
     </div>

@@ -308,20 +308,36 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   };
 
  
-  const handleChange = (event: IChangeEvent<any>) => {
-    // if (!isEditModal) {
-    //   const { firstName, lastName } = event.formData;
-  
-    //   if (firstName && lastName) {
-    //     event.formData.username = firstName + lastName;
-    //   } else {
-    //     event.formData.username = "";
-    //   }
-    //   setCustomFormData({ ...event.formData });
+const handleChange = (event: IChangeEvent<any>) => {
+  const { formData } = event;
 
-    // }
+ 
+  if (!isEditModal) {
+    const { firstName, lastName, username } = formData;
+    if (firstName && lastName) {
+      const updatedUsername = event.formData.username
+        ? username 
+        : firstName && lastName
+          ? (firstName + lastName).toLowerCase()
+          : '';
+
   
-  };
+      const updatedFormData = {
+        ...formData,
+        username: updatedUsername,
+      };
+
+      setCustomFormData(updatedFormData);
+    } else {
+      setCustomFormData({ ...event.formData });
+    }
+  } else {
+    setCustomFormData({ ...formData });
+  }
+};
+
+
+
   
 
   const handleError = (errors: any) => {
