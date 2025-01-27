@@ -15,7 +15,7 @@ import VillageDetailCard from '@/components/youthNet/VillageDetailCard';
 import Frame2 from '../../../assets/images/SurveyFrame2.png';
 import Profile from '@/components/youthNet/Profile';
 
-const userId = () => {
+const UserId = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
 
@@ -127,4 +127,4 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default withRole(TENANT_DATA.YOUTHNET)(userId);
+export default withRole(TENANT_DATA.YOUTHNET)(UserId);
