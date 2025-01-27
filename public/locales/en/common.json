@@ -156,7 +156,7 @@
     "SUBMIT_YOUR_REQUEST_FOR_ISSUES": "Submit your request and let us assist you with any issues or concerns.",
     "INSTALL": "Install Now",
     "INSTALL_APP_MESSAGE": "For Easy Access, Install the App Now",
-    "INSTALL_APP_DESCRIPTION": "Get access to the Pratham Learning Management App (LMA) at your fingertips by installing on your device.",
+    "INSTALL_APP_DESCRIPTION": "Get access to the Pratham Learning Management Portal (LMP) at your fingertips by installing on your device.",
     "RELOAD": "Update Now",
     "UPDATE_AVAILABLE": "New Update Available!",
     "RELOAD_TO_UPDATE": "Get the latest features and improvements—update now to enjoy a smoother experience and stay up-to-date!"
@@ -588,7 +588,17 @@
     "WHAT_IS_YOUR_PREFERRED_MODE_OF_LEARNING": "What is Your Preferred Mode of Learning?",
     "ARE_YOU_CURRENTLY_WORKING_IF_YES_CHOOSE_THE_DOMAIN": "Are You Currently Working? If Yes, Choose the Domain",
     "HAVE_YOU_RECEIVE_ANY_PRIOR_TRAINING": "Have You Received Any Prior Training?",
-    "WHAT_DO_YOU_WANT_TO_BECOME": "What do you want to become?"
+    "WHAT_DO_YOU_WANT_TO_BECOME": "What do you want to become?",
+    "EDUCATIONAL_INSTITUTE": "Educational Institute",
+    "UNEMPLOYED_OR_DOMESTIC_WORK":"Unemployed or Domestic Work",
+    "SELF_PLACED":"Self Placed",
+    "TRANSGENDER":"Transgender",
+    "HINDI":"Hindi",
+    "MARATHI":"Marathi",
+    "URDU":"Urdu",
+    "DIVORCED/WIDOW":"Divorced/Widow",
+    "GRADUATE":"Graduate",
+    "POST_GRADUATE":"Post Graduate"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
@@ -600,12 +610,15 @@
     "MIN_LENGTH_CHARACTERS_ERROR": "Minimum {{minLength}} characters required",
     "MAX_LENGTH_CHARACTERS_ERROR": "Maximum {{maxLength}} characters allowed",
     "NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "Numbers and special characters are not allowed",
+
     "ENTER_VALID_MOBILE_NUMBER": "Enter Valid mobile number",
     "ENTER_VALID_EMAIL": "Enter valid Email",
     "ENTER_VALID_YEAR": "Enter valid Year",
     "MUST_BE_LESS_THAN": "{{fieldname}} must be less than {{maxLength}}",
     "MUST_BE_GREATER_THAN": "{{fieldname}} must be greater than {{minLength}}",
-    "ENTER_VALID_CENTER_NAME": "Enter valid center name"
+    "ENTER_VALID_CENTER_NAME": "Enter valid center name",
+    "SPACE_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "Space and special characters are not allowed"
+
   },
   "COURSE_PLANNER": {
     "COURSE_PLANNER": "Curriculum Plan",
@@ -624,7 +637,7 @@
     "ASSESSMENTS": "Assessments",
     "CENTER": "Center",
     "ASSESSMENT_TYPE": "Assessment Type",
-    "COMPLETED_THE_ASSESSMENT": "completed the assessment",
+    "COMPLETED_THE_ASSESSMENT": "completed all the assigned assessments",
     "SUBMITTED_ON": "Submitted On",
     "CORRECT_ANSWER": "correct answers",
     "NO_DATA_FOUND": "No data found",
@@ -640,7 +653,8 @@
     "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} out of {{totalCount}} completed",
     "NO_SUBTOPIC_SELECTED": "No Subtopic selected",
     "NO_SUBJECT_FOUND": "No Subject found",
-    "NO_ASSIGNED": "No assigned"
+    "NO_ASSIGNED": "No assigned",
+    "OUT_OF": "Out of"
   },
   "BOARD_ENROLMENT": {
     "BOARD_ENROLLMENT": "Board Enrollment",

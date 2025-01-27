@@ -9,6 +9,7 @@ import {
   RoleId,
   Status,
   Telemetry,
+  fieldKeys,
 } from '@/utils/app.constant';
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga4';
@@ -48,6 +49,8 @@ interface AddFacilitatorModalprops {
   userId?: string;
   onReload?: (() => void) | undefined;
   onFacilitatorAdded?: (() => void) | undefined;
+  facilitatorEmailId?: string;
+  facilitatorUserName?: string;
 }
 const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   open,
@@ -57,6 +60,8 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
   userId,
   onReload,
   onFacilitatorAdded,
+  facilitatorEmailId,
+  facilitatorUserName
 }) => {
   const [schema, setSchema] = React.useState<any>();
   const [openSendCredModal, setOpenSendCredModal] = React.useState(false);
@@ -221,7 +226,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
         const fieldSchema = schemaProperties[fieldKey];
         const fieldId = fieldSchema?.fieldId;
 
-        if (fieldId === null || fieldId === 'null') {
+        if (fieldId === null || fieldId === 'null' || fieldKey===fieldKeys.GENDER) {
           if (typeof fieldValue !== 'object') {
             apiBody[fieldKey] = fieldValue;
             if (fieldKey === 'name') {
@@ -283,10 +288,22 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             userData[fieldName] = apiBody[fieldName];
           });
           const customFields = apiBody?.customFields;
+          console.log('userData.email', facilitatorEmailId);
+          if(facilitatorEmailId===userData.email)
+          {
+            delete userData.email;
+
+          }
+          if(facilitatorUserName===userData.username)
+          delete userData.username;
+        
+          userData.gender=apiBody?.gender
+
           const object = {
             userData: userData,
             customFields: customFields,
           };
+          
           const response = await editEditUser(userId, object);
           if (response) {
             showToastMessage(
@@ -321,7 +338,12 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             setOpenSendCredModal(true);
             if (createFacilitator) {
               try {
-                const response = await createUser(apiBody);
+                if(apiBody?.phone_number)
+                {
+                  apiBody.mobile = apiBody?.phone_number;
+                }
+                
+               const response = await createUser(apiBody);
 
                 if (response) {
                   onFacilitatorAdded?.();
@@ -355,7 +377,7 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
                   telemetryFactory.interact(telemetryInteract);
 
                   await sendEmail(
-                    apiBody['name'],
+                    apiBody['firstName'],
                     formData?.email,
                     password,
                     formData?.email

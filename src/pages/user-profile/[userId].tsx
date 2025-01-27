@@ -57,7 +57,9 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const [reload, setReload] = React.useState(false);
   const [selfUserId, setSelfUserId] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
-
+  const [selectedUserEmail, setSelectedUserEmail] = useState("");
+  const [selectedUserUserName, setSelectedUserUserName] = useState("");
+  
   const { isRTL } = useDirection();
 
   const { data: formResponse } = useFormRead(
@@ -173,6 +175,9 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
   const fetchDataAndInitializeForm = async () => {
     try {
       if (formResponse && userDetails) {
+        setSelectedUserUserName(userDetails?.result?.userData?.username);
+      setSelectedUserEmail(userDetails?.result?.userData?.email);
+   
         setUserFormData(mapFields(formResponse, userDetails?.result));
       }
     } catch (error) {
@@ -194,7 +199,22 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
 
     if (userDetails) {
       const coreFieldData = userDetails?.result?.userData;
-      setUserName(toPascalCase(coreFieldData?.name));
+      let fullName = "";
+
+      if (coreFieldData?.firstName) {
+        fullName += toPascalCase(coreFieldData.firstName);
+      }
+      
+      if (coreFieldData?.middleName) {
+        fullName += (fullName ? " " : "") + toPascalCase(coreFieldData.middleName);
+      }
+      
+      if (coreFieldData?.lastName) {
+        fullName += (fullName ? " " : "") + toPascalCase(coreFieldData.lastName);
+      }
+      
+      setUserName(fullName);
+      // setUserName(toPascalCase(coreFieldData?.name));
       const fields: CustomField[] = userDetails?.result?.userData?.customFields;
       if (fields?.length > 0) {
         setAddress(
@@ -495,6 +515,8 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                 isEditModal={true}
                 userId={userId}
                 onReload={handleReload}
+                facilitatorEmailId={selectedUserEmail}
+                facilitatorUserName={selectedUserUserName}
               />
             )}
             <Box
@@ -517,7 +539,7 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
             >
               <Grid container spacing={4}>
                 {filteredSortedForView?.map((item) => {
-                  if (String(item.order) === '7') {
+                  if (String(item.order) === '9') {
                     return (
                       <Grid item xs={12} key={item?.label}>
                         <Typography
@@ -580,7 +602,9 @@ const TeacherProfile: React.FC<TeacherProfileProp> = ({
                         </Box>
                       </Grid>
                     );
-                  } else if (item.order === 7) {
+                  } 
+                  
+                  else if (item.order === 7) {
                     return (
                       <Grid item xs={12} key={item.label}>
                         <Typography

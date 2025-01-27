@@ -117,8 +117,7 @@ const Assessments = () => {
         if (resp) {
           const userDetails = resp.map((user: any) => ({
             ...user,
-            name: toPascalCase(user.name),
-            userId: user.userId,
+            name: toPascalCase(user?.firstName || '') + ' ' + (user?.lastName ? toPascalCase(user.lastName) : ""),            userId: user.userId,
           }));
           setCohortMembers(userDetails);
         }
@@ -457,6 +456,9 @@ const Assessments = () => {
                 <MenuItem value={'post'} style={{ textAlign: 'right' }}>
                   {t('PROFILE.POST_TEST')}
                 </MenuItem>
+                <MenuItem value={'other'} style={{ textAlign: 'right' }}>
+                  {t('FORM.OTHER')}
+                </MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -501,9 +503,9 @@ const Assessments = () => {
                 color: theme?.palette?.warning['400'],
               }}
             >
-              {testCompletionCount.totalCount > 0 && (
+              {testCompletionCount?.totalCount > 0 && (
                 <span>
-                  {`${testCompletionCount.completionCount}/${testCompletionCount.totalCount}`}{' '}
+                  {`${testCompletionCount.completionCount} ${t('ASSESSMENTS.OUT_OF')} ${testCompletionCount.totalCount}`}{' '}
                   {t('ASSESSMENTS.COMPLETED_THE_ASSESSMENT')}
                 </span>
               )}

@@ -40,10 +40,8 @@ export const getCohortList = async (
   }
   try {
     const response = await get(apiUrl);
-    if(isCustomFields)
-    {
+    if (isCustomFields) {
       return response?.data?.result;
-
     }
     if (response?.data?.result?.length) {
       let res = response?.data?.result;
@@ -58,7 +56,6 @@ export const getCohortList = async (
       return res;
     }
     return response?.data?.result;
-
   } catch (error) {
     console.error('Error in getting cohort details', error);
     // throw error;

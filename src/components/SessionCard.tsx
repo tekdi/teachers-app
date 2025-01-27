@@ -1,6 +1,6 @@
-import { SessionsCardProps } from '@/utils/Interfaces';
+import { CustomField, SessionsCardProps } from '@/utils/Interfaces';
 import { Box, Snackbar, Typography } from '@mui/material';
-import { convertUTCToIST, toPascalCase } from '@/utils/Helper';
+import { convertUTCToIST, getBMG, toPascalCase } from '@/utils/Helper';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlined from '@mui/icons-material/EditOutlined';
@@ -18,8 +18,8 @@ import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import useNotification from '@/hooks/useNotification';
 import { useRouter } from 'next/router';
 import { Role } from '@/utils/app.constant';
-
-
+import { getCohortDetails } from '@/services/CohortServices';
+import { usePathname } from 'next/navigation';
 const SessionsCard: React.FC<SessionsCardProps> = ({
   data,
   showCenterName = false,
@@ -33,6 +33,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
 }) => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
+  const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [eventDeleted, setEventDeleted] = React.useState(false);
@@ -46,9 +47,10 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const [showEdit, setShowEdit] = React.useState(false);
   const [editSession, setEditSession] = React.useState();
   const [eventStatus, setEventStatus] = React.useState('');
+  const [CohortBMG, setCohortBMG] = React.useState<any>({});
   const router = useRouter();
   const { cohortId }: any = router.query;
-
+  const dashboard = pathname === '/dashboard';
   const { getNotification } = useNotification();
 
   const handleEditSelection = (selection: string) => {
@@ -61,6 +63,29 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   };
 
   const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    if (dashboard) {
+      const classId = data.metadata?.cohortId;
+      const getCohortData = async () => {
+        const response = await getCohortDetails(classId);
+
+        let cohortData = null;
+
+        if (response?.cohortData?.length) {
+          cohortData = response?.cohortData[0];
+
+          const bgm = getBMG(cohortData);
+          if (bgm) {
+            setCohortBMG(bgm);
+          }
+        }
+      };
+      if (classId) {
+        getCohortData();
+      }
+    }
+  }, [dashboard]);
 
   const handleCohortNotification = async (
     cohortId: string,
@@ -77,20 +102,25 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           .filter((user: { role: Role; deviceId?: string | null }) =>
             [Role.TEACHER, Role.STUDENT].includes(user.role)
           )
-          .flatMap((user: any) => user.deviceId || []) 
-          .filter((id: any) => id !== null); 
+          .flatMap((user: any) => user.deviceId || [])
+          .filter((id: any) => id !== null);
 
         if (deviceIds.length > 0) {
           getNotification(deviceIds, notificationType, replacements);
         } else {
-          console.warn("No valid device IDs found. Skipping notification API call.");
+          console.warn(
+            'No valid device IDs found. Skipping notification API call.'
+          );
         }
       }
     } catch (error) {
-      console.error(`Error fetching cohort member list for ${notificationType}:`, error);
+      console.error(
+        `Error fetching cohort member list for ${notificationType}:`,
+        error
+      );
     }
   };
-  
+
   const onEventDeleted = async () => {
     setOpen(false);
     setEventDeleted(true);
@@ -100,13 +130,18 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
 
     if (cohortId) {
       const replacements = {
-        "{sessionName}": subject && sessionTitle
-          ? `${toPascalCase(subject)} - ${sessionTitle}`
-          : subject
-            ? toPascalCase(subject)
-            : toPascalCase(sessionTitle)
+        '{sessionName}':
+          subject && sessionTitle
+            ? `${toPascalCase(subject)} - ${sessionTitle}`
+            : subject
+              ? toPascalCase(subject)
+              : toPascalCase(sessionTitle),
       };
-      await handleCohortNotification(cohortId, "SESSION_DELETION_NOTIFICATION", replacements);
+      await handleCohortNotification(
+        cohortId,
+        'SESSION_DELETION_NOTIFICATION',
+        replacements
+      );
     }
   };
 
@@ -196,28 +231,31 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
     setUpdateEvent(true);
     if (cohortId) {
       const replacements = {
-        "{sessionName}": subject && sessionTitle
-          ? `${toPascalCase(subject)} - ${sessionTitle}`
-          : subject
-            ? toPascalCase(subject)
-            : toPascalCase(sessionTitle)
+        '{sessionName}':
+          subject && sessionTitle
+            ? `${toPascalCase(subject)} - ${sessionTitle}`
+            : subject
+              ? toPascalCase(subject)
+              : toPascalCase(sessionTitle),
       };
-      await handleCohortNotification(cohortId, "SESSION_UPDATE_NOTIFICATION", replacements);
+      await handleCohortNotification(
+        cohortId,
+        'SESSION_UPDATE_NOTIFICATION',
+        replacements
+      );
     }
   };
 
   const subject = data?.metadata?.subject;
   const sessionTitle = data?.shortDescription;
 
-
-  const getSessionTitle = (subject: string, sessionTitle : string ) => {
-      return subject && sessionTitle
-        ? `${toPascalCase(subject)} - ${sessionTitle}`
-        : subject
-          ? toPascalCase(subject)
-          : toPascalCase(sessionTitle)
-    }
-  
+  const getSessionTitle = (subject: string, sessionTitle: string) => {
+    return subject && sessionTitle
+      ? `${toPascalCase(subject)} - ${sessionTitle}`
+      : subject
+        ? toPascalCase(subject)
+        : toPascalCase(sessionTitle);
+  };
 
   return (
     <Box
@@ -246,9 +284,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
               fontSize={'16px'}
               className="one-line-text"
             >
-              {
-                getSessionTitle(subject , sessionTitle)
-              }
+              {getSessionTitle(subject, sessionTitle)}
             </Typography>
           </Box>
           <Typography
@@ -336,11 +372,13 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
       <CenterSessionModal
         open={open}
         handleClose={handleClose}
-        title={subject && sessionTitle
-          ? `${toPascalCase(subject)} - ${sessionTitle}`
-          : subject
-            ? toPascalCase(subject)
-            : toPascalCase(sessionTitle)}
+        title={
+          subject && sessionTitle
+            ? `${toPascalCase(subject)} - ${sessionTitle}`
+            : subject
+              ? toPascalCase(subject)
+              : toPascalCase(sessionTitle)
+        }
         primary={eventEdited ? 'Update' : 'Schedule'}
         handleEditModal={handleEditModal}
       >
@@ -352,11 +390,10 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
           eventDeleted={eventDeleted}
           eventData={data}
           updateEvent={updateEvent}
-          StateName={StateName}
-          board={board}
-          medium={medium}
-          grade={grade}
-       
+          // StateName={StateName}
+          board={dashboard ? CohortBMG?.board : board}
+          medium={dashboard ? CohortBMG?.medium : medium}
+          grade={dashboard ? CohortBMG?.grade : grade}
         />
       </CenterSessionModal>
 

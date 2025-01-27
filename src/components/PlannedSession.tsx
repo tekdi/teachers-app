@@ -171,16 +171,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
   useEffect(() => {
     const handleBMGS = async () => {
       try {
-        if (StateName && medium && grade && board) {
+        if (medium && grade && board) {
           const url = `/api/framework/v1/read/${frameworkId}`;
           const boardData = await fetch(url).then((res) => res.json());
           const frameworks = boardData?.result?.framework;
 
-          const getStates = getOptionsByCategory(frameworks, 'state');
-          const matchState = getStates.find(
-            (item: any) =>
-              item?.name?.toLowerCase() === StateName?.toLocaleLowerCase()
-          );
+          // const getStates = getOptionsByCategory(frameworks, 'state');
+          // const matchState = getStates.find(
+          //   (item: any) =>
+          //     item?.name?.toLowerCase() === StateName?.toLocaleLowerCase()
+          // );
 
           const getBoards = getOptionsByCategory(frameworks, 'board');
           const matchBoard = getBoards.find((item: any) => item.name === board);
@@ -197,46 +197,57 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           const courseTypes = getCourseTypes?.map((type: any) => type.name);
           setCourseTypes(courseTypes);
 
-          const courseTypesAssociations = getCourseTypes?.map((type: any) => {
-            return {
-              code: type.code,
-              name: type.name,
-              associations: type.associations,
-            };
-          });
+          const getSubjects = getOptionsByCategory(frameworks, 'subject');
+          const subjects = getSubjects?.map((type: any) => type.name);
+          console.log('subjects!!', getSubjects);
+          // setCourseTypes(courseTypes);
 
-          const courseSubjectLists = courseTypesAssociations.map(
-            (courseType: any) => {
-              const commonAssociations = courseType?.associations.filter(
-                (assoc: any) =>
-                  matchState?.associations.filter(
-                    (item: any) => item.code === assoc.code
-                  )?.length &&
-                  matchBoard?.associations.filter(
-                    (item: any) => item.code === assoc.code
-                  )?.length &&
-                  matchMedium?.associations.filter(
-                    (item: any) => item.code === assoc.code
-                  )?.length &&
-                  matchGrade?.associations.filter(
-                    (item: any) => item.code === assoc.code
-                  )?.length
-              );
-              const getSubjects = getOptionsByCategory(frameworks, 'subject');
-              const subjectAssociations = commonAssociations?.filter(
-                (assoc: any) =>
-                  getSubjects.map((item: any) => assoc.code === item?.code)
-              );
-              return {
-                courseTypeName: courseType?.name,
-                courseType: courseType?.code,
-                subjects: subjectAssociations?.map(
-                  (subject: any) => subject?.name
-                ),
-              };
-            }
+          // const courseTypesAssociations = getCourseTypes?.map((type: any) => {
+          //   return {
+          //     code: type.code,
+          //     name: type.name,
+          //     associations: type.associations,
+          //   };
+          // });
+          // const subjectAssociations = getSubjects?.map((type: any) => {
+          //   return {
+          //     code: type.code,
+          //     name: type.name,
+          //     associations: type.associations,
+          //   };
+          // });
+
+          // const courseSubjectLists = getSubjects.map((subject: any) => {
+          const commonAssociations = getSubjects?.filter(
+            (assoc: any) =>
+              // matchState?.associations.filter(
+              //   (item: any) => item.code === assoc.code
+              // )?.length &&
+              matchBoard?.associations.filter(
+                (item: any) => item.code === assoc.code
+              )?.length &&
+              matchMedium?.associations.filter(
+                (item: any) => item.code === assoc.code
+              )?.length &&
+              matchGrade?.associations.filter(
+                (item: any) => item.code === assoc.code
+              )?.length
           );
-          setSubjectLists(courseSubjectLists);
+          // const getSubjects = getOptionsByCategory(frameworks, 'subject');
+          // const subjectAssociations = commonAssociations?.filter(
+          //   (assoc: any) =>
+          //     getSubjects.map((item: any) => assoc.code === item?.code)
+          // );
+          console.log('commonAssociations', commonAssociations);
+          // return {
+          // courseTypeName: courseType?.name,
+          // courseType: courseType?.code,
+          const subjectList = commonAssociations?.map(
+            (subject: any) => subject?.name
+          );
+          // };
+          // });
+          setSubjectLists(subjectList);
         }
       } catch (error) {
         console.error('Error fetching board data:', error);
@@ -255,12 +266,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       setMode(mode);
       const courseType = eventData?.metadata?.courseType;
       setSelectedCourseType(courseType);
-      const courseSubjects = subjectLists?.find(
-        (item: any) => item.courseTypeName === courseType
-      );
-      if (courseSubjects) {
-        setSubjects(courseSubjects.subjects);
-      }
+      // const courseSubjects = subjectLists?.find(
+      //   (item: any) => item.courseTypeName === courseType
+      // );
+      // if (courseSubjects) {
+      // setSubjects(subjectLists);
+      // }
       const sub = eventData?.metadata?.subject;
       setSelectedSubject(sub);
       const sessionTitle = eventData?.shortDescription;
@@ -398,16 +409,16 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
       (item: any) => item.courseTypeName === newCourseType
     );
 
-    if (courseSubjects) {
-      setSubjects(courseSubjects.subjects);
-    }
+    // if (courseSubjects) {
+    //   setSubjects(courseSubjects.subjects);
+    // }
     setSessionBlocks(
       sessionBlocks.map((block) =>
         block.id === id
           ? {
               ...block,
               courseType: newCourseType,
-              subjectDropdown: courseSubjects?.subjects,
+              subjectDropdown: subjectLists,
             }
           : block
       )
@@ -1438,7 +1449,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
           )}
 
           <Box>
-            {(!StateName || !medium || !grade || !board) && (
+            {(!medium || !grade || !board) && (
               <Box
                 padding="0.5rem"
                 style={{
@@ -1464,7 +1475,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
               disabled={editSession}
             />
           </Box>
-          {(StateName || medium || grade || board) && (
+          {(medium || grade || board) && (
             <Box sx={{ mt: 2 }}>
               <FormControl fullWidth>
                 <InputLabel
@@ -1484,9 +1495,9 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                   value={
                     block?.courseType === selectedCourseType
                       ? block?.courseType
-                      : null || editSession?.metadata?.courseType
+                      : editSession?.metadata?.courseType
                   }
-                  disabled={!StateName || !medium || !grade || !board}
+                  disabled={!medium || !grade || !board}
                 >
                   {courseTypes?.map((courseType: string) => (
                     <MenuItem key={courseType} value={courseType}>
@@ -1500,7 +1511,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
 
           {(clickedBox === 'PLANNED_SESSION' || editSession) && (
             <>
-              {(StateName || medium || grade || board) && (
+              {(medium || grade || board) && (
                 <Box sx={{ mt: 2 }}>
                   <FormControl fullWidth>
                     <InputLabel
@@ -1520,16 +1531,15 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       value={
                         block?.subject === selectedSubject
                           ? block?.subject
-                          : null ||
-                            editSession?.metadata?.subject ||
+                          : editSession?.metadata?.subject ||
                             editSession?.subject
                       }
-                      disabled={!(StateName && medium && grade && board)}
+                      disabled={!(medium && grade && board)}
                     >
                       {(block?.subjectDropdown &&
                       block.subjectDropdown.length > 0
                         ? block.subjectDropdown
-                        : subjects
+                        : subjectLists
                       )?.map((subject: string) => (
                         <MenuItem key={subject} value={subject}>
                           {subject}
@@ -1591,7 +1601,7 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
             )}
           {clickedBox === 'EXTRA_SESSION' && (
             <Box sx={{ mt: 2 }}>
-              {(StateName || medium || grade || board) && (
+              {(medium || grade || board) && (
                 <Box>
                   <FormControl fullWidth>
                     <InputLabel
@@ -1616,12 +1626,12 @@ const PlannedSession: React.FC<PlannedModalProps> = ({
                       value={
                         block?.subject || editSession?.metadata?.subject || ''
                       }
-                      disabled={!(StateName && medium && grade && board)}
+                      disabled={!(medium && grade && board)}
                     >
                       {(block?.subjectDropdown &&
                       block.subjectDropdown.length > 0
                         ? block.subjectDropdown
-                        : subjects
+                        : subjectLists
                       )?.map((subject: string) => (
                         <MenuItem key={subject} value={subject}>
                           {subject}

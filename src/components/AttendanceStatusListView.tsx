@@ -19,6 +19,7 @@ import {
   capitalizeEachWord,
   filterMiniProfileFields,
   shortDateFormat,
+  toPascalCase,
 } from '../utils/Helper';
 import DropoutLabel from './DropoutLabel';
 import LearnerModal from './LearnerModal';
@@ -104,9 +105,24 @@ const AttendanceStatusListView: React.FC<AttendanceStatusListViewProps> = ({
           const data = response?.result;
           if (data) {
             const userData = data?.userData;
-            setUserName(userData?.name);
+            let fullName = "";
+
+            if (userData?.firstName) {
+              fullName += toPascalCase(userData.firstName);
+            }
+            
+            if (userData?.middleName) {
+              fullName += (fullName ? " " : "") + toPascalCase(userData.middleName);
+            }
+            
+            if (userData?.lastName) {
+              fullName += (fullName ? " " : "") + toPascalCase(userData.lastName);
+            }
+            
+            setUserName(fullName);
+
             setContactNumber(userData?.mobile);
-            setEnrollmentNumber(capitalizeEachWord(userData?.username));
+            setEnrollmentNumber(userData?.username);
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);

@@ -100,7 +100,6 @@ const CoursePlannerDetail = () => {
       const response = await getTargetedSolutions({
         subject: tStore?.taxonomySubject,
         class: tStore?.grade,
-        state: tStore?.state,
         board: tStore?.board,
         courseType: tStore?.type,
         medium: tStore?.medium,
@@ -172,7 +171,6 @@ const CoursePlannerDetail = () => {
       const updatedResponse = await getTargetedSolutions({
         subject: tStore?.taxonomySubject,
         class: tStore?.grade,
-        state: tStore?.state,
         board: tStore?.board,
         courseType: tStore?.type,
         medium: tStore?.medium,
@@ -322,7 +320,6 @@ const CoursePlannerDetail = () => {
       setUserProjectDetails(updatedData);
       setSelectedSubtopics([]);
       toggleDrawer(false)();
-
     } catch (err) {
       console.log(err);
     }

@@ -207,73 +207,20 @@ const BoardEnrollmentDetail = () => {
           const url = externalsource;
           const boards = await fetch(url).then((res) => res.json());
           const frameworks = boards?.result?.framework;
-          const getStates: any = getOptionsByCategory(frameworks, 'state');
-         
-
-          const matchingState = getStates.find(
-            (state: any) => state.name === userStateName
-          );
-          if (matchingState) {
-            setStateAssociations(matchingState.associations);
-          }
 
           const getBoards = getOptionsByCategory(frameworks, 'board');
 
-          //filter common board by mapping boards with stateAssociation
-          if (getBoards && matchingState) {
-            const commonBoards = getBoards
-              .filter((item1: { code: any }) =>
-                matchingState.associations.some(
-                  (item2: { code: any; category: string }) =>
-                    item2.code === item1.code && item2.category === 'board'
-                )
-              )
-              .map((item1: { name: any; code: any; associations: any }) => ({
-                name: item1.name,
-                code: item1.code,
-                associations: item1.associations,
-              }));
-            setBoardOptions(commonBoards);
+          if (getBoards) {
+            setBoardOptions(getBoards);
 
             if (formData?.BOARD) {
               const boardAssociations = getAssociationsByName(
-                commonBoards,
+                getBoards,
                 formData?.BOARD
               );
               setBoardAssociations(boardAssociations);
-              const getCourseType = getOptionsByCategory(
-                frameworks,
-                'courseType'
-              );
-              const mainCourse = getCourseType.find(
-                (item: any) => item.code === 'mainCourse'
-              );
-              const mainCourseSubjects = extractCategory(mainCourse, 'subject');
-              setMainCourseAssociations(mainCourse?.associations);
-
+             
               const getSubjects = getOptionsByCategory(frameworks, 'subject');
-              const boardSubjects = extractCategory(commonBoards, 'subject');
-              // const courseTypeSubjects = extractCategory(getCourseType, 'subject');
-
-              const commonSubjectInState1 = getSubjects.filter(
-                (item1: { code: string }) =>
-                  matchingState?.associations?.some(
-                    (item2: { code: string; category: string }) =>
-                      item2.code === item1.code && item2.category === 'subject'
-                  )
-              );
-
-              const commonSubjectInState = commonSubjectInState1.map(
-                (item1: {
-                  name: string;
-                  code: string;
-                  associations: any[];
-                }) => ({
-                  name: item1.name,
-                  code: item1.code,
-                  associations: item1.associations,
-                })
-              );
 
               const commonSubjectInBoard = getSubjects
                 .filter((item1: { code: any }) =>
@@ -288,35 +235,7 @@ const BoardEnrollmentDetail = () => {
                   associations: item1.associations,
                 }));
 
-              const commonSubjectInMainCourse = getSubjects
-                .filter((item1: { code: any }) =>
-                  mainCourse?.associations.some(
-                    (item2: { code: any; category: string }) =>
-                      item2.code === item1.code && item2.category === 'subject'
-                  )
-                )
-                .map((item1: { name: any; code: any; associations: any }) => ({
-                  name: item1.name,
-                  code: item1.code,
-                  associations: item1.associations,
-                }));
-
-              const commonSubjectInStateBoard = commonSubjectInState.filter(
-                (subjectInState: { code: any }) =>
-                  commonSubjectInBoard.some(
-                    (subjectInBoard: { code: any }) =>
-                      subjectInBoard.code === subjectInState.code
-                  )
-              );
-
-              const overAllCommonSubjects = commonSubjectInStateBoard.filter(
-                (subjectInStateBoard: { code: any }) =>
-                  commonSubjectInMainCourse.some(
-                    (subjectInMainCourse: { code: any }) =>
-                      subjectInMainCourse.code === subjectInStateBoard.code
-                  )
-              );
-              setSubjectOptions(overAllCommonSubjects);
+              setSubjectOptions(commonSubjectInBoard);
             }
           }
         }

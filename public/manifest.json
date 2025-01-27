@@ -4,9 +4,9 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "Pratham Learning Management App",
-  "short_name": "LMA",
-  "description": "Learning Management app for Pratham",
+  "name": "Pratham Learning Management Portal",
+  "short_name": "Pratham LMP",
+  "description": "Learning Management Portal for Pratham",
   "icons": [
     {
       "src": "/icon-192x192.png",

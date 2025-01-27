@@ -16,12 +16,12 @@ if (typeof window !== 'undefined') {
 const telemetryConfig = {
   apislug: '',
   pdata: {
-    id: 'pratham-teacher-app',
+    id: 'pratham-learning-management-portal',
     pid: '0.0.1',
-    ver: 'pratham-teacher-app',
+    ver: 'pratham-learning-management-portal',
   },
-  env: 'pratham-teacher-app',
-  channel: 'pratham-teacher-app',
+  env: 'pratham-learning-management-portal',
+  channel: 'pratham-learning-management-portal',
   did: 'did',
   authtoken: '',
   studentid:

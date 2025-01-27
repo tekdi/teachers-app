@@ -96,6 +96,7 @@ export interface CohortMemberList {
     role?: string;
     status?: string[];
     name?: string | undefined;
+    firstName?:string
   };
   includeArchived?: boolean;
 }
@@ -118,6 +119,7 @@ export interface UserData {
   district: string;
   state: string;
   mobile?: string;
+  firstName?:string
 }
 
 export interface IUserData {
@@ -268,6 +270,7 @@ export interface ICohort {
   value: string;
   state: string;
   customField?: any;
+  firstName?:string
 }
 
 export interface LearListHeaderProps {
@@ -432,7 +435,7 @@ export interface FieldOption {
 
 export interface Field {
   name: string;
-  type: 'text' | 'numeric' | 'drop_down' | 'checkbox' | 'radio' | 'email';
+  type: 'text' | 'numeric' | 'drop_down' | 'checkbox' | 'radio' | 'email' | 'date';
   label: string;
   order: string;
   coreField: number;
@@ -652,7 +655,6 @@ export interface IAssessmentStatusOptions {
 
 export interface GetTargetedSolutionsParams {
   subject: any;
-  state: any;
   medium: any;
   class: any;
   board: any;

@@ -241,7 +241,7 @@ const UserAttendanceHistory = () => {
           const nameUserIdArray = resp
               ?.map((entry: any) => ({
                 userId: entry.userId,
-                name: toPascalCase(entry.name),
+                name: toPascalCase(entry?.firstName || '') + ' ' + (entry?.lastName ? toPascalCase(entry.lastName) : ""),
                 memberStatus: entry.status,
                 createdAt: entry.createdAt,
                 updatedAt: entry.updatedAt,
