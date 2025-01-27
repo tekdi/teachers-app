@@ -711,6 +711,21 @@
     "ENTRIES": "Entries",
     "VOLUNTEERS_ASSIGNED": "Volunteers assigned"
   },
+  "YOUTHNET_PROFILE": {
+    "MY_PROFILE": "My Profile",
+    "ACTIVITIES_CONDUCTED": "Activities conducted",
+    "PROFILE_DETAILS": "Profile Details",
+    "FULL_NAME": "Full Name",
+    "EMAIL_ID": "Email ID",
+    "STATE_DISTRICT_BLOCK": "State District Block",
+    "DESIGNATION": "Designation",
+    "JOINED_ON": "Joined on",
+    "PHONE_NUMBER": "Phone Number",
+    "MENTOR_ID": "Mentor ID",
+    "GENDER": "Gender",
+    "AGE": "Age",
+    "N/A": "-"
+  },
   "YOUTHNET_CAMP_DETAILS": {
     "SUBMISSION": "Submission",
     "SUMMARY": "Summary"

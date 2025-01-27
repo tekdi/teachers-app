@@ -8,6 +8,8 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
 import EntrySlider from '@/components/youthNet/EntrySlider';
 import EntryContent from '@/components/youthNet/EntryContent';
+import withRole from '@/components/withRole';
+import { TENANT_DATA } from '../../../../app.config';
 
 const SurveyClassDetails = () => {
   const { t } = useTranslation();
@@ -127,4 +129,4 @@ const SurveyClassDetails = () => {
   );
 };
 
-export default SurveyClassDetails;
+export default withRole(TENANT_DATA.YOUTHNET)(SurveyClassDetails);

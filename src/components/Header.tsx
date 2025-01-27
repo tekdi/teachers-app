@@ -21,6 +21,7 @@ import { useDirection } from '../hooks/useDirection';
 import useStore from '../store/store';
 import ConfirmationModal from './ConfirmationModal';
 import StyledMenu from './StyledMenu';
+import { TENANT_DATA } from '../../app.config';
 
 interface HeaderProps {
   toggleDrawer?: (newOpen: boolean) => () => void;
@@ -63,8 +64,16 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
   }, []);
 
   const handleProfileClick = () => {
+    const tenant = localStorage.getItem('tenantName');
     if (pathname !== `/user-profile/${userId}`) {
-      router.push(`/user-profile/${userId}`);
+      if (tenant?.toLowerCase() === TENANT_DATA.YOUTHNET?.toLowerCase()) {
+        router.push(`youthboard/user-profile/${userId}`);
+      } else if (
+        tenant?.toLowerCase() ===
+        TENANT_DATA.SECOND_CHANCE_PROGRAM?.toLowerCase()
+      ) {
+        router.push(`/user-profile/${userId}`);
+      }
       logEvent({
         action: 'my-profile-clicked-header',
         category: 'Dashboard',
@@ -73,7 +82,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     }
   };
 
-  const handleLogoutClick = async() => {
+  const handleLogoutClick = async () => {
     router.replace('/logout');
     logEvent({
       action: 'logout-clicked-header',
@@ -82,11 +91,11 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     });
     const token = localStorage.getItem('token');
 
-    const tenantid = localStorage.getItem('tenantId')
+    const tenantid = localStorage.getItem('tenantId');
     const deviceID = localStorage.getItem('deviceID');
     const windowUrl = window.location.pathname;
     const cleanedUrl = windowUrl.replace(/^\//, '');
-    const env = cleanedUrl.split("/")[0];
+    const env = cleanedUrl.split('/')[0];
     const telemetryInteract = {
       context: {
         env: env,
@@ -103,7 +112,6 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     telemetryFactory.interact(telemetryInteract);
     if (deviceID) {
       try {
-        
         const tenantId = tenantid;
 
         const headers = {
@@ -117,10 +125,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
           headers
         );
       } catch (updateError) {
-        console.error(
-          'Error updating device notification:',
-          updateError
-        );
+        console.error('Error updating device notification:', updateError);
       }
     }
   };
@@ -299,9 +304,8 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
           setLanguage={setLanguage}
         />
       </Box>
-      <Box sx={{marginTop:'10px'}}></Box>
+      <Box sx={{ marginTop: '10px' }}></Box>
     </>
-    
   );
 };
 

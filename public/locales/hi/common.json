@@ -687,6 +687,22 @@
     "ENTRIES": "प्रविष्टियाँ",
     "VOLUNTEERS_ASSIGNED": "स्वयंसेवक सौंपे गए"
   },
+  "YOUTHNET_PROFILE": {
+    "MY_PROFILE": "मेरा प्रोफाइल",
+    "ACTIVITIES_CONDUCTED": "संचालित गतिविधियाँ",
+    "PROFILE_DETAILS": "प्रोफाइल विवरण",
+    "FULL_NAME": "पूरा नाम",
+    "EMAIL_ID": "ईमेल आईडी",
+    "STATE_DISTRICT_BLOCK": "राज्य जिला ब्लॉक",
+    "DESIGNATION": "पद",
+    "JOINED_ON": "जुड़े दिनांक",
+    "PHONE_NUMBER": "फोन नंबर",
+    "MENTOR_ID": "मेंटोर आईडी",
+    "GENDER": "लिंग",
+    "AGE": "आयु",
+    "N/A": "-"
+  },
+
   "YOUTHNET_CAMP_DETAILS": {
     "SUBMISSION": "प्रस्तुत करना",
     "SUMMARY": "सारांश"
