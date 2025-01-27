@@ -17,13 +17,17 @@ const FormWithMaterialUI = withTheme(MaterialUITheme);
 interface DynamicFormProps {
   schema: any;
   uiSchema: object;
-  formData?: object;
-  onSubmit: (
+  formData?: {
+    username?: string; // Add username explicitly as a field
+    [key: string]: any; // Allow for other fields as well
+  }; 
+   onSubmit: (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => void | Promise<void>;
   onChange: (event: IChangeEvent<any>) => void;
   onError: (errors: any) => void;
+  setFormData?: (data: any) => void;
   showErrorList: boolean;
 
   widgets: {
@@ -44,13 +48,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   onError,
   customFields,
   children,
+  setFormData
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
     MultiSelectDropdown: MultiSelectDropdown,
     CustomNumberWidget: CustomNumberWidget,
-    UsernameWithSuggestions: UsernameWithSuggestions as React.FC<WidgetProps<any, RJSFSchema, any>> // Ensure correct type
+   UsernameWithSuggestions: UsernameWithSuggestions as React.FC<WidgetProps<any, RJSFSchema, any>> // Ensure correct type
   };
   const { t } = useTranslation();
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -282,17 +287,23 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       }
     }
   };
-  const handleSuggestionSelect = (suggestion: string) => {
-    console.log("Selected Suggestion:", suggestion);
-    setSuggestions([]); 
+
+  
+  const handleSuggestionSelect = (selectedUsername: string) => {
+    if(setFormData)
+    setFormData((prev: any) => ({
+      ...prev,
+      username: selectedUsername
+    }));  
+    setSuggestions([]);
   };
+  
+
   return (
     <div className="form-parent">
       <FormWithMaterialUI
         schema={schema}
-        uiSchema={{
-          username: { "ui:widget": "UsernameWithSuggestions" }, 
-        }}       
+        uiSchema={uiSchema}     
          formData={sanitizeFormData(formData)}
         onChange={handleChange}
         onSubmit={onSubmit}

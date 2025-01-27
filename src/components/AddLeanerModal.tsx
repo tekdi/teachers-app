@@ -387,6 +387,7 @@ const handleChange = (event: IChangeEvent<any>) => {
             showErrorList={true}
             customFields={customFields}
             formData={customFormData ?? undefined}
+            setFormData={setCustomFormData}
           >
             <FormButtons
               formData={formData ?? learnerFormData}

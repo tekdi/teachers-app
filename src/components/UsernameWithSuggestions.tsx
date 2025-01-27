@@ -1,4 +1,4 @@
-import { ListItemText, MenuItem, TextField } from "@mui/material";
+import { Box, ListItemText, MenuItem, TextField, Typography } from "@mui/material";
 import { WidgetProps } from "@rjsf/utils";
 import React from "react";
 interface UsernameWidgetProps {
@@ -50,12 +50,25 @@ const UsernameWithSuggestions: React.FC<UsernameWidgetProps> = ({
       {suggestions.length > 0 && (
         <div>
           {suggestions.map((suggestion: any, index: number) => (
-            <MenuItem
-              key={index}
-              onClick={() => onSuggestionSelect(suggestion)} 
-            >
-              <ListItemText primary={suggestion} />
-            </MenuItem>
+            <Box>
+              {/* Availble suggestion :  */}
+              <Typography
+               onClick={() => onSuggestionSelect(suggestion)} 
+              sx={{cursor:'pointer',
+              color:'green',
+
+            }}
+              >
+              {suggestion}
+
+              </Typography>
+            </Box>
+            // <MenuItem
+            //   key={index}
+            //   onClick={() => onSuggestionSelect(suggestion)} 
+            // >
+            //   <ListItemText primary={suggestion} />
+            // </MenuItem>
           ))}
         </div>
       )}

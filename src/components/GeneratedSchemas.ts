@@ -57,6 +57,9 @@ export const GenerateSchemaAndUiSchema = (
         if (field?.hint) {
           fieldUiSchema['ui:help'] = t(`FORM.${field?.hint}`);
         }
+        if(name==="username")
+        fieldUiSchema['ui:widget'] = 'UsernameWithSuggestions';
+
 
         break;
       case 'email':
