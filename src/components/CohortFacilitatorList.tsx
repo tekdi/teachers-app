@@ -214,7 +214,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                       page={page + 1}
                       onPageChange={handlePageChange}
                       // fetchMoreData={fetchData}
-                      hasMore={infinitePage * 1 < totalCount}
+                      hasMore={infinitePage * pagesLimit < totalCount}
                       items={(infiniteData || []).map((user: UserDataProps) => (
                         <Box key={user.userId}></Box>
                       ))}

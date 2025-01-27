@@ -2,8 +2,7 @@ import NoDataFound from '@/components/common/NoDataFound';
 import Header from '@/components/Header';
 import BackHeader from '@/components/youthNet/BackHeader';
 import Surveys from '@/components/youthNet/Surveys';
-import { surveysData, volunteerData } from '@/components/youthNet/tempConfigs';
-import VolunteerListCard from '@/components/youthNet/VolunteerListCard';
+import { surveysData } from '@/components/youthNet/tempConfigs';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -11,7 +10,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-const surveys = () => {
+const Survey = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
@@ -125,4 +124,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default surveys
+export default Survey
