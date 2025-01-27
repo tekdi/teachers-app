@@ -45,6 +45,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
 
   const [page, setPage] = useState(0);
+  const [offset, setOffset] = useState(0);
+
   const [infinitePage, setInfinitePage] = useState(1);
   const [infiniteData, setInfiniteData] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
@@ -57,12 +59,14 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
   useEffect(() => {
     const getCohortMemberList = async () => {
-      if (!isMobile) {
-        setLoading(true);
-      }
+      // if (!isMobile) {
+      // }
+      setLoading(true);
       try {
         if (cohortId) {
           const filters = { cohortId: cohortId };
+          const limit = 10
+          const page=offset
           const response = await getMyCohortFacilitatorList({
             limit,
             page,
@@ -132,18 +136,19 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
     INFINITE_SCROLL_INCREMENT: 10,
   };
 
-  const fetchData = async () => {
-    try {
-      setInfinitePage(
-        (prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT
-      );
-    } catch (error) {
-      console.error('Error fetching more data:', error);
-      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-    }
-  };
+  // const fetchData = async () => {
+  //   try {
+  //     setInfinitePage(
+  //       (prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT
+  //     );
+  //   } catch (error) {
+  //     console.error('Error fetching more data:', error);
+  //     showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+  //   }
+  // };
   const handlePageChange = (newPage: number) => {
-    setPage(newPage);
+    setPage(newPage-1);
+    setOffset((newPage-1)*10)
   };
   
   
@@ -208,8 +213,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                       count={Math.ceil(totalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE)}
                       page={page + 1}
                       onPageChange={handlePageChange}
-                      fetchMoreData={fetchData}
-                      hasMore={infinitePage * limit < totalCount}
+                      // fetchMoreData={fetchData}
+                      hasMore={infinitePage * 1 < totalCount}
                       items={(infiniteData || []).map((user: UserDataProps) => (
                         <Box key={user.userId}></Box>
                       ))}
