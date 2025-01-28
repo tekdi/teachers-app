@@ -9,7 +9,9 @@ import SearchBar from '@/components/Searchbar';
 import SortBy from '@/components/youthNet/SortBy';
 import YouthAndVolunteers from '@/components/youthNet/YouthAndVolunteers';
 import {
+  DROPDOWN_NAME,
   users,
+  VILLAGE_OPTIONS,
   villageList,
   youthList,
 } from '@/components/youthNet/tempConfigs';
@@ -17,15 +19,23 @@ import { UserList } from '@/components/youthNet/UserCard';
 import DownloadIcon from '@mui/icons-material/Download';
 import withRole from '@/components/withRole';
 import { TENANT_DATA } from '../../../../app.config';
+import Dropdown from '@/components/youthNet/DropDown';
+import { useRouter } from 'next/router';
+
 const index = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-
+  const router = useRouter();
   const [value, setValue] = useState<number>(1);
   const [searchInput, setSearchInput] = useState('');
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+
+  const handleUserClick = (name: any) => {
+    console.log('Clicked user:', name);
+    router.push(`/youthboard/student/${name}`);
   };
 
   return (
@@ -34,7 +44,7 @@ const index = () => {
         <Header />
       </Box>
       <Box ml={2}>
-        <BackHeader headingOne={t('YOUTHNET_PROFILE.VILLAGES_AND_YOUTH')} />
+        <BackHeader headingOne={t('DASHBOARD.VILLAGES_AND_YOUTH')} />
       </Box>
       <Box sx={{ width: '100%' }}>
         {value && (
@@ -86,15 +96,16 @@ const index = () => {
             <Box
               display={'flex'}
               flexDirection={'row'}
-              gap={'2rem'}
-              mr={'20px'}
+              sx={{
+                pr: '20px',
+              }}
               // justifyContent={'space-around'}
             >
               <SearchBar
                 onSearch={setSearchInput}
                 value={searchInput}
                 placeholder={t('DASHBOARD.SEARCH_VILLAGES')}
-                fullWidth={false}
+                fullWidth={true}
               />
               <SortBy />
             </Box>
@@ -112,7 +123,6 @@ const index = () => {
                   fontSize: '16px',
                   color: 'black',
                   marginLeft: '2rem',
-                  padding: '5px 5px',
                 }}
               >
                 52 Villages
@@ -123,7 +133,7 @@ const index = () => {
                   display: 'flex',
                   alignItems: 'center',
                   cursor: 'pointer',
-                  padding: '5px 5px',
+                  pr: '20px',
                   color: '#0D599E',
                   '&:hover': {
                     color: '#074d82',
@@ -147,7 +157,7 @@ const index = () => {
                   color: 'textSecondary',
                   marginLeft: '2rem',
                   cursor: 'pointer',
-                  padding: '5px 5px',
+                  pr: '20px',
                 }}
                 className="one-line-text"
               >
@@ -158,9 +168,8 @@ const index = () => {
                 sx={{
                   fontSize: '16px',
                   color: 'textSecondary',
-                  marginLeft: '2rem',
                   cursor: 'pointer',
-                  padding: '5px 5px',
+                  pr: '20px',
                 }}
               >
                 Total Count (+ New Registrations today)
@@ -168,7 +177,7 @@ const index = () => {
             </Box>
             <Box
               sx={{
-                px: '20px',
+                pr: '20px',
                 mt: '15px',
               }}
             >
@@ -186,7 +195,39 @@ const index = () => {
                 mt: '15px',
               }}
             >
-              <UserList layout="list" users={youthList} />
+              <Dropdown
+                name={DROPDOWN_NAME}
+                values={VILLAGE_OPTIONS}
+                onSelect={(value) => console.log('Selected:', value)}
+              />
+            </Box>
+            <Box
+              display={'flex'}
+              flexDirection={'row'}
+              sx={{
+                pr: '20px',
+              }}
+              // justifyContent={'space-around'}
+            >
+              <SearchBar
+                onSearch={setSearchInput}
+                value={searchInput}
+                placeholder={t('DASHBOARD.SEARCH_VILLAGES')}
+                fullWidth={true}
+              />
+              <SortBy />
+            </Box>
+            <Box
+              sx={{
+                px: '20px',
+                mt: '15px',
+              }}
+            >
+              <UserList
+                layout="list"
+                users={youthList}
+                onUserClick={handleUserClick}
+              />
             </Box>
           </>
         )}

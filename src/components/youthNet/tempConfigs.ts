@@ -245,3 +245,15 @@ export const villageList = [
     newRegistrations: 5,
   },
 ];
+
+export const DROPDOWN_NAME = 'Village';
+export const VILLAGE_OPTIONS = ['Shivare', 'Pune', 'Mumbai'];
+
+export const studentListDetails = [
+  {
+    name: 'Ananya Gupta',
+    age: 'Shivare (Bhor, Pune, Maharashtra)',
+    showMore: true,
+    showAvtar: true,
+  },
+];

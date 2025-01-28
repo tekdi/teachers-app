@@ -11,7 +11,7 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTheme } from '@mui/material/styles';
 
-type UserCardProps = {
+type ProfileCardProps = {
   name: string;
   showAvtar?: boolean;
   age?: string | number;
@@ -25,7 +25,7 @@ type UserCardProps = {
   onClick?: (name: string) => void; // Add onClick prop
 };
 
-const UserCard: React.FC<UserCardProps> = ({
+const ProfileCard: React.FC<ProfileCardProps> = ({
   name,
   age,
   village,
@@ -43,7 +43,7 @@ const UserCard: React.FC<UserCardProps> = ({
   return (
     <Box
       display={'flex'}
-      // borderBottom={`1px solid ${theme.palette.warning['A100']}`}
+      borderBottom={`1px solid ${theme.palette.warning['A100']}`}
       width={'100%'}
       justifyContent={'space-between'}
       sx={{
@@ -98,16 +98,10 @@ const UserCard: React.FC<UserCardProps> = ({
           </Typography>
           <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
             <Box sx={{ display: 'flex', gap: '8px' }}>
-              {age ? (
+              {age && (
                 <Typography variant="body2" color="textSecondary">
                   {age} y/o • {village || joinOn}
                 </Typography>
-              ) : (
-                village && (
-                  <Typography variant="body2" color="textSecondary">
-                    {village || joinOn}
-                  </Typography>
-                )
               )}
               {isNew && (
                 <Typography
@@ -157,13 +151,13 @@ const UserCard: React.FC<UserCardProps> = ({
   );
 };
 
-type UserListProps = {
-  users: UserCardProps[];
+type ProfileListProps = {
+  users: ProfileCardProps[];
   layout?: 'list' | 'grid'; // Added layout prop
   onUserClick?: (name: string) => void; // Add onUserClick prop
 };
 
-export const UserList: React.FC<UserListProps> = ({
+export const ProfileList: React.FC<ProfileListProps> = ({
   users,
   layout = 'grid',
   onUserClick, // Receive onUserClick prop
@@ -180,10 +174,10 @@ export const UserList: React.FC<UserListProps> = ({
               md={user.totalCount ? 12 : 6}
               lg={user.totalCount ? 12 : 4}
             >
-              <UserCard {...user} onClick={onUserClick} />{' '}
+              <ProfileCard {...user} onClick={onUserClick} />{' '}
               {/* Pass onUserClick */}
             </Grid>
-            {index < users.length - 1 && <Divider />}
+            {index < users.length - 1}
           </React.Fragment>
         ))}
       </Grid>
@@ -192,8 +186,8 @@ export const UserList: React.FC<UserListProps> = ({
     <List>
       {users.map((user, index) => (
         <React.Fragment key={index}>
-          <UserCard {...user} onClick={onUserClick} />
-          {index < users.length - 1 && <Divider />}
+          <ProfileCard {...user} onClick={onUserClick} />
+          {index < users.length - 1}
         </React.Fragment>
       ))}
     </List>

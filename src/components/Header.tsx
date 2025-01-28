@@ -67,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
     const tenant = localStorage.getItem('tenantName');
     if (pathname !== `/user-profile/${userId}`) {
       if (tenant?.toLowerCase() === TENANT_DATA.YOUTHNET?.toLowerCase()) {
-        router.push(`youthboard/user-profile/${userId}`);
+        router.push(`/youthboard/user-profile/${userId}`);
       } else if (
         tenant?.toLowerCase() ===
         TENANT_DATA.SECOND_CHANCE_PROGRAM?.toLowerCase()
