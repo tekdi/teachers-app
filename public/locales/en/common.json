@@ -596,7 +596,9 @@
     "HINDI":"Hindi",
     "MARATHI":"Marathi",
     "URDU":"Urdu",
-    "DIVORCED/WIDOW":"Divorced/Widow"
+    "DIVORCED/WIDOW":"Divorced/Widow",
+    "AVAILABLE_SUGGESTIONS":"Available suggestions:",
+    "USERNAME_ALREADY_TAKEN":"This username is already taken"
 
   },
   "FORM_ERROR_MESSAGES": {

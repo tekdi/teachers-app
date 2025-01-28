@@ -11,6 +11,7 @@ import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import CustomNumberWidget from './CustomNumberWidget';
 import UsernameWithSuggestions from './UsernameWithSuggestions';
+import { userNameExist } from '@/services/CreateUserService';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -37,6 +38,7 @@ interface DynamicFormProps {
     [key: string]: React.FC<RegistryFieldsType<any, RJSFSchema, any>>;
   };
   children?: ReactNode;
+  isEdit?: boolean;
 }
 
 const DynamicForm: React.FC<DynamicFormProps> = ({
@@ -49,6 +51,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   customFields,
   children,
   setFormData,
+  isEdit=false,
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
@@ -271,16 +274,79 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     });
   }
 
-  function handleChange(event: any) {
+  const handleChange= async(event: any)=> {
     const sanitizedData = sanitizeFormData(event.formData);
+    console.log("sanitizedData",formData)
+    if(formData?.username && formData?.firstName && formData?.lastName)
+    {
+      try {
+        
+        const userData = {
+          firstName: formData?.firstName,
+          lastName: formData?.lastName,
+          username: event.formData?.username,
+        }
+                const response = await userNameExist(userData);
+        console.log("response",response?.suggestedUsername)
+        setSuggestions([response?.suggestedUsername]);
+        // setSuggestions(["1234"])
+      } catch (error) {
+        setSuggestions([]);
+        console.error('Error validating username:', error);
+      }
+    }
     onChange({ ...event, formData: sanitizedData });
   }
   const handleUsernameBlur = async (username: string) => {
-    if (username) {
+   
+    if (username && formData?.firstName && formData?.firstName) {
       try {
-        console.log('Username onblur called');
+        
+        const userData = {
+          firstName: formData?.firstName,
+          lastName: formData?.lastName,
+          username: username,
+        }
+                const response = await userNameExist(userData);
+        console.log("response",response?.suggestedUsername)
+        setSuggestions([response?.suggestedUsername]);
         // setSuggestions(["1234"])
       } catch (error) {
+        setSuggestions([]);
+        console.error('Error validating username:', error);
+      }
+    }
+  };
+  const handleFirstLastNameBlur = async (lastName: string) => {
+    if (lastName && !isEdit) {
+      try {
+        console.log('Username onblur called' ,formData);
+        if(formData?.firstName && formData?.lastName){
+          if( setFormData){
+            setFormData((prev: any) => ({
+              ...prev,
+              username: formData.username ? formData.username :`${formData?.firstName}${formData?.lastName}`.toLowerCase(),
+            }));
+           
+            try{  
+              const userData = {
+                firstName: formData?.firstName,
+                lastName: formData?.lastName,
+                username: formData.username ? formData.username: `${formData?.firstName}${formData?.lastName}`.toLowerCase(),
+              }
+                      const response = await userNameExist(userData);
+              console.log("response",response?.suggestedUsername)
+              setSuggestions([response?.suggestedUsername]);
+    
+            }
+            catch(error){
+              console.log("error",error)
+            }
+          }
+        }
+      } catch (error) {
+        setSuggestions([]);
+
         console.error('Error validating username:', error);
       }
     }
@@ -318,6 +384,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         onBlur={(field, value) => {
           if (field === 'username') {
             handleUsernameBlur(value);
+          }
+          if (field === 'root_lastName' || field === 'root_firstName') {
+            handleFirstLastNameBlur(value);
           }
         }}
       >
