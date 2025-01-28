@@ -40,7 +40,7 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
         `${router.pathname}/user/${userId}?assessmentType=${assessmentType}&center=${classId}&board=${board}`
       );
     } else {
-      const type = assessmentType === AssessmentType.PRE_TEST ? 'pre' : 'post';
+      const type = assessmentType === AssessmentType.PRE_TEST ? 'pre' : (assessmentType === AssessmentType.POST_TEST ? 'post' : 'other');
       router.push(
         `/assessments/user/${userId}?assessmentType=${type}&center=${classId}&board=${board}`
       );
@@ -98,6 +98,19 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
     }
   };
 
+  const getCardTitle = (assessmentType: string) => {
+    switch (assessmentType) {
+      case AssessmentType.PRE_TEST:
+        return t('PROFILE.PRE_TEST');
+      case AssessmentType.POST_TEST:
+        return t('PROFILE.POST_TEST');
+      case AssessmentType.OTHER:
+        return t('FORM.OTHER');
+      default:
+        return assessmentType;
+    }
+  }
+
   return (
     <Grid item xs={12} sm={12} md={6} lg={4} key={userId}>
       <Box
@@ -143,25 +156,21 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
                 }}
                 className="one-line-text"
               >
-                 <Typography
-             sx={{
-              display: '-webkit-box',
-              WebkitLineClamp: 1,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-            >
-               {cardTitle === 'pre-test'
-                  ? t('PROFILE.PRE_TEST')
-                  : cardTitle === 'post-test'
-                    ? t('PROFILE.POST_TEST')
-                    : cardTitle}
-            </Typography>
-               
+                <Typography
+                  sx={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 1,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {getCardTitle(cardTitle)}
+                </Typography>
+
               </Box>
               <Box
-                sx={{ 
+                sx={{
                   gap: '4px',
                   display: 'flex',
                   alignItems: 'center',
@@ -186,14 +195,5 @@ const AssessmentReportCard: React.FC<AssessmentReportCardProp> = ({
     </Grid>
   );
 };
-
-// export async function getStaticProps({ locale }: any) {
-//   return {
-//     props: {
-//       ...(await serverSideTranslations(locale, ['common'])),
-//       // Will be passed to the page component as props
-//     },
-//   };
-// }
 
 export default AssessmentReportCard;

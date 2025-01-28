@@ -33,7 +33,7 @@ self.addEventListener('install', async () => {
     //   self.registration.showNotification(notificationTitle, notificationOptions);
     // });
     messaging.onBackgroundMessage(function (payload) {
-
+      console.log("payload", payload);
 
       // const notificationTitle = payload.data.title;
       // const navigate_to = payload.data.navigate_to;
