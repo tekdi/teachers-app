@@ -96,6 +96,8 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const [centers, setCenters] = useState<any>([]);
   const [centerList, setCenterList] = useState<string[]>([]);
   const [page, setPage] = useState(1);
+
+  const [offset, setOffSet] = useState(0);
   const [infinitePage, setInfinitePage] = useState(1);
   const [infiniteData, setInfiniteData] = useState(users || []);
 
@@ -139,9 +141,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
   useEffect(() => {
     const getFacilitator = async () => {
-      if (!isMobile) {
-        setLoading(true);
-      }
+      // if (!isMobile) {
+      // }
+      setLoading(true);
       try {
         const cohortId = cohortData
           .map((block: any) => {
@@ -151,7 +153,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
         if (cohortId) {
           const limit = 10;
-          // const page = page;
+           const page = offset;
           const filters = {
             states: store.stateCode,
             districts: store.districtCode,
@@ -222,7 +224,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
           setUsers(extractedData);
           // setLoading(false);
           if (isMobile) {
-            setInfiniteData([...infiniteData, ...extractedData]);
+           setInfiniteData([...infiniteData, ...extractedData]);
           } else {
             setFilteredUsers(extractedData);
             setInfiniteData(extractedData);
@@ -537,14 +539,14 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     );
   };
   const PAGINATION_CONFIG = {
-    ITEMS_PER_PAGE: 12,
+    ITEMS_PER_PAGE: 10,
     INFINITE_SCROLL_INCREMENT: 10
   };
 
 
   const fetchData = async () => {
     try {
-      setInfinitePage((prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT);
+     setInfinitePage((prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT);
     } catch (error) {
       console.error('Error fetching more data:', error);
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -552,6 +554,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   }
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+    setOffSet((newPage-1)*10)
   };
 
   return (

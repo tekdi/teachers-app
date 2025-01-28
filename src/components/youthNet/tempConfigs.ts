@@ -245,3 +245,99 @@ export const villageList = [
     newRegistrations: 5,
   },
 ];
+
+
+
+// surveys UI  data 
+
+
+export const surveysData = [
+  {
+    title: "Creativity Mahotsav",
+    date: "30 Sep, 2024",
+    details: {
+      villages: 5,
+      status: "NEW",
+      actionRequired: "Assign Volunteers to All Villages"
+    }
+  },
+  {
+    title: "Green Initiative Drive",
+    date: "15 Oct, 2024",
+    details: {
+      villages: 8,
+      status: "IN_PROGRESS",
+    }
+  },
+  {
+    title: "Health Awareness Camp",
+    date: "05 Nov, 2024",
+    details: {
+      villages: 12,
+      status: "COMPLETED",
+      actionRequired: "Compile Final Report"
+    }
+  },
+  {
+    title: "Educational Fair",
+    date: "20 Sep, 2024",
+    details: {
+      villages: 6,
+      status: "NEW",
+    }
+  },
+  {
+    title: "Clean Water Project",
+    date: "01 Oct, 2024",
+    details: {
+      villages: 10,
+      status: "IN_PROGRESS",
+      actionRequired: "Monitor Installation Progress"
+    }
+  },
+  {
+    title: "Sports Championship",
+    date: "28 Oct, 2024",
+    details: {
+      villages: 7,
+      status: "NEW",
+      actionRequired: "Arrange for Venue and Equipment"
+    }
+  },
+  {
+    title: "Digital Literacy Program",
+    date: "10 Nov, 2024",
+    details: {
+      villages: 9,
+      status: "IN_PROGRESS",
+      actionRequired: "Distribute Devices to Participants"
+    }
+  },
+  {
+    title: "Cultural Heritage Week",
+    date: "25 Sep, 2024",
+    details: {
+      villages: 4,
+      status: "NEW",
+      actionRequired: "Coordinate with Local Artists"
+    }
+  },
+  {
+    title: "Disaster Preparedness Workshop",
+    date: "12 Oct, 2024",
+    details: {
+      villages: 15,
+      status: "IN_PROGRESS",
+    
+    }
+  },
+  {
+    title: "Youth Leadership Summit",
+    date: "18 Nov, 2024",
+    details: {
+      villages: 11,
+      status: "NEW",
+      actionRequired: "Finalize List of Attendees"
+    }
+  }
+];

@@ -38,7 +38,7 @@ const BackHeader: React.FC<BackHeaderProps> = ({
         </IconButton>
       )}
       <Box>
-        <Typography textAlign="left" fontSize="22px">
+        <Typography color={'#1F1B13'} textAlign="left" fontSize="22px">
           {headingOne}
         </Typography>
 

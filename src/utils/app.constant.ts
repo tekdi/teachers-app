@@ -23,8 +23,9 @@ import bgunit from '../assets/images/bgUnit.png';
 export const limit: number = 200;
 export const refetchInterval: number = 5 * 60 * 1000; // 5 min
 export const gcTime: number = 10 * 60 * 1000; // 10 Min
+export const pagesLimit: number = 10;
 
-export const labelsToExtractForMiniProfile = [
+export const labelsToExtractForMiniProfile = [ 
   'AGE',
   'GENDER',
   'LEARNERS_PRIMARY_WORK',

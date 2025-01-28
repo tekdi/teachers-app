@@ -197,6 +197,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   const isBoard = router.pathname.includes('/board-enrollment');
   const isSupportRequest = router.pathname.includes('/support-request');
   const isVillagesAndYouths = router.pathname.includes('/youthboard/villages');
+  const isSurveys = router.pathname.includes('/youthboard/surveys');
 
   return (
     <Drawer
@@ -419,6 +420,38 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               }}
             >
               {t('DASHBOARD.VILLAGES_AND_YOUTH')}
+            </Button>
+
+            <Button
+              className="fs-14"
+              sx={{
+                gap: '10px',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                background: isSurveys
+                  ? theme.palette.primary.main
+                  : 'transparent',
+                padding: isSurveys
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                marginTop: '25px',
+                color: isSurveys
+                  ? '#2E1500'
+                  : theme.palette.warning.A200,
+                fontWeight: isSurveys ? '600' : 500,
+                '&:hover': {
+                  background: isSurveys
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+              }}
+              startIcon={<GroupsIcon sx={{ fontSize: '24px !important' }} />}
+              onClick={() => {
+                router.push(`/youthboard/surveys`);
+              }}
+            >
+              Surveys
             </Button>
           </Box>
         )}

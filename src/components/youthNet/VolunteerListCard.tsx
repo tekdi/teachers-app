@@ -10,7 +10,7 @@ interface CardProps {
   entries: number;
   volunteerCount: number;
   actionLabel: string;
-  onActionClick: () => void;
+  onActionClick?: () => void;
 }
 
 const VolunteerListCard: React.FC<CardProps> = ({
@@ -84,7 +84,7 @@ const VolunteerListCard: React.FC<CardProps> = ({
             component="button"
             variant="body2"
             color="primary"
-            onClick={onActionClick}
+            onClick={onActionClick || (() => { })}
             sx={{
               fontWeight: '500',
               color: '#0D599E',
