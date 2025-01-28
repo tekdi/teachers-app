@@ -723,8 +723,7 @@
     "PHONE_NUMBER": "Phone Number",
     "MENTOR_ID": "Mentor ID",
     "GENDER": "Gender",
-    "AGE": "Age",
-    "N/A": "-"
+    "AGE": "Age"
   },
   "YOUTHNET_CAMP_DETAILS": {
     "SUBMISSION": "Submission",

@@ -53,7 +53,7 @@ const Profile: React.FC<ProfileDetailsProps> = ({
           sx={{ fontSize: '16px', fontWeight: 400 }}
           gutterBottom
         >
-          {fullName || t('YOUTHNET_PROFILE.N/A')}
+          {fullName}
         </Typography>
 
         <Typography
@@ -67,7 +67,7 @@ const Profile: React.FC<ProfileDetailsProps> = ({
           sx={{ fontSize: '16px', fontWeight: 400 }}
           gutterBottom
         >
-          {emailId || t('YOUTHNET_PROFILE.N/A')}
+          {emailId}
         </Typography>
 
         <Typography
@@ -81,9 +81,7 @@ const Profile: React.FC<ProfileDetailsProps> = ({
           sx={{ fontSize: '16px', fontWeight: 400 }}
           gutterBottom
         >
-          {state || t('YOUTHNET_PROFILE.N/A')},{' '}
-          {district || t('YOUTHNET_PROFILE.N/A')},{' '}
-          {block || t('YOUTHNET_PROFILE.N/A')}
+          {state}, {district}, {block}
         </Typography>
 
         <Grid container spacing={2}>
@@ -98,7 +96,7 @@ const Profile: React.FC<ProfileDetailsProps> = ({
               color={theme.palette.warning['A200']}
               sx={{ fontSize: '16px', fontWeight: 400 }}
             >
-              {designation || t('YOUTHNET_PROFILE.N/A')}
+              {designation}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -112,7 +110,7 @@ const Profile: React.FC<ProfileDetailsProps> = ({
               color={theme.palette.warning['A200']}
               sx={{ fontSize: '16px', fontWeight: 400 }}
             >
-              {joinedOn || t('YOUTHNET_PROFILE.N/A')}
+              {joinedOn}
             </Typography>
           </Grid>
         </Grid>
@@ -129,7 +127,7 @@ const Profile: React.FC<ProfileDetailsProps> = ({
               color={theme.palette.warning['A200']}
               sx={{ fontSize: '16px', fontWeight: 400 }}
             >
-              {phoneNumber || t('YOUTHNET_PROFILE.N/A')}
+              {phoneNumber}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -143,7 +141,7 @@ const Profile: React.FC<ProfileDetailsProps> = ({
               color={theme.palette.warning['A200']}
               sx={{ fontSize: '16px', fontWeight: 400 }}
             >
-              {mentorId || t('YOUTHNET_PROFILE.N/A')}
+              {mentorId}
             </Typography>
           </Grid>
         </Grid>
@@ -157,7 +155,7 @@ const Profile: React.FC<ProfileDetailsProps> = ({
               {t('YOUTHNET_PROFILE.GENDER')}
             </Typography>
             <Typography color={theme.palette.warning['A200']}>
-              {gender || t('YOUTHNET_PROFILE.N/A')}
+              {gender}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -168,7 +166,7 @@ const Profile: React.FC<ProfileDetailsProps> = ({
               {t('YOUTHNET_PROFILE.AGE')}
             </Typography>
             <Typography sx={{ fontSize: '16px', fontWeight: 400 }}>
-              {age || t('YOUTHNET_PROFILE.N/A')}
+              {age}
             </Typography>
           </Grid>
         </Grid>
