@@ -119,6 +119,9 @@ const customTheme = extendTheme({
           main: '#064471',
           light: '#D6EEFF',
           contrastText: '#EFC570',
+          //@ts-ignore
+          black: '#000000',
+          gradient: 'linear-gradient(180deg, #FFFDF6 100%, #F8EFDA 100%)',
         },
         warning: {
           '100': '#17130B',
