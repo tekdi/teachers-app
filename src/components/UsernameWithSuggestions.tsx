@@ -1,16 +1,20 @@
-import { Box, ListItemText, MenuItem, TextField, Typography } from "@mui/material";
-import { WidgetProps } from "@rjsf/utils";
-import React from "react";
+import {
+  Box,
+  ListItemText,
+  MenuItem,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { WidgetProps } from '@rjsf/utils';
+import React from 'react';
 interface UsernameWidgetProps {
- 
   formContext: {
-       suggestions: string[];
-       onSuggestionSelect: (suggestion: string) => void;
-    };
-    value: string;
-     onChange: (value: string) => void;
-     onBlur: (field: string, value: string) => void;
-
+    suggestions: string[];
+    onSuggestionSelect: (suggestion: string) => void;
+  };
+  value: string;
+  onChange: (value: string) => void;
+  onBlur: (field: string, value: string) => void;
 }
 const UsernameWithSuggestions: React.FC<UsernameWidgetProps> = ({
   formContext,
@@ -23,7 +27,7 @@ const UsernameWithSuggestions: React.FC<UsernameWidgetProps> = ({
 
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     if (onBlur) {
-      onBlur(event.target.name, event.target.value); 
+      onBlur(event.target.name, event.target.value);
     }
   };
 
@@ -34,20 +38,18 @@ const UsernameWithSuggestions: React.FC<UsernameWidgetProps> = ({
   };
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(event.target.value); 
+    onChange(event.target.value);
   };
 
   return (
     <div>
       <TextField
-       
         value={value}
-        onChange={handleUsernameChange}  
+        onChange={handleUsernameChange}
         onBlur={handleBlur}
         InputLabelProps={{
           shrink: value ? true : false,
         }}
-     
         {...rest}
       />
       {suggestions?.length > 0 && (
@@ -56,17 +58,12 @@ const UsernameWithSuggestions: React.FC<UsernameWidgetProps> = ({
             <Box>
               {/* Availble suggestion :  */}
               <Typography
-               onClick={() => onSuggestionSelect(suggestion)} 
-              sx={{cursor:'pointer',
-              color:'green',
-
-            }}
+                onClick={() => onSuggestionSelect(suggestion)}
+                sx={{ cursor: 'pointer', color: 'green' }}
               >
-              {suggestion}
-
+                {suggestion}
               </Typography>
             </Box>
-           
           ))}
         </div>
       )}
@@ -75,7 +72,3 @@ const UsernameWithSuggestions: React.FC<UsernameWidgetProps> = ({
 };
 
 export default UsernameWithSuggestions;
-
-
-
-

@@ -2,7 +2,11 @@ import { UiSchema } from '@rjsf/utils';
 import { JSONSchema7 } from 'json-schema';
 import NumberInputField from './form/NumberInputField';
 import { FormData, Field, FieldOption } from '@/utils/Interfaces';
-import { getCurrentYearPattern, getEmailPattern, getLastDayDate } from '@/utils/Helper';
+import {
+  getCurrentYearPattern,
+  getEmailPattern,
+  getLastDayDate,
+} from '@/utils/Helper';
 
 export const customFields = {
   NumberInputField: NumberInputField,
@@ -57,9 +61,8 @@ export const GenerateSchemaAndUiSchema = (
         if (field?.hint) {
           fieldUiSchema['ui:help'] = t(`FORM.${field?.hint}`);
         }
-        if(name==="username")
-        fieldUiSchema['ui:widget'] = 'UsernameWithSuggestions';
-
+        if (name === 'username')
+          fieldUiSchema['ui:widget'] = 'UsernameWithSuggestions';
 
         break;
       case 'email':
@@ -118,11 +121,11 @@ export const GenerateSchemaAndUiSchema = (
         }));
         fieldUiSchema['ui:widget'] = 'CustomRadioWidget';
         break;
-        case 'date':
-          fieldSchema.type = 'string';
-          fieldSchema.format = 'date';
-          fieldUiSchema['ui:widget'] = 'date';
-          break;
+      case 'date':
+        fieldSchema.type = 'string';
+        fieldSchema.format = 'date';
+        fieldUiSchema['ui:widget'] = 'date';
+        break;
       default:
         break;
     }

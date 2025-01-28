@@ -18,10 +18,10 @@ interface DynamicFormProps {
   schema: any;
   uiSchema: object;
   formData?: {
-    username?: string; 
+    username?: string;
     [key: string]: any;
-  }; 
-   onSubmit: (
+  };
+  onSubmit: (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => void | Promise<void>;
@@ -48,14 +48,16 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   onError,
   customFields,
   children,
-  setFormData
+  setFormData,
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
     MultiSelectDropdown: MultiSelectDropdown,
     CustomNumberWidget: CustomNumberWidget,
-   UsernameWithSuggestions: UsernameWithSuggestions as React.FC<WidgetProps<any, RJSFSchema, any>> 
+    UsernameWithSuggestions: UsernameWithSuggestions as React.FC<
+      WidgetProps<any, RJSFSchema, any>
+    >,
   };
   const { t } = useTranslation();
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -91,13 +93,16 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
   const sanitizeFormData = (data: any): any => {
     if (Array.isArray(data)) {
-      return data.map(item => (typeof item === "undefined" ? '' : sanitizeFormData(item)));
+      return data.map((item) =>
+        typeof item === 'undefined' ? '' : sanitizeFormData(item)
+      );
     }
     if (data !== null && typeof data === 'object') {
       return Object.fromEntries(
-       
-        Object.entries(data)?.map(([key, value]) => [key, value === "undefined" ? "" : sanitizeFormData(value)])
-
+        Object.entries(data)?.map(([key, value]) => [
+          key,
+          value === 'undefined' ? '' : sanitizeFormData(value),
+        ])
       );
     }
     return data;
@@ -194,16 +199,12 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               );
               break;
             }
-            case '^[a-zA-Z0-9.@]+$':
-          
-          {
-            error.message = t(
-              'FORM_ERROR_MESSAGES.SPACE_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
-            );
-            break;
-
-
-          }
+            case '^[a-zA-Z0-9.@]+$': {
+              error.message = t(
+                'FORM_ERROR_MESSAGES.SPACE_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
+              );
+              break;
+            }
             default: {
               if (error?.property === '.email') {
                 const validEmail = emailPattern.test(pattern);
@@ -277,34 +278,29 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   const handleUsernameBlur = async (username: string) => {
     if (username) {
       try {
-       
-          console.log('Username onblur called');
-         // setSuggestions(["1234"])
-
-          
+        console.log('Username onblur called');
+        // setSuggestions(["1234"])
       } catch (error) {
         console.error('Error validating username:', error);
       }
     }
   };
 
-  
   const handleSuggestionSelect = (selectedUsername: string) => {
-    if(setFormData)
-    setFormData((prev: any) => ({
-      ...prev,
-      username: selectedUsername
-    }));  
+    if (setFormData)
+      setFormData((prev: any) => ({
+        ...prev,
+        username: selectedUsername,
+      }));
     setSuggestions([]);
   };
-  
 
   return (
     <div className="form-parent">
       <FormWithMaterialUI
         schema={schema}
-        uiSchema={uiSchema}     
-         formData={sanitizeFormData(formData)}
+        uiSchema={uiSchema}
+        formData={sanitizeFormData(formData)}
         onChange={handleChange}
         onSubmit={onSubmit}
         validator={validator}
@@ -320,14 +316,11 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
           onSuggestionSelect: handleSuggestionSelect,
         }}
         onBlur={(field, value) => {
-          if (field==="username") {
-            
+          if (field === 'username') {
             handleUsernameBlur(value);
           }
         }}
       >
-          
-
         {children}
       </FormWithMaterialUI>
     </div>
