@@ -18,8 +18,8 @@ interface DynamicFormProps {
   schema: any;
   uiSchema: object;
   formData?: {
-    username?: string; // Add username explicitly as a field
-    [key: string]: any; // Allow for other fields as well
+    username?: string; 
+    [key: string]: any;
   }; 
    onSubmit: (
     data: IChangeEvent<any, RJSFSchema, any>,
@@ -55,7 +55,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     CustomRadioWidget: CustomRadioWidget,
     MultiSelectDropdown: MultiSelectDropdown,
     CustomNumberWidget: CustomNumberWidget,
-   UsernameWithSuggestions: UsernameWithSuggestions as React.FC<WidgetProps<any, RJSFSchema, any>> // Ensure correct type
+   UsernameWithSuggestions: UsernameWithSuggestions as React.FC<WidgetProps<any, RJSFSchema, any>> 
   };
   const { t } = useTranslation();
   const [suggestions, setSuggestions] = useState<string[]>([]);
