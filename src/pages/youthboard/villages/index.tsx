@@ -22,7 +22,7 @@ import { TENANT_DATA } from '../../../../app.config';
 import Dropdown from '@/components/youthNet/DropDown';
 import { useRouter } from 'next/router';
 
-const index = () => {
+const Index = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
@@ -244,4 +244,4 @@ export async function getStaticProps({ locale }: any) {
   };
 }
 
-export default withRole(TENANT_DATA.YOUTHNET)(index);
+export default withRole(TENANT_DATA.YOUTHNET)(Index);

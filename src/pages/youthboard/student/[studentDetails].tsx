@@ -9,7 +9,6 @@ import Header from '@/components/Header';
 import BackHeader from '@/components/youthNet/BackHeader';
 import { Box, Typography } from '@mui/material';
 import { UserList } from '@/components/youthNet/UserCard';
-import { studentListDetails } from '@/components/youthNet/tempConfigs';
 import Profile from '@/components/youthNet/Profile';
 import { useTheme } from '@mui/material/styles';
 
