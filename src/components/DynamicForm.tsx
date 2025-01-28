@@ -273,43 +273,40 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       return error;
     });
   }
-
+  const validateUsername = async (userData: { firstName: string; lastName: string; username: string }) => {
+    try {
+      const response = await userNameExist(userData);
+      setSuggestions([response?.suggestedUsername]);
+    } catch (error) {
+      setSuggestions([]);
+      console.error('Error validating username:', error);
+    }
+  };
   const handleChange= async(event: any)=> {
     const sanitizedData = sanitizeFormData(event.formData);
-    if(formData?.username && formData?.firstName && formData?.lastName)
+    if(formData?.username && formData?.firstName && formData?.lastName && formData?.username!== event.formData?.username) 
     {
-      try {
-        
-        const userData = {
-          firstName: formData?.firstName,
-          lastName: formData?.lastName,
-          username: event.formData?.username,
-        }
-                const response = await userNameExist(userData);
-        setSuggestions([response?.suggestedUsername]);
-      } catch (error) {
-        setSuggestions([]);
-        console.error('Error validating username:', error);
+      const userData = {
+        firstName: formData?.firstName,
+        lastName: formData?.lastName,
+        username: event.formData?.username,
       }
+      //         const response = await userNameExist(userData);
+      // setSuggestions([response?.suggestedUsername]);
+      await validateUsername(userData);
+     
     }
     onChange({ ...event, formData: sanitizedData });
   }
   const handleUsernameBlur = async (username: string) => {
    
     if (username && formData?.firstName && formData?.lastName) {
-      try {
-        
-        const userData = {
-          firstName: formData?.firstName,
-          lastName: formData?.lastName,
-          username: username,
-        }
-                const response = await userNameExist(userData);
-        setSuggestions([response?.suggestedUsername]);
-      } catch (error) {
-        setSuggestions([]);
-        console.error('Error validating username:', error);
+      const userData = {
+        firstName: formData?.firstName,
+        lastName: formData?.lastName,
+        username: username,
       }
+      await validateUsername(userData)     
     }
   };
   const handleFirstLastNameBlur = async (lastName: string) => {
@@ -322,21 +319,13 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               ...prev,
               username: formData.username ? formData.username :`${formData?.firstName}${formData?.lastName}`.toLowerCase(),
             }));
+            const userData = {
+              firstName: formData?.firstName,
+              lastName: formData?.lastName,
+              username: formData.username ? formData.username: `${formData?.firstName}${formData?.lastName}`.toLowerCase(),
+            }
+            await validateUsername(userData)  
            
-            try{  
-              const userData = {
-                firstName: formData?.firstName,
-                lastName: formData?.lastName,
-                username: formData.username ? formData.username: `${formData?.firstName}${formData?.lastName}`.toLowerCase(),
-              }
-                      const response = await userNameExist(userData);
-              console.log("response",response?.suggestedUsername)
-              setSuggestions([response?.suggestedUsername]);
-    
-            }
-            catch(error){
-              console.log("error",error)
-            }
           }
         }
       } catch (error) {
