@@ -141,9 +141,9 @@ const ManageUser: React.FC<ManageUsersProps> = ({
 
   useEffect(() => {
     const getFacilitator = async () => {
-      // if (!isMobile) {
-      // }
-      setLoading(true);
+      if (!isMobile) {
+        setLoading(true);
+      }
       try {
         const cohortId = cohortData
           .map((block: any) => {
@@ -543,9 +543,18 @@ const ManageUser: React.FC<ManageUsersProps> = ({
     INFINITE_SCROLL_INCREMENT: 10
   };
 
-
   const fetchData = async () => {
+    if (infiniteData && (infiniteData.length>=TotalCount)){
+      return;
+    }    
     try {
+      setOffSet((prev) => {
+        if (TotalCount && prev + PAGINATION_CONFIG.ITEMS_PER_PAGE <= TotalCount) {
+          return prev + PAGINATION_CONFIG.ITEMS_PER_PAGE;
+        }
+        return prev;
+      });
+
      setInfinitePage((prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT);
     } catch (error) {
       console.error('Error fetching more data:', error);
@@ -554,7 +563,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   }
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    setOffSet((newPage-1)*10)
+    setOffSet((newPage - 1) * PAGINATION_CONFIG.ITEMS_PER_PAGE)
   };
 
   return (
@@ -801,6 +810,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
                               onPageChange={handlePageChange}
                               fetchMoreData={() => fetchData()}
                               hasMore={hasMore}
+                              TotalCount={TotalCount}
                               items={infiniteData.map((user) => (
                                 <Box key={user.userId}></Box>
                               ))}
