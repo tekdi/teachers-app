@@ -5,24 +5,29 @@ import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { useTranslation } from 'next-i18next';
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import CustomRadioWidget from './CustomRadioWidget';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import CustomNumberWidget from './CustomNumberWidget';
+import UsernameWithSuggestions from './UsernameWithSuggestions';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
 interface DynamicFormProps {
   schema: any;
   uiSchema: object;
-  formData?: object;
+  formData?: {
+    username?: string;
+    [key: string]: any;
+  };
   onSubmit: (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => void | Promise<void>;
   onChange: (event: IChangeEvent<any>) => void;
   onError: (errors: any) => void;
+  setFormData?: (data: any) => void;
   showErrorList: boolean;
 
   widgets: {
@@ -43,14 +48,19 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   onError,
   customFields,
   children,
+  setFormData,
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
     MultiSelectDropdown: MultiSelectDropdown,
     CustomNumberWidget: CustomNumberWidget,
+    UsernameWithSuggestions: UsernameWithSuggestions as React.FC<
+      WidgetProps<any, RJSFSchema, any>
+    >,
   };
   const { t } = useTranslation();
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const submittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.submittedButtonStatus
@@ -83,13 +93,16 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
   const sanitizeFormData = (data: any): any => {
     if (Array.isArray(data)) {
-      return data.map(item => (typeof item === "undefined" ? '' : sanitizeFormData(item)));
+      return data.map((item) =>
+        typeof item === 'undefined' ? '' : sanitizeFormData(item)
+      );
     }
     if (data !== null && typeof data === 'object') {
       return Object.fromEntries(
-       
-        Object.entries(data)?.map(([key, value]) => [key, value === "undefined" ? "" : sanitizeFormData(value)])
-
+        Object.entries(data)?.map(([key, value]) => [
+          key,
+          value === 'undefined' ? '' : sanitizeFormData(value),
+        ])
       );
     }
     return data;
@@ -186,16 +199,12 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               );
               break;
             }
-            case '^[a-zA-Z0-9.@]+$':
-          
-          {
-            error.message = t(
-              'FORM_ERROR_MESSAGES.SPACE_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
-            );
-            break;
-
-
-          }
+            case '^[a-zA-Z0-9.@]+$': {
+              error.message = t(
+                'FORM_ERROR_MESSAGES.SPACE_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
+              );
+              break;
+            }
             default: {
               if (error?.property === '.email') {
                 const validEmail = emailPattern.test(pattern);
@@ -266,6 +275,25 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     const sanitizedData = sanitizeFormData(event.formData);
     onChange({ ...event, formData: sanitizedData });
   }
+  const handleUsernameBlur = async (username: string) => {
+    if (username) {
+      try {
+        console.log('Username onblur called');
+        // setSuggestions(["1234"])
+      } catch (error) {
+        console.error('Error validating username:', error);
+      }
+    }
+  };
+
+  const handleSuggestionSelect = (selectedUsername: string) => {
+    if (setFormData)
+      setFormData((prev: any) => ({
+        ...prev,
+        username: selectedUsername,
+      }));
+    setSuggestions([]);
+  };
 
   return (
     <div className="form-parent">
@@ -283,6 +311,15 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         onError={handleError}
         transformErrors={transformErrors}
         fields={customFields}
+        formContext={{
+          suggestions,
+          onSuggestionSelect: handleSuggestionSelect,
+        }}
+        onBlur={(field, value) => {
+          if (field === 'username') {
+            handleUsernameBlur(value);
+          }
+        }}
       >
         {children}
       </FormWithMaterialUI>

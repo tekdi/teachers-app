@@ -15,6 +15,8 @@ import {
 } from '@/components/youthNet/tempConfigs';
 import { UserList } from '@/components/youthNet/UserCard';
 import DownloadIcon from '@mui/icons-material/Download';
+import withRole from '@/components/withRole';
+import { TENANT_DATA } from '../../../../app.config';
 const index = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
@@ -32,7 +34,7 @@ const index = () => {
         <Header />
       </Box>
       <Box ml={2}>
-        <BackHeader headingOne={t('DASHBOARD.VILLAGES_AND_YOUTH')} />
+        <BackHeader headingOne={t('YOUTHNET_PROFILE.VILLAGES_AND_YOUTH')} />
       </Box>
       <Box sx={{ width: '100%' }}>
         {value && (
@@ -200,4 +202,5 @@ export async function getStaticProps({ locale }: any) {
     },
   };
 }
-export default index;
+
+export default withRole(TENANT_DATA.YOUTHNET)(index);

@@ -173,7 +173,6 @@ function App({ Component, pageProps }: AppProps) {
           rel="stylesheet"
         />
       </Head>
-      <InstallPopup />
       <CacheProvider value={isRTL ? rtlCache : ltrCache}>
         <CssVarsProvider theme={customTheme}>
           <Box
@@ -191,6 +190,7 @@ function App({ Component, pageProps }: AppProps) {
               overflowX: 'hidden',
             }}
           >
+            <InstallPopup />
             <QueryClientProvider client={client}>
               <Component {...pageProps} />
             </QueryClientProvider>
