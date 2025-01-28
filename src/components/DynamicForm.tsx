@@ -276,7 +276,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
   const handleChange= async(event: any)=> {
     const sanitizedData = sanitizeFormData(event.formData);
-    console.log("sanitizedData",formData)
     if(formData?.username && formData?.firstName && formData?.lastName)
     {
       try {
@@ -287,7 +286,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
           username: event.formData?.username,
         }
                 const response = await userNameExist(userData);
-        console.log("response",response?.suggestedUsername)
         setSuggestions([response?.suggestedUsername]);
       } catch (error) {
         setSuggestions([]);
@@ -298,7 +296,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   }
   const handleUsernameBlur = async (username: string) => {
    
-    if (username && formData?.firstName && formData?.firstName) {
+    if (username && formData?.firstName && formData?.lastName) {
       try {
         
         const userData = {
@@ -307,7 +305,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
           username: username,
         }
                 const response = await userNameExist(userData);
-        console.log("response",response?.suggestedUsername)
         setSuggestions([response?.suggestedUsername]);
       } catch (error) {
         setSuggestions([]);
