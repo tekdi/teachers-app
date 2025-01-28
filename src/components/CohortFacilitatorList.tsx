@@ -57,6 +57,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
   const { t } = useTranslation();
 
+
+
   useEffect(() => {
     const getCohortMemberList = async () => {
       if (!isMobile) {
@@ -146,8 +148,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
     try {
       setOffset((prev) => {
-        if (totalCount && prev + 10 <= totalCount) {
-          return prev + 10;
+        if (totalCount && prev + PAGINATION_CONFIG.ITEMS_PER_PAGE <= totalCount) {
+          return prev + PAGINATION_CONFIG.ITEMS_PER_PAGE;
         }
         return prev;
       });

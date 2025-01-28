@@ -546,15 +546,11 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   const fetchData = async () => {
     if (infiniteData && (infiniteData.length>=TotalCount)){
       return;
-    }   
-
-    console.log(infiniteData.length);
-    console.log(TotalCount);
-    
+    }    
     try {
       setOffSet((prev) => {
-        if (TotalCount && prev + 10 <= TotalCount) {
-          return prev + 10;
+        if (TotalCount && prev + PAGINATION_CONFIG.ITEMS_PER_PAGE <= TotalCount) {
+          return prev + PAGINATION_CONFIG.ITEMS_PER_PAGE;
         }
         return prev;
       });
@@ -567,7 +563,7 @@ const ManageUser: React.FC<ManageUsersProps> = ({
   }
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    setOffSet((newPage-1)*10)
+    setOffSet((newPage - 1) * PAGINATION_CONFIG.ITEMS_PER_PAGE)
   };
 
   return (

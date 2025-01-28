@@ -48,7 +48,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
                 //     <p style={{ textAlign: 'center' }}>You have seen all data!</p>
                 // }
             >
-                <></>
+                {null}
             </InfiniteScroll>
         );
     }
