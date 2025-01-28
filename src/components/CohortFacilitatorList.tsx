@@ -59,9 +59,9 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
   useEffect(() => {
     const getCohortMemberList = async () => {
-      // if (!isMobile) {
-      // }
-      setLoading(true);
+      if (!isMobile) {
+        setLoading(true);
+      }
       try {
         if (cohortId) {
           const filters = { cohortId: cohortId };
@@ -136,16 +136,28 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
     INFINITE_SCROLL_INCREMENT: pagesLimit,
   };
 
-  // const fetchData = async () => {
-  //   try {
-  //     setInfinitePage(
-  //       (prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT
-  //     );
-  //   } catch (error) {
-  //     console.error('Error fetching more data:', error);
-  //     showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-  //   }
-  // };
+  const fetchData = async () => {
+    if (infiniteData && (infiniteData.length >= totalCount)) {
+      return;
+    }
+
+    console.log(infiniteData.length);
+    console.log(totalCount);
+
+    try {
+      setOffset((prev) => {
+        if (totalCount && prev + 10 <= totalCount) {
+          return prev + 10;
+        }
+        return prev;
+      });
+
+      setInfinitePage((prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT);
+    } catch (error) {
+      console.error('Error fetching more data:', error);
+      showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+    }
+  }
   const handlePageChange = (newPage: number) => {
     setPage(newPage-1);
     setOffset((newPage - 1) * pagesLimit)
@@ -214,6 +226,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                       page={page + 1}
                       onPageChange={handlePageChange}
                       // fetchMoreData={fetchData}
+                      TotalCount={totalCount}
                       hasMore={infinitePage * pagesLimit < totalCount}
                       items={(infiniteData || []).map((user: UserDataProps) => (
                         <Box key={user.userId}></Box>
