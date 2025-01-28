@@ -2,11 +2,17 @@ import { Box, ListItemText, MenuItem, TextField, Typography } from "@mui/materia
 import { WidgetProps } from "@rjsf/utils";
 import React from "react";
 interface UsernameWidgetProps {
-  formContext: any
-  value: any;
-  onChange: (value: any) => void;
-  onBlur: (field: any ,value: any) => void;
-
+  // formContext: any
+  // value: any;
+  // onChange: (value: any) => void;
+  // onBlur: (field: any ,value: any) => void;
+  formContext: {
+       suggestions: string[];
+       onSuggestionSelect: (suggestion: string) => void;
+    };
+    value: string;
+     onChange: (value: string) => void;
+     onBlur: (field: string, value: string) => void;
 
 }
 const UsernameWithSuggestions: React.FC<UsernameWidgetProps> = ({
