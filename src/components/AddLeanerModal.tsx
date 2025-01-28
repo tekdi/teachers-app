@@ -298,7 +298,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     }
   };
 
-   const handleChange = async (event: IChangeEvent<any>) => {
+   const handleChange = (event: IChangeEvent<any>) => {
     const { formData } = event;
   
     if (!isEditModal) {

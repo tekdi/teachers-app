@@ -289,7 +289,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 const response = await userNameExist(userData);
         console.log("response",response?.suggestedUsername)
         setSuggestions([response?.suggestedUsername]);
-        // setSuggestions(["1234"])
       } catch (error) {
         setSuggestions([]);
         console.error('Error validating username:', error);
@@ -310,7 +309,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 const response = await userNameExist(userData);
         console.log("response",response?.suggestedUsername)
         setSuggestions([response?.suggestedUsername]);
-        // setSuggestions(["1234"])
       } catch (error) {
         setSuggestions([]);
         console.error('Error validating username:', error);
