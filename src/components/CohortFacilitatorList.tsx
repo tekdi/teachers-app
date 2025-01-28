@@ -1,7 +1,7 @@
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortFacilitatorList } from '@/services/MyClassDetailsService';
 import useStore from '@/store/store';
-import { Status, limit } from '@/utils/app.constant';
+import { Status, pagesLimit } from '@/utils/app.constant';
 import {
   toPascalCase
 } from '@/utils/Helper';
@@ -45,6 +45,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
 
   const [page, setPage] = useState(0);
+  const [offset, setOffset] = useState(0);
+
   const [infinitePage, setInfinitePage] = useState(1);
   const [infiniteData, setInfiniteData] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
@@ -55,6 +57,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
   const { t } = useTranslation();
 
+
+
   useEffect(() => {
     const getCohortMemberList = async () => {
       if (!isMobile) {
@@ -63,6 +67,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       try {
         if (cohortId) {
           const filters = { cohortId: cohortId };
+          const limit = pagesLimit
+          const page=offset
           const response = await getMyCohortFacilitatorList({
             limit,
             page,
@@ -128,22 +134,35 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   };
 
   const PAGINATION_CONFIG = {
-    ITEMS_PER_PAGE: 10,
-    INFINITE_SCROLL_INCREMENT: 10,
+    ITEMS_PER_PAGE: pagesLimit,
+    INFINITE_SCROLL_INCREMENT: pagesLimit,
   };
 
   const fetchData = async () => {
+    if (infiniteData && (infiniteData.length >= totalCount)) {
+      return;
+    }
+
+    console.log(infiniteData.length);
+    console.log(totalCount);
+
     try {
-      setInfinitePage(
-        (prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT
-      );
+      setOffset((prev) => {
+        if (totalCount && prev + PAGINATION_CONFIG.ITEMS_PER_PAGE <= totalCount) {
+          return prev + PAGINATION_CONFIG.ITEMS_PER_PAGE;
+        }
+        return prev;
+      });
+
+      setInfinitePage((prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT);
     } catch (error) {
       console.error('Error fetching more data:', error);
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
     }
-  };
+  }
   const handlePageChange = (newPage: number) => {
-    setPage(newPage);
+    setPage(newPage-1);
+    setOffset((newPage - 1) * pagesLimit)
   };
   
   
@@ -203,13 +222,14 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 }}
               >
                 {
-                  (isMobile ? infiniteData.length > 10 : (filteredData && filteredData?.length > 10)) && (
+                  (isMobile ? infiniteData.length > pagesLimit : (filteredData && filteredData?.length > pagesLimit)) && (
                     <CustomPagination
                       count={Math.ceil(totalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE)}
                       page={page + 1}
                       onPageChange={handlePageChange}
-                      fetchMoreData={fetchData}
-                      hasMore={infinitePage * limit < totalCount}
+                      // fetchMoreData={fetchData}
+                      TotalCount={totalCount}
+                      hasMore={infinitePage * pagesLimit < totalCount}
                       items={(infiniteData || []).map((user: UserDataProps) => (
                         <Box key={user.userId}></Box>
                       ))}

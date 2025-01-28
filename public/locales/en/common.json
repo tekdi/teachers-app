@@ -156,7 +156,7 @@
     "SUBMIT_YOUR_REQUEST_FOR_ISSUES": "Submit your request and let us assist you with any issues or concerns.",
     "INSTALL": "Install Now",
     "INSTALL_APP_MESSAGE": "For Easy Access, Install the App Now",
-    "INSTALL_APP_DESCRIPTION": "Get access to the Pratham Learning Management App (LMA) at your fingertips by installing on your device.",
+    "INSTALL_APP_DESCRIPTION": "Get access to the Pratham Learning Management Portal (LMP) at your fingertips by installing on your device.",
     "RELOAD": "Update Now",
     "UPDATE_AVAILABLE": "New Update Available!",
     "RELOAD_TO_UPDATE": "Get the latest features and improvements—update now to enjoy a smoother experience and stay up-to-date!"
@@ -598,8 +598,9 @@
     "URDU":"Urdu",
     "DIVORCED/WIDOW":"Divorced/Widow",
     "AVAILABLE_SUGGESTIONS":"Available suggestions:",
-    "USERNAME_ALREADY_TAKEN":"This username is already taken"
-
+    "USERNAME_ALREADY_TAKEN":"This username is already taken",
+    "GRADUATE":"Graduate",
+    "POST_GRADUATE":"Post Graduate"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
@@ -638,7 +639,7 @@
     "ASSESSMENTS": "Assessments",
     "CENTER": "Center",
     "ASSESSMENT_TYPE": "Assessment Type",
-    "COMPLETED_THE_ASSESSMENT": "completed the assessment",
+    "COMPLETED_THE_ASSESSMENT": "completed all the assigned assessments",
     "SUBMITTED_ON": "Submitted On",
     "CORRECT_ANSWER": "correct answers",
     "NO_DATA_FOUND": "No data found",
@@ -654,7 +655,8 @@
     "NUMBER_OUT_OF_COMPLETED": "{{completedCount}} out of {{totalCount}} completed",
     "NO_SUBTOPIC_SELECTED": "No Subtopic selected",
     "NO_SUBJECT_FOUND": "No Subject found",
-    "NO_ASSIGNED": "No assigned"
+    "NO_ASSIGNED": "No assigned",
+    "OUT_OF": "Out of"
   },
   "BOARD_ENROLMENT": {
     "BOARD_ENROLLMENT": "Board Enrollment",
@@ -725,8 +727,28 @@
     "ENTRIES": "Entries",
     "VOLUNTEERS_ASSIGNED": "Volunteers assigned"
   },
+  "YOUTHNET_PROFILE": {
+    "MY_PROFILE": "My Profile",
+    "ACTIVITIES_CONDUCTED": "Activities conducted",
+    "PROFILE_DETAILS": "Profile Details",
+    "FULL_NAME": "Full Name",
+    "EMAIL_ID": "Email ID",
+    "STATE_DISTRICT_BLOCK": "State District Block",
+    "DESIGNATION": "Designation",
+    "JOINED_ON": "Joined on",
+    "PHONE_NUMBER": "Phone Number",
+    "MENTOR_ID": "Mentor ID",
+    "GENDER": "Gender",
+    "AGE": "Age"
+  },
   "YOUTHNET_CAMP_DETAILS": {
     "SUBMISSION": "Submission",
     "SUMMARY": "Summary"
+  },
+  "SURVEYS": {
+    "SURVEYS" :"Surveys",
+    "ACTIVE_SURVEYS" :"Active Surveys",
+    "PREVIOUS_SURVEYS" :"Previous Surveys",
+    "VILLAGES":"Villages"
   }
 }

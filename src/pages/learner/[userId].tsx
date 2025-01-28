@@ -210,10 +210,12 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           }
         }
       } else {
-        const fieldValue = getValue(userData, customFieldValue);
 
-        if (fieldValue) {
-          initialFormData[item.name] = fieldValue;
+        if (customFieldValue) {
+          const fieldValue = getValue(userData, customFieldValue); 
+          if (fieldValue) {
+            initialFormData[item.name] = fieldValue;
+          }
         }
       }
     });

@@ -34,6 +34,7 @@ const MonthlyRegistrationsChart: React.FC = () => {
           marginBottom: '10px',
           marginTop: 0,
         }}
+        suppressHydrationWarning
       >
         {t('YOUTHNET_DASHBOARD.MONTHLY_REGISTRATIONS_OVERVIEW')}
       </h3>

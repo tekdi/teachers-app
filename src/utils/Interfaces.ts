@@ -910,7 +910,12 @@ export interface RegistrationModalProps {
 export interface SurveysProps {
   title: string;
   date: string;
-  onClick: () => void;
+  villages?: number;
+  status?: string;
+  actionRequired?: string;
+  isActionRequired?: boolean;
+  onClick?: () => void;
+  minHeight?:string;
 }
 
 export interface VillageDetailProps {

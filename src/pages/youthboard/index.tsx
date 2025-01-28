@@ -169,7 +169,7 @@ const index = () => {
         onClose={handleModalClose}
       >
         {' '}
-        <UserList users={users} />
+        <UserList users={users} layout="list" />
       </SimpleModal>
 
       <SimpleModal
@@ -178,7 +178,7 @@ const index = () => {
         onClose={handleModalClose}
       >
         {' '}
-        <UserList users={users} />
+        <UserList users={users} layout="list" />
       </SimpleModal>
       <SimpleModal
         modalTitle={t('YOUTHNET_DASHBOARD.VLLAGE_18')}

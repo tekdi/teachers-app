@@ -681,6 +681,21 @@
     "BELOW_18": "18 वर्षांखालील नोंदणी",
     "VLLAGE_18": "आजची नवीन नोंदणी"
   },
+  "YOUTHNET_PROFILE": {
+    "MY_PROFILE": "माझा प्रोफाइल",
+    "ACTIVITIES_CONDUCTED": "संचालित क्रियाकलाप",
+    "PROFILE_DETAILS": "प्रोफाइल तपशील",
+    "FULL_NAME": "पूर्ण नाव",
+    "EMAIL_ID": "ईमेल आयडी",
+    "STATE_DISTRICT_BLOCK": "राज्य जिल्हा ब्लॉक",
+    "DESIGNATION": "पद",
+    "JOINED_ON": "जोडलेले",
+    "PHONE_NUMBER": "फोन नंबर",
+    "MENTOR_ID": "मेंटर आयडी",
+    "GENDER": "लिंग",
+    "AGE": "वय"
+  },
+
   "YOUTHNET_VOLUNTEERLIST": {
     "ENTRIES": "नोंदी",
     "VOLUNTEERS_ASSIGNED": "स्वयंसेवक नियुक्त"
