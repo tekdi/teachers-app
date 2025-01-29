@@ -19,7 +19,7 @@ import {
 import { telemetryFactory } from '@/utils/telemetry';
 import { IChangeEvent } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactGA from 'react-ga4';
 import { useTranslation } from 'react-i18next';
 import { tenantId } from '../../app.config';
@@ -298,31 +298,26 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     }
   };
 
-  const handleChange = (event: IChangeEvent<any>) => {
+   const handleChange = (event: IChangeEvent<any>) => {
     const { formData } = event;
-
+  
     if (!isEditModal) {
       const { firstName, lastName, username } = formData;
+       
       if (firstName && lastName) {
-        const updatedUsername = event.formData.username
-          ? username
-          : firstName && lastName
-            ? (firstName + lastName).toLowerCase()
-            : '';
-
-        const updatedFormData = {
+  
+        setCustomFormData({
           ...formData,
-          username: updatedUsername,
-        };
-
-        setCustomFormData(updatedFormData);
+        
+        });
       } else {
-        setCustomFormData({ ...event.formData });
+        setCustomFormData({ ...formData });
       }
     } else {
       setCustomFormData({ ...formData });
     }
   };
+  
 
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
@@ -372,6 +367,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             customFields={customFields}
             formData={customFormData ?? undefined}
             setFormData={setCustomFormData}
+            isEdit={isEditModal}
           >
             <FormButtons
               formData={formData ?? learnerFormData}
