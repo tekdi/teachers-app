@@ -11,6 +11,7 @@ import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import CustomNumberWidget from './CustomNumberWidget';
 import UsernameWithSuggestions from './UsernameWithSuggestions';
+import { customValidation } from './FormValidation';
 import { userNameExist } from '@/services/CreateUserService';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
@@ -359,6 +360,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         onSubmit={onSubmit}
         validator={validator}
         liveValidate
+        customValidate={customValidation(schema, t)}
         showErrorList={false}
         widgets={widgets}
         noHtml5Validate

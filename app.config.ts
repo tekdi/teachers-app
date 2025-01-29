@@ -93,6 +93,7 @@ if (!frameworkId) {
 export enum AssessmentType {
   PRE_TEST = 'Pre Test',
   POST_TEST = 'Post Test',
+  OTHER = 'Other',
 }
 export const RequisiteType = {
   PRE_REQUISITES: 'prerequisite',

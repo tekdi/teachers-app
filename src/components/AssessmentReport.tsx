@@ -27,6 +27,7 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
 
   const [preAssessmentList, setPreAssessmentList] = useState<string[]>([]);
   const [postAssessmentList, setPostAssessmentList] = useState<string[]>([]);
+  const [otherAssessmentList, setOtherAssessmentList] = useState<string[]>([]);
   const [assessmentData, setAssessmentData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [board, setBoard] = useState('');
@@ -141,6 +142,7 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
     if (board) {
       fetchAssessmentData(AssessmentType.PRE_TEST, setPreAssessmentList);
       fetchAssessmentData(AssessmentType.POST_TEST, setPostAssessmentList);
+      fetchAssessmentData(AssessmentType.OTHER, setOtherAssessmentList);
     }
   }, [board]);
 
@@ -155,6 +157,12 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
       fetchAssessmentStatus(postAssessmentList, AssessmentType.POST_TEST);
     }
   }, [postAssessmentList]);
+
+  useEffect(() => {
+    if (otherAssessmentList.length) {
+      fetchAssessmentStatus(otherAssessmentList, AssessmentType.OTHER);
+    }
+  }, [otherAssessmentList]);
 
   return (
     <Box

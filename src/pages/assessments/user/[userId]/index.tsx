@@ -8,7 +8,7 @@ import {
 import { getUserDetails } from '@/services/ProfileService';
 import { AssessmentStatus } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
-import { format2DigitDate, toPascalCase } from '@/utils/Helper';
+import { format2DigitDate, getAssessmentType, toPascalCase } from '@/utils/Helper';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
@@ -50,7 +50,7 @@ const statusKeyMap: any = {
 function AssessmentsDetails() {
   const theme = useTheme<any>();
   const { t } = useTranslation();
-  const {  isRTL } = useDirection();
+  const { isRTL } = useDirection();
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -95,10 +95,7 @@ function AssessmentsDetails() {
         state: stateName as string,
         board: board,
         status: ['Live'],
-        assessmentType:
-          assessmentType === 'pre'
-            ? AssessmentType.PRE_TEST
-            : AssessmentType.POST_TEST,
+        assessmentType: getAssessmentType(assessmentType),
         primaryCategory: [
           "Practice Question Set"
         ]
@@ -233,18 +230,18 @@ function AssessmentsDetails() {
           setUserDetails(response?.result?.userData);
           let fullName = "";
 
-              if (response?.result?.userData?.firstName) {
-                fullName += toPascalCase(response?.result?.userData.firstName);
-              }
-              
-              if (response?.result?.userData?.middleName) {
-                fullName += (fullName ? " " : "") + toPascalCase(response?.result?.userData.middleName);
-              }
-              
-              if (response?.result?.userData?.lastName) {
-                fullName += (fullName ? " " : "") + toPascalCase(response?.result?.userData.lastName);
-              }
-              setFullName(fullName);
+          if (response?.result?.userData?.firstName) {
+            fullName += toPascalCase(response?.result?.userData.firstName);
+          }
+
+          if (response?.result?.userData?.middleName) {
+            fullName += (fullName ? " " : "") + toPascalCase(response?.result?.userData.middleName);
+          }
+
+          if (response?.result?.userData?.lastName) {
+            fullName += (fullName ? " " : "") + toPascalCase(response?.result?.userData.lastName);
+          }
+          setFullName(fullName);
         }
       } catch (error) {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -301,14 +298,15 @@ function AssessmentsDetails() {
   const handleAssessmentTypeChange = (newType: string) => {
     setAssessmentType(newType);
     const queryParams = { ...router.query };
-    if (newType === 'post') queryParams.type = 'post';
-    else delete queryParams.type;
+    if (newType === 'post') queryParams.assessmentType = 'post';
+    if (newType === 'other') queryParams.assessmentType = 'other';
+    else delete queryParams.assessmentType;
 
     router.push({ pathname: router.pathname, query: queryParams }, undefined, { shallow: true });
   };
 
   useEffect(() => {
-    setAssessmentType(router.query.type === 'post' ? 'post' : 'pre');
+    setAssessmentType(router.query.assessmentType === 'post' ? 'post' : (router.query.assessmentType === 'pre' ? 'pre' : 'other'));
   }, [router.query.type]);
 
   return (
@@ -361,6 +359,7 @@ function AssessmentsDetails() {
               >
                 <MenuItem value={'pre'}>{t('PROFILE.PRE_TEST')}</MenuItem>
                 <MenuItem value={'post'}>{t('PROFILE.POST_TEST')}</MenuItem>
+                <MenuItem value={'other'}>{t('FORM.OTHER')}</MenuItem>
               </Select>
             </FormControl>
           </Box>

@@ -3,7 +3,7 @@ import { Box, IconButton, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface BackHeaderProps {
-  headingOne: string;
+  headingOne?: string;
   headingTwo?: string;
   headingThree?: string;
   onBackClick?: () => void;
