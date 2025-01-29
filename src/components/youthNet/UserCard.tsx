@@ -22,8 +22,8 @@ type UserCardProps = {
   showMore?: boolean;
   totalCount?: number;
   newRegistrations?: number;
-  onClick?: (name: string) => void; // Add onClick prop
-  onToggleClick?: (name: string) => void; // Add onClick prop
+  onClick?: (name: string) => void;
+  onToggleClick?: (name: string) => void;
 };
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -45,7 +45,6 @@ const UserCard: React.FC<UserCardProps> = ({
   return (
     <Box
       display={'flex'}
-      // borderBottom={`1px solid ${theme.palette.warning['A100']}`}
       width={'100%'}
       justifyContent={'space-between'}
       sx={{
@@ -162,8 +161,8 @@ const UserCard: React.FC<UserCardProps> = ({
 
 type UserListProps = {
   users: UserCardProps[];
-  layout?: 'list' | 'grid'; // Added layout prop
-  onUserClick?: (name: string) => void; // Add onUserClick prop
+  layout?: 'list' | 'grid';
+  onUserClick?: (name: string) => void;
   onToggleUserClick?: (name: string) => void;
 };
 
