@@ -20,13 +20,13 @@ export const fetchSurveyData = async (): Promise<boolean> => {
   }
 };
 
-export const fetchStudentData = async (): Promise<boolean> => {
+export const fetchStudentData = async (): Promise<any> => {
   if (USE_STUDENT_MOCK) {
-    return MOCK_SURVEY_CONFIG.surveyAvailable;
+    return USE_STUDENT_MOCK;
   }
 
   try {
-    const response = await axios.get(`${API_BASE_URL}/survey`);
+    const response = await axios.get(`${API_BASE_URL}/studentList`);
     return response?.data?.surveyAvailable || false;
   } catch (error) {
     console.error('Error fetching survey data:', error);
